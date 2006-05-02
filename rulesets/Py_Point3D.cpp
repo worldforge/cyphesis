@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2004-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 #include "Py_Point3D.h"
 
 #include "Py_Vector3D.h"
+#include "Py_Object.h"
 
 static PyObject * Point3D_mag(PyPoint3D * self)
 {
@@ -58,7 +59,7 @@ static PyMethodDef Point3D_methods[] = {
 static void Point3D_dealloc(PyPoint3D *self)
 {
     self->coords.~Point3D();
-    PyMem_DEL(self);
+    self->ob_type->tp_free(self);
 }
 
 static int Point3D_print(PyPoint3D * self, FILE * fp, int)
@@ -145,6 +146,62 @@ static int Point3D_num_coerce(PyObject ** self, PyObject ** other)
     return 0;
 }
 
+static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
+{
+    PyObject * clist;
+    new (&(self->coords)) Point3D();
+    switch (PyTuple_Size(args)) {
+        case 0:
+            break;
+        case 1:
+            clist = PyTuple_GetItem(args, 0);
+            if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
+                PyErr_SetString(PyExc_TypeError, "Point3D() from single value must a list 3 long");
+                return -1;
+            }
+            for(int i = 0; i < 3; i++) {
+                PyObject * item = PyList_GetItem(clist, i);
+                if (PyInt_Check(item)) {
+                    self->coords[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    self->coords[i] = PyFloat_AsDouble(item);
+                } else if (PyMessageElement_Check(item)) {
+                    PyMessageElement * mitem = (PyMessageElement*)item;
+                    if (!mitem->m_obj->isNum()) {
+                        PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
+                        return -1;
+                    }
+                    self->coords[i] = mitem->m_obj->asNum();
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            self->coords.setValid();
+            break;
+        case 3:
+            for(int i = 0; i < 3; i++) {
+                PyObject * item = PyTuple_GetItem(args, i);
+                if (PyInt_Check(item)) {
+                    self->coords[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    self->coords[i] = PyFloat_AsDouble(item);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            self->coords.setValid();
+            break;
+        default:
+            PyErr_SetString(PyExc_TypeError, "Point3D must take list of floats, or ints, 3 ints or 3 floats");
+            return -1;
+            break;
+    }
+        
+    return 0;
+}
+
 static PyNumberMethods Point3D_num = {
         (binaryfunc)Point3D_num_add,    /* nb_add */
         (binaryfunc)Point3D_num_sub,    /* nb_subtract */
@@ -172,22 +229,46 @@ static PyNumberMethods Point3D_num = {
 };
 
 PyTypeObject PyPoint3D_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
-        "Point3D",                      /*tp_name*/
-        sizeof(PyPoint3D),              /*tp_basicsize*/
-        0,                              /*tp_itemsize*/
-        /* methods */
-        (destructor)Point3D_dealloc,    /*tp_dealloc*/
-        (printfunc)Point3D_print,       /*tp_print*/
-        (getattrfunc)Point3D_getattr,   /*tp_getattr*/
-        0,                              /*tp_setattr*/
-        (cmpfunc)Point3D_compare,       /*tp_compare*/
-        (reprfunc)Point3D_repr,         /*tp_repr*/
-        &Point3D_num,                   /*tp_as_number*/
-        0,                              /*tp_as_sequence*/
-        0,                              /*tp_as_mapping*/
-        0,                              /*tp_hash*/
+        PyObject_HEAD_INIT(0)
+        0,                              // ob_size
+        "Point3D.Point3D",              // tp_name
+        sizeof(PyPoint3D),              // tp_basicsize
+        0,                              // tp_itemsize
+        //  methods 
+        (destructor)Point3D_dealloc,    // tp_dealloc
+        (printfunc)Point3D_print,       // tp_print
+        (getattrfunc)Point3D_getattr,   // tp_getattr
+        0,                              // tp_setattr
+        (cmpfunc)Point3D_compare,       // tp_compare
+        (reprfunc)Point3D_repr,         // tp_repr
+        &Point3D_num,                   // tp_as_number
+        0,                              // tp_as_sequence
+        0,                              // tp_as_mapping
+        0,                              // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Point3D objects",              // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Point3D_init,         // tp_init
+        0,                              // tp_alloc
+        0,                              // tp_new
 };
 
 PyPoint3D * newPyPoint3D()

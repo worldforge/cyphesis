@@ -1078,15 +1078,15 @@ void init_python_api()
         return;
     }
 
-    if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
-        log(CRITICAL, "Python init failed to create Vector3D module\n");
-        return;
-    }
+    // if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
+        // log(CRITICAL, "Python init failed to create Vector3D module\n");
+        // return;
+    // }
 
-    if (Py_InitModule("Point3D", point3d_methods) == NULL) {
-        log(CRITICAL, "Python init failed to create Point3D module\n");
-        return;
-    }
+    // if (Py_InitModule("Point3D", point3d_methods) == NULL) {
+        // log(CRITICAL, "Python init failed to create Point3D module\n");
+        // return;
+    // }
 
     if (Py_InitModule("BBox", bbox_methods) == NULL) {
         log(CRITICAL, "Python init failed to create BBox module\n");
@@ -1183,12 +1183,35 @@ void init_python_api()
         log(CRITICAL, "Python init failed to create rules module");
         return;
     }
-
     if (PyType_Ready(&PyStatistics_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Statistics wrapper type");
         return;
     }
     PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
+
+    PyObject * point3d = Py_InitModule("Point3D", no_methods);
+    if (point3d == NULL) {
+        log(CRITICAL, "Python init failed to create Point3D module\n");
+        return;
+    }
+    PyPoint3D_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyPoint3D_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Point3D wrapper type");
+        return;
+    }
+    PyModule_AddObject(point3d, "Point3D", (PyObject *)&PyPoint3D_Type);
+
+    PyObject * vector3d = Py_InitModule("Vector3D", no_methods);
+    if (vector3d == NULL) {
+        log(CRITICAL, "Python init failed to create Vector3D module\n");
+        return;
+    }
+    PyVector3D_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyVector3D_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Vector3D wrapper type");
+        return;
+    }
+    PyModule_AddObject(vector3d, "Vector3D", (PyObject *)&PyVector3D_Type);
 
     PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
     PyRun_SimpleString((char *)importCmd.c_str());

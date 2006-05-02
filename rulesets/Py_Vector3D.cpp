@@ -16,7 +16,9 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "Py_Vector3D.h"
+
 #include "Py_Quaternion.h"
+#include "Py_Object.h"
 
 static PyObject * Vector3D_dot(PyVector3D * self, PyVector3D * other)
 {
@@ -166,7 +168,7 @@ static PyMethodDef Vector3D_methods[] = {
 static void Vector3D_dealloc(PyVector3D *self)
 {
     self->coords.~Vector3D();
-    PyMem_DEL(self);
+    self->ob_type->tp_free(self);
 }
 
 static int Vector3D_print(PyVector3D * self, FILE * fp, int)
@@ -305,6 +307,62 @@ static int Vector3D_num_coerce(PyObject ** self, PyObject ** other)
     return 0;
 }
 
+static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
+{
+    PyObject * clist;
+    new (&(self->coords)) Vector3D();
+    switch (PyTuple_Size(args)) {
+        case 0:
+            break;
+        case 1:
+            clist = PyTuple_GetItem(args, 0);
+            if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
+                PyErr_SetString(PyExc_TypeError, "Vector3D() from single value must a list 3 long");
+                return -1;
+            }
+            for(int i = 0; i < 3; i++) {
+                PyObject * item = PyList_GetItem(clist, i);
+                if (PyInt_Check(item)) {
+                    self->coords[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    self->coords[i] = PyFloat_AsDouble(item);
+                } else if (PyMessageElement_Check(item)) {
+                    PyMessageElement * mitem = (PyMessageElement*)item;
+                    if (!mitem->m_obj->isNum()) {
+                        PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                        return -1;
+                    }
+                    self->coords[i] = mitem->m_obj->asNum();
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            self->coords.setValid();
+            break;
+        case 3:
+            for(int i = 0; i < 3; i++) {
+                PyObject * item = PyTuple_GetItem(args, i);
+                if (PyInt_Check(item)) {
+                    self->coords[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    self->coords[i] = PyFloat_AsDouble(item);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            self->coords.setValid();
+            break;
+        default:
+            PyErr_SetString(PyExc_TypeError, "Vector3D must take list of floats, or ints, 3 ints or 3 floats");
+            return -1;
+            break;
+    }
+        
+    return 0;
+}
+
 static PyNumberMethods Vector3D_num = {
         (binaryfunc)Vector3D_num_add,   /* nb_add */
         (binaryfunc)Vector3D_num_sub,   /* nb_subtract */
@@ -332,22 +390,46 @@ static PyNumberMethods Vector3D_num = {
 };
 
 PyTypeObject PyVector3D_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
-        "Vector3D",                     /*tp_name*/
-        sizeof(PyVector3D),         /*tp_basicsize*/
-        0,                              /*tp_itemsize*/
-        /* methods */
-        (destructor)Vector3D_dealloc,   /*tp_dealloc*/
-        (printfunc)Vector3D_print,      /*tp_print*/
-        (getattrfunc)Vector3D_getattr,  /*tp_getattr*/
-        (setattrfunc)Vector3D_setattr,  /*tp_setattr*/
-        (cmpfunc)Vector3D_compare,      /*tp_compare*/
-        (reprfunc)Vector3D_repr,        /*tp_repr*/
-        &Vector3D_num,                  /*tp_as_number*/
-        0,                              /*tp_as_sequence*/
-        0,                              /*tp_as_mapping*/
-        0,                              /*tp_hash*/
+        PyObject_HEAD_INIT(0)
+        0,                              // ob_size
+        "Vector3D.Vector3D",            // tp_name
+        sizeof(PyVector3D),             // tp_basicsize
+        0,                              // tp_itemsize
+        // methods 
+        (destructor)Vector3D_dealloc,   // tp_dealloc
+        (printfunc)Vector3D_print,      // tp_print
+        (getattrfunc)Vector3D_getattr,  // tp_getattr
+        (setattrfunc)Vector3D_setattr,  // tp_setattr
+        (cmpfunc)Vector3D_compare,      // tp_compare
+        (reprfunc)Vector3D_repr,        // tp_repr
+        &Vector3D_num,                  // tp_as_number
+        0,                              // tp_as_sequence
+        0,                              // tp_as_mapping
+        0,                              // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Vector3D objects",             // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Vector3D_init,        // tp_init
+        0,                              // tp_alloc
+        0,                              // tp_new
 };
 
 PyVector3D * newPyVector3D()

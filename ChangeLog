@@ -1,5 +1,12 @@
 2006-05-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Point3D.cpp, rulesets/Py_Vector3D.cpp,
+	  rulesets/Python_API.cpp: Extend the type object for python
+	  Vector3D and Point3D to the format used by more recent python
+	  versions, adding init methods as well as flags, and doc string.
+
+2006-05-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp, common/system.h: Add a function to increment nice
 	  value for the server. Change security check to return unsigned, as
 	  the magic number is in fact unsigned.
