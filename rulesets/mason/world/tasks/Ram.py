@@ -19,7 +19,7 @@ class Ram(Thing):
     def strike_operation(self, op):
         """ Op handler for strike op which activates this task """
         if len(op) < 1:
-            print "No target"
+            std.stderr.write("Ram task has no target in strike op")
 
         # FIXME Use weak references, once we have them
         self.target = op[0].id
@@ -30,7 +30,7 @@ class Ram(Thing):
 
         target=self.character.world.get_object(self.target)
         if not target:
-            print "Target is no more"
+            # print "Target is no more"
             self.irrelevant()
             return
 

@@ -17,10 +17,10 @@ class Raise(Thing):
     """ A proof of concept task for raiseing a heavy item from the ground."""
     def lever_operation(self, op):
         """ Op handler for lever op which activates this task """
-        print "Raise.lever"
+        # print "Raise.lever"
 
         if len(op) < 1:
-            print "No target"
+            std.stderr.write("Raise task hsa no target in lever op")
 
         # FIXME Use weak references, once we have them
         self.target = op[0].id
@@ -28,20 +28,20 @@ class Raise(Thing):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Raise.tick"
+        # print "Raise.tick"
         res=Message()
 
         target=self.character.world.get_object(self.target)
         if not target:
-            print "Target is no more"
+            # print "Target is no more"
             self.irrelevant()
             return
 
         distance=distance_to(self.character.location, target.location)
         axis=distance.cross(Vector3D(0,0,1))
-        print "DISTANCE ", distance, axis
+        # print "DISTANCE ", distance, axis
         rotation=Quaternion(axis, -0.01)
-        print "ROT ", rotation
+        # print "ROT ", rotation
         if target.location.orientation.valid():
             rotation = target.location.orientation * rotation
 

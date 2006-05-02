@@ -21,17 +21,17 @@ class Combat(Thing):
             term the defender. We store the IDs of both. """
         # Check if the attacked characters stamina is too low for combat
         if self.character.stamina < 0.1:
-            print "Aborting defender stamina low"
+            # print "Aborting defender stamina low"
             self.irrelevant()
             return
         assert(op.from_ != op.to)
         if op.to != self.character.id:
             self.oponent = op.to
-            print "Attack operation is not to this character"
+            # print "Attack operation is not to this character"
             # We have initiative
         else:
             self.oponent = op.from_
-            print "Attack operation is to this character"
+            # print "Attack operation is to this character"
             self.surprise = True
             # We do not have initiative
         # Attach this task to the attacker. Its already implicitly attached
@@ -58,29 +58,29 @@ class Combat(Thing):
         assert(self.character.id == op.to)
 
         if self.character.stamina <= 0:
-            print "I am exhausted"
+            # print "I am exhausted"
             self.irrelevant()
             return
 
         attacker = self.character
         if not attacker:
-            print "No attacker"
+            sys.stderr.write("Attacker owning combat task destroyed, but task still running")
             self.irrelevant()
             return
 
         if attacker.stamina <= 0:
-            print "Attacker exhausted"
+            # print "Attacker exhausted"
             self.irrelevant()
             return
 
         defender = self.character.world.get_object(self.oponent)
         if not defender:
-            print "No defender"
+            # print "No defender"
             self.irrelevant()
             return
 
         if hasattr(self, 'surprise') and self.surprise:
-            print 'Surprised!'
+            # print 'Surprised!'
             self.surprise = False
             tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
             tick.setFutureSeconds(0.75 + uniform(0,0.25))

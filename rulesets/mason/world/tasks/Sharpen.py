@@ -17,10 +17,10 @@ class Sharpen(Thing):
     """ A proof of concept task for sharpening a log into a stake."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        print "Sharpen.cut"
+        # print "Sharpen.cut"
 
         if len(op) < 1:
-            print "No target"
+            sys.stderr.write("Sharpen task has no target in cut op")
 
         # FIXME Use weak references, once we have them
         self.target = op[0].id
@@ -28,12 +28,12 @@ class Sharpen(Thing):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Sharpen.tick"
+        # print "Sharpen.tick"
         res=Message()
 
         target=self.character.world.get_object(self.target)
         if not target:
-            print "Target is no more"
+            # print "Target is no more"
             self.irrelevant()
             return
 

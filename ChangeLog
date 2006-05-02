@@ -1,5 +1,14 @@
 2006-05-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Combat.py,
+	  rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Ram.py,
+	  rulesets/mason/world/tasks/Sharpen.py: Remove debug output from
+	  task scripts.
+
+2006-05-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Oak bounding box update.
 
 2006-04-30  Al Riddoch  <alriddoch@zepler.org>
