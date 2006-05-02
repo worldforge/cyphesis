@@ -239,6 +239,10 @@ int main(int argc, char ** argv)
     // Inform things that want to know that we are running.
     running();
 
+    // Reduce our system priority to make it easier to debug a runaway
+    // server.
+    reduce_priority();
+
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {

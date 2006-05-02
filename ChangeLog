@@ -1,5 +1,14 @@
 2006-05-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.cpp, common/system.h: Add a function to increment nice
+	  value for the server. Change security check to return unsigned, as
+	  the magic number is in fact unsigned.
+
+	* server/server.cpp: Call system function to increment nice, thus
+	  reducing priority once setup is complete.
+
+2006-05-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Combat.py,
 	  rulesets/mason/world/tasks/Logging.py,
 	  rulesets/mason/world/tasks/Raise.py,

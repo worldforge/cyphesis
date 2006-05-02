@@ -54,13 +54,21 @@ const std::string get_hostname()
     return std::string(host_ident.nodename);
 }
 
-int security_check()
+unsigned int security_check()
 {
     if (getuid() == 0 || geteuid() == 0) {
         log(ERROR, "Running cyphesis as the superuser is dangerous.");
         return -1;
     }
     return SECURITY_OKAY;
+}
+
+void reduce_priority()
+{
+    // FIXME Make this optional
+    if (nice(1) < 0) {
+        log(ERROR, "Unable to increase nice level to reduce priority");
+    }
 }
 
 extern "C" void shutdown_on_signal(int signo)

@@ -37,7 +37,8 @@
 #include <string>
 
 const std::string get_hostname();
-int security_check();
+unsigned int security_check();
+void reduce_priority();
 void interactive_signals();
 void daemon_signals();
 int daemonise();
