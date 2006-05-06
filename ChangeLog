@@ -1,3 +1,46 @@
+2006-05-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp, common/newid.cpp, server/server.cpp:
+	  Modify new ID checks so that code still runs when database is
+	  unavailable, and events requiring new IDs fail cleanly.
+
+	* server/Connection.cpp: Report a failure to create a player
+	  account if no ID available.
+
+	* rulesets/BaseMind.cpp: When processing appearance ops, handle
+	  stamp more efficiently, report an error if ID is missing
+	  from argument.
+
+	* server/IdlePSQLConnector.cpp, server/IdlePSQLConnector.h:
+	  Implement re-connecting to the Database if connection is lost.
+
+	* rulesets/Character.cpp, rulesets/Entity.cpp, rulesets/Thing.cpp:
+	  Ensure STAMP is present on appearance op args.
+
+	* server/CommListener.cpp, server/CommListener.h,
+	  server/CommPeerListener.cpp, server/CommPeerListener.h,
+	  server/CommSlaveListener.cpp, server/CommSlaveListener.h,
+	  server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Add a return value to method for creating new client socket
+	  objects, and use it to return failure if no ID is available
+	  from the database for a new object.
+
+	* rulesets/Py_Point3D.cpp, rulesets/Py_Vector3D.cpp,
+	  rulesets/Python_API.cpp: Add "new" method for class wrappers, and
+	  call the in place constructor from new rather than init. Re-write
+	  internal function for creating new instances so it uses the "new"
+	  method.
+
+	* rulesets/Py_Statistics.cpp: Remove some obsolete code inadvertedly
+	  copied from another file. Comment out some unused code to get rid
+	  of a warning.
+
+	* server/CommPSQLSocket.cpp: Clear the database connection from
+	  destructor.
+
+	* tests/python_class.cpp: A new test for experimenting with new
+	  Python wrappers.
+
 2006-05-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Point3D.cpp, rulesets/Py_Vector3D.cpp,

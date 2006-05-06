@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2005 Alistair Riddoch
+// Copyright (C) 2000-2004 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,22 +15,30 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "common/id.h"
-#include "common/const.h"
-#include "common/Database.h"
+#include <Python.h>
 
-static long idGenerator = 0;
+#include "rulesets/Python_API.h"
+#include "rulesets/Py_Vector3D.h"
 
-long newId(std::string & id)
+#include "common/globals.h"
+
+int main(int argc, char ** argv)
 {
-    if (consts::enable_database) {
-        return Database::instance()->newId(id);
-    } else {
-        static char buf[32];
-        long new_id = ++idGenerator;
-        sprintf(buf, "%ld", new_id);
-        id = buf;
-        assert(!id.empty());
-        return new_id;
+    loadConfig(argc, argv);
+
+    init_python_api();
+
+    PyVector3D * pv = newPyVector3D();
+
+    if (PyErr_Occurred() != 0) {
+        PyErr_Print();
     }
+
+    PyObject * pv2 = PyInstance_New((PyObject*)&PyVector3D_Type, 0, 0);
+
+    if (PyErr_Occurred() != 0) {
+        PyErr_Print();
+    }
+
+    shutdown_python_api();
 }

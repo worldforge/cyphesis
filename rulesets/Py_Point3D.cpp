@@ -202,6 +202,17 @@ static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
+PyObject * Point3D_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyPoint3D * self = (PyPoint3D *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        new (&(self->coords)) Point3D();
+    }
+    return (PyObject *)self;
+}
+
 static PyNumberMethods Point3D_num = {
         (binaryfunc)Point3D_num_add,    /* nb_add */
         (binaryfunc)Point3D_num_sub,    /* nb_subtract */
@@ -268,16 +279,20 @@ PyTypeObject PyPoint3D_Type = {
         0,                              // tp_dictoffset
         (initproc)Point3D_init,         // tp_init
         0,                              // tp_alloc
-        0,                              // tp_new
+        Point3D_new,                    // tp_new
 };
 
 PyPoint3D * newPyPoint3D()
 {
-        PyPoint3D * self;
-        self = PyObject_NEW(PyPoint3D, &PyPoint3D_Type);
-        if (self == NULL) {
-                return NULL;
-        }
-        new (&(self->coords)) Point3D();
-        return self;
+#if 0
+    PyPoint3D * self;
+    self = PyObject_NEW(PyPoint3D, &PyPoint3D_Type);
+    if (self == NULL) {
+            return NULL;
+    }
+    new (&(self->coords)) Point3D();
+    return self;
+#else
+    return (PyPoint3D *)PyPoint3D_Type.tp_new(&PyPoint3D_Type, 0, 0);
+#endif
 }

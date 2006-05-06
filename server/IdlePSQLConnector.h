@@ -28,6 +28,8 @@ class Database;
 class IdlePSQLConnector : virtual public Idle {
   protected:
     Database & m_db;
+
+    long m_lastConnect;
   public:
     IdlePSQLConnector(CommServer &, Database &);
     virtual ~IdlePSQLConnector();

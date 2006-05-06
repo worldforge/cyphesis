@@ -24,7 +24,7 @@
 /// local clients to admin a slave server.
 class CommSlaveListener : public CommUnixListener {
   private:
-    virtual void create(int fd);
+    virtual int create(int fd);
 
   public:
     explicit CommSlaveListener(CommServer & svr);

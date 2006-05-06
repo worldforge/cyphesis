@@ -17,11 +17,19 @@
 
 #include "IdlePSQLConnector.h"
 
+#include "CommServer.h"
+#include "CommPSQLSocket.h"
+
+#include "common/Database.h"
+#include "common/log.h"
+
+#include <iostream>
+
 /// \brief Constructor for PSQL Connector.
 ///
 /// @param svr Reference to the object that manages all socket communication.
 IdlePSQLConnector::IdlePSQLConnector(CommServer & svr, Database & db) :
-                   Idle(svr), m_db(db)
+                   Idle(svr), m_db(db), m_lastConnect(svr.time())
 {
 }
 
@@ -31,4 +39,14 @@ IdlePSQLConnector::~IdlePSQLConnector()
 
 void IdlePSQLConnector::idle(time_t time)
 {
+    if (time > m_lastConnect) {
+        m_lastConnect = time;
+        if (m_db.initConnection() == 0) {
+            log(NOTICE, "Database connection re-established");
+            CommPSQLSocket * dbsocket = new CommPSQLSocket(m_idleManager, m_db);
+            m_idleManager.addSocket(dbsocket);
+            m_idleManager.addIdle(dbsocket);
+            delete this;
+        }
+    }
 }

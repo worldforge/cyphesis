@@ -33,12 +33,16 @@ CommSlaveListener::~CommSlaveListener()
 {
 }
 
-void CommSlaveListener::create(int asockfd)
+int CommSlaveListener::create(int asockfd)
 {
+    // FIXME Hmm, no proper ID for this connection.
+
     CommSlaveClient * newpeer = new CommSlaveClient(m_commServer, asockfd);
 
     newpeer->setup();
 
     // Add this new peer to the list.
     m_commServer.addSocket(newpeer);
+
+    return 0;
 }

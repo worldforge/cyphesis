@@ -221,6 +221,7 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
     Appearance app;
     Anonymous app_arg;
     app_arg->setId(getId());
+    app_arg->setStamp(m_seq);
     app->setArgs1(app_arg);
 
     res.push_back(app);

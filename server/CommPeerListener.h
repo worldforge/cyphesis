@@ -24,7 +24,7 @@
 /// remote peer servers.
 class CommPeerListener : public CommListener {
   private:
-    virtual void create(int fd, const char * address);
+    virtual int create(int fd, const char * address);
 
   public:
     explicit CommPeerListener(CommServer & svr);

@@ -1,3 +1,13 @@
+Test account and avatar creation from client when database is down.
+
+Once SEQ has replaced STAMP in Atlas-C++, use it instead of serialno
+in Tick op args.
+
+Note that tp_new should do essential non-repeatable initialisation, like
+calling in place constructor. Current newFoo() functions in the Python
+API code do not cause the types tp_new or tp_init to be called. Need to
+work out why, and see if changes are needed.
+
 Add media for boots, bowl, cow, flower, hat, knife, leaf, loaf, statue, stool,
 and longtable
 
@@ -774,9 +784,6 @@ General TODO
   be moved into the bbox entity. Should work fine for irreguler shaped
   things, as long as bbox is kept up to date.
 
-  Investigate why attempt to make admin entities move around doesn't work
-  right now. Fixed I think.
-
   Ensure that maxmass set in python has some effect in C++, and investigate
   other related attributes.
 
@@ -796,15 +803,10 @@ General TODO
   removed. Should consider the effect this will have on NPC memory,
   and whether or not it can be rebootstrapped.
 
-  Clean up the removal of idDict. Need to fix deletion of idDict contents,
-  and arbitrary object requesting by admin.
-
   Why don't the pigs eat?
 
   Looking at contains attribute currently only applies sight ranges in
   world entity. Need to apply sight ranges in all entities.
-
-  Find out why pure orientation changes don't get echoed by the server.
 
   Once the subscription mechanism works, transfer its setup into the factories,
   and use it to inform the clients what op types are meaningful for object
@@ -813,31 +815,7 @@ General TODO
   Fix the database so it handles updating entities. Need to actually lookup
   how this is done. Need to lock row if its being updated.
 
-  Implement installation of a new type by admin account.
-
-  Entity classes need to be added by world builders. They also need to be
-  persisted, so it seems as though they need to installed in a database,
-  and for this database to be loaded just before the world state. This implies
-  that majority of config on startup needs to be loaded from some kind of
-  writable config store, rather than read only system files. Does this mean
-  that predefined rulesets should only be loaded when explicitly commanded,
-  or perhaps even externally to the core server?
-  This also asks the question whether the current db code is up to scratch.
-  Need to look into SQL for the database now. It is going to be a relation
-  object database hybrid, using current tech to serialise objects, despite
-  Funcoms warning. One question is obviously whether to use a database
-  server, or in process database access.
-
   Add services features, and test them in equator.
-
-  Current watchdog keeps server running. Should a future version ensure
-  that the server is working?
-
-  Add support for maps list attribute on world_0. Good idea?
-
-  Implement accelerated Atlas Objects API. MAYBE:
-    POSTPONED FROM 0.3
-    POSTPONED FROM 0.4
 
   Fully implement stackable objects.
   Use combine operation to deal with making more than one object into one.
@@ -845,13 +823,6 @@ General TODO
   Add sending of touch op on collision.
 
   Implement omnipresent
-
-  Establish a way to handle the location of db3 headers on debian without
-  library header file requiring config.h
-
-  Clean out C isms in watchdog and control tool
-
-  Clean up Python_API.h, and add init/shutdown functions.
 
 Required for werewolf:
 

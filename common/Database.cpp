@@ -180,6 +180,7 @@ bool Database::initRule(bool createTables)
 void Database::shutdownConnection()
 {
     PQfinish(m_connection);
+    m_connection = 0;
 }
 
 Database * Database::instance()
@@ -818,6 +819,10 @@ long Database::newId(std::string & id)
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
+    if (id.empty()) {
+        log(ERROR, "Unknown error getting ID from database.");
+        return -1;
+    }
     return forceIntegerId(id);
 }
 

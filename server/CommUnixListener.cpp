@@ -107,16 +107,17 @@ int CommUnixListener::accept()
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
 
-    create(asockfd);
-
-    return 0;
+    return create(asockfd);
 }
 
-void CommUnixListener::create(int asockfd)
+int CommUnixListener::create(int asockfd)
 {
     std::string connection_id;
-    newId(connection_id);
-    assert(!connection_id.empty());
+    if (newId(connection_id) < 0) {
+        log(ERROR, "Unable to accept connection as no ID available");
+        close(asockfd);
+        return -1;
+    }
 
     CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd,
                                                    connection_id);
@@ -126,4 +127,6 @@ void CommUnixListener::create(int asockfd)
     // Add this new client to the list.
     m_commServer.addSocket(newcli);
     m_commServer.addIdle(newcli);
+
+    return 0;
 }

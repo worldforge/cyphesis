@@ -1194,7 +1194,7 @@ void init_python_api()
         log(CRITICAL, "Python init failed to create Point3D module\n");
         return;
     }
-    PyPoint3D_Type.tp_new = PyType_GenericNew;
+    // PyPoint3D_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyPoint3D_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Point3D wrapper type");
         return;
@@ -1206,7 +1206,7 @@ void init_python_api()
         log(CRITICAL, "Python init failed to create Vector3D module\n");
         return;
     }
-    PyVector3D_Type.tp_new = PyType_GenericNew;
+    // PyVector3D_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyVector3D_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Vector3D wrapper type");
         return;

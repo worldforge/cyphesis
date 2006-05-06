@@ -177,7 +177,7 @@ int main(int argc, char ** argv)
     } else {
         std::string adminId;
         long intId = newId(adminId);
-        assert(!adminId.empty());
+        assert(intId >= 0);
 
         Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
         server.addAccount(admin);

@@ -35,7 +35,7 @@ class CommUnixListener : public CommSocket {
 
     int accept();
 
-    virtual void create(int fd);
+    virtual int create(int fd);
 
   public:
     explicit CommUnixListener(CommServer & svr);

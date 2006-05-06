@@ -67,7 +67,6 @@ static PyObject * Statistics_getattro(PyStatistics *self, PyObject *pn)
 
 static int Statistics_setattro(PyStatistics *self, PyObject *pn, PyObject *v)
 {
-    char * name = PyString_AS_STRING(pn);
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.setattro");
@@ -75,6 +74,7 @@ static int Statistics_setattro(PyStatistics *self, PyObject *pn, PyObject *v)
     }
 #endif // NDEBUG
     // FIXME Allow setting of statistics values.
+    // char * name = PyString_AS_STRING(pn);
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
@@ -93,8 +93,6 @@ static PyObject * Statistics_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we set some
     // stuff to null.
     PyStatistics * self = (PyStatistics *)type->tp_alloc(type, 0);
-    // self->time = 0;
-    // self->own = false;
     return (PyObject *)self;
 }
 

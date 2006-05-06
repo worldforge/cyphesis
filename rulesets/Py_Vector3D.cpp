@@ -310,7 +310,6 @@ static int Vector3D_num_coerce(PyObject ** self, PyObject ** other)
 static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
 {
     PyObject * clist;
-    new (&(self->coords)) Vector3D();
     switch (PyTuple_Size(args)) {
         case 0:
             break;
@@ -361,6 +360,17 @@ static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
     }
         
     return 0;
+}
+
+static PyObject * Vector3D_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyVector3D * self = (PyVector3D *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        new (&(self->coords)) Vector3D();
+    }
+    return (PyObject *)self;
 }
 
 static PyNumberMethods Vector3D_num = {
@@ -429,16 +439,20 @@ PyTypeObject PyVector3D_Type = {
         0,                              // tp_dictoffset
         (initproc)Vector3D_init,        // tp_init
         0,                              // tp_alloc
-        0,                              // tp_new
+        Vector3D_new,                   // tp_new
 };
 
 PyVector3D * newPyVector3D()
 {
-        PyVector3D * self;
-        self = PyObject_NEW(PyVector3D, &PyVector3D_Type);
-        if (self == NULL) {
-                return NULL;
-        }
-        new (&(self->coords)) Vector3D();
-        return self;
+#if 0
+    PyVector3D * self;
+    self = PyObject_NEW(PyVector3D, &PyVector3D_Type);
+    if (self == NULL) {
+            return NULL;
+    }
+    new (&(self->coords)) Vector3D();
+    return self;
+#else
+    return (PyVector3D *)PyVector3D_Type.tp_new(&PyVector3D_Type, 0, 0);
+#endif
 }

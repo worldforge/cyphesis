@@ -31,7 +31,7 @@ class CommListener : public CommSocket {
 
     int accept();
 
-    virtual void create(int fd, const char * address);
+    virtual int create(int fd, const char * address);
 
   public:
     explicit CommListener(CommServer & svr);

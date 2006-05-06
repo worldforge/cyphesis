@@ -53,7 +53,8 @@ CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
 CommPSQLSocket::~CommPSQLSocket()
 {
     if (!exit_flag) {
-        std::cout << "Lost server connection" << std::endl << std::flush;
+        m_db.shutdownConnection();
+
         IdlePSQLConnector * ipsqlc = new IdlePSQLConnector(m_idleManager, m_db);
         m_idleManager.addIdle(ipsqlc);
     }

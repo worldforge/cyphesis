@@ -127,15 +127,17 @@ int CommListener::accept()
         address = "unknown";
     }
     
-    create(asockfd, address);
-    return 0;
+    return create(asockfd, address);
 }
 
-void CommListener::create(int asockfd, const char * address)
+int CommListener::create(int asockfd, const char * address)
 {
     std::string connection_id;
-    newId(connection_id);
-    assert(!connection_id.empty());
+    if (newId(connection_id) < 0) {
+        log(ERROR, "Unable to accept connection as no ID available");
+        close(asockfd);
+        return -1;
+    }
 
     CommRemoteClient * newcli = new CommRemoteClient(m_commServer, asockfd,
                                                      address, connection_id);
@@ -145,4 +147,6 @@ void CommListener::create(int asockfd, const char * address)
     // Add this new client to the list.
     m_commServer.addSocket(newcli);
     m_commServer.addIdle(newcli);
+
+    return 0;
 }

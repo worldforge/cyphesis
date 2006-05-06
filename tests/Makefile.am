@@ -12,11 +12,15 @@ RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
 
 SERVER_TESTS = EntityFactorytest
 
+PYTHON_TESTS = python_class
+
 INCLUDES = -I$(top_srcdir)
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
 TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS)
+
+EXTRA_PROGRAMS = $(PYTHON_TESTS)
 
 check_PROGRAMS = $(TESTS)
 
@@ -415,7 +419,7 @@ Creatortest_LDFLAGS = -export-dynamic
 Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
 
-Tasktest_SOURCES = Tasktest.cpp Fell.cpp
+Tasktest_SOURCES = Tasktest.cpp Fell.cpp Fell.h
 Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
@@ -485,3 +489,12 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/common/const.o \
                           $(TERRAIN_LIBS) $(NETWORK_LIBS)
 EntityFactorytest_LDFLAGS = -export-dynamic
+
+python_class_SOURCES = python_class.cpp
+python_class_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                     $(top_builddir)/rulesets/librulesetentity.a \
+                     $(top_builddir)/rulesets/librulesetmind.a \
+                     $(top_builddir)/rulesets/librulesetbase.a \
+                     $(top_builddir)/modules/libmodules.a \
+                     $(top_builddir)/physics/libphysics.a \
+                     $(top_builddir)/common/libcommon.a

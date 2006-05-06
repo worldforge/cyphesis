@@ -21,6 +21,7 @@
 #include "CommServer.h"
 
 #include "common/id.h"
+#include "common/log.h"
 
 static const bool debug_flag = false;
 
@@ -35,15 +36,21 @@ CommPeerListener::~CommPeerListener()
 {
 }
 
-void CommPeerListener::create(int asockfd, const char * address)
+int CommPeerListener::create(int asockfd, const char * address)
 {
-    std::string peerId;
-    newId(peerId);
+    std::string peer_id;
+    if (newId(peer_id) < 0) {
+        log(ERROR, "Unable to accept connection as no ID available");
+        close(asockfd);
+        return -1;
+    }
 
-    CommPeer * newpeer = new CommPeer(m_commServer, asockfd, address, peerId);
+    CommPeer * newpeer = new CommPeer(m_commServer, asockfd, address, peer_id);
 
     newpeer->setup();
 
     // Add this new peer to the list.
     m_commServer.addSocket(newpeer);
+
+    return 0;
 }

@@ -421,22 +421,20 @@ void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
+        if (!(*I)->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            log(ERROR, "BaseMind: Appearance op does not have ID");
+            continue;
+        }
         const std::string & id = (*I)->getId();
-        if (id.empty()) { continue; }
         MemEntity * me = m_map.getAdd(id);
-        Element stamp;
         if (me != 0) {
-            if ((*I)->copyAttr("stamp", stamp) == 0) {
-                if (stamp.isNum()) {
-                    if ((int)stamp.asNum() != me->getSeq()) {
-                        Look l;
-                        Anonymous m;
-                        m->setId(id);
-                        l->setArgs1(m);
-                        res.push_back(l);
-                    }
-                } else {
-                    log(ERROR, "BaseMind: Appearance op does not have numeric stamp");
+            if ((*I)->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
+                if ((int)(*I)->getStamp() != me->getSeq()) {
+                    Look l;
+                    Anonymous m;
+                    m->setId(id);
+                    l->setArgs1(m);
+                    res.push_back(l);
                 }
             } else {
                 log(ERROR, "BaseMind: Appearance op does not have stamp");

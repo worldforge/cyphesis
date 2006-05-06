@@ -109,7 +109,10 @@ Account * Connection::addPlayer(const std::string& username,
     std::string newAccountId;
 
     long intId = newId(newAccountId);
-    assert(!newAccountId.empty());
+    if (intId < 0) {
+        log(ERROR, "Account creation failed as no ID available");
+        return 0;
+    }
 
     Player * player = new Player(this, username, hash, newAccountId, intId);
     addObject(player);
@@ -321,6 +324,10 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     Account * player = addPlayer(username, password);
+    if (player == 0) {
+        clientError(op, "Account creation failed", res);
+        return;
+    }
     if (consts::enable_database) {
         Persistance::instance()->putAccount(*player);
     }
