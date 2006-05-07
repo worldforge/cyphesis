@@ -374,7 +374,10 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     const std::string & hostname = hostname_attr.String();
 
     std::string peerId;
-    newId(peerId);
+    if (newId(peerId) < 0) {
+        error(op, "Connection failed as no ID available", res, getId());
+        return;
+    }
 
     CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
                                  hostname, peerId);

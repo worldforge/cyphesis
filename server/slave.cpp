@@ -114,8 +114,14 @@ int main(int argc, char ** argv)
     // This ID is currently generated every time, but should perhaps be
     // persistent in future.
     std::string server_id, lobby_id;
-    long int_id = newId(server_id);
-    long lobby_int_id = newId(lobby_id);
+    std::string server_id, lobby_id;
+    long int_id, lobby_int_id;
+
+    if (((int_id = newId(server_id)) < 0) ||
+        ((lobby_int_id = newId(lobby_id)) < 0)) {
+        log(CRITICAL, "Unable to get server IDs from Database");
+        return EXIT_DATABASE_ERROR;
+    }
 
     ServerRouting server(world, rulesets.front(), serverName,
                          server_id, int_id,
@@ -144,7 +150,10 @@ int main(int argc, char ** argv)
     commServer.addSocket(listener);
 
     std::string master_id;
-    newId(master_id);
+    if (newId(master_id) < 0) {
+        log(CRITICAL, "Unable to get master ID from Database");
+        return EXIT_DATABASE_ERROR;
+    }
 
     CommMaster * master = new CommMaster(commServer, serverHostname, master_id);
     if (master->connect(serverHostname) != 0) {
