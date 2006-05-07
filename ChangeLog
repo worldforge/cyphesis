@@ -1,5 +1,9 @@
 2006-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/newid.cpp: Add assert.h as required by some compilers.
+
+2006-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/accountbase.cpp, server/Admin.cpp, server/Persistance.cpp,
 	  server/server.cpp, server/slave.cpp: Add more checks to ensure
 	  that not getting an ID from the database always fails cleanly.

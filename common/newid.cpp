@@ -19,6 +19,8 @@
 #include "common/const.h"
 #include "common/Database.h"
 
+#include <assert.h>
+
 static long idGenerator = 0;
 
 long newId(std::string & id)
