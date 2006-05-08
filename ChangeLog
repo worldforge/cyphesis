@@ -1,5 +1,26 @@
 2006-05-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_BBox.cpp: Add method exposing boxSquareBoundingRadius
+	  to python.
+
+	* rulesets/Task.cpp, rulesets/Task.h: Add method to generate the
+	  next tick for this task, using a given interval. Fix setting
+	  progress and rate, so both can be zero.
+
+	* rulesets/Py_Task.cpp: Expose nextTick() method to python.
+	  Allow rate to be set as an integer from python, so it can be zero.
+
+	* rulesets/mason/world/tasks/Combat.py: Use next_tick() for all
+	  tick ops.
+
+	* rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Ram.py,
+	  rulesets/mason/world/tasks/Sharpen.py: Add range checks, and use
+	  next_tick() to simplify tick op generation.
+
+2006-05-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Combat.py: Implement check which
 	  ensures fighting characters are close together.
 

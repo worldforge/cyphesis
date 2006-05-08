@@ -29,7 +29,6 @@ class Raise(Thing):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Raise.tick"
-        res=Message()
 
         target=self.character.world.get_object(self.target)
         if not target:
@@ -38,6 +37,13 @@ class Raise(Thing):
             return
 
         distance=distance_to(self.character.location, target.location)
+        # Check we are not too far away from the object to interact with it
+        # This calculation is imprecise as it sums the square radii, but
+        # its usually close enough.
+        d = distance.square_mag()
+        r = self.character.location.bbox.square_bounding_radius() + target.location.bbox.square_bounding_radius()
+        if d > r:
+            return self.next_tick(1);
         axis=distance.cross(Vector3D(0,0,1))
         # print "DISTANCE ", distance, axis
         rotation=Quaternion(axis, -0.01)
@@ -49,14 +55,14 @@ class Raise(Thing):
             # Not withstanding famous quotes to the contrary, in these
             # system we can not move the world no matter how large a lever
             # or firm a place to stand we have.
+            self.irrelevant()
             return
         target_location=Location(target.location.parent, target.location.coordinates)
         target_location.orientation=rotation
         move=Operation("move", Entity(self.target, location=target_location), to=self.target)
+        res=Message()
         res.append(move)
 
-        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
-        tick.setFutureSeconds(1)
-        res.append(tick)
+        res.append(self.next_tick(1))
 
         return res

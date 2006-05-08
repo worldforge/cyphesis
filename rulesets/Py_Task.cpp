@@ -18,6 +18,7 @@
 #include "Py_Task.h"
 
 #include "Py_Thing.h"
+#include "Py_Operation.h"
 
 #include "Task.h"
 #include "Character.h"
@@ -70,11 +71,35 @@ static PyObject * Task_newtick(PyTask * self)
     return PyInt_FromLong(self->m_task->newTick());
 }
 
+static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
+{
+#ifndef NDEBUG
+    if (self->m_task == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
+        return NULL;
+    }
+#endif // NDEBUG
+    double interval;
+    if (PyFloat_Check(arg)) {
+        interval = PyFloat_AsDouble(arg);
+    } else if (PyInt_Check(arg)) {
+        interval = PyInt_AsLong(arg);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Interval must be a number");
+    }
+    PyOperation * tick_op = newPyOperation();
+    if (tick_op != 0) {
+        tick_op->operation = self->m_task->nextTick(interval);
+    }
+    return (PyObject*)tick_op;
+}
+
 static PyMethodDef Task_methods[] = {
         {"irrelevant",     (PyCFunction)Task_irrelevant, METH_NOARGS},
         {"obsolete",       (PyCFunction)Task_obsolete, METH_NOARGS},
         {"count",          (PyCFunction)Task_count, METH_NOARGS},
         {"new_tick",       (PyCFunction)Task_newtick, METH_NOARGS},
+        {"next_tick",      (PyCFunction)Task_nexttick, METH_O},
         {NULL,          NULL}           /* sentinel */
 };
 
@@ -120,13 +145,20 @@ static int Task_setattr(PyTask *self, char *name, PyObject *v)
             return -1;
         }
         self->m_task->progress() = PyFloat_AsDouble(v);
+        return 0;
     }
     if (strcmp(name, "rate") == 0) {
-        if (!PyFloat_Check(v)) {
-            PyErr_SetString(PyExc_TypeError, "rate must be a float");
+        double rate;
+        if (PyFloat_Check(v)) {
+            rate = PyFloat_AsDouble(v);
+        } else if (PyInt_Check(v)) {
+            rate = PyInt_AsLong(v);
+        } else {
+            PyErr_SetString(PyExc_TypeError, "rate must be a number");
             return -1;
         }
-        self->m_task->rate() = PyFloat_AsDouble(v);
+        self->m_task->rate() = rate;
+        return 0;
     }
     // FIXME Something may be required here long term, for task attributes.
     if (self->Task_attr == NULL) {

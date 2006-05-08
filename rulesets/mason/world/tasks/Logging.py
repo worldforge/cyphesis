@@ -29,7 +29,6 @@ class Logging(Thing):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Logging.tick"
-        res=Message()
 
         target=self.character.world.get_object(self.target)
         if not target:
@@ -38,6 +37,13 @@ class Logging(Thing):
             return
 
         current_status = target.status
+
+        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+            self.progress = 1 - current_status
+            self.rate = 0
+            return self.next_tick(1.75)
+
+        res=Message()
         if current_status > 0.5:
             set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
             res.append(set)
@@ -62,8 +68,6 @@ class Logging(Thing):
         self.progress = 1 - current_status
         self.rate = 0.1 / 1.75
         
-        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
-        tick.setFutureSeconds(1.75)
-        res.append(tick)
+        res.append(self.next_tick(1.75))
 
         return res

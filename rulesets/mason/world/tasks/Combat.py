@@ -82,14 +82,10 @@ class Combat(Thing):
         if hasattr(self, 'surprise') and self.surprise:
             # print 'Surprised!'
             self.surprise = False
-            tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
-            tick.setFutureSeconds(0.75 + uniform(0,0.25))
-            return tick
+            return self.next_tick(0.75 + uniform(0,0.25))
 
         if square_distance(self.character.location, defender.location) > self.square_range:
-            tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
-            tick.setFutureSeconds(1.75 + uniform(0,0.25))
-            return tick
+            return self.next_tick(1.75 + uniform(0,0.25))
 
         a=self.character.id
         d=self.oponent
@@ -138,9 +134,7 @@ class Combat(Thing):
             return res
 
         # Schedule a new tick op
-        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
-        tick.setFutureSeconds(1.75 + uniform(0,0.25))
-        res.append(tick)
+        res.append(self.next_tick(1.75 + uniform(0,0.25)))
         return res
     def face(self, other):
         """ Turn to face that another character, ensuring that

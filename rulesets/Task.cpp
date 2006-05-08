@@ -17,8 +17,15 @@
 
 #include "Task.h"
 
-#include <Atlas/Objects/RootEntity.h>
+#include "Character.h"
+
+#include "common/Tick.h"
+
+#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Entity::Anonymous;
 
 /// \brief Task constructor for classes which inherit from Task
 Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr)
@@ -46,11 +53,24 @@ void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     Atlas::Message::MapType task;
     task["name"] = m_name;
-    if (m_progress > 0) {
+    if (m_progress >= 0) {
         task["progress"] = m_progress;
     }
-    if (m_rate > 0) {
+    if (m_rate >= 0) {
         task["progress_rate"] = m_rate;
     }
     ent->setAttr("tasks", Atlas::Message::ListType(1, task));
+}
+
+Operation Task::nextTick(double interval)
+{
+    Anonymous tick_arg;
+    tick_arg->setName("task");
+    tick_arg->setAttr("serialno", newTick());
+    Tick tick;
+    tick->setArgs1(tick_arg);
+    tick->setTo(m_character.getId());
+    tick->setFutureSeconds(interval);
+
+    return tick;
 }

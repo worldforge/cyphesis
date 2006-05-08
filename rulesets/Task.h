@@ -89,6 +89,9 @@ class Task {
     /// an atlas representation of this task.
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &);
 
+    /// \brief Create a new tick op for the next iteration of this task
+    Operation nextTick(double interval);
+
     void incRef() {
         ++m_refCount;
     }

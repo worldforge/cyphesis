@@ -38,6 +38,12 @@ class Sharpen(Thing):
             return
 
         new_status = target.status - 0.1
+
+        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+            self.progress = 1 - new_status
+            self.rate = 0
+            return self.next_tick(1.75)
+
         set=Operation("set", Entity(self.target, status=new_status), to=target)
         res.append(set)
         if new_status < 0:
@@ -49,8 +55,6 @@ class Sharpen(Thing):
         self.progress = 1 - new_status
         self.rate = 0.1 / 1.75
         
-        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
-        tick.setFutureSeconds(1.75)
-        res.append(tick)
+        res.append(self.next_tick(1.75))
 
         return res

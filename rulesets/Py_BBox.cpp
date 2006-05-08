@@ -20,7 +20,17 @@
 
 #include "common/log.h"
 
+static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
+{
+    float square_radius = 0;
+    if (self->box.isValid()) {
+        square_radius = boxSquareBoundingRadius(self->box);
+    }
+    return PyFloat_FromDouble(square_radius);
+}
+
 static PyMethodDef BBox_methods[] = {
+    {"square_bounding_radius", (PyCFunction)BBox_sqr_bounding_radius, METH_NOARGS},
     {NULL, NULL}  // sentinel
 };
 

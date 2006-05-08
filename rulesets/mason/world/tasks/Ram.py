@@ -35,7 +35,12 @@ class Ram(Thing):
             return
 
         if not target.location.parent:
+            self.irrelevant()
             return
+
+        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+            return self.next_tick(1)
+
         target_location = Location(target.location.parent, target.location.coordinates)
         target_location.velocity=Vector3D(0,0,-0.5)
         target_entity_moving = Entity(self.target, location = target_location)
@@ -53,9 +58,7 @@ class Ram(Thing):
         move=Operation("move", target_entity_moving, to=self.target)
         res.append(move)
 
-        tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=self.character.id)
-        tick.setFutureSeconds(1)
-        res.append(tick)
+        res.append(self.next_tick(1))
 
         return res
 
