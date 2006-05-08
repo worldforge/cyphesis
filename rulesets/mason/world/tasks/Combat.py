@@ -42,7 +42,7 @@ class Combat(Thing):
             self.irrelevant()
             return
         # a.set_task(self.cppthing)
-        # Send ourselves a tick immediatly to start things going.
+        self.square_range = 25
     def tick_operation(self, op):
         """ This method is called repeatedly, each time a combat turn occurs.
             In this example the interval is fixed, but it can be varied.
@@ -84,6 +84,11 @@ class Combat(Thing):
             self.surprise = False
             tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
             tick.setFutureSeconds(0.75 + uniform(0,0.25))
+            return tick
+
+        if square_distance(self.character.location, defender.location) > self.square_range:
+            tick=Operation("tick", Entity(name="task",serialno=self.new_tick()), to=op.to)
+            tick.setFutureSeconds(1.75 + uniform(0,0.25))
             return tick
 
         a=self.character.id
