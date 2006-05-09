@@ -1,3 +1,8 @@
+In order to store class related stuff without having to store it on
+the instance, might need to have a type class which each Entity has
+a pointer to. Should it also be possible to specifiy different statistics
+classes in data/*.xml?
+
 Add a base class for all active mobile characters in mason.xml, and set
 up the essential statistics values. I am not sure but there may still be
 issues with specifying class inheritance in the rules.
