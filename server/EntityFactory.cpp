@@ -588,10 +588,10 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
         log(ERROR, String::compose("Could not find factory for existing task class \"%1\"", class_name).c_str());
         return -1;
     }
-    TaskFactory * factory = I->second;
-    assert(factory != 0);
-
     // FIXME Actually update the task factory.
+    // TaskFactory * factory = I->second;
+    // assert(factory != 0);
+
     return 0;
 }
 

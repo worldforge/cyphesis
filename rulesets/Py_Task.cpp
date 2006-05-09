@@ -86,6 +86,7 @@ static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
         interval = PyInt_AsLong(arg);
     } else {
         PyErr_SetString(PyExc_TypeError, "Interval must be a number");
+        return NULL;
     }
     PyOperation * tick_op = newPyOperation();
     if (tick_op != 0) {

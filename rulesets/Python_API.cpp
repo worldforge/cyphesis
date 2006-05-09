@@ -488,132 +488,6 @@ static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
     return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
 }
 
-static PyObject * vector3d_new(PyObject * self, PyObject * args)
-{
-        PyVector3D *o;
-        Vector3D val;
-        // We need to deal with actual args here
-        PyObject * clist;
-        switch (PyTuple_Size(args)) {
-            case 0:
-                break;
-            case 1:
-                clist = PyTuple_GetItem(args, 0);
-                if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
-                    PyErr_SetString(PyExc_TypeError, "Vector3D() from single value must a list 3 long");
-                    return NULL;
-                }
-                for(int i = 0; i < 3; i++) {
-                    PyObject * item = PyList_GetItem(clist, i);
-                    if (PyInt_Check(item)) {
-                        val[i] = (float)PyInt_AsLong(item);
-                    } else if (PyFloat_Check(item)) {
-                        val[i] = PyFloat_AsDouble(item);
-                    } else if (PyMessageElement_Check(item)) {
-                        PyMessageElement * mitem = (PyMessageElement*)item;
-                        if (!mitem->m_obj->isNum()) {
-                            PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
-                            return NULL;
-                        }
-                        val[i] = mitem->m_obj->asNum();
-                    } else {
-                        PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
-                        return NULL;
-                    }
-                }
-                val.setValid();
-                break;
-            case 3:
-                for(int i = 0; i < 3; i++) {
-                    PyObject * item = PyTuple_GetItem(args, i);
-                    if (PyInt_Check(item)) {
-                        val[i] = (float)PyInt_AsLong(item);
-                    } else if (PyFloat_Check(item)) {
-                        val[i] = PyFloat_AsDouble(item);
-                    } else {
-                        PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
-                        return NULL;
-                    }
-                }
-                val.setValid();
-                break;
-            default:
-                PyErr_SetString(PyExc_TypeError, "Vector3D must take list of floats, or ints, 3 ints or 3 floats");
-                return NULL;
-                break;
-        }
-            
-        o = newPyVector3D();
-        if ( o == NULL ) {
-                return NULL;
-        }
-        o->coords = val;
-        return (PyObject *)o;
-}
-
-static PyObject * point3d_new(PyObject * self, PyObject * args)
-{
-        PyPoint3D *o;
-        Point3D val;
-        // We need to deal with actual args here
-        PyObject * clist;
-        switch (PyTuple_Size(args)) {
-            case 0:
-                break;
-            case 1:
-                clist = PyTuple_GetItem(args, 0);
-                if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
-                    PyErr_SetString(PyExc_TypeError, "Point3D() from single value must a list 3 long");
-                    return NULL;
-                }
-                for(int i = 0; i < 3; i++) {
-                    PyObject * item = PyList_GetItem(clist, i);
-                    if (PyInt_Check(item)) {
-                        val[i] = (float)PyInt_AsLong(item);
-                    } else if (PyFloat_Check(item)) {
-                        val[i] = PyFloat_AsDouble(item);
-                    } else if (PyMessageElement_Check(item)) {
-                        PyMessageElement * mitem = (PyMessageElement*)item;
-                        if (!mitem->m_obj->isNum()) {
-                            PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
-                            return NULL;
-                        }
-                        val[i] = mitem->m_obj->asNum();
-                    } else {
-                        PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
-                        return NULL;
-                    }
-                }
-                val.setValid();
-                break;
-            case 3:
-                for(int i = 0; i < 3; i++) {
-                    PyObject * item = PyTuple_GetItem(args, i);
-                    if (PyInt_Check(item)) {
-                        val[i] = (float)PyInt_AsLong(item);
-                    } else if (PyFloat_Check(item)) {
-                        val[i] = PyFloat_AsDouble(item);
-                    } else {
-                        PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
-                        return NULL;
-                    }
-                }
-                val.setValid();
-                break;
-            default:
-                PyErr_SetString(PyExc_TypeError, "Point3D must take list of floats, or ints, 3 ints or 3 floats");
-                return NULL;
-                break;
-        }
-            
-        o = newPyPoint3D();
-        if ( o == NULL ) {
-                return NULL;
-        }
-        o->coords = val;
-        return (PyObject *)o;
-}
-
 static PyObject * bbox_new(PyObject * self, PyObject * args)
 {
     std::vector<float> val;
@@ -993,16 +867,6 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-static PyMethodDef vector3d_methods[] = {
-    {"Vector3D",    vector3d_new,               METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
-};
-
-static PyMethodDef point3d_methods[] = {
-    {"Point3D",     point3d_new,                 METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
-};
-
 static PyMethodDef bbox_methods[] = {
     {"BBox",        bbox_new,                 METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
@@ -1077,16 +941,6 @@ void init_python_api()
         log(CRITICAL, "Python init failed to create physics module\n");
         return;
     }
-
-    // if (Py_InitModule("Vector3D", vector3d_methods) == NULL) {
-        // log(CRITICAL, "Python init failed to create Vector3D module\n");
-        // return;
-    // }
-
-    // if (Py_InitModule("Point3D", point3d_methods) == NULL) {
-        // log(CRITICAL, "Python init failed to create Point3D module\n");
-        // return;
-    // }
 
     if (Py_InitModule("BBox", bbox_methods) == NULL) {
         log(CRITICAL, "Python init failed to create BBox module\n");

@@ -1,5 +1,17 @@
 2006-05-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Task.cpp: Missing missing return when an error is
+	  detected.
+
+	* rulesets/Python_API.cpp: Remove obsolete Vector3D and Point3D
+	  constructors and method tables, now replaced by init method
+	  implementations.
+
+	* server/EntityFactory.cpp: Comment out as yet unused code for
+	  updating a task factory from an admin client.
+
+2006-05-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add a base class "mobile" from which all entities
 	  that are actors in game systems should inherit as it sets up the
 	  default statistics.
