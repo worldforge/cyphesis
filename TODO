@@ -1,3 +1,7 @@
+Add a base class for all active mobile characters in mason.xml, and set
+up the essential statistics values. I am not sure but there may still be
+issues with specifying class inheritance in the rules.
+
 Test account and avatar creation from client when database is down.
 
 Once SEQ has replaced STAMP in Atlas-C++, use it instead of serialno
