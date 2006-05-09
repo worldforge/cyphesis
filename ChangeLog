@@ -1,3 +1,9 @@
+2006-05-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add a base class "mobile" from which all entities
+	  that are actors in game systems should inherit as it sets up the
+	  default statistics.
+
 2006-05-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_BBox.cpp: Add method exposing boxSquareBoundingRadius
