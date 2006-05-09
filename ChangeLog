@@ -1,5 +1,10 @@
 2006-05-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* cyphesis.spec.in: Remove hard dependency on howl-devel, as this
+	  is replaced by a soft dependency on avahi-devel on modern systems.
+
+2006-05-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Task.cpp: Missing missing return when an error is
 	  detected.
 

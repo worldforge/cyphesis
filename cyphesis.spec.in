@@ -19,7 +19,7 @@ Source3: cyphesis.sysconfig
 PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig
 Requires: postgresql-server
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: Atlas-C++06-devel mercator-devel >= 0.2.0 varconf-devel >= 0.6.2 skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 2.0.0 howl-devel
+BuildRequires: Atlas-C++06-devel mercator-devel >= 0.2.0 varconf-devel >= 0.6.2 skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 2.0.0
 Obsoletes: cyphesis-service cyphesis-mason
 
 %description
