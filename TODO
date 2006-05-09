@@ -1,3 +1,6 @@
+Perhaps it should be possible to specify class data about the hard coded
+classes in data/*,xml.
+
 In order to store class related stuff without having to store it on
 the instance, might need to have a type class which each Entity has
 a pointer to. Should it also be possible to specifiy different statistics
