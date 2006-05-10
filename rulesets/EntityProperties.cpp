@@ -32,9 +32,10 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
 template<>
-void ImmutableProperty<BBox>::get(Element & e) const
+bool ImmutableProperty<BBox>::get(Element & e) const
 {
     e = m_data.toAtlas();
+    return true;
 }
 
 template<>
@@ -62,10 +63,11 @@ void ImmutableProperty<BBox>::add(const std::string & s, const RootEntity & ent)
 }
 
 template<>
-void ImmutableProperty<IdList>::get(Element & e) const
+bool ImmutableProperty<IdList>::get(Element & e) const
 {
     e = Atlas::Message::ListType();
     idListasObject(m_data, e.asList());
+    return true;
 }
 
 template<>
@@ -95,7 +97,7 @@ void ImmutableProperty<IdList>::add(const std::string & s, const RootEntity & en
 }
 
 template<>
-void ImmutableProperty<EntitySet>::get(Element & e) const
+bool ImmutableProperty<EntitySet>::get(Element & e) const
 {
     e = ListType();
     ListType & contlist = e.asList();
@@ -103,6 +105,7 @@ void ImmutableProperty<EntitySet>::get(Element & e) const
     for (EntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
     }
+    return true;
 }
 
 template<>
@@ -126,7 +129,7 @@ void ImmutableProperty<EntitySet>::add(const std::string & s,
 }
 
 template<>
-void ImmutableProperty<Container>::get(Element & e) const
+bool ImmutableProperty<Container>::get(Element & e) const
 {
     // FIXME Not sure if this is best. Why did we bother to virtualise
     // addToMessage() if we have to do this here?
@@ -136,6 +139,7 @@ void ImmutableProperty<Container>::get(Element & e) const
     for (Container::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
     }
+    return true;
 }
 
 template<>

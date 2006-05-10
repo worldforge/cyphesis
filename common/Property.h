@@ -37,7 +37,7 @@ class PropertyBase {
     unsigned int flags() const { return m_flags; }
 
     /// \brief Copy the value of the property into an Atlas Message
-    virtual void get(Atlas::Message::Element &) const = 0;
+    virtual bool get(Atlas::Message::Element &) const = 0;
     /// \brief Read the value of the property from an Atlas Message
     virtual void set(const Atlas::Message::Element &) = 0;
     /// \brief Add the value as an attribute to an Atlas map
@@ -59,7 +59,7 @@ class ImmutableProperty : public PropertyBase {
   public:
     explicit ImmutableProperty(const T & data, unsigned int flags = 0);
 
-    virtual void get(Atlas::Message::Element &) const;
+    virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string &, Atlas::Message::MapType & map) const;
     virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &) const;

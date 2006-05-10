@@ -29,7 +29,7 @@ class CalendarProperty : public PropertyBase {
   public:
     explicit CalendarProperty(unsigned int flags);
 
-    virtual void get(Atlas::Message::Element &) const;
+    virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
 };
 

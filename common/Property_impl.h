@@ -30,9 +30,10 @@ ImmutableProperty<T>::ImmutableProperty(const T & data, unsigned int flags) :
 }
 
 template <typename T>
-void ImmutableProperty<T>::get(Atlas::Message::Element & e) const
+bool ImmutableProperty<T>::get(Atlas::Message::Element & e) const
 {
     e = m_data;
+    return true;
 }
 
 template <typename T>

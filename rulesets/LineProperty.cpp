@@ -38,10 +38,11 @@ LineProperty::LineProperty(CoordList & data, unsigned int flags) :
 {
 }
 
-void LineProperty::get(Element & ent) const
+bool LineProperty::get(Element & ent) const
 {
     ent = ListType();
     objectListAsMessage(m_data, ent.asList());
+    return true;
 }
 
 void LineProperty::set(const Element & ent)

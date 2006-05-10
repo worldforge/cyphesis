@@ -31,7 +31,7 @@ class AreaProperty : public PropertyBase {
   public:
     explicit AreaProperty(unsigned int flags);
 
-    virtual void get(Atlas::Message::Element &);
+    virtual bool get(Atlas::Message::Element &);
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string &, Atlas::Message::MapType & map);
 };

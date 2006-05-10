@@ -36,10 +36,11 @@ AreaProperty::AreaProperty(unsigned int flags) : PropertyBase(flags),
 {
 }
 
-void AreaProperty::get(Element & ent)
+bool AreaProperty::get(Element & ent)
 {
     MapType & area = (ent = MapType()).asMap();
     m_line.get(area["points"]);
+    return true;
 }
 
 void AreaProperty::set(const Element & ent)

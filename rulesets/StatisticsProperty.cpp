@@ -31,8 +31,9 @@ StatisticsProperty::StatisticsProperty(Statistics & data, unsigned int flags) :
 {
 }
 
-void StatisticsProperty::get(Element & ent) const
+bool StatisticsProperty::get(Element & ent) const
 {
+    return false;
 }
 
 void StatisticsProperty::set(const Element & ent)

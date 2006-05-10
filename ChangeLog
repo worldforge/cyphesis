@@ -1,5 +1,17 @@
 2006-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Property.h, common/Property_impl.h,
+	  rulesets/AreaProperty.cpp, rulesets/AreaProperty.h,
+	  rulesets/CalendarProperty.cpp, rulesets/CalendarProperty.h,
+	  rulesets/Entity.cpp, rulesets/EntityProperties.cpp,
+	  rulesets/LineProperty.cpp, rulesets/LineProperty.h,
+	  rulesets/Py_Thing.cpp, rulesets/StatisticsProperty.cpp,
+	  rulesets/StatisticsProperty.h, rulesets/TerrainProperty.cpp,
+	  rulesets/TerrainProperty.h: Change return value of Property::get
+	  to bool, and use it to indicate if the property has a value.
+
+2006-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/PersistantThingFactory.h: Improve comments.
 
 	* data/mason.xml: Add maximum and minimum values example for the mass

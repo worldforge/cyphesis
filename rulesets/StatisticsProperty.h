@@ -31,7 +31,7 @@ class StatisticsProperty : public PropertyBase {
 
     Statistics & data() const { return m_data; }
 
-    virtual void get(Atlas::Message::Element &) const;
+    virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
 };
 

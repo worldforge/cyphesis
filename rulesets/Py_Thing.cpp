@@ -236,8 +236,13 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
             return ret;
         }
         Element attr;
-        prop->get(attr);
-        return MessageElement_asPyObject(attr);
+        // If this property is not set with a value, return none.
+        if (prop->get(attr)) {
+            return MessageElement_asPyObject(attr);
+        } else {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
     }
     const MapType & attrs = entity->getAttributes();
     MapType::const_iterator I = attrs.find(name);

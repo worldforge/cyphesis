@@ -122,8 +122,7 @@ bool Entity::get(const std::string & name, Element & attr) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
-        I->second->get(attr);
-        return true;
+        return I->second->get(attr);
     }
     MapType::const_iterator J = m_attributes.find(name);
     if (J != m_attributes.end()) {

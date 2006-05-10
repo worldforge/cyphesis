@@ -40,7 +40,7 @@ class TerrainProperty : public PropertyBase {
                              PointSet & createdTerrain,
                              unsigned int flags);
 
-    virtual void get(Atlas::Message::Element &) const;
+    virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
 };
 

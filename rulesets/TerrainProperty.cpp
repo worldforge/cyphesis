@@ -47,7 +47,7 @@ TerrainProperty::TerrainProperty(Mercator::Terrain & data,
 {
 }
 
-void TerrainProperty::get(Element & ent) const
+bool TerrainProperty::get(Element & ent) const
 {
     MapType & t = (ent = MapType()).asMap();
     MapType & terrain = (t["points"] = MapType()).asMap();
@@ -67,6 +67,7 @@ void TerrainProperty::get(Element & ent) const
             point[2] = (FloatType)(J->second.height());
         }
     }
+    return true;
 }
 
 void TerrainProperty::set(const Element & ent)
