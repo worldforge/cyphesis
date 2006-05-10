@@ -1792,7 +1792,9 @@
         <string name="visibility">public</string>
       </map>
       <map name="mass">
+        <float name="min">3</float>
         <float name="default">5</float>
+        <float name="max">30</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">

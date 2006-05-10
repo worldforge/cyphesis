@@ -65,7 +65,7 @@ class FactoryBase {
     /// Default attribute values for this class
     Atlas::Message::MapType m_classAttributes;
     /// Default attribute values for instances of this class, including
-    /// defaults from parent classes.
+    /// defaults inherited from parent classes.
     Atlas::Message::MapType m_attributes;
     /// Factory for class from which the class handled by this factory
     /// inherits.

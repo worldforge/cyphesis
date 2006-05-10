@@ -1,3 +1,13 @@
+2006-05-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/PersistantThingFactory.h: Improve comments.
+
+	* data/mason.xml: Add maximum and minimum values example for the mass
+	  of a pig.
+
+	* common/Type.h: Add empty interface class which will be padded out
+	  to be the interface used by instances to query their class.
+
 2006-05-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release 0.5.7
