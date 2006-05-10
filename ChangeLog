@@ -1,5 +1,11 @@
 2006-05-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Makefile.am, tools/Makefile.am: Switch static libraries over
+	  to linking avahi so static builds and auto packages can be made
+	  on Fedora Core 5.
+
+2006-05-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Property.h, common/Property_impl.h,
 	  rulesets/AreaProperty.cpp, rulesets/AreaProperty.h,
 	  rulesets/CalendarProperty.cpp, rulesets/CalendarProperty.h,

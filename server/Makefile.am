@@ -22,6 +22,7 @@ SERVER_LIBS = \
     /usr/lib/libkrb5.a \
     /usr/lib/libgssapi_krb5.a \
     /usr/lib/libk5crypto.a \
+    /usr/lib/libkrb5support.a \
     /usr/lib/libgcrypt.a \
     /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
@@ -30,7 +31,9 @@ SERVER_LIBS = \
     /usr/lib/libcom_err.a \
     $(PYTHON_LIBS) \
     /usr/lib/libutil.a \
-    /usr/lib/libhowl.a \
+    /usr/lib/libavahi-client.a \
+    /usr/lib/libavahi-common.a \
+    /usr/lib/libdbus-1.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
     -ldl -lc -lm -lpthread -lgcc_s

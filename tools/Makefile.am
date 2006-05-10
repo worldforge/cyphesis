@@ -35,6 +35,7 @@ DBTOOL_LIBS = \
     /usr/lib/libkrb5.a \
     /usr/lib/libgssapi_krb5.a \
     /usr/lib/libk5crypto.a \
+    /usr/lib/libkrb5support.a \
     /usr/lib/libgcrypt.a \
     /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
@@ -43,7 +44,7 @@ DBTOOL_LIBS = \
     /usr/lib/libcom_err.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
-    -lpthread -lc -lm -lgcc_s
+    -ldl -lpthread -lc -lm -lgcc_s
 
 READLINETOOL_LIBS = \
     /usr/lib/libreadline.a \
@@ -51,6 +52,9 @@ READLINETOOL_LIBS = \
 
 NETWORKTOOL_LIBS = \
     /usr/lib/libskstream-0.3.a
+
+MATHTOOL_LIBS = \
+    /usr/lib/libwfmath-0.3.a
 
 AM_LDFLAGS = -nodefaultlibs
 
@@ -60,6 +64,7 @@ TOOL_LIBS = $(COMMON_LIBS)
 DBTOOL_LIBS = $(COMMON_LIBS) $(PGSQL_LIBS)
 READLINETOOL_LIBS = $(READLINE_LIBS)
 NETWORKTOOL_LIBS = $(NETWORK_LIBS)
+MATHTOOL_LIBS = $(MATH_LIBS)
 
 endif
 
@@ -121,5 +126,5 @@ cypasswd_LDADD = $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/id.o \
                  $(top_builddir)/common/system.o \
-                 $(MATH_LIBS) \
+                 $(MATHTOOL_LIBS) \
                  $(DBTOOL_LIBS)
