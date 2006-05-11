@@ -126,6 +126,11 @@ int main(int argc, char ** argv)
     } else {
         server_name = get_hostname();
     }
+
+    int nice=0;
+    if (global_conf->findItem("cyphesis", "nice")) {
+        nice = global_conf->getItem("cyphesis", "nice");
+    }
     
     // Start up the python subsystem.
     init_python_api();
@@ -246,7 +251,9 @@ int main(int argc, char ** argv)
 
     // Reduce our system priority to make it easier to debug a runaway
     // server.
-    reduce_priority();
+    if (nice != 0) {
+        reduce_priority(nice);
+    }
 
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.

@@ -1,3 +1,8 @@
+2006-05-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/server.cpp: Add option to control the increased nice level
+	  the server runs at.
+
 2006-05-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Makefile.am, tools/Makefile.am: Switch static libraries over

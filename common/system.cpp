@@ -63,10 +63,10 @@ unsigned int security_check()
     return SECURITY_OKAY;
 }
 
-void reduce_priority()
+void reduce_priority(int p)
 {
     // FIXME Make this optional
-    if (nice(1) < 0) {
+    if (nice(p) < 0) {
         log(ERROR, "Unable to increase nice level to reduce priority");
     }
 }

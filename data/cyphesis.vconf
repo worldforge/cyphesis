@@ -23,6 +23,8 @@ usemetaserver="true"
 metaserver="metaserver.worldforge.org"
 # Run in daemon mode
 daemon="false"
+# Run at an increased nice level
+nice=1
 # Leave control of NPCs to AI client
 useaiclient="false"
 # Database configuration
