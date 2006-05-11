@@ -1,5 +1,8 @@
 2006-05-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.cpp, common/system.h: Add a parameter specifying
+	  the extent of the change when reducing priority.
+
 	* server/server.cpp: Add option to control the increased nice level
 	  the server runs at.
 
