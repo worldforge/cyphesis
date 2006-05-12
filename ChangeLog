@@ -1,5 +1,15 @@
 2006-05-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Add mode "relative" to be specified only
+	  on new entities that indicates that the entity's height is specified
+	  relative to the terrain surface.
+
+	* rulesets/mason/define_world.py: Specify the stockade stakes
+	  are all embedded 1 metre into the ground, and increase the base
+	  height by 2 metres to make the stockade look more convincing.
+
+2006-05-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp, common/system.h: Add a parameter specifying
 	  the extent of the change when reducing priority.
 

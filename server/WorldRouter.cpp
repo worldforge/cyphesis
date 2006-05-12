@@ -197,6 +197,8 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
             h = 0;
         } else if (mode == "swimming") {
             h = std::max(h, std::min(0.f, pos.z()));
+        } else if (mode == "relative") {
+            h = h + pos.z();
         }
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
@@ -204,7 +206,6 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
     } else {
         static const Quaternion identity(Quaternion().identity());
         assert(parent->m_location.m_loc != 0);
-        // FIXME take account of orientation
         const Point3D & ppos = parent->m_location.pos();
         debug(std::cout << "parent " << parent->getId() << " of type "
                         << parent->getType() << " pos " << ppos.z()
@@ -255,6 +256,9 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         ent->get("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
+            if (mode == "relative") {
+                ent->set("mode", "fixed");
+            }
         } else {
             log(ERROR, String::compose("Mode on entity is a %1 in WorldRouter::addEntity", Element::typeName(mode_attr.getType())).c_str());
         }
