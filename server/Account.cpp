@@ -139,7 +139,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
 void Account::LogoutOperation(const Operation & op, OpVector &)
 {
-    debug(std::cout << "Account logout: " << getId() << std::endl;);
+    std::cout << "Account logout: " << getId() << std::endl;
 
     // It is possible this account is being forcibly logged out at a time
     // when it is not logged in.

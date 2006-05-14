@@ -1,3 +1,13 @@
+2006-05-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Be more severe about error messages if
+	  client sends an action op. Remove obsolete comments.
+	  Warn if client sends a Set op. Don't accept look ops with
+	  an arg containing no ID - nothing sends this, and nothing should.
+
+	* rulesets/Thing.cpp: Add an error report if an explicit Action op
+	  is received by an entity.
+
 2006-05-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/WorldRouter.cpp: Add mode "relative" to be specified only

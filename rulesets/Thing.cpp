@@ -93,6 +93,7 @@ void Thing::SetupOperation(const Operation & op, OpVector & res)
 
 void Thing::ActionOperation(const Operation & op, OpVector & res)
 {
+    log(ERROR, String::compose("Action::Operation called on %1(%2), but it should be abstract", getId(), getType()).c_str());
     if (m_script->operation("action", op, res) != 0) {
         return;
     }

@@ -555,8 +555,9 @@ void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 
 void Character::mindActionOperation(const Operation & op, OpVector & res)
 {
-    // FIXME Put this in, and make sure it doesn't happen again.
-    log(WARNING, "Explicit Action operation from client");
+    // FIXME Make sure it doesn't happen again. Action should probably be
+    // removed from the main switch.
+    log(ERROR, "Explicit Action operation from client");
     
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -593,11 +594,6 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = arg->getId();
-
-    // FIXME Check current TASK?
-    // If already in combat, probably this should not work.
-    // If doing something else, it gets aborted.
-    // endCurrentTask();
 
     op->setTo(id);
     res.push_back(op);
@@ -847,8 +843,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & other_id = arg->getId();
-    // FIXME We are looking up the object, but the vast majority of the
-    // time we are moving ourselves. Bypass this lookup if possible.
     if (other_id != getId()) {
         debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
         Entity * other = m_world->getEntity(other_id);
@@ -1029,6 +1023,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
 void Character::mindSetOperation(const Operation & op, OpVector & res)
 {
+    log(WARNING, "Set op from mind");
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindSetOperation: set op has no argument");
@@ -1115,11 +1110,11 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
         op->setTo(m_world->m_gameWorld.getId());
     } else {
         const Root & arg = args.front();
-        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            op->setTo(arg->getId());
-        } else {
-            op->setTo(getId());
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            log(ERROR, "mindLookOperation: Op has no ID");
+            return;
         }
+        op->setTo(arg->getId());
     }
     debug( std::cout <<"  now to ["<<op->getTo()<<"]"<<std::endl<<std::flush;);
     res.push_back(op);
@@ -1127,6 +1122,8 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
 
 void Character::mindCutOperation(const Operation & op, OpVector & res)
 {
+    // FIXME This should go very soon, probably elminated from the mind
+    // switch if we can.
     log(WARNING, "mindCutOperation: Unexpected Cut op from mind");
     op->setTo(getId());
     res.push_back(op);
@@ -1134,8 +1131,6 @@ void Character::mindCutOperation(const Operation & op, OpVector & res)
 
 void Character::mindEatOperation(const Operation & op, OpVector & res)
 {
-    // FIXME Need to get what food to eat from the arg, and sort out goals
-    // so they don't set TO
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindEatOperation: Op has no ARGS");
@@ -1160,7 +1155,7 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindTouchOperation: Op has no ARGS");
+        log(ERROR, "mindTouchOperation: Op has no ID");
         return;
     }
     // Pass the modified touch operation on to target.

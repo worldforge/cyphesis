@@ -1,3 +1,12 @@
+The w2m*Operation code does only 2 things:
+  It checks for Setup and Tick ops whether they are for the mind, which
+  we can do in the mind code.
+
+  It filters based on drunkness.
+Both can go, removing the mechanism altogether.
+
+STUN can be used for NAT detection. Useful?
+
 Perhaps it should be possible to specify class data about the hard coded
 classes in data/*,xml.
 
