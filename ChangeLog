@@ -1,3 +1,12 @@
+2006-05-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Creator.cpp: Send an unseen op if admin attempts to
+	  puppet something that does not exist. Add some comments and
+	  a FIXME.
+
+	* TODO: Add a note about the lack of crossover between ops used
+	  by OOG code and IG code.
+
 2006-05-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Be more severe about error messages if

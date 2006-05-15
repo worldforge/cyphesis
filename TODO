@@ -1,3 +1,5 @@
+Separate out IG_OP_SWITCH from OOG_OP_SWITCH. Very little overlap.
+
 The w2m*Operation code does only 2 things:
   It checks for Setup and Tick ops whether they are for the mind, which
   we can do in the mind code.

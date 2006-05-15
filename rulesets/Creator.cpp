@@ -137,12 +137,25 @@ void Creator::externalOperation(const Operation & op)
         }
     } else {
         Entity * to = m_world->getEntity(op->getTo());
-        if (to == 0) {
-            log(ERROR, String::compose("Creator operation from client is to unknown ID %1", op->getTo()).c_str());
-            // FIXME Respond with Unseen.
-        } else {
+        if (to != 0) {
             // Make it appear like it came from target itself;
             to->sendWorld(op);
+        } else {
+            log(ERROR, String::compose("Creator operation from client is to unknown ID %1", op->getTo()).c_str());
+
+            Unseen u;
+
+            Anonymous unseen_arg;
+            unseen_arg->setId(op->getTo());
+            u->setArgs1(unseen_arg);
+
+            u->setTo(getId());
+            if (op->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                u->setRefno(op->getSerialno());
+            }
+            OpVector res;
+            sendExternalMind(u, res);
+            // We are not interested in anything the external mind might return
         }
     }
 }
@@ -162,6 +175,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
         if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             op->setTo(arg->getId());
         } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
+            // Search by name
             Entity * e = m_world->findByName(arg->getName());
             if (e != NULL) {
                 op->setTo(e->getId());
@@ -176,6 +190,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                 return;
             }
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+            // Search by name
             if (!arg->getParents().empty()) {
                 Entity * e = m_world->findByType(arg->getParents().front());
                 if (e != NULL) {
@@ -192,6 +207,9 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                 }
             }
         }
+        // FIXME Need to ensure that a broadcast Look insn't sent, and
+        // an Unseen is sent back, in once place if no match is found.
+        // Probably most easlier done by checking TO on op by flag.
     }
     debug( std::cout <<"  now to ["<<op->getTo()<<"]"<<std::endl<<std::flush;);
     res.push_back(op);
