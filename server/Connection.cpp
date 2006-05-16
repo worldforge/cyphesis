@@ -175,7 +175,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         return;
     }
     BaseEntity * b_ent = I->second;
-    Entity * ig_ent = dynamic_cast<Character *>(b_ent);
+    Entity * ig_ent = dynamic_cast<Entity *>(b_ent);
     if (ig_ent == NULL) {
         b_ent->operation(op, res);
         return;

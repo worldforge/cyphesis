@@ -1,5 +1,9 @@
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp; Fix the wrong dynamic cast.
+
+2006-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Slightly simplify the code that handles
 	  subscribing character entities to a connection.
 
