@@ -1,5 +1,10 @@
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp: Slightly simplify the code that handles
+	  subscribing character entities to a connection.
+
+2006-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp: Return 0 on security check fail, as -1 is
 	  signed.
 

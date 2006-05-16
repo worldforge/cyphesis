@@ -166,41 +166,37 @@ void Connection::operation(const Operation & op, OpVector & res)
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
         callOperation(op, res);
         return;
-    } else {
-        const std::string & from = op->getFrom();
-        debug(std::cout << "send on to " << from << std::endl << std::flush;);
-        BaseDict::const_iterator I = m_objects.find(integerId(from));
-        if (I == m_objects.end()) {
-            error(op, String::compose("Client \"%1\" op from \"%2\" is from non-existant object.", op->getParents().front(), from).c_str(), res);
-            return;
-        }
-        BaseEntity * b_ent = I->second;
-        Entity * ig_ent = dynamic_cast<Character *>(b_ent);
-        if (ig_ent == NULL) {
-            b_ent->operation(op, res);
-            return;
-        }
-        Character * character = dynamic_cast<Character *>(b_ent);
-        if ((character != NULL) && (character->m_externalMind == NULL)) {
-            character->m_externalMind = new ExternalMind(*this,
-                                                         character->getId(),
-                                                         character->getIntId());
-            debug(std::cout << "Subscribing existing character" << std::endl
-                            << std::flush;);
-            Info info;
-            Anonymous info_arg;
-            character->addToEntity(info_arg);
-            info->setArgs1(info_arg);
-            info->setSerialno(newSerialNo());
-
-            res.push_back(info);
-            character->externalOperation(op);
-            logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character %3(%4)", getId(), ig_ent->getId(), ig_ent->getName(), ig_ent->getType()).c_str());
-            return;
-        }
-        ig_ent->externalOperation(op);
+    }
+    const std::string & from = op->getFrom();
+    debug(std::cout << "send on to " << from << std::endl << std::flush;);
+    BaseDict::const_iterator I = m_objects.find(integerId(from));
+    if (I == m_objects.end()) {
+        error(op, String::compose("Client \"%1\" op from \"%2\" is from non-existant object.", op->getParents().front(), from).c_str(), res);
         return;
     }
+    BaseEntity * b_ent = I->second;
+    Entity * ig_ent = dynamic_cast<Character *>(b_ent);
+    if (ig_ent == NULL) {
+        b_ent->operation(op, res);
+        return;
+    }
+    Character * character = dynamic_cast<Character *>(b_ent);
+    if ((character != NULL) && (character->m_externalMind == NULL)) {
+        debug(std::cout << "Subscribing existing character" << std::endl
+                        << std::flush;);
+        character->m_externalMind = new ExternalMind(*this, character->getId(),
+                                                     character->getIntId());
+        Info info;
+        Anonymous info_arg;
+        character->addToEntity(info_arg);
+        info->setArgs1(info_arg);
+        info->setSerialno(newSerialNo());
+
+        res.push_back(info);
+
+        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character %3(%4)", getId(), ig_ent->getId(), ig_ent->getName(), ig_ent->getType()).c_str());
+    }
+    ig_ent->externalOperation(op);
 }
 
 void Connection::LoginOperation(const Operation & op, OpVector & res)
