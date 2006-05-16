@@ -58,7 +58,7 @@ unsigned int security_check()
 {
     if (getuid() == 0 || geteuid() == 0) {
         log(ERROR, "Running cyphesis as the superuser is dangerous.");
-        return -1;
+        return 0;
     }
     return SECURITY_OKAY;
 }

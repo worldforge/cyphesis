@@ -73,13 +73,15 @@ Connection::~Connection()
 
     debug(std::cout << "destroy called" << std::endl << std::flush;);
     
+    logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()).c_str());
+
     BaseDict::const_iterator Iend = m_objects.end();
     for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
         Account * ac = dynamic_cast<Account *>(I->second);
         if (ac != NULL) {
             m_server.m_lobby.delAccount(ac);
             ac->m_connection = NULL;
-            logEvent(LOGOUT, String::compose("%1 %2 - Logout account %3", getId(), ac->getId(), ac->m_username).c_str());
+            logEvent(LOGOUT, String::compose("%1 %2 - Disconnect account %3", getId(), ac->getId(), ac->m_username).c_str());
             continue;
         }
         Character * character = dynamic_cast<Character *>(I->second);
@@ -87,12 +89,11 @@ Connection::~Connection()
             if (character->m_externalMind != NULL) {
                 delete character->m_externalMind;
                 character->m_externalMind = NULL;
-                logEvent(DROP_CHAR, String::compose("%1 - %2 Drop character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
+                logEvent(DROP_CHAR, String::compose("%1 - %2 Disconnect character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
             }
         }
     }
 
-    logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()).c_str());
     m_server.decClients();
 }
 
@@ -358,36 +359,47 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = args.front();
     
-    Element user_attr;
-    if (arg->copyAttr("username", user_attr) != 0 || !user_attr.isString()) {
-        error(op, "Got Logout with no username.", res);
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        error(op, "Got logout for entith with no ID", res);
         return;
     }
-    const std::string & username = user_attr.String();
-
-    Element passwd_attr;
-    if (arg->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
-        error(op, "No account password given", res);
+    const long obj_id = integerId(arg->getId());
+    if (obj_id == -1) {
+        error(op, "Got logout for non numeric entity ID", res);
         return;
     }
-    const std::string & password = passwd_attr.String();
-    Account * player = m_server.getAccountByName(username);
-    if ((!player) || (password != player->m_password)) {
-        error(op, "Logout failed", res);
+    BaseDict::iterator I = m_objects.find(obj_id);
+    if (I == m_objects.end()) {
+        error(op, "Got logout for unknown entity ID", res);
         return;
     }
+    // This is very similar code to stuff that does the same job in
+    // Connection destructor. Should be possible to share some, but
+    // the log messages should probably be different.
+    Account * ac = dynamic_cast<Account *>(I->second);
+    if (ac != 0) {
+        std::cout << "Loogging out account" << std::endl << std::flush;
+        m_server.m_lobby.delAccount(ac);
+        ac->m_connection = 0;
+        logEvent(LOGOUT, String::compose("%1 %2 - Logout account %3", getId(), ac->getId(), ac->m_username).c_str());
+    }
+    Character * character = dynamic_cast<Character *>(I->second);
+    if (character != 0) {
+        std::cout << "Loogging out character" << std::endl << std::flush;
+        assert(character->m_externalMind != 0);
+        delete character->m_externalMind;
+        character->m_externalMind = 0;
+        logEvent(DROP_CHAR, String::compose("%1 - %2 Logout character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
 
-    // FIXME This won't work. This connection won't have the account ID
-    // so won't be able to find it. If it did, then it could just log out
-    // the normal way. Pointless.
-    Operation l(op.copy());
-    l->setFrom(player->getId());
+    }
+    m_objects.erase(I);
 
-    OpVector tres;
-    operation(l, tres);
-    // Its not safe to assert this. FIXME Look into what might be returned
-    // in the way of errors, and where they should go.
-    assert(tres.empty());
+    Info info;
+    info->setArgs1(op);
+    info->setRefno(op->getSerialno());
+    // Err, do we still bother with this?
+    info->setSerialno(newSerialNo());
+    res.push_back(info);
 }
 
 void Connection::GetOperation(const Operation & op, OpVector & res)

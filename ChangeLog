@@ -1,3 +1,14 @@
+2006-05-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp: Return 0 on security check fail, as -1 is
+	  signed.
+
+	* server/Connection.cpp: Re-order logging messages so that messages
+	  reflect the fact the a broken connection occurs before the
+	  subscriptions associated with that connection can be dropped.
+	  Implement logging out just specific objects without closing the
+	  connection.
+
 2006-05-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Creator.cpp: Send an unseen op if admin attempts to

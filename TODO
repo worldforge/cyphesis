@@ -1,3 +1,16 @@
+So, now it seems that Eris closes connection once it gets logout complete.
+I don't really think it should do this.
+
+Hmm, when logging out an account, the characters from that account, do
+they remain in the connections dictionary? Is this bad? Also, when
+unsub a character, it does not need to be removed from the connection
+dictionary.
+
+When client disconnects, the server now logs the disconnect first, before
+the implicit logout of account and character, so logging analysis software
+can tell whether a character has been cleanly logged out by whether the
+connection still exists.
+
 Separate out IG_OP_SWITCH from OOG_OP_SWITCH. Very little overlap.
 
 The w2m*Operation code does only 2 things:
