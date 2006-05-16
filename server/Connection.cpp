@@ -373,13 +373,14 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     // Connection destructor. Should be possible to share some, but
     // the log messages should probably be different.
     Account * ac = dynamic_cast<Account *>(I->second);
+    Character * character = dynamic_cast<Character *>(I->second);
     if (ac != 0) {
-        std::cout << "Loogging out account" << std::endl << std::flush;
         m_server.m_lobby.delAccount(ac);
         ac->m_connection = 0;
+        m_objects.erase(I);
+        // FIXME Remove all characters associated with this account.
         logEvent(LOGOUT, String::compose("%1 %2 - Logout account %3", getId(), ac->getId(), ac->m_username).c_str());
     }
-    Character * character = dynamic_cast<Character *>(I->second);
     if (character != 0) {
         std::cout << "Loogging out character" << std::endl << std::flush;
         assert(character->m_externalMind != 0);
@@ -388,7 +389,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         logEvent(DROP_CHAR, String::compose("%1 - %2 Logout character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
 
     }
-    m_objects.erase(I);
 
     Info info;
     info->setArgs1(op);

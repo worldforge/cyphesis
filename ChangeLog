@@ -1,5 +1,10 @@
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp: Don't remove characters from the connection
+	  when they are logged out.
+
+2006-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp; Fix the wrong dynamic cast.
 
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
