@@ -1,5 +1,11 @@
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/ExternalMind.cpp: Don't remove object from connection
+	  as it may be required again, and it will be removed anyway if the
+	  entity is destroyed.
+
+2006-05-16  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Don't remove characters from the connection
 	  when they are logged out.
 

@@ -27,7 +27,9 @@ ExternalMind::ExternalMind(Connection & connection,
 
 ExternalMind::~ExternalMind()
 {
-    m_connection.removeObject(getIntId());
+    // This object does not own the associated entity, so is not
+    // responsible for removing it from the connectio.
+    // m_connection.removeObject(getIntId());
 }
 
 void ExternalMind::operation(const Operation & op, OpVector &)
