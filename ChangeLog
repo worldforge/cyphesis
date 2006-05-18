@@ -1,3 +1,10 @@
+2006-05-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseWorld.h, rulesets/Creator.cpp, rulesets/World.cpp,
+	  server/WorldRouter.cpp, server/WorldRouter.h, tests/TestWorld.h:
+	  Pass perceptive entities to the world by pointer rather than
+	  by ID, avoiding a lookup in the dictionary.
+
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/ExternalMind.cpp: Don't remove object from connection

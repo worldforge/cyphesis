@@ -513,13 +513,10 @@ void WorldRouter::operation(const Operation & op, Entity & from)
 /// to the entity to the set of perceptive entities. This method is
 /// called when key events occur that indicate that the entity in
 /// question can receive broadcase perception operations.
-void WorldRouter::addPerceptive(const std::string & id)
+void WorldRouter::addPerceptive(Entity * perceptive)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
-    Entity * perceptive = getEntity(id);
-    if (perceptive != 0) {
-        m_perceptives.insert(perceptive);
-    }
+    m_perceptives.insert(perceptive);
 }
 
 /// Main world loop function.

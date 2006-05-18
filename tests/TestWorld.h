@@ -39,7 +39,7 @@ class TestWorld : public BaseWorld {
     virtual Entity * findByType(const std::string & type) { return 0; }
     virtual float constrainHeight(Entity*, const Point3D&,
                                   const std::string&) { return 0.f; }
-    virtual void addPerceptive(const std::string &) { }
+    virtual void addPerceptive(Entity *) { }
 };
 
 #endif // TESTS_TEST_WORLD_H

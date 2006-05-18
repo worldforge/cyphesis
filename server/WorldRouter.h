@@ -91,7 +91,7 @@ class WorldRouter : public BaseWorld {
 
     void operation(const Operation &, Entity &);
 
-    virtual void addPerceptive(const std::string &);
+    virtual void addPerceptive(Entity *);
     virtual void message(const Operation &, Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);

@@ -89,7 +89,7 @@ class BaseWorld {
     virtual Entity * findByType(const std::string & type) = 0;
     virtual float constrainHeight(Entity *, const Point3D &,
                                   const std::string &) = 0;
-    virtual void addPerceptive(const std::string & id) = 0;
+    virtual void addPerceptive(Entity *) = 0;
 
 
     sigc::signal<void, Operation> Dispatching;

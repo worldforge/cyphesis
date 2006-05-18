@@ -102,7 +102,7 @@ void Creator::operation(const Operation & op, OpVector & res)
             break;
         default:
             if (op_no == OP_SETUP) {
-                m_world->addPerceptive(getId());
+                m_world->addPerceptive(this);
             } else if (op_no == OP_TICK) {
                 TickOperation(op, res);
             }
