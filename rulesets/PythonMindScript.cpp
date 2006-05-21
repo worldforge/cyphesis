@@ -120,7 +120,14 @@ void PythonMindScript::hook(const std::string & method, Entity * entity)
     }
 
     PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", wrapper);
-    // FIXME We should perhaps report an error here.
-    Py_XDECREF(ret);
     Py_DECREF(wrapper);
+    if (ret == NULL) {
+        if (PyErr_Occurred() == NULL) {
+            log(NOTICE, "No hook");
+        } else {
+            log(ERROR, "Reporting python error");
+            PyErr_Print();
+        }
+    }
+    Py_DECREF(ret);
 }

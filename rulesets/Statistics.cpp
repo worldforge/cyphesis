@@ -48,7 +48,6 @@ float Statistics::get(const std::string & name)
             log(ERROR, "Statistics::get: Error reading value from script");
         }
     }
-    // FIXME query the script
     return get_default(name);
 }
 

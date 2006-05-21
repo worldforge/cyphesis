@@ -1,3 +1,10 @@
+2006-05-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonMindScript.cpp: Report an error if one occurs
+	  running a hook function in a script.
+
+	* rulesets/Statistics.cpp: Remove an obsolete FIXME.
+
 2006-05-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseWorld.h, rulesets/Creator.cpp, rulesets/World.cpp,
