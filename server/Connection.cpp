@@ -382,7 +382,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         logEvent(LOGOUT, String::compose("%1 %2 - Logout account %3", getId(), ac->getId(), ac->m_username).c_str());
     }
     if (character != 0) {
-        std::cout << "Loogging out character" << std::endl << std::flush;
         assert(character->m_externalMind != 0);
         delete character->m_externalMind;
         character->m_externalMind = 0;

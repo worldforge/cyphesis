@@ -1,3 +1,7 @@
+2006-05-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Connection.cpp: Remove debug output.
+
 2006-05-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/PythonMindScript.cpp: Report an error if one occurs
