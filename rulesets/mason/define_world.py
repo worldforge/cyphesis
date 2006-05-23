@@ -756,3 +756,10 @@ def test_goblins(mapeditor):
 
     m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
 
+def test_deer(mapeditor):
+
+    m=editor(mapeditor)
+
+    d=m.make('deer', type='deer', xyz=(5, 0, settlement_height))
+    m.learn(d,deer_goals)
+    m.make('settler', type='settler', xyz=(0, 0, settlement_height))

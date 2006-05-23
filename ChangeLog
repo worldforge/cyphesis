@@ -1,5 +1,10 @@
 2006-05-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Add function to test matrixing
+	  deer.
+
+2006-05-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Remove debug output.
 
 2006-05-21  Al Riddoch  <alriddoch@zepler.org>
