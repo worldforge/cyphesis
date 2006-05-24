@@ -1,3 +1,5 @@
+Make use of wrapTask().
+
 So, now it seems that Eris closes connection once it gets logout complete.
 I don't really think it should do this.
 

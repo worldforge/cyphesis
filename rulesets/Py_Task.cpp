@@ -19,8 +19,9 @@
 
 #include "Py_Thing.h"
 #include "Py_Operation.h"
+#include "PythonWrapper.h"
 
-#include "Task.h"
+#include "TaskScript.h"
 #include "Character.h"
 
 static PyObject * Task_irrelevant(PyTask * self)
@@ -198,6 +199,25 @@ PyTypeObject PyTask_Type = {
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
 };
+
+PyObject * wrapTask(Task * task)
+{
+    PyObject * wrapper;
+    TaskScript * ts = dynamic_cast<TaskScript *>(task);
+    PythonWrapper * pw;
+    if (ts == 0 || ((pw = dynamic_cast<PythonWrapper *>(ts->script())) == 0)) {
+        PyTask * pt = newPyTask();
+        pt->m_task = task;
+        wrapper = (PyObject *)pt;
+        // This wrapper cannot be stashed back int the task yet so
+        // we don't have to do this next time.
+    } else {
+        wrapper = pw->wrapper();
+        assert(wrapper != NULL);
+        Py_INCREF(wrapper);
+    }
+    return wrapper;
+}
 
 PyTask * newPyTask()
 {

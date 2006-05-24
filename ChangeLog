@@ -1,3 +1,11 @@
+2006-05-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/TaskScript.h: Add accessor for the script object associated
+	  with a task.
+
+	* rulesets/Py_Task.cpp: Add a function to wrap a task which uses the
+	  tasks existing python object if it has one.
+
 2006-05-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Add function to test matrixing

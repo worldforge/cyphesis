@@ -35,6 +35,10 @@ class TaskScript : public Task {
     explicit TaskScript(Character & chr);
     virtual ~TaskScript();
 
+    Script * script() const {
+        return m_script;
+    }
+
     void setScript(Script * scrpt);
 
     virtual void irrelevant();
