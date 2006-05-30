@@ -33,6 +33,7 @@
 #include "Setup.h"
 #include "Tick.h"
 #include "Unseen.h"
+#include "Update.h"
 
 #include <Atlas/Objects/Entity.h>
 
@@ -120,6 +121,10 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("drop", "action"));
     Atlas::Objects::Operation::DROP_NO = atlas_factories->addFactory("drop", &Atlas::Objects::generic_factory);
     i.opInstall("drop", OP_DROP);
+
+    i.addChild(atlasOpDefinition("update", "tick"));
+    Atlas::Objects::Operation::UPDATE_NO = atlas_factories->addFactory("update", &Atlas::Objects::generic_factory);
+    i.opInstall("update", OP_DROP);
 
 }
 
