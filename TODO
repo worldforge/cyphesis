@@ -1,3 +1,7 @@
+When a character is created, its not added to the clients model of that
+account character list, so if that character is dropped, it cannot be
+taken again.
+
 --- rulesets/basic/mind/goals/common/move.py    22 Jan 2006 02:13:54 -0000      1.23
 +++ rulesets/basic/mind/goals/common/move.py    29 May 2006 23:48:14 -0000
 @@ -344,7 +344,7 @@
