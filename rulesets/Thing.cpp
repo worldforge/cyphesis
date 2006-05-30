@@ -350,85 +350,90 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // to this entity and others to indicate if one has gained or lost
     // sight of the other because of this movement
     if (consts::enable_ranges && isPerceptive()) {
-        debug(std::cout << "testing range" << std::endl;);
-        float fromSquSize = m_location.squareBoxSize();
-        std::vector<Root> appear, disappear;
-
-        Anonymous this_ent;
-        this_ent->setId(getId());
-        this_ent->setStamp(m_seq);
-
-        EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
-        EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
-        for(; I != Iend; ++I) {
-            float oldDist = squareDistance((*I)->m_location.pos(), oldpos),
-                  newDist = squareDistance((*I)->m_location.pos(), m_location.pos()),
-                  oSquSize = (*I)->m_location.squareBoxSize();
-
-            // Build appear and disappear lists, and send operations
-            // Also so operations to (dis)appearing perceptive
-            // entities saying that we are (dis)appearing
-            if ((*I)->isPerceptive()) {
-                bool wasInRange = ((fromSquSize / oldDist) > consts::square_sight_factor),
-                     isInRange = ((fromSquSize / newDist) > consts::square_sight_factor);
-                if (wasInRange ^ isInRange) {
-                    if (wasInRange) {
-                        // Send operation to the entity in question so it
-                        // knows it is losing sight of us.
-                        Disappearance d;
-                        d->setArgs1(this_ent);
-                        d->setTo((*I)->getId());
-                        res.push_back(d);
-                    } else /*if (isInRange)*/ {
-                        // Send operation to the entity in question so it
-                        // knows it is gaining sight of us.
-                        // FIXME We don't need to do this, cos its about
-                        // to get our Sight(Move)
-                        Appearance a;
-                        a->setArgs1(this_ent);
-                        a->setTo((*I)->getId());
-                        res.push_back(a);
-                    }
-                }
-            }
-            
-            bool couldSee = ((oSquSize / oldDist) > consts::square_sight_factor),
-                 canSee = ((oSquSize / newDist) > consts::square_sight_factor);
-            if (couldSee ^ canSee) {
-                Anonymous that_ent;
-                that_ent->setId((*I)->getId());
-                that_ent->setStamp((*I)->getSeq());
-                if (couldSee) {
-                    // We are losing sight of that object
-                    disappear.push_back(that_ent);
-                    debug(std::cout << getId() << ": losing site of "
-                                    << (*I)->getId() << std::endl;);
-                } else /*if (canSee)*/ {
-                    // We are gaining sight of that object
-                    appear.push_back(that_ent);
-                    debug(std::cout << getId() << ": gaining site of "
-                                    << (*I)->getId() << std::endl;);
-                }
-            }
-        }
-        if (!appear.empty()) {
-            // Send an operation to ourselves with a list of entities
-            // we are losing sight of
-            Appearance a;
-            a->setArgs(appear);
-            a->setTo(getId());
-            res.push_back(a);
-        }
-        if (!disappear.empty()) {
-            // Send an operation to ourselves with a list of entities
-            // we are gaining sight of
-            Disappearance d;
-            d->setArgs(disappear);
-            d->setTo(getId());
-            res.push_back(d);
-        }
+        checkVisibility(oldpos, res);
     }
     updated.emit();
+}
+
+void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
+{
+    debug(std::cout << "testing range" << std::endl;);
+    float fromSquSize = m_location.squareBoxSize();
+    std::vector<Root> appear, disappear;
+
+    Anonymous this_ent;
+    this_ent->setId(getId());
+    this_ent->setStamp(m_seq);
+
+    EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
+    EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
+    for(; I != Iend; ++I) {
+        float oldDist = squareDistance((*I)->m_location.pos(), oldpos),
+              newDist = squareDistance((*I)->m_location.pos(), m_location.pos()),
+              oSquSize = (*I)->m_location.squareBoxSize();
+
+        // Build appear and disappear lists, and send operations
+        // Also so operations to (dis)appearing perceptive
+        // entities saying that we are (dis)appearing
+        if ((*I)->isPerceptive()) {
+            bool wasInRange = ((fromSquSize / oldDist) > consts::square_sight_factor),
+                 isInRange = ((fromSquSize / newDist) > consts::square_sight_factor);
+            if (wasInRange ^ isInRange) {
+                if (wasInRange) {
+                    // Send operation to the entity in question so it
+                    // knows it is losing sight of us.
+                    Disappearance d;
+                    d->setArgs1(this_ent);
+                    d->setTo((*I)->getId());
+                    res.push_back(d);
+                } else /*if (isInRange)*/ {
+                    // Send operation to the entity in question so it
+                    // knows it is gaining sight of us.
+                    // FIXME We don't need to do this, cos its about
+                    // to get our Sight(Move)
+                    Appearance a;
+                    a->setArgs1(this_ent);
+                    a->setTo((*I)->getId());
+                    res.push_back(a);
+                }
+            }
+        }
+        
+        bool couldSee = ((oSquSize / oldDist) > consts::square_sight_factor),
+             canSee = ((oSquSize / newDist) > consts::square_sight_factor);
+        if (couldSee ^ canSee) {
+            Anonymous that_ent;
+            that_ent->setId((*I)->getId());
+            that_ent->setStamp((*I)->getSeq());
+            if (couldSee) {
+                // We are losing sight of that object
+                disappear.push_back(that_ent);
+                debug(std::cout << getId() << ": losing site of "
+                                << (*I)->getId() << std::endl;);
+            } else /*if (canSee)*/ {
+                // We are gaining sight of that object
+                appear.push_back(that_ent);
+                debug(std::cout << getId() << ": gaining site of "
+                                << (*I)->getId() << std::endl;);
+            }
+        }
+    }
+    if (!appear.empty()) {
+        // Send an operation to ourselves with a list of entities
+        // we are losing sight of
+        Appearance a;
+        a->setArgs(appear);
+        a->setTo(getId());
+        res.push_back(a);
+    }
+    if (!disappear.empty()) {
+        // Send an operation to ourselves with a list of entities
+        // we are gaining sight of
+        Disappearance d;
+        d->setArgs(disappear);
+        d->setTo(getId());
+        res.push_back(d);
+    }
 }
 
 void Thing::SetOperation(const Operation & op, OpVector & res)
@@ -463,6 +468,11 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Update" << std::endl << std::flush;);
+    if (!m_location.velocity().isValid() ||
+        m_location.velocity().sqrMag() > WFMATH_EPSILON) {
+        std::cout << "Update got for entity not moving" << std::endl << std::flush;
+    }
+
     // This is where we will handle movement simulation from now on, rather
     // than in the mind interface. The details will be sorted by a new type
     // of object which will handle the specifics.

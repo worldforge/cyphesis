@@ -30,6 +30,8 @@ typedef Entity Thing_parent;
 /// functionality for movement, entity creation and destruction, attribute
 /// changing, and combustion.
 class Thing : public Thing_parent {
+  protected:
+    void checkVisibility(const Point3D &, OpVector &);
   public:
 
     explicit Thing(const std::string & id, long intId);

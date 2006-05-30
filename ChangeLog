@@ -1,5 +1,11 @@
 2006-05-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.h, rulesets/Thing.cpp: Create a function to hold
+	  visibility checking code, and remove it from MoveOperation, calling
+	  the function instead.
+
+2006-05-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/TaskScript.h: Add accessor for the script object associated
 	  with a task.
 
