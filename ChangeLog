@@ -1,3 +1,14 @@
+2006-05-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.h: Add new constant for period between movement updates.
+
+	* rulesets/Pedestrian.cpp: Don't update entity movement timestamp
+	  here.
+
+	* rulesets/Thing.cpp: Add comments about movement code. Update
+	  movement timestamp when move op is handled. Use movement update
+	  interval for update ops.
+
 2006-05-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/custom.cpp: Add Update operation type to those registered

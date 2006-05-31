@@ -85,7 +85,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     // operation is dispatched. It may be a good idea to put a time stamp
     // in Location, as it will be useful elsewhere, and will eliminate the
     // race condition.
-    m_body.m_location.update(current_time);
+    // m_body.m_location.update(current_time);
 
     if (!updateNeeded(m_body.m_location)) {
         debug( std::cout << "No update" << std::endl << std::flush;);

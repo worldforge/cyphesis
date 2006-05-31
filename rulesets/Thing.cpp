@@ -156,10 +156,18 @@ void Thing::BurnOperation(const Operation & op, OpVector & res)
 void Thing::MoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
+
+    // FIXME This is probably here in case the op is handled by a script.
+    // Should it reall be here, or would it be better to move in after
+    // the checks, and make the script responsible for doing this if it
+    // needs to?
     m_seq++;
+
     if (m_script->operation("move", op, res) != 0) {
         return;
     }
+
+    // Check the validity of the operation.
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "Move has no argument", res, getId());
@@ -197,6 +205,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
                 return;
             }
         }
+        assert(new_loc != 0);
+        assert(m_location.m_loc != new_loc);
     }
 
     if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
@@ -299,7 +309,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     mode);
-    // m_location.update(m_world->getTime());
+    m_location.update(m_world->getTime());
     m_update_flags |= a_pos;
 
     if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
@@ -337,7 +347,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         m_location.velocity().sqrMag() > WFMATH_EPSILON) {
         // m_motion->genUpdateOperation(); ??
         Update u;
-        u->setFutureSeconds(consts::basic_tick);
+        u->setFutureSeconds(consts::move_tick);
         u->setTo(getId());
 
         res.push_back(u);
@@ -469,7 +479,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Update" << std::endl << std::flush;);
     if (!m_location.velocity().isValid() ||
-        m_location.velocity().sqrMag() > WFMATH_EPSILON) {
+        m_location.velocity().sqrMag() < WFMATH_EPSILON) {
         std::cout << "Update got for entity not moving" << std::endl << std::flush;
     }
 
