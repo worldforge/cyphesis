@@ -235,7 +235,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
                                 m_diverted = true;
                             }
                             // m_updatedPos must only be set if no LOC change has occured.
-                            m_updatedPos = new_location.m_pos;
+                            // m_updatedPos = new_location.m_pos;
                         } else {
                             reset();
                             new_location.m_velocity = Vector3D(0,0,0);
@@ -253,13 +253,13 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         } else {
             new_location.m_pos = new_coords;
             // m_updatedPos must only be set if no LOC change has occured.
-            m_updatedPos = new_location.m_pos;
+            // m_updatedPos = new_location.m_pos;
             m_diverted = false;
         }
     } else {
         new_location.m_pos = new_coords;
         // m_updatedPos must only be set if no LOC change has occured.
-        m_updatedPos = new_location.m_pos;
+        // m_updatedPos = new_location.m_pos;
     }
 
     std::string mode("standing");

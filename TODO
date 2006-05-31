@@ -1,3 +1,14 @@
+Moving Continuous Movement into Thing, including terrain following, and
+collision detection:
+UpdateOp needs to handle movement, and generate a Sight(Move), but does
+not need to do much of the things done in MoveOp. In the simple initial
+case it does not have to deal with LOC change. Even once it does, it
+only then has to deal with recontainering, and it is not necessary
+to check for pickup and drop. It does not need to deal with mode change
+as it only handles ongoing movement. It needs to do visibility check,
+which is now a stand alone function, and thus needs to store the old POS.
+Initially it will not need to modify anything except POS.
+
 When a character is created, its not added to the clients model of that
 account character list, so if that character is dropped, it cannot be
 taken again.
@@ -38,7 +49,7 @@ The w2m*Operation code does only 2 things:
   It filters based on drunkness.
 Both can go, removing the mechanism altogether.
 
-STUN can be used for NAT detection. Useful?
+STUN can be used for NAT detection. Useful? UDP only. Still useful.
 
 Perhaps it should be possible to specify class data about the hard coded
 classes in data/*,xml.

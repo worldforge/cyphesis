@@ -1,5 +1,14 @@
 2006-05-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Implement basic movement updates.
+
+	* rulesets/Pedestrian.cpp: Disable updatePos as it is no longer
+	  required.
+
+	* TODO: Add notes on further refactoring of movement code.
+
+2006-05-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.h: Add new constant for period between movement updates.
 
 	* rulesets/Pedestrian.cpp: Don't update entity movement timestamp

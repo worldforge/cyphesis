@@ -48,11 +48,12 @@ using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Drop;
-using Atlas::Objects::Operation::Update;
+using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Pickup;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
+using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
@@ -481,9 +482,61 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     if (!m_location.velocity().isValid() ||
         m_location.velocity().sqrMag() < WFMATH_EPSILON) {
         std::cout << "Update got for entity not moving" << std::endl << std::flush;
+        return;
     }
 
     // This is where we will handle movement simulation from now on, rather
     // than in the mind interface. The details will be sorted by a new type
     // of object which will handle the specifics.
+
+    // FIXME Check whether this is still the next update.
+
+    const double & current_time = m_world->getTime();
+    double time_diff = current_time - m_location.timeStamp();
+    m_location.update(current_time);
+
+    std::string mode;
+
+    if (has("mode")) {
+        Element mode_attr;
+        get("mode", mode_attr);
+        if (mode_attr.isString()) {
+            mode = mode_attr.String();
+        } else {
+            log(ERROR, String::compose("Mode on entity is a %1 in Thing::MoveOperation", Element::typeName(mode_attr.getType())).c_str());
+        }
+    }
+
+    Point3D oldpos = m_location.pos();
+
+    m_location.m_pos += (m_location.velocity() * time_diff);
+
+    std::cout << "O: " << oldpos << " N: " << m_location.m_pos
+              << std::flush;
+
+    m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
+                                                    m_location.pos(),
+                                                    mode);
+
+    std::cout << " C: " << m_location.m_pos
+              << std::endl << std::flush;
+
+    Move m;
+    Anonymous move_arg;
+    move_arg->setId(getId());
+    m_location.addToEntity(move_arg);
+    m->setArgs1(move_arg);
+    m->setFrom(getId());
+    m->setTo(getId());
+
+    Sight s;
+    s->setArgs1(m);
+
+    res.push_back(s);
+
+    Update u;
+    u->setFutureSeconds(consts::move_tick);
+    u->setTo(getId());
+
+    res.push_back(u);
 }
