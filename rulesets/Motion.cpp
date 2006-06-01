@@ -73,6 +73,7 @@ float Motion::checkCollisions()
                      << " against"; );
     m_collEntity = NULL;
     m_collLocChange = false;
+    m_collision = false;
     // Check against everything within the current container
     EntitySet::const_iterator I = m_entity.m_location.m_loc->m_contains.begin();
     EntitySet::const_iterator Iend = m_entity.m_location.m_loc->m_contains.end();
@@ -157,6 +158,7 @@ float Motion::checkCollisions()
         }
     }
     assert(m_collEntity != NULL);
+    m_collision = true;
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
     debug( std::cout << "Setting target loc to "
                      << m_entity.m_location.pos() << "+"

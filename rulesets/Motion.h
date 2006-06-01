@@ -39,13 +39,20 @@ class Motion {
   protected:
     Entity & m_entity;
     std::string m_mode;
+    bool m_collision;
 
   public:
     explicit Motion(Entity & body);
     virtual ~Motion();
 
+    float m_collisionTime;
+
     const std::string & mode() const {
         return m_mode;
+    }
+
+    const bool collision() const {
+        return m_collision;
     }
     
     /// \brief Set the mode the motion is currently in

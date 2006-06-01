@@ -1,5 +1,13 @@
 2006-06-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Motion.h, rulesets/Motion.cpp: Add flag and time to sore
+	  info about collisions.
+
+	* rulesets/Thing.cpp: Rambling messy code to detect and act on
+	  predicted collisions.
+
+2006-06-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.h, rulesets/Motion.cpp: Add method to check for
 	  collisions.
 

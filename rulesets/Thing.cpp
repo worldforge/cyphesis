@@ -302,6 +302,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         }
     }
 
+    const double & current_time = m_world->getTime();
+
     Point3D oldpos = m_location.pos();
 
     // Update pos
@@ -310,7 +312,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     mode);
-    m_location.update(m_world->getTime());
+    m_location.update(current_time);
     m_update_flags |= a_pos;
 
     if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
@@ -333,6 +335,14 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // m_motion->adjustNewPostion();
 
     float collisionTime = m_motion->checkCollisions();
+
+    if (m_motion->collision()) {
+        if (collisionTime < WFMATH_EPSILON) {
+            std::cout << "NO MOVE" << std::endl << std::flush;
+        } else {
+            m_motion->m_collisionTime = current_time + collisionTime;
+        }
+    }
 
     std::cout << "Collision in " << collisionTime << std::endl << std::flush;
 
@@ -495,7 +505,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     const double & current_time = m_world->getTime();
     double time_diff = current_time - m_location.timeStamp();
-    m_location.update(current_time);
 
     std::string mode;
 
@@ -511,6 +520,16 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     Point3D oldpos = m_location.pos();
 
+    bool colliding = false;
+
+    if (m_motion->collision()) {
+        if (current_time >= m_motion->m_collisionTime) {
+            std::cout << "UPDATE HIT" << std::endl << std::flush;
+            time_diff = m_motion->m_collisionTime - m_location.timeStamp();
+            colliding = true;
+        }
+    }
+
     m_location.m_pos += (m_location.velocity() * time_diff);
 
     std::cout << "O: " << oldpos << " N: " << m_location.m_pos
@@ -519,11 +538,30 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     mode);
+    m_location.update(current_time);
+    m_update_flags != a_pos;
 
     std::cout << " C: " << m_location.m_pos
               << std::endl << std::flush;
 
+    if (colliding) {
+        // FIXME Deflect sometimes?
+        m_location.m_velocity = Vector3D(0,0,0);
+    }
+
+    // FIXME Need to not send Update if collision has occured, or is
+    // immediatly predicted. Don't do collision check if collision alread
+    // due. Set update interval correctly, both here and in MoveOPeration
+
     float collisionTime = m_motion->checkCollisions();
+
+    if (m_motion->collision()) {
+        if (collisionTime < WFMATH_EPSILON) {
+            std::cout << "NO MOVE" << std::endl << std::flush;
+        } else {
+            m_motion->m_collisionTime = current_time + collisionTime;
+        }
+    }
 
     std::cout << "Collision in " << collisionTime << std::endl << std::flush;
 
