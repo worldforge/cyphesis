@@ -262,8 +262,15 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     obj->addToEntity(info_arg);
     info->setArgs1(info_arg);
     info->setSerialno(newSerialNo());
-
     res.push_back(info);
+
+    Sight sight;
+    sight->setTo(getId());
+    Anonymous sight_arg;
+    addToEntity(sight_arg);
+    sight->setArgs1(sight_arg);
+    sight->setSerialno(newSerialNo());
+    res.push_back(sight);
 }
 
 void Account::SetOperation(const Operation & op, OpVector & res)

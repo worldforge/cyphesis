@@ -1,5 +1,10 @@
 2006-06-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Add op to notify client when account object
+	  is modified.
+
+2006-06-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.h, rulesets/Motion.cpp: Add flag and time to sore
 	  info about collisions.
 
