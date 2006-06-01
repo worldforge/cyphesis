@@ -1,3 +1,11 @@
+2006-06-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Motion.h, rulesets/Motion.cpp: Add method to check for
+	  collisions.
+
+	* rulesets/Thing.cpp: Use Motion::checkCollisions to output debug
+	  data about collisions.
+
 2006-05-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Implement basic movement updates.

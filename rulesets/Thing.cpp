@@ -332,7 +332,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Take into account mode also.
     // m_motion->adjustNewPostion();
 
+    float collisionTime = m_motion->checkCollisions();
 
+    std::cout << "Collision in " << collisionTime << std::endl << std::flush;
 
     Operation m(op.copy());
     RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
@@ -520,6 +522,10 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     std::cout << " C: " << m_location.m_pos
               << std::endl << std::flush;
+
+    float collisionTime = m_motion->checkCollisions();
+
+    std::cout << "Collision in " << collisionTime << std::endl << std::flush;
 
     Move m;
     Anonymous move_arg;

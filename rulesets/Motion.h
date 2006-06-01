@@ -80,6 +80,7 @@ class Motion {
     virtual Operation * genMoveOperation();
 
     // Collision bullshit?
+    float checkCollisions();
 };
 
 #endif // RULESETS_MOTION_H
