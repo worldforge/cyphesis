@@ -306,6 +306,7 @@ Operation Pedestrian::generateMove(Location & new_location)
     }
     double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
 
+#if 0
     if (vel_square_mag > 0) {
         if (checkCollisions(new_location) <= 0) {
             // FIXME THis ignore the possiblity that the collision might
@@ -316,6 +317,7 @@ Operation Pedestrian::generateMove(Location & new_location)
             square_speed_ratio = 0;
         }
     }
+#endif
 
     float height = 0;
     if (m_body.m_location.bBox().isValid()) {

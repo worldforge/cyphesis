@@ -330,21 +330,30 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     // At this point the Location data for this entity has been updated.
 
+    bool moving = false;
+
+    if (m_location.velocity().isValid() &&
+        m_location.velocity().sqrMag() > WFMATH_EPSILON) {
+        moving = true;
+    }
+
     // Take into account terrain following etc.
     // Take into account mode also.
     // m_motion->adjustNewPostion();
 
-    float collisionTime = m_motion->checkCollisions();
+    float update_time = m_motion->checkCollisions();
 
     if (m_motion->collision()) {
-        if (collisionTime < WFMATH_EPSILON) {
-            std::cout << "NO MOVE" << std::endl << std::flush;
+        if (update_time < WFMATH_EPSILON) {
+            std::cout << "M NO MOVE" << std::endl << std::flush;
+            m_location.m_velocity = Vector3D(0,0,0);
+            moving = false;
         } else {
-            m_motion->m_collisionTime = current_time + collisionTime;
+            m_motion->m_collisionTime = current_time + update_time;
         }
     }
 
-    std::cout << "Collision in " << collisionTime << std::endl << std::flush;
+    std::cout << "Move Update in " << update_time << std::endl << std::flush;
 
     Operation m(op.copy());
     RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
@@ -356,18 +365,13 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     res.push_back(s);
 
-    if (m_location.velocity().isValid() &&
-        m_location.velocity().sqrMag() > WFMATH_EPSILON) {
-        // m_motion->genUpdateOperation(); ??
+    if (moving) {
         Update u;
-        u->setFutureSeconds(consts::move_tick);
+        u->setFutureSeconds(update_time);
         u->setTo(getId());
 
         res.push_back(u);
     }
-
-    // I think it might be wise to send a set indicating we have changed
-    // modes, but this would probably be wasteful
 
     // This code handles sending Appearance and Disappearance operations
     // to this entity and others to indicate if one has gained or lost
@@ -520,13 +524,13 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     Point3D oldpos = m_location.pos();
 
-    bool colliding = false;
+    bool moving = true;
 
     if (m_motion->collision()) {
         if (current_time >= m_motion->m_collisionTime) {
             std::cout << "UPDATE HIT" << std::endl << std::flush;
             time_diff = m_motion->m_collisionTime - m_location.timeStamp();
-            colliding = true;
+            moving = false;
         }
     }
 
@@ -539,31 +543,31 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
                                                     m_location.pos(),
                                                     mode);
     m_location.update(current_time);
-    m_update_flags != a_pos;
+    m_update_flags |= a_pos;
 
     std::cout << " C: " << m_location.m_pos
               << std::endl << std::flush;
 
-    if (colliding) {
+    float update_time = consts::move_tick;
+
+    if (!moving) {
         // FIXME Deflect sometimes?
         m_location.m_velocity = Vector3D(0,0,0);
-    }
+    } else {
+        update_time = m_motion->checkCollisions();
 
-    // FIXME Need to not send Update if collision has occured, or is
-    // immediatly predicted. Don't do collision check if collision alread
-    // due. Set update interval correctly, both here and in MoveOPeration
-
-    float collisionTime = m_motion->checkCollisions();
-
-    if (m_motion->collision()) {
-        if (collisionTime < WFMATH_EPSILON) {
-            std::cout << "NO MOVE" << std::endl << std::flush;
-        } else {
-            m_motion->m_collisionTime = current_time + collisionTime;
+        if (m_motion->collision()) {
+            if (update_time < WFMATH_EPSILON) {
+                std::cout << "U NO MOVE" << std::endl << std::flush;
+                m_location.m_velocity = Vector3D(0,0,0);
+                moving = false;
+            } else {
+                m_motion->m_collisionTime = current_time + update_time;
+            }
         }
     }
 
-    std::cout << "Collision in " << collisionTime << std::endl << std::flush;
+    std::cout << "New Update in " << update_time << std::endl << std::flush;
 
     Move m;
     Anonymous move_arg;
@@ -578,9 +582,19 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     res.push_back(s);
 
-    Update u;
-    u->setFutureSeconds(consts::move_tick);
-    u->setTo(getId());
+    if (moving) {
+        Update u;
+        u->setFutureSeconds(update_time);
+        u->setTo(getId());
 
-    res.push_back(u);
+        res.push_back(u);
+    }
+
+    // This code handles sending Appearance and Disappearance operations
+    // to this entity and others to indicate if one has gained or lost
+    // sight of the other because of this movement
+    if (consts::enable_ranges && isPerceptive()) {
+        checkVisibility(oldpos, res);
+    }
+    updated.emit();
 }

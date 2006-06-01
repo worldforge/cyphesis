@@ -1,5 +1,12 @@
 2006-06-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp: Disable old collision detection code.
+
+	* rulesets/Thing.cpp: First working version of entity based collision
+	  code.
+
+2006-06-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Add op to notify client when account object
 	  is modified.
 
