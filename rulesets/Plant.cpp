@@ -151,6 +151,11 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)
 {
+    debug(std::cout << "Plant::Nourish(" << getId() << "," << m_type << ")"
+                    << std::endl << std::flush;);
+    if (m_script->operation("nourish", op, res)) {
+        return;
+    }
     if (op->getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
         return;

@@ -1,3 +1,8 @@
+2006-06-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Plant.cpp: Fix nourish handler to check for a script
+	  handler first.
+
 2006-06-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Pedestrian.cpp: Disable old collision detection code.
