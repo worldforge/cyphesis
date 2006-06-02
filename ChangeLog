@@ -1,5 +1,13 @@
 2006-06-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Motion.h: Add method to clear the collision flag.
+
+	* rulesets/Thing.cpp: Clear the collision flag once it has been
+	  handled, and improve code harmonisation between MoveOp and
+	  UpdateOp handlers.
+
+2006-06-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Plant.cpp: Fix nourish handler to check for a script
 	  handler first.
 

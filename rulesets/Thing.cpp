@@ -341,15 +341,20 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Take into account mode also.
     // m_motion->adjustNewPostion();
 
-    float update_time = m_motion->checkCollisions();
+    float update_time = consts::move_tick;
 
-    if (m_motion->collision()) {
-        if (update_time < WFMATH_EPSILON) {
-            std::cout << "M NO MOVE" << std::endl << std::flush;
-            m_location.m_velocity = Vector3D(0,0,0);
-            moving = false;
-        } else {
-            m_motion->m_collisionTime = current_time + update_time;
+    if (moving) {
+        // If we are moving, check for collisions
+        update_time = m_motion->checkCollisions();
+
+        if (m_motion->collision()) {
+            if (update_time < WFMATH_EPSILON) {
+                std::cout << "M NO MOVE" << std::endl << std::flush;
+                m_location.m_velocity = Vector3D(0,0,0);
+                moving = false;
+            } else {
+                m_motion->m_collisionTime = current_time + update_time;
+            }
         }
     }
 
@@ -526,19 +531,29 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     bool moving = true;
 
+    // Check if a predicted collision is due.
     if (m_motion->collision()) {
         if (current_time >= m_motion->m_collisionTime) {
             std::cout << "UPDATE HIT" << std::endl << std::flush;
             time_diff = m_motion->m_collisionTime - m_location.timeStamp();
             moving = false;
         }
+        m_motion->clear_collision();
     }
 
+    // Update entity position
     m_location.m_pos += (m_location.velocity() * time_diff);
+
+    // Affect the velocity
+    if (!moving) {
+        m_location.m_velocity = Vector3D(0,0,0);
+    }
 
     std::cout << "O: " << oldpos << " N: " << m_location.m_pos
               << std::flush;
 
+    // Adjust the position to world constraints - essentially fit
+    // to the terrain height at this stage.
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     mode);
@@ -550,10 +565,8 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     float update_time = consts::move_tick;
 
-    if (!moving) {
-        // FIXME Deflect sometimes?
-        m_location.m_velocity = Vector3D(0,0,0);
-    } else {
+    if (moving) {
+        // If we are moving, check for collisions
         update_time = m_motion->checkCollisions();
 
         if (m_motion->collision()) {

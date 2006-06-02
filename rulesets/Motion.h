@@ -54,6 +54,10 @@ class Motion {
     const bool collision() const {
         return m_collision;
     }
+
+    void clear_collision() {
+        m_collision = false;
+    }
     
     /// \brief Set the mode the motion is currently in
     ///
