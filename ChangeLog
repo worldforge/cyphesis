@@ -1,5 +1,15 @@
 2006-06-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Motion.h: Rename to clearCollision() to adhere to
+	  convention.
+
+	* rulesets/Motion.cpp: Implicitly clear a pending collision whenever
+	  one is resolved.
+
+	* rulesets/Thing.cpp: Cut in the new collision resolution code.
+
+2006-06-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.cpp, rulesets/Motion.h: Initial implementation of
 	  collision resolution code.
 

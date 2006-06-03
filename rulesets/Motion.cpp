@@ -241,5 +241,6 @@ bool Motion::resolveCollision()
             }
         }
     }
+    clearCollision();
     return moving;
 }

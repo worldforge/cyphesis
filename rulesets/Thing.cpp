@@ -58,7 +58,7 @@ using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 /// \brief Constructor for physical or tangiable entities.
 Thing::Thing(const std::string & id, long intId) : Thing_parent(id, intId)
@@ -350,8 +350,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (m_motion->collision()) {
             if (update_time < WFMATH_EPSILON) {
                 std::cout << "M NO MOVE" << std::endl << std::flush;
-                m_location.m_velocity = Vector3D(0,0,0);
-                moving = false;
+                moving = m_motion->resolveCollision();
             } else {
                 m_motion->m_collisionTime = current_time + update_time;
             }
@@ -536,17 +535,19 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         if (current_time >= m_motion->m_collisionTime) {
             std::cout << "UPDATE HIT" << std::endl << std::flush;
             time_diff = m_motion->m_collisionTime - m_location.timeStamp();
+            // This flag signals that collision resolution is required later.
+            // Whether or not we are actually moving is determined by the
+            // collision resolution.
             moving = false;
         }
-        m_motion->clear_collision();
     }
 
     // Update entity position
     m_location.m_pos += (m_location.velocity() * time_diff);
 
-    // Affect the velocity
+    // Collision resolution has to occur after position has been updated.
     if (!moving) {
-        m_location.m_velocity = Vector3D(0,0,0);
+        moving = m_motion->resolveCollision();
     }
 
     std::cout << "O: " << oldpos << " N: " << m_location.m_pos
@@ -572,8 +573,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         if (m_motion->collision()) {
             if (update_time < WFMATH_EPSILON) {
                 std::cout << "U NO MOVE" << std::endl << std::flush;
-                m_location.m_velocity = Vector3D(0,0,0);
-                moving = false;
+                moving = m_motion->resolveCollision();
             } else {
                 m_motion->m_collisionTime = current_time + update_time;
             }

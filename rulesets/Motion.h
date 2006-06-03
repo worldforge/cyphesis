@@ -65,7 +65,7 @@ class Motion {
         return m_collision;
     }
 
-    void clear_collision() {
+    void clearCollision() {
         m_collision = false;
     }
     
