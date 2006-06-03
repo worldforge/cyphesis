@@ -18,6 +18,8 @@
 #ifndef RULESETS_MOTION_H
 #define RULESETS_MOTION_H
 
+#include "physics/Vector3D.h"
+
 #include "common/types.h"
 
 #include <string>
@@ -39,7 +41,15 @@ class Motion {
   protected:
     Entity & m_entity;
     std::string m_mode;
+
+    /// Collision predicted flag
     bool m_collision;
+    /// Entity with which collision will occur
+    Entity * m_collEntity;
+    /// Collision will cause passing in or out of container
+    bool m_collLocChange;
+    /// Normal to the collision surface
+    Vector3D m_collNormal;
 
   public:
     explicit Motion(Entity & body);
@@ -92,6 +102,9 @@ class Motion {
 
     // Collision bullshit?
     float checkCollisions();
+
+    // More Collision bullshit
+    bool resolveCollision();
 };
 
 #endif // RULESETS_MOTION_H
