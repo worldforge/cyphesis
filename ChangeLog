@@ -1,5 +1,9 @@
 2006-06-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Motion.cpp, rulesets/Thing.cpp: Disable debug flags.
+
+2006-06-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.h, rulesets/Movement.cpp, rulesets/Pedestrian.cpp:
 	  Remove old obsolete collision code.
 

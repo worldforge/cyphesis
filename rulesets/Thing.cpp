@@ -58,7 +58,7 @@ using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangiable entities.
 Thing::Thing(const std::string & id, long intId) : Thing_parent(id, intId)

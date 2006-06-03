@@ -29,7 +29,7 @@
 
 #include <iostream>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 Motion::Motion(Entity & body) : m_entity(body)
 {
