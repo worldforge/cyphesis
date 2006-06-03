@@ -1,5 +1,10 @@
 2006-06-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h, rulesets/Movement.cpp, rulesets/Pedestrian.cpp:
+	  Remove old obsolete collision code.
+
+2006-06-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.h: Rename to clearCollision() to adhere to
 	  convention.
 

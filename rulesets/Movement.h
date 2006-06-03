@@ -33,18 +33,10 @@ class Location;
 class Movement {
   protected:
     Entity & m_body;
-    double m_lastMovementTime;
-    double m_lastCollisionTime;
     Point3D m_targetPos;
-    Point3D m_updatedPos;
     int m_serialno;
-    Point3D m_collPos;
-    Entity * m_collEntity;
-    bool m_collLocChange;
-    bool m_diverted;
-    Vector3D m_collNormal;
 
-    float checkCollisions(const Location & loc);
+    // float checkCollisions(const Location & loc);
   public:
     explicit Movement(Entity & body);
     virtual ~Movement();
