@@ -344,7 +344,7 @@ class pursuit(Goal):
         lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
         if lst_of_what==[]: return
         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
-        multiply = const.base_velocity * self.direction
+        multiply = const.base_velocity * self.direction * const.basic_tick
         loc = Location(me.location.parent)
         loc.coordinates =  me.location.coordinates + (dist_vect * multiply)
         #print me,multiply,dist,loc.coordinates.distance(other_xyz)

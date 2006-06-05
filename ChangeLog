@@ -1,5 +1,10 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/move.py: Make deer run further
+	  when they are scared, thus making their movement smoother.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Clear out movement debug output.
 
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
