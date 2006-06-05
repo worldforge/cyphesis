@@ -369,14 +369,18 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     res.push_back(s);
 
+    // Serial number must be changed regardless of whether we will use it
+    ++m_motion->serialno();
+
     if (moving) {
         // Update op will have refno == op.serialno
-        m_motion->serialno() = op->getSerialno();
-        std::cout << "O" << m_motion->serialno() << std::endl << std::flush;
 
         Update u;
         u->setFutureSeconds(update_time);
         u->setTo(getId());
+
+        u->setRefno(m_motion->serialno());
+        std::cout << "O" << m_motion->serialno() << " " << u->getRefno() << std::endl << std::flush;
 
         res.push_back(u);
     }
@@ -605,12 +609,21 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 
     if (moving) {
-        m_motion->serialno() = op->getSerialno();
-        std::cout << "U" << m_motion->serialno() << std::endl << std::flush;
-
         Update u;
         u->setFutureSeconds(update_time);
         u->setTo(getId());
+
+        // If the update op has no serial number, we need our own
+        // ref number
+        if (op->isDefaultSerialno()) {
+            u->setRefno(++m_motion->serialno());
+        } else {
+            // We should respect the serial number if it is present
+            // as the core code will set the reference number
+            // correctly.
+            m_motion->serialno() = op->getSerialno();
+        }
+        std::cout << "U" << m_motion->serialno() << std::endl << std::flush;
 
         res.push_back(u);
     }

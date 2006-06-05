@@ -1,5 +1,11 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Re-work the movement code so it never relies
+	  on external serial numbers, but will use internal op serialnos
+	  if they are available, or use its own refnos if not.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp, server/CommClient.cpp, server/Account.cpp:
 	  Only set refnos on ops if the client has set a serial number.
 
