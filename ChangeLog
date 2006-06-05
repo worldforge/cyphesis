@@ -1,5 +1,14 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h: Add method to check if a target position has
+	  been specified.
+
+	* rulesets/Character.cpp: Don't return a tick for movement if no
+	  target is specified, as the old movement object has no further
+	  role to play.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Re-work the movement code so it never relies
 	  on external serial numbers, but will use internal op serialnos
 	  if they are available, or use its own refnos if not.

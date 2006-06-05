@@ -45,6 +45,10 @@ class Movement {
         return m_serialno;
     }
 
+    bool hasTarget() const {
+        return m_targetPos.isValid();
+    }
+
     void setTarget(const Point3D & target) {
         m_targetPos = target;
     }

@@ -982,9 +982,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
-    debug( if (new_pos.isValid()) { std::cout<<"\tUsing target"
-                                           << std::endl
-                                           << std::flush; } );
     if (new_pos.isValid()) {
         m_movement.setTarget(new_pos);
         debug(std::cout << "Target" << new_pos
@@ -1004,7 +1001,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     assert(moveOp.isValid());
     res.push_back(moveOp);
 
-    if (ret_location.velocity().isValid() &&
+    if (m_movement.hasTarget() &&
+        ret_location.velocity().isValid() &&
         ret_location.velocity() != Vector3D(0,0,0)) {
 
         Tick tickOp;
