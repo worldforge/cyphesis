@@ -1,5 +1,14 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.cpp, server/CommClient.cpp, server/Account.cpp:
+	  Only set refnos on ops if the client has set a serial number.
+
+	* rulesets/Character.cpp: Simplify handling the transfer of
+	  operations from client to in-game. Don't give new operations
+	  serial numbers at this point.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Only set the refno on an op if the original
 	  had a serilno. Don't bother setting serialno on internal ops.
 

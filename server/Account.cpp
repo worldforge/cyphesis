@@ -149,7 +149,9 @@ void Account::LogoutOperation(const Operation & op, OpVector &)
 
     Info info;
     info->setArgs1(op);
-    info->setRefno(op->getSerialno());
+    if (!op->isDefaultSerialno()) {
+        info->setRefno(op->getSerialno());
+    }
     info->setSerialno(newSerialNo());
     info->setFrom(getId());
     info->setTo(getId());
@@ -352,8 +354,10 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     s->setArgs1(op);
     s->setFrom(getId());
     s->setSerialno(newSerialNo());
-    // FIXME Remove this
-    s->setRefno(op->getSerialno());
+    // FIXME Remove this - broadcasting
+    if (!op->isDefaultSerialno()) {
+        s->setRefno(op->getSerialno());
+    }
     RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
 
     if (!arg.isValid()) {
@@ -381,8 +385,10 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     s->setArgs1(op);
     s->setFrom(getId());
     s->setSerialno(newSerialNo());
-    // FIXME Remove this - no really
-    s->setRefno(op->getSerialno());
+    // FIXME Remove this - broadcasting
+    if (!op->isDefaultSerialno()) {
+        s->setRefno(op->getSerialno());
+    }
     RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
 
     if (!arg.isValid()) {

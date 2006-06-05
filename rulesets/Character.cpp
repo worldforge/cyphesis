@@ -1454,17 +1454,18 @@ void Character::externalOperation(const Operation & op)
     
     // We require that the first op is the direct consequence of the minds
     // op, so it gets the same serialno
+    OpVector::const_iterator I = mres.begin();
+    OpVector::const_iterator Iend = mres.end();
+
     // FIXME in Atlas-C++ 0.6 we can do this by relying on being able
     // to query if an object has a certain attribute. A copied op will have
     // it, a new op won't.
-    OpVector::const_iterator Ibegin = mres.begin();
-    OpVector::const_iterator Iend = mres.end();
-    for (OpVector::const_iterator I = Ibegin; I != Iend; ++I) {
-        if (I == Ibegin) {
-            (*I)->setSerialno(op->getSerialno());
-        } else {
-            (*I)->setSerialno(newSerialNo());
-        }
+    // Do we need to set this, or can we just check it?
+    if (!op->isDefaultSerialno() && I != Iend) {
+        (*I)->setSerialno(op->getSerialno());
+    }
+
+    for (; I != Iend; ++I) {
         sendWorld(*I);
         // Don't delete br as it has gone into World's queue
         // World will deal with it.

@@ -121,7 +121,12 @@ int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
     OpVector::const_iterator Iend = reply.end();
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
-        (*I)->setRefno(serialno);
+        if (!op->isDefaultSerialno()) {
+            // Should we respect existing refnos?
+            if ((*I)->isDefaultRefno()) {
+                (*I)->setRefno(serialno);
+            }
+        }
         if (send(*I) != 0) {
             return -1;
         }

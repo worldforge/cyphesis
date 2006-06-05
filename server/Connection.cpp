@@ -346,7 +346,9 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         // Logging self out
         Info info;
         info->setArgs1(op);
-        info->setRefno(op->getSerialno());
+        if (!op->isDefaultSerialno()) {
+            info->setRefno(op->getSerialno());
+        }
         info->setSerialno(newSerialNo());
         // FIXME Direct call of send. Need local refno handling.
         send(info);
@@ -391,7 +393,9 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
 
     Info info;
     info->setArgs1(op);
-    info->setRefno(op->getSerialno());
+    if (!op->isDefaultSerialno()) {
+        info->setRefno(op->getSerialno());
+    }
     // Err, do we still bother with this?
     info->setSerialno(newSerialNo());
     res.push_back(info);
