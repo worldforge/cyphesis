@@ -349,15 +349,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         if (m_motion->collision()) {
             if (update_time < WFMATH_EPSILON) {
-                std::cout << "M NO MOVE" << std::endl << std::flush;
                 moving = m_motion->resolveCollision();
             } else {
                 m_motion->m_collisionTime = current_time + update_time;
             }
         }
     }
-
-    std::cout << "Move Update in " << update_time << std::endl << std::flush;
 
     Operation m(op.copy());
     RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
@@ -373,14 +370,13 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     ++m_motion->serialno();
 
     if (moving) {
-        // Update op will have refno == op.serialno
+        debug(std::cout << "Move Update in " << update_time << std::endl << std::flush;);
 
         Update u;
         u->setFutureSeconds(update_time);
         u->setTo(getId());
 
         u->setRefno(m_motion->serialno());
-        std::cout << "O" << m_motion->serialno() << " " << u->getRefno() << std::endl << std::flush;
 
         res.push_back(u);
     }
@@ -507,14 +503,12 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
     if (op->getRefno() != m_motion->serialno()) {
-        std::cout << "Update obsolete " << op->getRefno() << "," << m_motion->serialno() << std::endl << std::flush;
         return;
     }
 
-    std::cout << "Update" << std::endl << std::flush;
     if (!m_location.velocity().isValid() ||
         m_location.velocity().sqrMag() < WFMATH_EPSILON) {
-        std::cout << "Update got for entity not moving" << std::endl << std::flush;
+        log(ERROR, "Update got for entity not moving");
         return;
     }
 
@@ -546,7 +540,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // Check if a predicted collision is due.
     if (m_motion->collision()) {
         if (current_time >= m_motion->m_collisionTime) {
-            std::cout << "UPDATE HIT" << std::endl << std::flush;
             time_diff = m_motion->m_collisionTime - m_location.timeStamp();
             // This flag signals that collision resolution is required later.
             // Whether or not we are actually moving is determined by the
@@ -563,9 +556,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         moving = m_motion->resolveCollision();
     }
 
-    std::cout << "O: " << oldpos << " N: " << m_location.m_pos
-              << std::flush;
-
     // Adjust the position to world constraints - essentially fit
     // to the terrain height at this stage.
     m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
@@ -573,9 +563,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
                                                     mode);
     m_location.update(current_time);
     m_update_flags |= a_pos;
-
-    std::cout << " C: " << m_location.m_pos
-              << std::endl << std::flush;
 
     float update_time = consts::move_tick;
 
@@ -585,15 +572,12 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
         if (m_motion->collision()) {
             if (update_time < WFMATH_EPSILON) {
-                std::cout << "U NO MOVE" << std::endl << std::flush;
                 moving = m_motion->resolveCollision();
             } else {
                 m_motion->m_collisionTime = current_time + update_time;
             }
         }
     }
-
-    std::cout << "New Update in " << update_time << std::endl << std::flush;
 
     Move m;
     Anonymous move_arg;
@@ -609,6 +593,8 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 
     if (moving) {
+        debug(std::cout << "New Update in " << update_time << std::endl << std::flush;);
+
         Update u;
         u->setFutureSeconds(update_time);
         u->setTo(getId());
@@ -623,7 +609,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
             // correctly.
             m_motion->serialno() = op->getSerialno();
         }
-        std::cout << "U" << m_motion->serialno() << std::endl << std::flush;
 
         res.push_back(u);
     }

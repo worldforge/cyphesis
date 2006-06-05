@@ -1,5 +1,9 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Clear out movement debug output.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.h: Add method to check if a target position has
 	  been specified.
 
