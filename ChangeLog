@@ -1,5 +1,9 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac, NEWS: Increment version for forthcoming release.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Don't add a settler to the deer
 	  test scanario, as its not required.
 
