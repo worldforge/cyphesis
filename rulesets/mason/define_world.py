@@ -762,4 +762,4 @@ def test_deer(mapeditor):
 
     d=m.make('deer', type='deer', xyz=(5, 0, settlement_height))
     m.learn(d,deer_goals)
-    m.make('settler', type='settler', xyz=(0, 0, settlement_height))
+    # m.make('settler', type='settler', xyz=(0, 0, settlement_height))

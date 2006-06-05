@@ -1,5 +1,10 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Don't add a settler to the deer
+	  test scanario, as its not required.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Makefile.am: Update the linked modules for the tests so that
 	  they build against the new movement code.
 
