@@ -1,5 +1,15 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Add some assert checks when altering the
+	  container of an entity.
+
+	* rulesets/Motion.cpp: Fix the code in collision resolution that
+	  handler container changes so it does reference counting,
+	  inserting and removing from contains lists, and flagging entity
+	  changes.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac, NEWS: Increment version for forthcoming release.
 
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>

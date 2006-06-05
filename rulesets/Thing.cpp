@@ -254,6 +254,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             s->setArgs1(d);
             res.push_back(s);
         }
+
         // Update loc
         m_location.m_loc->m_contains.erase(this);
         if (m_location.m_loc->m_contains.empty()) {
@@ -266,9 +267,11 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             new_loc->m_update_flags |= a_cont;
             new_loc->updated.emit();
         }
+        assert(m_location.m_loc->checkRef() > 0);
         m_location.m_loc->decRef();
         m_location.m_loc = new_loc;
         m_location.m_loc->incRef();
+        assert(m_location.m_loc->checkRef() > 0);
         m_update_flags |= a_loc;
 
         containered.emit();
