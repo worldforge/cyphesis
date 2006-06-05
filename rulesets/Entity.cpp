@@ -269,6 +269,33 @@ void Entity::merge(const MapType & ent)
     }
 }
 
+/// \brief Change the container of an entity
+///
+/// @param new_loc The entity which is to become this entities new
+/// container.
+void Entity::changeContainer(Entity * new_loc)
+{
+    m_location.m_loc->m_contains.erase(this);
+    if (m_location.m_loc->m_contains.empty()) {
+        m_location.m_loc->m_update_flags |= a_cont;
+        m_location.m_loc->updated.emit();
+    }
+    bool was_empty = new_loc->m_contains.empty();
+    new_loc->m_contains.insert(this);
+    if (was_empty) {
+        new_loc->m_update_flags |= a_cont;
+        new_loc->updated.emit();
+    }
+    assert(m_location.m_loc->checkRef() > 0);
+    m_location.m_loc->decRef();
+    m_location.m_loc = new_loc;
+    m_location.m_loc->incRef();
+    assert(m_location.m_loc->checkRef() > 0);
+    m_update_flags |= a_loc;
+
+    containered.emit();
+}
+
 /// \brief Subscribe this entity to operations of the type given
 ///
 /// @param op Type of operation this entity should be subscribed to

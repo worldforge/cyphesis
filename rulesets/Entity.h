@@ -184,6 +184,7 @@ class Entity : public BaseEntity {
 
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::MapType &);
+    void changeContainer(Entity *);
 
     void destroy();
 

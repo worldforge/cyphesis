@@ -186,23 +186,7 @@ bool Motion::resolveCollision()
             location.m_orientation *= collOrientation;
             location.m_velocity.rotate(collOrientation);
 
-            Entity * new_loc = m_collEntity->m_location.m_loc;
-            location.m_loc->m_contains.erase(&m_entity);
-            if (location.m_loc->m_contains.empty()) {
-                location.m_loc->m_update_flags |= a_cont;
-                location.m_loc->updated.emit();
-            }
-            bool was_empty = new_loc->m_contains.empty();
-            new_loc->m_contains.insert(&m_entity);
-            if (was_empty) {
-                new_loc->m_update_flags |= a_cont;
-                new_loc->updated.emit();
-            }
-            location.m_loc->decRef();
-            location.m_loc = new_loc;
-            location.m_loc->incRef();
-            m_entity.m_update_flags |= a_loc;
-            m_entity.containered.emit();
+            m_entity.changeContainer(m_collEntity->m_location.m_loc);
         } else if (m_collEntity->m_location.m_loc == location.m_loc) {
             // Passing into new container
             debug(std::cout << "IN" << std::endl << std::flush;);
@@ -213,23 +197,7 @@ bool Motion::resolveCollision()
             location.m_orientation /= collOrientation;
             location.m_velocity.rotate(collOrientation.inverse());
 
-            Entity * new_loc = m_collEntity;
-            location.m_loc->m_contains.erase(&m_entity);
-            if (location.m_loc->m_contains.empty()) {
-                location.m_loc->m_update_flags |= a_cont;
-                location.m_loc->updated.emit();
-            }
-            bool was_empty = new_loc->m_contains.empty();
-            new_loc->m_contains.insert(&m_entity);
-            if (was_empty) {
-                new_loc->m_update_flags |= a_cont;
-                new_loc->updated.emit();
-            }
-            location.m_loc->decRef();
-            location.m_loc = new_loc;
-            location.m_loc->incRef();
-            m_entity.m_update_flags |= a_loc;
-            m_entity.containered.emit();
+            m_entity.changeContainer(m_collEntity);
         } else {
             // Container we are supposed to changing to is wrong.
             // Just stop where we currently are. Debugging is required to work out

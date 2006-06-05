@@ -256,25 +256,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         }
 
         // Update loc
-        m_location.m_loc->m_contains.erase(this);
-        if (m_location.m_loc->m_contains.empty()) {
-            m_location.m_loc->m_update_flags |= a_cont;
-            m_location.m_loc->updated.emit();
-        }
-        bool was_empty = new_loc->m_contains.empty();
-        new_loc->m_contains.insert(this);
-        if (was_empty) {
-            new_loc->m_update_flags |= a_cont;
-            new_loc->updated.emit();
-        }
-        assert(m_location.m_loc->checkRef() > 0);
-        m_location.m_loc->decRef();
-        m_location.m_loc = new_loc;
-        m_location.m_loc->incRef();
-        assert(m_location.m_loc->checkRef() > 0);
-        m_update_flags |= a_loc;
-
-        containered.emit();
+        changeContainer(new_loc);
     }
 
     std::string mode;

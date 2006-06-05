@@ -1,3 +1,12 @@
+2006-06-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add a function to handle
+	  all the changes required when the LOC or container of an entity
+	  changes.
+
+	* rulesets/Motion.cpp, rulesets/Thing.cpp: Use changeContainer()
+	  rather than repeating the code in three places.
+
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Add some assert checks when altering the
