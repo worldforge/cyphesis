@@ -1,3 +1,12 @@
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Motion.cpp, rulesets/Motion.h: Add method and storage
+	  to note what the reference number of the next update op should
+	  be.
+
+	* rulesets/Thing.cpp: Note the current serialno as the refno of the
+	  expected update op, and ignore all others obsolete update ops.
+
 2006-06-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Motion.cpp, rulesets/Thing.cpp: Disable debug flags.

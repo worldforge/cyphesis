@@ -42,6 +42,9 @@ class Motion {
     Entity & m_entity;
     std::string m_mode;
 
+    /// Refno of next expected update op
+    long m_serialno;
+
     /// Collision predicted flag
     bool m_collision;
     /// Entity with which collision will occur
@@ -59,6 +62,10 @@ class Motion {
 
     const std::string & mode() const {
         return m_mode;
+    }
+
+    long & serialno() {
+        return m_serialno;
     }
 
     const bool collision() const {

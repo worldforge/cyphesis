@@ -31,7 +31,7 @@
 
 static const bool debug_flag = false;
 
-Motion::Motion(Entity & body) : m_entity(body)
+Motion::Motion(Entity & body) : m_entity(body), m_serialno(0)
 {
 }
 

@@ -370,6 +370,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 
     if (moving) {
+        // Update op will have refno == op.serialno
+        m_motion->serialno() = op->getSerialno();
+        std::cout << "O" << m_motion->serialno() << std::endl << std::flush;
+
         Update u;
         u->setFutureSeconds(update_time);
         u->setTo(getId());
@@ -498,7 +502,12 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Update" << std::endl << std::flush;);
+    if (op->getRefno() != m_motion->serialno()) {
+        std::cout << "Update obsolete " << op->getRefno() << "," << m_motion->serialno() << std::endl << std::flush;
+        return;
+    }
+
+    std::cout << "Update" << std::endl << std::flush;
     if (!m_location.velocity().isValid() ||
         m_location.velocity().sqrMag() < WFMATH_EPSILON) {
         std::cout << "Update got for entity not moving" << std::endl << std::flush;
@@ -596,6 +605,9 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 
     if (moving) {
+        m_motion->serialno() = op->getSerialno();
+        std::cout << "U" << m_motion->serialno() << std::endl << std::flush;
+
         Update u;
         u->setFutureSeconds(update_time);
         u->setTo(getId());
