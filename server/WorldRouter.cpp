@@ -426,9 +426,11 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         if (op->getFrom() == (*I)->getTo()) {
-            (*I)->setRefno(op->getSerialno());
+            if (!op->isDefaultSerialno() && (*I)->isDefaultRefno()) {
+                (*I)->setRefno(op->getSerialno());
+            }
         }
-        (*I)->setSerialno(newSerialNo());
+        // (*I)->setSerialno(newSerialNo());
         message(*I, ent);
     }
 }

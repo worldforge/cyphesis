@@ -1,5 +1,10 @@
 2006-06-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Only set the refno on an op if the original
+	  had a serilno. Don't bother setting serialno on internal ops.
+
+2006-06-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.cpp, rulesets/Motion.h: Add method and storage
 	  to note what the reference number of the next update op should
 	  be.
