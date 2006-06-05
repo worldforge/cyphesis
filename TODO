@@ -1,3 +1,6 @@
+Make sure only setting serialno on ops when it is needed, and accordingly
+only set refno when its called for.
+
 Moving Continuous Movement into Thing, including terrain following, and
 collision detection:
 UpdateOp needs to handle movement, and generate a Sight(Move), but does
