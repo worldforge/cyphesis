@@ -1,37 +1,4 @@
-Make sure only setting serialno on ops when it is needed, and accordingly
-only set refno when its called for.
-
-Moving Continuous Movement into Thing, including terrain following, and
-collision detection:
-UpdateOp needs to handle movement, and generate a Sight(Move), but does
-not need to do much of the things done in MoveOp. In the simple initial
-case it does not have to deal with LOC change. Even once it does, it
-only then has to deal with recontainering, and it is not necessary
-to check for pickup and drop. It does not need to deal with mode change
-as it only handles ongoing movement. It needs to do visibility check,
-which is now a stand alone function, and thus needs to store the old POS.
-Initially it will not need to modify anything except POS.
-
-When a character is created, its not added to the clients model of that
-account character list, so if that character is dropped, it cannot be
-taken again.
-
---- rulesets/basic/mind/goals/common/move.py    22 Jan 2006 02:13:54 -0000      1.23
-+++ rulesets/basic/mind/goals/common/move.py    29 May 2006 23:48:14 -0000
-@@ -344,7 +344,7 @@
-         lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
-         if lst_of_what==[]: return
-         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
--        multiply = const.base_velocity * self.direction
-+        multiply = const.base_velocity * self.direction * const.basic_tick
-         loc = Location(me.location.parent)
-         loc.coordinates =  me.location.coordinates + (dist_vect * multiply)
-         #print me,multiply,dist,loc.coordinates.distance(other_xyz)
-
 Make use of wrapTask().
-
-So, now it seems that Eris closes connection once it gets logout complete.
-I don't really think it should do this.
 
 Hmm, when logging out an account, the characters from that account, do
 they remain in the connections dictionary? Is this bad? Also, when
