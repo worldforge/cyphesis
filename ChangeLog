@@ -1,5 +1,11 @@
 2006-06-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, rulesets/Creator.cpp, common/BaseEntity.cpp:
+	  Catch the last few places, and ensure refno is only set if
+	  serialno is set on the causing op.
+
+2006-06-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h, rulesets/Entity.cpp: Add a function to handle
 	  all the changes required when the LOC or container of an entity
 	  changes.

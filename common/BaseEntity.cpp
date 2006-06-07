@@ -379,7 +379,9 @@ void BaseEntity::error(const Operation& op, const char* errstring,
     args.push_back(op);
 
     if (!to.empty()) {
-        e->setRefno(op->getSerialno());
+        if (!op->isDefaultSerialno()) {
+            e->setRefno(op->getSerialno());
+        }
         e->setTo(to);
     }
     e->setSerialno(newSerialNo());
@@ -414,7 +416,9 @@ void BaseEntity::clientError(const Operation & op,
     args.push_back(op);
 
     if (!to.empty()) {
-        e->setRefno(op->getSerialno());
+        if (!op->isDefaultSerialno()) {
+            e->setRefno(op->getSerialno());
+        }
         e->setTo(to);
     }
     e->setSerialno(newSerialNo());

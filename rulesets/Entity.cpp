@@ -332,7 +332,9 @@ void Entity::externalOperation(const Operation & op)
     operation(op, res);
     OpVector::const_iterator Iend = res.end();
     for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        (*I)->setRefno(op->getSerialno());
+        if (!op->isDefaultSerialno()) {
+            (*I)->setRefno(op->getSerialno());
+        }
         sendWorld(*I);
     }
 }

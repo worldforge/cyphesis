@@ -130,7 +130,9 @@ void Creator::externalOperation(const Operation & op)
         OpVector::const_iterator Iend = lres.end();
         for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
             (*I)->setSerialno(newSerialNo());
-            (*I)->setRefno(op->getSerialno());
+            if (!op->isDefaultSerialno()) {
+                (*I)->setRefno(op->getSerialno());
+            }
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue
             // World will deal with it.
@@ -150,7 +152,7 @@ void Creator::externalOperation(const Operation & op)
             u->setArgs1(unseen_arg);
 
             u->setTo(getId());
-            if (op->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+            if (!op->isDefaultSerialno()) {
                 u->setRefno(op->getSerialno());
             }
             OpVector res;
@@ -183,7 +185,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                 Unseen u;
                 u->setTo(getId());
                 u->setArgs1(arg);
-                if (op->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                if (!op->isDefaultSerialno()) {
                     u->setRefno(op->getSerialno());
                 }
                 sendExternalMind(u, res);
@@ -199,7 +201,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                     Unseen u;
                     u->setTo(getId());
                     u->setArgs1(arg);
-                    if (op->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                    if (!op->isDefaultSerialno()) {
                         u->setRefno(op->getSerialno());
                     }
                     sendExternalMind(u, res);
