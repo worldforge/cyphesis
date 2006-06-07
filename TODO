@@ -46,9 +46,6 @@ work out why, and see if changes are needed.
 Add media for boots, bowl, cow, flower, hat, knife, leaf, loaf, statue, stool,
 and longtable
 
-In BaseMind::Appearance, use getStamp() and flags, instead of stupid
-string munging.
-
 Need to work out a sane way to handle udp socket for sending to multiple
 clients quickly and efficiently.
 
@@ -768,10 +765,6 @@ is allowed.
 
 Add propper type engine.
 
-Benchmark various setting arguments ways. RESULT: When using Message::Object
-args, it is much much more efficient. When using op.AsObject(); for args, it is
-quite a bit more efficient.
-
 Put in different high level exception catchers, to differentiate between
 exceptions caused by a client, which should result in a kick, and bugs in game
 which need to be logged.
@@ -837,8 +830,6 @@ General TODO
   puts the server in bulk maintenance mode, from which NPCs should be
   removed. Should consider the effect this will have on NPC memory,
   and whether or not it can be rebootstrapped.
-
-  Why don't the pigs eat?
 
   Looking at contains attribute currently only applies sight ranges in
   world entity. Need to apply sight ranges in all entities.
