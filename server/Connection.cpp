@@ -190,7 +190,6 @@ void Connection::operation(const Operation & op, OpVector & res)
         Anonymous info_arg;
         character->addToEntity(info_arg);
         info->setArgs1(info_arg);
-        info->setSerialno(newSerialNo());
 
         res.push_back(info);
 
@@ -267,7 +266,6 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     Anonymous info_arg;
     player->addToEntity(info_arg);
     info->setArgs1(info_arg);
-    info->setSerialno(newSerialNo());
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
 
@@ -332,7 +330,6 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     Anonymous info_arg;
     player->addToEntity(info_arg);
     info->setArgs1(info_arg);
-    info->setSerialno(newSerialNo());
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
@@ -349,7 +346,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         if (!op->isDefaultSerialno()) {
             info->setRefno(op->getSerialno());
         }
-        info->setSerialno(newSerialNo());
         // FIXME Direct call of send. Need local refno handling.
         send(info);
         disconnect();
@@ -396,8 +392,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     if (!op->isDefaultSerialno()) {
         info->setRefno(op->getSerialno());
     }
-    // Err, do we still bother with this?
-    info->setSerialno(newSerialNo());
     res.push_back(info);
 }
 
@@ -410,7 +404,6 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         Anonymous info_arg;
         m_server.addToEntity(info_arg);
         info->setArgs1(info_arg);
-        info->setSerialno(newSerialNo());
         debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
     } else {
         const Root & arg = args.front();
@@ -426,7 +419,6 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
             return;
         }
         info->setArgs1(o);
-        info->setSerialno(newSerialNo());
     }
     
     res.push_back(info);

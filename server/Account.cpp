@@ -127,7 +127,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     for(int i = 0; i < 10; i++) {
         Create c;
         c->setTo(chr->getId());
-        c->setSerialno(newSerialNo());
         c->setArgs1(create_arg);
         world.message(c, *chr);
     }
@@ -152,7 +151,6 @@ void Account::LogoutOperation(const Operation & op, OpVector &)
     if (!op->isDefaultSerialno()) {
         info->setRefno(op->getSerialno());
     }
-    info->setSerialno(newSerialNo());
     info->setFrom(getId());
     info->setTo(getId());
     // FIXME Direct send rather than reply - requires local refno handling
@@ -263,7 +261,6 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     Anonymous info_arg;
     obj->addToEntity(info_arg);
     info->setArgs1(info_arg);
-    info->setSerialno(newSerialNo());
     res.push_back(info);
 
     Sight sight;
@@ -271,7 +268,6 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     Anonymous sight_arg;
     addToEntity(sight_arg);
     sight->setArgs1(sight_arg);
-    sight->setSerialno(newSerialNo());
     res.push_back(sight);
 }
 
@@ -353,7 +349,6 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     Sight s;
     s->setArgs1(op);
     s->setFrom(getId());
-    s->setSerialno(newSerialNo());
     // FIXME Remove this - broadcasting
     if (!op->isDefaultSerialno()) {
         s->setRefno(op->getSerialno());
@@ -384,7 +379,6 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     Sound s;
     s->setArgs1(op);
     s->setFrom(getId());
-    s->setSerialno(newSerialNo());
     // FIXME Remove this - broadcasting
     if (!op->isDefaultSerialno()) {
         s->setRefno(op->getSerialno());
@@ -415,7 +409,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         Anonymous sight_arg;
         m_connection->m_server.m_lobby.addToEntity(sight_arg);
         s->setArgs1(sight_arg);
-        s->setSerialno(newSerialNo());
         res.push_back(s);
         return;
     }
@@ -435,7 +428,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         Anonymous sight_arg;
         J->second->addToEntity(sight_arg);
         s->setArgs1(sight_arg);
-        s->setSerialno(newSerialNo());
         res.push_back(s);
         return;
     }
@@ -447,7 +439,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         Anonymous sight_arg;
         K->second->addToEntity(sight_arg);
         s->setArgs1(sight_arg);
-        s->setSerialno(newSerialNo());
         res.push_back(s);
         return;
     }

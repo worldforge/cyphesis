@@ -57,7 +57,6 @@ void Lobby::addAccount(Account * ac)
     a->setArgs1(us);
     a->setFrom(ac->getId());
     a->setTo(getId());
-    a->setSerialno(newSerialNo());
 
     OpVector res;
     operation(a, res);
@@ -78,7 +77,6 @@ void Lobby::delAccount(Account * ac)
     d->setArgs1(us);
     d->setFrom(ac->getId());
     d->setTo(getId());
-    d->setSerialno(newSerialNo());
 
     OpVector res;
     operation(d, res);

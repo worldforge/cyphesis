@@ -129,7 +129,6 @@ void Creator::externalOperation(const Operation & op)
         callOperation(op, lres);
         OpVector::const_iterator Iend = lres.end();
         for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
-            (*I)->setSerialno(newSerialNo());
             if (!op->isDefaultSerialno()) {
                 (*I)->setRefno(op->getSerialno());
             }

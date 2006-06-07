@@ -229,7 +229,6 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         error(op, String::compose("Unknown object type \"%1\" requested for \"%2\"", objtype, id).c_str(), res, getId());
         return;
     }
-    info->setSerialno(newSerialNo());
     res.push_back(info);
 }
 

@@ -284,7 +284,6 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         Setup s;
         s->setTo(ent->getId());
         s->setFutureSeconds(-0.1);
-        s->setSerialno(newSerialNo());
         message(s, m_gameWorld);
     }
     return ent;
@@ -430,7 +429,6 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
                 (*I)->setRefno(op->getSerialno());
             }
         }
-        // (*I)->setSerialno(newSerialNo());
         message(*I, ent);
     }
 }

@@ -384,7 +384,6 @@ void BaseEntity::error(const Operation& op, const char* errstring,
         }
         e->setTo(to);
     }
-    e->setSerialno(newSerialNo());
 
     res.push_back(e);
 }
@@ -421,7 +420,6 @@ void BaseEntity::clientError(const Operation & op,
         }
         e->setTo(to);
     }
-    e->setSerialno(newSerialNo());
 
     res.push_back(e);
 }

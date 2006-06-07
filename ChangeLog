@@ -1,5 +1,13 @@
 2006-06-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, rulesets/Character.cpp, rulesets/Creator.cpp,
+	  server/Account.cpp, server/Admin.cpp, server/Connection.cpp,
+	  server/Lobby.cpp, server/WorldRouter.cpp: Don't bother with serial
+	  numbers on ops generated inside the server. They just leak and upset
+	  clients.
+
+2006-06-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Creator.cpp, common/BaseEntity.cpp:
 	  Catch the last few places, and ensure refno is only set if
 	  serialno is set on the causing op.

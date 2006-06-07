@@ -1438,7 +1438,6 @@ void Character::operation(const Operation & op, OpVector & res)
         for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
             //Operation * mr2 = mind2_res.front();
             // Need to be very careful about what this actually does
-            (*I)->setSerialno(newSerialNo());
             externalOperation(*I);
         }
     }
