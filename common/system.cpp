@@ -89,6 +89,7 @@ extern "C" void shutdown_on_signal(int signo)
 extern "C" void report_segfault(int signo)
 {
     log(CRITICAL, "Segmentation fault");
+    log(NOTICE, "Please report this bug to alriddoch@zepler.org");
 
 #if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);
@@ -98,6 +99,7 @@ extern "C" void report_segfault(int signo)
 extern "C" void report_abort(int signo)
 {
     log(CRITICAL, "Aborted");
+    log(NOTICE, "Please report this bug to alriddoch@zepler.org");
 
 #if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);

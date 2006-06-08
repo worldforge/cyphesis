@@ -1,3 +1,8 @@
+2006-06-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp: Add a message to the crash handlers giving
+	  an email address to report bugs to.
+
 2006-06-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Motion.cpp: Ensure collision prediction returns move_tick
