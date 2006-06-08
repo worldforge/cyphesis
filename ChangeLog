@@ -1,5 +1,11 @@
 2006-06-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Motion.cpp: Ensure collision prediction returns move_tick
+	  when a collision is not predicted. Remove pointless assignments.
+	  Clarify error message.
+
+2006-06-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, rulesets/Character.cpp, rulesets/Creator.cpp,
 	  server/Account.cpp, server/Admin.cpp, server/Connection.cpp,
 	  server/Lobby.cpp, server/WorldRouter.cpp: Don't bother with serial

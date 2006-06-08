@@ -110,7 +110,7 @@ float Motion::checkCollisions()
         predictEmergence(m_entity.m_location, parent_location, t);
         // if (t == 0) { return; }
         // if (t < 0) { t = 0; }
-        if (t > consts::move_tick) { return t; }
+        if (t > consts::move_tick) { return consts::move_tick; }
         collTime = t;
         debug(std::cout << "Collision with parent bounding box in "
                         << collTime << std::endl << std::flush;);
@@ -215,8 +215,6 @@ bool Motion::resolveCollision()
             location.m_velocity = Vector3D(0,0,0);
             moving = false;
         }
-        m_collEntity = NULL;
-        m_collLocChange = false;
     } else {
         // We have arrived at our target position and must
         // stop, or be deflected
@@ -226,7 +224,7 @@ bool Motion::resolveCollision()
             // the last move has taken effect, so we make the new
             // pos exactly as it was when the last collision was
             // predicted.
-            log(ERROR, "NON COLLISION");
+            log(ERROR, "NON COLLISION - target does not have common parent");
         } else {
             // FIXME Generate touch ops
             // This code relies on m_collNormal being a unit vector
