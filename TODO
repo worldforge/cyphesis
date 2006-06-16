@@ -1,3 +1,11 @@
+Add property system, with property classes registered with entity factory,
+and stored in the entity class object. Implementation should avoid looking up
+excessively in dictionaries at entity instance time. Instead the work should
+be done at class creation time. In the long term, properties defined by
+scripts should be required. Reduce the role of C++ inheritance in what
+properties things have, and instead put more on the bass class, and perhaps
+use flags to indicate whether they are in use.
+
 Make use of wrapTask().
 
 Hmm, when logging out an account, the characters from that account, do
