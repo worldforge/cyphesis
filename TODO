@@ -1,3 +1,6 @@
+Add trenching rule, and perhaps think about a generic task that can allow
+someone to help someone else do the task they are doing.
+
 Add property system, with property classes registered with entity factory,
 and stored in the entity class object. Implementation should avoid looking up
 excessively in dictionaries at entity instance time. Instead the work should

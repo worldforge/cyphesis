@@ -1449,22 +1449,17 @@ void Character::externalOperation(const Operation & op)
     OpVector mres;
     mind2body(op, mres);
     
-    // We require that the first op is the direct consequence of the minds
-    // op, so it gets the same serialno
     OpVector::const_iterator I = mres.begin();
     OpVector::const_iterator Iend = mres.end();
 
-    // FIXME in Atlas-C++ 0.6 we can do this by relying on being able
-    // to query if an object has a certain attribute. A copied op will have
-    // it, a new op won't.
-    // Do we need to set this, or can we just check it?
+    // If the original op had a serial no, we assume the first consequence
+    // of that is effectively the same operation.
+    // FIXME Can this be guaranteed by the mind2body phase?
     if (!op->isDefaultSerialno() && I != Iend) {
         (*I)->setSerialno(op->getSerialno());
     }
 
     for (; I != Iend; ++I) {
         sendWorld(*I);
-        // Don't delete br as it has gone into World's queue
-        // World will deal with it.
     }
 }

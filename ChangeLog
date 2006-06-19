@@ -1,3 +1,8 @@
+2006-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Re-write comments about sending ops from
+	  mind to world.
+
 2006-06-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp: Add a message to the crash handlers giving
