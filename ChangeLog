@@ -1,5 +1,10 @@
 2006-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Task.cpp: Add "progress" and "rate" to Task.getattr
+	  for python.
+
+2006-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Task.cpp: Allow progress to be set as an integer from
 	  a task script.
 

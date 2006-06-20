@@ -123,6 +123,12 @@ static PyObject * Task_getattr(PyTask *self, char *name)
     if (strcmp(name, "character") == 0) {
         return wrapEntity(&self->m_task->character());
     }
+    if (strcmp(name, "progress") == 0) {
+        return PyFloat_FromDouble(self->m_task->progress());
+    }
+    if (strcmp(name, "rate") == 0) {
+        return PyFloat_FromDouble(self->m_task->rate());
+    }
     if (self->Task_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Task_attr, name);
         if (v != NULL) {
