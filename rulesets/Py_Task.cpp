@@ -142,11 +142,14 @@ static int Task_setattr(PyTask *self, char *name, PyObject *v)
     }
 #endif // NDEBUG
     if (strcmp(name, "progress") == 0) {
-        if (!PyFloat_Check(v)) {
-            PyErr_SetString(PyExc_TypeError, "progress must be a float");
+        if (PyFloat_Check(v)) {
+            self->m_task->progress() = PyFloat_AsDouble(v);
+        } else if (PyInt_Check(v)) {
+            self->m_task->progress() = PyInt_AsLong(v);
+        } else {
+            PyErr_SetString(PyExc_TypeError, "progress must be a number");
             return -1;
         }
-        self->m_task->progress() = PyFloat_AsDouble(v);
         return 0;
     }
     if (strcmp(name, "rate") == 0) {

@@ -1,5 +1,13 @@
 2006-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Task.cpp: Allow progress to be set as an integer from
+	  a task script.
+
+	* data/mason.xml, rulesets/mason/world/tasks/Slice.py: Add a new
+	  slice task for sawing logs into boards.
+
+2006-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Fix some issues
 	  with code that assumed op.from and op.to where entities rather
 	  than entity IDs.

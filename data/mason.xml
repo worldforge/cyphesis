@@ -2088,6 +2088,25 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">slice</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">bucksaw</string>
+      <string name="target">lumber</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Slice</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">sharpen</string>
     <string name="objtype">class</string>
     <list name="parents">
