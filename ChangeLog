@@ -1,5 +1,10 @@
 2006-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Don't forward ops to the mind blindly if
+	  we don't know what they are.
+
+2006-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add classes for raw building materials.
 
 2006-06-19  Al Riddoch  <alriddoch@zepler.org>
