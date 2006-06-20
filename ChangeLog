@@ -1,5 +1,10 @@
 2006-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Slice.py: The basics of cutting lumber
+	  into boards is now working.
+
+2006-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Task.cpp: Add "progress" and "rate" to Task.getattr
 	  for python.
 

@@ -37,21 +37,24 @@ class Slice(Thing):
 
         target=self.character.world.get_object(self.target)
         if not target:
-            # print "Target is no more"
+            print "Target is no more"
             self.irrelevant()
             return
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
+            print "Too far away"
             return self.next_tick(1.75)
+        else:
+            self.progress += self.rate * 1.75
 
-        self.progress += self.rate * 1.75
+        self.rate = 0.1 / 1.75
 
         if self.progress < 1:
+            print "Not done yet"
             return self.next_tick(1.75)
 
-        new_loc = Location()
-        width = new_loc.bbox.far_point.x - new_loc.bbox.near_point.x
+        width = target.location.bbox.far_point.x - target.location.bbox.near_point.x
         if width <= self.width:
             print "Nothing more to cut"
             self.irrelevant()
@@ -59,26 +62,25 @@ class Slice(Thing):
 
         res=Message()
 
-        new_loc.bbox.far_point = Vector3D(target.location.bbox.far_point.x,
-                                          target.location.bbox.far_point.y,
-                                          target.location.bbox.far_point.z)
+        new_bbox = [target.location.bbox.near_point.x,
+                    target.location.bbox.near_point.y,
+                    target.location.bbox.near_point.z,
+                    target.location.bbox.far_point.x - self.width,
+                    target.location.bbox.far_point.y,
+                    target.location.bbox.far_point.z]
 
-        new_loc.bbox.near_point = Vector3D(target.location.bbox.near_point.x - self.width,
-                                           target.location.bbox.near_point.y,
-                                           target.location.bbox.near_point.z)
-
-        set=Operation("set", Entity(target.id, location=new_loc), to=target)
+        set=Operation("set", Entity(target.id, bbox=new_bbox), to=target)
         res.append(set)
 
         slice_loc = target.location.copy()
 
-        slice_loc.bbox.far_point = Vector3D(0,
+        slice_loc.bbox.near_point = Vector3D(0,
+                                             slice_loc.bbox.near_point.y,
+                                             slice_loc.bbox.near_point.z)
+        slice_loc.bbox.far_point = Vector3D(self.width,
                                             slice_loc.bbox.far_point.y,
                                             slice_loc.bbox.far_point.z)
 
-        slice_loc.bbox.near_point = Vector3D(self.width,
-                                             slice_loc.bbox.near_point.y,
-                                             slice_loc.bbox.near_point.z)
         slice_loc.orientation = target.location.orientation
 
         create=Operation("create", Entity(name='wood',type='wood',location=slice_loc), to=target)
