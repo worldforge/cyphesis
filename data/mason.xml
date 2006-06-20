@@ -1583,6 +1583,17 @@
 
   <map>
     <map name="attributes">
+    </map>
+    <string name="description">base class for solid materials</string>
+    <string name="id">material</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-6</float>
@@ -2236,6 +2247,16 @@
   </map>
 
   <map>
+    <map name="attributes">
+    </map>
+    <string name="id">stone</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>material</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">strike</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -2595,6 +2616,20 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">wood</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>material</string>
     </list>
   </map>
 
