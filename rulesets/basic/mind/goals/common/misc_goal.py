@@ -671,12 +671,16 @@ class hireling_transaction(transaction):
         if employer:
             print 'Already employed by ' + employer
             return Operation("talk",Entity(say="Sorry, I am currently working for someone else."))
+        who=me.map.get(self.who)
+        if not who:
+            print "Who am I talking to"
+            return
         if self.payed < self.cost:
-            return Operation("talk",Entity(say=self.who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
+            return Operation("talk",Entity(say=who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
         res=Message()
-        me.add_knowledge('employer', me.id, self.who.id)
+        me.add_knowledge('employer', me.id, who.id)
         # FIXME add the new goal
-        goal = accompany(self.who.id)
+        goal = accompany(who.id)
         me.goals.insert(0,goal)
         res.append(Operation("talk",Entity(say="I will help you out until sundown today.")))
         self.irrelevant=1

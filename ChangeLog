@@ -1,5 +1,11 @@
 2006-06-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/goals/common/misc_goal.py: Fix some issues
+	  with code that assumed op.from and op.to where entities rather
+	  than entity IDs.
+
+2006-06-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Don't forward ops to the mind blindly if
 	  we don't know what they are.
 
