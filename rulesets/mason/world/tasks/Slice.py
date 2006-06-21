@@ -17,7 +17,7 @@ class Slice(Thing):
     """ A proof of concept task for sharpening a log into a stake."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        print "Slice.cut"
+        # print "Slice.cut"
 
         if len(op) < 1:
             sys.stderr.write("Slice task has no target in cut op")
@@ -33,17 +33,17 @@ class Slice(Thing):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Slice.tick"
+        # print "Slice.tick"
 
         target=self.character.world.get_object(self.target)
         if not target:
-            print "Target is no more"
+            # print "Target is no more"
             self.irrelevant()
             return
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
-            print "Too far away"
+            # print "Too far away"
             return self.next_tick(1.75)
         else:
             self.progress += self.rate * 1.75
@@ -51,12 +51,12 @@ class Slice(Thing):
         self.rate = 0.1 / 1.75
 
         if self.progress < 1:
-            print "Not done yet"
+            # print "Not done yet"
             return self.next_tick(1.75)
 
         width = target.location.bbox.far_point.x - target.location.bbox.near_point.x
         if width <= self.width:
-            print "Nothing more to cut"
+            # print "Nothing more to cut"
             self.irrelevant()
             return
 
@@ -74,16 +74,21 @@ class Slice(Thing):
 
         slice_loc = target.location.copy()
 
-        slice_loc.bbox.near_point = Vector3D(0,
-                                             slice_loc.bbox.near_point.y,
-                                             slice_loc.bbox.near_point.z)
-        slice_loc.bbox.far_point = Vector3D(self.width,
-                                            slice_loc.bbox.far_point.y,
-                                            slice_loc.bbox.far_point.z)
+        pos_offset = Vector3D(target.location.bbox.far_point.x, 0, 0)
+        pos_offset.rotate(target.location.orientation)
+
+        slice_loc.coordinates = target.location.coordinates + pos_offset
+
+        slice_bbox = [0,
+                      target.location.bbox.near_point.y,
+                      target.location.bbox.near_point.z,
+                      self.width,
+                      target.location.bbox.far_point.y,
+                      target.location.bbox.far_point.z]
 
         slice_loc.orientation = target.location.orientation
 
-        create=Operation("create", Entity(name='wood',type='wood',location=slice_loc), to=target)
+        create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 
         if width - self.width > self.width:
