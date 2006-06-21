@@ -1,3 +1,11 @@
+Add a task to cut things in half, to be used on materials.
+Take a unit vector vertically upwards, transform by the entities transform
+and use the resulting vector to determine which way is up. This axis and
+the axis which closely matches the direction of the acting entity to the
+centre of the material will be used. The position of the cut is defined by
+the position clicked on, and the width of the cut should be defined in the
+script somewhere.
+
 Add trenching rule, and perhaps think about a generic task that can allow
 someone to help someone else do the task they are doing.
 
