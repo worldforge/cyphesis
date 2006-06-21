@@ -1,5 +1,11 @@
 2006-06-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/debug.h, common/debug.cpp: Add interface template for a
+	  function which dumps a representation of a type to stdout, and
+	  add a specialisation for dumping Atlas message data.
+
+2006-06-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Slice.py: Fix shape of boards, and add
 	  appropriate position offset.
 

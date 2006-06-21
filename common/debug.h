@@ -20,4 +20,7 @@
 
 #define debug(prg) { if (debug_flag) { prg } }
 
+template <typename T>
+void debug_dump(const T & t);
+
 #endif // COMMON_DEBUG_H

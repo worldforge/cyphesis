@@ -16,7 +16,8 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      prefix.c prefix.h \
 		      newid.cpp id.cpp id.h \
 		      log.cpp log.h \
-		      debug.h random.h nls.h \
+		      debug.cpp debug.h \
+		      random.h nls.h \
 		      compose.hpp \
 		      types.h type_utils.h op_switch.h \
 		      operations.cpp \
