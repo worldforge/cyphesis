@@ -1,4 +1,6 @@
-Set op from mind when handing over coins for a transaction. Why?
+Combine and Divide need to ensure the atomicity of the operation, ensuring
+that if creation fails, the whole thing fails. Without its not safe. Should
+either allow changes to the original entities to be specified?
 
 Add a task to cut things in half, to be used on materials.
 Take a unit vector vertically upwards, transform by the entities transform
