@@ -1,5 +1,15 @@
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Add check for recent gcc versions, and turn of
+	  strict aliasing on versions which have trouble with python
+	  pointer casting.
+
+	* common/PropertyFactory_impl.h, server/CorePropertyManager.cpp:
+	  Return safe values from function stubs to get rid of compiler
+	  warnings.
+
+2006-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Makefile.am: Add missing reference to header file.
 
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>

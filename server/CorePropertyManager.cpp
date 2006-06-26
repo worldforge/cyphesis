@@ -31,4 +31,5 @@ CorePropertyManager::~CorePropertyManager()
 
 int CorePropertyManager::addProperty(Entity * entity, const std::string & name)
 {
+    return -1;
 }

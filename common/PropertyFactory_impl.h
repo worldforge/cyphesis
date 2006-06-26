@@ -28,6 +28,7 @@ PropertyBase * PropertyBuilder<T>::newProperty()
     // Could be a template which inherits from its argument, and stores
     // the value, rather than just having a reference to it.
     // return new T();
+    return 0;
 }
 
 #endif // COMMON_PROPERTY_FACTORY_IMPL_H
