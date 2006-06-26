@@ -24,8 +24,8 @@
 
 #include "common/Database.h"
 
-#include <sigc++/bind.h>
-#include <sigc++/object_slot.h>
+#include <sigc++/adaptors/bind.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <sstream>
 

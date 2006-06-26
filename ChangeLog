@@ -1,5 +1,13 @@
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp, server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/EntityFactory.h,
+	  server/Persistor_impl.h, tools/cycmd.cpp: 
+	  Switch from using deprecated sigc++ 1.2 headers to the right
+	  sigc++ 2.0 equivalents.
+
+2006-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/DynamicProperty.cpp, common/DynamicProperty.h,
 	  common/DynamicProperty_impl.h: New property class for handling
 	  properties or attributes added on the fly which need to store the

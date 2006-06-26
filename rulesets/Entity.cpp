@@ -29,7 +29,7 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sigc++/object_slot.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <cassert>
 

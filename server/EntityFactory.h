@@ -21,8 +21,6 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <sigc++/object.h>
-
 class Entity;
 class Character;
 class Task;

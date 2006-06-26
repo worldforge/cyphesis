@@ -40,8 +40,6 @@
 
 #include <skstream/skstream_unix.h>
 
-#include <sigc++/object_slot.h>
-#include <sigc++/signal.h>
 #include <sigc++/connection.h>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h
