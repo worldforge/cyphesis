@@ -23,12 +23,7 @@
 template <class T>
 PropertyBase * PropertyBuilder<T>::newProperty()
 {
-    // Classic properties need a reference to the value they are handling
-    // at startup. Need a new dynamic property class to handle this.
-    // Could be a template which inherits from its argument, and stores
-    // the value, rather than just having a reference to it.
-    // return new T();
-    return 0;
+    return new T();
 }
 
 #endif // COMMON_PROPERTY_FACTORY_IMPL_H

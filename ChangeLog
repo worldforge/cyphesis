@@ -1,5 +1,16 @@
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/DynamicProperty.cpp, common/DynamicProperty.h,
+	  common/DynamicProperty_impl.h: New property class for handling
+	  properties or attributes added on the fly which need to store the
+	  value.
+
+	* common/PropertyFactory.cpp, common/PropertyFactory_impl.h,
+	  server/CorePropertyManager.cpp: Use DynamicProperty in the
+	  property factories for properties created on the fly.
+
+2006-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Add check for recent gcc versions, and turn of
 	  strict aliasing on versions which have trouble with python
 	  pointer casting.

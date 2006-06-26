@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "PropertyFactory_impl.h"
+#ifndef COMMON_DYNAMIC_PROPERTY_IMPL_H
+#define COMMON_DYNAMIC_PROPERTY_IMPL_H
 
 #include "DynamicProperty.h"
 
-PropertyFactory::~PropertyFactory()
+template <typename T>
+DynamicProperty<T>::DynamicProperty() : Property<T>(m_store, 0)
 {
 }
 
-template class PropertyBuilder<DynamicProperty<double> >;
+#endif // COMMON_DYNAMIC_PROPERTY_IMPL_H

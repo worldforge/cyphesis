@@ -18,11 +18,11 @@
 #include "CorePropertyManager.h"
 
 #include "common/PropertyFactory.h"
-#include "common/Property.h"
+#include "common/DynamicProperty.h"
 
 CorePropertyManager::CorePropertyManager()
 {
-    m_propertyFactories["status"] = new PropertyBuilder<Property<double> >;
+    m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
 }
 
 CorePropertyManager::~CorePropertyManager()

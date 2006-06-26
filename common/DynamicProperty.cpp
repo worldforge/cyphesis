@@ -15,12 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "PropertyFactory_impl.h"
+#include "DynamicProperty_impl.h"
 
-#include "DynamicProperty.h"
-
-PropertyFactory::~PropertyFactory()
-{
-}
-
-template class PropertyBuilder<DynamicProperty<double> >;
+template class DynamicProperty<double>;
