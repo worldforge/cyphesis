@@ -6,15 +6,10 @@ from physics import *
 from Quaternion import Quaternion
 from Vector3D import Vector3D
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
-
 from world.objects.Thing import Thing
 
 class Slice(Thing):
-    """ A proof of concept task for sharpening a log into a stake."""
+    """ A task for cutting a log into boards."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Slice.cut"
@@ -25,9 +20,6 @@ class Slice(Thing):
         # FIXME Use weak references, once we have them
         self.target = op[0].id
         self.tool = op.to
-
-        self.progress = 0
-        self.rate = 0.1 / 1.75
 
         self.width = 0.2
 
