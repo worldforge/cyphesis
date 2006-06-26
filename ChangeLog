@@ -1,5 +1,9 @@
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Makefile.am: Add missing reference to header file.
+
+2006-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/PropertyFactory.cpp, common/PropertyFactory.h,
 	  common/PropertyFactory_impl.h, common/PropertyManager.cpp,
 	  common/PropertyManager.h: Add new classes to automate the

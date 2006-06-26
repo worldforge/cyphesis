@@ -29,6 +29,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      inheritance.cpp custom.cpp inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
 		      PropertyFactory.cpp PropertyFactory.h \
+		      PropertyFactory_impl.h \
 		      PropertyManager.cpp PropertyManager.h \
 		      BaseEntity.cpp BaseEntity.h \
 		      OOGThing.cpp OOGThing.h \
