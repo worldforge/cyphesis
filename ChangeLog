@@ -1,5 +1,10 @@
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Bisect.py: Starting point for task
+	  for cutting chunks of material in half.
+
+2006-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Slice.py: Clean out some unused code.
 
 2006-06-21  Al Riddoch  <alriddoch@zepler.org>
