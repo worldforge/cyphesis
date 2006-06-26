@@ -1,5 +1,16 @@
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/PropertyFactory.cpp, common/PropertyFactory.h,
+	  common/PropertyFactory_impl.h, common/PropertyManager.cpp,
+	  common/PropertyManager.h: Add new classes to automate the
+	  creation of property objects for known property types.
+
+	* server/CorePropertyManager.cpp, server/CorePropertyManager.h:
+	  Manager object that will coordinate creating properties
+	  when they are added to entities.
+
+2006-06-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Bisect.py: Starting point for task
 	  for cutting chunks of material in half.
 
