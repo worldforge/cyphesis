@@ -1,3 +1,6 @@
+World bounding box seems to be having very strange values, when it should
+arguably have none.
+
 Combine and Divide need to ensure the atomicity of the operation, ensuring
 that if creation fails, the whole thing fails. Without its not safe. Should
 either allow changes to the original entities to be specified?
