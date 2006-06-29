@@ -19,6 +19,7 @@
 
 #include "rulesets/LineProperty.h"
 
+#include "common/types.h"
 #include "common/PropertyFactory_impl.h"
 #include "common/DynamicProperty_impl.h"
 
@@ -28,6 +29,8 @@ CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
     m_propertyFactories["coords"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
+    m_propertyFactories["start_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
+    m_propertyFactories["end_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
 }
 
 CorePropertyManager::~CorePropertyManager()

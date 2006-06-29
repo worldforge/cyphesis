@@ -1,5 +1,10 @@
 2006-06-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CorePropertyManager.cpp: Add properties for START_INTERSECTIONS
+	  and END_INTERSECTIONS.
+
+2006-06-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/DynamicProperty.h, common/DynamicProperty_impl.h:
 	  Add a second dynamic property template which can wrap any
 	  property class, not just instances of Property<>.
