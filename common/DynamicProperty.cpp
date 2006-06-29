@@ -16,5 +16,3 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "DynamicProperty_impl.h"
-
-template class DynamicProperty<double>;

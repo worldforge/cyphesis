@@ -22,5 +22,3 @@
 PropertyFactory::~PropertyFactory()
 {
 }
-
-template class PropertyBuilder<DynamicProperty<double> >;

@@ -1,3 +1,15 @@
+2006-06-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/DynamicProperty.h, common/DynamicProperty_impl.h:
+	  Add a second dynamic property template which can wrap any
+	  property class, not just instances of Property<>.
+
+	* server/CorePropertyManager.cpp: Install a property factory for
+	  COORDS, to handle the coordinates in a line.
+
+	* common/DynamicProperty.cpp, common/PropertyFactory.cpp: Remove
+	  unnecessary template instanciations.
+
 2006-06-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp, server/Account.cpp, server/Admin.cpp,

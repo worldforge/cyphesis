@@ -17,12 +17,17 @@
 
 #include "CorePropertyManager.h"
 
-#include "common/PropertyFactory.h"
-#include "common/DynamicProperty.h"
+#include "rulesets/LineProperty.h"
+
+#include "common/PropertyFactory_impl.h"
+#include "common/DynamicProperty_impl.h"
+
+template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
+    m_propertyFactories["coords"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 }
 
 CorePropertyManager::~CorePropertyManager()

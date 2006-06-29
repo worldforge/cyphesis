@@ -30,4 +30,14 @@ class DynamicProperty : public Property<T> {
     explicit DynamicProperty();
 };
 
+template <class P, typename T>
+class Dynamic : public P {
+  protected:
+    T m_store;
+  public:
+    // No flags for the time being, though once we work on persistence again
+    // it may be required.
+    explicit Dynamic();
+};
+
 #endif // COMMON_DYNAMIC_PROPERTY_H

@@ -25,4 +25,9 @@ DynamicProperty<T>::DynamicProperty() : Property<T>(m_store, 0)
 {
 }
 
+template <class P, typename T>
+Dynamic<P, T>::Dynamic() : P(m_store, 0)
+{
+}
+
 #endif // COMMON_DYNAMIC_PROPERTY_IMPL_H
