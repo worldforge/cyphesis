@@ -71,9 +71,11 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
     installFactory("game_entity", "world", new ForbiddenThingFactory<World>());
     PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
     installFactory("game_entity", "thing", tft);
-    installFactory("thing", "feature", tft->duplicateFactory());
-    installFactory("feature", "line", new PersistantThingFactory<Line>());
-    installFactory("feature", "area", new PersistantThingFactory<Area>());
+    // FIXME #1 No longer need these three once Line and Area are removed from
+    // the code.
+    // installFactory("thing", "feature", tft->duplicateFactory());
+    // installFactory("feature", "line", new PersistantThingFactory<Line>());
+    // installFactory("feature", "area", new PersistantThingFactory<Area>());
     installFactory("thing", "character",
                    new PersistantThingFactory<Character>());
     installFactory("character", "creator",

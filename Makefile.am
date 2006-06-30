@@ -2,7 +2,7 @@
 SUBDIRS = physics common modules rulesets server client data tools tests man
 
 docdir = $(datadir)/doc/cyphesis-$(VERSION)
-dist_doc_DATA = README COPYING AUTHORS THANKS NEWS
+dist_doc_DATA = README COPYING AUTHORS THANKS NEWS FIXME
 
 rulesetdir = $(datadir)/cyphesis/rulesets
 

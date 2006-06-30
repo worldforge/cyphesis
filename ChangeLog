@@ -1,3 +1,14 @@
+2006-06-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* FIXME, Makefile.am: Add new FIXME file which documents FIXMEs in
+	  the code.
+
+	* server/EntityFactory.cpp: Remove the terrain feature classes
+	  implemented as hard coded classes.
+
+	* data/basic.xml: Add the terrain feature classes as soft data
+	  defined classes.
+
 2006-06-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CorePropertyManager.cpp: Add properties for START_INTERSECTIONS

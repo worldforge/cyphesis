@@ -12,6 +12,16 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">area</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>feature</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">arrow</string>
     <string name="objtype">class</string>
     <list name="parents">
@@ -164,6 +174,16 @@
 
   <map>
     <map name="attributes">
+    </map>
+    <string name="id">feature</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
@@ -231,6 +251,16 @@
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House</string>
     </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">line</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>feature</string>
+    </list>
   </map>
 
   <map>

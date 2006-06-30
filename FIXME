@@ -1,0 +1,5 @@
+#1  2006-06-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp:74 Commented out code for three hard coded
+	  entity classes should be removed once Line and Area are removed
+	  from the code.
