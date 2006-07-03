@@ -20,12 +20,6 @@
 
 #include "common/PropertyManager.h"
 
-#include <map>
-
-class PropertyFactory;
-
-typedef std::map<std::string, PropertyFactory *> PropertyFactoryDict;
-
 class ClientPropertyManager : public PropertyManager {
   public:
     ClientPropertyManager();

@@ -26,7 +26,7 @@ ClientPropertyManager::~ClientPropertyManager()
 }
 
 PropertyBase * ClientPropertyManager::addProperty(Entity * entity,
-                                                const std::string & name)
+                                                  const std::string & name)
 {
     return 0;
 }
