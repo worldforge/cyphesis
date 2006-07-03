@@ -173,9 +173,9 @@ class Entity : public BaseEntity {
         return m_attributes;
     }
 
-    bool has(const std::string &) const;
-    bool get(const std::string &, Atlas::Message::Element &) const;
-    void set(const std::string &, const Atlas::Message::Element &);
+    bool hasAttr(const std::string &) const;
+    bool getAttr(const std::string &, Atlas::Message::Element &) const;
+    void setAttr(const std::string &, const Atlas::Message::Element &);
 
     PropertyBase * getProperty(const std::string &) const;
 

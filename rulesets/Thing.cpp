@@ -261,9 +261,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     std::string mode;
 
-    if (has("mode")) {
+    if (hasAttr("mode")) {
         Element mode_attr;
-        get("mode", mode_attr);
+        getAttr("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
@@ -281,7 +281,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             log(ERROR, "Non string mode set in Thing::MoveOperation");
         } else {
             // Update the mode
-            set("mode", attr_mode);
+            setAttr("mode", attr_mode);
             m_motion->setMode(attr_mode.String());
             mode = attr_mode.String();
         }
@@ -508,9 +508,9 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     std::string mode;
 
-    if (has("mode")) {
+    if (hasAttr("mode")) {
         Element mode_attr;
-        get("mode", mode_attr);
+        getAttr("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {

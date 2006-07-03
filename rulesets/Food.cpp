@@ -79,7 +79,7 @@ void Food::BurnOperation(const Operation & op, OpVector & res)
     }
     double cooked = 0;
     Element cooked_attr;
-    if (get("cooked", cooked_attr) && cooked_attr.isNum()) {
+    if (getAttr("cooked", cooked_attr) && cooked_attr.isNum()) {
         cooked = cooked_attr.asNum();
     }
     const Root & arg = op->getArgs().front();

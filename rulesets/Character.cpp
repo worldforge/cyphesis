@@ -643,7 +643,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     std::string op_type;
 
     // Determine the operations this tool supports
-    if (!tool->get("operations", toolOpAttr)) {
+    if (!tool->getAttr("operations", toolOpAttr)) {
         log(NOTICE, "Character::mindUseOp Attempt to use something not a tool");
         return;
     }

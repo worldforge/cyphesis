@@ -131,7 +131,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
     }
     Entity * mind = self->m_mind;
     Element attr;
-    if (mind->get(name, attr)) {
+    if (mind->getAttr(name, attr)) {
         return MessageElement_asPyObject(attr);
     }
     return Py_FindMethod(Mind_methods, (PyObject *)self, name);
@@ -170,7 +170,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
     // FIXME It may now be possible to accept map and list attributes.
     Element obj = PyObject_asMessageElement(v);
     if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
-        thing->set(name, obj);
+        thing->setAttr(name, obj);
         return 0;
     }
 #if 0

@@ -99,7 +99,7 @@ Entity::~Entity()
 /// @param name Name of attribute to be checked
 /// @return trye if this entity has an attribute with the name given
 /// false otherwise
-bool Entity::has(const std::string & name) const
+bool Entity::hasAttr(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -119,7 +119,7 @@ bool Entity::has(const std::string & name) const
 /// @param attr Reference used to store value
 /// @return trye if this entity has an attribute with the name given
 /// false otherwise
-bool Entity::get(const std::string & name, Element & attr) const
+bool Entity::getAttr(const std::string & name, Element & attr) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -137,7 +137,7 @@ bool Entity::get(const std::string & name, Element & attr) const
 ///
 /// @param name Name of attribute to be changed
 /// @param attr Value to be stored
-void Entity::set(const std::string & name, const Element & attr)
+void Entity::setAttr(const std::string & name, const Element & attr)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -281,7 +281,7 @@ void Entity::merge(const MapType & ent)
     for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
         const std::string & key = I->first;
         if (imm.find(key) != imm.end()) continue;
-        set(key, I->second);
+        setAttr(key, I->second);
     }
 }
 

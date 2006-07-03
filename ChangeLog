@@ -1,5 +1,14 @@
 2006-07-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/Py_CreatorClient.cpp, rulesets/Character.cpp,
+	  rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Food.cpp,
+	  rulesets/Pedestrian.cpp, rulesets/Plant.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Thing.cpp, server/WorldRouter.cpp:
+	  Rename Entity members get(), set() and has() to getAttr(), setAttr()
+	  and hasAttr().
+
+2006-07-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientPropertyManager.cpp, client/ClientPropertyManager.h:
 	  A new class as a dummy property manager for the client side.
 	  Never creates property objects.

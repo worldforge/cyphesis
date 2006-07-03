@@ -119,9 +119,9 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
 
     std::string mode("standing");
 
-    if (m_body.has("mode")) {
+    if (m_body.hasAttr("mode")) {
         Element mode_attr;
-        m_body.get("mode", mode_attr);
+        m_body.getAttr("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {

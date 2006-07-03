@@ -225,7 +225,7 @@ static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
     }
     Entity * thing = self->m_mind;
     Element attr;
-    if (!thing->get(name, attr)) {
+    if (!thing->getAttr(name, attr)) {
         return Py_FindMethod(CreatorClient_methods, (PyObject *)self, name);
     }
     PyObject * ret = MessageElement_asPyObject(attr);
@@ -270,7 +270,7 @@ static int CreatorClient_setattr(PyCreatorClient *self, char *name, PyObject *v)
     //}
     Element obj = PyObject_asMessageElement(v);
     if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
-        thing->set(name, obj);
+        thing->setAttr(name, obj);
         return 0;
     }
     // If we get here, then the attribute is not Atlas compatable, so we

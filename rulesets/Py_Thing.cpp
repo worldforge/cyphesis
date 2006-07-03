@@ -291,7 +291,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         if (obj.isList()) {
             log(NOTICE, "Setting a list attribute on an entity from a script");
         }
-        entity->set(name, obj);
+        entity->setAttr(name, obj);
         return 0;
     }
     // FIXME In fact it seems that nothing currently hits this bit, so

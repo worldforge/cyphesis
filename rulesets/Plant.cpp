@@ -103,7 +103,7 @@ void Plant::ChopOperation(const Operation & op, OpVector & res)
         return;
     }
     Element mode;
-    if (get("mode", mode) && mode.isString() && mode.String() == "felled") {
+    if (getAttr("mode", mode) && mode.isString() && mode.String() == "felled") {
         debug(std::cout << "Plant is already down" << std::endl << std::flush;);
         Set set_op;
         Anonymous set_arg;
@@ -209,7 +209,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         double new_mass = m_mass + m_nourishment;
         m_nourishment = 0;
         Element maxmass_attr;
-        if (get("maxmass", maxmass_attr)) {
+        if (getAttr("maxmass", maxmass_attr)) {
             if (maxmass_attr.isNum()) {
                 new_mass = std::min(new_mass, maxmass_attr.asNum());
             }

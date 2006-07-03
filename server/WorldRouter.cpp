@@ -251,13 +251,13 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     ent->m_location.update(getTime());
     // FIXME
     std::string mode;
-    if (ent->has("mode")) {
+    if (ent->hasAttr("mode")) {
         Element mode_attr;
-        ent->get("mode", mode_attr);
+        ent->getAttr("mode", mode_attr);
         if (mode_attr.isString()) {
             mode = mode_attr.String();
             if (mode == "relative") {
-                ent->set("mode", "fixed");
+                ent->setAttr("mode", "fixed");
             }
         } else {
             log(ERROR, String::compose("Mode on entity is a %1 in WorldRouter::addEntity", Element::typeName(mode_attr.getType())).c_str());
