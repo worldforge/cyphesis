@@ -104,14 +104,14 @@ int main(int argc, char ** argv)
 
         Entity * test_ent = EntityFactory::instance()->newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
-        assert(!test_ent->get("funky", val));
+        assert(!test_ent->getAttr("funky", val));
         assert(val.isNone());
 
         attributes->setAttr("funky", "true");
 
         test_ent = EntityFactory::instance()->newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -137,7 +137,7 @@ int main(int argc, char ** argv)
         assert(test_ent != 0);
         // Check the created entity does not have the attribute values we
         // will be testing later
-        assert(!test_ent->get("funky", val));
+        assert(!test_ent->getAttr("funky", val));
         assert(val.isNone());
 
         // Set a test attribute
@@ -147,7 +147,7 @@ int main(int argc, char ** argv)
         // attribute value
         test_ent = entity_factory.newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -203,7 +203,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -213,7 +213,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute described when the
         // custom type was installed.
-        assert(test_ent->get("test_custom_type_attr", val));
+        assert(test_ent->getAttr("test_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_value");
 
@@ -272,7 +272,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -282,7 +282,7 @@ int main(int argc, char ** argv)
 
         // Check the instance of the second custom type has the attribute
         // described when the first custom type was installed.
-        assert(test_ent->get("test_custom_type_attr", val));
+        assert(test_ent->getAttr("test_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_value");
 
@@ -292,7 +292,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute described when the
         // second custom type was installed
-        assert(test_ent->get("test_custom_inherited_type_attr", val));
+        assert(test_ent->getAttr("test_custom_inherited_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_inherited_value");
 
@@ -352,9 +352,9 @@ int main(int argc, char ** argv)
         assert(val.isNone());
 
         // Make sure test nonexistant attribute isn't present
-        assert(!test_ent->get("nonexistant", val));
+        assert(!test_ent->getAttr("nonexistant", val));
         // Make sure nonexistant attribute isn't present
-        assert(!test_ent->get("nonexistant_attribute", val));
+        assert(!test_ent->getAttr("nonexistant_attribute", val));
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -362,7 +362,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -372,7 +372,7 @@ int main(int argc, char ** argv)
 
         // Check the instance of the second custom type has the attribute
         // described when the first custom type was installed.
-        assert(test_ent->get("test_custom_type_attr", val));
+        assert(test_ent->getAttr("test_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_value");
 
@@ -382,7 +382,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute described when the
         // second custom type was installed
-        assert(!test_ent->get("test_custom_inherited_type_attr", val));
+        assert(!test_ent->getAttr("test_custom_inherited_type_attr", val));
 
         // Modify the first custom type removing its custom attribute
         {
@@ -415,7 +415,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -424,7 +424,7 @@ int main(int argc, char ** argv)
         assert(val.isNone());
 
         // Check the custom type no longer has the custom attribute
-        assert(!test_ent->get("test_custom_type_attr", val));
+        assert(!test_ent->getAttr("test_custom_type_attr", val));
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
@@ -451,9 +451,9 @@ int main(int argc, char ** argv)
         assert(val.isNone());
 
         // Make sure test nonexistant attribute isn't present
-        assert(!test_ent->get("nonexistant", val));
+        assert(!test_ent->getAttr("nonexistant", val));
         // Make sure nonexistant attribute isn't present
-        assert(!test_ent->get("nonexistant_attribute", val));
+        assert(!test_ent->getAttr("nonexistant_attribute", val));
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -461,7 +461,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -471,7 +471,7 @@ int main(int argc, char ** argv)
 
         // Check the instance of the second custom type has the attribute
         // described when the first custom type was installed.
-        assert(!test_ent->get("test_custom_type_attr", val));
+        assert(!test_ent->getAttr("test_custom_type_attr", val));
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -479,7 +479,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute described when the
         // second custom type was installed
-        assert(!test_ent->get("test_custom_inherited_type_attr", val));
+        assert(!test_ent->getAttr("test_custom_inherited_type_attr", val));
 
         // Add more custom attributes to the first type
         {
@@ -533,7 +533,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -542,11 +542,11 @@ int main(int argc, char ** argv)
         assert(val.isNone());
 
         // Check the custom type now has the custom attributes
-        assert(test_ent->get("test_custom_type_attr", val));
+        assert(test_ent->getAttr("test_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_value");
 
-        assert(test_ent->get("new_custom_type_attr", val));
+        assert(test_ent->getAttr("new_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "new_value");
 
@@ -582,9 +582,9 @@ int main(int argc, char ** argv)
         assert(val.isNone());
 
         // Make sure test nonexistant attribute isn't present
-        assert(!test_ent->get("nonexistant", val));
+        assert(!test_ent->getAttr("nonexistant", val));
         // Make sure nonexistant attribute isn't present
-        assert(!test_ent->get("nonexistant_attribute", val));
+        assert(!test_ent->getAttr("nonexistant_attribute", val));
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -592,7 +592,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type has the attribute we passed in when creating
         // the instance.
-        assert(test_ent->get("funky", val));
+        assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
@@ -602,11 +602,11 @@ int main(int argc, char ** argv)
 
         // Check the instance of the second custom type has the attribute
         // described when the first custom type was installed.
-        assert(test_ent->get("test_custom_type_attr", val));
+        assert(test_ent->getAttr("test_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_value");
 
-        assert(test_ent->get("new_custom_type_attr", val));
+        assert(test_ent->getAttr("new_custom_type_attr", val));
         assert(val.isString());
         assert(val.String() == "new_value");
 
@@ -616,7 +616,7 @@ int main(int argc, char ** argv)
 
         // Check the custom type no longer has the attribute described when the
         // second custom type was installed
-        assert(!test_ent->get("test_custom_inherited_type_attr", val));
+        assert(!test_ent->getAttr("test_custom_inherited_type_attr", val));
 
     }
 }

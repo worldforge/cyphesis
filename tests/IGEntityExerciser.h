@@ -19,13 +19,14 @@
 #define TESTS_IG_ENTITY_EXERCISER_H
 
 #include "EntityExerciser.h"
+#include "TestPropertyManager.h"
 
 #include <Atlas/Message/Element.h>
 
 template <class EntityType>
 class IGEntityExerciser : public EntityExerciser<EntityType> {
   public:
-    explicit IGEntityExerciser(EntityType & e) : EntityExerciser<EntityType>(e) { }
+    explicit IGEntityExerciser(EntityType & e) : EntityExerciser<EntityType>(e) { new TestPropertyManager; }
 
     bool checkAttributes(const std::set<std::string> & attr_names);
     bool checkProperties(const std::set<std::string> & prop_names);
@@ -38,7 +39,7 @@ inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::s
     std::set<std::string>::const_iterator I = attr_names.begin();
     std::set<std::string>::const_iterator Iend = attr_names.end();
     for (; I != Iend; ++I) {
-        if (!this->m_ent.get(*I, null)) {
+        if (!this->m_ent.getAttr(*I, null)) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
                       << std::endl << std::flush;
             return false;

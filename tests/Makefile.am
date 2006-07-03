@@ -114,15 +114,7 @@ distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
-                     $(top_builddir)/common/inheritance.o \
-                     $(top_builddir)/common/custom.o \
-                     $(top_builddir)/common/operations.o \
-                     $(top_builddir)/common/serialno.o \
-                     $(top_builddir)/common/log.o \
-                     $(top_builddir)/common/prefix.o \
-                     $(top_builddir)/common/globals.o \
-                     $(top_builddir)/common/Property.o \
-                     $(top_builddir)/common/BaseEntity.o \
+                     $(top_builddir)/common/libcommon.a \
                      $(MATH_LIBS)
 
 # MODULE_TESTS
@@ -133,15 +125,7 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/Script.o \
-                     $(top_builddir)/common/inheritance.o \
-                     $(top_builddir)/common/BaseEntity.o \
-                     $(top_builddir)/common/log.o \
-                     $(top_builddir)/common/prefix.o \
-                     $(top_builddir)/common/globals.o \
-                     $(top_builddir)/common/serialno.o \
-                     $(top_builddir)/common/custom.o \
-                     $(top_builddir)/common/Property.o \
-                     $(top_builddir)/common/operations.o \
+                     $(top_builddir)/common/libcommon.a \
                      $(MATH_LIBS)
 
 WorldTimetest_SOURCES = WorldTimetest.cpp
@@ -150,24 +134,16 @@ WorldTimetest_LDADD = $(top_builddir)/modules/WorldTime.o \
 
 # RULESETS_TESTS
 
-Entitytest_SOURCES = Entitytest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/rulesets/Entity.o \
                    $(top_builddir)/rulesets/EntityProperties.o \
                    $(top_builddir)/rulesets/Script.o \
-                   $(top_builddir)/common/inheritance.o \
-                   $(top_builddir)/common/Property.o \
-                   $(top_builddir)/common/BaseEntity.o \
-                   $(top_builddir)/common/log.o \
-                   $(top_builddir)/common/prefix.o \
-                   $(top_builddir)/common/globals.o \
-                   $(top_builddir)/common/serialno.o \
-                   $(top_builddir)/common/custom.o \
-                   $(top_builddir)/common/operations.o \
+                   $(top_builddir)/common/libcommon.a \
                    $(MATH_LIBS)
 
-Areatest_SOURCES = Areatest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Areatest_SOURCES = Areatest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/physics/libphysics.a \
@@ -177,21 +153,10 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/common/inheritance.o \
-                 $(top_builddir)/common/Property.o \
-                 $(top_builddir)/common/BaseEntity.o \
-                 $(top_builddir)/common/BaseWorld.o \
-                 $(top_builddir)/common/id.o \
-                 $(top_builddir)/common/log.o \
-                 $(top_builddir)/common/prefix.o \
-                 $(top_builddir)/common/globals.o \
-                 $(top_builddir)/common/serialno.o \
-                 $(top_builddir)/common/custom.o \
-                 $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/libcommon.a \
                  $(MATH_LIBS)
 
-Foodtest_SOURCES = Foodtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Foodtest_SOURCES = Foodtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/physics/libphysics.a \
@@ -201,21 +166,10 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/common/inheritance.o \
-                 $(top_builddir)/common/Property.o \
-                 $(top_builddir)/common/BaseEntity.o \
-                 $(top_builddir)/common/BaseWorld.o \
-                 $(top_builddir)/common/id.o \
-                 $(top_builddir)/common/log.o \
-                 $(top_builddir)/common/prefix.o \
-                 $(top_builddir)/common/globals.o \
-                 $(top_builddir)/common/serialno.o \
-                 $(top_builddir)/common/custom.o \
-                 $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/libcommon.a \
                  $(MATH_LIBS)
 
-Linetest_SOURCES = Linetest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Linetest_SOURCES = Linetest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/physics/libphysics.a \
@@ -226,21 +180,10 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/common/inheritance.o \
-                 $(top_builddir)/common/Property.o \
-                 $(top_builddir)/common/BaseEntity.o \
-                 $(top_builddir)/common/BaseWorld.o \
-                 $(top_builddir)/common/id.o \
-                 $(top_builddir)/common/log.o \
-                 $(top_builddir)/common/prefix.o \
-                 $(top_builddir)/common/globals.o \
-                 $(top_builddir)/common/serialno.o \
-                 $(top_builddir)/common/custom.o \
-                 $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/libcommon.a \
                  $(MATH_LIBS)
 
-Planttest_SOURCES = Planttest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/libphysics.a \
@@ -250,21 +193,10 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
-                  $(top_builddir)/common/inheritance.o \
-                  $(top_builddir)/common/Property.o \
-                  $(top_builddir)/common/BaseEntity.o \
-                  $(top_builddir)/common/BaseWorld.o \
-                  $(top_builddir)/common/id.o \
-                  $(top_builddir)/common/log.o \
-                  $(top_builddir)/common/prefix.o \
-                  $(top_builddir)/common/globals.o \
-                  $(top_builddir)/common/serialno.o \
-                  $(top_builddir)/common/custom.o \
-                  $(top_builddir)/common/operations.o \
-                  $(top_builddir)/common/const.o \
+                  $(top_builddir)/common/libcommon.a \
                   $(MATH_LIBS)
 
-Stackabletest_SOURCES = Stackabletest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/physics/libphysics.a \
@@ -274,21 +206,10 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
-                      $(top_builddir)/common/inheritance.o \
-                      $(top_builddir)/common/Property.o \
-                      $(top_builddir)/common/BaseEntity.o \
-                      $(top_builddir)/common/BaseWorld.o \
-                      $(top_builddir)/common/id.o \
-                      $(top_builddir)/common/log.o \
-                      $(top_builddir)/common/prefix.o \
-                      $(top_builddir)/common/globals.o \
-                      $(top_builddir)/common/serialno.o \
-                      $(top_builddir)/common/custom.o \
-                      $(top_builddir)/common/operations.o \
-                      $(top_builddir)/common/const.o \
+                      $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
-Structuretest_SOURCES = Structuretest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Structuretest_SOURCES = Structuretest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/physics/libphysics.a \
@@ -298,21 +219,10 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
-                      $(top_builddir)/common/inheritance.o \
-                      $(top_builddir)/common/Property.o \
-                      $(top_builddir)/common/BaseEntity.o \
-                      $(top_builddir)/common/BaseWorld.o \
-                      $(top_builddir)/common/id.o \
-                      $(top_builddir)/common/log.o \
-                      $(top_builddir)/common/prefix.o \
-                      $(top_builddir)/common/globals.o \
-                      $(top_builddir)/common/serialno.o \
-                      $(top_builddir)/common/custom.o \
-                      $(top_builddir)/common/operations.o \
-                      $(top_builddir)/common/const.o \
+                      $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
-Thingtest_SOURCES = Thingtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Thingtest_SOURCES = Thingtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/libphysics.a \
@@ -321,21 +231,10 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
-                  $(top_builddir)/common/inheritance.o \
-                  $(top_builddir)/common/Property.o \
-                  $(top_builddir)/common/BaseEntity.o \
-                  $(top_builddir)/common/BaseWorld.o \
-                  $(top_builddir)/common/id.o \
-                  $(top_builddir)/common/log.o \
-                  $(top_builddir)/common/prefix.o \
-                  $(top_builddir)/common/globals.o \
-                  $(top_builddir)/common/serialno.o \
-                  $(top_builddir)/common/custom.o \
-                  $(top_builddir)/common/operations.o \
-                  $(top_builddir)/common/const.o \
+                  $(top_builddir)/common/libcommon.a \
                   $(MATH_LIBS)
 
-Worldtest_SOURCES = Worldtest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
+Worldtest_SOURCES = Worldtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/physics/libphysics.a \
@@ -347,64 +246,28 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
-                  $(top_builddir)/common/inheritance.o \
-                  $(top_builddir)/common/Property.o \
-                  $(top_builddir)/common/BaseEntity.o \
-                  $(top_builddir)/common/id.o \
-                  $(top_builddir)/common/log.o \
-                  $(top_builddir)/common/prefix.o \
-                  $(top_builddir)/common/globals.o \
-                  $(top_builddir)/common/serialno.o \
-                  $(top_builddir)/common/custom.o \
-                  $(top_builddir)/common/operations.o \
-                  $(top_builddir)/common/OOGThing.o \
-                  $(top_builddir)/common/BaseWorld.o \
-                  $(top_builddir)/common/const.o \
+                  $(top_builddir)/common/libcommon.a \
                   $(TERRAIN_LIBS)
 
-Charactertest_SOURCES = Charactertest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Charactertest_SOURCES = Charactertest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Charactertest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                       $(top_builddir)/rulesets/librulesetentity.a \
                       $(top_builddir)/rulesets/librulesetmind.a \
                       $(top_builddir)/rulesets/librulesetbase.a \
                       $(top_builddir)/modules/libmodules.a \
                       $(top_builddir)/physics/libphysics.a \
-                      $(top_builddir)/common/inheritance.o \
-                      $(top_builddir)/common/Property.o \
-                      $(top_builddir)/common/BaseEntity.o \
-                      $(top_builddir)/common/id.o \
-                      $(top_builddir)/common/log.o \
-                      $(top_builddir)/common/prefix.o \
-                      $(top_builddir)/common/globals.o \
-                      $(top_builddir)/common/serialno.o \
-                      $(top_builddir)/common/custom.o \
-                      $(top_builddir)/common/operations.o \
-                      $(top_builddir)/common/OOGThing.o \
-                      $(top_builddir)/common/BaseWorld.o \
-                      $(top_builddir)/common/const.o \
+                      $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 Charactertest_LDFLAGS = -export-dynamic
 
-Creatortest_SOURCES = Creatortest.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
+Creatortest_SOURCES = Creatortest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                     $(top_builddir)/rulesets/librulesetentity.a \
                     $(top_builddir)/rulesets/librulesetmind.a \
                     $(top_builddir)/rulesets/librulesetbase.a \
                     $(top_builddir)/modules/libmodules.a \
                     $(top_builddir)/physics/libphysics.a \
-                    $(top_builddir)/common/inheritance.o \
-                    $(top_builddir)/common/Property.o \
-                    $(top_builddir)/common/BaseEntity.o \
-                    $(top_builddir)/common/id.o \
-                    $(top_builddir)/common/log.o \
-                    $(top_builddir)/common/prefix.o \
-                    $(top_builddir)/common/globals.o \
-                    $(top_builddir)/common/serialno.o \
-                    $(top_builddir)/common/custom.o \
-                    $(top_builddir)/common/operations.o \
-                    $(top_builddir)/common/OOGThing.o \
-                    $(top_builddir)/common/BaseWorld.o \
-                    $(top_builddir)/common/const.o \
+                    $(top_builddir)/common/libcommon.a \
                     $(MATH_LIBS)
 Creatortest_LDFLAGS = -export-dynamic
 
@@ -419,24 +282,13 @@ Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/Python_API.o \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/physics/libphysics.a \
-                 $(top_builddir)/common/inheritance.o \
-                 $(top_builddir)/common/Property.o \
-                 $(top_builddir)/common/BaseEntity.o \
-                 $(top_builddir)/common/id.o \
-                 $(top_builddir)/common/log.o \
-                 $(top_builddir)/common/prefix.o \
-                 $(top_builddir)/common/globals.o \
-                 $(top_builddir)/common/serialno.o \
-                 $(top_builddir)/common/custom.o \
-                 $(top_builddir)/common/operations.o \
-                 $(top_builddir)/common/OOGThing.o \
-                 $(top_builddir)/common/BaseWorld.o \
-                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/libcommon.a \
                  $(MATH_LIBS)
 Tasktest_LDFLAGS = -export-dynamic
 
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
+                          $(top_builddir)/server/CorePropertyManager.o \
                           $(top_builddir)/server/PersistantThingFactory.o \
                           $(top_builddir)/server/Persistor.o \
                           $(top_builddir)/server/Persistance.o \
@@ -461,24 +313,7 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/rulesets/librulesetbase.a \
                           $(top_builddir)/modules/libmodules.a \
                           $(top_builddir)/physics/libphysics.a \
-                          $(top_builddir)/common/AtlasFileLoader.o \
-                          $(top_builddir)/common/terrain_utils.o \
-                          $(top_builddir)/common/inheritance.o \
-                          $(top_builddir)/common/Property.o \
-                          $(top_builddir)/common/BaseEntity.o \
-                          $(top_builddir)/common/system.o \
-                          $(top_builddir)/common/id.o \
-                          $(top_builddir)/common/newid.o \
-                          $(top_builddir)/common/log.o \
-                          $(top_builddir)/common/prefix.o \
-                          $(top_builddir)/common/globals.o \
-                          $(top_builddir)/common/serialno.o \
-                          $(top_builddir)/common/custom.o \
-                          $(top_builddir)/common/operations.o \
-                          $(top_builddir)/common/OOGThing.o \
-                          $(top_builddir)/common/BaseWorld.o \
-                          $(top_builddir)/common/Database.o \
-                          $(top_builddir)/common/const.o \
+                          $(top_builddir)/common/libcommon.a \
                           $(TERRAIN_LIBS) $(NETWORK_LIBS)
 EntityFactorytest_LDFLAGS = -export-dynamic
 
