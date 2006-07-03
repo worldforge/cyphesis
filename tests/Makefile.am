@@ -134,7 +134,7 @@ WorldTimetest_LDADD = $(top_builddir)/modules/WorldTime.o \
 
 # RULESETS_TESTS
 
-Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
 Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/rulesets/Entity.o \

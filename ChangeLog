@@ -1,5 +1,9 @@
 2006-07-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Makefile.am: Add a missing header.
+
+2006-07-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/IGEntityExerciser.h, tests/TestPropertyManager.cpp,
 	  tests/TestPropertyManager.h: Add a dummy property manager, and
 	  install it before testing any IG entity classes.
