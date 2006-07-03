@@ -1,5 +1,9 @@
 2006-07-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* Release 0.5.8
+
+2006-07-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Makefile.am: Add a missing header.
 
 2006-07-03  Al Riddoch  <alriddoch@zepler.org>
@@ -434,7 +438,7 @@
 
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
-	* server/Connection.cpp; Fix the wrong dynamic cast.
+	* server/Connection.cpp: Fix the wrong dynamic cast.
 
 2006-05-16  Al Riddoch  <alriddoch@zepler.org>
 
