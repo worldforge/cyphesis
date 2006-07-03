@@ -29,4 +29,5 @@ PropertyManager::PropertyManager()
 
 PropertyManager::~PropertyManager()
 {
+   m_instance = 0;
 }

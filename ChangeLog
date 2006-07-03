@@ -1,5 +1,13 @@
 2006-07-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/PropertyManager.cpp: When the PropertyManager is deleted,
+	  set the instance variable to 0.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h: Add a destructor
+	  so the property manager can be deleted at shutdown.
+
+2006-07-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientPropertyManager.cpp, client/ClientPropertyManager.h:
 	  Fix formatting and remove obsolete typedefs.
 

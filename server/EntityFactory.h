@@ -46,6 +46,7 @@ class EntityFactory {
   protected:
     typedef std::multimap<std::string, std::pair<std::string, Atlas::Message::MapType> > RuleWaitList;
     explicit EntityFactory(BaseWorld & w);
+    ~EntityFactory();
     static EntityFactory * m_instance;
 
     FactoryDict m_factories;

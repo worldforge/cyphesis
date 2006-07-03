@@ -93,6 +93,11 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
     new CorePropertyManager();
 }
 
+EntityFactory::~EntityFactory()
+{
+    delete PropertyManager::instance();
+}
+
 void EntityFactory::initWorld()
 {
     FactoryDict::const_iterator I = m_factories.find("world");
