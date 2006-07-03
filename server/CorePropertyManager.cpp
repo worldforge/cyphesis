@@ -18,10 +18,13 @@
 #include "CorePropertyManager.h"
 
 #include "rulesets/LineProperty.h"
+#include "rulesets/Entity.h"
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
 #include "common/DynamicProperty_impl.h"
+
+#include <iostream>
 
 template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 
@@ -29,15 +32,26 @@ CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
     m_propertyFactories["coords"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
+    m_propertyFactories["points"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
     m_propertyFactories["start_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
 }
 
 CorePropertyManager::~CorePropertyManager()
 {
+    // FIXME #2 Delete factories at shutdown.
 }
 
-int CorePropertyManager::addProperty(Entity * entity, const std::string & name)
+PropertyBase * CorePropertyManager::addProperty(Entity * entity,
+                                                const std::string & name)
 {
-    return -1;
+    assert(entity != 0);
+    assert(!name.empty());
+    PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
+    if (I == m_propertyFactories.end()) {
+        return 0;
+    }
+    std::cout << name << " property found. " << entity->getId() << std::endl << std::flush;
+    PropertyBase * p = I->second->newProperty();
+    return p;
 }

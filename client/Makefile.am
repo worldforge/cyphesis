@@ -39,6 +39,7 @@ cyclient_SOURCES = \
 		ObserverClient.cpp ObserverClient.h \
 		ClientConnection.cpp ClientConnection.h \
 		Py_CreatorClient.cpp Py_CreatorClient.h \
+		ClientPropertyManager.cpp ClientPropertyManager.h \
 		client.cpp
 
 cyclient_LDADD = $(top_builddir)/rulesets/librulesetbase.a \

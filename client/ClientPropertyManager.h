@@ -15,28 +15,23 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef COMMON_PROPERTY_MANAGER_H
-#define COMMON_PROPERTY_MANAGER_H
+#ifndef CLIENT_CLIENT_PROPERTY_MANAGER_H
+#define CLIENT_CLIENT_PROPERTY_MANAGER_H
 
-#include <string>
+#include "common/PropertyManager.h"
 
-class Entity;
-class PropertyBase;
+#include <map>
 
-class PropertyManager {
-  protected:
-    static PropertyManager * m_instance;
+class PropertyFactory;
 
-    PropertyManager();
+typedef std::map<std::string, PropertyFactory *> PropertyFactoryDict;
 
+class ClientPropertyManager : public PropertyManager {
   public:
-    virtual ~PropertyManager();
+    ClientPropertyManager();
+    virtual ~ClientPropertyManager();
 
-    virtual PropertyBase * addProperty(Entity *, const std::string & name) = 0;
-
-    static PropertyManager * instance() {
-        return m_instance;
-    }
+    virtual PropertyBase * addProperty(Entity *, const std::string & name);
 };
 
-#endif // COMMON_PROPERTY_MANAGER_H
+#endif // CLIENT_CLIENT_PROPERTY_MANAGER_H

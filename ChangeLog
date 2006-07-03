@@ -1,3 +1,25 @@
+2006-07-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientPropertyManager.cpp, client/ClientPropertyManager.h:
+	  A new class as a dummy property manager for the client side.
+	  Never creates property objects.
+
+	* client/client.cpp: Instantiate the client property manager
+	  during client initialisation.
+
+	* server/EntityFactory.cpp: Instatiate the server property manager
+	  during server intialisation.
+
+	* common/PropertyManager.h: Add the singletons accessor, and
+	  make the addProperty member return a pointer to the property.
+
+	* server/CorePropertyManager.h, server/CorePropertyManager.cpp:
+	  Implement creating properties for server side entity objects.
+
+	* rulesets/Entity.cpp: Use the property manager singleton to
+	  create properties if a new attribute is set which is not already
+	  a property, and its also not already a soft attribute.
+
 2006-06-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* FIXME, Makefile.am: Add new FIXME file which documents FIXMEs in

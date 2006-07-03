@@ -19,6 +19,7 @@
 
 #include "EntityFactory.h"
 
+#include "CorePropertyManager.h"
 #include "PersistantThingFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
@@ -88,6 +89,8 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
                    new PersistantThingFactory<Structure>());
 
     m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
+
+    new CorePropertyManager();
 }
 
 void EntityFactory::initWorld()

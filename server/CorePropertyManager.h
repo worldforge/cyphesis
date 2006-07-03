@@ -24,6 +24,8 @@
 
 class PropertyFactory;
 
+typedef std::map<std::string, PropertyFactory *> PropertyFactoryDict;
+
 class CorePropertyManager : public PropertyManager {
   protected:
     // Data structure for factories and the like?
@@ -32,7 +34,7 @@ class CorePropertyManager : public PropertyManager {
     CorePropertyManager();
     virtual ~CorePropertyManager();
 
-    virtual int addProperty(Entity * entity, const std::string & name);
+    virtual PropertyBase * addProperty(Entity *, const std::string & name);
 };
 
 #endif // SERVER_CORE_PROPERTY_MANAGER_H

@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "ObserverClient.h"
+#include "ClientPropertyManager.h"
 
 #include "rulesets/Python_API.h"
 
@@ -87,6 +88,7 @@ int main(int argc, char ** argv)
     init_python_api();
 
     try {
+        new ClientPropertyManager();
         ObserverClient & observer = *new ObserverClient();
         observer.setServer(server);
         if (observer.setup(account, password) != 0) {

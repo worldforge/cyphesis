@@ -23,6 +23,7 @@
 #include "common/debug.h"
 #include "common/inheritance.h"
 #include "common/Property.h"
+#include "common/PropertyManager.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -144,7 +145,22 @@ void Entity::set(const std::string & name, const Element & attr)
         m_update_flags |= I->second->flags();
         return;
     }
-    m_attributes[name] = attr;
+    MapType::iterator J = m_attributes.find(name);
+    if (J == m_attributes.end()) {
+        PropertyBase * prop = PropertyManager::instance()->addProperty(this,
+                                                                       name);
+        if (prop != 0) {
+            std::cout << "Inserting new property " << getId() << std::endl << std::flush;
+            m_properties[name] = prop;
+            m_update_flags |= prop->flags();
+        } else {
+            m_attributes[name] = attr;
+            m_update_flags |= a_attr;
+        }
+        return;
+    }
+    J->second = attr;
+    // m_attributes[name] = attr;
     m_update_flags |= a_attr;
 }
 

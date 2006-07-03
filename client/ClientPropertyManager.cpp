@@ -15,28 +15,18 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef COMMON_PROPERTY_MANAGER_H
-#define COMMON_PROPERTY_MANAGER_H
+#include "ClientPropertyManager.h"
 
-#include <string>
+ClientPropertyManager::ClientPropertyManager()
+{
+}
 
-class Entity;
-class PropertyBase;
+ClientPropertyManager::~ClientPropertyManager()
+{
+}
 
-class PropertyManager {
-  protected:
-    static PropertyManager * m_instance;
-
-    PropertyManager();
-
-  public:
-    virtual ~PropertyManager();
-
-    virtual PropertyBase * addProperty(Entity *, const std::string & name) = 0;
-
-    static PropertyManager * instance() {
-        return m_instance;
-    }
-};
-
-#endif // COMMON_PROPERTY_MANAGER_H
+PropertyBase * ClientPropertyManager::addProperty(Entity * entity,
+                                                const std::string & name)
+{
+    return 0;
+}
