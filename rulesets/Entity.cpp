@@ -150,7 +150,6 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         PropertyBase * prop = PropertyManager::instance()->addProperty(this,
                                                                        name);
         if (prop != 0) {
-            std::cout << "Inserting new property " << getId() << std::endl << std::flush;
             m_properties[name] = prop;
             m_update_flags |= prop->flags();
         } else {

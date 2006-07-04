@@ -24,7 +24,11 @@
 #include "common/PropertyFactory_impl.h"
 #include "common/DynamicProperty_impl.h"
 
+#include "common/debug.h"
+
 #include <iostream>
+
+static const bool debug_flag = false;
 
 template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 
@@ -51,7 +55,7 @@ PropertyBase * CorePropertyManager::addProperty(Entity * entity,
     if (I == m_propertyFactories.end()) {
         return 0;
     }
-    std::cout << name << " property found. " << entity->getId() << std::endl << std::flush;
+    debug(std::cout << name << " property found. " << entity->getId() << std::endl << std::flush;);
     PropertyBase * p = I->second->newProperty();
     return p;
 }

@@ -1,3 +1,9 @@
+2006-07-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp: Remove debug output.
+
+	* server/CorePropertyManager.cpp: Remove more debug output.
+
 2006-07-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* Release 0.5.8
