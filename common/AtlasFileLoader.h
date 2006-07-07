@@ -19,7 +19,7 @@
 #define COMMON_ATLAS_FILE_LOADER_H
 
 #include <Atlas/Message/DecoderBase.h>
-#include <Atlas/Codecs/XML.h>
+#include <Atlas/Codec.h>
 
 #include <fstream>
 
@@ -29,8 +29,8 @@ class AtlasFileLoader : public Atlas::Message::DecoderBase {
   private:
     /// Input file
     std::fstream m_file;
-    /// Atlas codec for decoding input FIXME Make this generic
-    Atlas::Codecs::XML m_codec;
+    /// Atlas codec for decoding input.
+    Atlas::Codec * m_codec;
     /// Counter for messages read from input
     int m_count;
     /// Store for the messages loaded
@@ -48,7 +48,7 @@ class AtlasFileLoader : public Atlas::Message::DecoderBase {
     /// Read input file to atlas codec.
     void read() {
         while (!m_file.eof()) {
-            m_codec.poll();
+            m_codec->poll();
         }
     }
 

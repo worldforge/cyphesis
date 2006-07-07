@@ -20,6 +20,7 @@
 #include "common/log.h"
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Codecs/XML.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -46,6 +47,7 @@ void AtlasFileLoader::messageArrived(const MapType & msg)
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  MapType & m) :
                 m_file(filename.c_str(), std::ios::in),
-                m_codec(m_file, *this), m_count(0), m_messages(m)
+                m_count(0), m_messages(m)
 {
+    m_codec = new Atlas::Codecs::XML(m_file, *this);
 }

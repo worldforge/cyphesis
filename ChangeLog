@@ -1,3 +1,8 @@
+2006-07-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/AtlasFileLoader.cpp, common/AtlasFileLoader.h: Modify
+	  the class so that fundamentally it can handle any atlas codec.
+
 2006-07-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp: Remove debug output.
