@@ -1,5 +1,9 @@
 2006-07-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/LineProperty.h: Remove obsolete FIXMEs.
+
+2006-07-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.cpp: Remove FIXME about nice option which has already
 	  been implemented.
 

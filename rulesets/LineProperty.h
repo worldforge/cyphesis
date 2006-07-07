@@ -28,8 +28,6 @@
 class LineProperty : public PropertyBase {
   protected:
     CoordList & m_data;
-    // PointSet & m_modifiedTerrain; // FIXME We will need this for persistence
-    // PointSet & m_createdTerrain;
   public:
     explicit LineProperty(CoordList & data,
                           unsigned int flags);

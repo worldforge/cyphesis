@@ -43,7 +43,6 @@ class EntityType {
     }
 
     bool isA(const EntityType & other) {
-        // FIXME
         return false;
     }
 };
