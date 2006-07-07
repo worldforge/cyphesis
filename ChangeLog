@@ -1,5 +1,10 @@
 2006-07-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.cpp: Remove FIXME about nice option which has already
+	  been implemented.
+
+2006-07-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/AtlasFileLoader.cpp, common/AtlasFileLoader.h: Modify
 	  the class so that fundamentally it can handle any atlas codec.
 
