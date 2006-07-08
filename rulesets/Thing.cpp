@@ -502,8 +502,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // than in the mind interface. The details will be sorted by a new type
     // of object which will handle the specifics.
 
-    // FIXME Check whether this is still the next update.
-
     const double & current_time = m_world->getTime();
     double time_diff = current_time - m_location.timeStamp();
 

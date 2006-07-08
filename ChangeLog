@@ -1,5 +1,10 @@
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Remove obsolete FIXME about feature already
+	  implemented.
+
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Creator.cpp, server/WorldRouter.cpp,
 	  server/WorldRouter.h: Remove obsolete code to handle omnipresent
 	  entities.
