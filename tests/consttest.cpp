@@ -58,9 +58,6 @@ int main()
     minSqrBoxSize = consts::minSqrBoxSize;
     assert(minSqrBoxSize > 0);
     
-    bool enable_omnipresence;
-    enable_omnipresence = consts::enable_omnipresence;
-    assert(enable_omnipresence == false || enable_omnipresence == true);
     bool enable_persistence;
     enable_persistence = consts::enable_persistence;
     assert(enable_persistence == false || enable_persistence == true);

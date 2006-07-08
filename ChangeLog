@@ -1,5 +1,16 @@
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Remove obsolete code to handle omnipresent
+	  entities.
+
+	* common/const.h: Remove obsolete flag enabling omnipresent
+	  entities.
+
+	* tests/consttest.cpp: Remove test for omnipresent flag.
+
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.h: Remove obsolete config option to disable
 	  range checks and calculations.
 

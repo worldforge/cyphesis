@@ -41,8 +41,6 @@ namespace consts {
   /// \brief sin() of minimum angle subtended by visible object
   static const float sight_factor = 0.06;
   static const float square_sight_factor = (sight_factor * sight_factor);
-  /// \brief Can things be omnipresent
-  static const bool enable_omnipresence = false;
   /// \brief What is the minimum size of an object when calculating visibility
   static const float minSqrBoxSize = 0.25f;
   /// \brief What is the minimum size of an object when calculating visibility

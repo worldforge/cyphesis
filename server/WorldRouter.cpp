@@ -229,8 +229,7 @@ float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
 /// Verify that the entity has a valid location, setting to
 /// the default spawn area if necessary. Handle inserting the
 /// entity into the loc/contains tree maintained by the Entity
-/// class. Handle omnipresent entities, and sending a Setup op
-/// to the entity.
+/// class. Send a Setup op to the entity.
 Entity * WorldRouter::addEntity(Entity * ent, bool setup)
 {
     debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
@@ -275,11 +274,6 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
     ent->m_world = this;
-    if (consts::enable_omnipresence &&
-        (ent->getAttributes().find("omnipresent") !=
-         ent->getAttributes().end())) {
-        m_omnipresentList.insert(ent);
-    }
     if (setup) {
         Setup s;
         s->setTo(ent->getId());
@@ -360,9 +354,6 @@ void WorldRouter::delEntity(Entity * ent)
     if (ent == &m_gameWorld) {
         log(WARNING, "Attempt to delete game world");
         return;
-    }
-    if (consts::enable_omnipresence) {
-        m_omnipresentList.erase(ent);
     }
     m_perceptives.erase(ent);
     m_objectList.erase(ent);

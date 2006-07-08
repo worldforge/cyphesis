@@ -55,8 +55,7 @@ typedef std::list<OpQueEntry> OpQueue;
 ///
 /// This class has one instance which manages the game world.
 /// It maintains a list of all ih-game (IG) objects in the server.
-/// It explicitly also maintains lists of perceptive and omnipresent
-/// entities.
+/// It explicitly also maintains lists of perceptive entities.
 class WorldRouter : public BaseWorld {
   private:
     /// An ordered queue of operations to be dispatched in the future
@@ -69,8 +68,6 @@ class WorldRouter : public BaseWorld {
     EntitySet m_objectList;
     /// List of perceptive entities.
     EntitySet m_perceptives;
-    /// List of omnipresent entities. Obsolete.
-    EntitySet m_omnipresentList;
 
     void addOperationToQueue(const Operation &, Entity &);
     Operation getOperationFromQueue();
