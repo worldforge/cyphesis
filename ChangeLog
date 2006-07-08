@@ -1,5 +1,9 @@
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Use class number to check for delete ops.
+
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp, server/WorldRouter.h: Remove now obsolete
 	  object list.
 

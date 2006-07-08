@@ -456,8 +456,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
         assert(to_entity != 0);
 
         deliverTo(op, *to_entity);
-        if (op->getParents().front() == "delete") { // FIXME numeric type
-            assert(op->getClassNo() == Atlas::Objects::Operation::DELETE_NO);
+        if (op->getClassNo() == Atlas::Objects::Operation::DELETE_NO) {
             delEntity(to_entity);
         }
     } else if (broadcastPerception(op)) {
