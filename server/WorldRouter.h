@@ -64,8 +64,6 @@ class WorldRouter : public BaseWorld {
     OpQueue m_immediateQueue;
     /// The system time when the server was started.
     time_t m_initTime;
-    /// List of all IG entities.
-    EntitySet m_objectList;
     /// List of perceptive entities.
     EntitySet m_perceptives;
 

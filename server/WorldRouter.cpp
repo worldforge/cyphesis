@@ -104,7 +104,6 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId, consts::r
     m_gameWorld.setType("world");
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
-    m_objectList.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
     EntityFactory::init(*this);
 }
@@ -235,7 +234,6 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
                     << std::flush;);
     m_eobjects[ent->getIntId()] = ent;
-    m_objectList.insert(ent);
     assert(ent->m_location.isValid());
 
     if (!ent->m_location.isValid()) {
@@ -356,7 +354,6 @@ void WorldRouter::delEntity(Entity * ent)
         return;
     }
     m_perceptives.erase(ent);
-    m_objectList.erase(ent);
     m_eobjects.erase(ent->getIntId());
     ent->destroy();
     ent->decRef();
