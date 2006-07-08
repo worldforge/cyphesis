@@ -477,33 +477,24 @@ void WorldRouter::operation(const Operation & op, Entity & from)
             delEntity(to_entity);
         }
     } else {
+        assert(op->getFrom() == from.getId());
         // Where broadcasts go depends on type of op
         const EntitySet & broadcast = broadcastList(op);
-        assert(op->getFrom() == from.getId());
-        if (!consts::enable_ranges) {
-            EntitySet::const_iterator I = broadcast.begin();
-            EntitySet::const_iterator Iend = broadcast.end();
-            for (; I != Iend; ++I) {
-                op->setTo((*I)->getId());
-                deliverTo(op, **I);
+        float fromSquSize = from.m_location.squareBoxSize();
+        EntitySet::const_iterator I = broadcast.begin();
+        EntitySet::const_iterator Iend = broadcast.end();
+        for (; I != Iend; ++I) {
+            // Calculate square distance to target
+            float dist = squareDistance(from.m_location, (*I)->m_location);
+            float view_factor = fromSquSize / dist;
+            if (view_factor < consts::square_sight_factor) {
+                debug(std::cout << "Op from " << from.getId()
+                                << " cannot be seen by " << (*I)->getId()
+                                << std::endl << std::flush;);
+                continue;
             }
-        } else {
-            float fromSquSize = from.m_location.squareBoxSize();
-            EntitySet::const_iterator I = broadcast.begin();
-            EntitySet::const_iterator Iend = broadcast.end();
-            for (; I != Iend; ++I) {
-                // Calculate square distance to target
-                float dist = squareDistance(from.m_location, (*I)->m_location);
-                float view_factor = fromSquSize / dist;
-                if (view_factor < consts::square_sight_factor) {
-                    debug(std::cout << "Op from " << from.getId()
-                                    << " cannot be seen by " << (*I)->getId()
-                                    << std::endl << std::flush;);
-                    continue;
-                }
-                op->setTo((*I)->getId());
-                deliverTo(op, **I);
-            }
+            op->setTo((*I)->getId());
+            deliverTo(op, **I);
         }
     }
 }

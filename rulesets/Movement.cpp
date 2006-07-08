@@ -21,7 +21,6 @@
 
 #include "physics/Collision.h"
 
-#include "common/const.h"
 #include "common/debug.h"
 
 #include "common/Tick.h"

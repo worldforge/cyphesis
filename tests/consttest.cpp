@@ -48,28 +48,16 @@ int main()
     float square_base_velocity;
     square_base_velocity = consts::square_base_velocity;
     assert(square_base_velocity > 0);
-    float sight_range;
-    sight_range = consts::sight_range;
-    assert(sight_range > 0);
-    float square_sight_range;
-    square_sight_range = consts::square_sight_range;
-    assert(square_sight_range > 0);
     float sight_factor;
     sight_factor = consts::sight_factor;
     assert(sight_factor > 0);
     float square_sight_factor;
     square_sight_factor = consts::square_sight_factor;
     assert(square_sight_factor > 0);
-    float hearing_range;
-    hearing_range = consts::hearing_range;
-    assert(hearing_range > 0);
     float minSqrBoxSize;
     minSqrBoxSize = consts::minSqrBoxSize;
     assert(minSqrBoxSize > 0);
     
-    bool enable_ranges;
-    enable_ranges = consts::enable_ranges;
-    assert(enable_ranges == false || enable_ranges == true);
     bool enable_omnipresence;
     enable_omnipresence = consts::enable_omnipresence;
     assert(enable_omnipresence == false || enable_omnipresence == true);

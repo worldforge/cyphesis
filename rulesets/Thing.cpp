@@ -354,6 +354,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Serial number must be changed regardless of whether we will use it
     ++m_motion->serialno();
 
+    // If we are moving, schedule an update to track the movement
     if (moving) {
         debug(std::cout << "Move Update in " << update_time << std::endl << std::flush;);
 
@@ -369,7 +370,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // This code handles sending Appearance and Disappearance operations
     // to this entity and others to indicate if one has gained or lost
     // sight of the other because of this movement
-    if (consts::enable_ranges && isPerceptive()) {
+    if (isPerceptive()) {
         checkVisibility(oldpos, res);
     }
     updated.emit();
@@ -601,7 +602,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // This code handles sending Appearance and Disappearance operations
     // to this entity and others to indicate if one has gained or lost
     // sight of the other because of this movement
-    if (consts::enable_ranges && isPerceptive()) {
+    if (isPerceptive()) {
         checkVisibility(oldpos, res);
     }
     updated.emit();

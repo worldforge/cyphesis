@@ -1,3 +1,20 @@
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.h: Remove obsolete config option to disable
+	  range checks and calculations.
+
+	* client/ObserverClient.cpp, rulesets/Movement.cpp,
+	  server/Admin.cpp, tools/AdminClient.h, tools/cycmd.cpp:
+	  Remove const.h from files which no longer require it.
+
+	* rulesets/Python_API.cpp: Remove python bindings for obsolete
+	  constants.
+
+	* rulesets/Thing.cpp, rulesets/World.cpp, server/WorldRouter.cpp:
+	  Remove obsolete rotten code for handling sight without ranges.
+
+	* tests/consttest.cpp: Remove tests for removed constants.
+
 2006-07-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.h, rulesets/LineProperty.h: Remove obsolete FIXMEs.

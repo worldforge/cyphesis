@@ -19,8 +19,6 @@
 
 #include "CreatorClient.h"
 
-#include "common/const.h"
-
 #include <iostream>
 
 #include <unistd.h>

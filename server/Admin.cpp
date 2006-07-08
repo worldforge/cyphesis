@@ -27,7 +27,6 @@
 
 #include "common/id.h"
 #include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
 #include "common/serialno.h"
 #include "common/inheritance.h"

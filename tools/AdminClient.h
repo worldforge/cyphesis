@@ -18,7 +18,6 @@
 #ifndef TOOLS_ADMIN_CLIENT_H
 #define TOOLS_ADMIN_CLIENT_H
 
-#include "common/const.h"
 #include "common/globals.h"
 
 #include <Atlas/Objects/Decoder.h>

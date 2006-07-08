@@ -978,9 +978,11 @@ void init_python_api()
     o = PyInt_FromLong(0);
     PyObject_SetAttrString(_const, "server_python", o);
     Py_DECREF(o);
+
     o = PyInt_FromLong(consts::debug_level);
     PyObject_SetAttrString(_const, "debug_level", o);
     Py_DECREF(o);
+
     o = PyInt_FromLong(consts::debug_thinking);
     PyObject_SetAttrString(_const, "debug_thinking", o);
     Py_DECREF(o);
@@ -988,9 +990,11 @@ void init_python_api()
     o = PyFloat_FromDouble(consts::time_multiplier);
     PyObject_SetAttrString(_const, "time_multiplier", o);
     Py_DECREF(o);
+
     o = PyFloat_FromDouble(consts::base_velocity_coefficient);
     PyObject_SetAttrString(_const, "base_velocity_coefficient", o);
     Py_DECREF(o);
+
     o = PyFloat_FromDouble(consts::base_velocity);
     PyObject_SetAttrString(_const, "base_velocity", o);
     Py_DECREF(o);
@@ -999,15 +1003,6 @@ void init_python_api()
     PyObject_SetAttrString(_const, "basic_tick", o);
     Py_DECREF(o);
 
-    o = PyFloat_FromDouble(consts::sight_range);
-    PyObject_SetAttrString(_const, "sight_range", o);
-    Py_DECREF(o);
-    o = PyFloat_FromDouble(consts::hearing_range);
-    PyObject_SetAttrString(_const, "hearing_range", o);
-    Py_DECREF(o);
-    o = PyInt_FromLong(consts::enable_ranges);
-    PyObject_SetAttrString(_const, "enable_ranges", o);
-    Py_DECREF(o);
     Py_DECREF(_const);
 
     /// Create the common.globals module

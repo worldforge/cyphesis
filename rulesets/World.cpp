@@ -363,14 +363,6 @@ void World::LookOperation(const Operation & op, OpVector & res)
     // Let the worldrouter know we have been looked at.
     assert(m_world != 0);
 
-    if (!consts::enable_ranges) {
-        // FIXME If this is true the looking entity is not getting added to
-        // the worlds perceptive list.
-        debug(std::cout << "WARNING: Sight ranges disabled." << std::endl
-                        << std::flush;);
-        return World_parent::LookOperation(op, res);
-    }
-
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
     const std::string & from_id = op->getFrom();
     Entity * from = m_world->getEntity(from_id);

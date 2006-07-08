@@ -38,16 +38,9 @@ namespace consts {
   static const float square_basic_tick = basic_tick * basic_tick;
   static const float square_base_velocity = base_velocity * base_velocity;
 
-  /// \brief Are ranges for broadcast enabled.
-  static const bool enable_ranges = true;
-  /// \brief Range of broadcast sight ops
-  static const float sight_range = 26.0;
-  static const float square_sight_range = (sight_range * sight_range);
   /// \brief sin() of minimum angle subtended by visible object
   static const float sight_factor = 0.06;
   static const float square_sight_factor = (sight_factor * sight_factor);
-  /// \brief Range of broadcast sound ops
-  static const float hearing_range = 13.0;
   /// \brief Can things be omnipresent
   static const bool enable_omnipresence = false;
   /// \brief What is the minimum size of an object when calculating visibility

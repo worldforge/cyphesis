@@ -19,7 +19,6 @@
 #include "config.h"
 #endif
 
-#include "common/const.h"
 #include "common/types.h"
 #include "common/globals.h"
 
