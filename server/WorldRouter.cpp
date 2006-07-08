@@ -385,22 +385,16 @@ void WorldRouter::message(const Operation & op, Entity & ent)
 /// @return a reference to the list of entities to be used for braodcast.
 const EntitySet & WorldRouter::broadcastList(const Operation & op) const
 {
-    // FIXME Use numeric types
-    const std::list<std::string> & parents = op->getParents();
-    if (!parents.empty()) {
-        const std::string & parent = parents.front();
-        if ((parent == "sight") || (parent == "sound") ||
-            (parent == "appearance") || (parent == "disappearance")) {
-            return m_perceptives;
-        }
-        std::string msg = std::string("Broadcasting ") + parent + " op from "
-                                                       + op->getFrom();
-        log(WARNING, msg.c_str());
-    } else {
-        std::string msg = std::string("Broadcasting op with no parent from ")
-                                                       + op->getFrom();
-        log(ERROR, msg.c_str());
+    int op_class = op->getClassNo();
+    if (op_class == Atlas::Objects::Operation::SIGHT_NO ||
+        op_class == Atlas::Objects::Operation::SOUND_NO ||
+        op_class == Atlas::Objects::Operation::APPEARANCE_NO ||
+        op_class == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
+        return m_perceptives;
     }
+    log(WARNING, String::compose("Broadcasting %1 op from %2",
+                                 op->getParents().front(),
+                                 op->getFrom()).c_str());
     return m_objectList;
 }
 
@@ -440,6 +434,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
                     << op->getFrom() << ":" << to << "}" << std::endl
                     << std::flush;);
     assert(op->getFrom() == from.getId());
+    assert(!op->getParents().empty());
 
     if (!to.empty()) {
         Entity * to_entity = 0;
@@ -494,7 +489,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
 /// Look up the entity with the id provided, and add a pointer
 /// to the entity to the set of perceptive entities. This method is
 /// called when key events occur that indicate that the entity in
-/// question can receive broadcase perception operations.
+/// question can receive broadcast perception operations.
 void WorldRouter::addPerceptive(Entity * perceptive)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
