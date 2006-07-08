@@ -276,7 +276,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // an additional Set op would be required.
     Element attr_mode;
     if (ent->copyAttr("mode", attr_mode) == 0) {
-        // FIXME
         if (!attr_mode.isString()) {
             log(ERROR, "Non string mode set in Thing::MoveOperation");
         } else {

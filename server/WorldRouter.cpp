@@ -439,6 +439,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
                     << op->getParents().front() << ":"
                     << op->getFrom() << ":" << to << "}" << std::endl
                     << std::flush;);
+    assert(op->getFrom() == from.getId());
 
     if (!to.empty()) {
         Entity * to_entity = 0;
@@ -468,7 +469,6 @@ void WorldRouter::operation(const Operation & op, Entity & from)
             delEntity(to_entity);
         }
     } else {
-        assert(op->getFrom() == from.getId());
         // Where broadcasts go depends on type of op
         const EntitySet & broadcast = broadcastList(op);
         float fromSquSize = from.m_location.squareBoxSize();

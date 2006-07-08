@@ -1,5 +1,12 @@
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Remove undocumented FIXME.
+
+	* server/WorldRouter.cpp: Move an assert into a better place
+	  where it covers more.
+
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Remove obsolete FIXME about feature already
 	  implemented.
 
