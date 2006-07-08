@@ -1,5 +1,12 @@
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.h, server/WorldRouter.cpp: Re-write the way
+	  broadcasts are handled, so the code is cleaner, and non
+	  perception operations are properlly broadcast without the
+	  need to store an explicit list of all entities in the world.
+
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Re-write check for broadcast op types to
 	  use numeric class number instead of string parents.
 

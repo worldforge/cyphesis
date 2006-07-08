@@ -71,7 +71,7 @@ class WorldRouter : public BaseWorld {
 
     void addOperationToQueue(const Operation &, Entity &);
     Operation getOperationFromQueue();
-    const EntitySet & broadcastList(const Operation &) const;
+    bool broadcastPerception(const Operation &) const;
     void updateTime(int sec, int usec);
     void deliverTo(const Operation &, Entity &);
     void delEntity(Entity * obj);

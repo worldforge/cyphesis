@@ -383,19 +383,19 @@ void WorldRouter::message(const Operation & op, Entity & ent)
 /// This should probably go, as there is essentially no sane reason
 /// for broadcasting a random op to all entities.
 /// @return a reference to the list of entities to be used for braodcast.
-const EntitySet & WorldRouter::broadcastList(const Operation & op) const
+bool WorldRouter::broadcastPerception(const Operation & op) const
 {
     int op_class = op->getClassNo();
     if (op_class == Atlas::Objects::Operation::SIGHT_NO ||
         op_class == Atlas::Objects::Operation::SOUND_NO ||
         op_class == Atlas::Objects::Operation::APPEARANCE_NO ||
         op_class == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-        return m_perceptives;
+        return true;
     }
     log(WARNING, String::compose("Broadcasting %1 op from %2",
                                  op->getParents().front(),
                                  op->getFrom()).c_str());
-    return m_objectList;
+    return false;
 }
 
 /// \brief Deliver an operation to its target.
@@ -463,12 +463,11 @@ void WorldRouter::operation(const Operation & op, Entity & from)
             assert(op->getClassNo() == Atlas::Objects::Operation::DELETE_NO);
             delEntity(to_entity);
         }
-    } else {
+    } else if (broadcastPerception(op)) {
         // Where broadcasts go depends on type of op
-        const EntitySet & broadcast = broadcastList(op);
         float fromSquSize = from.m_location.squareBoxSize();
-        EntitySet::const_iterator I = broadcast.begin();
-        EntitySet::const_iterator Iend = broadcast.end();
+        EntitySet::const_iterator I = m_perceptives.begin();
+        EntitySet::const_iterator Iend = m_perceptives.end();
         for (; I != Iend; ++I) {
             // Calculate square distance to target
             float dist = squareDistance(from.m_location, (*I)->m_location);
@@ -481,6 +480,13 @@ void WorldRouter::operation(const Operation & op, Entity & from)
             }
             op->setTo((*I)->getId());
             deliverTo(op, **I);
+        }
+    } else {
+        EntityDict::const_iterator I = m_eobjects.begin();
+        EntityDict::const_iterator Iend = m_eobjects.end();
+        for (; I != Iend; ++I) {
+            op->setTo(I->second->getId());
+            deliverTo(op, *I->second);
         }
     }
 }
