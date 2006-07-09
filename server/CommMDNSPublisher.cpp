@@ -125,7 +125,6 @@ int CommMDNSPublisher::read()
 {
     assert(m_session != 0);
 
-    // FIXME Check return value
     if (sw_discovery_read_socket(m_session) != SW_OKAY) {
         log(WARNING, "Error publishing our presence using MDNS. Disabled.");
         return -1;

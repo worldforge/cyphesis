@@ -1,5 +1,12 @@
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Re-order checks for increased robustness.
+	  Add more error reports.
+
+	* server/CommMDNSPublisher.cpp: Remove a redundant FIXME.
+
+2006-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Use class number to check for delete ops.
 
 2006-07-08  Al Riddoch  <alriddoch@zepler.org>

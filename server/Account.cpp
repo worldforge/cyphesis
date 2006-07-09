@@ -373,6 +373,14 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
+        error(op, "Talk has no args", res, getId());
+        return;
+    }
+
+    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+
+    if (!arg.isValid()) {
+        error(op, "Talk arg is malformed", res, getId());
         return;
     }
 
@@ -382,12 +390,6 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     // FIXME Remove this - broadcasting
     if (!op->isDefaultSerialno()) {
         s->setRefno(op->getSerialno());
-    }
-    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-
-    if (!arg.isValid()) {
-        error(op, "Talk arg is malformed", res, getId());
-        return;
     }
 
     if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
