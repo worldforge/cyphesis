@@ -41,7 +41,6 @@ Fell::~Fell()
 {
 }
 
-// FIXME Should this be what the default implemntation of this method does?
 void Fell::initTask(const Operation & op, OpVector & res)
 {
     Anonymous tick_arg;

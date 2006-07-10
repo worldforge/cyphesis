@@ -1,5 +1,9 @@
 2006-07-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Fell.cpp: Remove obsolete FIXME.
+
+2006-07-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Implement improved error reporting.
 	  Remove related FIXMEs.
 
