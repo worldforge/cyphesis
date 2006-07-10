@@ -103,9 +103,18 @@ void AdminClient::objectArrived(const Root & obj)
 {
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
-        // FIXME report the parents and objtype
         std::cerr << "ERROR: Non op object received from server"
                   << std::endl << std::flush;;
+        if (!obj->isDefaultParents() && !obj->getParents().empty()) {
+            std::cerr << "NOTICE: Unexpected object has parent "
+                      << obj->getParents().front()
+                      << std::endl << std::flush;
+        }
+        if (!obj->isDefaultObjtype()) {
+            std::cerr << "NOTICE: Unexpected object has objtype "
+                      << obj->getObjtype()
+                      << std::endl << std::flush;
+        }
         return;
     }
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
@@ -320,7 +329,6 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         debug(std::cerr << "Rule \"" << id << "\" to be uploaded has parent \""
                         << parent << "\" which does not exist on server yet."
                         << std::endl << std::flush;);
-        // FIXME Make sure there is not a rule with the same ID already waiting
         RuleWaitList::const_iterator J = m_waitingRules.lower_bound(parent);
         RuleWaitList::const_iterator Jend = m_waitingRules.upper_bound(parent);
         for (; J != Jend; ++J) {
