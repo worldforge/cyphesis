@@ -41,3 +41,12 @@ of a line, and } should always be the first non-whitespace character on a
 line. In the case of if or for statements, the clause should always be
 enclosed by { } and the opening { should be on the same line as the if or for
 statement.
+
+PROFILING
+
+2006-07-10
+
+Over 30% of CPU time, and the top 3 functions are spent predicting
+collisions. top 3 functions squareDistance(),
+getCollisionTime(point, vector, point, vector, vector, float)
+predictCollision(loc, loc, float, vector)
