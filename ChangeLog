@@ -1,5 +1,11 @@
 2006-07-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h, server/EntityFactory.cpp: Improve test
+	  for task classes by checking if the class parent has already been
+	  installed as a class.
+
+2006-07-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Fell.cpp: Remove obsolete FIXME.
 
 2006-07-10  Al Riddoch  <alriddoch@zepler.org>

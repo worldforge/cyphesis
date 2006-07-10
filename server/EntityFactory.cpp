@@ -328,6 +328,14 @@ void EntityFactory::populateFactory(const std::string & className,
     }
 }
 
+bool EntityFactory::isTask(const std::string & className)
+{
+    if (className == "task") {
+        return true;
+    }
+    return (m_taskFactories.find(className) != m_taskFactories.end());
+}
+
 int EntityFactory::installTaskClass(const std::string & className,
                                     const std::string & parent,
                                     const MapType & classDesc)
@@ -501,7 +509,7 @@ int EntityFactory::installRule(const std::string & className,
     }
     const std::string & parent = p1.String();
     if (objtype == "class") {
-        if (parent == "task") {
+        if (isTask(parent)) {
             int ret = installTaskClass(className, parent, classDesc);
             if (ret != 0) {
                 return ret;
