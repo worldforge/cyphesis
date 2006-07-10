@@ -380,8 +380,18 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
 {
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
-        // FIXME report the parents and objtype
         std::cerr << "Non op object received from client" << std::endl << std::flush;
+        if (!obj->isDefaultParents() && !obj->getParents().empty()) {
+            std::cerr << "NOTICE: Unexpected object has parent "
+                      << obj->getParents().front()
+                      << std::endl << std::flush;
+        }
+        if (!obj->isDefaultObjtype()) {
+            std::cerr << "NOTICE: Unexpected object has objtype "
+                      << obj->getObjtype()
+                      << std::endl << std::flush;
+        }
+
         return;
     }
 
@@ -1101,7 +1111,6 @@ int main(int argc, char ** argv)
     }
 
     if (server.empty()) {
-        // FIXME This socket name should be an option
         std::string localSocket = var_directory + "/tmp/";
         if (useslave != 0) {
             localSocket += slave_socket_name;

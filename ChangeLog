@@ -1,5 +1,10 @@
 2006-07-10  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Implement improved error reporting.
+	  Remove related FIXMEs.
+
+2006-07-10  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/AdminClient.cpp: Implement improved error reporting.
 	  Remove related FIXMEs.
 
