@@ -1,5 +1,10 @@
 2006-07-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/WorldRouter.cpp: Use the flag check to see if TO is set on
+	  an operation, rather than checking if TO is empty.
+
+2006-07-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseEntity.h: Remove opEnumerate
 	  method as its now a trivila call to another method.
 

@@ -425,15 +425,16 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 /// so that broadcast ops can have their TO set correctly for each target.
 void WorldRouter::operation(const Operation & op, Entity & from)
 {
-    const std::string & to = op->getTo();
     debug(std::cout << "WorldRouter::operation {"
                     << op->getParents().front() << ":"
-                    << op->getFrom() << ":" << to << "}" << std::endl
-                    << std::flush;);
+                    << op->getFrom() << ":" << op->getTo() << "}"
+                    << std::endl << std::flush;);
     assert(op->getFrom() == from.getId());
     assert(!op->getParents().empty());
 
-    if (!to.empty()) {
+    if (!op->isDefaultTo()) {
+        const std::string & to = op->getTo();
+        assert(!to.empty());
         Entity * to_entity = 0;
 
         if (to == from.getId()) {
