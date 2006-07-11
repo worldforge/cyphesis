@@ -100,7 +100,6 @@ class BaseEntity : virtual public sigc::trackable {
     virtual void OtherOperation(const Operation &, OpVector &);
     virtual void ErrorOperation(const Operation &, OpVector &);
 
-    OpNo opEnumerate(const Operation &) const;
     void callOperation(const Operation &, OpVector &);
     void error(const Operation &, const char * errstring, OpVector &,
                const std::string & to = "") const;

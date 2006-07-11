@@ -344,14 +344,9 @@ void BaseEntity::ErrorOperation(const Operation & op, OpVector & res)
 {
 }
 
-OpNo BaseEntity::opEnumerate(const Operation & op) const
-{
-    return op->getClassNo();
-}
-
 void BaseEntity::callOperation(const Operation & op, OpVector & res)
 {
-    const OpNo op_no = opEnumerate(op);
+    const OpNo op_no = op->getClassNo();
     OP_SWITCH(op, op_no, res,)
 }
 

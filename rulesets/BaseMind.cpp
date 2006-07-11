@@ -489,7 +489,7 @@ void BaseMind::callSightOperation(const Operation & op,
                                   OpVector & res)
 {
     m_map.getAdd(sub_op->getFrom());
-    OpNo op_no = opEnumerate(sub_op);
+    OpNo op_no = sub_op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         std::cout << getId() << " could not deliver sight of "
                   << sub_op->getParents().front()
@@ -503,7 +503,7 @@ void BaseMind::callSoundOperation(const Operation & op,
                                   OpVector & res)
 {
     m_map.getAdd(sub_op->getFrom());
-    OpNo op_no = opEnumerate(sub_op);
+    OpNo op_no = sub_op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         std::cout << getId() << " could not deliver sound of "
                   << sub_op->getParents().front()

@@ -1,3 +1,11 @@
+2006-07-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h: Remove opEnumerate
+	  method as its now a trivila call to another method.
+
+	* rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Creator.cpp:
+	  Replace calls to opEnumerate with direct calls to getClassNo().
+
 2006-07-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.h, server/EntityFactory.cpp: Improve test

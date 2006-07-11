@@ -79,7 +79,7 @@ void Creator::operation(const Operation & op, OpVector & res)
     // need to be implemented, in particular SetupOperation() would need
     // need to be implemented as below. Some might need to be blocked
     // to prevent anyone from messing with us, like SetOperation().
-    OpNo op_no = opEnumerate(op);
+    OpNo op_no = op->getClassNo();
     switch(op_no) {
         case OP_CREATE:
             CreateOperation(op, res);

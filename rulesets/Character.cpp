@@ -1414,14 +1414,14 @@ void Character::mind2body(const Operation & op, OpVector & res)
         op->getClassNo() != OP_TICK) {
         log(ERROR, String::compose("Operation \"%1\" from mind with FUTURE_SECONDS set", op->getParents().front()).c_str());
     }
-    OpNo otype = opEnumerate(op);
+    OpNo otype = op->getClassNo();
     OP_SWITCH(op, otype, res, mind)
 }
 
 bool Character::world2mind(const Operation & op)
 {
     debug( std::cout << "Character::world2mind(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    OpNo otype = opEnumerate(op);
+    OpNo otype = op->getClassNo();
     POLL_OP_SWITCH(op, otype, w2m)
     return false;
 }

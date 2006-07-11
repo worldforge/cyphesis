@@ -1,3 +1,5 @@
+Remove scriptSubscribe functions.
+
 Get rid of Entity::m_attributes by making a SoftProperty class for adding
 arbitrary properties to entities. Saves some lookups I think.
 
