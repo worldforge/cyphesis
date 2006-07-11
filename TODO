@@ -30,14 +30,7 @@ use flags to indicate whether they are in use.
 Make use of wrapTask().
 
 Hmm, when logging out an account, the characters from that account, do
-they remain in the connections dictionary? Is this bad? Also, when
-unsub a character, it does not need to be removed from the connection
-dictionary.
-
-When client disconnects, the server now logs the disconnect first, before
-the implicit logout of account and character, so logging analysis software
-can tell whether a character has been cleanly logged out by whether the
-connection still exists.
+they remain in the connections dictionary? Is this bad?
 
 Separate out IG_OP_SWITCH from OOG_OP_SWITCH. Very little overlap.
 
