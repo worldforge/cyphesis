@@ -38,9 +38,10 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
         return NULL;
     }
 #endif // NDEBUG
-    double radius;
     PyObject * where_obj;
-    if (!PyArg_ParseTuple(args, "Od", &where_obj, &radius)) {
+    double radius;
+    char * type;
+    if (!PyArg_ParseTuple(args, "Ods", &where_obj, &radius, &type)) {
         return NULL;
     }
     if (!PyLocation_Check(where_obj)) {
@@ -49,7 +50,7 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
     }
     PyLocation * where = (PyLocation *)where_obj;
     MemEntityVector res = self->m_map->findByLocation(*where->location,
-                                                          radius);
+                                                      radius, type);
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;

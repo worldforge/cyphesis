@@ -1,5 +1,22 @@
 2006-07-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h:
+	  Remove commented out lookId code. Re-write findByLocation to
+	  require a type as well, and use a more efficient search to find
+	  the entities requested.
+
+	* rulesets/Py_Map.cpp: Re-write find_by_location wrapper to handle
+	  the extra type argument.
+
+	* rulesets/basic/mind/Memory.py: Re-write recall_place so that
+	  type and radius are now required, and make sure all types listed
+	  are checked for.
+
+	* rulesets/basic/mind/goals/common/move.py: Check if recall_place
+	  has returned anything at all.
+
+2006-07-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/MemMap.h, rulesets/MemMap.cpp: Replace lookId() with
 	  sendLooks() which sends a look to all required entities in
 	  one batch more efficiently.

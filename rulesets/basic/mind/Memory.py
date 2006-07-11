@@ -10,19 +10,14 @@ class Memory:
     def destroy(self):
         self.events=None
         self.map=None
-    def recall_place(self, location, radius=0.0, otype=None):
-        result_all=self.map.find_by_location(location,radius)
-        if not otype: return result_all
-        result=[]
-        for place in result_all:
-            #if place[1].type[0]==otype:
-            if type(otype)==ListType:
-                if place.type[0] in otype:
-                    result.append(place)
-            else:
-                if place.type[0]==otype:
-                    result.append(place)
-        return result
+    def recall_place(self, location, radius, otype):
+        if type(otype)==ListType:
+            for i in otype:
+                result = self.map.find_by_location(location, radius, i)
+                if len(result)!=0:
+                    return result
+        else:
+            return self.map.find_by_location(location, radius, otype)
     def remember_event(self, event):
         "add new memory with age"
         self.events.append([event,1.0])

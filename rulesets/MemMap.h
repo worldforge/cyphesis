@@ -66,7 +66,6 @@ class MemMap {
         return m_entities;
     }
 
-    Atlas::Objects::Operation::RootOperation lookId();
     void sendLooks(OpVector &);
     void del(const std::string & id);
     MemEntity * get(const std::string & id) const;
@@ -74,7 +73,8 @@ class MemMap {
     MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
 
     MemEntityVector findByType(const std::string & what);
-    MemEntityVector findByLocation(const Location & where, double radius);
+    MemEntityVector findByLocation(const Location & where, double radius,
+                                   const std::string & what);
 
     const Atlas::Message::Element asMessage();
 

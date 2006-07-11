@@ -127,22 +127,6 @@ MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
 {
 }
 
-Atlas::Objects::Operation::RootOperation MemMap::lookId()
-// Generate a look operation to look at an entity we are interested in
-{
-    debug( std::cout << "MemMap::lookId" << std::endl << std::flush;);
-    if (!m_additionsById.empty()) {
-        const std::string & id = m_additionsById.front();
-        Look l;
-        Anonymous m;
-        m->setId(id);
-        l->setArgs1(m);
-        m_additionsById.pop_front();
-        return l;
-    }
-    return NULL;
-}
-
 void MemMap::sendLooks(OpVector & res)
 {
     debug( std::cout << "MemMap::sendLooks" << std::endl << std::flush;);
@@ -331,11 +315,13 @@ MemEntityVector MemMap::findByType(const std::string & what)
     return res;
 }
 
-MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
+MemEntityVector MemMap::findByLocation(const Location & loc, double radius,
+                                       const std::string & what)
 // Find an entity in our memory in a certain place
 // FIXME Don't return by value
 {
     MemEntityVector res;
+#if 0
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         MemEntity * item = I->second;
@@ -352,6 +338,32 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius)
         }
     }
     return res;
+#else
+    Entity * place = loc.m_loc;
+    MemEntity * place_by_id = get(place->getId());
+    if (place != place_by_id) {
+        log(ERROR, "WTF!");
+        return res;
+    }
+    EntitySet::const_iterator I = place->m_contains.begin();
+    EntitySet::const_iterator Iend = place->m_contains.end();
+    float square_range = radius * radius;
+    for (; I != Iend; ++I) {
+        assert(*I != 0);
+        MemEntity * item = dynamic_cast<MemEntity *>(*I);
+        if (item == 0) {
+            log(ERROR, "Weird entity in memory");
+            continue;
+        }
+        if (!item->isVisible() || item->getType() != what) {
+            continue;
+        }
+        if (squareDistance(loc.pos(), item->m_location.pos()) < square_range) {
+            res.push_back(item);
+        }
+    }
+    return res;
+#endif
 }
 
 const Element MemMap::asMessage()

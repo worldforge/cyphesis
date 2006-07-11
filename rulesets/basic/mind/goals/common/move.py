@@ -342,7 +342,7 @@ class pursuit(Goal):
         return not me.mem.recall_place(me.location,self.range,self.what)
     def run(self, me):
         lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
-        if lst_of_what==[]: return
+        if not lst_of_what or len(lst_of_what)==0: return
         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction * const.basic_tick
         loc = Location(me.location.parent)

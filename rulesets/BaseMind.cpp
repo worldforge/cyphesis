@@ -477,13 +477,7 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     m_map.check(op->getSeconds());
     m_map.getAdd(op->getFrom());
     Operation look(0);
-#if 0
-    while ((look = m_map.lookId()).isValid()) {
-        res.push_back(look);
-    }
-#else
     m_map.sendLooks(res);
-#endif
     m_script->operation("call_triggers", op, res);
     callOperation(op, res);
 }
