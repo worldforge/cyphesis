@@ -18,10 +18,13 @@
 #ifndef RULESETS_MEM_MAP_H
 #define RULESETS_MEM_MAP_H
 
+#include "common/types.h"
+
+#include <Atlas/Message/Element.h>
+#include <Atlas/Objects/ObjectsFwd.h>
+
 #include <string>
 #include <list>
-
-#include <Atlas/Objects/ObjectsFwd.h>
 
 class MemEntity;
 class Script;
@@ -64,6 +67,7 @@ class MemMap {
     }
 
     Atlas::Objects::Operation::RootOperation lookId();
+    void sendLooks(OpVector &);
     void del(const std::string & id);
     MemEntity * get(const std::string & id) const;
     MemEntity * getAdd(const std::string & id);

@@ -1,5 +1,17 @@
 2006-07-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.h, rulesets/MemMap.cpp: Replace lookId() with
+	  sendLooks() which sends a look to all required entities in
+	  one batch more efficiently.
+
+	* rulesets/Py_Map.cpp: Remove bindings for Map.look_id, as its not
+	  used.
+
+	* rulesets/BaseMind.cpp: Use MemMap.sendLooks() instead of
+	  MemMap.lookIds() to look at the world.
+
+2006-07-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/WorldRouter.cpp: Use the flag check to see if TO is set on
 	  an operation, rather than checking if TO is empty.
 

@@ -15,8 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "MemEntity.h"
 #include "MemMap.h"
+
+#include "MemEntity.h"
 #include "Script.h"
 
 #include "common/id.h"
@@ -140,6 +141,21 @@ Atlas::Objects::Operation::RootOperation MemMap::lookId()
         return l;
     }
     return NULL;
+}
+
+void MemMap::sendLooks(OpVector & res)
+{
+    debug( std::cout << "MemMap::sendLooks" << std::endl << std::flush;);
+    std::list<std::string>::const_iterator I = m_additionsById.begin();
+    std::list<std::string>::const_iterator Iend = m_additionsById.end();
+    for (; I != Iend; ++I) {
+        Look l;
+        Anonymous look_arg;
+        look_arg->setId(*I);
+        l->setArgs1(look_arg);
+        res.push_back(l);
+    }
+    m_additionsById.clear();
 }
 
 MemEntity * MemMap::addId(const std::string & id, long intId)

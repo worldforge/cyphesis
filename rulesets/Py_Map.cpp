@@ -98,24 +98,6 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
     return list;
 }
 
-static PyObject * Map_look_id(PyMap * self)
-{
-#ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.look_id");
-        return NULL;
-    }
-#endif // NDEBUG
-    Operation op = self->m_map->lookId();
-    if (!op.isValid()) {
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
-    PyOperation * py_op = newPyOperation();
-    py_op->operation = op;
-    return (PyObject *)py_op;
-}
-
 static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
 {
 #ifndef NDEBUG
@@ -283,7 +265,6 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
     {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
-    {"look_id",             (PyCFunction)Map_look_id,             METH_NOARGS},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
     {"delete",              (PyCFunction)Map_delete,              METH_O},
     {"get",                 (PyCFunction)Map_get,                 METH_O},
