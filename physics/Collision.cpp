@@ -86,7 +86,10 @@ bool getCollisionTime(const Point3D & p,      // Position of point
     bool collided = (time < 0.);
     // Return true if the collision direction is from infront,
     // whether it has already happened on not
-    return ((now_infront && !collided) || (!now_infront && collided));
+
+    // We require logical EOR, which for bools is equivalent to !=
+    // return ((now_infront && !collided) || (!now_infront && collided));
+    return now_infront != collided;
 }
 
 // Returns true if first_collision has been updated

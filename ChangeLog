@@ -1,3 +1,10 @@
+2006-07-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Use != for logical exclusive or on bools.
+
+	* physics/Collision.cpp: Re-write complete excluseive or
+	  implementation and replace with !=.
+
 2006-07-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h:

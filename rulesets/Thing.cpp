@@ -398,7 +398,7 @@ void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
         if ((*I)->isPerceptive()) {
             bool wasInRange = ((fromSquSize / oldDist) > consts::square_sight_factor),
                  isInRange = ((fromSquSize / newDist) > consts::square_sight_factor);
-            if (wasInRange ^ isInRange) {
+            if (wasInRange != isInRange) {
                 if (wasInRange) {
                     // Send operation to the entity in question so it
                     // knows it is losing sight of us.
