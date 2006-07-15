@@ -1,3 +1,8 @@
+Implement stacking basics with the active code in a property, and wrappers
+in a base C++ class. Once properties can directly handle ops, less of a
+problem, and the base class goes away. Stacking is explicit and driven by
+mind and client.
+
 Change MemMap::lookId() into a method called once that does all of them.
 
 Remove scriptSubscribe functions.
