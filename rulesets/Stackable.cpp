@@ -23,6 +23,7 @@
 #include "Script.h"
 
 #include "common/Property.h"
+#include "common/log.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -31,6 +32,8 @@ using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Entity::Anonymous;
 
 Stackable::Stackable(const std::string & id, long intId) :
@@ -49,6 +52,7 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
     if (m_script->operation("combine", op, res) != 0) {
         return;
     }
+    int old_num = m_num;
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
@@ -71,7 +75,9 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
         if (obj == NULL) { continue; }
         if (obj->m_type != m_type) { continue; }
         m_num = m_num + obj->m_num;
-        // Set op for num change?
+        // This ensures an attempt to stack this entitie multiple times will
+        // not result in a dupped item
+        obj->m_num = 0;
 
         Delete d;
         Anonymous del_arg;
@@ -80,8 +86,21 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
         d->setArgs1(del_arg);
         res.push_back(d);
     }
-    // Currently does not send sight ops, as the Sight ops for this type of
-    // thing have not been discussed
+
+    if (old_num == m_num) {
+        return;
+    }
+
+    Set set;
+    Anonymous set_arg;
+    set_arg->setId(getId());
+    set_arg->setAttr("num", m_num);
+    set->setArgs1(set_arg);
+    set->setTo(getId());
+
+    Sight sight;
+    sight->setArgs1(set_arg);
+    res.push_back(sight);
 }
 
 void Stackable::DivideOperation(const Operation & op, OpVector & res)
@@ -89,6 +108,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
     if (m_script->operation("divide", op, res) != 0) {
         return;
     }
+    int old_num = m_num;
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
@@ -98,11 +118,19 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
         if (arg->copyAttr("num", num_attr) != 0 && num_attr.isInt()) {
             new_num = num_attr.asInt();
         }
-        if (m_num <= new_num) { continue; }
+        if (m_num <= new_num) {
+            log(ERROR, "Attempt to divide entity into a chunk larger than the original");
+            continue;
+        }
+
+        m_num -= new_num;
         
         Anonymous create_arg;
         create_arg->setParents(std::list<std::string>(1, m_type));
-        create_arg->setAttr("num", new_num);
+        if (new_num > 1) {
+            create_arg->setAttr("num", new_num);
+        }
+
         Create c;
         c->setArgs1(create_arg);
         c->setTo(getId());
@@ -110,4 +138,19 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
     }
     // Currently does not send sight ops, as the Sight ops for this type of
     // thing have not been discussed
+
+    if (old_num == m_num) {
+        return;
+    }
+
+    Set set;
+    Anonymous set_arg;
+    set_arg->setId(getId());
+    set_arg->setAttr("num", m_num);
+    set->setArgs1(set_arg);
+    set->setTo(getId());
+
+    Sight sight;
+    sight->setArgs1(set_arg);
+    res.push_back(sight);
 }

@@ -1,5 +1,10 @@
 2006-07-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Stackable.cpp: Fix some bugs and finish implementing
+	  combine and divide on stacked entities.
+
+2006-07-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Use != for logical exclusive or on bools.
 
 	* physics/Collision.cpp: Re-write complete excluseive or
