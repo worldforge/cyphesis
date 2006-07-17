@@ -67,6 +67,7 @@ class Character : public Character_parent {
 
     void metabolise(OpVector &, double ammount = 1); 
     void wieldDropped();
+    Entity * findInInventory(const std::string & id);
 
     friend class Movement;
   public:

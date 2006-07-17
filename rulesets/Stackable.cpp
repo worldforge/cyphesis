@@ -113,6 +113,12 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
         const Root & arg = *I;
+        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            if (arg->getId() != getId()) {
+                log(ERROR, "Divide operation has wrong ID in args");
+            }
+            continue;
+        }
         int new_num = 1;
         Element num_attr;
         if (arg->copyAttr("num", num_attr) != 0 && num_attr.isInt()) {

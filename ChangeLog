@@ -1,3 +1,14 @@
+2006-07-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Stackable.cpp: Report an error if a divide op has
+	  args with the wrong ID.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Add function
+	  to check if an entity is in the characters inventory.
+
+	* rulesets/Character.cpp: First pass at implementing filters
+	  for combine and divide ops from the client.
+
 2006-07-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Stackable.cpp: Fix some bugs and finish implementing

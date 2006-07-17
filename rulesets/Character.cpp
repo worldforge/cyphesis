@@ -121,6 +121,19 @@ void Character::wieldDropped()
     sendWorld(wield);
 }
 
+Entity * Character::findInInventory(const std::string & id)
+{
+    // FIXME Non-recursive search at this time
+    EntitySet::const_iterator I = m_contains.begin();
+    EntitySet::const_iterator Iend = m_contains.end();
+    for (; I != Iend; ++I) {
+        if ((*I)->getId() == id) {
+            return *I;
+        }
+    }
+    return 0;
+}
+
 Character::Character(const std::string & id, long intId) :
                                             Character_parent(id, intId),
                                             m_statistics(*this),
@@ -1050,6 +1063,25 @@ void Character::mindChopOperation(const Operation & op, OpVector & res)
 
 void Character::mindCombineOperation(const Operation & op, OpVector & res)
 {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "mindCombineOperation: combine op has no argument");
+        return;
+    }
+    std::vector<Root>::const_iterator I = args.begin();
+    const Root & arg1 = *I;
+    op->setTo(arg1->getId());
+    std::vector<Root>::const_iterator Iend = args.end();
+    for (; I != Iend; ++I) {
+        const Root & arg = *I;
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "Character::mindCombineOp No ID.", res, getId());
+            return;
+        }
+        // FIXME Check item to be combined is in inventory
+        // and then also check stackable and the same type.
+    }
+    res.push_back(op);
 }
 
 void Character::mindCreateOperation(const Operation & op, OpVector & res)
@@ -1066,6 +1098,30 @@ void Character::mindDeleteOperation(const Operation & op, OpVector & res)
 
 void Character::mindDivideOperation(const Operation & op, OpVector & res)
 {
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "mindDivideOperation: op has no argument");
+        return;
+    }
+    std::vector<Root>::const_iterator I = args.begin();
+    const Root & arg1 = *I;
+    if (!arg1->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        error(op, "Character::mindDivideOp arg 1 has no ID.", res, getId());
+        return;
+    }
+    // FIXME Check entity to be divided is in inventory
+    op->setTo(arg1->getId());
+    ++I;
+    std::vector<Root>::const_iterator Iend = args.end();
+    for (; I != Iend; ++I) {
+        const Root & arg = *I;
+        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "Character::mindDivideOp arg has ID.", res, getId());
+            return;
+        }
+        // Check the same type?
+    }
+    res.push_back(op);
 }
 
 void Character::mindBurnOperation(const Operation & op, OpVector & res)
