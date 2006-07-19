@@ -49,6 +49,7 @@ Stackable::~Stackable()
 
 void Stackable::CombineOperation(const Operation & op, OpVector & res)
 {
+    std::cout << "CombineOperation" << std::endl << std::flush;
     if (m_script->operation("combine", op, res) != 0) {
         return;
     }

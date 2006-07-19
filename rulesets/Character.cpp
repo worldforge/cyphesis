@@ -1063,6 +1063,7 @@ void Character::mindChopOperation(const Operation & op, OpVector & res)
 
 void Character::mindCombineOperation(const Operation & op, OpVector & res)
 {
+    std::cout << "mindCombineOperation" << std::endl << std::flush;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindCombineOperation: combine op has no argument");

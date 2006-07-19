@@ -1,3 +1,10 @@
+2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/basic.xml: Make coin inherit from stackable.
+
+	* rulesets/Character.cpp, rulesets/Stackable.cpp: Add debug output
+	  to new combine op handlers.
+
 2006-07-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Stackable.cpp: Report an error if a divide op has
