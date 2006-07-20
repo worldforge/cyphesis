@@ -1,3 +1,13 @@
+Move broadcast of Appearance out of SetupOperation, into WorldRouter::addEntity
+so that Setup then handles its script overloading just like everything else.
+
+When dispatching a non-perception op`to an entity, check if its
+flags change for zero to non-zero as a result, and if so, add it to a queue
+to be commited to database later. This even allows for immediate effect
+ops to be grouped into a transaction perhaps. It might be necessary or
+apropriate to guarantee that immediate ops are dispatched immediatly
+rather than returning to idle if a certain number of ops occur.
+
 Implement stacking basics with the active code in a property, and wrappers
 in a base C++ class. Once properties can directly handle ops, less of a
 problem, and the base class goes away. Stacking is explicit and driven by
