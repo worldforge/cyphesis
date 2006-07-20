@@ -323,7 +323,7 @@ even if the script handled them. Character Pre-processes Setup
 before passing to ensure a setup op happens. Character tick ops
 are checked to see if they are movement related, if not they are passed
 to script. Character never sends nourish or wield op to script.
-Thing pre-processes Setup. Thing increments m_seq when it gets Set or Move.
+Thing increments m_seq when it gets Set or Move.
 
 Make Connect and Attack standard Atlas op.
 

@@ -1,5 +1,10 @@
 2006-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Remove Appearance from SetupOperation
+	  in Character too.
+
+2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp, server/WorldRouter.cpp: Remove broadcasting
 	  an appearance from Setup handlers, and put it WorldRouter when
 	  the entity is added to the world, to take out the special case

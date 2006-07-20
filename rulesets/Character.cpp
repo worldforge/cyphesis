@@ -226,20 +226,12 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
     debug( std::cout << "CHaracter::SetupOperation()" << std::endl
                      << std::flush;);
 
-    if (!op->getArgs().empty()) {
-        debug( std::cout << __func__ << " Setup op is for subsystem" << std::endl << std::flush;);
+    if (m_script->operation("setup", op, res) != 0) {
         return;
     }
 
-    Appearance app;
-    Anonymous app_arg;
-    app_arg->setId(getId());
-    app_arg->setStamp(m_seq);
-    app->setArgs1(app_arg);
-
-    res.push_back(app);
-
-    if (m_script->operation("setup", op, res) != 0) {
+    if (!op->getArgs().empty()) {
+        debug( std::cout << __func__ << " Setup op is for subsystem" << std::endl << std::flush;);
         return;
     }
 
