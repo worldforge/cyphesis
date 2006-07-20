@@ -1,5 +1,8 @@
-Move broadcast of Appearance out of SetupOperation, into WorldRouter::addEntity
-so that Setup then handles its script overloading just like everything else.
+TickOperation generated in Thing::SetupOperation is unnecessary. If scripts
+really need it, they can do it themselves now that SetupOperation, meaning
+that SetupOperation in Thing can go altogether, and added explicityly to
+base classes that need it - only plant at the moment. Thus tick would not
+be sent to every entity on creation.
 
 When dispatching a non-perception op`to an entity, check if its
 flags change for zero to non-zero as a result, and if so, add it to a queue
