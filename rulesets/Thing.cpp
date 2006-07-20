@@ -161,7 +161,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // FIXME This is probably here in case the op is handled by a script.
     // Should it reall be here, or would it be better to move in after
     // the checks, and make the script responsible for doing this if it
-    // needs to?
+    // needs to? See also the start of SetOperation
     m_seq++;
 
     if (m_script->operation("move", op, res) != 0) {
@@ -512,7 +512,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, String::compose("Mode on entity is a %1 in Thing::MoveOperation", Element::typeName(mode_attr.getType())).c_str());
+            log(ERROR, String::compose("Mode on entity is a %1 in Thing::UpdateOperation", Element::typeName(mode_attr.getType())).c_str());
         }
     }
 

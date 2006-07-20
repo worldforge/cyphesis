@@ -1,5 +1,10 @@
 2006-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Add note about updating m_seq in SetOperation
+	  Correct function name in an error message.
+
+2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml: Make coin inherit from stackable.
 
 	* rulesets/Character.cpp, rulesets/Stackable.cpp: Add debug output
