@@ -1,5 +1,12 @@
 2006-07-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp, server/WorldRouter.cpp: Remove broadcasting
+	  an appearance from Setup handlers, and put it WorldRouter when
+	  the entity is added to the world, to take out the special case
+	  from the Setup operation handler.
+
+2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Add note about updating m_seq in SetOperation
 	  Correct function name in an error message.
 

@@ -74,14 +74,6 @@ Thing::~Thing()
 
 void Thing::SetupOperation(const Operation & op, OpVector & res)
 {
-    Appearance app;
-    Anonymous arg;
-    arg->setId(getId());
-    arg->setStamp(m_seq);
-    app->setArgs1(arg);
-
-    res.push_back(app);
-
     if (m_script->operation("setup", op, res) != 0) {
         return;
     }

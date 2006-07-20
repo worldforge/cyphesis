@@ -33,14 +33,16 @@
 #include "common/Setup.h"
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sstream>
 #include <algorithm>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Operation::Setup;
+using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
@@ -277,6 +279,13 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
         s->setTo(ent->getId());
         s->setFutureSeconds(-0.1);
         message(s, m_gameWorld);
+
+        Anonymous arg;
+        Appearance app;
+        arg->setId(ent->getId());
+        arg->setStamp(ent->getSeq());
+        app->setArgs1(arg);
+        message(app, *ent);
     }
     return ent;
 }
