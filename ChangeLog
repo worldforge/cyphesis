@@ -1,16 +1,27 @@
-2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+2006-07-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.h, rulesets/Thing.cpp, rulesets/Plant.h,
+	  rulesets/Plant.cpp: Remove SetupOperation from Thing
+	  and implement in Plant, as not all entities need a starting
+	  tick, but plants do.
+
+	* rulesets/basic/world/objects/elements/Fire.py,
+	  rulesets/mason/world/objects/Weather.py: Add setup_operation
+	  handlers as these scripts require ticks.
+
+2006-07-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Remove Appearance from SetupOperation
 	  in Character too.
 
-2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+2006-07-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp, server/WorldRouter.cpp: Remove broadcasting
 	  an appearance from Setup handlers, and put it WorldRouter when
 	  the entity is added to the world, to take out the special case
 	  from the Setup operation handler.
 
-2006-07-19  Al Riddoch  <alriddoch@zepler.org>
+2006-07-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Add note about updating m_seq in SetOperation
 	  Correct function name in an error message.

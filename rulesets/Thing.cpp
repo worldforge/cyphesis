@@ -27,8 +27,6 @@
 
 #include "common/Burn.h"
 #include "common/Nourish.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
 #include "common/Update.h"
 #include "common/Pickup.h"
 #include "common/Drop.h"
@@ -44,7 +42,6 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Drop;
@@ -70,18 +67,6 @@ Thing::~Thing()
 {
     assert(m_motion != 0);
     delete m_motion;
-}
-
-void Thing::SetupOperation(const Operation & op, OpVector & res)
-{
-    if (m_script->operation("setup", op, res) != 0) {
-        return;
-    }
-
-    Tick tick;
-    tick->setTo(getId());
-
-    res.push_back(tick);
 }
 
 void Thing::ActionOperation(const Operation & op, OpVector & res)

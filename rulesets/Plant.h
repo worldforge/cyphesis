@@ -57,6 +57,7 @@ class Plant : public Plant_parent {
 
     virtual void ChopOperation(const Operation &, OpVector &);
     virtual void NourishOperation(const Operation &, OpVector &);
+    virtual void SetupOperation(const Operation &, OpVector &);
     virtual void TickOperation(const Operation &, OpVector &);
     virtual void TouchOperation(const Operation &, OpVector &);
 };

@@ -170,6 +170,18 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
 }
 
+void Plant::SetupOperation(const Operation & op, OpVector & res)
+{
+    if (m_script->operation("setup", op, res) != 0) {
+        return;
+    }
+
+    Tick tick;
+    tick->setTo(getId());
+
+    res.push_back(tick);
+}
+
 void Plant::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"

@@ -37,7 +37,6 @@ class Thing : public Thing_parent {
     explicit Thing(const std::string & id, long intId);
     virtual ~Thing();
 
-    virtual void SetupOperation(const Operation & op, OpVector &);
     virtual void ActionOperation(const Operation & op, OpVector &);
     virtual void DeleteOperation(const Operation & op, OpVector &);
     virtual void BurnOperation(const Operation & op, OpVector &);
