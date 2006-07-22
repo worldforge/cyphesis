@@ -1,3 +1,9 @@
+2006-07-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp, rulesets/Thing.cpp, rulesets/Thing.h:
+	  Move Look and Create handlers into Thing from Entity, so Entity is
+	  a more abstract for all IG entities.
+
 2006-07-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.h, rulesets/Thing.cpp, rulesets/Plant.h,

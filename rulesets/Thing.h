@@ -43,6 +43,8 @@ class Thing : public Thing_parent {
     virtual void MoveOperation(const Operation & op, OpVector &);
     virtual void SetOperation(const Operation & op, OpVector &);
     virtual void UpdateOperation(const Operation & op, OpVector &);
+    virtual void LookOperation(const Operation & op, OpVector &);
+    virtual void CreateOperation(const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_THING_H

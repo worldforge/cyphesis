@@ -581,3 +581,74 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     }
     updated.emit();
 }
+
+void Thing::LookOperation(const Operation & op, OpVector & res)
+{
+    if (m_script->operation("look", op, res) != 0) {
+        return;
+    }
+
+    Sight s;
+
+    Anonymous new_ent;
+    addToEntity(new_ent);
+    s->setArgs1(new_ent);
+
+    s->setTo(op->getFrom());
+
+    res.push_back(s);
+}
+
+void Thing::CreateOperation(const Operation & op, OpVector & res)
+{
+    if (m_script->operation("create", op, res) != 0) {
+        return;
+    }
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+       return;
+    }
+    try {
+        RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
+        if (!ent.isValid()) {
+            error(op, "Entity to be created is malformed", res, getId());
+            return;
+        }
+        const std::list<std::string> & parents = ent->getParents();
+        if (parents.empty()) {
+            error(op, "Entity to be created has empty parents", res, getId());
+            return;
+        }
+        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
+            (m_location.m_loc != 0)) {
+            ent->setLoc(m_location.m_loc->getId());
+            if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+                ::addToEntity(m_location.pos(), ent->modifyPos());
+            }
+        }
+        const std::string & type = parents.front();
+        debug( std::cout << getId() << " creating " << type;);
+
+        Entity * obj = m_world->addNewEntity(type,ent);
+
+        if (obj == 0) {
+            error(op, "Create op failed.", res, op->getFrom());
+            return;
+        }
+
+        Operation c(op.copy());
+
+        Anonymous new_ent;
+        obj->addToEntity(new_ent);
+        c->setArgs1(new_ent);
+
+        Sight s;
+        s->setArgs1(c);
+        res.push_back(s);
+    }
+    catch (Atlas::Message::WrongTypeException&) {
+        log(ERROR, "EXCEPTION: Malformed object to be created");
+        error(op, "Malformed object to be created", res, getId());
+        return;
+    }
+}
