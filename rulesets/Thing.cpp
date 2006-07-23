@@ -135,12 +135,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
 
-    // FIXME This is probably here in case the op is handled by a script.
-    // Should it reall be here, or would it be better to move in after
-    // the checks, and make the script responsible for doing this if it
-    // needs to? See also the start of SetOperation
-    m_seq++;
-
     if (m_script->operation("move", op, res) != 0) {
         return;
     }
@@ -349,6 +343,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (isPerceptive()) {
         checkVisibility(oldpos, res);
     }
+    m_seq++;
     updated.emit();
 }
 
@@ -435,7 +430,6 @@ void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
 
 void Thing::SetOperation(const Operation & op, OpVector & res)
 {
-    m_seq++;
     if (m_script->operation("set", op, res) != 0) {
         return;
     }
@@ -457,6 +451,7 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
         d->setTo(getId());
         res.push_back(d);
     }
+    m_seq++;
     if (m_update_flags != 0) {
         updated.emit();
     }

@@ -1,3 +1,10 @@
+2006-07-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Moved increment on m_seq to later in the
+	  function, to make sure its only incremented when the entity
+	  has really been updated. Scripts will be required to update
+	  now.
+
 2006-07-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp, rulesets/Thing.cpp, rulesets/Thing.h:
