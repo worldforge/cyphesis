@@ -1,5 +1,10 @@
 2006-07-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Add script hooks to Wield and Nourish
+	  handlers.
+
+2006-07-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Move the script hook for Character
 	  to the beginning of the Tick op handler.
 

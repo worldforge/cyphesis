@@ -402,6 +402,9 @@ void Character::EatOperation(const Operation & op, OpVector & res)
 
 void Character::NourishOperation(const Operation & op, OpVector & res)
 {
+    if (m_script->operation("nourish", op, res) != 0) {
+        return;
+    }
     if (op->getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
         return;
@@ -437,6 +440,9 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
+    if (m_script->operation("wield", op, res) != 0) {
+        return;
+    }
     if (op->getArgs().empty()) {
         // Wield nothing
         if (m_rightHandWieldConnection.connected()) {
