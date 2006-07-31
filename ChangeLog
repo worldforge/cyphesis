@@ -1,5 +1,10 @@
 2006-07-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Add script override code to the
+	  imaginary and talk operation handlers.
+
+2006-07-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/debug.h: Add a macro to print out function name when
 	  debugging.
 

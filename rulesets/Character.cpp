@@ -216,6 +216,10 @@ void Character::clearTask()
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
 {
+    if (m_script->operation("imaginary", op, res) != 0) {
+        return;
+    }
+
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
@@ -357,6 +361,10 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 void Character::TalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
+    if (m_script->operation("talk", op, res) != 0) {
+        return;
+    }
+
     Sound s;
     s->setArgs1(op);
     res.push_back(s);
