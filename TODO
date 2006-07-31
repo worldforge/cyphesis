@@ -1,3 +1,6 @@
+Remove World::SetOperation. It doesn't matter if it gets hit with a stray
+delete operation, as it will have no effect.
+
 Make logging task rotate the tree to flat over a tick interval, which
 removes the issue of the progress glitching half way through the task,
 as long as the rate is set to zero for the tick while the tree falls.

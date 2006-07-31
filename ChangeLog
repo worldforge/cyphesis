@@ -1,5 +1,10 @@
 2006-07-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Use class numbers rather than names to
+	  determine operation handler.
+
+2006-07-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/BaseMind.cpp: Move all script overrides so the override
 	  and are called before the mind checks to see if the character
 	  is awake.
