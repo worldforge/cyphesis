@@ -268,6 +268,10 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
+    if (m_script->operation("tick", op, res) != 0) {
+        return;
+    }
+
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const std::vector<Root> & args = op->getArgs();
@@ -325,8 +329,6 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             log(ERROR, String::compose("Tick to unknown subsystem \"%1\" arrived", arg->getName()).c_str());
         }
     } else {
-        m_script->operation("tick", op, res);
-
         // DIGEST
         if ((m_food >= foodConsumption) && (m_status < 2)) {
             // It is important that the metabolise bit is done next, as this
