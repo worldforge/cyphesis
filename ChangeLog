@@ -1,3 +1,9 @@
+2006-07-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/World.cpp: Add checks that operations have the class
+	  number expected, so that this section can be converted to work on
+	  class numbers.
+
 2006-07-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Moved increment on m_seq to later in the

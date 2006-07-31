@@ -444,10 +444,13 @@ void World::OtherOperation(const Operation & op, OpVector & res)
     const std::string & type = op->getParents().front();
 
     if (type == "delve") {
+        assert(op->getClassNo() == Atlas::Objects::Operation::DELVE_NO);
         delveOperation(op, res);
     } else if (type == "dig") {
+        assert(op->getClassNo() == Atlas::Objects::Operation::DIG_NO);
         digOperation(op, res);
     } else if (type == "mow") {
+        assert(op->getClassNo() == Atlas::Objects::Operation::MOW_NO);
         mowOperation(op, res);
     }
 }
