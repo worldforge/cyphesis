@@ -20,6 +20,12 @@
 
 #define debug(prg) { if (debug_flag) { prg } }
 
+#define debug_func() {\
+    if (debug_flag) { \
+        std::cerr << __PRETTY_FUNCTION__ << std::endl << std::flush;\
+    }\
+}
+
 template <typename T>
 void debug_dump(const T & t);
 

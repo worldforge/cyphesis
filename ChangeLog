@@ -1,5 +1,10 @@
 2006-07-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/debug.h: Add a macro to print out function name when
+	  debugging.
+
+2006-07-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp: Add checks that operations have the class
 	  number expected, so that this section can be converted to work on
 	  class numbers.
