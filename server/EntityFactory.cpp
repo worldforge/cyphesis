@@ -536,7 +536,8 @@ int EntityFactory::installRule(const std::string & className,
     // Install any rules that were waiting for this rule before they
     // could be installed
     RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
-    for (; I != m_waitingRules.upper_bound(className); ++I) {
+    RuleWaitList::iterator Iend = m_waitingRules.upper_bound(className);
+    for (; I != Iend; ++I) {
         const std::string & wClassName = I->second.first;
         const MapType & wClassDesc = I->second.second;
         debug(std::cout << "WAITING rule " << wClassName

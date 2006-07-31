@@ -1,5 +1,10 @@
 2006-07-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Don't call upper_bound in a loop
+	  as it is return by value, and expensive to call.
+
+2006-07-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Add script override code to the
 	  imaginary and talk operation handlers.
 
