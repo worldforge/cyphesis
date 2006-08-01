@@ -1494,7 +1494,11 @@ bool Character::world2mind(const Operation & op)
 void Character::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    callOperation(op, res);
+    if (m_script->operation(op->getParents().front(), op, res) != 0) {
+        // Op was handled by a script
+    } else {
+        callOperation(op, res);
+    }
     // set refno on result?
     if (!m_isAlive) {
         return;

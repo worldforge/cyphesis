@@ -178,9 +178,6 @@ class Entity : public BaseEntity {
 
     PropertyBase * getProperty(const std::string &) const;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
-
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::MapType &);
     void changeContainer(Entity *);
@@ -189,7 +186,11 @@ class Entity : public BaseEntity {
 
     virtual void scriptSubscribe(const std::string &);
 
+    virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+
     virtual void externalOperation(const Operation & op);
+    virtual void operation(const Operation &, OpVector &);
 
     virtual void SetupOperation(const Operation & op, OpVector &);
     virtual void TickOperation(const Operation & op, OpVector &);

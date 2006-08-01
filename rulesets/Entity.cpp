@@ -354,6 +354,14 @@ void Entity::externalOperation(const Operation & op)
     }
 }
 
+void Entity::operation(const Operation & op, OpVector & res)
+{
+    if (m_script->operation(op->getParents().front(), op, res) != 0) {
+        return;
+    }
+    return callOperation(op, res);
+}
+
 void Entity::SetupOperation(const Operation & op, OpVector & res)
 {
     m_script->operation("setup", op, res);

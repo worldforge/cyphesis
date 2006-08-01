@@ -1,3 +1,13 @@
+2006-08-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add a override of
+	  BaseEntities operation() method which handles calling
+	  script operation handlers directly, rather than relying
+	  on the C++ handlers to check for them later.
+
+	* rulesets/Character.cpp, rulesets/BaseMind.cpp: Check for script
+	  operation handlers centrally in Character and BaseMind too.
+
 2006-07-31  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Use class numbers rather than names to

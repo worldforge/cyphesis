@@ -483,6 +483,9 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     Operation look(0);
     m_map.sendLooks(res);
     m_script->operation("call_triggers", op, res);
+    if (m_script->operation(op->getParents().front(), op, res) != 0) {
+        return;
+    }
     callOperation(op, res);
 }
 

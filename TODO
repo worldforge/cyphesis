@@ -1,3 +1,6 @@
+Why is Update handled by w2mOtherOperation instead of being in the main
+switch?
+
 Remove World::SetOperation. It doesn't matter if it gets hit with a stray
 delete operation, as it will have no effect.
 
