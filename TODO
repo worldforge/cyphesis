@@ -320,9 +320,6 @@ Modify Attack handler so it is the attackee that creates the task object,
 so attacking a pointless target has no effect without any smarts required
 in mindAttackOperation().
 
-Script code would be simpler if we could call the scripts in Entity::operation
-rather than in each method individually.
-Need to handle double op methods, and some special cases.
 We can probably block all ops to mind when its unconcious from
 the Character class.
 
@@ -662,9 +659,6 @@ Get rif of Entity::m_name, and other related pointless static attrs.
 Fix Entity::addToObject to be more efficient with contlist
 
 Make the server easier to kill.
-
-Replace Sight(Create) broadcast from Thing::SetupOperation with an appearance
-broadcast.
 
 Enforce well-formed args and parents on IG ops centrally.
 
