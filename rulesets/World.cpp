@@ -367,9 +367,8 @@ void World::LookOperation(const Operation & op, OpVector & res)
     const std::string & from_id = op->getFrom();
     Entity * from = m_world->getEntity(from_id);
     if (from == 0) {
-        debug(std::cout << "ERROR: Look op has invalid from" << std::endl
-                        << std::flush;);
-        return World_parent::LookOperation(op, res);
+        log(ERROR, "Look op has invalid from");
+        return;
     }
 
     // Pass entity to addPerceptive

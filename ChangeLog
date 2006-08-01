@@ -1,5 +1,10 @@
 2006-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: If Look op is from something that can't be
+	  found, report an error rather than carrying on.
+
+2006-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/World.cpp, rulesets/World.h, rulesets/mason/define_world.py:
 	  Remove the special handling of Set ops in world which prevented
 	  setting status below zero from generating a Delete op. Add a test
