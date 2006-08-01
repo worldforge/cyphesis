@@ -411,10 +411,6 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     res.push_back(si);
 }
 
-void Character::UseOperation(const Operation & op, OpVector & res)
-{
-}
-
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {

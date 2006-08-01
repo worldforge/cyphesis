@@ -1,5 +1,10 @@
 2006-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/Entity.cpp, rulesets/Character.h,
+	  rulesets/Character.cpp: Remove now empty operation methods.
+
+2006-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Food.cpp,
 	  rulesets/Plant.cpp, rulesets/Stackable.cpp, rulesets/Thing.cpp:
 	  Remove script override calls from the individual C++ operation

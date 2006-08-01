@@ -192,28 +192,6 @@ class Entity : public BaseEntity {
     virtual void externalOperation(const Operation & op);
     virtual void operation(const Operation &, OpVector &);
 
-    virtual void SetupOperation(const Operation & op, OpVector &);
-    virtual void TickOperation(const Operation & op, OpVector &);
-    virtual void ActionOperation(const Operation & op, OpVector &);
-    virtual void ChopOperation(const Operation & op, OpVector &);
-    virtual void CreateOperation(const Operation & op, OpVector &);
-    virtual void CutOperation(const Operation & op, OpVector &);
-    virtual void DeleteOperation(const Operation & op, OpVector &);
-    virtual void EatOperation(const Operation & op, OpVector &);
-    virtual void BurnOperation(const Operation & op, OpVector &);
-    virtual void ImaginaryOperation(const Operation & op, OpVector &);
-    virtual void MoveOperation(const Operation & op, OpVector &);
-    virtual void NourishOperation(const Operation & op, OpVector &);
-    virtual void SetOperation(const Operation & op, OpVector &);
-    virtual void SightOperation(const Operation & op, OpVector &);
-    virtual void SoundOperation(const Operation & op, OpVector &);
-    virtual void TouchOperation(const Operation & op, OpVector &);
-    virtual void LookOperation(const Operation & op, OpVector &);
-    virtual void AppearanceOperation(const Operation & op, OpVector &);
-    virtual void DisappearanceOperation(const Operation & op, OpVector &);
-    virtual void AttackOperation(const Operation & op, OpVector &);
-    virtual void OtherOperation(const Operation & op, OpVector &);
-
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;
 
