@@ -1,5 +1,12 @@
 2006-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Food.cpp,
+	  rulesets/Plant.cpp, rulesets/Stackable.cpp, rulesets/Thing.cpp:
+	  Remove script override calls from the individual C++ operation
+	  methods, as script overrides are now done centrally.
+
+2006-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp: Remove script override calls from the
 	  individual C++ operation methods, as script overrides are
 	  now done centrally.

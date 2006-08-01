@@ -8,7 +8,7 @@ Make logging task rotate the tree to flat over a tick interval, which
 removes the issue of the progress glitching half way through the task,
 as long as the rate is set to zero for the tick while the tree falls.
 
-When dispatching a non-perception op`to an entity, check if its
+When dispatching a unicast op`to an entity, check if its
 flags change for zero to non-zero as a result, and if so, add it to a queue
 to be commited to database later. This even allows for immediate effect
 ops to be grouped into a transaction perhaps. It might be necessary or

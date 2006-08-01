@@ -216,10 +216,6 @@ void Character::clearTask()
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("imaginary", op, res) != 0) {
-        return;
-    }
-
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
@@ -229,10 +225,6 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "CHaracter::SetupOperation()" << std::endl
                      << std::flush;);
-
-    if (m_script->operation("setup", op, res) != 0) {
-        return;
-    }
 
     if (!op->getArgs().empty()) {
         debug( std::cout << __func__ << " Setup op is for subsystem" << std::endl << std::flush;);
@@ -268,10 +260,6 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("tick", op, res) != 0) {
-        return;
-    }
-
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const std::vector<Root> & args = op->getArgs();
@@ -363,10 +351,6 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 void Character::TalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
-    if (m_script->operation("talk", op, res) != 0) {
-        return;
-    }
-
     Sound s;
     s->setArgs1(op);
     res.push_back(s);
@@ -376,10 +360,6 @@ void Character::EatOperation(const Operation & op, OpVector & res)
 {
     // This is identical to Food::Operation(Eat &)
     // Perhaps animal should inherit from Food?
-    if (m_script->operation("eat", op, res) != 0) {
-        return;
-    }
-
     Set s;
     Anonymous self_ent;
     self_ent->setId(getId());
@@ -402,9 +382,6 @@ void Character::EatOperation(const Operation & op, OpVector & res)
 
 void Character::NourishOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("nourish", op, res) != 0) {
-        return;
-    }
     if (op->getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
         return;
@@ -440,9 +417,6 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("wield", op, res) != 0) {
-        return;
-    }
     if (op->getArgs().empty()) {
         // Wield nothing
         if (m_rightHandWieldConnection.connected()) {

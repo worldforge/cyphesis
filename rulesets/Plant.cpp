@@ -99,9 +99,6 @@ int Plant::dropFruit(OpVector & res)
 void Plant::ChopOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
-    if (m_script->operation("chop", op, res)) {
-        return;
-    }
     Element mode;
     if (getAttr("mode", mode) && mode.isString() && mode.String() == "felled") {
         debug(std::cout << "Plant is already down" << std::endl << std::flush;);
@@ -153,9 +150,6 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Nourish(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
-    if (m_script->operation("nourish", op, res)) {
-        return;
-    }
     if (op->getArgs().empty()) {
         error(op, "Nourish has no argument", res, getId());
         return;
@@ -172,10 +166,6 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
 
 void Plant::SetupOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("setup", op, res) != 0) {
-        return;
-    }
-
     Tick tick;
     tick->setTo(getId());
 
@@ -186,9 +176,6 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
-    if (m_script->operation("tick", op, res)) {
-        return;
-    }
     Tick tick_op;
     tick_op->setTo(getId());
     tick_op->setFutureSeconds(consts::basic_tick * m_speed);
@@ -263,9 +250,6 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     debug(std::cout << "Plant has " << m_fruits << " fruits right now"
                     << std::endl << std::flush;);
-    if (m_script->operation("touch", op, res)) {
-        return;
-    }
     debug(std::cout << "Checking for drop"
                     << std::endl << std::flush;);
 

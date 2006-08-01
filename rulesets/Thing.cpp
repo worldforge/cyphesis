@@ -72,9 +72,6 @@ Thing::~Thing()
 void Thing::ActionOperation(const Operation & op, OpVector & res)
 {
     log(ERROR, String::compose("Action::Operation called on %1(%2), but it should be abstract", getId(), getType()).c_str());
-    if (m_script->operation("action", op, res) != 0) {
-        return;
-    }
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
@@ -82,9 +79,6 @@ void Thing::ActionOperation(const Operation & op, OpVector & res)
 
 void Thing::DeleteOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("delete", op, res) != 0) {
-        return;
-    }
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     Sight s;
@@ -94,9 +88,6 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
 
 void Thing::BurnOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("burn", op, res) != 0) {
-        return;
-    }
     if (op->getArgs().empty()) {
         error(op, "Fire op has no argument", res, getId());
         return;
@@ -134,10 +125,6 @@ void Thing::BurnOperation(const Operation & op, OpVector & res)
 void Thing::MoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
-
-    if (m_script->operation("move", op, res) != 0) {
-        return;
-    }
 
     // Check the validity of the operation.
     const std::vector<Root> & args = op->getArgs();
@@ -430,9 +417,6 @@ void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
 
 void Thing::SetOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("set", op, res) != 0) {
-        return;
-    }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "Set has no argument", res, getId());
@@ -579,10 +563,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
 void Thing::LookOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("look", op, res) != 0) {
-        return;
-    }
-
     Sight s;
 
     Anonymous new_ent;
@@ -596,9 +576,6 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
 
 void Thing::CreateOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("create", op, res) != 0) {
-        return;
-    }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
        return;

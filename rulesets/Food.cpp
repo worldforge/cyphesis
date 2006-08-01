@@ -43,10 +43,6 @@ Food::~Food()
 
 void Food::EatOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("eat", op, res) != 0) {
-        return;
-    }
-
     Anonymous self;
     self->setId(getId());
     self->setAttr("status", -1);
@@ -70,9 +66,6 @@ void Food::EatOperation(const Operation & op, OpVector & res)
 
 void Food::BurnOperation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation("burn", op, res) != 0) {
-        return;
-    }
     if (op->getArgs().empty()) {
        error(op, "Burn op has no argument", res, getId());
        return;
