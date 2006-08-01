@@ -326,15 +326,6 @@ Need to handle double op methods, and some special cases.
 We can probably block all ops to mind when its unconcious from
 the Character class.
 
-BaseMind blocks sight ops if character is not awake. FIXED
-BaseMind handles Appearance and Disappearance even if the script handled
-them. FIXED
-Character Pre-processes Setup before passing to ensure a setup op happens. FIXED
-Character tick ops are checked to see if they are movement related, if not
-they are passed to script. FIXED
-Character never sends nourish or wield op to script. FIXED
-Thing increments m_seq when it gets Set or Move. FIXED
-
 Make Connect and Attack standard Atlas op.
 
 Sort out issue where carrying a living tree kills people. Caused by
@@ -559,18 +550,6 @@ Sort out FIXME in Creator::operation().
 
 Character creation should not fail if creating its bootstrap inventory fails.
 Errors from coin creation are confusing clients.
-
-Take note of the places where behavoir is not the standard.
-BaseMind::AppearanceOperation() uses both results from script and from
-from the C++ methods. As does BaseMind::DisappearanceOperation(). FIXED
-Character::ImaginaryOperation() does not call a script at all. FIXED
-Character::TalkOperation() does not call a script at all. FIXED
-Character::TickOperation() does not initially call a script, and when it
-does, it continues and merges the result. FIXED
-Character::NourishOperation() does not call a script at all. FIXED
-Thing::SetupOperation() _ALWAYS_ emits an Appearance op, but then processes
-op as normal. FIXED
-World provides no script overloading for any of its methods. UNIMPORTANT
 
 Convert FormatedXMLWriter into a templat that can drive any Atlas codec.
 Thus we can have any Atlas Codec output in formatted human readable form.
