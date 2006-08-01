@@ -5,12 +5,6 @@ Make logging task rotate the tree to flat over a tick interval, which
 removes the issue of the progress glitching half way through the task,
 as long as the rate is set to zero for the tick while the tree falls.
 
-TickOperation generated in Thing::SetupOperation is unnecessary. If scripts
-really need it, they can do it themselves now that SetupOperation, meaning
-that SetupOperation in Thing can go altogether, and added explicityly to
-base classes that need it - only plant at the moment. Thus tick would not
-be sent to every entity on creation.
-
 When dispatching a non-perception op`to an entity, check if its
 flags change for zero to non-zero as a result, and if so, add it to a queue
 to be commited to database later. This even allows for immediate effect
@@ -326,14 +320,17 @@ in mindAttackOperation().
 Script code would be simpler if we could call the scripts in Entity::operation
 rather than in each method individually.
 Need to handle double op methods, and some special cases.
-BaseMind blocks sight ops if character is not awake.
 We can probably block all ops to mind when its unconcious from
-the Character class. BaseMind handles Appearance and Disappearance
-even if the script handled them. Character Pre-processes Setup
-before passing to ensure a setup op happens. Character tick ops
-are checked to see if they are movement related, if not they are passed
-to script. Character never sends nourish or wield op to script.
-Thing increments m_seq when it gets Set or Move.
+the Character class.
+
+BaseMind blocks sight ops if character is not awake. FIXED
+BaseMind handles Appearance and Disappearance even if the script handled
+them. FIXED
+Character Pre-processes Setup before passing to ensure a setup op happens. FIXED
+Character tick ops are checked to see if they are movement related, if not
+they are passed to script. FIXED
+Character never sends nourish or wield op to script. FIXED
+Thing increments m_seq when it gets Set or Move. FIXED
 
 Make Connect and Attack standard Atlas op.
 
@@ -562,15 +559,15 @@ Errors from coin creation are confusing clients.
 
 Take note of the places where behavoir is not the standard.
 BaseMind::AppearanceOperation() uses both results from script and from
-from the C++ methods. As does BaseMind::DisappearanceOperation().
-Character::ImaginaryOperation() does not call a script at all.
-Character::TalkOperation() does not call a script at all.
+from the C++ methods. As does BaseMind::DisappearanceOperation(). FIXED
+Character::ImaginaryOperation() does not call a script at all. FIXED
+Character::TalkOperation() does not call a script at all. FIXED
 Character::TickOperation() does not initially call a script, and when it
-does, it continues and merges the result.
-Character::NourishOperation() does not call a script at all.
+does, it continues and merges the result. FIXED
+Character::NourishOperation() does not call a script at all. FIXED
 Thing::SetupOperation() _ALWAYS_ emits an Appearance op, but then processes
-op as normal.
-World provides no script overloading for any of its methods.
+op as normal. FIXED
+World provides no script overloading for any of its methods. UNIMPORTANT
 
 Convert FormatedXMLWriter into a templat that can drive any Atlas codec.
 Thus we can have any Atlas Codec output in formatted human readable form.
