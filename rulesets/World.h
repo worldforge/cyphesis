@@ -81,7 +81,6 @@ class World : public World_parent {
     virtual void BurnOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
-    virtual void SetOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
 };
 

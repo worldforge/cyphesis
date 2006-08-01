@@ -418,27 +418,6 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
     // Deleting has no effect.
 }
 
-void World::SetOperation(const Operation & op, OpVector & res)
-{
-    // This is the same as Thing::Operation(Set), except world does not
-    // get deleted if its status goes below 0.
-    m_seq++;
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-       error(op, "Set has no argument", res, getId());
-       return;
-    }
-    const Root & ent = args.front();
-    merge(ent->asMessage());
-    Sight s;
-    s->setArgs1(op);
-    res.push_back(s);
-
-    if (m_update_flags != 0) {
-        updated.emit();
-    }
-}
-
 void World::OtherOperation(const Operation & op, OpVector & res)
 {
     int class_no = op->getClassNo();
