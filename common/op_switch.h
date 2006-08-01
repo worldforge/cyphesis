@@ -211,26 +211,11 @@
 
 #define SUB_OP_SWITCH(_op, _sub_op_no, _result, _prefix, _sub_op) \
     switch (_sub_op_no) { \
-        case OP_ACTION: \
-            _prefix ## ActionOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_COMBINE: \
-            _prefix ## CombineOperation(_op, _sub_op, _result); \
-            break; \
         case OP_CREATE: \
             _prefix ## CreateOperation(_op, _sub_op, _result); \
             break; \
         case OP_DELETE: \
             _prefix ## DeleteOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_DIVIDE: \
-            _prefix ## DivideOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_IMAGINARY: \
-            _prefix ## ImaginaryOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_LOGIN: \
-            _prefix ## LoginOperation(_op, _sub_op, _result); \
             break; \
         case OP_MOVE: \
             _prefix ## MoveOperation(_op, _sub_op, _result); \
@@ -238,28 +223,9 @@
         case OP_SET: \
             _prefix ## SetOperation(_op, _sub_op, _result); \
             break; \
-        case OP_TALK: \
-            _prefix ## TalkOperation(_op, _sub_op, _result); \
-            break; \
-        case OP_TOUCH: \
-            _prefix ## TouchOperation(_op, _sub_op, _result); \
-            break; \
         case OP_INVALID: \
             break; \
         default: \
-            if (_sub_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
-                _prefix ## AttackOperation(_op, _sub_op, _result); \
-            } else if (_sub_op_no == Atlas::Objects::Operation::BURN_NO) { \
-                _prefix ## BurnOperation(_op, _sub_op, _result); \
-            } else if (_sub_op_no == Atlas::Objects::Operation::CHOP_NO) { \
-                _prefix ## ChopOperation(_op, _sub_op, _result); \
-            } else if (_sub_op_no == Atlas::Objects::Operation::CUT_NO) { \
-                _prefix ## CutOperation(_op, _sub_op, _result); \
-            } else if (_sub_op_no == Atlas::Objects::Operation::EAT_NO) { \
-                _prefix ## EatOperation(_op, _sub_op, _result); \
-            } else { \
-                _prefix ## OtherOperation(_op, _sub_op, _result); \
-            } \
             break; \
     }
 
