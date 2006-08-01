@@ -364,108 +364,84 @@ void Entity::operation(const Operation & op, OpVector & res)
 
 void Entity::SetupOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("setup", op, res);
 }
 
 void Entity::TickOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("tick", op, res);
 }
 
 void Entity::ActionOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("action", op, res);
 }
 
 void Entity::ChopOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("chop", op, res);
 }
 
 void Entity::CreateOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("create", op, res);
 }
 
 void Entity::CutOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("cut", op, res);
 }
 
 void Entity::DeleteOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("delete", op, res);
 }
 
 void Entity::EatOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("eat", op, res);
 }
 
 void Entity::BurnOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("burn", op, res);
 }
 
 void Entity::ImaginaryOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("imaginary", op, res);
 }
 
 void Entity::MoveOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("move", op, res);
 }
 
 void Entity::NourishOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("nourish", op, res);
 }
 
 void Entity::SetOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("set", op, res);
 }
 
 void Entity::SightOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("sight", op, res);
 }
 
 void Entity::SoundOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("sound", op, res);
 }
 
 void Entity::TouchOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("touch", op, res);
 }
 
 void Entity::LookOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("look", op, res);
 }
 
 void Entity::AppearanceOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("appearance", op, res);
 }
 
 void Entity::DisappearanceOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("disappearance", op, res);
 }
 
 void Entity::AttackOperation(const Operation & op, OpVector & res)
 {
-    m_script->operation("attack", op, res);
 }
 
 void Entity::OtherOperation(const Operation & op, OpVector & res)
 {
-    const std::string & op_type = op->getParents().front();
-    debug(std::cout << "Entity " << getId() << " got custom " << op_type
-                    << " op" << std::endl << std::flush;);
-    m_script->operation(op_type, op, res);
 }

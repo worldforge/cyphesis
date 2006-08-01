@@ -1,5 +1,11 @@
 2006-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.cpp: Remove script override calls from the
+	  individual C++ operation methods, as script overrides are
+	  now done centrally.
+
+2006-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h, rulesets/Entity.cpp: Add a override of
 	  BaseEntities operation() method which handles calling
 	  script operation handlers directly, rather than relying
