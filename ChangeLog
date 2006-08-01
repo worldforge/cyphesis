@@ -1,5 +1,11 @@
 2006-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/op_switch.h, rulesets/Character.h, rulesets/Character.cpp:
+	  Add Update to the poll op handlers in the world2mind interface,
+	  removing the special case.
+
+2006-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/op_switch.h: Remove all ops but Create, Delete, Move and
 	  Set from the sub op switch used in mind code.
 

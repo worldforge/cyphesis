@@ -1343,9 +1343,7 @@ bool Character::w2mErrorOperation(const Operation & op)
 bool Character::w2mOtherOperation(const Operation & op)
 {
     const std::string & ot = op->getParents().front();
-    if (ot != "update") {
-        log(WARNING, String::compose("Unexpeced %1 op going from world 2 mind", ot).c_str());
-    }
+    log(WARNING, String::compose("Unexpeced %1 op going from world 2 mind", ot).c_str());
     return false;
 }
 
@@ -1376,6 +1374,11 @@ bool Character::w2mTickOperation(const Operation & op)
             return true;
         }
     }
+    return false;
+}
+
+bool Character::w2mUpdateOperation(const Operation & op)
+{
     return false;
 }
 

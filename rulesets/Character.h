@@ -160,6 +160,7 @@ class Character : public Character_parent {
     bool w2mSoundOperation(const Operation &);
     bool w2mTouchOperation(const Operation &);
     bool w2mTickOperation(const Operation &);
+    bool w2mUpdateOperation(const Operation &);
     bool w2mLookOperation(const Operation &);
     bool w2mSetupOperation(const Operation &);
     bool w2mTalkOperation(const Operation &);

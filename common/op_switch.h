@@ -202,6 +202,8 @@
                 return _prefix ## SetupOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
                 return _prefix ## TickOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \
+                return _prefix ## UpdateOperation(_op); \
             } else { \
                 return _prefix ## OtherOperation(_op); \
             } \
