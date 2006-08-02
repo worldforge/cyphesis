@@ -18,4 +18,6 @@ EXTRA_DIST = cyphesis.spec Doxyfile autogen.sh \
 docs:
 	@echo "running doxygen..."
 	@doxygen Doxyfile
+	@doxygen Doxyfile-python
 	@echo "documentation is in doc/."
+	@echo "python documentation is in python_doc/."

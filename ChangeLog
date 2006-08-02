@@ -1,5 +1,10 @@
 2006-08-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* Doxyfile-python: Add a new doxyfile for building separate docs
+	  for the python scripts.
+
+2006-08-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Use.h, common/Wield.h, common/Generic.h: Mark unused files
 	  as removed from the build.
 

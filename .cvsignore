@@ -15,6 +15,7 @@ configure
 cyphesis.spec
 depcomp
 doc
+python_doc
 gmon.out
 install-sh
 libtool
