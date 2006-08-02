@@ -26,6 +26,8 @@ class PropertyFactory;
 
 typedef std::map<std::string, PropertyFactory *> PropertyFactoryDict;
 
+/// \brief Property manager for the core server. Handles assigning properties
+/// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
   protected:
     // Data structure for factories and the like?

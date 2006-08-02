@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int NOURISH_NO;
 
+/// \brief An affect operation used to indicate something is nourished.
 class Nourish : public Generic
 {
   public:

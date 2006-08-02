@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int CHOP_NO;
 
+/// \brief An affect operation used to indicate an entity has been cut with
+/// a light or medium cutting tool.
 class Chop : public Generic
 {
   public:

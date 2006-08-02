@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int SETUP_NO;
 
+/// \brief An operation used to trigger initialisation of an entity once
+/// it is in the world.
 class Setup : public Generic
 {
   public:

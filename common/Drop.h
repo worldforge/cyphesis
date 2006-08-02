@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int DROP_NO;
 
+/// \brief An action operation used to initiate putting an inventory item
+/// down.
 class Drop : public Generic
 {
   public:

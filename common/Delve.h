@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int DELVE_NO;
 
+/// \brief An affect operation used to gather rock resources from the terrain.
 class Delve : public Generic
 {
   public:

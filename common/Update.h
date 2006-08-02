@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int UPDATE_NO;
 
+/// \brief An operation used to trigger a location update.
 class Update : public Generic
 {
   public:

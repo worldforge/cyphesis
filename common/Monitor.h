@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int MONITOR_NO;
 
+/// \brief An operation used to enable remote monitoring of the server.
 class Monitor : public Generic
 {
   public:

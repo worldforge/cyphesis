@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int EAT_NO;
 
+/// \brief An action and affect operation used to initiate and indicate
+/// something is being eaten.
 class Eat : public Generic
 {
   public:

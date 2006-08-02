@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int CUT_NO;
 
+/// \brief An action operation used to initiate any number of tasks or
+/// activities related to cutting.
 class Cut : public Generic
 {
   public:

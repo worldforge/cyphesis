@@ -20,6 +20,8 @@
 
 #include "Property.h"
 
+/// \brief Adaptor class which can make an instance of Property<T>
+/// store its own data.
 template <typename T>
 class DynamicProperty : public Property<T> {
   protected:
@@ -30,6 +32,8 @@ class DynamicProperty : public Property<T> {
     explicit DynamicProperty();
 };
 
+/// \brief Adaptor class which can make any property class store its own
+/// data.
 template <class P, typename T>
 class Dynamic : public P {
   protected:

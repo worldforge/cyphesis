@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int BURN_NO;
 
+/// \brief An affect operation used to indicate something is affected by fire.
 class Burn : public Generic
 {
   public:

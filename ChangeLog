@@ -1,5 +1,22 @@
 2006-08-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Use.h, common/Wield.h, common/Generic.h: Mark unused files
+	  as removed from the build.
+
+	* common/Attack.h, common/Burn.h, common/Chop.h, common/Connect.h,
+	  common/Cut.h, common/Delve.h, common/Dig.h, common/Drop.h,
+	  common/Eat.h, common/Monitor.h, common/Mow.h, common/Nourish.h,
+	  common/Pickup.h, common/Setup.h, common/Tick.h, common/Unseen.h,
+	  common/Update.h: Add class documentation to all the custom
+	  properties.
+
+	* common/DynamicProperty.h, client/ClientPropertyManager.h,
+	  server/CorePropertyManager.h, server/PersistantThingFactory.h,
+	  server/ScriptFactory.h, server/WorldRouter.cpp: Add documentation
+	  to some places where it is missing.
+
+2006-08-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/custom.cpp: Modify Burn to inherit from Affect, as it is
 	  is not a pure action.
 

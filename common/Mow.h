@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int MOW_NO;
 
+/// \brief An affect operation used to gather vegetation resources from
+/// the terrain.
 class Mow : public Generic
 {
   public:

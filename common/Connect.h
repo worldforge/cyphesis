@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int CONNECT_NO;
 
+/// \brief An operation used to establish a connection from this server
+/// to another.
 class Connect : public Generic
 {
   public:

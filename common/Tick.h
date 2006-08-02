@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int TICK_NO;
 
+/// \brief An operation used to trigger one of a number of types of update.
 class Tick : public Generic
 {
   public:

@@ -105,6 +105,8 @@ class PersistantThingFactory : public FactoryBase {
     virtual FactoryBase * duplicateFactory();
 };
 
+/// \brief Class template for factories for entity classes which cannot or
+/// should not be instanced
 template <class T>
 class ForbiddenThingFactory : public FactoryBase {
   public:

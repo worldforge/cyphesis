@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int ATTACK_NO;
 
+/// \brief An action operation used to initiate combat.
 class Attack : public Generic
 {
   public:

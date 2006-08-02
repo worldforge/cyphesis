@@ -46,6 +46,8 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
+/// \brief Type to hold an operation and the Entity it is from for efficiency
+/// when broadcasting.
 struct OpQueEntry {
     Operation op;
     Entity & from;

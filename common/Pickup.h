@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int PICKUP_NO;
 
+/// \brief An action operation used to initiate picking an inventory item
+/// up.
 class Pickup : public Generic
 {
   public:

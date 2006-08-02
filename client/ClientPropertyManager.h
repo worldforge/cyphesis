@@ -20,6 +20,7 @@
 
 #include "common/PropertyManager.h"
 
+/// \brief Property manager for the client where no properties are required.
 class ClientPropertyManager : public PropertyManager {
   public:
     ClientPropertyManager();

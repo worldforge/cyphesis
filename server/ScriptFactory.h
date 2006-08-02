@@ -24,6 +24,8 @@
 
 class Entity;
 
+/// \brief Factory interface for creating scripts to attach to in game
+/// entity objects.
 class ScriptFactory {
   protected:
     std::string m_package;
@@ -39,6 +41,8 @@ class ScriptFactory {
     virtual int refreshClass() = 0;
 };
 
+/// \brief Factory implementation for creating python script objects to attach
+/// to in game entity objects.
 class PythonScriptFactory : public ScriptFactory {
   protected:
     PyObject * m_module;

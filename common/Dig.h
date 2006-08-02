@@ -24,6 +24,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int DIG_NO;
 
+/// \brief An affect operation used to gather soil resources from the terrain.
 class Dig : public Generic
 {
   public:

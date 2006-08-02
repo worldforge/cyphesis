@@ -24,6 +24,8 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int UNSEEN_NO;
 
+/// \brief A perception operation used to indicate that an attempt to
+/// interact with an entity failed because it is not present.
 class Unseen : public Generic
 {
   public:
