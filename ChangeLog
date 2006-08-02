@@ -1,5 +1,10 @@
 2006-08-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/custom.cpp: Modify Burn to inherit from Affect, as it is
+	  is not a pure action.
+
+2006-08-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* Doxyfile, client/define_world.cpp, client/define_world.h,
 	  common/CustomOp.cpp, common/CustomOp.h, common/CustomOp_impl.h,
 	  common/Load.h, common/Save.h, common/inheritance_impl.h,

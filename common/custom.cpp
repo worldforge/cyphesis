@@ -62,7 +62,7 @@ void installCustomOperations()
     Atlas::Objects::Operation::ADD_NO = atlas_factories->addFactory("add", &Atlas::Objects::generic_factory);
     i.opInstall("add", OP_ADD);
 
-    i.addChild(atlasOpDefinition("burn", "action"));
+    i.addChild(atlasOpDefinition("burn", "affect"));
     Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory);
     i.opInstall("burn", OP_BURN);
 
