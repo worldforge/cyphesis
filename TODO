@@ -51,6 +51,12 @@ Hmm, when logging out an account, the characters from that account, do
 they remain in the connections dictionary? Is this bad?
 
 Separate out IG_OP_SWITCH from OOG_OP_SWITCH. Very little overlap.
+IG Does not have: GET, ERROR, INFO, LOGIN, LOGOUT, USE??? (should fix),
+                  ADD, CUT
+OOG Does not have: ACTION, APPEARANCE, DISAPPEARANCE, COMBINE, DELETE,
+                   DISAPPEARANCE, DIVIDE, ERROR, INFO, MOVE, SIGHT,
+                   SOUND, TOUCH, USE, WIELD, ADD, ATTACK, BURN,
+                   CHOP, CUT, EAT, NOURISH, SETUP, TICK, UPDATE
 
 The w2m*Operation code does only 2 things:
   It checks for Setup and Tick ops whether they are for the mind, which
@@ -248,7 +254,7 @@ Implement data driven gui dialogues, in Sear and perhaps equator.
 <map>
 
 
-        ---------------------------------------------------------
+        -------------------------Dialogue------------------------
         |                                                       |
         |   A dialogue                                          |
         |                                                       |
