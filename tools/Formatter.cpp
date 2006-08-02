@@ -3,6 +3,7 @@
 // Copyright (C) 2005 Alistair Riddoch
 
 #error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include "Formatter.h"
 

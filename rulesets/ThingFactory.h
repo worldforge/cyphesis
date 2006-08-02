@@ -19,6 +19,7 @@
 #define RULESETS_THING_FACTORY_H
 
 #error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include <Atlas/Message/Element.h>
 

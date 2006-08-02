@@ -19,6 +19,7 @@
 #define COMMON_SAVE_H
 
 #error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include <Atlas/Objects/Operation/Get.h>
 

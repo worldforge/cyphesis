@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef RULESETS_PY_OPTIME_H
 #define RULESETS_PY_OPTIME_H

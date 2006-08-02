@@ -19,6 +19,7 @@
 #define SERVER_SERVER_ROUTING_METHODS_H
 
 #error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include "ServerRouting.h"
 #include "common/BaseWorld.h"

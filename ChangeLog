@@ -1,3 +1,17 @@
+2006-08-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* Doxyfile, client/define_world.cpp, client/define_world.h,
+	  common/CustomOp.cpp, common/CustomOp.h, common/CustomOp_impl.h,
+	  common/Load.h, common/Save.h, common/inheritance_impl.h,
+	  common/operations.h, common/refno.h, common/utility.cpp,
+	  common/utility.h, rulesets/Combat.h, rulesets/Entity_getLocation.h,
+	  rulesets/Fell.h, rulesets/MemMap_methods.h, rulesets/Py_Optime.cpp,
+	  rulesets/Py_Optime.h, rulesets/ThingFactory.h,
+	  server/CommIdleSocket.h, server/ServerRouting_methods.h,
+	  tools/Formatter.cpp, tools/Formatter.h, tools/cydbload.cpp,
+	  tools/cyisoload.cpp: Make doxygen skip code that has been removed
+	  and is just left in cvs for reference.
+
 2006-08-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: If Look op is from something that can't be

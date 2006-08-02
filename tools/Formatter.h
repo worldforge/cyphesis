@@ -3,6 +3,7 @@
 // Copyright (C) 2004 Alistair Riddoch
 
 #error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef TOOLS_FORMATTER_H
 #define TOOLS_FORMATTER_H
