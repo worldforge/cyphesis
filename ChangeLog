@@ -1,3 +1,8 @@
+2006-08-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Fix the size of the world bbox
+	  being set when terrain is defined.
+
 2006-08-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* scripts/compile_python.py: Add a new script which compiles python

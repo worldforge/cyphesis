@@ -222,7 +222,7 @@ def default(mapeditor):
         
     # print minx, ":", miny, ":", minz, ":", maxx, ":", maxy, ":", maxz
 
-    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx, miny, minz, maxx, maxy, maxz])
+    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
 
 # a wall around the world
 
@@ -636,7 +636,30 @@ def modify_terrain(mapeditor):
     points['0x1'] = [0, 1, 14.2]
     points['1x1'] = [1, 1, 19.7]
 
-    m.set(world.id, terrain={'points' : points})
+    minx=0
+    miny=0
+    minz=0
+    maxx=0
+    maxy=0
+    maxz=0
+    for i in points.values():
+        x = i[0]
+        y = i[1]
+        z = i[2]
+        if not minx or x < minx:
+            minx = x
+        if not miny or y < miny:
+            miny = y
+        if not minz or z < minz:
+            minz = z
+        if not maxx or x > maxx:
+            maxx = x
+        if not maxy or y > maxy:
+            maxy = y
+        if not maxz or z > maxz:
+            maxz = z
+        
+    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
 
 def test_coll(mapeditor):
 
