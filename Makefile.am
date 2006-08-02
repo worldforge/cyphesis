@@ -13,7 +13,8 @@ install-data-hook:
 	chmod 1777 $(DESTDIR)$(socketdir)
 
 EXTRA_DIST = cyphesis.spec Doxyfile autogen.sh \
-             cyphesis.init cyclient.init cyphesis.sysconfig
+             cyphesis.init cyclient.init cyphesis.sysconfig \
+             scripts/compile_python.py scripts/gen_op.py
 
 docs:
 	@echo "running doxygen..."

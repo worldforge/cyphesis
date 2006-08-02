@@ -16,7 +16,8 @@ Source0: %{name}-%{version}.tar.bz2
 Source1: cyphesis.init
 Source2: cyclient.init
 Source3: cyphesis.sysconfig
-PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig
+Source4: compile_python.py
+PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig /usr/bin/find /bin/rm
 Requires: postgresql-server
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: Atlas-C++06-devel mercator-devel >= 0.2.0 varconf-devel >= 0.6.2 skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 2.0.0
@@ -62,6 +63,10 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
+%{SOURCE4} $RPM_BUILD_ROOT/%{_datadir}/cyphesis/rulesets/basic
+%{SOURCE4} $RPM_BUILD_ROOT/%{_datadir}/cyphesis/rulesets/mason
+find $RPM_BUILD_ROOT/%{_datadir}/cyphesis/rulesets -name *.py | xargs /bin/rm
+# find $RPM_BUILD_ROOT/%{_datadir}/cyphesis/rulesets -name *.pyo | xargs /bin/rm
 if [ -d /etc/rc.d/init.d ]
 then
         install -d $RPM_BUILD_ROOT/etc/rc.d/init.d

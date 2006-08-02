@@ -1,5 +1,14 @@
 2006-08-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* scripts/compile_python.py: Add a new script which compiles python
+	  files.
+
+	* cyphesis.spec.in: Modify spec to compile installed python
+	  scripts, and remove original source for runtime performance
+	  and compact package size.
+
+2006-08-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* Doxyfile-python: Add a new doxyfile for building separate docs
 	  for the python scripts.
 
