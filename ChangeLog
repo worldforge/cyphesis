@@ -1,5 +1,10 @@
 2006-08-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp: Ensure that that world does not obtain
+	  position or orientation when being restored from the database.
+
+2006-08-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/define_world.py: Fix the size of the world bbox
 	  being set when terrain is defined.
 

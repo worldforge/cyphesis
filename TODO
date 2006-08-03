@@ -1,3 +1,10 @@
+cycmd karks it when it gets SIGWINCH I think.
+
+When world bootstrapped in DB, its gets position, even though the contents
+of its POS are invalid and undefined. When restarting after bootstrap, POS
+will then be valid, but use the undefined values found in the database,
+which can mess shit up big time.
+
 Make logging task rotate the tree to flat over a tick interval, which
 removes the issue of the progress glitching half way through the task,
 as long as the rate is set to zero for the tick while the tree falls.

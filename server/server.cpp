@@ -35,6 +35,7 @@
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
+#include "rulesets/Entity.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -176,6 +177,16 @@ int main(int argc, char ** argv)
         if (restore.read() == 1) {
             debug(std::cout << "Bootstrapping world" << std::endl << std::flush;);
             EntityFactory::instance()->initWorld();
+            assert(!world.m_gameWorld.m_location.m_pos.isValid());
+            assert(!world.m_gameWorld.m_location.m_orientation.isValid());
+        } else {
+            // The world should not have POS or ORIENTATION, but will have
+            // picked one up when restored from the database.
+            world.m_gameWorld.m_location.m_pos = Point3D(0,0,0);
+            world.m_gameWorld.m_location.m_pos.setValid(false);
+            world.m_gameWorld.m_location.m_orientation = Quaternion();
+            // world.m_gameWorld.m_location.m_orientation.setValid(false);
+            
         }
 
         log(INFO, _(" world restored"));
