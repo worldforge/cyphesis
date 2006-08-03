@@ -49,10 +49,18 @@ static PyObject * Point3D_distance(PyPoint3D * self, PyPoint3D * other)
     return PyFloat_FromDouble(distance(self->coords, other->coords));
 }
 
+static PyObject * Point3D_is_valid(PyPoint3D * self)
+{
+    PyObject * ret = self->coords.isValid() ? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
+}
+
 static PyMethodDef Point3D_methods[] = {
     {"mag",             (PyCFunction)Point3D_mag,              METH_NOARGS},
     {"unit_vector_to",  (PyCFunction)Point3D_unit_vector_to,   METH_O},
     {"distance",        (PyCFunction)Point3D_distance,         METH_O},
+    {"is_valid",        (PyCFunction)Point3D_is_valid,         METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 

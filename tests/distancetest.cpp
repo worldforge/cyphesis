@@ -201,5 +201,24 @@ int main()
         ent4.m_location.m_loc = 0;
     }
 
+    {
+        Entity tlve("0", 0), ent1("1", 1), ent2("2", 2);
+
+        ent1.m_location.m_loc = &tlve;
+        ent1.m_location.m_pos = Point3D(1, 1, 0);
+        ent1.m_location.m_orientation = WFMath::Quaternion().identity();
+
+        ent2.m_location.m_loc = &ent1;
+        ent2.m_location.m_pos = Point3D(0, 0, 0);
+        ent2.m_location.m_orientation = WFMath::Quaternion().identity();
+
+        Vector3D distance = distanceTo(ent1.m_location, ent2.m_location);
+
+        std::cout << "Distance ent1 -> ent2: "
+                  << distance << "," << distance.isValid()
+                  << std::endl << std::flush;
+        ent1.m_location.m_loc = 0;
+        ent2.m_location.m_loc = 0;
+    }
     return ret;
 }

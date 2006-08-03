@@ -1003,6 +1003,10 @@ void init_python_api()
     PyObject_SetAttrString(_const, "basic_tick", o);
     Py_DECREF(o);
 
+    o = PyFloat_FromDouble(WFMATH_EPSILON);
+    PyObject_SetAttrString(_const, "epsilon", o);
+    Py_DECREF(o);
+
     Py_DECREF(_const);
 
     /// Create the common.globals module
