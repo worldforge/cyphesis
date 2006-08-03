@@ -1,5 +1,16 @@
 2006-08-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Expose wfmath's epsilon as a const value
+	  to python.
+
+	* rulesets/Py_Point3D.cpp: Expose isValid() method on WFMath::Point<3>
+	  to python.
+
+	* tests/distancetest.cpp: Add test to confirm that distanceTo
+	  determines distance to inventory items correctly.
+
+2006-08-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Ensure that that world does not obtain
 	  position or orientation when being restored from the database.
 
