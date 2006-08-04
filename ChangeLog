@@ -1,5 +1,14 @@
 2006-08-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Raise.py: Move the check which ensures
+	  that task is not attempting to move the world is placed earlier.
+	  Add a check that the item being affected is non-zero distance from
+	  the character, ensuring the rotation maths don't give weird errors.
+	  A recently commited fix to wfmath should ensure that corruption
+	  does not occur again, but this check is still a good idea.
+
+2006-08-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Expose wfmath's epsilon as a const value
 	  to python.
 
