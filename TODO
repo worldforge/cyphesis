@@ -787,10 +787,6 @@ being handled right in the mind code.
 Sort persisting world so things like its orientation are initialised correctly.
 Either valid or invalid.
 
-CreateOperation and DeleteOperation behavoir probably should be moved from
-Thing to
-entity as they should work on entities.
-
 Implement constraints on entities, which have to be checked before movement
 is allowed.
 
@@ -878,8 +874,6 @@ General TODO
   Use combine operation to deal with making more than one object into one.
 
   Add sending of touch op on collision.
-
-  Implement omnipresent
 
 Required for werewolf:
 
