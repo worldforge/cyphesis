@@ -1,5 +1,12 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.h, server/Connection.cpp: Move the code that
+	  decouples an object from the subscribed connection into its
+	  own function, so the same code is invoked from two different
+	  places.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommServer.cpp: More thoroughly and accuratly report the
 	  failure if epoll doesn't work.
 

@@ -77,21 +77,7 @@ Connection::~Connection()
 
     BaseDict::const_iterator Iend = m_objects.end();
     for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        Account * ac = dynamic_cast<Account *>(I->second);
-        if (ac != NULL) {
-            m_server.m_lobby.delAccount(ac);
-            ac->m_connection = NULL;
-            logEvent(LOGOUT, String::compose("%1 %2 - Disconnect account %3", getId(), ac->getId(), ac->m_username).c_str());
-            continue;
-        }
-        Character * character = dynamic_cast<Character *>(I->second);
-        if (character != NULL) {
-            if (character->m_externalMind != NULL) {
-                delete character->m_externalMind;
-                character->m_externalMind = NULL;
-                logEvent(DROP_CHAR, String::compose("%1 - %2 Disconnect character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
-            }
-        }
+        disconnectObject(I->second, "Disconnect");
     }
 
     m_server.decClients();
@@ -122,6 +108,26 @@ Account * Connection::addPlayer(const std::string& username,
     m_server.addAccount(player);
     m_server.m_lobby.addAccount(player);
     return player;
+}
+
+int Connection::disconnectObject(BaseEntity * obj, const std::string & event)
+{
+    Account * ac = dynamic_cast<Account *>(obj);
+    if (ac != 0) {
+        m_server.m_lobby.delAccount(ac);
+        ac->m_connection = 0;
+        logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(), ac->getId(), ac->m_username, event).c_str());
+        return 1;
+    }
+    Character * character = dynamic_cast<Character *>(obj);
+    if (character != 0) {
+        if (character->m_externalMind != 0) {
+            delete character->m_externalMind;
+            character->m_externalMind = 0;
+            logEvent(DROP_CHAR, String::compose("%1 - %2 %5 character %3(%4)", getId(), character->getId(), character->getName(), character->getType(), event).c_str());
+        }
+    }
+    return 0;
 }
 
 void Connection::addObject(BaseEntity * obj)
@@ -346,7 +352,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         if (!op->isDefaultSerialno()) {
             info->setRefno(op->getSerialno());
         }
-        // FIXME Direct call of send. Need local refno handling.
         send(info);
         disconnect();
         return;
@@ -367,24 +372,9 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         error(op, "Got logout for unknown entity ID", res);
         return;
     }
-    // This is very similar code to stuff that does the same job in
-    // Connection destructor. Should be possible to share some, but
-    // the log messages should probably be different.
-    Account * ac = dynamic_cast<Account *>(I->second);
-    Character * character = dynamic_cast<Character *>(I->second);
-    if (ac != 0) {
-        m_server.m_lobby.delAccount(ac);
-        ac->m_connection = 0;
+    if (disconnectObject(I->second, "Logout") == 1) {
         m_objects.erase(I);
         // FIXME Remove all characters associated with this account.
-        logEvent(LOGOUT, String::compose("%1 %2 - Logout account %3", getId(), ac->getId(), ac->m_username).c_str());
-    }
-    if (character != 0) {
-        assert(character->m_externalMind != 0);
-        delete character->m_externalMind;
-        character->m_externalMind = 0;
-        logEvent(DROP_CHAR, String::compose("%1 - %2 Logout character %3(%4)", getId(), character->getId(), character->getName(), character->getType()).c_str());
-
     }
 
     Info info;
