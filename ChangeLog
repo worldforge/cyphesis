@@ -1,4 +1,9 @@
-2006-08-03  Al Riddoch  <alriddoch@zepler.org>
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommServer.cpp: More thoroughly and accuratly report the
+	  failure if epoll doesn't work.
+
+2006-08-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/tasks/Raise.py: Move the check which ensures
 	  that task is not attempting to move the world is placed earlier.

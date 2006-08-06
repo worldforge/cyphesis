@@ -49,10 +49,8 @@ CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
     // FIXME 64 is a random figure I pulled out of the air. I don't even know
     // what this is used for.
     m_epollFd = epoll_create(64);
-    // FIXME This should only fail if there is a shortage of kernel memory,
-    // which should never happen.
     if (m_epollFd < 0) {
-        log(CRITICAL, "Out of memory calling epoll_create()");
+        log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)).c_str());
         exit_flag = true;
     }
 #endif // HAVE_EPOLL_CREATE
