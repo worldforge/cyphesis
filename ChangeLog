@@ -1,5 +1,10 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommClient.cpp: Fully report the parent and objtype of
+	  spurious objects received on the network.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Report an error if a logout is received by
 	  an account which is not connected.
 

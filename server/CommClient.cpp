@@ -21,6 +21,7 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Encoder.h>
@@ -150,8 +151,12 @@ void CommClient::objectArrived(const Atlas::Objects::Root & obj)
 {
     Atlas::Objects::Operation::RootOperation op = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(obj);
     if (!op.isValid()) {
-        // FIXME report the parents and objtype
-        log(ERROR, "Non op object received from client");
+        const std::list<std::string> & parents = obj->getParents();
+        if (parents.empty()) {
+            log(ERROR, String::compose("Object of type \"%1\" and no parent arrived from client", obj->getObjtype()).c_str());
+        } else {
+            log(ERROR, String::compose("Object of type \"%1\" and parent \"%2\" arrived from client", obj->getObjtype(), obj->getParents().front()).c_str());
+        }
         return;
     }
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);

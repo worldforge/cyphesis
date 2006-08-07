@@ -1,3 +1,5 @@
+In next series, PARENTS on Atlas objects should be a vector.
+
 Sort out .valid() or .is_valid() methods in python bindings for wfmath stuff.
 
 Add tests to make sure distanceTo() returns a valid zero length vector
