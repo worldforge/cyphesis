@@ -75,8 +75,12 @@ void ClientConnection::objectArrived(const Atlas::Objects::Root & obj)
 {
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
-        // FIXME report the parents and objtype
-        log(ERROR, String::compose("Non op object of type %1 received from server.", obj->getParents().front()).c_str());
+        const std::list<std::string> & parents = obj->getParents();
+        if (parents.empty()) {
+            log(ERROR, String::compose("Object of type \"%1\" with no parent arrived from server", obj->getObjtype()).c_str());
+        } else {
+            log(ERROR, String::compose("Object of type \"%1\" with parent \"%2\" arrived from server", obj->getObjtype(), obj->getParents().front()).c_str());
+        }
         return;
     }
     debug(std::cout << "A " << op->getParents().front() << " op from server!" << std::endl << std::flush;);

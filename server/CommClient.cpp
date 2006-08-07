@@ -153,9 +153,9 @@ void CommClient::objectArrived(const Atlas::Objects::Root & obj)
     if (!op.isValid()) {
         const std::list<std::string> & parents = obj->getParents();
         if (parents.empty()) {
-            log(ERROR, String::compose("Object of type \"%1\" and no parent arrived from client", obj->getObjtype()).c_str());
+            log(ERROR, String::compose("Object of type \"%1\" with no parent arrived from client", obj->getObjtype()).c_str());
         } else {
-            log(ERROR, String::compose("Object of type \"%1\" and parent \"%2\" arrived from client", obj->getObjtype(), obj->getParents().front()).c_str());
+            log(ERROR, String::compose("Object of type \"%1\" with parent \"%2\" arrived from client", obj->getObjtype(), obj->getParents().front()).c_str());
         }
         return;
     }

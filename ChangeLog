@@ -1,5 +1,11 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/ClientConnection.cpp, server/CommClient.cpp: Clarify the
+	  error messages about non operation objects on the wire, and
+	  use the same messages in the client.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CorePropertyManager.cpp: Delete all the property
 	  factories on shutdown, to keep the memory usage clean.
 
