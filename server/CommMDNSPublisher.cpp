@@ -240,6 +240,13 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
         cmp->m_avahiFd = fd;
     }
 
+    if (!event & AVAHI_WATCH_IN) {
+        log(ERROR, "Avahi watcher does not require read events.");
+    }
+    if (event & ~AVAHI_WATCH_IN) {
+        log(WARNING, "Avahi watcher requires unsupported events.");
+    }
+
     AvahiWatch * aw = new AvahiWatch;
     aw->m_publisher = cmp;
     aw->m_requiredEvent = event;
@@ -266,7 +273,7 @@ static AvahiWatchEvent watch_get_events(AvahiWatch *w)
 static void watch_free(AvahiWatch *w)
 {
     debug(std::cout << "avahi_watch_free" << std::endl << std::flush;);
-    // FIXME Implement this if necessary
+    log(WARNING, "avahi watch_free handler called");
 }
 
 struct AvahiTimeout {
@@ -430,17 +437,9 @@ bool CommMDNSPublisher::eof()
 int CommMDNSPublisher::read()
 {
     assert(m_avahiWatch != 0);
-    if (!m_avahiWatch->m_requiredEvent & AVAHI_WATCH_IN) {
-        // FIXME Move this check to the watch_new()
-        log(ERROR, "Avahi watcher does not require read events.");
-        return -1;
-    }
-    if (m_avahiWatch->m_requiredEvent & ~AVAHI_WATCH_IN) {
-        // FIXME Move this check to the watch_new()
-        log(WARNING, "Avahi watcher requires unsupported events.");
-    }
     m_avahiWatch->m_events = AVAHI_WATCH_IN;
     m_avahiWatch->m_callback(m_avahiWatch, m_avahiFd, AVAHI_WATCH_IN, m_avahiWatch->m_userdata);
+    m_avahiWatch->m_events = (AvahiWatchEvent)0;
     return 0;
 }
 

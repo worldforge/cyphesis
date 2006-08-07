@@ -1,5 +1,13 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommMDNSPublisher.cpp: Report a warning if avahi frees
+	  a watch data structure, which is currently not implemented.
+	  Move checks on the event type avahi requires to the callback
+	  called by avahi, so it is only checked once. Ensure that no
+	  events are flagged once the events have been processed.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp: Report socket errors when accepting a
 	  new connection.
 
