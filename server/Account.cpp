@@ -138,11 +138,8 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
 void Account::LogoutOperation(const Operation & op, OpVector &)
 {
-    std::cout << "Account logout: " << getId() << std::endl;
-
-    // It is possible this account is being forcibly logged out at a time
-    // when it is not logged in.
     if (m_connection == 0) {
+        log(ERROR, "Account::LogoutOperation on account that doesn't seem to be connected.");
         return;
     }
 
@@ -153,7 +150,6 @@ void Account::LogoutOperation(const Operation & op, OpVector &)
     }
     info->setFrom(getId());
     info->setTo(getId());
-    // FIXME Direct send rather than reply - requires local refno handling
     m_connection->send(info);
     m_connection->disconnect();
 }

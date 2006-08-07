@@ -1,5 +1,10 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Report an error if a logout is received by
+	  an account which is not connected.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.h, server/Connection.cpp: Move the code that
 	  decouples an object from the subscribed connection into its
 	  own function, so the same code is invoked from two different
