@@ -99,11 +99,11 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
-    Character * pchar = dynamic_cast<Character *>(chr);
-    if (pchar != 0) {
-        pchar->m_externalMind = new ExternalMind(*m_connection,
-                                                 pchar->getId(),
-                                                 pchar->getIntId());
+    Character * character = dynamic_cast<Character *>(chr);
+    if (character != 0) {
+        character->m_externalMind = new ExternalMind(*m_connection,
+                                                     character->getId(),
+                                                     character->getIntId());
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
@@ -246,19 +246,22 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    BaseEntity * obj = addNewCharacter(typestr, arg);
+    Entity * entity = addNewCharacter(typestr, arg);
 
-    if (obj == 0) {
+    if (entity == 0) {
         error(op, "Character creation failed", res, getId());
         return;
     }
 
-    // Inform the client that it has successfully subscribed
-    Info info;
-    Anonymous info_arg;
-    obj->addToEntity(info_arg);
-    info->setArgs1(info_arg);
-    res.push_back(info);
+    Character * character = dynamic_cast<Character *>(entity);
+    if (character != 0) {
+        // Inform the client that it has successfully subscribed
+        Info info;
+        Anonymous info_arg;
+        entity->addToEntity(info_arg);
+        info->setArgs1(info_arg);
+        res.push_back(info);
+    }
 
     // Inform the client of the newly created character
     Sight sight;
