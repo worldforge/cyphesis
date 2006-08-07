@@ -1,5 +1,9 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/slave.cpp: Remove duplicate line added accidentally.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommServer.cpp: Remove FIXME and replace with comments
 	  explaining the choice of value for epoll_create(). Check if
 	  epoll_wait is returning the maximum events possible, so we know

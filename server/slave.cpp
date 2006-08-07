@@ -114,7 +114,6 @@ int main(int argc, char ** argv)
     // This ID is currently generated every time, but should perhaps be
     // persistent in future.
     std::string server_id, lobby_id;
-    std::string server_id, lobby_id;
     long int_id, lobby_int_id;
 
     if (((int_id = newId(server_id)) < 0) ||
