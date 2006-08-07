@@ -1,3 +1,6 @@
+Make sure client can't get the impression it has taken over a non character
+entity.
+
 In next series, PARENTS on Atlas objects should be a vector.
 
 Sort out .valid() or .is_valid() methods in python bindings for wfmath stuff.

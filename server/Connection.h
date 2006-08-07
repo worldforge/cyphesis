@@ -47,7 +47,7 @@ class Connection : public OOGThing {
     bool m_obsolete;
 
     Account * addPlayer(const std::string &, const std::string &);
-    int disconnectObject(BaseEntity *, const std::string & event);
+    Account * removePlayer(BaseEntity *, const std::string & event);
   protected:
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;

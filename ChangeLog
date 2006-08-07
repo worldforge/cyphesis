@@ -1,5 +1,15 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Connection.h, server/Connection.cpp: Change disconnectObject
+	  to removePlayer to make it clearer what the return value means,
+	  and return a pointer to the removed object if it is a player account.
+
+	* server/Connection.cpp: When removing an account which has been
+	  logged out, remove all its characters which are not currently in
+	  use from the connections list.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommSlaveClient.cpp, server/CommSlaveClient.h: Require an
 	  ID to be passed into the constructor for a slave connection.
 

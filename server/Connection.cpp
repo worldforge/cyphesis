@@ -77,7 +77,7 @@ Connection::~Connection()
 
     BaseDict::const_iterator Iend = m_objects.end();
     for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        disconnectObject(I->second, "Disconnect");
+        removePlayer(I->second, "Disconnect");
     }
 
     m_server.decClients();
@@ -110,14 +110,18 @@ Account * Connection::addPlayer(const std::string& username,
     return player;
 }
 
-int Connection::disconnectObject(BaseEntity * obj, const std::string & event)
+/// \brief Remove an object from this connection.
+///
+/// The object being removed may be a player, or another type of object such
+/// as an avatar. If it is an player or other account, a pointer is returned.
+Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
 {
     Account * ac = dynamic_cast<Account *>(obj);
     if (ac != 0) {
         m_server.m_lobby.delAccount(ac);
         ac->m_connection = 0;
         logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(), ac->getId(), ac->m_username, event).c_str());
-        return 1;
+        return ac;
     }
     Character * character = dynamic_cast<Character *>(obj);
     if (character != 0) {
@@ -369,12 +373,36 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     }
     BaseDict::iterator I = m_objects.find(obj_id);
     if (I == m_objects.end()) {
-        error(op, "Got logout for unknown entity ID", res);
+        error(op, String::compose("Got logout for unknown entity ID(%1)", obj_id).c_str(), res);
         return;
     }
-    if (disconnectObject(I->second, "Logout") == 1) {
+    Account * ac = removePlayer(I->second, "Logout");
+    if (ac != 0) {
         m_objects.erase(I);
-        // FIXME Remove all characters associated with this account.
+        EntityDict::const_iterator J = ac->getCharacters().begin();
+        EntityDict::const_iterator Jend = ac->getCharacters().end();
+        for (; J != Jend; ++J) {
+            Entity * chr = J->second;
+            Character * character = dynamic_cast<Character *>(chr);
+            if (character != 0) {
+                if (character->m_externalMind != 0) {
+                    ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
+                    if (em == 0) {
+                        log(ERROR, String::compose("Character %1(%2) has external mind object which is not an ExternalMind", chr->getType(), chr->getId()).c_str());
+                    } else {
+                        if (&em->m_connection != this) {
+                            log(ERROR, String::compose("Connection(%1) has found a character in its dictionery which is connected to another Connection(%2)", getId(), em->m_connection.getId()).c_str());
+                            removeObject(J->second->getIntId());
+                        }
+                    }
+                } else {
+                    removeObject(J->second->getIntId());
+                }
+            } else {
+                // Non character entity
+                removeObject(J->second->getIntId());
+            }
+        }
     }
 
     Info info;
