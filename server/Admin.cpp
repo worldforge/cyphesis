@@ -249,7 +249,6 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = arg->getId();
-    // FIXME Use this id to install a type from the client
 
     if ((objtype == "object") || (objtype == "obj")) {
 

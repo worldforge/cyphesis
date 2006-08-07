@@ -1,5 +1,9 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Admin.cpp: Remove obsolete FIXME.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommClient.cpp: Fully report the parent and objtype of
 	  spurious objects received on the network.
 
