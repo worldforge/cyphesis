@@ -1,5 +1,10 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Only add initial inventory items if the entity
+	  being created is a character. Add some comments.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.h, server/Connection.cpp: Change disconnectObject
 	  to removePlayer to make it clearer what the return value means,
 	  and return a pointer to the removed object if it is a player account.

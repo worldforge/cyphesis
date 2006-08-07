@@ -113,22 +113,22 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         if (consts::enable_persistence) {
             Persistance::instance()->addCharacter(*this, *chr);
         }
-    }
 
-    // Hack in default objects
-    // This needs to be done in a generic way
-    Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1,"coin"));
-    ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
-    create_arg->setLoc(chr->getId());
-    create_arg->setName("coin");
-    // FIXME We can probably send the same op 10 times, rather than create 10
-    // FIXME alternatively we can set 10 args on one op
-    for(int i = 0; i < 10; i++) {
-        Create c;
-        c->setTo(chr->getId());
-        c->setArgs1(create_arg);
-        world.message(c, *chr);
+        // Hack in default objects
+        // This needs to be done in a generic way
+        Anonymous create_arg;
+        create_arg->setParents(std::list<std::string>(1,"coin"));
+        ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
+        create_arg->setLoc(chr->getId());
+        create_arg->setName("coin");
+        // FIXME We can probably send the same op 10 times, rather than create 10
+        // FIXME alternatively we can set 10 args on one op
+        for(int i = 0; i < 10; i++) {
+            Create c;
+            c->setTo(chr->getId());
+            c->setArgs1(create_arg);
+            world.message(c, *chr);
+        }
     }
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character %4(%5) by account %6", m_connection->getId(), getId(), chr->getId(), chr->getName(), chr->getType(), m_username).c_str());
@@ -253,12 +253,14 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    // Inform the client that it has successfully subscribed
     Info info;
     Anonymous info_arg;
     obj->addToEntity(info_arg);
     info->setArgs1(info_arg);
     res.push_back(info);
 
+    // Inform the client of the newly created character
     Sight sight;
     sight->setTo(getId());
     Anonymous sight_arg;
