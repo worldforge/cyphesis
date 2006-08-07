@@ -46,8 +46,9 @@ static const bool debug_flag = false;
 CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
 {
 #ifdef HAVE_EPOLL_CREATE
-    // FIXME 64 is a random figure I pulled out of the air. I don't even know
-    // what this is used for.
+    // 64 seems like a suitable value for initial number of sockets to be
+    // handled, though there is very little documentation on what would be
+    // a good choice here.
     m_epollFd = epoll_create(64);
     if (m_epollFd < 0) {
         log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)).c_str());
@@ -118,16 +119,24 @@ void CommServer::poll()
     bool busy = idle();
 
 #ifdef HAVE_EPOLL_CREATE
-    static struct epoll_event events[16];
+    static const int max_events = 16;
 
-    int rval = ::epoll_wait(m_epollFd, events, 16, (busy ? 0 : 100));
+    static struct epoll_event events[max_events];
+
+    int rval = ::epoll_wait(m_epollFd, events, max_events, (busy ? 0 : 100));
 
     if (rval <  0) {
         if (errno != EINTR) {
             log(ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
         }
-    } else {
-        m_congested = (rval != 0) || m_congested && busy;
+        return;
+    }
+
+    m_congested = (rval != 0) || m_congested && busy;
+
+    if (rval == max_events) {
+        // If we see this alot, we should increase the maximum
+        log(NOTICE, "epoll_wait returned the maximum number of events.");
     }
 
     for (int i = 0; i < rval; ++i) {

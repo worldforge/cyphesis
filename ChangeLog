@@ -1,5 +1,12 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommServer.cpp: Remove FIXME and replace with comments
+	  explaining the choice of value for epoll_create(). Check if
+	  epoll_wait is returning the maximum events possible, so we know
+	  if we should enlarge the array.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMDNSPublisher.cpp: Report a warning if avahi frees
 	  a watch data structure, which is currently not implemented.
 	  Move checks on the event type avahi requires to the callback
