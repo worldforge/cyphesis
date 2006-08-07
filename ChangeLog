@@ -1,5 +1,10 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CorePropertyManager.cpp: Delete all the property
+	  factories on shutdown, to keep the memory usage clean.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Rename some variables to clearer meanings.
 	  Only send confirmation of subscription on entity creation if
 	  the entity created is a character. Otherwise it is still created,

@@ -43,7 +43,12 @@ CorePropertyManager::CorePropertyManager()
 
 CorePropertyManager::~CorePropertyManager()
 {
-    // FIXME #2 Delete factories at shutdown.
+    std::map<std::string, PropertyFactory *>::const_iterator I = m_propertyFactories.begin();
+    std::map<std::string, PropertyFactory *>::const_iterator Iend = m_propertyFactories.end();
+    for (; I != Iend; ++I) {
+        assert(I->second != 0);
+        delete I->second;
+    }
 }
 
 PropertyBase * CorePropertyManager::addProperty(Entity * entity,
