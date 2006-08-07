@@ -23,11 +23,13 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <iostream>
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 #include <cassert>
 
@@ -61,7 +63,8 @@ bool CommListener::isOpen() const
 int CommListener::read()
 {
     accept();
-    // FIXME Perhaps we should return the error if accept() doesn't work?
+    // Accept errors are not returned, as the listen socket should not
+    // be removed.
     return 0;
 }
 
@@ -104,6 +107,7 @@ int CommListener::accept()
                            (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {
+        log(ERROR, String::compose("System error accepting network connection: ", strerror(errno)).c_str());
         return -1;
     }
     debug(std::cout << "Accepted" << std::endl << std::flush;);

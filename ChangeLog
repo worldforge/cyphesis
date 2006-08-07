@@ -1,5 +1,10 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommListener.cpp: Report socket errors when accepting a
+	  new connection.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Admin.cpp: Remove obsolete FIXME.
 
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
