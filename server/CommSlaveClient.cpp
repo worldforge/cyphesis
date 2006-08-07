@@ -24,8 +24,9 @@
 ///
 /// @param svr Reference to the object that manages all socket communication.
 /// @param fd Socket file descriptor
-CommSlaveClient::CommSlaveClient(CommServer & svr, int fd) :
-                 CommClient(svr, fd, *new SlaveClientConnection("local", *this,
+CommSlaveClient::CommSlaveClient(CommServer & svr, int fd,
+                                 const std::string & id) :
+                 CommClient(svr, fd, *new SlaveClientConnection(id, *this,
                                                                 svr.m_server))
 {
 }

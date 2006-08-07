@@ -20,6 +20,9 @@
 #include "CommSlaveClient.h"
 #include "CommServer.h"
 
+#include "common/id.h"
+#include "common/log.h"
+
 static const bool debug_flag = false;
 
 /// \brief Constructor for listener socket object.
@@ -35,9 +38,15 @@ CommSlaveListener::~CommSlaveListener()
 
 int CommSlaveListener::create(int asockfd)
 {
-    // FIXME Hmm, no proper ID for this connection.
+    std::string connection_id;
+    if (newId(connection_id) < 0) {
+        log(ERROR, "Unable to accept connection as no ID available");
+        close(asockfd);
+        return -1;
+    }
 
-    CommSlaveClient * newpeer = new CommSlaveClient(m_commServer, asockfd);
+    CommSlaveClient * newpeer = new CommSlaveClient(m_commServer, asockfd,
+                                                    connection_id);
 
     newpeer->setup();
 

@@ -1,5 +1,13 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommSlaveClient.cpp, server/CommSlaveClient.h: Require an
+	  ID to be passed into the constructor for a slave connection.
+
+	* server/CommSlaveListener.cpp: Generate an ID for client connections
+	  to a slave server, and pass it into the CommSlaveClient constructor.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/slave.cpp: Remove duplicate line added accidentally.
 
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>

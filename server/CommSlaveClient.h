@@ -24,7 +24,7 @@
 /// server.
 class CommSlaveClient : public CommClient {
   public:
-    CommSlaveClient(CommServer & svr, int fd);
+    CommSlaveClient(CommServer & svr, int fd, const std::string & id);
     virtual ~CommSlaveClient();
 
 };
