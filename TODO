@@ -1,3 +1,6 @@
+Read readline docs, and sort out good way of ensuring output does
+not mess up prompt.
+
 Make sure client can't get the impression it has taken over a non character
 entity.
 

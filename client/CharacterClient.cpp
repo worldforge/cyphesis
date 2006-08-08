@@ -56,7 +56,7 @@ int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
     long no = op->getSerialno();
     while (true) {
         if (m_connection.pending()) {
-            Operation input = CharacterClient::m_connection.pop();
+            Operation input = m_connection.pop();
             assert(input.isValid());
             if (input.isValid()) {
                 // FIXME What the hell is this!

@@ -314,7 +314,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     int login();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
-    void poll();
+    void poll(bool rewrite_prompt = true);
     void getLogin();
     void runCommand(char *);
     int runTask(AdminTask * task, const std::string & arg);
@@ -720,7 +720,7 @@ void Interactive<Stream>::loop()
 }
 
 template <class Stream>
-void Interactive<Stream>::poll()
+void Interactive<Stream>::poll(bool rewrite_prompt)
 // poll the codec if select says there is something there.
 {
     fd_set infds;
@@ -742,9 +742,15 @@ void Interactive<Stream>::poll()
                 std::cout << "Server disconnected" << std::endl << std::flush;
                 exit = true;
             } else {
-                std::cout << std::endl;
+                // FIXME Work out another way to make output clean, even
+                // though we have a prompt.
+                if (rewrite_prompt) {
+                    std::cout << std::endl;
+                }
                 codec->poll();
-                rl_forced_update_display();
+                if (rewrite_prompt) {
+                    rl_forced_update_display();
+                }
             }
         }
         if (FD_ISSET(STDIN_FILENO, &infds)) {
@@ -1067,9 +1073,13 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
     if (!reply_expected) { return; }
     // Wait for reply
-    // FIXME Only wait a reasonable ammount of time
+    time_t wait_start_time = time(NULL);
     while (!reply_flag) {
-       codec->poll();
+       if (time(NULL) - wait_start_time > 5) {
+           std::cout << cmd << ": No reply from server" << std::endl << std::flush;
+           return;
+       }
+       poll(false);
     }
 }
 
@@ -1118,7 +1128,7 @@ int main(int argc, char ** argv)
             localSocket += client_socket_name;
         }
 
-        std::cerr << "Attempting local connection" << std::endl << std::flush;
+        std::cout << "Attempting local connection" << std::endl << std::flush;
         Interactive<unix_socket_stream> bridge;
         if (bridge.connect(localSocket) == 0) {
             bridge.setUsername("admin");

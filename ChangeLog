@@ -1,5 +1,13 @@
 2006-08-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CharacterClient.cpp: Remove pointless class scope when
+	  acessing member variable.
+
+	* tools/cycmd.cpp: Don't wait forever for responses from the
+	  server to commands.
+
+2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientConnection.cpp, server/CommClient.cpp: Clarify the
 	  error messages about non operation objects on the wire, and
 	  use the same messages in the client.
