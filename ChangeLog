@@ -1,4 +1,10 @@
-2006-08-07  Al Riddoch  <alriddoch@zepler.org>
+2006-08-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/type_utilstest.cpp: Expand tests to cover lists of
+	  vectors and quaternions, and confirm the resultings lists contain
+	  objects with the right value.
+
+2006-08-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/CharacterClient.cpp: Remove pointless class scope when
 	  acessing member variable.

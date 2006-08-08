@@ -18,15 +18,18 @@
 #include "common/type_utils.h"
 
 #include "physics/Vector3D.h"
+#include "physics/Quaternion.h"
 
 #include <wfmath/atlasconv.h>
 
 #include <cassert>
 
+typedef std::vector<Quaternion> OrientationList;
+
 int main()
 {
     {
-        std::vector<Point3D> pointList;
+        CoordList pointList;
 
         Atlas::Message::ListType point;
         point.push_back(1.5);
@@ -47,10 +50,82 @@ int main()
 
         assert(pointList.size() == 0);
 
-        objectListFromMessage<Point3D, CoordList>(pointData, pointList);
+        objectListFromMessage<Point3D>(pointData, pointList);
 
         assert(pointList.size() == 6);
-    }
 
-    // FIXME More tests please Vector3D, Quaternion, etc.
+        CoordList::const_iterator I = pointList.begin();
+        CoordList::const_iterator Iend = pointList.end();
+        for (; I != Iend; ++I) {
+            const Point3D & q = *I;
+            assert(q == Point3D(1.5, 1.5, 1.5));
+        }
+    }
+    {
+        VectorList pointList;
+
+        Atlas::Message::ListType point;
+        point.push_back(1.5);
+        point.push_back(1.5);
+        point.push_back(1.5);
+
+        Atlas::Message::ListType pointData;
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+
+        assert(point.size() == 3);
+
+        assert(pointData.size() == 6);
+
+        assert(pointList.size() == 0);
+
+        objectListFromMessage<Vector3D>(pointData, pointList);
+
+        assert(pointList.size() == 6);
+
+        VectorList::const_iterator I = pointList.begin();
+        VectorList::const_iterator Iend = pointList.end();
+        for (; I != Iend; ++I) {
+            const Vector3D & q = *I;
+            assert(q == Vector3D(1.5, 1.5, 1.5));
+        }
+    }
+    {
+        OrientationList pointList;
+
+        Atlas::Message::ListType point;
+        point.push_back(0);
+        point.push_back(0);
+        point.push_back(0);
+        point.push_back(1);
+
+        Atlas::Message::ListType pointData;
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+        pointData.push_back(point);
+
+        assert(point.size() == 4);
+
+        assert(pointData.size() == 6);
+
+        assert(pointList.size() == 0);
+
+        objectListFromMessage<Quaternion>(pointData, pointList);
+
+        assert(pointList.size() == 6);
+
+        OrientationList::const_iterator I = pointList.begin();
+        OrientationList::const_iterator Iend = pointList.end();
+        for (; I != Iend; ++I) {
+            const Quaternion & q = *I;
+            assert(q == Quaternion().identity());
+        }
+    }
 }
