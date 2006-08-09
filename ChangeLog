@@ -1,3 +1,9 @@
+2006-08-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: Customise the prompt so it indicates the
+	  name of the server connected to, the username authenticated
+	  and the privelege level.
+
 2006-08-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/type_utilstest.cpp: Expand tests to cover lists of

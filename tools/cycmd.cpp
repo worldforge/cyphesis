@@ -36,6 +36,7 @@
 
 #include "common/Monitor.h"
 #include "common/Connect.h"
+#include "common/compose.hpp"
 
 #include <skstream/skstream_unix.h>
 
@@ -44,6 +45,8 @@
 #ifndef READLINE_CXX_SANE   // defined in config.h
 extern "C" {
 #endif
+#define USE_VARARGS
+#define PREFER_STDARG
 #include <readline/readline.h>
 #include <readline/history.h>
 #ifndef READLINE_CXX_SANE
@@ -270,15 +273,19 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
                     virtual public sigc::trackable
 {
   private:
-    bool error_flag, reply_flag, login_flag, avatar_flag;
+    bool error_flag, reply_flag, login_flag, avatar_flag, server_flag;
     int cli_fd;
     Atlas::Objects::ObjectsEncoder * encoder;
     Atlas::Codec * codec;
     Stream ios;
     std::string password;
     std::string username;
+    std::string accountType;
     std::string accountId;
     std::string agentId;
+    std::string agentName;
+    std::string serverName;
+    std::string prompt;
     bool exit;
     AdminTask * currentTask;
 
@@ -295,10 +302,12 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     void soundArrived(const RootOperation &);
 
     int negotiate();
+    void updatePrompt();
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
-                    avatar_flag(false), encoder(0), codec(0), exit(false),
-                    currentTask(0)
+                    avatar_flag(false), server_flag(false), encoder(0),
+                    codec(0), serverName("cyphesis"), prompt("cyphesis> "),
+                    exit(false), currentTask(0)
                     { }
     ~Interactive() {
         if (encoder != 0) {
@@ -312,6 +321,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     void send(const RootOperation &);
     int connect(const std::string & host);
     int login();
+    int setup();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
     void poll(bool rewrite_prompt = true);
@@ -516,12 +526,19 @@ void Interactive<Stream>::infoArrived(const RootOperation & op)
     }
     const Root & ent = op->getArgs().front();
     if (login_flag) {
+        std::cout << "login success" << std::endl << std::flush;
         if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
         } else {
             accountId = ent->getId();
+        }
+        if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+            const std::list<std::string> & parents = ent->getParents();
+            if (!parents.empty()) {
+                accountType = parents.front();
+            }
         }
     } else if (avatar_flag) {
         std::cout << "Create agent success" << std::endl << std::flush;
@@ -533,6 +550,20 @@ void Interactive<Stream>::infoArrived(const RootOperation & op)
             agentId = ent->getId();
             avatar_flag = false;
         }
+    } else if (server_flag) {
+        std::cout << "Server query success" << std::endl << std::flush;
+        Element name;
+        if (ent->copyAttr("name", name) == 0) {
+            if (name.isString()) {
+                serverName = name.String();
+                std::string::size_type p = serverName.find(".");
+                if (p != std::string::npos) {
+                    serverName = serverName.substr(0, p);
+                }
+                updatePrompt();
+            }
+        }
+        server_flag = false;
     } else {
         std::cout << "Info(" << std::endl;
         MapType entmap = ent->asMessage();
@@ -635,6 +666,7 @@ void Interactive<Stream>::runCommand(char * cmd)
 {
     if (cmd == NULL) {
         exit = true;
+        std::cout << std::endl << std::flush;
         return;
     }
 
@@ -710,12 +742,14 @@ char * completion_generator(const char * text, int state)
 template <class Stream>
 void Interactive<Stream>::loop()
 {
-    rl_callback_handler_install("cyphesis> ", &Interactive<Stream>::gotCommand);
+    rl_callback_handler_install(prompt.c_str(),
+                                &Interactive<Stream>::gotCommand);
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive<Stream>::runCommand));
     while (!exit) {
         poll();
     };
+    std::cout << std::endl << std::flush;
     rl_callback_handler_remove();
 }
 
@@ -742,8 +776,6 @@ void Interactive<Stream>::poll(bool rewrite_prompt)
                 std::cout << "Server disconnected" << std::endl << std::flush;
                 exit = true;
             } else {
-                // FIXME Work out another way to make output clean, even
-                // though we have a prompt.
                 if (rewrite_prompt) {
                     std::cout << std::endl;
                 }
@@ -828,8 +860,29 @@ int Interactive<Stream>::negotiate()
 
     // Send whatever codec specific data marks the beginning of a stream
     codec->streamBegin();
+
     return 0;
 
+}
+
+template <class Stream>
+void Interactive<Stream>::updatePrompt()
+{
+    std::string designation(">");
+    if (!username.empty()) {
+        prompt = username + "@";
+        if (accountType == "admin") {
+            designation = "#";
+        } else {
+            designation = "$";
+        }
+    } else {
+        prompt = "";
+    }
+    prompt += serverName;
+    prompt += designation;
+    prompt += " ";
+    rl_set_prompt(prompt.c_str());
 }
 
 template <class Stream>
@@ -856,6 +909,28 @@ int Interactive<Stream>::login()
 
     login_flag = false;
 
+    if (!error_flag) {
+       updatePrompt();
+       return 0;
+    }
+    return -1;
+}
+
+template <class Stream>
+int Interactive<Stream>::setup()
+{
+    Get get;
+
+    encoder->streamObjectsMessage(get);
+    ios << std::flush;
+    server_flag = true;
+
+    reply_flag = true;
+    while (server_flag && !error_flag) {
+       codec->poll();
+    }
+
+    server_flag = false;
     if (!error_flag) {
        return 0;
     }
@@ -1133,6 +1208,7 @@ int main(int argc, char ** argv)
         if (bridge.connect(localSocket) == 0) {
             bridge.setUsername("admin");
 
+            bridge.setup();
             std::cout << "Logging in... " << std::flush;
             if (bridge.login() != 0) {
                 std::cout << "failed." << std::endl << std::flush;
@@ -1163,6 +1239,7 @@ int main(int argc, char ** argv)
     if (bridge.connect(server) != 0) {
         return 1;
     }
+    bridge.setup();
     if (!interactive) {
         std::cerr << "WARNING: No login details available for remote host"
                   << std::endl
