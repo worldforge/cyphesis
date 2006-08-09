@@ -1,3 +1,7 @@
+Key player owned property, like houses and mounts should perhaps be listed
+in the account charlist, and thus in the connection objects list, allowing
+direct external control.
+
 Read readline docs, and sort out good way of ensuring output does
 not mess up prompt.
 
