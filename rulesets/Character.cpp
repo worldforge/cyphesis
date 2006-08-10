@@ -121,17 +121,28 @@ void Character::wieldDropped()
     sendWorld(wield);
 }
 
-Entity * Character::findInInventory(const std::string & id)
+Entity * Character::findInContains(Entity * ent, const std::string & id)
 {
-    // FIXME Non-recursive search at this time
-    EntitySet::const_iterator I = m_contains.begin();
-    EntitySet::const_iterator Iend = m_contains.end();
+    EntitySet::const_iterator I = ent->m_contains.begin();
+    EntitySet::const_iterator Iend = ent->m_contains.end();
     for (; I != Iend; ++I) {
-        if ((*I)->getId() == id) {
+        Entity * child = *I;
+        if (child->getId() == id) {
             return *I;
+        }
+        if (!child->m_contains.empty()) {
+            Entity * found = findInContains(child, id);
+            if (found != 0) {
+                return found;
+            }
         }
     }
     return 0;
+}
+
+Entity * Character::findInInventory(const std::string & id)
+{
+    return findInContains(this, id);
 }
 
 Character::Character(const std::string & id, long intId) :

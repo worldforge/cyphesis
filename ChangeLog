@@ -1,3 +1,8 @@
+2006-08-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.h, rulesets/Character.cpp: Re-write 
+	  findInInventory to recurse into inventory containers.
+
 2006-08-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Add a further customisation to the prompt so it
