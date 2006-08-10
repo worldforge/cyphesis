@@ -1,5 +1,13 @@
 2006-08-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Add a further customisation to the prompt so it
+	  shows the type of server being connected to.
+
+	* TODO: Add a note about a possible re-work of the database
+	  world persistence model.
+
+2006-08-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Customise the prompt so it indicates the
 	  name of the server connected to, the username authenticated
 	  and the privelege level.

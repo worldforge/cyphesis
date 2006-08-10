@@ -285,6 +285,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     std::string agentId;
     std::string agentName;
     std::string serverName;
+    std::string systemType;
     std::string prompt;
     bool exit;
     AdminTask * currentTask;
@@ -552,14 +553,18 @@ void Interactive<Stream>::infoArrived(const RootOperation & op)
         }
     } else if (server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
-        Element name;
-        if (ent->copyAttr("name", name) == 0) {
-            if (name.isString()) {
-                serverName = name.String();
-                std::string::size_type p = serverName.find(".");
-                if (p != std::string::npos) {
-                    serverName = serverName.substr(0, p);
-                }
+        if (!ent->isDefaultName()) {
+            serverName = ent->getName();
+            std::string::size_type p = serverName.find(".");
+            if (p != std::string::npos) {
+                serverName = serverName.substr(0, p);
+            }
+            updatePrompt();
+        }
+        Element raw_attr;
+        if (ent->copyAttr("server", raw_attr) == 0) {
+            if (raw_attr.isString()) {
+                systemType = raw_attr.String();
                 updatePrompt();
             }
         }
@@ -880,6 +885,8 @@ void Interactive<Stream>::updatePrompt()
         prompt = "";
     }
     prompt += serverName;
+    prompt += " ";
+    prompt += systemType;
     prompt += designation;
     prompt += " ";
     rl_set_prompt(prompt.c_str());
