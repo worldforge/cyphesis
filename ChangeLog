@@ -1,5 +1,10 @@
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Ensure operation_new return value is set
+	  to null if an exception is generated in addToArgs().
+
+2006-08-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_BBox.cpp, rulesets/Py_Statistics.cpp,
 	  rulesets/Python_API.cpp: Replace calls to the cyphesis log
 	  system with Python exceptions.

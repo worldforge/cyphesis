@@ -844,14 +844,18 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         }
     }
     std::vector<Root> & args_list = op->operation->modifyArgs();
+    assert(args_list.empty());
     if (arg1 != 0 && addToArgs(args_list, arg1) != 0) {
         Py_DECREF(op);
+        op = NULL;
     }
     if (arg2 != 0 && addToArgs(args_list, arg2) != 0) {
         Py_DECREF(op);
+        op = NULL;
     }
     if (arg3 != 0 && addToArgs(args_list, arg3) != 0) {
         Py_DECREF(op);
+        op = NULL;
     }
     return (PyObject *)op;
 }
