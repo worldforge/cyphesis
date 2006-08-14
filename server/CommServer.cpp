@@ -78,9 +78,7 @@ bool CommServer::idle()
 {
     // Update the time, and get the core server object to process
     // stuff.
-    // FIXME These idle methods are now getting called way too often
-    // if the core server is busy. Cut it back a bit. Probably can avoid
-    // calling them at all if we are busy.
+    time_t old_seconds = m_timeVal.tv_sec;
     gettimeofday(&m_timeVal, NULL);
 
     bool busy = m_server.m_world.idle(m_timeVal.tv_sec, m_timeVal.tv_usec);
@@ -88,7 +86,7 @@ bool CommServer::idle()
     // We only call the idlers if the world has returned that it is not busy,
     // and the last call to select/poll with a sleep time provided did not
     // return any traffic.
-    if (!busy && !m_congested) {
+    if (!busy && !m_congested && old_seconds != m_timeVal.tv_sec) {
         IdleSet::const_iterator I = m_idlers.begin();
         IdleSet::const_iterator Iend = m_idlers.end();
         for (; I != Iend; ++I) {
