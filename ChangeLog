@@ -1,5 +1,9 @@
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Fell.cpp: Exclude from the build, and doxygen.
+
+2006-08-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommServer.cpp: Only call idlers once every second, and
 	  still only when the server is not busy of congested with network
 	  traffic.
