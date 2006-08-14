@@ -734,40 +734,46 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     return (PyObject *)o;
 }
 
-static inline void addToArgs(std::vector<Root> & args, PyObject * arg)
+static int addToArgs(std::vector<Root> & args, PyObject * arg)
 {
-    if (arg == NULL) {
-        return;
-    }
     if (PyMessageElement_Check(arg)) {
         PyMessageElement * obj = (PyMessageElement*)arg;
+#ifndef NDEBUG
         if (obj->m_obj == NULL) {
-            log(ERROR, "Operation() Null element object added to new operation arguments.");
-            return;
+            PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in Operation constructor argument");
+            return -1;
         }
+#endif // NDEBUG
         const Element & o = *obj->m_obj;
         if (o.isMap()) {
             args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));
         } else {
-            log(ERROR, "Operation() Non-map element object added to new operation arguments."); // FIXME perhaps this should raise a python exception?
+            PyErr_SetString(PyExc_TypeError, "Operation arg is not a map");
+            return -1;
         }
     } else if (PyOperation_Check(arg)) {
         PyOperation * op = (PyOperation*)arg;
+#ifndef NDEBUG
         if (!op->operation.isValid()) {
-            log(ERROR, "Operation() Null operation object added to new operation arguments.");
-            return;
+            PyErr_SetString(PyExc_AssertionError,"Invalid operation in Operation constructor argument");
+            return -1;
         }
+#endif // NDEBUG
         args.push_back(op->operation);
     } else if (PyRootEntity_Check(arg)) {
         PyRootEntity * ent = (PyRootEntity*)arg;
+#ifndef NDEBUG
         if (!ent->entity.isValid()) {
-            log(ERROR, "Operation() Null operation object added to new operation arguments.");
-            return;
+            PyErr_SetString(PyExc_AssertionError,"Invalid rootentity in Operation constructor argument");
+            return -1;
         }
+#endif // NDEBUG
         args.push_back(ent->entity);
     } else {
-        log(ERROR, "Operation() Unknown object added to operation arguments.");
+        PyErr_SetString(PyExc_TypeError, "Operation arg is of unknown type");
+        return -1;
     }
+    return 0;
 }
 
 static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
@@ -838,9 +844,15 @@ static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwd
         }
     }
     std::vector<Root> & args_list = op->operation->modifyArgs();
-    addToArgs(args_list, arg1);
-    addToArgs(args_list, arg2);
-    addToArgs(args_list, arg3);
+    if (arg1 != 0 && addToArgs(args_list, arg1) != 0) {
+        Py_DECREF(op);
+    }
+    if (arg2 != 0 && addToArgs(args_list, arg2) != 0) {
+        Py_DECREF(op);
+    }
+    if (arg3 != 0 && addToArgs(args_list, arg3) != 0) {
+        Py_DECREF(op);
+    }
     return (PyObject *)op;
 }
 

@@ -22,8 +22,6 @@
 
 #include "Task.h"
 
-#include "common/log.h"
-
 static PyMethodDef Statistics_methods[] = {
     {NULL,          NULL}           /* sentinel */
 };
@@ -35,6 +33,9 @@ static void Statistics_dealloc(PyStatistics *self)
 
 static PyObject * Statistics_getattro(PyStatistics *self, PyObject *pn)
 {
+    // We use getattro rather than the simpler getattr because otherwise
+    // overriding of scripts does not work correctly. Statistics objects
+    // in game inherit directly from this class.
     char * name = PyString_AS_STRING(pn);
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -105,7 +106,7 @@ static int Statistics_init(PyStatistics * self, PyObject * args, PyObject * kwd)
     }
 
     if (!PyEntity_Check(entity)) {
-        log(ERROR, "Arg to statistics constructor is not an entity");
+        PyErr_SetString(PyExc_TypeError, "Arg to Statistics must be an entity.");
         return -1;
     }
     PyCharacter * character = (PyCharacter *)entity;

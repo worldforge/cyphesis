@@ -27,8 +27,6 @@
 #include "PythonWrapper.h"
 #include "BaseMind.h"
 
-#include "common/log.h"
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
@@ -161,29 +159,22 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
     if (strcmp(name, "map") == 0) {
         return -1;
     }
-    Entity * thing = self->m_mind;
+    Entity * entity = self->m_mind;
+    // Should we support removal of attributes?
     //std::string attr(name);
     //if (v == NULL) {
-        //thing->attributes.erase(attr);
+        //entity->attributes.erase(attr);
         //return 0;
     //}
-    // FIXME It may now be possible to accept map and list attributes.
     Element obj = PyObject_asMessageElement(v);
-    if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
-        thing->setAttr(name, obj);
+    if (!obj.isNone()) {
+        // In the Python wrapper for Entity in Py_Thing.cpp notices are issued
+        // for some types.
+        entity->setAttr(name, obj);
         return 0;
     }
-#if 0
-    if (obj.isMap()) {
-        std::cout << name << " is m map" << std::endl << std::flush;
-    }
-    if (obj.isList()) {
-        std::cout << name << " is m list" << std::endl << std::flush;
-    }
-    if (obj.isNone()) {
-        std::cout << name << " is m none" << std::endl << std::flush;
-    }
-#endif
+    // FIXME In fact it seems that nothing currently hits this bit, so
+    // all this code is redundant for entity scripts.
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
     if (self->Mind_attr == NULL) {

@@ -184,6 +184,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     // FIXME I don't like having to do this test, as its only required
     // during the unit tests.
     // Log an error perhaps?
+    // FIXME This causes a character holding an uprooted plant to die.
     if (m_location.m_loc != 0) {
         Eat eat_op;
         eat_op->setTo(m_location.m_loc->getId());

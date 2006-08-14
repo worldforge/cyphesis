@@ -36,7 +36,7 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
             Py_INCREF(o);
             return o;
         } else {
-            log(WARNING, "Unexpected type of Statistics script");
+            log(WARNING, "Unexpected non-python Statistics script");
             PyStatistics * ps = newPyStatistics();
             if (ps == NULL) {
                 return NULL;

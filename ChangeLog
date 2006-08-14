@@ -11,6 +11,9 @@
 
 	* rulesets/Py_RootEntity.cpp: Assert that attributes work correctly.
 
+	* rulesets/Plant.cpp: Add FIXME about an issue with plants eating
+	  people.
+
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Fell.cpp: Exclude from the build, and doxygen.

@@ -18,9 +18,6 @@
 #include "Py_RootEntity.h"
 #include "Py_Object.h"
 
-#include "common/log.h"
-#include "common/compose.hpp"
-
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
@@ -95,10 +92,10 @@ static PyObject * getattr(T * self, char * name)
         return PyString_FromString(self->entity->getName().c_str());
     } else if (strcmp(name, "id") == 0) {
         return PyString_FromString(self->entity->getId().c_str());
-    // FIXME This needs to be enabled, but sort out bugs first.
     } else {
         Element attr;
         if (self->entity->copyAttr(name, attr) == 0) {
+            assert(!attr.isNone());
             if (attr.isPtr()) {
                 PyObject * ret = (PyObject*)attr.Ptr();
                 Py_INCREF(ret);

@@ -18,8 +18,6 @@
 #include "Py_BBox.h"
 #include "Py_Vector3D.h"
 
-#include "common/log.h"
-
 static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
 {
     float square_radius = 0;
@@ -61,11 +59,13 @@ static PyObject * BBox_getattr(PyBBox *self, char *name)
 static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
 {
     if (!PyVector3D_Check(v)) {
-        PyErr_SetString(PyExc_TypeError, "BBox setattr must take tuple of floats, or ints");
+        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Vector");
+        return -1;
     }
     PyVector3D * vec = (PyVector3D *)v;
     if (!vec->coords.isValid()) {
-        log(ERROR, "BBox.setattr() vector is not set.");
+        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a valid Vector");
+        return -1;
     }
     const Vector3D & vector = vec->coords;
     if (strcmp(name, "near_point") == 0) {
