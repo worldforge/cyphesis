@@ -1,5 +1,18 @@
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_BBox.cpp, rulesets/Py_Statistics.cpp,
+	  rulesets/Python_API.cpp: Replace calls to the cyphesis log
+	  system with Python exceptions.
+
+	* rulesets/Py_Mind.cpp: Accept map and list atlas attributes on
+	  the mind object.
+
+	* rulesets/Py_Property.cpp: Improve the wording of some log messags.
+
+	* rulesets/Py_RootEntity.cpp: Assert that attributes work correctly.
+
+2006-08-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Fell.cpp: Exclude from the build, and doxygen.
 
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
