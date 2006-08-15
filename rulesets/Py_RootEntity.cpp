@@ -18,6 +18,9 @@
 #include "Py_RootEntity.h"
 #include "Py_Object.h"
 
+#include "common/log.h"
+#include "common/compose.hpp"
+
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
@@ -137,6 +140,12 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
     }
     Element atlas_val = PyObject_asMessageElement(v);
     if (!atlas_val.isNone()) {
+        if (atlas_val.isMap()) {
+            log(NOTICE, String::compose("Setting %1 as map attribute on RootEntity", name).c_str());
+        }
+        if (atlas_val.isList()) {
+            log(NOTICE, String::compose("Setting %1 as list attribute on RootEntity", name).c_str());
+        }
         self->entity->setAttr(name, atlas_val);
         return 0;
     } else {
