@@ -679,6 +679,42 @@ static PyObject * oplist_new(PyObject * self, PyObject * args)
         return (PyObject *)o;
 }
 
+static int PySequence_asVector(PyObject * o, std::vector<double> & ret)
+{
+    int len;
+    PyObject * item;
+    if (PyList_Check(o)) {
+        len = PyList_Size(o);
+        ret.resize(len);
+        for(int i = 0; i < len; i++) {
+            item = PyList_GetItem(o, i);
+            if (PyFloat_Check(item)) {
+                ret[i] = PyFloat_AsDouble(item);
+            } else if (PyInt_Check(item)) {
+                ret[i] = PyInt_AsLong(item);
+            } else {
+                return -1;
+            }
+        }
+    } else if (PyTuple_Check(o)) {
+        len = PyTuple_Size(o);
+        ret.resize(len);
+        for(int i = 0; i < len; i++) {
+            item = PyTuple_GetItem(o, i);
+            if (PyFloat_Check(item)) {
+                ret[i] = PyFloat_AsDouble(item);
+            } else if (PyInt_Check(item)) {
+                ret[i] = PyInt_AsLong(item);
+            } else {
+                return -1;
+            }
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
 static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
 {
     char * id = NULL;
@@ -701,14 +737,31 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
         for(i = 0; i < size; i++) {
             char * key = PyString_AsString(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
-            if ((strcmp(key, "location") == 0) && (PyLocation_Check(val))) {
+            if (strcmp(key, "location") == 0) {
+                if (!PyLocation_Check(val)) {
+                    PyErr_SetString(PyExc_TypeError, "location must be a Location object");
+                    return NULL;
+                }
                 PyLocation * loc = (PyLocation*)val;
                 loc->location->addToEntity(ent);
             } else if (strcmp(key, "xyz") == 0) {
-                ent->setAttr("pos", PyObject_asMessageElement(val));
-            } else if ((strcmp(key, "parent") == 0) && (PyString_Check(val))) {
+                std::vector<double> vector_val;
+                if (PySequence_asVector(val, vector_val) != 0) {
+                    PyErr_SetString(PyExc_TypeError, "xyz must be a number sequence.");
+                    return NULL;
+                }
+                ent->setPos(vector_val);
+            } else if (strcmp(key, "parent") == 0) {
+                if (!PyString_Check(val)) {
+                    PyErr_SetString(PyExc_TypeError, "parent must be a string.");
+                    return NULL;
+                }
                 ent->setLoc(PyString_AsString(val));
-            } else if ((strcmp(key, "type") == 0) && (PyString_Check(val))) {
+            } else if (strcmp(key, "type") == 0) {
+                if (!PyString_Check(val)) {
+                    PyErr_SetString(PyExc_TypeError, "type must be a string.");
+                    return NULL;
+                }
                 ent->setParents(std::list<std::string>(1, PyString_AsString(val)));
                 ent->setObjtype("obj");
             } else {

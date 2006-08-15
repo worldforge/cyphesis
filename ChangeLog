@@ -1,5 +1,12 @@
 2006-08-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: In Python Entity constructor, tighten
+	  up checks so exceptions are thrown for initialisers of the wrong
+	  type. Convert xyz sequence more directly to C++ vector for
+	  efficiency.
+
+2006-08-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Object.cpp: Avoid calling python list length
 	  function every loop iteration, for efficiency.
 
