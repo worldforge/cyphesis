@@ -136,7 +136,7 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
         return 0;
     }
     Element atlas_val = PyObject_asMessageElement(v);
-    if (atlas_val.getType() != Element::TYPE_NONE) {
+    if (!atlas_val.isNone()) {
         self->entity->setAttr(name, atlas_val);
         return 0;
     } else {

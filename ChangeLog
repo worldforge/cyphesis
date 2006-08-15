@@ -1,5 +1,10 @@
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_RootEntity.cpp: Simplify the check for unconvertible
+	  values.
+
+2006-08-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Mind.cpp: Put back restriction on map and list
 	  attributes on mind, and force them to be handled as native
 	  python objects.
