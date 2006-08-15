@@ -219,7 +219,8 @@ static Element PyListObject_asElement(PyObject * list)
 {
     ListType argslist;
     PyMessageElement * item;
-    for(int i = 0; i < PyList_Size(list); i++) {
+    int len = PyList_Size(list);
+    for(int i = 0; i < len; i++) {
         item = (PyMessageElement *)PyList_GetItem(list, i);
         if (PyMessageElement_Check(item)) {
             argslist.push_back(*(item->m_obj));
