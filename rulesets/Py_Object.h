@@ -42,11 +42,7 @@ PyMessageElement * newPyMessageElement();
 // Utility functions to munge between Object related types and python types
 //
 
-// PyObject * MapType_asPyObject(const Atlas::Message::MapType & map);
-// PyObject * ListType_asPyObject(const Atlas::Message::ListType & list);
 PyObject * MessageElement_asPyObject(const Atlas::Message::Element & obj);
-Atlas::Message::Element PyListObject_asElement(PyObject * list);
-Atlas::Message::Element PyDictObject_asElement(PyObject * dict);
-Atlas::Message::Element PyObject_asMessageElement(PyObject * o);
+Atlas::Message::Element PyObject_asMessageElement(PyObject * o, bool simple = false);
 
 #endif // RULESETS_PY_OBJECT_H

@@ -1,5 +1,16 @@
 2006-08-14  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Object.h, rulesets/Py_Object.cpp: Remove redundant
+	  functions from the header, and make them static. Add a flag to
+	  conversion function, to specify the function should return
+	  early if the result will be a map or a list.
+
+	* rulesets/Py_Mind.cpp: Indicate that converted python objects
+	  being used to set attributes should only be converted to non
+	  sequence data, to avoid the wasted copy and conversion.
+
+2006-08-14  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_RootEntity.cpp: Simplify the check for unconvertible
 	  values.
 

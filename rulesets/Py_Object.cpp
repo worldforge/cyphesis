@@ -215,7 +215,7 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     return ret;
 }
 
-Element PyListObject_asElement(PyObject * list)
+static Element PyListObject_asElement(PyObject * list)
 {
     ListType argslist;
     PyMessageElement * item;
@@ -236,7 +236,7 @@ Element PyListObject_asElement(PyObject * list)
     return argslist;
 }
 
-Element PyDictObject_asElement(PyObject * dict)
+static Element PyDictObject_asElement(PyObject * dict)
 {
     MapType argsmap;
     PyMessageElement * item;
@@ -262,7 +262,7 @@ Element PyDictObject_asElement(PyObject * dict)
     return argsmap;
 }
 
-Element PyObject_asMessageElement(PyObject * o)
+Element PyObject_asMessageElement(PyObject * o, bool simple)
 {
     if (PyInt_Check(o)) {
         return Element((int)PyInt_AsLong(o));
@@ -272,6 +272,11 @@ Element PyObject_asMessageElement(PyObject * o)
     }
     if (PyString_Check(o)) {
         return Element(PyString_AsString(o));
+    }
+    // If the caller has specified that it is not interested in
+    // map or list results, we should just return now.
+    if (simple) {
+        return Element();
     }
     if (PyList_Check(o)) {
         return PyListObject_asElement(o);
@@ -303,8 +308,7 @@ Element PyObject_asMessageElement(PyObject * o)
     }
     if (PyOplist_Check(o)) {
         PyOplist * opl = (PyOplist *)o;
-        ListType _list;
-        Element msg(_list);
+        Element msg = ListType();
         ListType & entlist = msg.asList();
         const OpVector & ops = *opl->ops;
         OpVector::const_iterator Iend = ops.end();
