@@ -1,3 +1,9 @@
+map and list attributes on python objects are a problem, because the
+wrappers copy then in getattr, meaning that modifications are lost.
+
+At the end of operation_new, should op be set to NULL if its decreffeed
+because an exception is being thrown?
+
 Database model: database for each non sequence type, int, float, string,
 with indexes on ID of entity, and an integer representing the attribute
 name. Another table of names will be required as authoritative mapping

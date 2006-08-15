@@ -167,14 +167,17 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
         //return 0;
     //}
     Element obj = PyObject_asMessageElement(v);
-    if (!obj.isNone()) {
+    if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
         // In the Python wrapper for Entity in Py_Thing.cpp notices are issued
         // for some types.
         entity->setAttr(name, obj);
         return 0;
     }
-    // FIXME In fact it seems that nothing currently hits this bit, so
-    // all this code is redundant for entity scripts.
+    // Minds set a number of native Python members on themselves to store
+    // important state information, which seems to be lost if we munge them
+    // into Atlas data, probably because of the weird stuff that happens
+    // in the wrappers when scripts manipulate complex attributes. They
+    // are copied on getattr, rather than referenced.
     // If we get here, then the attribute is not Atlas compatable, so we
     // need to store it in a python dictionary
     if (self->Mind_attr == NULL) {
