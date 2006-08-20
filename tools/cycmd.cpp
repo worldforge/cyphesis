@@ -764,6 +764,7 @@ void Interactive<Stream>::poll(bool rewrite_prompt)
 {
     fd_set infds;
     struct timeval tv;
+    int retval;
 
     FD_ZERO(&infds);
 
@@ -771,9 +772,13 @@ void Interactive<Stream>::poll(bool rewrite_prompt)
     FD_SET(STDIN_FILENO, &infds);
 
     tv.tv_sec = 0;
-    tv.tv_usec = 100000;
+    tv.tv_usec = 500000;
 
-    int retval = select(cli_fd+1, &infds, NULL, NULL, &tv);
+    if (rewrite_prompt) {
+        retval = select(cli_fd+1, &infds, NULL, NULL, NULL);
+    } else {
+        retval = select(cli_fd+1, &infds, NULL, NULL, &tv);
+    }
 
     if (retval > 0) {
         if (FD_ISSET(cli_fd, &infds)) {

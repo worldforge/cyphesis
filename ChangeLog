@@ -1,5 +1,11 @@
 2006-08-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: When calling select while waiting for user input,
+	  don't specify a timeout for select, as no timing is occuring in
+	  the program.
+
+2006-08-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Check the return value of select, and only check
 	  file descriptors if an error has not occured.
 
