@@ -35,7 +35,7 @@ static PyObject * Quaternion_as_list(PyQuaternion * self)
     return r;
 }
 
-static PyObject * Quaternion_valid(PyQuaternion * self)
+static PyObject * Quaternion_is_valid(PyQuaternion * self)
 {
     PyObject * ret = self->rotation.isValid() ? Py_True : Py_False;
     Py_INCREF(ret);
@@ -44,7 +44,7 @@ static PyObject * Quaternion_valid(PyQuaternion * self)
 
 static PyMethodDef Quaternion_methods[] = {
     {"as_list",         (PyCFunction)Quaternion_as_list, METH_NOARGS},
-    {"valid",           (PyCFunction)Quaternion_valid,   METH_NOARGS},
+    {"is_valid",        (PyCFunction)Quaternion_is_valid,METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 

@@ -61,12 +61,12 @@ class Raise(Thing):
         # print "DISTANCE ", distance, distance.is_valid(), axis, axis.is_valid()
         # If axis is zero, the quaternion contains NaNs.
         rotation=Quaternion(axis, -0.01)
-        # print "ROT ", rotation, rotation.valid()
-        if target.location.orientation.valid():
+        # print "ROT ", rotation, rotation.is_valid()
+        if target.location.orientation.is_valid():
             # print "VALID"
             rotation = target.location.orientation * rotation
 
-        # print "NEW_ROT", rotation, rotation.valid()
+        # print "NEW_ROT", rotation, rotation.is_valid()
         target_location=Location(target.location.parent, target.location.coordinates)
         target_location.orientation=rotation
         move=Operation("move", Entity(self.target, location=target_location), to=self.target)

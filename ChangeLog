@@ -1,3 +1,12 @@
+2006-08-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Quaternion.cpp: Rename valid() method to is_valid()
+	  for API consistency.
+
+	* rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py: Update scripts to the changes
+	  API.
+
 2006-08-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: In Python Entity constructor, tighten

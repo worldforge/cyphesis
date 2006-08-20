@@ -51,7 +51,7 @@ class Logging(Thing):
         else:
             normal=Vector3D(0,0,1)
             # print "LOC.ori ", target.location.orientation
-            if target.location.orientation.valid():
+            if target.location.orientation.is_valid():
                 normal.rotate(target.location.orientation)
             # print "Normal ", normal, normal.dot(Vector3D(0,0,1))
             if normal.dot(Vector3D(0,0,1)) > 0.8:
