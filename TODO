@@ -35,8 +35,6 @@ entity.
 
 In next series, PARENTS on Atlas objects should be a vector.
 
-cycmd karks it when it gets SIGWINCH I think.
-
 When world bootstrapped in DB, its gets position, even though the contents
 of its POS are invalid and undefined. When restarting after bootstrap, POS
 will then be valid, but use the undefined values found in the database,

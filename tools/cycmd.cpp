@@ -775,7 +775,7 @@ void Interactive<Stream>::poll(bool rewrite_prompt)
 
     int retval = select(cli_fd+1, &infds, NULL, NULL, &tv);
 
-    if (retval) {
+    if (retval > 0) {
         if (FD_ISSET(cli_fd, &infds)) {
             if (ios.peek() == -1) {
                 std::cout << "Server disconnected" << std::endl << std::flush;

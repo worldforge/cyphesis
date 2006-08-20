@@ -1,5 +1,10 @@
 2006-08-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Check the return value of select, and only check
+	  file descriptors if an error has not occured.
+
+2006-08-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/distancetest.cpp: Add assertions to distance test that
 	  ensure correct behavoir.
 
