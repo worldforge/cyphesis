@@ -217,6 +217,9 @@ int main()
         std::cout << "Distance ent1 -> ent2: "
                   << distance << "," << distance.isValid()
                   << std::endl << std::flush;
+
+        assert(distance.isValid());
+        assert(distance == Vector3D(0,0,0));
         ent1.m_location.m_loc = 0;
         ent2.m_location.m_loc = 0;
     }

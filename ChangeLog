@@ -1,5 +1,10 @@
 2006-08-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/distancetest.cpp: Add assertions to distance test that
+	  ensure correct behavoir.
+
+2006-08-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Quaternion.cpp: Rename valid() method to is_valid()
 	  for API consistency.
 
