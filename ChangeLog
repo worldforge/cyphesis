@@ -1,5 +1,10 @@
 2006-08-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.h, rulesets/Character.cpp, common/op_switch.h:
+	  Ensure that unseen operations are passed to the mind.
+
+2006-08-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: When calling select while waiting for user input,
 	  don't specify a timeout for select, as no timing is occuring in
 	  the program.

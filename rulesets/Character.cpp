@@ -1388,6 +1388,11 @@ bool Character::w2mTickOperation(const Operation & op)
     return false;
 }
 
+bool Character::w2mUnseenOperation(const Operation & op)
+{
+    return true;
+}
+
 bool Character::w2mUpdateOperation(const Operation & op)
 {
     return false;
