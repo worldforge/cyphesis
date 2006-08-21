@@ -202,14 +202,16 @@ void AdminClient::poll()
 
     int retval = select(cli_fd+1, &infds, NULL, NULL, &tv);
 
-    if (retval) {
-        if (FD_ISSET(cli_fd, &infds)) {
-            if (ios->peek() == -1) {
-                std::cerr << "Server disconnected" << std::endl << std::flush;
-                exit = true;
-            } else {
-                codec->poll();
-            }
+    if (retval < 1) {
+        return;
+    }
+
+    if (FD_ISSET(cli_fd, &infds)) {
+        if (ios->peek() == -1) {
+            std::cerr << "Server disconnected" << std::endl << std::flush;
+            exit = true;
+        } else {
+            codec->poll();
         }
     }
 }

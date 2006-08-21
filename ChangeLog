@@ -1,5 +1,12 @@
 2006-08-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/AdminClient.cpp, client/ClientConnection.cpp: Re-work poll()
+	  methods in client code that call select(2), so that they don't
+	  ignore errors, or get stuck waiting for data that has not yet
+	  arrived by doing so.
+
+2006-08-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.h, rulesets/Character.cpp, common/op_switch.h:
 	  Ensure that unseen operations are passed to the mind.
 

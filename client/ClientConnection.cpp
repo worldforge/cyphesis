@@ -279,18 +279,19 @@ void ClientConnection::poll(int timeOut)
 
     int retval = select(client_fd+1, &infds, NULL, NULL, &tv);
 
-    if (retval && (FD_ISSET(client_fd, &infds))) {
+    if (retval < 1) {
+        return;
+    }
+
+    if (FD_ISSET(client_fd, &infds)) {
         if (ios.peek() == -1) {
             std::cerr << "Server disconnected" << std::endl << std::flush;
             error_flag = true;
             reply_flag = true;
-            return;
+        } else {
+            codec->poll();
         }
-        codec->poll();
-        return;
     }
-    return;
-
 }
 
 RootOperation ClientConnection::pop()
