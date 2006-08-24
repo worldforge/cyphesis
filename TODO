@@ -1,8 +1,7 @@
+Probably good to replace python xyz with POS.
+
 map and list attributes on python objects are a problem, because the
 wrappers copy then in getattr, meaning that modifications are lost.
-
-At the end of operation_new, should op be set to NULL if its decreffeed
-because an exception is being thrown?
 
 Database model: database for each non sequence type, int, float, string,
 with indexes on ID of entity, and an integer representing the attribute
@@ -34,11 +33,6 @@ Make sure client can't get the impression it has taken over a non character
 entity.
 
 In next series, PARENTS on Atlas objects should be a vector.
-
-When world bootstrapped in DB, its gets position, even though the contents
-of its POS are invalid and undefined. When restarting after bootstrap, POS
-will then be valid, but use the undefined values found in the database,
-which can mess shit up big time.
 
 Make logging task rotate the tree to flat over a tick interval, which
 removes the issue of the progress glitching half way through the task,
