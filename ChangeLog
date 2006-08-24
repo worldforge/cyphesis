@@ -1,3 +1,11 @@
+2006-08-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Increment version number.
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.9
+
 2006-08-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/AdminClient.cpp, client/ClientConnection.cpp: Re-work poll()
