@@ -1,5 +1,17 @@
 2006-08-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Change the entity_new constructor used
+	  by define world scripts so that it takes an optional "pos" argument
+	  rather than the long obsolete "xyz".
+
+	* rulesets/mason/define_world.py, rulesets/werewolf/define_world.py:
+	  Modify the most relevant define_world scripts to use the changed API.
+
+	* rulesets/basic/mind/goals/common/move.py: Remove a long obsolete
+	  commented out debug line.
+
+2006-08-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/AdminClient.cpp: Don't include config.h, as this file doesn't
 	  use anything from it.
 

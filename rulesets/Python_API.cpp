@@ -744,10 +744,10 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
                 }
                 PyLocation * loc = (PyLocation*)val;
                 loc->location->addToEntity(ent);
-            } else if (strcmp(key, "xyz") == 0) {
+            } else if (strcmp(key, "pos") == 0) {
                 std::vector<double> vector_val;
                 if (PySequence_asVector(val, vector_val) != 0) {
-                    PyErr_SetString(PyExc_TypeError, "xyz must be a number sequence.");
+                    PyErr_SetString(PyExc_TypeError, "pos must be a number sequence.");
                     return NULL;
                 }
                 ent->setPos(vector_val);

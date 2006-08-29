@@ -22,9 +22,9 @@ import time
 #'Breakfast' goal is type of 'eating'.
 
 village_height=0
-gallows_xyz=(7,7,village_height)
+gallows_pos=(7,7,village_height)
 
-knowledge=[('gallows',gallows_xyz)]
+knowledge=[('gallows',gallows_pos)]
 
 execute=(il.execute,"elect()")
 
@@ -41,22 +41,22 @@ def default(mapeditor):
 
 # a wall around the world, suitable for all games.
 
-    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[1,102,2.5])
-    m.make('wall',type='wall',xyz=(-151,-101,village_height),bbox=[152,1,2.5])
-    m.make('wall',type='wall',xyz=(-151,100,village_height),bbox=[152,1,2.5])
-    m.make('wall',type='wall',xyz=(100,-101,village_height),bbox=[1,102,2.5])
+    m.make('wall',type='wall',pos=(-151,-101,village_height),bbox=[1,102,2.5])
+    m.make('wall',type='wall',pos=(-151,-101,village_height),bbox=[152,1,2.5])
+    m.make('wall',type='wall',pos=(-151,100,village_height),bbox=[152,1,2.5])
+    m.make('wall',type='wall',pos=(100,-101,village_height),bbox=[1,102,2.5])
 
     m.make('weather',type='weather',desc='object that describes the weather',
-           xyz=(0,1,0), rain=0.0)
+           pos=(0,1,0), rain=0.0)
 
 #   the gallows
-    gallows = m.make('gallows', type='gallows', xyz=gallows_xyz)
+    gallows = m.make('gallows', type='gallows', pos=gallows_pos)
 
 #   the mayor, who runs the game
-    mayor=m.make('mayor', type='mayor', xyz=(1, 1, village_height))
+    mayor=m.make('mayor', type='mayor', pos=(1, 1, village_height))
 
 #   the hangman, who lynches the villagers
-    hangman=m.make('hangman', type='hangman', xyz=(5, 5, village_height))
+    hangman=m.make('hangman', type='hangman', pos=(5, 5, village_height))
     m.learn(hangman,execute)
     m.know(hangman,knowledge)
     m.own(hangman,gallows)
