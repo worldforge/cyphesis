@@ -1,5 +1,3 @@
-Probably good to replace python xyz with POS.
-
 map and list attributes on python objects are a problem, because the
 wrappers copy then in getattr, meaning that modifications are lost.
 
