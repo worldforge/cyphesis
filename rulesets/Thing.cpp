@@ -327,6 +327,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // This code handles sending Appearance and Disappearance operations
     // to this entity and others to indicate if one has gained or lost
     // sight of the other because of this movement
+
+    // FIXME Why only for a perceptive moving entity? Surely other entities
+    // must gain/lose sight of this entity if it's moving?
     if (isPerceptive()) {
         checkVisibility(oldpos, res);
     }
@@ -555,6 +558,9 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // This code handles sending Appearance and Disappearance operations
     // to this entity and others to indicate if one has gained or lost
     // sight of the other because of this movement
+
+    // FIXME Why only for a perceptive moving entity? Surely other entities
+    // must gain/lose sight of this entity if it's moving?
     if (isPerceptive()) {
         checkVisibility(oldpos, res);
     }

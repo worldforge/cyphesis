@@ -1,5 +1,10 @@
 2006-09-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Add FIXME notes about appear/disappear
+	  generating code.
+
+2006-09-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommListener.cpp, server/CommUnixListener.cpp: Clean up
 	  the code layout a little.
 
