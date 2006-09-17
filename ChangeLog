@@ -1,3 +1,8 @@
+2006-09-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMDNSPublisher.cpp: Re-write isOpen so that it checks
+	  the socket fd is not -1.
+
 2006-08-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Change the entity_new constructor used

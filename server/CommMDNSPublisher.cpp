@@ -113,7 +113,9 @@ int CommMDNSPublisher::getFd() const
 
 bool CommMDNSPublisher::isOpen() const
 {
-    return true;
+    assert(m_session != 0);
+
+    return sw_discovery_socket(m_session) != -1;
 }
 
 bool CommMDNSPublisher::eof()
@@ -426,7 +428,7 @@ int CommMDNSPublisher::getFd() const
 
 bool CommMDNSPublisher::isOpen() const
 {
-    return true;
+    return m_avahiFd != -1;
 }
 
 bool CommMDNSPublisher::eof()
