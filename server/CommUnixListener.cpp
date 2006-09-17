@@ -58,7 +58,7 @@ bool CommUnixListener::eof()
 }
 bool CommUnixListener::isOpen() const
 {
-    return true;
+    return m_unixListener.is_open();
 }
 
 int CommUnixListener::read()

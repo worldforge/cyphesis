@@ -1,5 +1,14 @@
 2006-09-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommListener.cpp, server/CommUnixListener.cpp:
+	  Re-write isOpen() to use the is_open method of the overlying
+	  socket object, rather than always returning true. This issue may
+	  never arise, but it ensures that all socket objects should
+	  return isOpen() == false before they return -1 as a socket fd,
+	  which prevents memory corruption in the select code.
+
+2006-09-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientConnection.cpp: Remove hardcoded value for the
 	  maximum path length for a unix socket, and use the size of
 	  the data structure member instead. This fixes an issue caused
