@@ -55,6 +55,7 @@ bool CommListener::eof()
 {
     return false;
 }
+
 bool CommListener::isOpen() const
 {
     return m_listener.is_open();

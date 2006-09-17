@@ -56,6 +56,7 @@ bool CommUnixListener::eof()
 {
     return false;
 }
+
 bool CommUnixListener::isOpen() const
 {
     return m_unixListener.is_open();
