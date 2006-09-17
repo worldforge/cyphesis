@@ -129,8 +129,6 @@ int ClientConnection::read() {
     }
 }
 
-#define UNIX_PATH_MAX 108
-
 int ClientConnection::connectLocal(const std::string & sockname)
 {
     debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
@@ -145,7 +143,7 @@ int ClientConnection::connectLocal(const std::string & sockname)
 
     struct sockaddr_un sun;
     sun.sun_family = AF_UNIX;
-    strncpy(sun.sun_path, socket.c_str(), UNIX_PATH_MAX);
+    strncpy(sun.sun_path, socket.c_str(), sizeof(sun.sun_path));
 
     int fd = ::socket(PF_UNIX, SOCK_STREAM, 0);
 

@@ -1,5 +1,12 @@
 2006-09-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/ClientConnection.cpp: Remove hardcoded value for the
+	  maximum path length for a unix socket, and use the size of
+	  the data structure member instead. This fixes an issue caused
+	  by the behavoir of strncpy on MacOSX.
+
+2006-09-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommMDNSPublisher.cpp: Re-write isOpen so that it checks
 	  the socket fd is not -1.
 
