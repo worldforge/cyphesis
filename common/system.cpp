@@ -215,14 +215,18 @@ int daemonise()
     switch (pid) {
         case 0:
             // Child
+            // Get rid of controlling tty, and start new session
+            setsid();
             // Switch signal behavoir
             daemon_signals();
+            // Change current working directory to /
+            if (chdir("/") != 0) {
+                log(ERROR, "Unable to change current working directory to /");
+            }
             // Get rid if stdio
             close(STDIN_FILENO);
             close(STDOUT_FILENO);
             close(STDERR_FILENO);
-            // Get rid of controlling tty, and start new session
-            setsid();
             // Open /dev/null on the stdio file descriptors to avoid problems
             new_stdio = open("/dev/null", O_RDWR);
             dup2(new_stdio, STDIN_FILENO);

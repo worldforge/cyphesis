@@ -1,3 +1,9 @@
+2006-09-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/system.cpp: When creating a daemon, create the new session
+	  earilier, and change current working directory to / to ensure the
+	  daemon does not interfere with the system.
+
 2006-09-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Add FIXME notes about appear/disappear
