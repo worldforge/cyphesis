@@ -25,6 +25,7 @@ typedef enum log_event { START, STOP, CONNECT, DISCONNECT, LOGIN, LOGOUT,
                          TAKE_CHAR, DROP_CHAR } LogEvent;
 
 void initLogger();
+void rotateLogger();
 void log(LogLevel, const char * msg);
 void logEvent(LogEvent, const char * msg);
 void logSysError(LogLevel);

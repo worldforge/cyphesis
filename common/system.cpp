@@ -105,6 +105,11 @@ extern "C" void report_abort(int signo)
 #endif
 }
 
+extern "C" void rotate_logs(int signo)
+{
+    rotateLogger();
+}
+
 void interactive_signals()
 {
 #if defined(HAVE_SIGACTION)
@@ -177,7 +182,7 @@ void daemon_signals()
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = SIG_IGN;
+    action.sa_handler = rotate_logs;
     sigaction(SIGHUP, &action, NULL);
 
     sigemptyset(&action.sa_mask);
@@ -198,7 +203,7 @@ void daemon_signals()
     signal(SIGINT, SIG_IGN);
     signal(SIGTERM, shutdown_on_signal);
     signal(SIGQUIT, SIG_IGN);
-    signal(SIGHUP, SIG_IGN);
+    signal(SIGHUP, rotate_logs);
     signal(SIGPIPE, SIG_IGN);
     signal(SIGSEGV, report_segfault);
     signal(SIGABRT, report_abort);

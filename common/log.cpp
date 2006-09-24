@@ -51,12 +51,8 @@ static void logDate(std::ostream & log_stream)
 
 static std::ofstream event_log;
 
-void initLogger()
+static void open_event_log()
 {
-    if (daemon_flag) {
-        openlog("WorldForge Cyphesis", LOG_PID, LOG_USER);
-    }
-
     std::string event_log_file = var_directory + "/tmp/cyphesis_event.log";
 
     event_log.open(event_log_file.c_str(), std::ios::out | std::ios::app);
@@ -65,6 +61,24 @@ void initLogger()
         log(ERROR, String::compose("Unable to open event log file \"%1\"", event_log_file).c_str());
         logSysError(ERROR);
     }
+}
+
+void initLogger()
+{
+    if (daemon_flag) {
+        openlog("WorldForge Cyphesis", LOG_PID, LOG_USER);
+    }
+
+    open_event_log();
+}
+
+void rotateLogger()
+{
+    if (event_log.is_open()) {
+        event_log.close();
+    }
+
+    open_event_log();
 }
 
 void log(LogLevel lvl, const char * msg)

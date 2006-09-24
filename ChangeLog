@@ -1,3 +1,11 @@
+2006-09-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/log.h, common/log.cpp: Add a new function to rotate
+	  the logs, eliminate duplicate code by breaking out log opening
+	  code into a static function.
+
+	* common/system.cpp: Add a HUP system call handler to rotate the logs.
+
 2006-09-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp: When creating a daemon, create the new session
