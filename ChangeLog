@@ -1,5 +1,11 @@
 2006-09-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Add check for poll system call, as it would probably
+	  bast to implement poll, making select a worst case fallback
+	  option.
+
+2006-09-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.h, common/log.cpp: Add a new function to rotate
 	  the logs, eliminate duplicate code by breaking out log opening
 	  code into a static function.

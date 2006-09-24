@@ -65,7 +65,7 @@ AC_ARG_ENABLE(debug,
 
 AC_LANG(C++)
 
-AC_CHECK_FUNCS([sigset sigaction epoll_create])
+AC_CHECK_FUNCS([sigset sigaction epoll_create poll])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
