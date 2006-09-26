@@ -1,3 +1,9 @@
+2006-09-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.init: Fix the options for scripts that create postresql
+	  accounts and database, so they don't block expecting interaction
+	  from the user.
+
 2006-09-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Add check for poll system call, as it would probably
