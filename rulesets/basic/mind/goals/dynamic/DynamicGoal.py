@@ -4,6 +4,11 @@
 from mind.Goal import Goal
 
 class DynamicGoal(Goal):
+    """Base class for dynamic or trigger goals.
+
+    A dynamic goal is one which is activated by an event or trigger,
+    usually the sight of an event, or a trigger language construct
+    in a talk operation."""
     def __init__(self, desc="some dynamic goal", trigger=None, **kw):
         kw['desc'] = desc
         apply(Goal.__init__,(self,),kw)
