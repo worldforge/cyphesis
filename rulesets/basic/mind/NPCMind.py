@@ -36,7 +36,24 @@ def get_dict_func(self, func_str, func_undefined):
     return func
 
 class NPCMind(BaseMind):
-    """base class for all NPCs"""
+    """Mind class for most mobile entities in the game.
+
+    An NPCMind object is associated with all NPC and similar entities on a
+    game server. It handles perception data from the world, tracks what
+    the NPC knows about, and handles its goals.
+
+    The data is organised into three key data structures:
+
+    self.map is handled by the underlying C++ code, and contains a copy of
+    all the entities in the world that this NPC is currently able to perceive.
+
+    self.knowledge contains data triples which define relations between
+    entities.
+
+    self.goals and self.trigger_goals contain trees of goals which represent
+    current and potential activities that NPC might engage in. self.goals are
+    goals which are checked each tick, self.trigger_goals are goals which
+    are activated by an event."""
     ########## Initialization
     def __init__(self, cppthing):
         self.cinit(cppthing)
@@ -72,10 +89,13 @@ class NPCMind(BaseMind):
         return event_name, sub_op
     ########## Map updates
     def add_map(self, obj):
+        """Hook called by underlying map code when an entity is added."""
         #print "Map add",obj
         pass
     def update_map(self, obj):
-        """fix ownership category for objects owned temporary under 'Foo' type"""
+        """Hook called by underlying map code when an entity is added.
+
+        Fix ownership category for objects owned temporary under 'Foo' type."""
         #print "Map update",obj
         foo_lst = self.things.get('Foo',[])
         for foo in foo_lst[:]: #us copy in loop, because it might get modified
@@ -84,6 +104,7 @@ class NPCMind(BaseMind):
                 self.remove_thing(foo)
                 self.add_thing(obj)
     def delete_map(self, obj):
+        """Hook called by underlying map code when an entity is added."""
         #print "Map delete",obj
         self.remove_thing(obj)
     ########## Operations
@@ -119,6 +140,7 @@ class NPCMind(BaseMind):
         print "LOAD"
     ########## Sight operations
     def sight_create_operation(self, original_op, op):
+        """Note our ownership of entities we created."""
         #BaseMind version overridden!
         obj=self.map.add(op[0], op.getSeconds())
         if original_op.from_==self.id:
@@ -154,6 +176,11 @@ class NPCMind(BaseMind):
         log.debug(1,str(self.id)+" interlinguish_warning: "+str(msg)+\
                   ": "+str(say[0].lexlink.id[1:]),op)
     def interlinguish_desire_verb3_buy_verb1_operation(self, op, say):
+        """Handle a sentence of the form 'I would iike to buy a ....'
+
+        Check if we have any of the type of thing the other character is
+        interested in, and whether we know what price to sell at. If so
+        set up the transaction goal, which offers to sell it."""
         object=say[1].word
         thing=self.things.get(object)
         if thing:
@@ -165,6 +192,7 @@ class NPCMind(BaseMind):
             self.goals.insert(0,goal)
             return Operation("talk", Entity(say=who.name+" one "+object+" will be "+str(price)+" coins")) + self.face(who)
     def interlinguish_desire_verb3_operation(self, op, say):
+        """Handle a sentence of the form 'I would like to ...'"""
         object=say[2:]
         verb=interlinguish.get_verb(object)
         operation_method=self.find_op_method(verb,"interlinguish_desire_verb3_",
@@ -182,6 +210,10 @@ class NPCMind(BaseMind):
         else:
             return self.interlinguish_warning(op,say,"Unkown assertion")
     def interlinguish_know_verb1_operation(self, op, say):
+        """Handle a sentence of the form 'know subject predicate object'
+
+        Accept admin instruction about knowledge, and store the triple
+        in our knowledge base."""
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")
         subject=say[1].word
@@ -197,6 +229,11 @@ class NPCMind(BaseMind):
         else:
             self.add_knowledge(predicate,subject,object)
     def interlinguish_tell_verb1_operation(self, op, say):
+        """Handle a sentence of the form 'Tell (me) ....'
+
+        Accept queries about what we know. Mostly this is for debugging
+        and for the time being it is useful to answer these queries no matter
+        who hasks."""
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
         subject=say[1].word
@@ -222,12 +259,26 @@ class NPCMind(BaseMind):
                 return Operation('talk', Entity(say=k)) + self.face(self.map.get(op.from_))
             return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(self.map.get(op.from_))
     def interlinguish_learn_verb1_operation(self, op, say):
+        """Handle a sentence of the form 'learn ....'
+
+        The learn sentence contains two components, and can hardly
+        be concidered a real sentence at all. The first is the verb
+        to be associated with a goal activity, and the second is
+        the python fragment executed in order to create the goal instance.
+        Obviously accepting a code fragment from the client is very
+        dangerous, and we need to be carefull that the admin_sound() check
+        works."""
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")
         subject=say[1].word
         object=say[2].word
         self.add_goal(subject,object)
     def interlinguish_own_verb1_operation(self, op, say):
+        """Handle a sentence of the form ' own ...'
+
+        Sentences of this form from the admin inform us that we own an
+        entity. This is essential when an entity needs to be used as a
+        tool, or raw material."""
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")
 ##         print self,"own:",say[1].word,say[2].word

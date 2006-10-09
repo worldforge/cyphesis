@@ -1,3 +1,10 @@
+Why handle sight_create_operation in NPCMind when the implementation in
+BaseMind does everything fine, and we can handle the ownership in the
+add_map() hook?
+
+Should Unseen be handled in BaseMind -> MemMap rather than taking the
+hit in the python code?
+
 Replace hasAttrFlag which isDefaultFoo for efficiency.
 
 rootWorldId should be a parameter to WorldRouter, not hardcoded.
