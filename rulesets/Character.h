@@ -50,7 +50,6 @@ class Character : public Character_parent {
 
     // Properties
     double m_stamina;
-    double m_drunkness;
     std::string m_sex;
     double m_food;
     double m_maxMass;
@@ -82,7 +81,6 @@ class Character : public Character_parent {
     Task * task() { return m_task; }
 
     const double getStamina() const { return m_stamina; }
-    const double getDrunkness() const { return m_drunkness; }
     const std::string & getSex() const { return m_sex; }
     const double getFood() const { return m_food; }
     const std::string & getRightHandWield() const { return m_rightHandWield; }

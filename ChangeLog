@@ -1,5 +1,13 @@
 2006-10-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.h, rulesets/Character.cpp: Remove hacky
+	  hardcoded drunkness implementation.
+
+	* rulesets/attributes.h, server/Persistor_impl.h, server/Restorer.cpp:
+	  Remove persistence hooks for drunkness.
+
+2006-10-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Block attempts at admin operations from the
 	  mind interface, and therefore the client.
 

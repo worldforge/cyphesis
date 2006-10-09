@@ -100,9 +100,6 @@ void Character::metabolise(OpVector & res, double ammount)
     } else {
         set_arg->setAttr("status", m_status - energyUsed);
     }
-    if (m_drunkness > 0) {
-        set_arg->setAttr("drunkness", m_drunkness - 0.1);
-    }
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
         set_arg->setAttr("stamina", 1.);
     }
@@ -150,7 +147,7 @@ Character::Character(const std::string & id, long intId) :
                                             m_statistics(*this),
                                             m_movement(*new Pedestrian(*this)),
                                             m_task(0), m_isAlive(true),
-                                            m_stamina(1.), m_drunkness(0.),
+                                            m_stamina(1.),
                                             m_sex("female"),
                                             m_food(0), m_maxMass(100),
                                             m_mind(0), m_externalMind(0)
@@ -160,7 +157,6 @@ Character::Character(const std::string & id, long intId) :
                             WFMath::Point<3>(0.25, 0.25, 2)));
 
     m_properties["stamina"] = new Property<double>(m_stamina, 0);
-    m_properties["drunkness"] = new Property<double>(m_drunkness, a_drunk);
     m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
     m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
     m_properties["right_hand_wield"] = new Property<std::string>(m_rightHandWield, a_rwield);
@@ -407,11 +403,6 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     Anonymous food_ent;
     food_ent->setId(getId());
     food_ent->setAttr("food", m_food);
-    Element alcohol_attr;
-    if (arg->copyAttr("alcohol", alcohol_attr) == 0 && alcohol_attr.isNum()) {
-        m_drunkness += alcohol_attr.asNum() / m_mass;
-        food_ent->setAttr("drunkness", m_drunkness);
-    }
 
     Set s;
     s->setArgs1(food_ent);
@@ -907,11 +898,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (new_pos.isValid()) {
-        new_pos +=
-            (Vector3D(((double)rand())/RAND_MAX, ((double)rand())/RAND_MAX, 0)
-                                * (m_drunkness * 10));
-    }
     debug( std::cout << ":" << new_loc << ":" << m_location.m_loc->getId()
                      << ":" << std::endl << std::flush;);
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
@@ -1332,17 +1318,11 @@ bool Character::w2mNourishOperation(const Operation & op)
 
 bool Character::w2mAppearanceOperation(const Operation & op)
 {
-    if (m_drunkness > 1.0) {
-        return false;
-    }
     return true;
 }
 
 bool Character::w2mDisappearanceOperation(const Operation & op)
 {
-    if (m_drunkness > 1.0) {
-        return false;
-    }
     return true;
 }
 
@@ -1400,25 +1380,16 @@ bool Character::w2mUpdateOperation(const Operation & op)
 
 bool Character::w2mSightOperation(const Operation & op)
 {
-    if (m_drunkness > 1.0) {
-        return false;
-    }
     return true;
 }
 
 bool Character::w2mSoundOperation(const Operation & op)
 {
-    if (m_drunkness > 1.0) {
-        return false;
-    }
     return true;
 }
 
 bool Character::w2mTouchOperation(const Operation & op)
 {
-    if (m_drunkness > 1.0) {
-        return false;
-    }
     return true;
 }
 
@@ -1458,9 +1429,6 @@ void Character::mind2body(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
 
-    if (m_drunkness > 1.0) {
-        return;
-    }
     if (op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
         return;

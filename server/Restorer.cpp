@@ -44,7 +44,6 @@ template <> Persistor<World> Restorer<World>::m_persist(true);
 template<>
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
-    dr.readColumn("drunkness", m_drunkness);
     dr.readColumn("sex", m_sex);
     dr.readColumn("food", m_food);
     dr.readColumn("right_hand_wield", m_rightHandWield);

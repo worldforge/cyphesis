@@ -30,15 +30,12 @@ static const uint32_t a_loc	= 1 << 0,	// Entity
                       a_attr	= 1 << 7,	// Entity
                       a_name	= 1 << 8,	// Entity
                       a_mass	= 1 << 9,	// Entity
-                      a_drunk	= 1 << 10,	// Character
-                      a_sex	= 1 << 11,	// Character
-                      a_food	= 1 << 12,	// Character
-                      a_rwield	= 1 << 13,	// Character
-                      a_line	= 1 << 14,	// Line
-                      a_area	= 1 << 15,	// Area
-                      a_fruit	= 1 << 16,	// Plant
-                      a_terrain	= 1 << 17;	// World
-
-static const int attr_count = 16;
+                      a_sex	= 1 << 10,	// Character
+                      a_food	= 1 << 11,	// Character
+                      a_rwield	= 1 << 12,	// Character
+                      a_line	= 1 << 13,	// Line
+                      a_area	= 1 << 14,	// Area
+                      a_fruit	= 1 << 15,	// Plant
+                      a_terrain	= 1 << 16;	// World
 
 #endif // RULESETS_ATTRIBUTES_H
