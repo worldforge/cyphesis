@@ -1,3 +1,8 @@
+2006-10-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.cpp: Block attempts at admin operations from the
+	  mind interface, and therefore the client.
+
 2006-10-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/goals/dynamic/DynamicGoal.py:

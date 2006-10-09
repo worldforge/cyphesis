@@ -1,3 +1,12 @@
+Replace hasAttrFlag which isDefaultFoo for efficiency.
+
+rootWorldId should be a parameter to WorldRouter, not hardcoded.
+
+Make ServerRouting pluggable by replacing with NodeRouting subclass, or
+something, which might contain more stuff to handle being a node in a
+distributed server. Might also be necessary to replace WorldRouter, which
+will be no problem, as everything currently refers to it by its base class.
+
 Fix appear disappear for instantaneous edit move ops.
 
 map and list attributes on python objects are a problem, because the

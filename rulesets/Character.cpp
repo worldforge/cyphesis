@@ -1463,6 +1463,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
     }
     if (op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
+        return;
     }
     if (op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG) &&
         op->getClassNo() != OP_TICK) {
