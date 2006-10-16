@@ -1,3 +1,17 @@
+datagram notes: see skstream TODO. Idea: When a broadcast op arrives at
+the Connection, route it to an object handling datagram comms for a given
+set of clients, and it caches the object, and notes the target address.
+It then builds a pool of target addresses for the cached op as the
+op is broadcast around the clients, and then later, in the socket loop
+code, it then handles sending the data out. Alternatively it could 
+serialise when it first gets the op, and cache the serialised data
+in the stream, noting the identity of the operation so that it can
+resend it. As long as it holds the operation smart pointer, no
+other operation can arrive with the same address, although another one
+later may easily have the same address once the smartptr releases to the
+memory pool. As soon as another op arrives for transmission, it should be
+okay to release the previous one, as it is not coming back.
+
 Why handle sight_create_operation in NPCMind when the implementation in
 BaseMind does everything fine, and we can handle the ownership in the
 add_map() hook?
