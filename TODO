@@ -1,3 +1,11 @@
+Ad physical constraints system, which if move op comes, it is filtered
+or transformed by it. For example, in a structure, elements of that
+structure would be contrained so that they translated move ops into
+move ops of their parent entity, the structure itself. This should be
+possible using the generic idea of properties that handle operations,
+and gives us a use case example for how a given property might need
+to filter or override an operation.
+
 datagram notes: see skstream TODO. Idea: When a broadcast op arrives at
 the Connection, route it to an object handling datagram comms for a given
 set of clients, and it caches the object, and notes the target address.
