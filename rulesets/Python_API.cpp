@@ -70,6 +70,33 @@ static void Function_dealloc(FunctionObject * self)
 
 static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 {
+    static char* kwlist[] = {"level", "message", NULL};
+    int level;
+    char *message;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "is:log_debug",
+                                     kwlist, &level, &message))
+        return NULL;
+
+    if(level <= consts::debug_level)
+        std::cout << message << std::endl << std::flush;
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * log_think(PyObject * self, PyObject * args, PyObject * kwds)
+{
+    static char* kwlist[] = {"message", NULL};
+    char *message;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "s:log_think",
+                                     kwlist, &message))
+        return NULL;
+
+    if(1 == consts::debug_thinking)
+        std::cout << message << std::endl << std::flush;
+
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -92,6 +119,26 @@ PyTypeObject log_debug_type = {
         0,              /* tp_as_mapping */
         0,              /* tp_hash */
         log_debug,      /* tp_call */
+};
+
+PyTypeObject log_think_type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,
+        "Function",
+        sizeof(FunctionObject),
+        0,
+        /* methods */
+        (destructor)Function_dealloc,
+        0,              /* tp_print */
+        0,              /* tp_getattr */
+        0,              /* tp_setattr */
+        0,              /* tp_compare */
+        0,              /* tp_repr */
+        0,              /* tp_as_number */
+        0,              /* tp_as_sequence */
+        0,              /* tp_as_mapping */
+        0,              /* tp_hash */
+        log_think,      /* tp_call */
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -1036,6 +1083,11 @@ void init_python_api()
     PyObject * debug = (PyObject*)PyObject_NEW(FunctionObject, &log_debug_type);
     PyObject_SetAttrString(log_mod, "debug", debug);
     Py_DECREF(debug);
+
+    PyObject * think = (PyObject*)PyObject_NEW(FunctionObject, &log_think_type);
+    PyObject_SetAttrString(log_mod, "thinking", think);
+    Py_DECREF(think);
+
     Py_DECREF(log_mod);
 
     PyObject * o;
