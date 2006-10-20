@@ -1,5 +1,11 @@
 2006-10-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp: Clean out unused keyword handling in debug
+	  functions, fix code to comply with style. Ensure debug calls have
+	  minimal cost if debugging is disabled.
+
+2006-10-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Add debug hooks for the python API, to
 	  help debug scripts.
 

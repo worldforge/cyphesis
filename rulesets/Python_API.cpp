@@ -70,16 +70,19 @@ static void Function_dealloc(FunctionObject * self)
 
 static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    static char* kwlist[] = {"level", "message", NULL};
-    int level;
-    char *message;
+    if (consts::debug_level != 0) {
+        int level;
+        char *message;
+        PyObject * op;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "is:log_debug",
-                                     kwlist, &level, &message))
-        return NULL;
+        if (!PyArg_ParseTuple(args, "is|O", &level, &message, &op)) {
+            return NULL;
+        }
 
-    if(level <= consts::debug_level)
-        std::cout << message << std::endl << std::flush;
+        if (consts::debug_level >= level) {
+            log(SCRIPT, message);
+        }
+    }
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -87,15 +90,15 @@ static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 
 static PyObject * log_think(PyObject * self, PyObject * args, PyObject * kwds)
 {
-    static char* kwlist[] = {"message", NULL};
-    char *message;
+    if (consts::debug_thinking != 0) {
+        char *message;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "s:log_think",
-                                     kwlist, &message))
-        return NULL;
+        if (!PyArg_ParseTuple(args, "s", &message)) {
+            return NULL;
+        }
 
-    if(1 == consts::debug_thinking)
-        std::cout << message << std::endl << std::flush;
+        log(SCRIPT, message);
+    }
 
     Py_INCREF(Py_None);
     return Py_None;
