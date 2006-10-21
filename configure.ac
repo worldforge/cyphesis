@@ -201,6 +201,7 @@ AM_PATH_LIBGCRYPT(1.2.0,
     AC_MSG_ERROR([Cannot find libgcrypt for encrypted passwords. Please install libgcrypt development libraries.])
 ])
 
+PKG_PROG_PKG_CONFIG
 
 dnl PKG_CHECK_MODULES(MONO, mono,
 dnl     [

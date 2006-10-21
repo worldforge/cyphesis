@@ -1,3 +1,11 @@
+2006-10-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* acinclude.m4: Update pkgconfig macros to more efficient later
+	  versions.
+
+	* configure.ac: Use newer pkgconfig macro to check for pkgconfig
+	  first.
+
 2006-10-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp: Clean out unused keyword handling in debug
