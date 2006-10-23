@@ -61,6 +61,6 @@ PropertyBase * CorePropertyManager::addProperty(Entity * entity,
         return 0;
     }
     debug(std::cout << name << " property found. " << entity->getId() << std::endl << std::flush;);
-    PropertyBase * p = I->second->newProperty();
+    PropertyBase * p = I->second->newProperty(entity);
     return p;
 }

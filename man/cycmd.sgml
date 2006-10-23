@@ -224,7 +224,7 @@ is from and which entity the operation is to.
    <varlistentry>
     <term><cmdsynopsis>
       <command>query</command>
-      <arg choice="req">typename</arg>
+      <arg choice="req">entity_id</arg>
      </cmdsynopsis>
     </term>
     <listitem>

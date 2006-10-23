@@ -1,3 +1,24 @@
+2006-10-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* man/Makefile.am: Add rules to create man pages for every command,
+	  which refer to the combined pages for all commands.
+
+	* man/cyaddrules.1, man/cyconvertrules.1, man/cydumprules.1,
+	  man/cyloadrules.1, man/cypasswd.1: Generate new pages as described
+	  above.
+
+	* man/cycmd.sgml: Fix argument name in cycmd man page.
+
+	* man/cyclient.1, man/cycmd.1, man/cycmd.sgml, man/cyphesis-tools.1,
+	  man/cyphesis.1: Re-generate existing man pages.
+
+	* common/PropertyFactory.h, common/PropertyFactory_impl.h: Pass in
+	  pointer to the entity when creating a new property using the
+	  factory.
+
+	* server/CorePropertyManager.cpp: Make sure the entity pointer is
+	  passed to the property factory as required.
+
 2006-10-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/NPCMind.py: Add doc strings to some key methods.

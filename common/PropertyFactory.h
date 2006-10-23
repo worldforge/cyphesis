@@ -21,18 +21,19 @@
 #include <string>
 
 class PropertyBase;
+class Entity;
 
 class PropertyFactory {
   public:
     virtual ~PropertyFactory();
 
-    virtual PropertyBase * newProperty() = 0;
+    virtual PropertyBase * newProperty(Entity *) = 0;
 };
 
 template <class T>
 class PropertyBuilder : public PropertyFactory {
   public:
-    virtual PropertyBase * newProperty();
+    virtual PropertyBase * newProperty(Entity *);
 };
 
 #endif // COMMON_PROPERTY_FACTORY_H

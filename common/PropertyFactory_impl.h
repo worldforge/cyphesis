@@ -21,7 +21,7 @@
 #include "PropertyFactory.h"
 
 template <class T>
-PropertyBase * PropertyBuilder<T>::newProperty()
+PropertyBase * PropertyBuilder<T>::newProperty(Entity *)
 {
     return new T();
 }
