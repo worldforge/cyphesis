@@ -1,5 +1,9 @@
 2006-10-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py: Add doc strings to some key methods.
+
+2006-10-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* acinclude.m4: Update pkgconfig macros to more efficient later
 	  versions.
 

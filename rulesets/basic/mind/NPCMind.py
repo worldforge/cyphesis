@@ -299,6 +299,14 @@ class NPCMind(BaseMind):
         pass
     ########## Sound operations
     def sound_talk_operation(self, original_op, op):
+        """Handle the sound of a talk operation from another character.
+
+        The spoken sentence comes in as a sentence string, which
+        is converted into a structure representation by the interlinguish
+        code. Embedded in the structure is the interlinguish string which
+        is then used to call methods and activate triggers, such as
+        dynamic goals."""
+
         talk_entity=op[0]
         res = Message()
         if interlinguish.convert_english_to_interlinguish(self,talk_entity):
@@ -316,6 +324,14 @@ class NPCMind(BaseMind):
         return res
     ########## Other operations
     def call_interlinguish_triggers(self, verb, prefix, op, say):
+        """Call trigger goals that have registered a trigger string that
+        matches the current interlinguish string.
+
+        Given an interlinguish verb string, and a prefix, find any trigger
+        goals that should be activated by the combined trigger string, and
+        activate them."""
+        # FIXME Don't need this call to get_op_name_and_sub, as we don't use
+        # the result.
         null_name, sub_op = self.get_op_name_and_sub(op)
         event_name = prefix+verb
         reply = Message()
@@ -392,7 +408,7 @@ class NPCMind(BaseMind):
                     return cmp=='>'
         return 1
     ########## things we own
-    def add_thing(self,thing): 
+    def add_thing(self,thing):
         """I own this thing"""
         #CHEAT!: this feature not yet supported
 ##         if not thing.location:
