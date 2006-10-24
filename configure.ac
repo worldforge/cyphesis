@@ -257,6 +257,7 @@ PKG_CHECK_MODULES(AVAHI, avahi-client,
         AC_DEFINE(HAVE_AVAHI, 1, [Define to 1 if you have avahi libs.])
     ],
     [
+        AC_MSG_RESULT([no])
         PKG_CHECK_MODULES(HOWL, howl,
             [
                 CPPFLAGS="$CPPFLAGS $HOWL_CFLAGS"
@@ -264,6 +265,7 @@ PKG_CHECK_MODULES(AVAHI, avahi-client,
                 AC_DEFINE(HAVE_LIBHOWL, 1, [Define to 1 if you have howl libs.])
             ],
             [
+                AC_MSG_RESULT([no])
                 AC_MSG_NOTICE([Ommiting DNS-SD functionality.])
             ])
     ])

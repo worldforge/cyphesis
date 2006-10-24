@@ -1,5 +1,10 @@
 2006-10-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Clean up output of the two MDNS service discovery
+	  libraries, so it is obvious what has happened when the checks fail.
+
+2006-10-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* man/Makefile.am: Add rules to create man pages for every command,
 	  which refer to the combined pages for all commands.
 
