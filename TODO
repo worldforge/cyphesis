@@ -1,3 +1,5 @@
+Add log rotation /etc/logrotate.d/foo to rpm.
+
 Improve pig death handling. Death is effectively just removing the mind
 state, so do so. Also think about disconnecting the incoming side
 of external mind. Perhaps interact in some way with the movement state?
