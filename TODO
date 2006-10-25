@@ -1,3 +1,7 @@
+Improve pig death handling. Death is effectively just removing the mind
+state, so do so. Also think about disconnecting the incoming side
+of external mind. Perhaps interact in some way with the movement state?
+
 Ad physical constraints system, which if move op comes, it is filtered
 or transformed by it. For example, in a structure, elements of that
 structure would be contrained so that they translated move ops into
