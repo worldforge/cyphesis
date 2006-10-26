@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: CreatorClient.h,v 1.17 2006-10-26 00:48:01 alriddoch Exp $
+
 #ifndef CLIENT_CREATOR_CLIENT_H
 #define CLIENT_CREATOR_CLIENT_H
 

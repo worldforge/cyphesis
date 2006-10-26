@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: TestWorld.h,v 1.6 2006-10-26 00:48:16 alriddoch Exp $
+
 #ifndef TESTS_TEST_WORLD_H
 #define TESTS_TEST_WORLD_H
 

@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: serialno.cpp,v 1.4 2006-10-26 00:48:06 alriddoch Exp $
+
 #include "serialno.h"
 
 int opSerialCount = 0;

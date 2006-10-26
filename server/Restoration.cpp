@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: Restoration.cpp,v 1.30 2006-10-26 00:48:15 alriddoch Exp $
+
 #include "Restoration.h"
 #include "Restorer.h"
 #include "Persistor.h"

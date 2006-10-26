@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: PersistantThingFactory_impl.h,v 1.10 2006-10-26 00:48:14 alriddoch Exp $
+
 #ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
 #define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
 

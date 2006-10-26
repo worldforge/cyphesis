@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
+// $Id: Skill.h,v 1.3 2006-10-26 00:48:13 alriddoch Exp $
+
 #ifndef SKILLS_SKILL_H
 #define SKILLS_SKILL_H
 

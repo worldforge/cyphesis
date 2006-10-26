@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: Quaternion.cpp,v 1.8 2006-10-26 00:48:07 alriddoch Exp $
+
 #include "Quaternion.h"
 
 #include "Vector3D.h"

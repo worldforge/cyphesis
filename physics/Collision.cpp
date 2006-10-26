@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: Collision.cpp,v 1.33 2006-10-26 00:48:07 alriddoch Exp $
+
 #include "Collision.h"
 
 #include "modules/Location.h"

@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: PropertyFactory.h,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
 

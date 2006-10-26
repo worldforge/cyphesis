@@ -2,6 +2,8 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
+// $Id: Planet.h,v 1.3 2006-10-26 00:48:12 alriddoch Exp $
+
 #ifndef ASTRONOMY_PLANET_H
 #define ASTRONOMY_PLANET_H
 

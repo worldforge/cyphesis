@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: Motion.cpp,v 1.14 2006-10-26 00:48:09 alriddoch Exp $
+
 #include "Motion.h"
 
 #include "rulesets/Entity.h"

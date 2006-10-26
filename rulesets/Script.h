@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: Script.h,v 1.16 2006-10-26 00:48:12 alriddoch Exp $
+
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
 

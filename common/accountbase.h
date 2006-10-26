@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: accountbase.h,v 1.17 2006-10-26 00:48:04 alriddoch Exp $
+
 #ifndef COMMON_ACCOUNT_BASE_H
 #define COMMON_ACCOUNT_BASE_H
 

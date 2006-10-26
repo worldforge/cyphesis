@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: StatisticsProperty.h,v 1.5 2006-10-26 00:48:12 alriddoch Exp $
+
 #ifndef RULESETS_STATISTICS_PROPERTY_H
 #define RULESETS_STATISTICS_PROPERTY_H
 

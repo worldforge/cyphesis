@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: server.cpp,v 1.138 2006-10-26 00:48:15 alriddoch Exp $
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif

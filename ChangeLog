@@ -1,5 +1,9 @@
 2006-10-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* Add RCS Id keywords to every file, for better version tracking.
+
+2006-10-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Makefile.am, server/Makefile.am: Remove a couple of obsolete
 	  headers from the build.
 

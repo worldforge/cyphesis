@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: CorePropertyManager.h,v 1.4 2006-10-26 00:48:14 alriddoch Exp $
+
 #ifndef SERVER_CORE_PROPERTY_MANAGER_H
 #define SERVER_CORE_PROPERTY_MANAGER_H
 

@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: Database.h,v 1.48 2006-10-26 00:48:03 alriddoch Exp $
+
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
 

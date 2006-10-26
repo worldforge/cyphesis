@@ -15,7 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.h,v 1.41 2006-10-25 18:06:40 alriddoch Exp $
+// $Id: const.h,v 1.42 2006-10-26 00:48:04 alriddoch Exp $
+
+// $Id: const.h,v 1.42 2006-10-26 00:48:04 alriddoch Exp $
 
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H

@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: ArithmeticFactory.h,v 1.3 2006-10-26 00:48:13 alriddoch Exp $
+
 #ifndef SERVER_ARITHMETIC_FACTORY_H
 #define SERVER_ARITHMETIC_FACTORY_H
 

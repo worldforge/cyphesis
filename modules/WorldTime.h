@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: WorldTime.h,v 1.13 2006-10-26 00:48:06 alriddoch Exp $
+
 #ifndef MODULES_WORLD_TIME_H
 #define MODULES_WORLD_TIME_H
 

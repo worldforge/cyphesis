@@ -15,6 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id: cyloadrules.cpp,v 1.32 2006-10-26 00:48:17 alriddoch Exp $
+
 #include "common/Database.h"
 #include "common/globals.h"
 
