@@ -63,7 +63,7 @@ cyphesis_SOURCES = \
 		PersistantThingFactory_impl.h \
 		Restoration.cpp Restoration.h \
 		Restorer.cpp Restorer_impl.h Restorer.h \
-		ServerRouting.cpp ServerRouting.h ServerRouting_methods.h \
+		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \

@@ -25,7 +25,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Database.cpp Database.h \
 		      terrain_utils.cpp terrain_utils.h \
 		      system.cpp system.h \
-		      serialno.cpp serialno.h refno.h \
+		      serialno.cpp serialno.h \
 		      inheritance.cpp custom.cpp inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
 		      DynamicProperty.cpp DynamicProperty.h \
