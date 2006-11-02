@@ -65,7 +65,9 @@ AC_ARG_ENABLE(debug,
 
 AC_LANG(C++)
 
-AC_CHECK_FUNCS([sigset sigaction epoll_create poll])
+AC_CHECK_FUNCS([sigset sigaction epoll_create poll localtime_r syslog uname])
+AC_CHECK_FUNCS([getuid nice fork setsid wait4 getppid kill inet_ntop])
+AC_CHECK_FUNCS([unlink])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
@@ -296,17 +298,20 @@ AC_CHECK_LIB(termcap,tgetent,
     [READLINE_LIBS="$READLINE_LIBS -ltermcap"],
     AC_CHECK_LIB(ncurses, tgetent, 
         [READLINE_LIBS="$READLINE_LIBS -lncurses"],
-        AC_MSG_ERROR([Cannot find tgetent in termcap or ncurses libraries!])
+        AC_MSG_WARN([Cannot find tgetent in termcap or ncurses libraries! This may be a problem for readline.])
     )
 )
 
-AC_CHECK_HEADERS(termios.h unistd.h signal.h)
+dnl General header checks
+AC_CHECK_HEADERS(termios.h unistd.h signal.h syslog.h sys/utsname.h sys/wait.h)
+AC_CHECK_HEADERS(winsock.h)
+
 AC_CHECK_LIB(readline,readline,
     [
         READLINE_LIBS="$READLINE_LIBS -lreadline"
     ],
     [
-        AC_MSG_ERROR([Cannot find readline!])
+        AC_MSG_WARN([Cannot find readline!])
     ],[ $READLINE_LIBS ]
 )
     

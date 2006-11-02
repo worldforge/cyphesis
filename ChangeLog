@@ -1,3 +1,9 @@
+2006-11-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Add checks for functions and headers that may or may
+	  not exist on more obscure systems. Relax some tests so that they
+	  only warn if they fail, as they may not be fatal.
+
 2006-10-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* acinclude.m4: Add AM_PATH_GCRYPT macro so that less errors occur.
