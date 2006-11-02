@@ -1,5 +1,14 @@
 2006-11-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.h: Add prototypes for required C library functions
+	  we implement on systems where they are missing.
+
+	* common/system.cpp: Adapt the system specific code for systems
+	  which are missing libc functions are system calls, including
+	  uname, getuid, nice, fork, kill and some of the signals.
+
+2006-11-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.h, common/log.cpp: Some systems have defines in their
 	  headers which conflict with cyphesis log levels, so make sure they
 	  are undefed before the enum, and add more tightly namespaced

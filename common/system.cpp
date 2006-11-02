@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.26 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: system.cpp,v 1.27 2006-11-02 02:38:15 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -36,9 +36,17 @@
 #include <iostream>
 
 extern "C" {
+#ifdef HAVE_SYS_UTSNAME_H
     #include <sys/utsname.h>
+#endif // HAVE_SYS_UTSNAME_H
     #include <sys/types.h>
+#ifdef HAVE_WINSOCK_H
+    #undef DATADIR
+    #include <winsock.h>
+#endif // HAVE_WINSOCK_H
+#ifdef HAVE_SYS_WAIT_H
     #include <sys/wait.h>
+#endif // HAVE_SYS_WAIT_H
     #include <signal.h>
     #include <fcntl.h>
     #include <unistd.h>
@@ -49,27 +57,40 @@ static const bool debug_flag = false;
 
 const std::string get_hostname()
 {
+#ifndef HAVE_UNAME
+    char hostname_buf[256];
+
+    if (gethostname(hostname_buf, 256) != 0) {
+        return "UNKNOWN";
+    }
+    return std::string(hostname_buf);
+#else // HAVE_UNAME
     struct utsname host_ident;
     if (uname(&host_ident) != 0) {
         return "UNKNOWN";
     }
     return std::string(host_ident.nodename);
+#endif // HAVE_UNAME
 }
 
 unsigned int security_check()
 {
+#ifdef HAVE_GETUID
     if (getuid() == 0 || geteuid() == 0) {
-        log(ERROR, "Running cyphesis as the superuser is dangerous.");
+        log(CYLOG_ERROR, "Running cyphesis as the superuser is dangerous.");
         return 0;
     }
+#endif // HAVE_GETUID
     return SECURITY_OKAY;
 }
 
 void reduce_priority(int p)
 {
+#ifdef HAVE_NICE
     if (nice(p) < 0) {
         log(ERROR, "Unable to increase nice level to reduce priority");
     }
+#endif // HAVE_NICE
 }
 
 extern "C" void shutdown_on_signal(int signo)
@@ -154,9 +175,11 @@ void interactive_signals()
 #else
     signal(SIGINT, shutdown_on_signal);
     signal(SIGTERM, shutdown_on_signal);
+#ifndef _WIN32
     signal(SIGQUIT, shutdown_on_signal);
     signal(SIGHUP, shutdown_on_signal);
     signal(SIGPIPE, SIG_IGN);
+#endif // _WIN32
     signal(SIGSEGV, report_segfault);
     signal(SIGABRT, report_abort);
 #endif
@@ -204,9 +227,11 @@ void daemon_signals()
 #else
     signal(SIGINT, SIG_IGN);
     signal(SIGTERM, shutdown_on_signal);
+#ifndef _WIN32
     signal(SIGQUIT, SIG_IGN);
     signal(SIGHUP, rotate_logs);
     signal(SIGPIPE, SIG_IGN);
+#endif // _WIN32
     signal(SIGSEGV, report_segfault);
     signal(SIGABRT, report_abort);
 #endif
@@ -214,6 +239,7 @@ void daemon_signals()
 
 int daemonise()
 {
+#ifdef HAVE_FORK
     int pid = fork();
     int new_stdio;
     int status = 0;
@@ -291,13 +317,20 @@ int daemonise()
             break;
     }
     return pid;
+#else // HAVE_FORK
+    // On systems where we can't fork, fool the original process into thinking
+    // it is now the child.
+    return 0;
+#endif // HAVE_FORK
 }
 
 void running()
 {
+#ifdef HAVE_FORK
     if (daemon_flag) {
         kill(getppid(), SIGUSR1);
     }
+#endif // HAVE_FORK
 }
 
 static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
@@ -364,7 +397,7 @@ int check_password(const std::string & pwd, const std::string & hash)
         // Extract the salt from the hash string
         size_t dp = hash.find('$', 3);
         if (dp == std::string::npos) {
-            log(ERROR, "Password hash has no $ symbol after the salt.");
+            log(CYLOG_ERROR, "Password hash has no $ symbol after the salt.");
             return -1;
         }
         assert(dp > 3);
