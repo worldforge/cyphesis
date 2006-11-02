@@ -15,13 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.h,v 1.15 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: log.h,v 1.16 2006-11-02 02:02:41 alriddoch Exp $
 
 #ifndef COMMON_LOG_H
 #define COMMON_LOG_H
 
+// Some systems pollute the namespace with defines of ERROR and perhaps
+// others.
+#undef ERROR
+
 typedef enum log_level { INFO, SCRIPT, NOTICE,
-                         WARNING, ERROR, SCRIPT_ERROR, CRITICAL } LogLevel;
+                         WARNING, CYLOG_ERROR, ERROR = CYLOG_ERROR,
+                         SCRIPT_ERROR,
+                         CRITICAL } LogLevel;
 
 typedef enum log_event { START, STOP, CONNECT, DISCONNECT, LOGIN, LOGOUT,
                          TAKE_CHAR, DROP_CHAR } LogEvent;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.19 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: log.cpp,v 1.20 2006-11-02 02:02:41 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -25,23 +25,33 @@
 #include <fstream>
 
 extern "C" {
+#ifdef HAVE_SYSLOG_H
   #include <syslog.h>
+#endif // HAVE_SYSLOG_H
   #include <errno.h>
 }
 
 static void logDate(std::ostream & log_stream)
 {
-    char buf[256];
-    struct tm local_time;
-
+    struct tm * local_time;
     const time_t now = time(NULL);
 
-    if (localtime_r(&now, &local_time) != &local_time) {
+#ifdef HAVE_LOCALTIME_R
+
+    struct tm local_time_buffer;
+
+    local_time = local_time_buffer;
+
+    if (localtime_r(&now, local_time) != &local_time) {
         log_stream << "[TIME_ERROR]";
         return;
     }
+#else // HAVE_LOCALTIME_R
+    local_time = localtime(&now);
+#endif // HAVE_LOCALTIME_R
 
-    int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T", &local_time);
+    char buf[256];
+    int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T", local_time);
 
     if (count == 0) {
         log_stream << "[TIME_ERROR]";
@@ -67,9 +77,11 @@ static void open_event_log()
 
 void initLogger()
 {
+#ifdef HAVE_SYSLOG
     if (daemon_flag) {
         openlog("WorldForge Cyphesis", LOG_PID, LOG_USER);
     }
+#endif // HAVE_SYSLOG
 
     open_event_log();
 }
@@ -85,6 +97,7 @@ void rotateLogger()
 
 void log(LogLevel lvl, const char * msg)
 {
+#ifdef HAVE_SYSLOG
     if (daemon_flag) {
         int type;
         switch (lvl) {
@@ -111,6 +124,10 @@ void log(LogLevel lvl, const char * msg)
         };
         syslog(type, msg);
     } else {
+#else // HAVE_SYSLOG
+    {
+#endif // HAVE_SYSLOG
+
         char * type;
         switch (lvl) {
             case INFO:

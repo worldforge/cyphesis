@@ -1,5 +1,13 @@
 2006-11-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/log.h, common/log.cpp: Some systems have defines in their
+	  headers which conflict with cyphesis log levels, so make sure they
+	  are undefed before the enum, and add more tightly namespaced
+	  versions for files which need those headers. Adapt the logging
+	  code for systems without syslog() or reentrant localtime().
+
+2006-11-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Add checks for functions and headers that may or may
 	  not exist on more obscure systems. Relax some tests so that they
 	  only warn if they fail, as they may not be fatal.
