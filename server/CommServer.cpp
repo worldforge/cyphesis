@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.cpp,v 1.57 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommServer.cpp,v 1.58 2006-11-02 05:14:55 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -29,8 +29,11 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/BaseWorld.h"
+#include "common/system.h"
 #include "common/compose.hpp"
+#include "common/BaseWorld.h"
+
+#include <skstream/sksocket.h>
 
 #include <iostream>
 
@@ -127,7 +130,7 @@ void CommServer::poll()
 
     if (rval <  0) {
         if (errno != EINTR) {
-            log(ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
+            log(CYLOG_ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
         }
         return;
     }
@@ -168,7 +171,7 @@ void CommServer::poll()
 #else // HAVE_EPOLL_CREATE
 
     fd_set sock_fds;
-    int highest = 0;
+    SOCKET_TYPE highest = 0;
     struct timeval tv;
 
     tv.tv_sec = 0;
@@ -183,7 +186,7 @@ void CommServer::poll()
            pendingConnections = true;
            continue;
        }
-       int socket_fd = (*I)->getFd();
+       SOCKET_TYPE socket_fd = (*I)->getFd();
        FD_SET(socket_fd, &sock_fds);
        if (socket_fd > highest) {
            highest = socket_fd;
@@ -194,8 +197,8 @@ void CommServer::poll()
 
     if (rval < 0) {
         if (errno != EINTR) {
-            log(ERROR, "Error caused by select() in main loop");
-            logSysError(ERROR);
+            log(CYLOG_ERROR, "Error caused by select() in main loop");
+            logSysError(CYLOG_ERROR);
         }
         return;
     }
@@ -247,8 +250,8 @@ void CommServer::addSocket(CommSocket * cs)
     ee.data.ptr = cs;
     int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_ADD, cs->getFd(), &ee);
     if (ret != 0) {
-        log(ERROR, "Error calling epoll_ctl to add socket");
-        logSysError(ERROR);
+        log(CYLOG_ERROR, "Error calling epoll_ctl to add socket");
+        logSysError(CYLOG_ERROR);
     }
 #endif // HAVE_EPOLL_CREATE
     m_sockets.insert(cs);
@@ -265,8 +268,8 @@ void CommServer::removeSocket(CommSocket * cs)
     // FIXME This may not be necessary
     int ret = ::epoll_ctl(m_epollFd, EPOLL_CTL_DEL, cs->getFd(), &ee);
     if (ret != 0) {
-        log(ERROR, "Error calling epoll_ctl to remove socket");
-        logSysError(ERROR);
+        log(CYLOG_ERROR, "Error calling epoll_ctl to remove socket");
+        logSysError(CYLOG_ERROR);
     }
 #endif // HAVE_EPOLL_CREATE
     m_sockets.erase(cs);

@@ -1,5 +1,22 @@
 2006-11-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommListener.cpp, server/CommPeerListener.cpp,
+	  server/CommUnixListener.cpp:
+	  Use closesocket to close sockets, so that it works on systems
+	  which do not use the same namespace for files and sockets.
+	  Use typedefs provided by skstream to ensure platform neutral
+	  handling of socket related types. Disable code that stores
+	  presentation version of client address on systems which don't
+	  have inet_ntop.
+
+	* server/CommServer.cpp: Use skstream to get the right header
+	  for select system call, and use skstream typedefs.
+
+	* server/WorldRouter.cpp: Use common/system.h to get getimeofday
+	  on systems which don't provide it.
+
+2006-11-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/system.h: Add prototypes for required C library functions
 	  we implement on systems where they are missing.
 

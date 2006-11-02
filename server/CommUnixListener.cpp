@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.cpp,v 1.24 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommUnixListener.cpp,v 1.25 2006-11-02 05:14:55 alriddoch Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "CommUnixListener.h"
 
@@ -28,6 +32,8 @@
 #include "common/globals.h"
 
 #include <iostream>
+
+#include <unistd.h>
 
 #include <cassert>
 
@@ -44,7 +50,7 @@ CommUnixListener::CommUnixListener(CommServer & svr) : CommSocket(svr),
 CommUnixListener::~CommUnixListener()
 {
     if (m_bound) {
-        unlink(m_path.c_str());
+        ::unlink(m_path.c_str());
     }
 }
 
@@ -118,7 +124,7 @@ int CommUnixListener::create(int asockfd)
     std::string connection_id;
     if (newId(connection_id) < 0) {
         log(ERROR, "Unable to accept connection as no ID available");
-        close(asockfd);
+        closesocket(asockfd);
         return -1;
     }
 

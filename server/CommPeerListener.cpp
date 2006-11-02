@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommPeerListener.cpp,v 1.6 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommPeerListener.cpp,v 1.7 2006-11-02 05:14:55 alriddoch Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "CommPeerListener.h"
 
@@ -24,6 +28,7 @@
 
 #include "common/id.h"
 #include "common/log.h"
+#include "common/system.h"
 
 static const bool debug_flag = false;
 
@@ -43,7 +48,7 @@ int CommPeerListener::create(int asockfd, const char * address)
     std::string peer_id;
     if (newId(peer_id) < 0) {
         log(ERROR, "Unable to accept connection as no ID available");
-        close(asockfd);
+        closesocket(asockfd);
         return -1;
     }
 

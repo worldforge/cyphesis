@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommListener.cpp,v 1.36 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommListener.cpp,v 1.37 2006-11-02 05:14:55 alriddoch Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "CommListener.h"
 
@@ -26,11 +30,13 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/system.h"
+
+#include <skstream/skstream.h>
 
 #include <iostream>
 
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#include <unistd.h>
 #include <errno.h>
 
 #include <cassert>
@@ -89,11 +95,11 @@ int CommListener::setup(int port)
         int   l_onoff;
         int   l_linger;
     } listenLinger = { 1, 0 };
-    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, &listenLinger,
+    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
                                                 sizeof(listenLinger));
     // Ensure the address can be reused once we are done with it.
     int flag = 1;
-    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
     return 0;
 }
 
@@ -103,7 +109,7 @@ int CommListener::accept()
     // Low level socket code to accept a new client connection, and create
     // the associated commclient object.
     struct sockaddr_storage sst;
-    unsigned int addr_len = sizeof(sst);
+    SOCKLEN addr_len = sizeof(sst);
 
     debug(std::cout << "Accepting.." << std::endl << std::flush;);
     int asockfd = ::accept(m_listener.getSocket(),
@@ -123,11 +129,13 @@ int CommListener::accept()
     }
     char buf[INET6_ADDRSTRLEN];
     const char * address = 0;
+#ifdef HAVE_INET_NTOP
     if (adr != 0) {
         address = ::inet_ntop(sst.ss_family, adr, buf, INET6_ADDRSTRLEN);
     } else {
         log(WARNING, "Unable to determine address type for connection");
     }
+#endif // HAVE_INET_NTOP
     if (address == 0) {
         log(WARNING, "Unable to determine remote address for connection");
         logSysError(WARNING);
@@ -142,7 +150,7 @@ int CommListener::create(int asockfd, const char * address)
     std::string connection_id;
     if (newId(connection_id) < 0) {
         log(ERROR, "Unable to accept connection as no ID available");
-        close(asockfd);
+        closesocket(asockfd);
         return -1;
     }
 
