@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommListener.cpp,v 1.37 2006-11-02 05:14:55 alriddoch Exp $
+// $Id: CommListener.cpp,v 1.38 2006-11-03 18:55:41 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -135,6 +135,8 @@ int CommListener::accept()
     } else {
         log(WARNING, "Unable to determine address type for connection");
     }
+#elif HAVE_GETNAMEINFO
+    // FIXME Get things using getnameinfo with NI_NUMERICHOST
 #endif // HAVE_INET_NTOP
     if (address == 0) {
         log(WARNING, "Unable to determine remote address for connection");

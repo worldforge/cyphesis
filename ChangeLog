@@ -1,3 +1,23 @@
+2006-11-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Add tests for more optional functions and headers.
+
+	* client/ObserverClient.cpp: Use alternative on systems which don't
+	  have usleep().
+
+	* common/system.cpp: Implement gettimeofday for systems which don't
+	  have it.
+
+	* server/CommListener.cpp: Add a note about supporting alternatives
+	  to inet_ntop.
+
+	* server/CommUnixListener.cpp, server/server.cpp: Disable the unix
+	  listen socket on systems which don't have it.
+
+	* tests/systemtest.cpp: Fix the test to work on systems without fork()
+	  or kill(), and add a test for the substitute gettimeofday
+	  implementation.
+
 2006-11-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommListener.cpp, server/CommPeerListener.cpp,

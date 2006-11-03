@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.cpp,v 1.25 2006-11-02 05:14:55 alriddoch Exp $
+// $Id: CommUnixListener.cpp,v 1.26 2006-11-03 18:55:41 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -36,6 +36,8 @@
 #include <unistd.h>
 
 #include <cassert>
+
+#ifdef HAVE_SYS_UN_H
 
 static const bool debug_flag = false;
 
@@ -139,3 +141,5 @@ int CommUnixListener::create(int asockfd)
 
     return 0;
 }
+
+#endif // HAVE_SYS_UN_H

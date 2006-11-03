@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.138 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: server.cpp,v 1.139 2006-11-03 18:55:41 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -221,6 +221,7 @@ int main(int argc, char ** argv)
         commServer.addSocket(peerListener);
     }
 
+#ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(commServer);
     if (localListener->setup(client_socket_name) != 0) {
         std::stringstream str;
@@ -231,6 +232,7 @@ int main(int argc, char ** argv)
     } else {
         commServer.addSocket(localListener);
     }
+#endif
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);

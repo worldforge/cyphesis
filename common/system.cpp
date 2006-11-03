@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.27 2006-11-02 02:38:15 alriddoch Exp $
+// $Id: system.cpp,v 1.28 2006-11-03 18:55:41 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -408,3 +408,30 @@ int check_password(const std::string & pwd, const std::string & hash)
     // Check if the generated hash matches the reference hash
     return hash == new_hash ? 0 : -1;
 }
+
+#ifndef HAVE_GETTIMEOFDAY
+
+int gettimeofday(struct timeval * tv, struct timezone * tz)
+{
+    assert(tz == 0);
+
+    SYSTEMTIME localtime;
+    struct tm unix_time;
+
+    GetLocalTime(&localtime);
+
+    unix_time.tm_sec = localtime.wSecond;
+    unix_time.tm_min = localtime.wMinute;
+    unix_time.tm_hour = localtime.wHour;
+    unix_time.tm_mday = localtime.wDay;
+    unix_time.tm_mon = localtime.wMonth - 1;
+    unix_time.tm_year = localtime.wYear - 1900;
+
+    tv->tv_usec = localtime.wMilliseconds * 1000;
+
+    tv->tv_sec = mktime(&unix_time);
+
+    return 0;
+}
+
+#endif

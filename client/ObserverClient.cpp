@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ObserverClient.cpp,v 1.22 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: ObserverClient.cpp,v 1.23 2006-11-03 18:55:41 alriddoch Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "ObserverClient.h"
 
@@ -73,7 +77,11 @@ void ObserverClient::load(const std::string & package,
 
 void ObserverClient::idle()
 {
+#ifdef HAVE_USLEEP
     usleep(100);
+#else // HAVE_SLEEP
+    Sleep(1);
+#endif
     // This is where we will put diagnostics, and maybe in future the AI code.
 #if 0
     // time.sleep(0.1);
