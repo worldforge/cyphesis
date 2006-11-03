@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.cpp,v 1.26 2006-11-03 18:55:41 alriddoch Exp $
+// $Id: CommUnixListener.cpp,v 1.27 2006-11-03 20:40:05 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -29,6 +29,7 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/system.h"
 #include "common/globals.h"
 
 #include <iostream>

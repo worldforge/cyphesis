@@ -1,5 +1,15 @@
 2006-11-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Add check for arpa/inet.h header.
+
+	* server/CommListener.cpp: Include arpa/inet.h if available, for
+	  inet_ntop.
+
+	* server/CommUnixListener.cpp: Include common/system.h to get
+	  closesocket().
+
+2006-11-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Add tests for more optional functions and headers.
 
 	* client/ObserverClient.cpp: Use alternative on systems which don't
