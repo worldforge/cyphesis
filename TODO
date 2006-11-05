@@ -1,3 +1,7 @@
+Can we make client connection code more generic, getting rid of the
+nasty merged TCP / UNIX stuff, and sharing code between tools and client.
+Perhaps even totally generic for server and client.
+
 Add log rotation /etc/logrotate.d/foo to rpm.
 
 Improve pig death handling. Death is effectively just removing the mind

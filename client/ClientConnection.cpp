@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.39 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: ClientConnection.cpp,v 1.40 2006-11-05 21:32:48 alriddoch Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif // HAVE_CONFIG_H
 
 #include "ClientConnection.h"
 
@@ -30,8 +34,9 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sys/socket.h>
+#ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
+#endif // HAVE_SYS_UN_H
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
@@ -133,6 +138,7 @@ int ClientConnection::read() {
 
 int ClientConnection::connectLocal(const std::string & sockname)
 {
+#ifdef HAVE_SYS_UN_H
     debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
     std::string socket;
     if (sockname == "") {
@@ -169,6 +175,9 @@ int ClientConnection::connectLocal(const std::string & sockname)
         ios.close();
     }
     return ret;
+#else // HAVE_SYS_UN_H
+    return -1;
+#endif // HAVE_SYS_UN_H
 }
 
 int ClientConnection::connect(const std::string & server)

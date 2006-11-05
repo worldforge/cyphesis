@@ -1,3 +1,8 @@
+2006-11-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/ClientConnection.cpp: Leave out local connection functionality
+	  on systems that don't have unix sockets.
+
 2006-11-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Add check for arpa/inet.h header.
