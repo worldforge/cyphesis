@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creatortest.cpp,v 1.19 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Creatortest.cpp,v 1.20 2006-11-06 03:30:03 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -60,7 +60,6 @@ int main(int argc, char ** argv)
     attrNames.insert("mass");
     attrNames.insert("bbox");
     attrNames.insert("contains");
-    attrNames.insert("drunkness");
     attrNames.insert("sex");
 
     // Make sure we have all the default attributes

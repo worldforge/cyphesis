@@ -1,5 +1,16 @@
 2006-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/Makefile.am: Add the network libraries to cypasswd as they
+	  are needed on some platforms for gethostname.
+
+	* tests/Makefile.am: Ensure the tests like correctly.
+
+	* tests/Creatortest.cpp, tests/Charactertest.cpp: Remove test for
+	  drunkness property, as it has been removed from the Character
+	  entity class.
+
+2006-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientConnection.cpp: Leave out local connection functionality
 	  on systems that don't have unix sockets.
 
