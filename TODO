@@ -1,3 +1,6 @@
+Do properties correctly use hardcoded set/getFoo() methods on Atlas::Objects?
+I am pretty sure they don't.
+
 Can we make client connection code more generic, getting rid of the
 nasty merged TCP / UNIX stuff, and sharing code between tools and client.
 Perhaps even totally generic for server and client.
