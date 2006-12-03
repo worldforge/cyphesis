@@ -15,10 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.10 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.11 2006-12-03 06:31:44 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
+#include "rulesets/ActivePropertyFactory_impl.h"
 #include "rulesets/LineProperty.h"
 #include "rulesets/Entity.h"
 
@@ -28,11 +29,18 @@
 
 #include "common/debug.h"
 
+#include <Atlas/Objects/Operation.h>
+
 #include <iostream>
 
 static const bool debug_flag = false;
 
 template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
+
+HandlerResult test_handler(const Operation &, OpVector & res)
+{
+    std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;
+}
 
 CorePropertyManager::CorePropertyManager()
 {
@@ -41,6 +49,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["points"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
     m_propertyFactories["start_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
+    m_propertyFactories["attachment"] = new ActivePropertyBuilder<DynamicProperty<int> >(Atlas::Objects::Operation::MOVE_NO, test_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()

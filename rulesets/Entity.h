@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.79 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Entity.h,v 1.80 2006-12-03 06:31:44 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -83,6 +83,8 @@ class Entity : public BaseEntity {
     Atlas::Message::MapType m_attributes;
     /// Map of properties
     PropertyDict m_properties;
+    /// Map of operation handlers
+    HandlerMap m_operationHandlers;
 
     /// Sequence number
     int m_seq;
@@ -179,6 +181,8 @@ class Entity : public BaseEntity {
     void setAttr(const std::string &, const Atlas::Message::Element &);
 
     PropertyBase * getProperty(const std::string &) const;
+
+    void installHandler(int, Handler);
 
     void setScript(Script * scrpt);
     void merge(const Atlas::Message::MapType &);

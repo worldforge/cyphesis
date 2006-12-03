@@ -8,6 +8,9 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
 librulesetbase_a_SOURCES = Entity.cpp Entity.h \
 			   attributes.h \
 			   EntityProperties.cpp \
+			   ActivePropertyFactory.cpp \
+			   ActivePropertyFactory_impl.h \
+			   ActivePropertyFactory.h \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 
 

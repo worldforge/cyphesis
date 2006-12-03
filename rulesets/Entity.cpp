@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.122 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Entity.cpp,v 1.123 2006-12-03 06:31:44 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -221,6 +221,15 @@ void Entity::addToEntity(const RootEntity & ent) const
     ent->setObjtype("obj");
 }
 
+/// \brief Install a handler function for an operation
+///
+/// @param class_no The class number of the operation to be handled
+/// @param handler A pointer to the function to be wrapped
+void Entity::installHandler(int class_no, Handler handler)
+{
+    m_operationHandlers.insert(std::make_pair(class_no, handler));
+}
+
 /// \brief Associate a script with this entity
 ///
 /// The previously associated script is deleted.
@@ -360,6 +369,11 @@ void Entity::operation(const Operation & op, OpVector & res)
 {
     if (m_script->operation(op->getParents().front(), op, res) != 0) {
         return;
+    }
+    HandlerMap::const_iterator I = m_operationHandlers.find(op->getClassNo());
+    if (I != m_operationHandlers.end()) {
+        std::cout << "Found handler for MOVE operations" << std::endl << std::flush;
+        I->second(op, res);
     }
     return callOperation(op, res);
 }

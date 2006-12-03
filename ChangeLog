@@ -1,9 +1,26 @@
+2006-12-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/types.h: Add a function pointer type, and related
+	  typedefs for functions which handle an operation.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Add a map of operation
+	  handlers so that any operation type can be handled by data
+	  defined handlers.
+
+	* rulesets/ActivePropertyFactory.cpp, rulesets/ActivePropertyFactory.h,
+	  rulesets/ActivePropertyFactory_impl.h: Add a new type of property
+	  factory, which installs a handler when the property is added to
+	  an entity.
+
+	* server/CorePropertyManager.cpp: Test out the new property factory
+	  and handler mechanism with a new property called "attachment".
+
 2006-11-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/Makefile.am: Add the network libraries to cypasswd as they
 	  are needed on some platforms for gethostname.
 
-	* tests/Makefile.am: Ensure the tests like correctly.
+	* tests/Makefile.am: Ensure the tests link correctly.
 
 	* tests/Creatortest.cpp, tests/Charactertest.cpp: Remove test for
 	  drunkness property, as it has been removed from the Character
