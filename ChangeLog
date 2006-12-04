@@ -1,3 +1,10 @@
+2006-12-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/EntityRef.cpp, modules/EntityRef.h: Add a new class to handle
+	  a weak reference to an Entity.
+
+	* tests/EntityReftest.cpp: Test the weak reference class.
+
 2006-12-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/types.h: Add a function pointer type, and related
