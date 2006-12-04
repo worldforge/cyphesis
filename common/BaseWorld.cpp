@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.cpp,v 1.16 2006-10-26 00:48:02 alriddoch Exp $
+// $Id: BaseWorld.cpp,v 1.17 2006-12-04 04:24:42 alriddoch Exp $
 
 #include "BaseWorld.h"
 
@@ -24,12 +24,18 @@
 #include "debug.h"
 #include "compose.hpp"
 
+BaseWorld * BaseWorld::m_instance = 0;
+
 BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
 {
+    assert(m_instance == 0);
+    m_instance = this;
 }
 
 BaseWorld::~BaseWorld()
 {
+    assert(m_instance == this);
+    m_instance = 0;
 }
 
 Entity * BaseWorld::getEntity(const std::string & id) const

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.h,v 1.47 2006-10-26 00:48:02 alriddoch Exp $
+// $Id: BaseWorld.h,v 1.48 2006-12-04 04:24:42 alriddoch Exp $
 
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
@@ -45,6 +45,8 @@ class BaseWorld {
     // Private and un-implemented to prevent slicing
     BaseWorld(const BaseWorld &);
     const BaseWorld & operator=(const BaseWorld &);
+
+    static BaseWorld * m_instance;
   protected:
     double m_realTime;
     EntityDict m_eobjects;
@@ -54,6 +56,10 @@ class BaseWorld {
     Entity & m_gameWorld;
 
     virtual ~BaseWorld();
+
+    static BaseWorld & instance() {
+        return *m_instance;
+    }
 
     Entity * getEntity(const std::string & id) const;
 
