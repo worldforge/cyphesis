@@ -1,5 +1,13 @@
 2006-12-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/types.h: Add a first attempt at defining what kind of result
+	  should be returned by operation handler functions.
+
+	* rulesets/mason/define_world.py: Add a test function for testing
+	  attachments, and the active property mechanism.
+
+2006-12-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/EntityRef.cpp, modules/EntityRef.h: Add a new class to handle
 	  a weak reference to an Entity.
 

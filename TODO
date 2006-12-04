@@ -1,3 +1,9 @@
+Make the world accessible via a singleton style interface on BaseWorld.
+Installed by BaseWorld constructor, and not checked when instance() is called.
+
+Need soft entity references. When used as a property need to thrash out most
+efficient way to get or set.
+
 Do properties correctly use hardcoded set/getFoo() methods on Atlas::Objects?
 I am pretty sure they don't.
 

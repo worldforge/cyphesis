@@ -794,3 +794,10 @@ def kill_world(mapeditor):
 
     world=m.look()
     m.set(world.id, status=-1)
+
+def test_attachment(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    m.make('axe', type='axe', attachment=23)
