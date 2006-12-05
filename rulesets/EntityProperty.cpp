@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.cpp,v 1.1 2006-12-04 23:06:58 alriddoch Exp $
+// $Id: EntityProperty.cpp,v 1.2 2006-12-05 06:48:58 alriddoch Exp $
 
 #include "EntityProperty.h"
 
@@ -23,10 +23,18 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
+EntityProperty::EntityProperty(unsigned int flags) : PropertyBase(flags)
+{
+}
+
 bool EntityProperty::get(Atlas::Message::Element & val) const
 {
-    val = m_data->getId();
-    return true;
+    if (m_data.get() != 0) {
+        val = m_data->getId();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void EntityProperty::set(const Atlas::Message::Element & val)
@@ -35,12 +43,15 @@ void EntityProperty::set(const Atlas::Message::Element & val)
     if (val.isString()) {
         const std::string & id = val.String();
         if (m_data.get() == 0 || m_data->getId() != id) {
+            std::cout << "Assigning it to " << id << std::endl << std::flush;
             Entity * e = BaseWorld::instance().getEntity(id);
             if (e != 0) {
+                std::cout << "Got it" << std::endl << std::flush;
                 m_data = EntityRef(e);
             }
         }
     } else if (val.isPtr()) {
+        std::cout << "Assigning it to pointer" << std::endl << std::flush;
         Entity * e = (Entity*)val.Ptr();
         assert(e != 0);
         m_data = EntityRef(e);
@@ -50,11 +61,15 @@ void EntityProperty::set(const Atlas::Message::Element & val)
 void EntityProperty::add(const std::string & s,
                          Atlas::Message::MapType & map) const
 {
-    map[s] = m_data->getId();
+    if (m_data.get() != 0) {
+        map[s] = m_data->getId();
+    }
 }
 
 void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
-    ent->setAttr(s, m_data->getId());
+    if (m_data.get() != 0) {
+        ent->setAttr(s, m_data->getId());
+    }
 }

@@ -8,7 +8,8 @@ MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
-                 Charactertest Creatortest Containertest Tasktest
+                 Charactertest Creatortest Containertest Tasktest \
+                 EntityPropertytest
 
 SERVER_TESTS = EntityFactorytest
 
@@ -296,6 +297,17 @@ Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/common/libcommon.a \
                  $(MATH_LIBS)
 Tasktest_LDFLAGS = -export-dynamic
+
+EntityPropertytest_SOURCES = EntityPropertytest.cpp
+EntityPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                           $(top_builddir)/rulesets/librulesetentity.a \
+                           $(top_builddir)/rulesets/librulesetmind.a \
+                           $(top_builddir)/rulesets/librulesetbase.a \
+                           $(top_builddir)/rulesets/Python_API.o \
+                           $(top_builddir)/modules/libmodules.a \
+                           $(top_builddir)/physics/libphysics.a \
+                           $(top_builddir)/common/libcommon.a \
+                           $(MATH_LIBS)
 
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \

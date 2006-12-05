@@ -1,3 +1,8 @@
+Add code to EntityPropertytest to cover setting by ID.
+
+custom propery classes could be writtent to handle "add()"ing their values
+directly to hard Atlas Entity attributes.
+
 Make the world accessible via a singleton style interface on BaseWorld.
 Installed by BaseWorld constructor, and not checked when instance() is called.
 
