@@ -15,11 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoadertest.cpp,v 1.1 2006-12-05 20:44:52 alriddoch Exp $
+// $Id: AtlasFileLoadertest.cpp,v 1.2 2006-12-05 21:58:47 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
 #include <Atlas/Message/Element.h>
+
+#include <cassert>
 
 int main()
 {

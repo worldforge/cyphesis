@@ -1,5 +1,10 @@
 2006-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/AtlasFileLoadertest.cpp, tests/AtlasFileLoadertest.h:
+	  Add assert header include as required by some compilers.
+
+2006-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityExerciser.h: Fill out the functionality to include tests
 	  for the virtual functions that convert an entity into Atlas data.
 
