@@ -33,3 +33,5 @@ Containertest
 Tasktest
 EntityFactorytest
 python_class
+EntityPropertytest
+EntityReftest
