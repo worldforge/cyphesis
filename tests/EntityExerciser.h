@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityExerciser.h,v 1.20 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: EntityExerciser.h,v 1.21 2006-12-05 20:44:53 alriddoch Exp $
 
 #ifndef TESTS_ENTITY_EXERCISER_H
 #define TESTS_ENTITY_EXERCISER_H
@@ -39,6 +39,7 @@
 #include "common/Update.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
 
@@ -59,6 +60,7 @@ class EntityExerciser {
     void addAllOperations(std::set<std::string> & ops);
 
     void runOperations();
+    void runConversions();
     void flushOperations(OpVector & ops);
 };
 
@@ -310,6 +312,26 @@ inline void EntityExerciser<EntityType>::runOperations()
         OpVector ov;
         m_ent.OtherOperation(op, ov);
         flushOperations(ov);
+    }
+}
+
+template <class EntityType>
+inline void EntityExerciser<EntityType>::runConversions()
+{
+    {
+        Atlas::Message::MapType data;
+
+        assert(data.empty());
+        m_ent.addToMessage(data);
+        assert(!data.empty());
+    }
+
+    {
+        Atlas::Objects::Entity::Anonymous data;
+
+        assert(data->isDefaultId());
+        m_ent.addToEntity(data);
+        assert(!data->isDefaultId());
     }
 }
 

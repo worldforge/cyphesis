@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntitytest.cpp,v 1.8 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: BaseEntitytest.cpp,v 1.9 2006-12-05 20:44:52 alriddoch Exp $
 
 #include "EntityExerciser.h"
 #include "allOperations.h"
@@ -26,16 +26,163 @@
 
 class BaseEntityTest : public BaseEntity {
   public:
-    BaseEntityTest() : BaseEntity("1", 1) { }
+    BaseEntityTest(const std::string & id, int iid) : BaseEntity(id, iid) { }
 };
 
 int main()
 {
-    BaseEntityTest be;
+    {
+        // Test constructor
+        BaseEntityTest e1("1", 1);
+    }
+
+    {
+        // Test destructor
+        BaseEntity * e1 = new BaseEntityTest("1", 1);
+
+        delete e1;
+    }
+
+    {
+        // Test string ID
+        BaseEntityTest e1("1", 1);
+
+        assert(e1.getId() == "1");
+    }
+
+    {
+        // Test integer ID
+        BaseEntityTest e1("1", 1);
+
+        assert(e1.getIntId() == 1);
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        assert(res.empty());
+        e1.error(op, "You got an error", res);
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(result->isDefaultTo());
+        assert(result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        assert(res.empty());
+        e1.error(op, "You got an error", res, "foo");
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(!result->isDefaultTo());
+        assert(result->getTo() == "foo");
+        assert(result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        op->setSerialno(23);
+        assert(!op->isDefaultSerialno());
+
+        assert(res.empty());
+        e1.error(op, "You got an error", res);
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(result->isDefaultTo());
+        assert(result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        op->setSerialno(23);
+        assert(!op->isDefaultSerialno());
+
+        assert(res.empty());
+        e1.error(op, "You got an error", res, "foo");
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(!result->isDefaultTo());
+        assert(result->getTo() == "foo");
+        assert(!result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        assert(res.empty());
+        e1.clientError(op, "You got an error", res);
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(result->isDefaultTo());
+        assert(result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        assert(res.empty());
+        e1.clientError(op, "You got an error", res, "foo");
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(!result->isDefaultTo());
+        assert(result->getTo() == "foo");
+        assert(result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        op->setSerialno(23);
+        assert(!op->isDefaultSerialno());
+
+        assert(res.empty());
+        e1.clientError(op, "You got an error", res);
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(result->isDefaultTo());
+        assert(result->isDefaultRefno());
+    }
+
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        OpVector res;
+        BaseEntityTest e1("1", 1);
+
+        op->setSerialno(23);
+        assert(!op->isDefaultSerialno());
+
+        assert(res.empty());
+        e1.clientError(op, "You got an error", res, "foo");
+        assert(res.size() == 1);
+        Atlas::Objects::Operation::RootOperation result = res.front();
+        assert(!result->isDefaultTo());
+        assert(result->getTo() == "foo");
+        assert(!result->isDefaultRefno());
+    }
+
+    BaseEntityTest be("1", 1);
 
     EntityExerciser<BaseEntity> ee(be);
 
     ee.runOperations();
+    ee.runConversions();
 
     std::set<std::string> opNames;
     ee.addAllOperations(opNames);

@@ -3,7 +3,7 @@ COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
                consttest randomtest Addtest Attacktest Burntest Choptest \
                Connecttest Cuttest Delvetest Digtest Droptest Eattest \
                Monitortest Mowtest Nourishtest Pickuptest Setuptest \
-               Ticktest Unseentest Updatetest
+               Ticktest Unseentest Updatetest AtlasFileLoadertest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -139,6 +139,12 @@ Unseentest_LDADD = $(top_builddir)/common/operations.o
 
 Updatetest_SOURCES = Updatetest.cpp
 Updatetest_LDADD = $(top_builddir)/common/operations.o
+
+AtlasFileLoadertest_SOURCES = AtlasFileLoadertest.cpp
+AtlasFileLoadertest_LDADD = $(top_builddir)/common/AtlasFileLoader.o \
+                            $(top_builddir)/modules/DateTime.o \
+                            $(top_builddir)/common/log.o \
+                            $(top_builddir)/common/globals.o
 
 # PHYSICS_TESTS
 
