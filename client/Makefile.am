@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)
+INCLUDES = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cyclient
 
@@ -32,15 +32,14 @@ cyclient_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 
-cyclient_SOURCES = \
-		CharacterClient.cpp CharacterClient.h \
-		CreatorClient.cpp CreatorClient.h \
-		BaseClient.cpp BaseClient.h \
-		ObserverClient.cpp ObserverClient.h \
-		ClientConnection.cpp ClientConnection.h \
-		Py_CreatorClient.cpp Py_CreatorClient.h \
-		ClientPropertyManager.cpp ClientPropertyManager.h \
-		client.cpp
+cyclient_SOURCES = CharacterClient.cpp CharacterClient.h \
+                   CreatorClient.cpp CreatorClient.h \
+                   BaseClient.cpp BaseClient.h \
+                   ObserverClient.cpp ObserverClient.h \
+                   ClientConnection.cpp ClientConnection.h \
+                   Py_CreatorClient.cpp Py_CreatorClient.h \
+                   ClientPropertyManager.cpp ClientPropertyManager.h \
+                   client.cpp
 
 cyclient_LDADD = $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/rulesets/librulesetentity.a \

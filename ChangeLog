@@ -1,5 +1,10 @@
 2006-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/Makefile.am, tests/Makefile.am: Add top_buildir to includes,
+	  to get config.h in an out-of-tree build.
+
+2006-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* OperationExerciser.cpp, OperationExerciser.h: Template class to
 	  exercise and test custom operation classes.
 
