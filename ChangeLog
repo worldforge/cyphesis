@@ -1,3 +1,8 @@
+2006-12-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/EntityReftest.cpp: Expand the unit tests to completely cover
+	  the EntityRef class.
+
 2006-12-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/EntityProperty.cpp, rulesets/EntityProperty.h: Add a
