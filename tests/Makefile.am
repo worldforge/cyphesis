@@ -144,6 +144,7 @@ AtlasFileLoadertest_SOURCES = AtlasFileLoadertest.cpp
 AtlasFileLoadertest_LDADD = $(top_builddir)/common/AtlasFileLoader.o \
                             $(top_builddir)/modules/DateTime.o \
                             $(top_builddir)/common/log.o \
+                            $(top_builddir)/common/prefix.o \
                             $(top_builddir)/common/globals.o
 
 # PHYSICS_TESTS
