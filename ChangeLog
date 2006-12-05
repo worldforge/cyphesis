@@ -1,5 +1,18 @@
 2006-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* OperationExerciser.cpp, OperationExerciser.h: Template class to
+	  exercise and test custom operation classes.
+
+
+	* Attacktest.cpp, Burntest.cpp, Choptest.cpp, Connecttest.cpp,
+	  Cuttest.cpp, Delvetest.cpp, Digtest.cpp, Droptest.cpp,
+	  Eattest.cpp, Monitortest.cpp, Mowtest.cpp, Nourishtest.cpp,
+	  Pickuptest.cpp, Setuptest.cpp, Ticktest.cpp, Unseentest.cpp,
+	  Updatetest.cpp: Use OperationExerciser on all current custom op
+	  classes.
+
+2006-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityPropertytest.cpp: Add a complete set of unit tests for
 	  EntityProperty.
 

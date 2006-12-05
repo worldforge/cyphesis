@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.h,v 1.43 2006-10-26 11:29:31 alriddoch Exp $
+// $Id: const.h,v 1.44 2006-12-05 09:39:59 alriddoch Exp $
 
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
@@ -48,7 +48,7 @@ namespace consts {
   /// \brief What is the minimum size of an object when calculating visibility
   static const float minBoxSize = 0.5f;
   /// \brief Should we use a database
-  static const bool enable_database = true;
+  static const bool enable_database = false;
   /// \brief Should world state be persistent
   static const bool enable_persistence = false;
 

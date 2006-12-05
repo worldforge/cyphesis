@@ -1,6 +1,9 @@
 COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
                OOGThingtest systemtest type_utilstest \
-               consttest randomtest
+               consttest randomtest Addtest Attacktest Burntest Choptest \
+               Connecttest Cuttest Delvetest Digtest Droptest Eattest \
+               Monitortest Mowtest Nourishtest Pickuptest Setuptest \
+               Ticktest Unseentest Updatetest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -82,6 +85,60 @@ consttest_SOURCES = consttest.cpp
 consttest_LDADD = $(top_builddir)/common/const.o
 
 randomtest_SOURCES = randomtest.cpp
+
+Addtest_SOURCES = Addtest.cpp OperationExerciser.cpp OperationExerciser.h
+Addtest_LDADD = $(top_builddir)/common/operations.o
+
+Attacktest_SOURCES = Attacktest.cpp
+Attacktest_LDADD = $(top_builddir)/common/operations.o
+
+Burntest_SOURCES = Burntest.cpp
+Burntest_LDADD = $(top_builddir)/common/operations.o
+
+Choptest_SOURCES = Choptest.cpp
+Choptest_LDADD = $(top_builddir)/common/operations.o
+
+Connecttest_SOURCES = Connecttest.cpp
+Connecttest_LDADD = $(top_builddir)/common/operations.o
+
+Cuttest_SOURCES = Cuttest.cpp
+Cuttest_LDADD = $(top_builddir)/common/operations.o
+
+Delvetest_SOURCES = Delvetest.cpp
+Delvetest_LDADD = $(top_builddir)/common/operations.o
+
+Digtest_SOURCES = Digtest.cpp
+Digtest_LDADD = $(top_builddir)/common/operations.o
+
+Droptest_SOURCES = Droptest.cpp
+Droptest_LDADD = $(top_builddir)/common/operations.o
+
+Eattest_SOURCES = Eattest.cpp
+Eattest_LDADD = $(top_builddir)/common/operations.o
+
+Monitortest_SOURCES = Monitortest.cpp
+Monitortest_LDADD = $(top_builddir)/common/operations.o
+
+Mowtest_SOURCES = Mowtest.cpp
+Mowtest_LDADD = $(top_builddir)/common/operations.o
+
+Nourishtest_SOURCES = Nourishtest.cpp
+Nourishtest_LDADD = $(top_builddir)/common/operations.o
+
+Pickuptest_SOURCES = Pickuptest.cpp
+Pickuptest_LDADD = $(top_builddir)/common/operations.o
+
+Setuptest_SOURCES = Setuptest.cpp
+Setuptest_LDADD = $(top_builddir)/common/operations.o
+
+Ticktest_SOURCES = Ticktest.cpp
+Ticktest_LDADD = $(top_builddir)/common/operations.o
+
+Unseentest_SOURCES = Unseentest.cpp
+Unseentest_LDADD = $(top_builddir)/common/operations.o
+
+Updatetest_SOURCES = Updatetest.cpp
+Updatetest_LDADD = $(top_builddir)/common/operations.o
 
 # PHYSICS_TESTS
 
