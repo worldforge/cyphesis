@@ -1,3 +1,11 @@
+2006-12-06  Al Riddoch  <alriddoch@zepler.org>
+
+	Changes submitted by Kai Blin  <kai.blin@gmail.com>
+
+	* data/mason.xml: Grow the gateway so it fits into the castle wall.
+
+	* rulesets/mason/define_world.py: Add the castle peninsula.
+
 2006-12-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/Makefile.am: Add prefix.o to one test, or it fails to link

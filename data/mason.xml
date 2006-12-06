@@ -1012,10 +1012,10 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-23</float>
+          <float>-25</float>
           <float>-14</float>
           <float>0</float>
-          <float>23</float>
+          <float>25</float>
           <float>14</float>
           <float>60</float>
         </list>

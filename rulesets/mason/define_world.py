@@ -162,7 +162,7 @@ def default(mapeditor):
     world=m.look()
 
     points = { }
-    for i in range(-6, 7):
+    for i in range(-8, 7):
         for j in range(-6, 7):
             if i>=5 or j>=5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
@@ -226,9 +226,9 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('boundary',type='boundary',pos=(-321,-321,-20),bbox=[2,642,300],mode="fixed")
-    m.make('boundary',type='boundary',pos=(-321,-321,-20),bbox=[642,2,300],mode="fixed")
-    m.make('boundary',type='boundary',pos=(-321, 320,-20),bbox=[642,2,300],mode="fixed")
+    m.make('boundary',type='boundary',pos=(-500,-321,-20),bbox=[2,642,300],mode="fixed")
+    m.make('boundary',type='boundary',pos=(-500,-321,-20),bbox=[821,2,300],mode="fixed")
+    m.make('boundary',type='boundary',pos=(-500, 320,-20),bbox=[821,2,300],mode="fixed")
     m.make('boundary',type='boundary',pos=( 320,-321,-20),bbox=[2,642,300],mode="fixed")
 
     m.make('fir',type='fir',pos=(-10,-0,settlement_height))
@@ -601,7 +601,7 @@ def modify_terrain(mapeditor):
 
     world=m.look()
     points = { }
-    for i in range(-6, 7):
+    for i in range(-8, 7):
         for j in range(-6, 7):
             if i>=5 or j>=5:
                 points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
@@ -786,6 +786,100 @@ def test_deer(mapeditor):
     d=m.make('deer', type='deer', pos=(5, 0, settlement_height))
     m.learn(d,deer_goals)
     # m.make('settler', type='settler', pos=(0, 0, settlement_height))
+def add_castle(mapeditor):
+    
+    m=editor(mapeditor)
+
+    # create the peninsula for the castle
+    world = m.look()
+    points = { }
+    points['-5x-2'] = [-5, -2, 20]
+    points['-5x-1'] = [-5, -1, 20]
+    points['-5x0'] = [-5, 0,   20]
+    points['-5x1'] = [-5, 1,   20]
+    points['-6x-2'] = [-6, -2, 20]
+    points['-6x-1'] = [-6, -1, 20]
+    points['-6x0'] = [-6, 0,   20]
+    points['-6x1'] = [-6, 1,   20]
+    points['-7x-2'] = [-7, -2, 20]
+    points['-7x-1'] = [-7, -1, 20]
+    points['-7x0'] = [-7, 0,   20]
+    points['-7x1'] = [-7, 1,   20]
+    points['-8x-2'] = [-8, -2, 20]
+    points['-8x-1'] = [-8, -1, 20]
+    points['-8x0'] = [-8, -0,  20]
+    points['-8x1'] = [-8,  1,  20]
+
+    minx=0
+    miny=0
+    minz=0
+    maxx=0
+    maxy=0
+    maxz=0
+    for i in points.values():
+        x = i[0]
+        y = i[1]
+        z = i[2]
+        if not minx or x < minx:
+            minx = x
+        if not miny or y < miny:
+            miny = y
+        if not minz or z < minz:
+            minz = z
+        if not maxx or x > maxx:
+            maxx = x
+        if not maxy or y > maxy:
+            maxy = y
+        if not maxz or z > maxz:
+            maxz = z
+        
+    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+
+    # put the keep on the peninsula
+    
+    # the foundation looks ugly in sear and does not work in ember, so I left it out. coordinates are probably wrong
+    #m.make('castle_foundation', type='castle_foundation', pos=(-415, -70, settlement_height))
+
+    # castle wall
+    m.make('castle_outer_wall', type='castle_outer_wall', pos=(-427.639, -30.2512, settlement_height), orientation=[0,0,0.7,0.7])
+
+    # gateway 
+    m.make('gateway', type='gateway', pos=(-380.753, -31.7661, settlement_height), orientation=[0,0,0.7,0.7])
+
+    # the keep
+    m.make('keep', type='keep', pos=(-459.231, -79.5895, settlement_height), orientation=[0,0,0,-1])
+
+    # top right tower
+    m.make('bailey1', type='bailey1', pos=(-477.46, 41.1592, settlement_height), orientation=[0,0,-1,0.02])
+
+    # bottom left tower
+    m.make('bailey2', type='bailey2', pos=(-387.035, -98.432, settlement_height), orientation=[0,0,-0.7,-0.7])
+
+    # bottom right tower
+    m.make('don_jon', type='don_jon', pos=(-382.011, 43.1961, settlement_height), orientation=[0,0,0,-1])
+
+    # armory
+    m.make('armory', type='armory', pos=(-426.873, 45.0104, settlement_height), orientation=[0,0,-0.7,-0.7])
+    
+    # castle_house 1
+    m.make('castle_house1', type='castle_house', pos=(-405.272, -80.1143, settlement_height), orientation=[0,0,0,1])
+
+    # castle_house 2
+    m.make('castle_house2', type='castle_house', pos=(-425.233, -79.6156, settlement_height), orientation=[0,0,0,1])
+    
+    # castle_house 3
+    m.make('castle_house3', type='castle_house', pos=(-454.223, -50.518, settlement_height), orientation=[0,0,0.5,-0.868])
+
+    # castle_house 4
+    m.make('castle_house4', type='castle_house', pos=(-456.11, -26.3539, settlement_height), orientation=[0,0,0.7,-0.7])
+
+    # inn 
+    m.make('inn', type='inn', pos=(-454.429, 12.7224, settlement_height), orientation=[0,0,0.28,1])
+
+    castle_path_area = {'points': [[-400, -34], [-372, -34], [-350, -42], [-300, -56], [-215, -42], [-180, -5], [-125, -6], [-86, -4],
+        [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
+    m.make('path to castle',type='path',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
+ 
 
 def kill_world(mapeditor):
 #   general things
