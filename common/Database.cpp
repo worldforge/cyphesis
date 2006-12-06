@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.85 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Database.cpp,v 1.86 2006-12-06 08:11:24 alriddoch Exp $
 
 #include "Database.h"
 
@@ -61,6 +61,8 @@ Database::Database() : m_rule_db("rules"),
 
 bool Database::tuplesOk()
 {
+    assert(m_connection != 0);
+
     bool status = false;
 
     PGresult * res;
@@ -75,6 +77,8 @@ bool Database::tuplesOk()
 
 bool Database::commandOk()
 {
+    assert(m_connection != 0);
+
     bool status = false;
 
     PGresult * res;
@@ -147,6 +151,8 @@ int Database::initConnection(bool createDatabase)
 
 bool Database::initRule(bool createTables)
 {
+    assert(m_connection != 0);
+
     int status = 0;
     clearPendingQuery();
     status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test'");
@@ -181,6 +187,8 @@ bool Database::initRule(bool createTables)
 
 void Database::shutdownConnection()
 {
+    assert(m_connection != 0);
+
     PQfinish(m_connection);
     m_connection = 0;
 }
@@ -191,6 +199,15 @@ Database * Database::instance()
         m_instance = new Database();
     }
     return m_instance;
+}
+
+void Database::cleanup()
+{
+    if (m_instance != 0) {
+        delete m_instance;
+    }
+
+    m_instance = 0;
 }
 
 bool Database::decodeObject(const std::string & data,
@@ -238,6 +255,8 @@ bool Database::encodeObject(const MapType & o,
 bool Database::getObject(const std::string & table, const std::string & key,
                          MapType & o)
 {
+    assert(m_connection != 0);
+
     debug(std::cout << "Database::getObject() " << table << "." << key
                     << std::endl << std::flush;);
     std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "'";
@@ -349,6 +368,8 @@ bool Database::delObject(const std::string & table, const std::string & key)
 
 bool Database::hasKey(const std::string & table, const std::string & key)
 {
+    assert(m_connection != 0);
+
     std::string query = std::string("SELECT id FROM ") + table +
                         " WHERE id='" + key + "'";
 
@@ -380,6 +401,8 @@ bool Database::hasKey(const std::string & table, const std::string & key)
 
 bool Database::getTable(const std::string & table, MapType &o)
 {
+    assert(m_connection != 0);
+
     std::string query = std::string("SELECT * FROM ") + table;
 
     clearPendingQuery();
@@ -444,6 +467,8 @@ bool Database::clearTable(const std::string & table)
 
 void Database::reportError()
 {
+    assert(m_connection != 0);
+
     char * message = PQerrorMessage(m_connection);
     assert(message != NULL);
 
@@ -457,6 +482,8 @@ void Database::reportError()
 
 const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
 {
+    assert(m_connection != 0);
+
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
@@ -491,6 +518,8 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
 
 bool Database::runCommandQuery(const std::string & query)
 {
+    assert(m_connection != 0);
+
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -516,6 +545,8 @@ bool Database::registerRelation(std::string & tablename,
                                 const std::string & targettable,
                                 RelationType kind)
 {
+    assert(m_connection != 0);
+
     tablename = sourcetable + "_" + targettable;
 
     std::string query = "SELECT * FROM ";
@@ -641,6 +672,8 @@ bool Database::removeRelationRowByOther(const std::string & name,
 bool Database::registerSimpleTable(const std::string & name,
                                    const MapType & row)
 {
+    assert(m_connection != 0);
+
     if (row.empty()) {
         log(ERROR, "Attempt to create empty database table");
     }
@@ -780,6 +813,8 @@ bool Database::updateSimpleRow(const std::string & name,
 
 bool Database::registerEntityIdGenerator()
 {
+    assert(m_connection != 0);
+
     clearPendingQuery();
     int status = PQsendQuery(m_connection, "SELECT * FROM entity_ent_id_seq");
     if (!status) {
@@ -800,6 +835,8 @@ bool Database::registerEntityIdGenerator()
 
 long Database::newId(std::string & id)
 {
+    assert(m_connection != 0);
+
     clearPendingQuery();
     int status = PQsendQuery(m_connection,
                              "SELECT nextval('entity_ent_id_seq')");
@@ -835,6 +872,8 @@ bool Database::registerEntityTable(const std::string & classname,
 // row probably needs to be richer to provide a more detailed, and possibly
 // ordered description of each the columns required.
 {
+    assert(m_connection != 0);
+
     if (entityTables.find(classname) != entityTables.end()) {
         log(ERROR, "Attempt to register entity table already registered.");
         debug(std::cerr << "Table for class " << classname
@@ -1089,6 +1128,8 @@ bool Database::registerArrayTable(const std::string & name,
                                   unsigned int dimension,
                                   const MapType & row)
 {
+    assert(m_connection != 0);
+
     assert(dimension <= 5);
 
     if (row.empty()) {
@@ -1353,6 +1394,8 @@ void Database::queryComplete()
 
 bool Database::launchNewQuery()
 {
+    assert(m_connection != 0);
+
     if (m_queryInProgress) {
         log(ERROR, "Launching new query when query is in progress");
         return false;

@@ -1,5 +1,17 @@
 2006-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Databasetest.cpp: Add a unit test for the features of
+	  Database that can be checked without an RDBMS to connect to.
+
+	* common/Database.h, common/Database.cpp: Provide a function to
+	  cleanup the Database singleton, for easier testing.
+
+	* common/Database.cpp: Assert that the connection to the database
+	  has been created before calling any functions in the database
+	  client lib using that connection.
+
+2006-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/BaseWorldtest.cpp: Add a comprehensive unit test for all
 	  non virtual parts of the BaseWorld class.
 

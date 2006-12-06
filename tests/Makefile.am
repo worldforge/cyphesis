@@ -4,7 +4,7 @@ COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
                Connecttest Cuttest Delvetest Digtest Droptest Eattest \
                Monitortest Mowtest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
-               BaseWorldtest
+               BaseWorldtest Databasetest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -156,6 +156,14 @@ BaseWorldtest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
+
+Databasetest_SOURCES = Databasetest.cpp
+Databasetest_LDADD = $(top_builddir)/common/Database.o \
+                     $(top_builddir)/modules/DateTime.o \
+                     $(top_builddir)/common/log.o \
+                     $(top_builddir)/common/id.o \
+                     $(top_builddir)/common/prefix.o \
+                     $(top_builddir)/common/globals.o
 
 # PHYSICS_TESTS
 
