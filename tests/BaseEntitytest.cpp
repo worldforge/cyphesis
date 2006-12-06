@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2003 Alistair Riddoch
+// Copyright (C) 2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntitytest.cpp,v 1.9 2006-12-05 20:44:52 alriddoch Exp $
+// $Id: BaseEntitytest.cpp,v 1.10 2006-12-06 07:48:02 alriddoch Exp $
 
 #include "EntityExerciser.h"
 #include "allOperations.h"
