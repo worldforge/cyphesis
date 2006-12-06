@@ -52,3 +52,8 @@ Setuptest
 Ticktest
 Unseentest
 Updatetest
+Addtest
+AtlasFileLoadertest
+BaseWorldtest
+Databasetest
+idtest

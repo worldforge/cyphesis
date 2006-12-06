@@ -1,5 +1,10 @@
 2006-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/idtest.cpp: Add a unit test for the ID conversion functions
+	  in common/id.cpp.
+
+2006-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Databasetest.cpp: Add a unit test for the features of
 	  Database that can be checked without an RDBMS to connect to.
 
