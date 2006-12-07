@@ -4,7 +4,8 @@ COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
                Connecttest Cuttest Delvetest Digtest Droptest Eattest \
                Monitortest Mowtest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
-               BaseWorldtest Databasetest idtest accountbasetest
+               BaseWorldtest Databasetest idtest accountbasetest \
+               debugtest
 
 PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
@@ -181,6 +182,9 @@ accountbasetest_LDADD = $(top_builddir)/common/accountbase.o \
                         $(top_builddir)/common/id.o \
                         $(top_builddir)/common/prefix.o \
                         $(top_builddir)/common/globals.o
+
+debugtest_SOURCES = debugtest.cpp
+debugtest_LDADD = $(top_builddir)/common/debug.o
 
 # PHYSICS_TESTS
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: debug.cpp,v 1.2 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: debug.cpp,v 1.3 2006-12-07 09:02:44 alriddoch Exp $
 
 #include "debug.h"
 
@@ -45,7 +45,7 @@ static void output(const Element & item, int depth)
                 ListType::const_iterator I = item.List().begin();
                 ListType::const_iterator Iend = item.List().end();
                 for(; I != Iend; ++I) {
-                    output(*I, depth);
+                    output(*I, depth + 1);
                     std::cout << " ";
                 }
                 std::cout << "]";
