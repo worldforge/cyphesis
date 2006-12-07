@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: accountbase.h,v 1.17 2006-10-26 00:48:04 alriddoch Exp $
+// $Id: accountbase.h,v 1.18 2006-12-07 08:22:34 alriddoch Exp $
 
 #ifndef COMMON_ACCOUNT_BASE_H
 #define COMMON_ACCOUNT_BASE_H
@@ -31,7 +31,9 @@ class AccountBase {
     AccountBase() : m_connection(*Database::instance()) { }
 
     ~AccountBase() {
-        m_connection.shutdownConnection();
+        if (m_connection.getConnection() != 0) {
+            m_connection.shutdownConnection();
+        }
     }
 
     int init();
