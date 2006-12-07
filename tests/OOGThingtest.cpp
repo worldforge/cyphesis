@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OOGThingtest.cpp,v 1.7 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: OOGThingtest.cpp,v 1.8 2006-12-07 08:39:49 alriddoch Exp $
 
 #include "EntityExerciser.h"
 #include "allOperations.h"
@@ -31,6 +31,27 @@ class OOGThingTest : public OOGThing {
 
 int main()
 {
+    {
+        OOGThingTest te;
+    }
+
+    {
+        OOGThingTest * te = new OOGThingTest;
+
+        delete te;
+    }
+
+    {
+        OOGThingTest te;
+        Operation op;
+        OpVector res;
+
+        te.OtherOperation(op, res);
+        assert(!res.empty());
+        Operation res1 = res.front();
+        assert(res1->getClassNo() == OP_ERROR);
+    }
+
     OOGThingTest be;
 
     EntityExerciser<OOGThing> ee(be);
