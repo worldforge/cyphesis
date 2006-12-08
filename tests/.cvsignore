@@ -57,3 +57,5 @@ AtlasFileLoadertest
 BaseWorldtest
 Databasetest
 idtest
+accountbasetest
+debugtest
