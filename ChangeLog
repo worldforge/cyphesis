@@ -1,3 +1,10 @@
+2006-12-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Task.h,
+	  rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/TrustedConnection.cpp,
+	  server/WorldRouter.cpp: Add inline documentation.
+
 2006-12-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Makefile.am: Remove unused header from the build.

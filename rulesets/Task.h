@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Task.h,v 1.15 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Task.h,v 1.16 2006-12-10 17:53:52 alriddoch Exp $
 
 #ifndef RULESETS_TASK_H
 #define RULESETS_TASK_H
@@ -94,10 +94,12 @@ class Task {
     /// \brief Create a new tick op for the next iteration of this task
     Operation nextTick(double interval);
 
+    /// \brief Increment the reference count on this task
     void incRef() {
         ++m_refCount;
     }
 
+    /// \brief Decrement the reference count on this task
     void decRef() {
         if (m_refCount <= 1) {
             assert(m_refCount == 1);

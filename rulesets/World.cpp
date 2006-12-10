@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.100 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: World.cpp,v 1.101 2006-12-10 17:53:53 alriddoch Exp $
 
 #include "World.h"
 
@@ -99,6 +99,11 @@ float World::getHeight(float x, float y)
     return m_terrain.get(x, y);
 }
 
+/// \brief Get a number encoding the surface type at the given x,y coordinates
+///
+/// @param pos the x,y coordinates of the point on the terrain
+/// @param material a reference to the integer to be used to store the
+/// material identifier at this location.
 int World::getSurface(const Point3D & pos, int & material)
 {
     float x = pos.x(),
@@ -133,6 +138,10 @@ int World::getSurface(const Point3D & pos, int & material)
     return 0;
 }
 
+/// \brief Process a Delve operation
+///
+/// @param op The operation to be processed
+/// @param res The result of the operation is returned here.
 void World::delveOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
@@ -196,6 +205,10 @@ void World::delveOperation(const Operation & op, OpVector & res)
     }
 }
 
+/// \brief Process a Dig operation
+///
+/// @param op The operation to be processed
+/// @param res The result of the operation is returned here.
 void World::digOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
@@ -276,6 +289,10 @@ void World::digOperation(const Operation & op, OpVector & res)
     }
 }
 
+/// \brief Process a Mow operation
+///
+/// @param op The operation to be processed
+/// @param res The result of the operation is returned here.
 void World::mowOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.80 2006-12-03 06:31:44 alriddoch Exp $
+// $Id: Entity.h,v 1.81 2006-12-10 17:53:52 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -72,7 +72,9 @@ class Entity : public BaseEntity {
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();
 
+    /// Count of references held by other objects to this entity
     int m_refCount;
+    /// Flag indicating that this entity has been destroyed
     bool m_destroyed;
   protected:
     /// Script associated with this entity
@@ -111,10 +113,12 @@ class Entity : public BaseEntity {
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
 
+    /// \brief Increment the reference count on this entity
     void incRef() {
         ++m_refCount;
     }
 
+    /// \brief Decrement the reference count on this entity
     void decRef() {
         if (m_refCount <= 0) {
             assert(m_refCount == 0);
@@ -124,14 +128,17 @@ class Entity : public BaseEntity {
         }
     }
 
+    /// \brief Check the reference count on this entity
     int checkRef() const {
         return m_refCount;
     }
 
+    /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const {
         return m_destroyed;
     }
 
+    /// \brief Accessor for pointer to script object
     Script * script() const {
         return m_script;
     }
@@ -145,33 +152,46 @@ class Entity : public BaseEntity {
         m_world->message(op, *this);
     }
 
+    /// \brief Accessor for update flags
     const int getUpdateFlags() const { return m_update_flags; }
+    /// \brief Accessor for sequence number
     const int getSeq() const { return m_seq; }
+    /// \brief Accessor for status property
     const double getStatus() const { return m_status; }
+    /// \brief Accessor for name property
     const std::string & getName() const { return m_name; }
+    /// \brief Accessor for entity type property
     const std::string & getType() const { return m_type; }
+    /// \brief Accessor for mass property
     const double getMass() const { return m_mass; }
 
+    /// \brief Check if this entity is flagged as perceptive
     const bool isPerceptive() const { return m_perceptive; }
 
+    /// \brief Reset the update flags
     void clearUpdateFlags() { m_update_flags = 0; }
 
+    /// \brief Set the value of the status property
     void setStatus(const double s) {
         m_status = s;
     }
 
+    /// \brief Set the value of the status property
     void setName(const std::string & n) {
         m_name = n;
     }
 
+    /// \brief Set the value of the entity type property
     void setType(const std::string & t) {
         m_type = t;
     }
 
+    /// \brief Set the value of the mass property
     void setMass(const double w) {
         m_mass = w;
     }
 
+    /// \brief Accessor for soft attribute map
     const Atlas::Message::MapType & getAttributes() const {
         return m_attributes;
     }

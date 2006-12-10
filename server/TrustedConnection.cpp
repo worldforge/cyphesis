@@ -15,10 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TrustedConnection.cpp,v 1.9 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: TrustedConnection.cpp,v 1.10 2006-12-10 17:53:53 alriddoch Exp $
 
 #include "TrustedConnection.h"
 
+/// \brief TrustedConnection constructor
+///
+/// @param client The network connection to the client that is trusted
+/// @param svr The core server object
+/// @param addr A string representation of the client's network address
+/// @param id The identifier of this connection.
 TrustedConnection::TrustedConnection(CommClient & client,
                                      ServerRouting & svr,
                                      const std::string & addr,
@@ -27,6 +33,10 @@ TrustedConnection::TrustedConnection(CommClient & client,
 {
 }
 
+/// \brief Verify the client has a valid login attempt
+///
+/// This overide of Connection::verifyCredentials skips all checks allowing
+/// the usually local client to log in as anyone they want.
 int TrustedConnection::verifyCredentials(const Account &,
                                          const Atlas::Objects::Root &) const
 {

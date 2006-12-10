@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.7 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.8 2006-12-10 17:53:53 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -38,6 +38,14 @@ using Atlas::Message::FloatType;
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
+/// \brief TerrainProperty constructor
+///
+/// @param data Reference to varaible holding the value of this Property
+/// @param modifiedTerrain Reference to a variable storing the set of
+/// modified points
+/// @param createdTerrain Reference to a variable storing the set of
+/// created points
+/// @param flags Flags indicating how this Property should be handled
 TerrainProperty::TerrainProperty(Mercator::Terrain & data,
                                  PointSet & modifiedTerrain,
                                  PointSet & createdTerrain,

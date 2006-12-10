@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.211 2006-11-02 05:14:55 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.212 2006-12-10 17:53:53 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -344,6 +344,7 @@ Task * WorldRouter::newTask(const std::string & name, Character & owner)
 /// tool and operation class given.
 /// @param tool the type of tool activating the task
 /// @param op the type of operation acitivating the task
+/// @param target the entity that the task uses as its target
 /// @param owner the character who will own the task
 /// @return a pointer to the new task
 Task * WorldRouter::activateTask(const std::string & tool,
@@ -437,6 +438,10 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 /// sight ranges for perception operations.
 /// @param op operation to be dispatched to the world. This is non-const
 /// so that broadcast ops can have their TO set correctly for each target.
+/// @param from entity the operation to be dispatched was send from. Note
+/// that it is possible that this entity has been destroyed, but it
+/// should still have a valid location, so can be used for range
+/// calculations.
 void WorldRouter::operation(const Operation & op, Entity & from)
 {
     debug(std::cout << "WorldRouter::operation {"

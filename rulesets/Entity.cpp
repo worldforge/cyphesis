@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.123 2006-12-03 06:31:44 alriddoch Exp $
+// $Id: Entity.cpp,v 1.124 2006-12-10 17:53:52 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -48,8 +48,17 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
+/// \brief Set of attribute names which must not be changed
+///
+/// The attributes named are special and are modified using high level
+/// operations, such as Move, not via Set operations, or assigned by
+/// normal means.
 std::set<std::string> Entity::m_immutable;
 
+/// \brief Singleton accessor for immutables
+///
+/// The immutable attribute set m_immutables is initialised if necessary,
+/// and a reference is returned.
 const std::set<std::string> & Entity::immutables()
 {
     if (m_immutable.empty()) {
@@ -63,6 +72,7 @@ const std::set<std::string> & Entity::immutables()
     return m_immutable;
 }
 
+/// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_refCount(0), m_destroyed(false),
                                          m_script(&noScript), m_seq(0),

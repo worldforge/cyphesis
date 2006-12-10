@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.205 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Thing.cpp,v 1.206 2006-12-10 17:53:53 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -339,6 +339,13 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     updated.emit();
 }
 
+/// \brief Check changes in visibility of this entity
+///
+/// Check how this entity's position has changed since the last update
+/// and how this has affected which entities it can see, and which can see
+/// it. Return Appearance and Disappearance operations as required.
+/// @param oldpos The coordinates of this entity before the update
+/// @param res Resulting operations are returned here
 void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
 {
     debug(std::cout << "testing range" << std::endl;);
