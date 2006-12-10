@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackable.h,v 1.26 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Stackable.h,v 1.27 2006-12-10 22:48:01 alriddoch Exp $
 
 #ifndef RULESETS_STACKABLE_H
 #define RULESETS_STACKABLE_H
@@ -34,7 +34,8 @@ typedef Thing Stackable_parent;
 /// piles are implemented as was suggested in some early Mason docs.
 class Stackable : public Stackable_parent {
   protected:
-    int m_num; // Number of items
+    /// \brief Number of items in the stack
+    int m_num;
 
   public:
 

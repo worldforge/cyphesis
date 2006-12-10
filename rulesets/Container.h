@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Container.h,v 1.5 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Container.h,v 1.6 2006-12-10 22:48:01 alriddoch Exp $
 
 #ifndef RULESETS_CONTAINER_H
 #define RULESETS_CONTAINER_H
@@ -126,12 +126,19 @@ class Container {
     virtual const_iterator begin() const = 0;
     virtual const_iterator end() const = 0;
 
+    /// \brief Query the number of members in the container
     virtual int size() const = 0;
+    /// \brief Query whether the container is empty
     virtual bool empty() const = 0;
+    /// \brief Insert a member into the container
     virtual void insert(Entity *) = 0;
+    /// \brief Remove a member from the container
     virtual void erase(Entity *) = 0;
+    /// \brief Can't remember what this was to do
     virtual void reParent() = 0;
+    /// \brief Add the CONTAINS attribute to the message for this container
     virtual void addToMessage(const std::string &, Atlas::Message::MapType &) const = 0;
+    /// \brief Add the CONTAINS attribute to the entity for this container
     virtual void addToEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &) const = 0;
 };
 

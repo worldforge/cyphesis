@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Statistics.h,v 1.7 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Statistics.h,v 1.8 2006-12-10 22:48:02 alriddoch Exp $
 
 #ifndef RULESETS_STATISTICS_H
 #define RULESETS_STATISTICS_H
@@ -35,10 +35,13 @@ class ArithmeticScript;
 /// construction itself, so should not be used at this time, just stored.
 class Statistics {
   public:
+    /// \brief Dictionary of skill values
     typedef std::map<std::string, float> SkillDict;
 
+    /// \brief Script that handles number crunching for statistics
     ArithmeticScript * m_script;
   protected:
+    /// \brief The Character these are the statistics for
     Character & m_character;
 
     /// \brief Skill values
@@ -46,10 +49,10 @@ class Statistics {
   public:
     Statistics(Character & chr);
 
-    // Get the value for a names statistic
+    /// \brief Get the value for a named statistic
     float get(const std::string & name);
 
-    // Return a default value for a statistic not supported by this model
+    /// \brief Return a default for a statistic not supported by this model
     float get_default(const std::string & name);
 
     /// \brief Increment the characters skill in a certain area

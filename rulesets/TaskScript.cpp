@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TaskScript.cpp,v 1.9 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: TaskScript.cpp,v 1.10 2006-12-10 22:48:02 alriddoch Exp $
 
 #include "rulesets/TaskScript.h"
 
@@ -31,6 +31,9 @@
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::Anonymous;
 
+/// \brief TaskScript constructor
+///
+/// @param chr Character that is performing the task
 TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
 {
 }
@@ -39,6 +42,9 @@ TaskScript::~TaskScript()
 {
 }
 
+/// \brief Assign a script to this scripted task
+///
+/// @param scrpt the language script object handle this task
 void TaskScript::setScript(Script * scrpt)
 {
     if (m_script != 0) {
@@ -48,6 +54,7 @@ void TaskScript::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
+/// \brief Mark this task as no longer relevant
 void TaskScript::irrelevant()
 {
     Task::irrelevant();

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TaskFactory.h,v 1.6 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: TaskFactory.h,v 1.7 2006-12-10 22:48:02 alriddoch Exp $
 
 #ifndef SERVER_TASK_FACTORY_H
 #define SERVER_TASK_FACTORY_H
@@ -36,10 +36,14 @@ class ScriptFactory;
 /// script language and class name.
 class TaskFactory {
   public:
+    /// \brief Type name of the base entity class this task works on
     std::string m_target;
 
     virtual ~TaskFactory();
 
+    /// \brief Create a new task
+    ///
+    /// @param chr the character performing the task
     virtual Task * newTask(Character & chr) = 0;
 };
 

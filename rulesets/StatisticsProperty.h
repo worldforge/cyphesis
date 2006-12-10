@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StatisticsProperty.h,v 1.5 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: StatisticsProperty.h,v 1.6 2006-12-10 22:48:02 alriddoch Exp $
 
 #ifndef RULESETS_STATISTICS_PROPERTY_H
 #define RULESETS_STATISTICS_PROPERTY_H
@@ -27,10 +27,12 @@ class Statistics;
 /// \brief Class to handle Entity statistics
 class StatisticsProperty : public PropertyBase {
   protected:
+    /// \brief Reference to variable holding the value of this Property
     Statistics & m_data;
   public:
     explicit StatisticsProperty(Statistics & data, unsigned int flags);
 
+    /// \brief Accessor for the variable holding the value of this Property
     Statistics & data() const { return m_data; }
 
     virtual bool get(Atlas::Message::Element &) const;

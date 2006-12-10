@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Statistics.cpp,v 1.9 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Statistics.cpp,v 1.10 2006-12-10 22:48:01 alriddoch Exp $
 
 #include "Statistics.h"
 
@@ -35,6 +35,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Message::MapType;
 
+/// \brief Statistics constructor
+///
+/// @param chr Character for which this handles the statistics
 Statistics::Statistics(Character & chr) : m_script(0), m_character(chr)
 {
 }

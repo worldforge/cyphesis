@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TaskScript.h,v 1.6 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: TaskScript.h,v 1.7 2006-12-10 22:48:02 alriddoch Exp $
 
 #ifndef RULESETS_TASK_SCRIPT_H
 #define RULESETS_TASK_SCRIPT_H
@@ -27,6 +27,7 @@ class Script;
 /// \brief Class for handling tasks which are implemented as scripts
 class TaskScript : public Task {
   protected:
+    /// \brief The language script that will handle this task
     Script * m_script;
   private:
     /// \brief Private and un-implemented, to make sure slicing is impossible
@@ -37,6 +38,7 @@ class TaskScript : public Task {
     explicit TaskScript(Character & chr);
     virtual ~TaskScript();
 
+    /// \brief Accessor for the script that handles this task
     Script * script() const {
         return m_script;
     }
