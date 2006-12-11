@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Container.h,v 1.6 2006-12-10 22:48:01 alriddoch Exp $
+// $Id: Container.h,v 1.7 2006-12-11 21:23:54 alriddoch Exp $
 
 #ifndef RULESETS_CONTAINER_H
 #define RULESETS_CONTAINER_H
@@ -64,8 +64,11 @@ class Container {
             --m_refCount;
         }
 
+        /// \brief Increment the iterator to point to the next entity
         virtual Container_const_iterator & operator++() = 0;
+        /// \brief Check if the iterator points to the same entity
         virtual bool operator==(const Container_const_iterator &) = 0;
+        /// \brief Dereference the iterator to get the entity
         virtual Entity * operator*() const = 0;
     };
   public:
@@ -123,7 +126,9 @@ class Container {
     Container();
     virtual ~Container();
 
+    /// \brief Return an iterator that points to the start of the container
     virtual const_iterator begin() const = 0;
+    /// \brief Return an iterator that points after the end of the container
     virtual const_iterator end() const = 0;
 
     /// \brief Query the number of members in the container
@@ -176,6 +181,7 @@ class StdContainer : public Container {
         virtual Entity * operator*() const;
     };
   protected:
+    /// \brief Storage for the entities in this container
     EntitySet m_entities;
   public:
     StdContainer();
