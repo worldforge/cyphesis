@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pickup.h,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Pickup.h,v 1.4 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_PICKUP_H
 #define COMMON_PICKUP_H
@@ -28,6 +28,7 @@ extern int PICKUP_NO;
 
 /// \brief An action operation used to initiate picking an inventory item
 /// up.
+/// \ingroup CustomOperations
 class Pickup : public Generic
 {
   public:

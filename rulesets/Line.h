@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Line.h,v 1.14 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Line.h,v 1.15 2006-12-12 15:54:23 alriddoch Exp $
 
 #ifndef RULESETS_LINE_H
 #define RULESETS_LINE_H
@@ -29,6 +29,7 @@ typedef Thing Line_parent;
 /// On the atlas side, it inherits from feature, but feature does not have
 /// any added attributes or functionality over thing. This is not yet fully
 /// implemented.
+/// \ingroup EntityClasses
 class Line : public Line_parent {
   protected:
     IdList m_startIntersections;

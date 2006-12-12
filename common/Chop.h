@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Chop.h,v 1.16 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Chop.h,v 1.17 2006-12-12 15:54:21 alriddoch Exp $
 
 #ifndef COMMON_CHOP_H
 #define COMMON_CHOP_H
@@ -28,6 +28,7 @@ extern int CHOP_NO;
 
 /// \brief An affect operation used to indicate an entity has been cut with
 /// a light or medium cutting tool.
+/// \ingroup CustomOperations
 class Chop : public Generic
 {
   public:

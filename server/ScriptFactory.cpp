@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.cpp,v 1.6 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: ScriptFactory.cpp,v 1.7 2006-12-12 15:54:24 alriddoch Exp $
 
 #include "ScriptFactory.h"
 
@@ -27,6 +27,10 @@
 
 #include "common/log.h"
 
+/// \brief ScriptFactory constructor
+/// 
+/// @param package name of the script package scripts are to be created from
+/// @param type name of the type instanced to create scripts
 ScriptFactory::ScriptFactory(const std::string & package,
                              const std::string & type) : m_package(package),
                                                          m_type(type)

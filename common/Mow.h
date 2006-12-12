@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Mow.h,v 1.8 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Mow.h,v 1.9 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_MOW_H
 #define COMMON_MOW_H
@@ -28,6 +28,7 @@ extern int MOW_NO;
 
 /// \brief An affect operation used to gather vegetation resources from
 /// the terrain.
+/// \ingroup CustomOperations
 class Mow : public Generic
 {
   public:

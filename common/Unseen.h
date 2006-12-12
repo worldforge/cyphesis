@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Unseen.h,v 1.7 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Unseen.h,v 1.8 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_UNSEEN_H
 #define COMMON_UNSEEN_H
@@ -28,6 +28,7 @@ extern int UNSEEN_NO;
 
 /// \brief A perception operation used to indicate that an attempt to
 /// interact with an entity failed because it is not present.
+/// \ingroup CustomOperations
 class Unseen : public Generic
 {
   public:

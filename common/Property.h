@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.13 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Property.h,v 1.14 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -87,6 +87,7 @@ class SignalProperty : public Property<T>, virtual public sigc::trackable {
 
     virtual void set(const Atlas::Message::Element &);
 
+    /// \brief Signal that is emitted when this Property is modified.
     sigc::signal<void> modified;
 };
 

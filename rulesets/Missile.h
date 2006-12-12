@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Missile.h,v 1.9 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Missile.h,v 1.10 2006-12-12 15:54:23 alriddoch Exp $
 
 #ifndef RULESETS_MISSILE_H
 #define RULESETS_MISSILE_H
@@ -43,6 +43,7 @@ typedef Thing Missile_parent;
 ///
 /// The ideas in this file will probably be made obsolete by ideas for moving
 /// fundamental movement simulation into the PhysicalEntity (Thing) class.
+/// \ingroup EntityClasses
 class Missile : public Missile_parent {
   protected:
     

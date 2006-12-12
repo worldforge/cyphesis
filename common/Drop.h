@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Drop.h,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Drop.h,v 1.4 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_DROP_H
 #define COMMON_DROP_H
@@ -28,6 +28,7 @@ extern int DROP_NO;
 
 /// \brief An action operation used to initiate putting an inventory item
 /// down.
+/// \ingroup CustomOperations
 class Drop : public Generic
 {
   public:

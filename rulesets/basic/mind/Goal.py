@@ -5,6 +5,10 @@ from types import *
 from atlas import *
 from common import log
 
+## \defgroup PythonGoals Goal Classes
+
+## \brief Base class for all goals
+## \ingroup PythonGoals
 class Goal:
     def __init__(self,desc="some goal",fulfilled=None,subgoals=[],
                  time=None, debug=0):

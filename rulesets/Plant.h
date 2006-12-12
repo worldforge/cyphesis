@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.h,v 1.31 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Plant.h,v 1.32 2006-12-12 15:54:24 alriddoch Exp $
 
 #ifndef RULESETS_PLANT_H
 #define RULESETS_PLANT_H
@@ -32,6 +32,7 @@ typedef Thing Plant_parent;
 /// for Acorn compatability. In the longer term this should provide for
 /// plants to grow, assuming we need plants to grow now that we are
 /// using Mercator for forests.
+/// \ingroup EntityClasses
 class Plant : public Plant_parent {
   protected:
     int m_fruits; // Number of fruits on the plant

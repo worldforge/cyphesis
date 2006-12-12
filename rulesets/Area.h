@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Area.h,v 1.16 2006-10-26 00:48:07 alriddoch Exp $
+// $Id: Area.h,v 1.17 2006-12-12 15:54:23 alriddoch Exp $
 
 #ifndef RULESETS_AREA_H
 #define RULESETS_AREA_H
@@ -29,6 +29,7 @@ typedef Thing Area_parent;
 /// On the atlas side, it inherits from feature, but feature does not have
 /// any added attributes or functionality over thing. This is not yet fully
 /// implemented.
+/// \ingroup EntityClasses
 class Area : public Area_parent {
   protected:
     IdList m_segments;

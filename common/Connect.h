@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connect.h,v 1.5 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Connect.h,v 1.6 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_CONNECT_H
 #define COMMON_CONNECT_H
@@ -28,6 +28,7 @@ extern int CONNECT_NO;
 
 /// \brief An operation used to establish a connection from this server
 /// to another.
+/// \ingroup CustomOperations
 class Connect : public Generic
 {
   public:

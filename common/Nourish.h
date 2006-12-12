@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Nourish.h,v 1.14 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Nourish.h,v 1.15 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_NOURISH_H
 #define COMMON_NOURISH_H
@@ -27,6 +27,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 extern int NOURISH_NO;
 
 /// \brief An affect operation used to indicate something is nourished.
+/// \ingroup CustomOperations
 class Nourish : public Generic
 {
   public:

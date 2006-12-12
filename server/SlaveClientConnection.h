@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SlaveClientConnection.h,v 1.3 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: SlaveClientConnection.h,v 1.4 2006-12-12 15:54:24 alriddoch Exp $
 
 #ifndef SERVER_SLAVE_CLIENT_CONNECTION_H
 #define SERVER_SLAVE_CLIENT_CONNECTION_H
@@ -32,7 +32,9 @@ class ServerRouting;
 /// required because cyphesis is not the authoritative point for logins.
 class SlaveClientConnection : public OOGThing {
   public:
+    /// \brief network object the client is connected to
     CommClient & m_commClient;
+    /// \brief core server object
     ServerRouting & m_server;
 
     SlaveClientConnection(const std::string &, CommClient &, ServerRouting &);

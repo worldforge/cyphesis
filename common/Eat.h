@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Eat.h,v 1.15 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Eat.h,v 1.16 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_EAT_H
 #define COMMON_EAT_H
@@ -28,6 +28,7 @@ extern int EAT_NO;
 
 /// \brief An action and affect operation used to initiate and indicate
 /// something is being eaten.
+/// \ingroup CustomOperations
 class Eat : public Generic
 {
   public:

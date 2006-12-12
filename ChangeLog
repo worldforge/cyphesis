@@ -1,3 +1,26 @@
+2006-12-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Increment version.
+
+	* common/const.h: Declare a doxygen group for all the consts.
+
+	* common/operations.cpp, common/Add.h, common/Attack.h, common/Burn.h,
+	  common/Chop.h, common/Connect.h, common/Cut.h, common/Delve.h,
+	  common/Dig.h, common/Drop.h, common/Eat.h, common/Monitor.h,
+	  common/Mow.h, common/Nourish.h, common/Pickup.h, common/Setup.h,
+	  common/Tick.h, common/Unseen.h, common/Update.h:
+	  Declare a doxygen group for all custom operations.
+
+	* rulesets/Area.h, rulesets/Character.h, rulesets/Creator.h,
+	  rulesets/Entity.h, rulesets/Food.h, rulesets/Line.h,
+	  rulesets/Missile.h, rulesets/Plant.h, rulesets/Stackable.h,
+	  rulesets/Structure.h, rulesets/World.h: Declare a doxygen group
+	  for in game entity classses.
+
+	* common/Property.h, common/Property_impl.h, server/ScriptFactory.cpp,
+	  server/ScriptFactory.h, server/SlaveClientConnection.cpp,
+	  server/SlaveClientConnection.h: Add some more inlined documentation.
+
 2006-12-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Container.cpp, rulesets/Container.h: Document some

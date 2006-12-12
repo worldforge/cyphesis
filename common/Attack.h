@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Attack.h,v 1.4 2006-10-26 00:48:02 alriddoch Exp $
+// $Id: Attack.h,v 1.5 2006-12-12 15:54:21 alriddoch Exp $
 
 #ifndef COMMON_ATTACK_H
 #define COMMON_ATTACK_H
@@ -27,6 +27,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 extern int ATTACK_NO;
 
 /// \brief An action operation used to initiate combat.
+/// \ingroup CustomOperations
 class Attack : public Generic
 {
   public:

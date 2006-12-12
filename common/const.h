@@ -15,12 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.h,v 1.44 2006-12-05 09:39:59 alriddoch Exp $
+// $Id: const.h,v 1.45 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
 
 namespace consts {
+
+  /// \defgroup Constants Global Configuration Constants
+
+  // @{
 
   /// \brief Should python code emit thinking ops
   static const int debug_thinking = 0;
@@ -65,6 +69,7 @@ namespace consts {
   /// \brief Date this server was built
   extern const char * buildDate;
 
+  // @}
 }
 
 #endif // COMMON_CONST_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.81 2006-12-10 17:53:52 alriddoch Exp $
+// $Id: Entity.h,v 1.82 2006-12-12 15:54:23 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -55,6 +55,11 @@ class PropertyBase;
 
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
+/// \brief Classes that model in world entities
+///
+/// These classes are used to model all in world entities or objects.
+/// \defgroup EntityClasses In World Entity Classes
+
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -67,6 +72,7 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 /// in scripts rather than in the C++ code.
 /// This is now also intended to be the base for in-game persistance.
 /// It implements the basic types required for persistance.
+/// \ingroup EntityClasses
 class Entity : public BaseEntity {
   private:
     static std::set<std::string> m_immutable;

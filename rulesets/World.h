@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.h,v 1.32 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: World.h,v 1.33 2006-12-12 15:54:24 alriddoch Exp $
 
 #ifndef RULESETS_WORLD_H
 #define RULESETS_WORLD_H
@@ -31,10 +31,11 @@ typedef Thing World_parent;
 
 typedef std::map<int, std::set<int> > PointSet;
 
-/// This is the in-game entity class used to represent the world.
+/// \brief This is the in-game entity class used to represent the world.
 ///
 /// I added this because I was not happy with the way the old object model
 /// used an out of game object of type WorldRouter to represent the world.
+/// \ingroup EntityClasses
 class World : public World_parent {
   protected:
     /// Terrain manager for the world.

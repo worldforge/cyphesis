@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Tick.h,v 1.15 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Tick.h,v 1.16 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_TICK_H
 #define COMMON_TICK_H
@@ -27,6 +27,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 extern int TICK_NO;
 
 /// \brief An operation used to trigger one of a number of types of update.
+/// \ingroup CustomOperations
 class Tick : public Generic
 {
   public:

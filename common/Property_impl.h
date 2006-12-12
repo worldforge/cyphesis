@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property_impl.h,v 1.10 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Property_impl.h,v 1.11 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_IMPL_H
 #define COMMON_PROPERTY_IMPL_H
@@ -73,6 +73,10 @@ void Property<T>::set(const Atlas::Message::Element & e)
     m_modData = e;
 }
 
+/// \brief SignalProperty constructor
+///
+/// @param data the variable that holds the value of this property
+/// @param flags used to indicate how this property is persisted
 template <typename T>
 SignalProperty<T>::SignalProperty(T & data, unsigned int flags) :
                    Property<T>(data, flags)

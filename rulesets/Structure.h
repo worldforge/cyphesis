@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Structure.h,v 1.13 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Structure.h,v 1.14 2006-12-12 15:54:24 alriddoch Exp $
 
 #ifndef RULESETS_STRUCTURE_H
 #define RULESETS_STRUCTURE_H
@@ -30,6 +30,7 @@ typedef Thing Structure_parent;
 /// can enter. All this class really does is ensure that the entity geometry
 /// is set up in such a way that the collision code allows the character
 /// to pass into it.
+/// \ingroup EntityClasses
 class Structure : public Structure_parent {
   public:
     explicit Structure(const std::string & id, long intId);

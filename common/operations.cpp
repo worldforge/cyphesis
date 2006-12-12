@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: operations.cpp,v 1.25 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: operations.cpp,v 1.26 2006-12-12 15:54:22 alriddoch Exp $
 
 #include "Add.h"
 #include "Attack.h"
@@ -35,6 +35,13 @@
 #include "Update.h"
 #include "Monitor.h"
 #include "Connect.h"
+
+/// \brief Operation classes not defined in the Atlas spec
+///
+/// Operation classes used by Cyphesis as extensions of the
+/// original Atlas specification used to generate the classes in
+/// the Atlas-C++ library.
+/// \defgroup CustomOperations Custom Operation Classes
 
 namespace Atlas { namespace Objects { namespace Operation {
 

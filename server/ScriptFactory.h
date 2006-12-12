@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.h,v 1.5 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: ScriptFactory.h,v 1.6 2006-12-12 15:54:24 alriddoch Exp $
 
 #ifndef SERVER_SCRIPT_FACTORY_H
 #define SERVER_SCRIPT_FACTORY_H
@@ -30,16 +30,21 @@ class Entity;
 /// entity objects.
 class ScriptFactory {
   protected:
+    /// \brief Name of the script package where the script type is
     std::string m_package;
+    /// \brief Name of the script type instances by this factory
     std::string m_type;
 
     ScriptFactory(const std::string & package, const std::string & type);
   public:
     virtual ~ScriptFactory();
 
+    /// \brief Accessor for package name
     const std::string & package() { return m_package; }
 
+    /// \brief Add a script to an entity
     virtual int addScript(Entity * entity) = 0;
+    /// \brief Reload the underlying class object from the script on disk
     virtual int refreshClass() = 0;
 };
 
@@ -47,7 +52,9 @@ class ScriptFactory {
 /// to in game entity objects.
 class PythonScriptFactory : public ScriptFactory {
   protected:
+    /// \brief Module object which contains the script class
     PyObject * m_module;
+    /// \brief Class object to be instanced when creating scripts
     PyObject * m_class;
 
     int getClass();

@@ -15,10 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SlaveClientConnection.cpp,v 1.4 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: SlaveClientConnection.cpp,v 1.5 2006-12-12 15:54:24 alriddoch Exp $
 
 #include "SlaveClientConnection.h"
 
+/// \brief SlaveClientConnection constructor
+///
+/// @param id identifier of the connection
+/// @param client network object the client is connected to
+/// @param svr core server object
 SlaveClientConnection::SlaveClientConnection(const std::string & id,
                                              CommClient & client,
                                              ServerRouting & svr) :

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackable.h,v 1.27 2006-12-10 22:48:01 alriddoch Exp $
+// $Id: Stackable.h,v 1.28 2006-12-12 15:54:24 alriddoch Exp $
 
 #ifndef RULESETS_STACKABLE_H
 #define RULESETS_STACKABLE_H
@@ -32,6 +32,7 @@ typedef Thing Stackable_parent;
 /// represented by an object. This class is not yet implemented as Combine
 /// and Divide semantics are not yet sorted. It may well be obsoleted if
 /// piles are implemented as was suggested in some early Mason docs.
+/// \ingroup EntityClasses
 class Stackable : public Stackable_parent {
   protected:
     /// \brief Number of items in the stack

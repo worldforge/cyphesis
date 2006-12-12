@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Food.h,v 1.17 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Food.h,v 1.18 2006-12-12 15:54:23 alriddoch Exp $
 
 #ifndef RULESETS_FOOD_H
 #define RULESETS_FOOD_H
@@ -28,6 +28,7 @@ typedef Thing Food_parent;
 ///
 /// Most of the functionality will be common to all food, and most derived
 /// classes will probably be in python.
+/// \ingroup EntityClasses
 class Food : public Food_parent {
   public:
     explicit Food(const std::string & id, long intId);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Delve.h,v 1.9 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Delve.h,v 1.10 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_DELVE_H
 #define COMMON_DELVE_H
@@ -27,6 +27,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 extern int DELVE_NO;
 
 /// \brief An affect operation used to gather rock resources from the terrain.
+/// \ingroup CustomOperations
 class Delve : public Generic
 {
   public:

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.87 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Character.h,v 1.88 2006-12-12 15:54:23 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -43,6 +43,7 @@ typedef Thing Character_parent;
 /// the mind or client to determine what the result on the world is, and
 /// operation verification for checking if an in-game operation should be
 /// passed to the mind.
+/// \ingroup EntityClasses
 class Character : public Character_parent {
   protected:
     Statistics m_statistics;

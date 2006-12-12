@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Dig.h,v 1.8 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Dig.h,v 1.9 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_DIG_H
 #define COMMON_DIG_H
@@ -27,6 +27,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 extern int DIG_NO;
 
 /// \brief An affect operation used to gather soil resources from the terrain.
+/// \ingroup CustomOperations
 class Dig : public Generic
 {
   public:

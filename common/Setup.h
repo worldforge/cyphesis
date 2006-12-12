@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Setup.h,v 1.15 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Setup.h,v 1.16 2006-12-12 15:54:22 alriddoch Exp $
 
 #ifndef COMMON_SETUP_H
 #define COMMON_SETUP_H
@@ -28,6 +28,7 @@ extern int SETUP_NO;
 
 /// \brief An operation used to trigger initialisation of an entity once
 /// it is in the world.
+/// \ingroup CustomOperations
 class Setup : public Generic
 {
   public:
