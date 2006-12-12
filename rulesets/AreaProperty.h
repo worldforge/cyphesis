@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AreaProperty.h,v 1.4 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: AreaProperty.h,v 1.5 2006-12-12 19:52:39 alriddoch Exp $
 
 #ifndef RULESETS_AREA_PROPERTY_H
 #define RULESETS_AREA_PROPERTY_H
@@ -27,6 +27,7 @@
 #include <set>
 
 /// \brief Class to handle Entity terrain property
+/// \ingroup PropertyClasses
 class AreaProperty : public PropertyBase {
   protected:
     LineProperty m_line;

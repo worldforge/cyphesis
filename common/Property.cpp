@@ -15,9 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.cpp,v 1.11 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: Property.cpp,v 1.12 2006-12-12 19:52:38 alriddoch Exp $
 
 #include "Property_impl.h"
+
+/// \brief Classes that define properties on in world entities
+///
+/// Property classes handle the values of Atlas attributes on in
+/// game entitie, ensuring type safety, and encapsulating certain
+/// behavoirs related to the presence and value of the attribute.
+/// \defgroup PropertyClasses Entity Property Classes
 
 /// \brief Constructor called from classes which inherit from Property
 /// @param flags default value for the Property flags

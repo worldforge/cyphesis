@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.h,v 1.9 2006-12-10 17:53:53 alriddoch Exp $
+// $Id: TerrainProperty.h,v 1.10 2006-12-12 19:52:39 alriddoch Exp $
 
 #ifndef RULESETS_TERRAIN_PROPERTY_H
 #define RULESETS_TERRAIN_PROPERTY_H
@@ -31,6 +31,7 @@ namespace Mercator {
 typedef std::map<int, std::set<int> > PointSet;
 
 /// \brief Class to handle Entity terrain property
+/// \ingroup PropertyClasses
 class TerrainProperty : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property

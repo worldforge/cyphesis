@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: DynamicProperty.h,v 1.4 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: DynamicProperty.h,v 1.5 2006-12-12 19:52:38 alriddoch Exp $
 
 #ifndef COMMON_DYNAMIC_PROPERTY_H
 #define COMMON_DYNAMIC_PROPERTY_H
@@ -24,6 +24,7 @@
 
 /// \brief Adaptor class which can make an instance of Property<T>
 /// store its own data.
+/// \ingroup PropertyClasses
 template <typename T>
 class DynamicProperty : public Property<T> {
   protected:
@@ -36,6 +37,7 @@ class DynamicProperty : public Property<T> {
 
 /// \brief Adaptor class which can make any property class store its own
 /// data.
+/// \ingroup PropertyClasses
 template <class P, typename T>
 class Dynamic : public P {
   protected:

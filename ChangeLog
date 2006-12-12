@@ -1,5 +1,19 @@
 2006-12-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* Doxyfile: Add tools to the documented code.
+
+	* index.dox: Update documentation index.
+
+	* tools/cycmd.cpp: Add a document page for this tool.
+
+	* common/DynamicProperty.h, common/Property.cpp, common/Property.h,
+	  rulesets/AreaProperty.h, rulesets/CalendarProperty.h,
+	  rulesets/EntityProperty.h, rulesets/LineProperty.h,
+	  rulesets/StatisticsProperty.h, rulesets/TerrainProperty.h:
+	  Add all property classes into a property group.
+
+2006-12-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment version.
 
 	* common/const.h: Declare a doxygen group for all the consts.

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LineProperty.h,v 1.7 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: LineProperty.h,v 1.8 2006-12-12 19:52:39 alriddoch Exp $
 
 #ifndef RULESETS_LINE_PROPERTY_H
 #define RULESETS_LINE_PROPERTY_H
@@ -27,6 +27,7 @@
 #include <set>
 
 /// \brief Class to handle Entity terrain property
+/// \ingroup PropertyClasses
 class LineProperty : public PropertyBase {
   protected:
     CoordList & m_data;

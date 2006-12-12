@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StatisticsProperty.h,v 1.6 2006-12-10 22:48:02 alriddoch Exp $
+// $Id: StatisticsProperty.h,v 1.7 2006-12-12 19:52:39 alriddoch Exp $
 
 #ifndef RULESETS_STATISTICS_PROPERTY_H
 #define RULESETS_STATISTICS_PROPERTY_H
@@ -25,6 +25,7 @@
 class Statistics;
 
 /// \brief Class to handle Entity statistics
+/// \ingroup PropertyClasses
 class StatisticsProperty : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property

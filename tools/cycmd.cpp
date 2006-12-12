@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.102 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.103 2006-12-12 19:52:39 alriddoch Exp $
+
+/// \page cycmd_index
+///
+/// This is what cycmd is really all about, what it trully loves best.
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

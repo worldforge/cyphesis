@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.14 2006-12-12 15:54:22 alriddoch Exp $
+// $Id: Property.h,v 1.15 2006-12-12 19:52:38 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -26,7 +26,10 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
+
 /// \brief Interface for Entity properties
+///
+/// \ingroup PropertyClasses
 class PropertyBase {
   protected:
     /// \brief Flags indicating how this Property should be handled
@@ -53,6 +56,7 @@ class PropertyBase {
 ///
 /// Properties like CONTAINS, LOC and POS are accessed this way, as they
 /// are only ever modified as a result of a move operation.
+/// \ingroup PropertyClasses
 template <typename T>
 class ImmutableProperty : public PropertyBase {
   protected:
@@ -68,6 +72,7 @@ class ImmutableProperty : public PropertyBase {
 };
 
 /// \brief Entity property template for properties with single data values
+/// \ingroup PropertyClasses
 template <typename T>
 class Property : public ImmutableProperty<T> {
   protected:
@@ -80,6 +85,7 @@ class Property : public ImmutableProperty<T> {
 };
 
 /// \brief Entity property template for properties with single data values
+/// \ingroup PropertyClasses
 template <typename T>
 class SignalProperty : public Property<T>, virtual public sigc::trackable {
   public:

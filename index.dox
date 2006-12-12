@@ -1,17 +1,21 @@
-/** @page index
+/** \mainpage
 
-<H1>Cyphesis</H1>
+\section Introdction
 
 Welcome to the Cyphesis documentation.
 
-<H2>Links</H2>
+\section Tools
+
+\ref cycmd_index "cycmd"
+
+\section Links
 
 <UL>
 <LI><a href="http://www.worldforge.org/">The WorldForge Project</a></LI>
 <LI><a hreF="http://www.worldforge.org/dev/eng/servers/cyphesis">Cyphesis</a></LI>
 </UL>
 
-<H2>Contact</H2>
+\section Contact
 
 The current maintainer for Cyphesis is Al Riddoch <alriddoch@zepler.org>.
 It is based on a Python implementation written by Aloril <aloril@iki.fi>.

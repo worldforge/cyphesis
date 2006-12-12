@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.h,v 1.1 2006-12-04 23:06:58 alriddoch Exp $
+// $Id: EntityProperty.h,v 1.2 2006-12-12 19:52:39 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_PROPERTY_H
 #define RULESETS_ENTITY_PROPERTY_H
@@ -25,6 +25,7 @@
 #include "modules/EntityRef.h"
 
 /// \brief Class to handle Entity terrain property
+/// \ingroup PropertyClasses
 class EntityProperty : public PropertyBase {
   protected:
     EntityRef m_data;
