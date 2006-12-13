@@ -1,3 +1,9 @@
+Consider, can we pre-fetch and cache the python object involved in calling a
+hook?
+
+Can we avoid the slightly messy sub_op argumen that is always there on scripts
+calls?
+
 Plough field, grow veggies. Carrot turnip.
 
 Add code to EntityPropertytest to cover setting by ID.

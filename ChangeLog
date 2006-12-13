@@ -1,5 +1,10 @@
 2006-12-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Script.cpp, rulesets/Structure.cpp:
+	  Add some inline documentation.
+
+2006-12-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* Doxyfile: Add tools to the documented code.
 
 	* index.dox: Update documentation index.
