@@ -1505,7 +1505,7 @@
     <string name="id">loaf</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>food</string>
     </list>
   </map>
 

@@ -1,3 +1,9 @@
+2006-12-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/const.h: Re-enable database for accounts and rules.
+
+	* data/mason.xml: Make loaf inherit from food.
+
 2006-12-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Script.cpp, rulesets/Structure.cpp:
