@@ -32,6 +32,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 /// Python scripts use this type in order to modify the time attribute
 /// of an operation, so its necessary to keep a pointer to the operation
 /// itself.
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Operation::RootOperation * operation;

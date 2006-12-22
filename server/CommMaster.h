@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMaster.h,v 1.4 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommMaster.h,v 1.5 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef SERVER_COMM_MASTER_H
 #define SERVER_COMM_MASTER_H
@@ -23,6 +23,7 @@
 #include "CommClient.h"
 
 /// \brief Handle an internet socket connected to a remote master server.
+/// \ingroup ServerSockets
 class CommMaster : public CommClient {
   public:
     CommMaster(CommServer & svr,

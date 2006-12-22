@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.cpp,v 1.7 2006-12-12 15:54:24 alriddoch Exp $
+// $Id: ScriptFactory.cpp,v 1.8 2006-12-22 02:14:45 alriddoch Exp $
 
 #include "ScriptFactory.h"
 
@@ -64,6 +64,10 @@ int PythonScriptFactory::getClass()
     return 0;
 }
 
+/// \brief PythonScriptFactory constructor
+///
+/// @param package Name of the script package where the script type is
+/// @param type Name of the scrpt types instanced by this factory
 PythonScriptFactory::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
                                          ScriptFactory(package, type),

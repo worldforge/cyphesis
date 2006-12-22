@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommListener.h,v 1.16 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommListener.h,v 1.17 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef SERVER_COMM_LISTENER_H
 #define SERVER_COMM_LISTENER_H
@@ -26,6 +26,7 @@
 
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote clients.
+/// \ingroup ServerSockets
 class CommListener : public CommSocket {
   private:
     /// skstream object to manage the listen socket.

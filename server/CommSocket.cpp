@@ -15,9 +15,18 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommSocket.cpp,v 1.6 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommSocket.cpp,v 1.7 2006-12-22 02:14:45 alriddoch Exp $
 
 #include "CommSocket.h"
+
+/// \defgroup ServerSockets Server Socket Classes
+///
+////Socket handling classes for the server code.
+/// Socket classes which inherit from CommSocket are used by the cyphesis
+/// server class CommServer to communicate with other parts of a WorldForge
+/// system using network sockets. All classes have a common interface which
+/// allows CommServer to monitor these sockets for activity or events, and
+/// notify the object when action is required.
 
 /// \brief Constructor for socket object.
 ///

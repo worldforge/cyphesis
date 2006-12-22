@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommClient.h,v 1.53 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommClient.h,v 1.54 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef SERVER_COMM_CLIENT_H
 #define SERVER_COMM_CLIENT_H
@@ -43,6 +43,7 @@ class BaseEntity;
 /// \brief Base class for Atlas clients connected to the server.
 ///
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
+/// \ingroup ServerSockets
 class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, public Idle {
   public:
     /// \brief STL deque of pointers to operation objects.

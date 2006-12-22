@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMetaClient.h,v 1.15 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommMetaClient.h,v 1.16 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef SERVER_COMM_META_CLIENT_H
 #define SERVER_COMM_META_CLIENT_H
@@ -28,6 +28,7 @@
 #include <skstream/skstream.h>
 
 /// \brief Handle a socket used to communicate with the metaserver.
+/// \ingroup ServerSockets
 class CommMetaClient : public CommSocket, virtual public Idle {
   private:
     /// C++ iostream compatible socket object handling the socket IO.

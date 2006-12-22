@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.158 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.159 2006-12-22 02:14:44 alriddoch Exp $
 
 #include "Python.h"
 
@@ -59,6 +59,11 @@ using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
+
+/// \defgroup PythonWrappers Python Wrapper Types
+///
+/// Structure types based on the PyObject header used to wrap C++ objects
+/// in Python.
 
 /// \brief Python wrapper for C++ functions to be exposed to Python
 typedef struct {

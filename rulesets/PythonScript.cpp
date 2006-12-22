@@ -15,10 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonScript.cpp,v 1.8 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: PythonScript.cpp,v 1.9 2006-12-22 02:14:44 alriddoch Exp $
 
 #include "PythonScript.h"
 
+/// \brief PythonScript constructor
+///
+/// @param o the python object instantiated from the script class.
+/// @param wrapper the python object used to wrap the C++ object for the script
 PythonScript::PythonScript(PyObject * o, PyObject * wrapper) :
               PythonWrapper(wrapper), scriptObject(o)
 {

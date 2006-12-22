@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Object.h,v 1.23 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_Object.h,v 1.24 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_OBJECT_H
 #define RULESETS_PY_OBJECT_H
@@ -25,6 +25,7 @@
 #include <Atlas/Message/Element.h>
 
 /// \brief Wrapper for Atlas::Message::Element in Python
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Atlas::Message::Element * m_obj;

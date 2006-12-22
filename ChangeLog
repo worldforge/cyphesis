@@ -1,3 +1,29 @@
+2006-12-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommClient.h, server/CommListener.h, server/CommLocalClient.h,
+	  server/CommMDNSPublisher.h, server/CommMaster.h,
+	  server/CommMetaClient.h, server/CommPSQLSocket.h,
+	  server/CommPeer.h, server/CommPeerListener.h,
+	  server/CommRemoteClient.h, server/CommServer.h,
+	  server/CommSlaveClient.h, server/CommSlaveListener.h,
+	  server/CommSocket.cpp, server/CommSocket.h,
+	  server/CommUnixListener.h: Add a documentation group for socket
+	  classes.
+
+	* rulesets/Py_BBox.h, rulesets/Py_EntityWrapper.h,
+	  rulesets/Py_Location.h, rulesets/Py_Map.h, rulesets/Py_Mind.h,
+	  rulesets/Py_Object.h, rulesets/Py_Operation.h,
+	  rulesets/Py_Oplist.h, rulesets/Py_Optime.h, rulesets/Py_Point3D.h,
+	  rulesets/Py_Property.h, rulesets/Py_Quaternion.h,
+	  rulesets/Py_RootEntity.h, rulesets/Py_Task.h, rulesets/Py_Thing.h,
+	  rulesets/Py_Vector3D.h, rulesets/Py_World.h, rulesets/Py_WorldTime.h,
+	  rulesets/Python_API.cpp: Add documentation group for Python wrapper
+	  types.
+
+	* rulesets/Container.h, rulesets/PythonScript.cpp,
+	  server/ScriptFactory.h, server/ScriptFactory.cpp:
+	  Add more inline documentation comments.
+
 2006-12-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/const.h: Re-enable database for accounts and rules.

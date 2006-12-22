@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_World.h,v 1.12 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_World.h,v 1.13 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_WORLD_H
 #define RULESETS_PY_WORLD_H
@@ -25,6 +25,7 @@
 class BaseWorld;
 
 /// \brief Wrapper for World in Python
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     BaseWorld * world;

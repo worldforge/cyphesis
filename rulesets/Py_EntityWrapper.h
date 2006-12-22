@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_EntityWrapper.h,v 1.3 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_EntityWrapper.h,v 1.4 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_ENTITY_WRAPPER_H
 #define RULESETS_PY_ENTITY_WRAPPER_H
@@ -25,6 +25,7 @@
 class Entity;
 
 /// \brief Wrapper for specific entity submodules in Python
+///
 /// This has been written to wrap Statistics, but as Statistics is always
 /// a member of entity, and entity is ref counted it makes sense to
 /// store a reference to the entity, so this wrapper can simple hold a
@@ -35,6 +36,7 @@ class Entity;
 /// for other submodules of entity. The methods for a python object are
 /// defined by its PyTypeObject, which is independant of the struct
 /// used.
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Entity * m_entity;

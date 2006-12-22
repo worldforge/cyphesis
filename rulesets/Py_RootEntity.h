@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_RootEntity.h,v 1.4 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_RootEntity.h,v 1.5 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_ENTITY_H
 #define RULESETS_PY_ENTITY_H
@@ -26,12 +26,14 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 /// \brief Wrapper for all Atlas entities in Python
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Entity::RootEntity entity;
 } PyRootEntity;
 
 /// \brief Wrapper for read only Atlas entities in Python
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Atlas::Objects::Entity::RootEntity entity;

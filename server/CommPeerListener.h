@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommPeerListener.h,v 1.5 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommPeerListener.h,v 1.6 2006-12-22 02:14:45 alriddoch Exp $
 
 #ifndef SERVER_COMM_PEER_LISTENER_H
 #define SERVER_COMM_PEER_LISTENER_H
@@ -24,6 +24,7 @@
 
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote peer servers.
+/// \ingroup ServerSockets
 class CommPeerListener : public CommListener {
   private:
     virtual int create(int fd, const char * address);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.h,v 1.6 2006-12-12 15:54:24 alriddoch Exp $
+// $Id: ScriptFactory.h,v 1.7 2006-12-22 02:14:45 alriddoch Exp $
 
 #ifndef SERVER_SCRIPT_FACTORY_H
 #define SERVER_SCRIPT_FACTORY_H
@@ -32,7 +32,7 @@ class ScriptFactory {
   protected:
     /// \brief Name of the script package where the script type is
     std::string m_package;
-    /// \brief Name of the script type instances by this factory
+    /// \brief Name of the script type instanced by this factory
     std::string m_type;
 
     ScriptFactory(const std::string & package, const std::string & type);

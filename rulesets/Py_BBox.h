@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_BBox.h,v 1.7 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_BBox.h,v 1.8 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_BBOX_H
 #define RULESETS_PY_BBOX_H
@@ -28,6 +28,7 @@
 ///
 /// Uses in-place construction to embed full C++ object into what is
 /// basically a C structure.
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     BBox box;

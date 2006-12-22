@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMDNSPublisher.h,v 1.4 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommMDNSPublisher.h,v 1.5 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef SERVER_COMM_MDNS_PUBLISHER_H
 #define SERVER_COMM_MDNS_PUBLISHER_H
@@ -28,6 +28,7 @@
 #include <stdint.h>
 
 /// \brief Handle a socket used to communicate with the MDNS responder daemon.
+/// \ingroup ServerSockets
 class CommMDNSPublisher : public CommSocket, virtual public Idle {
   private:
     // Howl data

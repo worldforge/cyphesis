@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommSlaveClient.h,v 1.5 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommSlaveClient.h,v 1.6 2006-12-22 02:14:45 alriddoch Exp $
 
 #ifndef SERVER_COMM_SLAVE_CLIENT_H
 #define SERVER_COMM_SLAVE_CLIENT_H
@@ -24,6 +24,7 @@
 
 /// \brief Handle an internet socket connected to a local client for a slave
 /// server.
+/// \ingroup ServerSockets
 class CommSlaveClient : public CommClient {
   public:
     CommSlaveClient(CommServer & svr, int fd, const std::string & id);

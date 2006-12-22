@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommRemoteClient.h,v 1.8 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommRemoteClient.h,v 1.9 2006-12-22 02:14:45 alriddoch Exp $
 
 #ifndef SERVER_COMM_REMOTE_CLIENT_H
 #define SERVER_COMM_REMOTE_CLIENT_H
@@ -23,6 +23,7 @@
 #include "CommClient.h"
 
 /// \brief Handle an internet socket connected to a remote client.
+/// \ingroup ServerSockets
 class CommRemoteClient : public CommClient {
   public:
     CommRemoteClient(CommServer & svr, int fd, const std::string & address,

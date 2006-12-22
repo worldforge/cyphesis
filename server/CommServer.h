@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.h,v 1.38 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommServer.h,v 1.39 2006-12-22 02:14:45 alriddoch Exp $
 
 #ifndef SERVER_COMM_SERVER_H
 #define SERVER_COMM_SERVER_H
@@ -36,6 +36,7 @@ typedef std::set<Idle *> IdleSet;
 /// Stores all the objects that handle network communications. This includes
 /// remote clients, local clients, listeners, database monitors and any
 /// other code which requires listening on a socket.
+/// \ingroup ServerSockets
 class CommServer {
   private:
     /// Set of pointers to CommSocket objects managed by this object.

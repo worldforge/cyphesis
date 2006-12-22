@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Point3D.h,v 1.6 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Point3D.h,v 1.7 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_POINT3D_H
 #define RULESETS_PY_POINT3D_H
@@ -28,6 +28,7 @@
 ///
 /// Uses in-place construction to embed full C++ object into what is
 /// basically a C structure.
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Point3D coords;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.h,v 1.17 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CommUnixListener.h,v 1.18 2006-12-22 02:14:45 alriddoch Exp $
 
 #ifndef SERVER_COMM_UNIX_LISTENER_H
 #define SERVER_COMM_UNIX_LISTENER_H
@@ -26,6 +26,7 @@
 
 /// \brief Handle the listen socket used to listen for unix socket connections
 /// on the local machine.
+/// \ingroup ServerSockets
 class CommUnixListener : public CommSocket {
   private:
     /// skstream object which manages the low level unix listen socket.

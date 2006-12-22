@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.h,v 1.3 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Property.h,v 1.4 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_PY_PROPERTY_H
 #define RULESETS_PY_PROPERTY_H
@@ -30,12 +30,15 @@ class StatisticsProperty;
 /// for wrappers for properties of more specific type, all of which will
 /// have an m_property which points to an object which inherits from
 /// PropertyBase.
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Entity * m_entity;
     PropertyBase * m_property;
 } PyProperty;
 
+/// \brief Wrapper for statistics property.
+/// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     Entity * m_entity;

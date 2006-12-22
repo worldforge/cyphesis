@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Container.h,v 1.7 2006-12-11 21:23:54 alriddoch Exp $
+// $Id: Container.h,v 1.8 2006-12-22 02:14:44 alriddoch Exp $
 
 #ifndef RULESETS_CONTAINER_H
 #define RULESETS_CONTAINER_H
@@ -171,6 +171,7 @@ class StdContainer : public Container {
     /// \brief Class for underlying implementation of StdContainer iterators.
     class StdContainer_const_iterator : public Container_const_iterator {
       private:
+        /// \brief STL iterator for the underlying STL container.
         EntitySet::const_iterator m_iter;
       public:
         StdContainer_const_iterator(EntitySet::const_iterator I);
