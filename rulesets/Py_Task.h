@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Task.h,v 1.6 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Task.h,v 1.7 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_TASK_H
 #define RULESETS_PY_TASK_H
@@ -28,7 +28,9 @@ class Task;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Storage for additional attributes
     PyObject * Task_attr;
+    /// \brief Task object handled by this wrapper
     Task * m_task;
 } PyTask;
 

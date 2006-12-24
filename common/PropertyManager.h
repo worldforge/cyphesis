@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyManager.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: PropertyManager.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_MANAGER_H
 #define COMMON_PROPERTY_MANAGER_H
@@ -28,6 +28,7 @@ class PropertyBase;
 /// \brief Base class for classes that handle creating Entity properties.
 class PropertyManager {
   protected:
+    /// \brief Singleton instance pointer for any subclass
     static PropertyManager * m_instance;
 
     PropertyManager();
@@ -35,8 +36,13 @@ class PropertyManager {
   public:
     virtual ~PropertyManager();
 
-    virtual PropertyBase * addProperty(Entity *, const std::string & name) = 0;
+    /// \brief Add a new named property to an Entity
+    ///
+    /// @param entity Entity to which the Property should be added
+    virtual PropertyBase * addProperty(Entity * entity,
+                                       const std::string & name) = 0;
 
+    /// \brief Return the registered singleton instance of any subclass
     static PropertyManager * instance() {
         return m_instance;
     }

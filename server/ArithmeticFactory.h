@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ArithmeticFactory.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: ArithmeticFactory.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef SERVER_ARITHMETIC_FACTORY_H
 #define SERVER_ARITHMETIC_FACTORY_H
@@ -38,10 +38,14 @@ class ArithmeticFactory {
 /// \brief Factory class for for creating python arithmetic scripts
 class PythonArithmeticFactory : public ArithmeticFactory {
   public:
+    /// /brief Python module object containing the script type
     PyObject * m_module;
+    /// \brief Python clas object for the script type
     PyObject * m_class;
 
+    /// \brief Name of the package containing the script
     std::string m_package;
+    /// \brief Name of the type within the package for the script
     std::string m_name;
 
     int getClass();

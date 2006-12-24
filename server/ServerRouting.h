@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.h,v 1.50 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: ServerRouting.h,v 1.51 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
@@ -128,7 +128,6 @@ class ServerRouting : public OOGThing {
     /// Accessor for server name.
     const std::string & getName() const { return m_svrName; }
 
-    /// Copy the attribute values of this object into an Atlas message.
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyFactory.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: PropertyFactory.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
@@ -30,6 +30,7 @@ class PropertyFactory {
   public:
     virtual ~PropertyFactory();
 
+    /// \brief Create a new Property instance
     virtual PropertyBase * newProperty(Entity *) = 0;
 };
 

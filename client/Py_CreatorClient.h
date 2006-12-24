@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_CreatorClient.h,v 1.10 2006-10-26 00:48:02 alriddoch Exp $
+// $Id: Py_CreatorClient.h,v 1.11 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef CLIENT_PY_CREATORCLIENT_H
 #define CLIENT_PY_CREATORCLIENT_H
@@ -31,7 +31,9 @@ extern PyTypeObject PyCreatorClient_Type;
 /// \brief Wrapper for CreatorClient in Python
 typedef struct {
     PyObject_HEAD
+    /// \brief Storage for additional attributes
     PyObject         * CreatorClient_attr;    // Attributes dictionary
+    /// \brief CreateClient object handled by this wrapper
     CreatorClient    * m_mind;
 } PyCreatorClient;
 

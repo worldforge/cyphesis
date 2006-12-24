@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.h,v 1.4 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Property.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_PROPERTY_H
 #define RULESETS_PY_PROPERTY_H
@@ -33,7 +33,9 @@ class StatisticsProperty;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Entity object that owns the Property
     Entity * m_entity;
+    /// \brief Property object handled by this wrapper
     PropertyBase * m_property;
 } PyProperty;
 
@@ -41,7 +43,9 @@ typedef struct {
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Entity object that owns the Property
     Entity * m_entity;
+    /// \brief StatisticsProperty object handled by this wrapper
     StatisticsProperty * m_property;
 } PyStatisticsProperty;
 

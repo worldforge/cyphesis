@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.34 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.35 2006-12-24 17:18:55 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
@@ -42,13 +42,13 @@ PythonEntityScript::~PythonEntityScript()
 {
 }
 
-bool PythonEntityScript::operation(const std::string & op_type,
+bool PythonEntityScript::operation(const std::string & opname,
                                    const Operation & op,
-                                   OpVector & ret_list,
+                                   OpVector & res,
                                    const Operation * sub_op)
 {
     assert(scriptObject != NULL);
-    std::string op_name = op_type + "_operation";
+    std::string op_name = opname + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
                                                             << std::flush;);
     // This check isn't really necessary, except it saves the conversion
@@ -82,14 +82,14 @@ bool PythonEntityScript::operation(const std::string & op_type,
     } else if (PyOperation_Check(ret)) {
         PyOperation * op = (PyOperation*)ret;
         assert(op->operation.isValid());
-        ret_list.push_back(op->operation);
+        res.push_back(op->operation);
     } else if (PyOplist_Check(ret)) {
         PyOplist * op = (PyOplist*)ret;
         assert(op->ops != NULL);
         const OpVector & o = *op->ops;
         OpVector::const_iterator Iend = o.end();
         for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
-            ret_list.push_back(*I);
+            res.push_back(*I);
         }
     } else {
        log(ERROR, String::compose("Python script \"%1\" returned an invalid result", op_name).c_str());

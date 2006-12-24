@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonArithmeticScript.cpp,v 1.6 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: PythonArithmeticScript.cpp,v 1.7 2006-12-24 17:18:55 alriddoch Exp $
 
 #include <Python.h>
 
@@ -25,7 +25,11 @@
 
 #include <iostream>
 
-PythonArithmeticScript::PythonArithmeticScript(PyObject * o) : m_script(o)
+/// \brief PythonArithmeticScript
+///
+/// @param script Python instance object implementing the script
+PythonArithmeticScript::PythonArithmeticScript(PyObject * script) :
+                                               m_script(script)
 {
 }
 

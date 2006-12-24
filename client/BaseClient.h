@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.h,v 1.19 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: BaseClient.h,v 1.20 2006-12-24 17:18:55 alriddoch Exp $
 
-#ifndef CLIENT_COMM_CLIENT_H
-#define CLIENT_COMM_CLIENT_H
+#ifndef CLIENT_BASE_CLIENT_H
+#define CLIENT_BASE_CLIENT_H
 
 #include "ClientConnection.h"
 
@@ -65,4 +65,4 @@ class BaseClient {
     }
 };
 
-#endif // CLIENT_COMM_CLIENT_H
+#endif // CLIENT_BASE_CLIENT_H

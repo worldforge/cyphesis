@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.h,v 1.20 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Operation.h,v 1.21 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_OPERATION_H
 #define RULESETS_PY_OPERATION_H
@@ -31,6 +31,7 @@ class Entity;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief RootOperation object handled by this wrapper
     Atlas::Objects::Operation::RootOperation operation;
 } PyOperation;
 
@@ -38,6 +39,7 @@ typedef struct {
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief RootOperation object handled by this wrapper
     Atlas::Objects::Operation::RootOperation operation;
 } PyConstOperation;
 

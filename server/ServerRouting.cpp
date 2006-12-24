@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.cpp,v 1.62 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: ServerRouting.cpp,v 1.63 2006-12-24 17:18:55 alriddoch Exp $
 
 #include "ServerRouting.h"
 #include "Lobby.h"
@@ -62,7 +62,6 @@ ServerRouting::~ServerRouting()
     delete &m_lobby;
 }
 
-/// Copies a representation of the server into an Atlas message.
 void ServerRouting::addToMessage(MapType & omap) const
 {
     omap["objtype"] = "obj";
@@ -81,7 +80,6 @@ void ServerRouting::addToMessage(MapType & omap) const
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
-/// Copies a representation of the server into an Atlas entity.
 void ServerRouting::addToEntity(const RootEntity & ent) const
 {
     ent->setObjtype("obj");

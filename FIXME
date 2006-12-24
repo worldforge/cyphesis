@@ -9,7 +9,11 @@
 #3  2006-12-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/TaskFactory.h:59 Work out what was intended by getClass()
-	  and addScript() methods, currently unimplemented.
+	  and addScript() methods, currently unimplemented. The also exist
+	  unimplemented in ArithmeticFactory. Here we have 3 types of
+	  factory all doing basically the same thing, with the same
+	  members and all. Much as we abore MI, it may be the right
+	  thing to do.
 
 #2  2006-07-01  Al Riddoch  <alriddoch@zepler.org>
 

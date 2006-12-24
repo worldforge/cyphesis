@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Player.h,v 1.29 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Player.h,v 1.30 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef SERVER_PLAYER_H
 #define SERVER_PLAYER_H
@@ -39,6 +39,8 @@ class Player : public Account {
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
+    /// \brief Set of types which can be created as playable characters by
+    /// Player accounts.
     static std::set<std::string> playableTypes;
 };
 

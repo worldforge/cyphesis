@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.h,v 1.17 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Thing.h,v 1.18 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_THING_H
 #define RULESETS_PY_THING_H
@@ -29,8 +29,11 @@ class Character;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Storage for additional attributes
     PyObject * Entity_attr;  // Attributes dictionary
+    /// \brief Entity object handled by this wrapper
     Entity * m_entity;
+    /// \brief Pointer to the method table
     struct PyMethodDef * m_methods;
 } PyEntity;
 
@@ -38,8 +41,11 @@ typedef struct {
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Storage for additional attributes
     PyObject * Entity_attr;  // Attributes dictionary
+    /// \brief Character entity object handled by this wrapper
     Character * m_entity;
+    /// \brief Pointer to the method table
     struct PyMethodDef * m_methods;
 } PyCharacter;
 

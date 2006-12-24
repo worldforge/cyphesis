@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ArithmeticFactory.cpp,v 1.4 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: ArithmeticFactory.cpp,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
 
 #include "server/ArithmeticFactory.h"
 
@@ -31,6 +31,10 @@ ArithmeticFactory::~ArithmeticFactory()
 {
 }
 
+/// \brief PythonArithmeticFactory constructor
+///
+/// @param package Name of the package containing the script
+/// @param name Name of the type within the package for the script
 PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
                                                  const std::string & name) :
                                                  m_module(0), m_class(0),
@@ -80,6 +84,9 @@ PythonArithmeticFactory::~PythonArithmeticFactory()
     }
 }
 
+/// \brief Create a new arithmetic script for a character
+///
+/// @param chr the Character that requires a new script
 ArithmeticScript * PythonArithmeticFactory::newScript(Character & chr)
 {
     // Create the task, and use its script to add a script

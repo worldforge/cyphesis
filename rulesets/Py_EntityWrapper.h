@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_EntityWrapper.h,v 1.4 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_EntityWrapper.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_ENTITY_WRAPPER_H
 #define RULESETS_PY_ENTITY_WRAPPER_H
@@ -39,6 +39,7 @@ class Entity;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Entity object handled by this wrapper
     Entity * m_entity;
 } PyEntityWrapper;
 

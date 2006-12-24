@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Location.h,v 1.14 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Location.h,v 1.15 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_LOCATION_H
 #define RULESETS_PY_LOCATION_H
@@ -29,7 +29,9 @@ class Entity;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Location object handled by this wrapper
     Location * location;
+    /// \brief Entiy object that the Location object is a member of
     Entity * owner;
 } PyLocation;
 

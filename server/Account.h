@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.h,v 1.53 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: Account.h,v 1.54 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
@@ -32,19 +32,29 @@ class Connection;
 /// characterError().
 class Account : public OOGThing {
   protected:
+    /// \brief A store of Character entities belonging to this account
     EntityDict m_charactersDict;
 
     Entity * addNewCharacter(const std::string &,
                              const Atlas::Objects::Entity::RootEntity &);
     void characterDestroyed(long);
 
-    virtual int characterError(const Operation &,
-                               const Atlas::Objects::Entity::RootEntity &,
-                               OpVector &) const = 0;
+    /// \brief Check a character creation op is within the privelege levels
+    /// of this account.
+    ///
+    /// @param op The full operation used for error reporting
+    /// @param ent A RootEntity representing the character to be created
+    /// @param res Any resulting error is returned here
+    virtual int characterError(const Operation & op,
+                               const Atlas::Objects::Entity::RootEntity & ent,
+                               OpVector & res) const = 0;
 
   public:
+    /// \brief The network connection currently subscribed to this account
     Connection * m_connection;
+    /// \brief The username of this account
     std::string m_username;
+    /// \brief The password used to authenticate this account
     std::string m_password;
 
     Account(Connection * conn, const std::string & username,
@@ -52,6 +62,7 @@ class Account : public OOGThing {
                                const std::string & id, long intId);
     virtual ~Account();
 
+    /// \brief Get a string representation of the type of account
     virtual const char * getType() const;
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
@@ -66,6 +77,7 @@ class Account : public OOGThing {
 
     void addCharacter(Entity *);
 
+    /// \brief Read only accessor for the Character dictionary
     const EntityDict & getCharacters() const {
         return m_charactersDict;
     }

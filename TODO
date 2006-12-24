@@ -1,3 +1,6 @@
+Look at PyOplist and see if it would be better to embed the object rather than
+have a pointer.
+
 Consider, can we pre-fetch and cache the python object involved in calling a
 hook?
 

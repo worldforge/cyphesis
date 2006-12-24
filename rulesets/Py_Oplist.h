@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Oplist.h,v 1.18 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Oplist.h,v 1.19 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_OPLIST_H
 #define RULESETS_PY_OPLIST_H
@@ -32,6 +32,7 @@ typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief OpVector object handled by this wrapper
     OpVector * ops;
 } PyOplist;
 
@@ -41,4 +42,4 @@ extern PyTypeObject PyOplist_Type;
 
 PyOplist * newPyOplist();
 
-#endif // RULESETS_PY_VECTOR3D_H
+#endif // RULESETS_PY_OPLIST_H

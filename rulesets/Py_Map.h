@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Map.h,v 1.13 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Map.h,v 1.14 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_MAP_H
 #define RULESETS_PY_MAP_H
@@ -28,6 +28,7 @@ class MemMap;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief MemMap object handled by this wrapper
     MemMap * m_map;
 } PyMap;
 

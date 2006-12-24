@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_RootEntity.h,v 1.5 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_RootEntity.h,v 1.6 2006-12-24 17:18:55 alriddoch Exp $
 
 #ifndef RULESETS_PY_ENTITY_H
 #define RULESETS_PY_ENTITY_H
@@ -29,6 +29,7 @@
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Atlas::Objects::Entity::RootEntity object handled by this wrapper
     Atlas::Objects::Entity::RootEntity entity;
 } PyRootEntity;
 
@@ -36,6 +37,7 @@ typedef struct {
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Atlas::Objects::Entity::RootEntity object handled by this wrapper
     Atlas::Objects::Entity::RootEntity entity;
 } PyConstRootEntity;
 
