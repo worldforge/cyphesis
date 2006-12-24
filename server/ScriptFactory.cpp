@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.cpp,v 1.8 2006-12-22 02:14:45 alriddoch Exp $
+// $Id: ScriptFactory.cpp,v 1.9 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "ScriptFactory.h"
 
@@ -41,6 +41,8 @@ ScriptFactory::~ScriptFactory()
 {
 }
 
+/// \brief Retrieve the pythonclass object from the module which has
+/// already been loaded.
 int PythonScriptFactory::getClass()
 {
     std::string classname(m_type);
@@ -73,6 +75,7 @@ PythonScriptFactory::PythonScriptFactory(const std::string & package,
                                          ScriptFactory(package, type),
                                          m_module(0), m_class(0)
 {
+    // FIXME #4 This sort of code should not be in the constructor
     PyObject * package_name = PyString_FromString((char *)m_package.c_str());
     m_module = PyImport_Import(package_name);
     Py_DECREF(package_name);

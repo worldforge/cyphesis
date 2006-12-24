@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cywatchdog.cpp,v 1.9 2006-10-26 00:48:17 alriddoch Exp $
+// $Id: cywatchdog.cpp,v 1.10 2006-12-24 14:42:07 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include <string>
 #include <fstream>

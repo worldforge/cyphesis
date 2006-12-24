@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyManager.h,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: PropertyManager.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_MANAGER_H
 #define COMMON_PROPERTY_MANAGER_H
@@ -25,6 +25,7 @@
 class Entity;
 class PropertyBase;
 
+/// \brief Base class for classes that handle creating Entity properties.
 class PropertyManager {
   protected:
     static PropertyManager * m_instance;

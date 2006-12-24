@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonScript.h,v 1.14 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: PythonScript.h,v 1.15 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_SCRIPT_H
 #define RULESETS_PYTHON_SCRIPT_H
@@ -29,6 +29,7 @@ class Entity;
 /// \brief Base Script class for Python scripts
 class PythonScript : public PythonWrapper {
   protected:
+    /// \brief Python instance object which implements the script for an entity
     PyObject * scriptObject;
   public:
     PythonScript(PyObject * object, PyObject * wrapper);

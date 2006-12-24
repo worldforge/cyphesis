@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Script.h,v 1.16 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Script.h,v 1.17 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
@@ -37,11 +37,11 @@ class Script {
   public:
     Script();
     virtual ~Script();
-    virtual bool operation(const std::string &,
-                           const Atlas::Objects::Operation::RootOperation &,
-                           OpVector &,
-                           const Atlas::Objects::Operation::RootOperation * = 0);
-    virtual void hook(const std::string &, Entity *);
+    virtual bool operation(const std::string & opname,
+                           const Atlas::Objects::Operation::RootOperation & op,
+                           OpVector & res,
+                           const Atlas::Objects::Operation::RootOperation * sub_op = 0);
+    virtual void hook(const std::string & function, Entity * entity);
 };
 
 extern Script noScript;

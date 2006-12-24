@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Script.cpp,v 1.13 2006-12-13 00:00:11 alriddoch Exp $
+// $Id: Script.cpp,v 1.14 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "Script.h"
 
@@ -23,6 +23,7 @@ Script::Script()
 {
 }
 
+/// \brief Script destructor
 Script::~Script()
 {
 }
@@ -57,4 +58,5 @@ void Script::hook(const std::string & function, Entity * entity)
 {
 }
 
+/// \brief Default object available for entities that don't have a script.
 Script noScript;

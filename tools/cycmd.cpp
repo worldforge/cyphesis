@@ -15,11 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.103 2006-12-12 19:52:39 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.104 2006-12-24 14:42:07 alriddoch Exp $
 
 /// \page cycmd_index
 ///
-/// This is what cycmd is really all about, what it trully loves best.
+/// \section Introduction
+///
+/// cycmd is a commandline tool to administrate the running server. For
+/// information on the commands available, please see the unix manual page.
+/// The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
+///
+/// The majority of the functionality is encapsulated by the Interactive
+/// class template.
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -90,6 +98,7 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Operation::Monitor;
 using Atlas::Objects::Operation::Connect;
 
+/// \brief Entry in the global command table for cycmd
 struct command {
     const char * cmd_string;
     const char * cmd_description;
@@ -135,6 +144,11 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
+/// \brief Base class for admin tasks which run for some time.
+///
+/// Typical tasks that inherit from this class are ones which last for
+/// non trivial time and will typically require the user to be able to
+/// continue issuing commands.
 class AdminTask {
   protected:
     bool m_complete;
@@ -149,6 +163,7 @@ class AdminTask {
     bool isComplete() const { return m_complete; }
 };
 
+/// \brief Task class for flushing the server of character entities
 class Flusher : public AdminTask {
   protected:
     const std::string agentId;
@@ -159,6 +174,7 @@ class Flusher : public AdminTask {
     void setup(const std::string & arg, OpVector & ret) {
         type = arg;
 
+        // Send a look to search by type.
         Look l;
 
         Anonymous lmap;
@@ -201,6 +217,7 @@ class Flusher : public AdminTask {
             std::cout << "Deleting: " << type << "(" << id << ")"
                       << std::endl << std::flush;
 
+            // Send a delete to the entity we have seen.
             Delete d;
 
             Anonymous dmap;
@@ -211,6 +228,8 @@ class Flusher : public AdminTask {
 
             res.push_back(d);
 
+            // Send a tick for a short time in the future so that
+            // we can look again once this entity is definitly gone.
             Tick t;
 
             t->setFrom(agentId);
@@ -229,6 +248,7 @@ class Flusher : public AdminTask {
                 return;
             }
 
+            // Send another look by type.
             Look l;
 
             Anonymous lmap;
@@ -245,6 +265,7 @@ class Flusher : public AdminTask {
     }
 };
 
+/// \brief Task class for monitoring all in-game operations occuring.
 class OperationMonitor : public AdminTask {
   protected:
     int op_count;
@@ -274,6 +295,8 @@ class OperationMonitor : public AdminTask {
     }
 };
 
+/// \brief Class template for clients used to connect to and administrate
+/// a cyphesis server.
 template <class Stream>
 class Interactive : public Atlas::Objects::ObjectsDecoder,
                     virtual public sigc::trackable

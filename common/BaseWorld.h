@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.h,v 1.48 2006-12-04 04:24:42 alriddoch Exp $
+// $Id: BaseWorld.h,v 1.49 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
@@ -35,34 +35,51 @@ class Entity;
 class Task;
 class Character;
 
-/// \brief Base class for game world object.
+/// \brief Base class for game world manager object.
 ///
 /// This base class provides the common features required by cyphesis
 /// for the object which encapsulates the game world. Other classes
 /// inherit from this provide the core game world system.
 class BaseWorld {
   private:
-    // Private and un-implemented to prevent slicing
+    /// \brief Copy constructor private and un-implemented to prevent slicing
     BaseWorld(const BaseWorld &);
+    /// \brief Assignment operator private and un-implemented to prevent slicing
     const BaseWorld & operator=(const BaseWorld &);
 
+    /// \brief Singleton instance pointer for the World manager object.
     static BaseWorld * m_instance;
   protected:
+    /// \brief The in-game time in seconds.
+    ///
+    /// Calculated from the out-of-game time by applying an offset stored
+    /// at startup
     double m_realTime;
+
+    /// \brief Dictionary of all the objects in the world.
+    ///
+    /// Pointers to all in-game entities in the world are stored keyed to
+    /// their integer ID.
     EntityDict m_eobjects;
 
     explicit BaseWorld(Entity &);
   public:
+    /// \brief The top level in-game entity in the world.
     Entity & m_gameWorld;
 
     virtual ~BaseWorld();
 
+    /// \brief Singleton accessor for the World manager object.
     static BaseWorld & instance() {
         return *m_instance;
     }
 
     Entity * getEntity(const std::string & id) const;
 
+    /// \brief Get an in-game Entity by its integer ID.
+    ///
+    /// @param id integer ID of Entity to be retrieved.
+    /// @return pointer to Entity retrieved, or zero if it was not found.
     Entity * getEntity(long id) const {
         EntityDict::const_iterator I = m_eobjects.find(id);
         if (I != m_eobjects.end()) {
@@ -73,33 +90,55 @@ class BaseWorld {
         }
     }
 
+    /// \brief Read only accessor for the in-game objects dictionary.
     const EntityDict & getEntities() const {
         return m_eobjects;
     }
 
+    /// \brief Read only accessor for the in-game time.
     const double & getTime() const {
         return m_realTime;
     }
 
+    /// \brief Get the time the world has been running since the server started.
     const double upTime() const {
         return m_realTime - timeoffset;
     }
 
+    /// \brief Main world loop function.
     virtual bool idle(int, int) = 0;
+
+    /// \brief Add a new entity to the world.
     virtual Entity * addEntity(Entity * obj, bool setup = true) = 0;
+
+    /// \brief Create a new entity and add to the world.
     virtual Entity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
+
+    /// \brief Create a new task
     virtual Task * newTask(const std::string &, Character &) = 0;
+
+    /// \brief Activate a new tast
     virtual Task * activateTask(const std::string &, const std::string &,
                                 const std::string &, Character &) = 0;
+
+    /// \brief Pass an operation to the world.
     virtual void message(const Operation &, Entity & obj) = 0;
+
+    /// \brief Find an entity of the given name.
     virtual Entity * findByName(const std::string & name) = 0;
+
+    /// \brief Find an entity of the given type.
     virtual Entity * findByType(const std::string & type) = 0;
+
+    /// \brief Provide an adjusted height for the given entity.
     virtual float constrainHeight(Entity *, const Point3D &,
                                   const std::string &) = 0;
+
+    /// \brief Add an entity provided to the list of perceptive entities.
     virtual void addPerceptive(Entity *) = 0;
 
-
+    /// \brief Signal that an operation is being dispatched.
     sigc::signal<void, Operation> Dispatching;
 };
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.h,v 1.46 2006-12-19 22:37:11 alriddoch Exp $
+// $Id: const.h,v 1.47 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
@@ -23,6 +23,12 @@
 namespace consts {
 
   /// \defgroup Constants Global Configuration Constants
+  ///
+  /// These constants defined in common/config.h control the configuration
+  /// of some aspects of the server which cannot be changed at runtime.
+  /// Most commonly they are made constant for performance reasons, though
+  /// sometimes it is because a change in the value at runtime could give
+  /// confusing or undefined results.
 
   // @{
 

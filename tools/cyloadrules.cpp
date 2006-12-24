@@ -15,13 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyloadrules.cpp,v 1.32 2006-10-26 00:48:17 alriddoch Exp $
+// $Id: cyloadrules.cpp,v 1.33 2006-12-24 14:42:07 alriddoch Exp $
 
 #include "common/Database.h"
 #include "common/globals.h"
 
 #include <Atlas/Message/DecoderBase.h>
-// #include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <string>
@@ -31,18 +30,26 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+/// \brief Handle the database access to the rules table only.
 class RuleBase {
   protected:
+    /// \brief RuleBase constructor
     RuleBase() : m_connection(*Database::instance()) { }
 
+    /// \brief Connection to the Database
     Database & m_connection;
+
+    /// \brief Singleton instance of RuleBase
     static RuleBase * m_instance;
+
+    /// \brief Name of the ruleset to be read from file
     std::string m_rulesetName;
   public:
     ~RuleBase() {
         m_connection.shutdownConnection();
     }
 
+    /// \brief Return a singleton instance of RuleBase
     static RuleBase * instance() {
         if (m_instance == NULL) {
             m_instance = new RuleBase();
@@ -57,19 +64,33 @@ class RuleBase {
         return m_instance;
     }
 
-    void storeInRules(const MapType & o, const std::string & key) {
+    /// \brief Store a rule in the database
+    ///
+    /// Check if the rules table contains a rule which this name, identifier.
+    /// If so return without doing anything, otherwise install the rule
+    /// into the database.
+    /// @param rule Atlas message data describing the rule to be stored
+    /// @param key identifier or name of the rule to be stored
+    void storeInRules(const MapType & rule, const std::string & key) {
         if (m_connection.hasKey(m_connection.rule(), key)) {
             return;
         }
-        m_connection.putObject(m_connection.rule(), key, o, StringVector(1, m_rulesetName));
+        m_connection.putObject(m_connection.rule(), key, rule, StringVector(1, m_rulesetName));
         if (!m_connection.clearPendingQuery()) {
             std::cerr << "Failed" << std::endl << std::flush;
         }
     }
+
+    /// \brief Clear the rules table in the database, leaving it empty.
     bool clearRules() {
         return (m_connection.clearTable(m_connection.rule()) &&
                 m_connection.clearPendingQuery());
     }
+
+    /// \brief Set the ruleset name to be used when installing rules in
+    /// the database.
+    ///
+    /// @param n name to be set.
     void setRuleset(const std::string & n) {
         m_rulesetName = n;
     }
@@ -77,7 +98,9 @@ class RuleBase {
 
 RuleBase * RuleBase::m_instance = NULL;
 
-class FileDecoder : public Atlas::Message::DecoderBase {
+/// \brief Class that handles reading in an Atlas file, and loading the
+/// contents into the rules database.
+class DatabaseFileLoader : public Atlas::Message::DecoderBase {
     std::fstream m_file;
     RuleBase & m_db;
     Atlas::Codecs::XML m_codec;
@@ -97,7 +120,7 @@ class FileDecoder : public Atlas::Message::DecoderBase {
         m_db.storeInRules(omap, I->second.asString());
     }
   public:
-    FileDecoder(const std::string & filename, RuleBase & db) :
+    DatabaseFileLoader(const std::string & filename, RuleBase & db) :
                 m_file(filename.c_str(), std::ios::in), m_db(db),
                 m_codec(m_file, *this), m_count(0)
     {
@@ -142,7 +165,7 @@ int main(int argc, char ** argv)
     }
 
     if (optind == (argc - 2)) {
-        FileDecoder f(argv[optind + 1], *db);
+        DatabaseFileLoader f(argv[optind + 1], *db);
         if (!f.isOpen()) {
             std::cerr << "ERROR: Unable to open file " << argv[optind + 1]
                       << std::endl << std::flush;
@@ -158,7 +181,7 @@ int main(int argc, char ** argv)
         for (; I != Iend; ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
-            FileDecoder f(filename, *db);
+            DatabaseFileLoader f(filename, *db);
             if (!f.isOpen()) {
                 std::cerr << "ERROR: Unable to open file " << filename
                           << std::endl << std::flush;

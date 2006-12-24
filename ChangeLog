@@ -1,3 +1,32 @@
+2006-12-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* index.dox, common/BaseWorld.cpp, common/BaseWorld.h,
+	  common/PropertyFactory.h, common/PropertyManager.h, common/const.h,
+	  rulesets/ActivePropertyFactory.h, rulesets/Entity.h,
+	  rulesets/Py_Vector3D.h, rulesets/Py_World.h, rulesets/Py_WorldTime.h,
+	  rulesets/PythonMindScript.cpp, rulesets/PythonMindScript.h,
+	  rulesets/PythonScript.h,
+	  rulesets/PythonThingScript.h, rulesets/PythonWrapper.cpp,
+	  rulesets/PythonWrapper.h, rulesets/Script.cpp, rulesets/Script.h,
+	  server/ArithmeticFactory.h, server/CommServer.h, server/CommSocket.h,
+	  server/ScriptFactory.cpp, server/TaskFactory.cpp,
+	  server/TaskFactory.h, server/WorldRouter.cpp, tools/AdminClient.h,
+	  tools/cyaddrules.cpp, tools/cycmd.cpp, tools/cyconfig.cpp,
+	  tools/cydumprules.cpp, tools/cyloadrules.cpp:
+	  Add a truck load of inline docs.
+
+	* tools/cywatchdog.cpp: Mark obsolete file as removed from the build.
+
+	* tools/cyloadrules.cpp, tools/cyconfig.cpp, tools/cyaddrules.cpp:
+	  Rename some overly generic types so they have more indicative
+	  and unique names.
+
+	* FIXME, server/ScriptFactory.cpp, server/TaskFactory.h: Add a couple
+	  of formal FIXMEs to sort out the code for loading modules and
+	  classes.
+
+	* rulesets/PythonThingScript.h: Remove some commented out code.
+
 2006-12-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommClient.h, server/CommListener.h, server/CommLocalClient.h,

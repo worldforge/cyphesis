@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Vector3D.h,v 1.15 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Py_Vector3D.h,v 1.16 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_PY_VECTOR3D_H
 #define RULESETS_PY_VECTOR3D_H
@@ -31,6 +31,7 @@
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
+    /// \brief Vector3D object handled by this wrapper
     Vector3D coords;
 } PyVector3D;
 

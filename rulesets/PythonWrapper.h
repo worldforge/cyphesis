@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonWrapper.h,v 1.3 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: PythonWrapper.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_WRAPPER_H
 #define RULESETS_PYTHON_WRAPPER_H
@@ -24,14 +24,16 @@
 
 #include "Script.h"
 
-/// \brief Wrapper class for entities without scripts with wrappers
+/// \brief Wrapper class for entities without scripts but with wrappers
 class PythonWrapper : public Script {
   protected:
+    /// \brief Python object that wraps the entity.
     PyObject * m_wrapper;
   public:
     explicit PythonWrapper(PyObject * wrapper);
     virtual ~PythonWrapper();
 
+    /// \brief Accessor for the python object that wraps the entity.
     PyObject * wrapper() const { return m_wrapper; }
 };
 

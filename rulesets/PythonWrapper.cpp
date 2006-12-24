@@ -15,10 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonWrapper.cpp,v 1.4 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: PythonWrapper.cpp,v 1.5 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "PythonWrapper.h"
 
+/// \brief PythonWrapper constructor
 PythonWrapper::PythonWrapper(PyObject * wrapper) : m_wrapper(wrapper)
 {
     Py_INCREF(m_wrapper);

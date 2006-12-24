@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.h,v 1.12 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: PythonMindScript.h,v 1.13 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_MIND_SCRIPT_H
 #define RULESETS_PYTHON_MIND_SCRIPT_H
@@ -27,14 +27,15 @@ class BaseMind;
 /// \brief Script class for Python scripts attached to a character Mind
 class PythonMindScript : public PythonScript {
   private:
+    /// \brief Mind this script is attached to, used to report errors accuratly
     BaseMind & mind;
   public:
     explicit PythonMindScript(PyObject *, PyObject *, BaseMind &);
     virtual ~PythonMindScript();
-    virtual bool operation(const std::string &,
-                           const Atlas::Objects::Operation::RootOperation &,
-                           OpVector &,
-                           const Atlas::Objects::Operation::RootOperation * = 0);
+    virtual bool operation(const std::string & opname,
+                           const Atlas::Objects::Operation::RootOperation & op,
+                           OpVector & res,
+                           const Atlas::Objects::Operation::RootOperation * sub_op = 0);
     virtual void hook(const std::string &, Entity *);
 };
 

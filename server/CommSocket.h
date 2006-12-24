@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommSocket.h,v 1.11 2006-12-22 02:14:45 alriddoch Exp $
+// $Id: CommSocket.h,v 1.12 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef SERVER_COMM_SOCKET_H
 #define SERVER_COMM_SOCKET_H
@@ -31,6 +31,7 @@ class CommSocket {
     /// Reference to the object that manages all socket communication.
     CommServer & m_commServer;
 
+    /// \brief Destructor.
     virtual ~CommSocket();
 
     /// \brief Get the socket file descriptor.
@@ -46,7 +47,7 @@ class CommSocket {
     /// @return true if the socket conneciton has hung up, false otherwise.
     virtual bool eof() = 0;
 
-    /// \brief Read date from the socket.
+    /// \brief Read data from the socket.
     ///
     /// Called when select has determined that this socket requires attention.
     /// This function should read data from the socket and do any initial
@@ -65,7 +66,11 @@ class CommSocket {
     /// or dispatch on data that has been read which might result in
     /// writing to the client. A typical example is an Atlas operation
     /// from the client which might have a reply. The Atlas decode is performed
-    /// in read(), but the dispatch is delayed until dispatch().
+    /// in read(), but the dispatch is delayed until dispatch(). It is
+    /// important to use this function correctly, as allowing interaction with
+    /// the socket during the read() call can cause the socket to change state
+    /// while the data is still being read. This can a cause hangs or
+    /// unpredictable behavior especially in the Atlas::Codec code.
     virtual void dispatch() = 0;
 };
 

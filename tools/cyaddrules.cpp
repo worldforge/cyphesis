@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.8 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: cyaddrules.cpp,v 1.9 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "AdminClient.h"
 
@@ -32,15 +32,30 @@
 
 using Atlas::Message::MapType;
 
-class FileDecoder : public Atlas::Message::DecoderBase
+/// \brief Class that handles reading in a rules file, and loading the
+/// contents to the server via the AdminClient.
+class ServerRulesFileLoader : public Atlas::Message::DecoderBase
 {
+    /// \brief iostream for accessing the rules file.
     std::fstream m_file;
+
+    /// \brief Name of the ruleset to be loaded.
     std::string m_ruleset;
+
+    /// \brief Client object to handle the connection to the server.
     AdminClient & m_client;
+
+    /// \brief Atlas codec used to decode the contents of the rules file.
     Atlas::Codecs::XML m_codec;
+
+    /// \brief Count of classes uploaded to the server.
     int m_count;
+
+    /// \brief Count of classes read from the file.
     int m_total;
 
+    /// \brief Method called from the base class when a complete message
+    /// is read from the file.
     virtual void messageArrived(const MapType & omap) {
         MapType::const_iterator I = omap.find("id");
         if (I == omap.end()) {
@@ -59,26 +74,35 @@ class FileDecoder : public Atlas::Message::DecoderBase
         }
     }
   public:
-    FileDecoder(const std::string & filename, const std::string & ruleset,
-                AdminClient & client) :
-                m_file(filename.c_str(), std::ios::in),
-                m_ruleset(ruleset), m_client(client),
-                m_codec(m_file, *this), m_count(0), m_total(0)
+    /// \brief ServerRulesFileLoader constructor
+    ///
+    /// @param filename name of the rules file to be loaded
+    /// @param ruleset name of the ruleset the file represents
+    /// @param client client object that uploads rules to the server
+    ServerRulesFileLoader(const std::string & filename,
+                          const std::string & ruleset,
+                          AdminClient & client) :
+                          m_file(filename.c_str(), std::ios::in),
+                          m_ruleset(ruleset), m_client(client),
+                          m_codec(m_file, *this), m_count(0), m_total(0)
     {
     }
 
+    /// \brief Read the contents of the file to the end
     void read() {
         while (!m_file.eof()) {
             m_codec.poll();
         }
     }
 
+    /// \brief Send a report of rules laoded and uploaded to standard out
     void report() {
         std::cout << m_count << " new classes uploaded out of "
                   << m_total << " loaded from file."
                   << std::endl << std::flush;
     }
 
+    /// \brief Indicate whether the file has been opened successfully
     bool isOpen() {
         return m_file.is_open();
     }
@@ -153,7 +177,7 @@ int main(int argc, char ** argv)
     }
 
     if (optind == (argc - 2)) {
-        FileDecoder f(argv[optind + 1], argv[optind], bridge);
+        ServerRulesFileLoader f(argv[optind + 1], argv[optind], bridge);
         if (!f.isOpen()) {
             std::cerr << "ERROR: Unable to open file " << argv[optind + 1]
                       << std::endl << std::flush;
@@ -167,7 +191,7 @@ int main(int argc, char ** argv)
         for (; I != Iend; ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
             std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
-            FileDecoder f(filename, *I, bridge);
+            ServerRulesFileLoader f(filename, *I, bridge);
             if (!f.isOpen()) {
                 std::cerr << "ERROR: Unable to open file " << filename
                           << std::endl << std::flush;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.6 2006-10-26 00:48:17 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.7 2006-12-24 14:42:07 alriddoch Exp $
 
 #include "common/Database.h"
 #include "common/globals.h"
@@ -34,18 +34,23 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+/// \brief Class to handle reading rules from the Database rules table.
 class RuleReader {
   protected:
+    /// \brief RuleReader constructor
     RuleReader() : m_connection(*Database::instance()) { }
 
+    /// \brief Connection to the database.
     Database & m_connection;
+
+    /// \brief Singleton instance of RuleReader
     static RuleReader * m_instance;
-    std::string m_rulesetName;
   public:
     ~RuleReader() {
         m_connection.shutdownConnection();
     }
 
+    /// \brief Return a singleton instance of RuleReader
     static RuleReader * instance() {
         if (m_instance == NULL) {
             m_instance = new RuleReader();
@@ -60,6 +65,10 @@ class RuleReader {
         return m_instance;
     }
 
+    /// \brief Read all the rules in one ruleset from the rules table.
+    ///
+    /// @param ruleset the name of the ruleset to be read.
+    /// @param o Atlas map to store the rules in.
     void readRuleTable(const std::string & ruleset, MapType & o) {
         std::stringstream query;
         query << "SELECT * FROM " << m_connection.rule() << " WHERE "

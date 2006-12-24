@@ -1,3 +1,16 @@
+#4  2006-12-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/ScriptFactory.cpp:77 This is unsafe code to be in a
+	  constructor. Move it somewhere else. This class is probably
+	  doing something similar to the issue in FIXME #3. Does
+	  a task factory need to load modules, and get classes, just
+	  like a script factory? Almost certainly.
+
+#3  2006-12-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/TaskFactory.h:59 Work out what was intended by getClass()
+	  and addScript() methods, currently unimplemented.
+
 #2  2006-07-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CorePropertyManager.cpp:41 Add code to delete all the

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.82 2006-12-12 15:54:23 alriddoch Exp $
+// $Id: Entity.h,v 1.83 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -33,6 +33,7 @@
 // Work in progress, this will be a way of inferring type relationships,
 // and will replace the simple string type currently used.
 
+/// \brief Experimental class in development to handle the inheritance tree
 class EntityType {
   protected:
     std::string m_typeName;

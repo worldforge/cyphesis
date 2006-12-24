@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ArithmeticFactory.h,v 1.3 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: ArithmeticFactory.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef SERVER_ARITHMETIC_FACTORY_H
 #define SERVER_ARITHMETIC_FACTORY_H
@@ -35,6 +35,7 @@ class ArithmeticFactory {
     virtual ArithmeticScript * newScript(Character & chr) = 0;
 };
 
+/// \brief Factory class for for creating python arithmetic scripts
 class PythonArithmeticFactory : public ArithmeticFactory {
   public:
     PyObject * m_module;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.cpp,v 1.35 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: PythonMindScript.cpp,v 1.36 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "PythonMindScript.h"
 
@@ -35,6 +35,7 @@
 
 static const bool debug_flag = false;
 
+/// \brief PythonMindScript constructor
 PythonMindScript::PythonMindScript(PyObject * o, PyObject * w, BaseMind & m) :
                   PythonScript(o, w), mind(m)
 {
@@ -114,14 +115,14 @@ bool PythonMindScript::operation(const std::string & op_type,
     return true;
 }
 
-void PythonMindScript::hook(const std::string & method, Entity * entity)
+void PythonMindScript::hook(const std::string & function, Entity * entity)
 {
     PyObject * wrapper = wrapEntity(entity);
     if (wrapper == NULL) {
         return;
     }
 
-    PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(method.c_str()), "(O)", wrapper);
+    PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(function.c_str()), "(O)", wrapper);
     Py_DECREF(wrapper);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {

@@ -6,7 +6,13 @@ Welcome to the Cyphesis documentation.
 
 \section Tools
 
-\ref cycmd_index "cycmd"
+- \ref cyaddrules_index "cyaddrules"
+- \ref cycmd_index "cycmd"
+- \ref cyconfig_index "cyconfig"
+- \ref cyconvertrules_index "cyconvertrules"
+- \ref cydumprules_index "cydumprules"
+- \ref cyloadrules_index "cyloadrules"
+- \ref cypasswd_index "cypasswd"
 
 \section Links
 

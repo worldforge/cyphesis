@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconfig.cpp,v 1.7 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: cyconfig.cpp,v 1.8 2006-12-24 14:42:07 alriddoch Exp $
 
 #include <varconf/config.h>
 
@@ -30,13 +30,14 @@ static int install(int argc, char ** argv)
     return 0;
 }
 
-struct command {
+/// \brief Entry in the global command table for cyconfig
+struct config_command {
     const char * cmd_string;
     int (*cmd_function)(int argc, char ** argv);
     const char * cmd_descrption;
 };
 
-static struct command commands[] = {
+static struct config_command commands[] = {
     { "install", &install, "Install a ruleset", },
     { 0, }
 };
@@ -44,7 +45,7 @@ static struct command commands[] = {
 static int runCommand(int argc, char ** argv)
 {
     assert(argc > 0);
-    for (struct command * i = &commands[0]; i->cmd_string != 0; ++i) {
+    for (struct config_command * i = &commands[0]; i->cmd_string != 0; ++i) {
         if (strcmp(argv[0], i->cmd_string) == 0) {
             return i->cmd_function(argc, argv);
         }

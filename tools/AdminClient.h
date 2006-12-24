@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AdminClient.h,v 1.11 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: AdminClient.h,v 1.12 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef TOOLS_ADMIN_CLIENT_H
 #define TOOLS_ADMIN_CLIENT_H
@@ -39,6 +39,7 @@ namespace Atlas {
 
 typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>, Atlas::Message::MapType> > RuleWaitList;
 
+/// \brief Client class to encapsulate functionality of an administrative client
 class AdminClient : public Atlas::Objects::ObjectsDecoder
 {
   private:

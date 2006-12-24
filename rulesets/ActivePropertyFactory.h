@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory.h,v 1.1 2006-12-03 06:31:44 alriddoch Exp $
+// $Id: ActivePropertyFactory.h,v 1.2 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_H
@@ -23,6 +23,7 @@
 #include "common/types.h"
 #include "common/PropertyFactory.h"
 
+/// \brief Factory class template to create active Property objects.
 template <class T>
 class ActivePropertyBuilder : public PropertyFactory {
   protected:

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.212 2006-12-10 17:53:53 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.213 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -181,7 +181,7 @@ Operation WorldRouter::getOperationFromQueue()
     return op;
 }
 
-/// \brief Provide an adjusted heigh for the given entity.
+/// \brief Provide an adjusted height for the given entity.
 ///
 /// If the position has a parent which has an associated geometry
 /// which define its childrens position, e.g terrain or a floor,
@@ -507,7 +507,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
     }
 }
 
-/// Add entity provided to this list of perceptive entities.
+/// Add entity provided to the list of perceptive entities.
 /// Look up the entity with the id provided, and add a pointer
 /// to the entity to the set of perceptive entities. This method is
 /// called when key events occur that indicate that the entity in

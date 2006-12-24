@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyFactory.h,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: PropertyFactory.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
@@ -25,6 +25,7 @@
 class PropertyBase;
 class Entity;
 
+/// \brief Base class for factories to create Property objects.
 class PropertyFactory {
   public:
     virtual ~PropertyFactory();
@@ -32,6 +33,7 @@ class PropertyFactory {
     virtual PropertyBase * newProperty(Entity *) = 0;
 };
 
+/// \brief Factory class template to create standard Property objects.
 template <class T>
 class PropertyBuilder : public PropertyFactory {
   public:

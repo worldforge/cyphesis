@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.h,v 1.39 2006-12-22 02:14:45 alriddoch Exp $
+// $Id: CommServer.h,v 1.40 2006-12-24 14:42:06 alriddoch Exp $
 
 #ifndef SERVER_COMM_SERVER_H
 #define SERVER_COMM_SERVER_H
@@ -67,6 +67,7 @@ class CommServer {
     void addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
 
+    /// \brief Accessor for the current time in seconds.
     long time() {
         return m_timeVal.tv_sec;
     }

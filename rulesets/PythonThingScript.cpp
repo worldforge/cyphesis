@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.33 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.34 2006-12-24 14:42:06 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
@@ -32,6 +32,7 @@
 
 static const bool debug_flag = false;
 
+/// \brief PythonEntityScript constructor
 PythonEntityScript::PythonEntityScript(PyObject * o, PyObject * wrapper) :
                     PythonScript(o, wrapper)
 {
