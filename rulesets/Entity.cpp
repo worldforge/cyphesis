@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.124 2006-12-10 17:53:52 alriddoch Exp $
+// $Id: Entity.cpp,v 1.125 2006-12-26 18:24:25 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -361,7 +361,6 @@ void Entity::scriptSubscribe(const std::string & op)
 /// after passing it to externalOperation, or expect the attributes
 /// of the operaration to remain the same.
 /// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
 void Entity::externalOperation(const Operation & op)
 {
     OpVector res;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CharacterClient.cpp,v 1.28 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: CharacterClient.cpp,v 1.29 2006-12-26 18:24:25 alriddoch Exp $
 
 #include "CharacterClient.h"
 
@@ -27,6 +27,12 @@
 
 static const bool debug_flag = false;
 
+/// \brief CharacterClient constructor
+///
+/// @param id String identifier
+/// @param intId Integer identifier
+/// @param name The name of the avatar used by this remote agent
+/// @param c The network connection to the server used for communication
 CharacterClient::CharacterClient(const std::string & id, long intId,
                                  const std::string & name,
                                  ClientConnection & c) :
@@ -34,22 +40,21 @@ CharacterClient::CharacterClient(const std::string & id, long intId,
 {
 }
 
-void CharacterClient::sightImaginaryOperation(const Operation &,
-                                              Operation &, OpVector &)
-{
-}
-
-void CharacterClient::soundTalkOperation(const Operation & ,
-                                         Operation &, OpVector &)
-{
-}
-
+/// \brief Send an operation to the server from this avatar
+///
+/// @param op Operation to be sent
 void CharacterClient::send(const Operation & op)
 {
     op->setFrom(getId());
     m_connection.send(op);
 }
 
+/// \brief Send an operation to the server, and wait for a reply
+///
+/// Reply is identified as it should have its refno attribute set to
+/// the serialno of the operation sent.
+/// @param op Operation to be sent
+/// @param res Result with correct refno is returned here
 int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
 {
     send(op);

@@ -1,5 +1,27 @@
 2006-12-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CharacterClient.cpp, client/ClientConnection.h,
+	  rulesets/Character.cpp, rulesets/Character.h, tools/cyaddrules.cpp,
+	  tools/cyconfig.cpp, tools/cyconvertrules.cpp, tools/cyctrl.cpp,
+	  tools/cydumprules.cpp, tools/cyloadrules.cpp, tools/cypasswd.cpp:
+	  Add inline documentation.
+
+	* client/CharacterClient.h, client/CharacterClient.cpp: Remove
+	  overriden sight operation handlers, as they are no longer
+	  present in the base class, and will never be called.
+
+	* client/ClientConnection.h: Remove obsolete unimplemented template
+	  declaration.
+
+	* rulesets/Entity.cpp: Remove documentation for an argument that was
+	  never there.
+
+	* tools/cyctrl.cpp: Mark as removed from the build.
+
+	* Add a FIXME about removing hard coded gender property
+
+2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, client/BaseClient.h,
 	  client/ClientConnection.cpp, common/AtlasFileLoader.cpp,
 	  common/AtlasFileLoader.h, common/BaseEntity.cpp, common/BaseEntity.h,

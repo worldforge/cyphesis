@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CharacterClient.h,v 1.16 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: CharacterClient.h,v 1.17 2006-12-26 18:24:25 alriddoch Exp $
 
 #ifndef CLIENT_CHARACTER_CLIENT_H
 #define CLIENT_CHARACTER_CLIENT_H
@@ -32,13 +32,6 @@ class CharacterClient : public BaseMind {
     int sendAndWaitReply(const Operation &, OpVector &);
   public:
     CharacterClient(const std::string &, long, const std::string&, ClientConnection&);
-
-    virtual void sightImaginaryOperation(const Operation &,
-                                         Operation &,
-                                         OpVector &);
-    virtual void soundTalkOperation(const Operation &,
-                                    Operation &,
-                                    OpVector &);
 
     void send(const Operation & op);
 };

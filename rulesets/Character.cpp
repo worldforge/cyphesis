@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.276 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Character.cpp,v 1.277 2006-12-26 18:24:25 alriddoch Exp $
 
 #include "Character.h"
 
@@ -85,6 +85,11 @@ const double Character::energyLoss = 0.1;
 const double Character::weightGain = 0.5;
 
 
+/// \brief Calculate how the Characters metabolism has affected it in the
+/// last tick
+///
+/// @param res Any result of changes is returned here.
+/// @param ammount Time scale factor, currently not used.
 void Character::metabolise(OpVector & res, double ammount)
 {
     // Currently handles energy
@@ -113,6 +118,10 @@ void Character::metabolise(OpVector & res, double ammount)
     res.push_back(s);
 }
 
+/// \brief Hooked to the Entity::containered signal of the wielded entity
+/// to indicate a change of location
+///
+/// This function responds by removing it as a wielded entity.
 void Character::wieldDropped()
 {
     Wield wield;
@@ -120,6 +129,12 @@ void Character::wieldDropped()
     sendWorld(wield);
 }
 
+/// \brief Search for an entity in an entities contents
+///
+/// Recursive function the finds an entity by ID in another entities
+/// contains list.
+/// @param ent Entity to search in
+/// @param id Identifier of entity to search for
 Entity * Character::findInContains(Entity * ent, const std::string & id)
 {
     EntitySet::const_iterator I = ent->m_contains.begin();
@@ -139,11 +154,19 @@ Entity * Character::findInContains(Entity * ent, const std::string & id)
     return 0;
 }
 
+/// \brief Search for an entity in the Character's inventory
+///
+/// Implemented using the recursive function findInContains.
+/// @param id Identifier of entity to search for
 Entity * Character::findInInventory(const std::string & id)
 {
     return findInContains(this, id);
 }
 
+/// \brief Character constructor
+///
+/// @param id String identifier
+/// @param intId Integer identifier
 Character::Character(const std::string & id, long intId) :
                                             Character_parent(id, intId),
                                             m_statistics(*this),
@@ -175,6 +198,10 @@ Character::~Character()
     }
 }
 
+/// \brief Set a new task as the one being performed by the Character
+///
+/// The old one is cleared and deleted if present
+/// @param task The new task to be assigned to the Character
 void Character::setTask(Task * task)
 {
     if (m_task != 0) {
@@ -186,6 +213,10 @@ void Character::setTask(Task * task)
     updateTask();
 }
 
+/// \brief Update the visible representation of the current task
+///
+/// Generate a Set operation which modifies the Characters task property
+/// to reflect the current status of the task.
 void Character::updateTask()
 {
     if (m_task == 0) {
@@ -203,6 +234,10 @@ void Character::updateTask()
     sendWorld(set);
 }
 
+/// \brief Clean up and remove the task currently being executed
+///
+/// Remove the task, and send an operation indicating that no tasks
+/// are now present.
 void Character::clearTask()
 {
     if (m_task == 0) {
@@ -540,14 +575,26 @@ void Character::ChopOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 }
 
+/// \brief Filter a Login operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindLoginOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Logout operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Action operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindActionOperation(const Operation & op, OpVector & res)
 {
     // FIXME Make sure it doesn't happen again. Action should probably be
@@ -572,10 +619,18 @@ void Character::mindActionOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Add operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindAddOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Attack operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindAttackOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
@@ -594,6 +649,10 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Setup operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindSetupOperation(const Operation & op, OpVector & res)
 {
     Anonymous setup_arg;
@@ -603,6 +662,10 @@ void Character::mindSetupOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Use operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
@@ -796,10 +859,18 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
     res.push_back(sight);
 }
 
+/// \brief Filter a Update operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindUpdateOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Wield operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindWieldOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
@@ -807,6 +878,10 @@ void Character::mindWieldOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Tick operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindTickOperation(const Operation & op, OpVector & res)
 {
     Anonymous tick_arg;
@@ -816,6 +891,10 @@ void Character::mindTickOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Move operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindMoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
@@ -1009,6 +1088,10 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
 }
 
+/// \brief Filter a Set operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindSetOperation(const Operation & op, OpVector & res)
 {
     log(WARNING, "Set op from mind");
@@ -1026,18 +1109,34 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Sight operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindSightOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Sound operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindSoundOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Chop operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindChopOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Combine operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindCombineOperation(const Operation & op, OpVector & res)
 {
     std::cout << "mindCombineOperation" << std::endl << std::flush;
@@ -1062,18 +1161,30 @@ void Character::mindCombineOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Create operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindCreateOperation(const Operation & op, OpVector & res)
 {
     op->setTo(getId());
     res.push_back(op);
 }
 
+/// \brief Filter a Delete operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindDeleteOperation(const Operation & op, OpVector & res)
 {
     op->setTo(getId());
     res.push_back(op);
 }
 
+/// \brief Filter a Divide operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindDivideOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
@@ -1102,28 +1213,52 @@ void Character::mindDivideOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Burn operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindBurnOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Get operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindGetOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Imaginary operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
 {
     op->setTo(getId());
     res.push_back(op);
 }
 
+/// \brief Filter a Info operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindInfoOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Nourish operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindNourishOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Talk operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindTalkOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mindTalkOperation"
@@ -1132,6 +1267,10 @@ void Character::mindTalkOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Look operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindLookOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got look up from mind from [" << op->getFrom()
@@ -1152,6 +1291,10 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Cut operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindCutOperation(const Operation & op, OpVector & res)
 {
     // FIXME This should go very soon, probably elminated from the mind
@@ -1161,6 +1304,10 @@ void Character::mindCutOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Eat operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindEatOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
@@ -1177,6 +1324,10 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Touch operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindTouchOperation(const Operation & op, OpVector & res)
 {
     // Work out what is being touched.
@@ -1199,140 +1350,252 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 }
 
+/// \brief Filter a Appearance operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindAppearanceOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter a Disappearance operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindDisappearanceOperation(const Operation & op, OpVector & res)
 {
 }
 
 
+/// \brief Filter a Error operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindErrorOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Filter any other operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
     op->setTo(getId());
     res.push_back(op);
 }
 
+/// \brief Filter a Action operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mActionOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Attack operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mAttackOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Login operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mLoginOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Logout operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mLogoutOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Chop operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mChopOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Create operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mCreateOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Cut operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mCutOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Delete operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mDeleteOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Eat operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mEatOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Burn operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mBurnOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Move operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mMoveOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Set operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mSetOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Look operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mLookOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Divide operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mDivideOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Combine operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mCombineOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Get operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mGetOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Imaginary operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mImaginaryOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Info operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mInfoOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Talk operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mTalkOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Nourish operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mNourishOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Appearance operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mAppearanceOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Filter a Disappearance operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mDisappearanceOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Filter a Error operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mErrorOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Filter any other operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mOtherOperation(const Operation & op)
 {
     const std::string & ot = op->getParents().front();
@@ -1340,6 +1603,10 @@ bool Character::w2mOtherOperation(const Operation & op)
     return false;
 }
 
+/// \brief Filter a Setup operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mSetupOperation(const Operation & op)
 {
     if (!op->getArgs().empty()) {
@@ -1350,16 +1617,28 @@ bool Character::w2mSetupOperation(const Operation & op)
     return false;
 }
 
+/// \brief Filter a Use operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mUseOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Wield operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mWieldOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Tick operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mTickOperation(const Operation & op)
 {
     if (!op->getArgs().empty()) {
@@ -1370,31 +1649,60 @@ bool Character::w2mTickOperation(const Operation & op)
     return false;
 }
 
+/// \brief Filter a Unseen operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mUnseenOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Filter a Update operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mUpdateOperation(const Operation & op)
 {
     return false;
 }
 
+/// \brief Filter a Sight operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mSightOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Filter a Sound operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mSoundOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Filter a Touch operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
 bool Character::w2mTouchOperation(const Operation & op)
 {
     return true;
 }
 
+/// \brief Send an operation to the current active part of the mind
+///
+/// The operation can potentially go to an external mind if one is
+/// currently one attached to this Character. This is normally a player
+/// client, but could be a remote AI agent. Additionally the operation
+/// can go to an internal AI mind. The result from the AI mind is
+/// discarded if an external mind is connected.
+/// @param op Operation to be processed.
+/// @param res The result of the operation is returned here.
 void Character::sendMind(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::sendMind(" << op->getParents().front() << ")" << std::endl << std::flush;);
@@ -1443,6 +1751,12 @@ void Character::mind2body(const Operation & op, OpVector & res)
     OP_SWITCH(op, otype, res, mind)
 }
 
+/// \brief Filter operations from the world to the mind
+///
+/// Operations from the world are checked here to see if they are suitable
+/// to send to the mind. Some operations should not go to the mind as they
+/// leak information. Others are just not necessary as they provide no
+/// useful information.
 bool Character::world2mind(const Operation & op)
 {
     debug( std::cout << "Character::world2mind(" << op->getParents().front() << ")" << std::endl << std::flush;);

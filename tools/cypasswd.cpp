@@ -15,7 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cypasswd.cpp,v 1.33 2006-10-26 00:48:17 alriddoch Exp $
+// $Id: cypasswd.cpp,v 1.34 2006-12-26 18:24:26 alriddoch Exp $
+
+/// \page cypasswd_index
+///
+/// \section Introduction
+///
+/// cypasswd is an interactive commandline tool to manage account data in
+/// the database. For information on the usage, please see the unix
+/// manual page. The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

@@ -15,7 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconfig.cpp,v 1.8 2006-12-24 14:42:07 alriddoch Exp $
+// $Id: cyconfig.cpp,v 1.9 2006-12-26 18:24:25 alriddoch Exp $
+
+/// \page cyconfig_index
+///
+/// \section Introduction
+///
+/// cyconfig is a non-interactive commandline tool to control and modify
+/// cyphesis configuration. For information on the usage, please see the unix
+/// manual page. The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
+///
+/// This tool is work in progress, and could in the long run assimilate
+/// the functionality of cyaddrules, cyloadrules and others.
 
 #include <varconf/config.h>
 

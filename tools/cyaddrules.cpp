@@ -15,7 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.9 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: cyaddrules.cpp,v 1.10 2006-12-26 18:24:25 alriddoch Exp $
+
+/// \page cyaddrules_index
+///
+/// \section Introduction
+///
+/// cyaddrules is a non-interactive commandline tool to upload rules files
+/// into a running server. For information on the usage, please see the unix
+/// manual page. The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
+///
+/// The code to interact with the server is encapsulated in the AdminClient
+/// class, which is shared with other tools.
 
 #include "AdminClient.h"
 

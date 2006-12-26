@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.h,v 1.21 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: ClientConnection.h,v 1.22 2006-12-26 18:24:25 alriddoch Exp $
 
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
@@ -41,19 +41,25 @@ namespace Atlas {
 /// an admin client
 class ClientConnection : public Atlas::Objects::ObjectsDecoder {
   private:
+    /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;
+    /// \brief Flag to indicate that an error has been received from the server
     bool error_flag;
+    /// \brief File descriptor used to communicate with the server
     int client_fd;
+    /// \brief iostream used to communicate with the server
     tcp_socket_stream ios;
+    /// \brief Atlas codec used to communicate with the server
     Atlas::Codec * codec;
+    /// \brief Atlas encoder used to serialise messages for the server
     Atlas::Objects::ObjectsEncoder * encoder;
+    /// \brief Store for reply data from the server
     Atlas::Objects::Root reply;
+    /// \brief Counter used to track serial numbers sent to the server
     int serialNo;
 
+    /// \brief Store for operations arrived from the server
     std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
-
-    template<class O>
-    void push(const O &);
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 
@@ -76,15 +82,22 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
     int wait();
     void send(const Atlas::Objects::Operation::RootOperation & op);
 
+    /// \brief Check the iostream for waiting data
     int peek() {
         return ios.peek();
     }
+
+    /// \brief Check the iostream to see if it is disconnected
     int eof() {
         return ios.eof();
     }
+
+    /// \brief Accessor to the server file descriptor
     int get_fd() {
         return client_fd;
     }
+
+    /// \brief Read only accessor for Info reply data from the server
     const Atlas::Objects::Root & getReply() {
         return reply;
     }

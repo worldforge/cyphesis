@@ -1,3 +1,6 @@
+Strip most operations out of the mindFooOperation() interface, as all soft
+ops now go via scripts, if at all.
+
 Make sure all properties override correctly. Check const.
 
 Look at PyOplist and see if it would be better to embed the object rather than

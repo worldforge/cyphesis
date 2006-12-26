@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.88 2006-12-12 15:54:23 alriddoch Exp $
+// $Id: Character.h,v 1.89 2006-12-26 18:24:25 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -46,25 +46,42 @@ typedef Thing Character_parent;
 /// \ingroup EntityClasses
 class Character : public Character_parent {
   protected:
+    /// \brief Mathematical model that calculates characters stats and abilities
     Statistics m_statistics;
+    /// \brief Handler for simulating movement under direction from the mind
     Movement & m_movement;
+    /// \brief Handler for a medium term task being undertaken
     Task * m_task;
+    /// \brief Flag indicating if this entity is alive
     bool m_isAlive;
 
     // Properties
+    /// \brief Level of stamina character has left
     double m_stamina;
+    /// \brief Characters gender FIXME #6 Get rid, not needed
     std::string m_sex;
+    /// \brief Ammount of food available for digestion
     double m_food;
+    /// \brief Maximum mass of this type of creature
     double m_maxMass;
 
+    /// \brief Identifier of entity in the characters right hand
     std::string m_rightHandWield;
+    /// \brief Sigc connection used to ensure the entity is removed
+    /// when it changes containers.
     sigc::connection m_rightHandWieldConnection;
 
+    /// \brief Energy converted to weight by metabolism per tick
     static const double energyConsumption;
+    /// \brief Food consumed by digestion per tick
     static const double foodConsumption;
+    /// \brief Weight converted to energy per tick
     static const double weightConsumption;
+    /// \brief Energy gained from digestion per tick
     static const double energyGain;
+    /// \brief Energy loss by metabolism per tick
     static const double energyLoss;
+    /// \brief Weight gained from excess energy by metabolism per tick
     static const double weightGain;
 
     void metabolise(OpVector &, double ammount = 1); 
@@ -74,18 +91,26 @@ class Character : public Character_parent {
 
     friend class Movement;
   public:
+    /// \brief Internal AI mind controlling this character
     BaseMind * m_mind;
+    /// \brief External network connected agent controlling this character
     BaseEntity * m_externalMind;
 
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
 
+    /// \brief Accessor for mathematical stats model
     Statistics & statistics() { return m_statistics; }
+    /// \brief Accessor for medium term task
     Task * task() { return m_task; }
 
+    /// \brief Accessor for raw stamina property
     const double getStamina() const { return m_stamina; }
+    /// \brief Accessor for raw gender property
     const std::string & getSex() const { return m_sex; }
+    /// \brief Accessor for raw food property
     const double getFood() const { return m_food; }
+    /// \brief Accessor for raw right hand wield property
     const std::string & getRightHandWield() const { return m_rightHandWield; }
 
     void setTask(Task *);

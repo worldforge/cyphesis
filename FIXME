@@ -1,3 +1,7 @@
+#6  2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Character.h Remove the hard m_sex property from character
+
 #5  2006-12-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.h:42 Remove m_world, and the m_world in Entity, as

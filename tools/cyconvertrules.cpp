@@ -15,7 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconvertrules.cpp,v 1.10 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: cyconvertrules.cpp,v 1.11 2006-12-26 18:24:25 alriddoch Exp $
+
+/// \page cyconvertrules_index
+///
+/// \section Introduction
+///
+/// cyconvertrules is a non-interactive commandline tool to convert rules files
+/// to the current format. For information on the usage, please see the unix
+/// manual page. The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
 
 #include "common/globals.h"
 

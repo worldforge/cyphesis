@@ -15,7 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.7 2006-12-24 14:42:07 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.8 2006-12-26 18:24:25 alriddoch Exp $
+
+/// \page cydumprules_index
+///
+/// \section Introduction
+///
+/// cydumprules is a non-interactive commandline tool to copy rule data from
+/// the database to a file. For information on the usage, please see the unix
+/// manual page. The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
 
 #include "common/Database.h"
 #include "common/globals.h"
