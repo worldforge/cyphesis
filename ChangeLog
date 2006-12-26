@@ -1,9 +1,13 @@
 2006-12-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: Add inline documentation.
+
+2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CharacterClient.cpp, client/ClientConnection.h,
 	  rulesets/Character.cpp, rulesets/Character.h, tools/cyaddrules.cpp,
-	  tools/cyconfig.cpp, tools/cyconvertrules.cpp, tools/cyctrl.cpp,
-	  tools/cydumprules.cpp, tools/cyloadrules.cpp, tools/cypasswd.cpp:
+	  tools/cyconfig.cpp, tools/cyconvertrules.cpp, tools/cydumprules.cpp,
+	  tools/cyloadrules.cpp, tools/cypasswd.cpp:
 	  Add inline documentation.
 
 	* client/CharacterClient.h, client/CharacterClient.cpp: Remove

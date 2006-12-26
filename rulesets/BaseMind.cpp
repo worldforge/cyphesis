@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.101 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.102 2006-12-26 18:46:08 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -127,7 +127,13 @@ void BaseMind::scriptSubscribe(const std::string & op)
 #endif
 }
 
-void BaseMind::sightCreateOperation(const Operation & op, const Operation & sub_op, OpVector & res)
+/// \brief Process the Sight of a Create operation.
+///
+/// @param op The Sight operation to be processed.
+/// @param sub_op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseMind::sightCreateOperation(const Operation & op,
+                                    const Operation & sub_op, OpVector & res)
 {
     const std::vector<Root> & args = sub_op->getArgs();
     if (args.empty()) {
@@ -144,7 +150,13 @@ void BaseMind::sightCreateOperation(const Operation & op, const Operation & sub_
     m_map.updateAdd(ent, op->getSeconds());
 }
 
-void BaseMind::sightDeleteOperation(const Operation & op, const Operation & sub_op, OpVector & res)
+/// \brief Process the Sight of a Delete operation.
+///
+/// @param op The Sight operation to be processed.
+/// @param sub_op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseMind::sightDeleteOperation(const Operation & op,
+                                    const Operation & sub_op, OpVector & res)
 {
     debug( std::cout << "Sight Delete operation" << std::endl << std::flush;);
     const std::vector<Root> & args = sub_op->getArgs();
@@ -161,7 +173,13 @@ void BaseMind::sightDeleteOperation(const Operation & op, const Operation & sub_
     }
 }
 
-void BaseMind::sightMoveOperation(const Operation & op, const Operation & sub_op, OpVector & res)
+/// \brief Process the Sight of a Move operation.
+///
+/// @param op The Sight operation to be processed.
+/// @param sub_op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseMind::sightMoveOperation(const Operation & op,
+                                  const Operation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, Move)" << std::endl << std::flush;);
     const std::vector<Root> & args = sub_op->getArgs();
@@ -177,7 +195,13 @@ void BaseMind::sightMoveOperation(const Operation & op, const Operation & sub_op
     m_map.updateAdd(ent, op->getSeconds());
 }
 
-void BaseMind::sightSetOperation(const Operation & op, const Operation & sub_op, OpVector & res)
+/// \brief Process the Sight of a Set operation.
+///
+/// @param op The Sight operation to be processed.
+/// @param sub_op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void BaseMind::sightSetOperation(const Operation & op,
+                                 const Operation & sub_op, OpVector & res)
 {
     const std::vector<Root> & args = sub_op->getArgs();
     if (args.empty()) {
