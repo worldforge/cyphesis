@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: accountbase.h,v 1.18 2006-12-07 08:22:34 alriddoch Exp $
+// $Id: accountbase.h,v 1.19 2006-12-26 14:30:43 alriddoch Exp $
 
 #ifndef COMMON_ACCOUNT_BASE_H
 #define COMMON_ACCOUNT_BASE_H
@@ -26,6 +26,7 @@
 /// access the account table
 class AccountBase {
   protected:
+    /// \brief Database connection used to change the accounts table
     Database & m_connection;
   public:
     AccountBase() : m_connection(*Database::instance()) { }

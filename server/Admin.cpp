@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.112 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: Admin.cpp,v 1.113 2006-12-26 14:30:44 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -54,6 +54,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
+/// \brief Admin constructor
 Admin::Admin(Connection * conn, const std::string& username,
              const std::string& passwd, const std::string & id, long intId) :
              Account(conn, username, passwd, id, intId)
@@ -116,6 +117,11 @@ void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setAttr("character_types", typeList);
 }
 
+/// \brief Function to monitor server operations
+///
+/// This function is connected to the WorldRouter operation dispatch
+/// signal when monitoring is enabled, and relays all in-game operations
+/// to the client.
 void Admin::opDispatched(Operation op)
 {
     if (m_connection != 0) {
@@ -349,6 +355,10 @@ void Admin::OtherOperation(const Operation & op, OpVector & res)
     }
 }
 
+/// \brief Process a Connect operation
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
 void Admin::customConnectOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
@@ -391,6 +401,10 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     // Fix it up
 }
 
+/// \brief Process a Monitor operation
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
 void Admin::customMonitorOperation(const Operation & op, OpVector & res)
 {
     if (!op->getArgs().empty()) {

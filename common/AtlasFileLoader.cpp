@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.cpp,v 1.6 2006-10-26 00:48:02 alriddoch Exp $
+// $Id: AtlasFileLoader.cpp,v 1.7 2006-12-26 14:30:43 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
@@ -27,6 +27,7 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+/// \brief Called from the base class when a complete message has been decoded
 void AtlasFileLoader::messageArrived(const MapType & msg)
 {
     MapType o = msg;
@@ -46,6 +47,10 @@ void AtlasFileLoader::messageArrived(const MapType & msg)
     ++m_count;
 }
 
+/// \brief AtlasFileLoader constructor
+///
+/// @param filename Name of the file to be loaded
+/// @param m Data store for the data loaded from the file
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  MapType & m) :
                 m_file(filename.c_str(), std::ios::in),

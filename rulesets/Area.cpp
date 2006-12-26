@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Area.cpp,v 1.27 2006-10-26 00:48:07 alriddoch Exp $
+// $Id: Area.cpp,v 1.28 2006-12-26 14:30:44 alriddoch Exp $
 
 #include "Area.h"
 
@@ -24,6 +24,10 @@
 
 static const bool debug_flag = false;
 
+/// \brief Area constructor
+///
+/// @param id String identifier of this Area entity
+/// @param intId Integer identifier of this Area entity
 Area::Area(const std::string & id, long intId) : Area_parent(id, intId)
 {
     debug(std::cout << "Instanced Area" << std::endl << std::flush;);

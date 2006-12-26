@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.100 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.101 2006-12-26 14:30:44 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -48,16 +48,19 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
+/// \brief BaseMind constructor
+///
+/// @param id String identifier
+/// @param intId Integer identifier
+/// @param body_name The name attribute of the body this mind controls
 BaseMind::BaseMind(const std::string & id, long intId,
                    const std::string & body_name) : MemEntity(id, intId),
                                                     m_map(m_script),
                                                     m_isAwake(true)
 {
-    // setId(id);
     m_name = body_name;
     setVisible(true);
     m_map.addEntity(this);
-    //BaseMind::time=WorldTime();
 }
 
 BaseMind::~BaseMind()

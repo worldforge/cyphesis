@@ -1,3 +1,23 @@
+2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* client/BaseClient.cpp, client/BaseClient.h,
+	  client/ClientConnection.cpp, common/AtlasFileLoader.cpp,
+	  common/AtlasFileLoader.h, common/BaseEntity.cpp, common/BaseEntity.h,
+	  common/Property.h, common/accountbase.cpp, common/accountbase.h,
+	  rulesets/ActivePropertyFactory.h,
+	  rulesets/ActivePropertyFactory_impl.h, rulesets/Area.cpp,
+	  rulesets/Area.h, rulesets/AreaProperty.cpp, rulesets/AreaProperty.h,
+	  rulesets/BaseMind.cpp, rulesets/BaseMind.h, server/Account.cpp,
+	  server/Admin.cpp, server/Admin.h, server/ArithmeticFactory.h,
+	  tests/Makefile.am, tools/AdminClient.cpp, tools/AdminClient.h,
+	  tools/cycmd.cpp: Add inline documentation.
+
+	* rulesets/ActivePropertyFactory.h: Use handler function pointer
+	  typedef for readability.
+
+	* rulesets/AreaProperty.cpp, rulesets/AreaProperty.h: Fix PropertyBase
+	  overriding by adding const to the right methods.
+
 2006-12-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/BaseClient.h, client/Py_CreatorClient.h,

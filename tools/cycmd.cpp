@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.104 2006-12-24 14:42:07 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.105 2006-12-26 14:30:44 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -151,15 +151,22 @@ static void help()
 /// continue issuing commands.
 class AdminTask {
   protected:
+    /// \brief Flag that indicates when the task is complete
     bool m_complete;
 
+    ///\brief AdminTask constructor
     AdminTask() : m_complete(false) { }
   public:
     virtual ~AdminTask() { }
 
+    /// \brief Set up the task processing user arguments
     virtual void setup(const std::string & arg, OpVector &) = 0;
+    /// \brief Handle an operation from the server
     virtual void operation(const RootOperation &, OpVector &) = 0;
 
+    /// \brief Check whether the task is complete
+    ///
+    /// @return true if the task is complete, false otherwise
     bool isComplete() const { return m_complete; }
 };
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Area.h,v 1.17 2006-12-12 15:54:23 alriddoch Exp $
+// $Id: Area.h,v 1.18 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef RULESETS_AREA_H
 #define RULESETS_AREA_H
@@ -32,6 +32,7 @@ typedef Thing Area_parent;
 /// \ingroup EntityClasses
 class Area : public Area_parent {
   protected:
+    /// \brief List if identifiers of entities which make up area segments
     IdList m_segments;
 
   public:

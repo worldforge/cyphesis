@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: accountbase.cpp,v 1.14 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: accountbase.cpp,v 1.15 2006-12-26 14:30:43 alriddoch Exp $
 
 #include "accountbase.h"
 
@@ -23,21 +23,25 @@
 
 #include <Atlas/Message/Element.h>
 
+/// \brief Initialise a connection to the accounts database
 int AccountBase::init()
 {
     return m_connection.initConnection(false);
 }
 
-bool AccountBase::putAccount(const Atlas::Message::MapType & o)
+/// \brief Store a new Account in the database
+///
+/// @param account Atlas description of Account to be stored
+bool AccountBase::putAccount(const Atlas::Message::MapType & account)
 {
-    Atlas::Message::MapType::const_iterator I = o.find("username");
-    if ((I == o.end()) || (!I->second.isString())) {
+    Atlas::Message::MapType::const_iterator I = account.find("username");
+    if ((I == account.end()) || (!I->second.isString())) {
         return false;
     }
     const std::string & username = I->second.String();
     
-    I = o.find("password");
-    if ((I == o.end()) || (!I->second.isString())) {
+    I = account.find("password");
+    if ((I == account.end()) || (!I->second.isString())) {
         return false;
     }
     const std::string & password = I->second.String();
@@ -45,8 +49,8 @@ bool AccountBase::putAccount(const Atlas::Message::MapType & o)
     encrypt_password(password, hash);
     
     std::string type = "player";
-    I = o.find("type");
-    if ((I != o.end()) && (I->second.isString())) {
+    I = account.find("type");
+    if ((I != account.end()) && (I->second.isString())) {
         type = I->second.String();
     }
     
@@ -66,22 +70,26 @@ bool AccountBase::putAccount(const Atlas::Message::MapType & o)
     return m_connection.createSimpleRow("accounts", id, columns, values);
 }
 
-bool AccountBase::modAccount(const Atlas::Message::MapType & o,
+/// \brief Modify the attributes of an Account in the database
+///
+/// @param account Atlas description of the Account to be modified
+/// @param accountId String identifier of the Account to be modified
+bool AccountBase::modAccount(const Atlas::Message::MapType & account,
                              const std::string & accountId)
 {
     std::string columns;
     bool empty = true;
 
-    Atlas::Message::MapType::const_iterator I = o.find("type");
-    if ((I != o.end()) && (I->second.isString())) {
+    Atlas::Message::MapType::const_iterator I = account.find("type");
+    if ((I != account.end()) && (I->second.isString())) {
         empty = false;
         columns += "type = '";
         columns += I->second.String();
         columns += "'";
     }
 
-    I = o.find("password");
-    if ((I != o.end()) && (I->second.isString())) {
+    I = account.find("password");
+    if ((I != account.end()) && (I->second.isString())) {
         if (!empty) { columns += ", "; }
         std::string hash;
         encrypt_password(I->second.String(), hash);
@@ -93,13 +101,20 @@ bool AccountBase::modAccount(const Atlas::Message::MapType & o,
                                         accountId, columns);
 }
 
+/// \brief Remove an Account from the accounts database
+///
+/// @param account String identifier of the Account to be removed.
 bool AccountBase::delAccount(const std::string & account)
 {
     return false;
 }
 
+/// \brief Retrieve an Account from the accounts database
+///
+/// @param username Username of the Account to be found
+/// @param account Account description returned here
 bool AccountBase::getAccount(const std::string & username,
-                             Atlas::Message::MapType & o)
+                             Atlas::Message::MapType & account)
 {
     std::string namestr = "'" + username + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
@@ -136,10 +151,10 @@ bool AccountBase::getAccount(const std::string & username,
 
     dr.clear();
 
-    o["id"] = id;
-    o["username"] = username;
-    o["password"] = password;
-    o["type"] = type;
+    account["id"] = id;
+    account["username"] = username;
+    account["password"] = password;
+    account["type"] = type;
 
     return true;
 }

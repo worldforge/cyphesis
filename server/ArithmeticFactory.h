@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ArithmeticFactory.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: ArithmeticFactory.h,v 1.6 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef SERVER_ARITHMETIC_FACTORY_H
 #define SERVER_ARITHMETIC_FACTORY_H
@@ -32,6 +32,9 @@ class ArithmeticFactory {
   public:
     virtual ~ArithmeticFactory();
 
+    /// \brief Create a new arithmetic model object
+    ///
+    /// @param chr The Character object for which the model should be created
     virtual ArithmeticScript * newScript(Character & chr) = 0;
 };
 

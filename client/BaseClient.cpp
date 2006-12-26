@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.cpp,v 1.40 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: BaseClient.cpp,v 1.41 2006-12-26 14:30:43 alriddoch Exp $
 
 #include "BaseClient.h"
 
@@ -50,6 +50,10 @@ BaseClient::~BaseClient()
 {
 }
 
+/// \brief Create a new account on the server
+///
+/// @param name User name of the new account
+/// @param password Password of the new account
 MapType BaseClient::createPlayer(const std::string & name,
                                  const std::string & password)
 {
@@ -92,6 +96,11 @@ MapType BaseClient::createPlayer(const std::string & name,
     return ent->asMessage();
 }
 
+/// \brief Create a new Character or avatar on the server
+///
+/// Requires that an account is already logged in.
+/// @param type The type of avatar to be created
+/// @return The CreatorClient object used to directly interact with the avatar
 CreatorClient * BaseClient::createCharacter(const std::string & type)
 {
     Anonymous character;
@@ -144,6 +153,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 //    time.sleep(0.1);
 //}
 
+/// \brief Handle any operations that have arrived from the server
 void BaseClient::handleNet()
 {
     RootOperation input;

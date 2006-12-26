@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.15 2006-12-12 19:52:38 alriddoch Exp $
+// $Id: Property.h,v 1.16 2006-12-26 14:30:43 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -42,13 +42,13 @@ class PropertyBase {
     unsigned int flags() const { return m_flags; }
 
     /// \brief Copy the value of the property into an Atlas Message
-    virtual bool get(Atlas::Message::Element &) const = 0;
+    virtual bool get(Atlas::Message::Element & val) const = 0;
     /// \brief Read the value of the property from an Atlas Message
-    virtual void set(const Atlas::Message::Element &) = 0;
+    virtual void set(const Atlas::Message::Element & val) = 0;
     /// \brief Add the value as an attribute to an Atlas map
-    virtual void add(const std::string &, Atlas::Message::MapType & map) const;
+    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     /// \brief Add the value as an attribute to an Atlas entity
-    virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &) const;
+    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
 /// \brief Entity property template for properties with single data values

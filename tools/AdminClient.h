@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AdminClient.h,v 1.12 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: AdminClient.h,v 1.13 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef TOOLS_ADMIN_CLIENT_H
 #define TOOLS_ADMIN_CLIENT_H
@@ -43,17 +43,30 @@ typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>
 class AdminClient : public Atlas::Objects::ObjectsDecoder
 {
   private:
+    /// \brief Flags used to track replies from the server
     bool error_flag, reply_flag, login_flag;
+    /// \brief File descriptor used to communicate with the server
     int cli_fd;
+    /// \brief Atlas encoder used to send to the server
     Atlas::Objects::ObjectsEncoder * encoder;
+    /// \brief Atlas codec used to communicate with the server
     Atlas::Codec * codec;
+    /// \brief iostream used to communicate with the server
     basic_socket_stream * ios;
+    /// \brief Password used to log into the server
     std::string password;
+    /// \brief Username used to log into the server
     std::string username;
+    /// \brief Account identifier returned after successful login
     std::string accountId;
+    /// \brief Stored error message from the last received Error operation
     std::string m_errorMessage;
+    /// \brief Flag set to indicate that the task is complete, and should exit
     bool exit;
+    /// \brief Store of rules which can't be uploaded until their parent has
+    /// been uploaded
     RuleWaitList m_waitingRules;
+    /// \brief List of names of rules already uploaded
     std::set<std::string> m_uploadedRules;
 
     void output(const Atlas::Message::Element & item, bool recurse = true);
@@ -82,10 +95,12 @@ class AdminClient : public Atlas::Objects::ObjectsDecoder
     int uploadRule(const std::string & id, const std::string & set,
                     const Atlas::Message::MapType &);
 
+    /// \brief Set the password used to log into the server
     void setPassword(const std::string & passwd) {
         password = passwd;
     }
 
+    /// \brief Set the username used to log into the server
     void setUsername(const std::string & uname) {
         username = uname;
     }

@@ -1,3 +1,8 @@
+#5  2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/BaseMind.h:42 Remove m_world, and the m_world in Entity, as
+	  we now use the singleton accessor in BaseWorld for that
+
 #4  2006-12-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/ScriptFactory.cpp:77 This is unsafe code to be in a

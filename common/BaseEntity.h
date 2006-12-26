@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.h,v 1.84 2006-10-26 00:48:02 alriddoch Exp $
+// $Id: BaseEntity.h,v 1.85 2006-12-26 14:30:43 alriddoch Exp $
 
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
@@ -42,22 +42,26 @@
 /// dictionary as they are called elsewhere in this code.
 class BaseEntity : virtual public sigc::trackable {
   private:
-    /// String id.
+    /// \brief String identifier
     const std::string m_id;
+    /// \brief Integer identifier
     const long m_intId;
 
-    // Private and un-implemented, to make sure slicing is impossible
+    /// \brief Copy constructor private and un-implemented to prevent slicing
     BaseEntity(const BaseEntity &);
+    /// \brief Assignment operator private and un-implemented to prevent slicing
     const BaseEntity & operator=(const BaseEntity &);
   protected:
     explicit BaseEntity(const std::string & id, long intId);
   public:
     virtual ~BaseEntity();
 
+    /// \brief Read only accessor for string identity
     const std::string & getId() const {
         return m_id;
     }
 
+    /// \brief Read only accessor for Integer identity
     long getIntId() const {
         return m_intId;
     }
@@ -108,6 +112,11 @@ class BaseEntity : virtual public sigc::trackable {
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;
 
+    /// \brief Signal emitted when this entity is removed from the server
+    ///
+    /// Note that this is usually well before the object is actually deleted
+    /// and marks the conceptual destruction of the concept this entity
+    /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
 };
 

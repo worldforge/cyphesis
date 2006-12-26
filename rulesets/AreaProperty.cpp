@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AreaProperty.cpp,v 1.4 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: AreaProperty.cpp,v 1.5 2006-12-26 14:30:44 alriddoch Exp $
 
 #include "AreaProperty.h"
 
@@ -33,12 +33,15 @@ static const bool debug_flag = false;
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+/// \brief AreaProperty constructor
+///
+/// @param flags Flags used to persist this property
 AreaProperty::AreaProperty(unsigned int flags) : PropertyBase(flags),
                                                  m_line(*new CoordList, flags)
 {
 }
 
-bool AreaProperty::get(Element & ent)
+bool AreaProperty::get(Element & ent) const
 {
     MapType & area = (ent = MapType()).asMap();
     m_line.get(area["points"]);
@@ -56,7 +59,7 @@ void AreaProperty::set(const Element & ent)
     }
 }
 
-void AreaProperty::add(const std::string & s, MapType & ent)
+void AreaProperty::add(const std::string & s, MapType & ent) const
 {
     get(ent[s]);
 }

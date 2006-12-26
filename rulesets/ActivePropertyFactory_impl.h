@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory_impl.h,v 1.1 2006-12-03 06:31:44 alriddoch Exp $
+// $Id: ActivePropertyFactory_impl.h,v 1.2 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
@@ -23,9 +23,13 @@
 #include "ActivePropertyFactory.h"
 #include "Entity.h"
 
+/// \brief ActivePropertyBuilder constructor
+///
+/// @param class_no Class number of the operation that will trigger this
+/// Property.
+/// @param handler Handler function called when the right operation arrives
 template <class T>
-ActivePropertyBuilder<T>::ActivePropertyBuilder(int class_no,
-                        HandlerResult(*handler)(const Operation &, OpVector &))
+ActivePropertyBuilder<T>::ActivePropertyBuilder(int class_no, Handler handler)
                         : m_operationClassNo(class_no), m_handler(handler)
 {
 }

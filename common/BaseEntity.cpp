@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.94 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.95 2006-12-26 14:30:43 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -49,8 +49,12 @@ using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
+/// \brief BaseEntity constructor
+///
+/// @param id String identifier
+/// @param intId Integer identifier
 BaseEntity::BaseEntity(const std::string & id, long intId) : m_id(id),
-                                                            m_intId(intId)
+                                                             m_intId(intId)
 {
 }
 
@@ -348,6 +352,10 @@ void BaseEntity::ErrorOperation(const Operation & op, OpVector & res)
 {
 }
 
+/// \brief Find and call the handler for an operation
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
 void BaseEntity::callOperation(const Operation & op, OpVector & res)
 {
     const OpNo op_no = op->getClassNo();

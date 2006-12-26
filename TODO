@@ -1,3 +1,5 @@
+Make sure all properties override correctly. Check const.
+
 Look at PyOplist and see if it would be better to embed the object rather than
 have a pointer.
 

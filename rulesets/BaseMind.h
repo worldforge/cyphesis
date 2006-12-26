@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.h,v 1.48 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: BaseMind.h,v 1.49 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
@@ -33,18 +33,28 @@
 /// the entity's memory.
 class BaseMind : public MemEntity {
   protected:
+    /// \brief Memory map of world entities this mind knows about
     MemMap m_map;
+    /// \brief Flag indicating whether this mind is concious
     bool m_isAwake;
+    /// \brief World time as far as this mind is aware
     WorldTime m_time;
+    /// FIXME #5 Remove m_world, and the m_world in Entity, as we now
+    /// use the singleton accessor in BaseWorld for that
+    /// \brief Override of Entity::m_world to make sure we don't use it
     int m_world;
   public:
     BaseMind(const std::string &, long, const std::string &);
     virtual ~BaseMind();
 
+    /// \brief Accessor for the memory map of world entities
     MemMap * getMap() { return &m_map; }
+    /// \brief Accessor for the world time
     WorldTime * getTime() { return &m_time; }
 
+    /// \brief Set this mind as inactive
     void sleep() { m_isAwake = false; }
+    /// \brief Set this mind as active
     void awake() { m_isAwake = true; }
 
     void sightCreateOperation(const Operation &, const Operation &, OpVector &);

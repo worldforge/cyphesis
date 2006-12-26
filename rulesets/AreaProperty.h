@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AreaProperty.h,v 1.5 2006-12-12 19:52:39 alriddoch Exp $
+// $Id: AreaProperty.h,v 1.6 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef RULESETS_AREA_PROPERTY_H
 #define RULESETS_AREA_PROPERTY_H
@@ -30,13 +30,14 @@
 /// \ingroup PropertyClasses
 class AreaProperty : public PropertyBase {
   protected:
+    /// \brief Property data for the line that defines the outline of the area
     LineProperty m_line;
   public:
     explicit AreaProperty(unsigned int flags);
 
-    virtual bool get(Atlas::Message::Element &);
-    virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string &, Atlas::Message::MapType & map);
+    virtual bool get(Atlas::Message::Element & val) const;
+    virtual void set(const Atlas::Message::Element & val);
+    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
 };
 
 #endif // RULESETS_AREA_PROPERTY_H

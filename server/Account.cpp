@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.146 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: Account.cpp,v 1.147 2006-12-26 14:30:44 alriddoch Exp $
 
 #include "Account.h"
 
@@ -59,6 +59,13 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
+/// \brief Account constructor
+///
+/// @param conn Network Connection creating this Account
+/// @param uname Username for this account
+/// @param passwd Password for this account
+/// @param id String identifier for this account
+/// @param intId Integer identifier for this account
 Account::Account(Connection * conn, const std::string & uname,
                  const std::string& passwd, const std::string & id, long intId)
                  : OOGThing(id, intId), m_connection(conn),
@@ -70,6 +77,9 @@ Account::~Account()
 {
 }
 
+/// \brief Called when the Character has been removed from the world.
+///
+/// @param id Integer identifier of the Character destroyed.
 void Account::characterDestroyed(long id)
 {
     m_charactersDict.erase(id);
@@ -78,6 +88,9 @@ void Account::characterDestroyed(long id)
     }
 }
 
+/// \brief Add a Character to those that belong to this Account
+///
+/// @param chr Character object to be added
 void Account::addCharacter(Entity * chr)
 {
     Character * pchar = dynamic_cast<Character *>(chr);
@@ -88,6 +101,10 @@ void Account::addCharacter(Entity * chr)
     chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
 }
 
+/// \brief Create a new Character and add it to this Account
+///
+/// @param typestr The type name of the Character to be created
+/// @param ent Atlas description of the Character to be created
 Entity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent)
 {
@@ -138,7 +155,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     return chr;
 }
 
-void Account::LogoutOperation(const Operation & op, OpVector &)
+void Account::LogoutOperation(const Operation & op, OpVector & res)
 {
     if (m_connection == 0) {
         log(ERROR, "Account::LogoutOperation on account that doesn't seem to be connected.");

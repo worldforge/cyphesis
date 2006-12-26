@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory.h,v 1.2 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: ActivePropertyFactory.h,v 1.3 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_H
@@ -30,11 +30,10 @@ class ActivePropertyBuilder : public PropertyFactory {
     /// The class number of operations this property needs to handle
     int m_operationClassNo;
     /// The handler function used to handle the operation.
-    HandlerResult (*m_handler)(const Operation &, OpVector &);
+    Handler m_handler;
     
   public:
-    explicit ActivePropertyBuilder(int, HandlerResult(*)(const Operation &,
-                                                         OpVector &));
+    explicit ActivePropertyBuilder(int, Handler);
 
     virtual PropertyBase * newProperty(Entity *);
 };

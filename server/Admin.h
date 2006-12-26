@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.h,v 1.40 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: Admin.h,v 1.41 2006-12-26 14:30:44 alriddoch Exp $
 
 #ifndef SERVER_ADMIN_H
 #define SERVER_ADMIN_H
@@ -29,11 +29,12 @@ class Persistance;
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:
-    virtual int characterError(const Operation &,
-                               const Atlas::Objects::Entity::RootEntity &,
-                               OpVector &) const;
+    virtual int characterError(const Operation & op,
+                               const Atlas::Objects::Entity::RootEntity & ent,
+                               OpVector & res) const;
     void opDispatched(Operation op);
 
+    /// \brief Connection used to monitor the in-game operations
     sigc::connection m_monitorConnection;
   public:
     Admin(Connection * conn, const std::string & username,
