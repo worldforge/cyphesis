@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.h,v 1.2 2006-12-12 19:52:39 alriddoch Exp $
+// $Id: EntityProperty.h,v 1.3 2006-12-27 00:32:33 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_PROPERTY_H
 #define RULESETS_ENTITY_PROPERTY_H
@@ -24,7 +24,7 @@
 
 #include "modules/EntityRef.h"
 
-/// \brief Class to handle Entity terrain property
+/// \brief Class to handle an Entity property that references another entity
 /// \ingroup PropertyClasses
 class EntityProperty : public PropertyBase {
   protected:
@@ -32,10 +32,10 @@ class EntityProperty : public PropertyBase {
   public:
     explicit EntityProperty(unsigned int flags);
 
-    virtual bool get(Atlas::Message::Element &) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string &, Atlas::Message::MapType & map) const;
-    virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &) const;
+    virtual bool get(Atlas::Message::Element & val) const;
+    virtual void set(const Atlas::Message::Element & val);
+    virtual void add(const std::string & val, Atlas::Message::MapType & map) const;
+    virtual void add(const std::string & val, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
 #endif // RULESETS_ENTITY_PROPERTY_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.16 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: Property.h,v 1.17 2006-12-27 00:32:33 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -65,10 +65,10 @@ class ImmutableProperty : public PropertyBase {
   public:
     explicit ImmutableProperty(const T & data, unsigned int flags = 0);
 
-    virtual bool get(Atlas::Message::Element &) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string &, Atlas::Message::MapType & map) const;
-    virtual void add(const std::string &, const Atlas::Objects::Entity::RootEntity &) const;
+    virtual bool get(Atlas::Message::Element & val) const;
+    virtual void set(const Atlas::Message::Element & val);
+    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
+    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
 /// \brief Entity property template for properties with single data values
@@ -91,7 +91,7 @@ class SignalProperty : public Property<T>, virtual public sigc::trackable {
   public:
     explicit SignalProperty(T & data, unsigned int flags);
 
-    virtual void set(const Atlas::Message::Element &);
+    virtual void set(const Atlas::Message::Element & val);
 
     /// \brief Signal that is emitted when this Property is modified.
     sigc::signal<void> modified;

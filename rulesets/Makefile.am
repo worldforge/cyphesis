@@ -28,6 +28,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     EntityProperty.cpp EntityProperty.h \
+			     GuiseProperty.cpp GuiseProperty.h \
 			     LineProperty.cpp LineProperty.h \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
