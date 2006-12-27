@@ -3,6 +3,14 @@ INCLUDES = -I$(top_srcdir) -I${top_builddir}
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave
 
+LOCAL_LIBS = $(top_builddir)/rulesets/libscriptpython.a \
+             $(top_builddir)/rulesets/librulesetmind.a \
+             $(top_builddir)/rulesets/librulesetentity.a \
+             $(top_builddir)/rulesets/librulesetbase.a \
+             $(top_builddir)/modules/libmodules.a \
+             $(top_builddir)/common/libcommon.a \
+             $(top_builddir)/physics/libphysics.a
+
 if LINK_STATIC
 
 SERVER_LIBS = \
@@ -90,16 +98,13 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
+		buildid.cpp \
 		server.cpp server.h
 
-cyphesis_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
-                 $(top_builddir)/rulesets/librulesetmind.a \
-                 $(top_builddir)/rulesets/librulesetentity.a \
-                 $(top_builddir)/rulesets/librulesetbase.a \
-                 $(top_builddir)/modules/libmodules.a \
-                 $(top_builddir)/common/libcommon.a \
-                 $(top_builddir)/physics/libphysics.a \
-                 $(SERVER_LIBS)
+cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
+
+buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS)
+	$(top_srcdir)/scripts/gen_buildid.py > buildid.cpp
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
@@ -138,11 +143,4 @@ cyslave_SOURCES = \
 		protocol_instructions.h \
 		slave.cpp
 
-cyslave_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
-                $(top_builddir)/rulesets/librulesetmind.a \
-                $(top_builddir)/rulesets/librulesetentity.a \
-                $(top_builddir)/rulesets/librulesetbase.a \
-                $(top_builddir)/modules/libmodules.a \
-                $(top_builddir)/common/libcommon.a \
-                $(top_builddir)/physics/libphysics.a \
-                $(SERVER_LIBS)
+cyslave_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)

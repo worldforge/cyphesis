@@ -1,5 +1,20 @@
 2006-12-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.cpp: Remove build time and date, because they almost
+	  never get updated here.
+
+	* scripts/gen_buildid.py: New script to generate a source file
+	  to note the build time and date.
+
+	* server/Makefile.am: Create a new file that depends on all server
+	  sources that contains the build time and data, and will contain
+	  the build number.
+
+	* server/ServerRouting.cpp: Add number of entities in the world
+	  to the server info.
+
+2006-12-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/GuiseProperty.cpp, rulesets/GuiseProperty.h:
 	  New property class to handle guise data. I think we had decided
 	  to call this property something else, but I can't remember what.
@@ -15079,4 +15094,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1676 2006-12-27 01:01:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1677 2006-12-27 01:11:57 alriddoch Exp $

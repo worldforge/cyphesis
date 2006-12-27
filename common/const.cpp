@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.cpp,v 1.38 2006-10-26 00:48:04 alriddoch Exp $
+// $Id: const.cpp,v 1.39 2006-12-27 01:11:58 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -34,7 +34,7 @@ namespace consts {
   // Version of the software we are running
   const char * version = VERSION;
   // Time this server was built
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
+  // const char * buildTime = __TIME__;
+  // const char * buildDate = __DATE__;
 
 }

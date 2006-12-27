@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.cpp,v 1.63 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: ServerRouting.cpp,v 1.64 2006-12-27 01:11:58 alriddoch Exp $
 
 #include "ServerRouting.h"
 #include "Lobby.h"
@@ -94,6 +94,7 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
     if (restricted_flag) {
         ent->setAttr("restricted", "true");
     }
+    ent->setAttr("entities", (long)m_world.getEntities().size());
     
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
