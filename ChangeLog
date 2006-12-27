@@ -1,5 +1,14 @@
 2006-12-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Makefile.am: Fix include directories to include the top
+	  of the build directory in non relocatable builds, so that out
+	  of directory non relocatable builds work.
+
+	* server/Makefile.am: Exclude buildid.cpp from distributed sources
+	  and from its own deps to fix some warnings and errors.
+
+2006-12-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* Makefile.am: Include buildid script in the distributed sources.
 
 	* tests/consttest.cpp: Remove buildTime and buildDate from the unit
@@ -15114,4 +15123,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1680 2006-12-27 11:38:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1681 2006-12-27 12:57:52 alriddoch Exp $

@@ -6,9 +6,10 @@ INCLUDES = -I$(top_srcdir) -I${top_builddir}
 
 else
 
-INCLUDES = -I$(top_srcdir) -DDATADIR=\"@datadir@\" \
-                           -DSYSCONFDIR=\"@sysconfdir@\" \
-                           -DLOCALSTATEDIR=\"@localstatedir@\"
+INCLUDES = -I$(top_srcdir)  -I${top_builddir} \
+           -DDATADIR=\"@datadir@\" \
+           -DSYSCONFDIR=\"@sysconfdir@\" \
+           -DLOCALSTATEDIR=\"@localstatedir@\"
 
 endif
 

@@ -98,8 +98,10 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		protocol_instructions.h \
-		buildid.cpp \
 		server.cpp server.h
+
+nodist_cyphesis_SOURCES = \
+		buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
