@@ -15078,3 +15078,5 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 	* Started adding Python interface code.
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
+
+$Id: ChangeLog,v 1.1676 2006-12-27 01:01:39 alriddoch Exp $
