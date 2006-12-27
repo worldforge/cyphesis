@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: consttest.cpp,v 1.7 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: consttest.cpp,v 1.8 2006-12-27 11:19:20 alriddoch Exp $
 
 #include "common/const.h"
 
@@ -85,6 +85,9 @@ int main()
     versions = consts::version;
     assert(versions.size() > 0);
 
+#if 0
+// For the time being, as these are now in the server/buildid.cpp
+// we are leaving the out
     const char * buildTime;
     buildTime = consts::buildTime;
     assert(buildTime != 0);
@@ -98,6 +101,7 @@ int main()
     std::string buildDates;
     buildDates = consts::buildDate;
     assert(buildDates.size() > 0);
+#endif
 
     return 0;
 }
