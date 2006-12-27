@@ -103,8 +103,8 @@ cyphesis_SOURCES = \
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
-buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS)
-	$(top_srcdir)/scripts/gen_buildid.py > buildid.cpp
+buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) $(top_srcdir)/scripts/gen_buildid.py
+	$(top_srcdir)/scripts/gen_buildid.py `tail -n 1 $(top_srcdir)/ChangeLog | sed "s/^.* 1\.\([0-9]*\).*$$/\1/"` > buildid.cpp
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \

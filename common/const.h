@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.h,v 1.47 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: const.h,v 1.48 2006-12-27 10:49:07 alriddoch Exp $
 
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
@@ -74,6 +74,8 @@ namespace consts {
   extern const char * buildTime;
   /// \brief Date this server was built
   extern const char * buildDate;
+  /// \brief Build number of this build, derived from ChangeLog RCS revision
+  extern const int buildId;
 
   // @}
 }

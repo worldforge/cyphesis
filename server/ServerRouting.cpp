@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.cpp,v 1.64 2006-12-27 01:11:58 alriddoch Exp $
+// $Id: ServerRouting.cpp,v 1.65 2006-12-27 10:49:08 alriddoch Exp $
 
 #include "ServerRouting.h"
 #include "Lobby.h"
@@ -72,10 +72,12 @@ void ServerRouting::addToMessage(MapType & omap) const
     omap["clients"] = m_numClients;
     omap["uptime"] = m_world.upTime();
     omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);
+    omap["buildid"] = consts::buildId;
     omap["version"] = std::string(consts::version);
     if (restricted_flag) {
         omap["restricted"] = "true";
     }
+    omap["entities"] = (long)m_world.getEntities().size();
     
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
@@ -90,6 +92,7 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
     ent->setAttr("clients", m_numClients);
     ent->setAttr("uptime", m_world.upTime());
     ent->setAttr("builddate", std::string(consts::buildTime)+", "+std::string(consts::buildDate));
+    ent->setAttr("buildid", consts::buildId);
     ent->setAttr("version", std::string(consts::version));
     if (restricted_flag) {
         ent->setAttr("restricted", "true");

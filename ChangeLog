@@ -1,5 +1,18 @@
 2006-12-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h: Add declaration for buildid, an incrementing
+	  build number to give finer version tracking of development code.
+
+	* server/ServerRouting.cpp: Add buildid to the server status
+	  made available to all clients. Fix entity count in server status
+	  as it wasn't fully added in the last change.
+
+	* server/Makefile.am, scripts/gen_buildid.py: Implement buildid
+	  by pulling the RCS revision number out of ChangeLog from its
+	  embedded RCS $Id: ChangeLog,v 1.1678 2006-12-27 10:49:05 alriddoch Exp $ entry.
+
+2006-12-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.cpp: Remove build time and date, because they almost
 	  never get updated here.
 
@@ -15094,4 +15107,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1677 2006-12-27 01:11:57 alriddoch Exp $
+$Id: ChangeLog,v 1.1678 2006-12-27 10:49:05 alriddoch Exp $
