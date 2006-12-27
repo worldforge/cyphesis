@@ -16,7 +16,7 @@
 
 	* server/Makefile.am, scripts/gen_buildid.py: Implement buildid
 	  by pulling the RCS revision number out of ChangeLog from its
-	  embedded RCS $Id: ChangeLog,v 1.1679 2006-12-27 11:19:19 alriddoch Exp $ entry.
+	  embedded RCS Id entry.
 
 2006-12-27  Al Riddoch  <alriddoch@zepler.org>
 
@@ -15114,4 +15114,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1679 2006-12-27 11:19:19 alriddoch Exp $
+$Id: ChangeLog,v 1.1680 2006-12-27 11:38:04 alriddoch Exp $
