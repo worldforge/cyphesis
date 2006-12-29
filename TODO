@@ -1,3 +1,22 @@
+Thing::updateProperties can be fixed to merge maps rather than just dump
+the whole contents. Not sure how this is done with the property interface
+but it should be possible for the Update argument to have map attributes, each
+containing a set of keys for the map values that actually need to be
+propagated.
+
+Anywhere where things send a Set to themselves, replace it with inline
+changes, and send an Update instead. Perhaps also places where contains
+is changed? I think contains changes are implied rather than express.
+
+"worn" attribute in Wield argument can be used to indicate where it
+should be worn.
+
+In GuiseProperty, need to ensure that  Set operation is simply a trigger
+for an update, so we can do things efficiently. A signal triggered
+by destruction or container change should trigger a Set(guis={}) which
+once it gets to the SetOperation handler gets its arg re-written, I guess
+the only option is the complete value.
+
 Strip most operations out of the mindFooOperation() interface, as all soft
 ops now go via scripts, if at all.
 
