@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.206 2006-12-10 17:53:53 alriddoch Exp $
+// $Id: Thing.cpp,v 1.207 2006-12-29 01:00:07 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -26,6 +26,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/Property.h"
 
 #include "common/Burn.h"
 #include "common/Nourish.h"
@@ -453,9 +454,92 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     }
 }
 
+/// \brief Generate a Sight(Set) operation giving an update on named attributes
+///
+/// When another operation causes the properties of an entity to be changed,
+/// it can trigger propagation of this change by sending an Update operation
+/// nameing the attributes or properties that need to be updated. This
+/// member function handles the Operation, sending a Sight(Set) for
+/// any perceptible changes, and will in future handle persisting those
+/// changes. Should this also handle side effects?
+/// The main reason for this up is that if other ops need to generate a
+/// Set op to update attributes, there are race conditions all over the
+/// place.
+/// @param op Update operation that notifies of the changes.
+/// @param res The result of the operation is returned here.
+void Thing::updateProperties(const Operation & op, OpVector & res)
+{
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+       return;
+    }
+
+    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    if (!arg.isValid()) {
+        error(op, "Update op has malformed args", res, getId());
+        return;
+    }
+
+    Anonymous set_arg;
+    set_arg->setId(getId());
+
+    // Check if any of the hard attributes on RootEntity of changed.
+    // All other hard attributes cannot be changed this way. Location related
+    // attrs can only be changed by a Move or move relate update.
+    // ID and PARENTS are immutable.
+    if (!arg->isDefaultName()) {
+        // Update the name
+        set_arg->setName(getName());
+    }
+    if (!arg->isDefaultContains()) {
+        // Update the contains
+        // FIXME Really?
+        // Surely better to go through the Property?
+    }
+
+    // FIXME SLOW!
+    MapType attrs = arg->asMessage();
+    MapType::const_iterator I = attrs.begin();
+    MapType::const_iterator Iend = attrs.end();
+
+    PropertyDict::const_iterator J;
+    PropertyDict::const_iterator Jend = m_properties.end();
+
+    MapType::const_iterator K;
+    MapType::const_iterator Kend = m_attributes.end();
+
+    for (; I != Iend; ++I) {
+        const std::string & attr = I->first;
+
+        J = m_properties.find(attr);
+        if (J != Jend) {
+            // Dump the property value into the Sight(Set()) arg
+            J->second->add(attr, set_arg);
+        } else {
+            K = m_attributes.find(attr);
+            if (K != Kend) {
+                // Copy the attribute into the Sight(Set()) arg
+                set_arg->setAttr(attr, K->second);
+            } else {
+                error(op, "Got update for non-existant attribute or property",
+                      res, getId());
+            }
+        }
+    }
+
+    Set set;
+    set->setTo(getId());
+    set->setArgs1(set_arg);
+
+    Sight sight;
+    sight->setArgs1(set);
+    res.push_back(sight);
+}
+
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
-    if (op->getRefno() != m_motion->serialno()) {
+    if (op->isDefaultRefno() || op->getRefno() != m_motion->serialno()) {
+        updateProperties(op, res);
         return;
     }
 

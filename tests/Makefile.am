@@ -13,8 +13,8 @@ MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
-                 Charactertest Creatortest Containertest Tasktest \
-                 EntityPropertytest
+                 Charactertest Creatortest ThingupdatePropertiestest \
+                 Containertest Tasktest EntityPropertytest
 
 SERVER_TESTS = EntityFactorytest
 
@@ -385,6 +385,18 @@ Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                     $(top_builddir)/common/libcommon.a \
                     $(MATH_LIBS)
 Creatortest_LDFLAGS = -export-dynamic
+
+ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
+ThingupdatePropertiestest_LDADD = $(top_builddir)/modules/Location.o \
+                                  $(top_builddir)/modules/DateTime.o \
+                                  $(top_builddir)/physics/libphysics.a \
+                                  $(top_builddir)/rulesets/Entity.o \
+                                  $(top_builddir)/rulesets/EntityProperties.o \
+                                  $(top_builddir)/rulesets/Thing.o \
+                                  $(top_builddir)/rulesets/Motion.o \
+                                  $(top_builddir)/rulesets/Script.o \
+                                  $(top_builddir)/common/libcommon.a \
+                                  $(MATH_LIBS)
 
 Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o

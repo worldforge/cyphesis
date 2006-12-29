@@ -1,5 +1,12 @@
 2006-12-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp, rulesets/Thing.h: Add a new method to
+	  generate a Sight(Set) for a designated set of modified attributes.
+
+	* ThingupdatePropertiestest.cpp: Add a test for the new method.
+
+2006-12-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.cpp, rulesets/OutfitProperty.h:
 	  Remove the flags constructor argument, as this type of property
 	  doesn't work that way.
@@ -15146,4 +15153,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1684 2006-12-29 00:41:18 alriddoch Exp $
+$Id: ChangeLog,v 1.1685 2006-12-29 01:00:09 alriddoch Exp $

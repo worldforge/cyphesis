@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.h,v 1.67 2006-10-26 00:48:12 alriddoch Exp $
+// $Id: Thing.h,v 1.68 2006-12-29 01:00:08 alriddoch Exp $
 
 #ifndef RULESETS_THING_H
 #define RULESETS_THING_H
@@ -34,6 +34,7 @@ typedef Entity Thing_parent;
 class Thing : public Thing_parent {
   protected:
     void checkVisibility(const Point3D &, OpVector &);
+    void updateProperties(const Operation & op, OpVector & res);
   public:
 
     explicit Thing(const std::string & id, long intId);
