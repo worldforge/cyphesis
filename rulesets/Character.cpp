@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.277 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: Character.cpp,v 1.278 2006-12-29 18:48:08 alriddoch Exp $
 
 #include "Character.h"
 
@@ -69,6 +69,7 @@ using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
@@ -486,17 +487,35 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (m_rightHandWieldConnection.connected()) {
-        m_rightHandWieldConnection.disconnect();
+    Anonymous update_arg;
+    update_arg->setId(getId());
+
+    Element worn_attr;
+    if (item->getAttr("worn", worn_attr)) {
+        std::cout << "Got wield for a garment" << std::endl << std::flush;
+        
+        // FIXME Implement adding stuff to the outfit propert, as efficiently
+        // as possible
+        // Must make sure that we can install the entity we have already
+        // looked up here, and fix the GuiseProperty code so it does not
+        // need a repeat lookup
+    } else {
+        std::cout << "Got wield for a tool" << std::endl << std::flush;
+
+        if (m_rightHandWieldConnection.connected()) {
+            m_rightHandWieldConnection.disconnect();
+        }
+
+        // The value is ignored by the update handler, but should be the
+        // right type.
+        update_arg->setAttr("right_hand_wield", item->getId());
+        setAttr("right_hand_wield", item->getId());
     }
 
-    Set set;
-    set->setTo(getId());
-    Anonymous set_arg;
-    set_arg->setId(getId());
-    set_arg->setAttr("right_hand_wield", item->getId());
-    set->setArgs1(set_arg);
-    res.push_back(set);
+    Update update;
+    update->setTo(getId());
+    update->setArgs1(update_arg);
+    res.push_back(update);
 
     m_rightHandWieldConnection = item->containered.connect(sigc::mem_fun(this, &Character::wieldDropped));
 

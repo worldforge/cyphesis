@@ -1,3 +1,9 @@
+Make updateProperties read-only perhaps? Needs to clean out properties.
+
+If an Update op has a serialno/refno as checked in Thing::Update
+then it should probably not be treated as a generic update, but rather
+rejected.
+
 Thing::updateProperties can be fixed to merge maps rather than just dump
 the whole contents. Not sure how this is done with the property interface
 but it should be possible for the Update argument to have map attributes, each
