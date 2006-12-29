@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.h,v 1.2 2006-12-29 00:02:34 alriddoch Exp $
+// $Id: OutfitProperty.h,v 1.3 2006-12-29 00:41:23 alriddoch Exp $
 
 #ifndef RULESETS_OUTFIT_PROPERTY_H
 #define RULESETS_OUTFIT_PROPERTY_H
@@ -27,12 +27,17 @@
 typedef std::map<std::string, EntityRef> EntityRefMap;
 
 /// \brief Class to handle Character outfit property
+///
+/// OUTFIT is the property used to describe how entities in the CONTAINS
+/// list of the entity are attached to it. Primarily intended for describing
+/// the clothes and equipment attached to a Character, it could be potentially
+/// used for all sorts of things.
 /// \ingroup PropertyClasses
 class OutfitProperty : public PropertyBase {
   protected:
     EntityRefMap m_data;
   public:
-    explicit OutfitProperty(unsigned int flags);
+    explicit OutfitProperty();
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

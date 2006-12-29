@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.2 2006-12-29 00:02:34 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.3 2006-12-29 00:41:24 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
@@ -29,7 +29,8 @@ using Atlas::Message::MapType;
 
 static const bool debug_flag = true;
 
-OutfitProperty::OutfitProperty(unsigned int flags) : PropertyBase(flags)
+/// \brief OutfitProperty constructor
+OutfitProperty::OutfitProperty() : PropertyBase(0)
 {
 }
 
