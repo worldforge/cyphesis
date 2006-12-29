@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.h,v 1.1 2006-12-27 00:32:33 alriddoch Exp $
+// $Id: OutfitProperty.h,v 1.2 2006-12-29 00:02:34 alriddoch Exp $
 
-#ifndef RULESETS_GUISE_PROPERTY_H
-#define RULESETS_GUISE_PROPERTY_H
+#ifndef RULESETS_OUTFIT_PROPERTY_H
+#define RULESETS_OUTFIT_PROPERTY_H
 
 #include "common/Property.h"
 
@@ -26,13 +26,13 @@
 
 typedef std::map<std::string, EntityRef> EntityRefMap;
 
-/// \brief Class to handle Character guise property
+/// \brief Class to handle Character outfit property
 /// \ingroup PropertyClasses
-class GuiseProperty : public PropertyBase {
+class OutfitProperty : public PropertyBase {
   protected:
     EntityRefMap m_data;
   public:
-    explicit GuiseProperty(unsigned int flags);
+    explicit OutfitProperty(unsigned int flags);
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
@@ -40,4 +40,4 @@ class GuiseProperty : public PropertyBase {
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
-#endif // RULESETS_GUISE_PROPERTY_H
+#endif // RULESETS_OUTFIT_PROPERTY_H

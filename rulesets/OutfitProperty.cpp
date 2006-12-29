@@ -15,9 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.1 2006-12-27 00:32:33 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.2 2006-12-29 00:02:34 alriddoch Exp $
 
-#include "GuiseProperty.h"
+#include "OutfitProperty.h"
 
 #include "Entity.h"
 
@@ -29,11 +29,11 @@ using Atlas::Message::MapType;
 
 static const bool debug_flag = true;
 
-GuiseProperty::GuiseProperty(unsigned int flags) : PropertyBase(flags)
+OutfitProperty::OutfitProperty(unsigned int flags) : PropertyBase(flags)
 {
 }
 
-bool GuiseProperty::get(Atlas::Message::Element & val) const
+bool OutfitProperty::get(Atlas::Message::Element & val) const
 {
     val = MapType();
     MapType & val_map = val.Map();
@@ -49,12 +49,12 @@ bool GuiseProperty::get(Atlas::Message::Element & val) const
     return true;
 }
 
-void GuiseProperty::set(const Atlas::Message::Element & val)
+void OutfitProperty::set(const Atlas::Message::Element & val)
 {
     // INT id?
 
     if (!val.isMap()) {
-        debug(std::cout << "Value of guise is not a map" << std::endl << std::flush;);
+        debug(std::cout << "Value of outfit is not a map" << std::endl << std::flush;);
         return;
     }
 
@@ -82,13 +82,13 @@ void GuiseProperty::set(const Atlas::Message::Element & val)
             m_data[key] = EntityRef(e);
         } else {
             debug(std::cout << "Key " << key << " is of type "
-                            << item.getType() << " when setting guise"
+                            << item.getType() << " when setting outfit"
                             << std::endl << std::flush;);
         }
     }
 }
 
-void GuiseProperty::add(const std::string & key,
+void OutfitProperty::add(const std::string & key,
                          Atlas::Message::MapType & map) const
 {
     if (m_data.empty()) {
@@ -106,7 +106,7 @@ void GuiseProperty::add(const std::string & key,
     }
 }
 
-void GuiseProperty::add(const std::string & key,
+void OutfitProperty::add(const std::string & key,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
     if (m_data.empty()) {

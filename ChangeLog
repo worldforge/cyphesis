@@ -1,3 +1,11 @@
+2006-12-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/GuiseProperty.h, rulesets/GuiseProperty.cpp,
+	  rulesets/OutfitProperty.h, rulesets/OutfitProperty.cpp,
+	  rulesets/Makefile.am: Rename "guise" to "outfit" as had
+	  been agreed quite a while ago on irc, but I forgot. History
+	  preserved using cvs repository hackery.
+
 2006-12-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Makefile.am: Add buildid.cpp to the files removed by
@@ -15129,4 +15137,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1682 2006-12-27 14:10:52 alriddoch Exp $
+$Id: ChangeLog,v 1.1683 2006-12-29 00:02:31 alriddoch Exp $
