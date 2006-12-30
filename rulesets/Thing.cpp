@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.208 2006-12-29 18:48:09 alriddoch Exp $
+// $Id: Thing.cpp,v 1.209 2006-12-30 23:13:33 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -467,7 +467,7 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 /// place.
 /// @param op Update operation that notifies of the changes.
 /// @param res The result of the operation is returned here.
-void Thing::updateProperties(const Operation & op, OpVector & res)
+void Thing::updateProperties(const Operation & op, OpVector & res) const
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -541,11 +541,22 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
 
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
-    if (op->isDefaultRefno() || op->getRefno() != m_motion->serialno()) {
+    // If it has no refno, then it is a generic request to broadcast
+    // an update of some properties which have changed.
+    if (op->isDefaultRefno()) {
         updateProperties(op, res);
         return;
     }
 
+    // If it has a refno, then it is a movement update. If it does not
+    // match the current movement serialno, then its obsolete, and can
+    // be discarded.
+    if (op->getRefno() != m_motion->serialno()) {
+        return;
+    }
+
+    // If somehow a movement update arrives with the correct refno, but
+    // we are not moving, then something has gone wrong.
     if (!m_location.velocity().isValid() ||
         m_location.velocity().sqrMag() < WFMATH_EPSILON) {
         log(ERROR, "Update got for entity not moving");

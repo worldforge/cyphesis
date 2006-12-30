@@ -1,3 +1,8 @@
+Atlas::Message::Element has TYPE_NONE, so we have a conceivable way
+to signal clearing of an attribute. Basically only possible soft attributes
+unless we want to make the Atlas::Objects code hideous. If we are going to
+find a way to signal this to the client, we need to add it to Atlas-C++.
+
 How do we clear a Property if it is specified by Update arg, but is no
 longer set to anything? Need a way for force it.
 

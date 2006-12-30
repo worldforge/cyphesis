@@ -1,3 +1,9 @@
+#7  2006-12-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* Thing::MoveOp Thing::UpdateOp: Try and work it so that the
+	  velocity flag can be used as the only necessary check if something
+	  is moving. Ie make sure if the velocity is zero, it is cleared.
+
 #6  2006-12-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.h Remove the hard m_sex property from character
