@@ -1,5 +1,14 @@
 2006-12-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/EntityProperty.cpp: Modify EntityProperty so it
+	  shows its value as an empty ID if it is not set to anything,
+	  and clears its reference if it is set to an empty string.
+
+	* rulesets/Character.cpp: Fix the code that handles an empty wield
+	  argument, so it clears the wielded entity correctly and efficiently.
+
+2006-12-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/attributes.h, server/Persistor_impl.h,
 	  server/Restorer.cpp: Remove right_hand_wield from the
 	  persistence layer, pending its complete removal.
@@ -15175,4 +15184,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1687 2006-12-30 03:55:37 alriddoch Exp $
+$Id: ChangeLog,v 1.1688 2006-12-30 16:45:01 alriddoch Exp $

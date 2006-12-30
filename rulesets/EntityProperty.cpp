@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.cpp,v 1.3 2006-12-30 03:55:46 alriddoch Exp $
+// $Id: EntityProperty.cpp,v 1.4 2006-12-30 16:45:04 alriddoch Exp $
 
 #include "EntityProperty.h"
 
@@ -44,16 +44,19 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         const std::string & id = val.String();
         if (m_data.get() == 0 || m_data->getId() != id) {
             std::cout << "Assigning it to " << id << std::endl << std::flush;
-            Entity * e = BaseWorld::instance().getEntity(id);
-            if (e != 0) {
-                std::cout << "Got it" << std::endl << std::flush;
-                m_data = EntityRef(e);
+            if (id.empty()) {
+                m_data = EntityRef(0);
+            } else {
+                Entity * e = BaseWorld::instance().getEntity(id);
+                if (e != 0) {
+                    std::cout << "Got it" << std::endl << std::flush;
+                    m_data = EntityRef(e);
+                }
             }
         }
     } else if (val.isPtr()) {
         std::cout << "Assigning it to pointer" << std::endl << std::flush;
         Entity * e = (Entity*)val.Ptr();
-        assert(e != 0);
         m_data = EntityRef(e);
     }
 }
@@ -63,6 +66,8 @@ void EntityProperty::add(const std::string & s,
 {
     if (m_data.get() != 0) {
         map[s] = m_data->getId();
+    } else {
+        map[s] = "";
     }
 }
 
@@ -71,5 +76,7 @@ void EntityProperty::add(const std::string & s,
 {
     if (m_data.get() != 0) {
         ent->setAttr(s, m_data->getId());
+    } else {
+        ent->setAttr(s, "");
     }
 }

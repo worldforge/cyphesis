@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.279 2006-12-30 03:55:44 alriddoch Exp $
+// $Id: Character.cpp,v 1.280 2006-12-30 16:45:04 alriddoch Exp $
 
 #include "Character.h"
 
@@ -460,13 +460,15 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
             m_rightHandWieldConnection.disconnect();
         }
 
-        Set set;
-        set->setTo(getId());
-        Anonymous set_arg;
-        set_arg->setId(getId());
-        set_arg->setAttr("right_hand_wield", "");
-        set->setArgs1(set_arg);
-        res.push_back(set);
+        m_rightHandWield = EntityRef(0);
+
+        Update update;
+        update->setTo(getId());
+        Anonymous update_arg;
+        update_arg->setId(getId());
+        update_arg->setAttr("right_hand_wield", "");
+        update->setArgs1(update_arg);
+        res.push_back(update);
 
         return;
     }
