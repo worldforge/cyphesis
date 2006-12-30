@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.h,v 1.3 2006-12-27 00:32:33 alriddoch Exp $
+// $Id: EntityProperty.h,v 1.4 2006-12-30 03:55:46 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_PROPERTY_H
 #define RULESETS_ENTITY_PROPERTY_H
@@ -28,9 +28,9 @@
 /// \ingroup PropertyClasses
 class EntityProperty : public PropertyBase {
   protected:
-    EntityRef m_data;
+    EntityRef & m_data;
   public:
-    explicit EntityProperty(unsigned int flags);
+    explicit EntityProperty(EntityRef & data);
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

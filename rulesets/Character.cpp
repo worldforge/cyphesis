@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.278 2006-12-29 18:48:08 alriddoch Exp $
+// $Id: Character.cpp,v 1.279 2006-12-30 03:55:44 alriddoch Exp $
 
 #include "Character.h"
 
@@ -26,6 +26,7 @@
 #include "World.h"
 #include "Task.h"
 #include "StatisticsProperty.h"
+#include "EntityProperty.h"
 
 #include "common/op_switch.h"
 #include "common/const.h"
@@ -185,7 +186,7 @@ Character::Character(const std::string & id, long intId) :
     m_properties["stamina"] = new Property<double>(m_stamina, 0);
     m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
     m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
-    m_properties["right_hand_wield"] = new Property<std::string>(m_rightHandWield, a_rwield);
+    m_properties["right_hand_wield"] = new EntityProperty(m_rightHandWield);
 }
 
 Character::~Character()
@@ -509,18 +510,18 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         // The value is ignored by the update handler, but should be the
         // right type.
         update_arg->setAttr("right_hand_wield", item->getId());
-        setAttr("right_hand_wield", item->getId());
+        // setAttr("right_hand_wield", item->getId());
+        m_rightHandWield = EntityRef(item);
+
+        m_rightHandWieldConnection = item->containered.connect(sigc::mem_fun(this, &Character::wieldDropped));
+
+        debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
     }
 
     Update update;
     update->setTo(getId());
     update->setArgs1(update_arg);
     res.push_back(update);
-
-    m_rightHandWieldConnection = item->containered.connect(sigc::mem_fun(this, &Character::wieldDropped));
-
-    // m_rightHandWield = item->getId();
-    debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
 }
 
 void Character::AttackOperation(const Operation & op, OpVector & res)
@@ -701,15 +702,13 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    const std::string & toolId = m_rightHandWield;
-
-    if (toolId.empty()) {
+    if (m_rightHandWield == 0) {
         error(op, "Character::mindUseOp No tool wielded.", res, getId());
         return;
     }
     // FIXME Get a tool id from the op attributes?
 
-    Entity * tool = m_world->getEntity(toolId);
+    Entity * tool = m_rightHandWield.get();
     if (tool == 0) {
         error(op, "Character::mindUseOp Tool does not exist.", res, getId());
         return;
@@ -845,7 +844,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         rop->setArgs1(target);
     }
 
-    rop->setTo(toolId);
+    rop->setTo(tool->getId());
 
     Entity * target_ent = m_world->getEntity(entity_arg->getId());
     if (target_ent == 0) {

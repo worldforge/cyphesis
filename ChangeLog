@@ -1,5 +1,19 @@
 2006-12-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/attributes.h, server/Persistor_impl.h,
+	  server/Restorer.cpp: Remove right_hand_wield from the
+	  persistence layer, pending its complete removal.
+
+	* rulesets/EntityProperty.h, rulesets/EntityProperty.cpp:
+	  Make EntityProperty a more normal property by making it hold
+	  a reference to its value, not the value itself.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Use EntityProperty
+	  for right_hand_wield attribute, so it stores the value long term
+	  which I think is more efficient.
+
+2006-12-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Add some debug instrumentation to the new
 	  Property update mechanism.
 
@@ -15161,4 +15175,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1686 2006-12-29 18:48:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1687 2006-12-30 03:55:37 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer.cpp,v 1.17 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Restorer.cpp,v 1.18 2006-12-30 03:55:49 alriddoch Exp $
 
 #include "Restorer_impl.h"
 
@@ -48,7 +48,6 @@ void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
     dr.readColumn("sex", m_sex);
     dr.readColumn("food", m_food);
-    dr.readColumn("right_hand_wield", m_rightHandWield);
 }
 
 template<>

@@ -1,3 +1,6 @@
+How do we clear a Property if it is specified by Update arg, but is no
+longer set to anything? Need a way for force it.
+
 Make updateProperties read-only perhaps? Needs to clean out properties.
 
 If an Update op has a serialno/refno as checked in Thing::Update

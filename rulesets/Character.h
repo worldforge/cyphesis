@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.89 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: Character.h,v 1.90 2006-12-30 03:55:45 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -23,6 +23,8 @@
 #include "Thing.h"
 
 #include "Statistics.h"
+
+#include "modules/EntityRef.h"
 
 #include <sigc++/connection.h>
 
@@ -66,7 +68,7 @@ class Character : public Character_parent {
     double m_maxMass;
 
     /// \brief Identifier of entity in the characters right hand
-    std::string m_rightHandWield;
+    EntityRef m_rightHandWield;
     /// \brief Sigc connection used to ensure the entity is removed
     /// when it changes containers.
     sigc::connection m_rightHandWieldConnection;
@@ -111,7 +113,9 @@ class Character : public Character_parent {
     /// \brief Accessor for raw food property
     const double getFood() const { return m_food; }
     /// \brief Accessor for raw right hand wield property
-    const std::string & getRightHandWield() const { return m_rightHandWield; }
+    const std::string & getRightHandWield() const {
+        return m_rightHandWield->getId();
+    }
 
     void setTask(Task *);
     void updateTask();
