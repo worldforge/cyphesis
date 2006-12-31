@@ -1,3 +1,11 @@
+2006-12-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Replace asserts with critical error messages,
+	  so tests can run without a Database connection.
+
+	* tests/EntityPropertytest.cpp: Re-write test cases to deal with
+	  modified behavoir if the Entity reference is null.
+
 2006-12-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.h, rulesets/Thing.cpp: Make updateProperties
@@ -15191,4 +15199,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1690 2006-12-30 23:13:32 alriddoch Exp $
+$Id: ChangeLog,v 1.1691 2006-12-31 15:56:35 alriddoch Exp $

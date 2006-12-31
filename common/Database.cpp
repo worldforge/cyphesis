@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.86 2006-12-06 08:11:24 alriddoch Exp $
+// $Id: Database.cpp,v 1.87 2006-12-31 15:56:35 alriddoch Exp $
 
 #include "Database.h"
 
@@ -401,7 +401,10 @@ bool Database::hasKey(const std::string & table, const std::string & key)
 
 bool Database::getTable(const std::string & table, MapType &o)
 {
-    assert(m_connection != 0);
+    if (m_connection == 0) {
+        log(CRITICAL, "Database connection is down. This is okay during tests");
+        return false;
+    }
 
     std::string query = std::string("SELECT * FROM ") + table;
 
@@ -872,7 +875,10 @@ bool Database::registerEntityTable(const std::string & classname,
 // row probably needs to be richer to provide a more detailed, and possibly
 // ordered description of each the columns required.
 {
-    assert(m_connection != 0);
+    if (m_connection == 0) {
+        log(CRITICAL, "Database connection is down. This is okay during tests");
+        return false;
+    }
 
     if (entityTables.find(classname) != entityTables.end()) {
         log(ERROR, "Attempt to register entity table already registered.");
@@ -1128,7 +1134,11 @@ bool Database::registerArrayTable(const std::string & name,
                                   unsigned int dimension,
                                   const MapType & row)
 {
-    assert(m_connection != 0);
+    if (m_connection == 0) {
+        log(CRITICAL, "Database connection is down. This is okay during tests");
+        return false;
+    }
+
 
     assert(dimension <= 5);
 
