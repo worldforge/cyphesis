@@ -1,3 +1,5 @@
+Implement OUTFIT and GUISE properties.
+
 Atlas::Message::Element has TYPE_NONE, so we have a conceivable way
 to signal clearing of an attribute. Basically only possible soft attributes
 unless we want to make the Atlas::Objects code hideous. If we are going to
