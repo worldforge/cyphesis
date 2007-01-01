@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackable.cpp,v 1.50 2006-12-10 22:48:01 alriddoch Exp $
+// $Id: Stackable.cpp,v 1.51 2007-01-01 17:57:09 alriddoch Exp $
 
 // A stackable object, ie one which can represent multiple object of the
 // same type. Used for things like coins.
@@ -70,7 +70,7 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
             // This is normal
             continue;
         }
-        Entity * ent = m_world->getEntity(id);
+        Entity * ent = BaseWorld::instance().getEntity(id);
         if (ent == NULL) {
             // FIXME Send an Unseen op?
             continue;

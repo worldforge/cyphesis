@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.213 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.214 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -107,7 +107,6 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId, consts::r
     m_initTime = tv.tv_sec;
     updateTime(tv.tv_sec, tv.tv_usec);
     m_gameWorld.incRef();
-    m_gameWorld.m_world = this;
     m_gameWorld.setType("world");
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
@@ -278,7 +277,6 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     }
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
-    ent->m_world = this;
     if (setup) {
         Setup s;
         s->setTo(ent->getId());

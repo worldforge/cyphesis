@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.83 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: Entity.h,v 1.84 2007-01-01 17:57:09 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -108,8 +108,6 @@ class Entity : public BaseEntity {
     /// Is this perceptive
     bool m_perceptive;
   public:
-    /// Exists in this world.
-    BaseWorld * m_world;
     /// Full details of location
     Location m_location;
     /// List of entities which use this as ref
@@ -156,7 +154,7 @@ class Entity : public BaseEntity {
     /// that serialno is sorted. This allows client serialnos to get
     /// in, so that client gets correct usefull refnos back.
     void sendWorld(const Operation & op) {
-        m_world->message(op, *this);
+        BaseWorld::instance().message(op, *this);
     }
 
     /// \brief Accessor for update flags

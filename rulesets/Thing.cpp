@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.209 2006-12-30 23:13:33 alriddoch Exp $
+// $Id: Thing.cpp,v 1.210 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -154,7 +154,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (new_loc_id != m_location.m_loc->getId()) {
         // If the LOC has not changed, we don't need to look it up, or do
         // any of the following checks.
-        new_loc = m_world->getEntity(new_loc_id);
+        new_loc = BaseWorld::instance().getEntity(new_loc_id);
         if (new_loc == 0) {
             error(op, "Move op loc does not exist", res, getId());
             return;
@@ -247,14 +247,14 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         }
     }
 
-    const double & current_time = m_world->getTime();
+    const double & current_time = BaseWorld::instance().getTime();
 
     Point3D oldpos = m_location.pos();
 
     // Update pos
     fromStdVector(m_location.m_pos, ent->getPos());
     // FIXME Quick height hack
-    m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
+    m_location.m_pos.z() = BaseWorld::instance().constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     mode);
     m_location.update(current_time);
@@ -567,7 +567,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // than in the mind interface. The details will be sorted by a new type
     // of object which will handle the specifics.
 
-    const double & current_time = m_world->getTime();
+    const double & current_time = BaseWorld::instance().getTime();
     double time_diff = current_time - m_location.timeStamp();
 
     std::string mode;
@@ -607,7 +607,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
     // Adjust the position to world constraints - essentially fit
     // to the terrain height at this stage.
-    m_location.m_pos.z() = m_world->constrainHeight(m_location.m_loc,
+    m_location.m_pos.z() = BaseWorld::instance().constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     mode);
     m_location.update(current_time);
@@ -714,7 +714,7 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         const std::string & type = parents.front();
         debug( std::cout << getId() << " creating " << type;);
 
-        Entity * obj = m_world->addNewEntity(type,ent);
+        Entity * obj = BaseWorld::instance().addNewEntity(type,ent);
 
         if (obj == 0) {
             error(op, "Create op failed.", res, op->getFrom());

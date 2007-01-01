@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.280 2006-12-30 16:45:04 alriddoch Exp $
+// $Id: Character.cpp,v 1.281 2007-01-01 17:57:08 alriddoch Exp $
 
 #include "Character.h"
 
@@ -478,7 +478,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = arg->getId();
-    Entity * item = m_world->getEntity(id);
+    Entity * item = BaseWorld::instance().getEntity(id);
     if (item == 0) {
         error(op, "Wield arg does not exist", res, getId());
         return;
@@ -533,7 +533,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Entity * attack_ent = m_world->getEntity(op->getFrom());
+    Entity * attack_ent = BaseWorld::instance().getEntity(op->getFrom());
     if (attack_ent == 0) {
         log(ERROR, "AttackOperation: Attack op from non-existant ID");
         return;
@@ -556,7 +556,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Task * combat = m_world->newTask("combat", *this);
+    Task * combat = BaseWorld::instance().newTask("combat", *this);
 
     if (combat == 0) {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
@@ -570,7 +570,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    combat = m_world->newTask("combat", *attacker);
+    combat = BaseWorld::instance().newTask("combat", *attacker);
 
     if (combat == 0) {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
@@ -848,13 +848,13 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     rop->setTo(tool->getId());
 
-    Entity * target_ent = m_world->getEntity(entity_arg->getId());
+    Entity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
     if (target_ent == 0) {
         error(op, "Character::mindUseOperation Target does not exist", res, getId());
         return;
     }
 
-    Task * task = m_world->activateTask(tool->getType(), op_type, target_ent->getType(), *this);
+    Task * task = BaseWorld::instance().activateTask(tool->getType(), op_type, target_ent->getType(), *this);
     if (task != NULL) {
         setTask(task);
         assert(res.empty());
@@ -939,7 +939,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     const std::string & other_id = arg->getId();
     if (other_id != getId()) {
         debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
-        Entity * other = m_world->getEntity(other_id);
+        Entity * other = BaseWorld::instance().getEntity(other_id);
         if (other == 0) {
             Unseen u;
 
@@ -1003,7 +1003,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
                      << ":" << std::endl << std::flush;);
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush;);
-        Entity * target_loc = m_world->getEntity(new_loc);
+        Entity * target_loc = BaseWorld::instance().getEntity(new_loc);
         if (target_loc == 0) {
             Unseen u;
 
@@ -1298,7 +1298,7 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     m_perceptive = true;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        op->setTo(m_world->m_gameWorld.getId());
+        op->setTo(BaseWorld::instance().m_gameWorld.getId());
     } else {
         const Root & arg = args.front();
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {

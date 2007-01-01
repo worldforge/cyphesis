@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.125 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: Entity.cpp,v 1.126 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -78,7 +78,7 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_script(&noScript), m_seq(0),
                                          m_status(1), m_type("entity"),
                                          m_mass(-1), m_perceptive(false),
-                                         m_world(NULL), m_update_flags(0)
+                                         m_update_flags(0)
 {
     m_properties["status"] = new Property<double>(m_status, a_status);
     m_properties["id"] = new ImmutableProperty<std::string>(getId());

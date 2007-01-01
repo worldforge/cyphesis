@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creatortest.cpp,v 1.20 2006-11-06 03:30:03 alriddoch Exp $
+// $Id: Creatortest.cpp,v 1.21 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -38,8 +38,6 @@ int main(int argc, char ** argv)
     Creator e("1", 1);
     Entity world("2", 2);
     TestWorld tw(world);
-
-    e.m_world = &tw;
 
     IGEntityExerciser<Creator> ee(e);
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.77 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Creator.cpp,v 1.78 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "Creator.h"
 
@@ -100,7 +100,7 @@ void Creator::operation(const Operation & op, OpVector & res)
             break;
         default:
             if (op_no == OP_SETUP) {
-                m_world->addPerceptive(this);
+                BaseWorld::instance().addPerceptive(this);
             } else if (op_no == OP_TICK) {
                 TickOperation(op, res);
             }
@@ -135,7 +135,7 @@ void Creator::externalOperation(const Operation & op)
             // World will deal with it.
         }
     } else {
-        Entity * to = m_world->getEntity(op->getTo());
+        Entity * to = BaseWorld::instance().getEntity(op->getTo());
         if (to != 0) {
             // Make it appear like it came from target itself;
             to->sendWorld(op);
@@ -168,14 +168,14 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
     m_perceptive = true;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        op->setTo(m_world->m_gameWorld.getId());
+        op->setTo(BaseWorld::instance().m_gameWorld.getId());
     } else {
         const Root & arg = args.front();
         if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             op->setTo(arg->getId());
         } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
             // Search by name
-            Entity * e = m_world->findByName(arg->getName());
+            Entity * e = BaseWorld::instance().findByName(arg->getName());
             if (e != NULL) {
                 op->setTo(e->getId());
             } else {
@@ -191,7 +191,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
             // Search by name
             if (!arg->getParents().empty()) {
-                Entity * e = m_world->findByType(arg->getParents().front());
+                Entity * e = BaseWorld::instance().findByType(arg->getParents().front());
                 if (e != NULL) {
                     op->setTo(e->getId());
                 } else {

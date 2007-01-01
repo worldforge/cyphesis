@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.cpp,v 1.78 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Pedestrian.cpp,v 1.79 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "Pedestrian.h"
 
@@ -79,7 +79,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
 /// @return 1 if no update was made, or 0 otherwise
 int Pedestrian::getUpdatedLocation(Location & return_location)
 {
-    const double & current_time = m_body.m_world->getTime();
+    const double & current_time = BaseWorld::instance().getTime();
     double time_diff = current_time - m_body.m_location.timeStamp();
 
     if (!updateNeeded(m_body.m_location)) {
@@ -131,7 +131,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         }
     }
 
-    float z = m_body.m_world->constrainHeight(new_location.m_loc, new_location.m_pos,
+    float z = BaseWorld::instance().constrainHeight(new_location.m_loc, new_location.m_pos,
                                               mode);
     debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()
                     << std::endl << std::flush;);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.101 2006-12-10 17:53:53 alriddoch Exp $
+// $Id: World.cpp,v 1.102 2007-01-01 17:57:09 alriddoch Exp $
 
 #include "World.h"
 
@@ -345,7 +345,7 @@ void World::mowOperation(const Operation & op, OpVector & res)
 void World::EatOperation(const Operation & op, OpVector & res)
 {
     const std::string & from_id = op->getFrom();
-    Entity * from = m_world->getEntity(from_id);
+    Entity * from = BaseWorld::instance().getEntity(from_id);
     if (from == 0) {
         log(ERROR, "World got eat op from non-existant entity.");
         return;
@@ -380,18 +380,17 @@ void World::EatOperation(const Operation & op, OpVector & res)
 void World::LookOperation(const Operation & op, OpVector & res)
 {
     // Let the worldrouter know we have been looked at.
-    assert(m_world != 0);
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
     const std::string & from_id = op->getFrom();
-    Entity * from = m_world->getEntity(from_id);
+    Entity * from = BaseWorld::instance().getEntity(from_id);
     if (from == 0) {
         log(ERROR, "Look op has invalid from");
         return;
     }
 
     // Pass entity to addPerceptive
-    m_world->addPerceptive(from);
+    BaseWorld::instance().addPerceptive(from);
 
     Sight s;
 
