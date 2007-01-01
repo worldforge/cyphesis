@@ -71,8 +71,8 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    PythonArithmeticScript.cpp PythonArithmeticScript.h
 
 dist-hook:
-	tar cf - `find basic -name \*.py` | (cd $(distdir); tar xf -)
-	tar cf - `find mason -name \*.py` | (cd $(distdir); tar xf -)
+	(cd $(top_srcdir)/rulesets; tar cf - `find basic -name \*.py`) | (cd $(distdir); tar xf -)
+	(cd $(top_srcdir)/rulesets; tar cf - `find mason -name \*.py`) | (cd $(distdir); tar xf -)
 
 install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
