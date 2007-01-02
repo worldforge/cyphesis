@@ -1,3 +1,7 @@
+Add an option to put a python console on stdio. See PyRun_InteractiveOneFlags
+to see an example of a functio which takes a line, and executes it in
+the way that the interactive interpretter does.
+
 Implement OUTFIT and GUISE properties.
 
 Atlas::Message::Element has TYPE_NONE, so we have a conceivable way
