@@ -1,5 +1,14 @@
 2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/AtlasProperties.cpp, rulesets/AtlasProperties.h:
+	  Add 3 custom property classes used to handle very commonly
+	  used properties that are hard coded in Atlas more efficiently.
+
+	* rulesets/Entity.cpp: Use the new performance property code in
+	  Entity.
+
+2007-01-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/LineProperty.cpp, rulesets/LineProperty.h: Fix the
 	  copyright dates with reference to the cvs log.
 
@@ -15242,4 +15251,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1697 2007-01-03 21:10:05 alriddoch Exp $
+$Id: ChangeLog,v 1.1698 2007-01-03 21:55:30 alriddoch Exp $

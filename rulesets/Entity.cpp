@@ -15,16 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.126 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Entity.cpp,v 1.127 2007-01-03 21:55:31 alriddoch Exp $
 
 #include "Entity.h"
 
 #include "Script.h"
+#include "AtlasProperties.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/inheritance.h"
-#include "common/Property.h"
 #include "common/PropertyManager.h"
 
 #include <wfmath/atlasconv.h>
@@ -81,10 +81,10 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_update_flags(0)
 {
     m_properties["status"] = new Property<double>(m_status, a_status);
-    m_properties["id"] = new ImmutableProperty<std::string>(getId());
-    m_properties["name"] = new Property<std::string>(m_name, a_name);
+    m_properties["id"] = new IdProperty(getId());
+    m_properties["name"] = new NameProperty(m_name, a_name);
     m_properties["mass"] = new Property<double>(m_mass, a_mass);
-    m_properties["contains"] = new ImmutableProperty<EntitySet>(m_contains);
+    m_properties["contains"] = new ContainsProperty(m_contains);
 
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
     sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));

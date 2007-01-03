@@ -8,6 +8,7 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
 librulesetbase_a_SOURCES = Entity.cpp Entity.h \
 			   attributes.h \
 			   EntityProperties.cpp \
+			   AtlasProperties.cpp AtlasProperties.h \
 			   ActivePropertyFactory.cpp \
 			   ActivePropertyFactory_impl.h \
 			   ActivePropertyFactory.h \
