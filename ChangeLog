@@ -1,5 +1,10 @@
 2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Makefile.am: Update dependencies of tests to include new
+	  properties.
+
+2007-01-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CorePropertyManager.cpp: Get rid of a warning about a missing
 	  return value.
 
@@ -15259,4 +15264,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1699 2007-01-03 22:29:46 alriddoch Exp $
+$Id: ChangeLog,v 1.1700 2007-01-03 22:32:58 alriddoch Exp $

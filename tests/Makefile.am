@@ -154,6 +154,7 @@ BaseWorldtest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
+                      $(top_builddir)/rulesets/AtlasProperties.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
@@ -216,6 +217,7 @@ transformtest_LDADD = $(MATH_LIBS)
 distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
+                     $(top_builddir)/rulesets/AtlasProperties.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
@@ -229,6 +231,7 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
+                     $(top_builddir)/rulesets/AtlasProperties.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/common/libcommon.a \
                      $(MATH_LIBS)
@@ -243,6 +246,7 @@ EntityReftest_LDADD = $(top_builddir)/modules/EntityRef.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
+                      $(top_builddir)/rulesets/AtlasProperties.o \
                       $(top_builddir)/rulesets/Script.o \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
@@ -254,6 +258,7 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/rulesets/Entity.o \
                    $(top_builddir)/rulesets/EntityProperties.o \
+                   $(top_builddir)/rulesets/AtlasProperties.o \
                    $(top_builddir)/rulesets/Script.o \
                    $(top_builddir)/common/libcommon.a \
                    $(MATH_LIBS)
@@ -265,6 +270,7 @@ Areatest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Area.o \
                  $(top_builddir)/rulesets/Entity.o \
                  $(top_builddir)/rulesets/EntityProperties.o \
+                 $(top_builddir)/rulesets/AtlasProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
@@ -278,6 +284,7 @@ Foodtest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/Food.o \
                  $(top_builddir)/rulesets/Entity.o \
                  $(top_builddir)/rulesets/EntityProperties.o \
+                 $(top_builddir)/rulesets/AtlasProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
@@ -292,6 +299,7 @@ Linetest_LDADD = $(top_builddir)/modules/Location.o \
                  $(top_builddir)/rulesets/LineProperty.o \
                  $(top_builddir)/rulesets/Entity.o \
                  $(top_builddir)/rulesets/EntityProperties.o \
+                 $(top_builddir)/rulesets/AtlasProperties.o \
                  $(top_builddir)/rulesets/Thing.o \
                  $(top_builddir)/rulesets/Motion.o \
                  $(top_builddir)/rulesets/Script.o \
@@ -305,6 +313,7 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Plant.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
+                  $(top_builddir)/rulesets/AtlasProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
@@ -318,6 +327,7 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Stackable.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
+                      $(top_builddir)/rulesets/AtlasProperties.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
@@ -331,6 +341,7 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Structure.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
+                      $(top_builddir)/rulesets/AtlasProperties.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
@@ -343,6 +354,7 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
+                  $(top_builddir)/rulesets/AtlasProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
@@ -355,6 +367,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
+                  $(top_builddir)/rulesets/AtlasProperties.o \
                   $(top_builddir)/rulesets/World.o \
                   $(top_builddir)/rulesets/TerrainProperty.o \
                   $(top_builddir)/rulesets/CalendarProperty.o \
@@ -392,6 +405,7 @@ ThingupdatePropertiestest_LDADD = $(top_builddir)/modules/Location.o \
                                   $(top_builddir)/physics/libphysics.a \
                                   $(top_builddir)/rulesets/Entity.o \
                                   $(top_builddir)/rulesets/EntityProperties.o \
+                                  $(top_builddir)/rulesets/AtlasProperties.o \
                                   $(top_builddir)/rulesets/Thing.o \
                                   $(top_builddir)/rulesets/Motion.o \
                                   $(top_builddir)/rulesets/Script.o \
