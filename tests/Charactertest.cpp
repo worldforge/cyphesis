@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Charactertest.cpp,v 1.10 2006-11-06 03:30:03 alriddoch Exp $
+// $Id: Charactertest.cpp,v 1.11 2007-01-03 22:48:03 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -55,7 +55,6 @@ int main(int argc, char ** argv)
     attrNames.insert("mass");
     attrNames.insert("bbox");
     attrNames.insert("contains");
-    attrNames.insert("sex");
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));

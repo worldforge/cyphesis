@@ -1,5 +1,16 @@
 2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Character.h: Remove SEX property
+	  from Character.
+
+	* rulesets/attributes.h, server/Persistor_impl.h, server/Restorer.cpp:
+	  Remove SEX property from the persistence code.
+
+	* tests/Charactertest.cpp, tests/Creatortest.cpp: Remove SEX attribute 
+	  from the tests, as it is no longer there.
+
+2007-01-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Makefile.am: Update dependencies of tests to include new
 	  properties.
 
@@ -15264,4 +15275,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1700 2007-01-03 22:32:58 alriddoch Exp $
+$Id: ChangeLog,v 1.1701 2007-01-03 22:48:02 alriddoch Exp $

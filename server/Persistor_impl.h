@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor_impl.h,v 1.33 2006-12-30 03:55:47 alriddoch Exp $
+// $Id: Persistor_impl.h,v 1.34 2007-01-03 22:48:03 alriddoch Exp $
 
 #ifndef SERVER_PERSISTOR_IMPL_H
 #define SERVER_PERSISTOR_IMPL_H
@@ -100,10 +100,6 @@ void Persistor<T>::uCharacter(Character & t, std::string & c)
 {
     std::stringstream q;
     bool empty = c.empty();
-    if (t.getUpdateFlags() & a_sex) {
-        if (!empty) { q << ", "; } else { empty = false; }
-        q << "sex = '" << t.getSex() << "'";
-    }
     if (t.getUpdateFlags() & a_food) {
         if (!empty) { q << ", "; } else { empty = false; }
         q << "food = " << t.getFood();
@@ -204,11 +200,10 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
     if (!c.empty()) {
         c += cs;
     }
-    c += "sex, food, right_hand_wield";
+    c += "food, right_hand_wield";
 
     std::stringstream q;
-    q << sq << t.getSex() << sq << cs
-      << t.getFood() << cs
+    q << t.getFood() << cs
       << sq << t.getRightHandWield() << sq;
 
     if (!v.empty()) {

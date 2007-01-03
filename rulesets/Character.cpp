@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.282 2007-01-03 02:06:53 alriddoch Exp $
+// $Id: Character.cpp,v 1.283 2007-01-03 22:48:03 alriddoch Exp $
 
 #include "Character.h"
 
@@ -177,7 +177,6 @@ Character::Character(const std::string & id, long intId) :
                                             m_movement(*new Pedestrian(*this)),
                                             m_task(0), m_isAlive(true),
                                             m_stamina(1.),
-                                            m_sex("female"),
                                             m_food(0), m_maxMass(100),
                                             m_mind(0), m_externalMind(0)
 {
@@ -186,7 +185,6 @@ Character::Character(const std::string & id, long intId) :
                             WFMath::Point<3>(0.25, 0.25, 2)));
 
     m_properties["stamina"] = new Property<double>(m_stamina, 0);
-    m_properties["sex"] = new Property<std::string>(m_sex, a_sex);
     m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
     m_properties["right_hand_wield"] = new EntityProperty(m_rightHandWield);
 }
