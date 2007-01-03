@@ -24,9 +24,6 @@ Anywhere where things send a Set to themselves, replace it with inline
 changes, and send an Update instead. Perhaps also places where contains
 is changed? I think contains changes are implied rather than express.
 
-"worn" attribute in Wield argument can be used to indicate where it
-should be worn.
-
 In GuiseProperty, need to ensure that  Set operation is simply a trigger
 for an update, so we can do things efficiently. A signal triggered
 by destruction or container change should trigger a Set(guis={}) which
@@ -51,17 +48,8 @@ Plough field, grow veggies. Carrot turnip.
 
 Add code to EntityPropertytest to cover setting by ID.
 
-custom propery classes could be writtent to handle "add()"ing their values
-directly to hard Atlas Entity attributes.
-
 Make the world accessible via a singleton style interface on BaseWorld.
 Installed by BaseWorld constructor, and not checked when instance() is called.
-
-Need soft entity references. When used as a property need to thrash out most
-efficient way to get or set.
-
-Do properties correctly use hardcoded set/getFoo() methods on Atlas::Objects?
-I am pretty sure they don't.
 
 Can we make client connection code more generic, getting rid of the
 nasty merged TCP / UNIX stuff, and sharing code between tools and client.
