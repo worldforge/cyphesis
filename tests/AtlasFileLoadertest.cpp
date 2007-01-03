@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoadertest.cpp,v 1.2 2006-12-05 21:58:47 alriddoch Exp $
+// $Id: AtlasFileLoadertest.cpp,v 1.3 2007-01-03 22:29:47 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
@@ -53,7 +53,7 @@ int main()
         AtlasFileLoader loader("foo", data);
 
         assert(loader.count() == 0);
-        assert(loader.count() == data.size());
+        assert((unsigned int)loader.count() == data.size());
     }
 
     return 0;

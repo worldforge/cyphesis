@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.12 2006-12-29 00:41:29 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.13 2007-01-03 22:29:47 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -41,6 +41,7 @@ template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 HandlerResult test_handler(const Operation &, OpVector & res)
 {
     std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;
+    return OPERATION_IGNORED;
 }
 
 CorePropertyManager::CorePropertyManager()
