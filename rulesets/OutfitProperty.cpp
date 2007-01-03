@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.3 2006-12-29 00:41:24 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.4 2007-01-03 02:06:53 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
@@ -43,8 +43,11 @@ bool OutfitProperty::get(Atlas::Message::Element & val) const
     EntityRefMap::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
         const EntityRef & item = I->second;
-        assert(item.get() != 0);
-        val_map[I->first] = item->getId();
+        if (item.get() == 0) {
+            val_map[I->first] = "";
+        } else {
+            val_map[I->first] = item->getId();
+        }
     }
 
     return true;
@@ -98,12 +101,17 @@ void OutfitProperty::add(const std::string & key,
 
     MapType & val_map = (map[key] = MapType()).Map();
 
+    // FIXME This code is essentially shared with the add function below
+    // Move it into a protected function
     EntityRefMap::const_iterator I = m_data.begin();
     EntityRefMap::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
         const EntityRef & item = I->second;
-        assert(item.get() != 0);
-        val_map[I->first] = item->getId();
+        if (item.get() != 0) {
+            val_map[I->first] = item->getId();
+        } else {
+            val_map[I->first] = "";
+        }
     }
 }
 
@@ -120,9 +128,37 @@ void OutfitProperty::add(const std::string & key,
     EntityRefMap::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
         const EntityRef & item = I->second;
-        assert(item.get() != 0);
-        val_map[I->first] = item->getId();
+        if (item.get() != 0) {
+            val_map[I->first] = item->getId();
+        } else {
+            val_map[I->first] = "";
+        }
     }
 
     ent->setAttr(key, val_map);
+}
+
+void OutfitProperty::cleanUp()
+{
+    std::set<std::string> empty_locations;
+
+    EntityRefMap::const_iterator I = m_data.begin();
+    EntityRefMap::const_iterator Iend = m_data.end();
+    for (; I != Iend; ++I) {
+        if (I->second == 0) {
+            empty_locations.insert(I->first);
+        }
+    }
+
+    std::set<std::string>::const_iterator J = empty_locations.begin();
+    std::set<std::string>::const_iterator Jend = empty_locations.end();
+    for (; J != Jend; ++J) {
+        std::cout << "Outfit purging " << *J << std::endl << std::flush;
+        m_data.erase(*J);
+    }
+}
+
+void OutfitProperty::wear(const std::string & location, Entity * garment)
+{
+    m_data[location] = EntityRef(garment);
 }

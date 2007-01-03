@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.281 2007-01-01 17:57:08 alriddoch Exp $
+// $Id: Character.cpp,v 1.282 2007-01-03 02:06:53 alriddoch Exp $
 
 #include "Character.h"
 
@@ -27,6 +27,7 @@
 #include "Task.h"
 #include "StatisticsProperty.h"
 #include "EntityProperty.h"
+#include "OutfitProperty.h"
 
 #include "common/op_switch.h"
 #include "common/const.h"
@@ -58,6 +59,7 @@
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
@@ -497,6 +499,23 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     if (item->getAttr("worn", worn_attr)) {
         std::cout << "Got wield for a garment" << std::endl << std::flush;
         
+        if (worn_attr.isString()) {
+            OutfitProperty * outfit;
+            PropertyBase * prop = getProperty("outfit");
+            if (prop != 0) {
+                outfit = dynamic_cast<OutfitProperty*>(prop);
+            } else {
+                // FIXME #8 really hacked in, should use manager
+                outfit = new OutfitProperty;
+                m_properties["outfit"] = outfit;
+            }
+            outfit->wear(worn_attr.String(), item);
+            outfit->cleanUp();
+
+            update_arg->setAttr("outfit", MapType());
+        } else {
+            log(WARNING, "Got clothing with non-string worn attribute.");
+        }
         // FIXME Implement adding stuff to the outfit propert, as efficiently
         // as possible
         // Must make sure that we can install the entity we have already

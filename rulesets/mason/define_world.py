@@ -895,3 +895,9 @@ def test_attachment(mapeditor):
     m=editor(mapeditor)
 
     m.make('axe', type='axe', attachment=23)
+
+def make_shirt(mapeditor):
+
+    m=editor(mapeditor)
+
+    m.make('shirt', type='shirt', worn='chest', attachment=23, mass=2)

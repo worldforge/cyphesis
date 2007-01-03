@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.h,v 1.3 2006-12-29 00:41:23 alriddoch Exp $
+// $Id: OutfitProperty.h,v 1.4 2007-01-03 02:06:53 alriddoch Exp $
 
 #ifndef RULESETS_OUTFIT_PROPERTY_H
 #define RULESETS_OUTFIT_PROPERTY_H
@@ -43,6 +43,9 @@ class OutfitProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+
+    void cleanUp();
+    void wear(const std::string & location, Entity * garment);
 };
 
 #endif // RULESETS_OUTFIT_PROPERTY_H

@@ -1,3 +1,15 @@
+2007-01-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/OutfitProperty.h, rulesets/OutfitProperty.cpp: Ensure that
+	  removed garments or equipment get reported as empty IDs, and provide
+	  a function to clean them up. Provide a direct function for adding
+	  garments, without needing to go through the slower standard interface.
+
+	* rulesets/mason/define_world.py: Add a quick hacked in test garment.
+
+	* rulesets/Character.cpp: Implement adding OUTFIT property on demand,
+	  and adding to it anything wielded that has a WORN attribute.
+
 2007-01-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Makefile.am: Fix dist-hook so an out-of srcdir invocation
@@ -15220,4 +15232,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1694 2007-01-01 21:49:49 alriddoch Exp $
+$Id: ChangeLog,v 1.1695 2007-01-03 02:06:50 alriddoch Exp $
