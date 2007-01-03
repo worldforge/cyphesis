@@ -1,5 +1,10 @@
 2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/LineProperty.cpp, rulesets/LineProperty.h: Fix the
+	  copyright dates with reference to the cvs log.
+
+2007-01-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add rules for new garments, and set the properties
 	  on existing properties so they can be worn.
 
@@ -15237,4 +15242,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1696 2007-01-03 20:59:57 alriddoch Exp $
+$Id: ChangeLog,v 1.1697 2007-01-03 21:10:05 alriddoch Exp $

@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2004-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LineProperty.h,v 1.9 2006-12-27 00:32:33 alriddoch Exp $
+// $Id: LineProperty.h,v 1.10 2007-01-03 21:10:05 alriddoch Exp $
 
 #ifndef RULESETS_LINE_PROPERTY_H
 #define RULESETS_LINE_PROPERTY_H
