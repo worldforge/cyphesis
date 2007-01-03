@@ -344,6 +344,10 @@
         <float name="default">2</float>
         <string name="visibility">public</string>
       </map>
+      <map name="worn">
+        <string name="default">feet</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">boots</string>
     <string name="objtype">class</string>
@@ -647,6 +651,35 @@
       <string name="language">python</string>
       <string name="name">world.objects.tools.Cleaver</string>
     </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="worn">
+        <string name="default">back</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">cloak</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
   </map>
 
   <map>
@@ -1227,6 +1260,10 @@
       </map>
       <map name="mass">
         <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="worn">
+        <string name="default">head</string>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -2139,6 +2176,35 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="worn">
+        <string name="default">body</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shirt</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
     </map>
     <string name="id">skeleton</string>
     <map name="mind">
@@ -2455,6 +2521,35 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>plant</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="worn">
+        <string name="default">legs</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">trousers</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
     </list>
   </map>
 
