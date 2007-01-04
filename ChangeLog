@@ -1,3 +1,10 @@
+2007-01-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Add Python 2.5 to the versions detected by configure.
+
+	* rulesets/Py_Operation.cpp: Adapt sequence methods to be compatible
+	  with the new interface typedefs in Python 2.5
+
 2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/Character.h: Remove SEX property
@@ -15275,4 +15282,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1701 2007-01-03 22:48:02 alriddoch Exp $
+$Id: ChangeLog,v 1.1702 2007-01-04 18:49:58 alriddoch Exp $
