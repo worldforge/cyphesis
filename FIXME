@@ -8,7 +8,7 @@
 
 	* rulesets/OutfitProperty.cpp:171 Signals connected to the
 	  property still seem to call the property methods after the
-	  entity owning the property has been deleted.
+	  entity owning the property has been deleted. FIXED
 
 #8  2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 

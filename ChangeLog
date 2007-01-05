@@ -1,5 +1,10 @@
 2007-01-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/OutfitProperty.cpp: Remove a FIXME comment fixed in the
+	  previous commit.
+
+2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.cpp, rulesets/OutfitProperty.h:
 	  Add a virtual destructor, for strict correctness.
 
@@ -15304,4 +15309,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1704 2007-01-05 02:58:52 alriddoch Exp $
+$Id: ChangeLog,v 1.1705 2007-01-05 03:02:43 alriddoch Exp $

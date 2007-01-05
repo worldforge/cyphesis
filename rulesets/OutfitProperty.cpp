@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.6 2007-01-05 02:58:53 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.7 2007-01-05 03:02:43 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
@@ -170,10 +170,6 @@ void OutfitProperty::wear(const std::string & location, Entity * garment)
 {
     m_data[location] = EntityRef(garment);
 
-    // FIXME #9 This don't seem to get removed when the entity owning
-    // this property is deleted, even though this property is
-    // trackable. Perhaps properties don't get deleted? Crazy talk.
-    //
     // FIXME #10 We need to disconnect the containered signal when re
     // get triggered, thus removing it, otherwise the calls accumulate.
     garment->containered.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment));
