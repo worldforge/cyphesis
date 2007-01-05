@@ -1,3 +1,6 @@
+Take another look at the scheme used in mind code to purge entities
+it thinks are bad.
+
 Add an operation to account allowing the client to add a mind to its
 Character. When a Character has internal and external mind, ops from the
 internal mind should go only to the externalMind.
