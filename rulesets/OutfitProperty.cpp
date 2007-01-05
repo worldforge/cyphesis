@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.4 2007-01-03 02:06:53 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.5 2007-01-05 00:47:22 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
@@ -25,6 +25,10 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
+#include <sigc++/adaptors/bind.h>
+#include <sigc++/functors/mem_fun.h>
+
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
 static const bool debug_flag = true;
@@ -161,4 +165,47 @@ void OutfitProperty::cleanUp()
 void OutfitProperty::wear(const std::string & location, Entity * garment)
 {
     m_data[location] = EntityRef(garment);
+
+    // FIXME #9 This don't seem to get removed when the entity owning
+    // this property is deleted, even though this property is
+    // trackable. Perhaps properties don't get deleted? Crazy talk.
+    //
+    // FIXME #10 We need to disconnect the containered signal when re
+    // get triggered, thus removing it, otherwise the calls accumulate.
+    garment->containered.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment));
+    garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment));
+}
+
+void OutfitProperty::itemRemoved(Entity * garment)
+{
+    Element worn_attr;
+    std::string key;
+    if (garment->getAttr("worn", worn_attr)) {
+        if (worn_attr.isString()) {
+            key = worn_attr.String();
+            assert(!key.empty());
+        } else {
+            std::cout << "WORN CORRUPT" << std::endl << std::flush;
+        }
+    } else {
+        std::cout << "WORN missing" << std::endl << std::flush;
+        
+        EntityRefMap::const_iterator I = m_data.begin();
+        EntityRefMap::const_iterator Iend = m_data.end();
+        for (; I != Iend; ++I) {
+            if (I->second == garment) {
+                std::cout << "Found in search" << std::endl << std::flush;
+                key = I->first;
+                assert(!key.empty());
+            }
+        }
+    }
+    if (key.empty()) {
+        std::cout << "Removing gave up" << std::endl << std::flush;
+    }
+    std::cout << "Removing now" << std::endl << std::flush;
+    m_data[key] = EntityRef(0);
+    if (garment->isDestroyed()) {
+        std::cout << "Removing destroyed" << std::endl << std::flush;
+    }
 }

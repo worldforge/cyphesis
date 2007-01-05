@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.283 2007-01-03 22:48:03 alriddoch Exp $
+// $Id: Character.cpp,v 1.284 2007-01-05 00:47:22 alriddoch Exp $
 
 #include "Character.h"
 
@@ -502,6 +502,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
             PropertyBase * prop = getProperty("outfit");
             if (prop != 0) {
                 outfit = dynamic_cast<OutfitProperty*>(prop);
+                assert(outfit != 0);
             } else {
                 // FIXME #8 really hacked in, should use manager
                 outfit = new OutfitProperty;

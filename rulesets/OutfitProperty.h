@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.h,v 1.4 2007-01-03 02:06:53 alriddoch Exp $
+// $Id: OutfitProperty.h,v 1.5 2007-01-05 00:47:22 alriddoch Exp $
 
 #ifndef RULESETS_OUTFIT_PROPERTY_H
 #define RULESETS_OUTFIT_PROPERTY_H
@@ -23,6 +23,8 @@
 #include "common/Property.h"
 
 #include "modules/EntityRef.h"
+
+#include <sigc++/trackable.h>
 
 typedef std::map<std::string, EntityRef> EntityRefMap;
 
@@ -33,9 +35,11 @@ typedef std::map<std::string, EntityRef> EntityRefMap;
 /// the clothes and equipment attached to a Character, it could be potentially
 /// used for all sorts of things.
 /// \ingroup PropertyClasses
-class OutfitProperty : public PropertyBase {
+class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
   protected:
     EntityRefMap m_data;
+
+    void itemRemoved(Entity *);
   public:
     explicit OutfitProperty();
 

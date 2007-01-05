@@ -901,3 +901,4 @@ def make_shirt(mapeditor):
     m=editor(mapeditor)
 
     m.make('shirt', type='shirt', worn='chest', attachment=23, mass=2)
+    m.make('acorn', type='acorn', worn='chest', pos=(1,1,1), attachment=23, mass=2)

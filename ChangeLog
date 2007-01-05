@@ -1,3 +1,15 @@
+2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/OutfitProperty.cpp, rulesets/OutfitProperty.h: Make this
+	  property sigc++ trackable, and add a method to handle signals
+	  indicating that the entity has been removed from the outfit.
+
+	* rulesets/mason/define_world.py: Add a test function for messing
+	  with outfit.
+
+	* rulesets/Character.cpp: Make sure the "outfit" property really is
+	  an OutfitProperty.
+
 2007-01-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Add Python 2.5 to the versions detected by configure.
@@ -15282,4 +15294,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1702 2007-01-04 18:49:58 alriddoch Exp $
+$Id: ChangeLog,v 1.1703 2007-01-05 00:47:21 alriddoch Exp $

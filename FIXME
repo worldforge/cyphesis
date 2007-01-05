@@ -1,3 +1,15 @@
+#10  2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/OutfitProperty.cpp: Signals used to trigger removing
+	  clothing when it is dropped need to be disconnected. Not sure how
+	  without a whole bunch of annoying sigc++ connections in a map.
+
+#9  2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/OutfitProperty.cpp:171 Signals connected to the
+	  property still seem to call the property methods after the
+	  entity owning the property has been deleted.
+
 #8  2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp:503 Temp hack in of outfit property.
