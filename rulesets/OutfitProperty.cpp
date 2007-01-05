@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.5 2007-01-05 00:47:22 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.6 2007-01-05 02:58:53 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
@@ -35,6 +35,10 @@ static const bool debug_flag = true;
 
 /// \brief OutfitProperty constructor
 OutfitProperty::OutfitProperty() : PropertyBase(0)
+{
+}
+
+OutfitProperty::~OutfitProperty()
 {
 }
 

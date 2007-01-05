@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.127 2007-01-03 21:55:31 alriddoch Exp $
+// $Id: Entity.cpp,v 1.128 2007-01-05 02:58:52 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -259,12 +259,14 @@ void Entity::setScript(Script * scrpt)
 void Entity::destroy()
 {
     assert(m_location.m_loc != NULL);
-    EntitySet & refContains = m_location.m_loc->m_contains;
+    EntitySet & loc_contains = m_location.m_loc->m_contains;
     EntitySet::const_iterator Iend = m_contains.end();
     for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
         Entity * obj = *I;
         // FIXME take account of orientation
         // FIXME velocity and orientation  need to be adjusted
+        // Remove the reference to ourself.
+        decRef();
         obj->m_location.m_loc = m_location.m_loc;
         m_location.m_loc->incRef();
         if (m_location.orientation().isValid()) {
@@ -275,9 +277,9 @@ void Entity::destroy()
             static const Quaternion identity(1, 0, 0, 0);
             obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), identity);
         }
-        refContains.insert(obj);
+        loc_contains.insert(obj);
     }
-    refContains.erase(this);
+    loc_contains.erase(this);
 
     // We don't call decRef() on our parent, because we may not get deleted
     // yet, and we need to keep a reference to our parent in case there

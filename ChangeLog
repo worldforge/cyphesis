@@ -1,5 +1,15 @@
 2007-01-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/OutfitProperty.cpp, rulesets/OutfitProperty.h:
+	  Add a virtual destructor, for strict correctness.
+
+	* rulesets/Entity.cpp: Clean up variable names in destroy().
+	  Moving moving contents into LOC on destruction, remove the
+	  ref counts to the destroyed entity held by its contents.
+	  This means Characters can now get deleted.
+
+2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.cpp, rulesets/OutfitProperty.h: Make this
 	  property sigc++ trackable, and add a method to handle signals
 	  indicating that the entity has been removed from the outfit.
@@ -15294,4 +15304,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1703 2007-01-05 00:47:21 alriddoch Exp $
+$Id: ChangeLog,v 1.1704 2007-01-05 02:58:52 alriddoch Exp $

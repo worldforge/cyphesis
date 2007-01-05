@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.h,v 1.5 2007-01-05 00:47:22 alriddoch Exp $
+// $Id: OutfitProperty.h,v 1.6 2007-01-05 02:58:53 alriddoch Exp $
 
 #ifndef RULESETS_OUTFIT_PROPERTY_H
 #define RULESETS_OUTFIT_PROPERTY_H
@@ -42,6 +42,7 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
     void itemRemoved(Entity *);
   public:
     explicit OutfitProperty();
+    virtual ~OutfitProperty();
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
