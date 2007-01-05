@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.84 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Entity.h,v 1.85 2007-01-05 17:19:27 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -26,6 +26,8 @@
 
 #include "common/BaseEntity.h"
 #include "common/BaseWorld.h"
+
+#include <sigc++/connection.h>
 
 #include <iostream>
 #include <cassert>
@@ -228,6 +230,9 @@ class Entity : public BaseEntity {
 
     /// Signal indicating that this entity has changed its LOC
     sigc::signal<void> containered;
+
+    /// Signal connections to be removed after firing
+    std::list<sigc::connection> containered_oneshots;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)

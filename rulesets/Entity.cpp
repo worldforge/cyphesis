@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.128 2007-01-05 02:58:52 alriddoch Exp $
+// $Id: Entity.cpp,v 1.129 2007-01-05 17:19:26 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -332,6 +332,12 @@ void Entity::changeContainer(Entity * new_loc)
     m_update_flags |= a_loc;
 
     containered.emit();
+
+    std::list<sigc::connection>::iterator I = containered_oneshots.begin();
+    std::list<sigc::connection>::iterator Iend = containered_oneshots.end();
+    for (; I != Iend; ++I) {
+        I->disconnect();
+    }
 }
 
 /// \brief Subscribe this entity to operations of the type given

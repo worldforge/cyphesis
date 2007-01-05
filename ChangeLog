@@ -1,5 +1,13 @@
 2007-01-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add a mechanism to make
+	  signal connection to Entity::containered single shot only.
+
+	* rulesets/OutfitProperty.cpp: Make the connect to garments
+	  containered signal single shot, to avoid having to disconnect it.
+
+2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.cpp: Remove a FIXME comment fixed in the
 	  previous commit.
 
@@ -15309,4 +15317,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1705 2007-01-05 03:02:43 alriddoch Exp $
+$Id: ChangeLog,v 1.1706 2007-01-05 17:19:25 alriddoch Exp $
