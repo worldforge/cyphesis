@@ -1,3 +1,7 @@
+Add an operation to account allowing the client to add a mind to its
+Character. When a Character has internal and external mind, ops from the
+internal mind should go only to the externalMind.
+
 Add an option to put a python console on stdio. See PyRun_InteractiveOneFlags
 to see an example of a functio which takes a line, and executes it in
 the way that the interactive interpretter does.
