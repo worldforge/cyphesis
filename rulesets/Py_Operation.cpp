@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.cpp,v 1.54 2007-01-04 18:49:59 alriddoch Exp $
+// $Id: Py_Operation.cpp,v 1.55 2007-01-07 04:16:49 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
@@ -480,9 +480,9 @@ static PyNumberMethods Operation_num = {
 
 static PySequenceMethods Operation_seq = {
     (lenfunc)Operation_seq_length,      /* sq_length */
-    NULL,                               /*  sq_concat */
+    NULL,                               /* sq_concat */
     NULL,                               /* sq_repeat */
-    (ssizeargfunc)Operation_seq_item,     /* sq_item */
+    (ssizeargfunc)Operation_seq_item,   /* sq_item */
     NULL,                               /* sq_slice */
     NULL,                               /* sq_ass_item */
     NULL                                /* sq_ass_slice */

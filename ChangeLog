@@ -1,3 +1,10 @@
+2007-01-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Operation.cpp: Fix formatting of comments.
+
+	* rulesets/Py_Oplist.cpp: Adapt sequence methods to be compatible
+	  with the new interface typedefs in Python 2.5
+
 2007-01-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.h, rulesets/Entity.cpp: Add a mechanism to make
@@ -15317,4 +15324,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1706 2007-01-05 17:19:25 alriddoch Exp $
+$Id: ChangeLog,v 1.1707 2007-01-07 04:16:46 alriddoch Exp $

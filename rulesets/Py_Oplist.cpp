@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Oplist.cpp,v 1.26 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Oplist.cpp,v 1.27 2007-01-07 04:16:49 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
@@ -129,14 +129,18 @@ static int Oplist_seq_length(PyOplist * self)
     return self->ops->size();
 } 
 
+#if PY_MINOR_VERSION < 5
+#define lenfunc inquiry
+#endif
+
 static PyMappingMethods Oplist_as_mapping = {
-    (inquiry)Oplist_seq_length,      /* mp_length */
+    (lenfunc)Oplist_seq_length,      /* mp_length */
     NULL,
     NULL
 };
 
 static PySequenceMethods Oplist_as_sequence = {
-    (inquiry)Oplist_seq_length,      /* sq_length */
+    (lenfunc)Oplist_seq_length,      /* sq_length */
     NULL,                            /* sq_concat */
     NULL,                            /* sq_repeat */
     NULL,                            /* sq_item */
