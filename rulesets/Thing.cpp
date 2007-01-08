@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.210 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Thing.cpp,v 1.211 2007-01-08 23:30:06 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -480,7 +480,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
         return;
     }
 
-    std::cout << "Generating property update" << std::endl << std::flush;
+    debug(std::cout << "Generating property update" << std::endl << std::flush;);
 
     Anonymous set_arg;
     set_arg->setId(getId());
@@ -512,7 +512,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
 
     for (; I != Iend; ++I) {
         const std::string & attr = I->first;
-        std::cout << "  " << attr << std::endl << std::flush;
+        debug(std::cout << "  " << attr << std::endl << std::flush;);
 
         J = m_properties.find(attr);
         if (J != Jend) {

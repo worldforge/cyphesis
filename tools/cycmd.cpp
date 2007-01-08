@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.105 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.106 2007-01-08 23:30:06 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -89,7 +89,6 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Tick;
-using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
@@ -108,6 +107,7 @@ struct command commands[] = {
     { "add_agent",      "Create an in-game agent", },
     { "connect",        "Connect server to a peer", },
     { "cancel",         "Cancel the current admin task", },
+    { "delete",         "Delete an entity from the server", },
     { "get",            "Examine a class on the server", },
     { "find_by_name",   "Find an entity with the given name", },
     { "find_by_type",   "Find an entity with the given type", },
@@ -162,7 +162,7 @@ class AdminTask {
     /// \brief Set up the task processing user arguments
     virtual void setup(const std::string & arg, OpVector &) = 0;
     /// \brief Handle an operation from the server
-    virtual void operation(const RootOperation &, OpVector &) = 0;
+    virtual void operation(const Operation &, OpVector &) = 0;
 
     /// \brief Check whether the task is complete
     ///
@@ -192,7 +192,7 @@ class Flusher : public AdminTask {
         ret.push_back(l);
     }
 
-    void operation(const RootOperation & op, OpVector & res) {
+    void operation(const Operation & op, OpVector & res) {
         if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
             // We have a sight op, check if its the sight of an entity we
             // want to delete.
@@ -294,7 +294,7 @@ class OperationMonitor : public AdminTask {
         op_count = 0;
     }
 
-    virtual void operation(const RootOperation & op, OpVector &) {
+    virtual void operation(const Operation & op, OpVector &) {
         ++op_count;
         std::cout << op->getParents().front() << "(from=\"" << op->getFrom()
                   << "\",to=\"" << op->getTo() << "\")"
@@ -331,12 +331,12 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
 
     void objectArrived(const Atlas::Objects::Root &);
 
-    void appearanceArrived(const RootOperation &);
-    void disappearanceArrived(const RootOperation &);
-    void infoArrived(const RootOperation &);
-    void errorArrived(const RootOperation &);
-    void sightArrived(const RootOperation &);
-    void soundArrived(const RootOperation &);
+    void appearanceArrived(const Operation &);
+    void disappearanceArrived(const Operation &);
+    void infoArrived(const Operation &);
+    void errorArrived(const Operation &);
+    void sightArrived(const Operation &);
+    void soundArrived(const Operation &);
 
     int negotiate();
     void updatePrompt();
@@ -355,7 +355,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
         }
     }
 
-    void send(const RootOperation &);
+    void send(const Operation &);
     int connect(const std::string & host);
     int login();
     int setup();
@@ -425,7 +425,7 @@ void Interactive<Stream>::output(const Element & item, int depth)
 template <class Stream>
 void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
 {
-    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
+    Operation op = Atlas::Objects::smart_dynamic_cast<Operation>(obj);
     if (!op.isValid()) {
         std::cerr << "Non op object received from client" << std::endl << std::flush;
         if (!obj->isDefaultParents() && !obj->getParents().empty()) {
@@ -483,7 +483,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
 }
 
 template <class Stream>
-void Interactive<Stream>::appearanceArrived(const RootOperation & op)
+void Interactive<Stream>::appearanceArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -519,7 +519,7 @@ void Interactive<Stream>::appearanceArrived(const RootOperation & op)
 }
 
 template <class Stream>
-void Interactive<Stream>::disappearanceArrived(const RootOperation & op)
+void Interactive<Stream>::disappearanceArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -555,7 +555,7 @@ void Interactive<Stream>::disappearanceArrived(const RootOperation & op)
 }
 
 template <class Stream>
-void Interactive<Stream>::infoArrived(const RootOperation & op)
+void Interactive<Stream>::infoArrived(const Operation & op)
 {
     reply_flag = true;
     if (op->getArgs().empty()) {
@@ -621,7 +621,7 @@ void Interactive<Stream>::infoArrived(const RootOperation & op)
 }
 
 template <class Stream>
-void Interactive<Stream>::errorArrived(const RootOperation & op)
+void Interactive<Stream>::errorArrived(const Operation & op)
 {
     reply_flag = true;
     error_flag = true;
@@ -636,7 +636,7 @@ void Interactive<Stream>::errorArrived(const RootOperation & op)
 }
 
 template <class Stream>
-void Interactive<Stream>::sightArrived(const RootOperation & op)
+void Interactive<Stream>::sightArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -659,7 +659,7 @@ void Interactive<Stream>::sightArrived(const RootOperation & op)
 }
 
 template <class Stream>
-void Interactive<Stream>::soundArrived(const RootOperation & op)
+void Interactive<Stream>::soundArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -1133,6 +1133,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         avatar_flag = true;
 
         encoder->streamObjectsMessage(c);
+    } else if (cmd == "delete") {
     } else if (cmd == "find_by_name") {
         if (agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;

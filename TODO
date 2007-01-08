@@ -1,3 +1,5 @@
+Add "delete" command to cycmd, for IG.
+
 Move metabolism into a property, ensuring that Character becomes a cleaner
 class. Implement death better, creating a skeleton with a named skull.
 Mod the lich code to use the name on the skull when creating the skeleton.

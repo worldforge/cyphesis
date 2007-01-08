@@ -358,6 +358,10 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">bottle</string>
     <string name="objtype">class</string>
