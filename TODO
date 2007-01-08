@@ -1,3 +1,7 @@
+Move metabolism into a property, ensuring that Character becomes a cleaner
+class. Implement death better, creating a skeleton with a named skull.
+Mod the lich code to use the name on the skull when creating the skeleton.
+
 Take another look at the scheme used in mind code to purge entities
 it thinks are bad.
 
