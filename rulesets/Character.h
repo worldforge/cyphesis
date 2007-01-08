@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.91 2007-01-03 22:48:03 alriddoch Exp $
+// $Id: Character.h,v 1.92 2007-01-08 03:19:21 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -71,16 +71,14 @@ class Character : public Character_parent {
     /// when it changes containers.
     sigc::connection m_rightHandWieldConnection;
 
-    /// \brief Energy converted to weight by metabolism per tick
+    /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
     /// \brief Food consumed by digestion per tick
     static const double foodConsumption;
-    /// \brief Weight converted to energy per tick
+    /// \brief Proportion of weight converted to energy per tick when starving
     static const double weightConsumption;
-    /// \brief Energy gained from digestion per tick
-    static const double energyGain;
-    /// \brief Energy loss by metabolism per tick
-    static const double energyLoss;
+    /// \brief Energy converted to weight by metabolism per tick
+    static const double energyLaidDown;
     /// \brief Weight gained from excess energy by metabolism per tick
     static const double weightGain;
 

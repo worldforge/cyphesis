@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.284 2007-01-05 00:47:22 alriddoch Exp $
+// $Id: Character.cpp,v 1.285 2007-01-08 03:19:21 alriddoch Exp $
 
 #include "Character.h"
 
@@ -81,45 +81,90 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-const double Character::energyConsumption = 0.001;
+// This figure is calculated to allow a character to live for 4 weeks
+// without food, during which time they will lose 40% of their mass
+// before starving.
+const double Character::energyConsumption = 0.0001;
+
+// Food consumption is fast, to keep Acorn playable
 const double Character::foodConsumption = 0.1;
-const double Character::weightConsumption = 0.1;
-const double Character::energyGain = 0.5;
-const double Character::energyLoss = 0.1;
+
+// When the character is starving, they start to lose weight. During
+// the latter 2 and a half weeks, they lose about 40% of their mass.
+// Bad players who do not feed their characters will be punished.
+const double Character::weightConsumption = 0.00002;
+
+// Ammount of evergy turned into weight by metabolism when Character
+// is well fed.
+const double Character::energyLaidDown = 0.1;
+
+// Ammount of weight gained as a result. High for Acorn.
 const double Character::weightGain = 0.5;
 
 
 /// \brief Calculate how the Characters metabolism has affected it in the
 /// last tick
 ///
+/// This function is called every 90 seconds. It does one of three things.
+/// If energy is very high, it loses some, and gains some weight. Otherwise
+/// it loses some energy, unless energy is very low, in which case loss
+/// is slower, as weight is used to compensate.
+/// A fully healthy Character should take about a week to starve to death.
+/// So 10080 / 90 = 6720 ticks.
 /// @param res Any result of changes is returned here.
 /// @param ammount Time scale factor, currently not used.
 void Character::metabolise(OpVector & res, double ammount)
 {
+    bool stamina_changed = false,
+         mass_changed = false;
+
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
-    Anonymous set_arg;
-    set_arg->setId(getId());
-    if ((m_status > (1.5 + energyLoss)) && (m_mass < m_maxMass)) {
-        m_status = m_status - energyLoss;
-        set_arg->setAttr("mass", m_mass + weightGain);
-    }
-    double energyUsed = energyConsumption * ammount;
-    if ((m_status <= energyUsed) && (m_mass > weightConsumption)) {
-        set_arg->setAttr("status", m_status - energyUsed + energyGain);
-        set_arg->setAttr("mass", m_mass - weightConsumption);
+
+    // If status is very high, we gain weight
+    if ((m_status > (1.5 + energyLaidDown)) && (m_mass < m_maxMass)) {
+        m_status -= energyLaidDown;
+        m_mass += weightGain;
+        mass_changed = true;
+        std::cout << m_type << " Gaining " << std::endl << std::flush;
     } else {
-        set_arg->setAttr("status", m_status - energyUsed);
+        // If status is relatively is not very high, then energy is burned
+        double energy_used = energyConsumption * ammount;
+        double weight_used = weightConsumption * m_mass * ammount;
+        if ((m_status <= 0.5) && (m_mass > weight_used)) {
+            // Drain away a little energy and lose some weight
+            // This ensures there is a long term penalty to allowing something
+            // to starve
+            m_status -= (energy_used / 2);
+            m_mass = m_mass - weight_used;
+            mass_changed = true;
+            std::cout << m_type << " Starving " << std::endl << std::flush;
+        } else {
+            // Just drain away a little energy
+            m_status -= energy_used;
+            std::cout << m_type << " Ticking " << std::endl << std::flush;
+        }
     }
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
-        set_arg->setAttr("stamina", 1.);
+        m_stamina = 1.;
+        stamina_changed = true;
     }
 
-    Set s;
-    s->setTo(getId());
-    s->setArgs1(set_arg);
+    Anonymous update_arg;
+    update_arg->setId(getId());
+    update_arg->setAttr("status", m_status);
+    if (mass_changed) {
+        update_arg->setAttr("mass", m_mass);
+    }
+    if (stamina_changed) {
+        update_arg->setAttr("stamina", m_stamina);
+    }
 
-    res.push_back(s);
+    Update update;
+    update->setTo(getId());
+    update->setArgs1(update_arg);
+
+    res.push_back(update);
 }
 
 /// \brief Hooked to the Entity::containered signal of the wielded entity

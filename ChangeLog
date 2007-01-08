@@ -1,5 +1,22 @@
 2007-01-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.h: Fix broken doc comments on constants for
+	  metabolism.
+
+	* rulesets/Character.cpp: Switch metabolism code over to use the
+	  update mechanism, to remove race conditions. Re-write the
+	  math so that nothing can stay alive for ages by consuming all their
+	  mass. Tune constants so a well fed character will take a month.
+
+	* data/mason.xml: Set up goblin and settler class so that by
+	  default they will starve to death in a few hours, and need to find
+	  food to avoid this.
+
+	* common/const.h: Oops. Database got disabled again by accident.
+	  Turn it back on.
+
+2007-01-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Operation.cpp: Fix formatting of comments.
 
 	* rulesets/Py_Oplist.cpp: Adapt sequence methods to be compatible
@@ -15324,4 +15341,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1707 2007-01-07 04:16:46 alriddoch Exp $
+$Id: ChangeLog,v 1.1708 2007-01-08 03:19:20 alriddoch Exp $
