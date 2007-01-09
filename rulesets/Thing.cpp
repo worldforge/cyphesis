@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.211 2007-01-08 23:30:06 alriddoch Exp $
+// $Id: Thing.cpp,v 1.212 2007-01-09 00:44:57 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -441,12 +441,12 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     s->setArgs1(op);
     res.push_back(s);
     if (m_status < 0) {
-        Delete d;
-        Anonymous darg;
-        darg->setId(getId());
-        d->setArgs1(darg);
-        d->setTo(getId());
-        res.push_back(d);
+        Delete del;
+        Anonymous delete_arg;
+        delete_arg->setId(getId());
+        del->setArgs1(delete_arg);
+        del->setTo(getId());
+        res.push_back(del);
     }
     m_seq++;
     if (m_update_flags != 0) {
@@ -528,6 +528,15 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
                       res, getId());
             }
         }
+    }
+
+    if (m_status < 0) {
+        Delete del;
+        Anonymous delete_arg;
+        delete_arg->setId(getId());
+        del->setArgs1(delete_arg);
+        del->setTo(getId());
+        res.push_back(del);
     }
 
     Set set;

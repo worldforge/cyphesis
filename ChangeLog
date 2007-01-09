@@ -1,4 +1,9 @@
-2007-01-07  Al Riddoch  <alriddoch@zepler.org>
+2007-01-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Thing.cpp: Delete entities if their status has gone
+	  below zero when an update is processed.
+
+2007-01-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Set default mass on bottle entity.
 
@@ -15350,4 +15355,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1709 2007-01-08 23:30:05 alriddoch Exp $
+$Id: ChangeLog,v 1.1710 2007-01-09 00:44:56 alriddoch Exp $
