@@ -1,5 +1,10 @@
 2007-01-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Oplist.cpp, rulesets/Py_Operation.cpp:
+	  Fix function fingerprints so they are compatible with Python 2.5.
+
+2007-01-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: Implement the delete command for in game
 	  entities.
 
@@ -15360,4 +15365,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1711 2007-01-09 11:51:37 alriddoch Exp $
+$Id: ChangeLog,v 1.1712 2007-01-09 14:00:19 alriddoch Exp $

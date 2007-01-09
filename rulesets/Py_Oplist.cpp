@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Oplist.cpp,v 1.27 2007-01-07 04:16:49 alriddoch Exp $
+// $Id: Py_Oplist.cpp,v 1.28 2007-01-09 14:00:26 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
@@ -108,7 +108,11 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
     return NULL;
 }
 
-static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
+#if PY_MINOR_VERSION < 5
+#define Py_ssize_t int
+#endif
+
+static Py_ssize_t Oplist_num_coerce(PyObject ** self, PyObject ** other)
 {
     //if (*other == Py_None) {
         Py_INCREF(*self);
@@ -117,6 +121,10 @@ static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
     //}
     //return -1;
 }
+
+#if PY_MINOR_VERSION < 5
+#define lenfunc inquiry
+#endif
 
 static int Oplist_seq_length(PyOplist * self)
 {

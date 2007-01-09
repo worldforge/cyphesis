@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.cpp,v 1.55 2007-01-07 04:16:49 alriddoch Exp $
+// $Id: Py_Operation.cpp,v 1.56 2007-01-09 14:00:25 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
@@ -325,7 +325,11 @@ static PyObject* Operation_get_name(PyOperation * self)
  * Operation sequence methods.
  */
 
-static int Operation_seq_length(PyOperation * self)
+#if PY_MINOR_VERSION < 5
+#define Py_ssize_t int
+#endif
+
+static Py_ssize_t Operation_seq_length(PyOperation * self)
 {
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
@@ -336,7 +340,7 @@ static int Operation_seq_length(PyOperation * self)
     return self->operation->getArgs().size();
 } 
 
-static PyObject * Operation_seq_item(PyOperation * self, int item)
+static PyObject * Operation_seq_item(PyOperation * self, Py_ssize_t item)
 {
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
