@@ -1,5 +1,10 @@
 2007-01-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cycmd.cpp: Implement the delete command for in game
+	  entities.
+
+2007-01-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Delete entities if their status has gone
 	  below zero when an update is processed.
 
@@ -15355,4 +15360,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1710 2007-01-09 00:44:56 alriddoch Exp $
+$Id: ChangeLog,v 1.1711 2007-01-09 11:51:37 alriddoch Exp $

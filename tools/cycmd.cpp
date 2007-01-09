@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.106 2007-01-08 23:30:06 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.107 2007-01-09 11:51:47 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -1134,6 +1134,25 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
         encoder->streamObjectsMessage(c);
     } else if (cmd == "delete") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the entity to delete" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Delete del;
+
+            Anonymous del_arg;
+            del_arg->setId(arg);
+            del->setArgs1(del_arg);
+            del->setFrom(agentId);
+            del->setTo(arg);
+
+            encoder->streamObjectsMessage(del);
+
+            reply_expected = false;
+        }
     } else if (cmd == "find_by_name") {
         if (agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
