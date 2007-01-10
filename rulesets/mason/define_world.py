@@ -882,7 +882,6 @@ def add_castle(mapeditor):
  
 
 def kill_world(mapeditor):
-#   general things
 
     m=editor(mapeditor)
 
@@ -890,7 +889,6 @@ def kill_world(mapeditor):
     m.set(world.id, status=-1)
 
 def test_attachment(mapeditor):
-#   general things
 
     m=editor(mapeditor)
 
@@ -902,3 +900,10 @@ def make_shirt(mapeditor):
 
     m.make('shirt', type='shirt', worn='chest', attachment=23, mass=2)
     m.make('acorn', type='acorn', worn='chest', pos=(1,1,1), attachment=23, mass=2)
+
+def test_decays(mapeditor):
+
+    m=editor(mapeditor)
+
+    m.make('axe', type='axe', decays='oak')
+

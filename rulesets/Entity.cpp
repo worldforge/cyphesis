@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.129 2007-01-05 17:19:26 alriddoch Exp $
+// $Id: Entity.cpp,v 1.130 2007-01-10 21:58:52 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -162,6 +162,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         PropertyBase * prop = PropertyManager::instance()->addProperty(this,
                                                                        name);
         if (prop != 0) {
+            prop->set(attr);
             m_properties[name] = prop;
             m_update_flags |= prop->flags();
         } else {
@@ -389,8 +390,8 @@ void Entity::operation(const Operation & op, OpVector & res)
     }
     HandlerMap::const_iterator I = m_operationHandlers.find(op->getClassNo());
     if (I != m_operationHandlers.end()) {
-        std::cout << "Found handler for MOVE operations" << std::endl << std::flush;
-        I->second(op, res);
+        std::cout << "Found handler for " << op->getParents().front() << " operations" << std::endl << std::flush;
+        I->second(this, op, res);
     }
     return callOperation(op, res);
 }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory_impl.h,v 1.2 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: ActivePropertyFactory_impl.h,v 1.3 2007-01-10 21:58:52 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
@@ -45,4 +45,4 @@ PropertyBase * ActivePropertyBuilder<T>::newProperty(Entity * property_owner)
     return new T();
 }
 
-#endif // COMMON_PROPERTY_FACTORY_IMPL_H
+#endif // RULESETS_PROPERTY_FACTORY_IMPL_H

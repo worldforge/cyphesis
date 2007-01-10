@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.13 2007-01-03 22:29:47 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.14 2007-01-10 21:58:54 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -31,16 +31,47 @@
 #include "common/debug.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
+
+using Atlas::Message::Element;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
 template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 
-HandlerResult test_handler(const Operation &, OpVector & res)
+HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 {
     std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;
+    return OPERATION_IGNORED;
+}
+
+HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
+{
+    std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;
+    PropertyBase * pb = e->getProperty("decays");
+    if (pb == NULL) {
+        std::cout << "Delete HANDLER no decays" << std::endl << std::flush;
+        return OPERATION_IGNORED;
+    }
+    Element val;
+    pb->get(val);
+    if (!val.isString()) {
+        std::cout << "Delete HANDLER decays non-string" << std::endl << std::flush;
+        return OPERATION_IGNORED;
+    }
+    const std::string & type = val.String();
+
+    Create create;
+    Anonymous create_arg;
+    create_arg->setParents(std::list<std::string>(1, type));
+    create->setTo(e->getId());
+    create->setArgs1(create_arg);
+    res.push_back(create);
+
     return OPERATION_IGNORED;
 }
 
@@ -52,6 +83,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["start_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
     m_propertyFactories["attachment"] = new ActivePropertyBuilder<DynamicProperty<int> >(Atlas::Objects::Operation::MOVE_NO, test_handler);
+    m_propertyFactories["decays"] = new ActivePropertyBuilder<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyBuilder<OutfitProperty>;
 }
 

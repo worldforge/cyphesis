@@ -1,3 +1,20 @@
+2007-01-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/types.h: Add an entity pointer to the handler function
+	  pointer arguments.
+
+	* rulesets/ActivePropertyFactory_impl.h: Fix the guard comment.
+
+	* rulesets/Character.cpp: Remove debugging output.
+
+	* rulesets/Entity.cpp: Fix new property code so it now sets the
+	  value. Improve the debug reporting when dealing with op handlers.
+
+	* rulesets/mason/define_world.py: Test the decays property.
+
+	* server/CorePropertyManager.cpp: Add a DECAYS property and a
+	  test handler for it.
+
 2007-01-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Oplist.cpp: Correct Python 2.5 fix to the right
@@ -15370,4 +15387,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1713 2007-01-09 17:58:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1714 2007-01-10 21:58:54 alriddoch Exp $

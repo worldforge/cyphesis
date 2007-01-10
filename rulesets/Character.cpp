@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.285 2007-01-08 03:19:21 alriddoch Exp $
+// $Id: Character.cpp,v 1.286 2007-01-10 21:58:52 alriddoch Exp $
 
 #include "Character.h"
 
@@ -126,7 +126,6 @@ void Character::metabolise(OpVector & res, double ammount)
         m_status -= energyLaidDown;
         m_mass += weightGain;
         mass_changed = true;
-        std::cout << m_type << " Gaining " << std::endl << std::flush;
     } else {
         // If status is relatively is not very high, then energy is burned
         double energy_used = energyConsumption * ammount;
@@ -138,11 +137,9 @@ void Character::metabolise(OpVector & res, double ammount)
             m_status -= (energy_used / 2);
             m_mass = m_mass - weight_used;
             mass_changed = true;
-            std::cout << m_type << " Starving " << std::endl << std::flush;
         } else {
             // Just drain away a little energy
             m_status -= energy_used;
-            std::cout << m_type << " Ticking " << std::endl << std::flush;
         }
     }
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: types.h,v 1.38 2006-12-04 03:23:13 alriddoch Exp $
+// $Id: types.h,v 1.39 2007-01-10 21:58:49 alriddoch Exp $
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
@@ -91,7 +91,7 @@ typedef enum {
     OPERATION_IGNORED, // Handler has done nothing
 } HandlerResult;
 
-typedef HandlerResult (*Handler)(const Operation &, OpVector &);
+typedef HandlerResult (*Handler)(Entity *, const Operation &, OpVector &);
 typedef std::map<int, Handler> HandlerMap;
 
 
