@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.20 2006-11-02 02:02:41 alriddoch Exp $
+// $Id: log.cpp,v 1.21 2007-01-11 17:28:25 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -51,7 +51,7 @@ static void logDate(std::ostream & log_stream)
 #endif // HAVE_LOCALTIME_R
 
     char buf[256];
-    int count = strftime(buf, sizeof(buf) / sizeof(char), "%Y:%m:%d %T", local_time);
+    int count = strftime(buf, sizeof(buf) / sizeof(char), "%F %T", local_time);
 
     if (count == 0) {
         log_stream << "[TIME_ERROR]";
