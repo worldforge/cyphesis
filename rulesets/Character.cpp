@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.286 2007-01-10 21:58:52 alriddoch Exp $
+// $Id: Character.cpp,v 1.287 2007-01-11 00:26:45 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1848,11 +1848,7 @@ bool Character::world2mind(const Operation & op)
 void Character::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    if (m_script->operation(op->getParents().front(), op, res) != 0) {
-        // Op was handled by a script
-    } else {
-        callOperation(op, res);
-    }
+    Entity::operation(op, res);
     // set refno on result?
     if (!m_isAlive) {
         return;

@@ -298,6 +298,10 @@
 
   <map>
     <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">merchant</string>
     <string name="objtype">class</string>

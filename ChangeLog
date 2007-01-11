@@ -1,3 +1,16 @@
+2007-01-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CorePropertyManager.cpp: Modify DECAYS Delete handler so
+	  that the parent entity handles the creation of entities that
+	  have resulted from the decay.
+
+	* rulesets/Character.cpp: Call Entity::operation() from operation()
+	  to ensure operation handlers are called, and all future
+	  modifications get picked up too.
+
+	* data/basic.xml, data/mason.xml: Add a DECAYS property leaving a
+	  skull to all humanoid classes.
+
 2007-01-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/types.h: Add an entity pointer to the handler function
@@ -15387,4 +15400,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1714 2007-01-10 21:58:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1715 2007-01-11 00:26:46 alriddoch Exp $

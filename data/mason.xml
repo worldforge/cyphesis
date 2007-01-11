@@ -1080,6 +1080,10 @@
 
   <map>
     <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">50</float>
         <string name="visibility">public</string>
@@ -1618,6 +1622,10 @@
 
   <map>
     <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">marshall</string>
     <string name="objtype">class</string>
@@ -1664,6 +1672,10 @@
 
   <map>
     <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">mercenary</string>
     <string name="objtype">class</string>
@@ -1798,6 +1810,10 @@
 
   <map>
     <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">orc</string>
     <string name="objtype">class</string>
@@ -2107,6 +2123,10 @@
 
   <map>
     <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
       <map name="guise">
         <map name="default">
           <map name="material">

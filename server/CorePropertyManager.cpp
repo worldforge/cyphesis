@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.14 2007-01-10 21:58:54 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.15 2007-01-11 00:26:44 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -68,7 +68,8 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     Create create;
     Anonymous create_arg;
     create_arg->setParents(std::list<std::string>(1, type));
-    create->setTo(e->getId());
+    e->m_location.addToEntity(create_arg);
+    create->setTo(e->m_location.m_loc->getId());
     create->setArgs1(create_arg);
     res.push_back(create);
 
