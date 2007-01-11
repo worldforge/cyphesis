@@ -1,5 +1,14 @@
 2007-01-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/PropertyExerciser.h, tests/PropertyExerciser.cpp:
+	  New class which thoroughly exercises any property class via its
+	  base interface.
+
+	* tests/AllPropertytest.cpp: Start passing all property classes
+	  through the as yet incomplete exerciser.
+
+2007-01-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.cpp: Add the connection to the entities
 	  deleted signal to those to be removed when the entity is containered
 	  or a garment will be connected to its wearer forever, even after
@@ -15426,4 +15435,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1719 2007-01-11 20:53:51 alriddoch Exp $
+$Id: ChangeLog,v 1.1720 2007-01-11 22:35:05 alriddoch Exp $

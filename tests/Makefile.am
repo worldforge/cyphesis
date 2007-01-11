@@ -14,7 +14,8 @@ MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
-                 Containertest Tasktest EntityPropertytest
+                 Containertest Tasktest EntityPropertytest \
+                 AllPropertytest
 
 SERVER_TESTS = EntityFactorytest
 
@@ -438,6 +439,18 @@ EntityPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                            $(top_builddir)/common/libcommon.a \
                            $(MATH_LIBS)
 
+AllPropertytest_SOURCES = AllPropertytest.cpp PropertyExerciser.cpp \
+                                              PropertyExerciser.h
+AllPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+                        $(top_builddir)/rulesets/librulesetentity.a \
+                        $(top_builddir)/rulesets/librulesetmind.a \
+                        $(top_builddir)/rulesets/librulesetbase.a \
+                        $(top_builddir)/rulesets/Python_API.o \
+                        $(top_builddir)/modules/libmodules.a \
+                        $(top_builddir)/physics/libphysics.a \
+                        $(top_builddir)/common/libcommon.a \
+                        $(MATH_LIBS)
+
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/CorePropertyManager.o \
@@ -468,6 +481,7 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/common/libcommon.a \
                           $(TERRAIN_LIBS) $(NETWORK_LIBS)
 EntityFactorytest_LDFLAGS = -export-dynamic
+
 
 python_class_SOURCES = python_class.cpp
 python_class_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
