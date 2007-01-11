@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.h,v 1.6 2007-01-05 02:58:53 alriddoch Exp $
+// $Id: OutfitProperty.h,v 1.7 2007-01-11 20:37:00 alriddoch Exp $
 
 #ifndef RULESETS_OUTFIT_PROPERTY_H
 #define RULESETS_OUTFIT_PROPERTY_H
@@ -39,7 +39,7 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
   protected:
     EntityRefMap m_data;
 
-    void itemRemoved(Entity *);
+    void itemRemoved(Entity * garment, Entity * wearer);
   public:
     explicit OutfitProperty();
     virtual ~OutfitProperty();
@@ -50,7 +50,7 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 
     void cleanUp();
-    void wear(const std::string & location, Entity * garment);
+    void wear(Entity * wearer, const std::string & location, Entity * garment);
 };
 
 #endif // RULESETS_OUTFIT_PROPERTY_H

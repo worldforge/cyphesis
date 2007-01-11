@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.287 2007-01-11 00:26:45 alriddoch Exp $
+// $Id: Character.cpp,v 1.288 2007-01-11 20:37:00 alriddoch Exp $
 
 #include "Character.h"
 
@@ -550,7 +550,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
                 outfit = new OutfitProperty;
                 m_properties["outfit"] = outfit;
             }
-            outfit->wear(worn_attr.String(), item);
+            outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
             update_arg->setAttr("outfit", MapType());
