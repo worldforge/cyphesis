@@ -1,5 +1,12 @@
 2007-01-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/OutfitProperty.cpp: Add the connection to the entities
+	  deleted signal to those to be removed when the entity is containered
+	  or a garment will be connected to its wearer forever, even after
+	  it has been removed.
+
+2007-01-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.h, rulesets/OutfitProperty.cpp: Add
 	  arguments to methods, so the owner of this property is available
 	  in important parts of the code. Trigger an Update when clothing
@@ -15419,4 +15426,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1718 2007-01-11 20:36:58 alriddoch Exp $
+$Id: ChangeLog,v 1.1719 2007-01-11 20:53:51 alriddoch Exp $

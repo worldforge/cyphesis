@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.9 2007-01-11 20:37:00 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.10 2007-01-11 20:53:53 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
@@ -178,7 +178,7 @@ void OutfitProperty::wear(Entity * wearer,
     // FIXME #10 We need to disconnect the containered signal when re
     // get triggered, thus removing it, otherwise the calls accumulate.
     garment->containered_oneshots.push_back( garment->containered.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer)) );
-    garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
+    garment->containered_oneshots.push_back( garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer)) );
 }
 
 void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
