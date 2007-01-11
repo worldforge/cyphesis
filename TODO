@@ -1,3 +1,11 @@
+Complete the work on property exercising tests.
+
+Fix python code which uses PyMem_DEL to use PyObject_Del which is the
+right thing now.
+
+Minds are getting properties from the core factory, because it is now accessed
+as a singleton. This cannot stand.
+
 Add a humanoid base class, putting default character bbox and the like in
 there, plus decays="skull".
 
