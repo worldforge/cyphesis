@@ -1,3 +1,15 @@
+Add a humanoid base class, putting default character bbox and the like in
+there, plus decays="skull".
+
+If I attach a property that listens out for delete ops, and creates things,
+do the returned ops still work okay? Ie does the deleted entity stick
+around long enough for the operation to get dispatched, even though it has
+been removed from the world map. If so, could use this to handle creating
+corpse, bones etc.
+
+Implement some kind of helper mechanism which monitors ops going to the client
+and if some match a certain template, it sends hints in the form of emotes.
+
 Add "delete" command to cycmd, for IG.
 
 Move metabolism into a property, ensuring that Character becomes a cleaner
