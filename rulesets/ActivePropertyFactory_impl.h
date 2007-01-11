@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory_impl.h,v 1.3 2007-01-10 21:58:52 alriddoch Exp $
+// $Id: ActivePropertyFactory_impl.h,v 1.4 2007-01-11 17:36:27 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
@@ -39,8 +39,6 @@ PropertyBase * ActivePropertyBuilder<T>::newProperty(Entity * property_owner)
 {
     // Install operation handler on property_owner
     property_owner->installHandler(m_operationClassNo, m_handler);
-
-    std::cout << "Installing custom handler for property" << std::endl << std::flush;
 
     return new T();
 }

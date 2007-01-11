@@ -1,5 +1,9 @@
 2007-01-11  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/ActivePropertyFactory_impl.h: Remove debug output.
+
+2007-01-11  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp: Fix my broken idea of what ISO date was supposed
 	  to look like, in the logs and standard output.
 
@@ -15405,4 +15409,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1716 2007-01-11 17:28:25 alriddoch Exp $
+$Id: ChangeLog,v 1.1717 2007-01-11 17:36:29 alriddoch Exp $
