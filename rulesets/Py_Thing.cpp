@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.58 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.59 2007-01-12 12:38:08 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -167,7 +167,7 @@ static PyMethodDef Character_methods[] = {
 static void Entity_dealloc(PyEntity *self)
 {
     Py_XDECREF(self->Entity_attr);
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Entity_getattr(PyEntity *self, char *name)

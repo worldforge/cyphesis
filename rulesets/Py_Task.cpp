@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Task.cpp,v 1.14 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Task.cpp,v 1.15 2007-01-12 12:38:08 alriddoch Exp $
 
 #include "Py_Task.h"
 
@@ -110,7 +110,7 @@ static PyMethodDef Task_methods[] = {
 static void Task_dealloc(PyTask *self)
 {
     Py_XDECREF(self->Task_attr);
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Task_getattr(PyTask *self, char *name)

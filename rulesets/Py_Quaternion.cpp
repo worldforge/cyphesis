@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Quaternion.cpp,v 1.13 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Quaternion.cpp,v 1.14 2007-01-12 12:38:08 alriddoch Exp $
 
 #include "Py_Quaternion.h"
 
@@ -53,7 +53,7 @@ static PyMethodDef Quaternion_methods[] = {
 static void Quaternion_dealloc(PyQuaternion *self)
 {
     self->rotation.~Quaternion();
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Quaternion_getattr(PyQuaternion *self, char *name)

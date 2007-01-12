@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Object.cpp,v 1.44 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_Object.cpp,v 1.45 2007-01-12 12:38:07 alriddoch Exp $
 
 #include "Py_Object.h"
 #include "Py_Operation.h"
@@ -69,7 +69,7 @@ static void Object_dealloc(PyMessageElement *self)
     if (self->m_obj != NULL) {
         delete self->m_obj;
     }
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Object_getattr(PyMessageElement *self, char *name)

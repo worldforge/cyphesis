@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Oplist.cpp,v 1.29 2007-01-09 17:58:12 alriddoch Exp $
+// $Id: Py_Oplist.cpp,v 1.30 2007-01-12 12:38:07 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
@@ -55,7 +55,7 @@ static void Oplist_dealloc(PyOplist *self)
     if (self->ops != NULL) {
         delete self->ops;
     }
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Oplist_getattr(PyOplist *self, char *name)

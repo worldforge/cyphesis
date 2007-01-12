@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.37 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.38 2007-01-12 12:38:06 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -61,7 +61,7 @@ static PyMethodDef Mind_methods[] = {
 static void Mind_dealloc(PyMind *self)
 {
     Py_XDECREF(self->Mind_attr);
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Mind_getattr(PyMind *self, char *name)

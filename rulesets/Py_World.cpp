@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_World.cpp,v 1.33 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_World.cpp,v 1.34 2007-01-12 12:38:08 alriddoch Exp $
 
 #include "Py_World.h"
 #include "Py_WorldTime.h"
@@ -71,7 +71,7 @@ static PyMethodDef World_methods[] = {
 
 static void World_dealloc(PyWorld *self)
 {
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * World_getattr(PyWorld *self, char *name)

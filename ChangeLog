@@ -1,3 +1,15 @@
+2007-01-12  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_BBox.cpp, rulesets/Py_Location.cpp, rulesets/Py_Map.cpp,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Object.cpp,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Oplist.cpp,
+	  rulesets/Py_Optime.cpp, rulesets/Py_Quaternion.cpp,
+	  rulesets/Py_RootEntity.cpp, rulesets/Py_Task.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Py_World.cpp,
+	  rulesets/Python_API.cpp: Replace calls to PyMem_DEL with calls
+	  to PyObject_Free. Thanks to Kai for doing most of the digging
+	  on this one.
+
 2007-01-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/PropertyExerciser.h, tests/PropertyExerciser.cpp:
@@ -15435,4 +15447,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1720 2007-01-11 22:35:05 alriddoch Exp $
+$Id: ChangeLog,v 1.1721 2007-01-12 12:38:05 alriddoch Exp $

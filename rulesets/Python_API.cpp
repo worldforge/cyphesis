@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.159 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.160 2007-01-12 12:38:08 alriddoch Exp $
 
 #include "Python.h"
 
@@ -72,7 +72,7 @@ typedef struct {
 
 static void Function_dealloc(FunctionObject * self)
 {
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
@@ -224,7 +224,7 @@ static PyMethodDef PyErrLogger_methods[] = {
 
 static void PyLogger_dealloc(PyObject * self)
 {
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * PyOutLogger_getattr(PyObject * self, char *name)

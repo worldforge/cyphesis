@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_BBox.cpp,v 1.13 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_BBox.cpp,v 1.14 2007-01-12 12:38:06 alriddoch Exp $
 
 #include "Py_BBox.h"
 #include "Py_Vector3D.h"
@@ -37,7 +37,7 @@ static PyMethodDef BBox_methods[] = {
 static void BBox_dealloc(PyBBox * self)
 {
     self->box.~BBox();
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * BBox_getattr(PyBBox *self, char *name)

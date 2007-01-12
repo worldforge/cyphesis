@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_RootEntity.cpp,v 1.10 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_RootEntity.cpp,v 1.11 2007-01-12 12:38:08 alriddoch Exp $
 
 #include "Py_RootEntity.h"
 #include "Py_Object.h"
@@ -71,7 +71,7 @@ PyMethodDef ConstRootEntity_methods[] = {
 static void RootEntity_dealloc(PyRootEntity *self)
 {
     self->entity.~RootEntity();
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static inline PyObject * findMethod(PyRootEntity * self, char * name)

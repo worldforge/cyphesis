@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Location.cpp,v 1.44 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_Location.cpp,v 1.45 2007-01-12 12:38:06 alriddoch Exp $
 
 #include "Py_Location.h"
 #include "Py_Thing.h"
@@ -49,7 +49,7 @@ static void Location_dealloc(PyLocation *self)
     if ((self->owner == 0) && (self->location != NULL)) {
         delete self->location;
     }
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Location_getattr(PyLocation *self, char *name)

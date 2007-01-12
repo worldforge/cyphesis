@@ -29,7 +29,7 @@ static PyMethodDef Optime_methods[] = {
 
 static void Optime_dealloc(PyOptime *self)
 {
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Optime_getattr(PyOptime *self, char *name)

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Map.cpp,v 1.45 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Py_Map.cpp,v 1.46 2007-01-12 12:38:06 alriddoch Exp $
 
 #include "Py_Map.h"
 #include "Py_Location.h"
@@ -281,7 +281,7 @@ static PyMethodDef Map_methods[] = {
 
 static void Map_dealloc(PyMap *self)
 {
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static PyObject * Map_getattr(PyMap *self, char *name)

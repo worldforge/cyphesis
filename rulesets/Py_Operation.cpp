@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.cpp,v 1.56 2007-01-09 14:00:25 alriddoch Exp $
+// $Id: Py_Operation.cpp,v 1.57 2007-01-12 12:38:07 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
@@ -538,7 +538,7 @@ PyMethodDef ConstRootOperation_methods[] = {
 static void Operation_dealloc(PyOperation *self)
 {
     self->operation.~RootOperation();
-    PyMem_DEL(self);
+    PyObject_Free(self);
 }
 
 static inline PyObject * findMethod(PyOperation * self, char * name)
