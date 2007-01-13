@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.3 2007-01-13 20:29:17 alriddoch Exp $
+// $Id: PropertyExerciser.cpp,v 1.4 2007-01-13 20:31:42 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
@@ -103,6 +103,11 @@ void PropertyExerciser::testGet(PropertyBase & property,
     } else {
         assert(get_target.getType() == Element::TYPE_NONE);
     }
+}
+
+void PropertyExerciser::testAdd(PropertyBase & property,
+                                Element::Type element_type)
+{
 }
 
 template <typename T>
