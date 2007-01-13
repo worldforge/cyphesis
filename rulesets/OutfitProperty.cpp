@@ -15,12 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.10 2007-01-11 20:53:53 alriddoch Exp $
+// $Id: OutfitProperty.cpp,v 1.11 2007-01-13 13:54:24 alriddoch Exp $
 
 #include "OutfitProperty.h"
 
 #include "Entity.h"
 
+#include "common/log.h"
 #include "common/debug.h"
 #include "common/Update.h"
 
@@ -34,7 +35,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 /// \brief OutfitProperty constructor
 OutfitProperty::OutfitProperty() : PropertyBase(0)
@@ -84,14 +85,11 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
 
         if (item.isString()) {
             const std::string & id = item.String();
-            std::cout << "Assigning it to " << id << std::endl << std::flush;
             Entity * e = BaseWorld::instance().getEntity(id);
             if (e != 0) {
-                std::cout << "Got it" << std::endl << std::flush;
                 m_data[key] = EntityRef(e);
             }
         } else if (item.isPtr()) {
-            std::cout << "Assigning it to pointer" << std::endl << std::flush;
             Entity * e = (Entity*)item.Ptr();
             assert(e != 0);
             m_data[key] = EntityRef(e);
@@ -164,7 +162,6 @@ void OutfitProperty::cleanUp()
     std::set<std::string>::const_iterator J = empty_locations.begin();
     std::set<std::string>::const_iterator Jend = empty_locations.end();
     for (; J != Jend; ++J) {
-        std::cout << "Outfit purging " << *J << std::endl << std::flush;
         m_data.erase(*J);
     }
 }
@@ -190,29 +187,24 @@ void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
             key = worn_attr.String();
             assert(!key.empty());
         } else {
-            std::cout << "WORN CORRUPT" << std::endl << std::flush;
+            log(ERROR, "WORN property of garment is not a string");
         }
     } else {
-        std::cout << "WORN missing" << std::endl << std::flush;
         
         EntityRefMap::const_iterator I = m_data.begin();
         EntityRefMap::const_iterator Iend = m_data.end();
         for (; I != Iend; ++I) {
             if (I->second == garment) {
-                std::cout << "Found in search" << std::endl << std::flush;
                 key = I->first;
                 assert(!key.empty());
             }
         }
     }
     if (key.empty()) {
-        std::cout << "Removing gave up" << std::endl << std::flush;
+        log(ERROR, "Outfit trying to remove garment with empty key");
+        return;
     }
-    std::cout << "Removing now" << std::endl << std::flush;
     m_data[key] = EntityRef(0);
-    if (garment->isDestroyed()) {
-        std::cout << "Removing destroyed" << std::endl << std::flush;
-    }
 
     Anonymous update_arg;
     update_arg->setId(wearer->getId());

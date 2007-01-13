@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.288 2007-01-11 20:37:00 alriddoch Exp $
+// $Id: Character.cpp,v 1.289 2007-01-13 13:54:24 alriddoch Exp $
 
 #include "Character.h"
 
@@ -537,7 +537,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
     Element worn_attr;
     if (item->getAttr("worn", worn_attr)) {
-        std::cout << "Got wield for a garment" << std::endl << std::flush;
+        debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
         
         if (worn_attr.isString()) {
             OutfitProperty * outfit;
@@ -563,7 +563,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         // looked up here, and fix the GuiseProperty code so it does not
         // need a repeat lookup
     } else {
-        std::cout << "Got wield for a tool" << std::endl << std::flush;
+        debug(std::cout << "Got wield for a tool" << std::endl << std::flush;);
 
         if (m_rightHandWieldConnection.connected()) {
             m_rightHandWieldConnection.disconnect();
