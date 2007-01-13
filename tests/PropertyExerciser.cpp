@@ -15,13 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.1 2007-01-11 22:35:06 alriddoch Exp $
+// $Id: PropertyExerciser.cpp,v 1.2 2007-01-13 13:52:10 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
 #include "common/Property.h"
 
 #include <limits>
+
+#include <cassert>
 
 using Atlas::Message::Element;
 

@@ -1,3 +1,7 @@
+2007-01-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/PropertyExerciser.cpp: Add the required asser header.
+
 2007-01-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_BBox.cpp, rulesets/Py_Location.cpp, rulesets/Py_Map.cpp,
@@ -15447,4 +15451,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1721 2007-01-12 12:38:05 alriddoch Exp $
+$Id: ChangeLog,v 1.1722 2007-01-13 13:52:08 alriddoch Exp $
