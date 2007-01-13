@@ -1,5 +1,10 @@
 2007-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/PropertyExerciser.cpp, tests/PropertyExerciser.h: Expand the
+	  coverage of the tests.
+
+2007-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/OutfitProperty.cpp: Remove debug output.
 
 	* rulesets/Character.cpp: Remove debug output.
@@ -15457,4 +15462,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1723 2007-01-13 13:54:24 alriddoch Exp $
+$Id: ChangeLog,v 1.1724 2007-01-13 20:29:14 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.h,v 1.1 2007-01-11 22:35:06 alriddoch Exp $
+// $Id: PropertyExerciser.h,v 1.2 2007-01-13 20:29:17 alriddoch Exp $
 
 #ifndef TESTS_PROPERTY_EXERCISER_H
 #define TESTS_PROPERTY_EXERCISER_H
@@ -41,6 +41,18 @@ class PropertyExerciser {
     std::list<Atlas::Message::StringType> string_values;
     std::list<Atlas::Message::MapType> map_values;
     std::list<Atlas::Message::ListType> list_values;
+
+    template <typename T>
+    void testSetByType(PropertyBase & property,
+                       Atlas::Message::Element::Type element_type,
+                       const std::list<T> & values);
+    
+    void testGet(PropertyBase & property,
+                 Atlas::Message::Element::Type element_type);
+    void testAdd(PropertyBase & property,
+                 Atlas::Message::Element::Type element_type);
+    void testSet(PropertyBase & property,
+                 Atlas::Message::Element::Type element_type);
   public:
     PropertyExerciser();
 

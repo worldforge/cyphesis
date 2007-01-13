@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.2 2007-01-13 13:52:10 alriddoch Exp $
+// $Id: PropertyExerciser.cpp,v 1.3 2007-01-13 20:29:17 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
@@ -26,6 +26,11 @@
 #include <cassert>
 
 using Atlas::Message::Element;
+using Atlas::Message::IntType;
+using Atlas::Message::PtrType;
+using Atlas::Message::FloatType;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 
 PropertyExerciser::PropertyExerciser()
 {
@@ -70,10 +75,27 @@ PropertyExerciser::PropertyExerciser()
     string_values.push_back("!£$%^&*()_+}{[]:@~#';<>?/.,l\\|");
     string_values.push_back("pwu3dc5012cw*/-+3+Q£%$\"q%2");
 
+    // empty list
+    list_values.push_back(ListType());
+
+    // A number of lists of ints
+    std::list<IntType>::const_iterator I = integer_values.begin();
+    const std::list<IntType>::const_iterator Iend = integer_values.end();
+    for (; I != Iend; ++I) {
+        list_values.push_back(ListType(1, *I));
+    }
+
+    // A list of all the ints
+    list_values.push_back(ListType());
+    I = integer_values.begin();
+    for (; I != Iend; ++I) {
+        list_values.back().push_back(*I);
+    }
+
 }
 
-int PropertyExerciser::exerciseProperty(PropertyBase & property,
-                                        Element::Type element_type)
+void PropertyExerciser::testGet(PropertyBase & property, 
+                                Element::Type element_type)
 {
     Element get_target;
     if (property.get(get_target)) {
@@ -81,5 +103,36 @@ int PropertyExerciser::exerciseProperty(PropertyBase & property,
     } else {
         assert(get_target.getType() == Element::TYPE_NONE);
     }
+}
+
+template <typename T>
+void PropertyExerciser::testSetByType(PropertyBase & property,
+                                      Element::Type element_type,
+                                      const std::list<T> & values)
+{
+    typename std::list<T>::const_iterator I = values.begin();
+    typename std::list<T>::const_iterator Iend = values.end();
+    for (; I != Iend; ++I) {
+        property.set(*I);
+        testGet(property, element_type);
+    }
+}
+
+void PropertyExerciser::testSet(PropertyBase & property,
+                                Element::Type element_type)
+{
+    testSetByType(property, element_type, integer_values);
+    testSetByType(property, element_type, float_values);
+    testSetByType(property, element_type, ptr_values);
+    testSetByType(property, element_type, string_values);
+    testSetByType(property, element_type, map_values);
+    testSetByType(property, element_type, list_values);
+}
+
+int PropertyExerciser::exerciseProperty(PropertyBase & property,
+                                        Element::Type element_type)
+{
+    testGet(property, element_type);
+    testSet(property, element_type);
     return 0;
 }
