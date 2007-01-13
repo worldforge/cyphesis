@@ -15,11 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.4 2007-01-13 20:31:42 alriddoch Exp $
+// $Id: PropertyExerciser.cpp,v 1.5 2007-01-13 20:47:34 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
 #include "common/Property.h"
+
+#include <Atlas/Objects/Anonymous.h>
 
 #include <limits>
 
@@ -29,8 +31,10 @@ using Atlas::Message::Element;
 using Atlas::Message::IntType;
 using Atlas::Message::PtrType;
 using Atlas::Message::FloatType;
+using Atlas::Message::StringType;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
+using Atlas::Objects::Entity::Anonymous;
 
 PropertyExerciser::PropertyExerciser()
 {
@@ -108,6 +112,15 @@ void PropertyExerciser::testGet(PropertyBase & property,
 void PropertyExerciser::testAdd(PropertyBase & property,
                                 Element::Type element_type)
 {
+    Anonymous add_target;
+    MapType add_target2;
+    std::list<StringType>::const_iterator I = string_values.begin();
+    std::list<StringType>::const_iterator Iend = string_values.end();
+    for (; I != Iend; ++I) {
+        property.add(*I, add_target);
+        property.add(*I, add_target2);
+    }
+
 }
 
 template <typename T>
@@ -120,6 +133,7 @@ void PropertyExerciser::testSetByType(PropertyBase & property,
     for (; I != Iend; ++I) {
         property.set(*I);
         testGet(property, element_type);
+        testAdd(property, element_type);
     }
 }
 
@@ -138,6 +152,7 @@ int PropertyExerciser::exerciseProperty(PropertyBase & property,
                                         Element::Type element_type)
 {
     testGet(property, element_type);
+    testAdd(property, element_type);
     testSet(property, element_type);
     return 0;
 }

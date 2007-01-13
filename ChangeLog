@@ -1,5 +1,9 @@
 2007-01-13  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/PropertyExerciser.cpp: Expand the coverage of the tests.
+
+2007-01-13  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/PropertyExerciser.cpp, tests/PropertyExerciser.h: Expand the
 	  coverage of the tests.
 
@@ -15462,4 +15466,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1724 2007-01-13 20:29:14 alriddoch Exp $
+$Id: ChangeLog,v 1.1725 2007-01-13 20:47:32 alriddoch Exp $
