@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.cpp,v 1.12 2006-12-12 19:52:38 alriddoch Exp $
+// $Id: Property.cpp,v 1.13 2007-01-14 21:55:22 alriddoch Exp $
 
 #include "Property_impl.h"
 
@@ -105,4 +105,8 @@ template class Property<float>;
 template class Property<double>;
 template class Property<std::string>;
 
+template class ImmutableProperty<int>;
+template class ImmutableProperty<long>;
+template class ImmutableProperty<float>;
+template class ImmutableProperty<double>;
 template class ImmutableProperty<std::string>;

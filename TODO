@@ -1,3 +1,6 @@
+Move the stuff that generates vast quantity of test Atlas data into
+its own class, so other things can use it.
+
 Complete the work on property exercising tests.
 
 Fix python code which uses PyMem_DEL to use PyObject_Del which is the

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AreaProperty.cpp,v 1.5 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: AreaProperty.cpp,v 1.6 2007-01-14 21:55:22 alriddoch Exp $
 
 #include "AreaProperty.h"
 
@@ -43,7 +43,7 @@ AreaProperty::AreaProperty(unsigned int flags) : PropertyBase(flags),
 
 bool AreaProperty::get(Element & ent) const
 {
-    MapType & area = (ent = MapType()).asMap();
+    MapType & area = (ent = MapType()).Map();
     m_line.get(area["points"]);
     return true;
 }
@@ -51,7 +51,7 @@ bool AreaProperty::get(Element & ent) const
 void AreaProperty::set(const Element & ent)
 {
     if (ent.isMap()) {
-        const MapType & area = ent.asMap();
+        const MapType & area = ent.Map();
         MapType::const_iterator I = area.find("points");
         if (I != area.end()) {
             m_line.set(I->second);

@@ -449,7 +449,7 @@ AllPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(MATH_LIBS)
+                        $(TERRAIN_LIBS) $(MATH_LIBS)
 
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.31 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: inheritance.h,v 1.32 2007-01-14 21:55:22 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -51,6 +51,10 @@ class Inheritance {
 
     void opInstall(const std::string & op, OpNo no) {
         opLookup[op] = no;
+    }
+
+    const RootDict & getAllObjects() const {
+        return atlasObjects;
     }
 
     OpNo opEnumerate(const std::string & parent) const;

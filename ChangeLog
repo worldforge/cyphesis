@@ -1,3 +1,30 @@
+2007-01-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Property.cpp: Add some specialisations that are useful
+	  to cover in the tests, even though we are not using them in
+	  the server yet.
+
+	* common/inheritance.h: Provide an accessor for the dictionary of
+	  class objects for testing purposes.
+
+	* rulesets/AreaProperty.cpp: Use Map() rather than isMap() once we
+	  have already tested it.
+
+	* rulesets/Entity.cpp: Remove some debug output.
+
+	* server/CorePropertyManager.cpp: Remove some debug output.
+
+	* tests/PropertyExerciser.h, tests/PropertyExerciser.cpp: Fill out
+	  the functionality of the property tester. Add functions to get
+	  random values. Use vector for value storage to make it easier
+	  to generate the random values.
+
+	* tests/AllPropertytest.cpp: Cover all the property classes we can
+	  test.
+
+	* tests/Makefile.am: Add mercator libraries to the property test,
+	  as we are now testing the terrain property.
+
 2007-01-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/PropertyExerciser.cpp: Expand the coverage of the tests.
@@ -15466,4 +15493,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1725 2007-01-13 20:47:32 alriddoch Exp $
+$Id: ChangeLog,v 1.1726 2007-01-14 21:55:21 alriddoch Exp $

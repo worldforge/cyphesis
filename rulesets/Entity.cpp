@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.130 2007-01-10 21:58:52 alriddoch Exp $
+// $Id: Entity.cpp,v 1.131 2007-01-14 21:55:22 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -390,7 +390,8 @@ void Entity::operation(const Operation & op, OpVector & res)
     }
     HandlerMap::const_iterator I = m_operationHandlers.find(op->getClassNo());
     if (I != m_operationHandlers.end()) {
-        std::cout << "Found handler for " << op->getParents().front() << " operations" << std::endl << std::flush;
+        debug(std::cout << "Found handler for " << op->getParents().front()
+                        << " operations" << std::endl << std::flush;);
         I->second(this, op, res);
     }
     return callOperation(op, res);

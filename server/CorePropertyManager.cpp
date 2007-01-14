@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.15 2007-01-11 00:26:44 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.16 2007-01-14 21:55:23 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -45,22 +45,24 @@ template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
 
 HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 {
-    std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;
+    debug(std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;);
     return OPERATION_IGNORED;
 }
 
 HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 {
-    std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;
+    debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
     PropertyBase * pb = e->getProperty("decays");
     if (pb == NULL) {
-        std::cout << "Delete HANDLER no decays" << std::endl << std::flush;
+        debug(std::cout << "Delete HANDLER no decays" << std::endl 
+                        << std::flush;);
         return OPERATION_IGNORED;
     }
     Element val;
     pb->get(val);
     if (!val.isString()) {
-        std::cout << "Delete HANDLER decays non-string" << std::endl << std::flush;
+        debug(std::cout << "Delete HANDLER decays non-string" << std::endl 
+                        << std::flush;);
         return OPERATION_IGNORED;
     }
     const std::string & type = val.String();

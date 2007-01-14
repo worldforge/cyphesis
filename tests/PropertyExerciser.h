@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.h,v 1.2 2007-01-13 20:29:17 alriddoch Exp $
+// $Id: PropertyExerciser.h,v 1.3 2007-01-14 21:55:23 alriddoch Exp $
 
 #ifndef TESTS_PROPERTY_EXERCISER_H
 #define TESTS_PROPERTY_EXERCISER_H
@@ -35,17 +35,20 @@ class PropertyExerciser {
     Atlas::Message::MapType map_ptr_target;
     Atlas::Message::ListType list_ptr_target;
     
-    std::list<Atlas::Message::IntType> integer_values;
-    std::list<Atlas::Message::FloatType> float_values;
-    std::list<Atlas::Message::PtrType> ptr_values;
-    std::list<Atlas::Message::StringType> string_values;
-    std::list<Atlas::Message::MapType> map_values;
-    std::list<Atlas::Message::ListType> list_values;
+    std::vector<Atlas::Message::IntType> integer_values;
+    std::vector<Atlas::Message::FloatType> float_values;
+    std::vector<Atlas::Message::PtrType> ptr_values;
+    std::vector<Atlas::Message::StringType> string_values;
+    std::vector<Atlas::Message::MapType> map_values;
+    std::vector<Atlas::Message::ListType> list_values;
+
+    Atlas::Message::Element randomAtlasValue();
+    const std::string & randomString() const;
 
     template <typename T>
     void testSetByType(PropertyBase & property,
                        Atlas::Message::Element::Type element_type,
-                       const std::list<T> & values);
+                       const std::vector<T> & values);
     
     void testGet(PropertyBase & property,
                  Atlas::Message::Element::Type element_type);
