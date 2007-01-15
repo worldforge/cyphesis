@@ -1,3 +1,8 @@
+2007-01-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Makefile.am: Remove avahi libraries from the static build
+	  as they create more hassle than it is worth.
+
 2007-01-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Property.cpp: Add some specialisations that are useful
@@ -15493,4 +15498,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1727 2007-01-15 01:25:14 alriddoch Exp $
+$Id: ChangeLog,v 1.1728 2007-01-15 02:39:08 alriddoch Exp $

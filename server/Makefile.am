@@ -41,12 +41,13 @@ SERVER_LIBS = \
     /usr/lib/libcom_err.a \
     $(PYTHON_LIBS) \
     /usr/lib/libutil.a \
-    /usr/lib/libavahi-client.a \
-    /usr/lib/libavahi-common.a \
-    /usr/lib/libdbus-1.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
     -ldl -lc -lm -lpthread -lgcc_s
+
+#    /usr/lib/libavahi-client.a \
+#    /usr/lib/libavahi-common.a \
+#    /usr/lib/libdbus-1.a 
 
 cyphesis_LDFLAGS = -nodefaultlibs $(PYTHON_LINKER_FLAGS)
 
