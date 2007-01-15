@@ -42,7 +42,7 @@
 
 2007-01-13  Al Riddoch  <alriddoch@zepler.org>
 
-	* tests/PropertyExerciser.cpp: Add the required asser header.
+	* tests/PropertyExerciser.cpp: Add the required assert header.
 
 2007-01-12  Al Riddoch  <alriddoch@zepler.org>
 
@@ -15493,4 +15493,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1726 2007-01-14 21:55:21 alriddoch Exp $
+$Id: ChangeLog,v 1.1727 2007-01-15 01:25:14 alriddoch Exp $
