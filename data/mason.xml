@@ -1098,6 +1098,7 @@
     <list name="parents">
       <string>character</string>
     </list>
+    <int name="playable">1</int>
   </map>
 
   <map>

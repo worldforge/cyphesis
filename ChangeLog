@@ -1,5 +1,9 @@
 2007-01-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Make goblin playable.
+
+2007-01-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Makefile.am: Remove avahi libraries from the static build
 	  as they create more hassle than it is worth.
 
@@ -15498,4 +15502,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1728 2007-01-15 02:39:08 alriddoch Exp $
+$Id: ChangeLog,v 1.1729 2007-01-15 21:56:59 alriddoch Exp $
