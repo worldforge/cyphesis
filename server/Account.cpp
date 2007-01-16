@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.147 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: Account.cpp,v 1.148 2007-01-16 17:01:45 alriddoch Exp $
 
 #include "Account.h"
 
@@ -148,6 +148,42 @@ Entity * Account::addNewCharacter(const std::string & typestr,
             c->setArgs1(create_arg);
             world.message(c, *chr);
         }
+
+        create_arg = create_arg.copy();
+        create_arg->setParents(std::list<std::string>(1, "shirt"));
+        Create c;
+        c->setTo(chr->getId());
+        c->setArgs1(create_arg);
+        world.message(c, *chr);
+
+        create_arg = create_arg.copy();
+        create_arg->setParents(std::list<std::string>(1, "trousers"));
+        c = Create();
+        c->setTo(chr->getId());
+        c->setArgs1(create_arg);
+        world.message(c, *chr);
+
+        create_arg = create_arg.copy();
+        create_arg->setParents(std::list<std::string>(1, "cloak"));
+        c = Create();
+        c->setTo(chr->getId());
+        c->setArgs1(create_arg);
+        world.message(c, *chr);
+
+        create_arg = create_arg.copy();
+        create_arg->setParents(std::list<std::string>(1, "boots"));
+        c = Create();
+        c->setTo(chr->getId());
+        c->setArgs1(create_arg);
+        world.message(c, *chr);
+
+        create_arg = create_arg.copy();
+        create_arg->setParents(std::list<std::string>(1, "hat"));
+        c = Create();
+        c->setTo(chr->getId());
+        c->setArgs1(create_arg);
+        world.message(c, *chr);
+
     }
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character %4(%5) by account %6", m_connection->getId(), getId(), chr->getId(), chr->getName(), chr->getType(), m_username).c_str());
