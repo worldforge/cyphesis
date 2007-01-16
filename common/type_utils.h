@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: type_utils.h,v 1.13 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: type_utils.h,v 1.14 2007-01-16 01:07:49 alriddoch Exp $
 
 #ifndef COMMON_TYPE_UTILS_H
 #define COMMON_TYPE_UTILS_H
@@ -55,14 +55,21 @@ void objectListAsMessage(const List_T & l, Atlas::Message::ListType & ol)
 }
 
 template<typename T, typename List_T>
-inline void objectListFromMessage(const Atlas::Message::ListType & l, List_T & ol)
+inline int objectListFromMessage(const Atlas::Message::ListType & l,
+                                 List_T & ol)
 {
     ol.clear();
     
     Atlas::Message::ListType::const_iterator Iend = l.end();
     for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
-        ol.push_back(T(I->asList()));
+        try {
+            ol.push_back(T(I->asList()));
+        }
+        catch (Atlas::Message::WrongTypeException) {
+            return -1;
+        }
     }
+    return 0;
 }
 
 #endif // COMMON_TYPE_UTILS_H

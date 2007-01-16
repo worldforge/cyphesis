@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AllPropertytest.cpp,v 1.2 2007-01-14 21:55:23 alriddoch Exp $
+// $Id: AllPropertytest.cpp,v 1.3 2007-01-16 01:07:49 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
@@ -192,14 +192,12 @@ int main()
     }
 #endif
 
-#if 0
     // FIXME Yay this throws!!! I found a bug with my foolish tests
     {
         CoordList test_coordlist_data;
         LineProperty test_property(test_coordlist_data, 0);
         assert(exerciser.exerciseProperty(test_property, TYPE_LIST) == 0);
     }
-#endif
 
 #if 0
     // FIXME THis segfaults, probably the same reason as why EntityRef

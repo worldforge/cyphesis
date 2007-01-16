@@ -1,3 +1,7 @@
+Setting attributes needs to be re-done more complex. Reporting divided
+into scopes, and reporting done based on what really happened, not what
+the Set wanted to happen.
+
 Move the stuff that generates vast quantity of test Atlas data into
 its own class, so other things can use it.
 

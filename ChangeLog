@@ -1,3 +1,11 @@
+2007-01-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/type_utils.h: Properlly check for Atlas data type when
+	  converting data to objects.
+
+	* tests/AllPropertytest.cpp: Enable LineProperty test now that the
+	  type checking is good enough.
+
 2007-01-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Make goblin playable.
@@ -15502,4 +15510,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1729 2007-01-15 21:56:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1730 2007-01-16 01:07:47 alriddoch Exp $
