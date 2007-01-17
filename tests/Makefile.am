@@ -462,6 +462,7 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/Player.o \
                           $(top_builddir)/server/Connection.o \
                           $(top_builddir)/server/ExternalMind.o \
+                          $(top_builddir)/server/ExternalProperty.o \
                           $(top_builddir)/server/Lobby.o \
                           $(top_builddir)/server/CommClient.o \
                           $(top_builddir)/server/Idle.o \
