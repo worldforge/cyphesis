@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.131 2007-01-14 21:55:22 alriddoch Exp $
+// $Id: Entity.cpp,v 1.132 2007-01-17 23:00:58 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -188,6 +188,15 @@ PropertyBase * Entity::getProperty(const std::string & name) const
         return I->second;
     }
     return 0;
+}
+
+/// \brief Set the property object for a given attribute
+///
+/// @param name name of the attribute for which the property is given
+/// @param prop the property object to be used
+void Entity::setProperty(const std::string & name, PropertyBase * prop)
+{
+    m_properties[name] = prop;
 }
 
 /// \brief Copy attributes into an Atlas element

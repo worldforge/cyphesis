@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.85 2007-01-05 17:19:27 alriddoch Exp $
+// $Id: Entity.h,v 1.86 2007-01-17 23:00:59 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -203,11 +203,12 @@ class Entity : public BaseEntity {
         return m_attributes;
     }
 
-    bool hasAttr(const std::string &) const;
-    bool getAttr(const std::string &, Atlas::Message::Element &) const;
-    void setAttr(const std::string &, const Atlas::Message::Element &);
+    bool hasAttr(const std::string & name) const;
+    bool getAttr(const std::string & name, Atlas::Message::Element &) const;
+    void setAttr(const std::string & name, const Atlas::Message::Element &);
 
-    PropertyBase * getProperty(const std::string &) const;
+    PropertyBase * getProperty(const std::string & name) const;
+    void setProperty(const std::string & name, PropertyBase * prop);
 
     void installHandler(int, Handler);
 

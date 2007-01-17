@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.161 2007-01-17 10:04:14 alriddoch Exp $
+// $Id: Connection.cpp,v 1.162 2007-01-17 23:00:59 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -26,6 +26,7 @@
 #include "Player.h"
 #include "ExternalMind.h"
 #include "Persistance.h"
+#include "ExternalProperty.h"
 
 #include "rulesets/Character.h"
 
@@ -33,6 +34,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/Update.h"
 #include "common/globals.h"
 #include "common/serialno.h"
 #include "common/inheritance.h"
@@ -51,6 +53,7 @@ using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
@@ -132,6 +135,12 @@ Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
             // Send a move op stopping the current movement
             Anonymous move_arg;
             move_arg->setId(character->getId());
+            // Include the EXTERNAL property which is changing to zero.
+            // It would be more correct at this point to send a separate
+            // update to have the property update itself, but this
+            // will be much less of an issue once Sight(Set) is created
+            // more correctly
+            move_arg->setAttr("external", 0);
             ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
 
             Move move;
@@ -168,6 +177,29 @@ void Connection::objectDeleted(long id)
 void Connection::disconnect()
 {
     m_commClient.disconnect();
+}
+
+void Connection::connectAvatar(Character * chr)
+{
+    chr->m_externalMind = new ExternalMind(*this, chr->getId(),
+                                                  chr->getIntId());
+
+    if (chr->getProperty("external") == 0) {
+        std::cout << "Adding external property" << std::endl << std::flush;
+
+        ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
+        chr->setProperty("external", ep);
+    }
+
+    Anonymous update_arg;
+    update_arg->setId(chr->getId());
+    update_arg->setAttr("external", 1);
+
+    Update update;
+    update->setTo(chr->getId());
+    update->setArgs1(update_arg);
+
+    chr->sendWorld(update);
 }
 
 int Connection::verifyCredentials(const Account & account,
@@ -207,8 +239,7 @@ void Connection::operation(const Operation & op, OpVector & res)
     if ((character != NULL) && (character->m_externalMind == NULL)) {
         debug(std::cout << "Subscribing existing character" << std::endl
                         << std::flush;);
-        character->m_externalMind = new ExternalMind(*this, character->getId(),
-                                                     character->getIntId());
+        connectAvatar(character);
         Info info;
         Anonymous info_arg;
         character->addToEntity(info_arg);

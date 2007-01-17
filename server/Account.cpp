@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.149 2007-01-17 10:04:14 alriddoch Exp $
+// $Id: Account.cpp,v 1.150 2007-01-17 23:00:59 alriddoch Exp $
 
 #include "Account.h"
 
@@ -120,9 +120,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
     Character * character = dynamic_cast<Character *>(chr);
     if (character != 0) {
-        character->m_externalMind = new ExternalMind(*m_connection,
-                                                     character->getId(),
-                                                     character->getIntId());
+        m_connection->connectAvatar(character);
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.

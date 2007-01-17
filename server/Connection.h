@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.55 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Connection.h,v 1.56 2007-01-17 23:00:59 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -27,6 +27,7 @@
 class ServerRouting;
 class CommClient;
 class Account;
+class Character;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///
@@ -64,6 +65,8 @@ class Connection : public OOGThing {
     void addObject(BaseEntity * obj);
     void removeObject(long id);
     void objectDeleted(long id);
+
+    void connectAvatar(Character * chr);
 
     void disconnect();
     void send(const Operation & op) const;

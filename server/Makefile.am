@@ -65,6 +65,7 @@ endif
 
 cyphesis_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
+		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \

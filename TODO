@@ -1,3 +1,7 @@
+Prevent soft attributes being set with the names of known properties.
+
+Set name from client.
+
 Setting attributes needs to be re-done more complex. Reporting divided
 into scopes, and reporting done based on what really happened, not what
 the Set wanted to happen.
