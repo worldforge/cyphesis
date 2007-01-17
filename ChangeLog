@@ -1,5 +1,12 @@
 2007-01-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Account.cpp: Fix the name of character inventory items.
+
+	* server/Connection.cpp: Stop any movement when the client
+	  disconnects.
+
+2007-01-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp: Use isDefaultFoo() rather than
 	  hasAttrFlag(FOO) for brevity and readability.
 
@@ -15521,4 +15528,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1731 2007-01-17 09:41:27 alriddoch Exp $
+$Id: ChangeLog,v 1.1732 2007-01-17 10:04:15 alriddoch Exp $

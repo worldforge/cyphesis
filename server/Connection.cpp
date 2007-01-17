@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.160 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Connection.cpp,v 1.161 2007-01-17 10:04:14 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -50,6 +50,7 @@
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
@@ -128,6 +129,16 @@ Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
     Character * character = dynamic_cast<Character *>(obj);
     if (character != 0) {
         if (character->m_externalMind != 0) {
+            // Send a move op stopping the current movement
+            Anonymous move_arg;
+            move_arg->setId(character->getId());
+            ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
+
+            Move move;
+            move->setFrom(character->getId());
+            move->setArgs1(move_arg);
+            character->externalOperation(move);
+
             delete character->m_externalMind;
             character->m_externalMind = 0;
             logEvent(DROP_CHAR, String::compose("%1 - %2 %5 character %3(%4)", getId(), character->getId(), character->getName(), character->getType(), event).c_str());
