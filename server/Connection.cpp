@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.162 2007-01-17 23:00:59 alriddoch Exp $
+// $Id: Connection.cpp,v 1.163 2007-01-17 23:12:21 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -185,8 +185,6 @@ void Connection::connectAvatar(Character * chr)
                                                   chr->getIntId());
 
     if (chr->getProperty("external") == 0) {
-        std::cout << "Adding external property" << std::endl << std::flush;
-
         ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
         chr->setProperty("external", ep);
     }
