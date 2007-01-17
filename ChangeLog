@@ -1,5 +1,9 @@
 2007-01-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h: Back off accidentally commited change.
+
+2007-01-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Connection.cpp: Remove some debugging output.
 
 2007-01-17  Al Riddoch  <alriddoch@zepler.org>
@@ -15549,4 +15553,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1734 2007-01-17 23:12:21 alriddoch Exp $
+$Id: ChangeLog,v 1.1735 2007-01-17 23:16:21 alriddoch Exp $
