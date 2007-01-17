@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.289 2007-01-13 13:54:24 alriddoch Exp $
+// $Id: Character.cpp,v 1.290 2007-01-17 09:41:22 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1819,12 +1819,11 @@ void Character::mind2body(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
 
-    if (op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
+    if (!op->isDefaultTo()) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
         return;
     }
-    if (op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG) &&
-        op->getClassNo() != OP_TICK) {
+    if (!op->isDefaultFutureSeconds() && op->getClassNo() != OP_TICK) {
         log(ERROR, String::compose("Operation \"%1\" from mind with FUTURE_SECONDS set", op->getParents().front()).c_str());
     }
     OpNo otype = op->getClassNo();
