@@ -1,3 +1,5 @@
+Provide python access to the game config.
+
 Prevent soft attributes being set with the names of known properties.
 
 Set name from client.
