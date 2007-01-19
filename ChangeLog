@@ -1,3 +1,9 @@
+2007-01-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/ExternalMind.cpp: Implement a filter point for all remote
+	  controlled characters where hints and other helpful emotes can
+	  be inserted. Use it to inform characters of imminent starvation.
+
 2007-01-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* NEWS: Update NEWS announcement for release.
@@ -15563,4 +15569,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1737 2007-01-18 00:26:44 alriddoch Exp $
+$Id: ChangeLog,v 1.1738 2007-01-19 14:23:40 alriddoch Exp $

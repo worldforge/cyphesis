@@ -1,3 +1,5 @@
+Add a new kind of programmable mind, for babysitting player characters.
+
 Provide python access to the game config.
 
 Prevent soft attributes being set with the names of known properties.
