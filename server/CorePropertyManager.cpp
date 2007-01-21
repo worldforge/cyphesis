@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.16 2007-01-14 21:55:23 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.17 2007-01-21 19:53:41 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -32,6 +32,8 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <wfmath/atlasconv.h>
 
 #include <iostream>
 
@@ -67,10 +69,13 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     }
     const std::string & type = val.String();
 
-    Create create;
     Anonymous create_arg;
     create_arg->setParents(std::list<std::string>(1, type));
-    e->m_location.addToEntity(create_arg);
+    ::addToEntity(e->m_location.pos(), create_arg->modifyPos());
+    create_arg->setLoc(e->m_location.m_loc->getId());
+    create_arg->setAttr("orientation", e->m_location.orientation().toAtlas());
+
+    Create create;
     create->setTo(e->m_location.m_loc->getId());
     create->setArgs1(create_arg);
     res.push_back(create);
