@@ -15,6 +15,7 @@
       </map>
     </map>
     <string name="id">gallows</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
     </list>
@@ -28,6 +29,7 @@
     <map name="attributes">
     </map>
     <string name="id">hangman</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -41,6 +43,7 @@
     <map name="attributes">
     </map>
     <string name="id">mayor</string>
+    <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
     </list>
@@ -58,8 +61,9 @@
       </map>
     </map>
     <string name="id">villager</string>
+    <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
     <map name="script">
       <string name="language">python</string>

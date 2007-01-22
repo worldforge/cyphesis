@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.290 2007-01-17 09:41:22 alriddoch Exp $
+// $Id: Character.cpp,v 1.291 2007-01-22 19:01:03 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1170,6 +1170,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
 /// \brief Filter a Set operation coming from the mind
 ///
+/// Currently any Set op is permitted. In the future this will be locked
+/// down to only allow mutable things to be changed. For example, for
+/// inventory items with no name can have their name set from the client.
 /// @param op The operation to be filtered.
 /// @param res The filtered result is returned here.
 void Character::mindSetOperation(const Operation & op, OpVector & res)
