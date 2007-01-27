@@ -1,5 +1,9 @@
 2007-01-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Fix the bounding box size for the pair of boots.
+
+2007-01-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Account.cpp: Remove the hack that ensures players always
 	  create a settler if they try and create a character that does not
 	  exist. Handle setting initial attributes unique to player characters
@@ -15594,4 +15598,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1741 2007-01-27 15:07:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1742 2007-01-27 15:14:39 alriddoch Exp $
