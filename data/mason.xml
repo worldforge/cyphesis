@@ -1088,10 +1088,6 @@
         <float name="default">50</float>
         <string name="visibility">public</string>
       </map>
-      <map name="status">
-        <float name="default">0.024</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">goblin</string>
     <string name="objtype">class</string>
@@ -2141,10 +2137,6 @@
             <string name="pants">1</string>
           </map>
         </map>
-      </map>
-      <map name="status">
-        <float name="default">0.024</float>
-        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">settler</string>

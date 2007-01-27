@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.150 2007-01-17 23:00:59 alriddoch Exp $
+// $Id: Account.cpp,v 1.151 2007-01-27 15:07:54 alriddoch Exp $
 
 #include "Account.h"
 
@@ -279,32 +279,23 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     
-#if 0
     const std::string & typestr = parents.front();
 
     if (characterError(op, arg, res)) {
         return;
     }
-#else
-    // Interim fix because of weird client interface
-    std::string typestr = parents.front();
-    
-    if (characterError(op, arg, res)) {
-        if (typestr == "__bad__type__") {
-            return;
-        }
-        res.clear();
-        if (!Inheritance::instance().hasClass(typestr)) {
-            Inheritance::instance().addChild(atlasClass(typestr, "settler"));
-        }
-        typestr = "settler";
-    }
-#endif
 
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    Entity * entity = addNewCharacter(typestr, arg);
+    Anonymous new_character;
+    new_character->setParents(std::list<std::string>(1, typestr));
+    new_character->setAttr("status", 0.024);
+    if (!arg->isDefaultName()) {
+        new_character->setName(arg->getName());
+    }
+
+    Entity * entity = addNewCharacter(typestr, new_character);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());

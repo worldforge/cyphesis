@@ -1,3 +1,15 @@
+2007-01-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/Account.cpp: Remove the hack that ensures players always
+	  create a settler if they try and create a character that does not
+	  exist. Handle setting initial attributes unique to player characters
+	  here, rather than setting the defaults on the classes.
+
+	* data/mason.xml: Remove initialising status to a ery low value to
+	  make settlers and goblins starve easily.
+
+	* data/basic.xml: Set the mass of a arrow to something sane.
+
 2007-01-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/werewolf.xml: Fix the syntax of werewolf rule objects.
@@ -15582,4 +15594,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1740 2007-01-22 19:01:02 alriddoch Exp $
+$Id: ChangeLog,v 1.1741 2007-01-27 15:07:54 alriddoch Exp $

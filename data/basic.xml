@@ -21,6 +21,10 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">arrow</string>
     <string name="objtype">class</string>
