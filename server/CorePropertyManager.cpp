@@ -15,13 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.17 2007-01-21 19:53:41 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.18 2007-01-27 16:35:37 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
 #include "rulesets/ActivePropertyFactory_impl.h"
+#include "rulesets/EntityPropertyFactory_impl.h"
+
 #include "rulesets/LineProperty.h"
 #include "rulesets/OutfitProperty.h"
+#include "rulesets/SolidProperty.h"
 #include "rulesets/Entity.h"
 
 #include "common/types.h"
@@ -93,6 +96,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["attachment"] = new ActivePropertyBuilder<DynamicProperty<int> >(Atlas::Objects::Operation::MOVE_NO, test_handler);
     m_propertyFactories["decays"] = new ActivePropertyBuilder<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyBuilder<OutfitProperty>;
+    m_propertyFactories["solid"] = new EntityPropertyBuilder<SolidProperty>;
 }
 
 CorePropertyManager::~CorePropertyManager()

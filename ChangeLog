@@ -1,5 +1,23 @@
 2007-01-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/ActivePropertyFactory_impl.h: Correct the header guard
+	  comments.
+
+	* rulesets/SolidProperty.cpp, rulesets/SolidProperty.h: New property
+	  to handler whether an entities bbox is solid or not.
+
+	* rulesets/EntityPropertyFactory.cpp, rulesets/EntityPropertyFactory.h,
+	  rulesets/EntityPropertyFactory_impl.h: New property factory
+	  for properties the contructor of which takes an entity pointer of
+	  the owning entity.
+
+	* server/CorePropertyManager.cpp: Install the SOLID property on demand.
+
+	* data/basic.xml: Make area entities non-solid by default, so you don't
+	  collide with them.
+
+2007-01-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Fix the bounding box size for the pair of boots.
 
 2007-01-27  Al Riddoch  <alriddoch@zepler.org>
@@ -15598,4 +15616,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1742 2007-01-27 15:14:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1743 2007-01-27 16:35:36 alriddoch Exp $

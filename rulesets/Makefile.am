@@ -12,6 +12,9 @@ librulesetbase_a_SOURCES = Entity.cpp Entity.h \
 			   ActivePropertyFactory.cpp \
 			   ActivePropertyFactory_impl.h \
 			   ActivePropertyFactory.h \
+			   EntityPropertyFactory.cpp \
+			   EntityPropertyFactory_impl.h \
+			   EntityPropertyFactory.h \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 
 
@@ -34,6 +37,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     CalendarProperty.cpp CalendarProperty.h \
+			     SolidProperty.cpp SolidProperty.h \
 			     Statistics.cpp Statistics.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \
