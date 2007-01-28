@@ -1,3 +1,8 @@
+2007-01-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/ExternalMind.cpp: Make sure hungry and starving hints only
+	  make it when they apply to this character, not to others.
+
 2007-01-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/ActivePropertyFactory_impl.h: Correct the header guard
@@ -15616,4 +15621,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1743 2007-01-27 16:35:36 alriddoch Exp $
+$Id: ChangeLog,v 1.1744 2007-01-28 23:51:07 alriddoch Exp $

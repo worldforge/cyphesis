@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalMind.cpp,v 1.19 2007-01-19 14:20:50 alriddoch Exp $
+// $Id: ExternalMind.cpp,v 1.20 2007-01-28 23:51:08 alriddoch Exp $
 
 #include "ExternalMind.h"
 
@@ -62,7 +62,8 @@ void ExternalMind::operation(const Operation & op, OpVector &)
             if (sub_op->getClassNo() == OP_SET && !sub_args.empty()) {
                 const Root & arg = sub_args.front();
                 Element status_value;
-                if (arg->copyAttr("status", status_value) == 0 and
+                if (arg->getId() == getId() and
+                    arg->copyAttr("status", status_value) == 0 and
                     status_value.isFloat() and status_value.Float() < 0.1) {
 
                     Anonymous imaginary_arg;
