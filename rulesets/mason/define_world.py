@@ -41,6 +41,8 @@ butcher_stall_pos=(155,140,settlement_height)
 butcher_pos=(153,142,settlement_height)
 tool_stall_pos=(150,138,settlement_height)
 tool_merchant_pos=(150,140,settlement_height)
+tailor_stall_pos=(144,154,settlement_height)
+tailor_pos=(142,152,settlement_height)
 mausoleum_pos=(-160, 105, graveyard_height)
 
 camp_pos=(100,-50,22)
@@ -106,6 +108,12 @@ toolprices = [('axe', 'price', '4'),
               ('tinderbox', 'price', '8')]
 
 toolmerc_knowledge=[('market', 'location', tool_stall_pos)]
+
+tailor_prices = [('shirt', 'price', '5'), 
+                 ('trousers', 'price', '5'),
+                 ('cloak', 'price', '5')]
+
+tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage('acorn')"),
@@ -385,6 +393,7 @@ def default(mapeditor):
     m.learn(butcher,(il.help,"add_help(['I need live pigs to restock my butcher stall.','Do you have any pigs for sale?','I prefer pigs that have grown to more than 20kg.'])"))
     m.know(butcher,bknowledge)
     m.know(butcher,bprices)
+
     
     cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
                    place='market', pos=(0, 0, 0), parent=butcher.id)
@@ -397,6 +406,32 @@ def default(mapeditor):
         coins.append(m.make('coin',type='coin',pos=(0,0,0),parent=butcher.id))
     m.own(butcher,coins)
     
+# 	clothing-merchant
+    stall = m.make('Tailor Stall', type='stall', pos=tailor_stall_pos, orientation=directions[7])
+    m.make('wall',type='wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+
+    tailor=m.make('Bok Forgo',type='merchant',desc='the tailor',
+                  pos=tailor_pos,age=probability.fertility_age,sex='mail')
+    m.learn(tailor,(il.help,"add_help(['Get your clothes here.','Everything to keep you looking your best is here.'])"))
+    
+    m.know(tailor, tailor_knowledge)
+    m.know(tailor, tailor_prices)
+
+    m.own(tailor, stall)
+
+    clothes=[]
+    garment_types=['shirt', 'trousers', 'cloak']
+    garment_styles=['ragged', 'burlap', 'sun', 'fine']
+
+    for i in range(0, 15):
+        gty = garment_types[randint(0, len(garment_types)-1)]
+        gsty = garment_styles[randint(0, len(garment_styles)-1)]
+        gname = '%s %s' % (gsty, gty)
+        clothes.append(m.make(gname,type=gty,pos=(0, uniform(-0.7, 0.7), 0), parent=stall.id))
+
+    m.own(tailor, clothes)
+
 # 	tool-merchant
     stall = m.make('Tool Stall', type='stall', pos=tool_stall_pos, orientation=directions[2])
     m.make('wall',type='wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))

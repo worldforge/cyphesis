@@ -1,3 +1,10 @@
+2007-01-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add some clothing
+	  types to the vocabulary.
+
+	* rulesets/mason/define_world.py: Add a tailor stall to the village.
+
 2007-01-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/ExternalMind.cpp: Make sure hungry and starving hints only
@@ -15621,4 +15628,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1744 2007-01-28 23:51:07 alriddoch Exp $
+$Id: ChangeLog,v 1.1745 2007-01-29 01:08:04 alriddoch Exp $
