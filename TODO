@@ -1,3 +1,5 @@
+Set up python environment during test, so they import from the source tree.
+
 Find out why locks up when it can't load ruleset.
 
 Add a new kind of programmable mind, for babysitting player characters.
