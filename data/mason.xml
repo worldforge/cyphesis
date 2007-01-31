@@ -2698,6 +2698,10 @@
         <float name="default">0.0</float>
         <string name="visibility">public</string>
       </map>
+      <map name="visibiltiy">
+        <float name="default">10.0</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">weather</string>
     <string name="objtype">class</string>

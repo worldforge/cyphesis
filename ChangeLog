@@ -1,5 +1,10 @@
 2007-01-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add new visibility property to weather, and clamp
+	  it to ten metres for testing.
+
+2007-01-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* FIXME: Clearly mark the fixed ones.
 
 	* data/mason.xml: Put a nice enormous huge bbox so its always
@@ -15638,4 +15643,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1746 2007-01-31 18:20:28 alriddoch Exp $
+$Id: ChangeLog,v 1.1747 2007-01-31 18:42:32 alriddoch Exp $
