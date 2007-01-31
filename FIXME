@@ -1,14 +1,14 @@
-#10  2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+#10  2007-01-05  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* rulesets/OutfitProperty.cpp: Signals used to trigger removing
 	  clothing when it is dropped need to be disconnected. Not sure how
 	  without a whole bunch of annoying sigc++ connections in a map.
 
-#9  2007-01-05  Al Riddoch  <alriddoch@zepler.org>
+#9  2007-01-05  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* rulesets/OutfitProperty.cpp:171 Signals connected to the
 	  property still seem to call the property methods after the
-	  entity owning the property has been deleted. FIXED
+	  entity owning the property has been deleted.
 
 #8  2007-01-03  Al Riddoch  <alriddoch@zepler.org>
 
@@ -47,10 +47,10 @@
 	  members and all. Much as we abore MI, it may be the right
 	  thing to do.
 
-#2  2006-07-01  Al Riddoch  <alriddoch@zepler.org>
+#2  2006-07-01  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* server/CorePropertyManager.cpp:41 Add code to delete all the
-	  factories at shutdown. FIXED
+	  factories at shutdown.
 
 #1  2006-06-30  Al Riddoch  <alriddoch@zepler.org>
 

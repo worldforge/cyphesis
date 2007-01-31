@@ -1,3 +1,13 @@
+2007-01-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* FIXME: Clearly mark the fixed ones.
+
+	* data/mason.xml: Put a nice enormous huge bbox so its always
+	  visible. Make the box non-solid for collision purposes.
+
+	* rulesets/mason/world/objects/Weather.py: Make rain shorter on
+	  average, and make the ammount of rain more variable.
+
 2007-01-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/panlingua/interlinguish.py: Add some clothing
@@ -15628,4 +15638,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1745 2007-01-29 01:08:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1746 2007-01-31 18:20:28 alriddoch Exp $

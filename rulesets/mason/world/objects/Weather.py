@@ -16,11 +16,11 @@ class Weather(Thing):
         res = Message()
         optick = Operation("tick", to=self)
         res = res + optick
-        if self.rain<0.5:
-            optick.setFutureSeconds(randint(120,300))
-            self.rain=1.0
+        if self.rain<0.1:
+            optick.setFutureSeconds(randint(60,300))
+            self.rain=uniform(0.1, 0.9)
         else:
-            optick.setFutureSeconds(randint(600,1200))
+            optick.setFutureSeconds(randint(600,2400))
             self.rain=0.0
         res = res+Operation("set", Entity(self.id,rain=self.rain), to=self)
         return res
