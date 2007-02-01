@@ -19,8 +19,10 @@ class Weather(Thing):
         if self.rain<0.1:
             optick.setFutureSeconds(randint(60,300))
             self.rain=uniform(0.1, 0.9)
+            self.visibility=10/(self.rain * self.rain)
         else:
             optick.setFutureSeconds(randint(600,2400))
             self.rain=0.0
-        res = res+Operation("set", Entity(self.id,rain=self.rain), to=self)
+            self.visibility=1000
+        res = res+Operation("set", Entity(self.id,rain=self.rain,visibility=self.visibility), to=self)
         return res

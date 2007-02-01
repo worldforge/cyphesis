@@ -1,5 +1,10 @@
 2007-01-31  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/Weather.py: Add visibility to
+	  the weather object, used to control the distance of the fogging.
+
+2007-01-31  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add new visibility property to weather, and clamp
 	  it to ten metres for testing.
 
@@ -15643,4 +15648,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1747 2007-01-31 18:42:32 alriddoch Exp $
+$Id: ChangeLog,v 1.1748 2007-02-01 18:48:55 alriddoch Exp $
