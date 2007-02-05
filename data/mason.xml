@@ -2698,7 +2698,7 @@
         <float name="default">0.0</float>
         <string name="visibility">public</string>
       </map>
-      <map name="visibiltiy">
+      <map name="visibility">
         <float name="default">10.0</float>
         <string name="visibility">public</string>
       </map>
