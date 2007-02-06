@@ -1,3 +1,6 @@
+Investigate -static-libgcc for partially static version of binaries for
+distribution.
+
 We really don't need m_name on Entity.
 
 autopackage should start server
