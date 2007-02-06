@@ -1,3 +1,5 @@
+Make enable/disable database a run time option.
+
 Instrument BaseMind/MemMap to detect mutiple additions of the same thing
 to the same mind.
 
