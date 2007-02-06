@@ -21,11 +21,11 @@
 	  velocity flag can be used as the only necessary check if something
 	  is moving. Ie make sure if the velocity is zero, it is cleared.
 
-#6  2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+#6  2006-12-26  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* rulesets/Character.h Remove the hard m_sex property from character
 
-#5  2006-12-26  Al Riddoch  <alriddoch@zepler.org>
+#5  2006-12-26  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* rulesets/BaseMind.h:42 Remove m_world, and the m_world in Entity, as
 	  we now use the singleton accessor in BaseWorld for that

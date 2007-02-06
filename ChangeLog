@@ -1,3 +1,8 @@
+2007-02-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/BaseMind.h: Remove m_world as it no longer has to mask
+	  Entity::m_world.
+
 2007-02-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Correct the spelling of visibility.
@@ -15652,4 +15657,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1749 2007-02-05 14:33:19 alriddoch Exp $
+$Id: ChangeLog,v 1.1750 2007-02-06 01:58:36 alriddoch Exp $

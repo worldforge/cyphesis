@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.h,v 1.49 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: BaseMind.h,v 1.50 2007-02-06 01:58:37 alriddoch Exp $
 
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
@@ -39,10 +39,6 @@ class BaseMind : public MemEntity {
     bool m_isAwake;
     /// \brief World time as far as this mind is aware
     WorldTime m_time;
-    /// FIXME #5 Remove m_world, and the m_world in Entity, as we now
-    /// use the singleton accessor in BaseWorld for that
-    /// \brief Override of Entity::m_world to make sure we don't use it
-    int m_world;
   public:
     BaseMind(const std::string &, long, const std::string &);
     virtual ~BaseMind();
