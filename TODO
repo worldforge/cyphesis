@@ -1,3 +1,10 @@
+Instrument BaseMind/MemMap to detect mutiple additions of the same thing
+to the same mind.
+
+Make it easier to use cypasswd to elevate privs.
+
+Add ability to create other types of avatar.
+
 Investigate -static-libgcc for partially static version of binaries for
 distribution.
 
