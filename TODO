@@ -1,5 +1,3 @@
-Stop using sub_to in cycmd for tick ops. Use name instead.
-
 Make enable/disable database a run time option.
 
 Instrument BaseMind/MemMap to detect mutiple additions of the same thing
@@ -54,8 +52,6 @@ corpse, bones etc.
 
 Implement some kind of helper mechanism which monitors ops going to the client
 and if some match a certain template, it sends hints in the form of emotes.
-
-Add "delete" command to cycmd, for IG.
 
 Move metabolism into a property, ensuring that Character becomes a cleaner
 class. Implement death better, creating a skeleton with a named skull.
