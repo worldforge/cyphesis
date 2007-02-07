@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.108 2007-02-07 23:00:41 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.109 2007-02-07 23:08:26 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -239,18 +239,20 @@ class Flusher : public AdminTask {
             // we can look again once this entity is definitly gone.
             Tick t;
 
+            Anonymous tick_arg;
+            tick_arg->setName("flusher");
+
             t->setFrom(agentId);
             t->setTo(agentId);
             t->setFutureSeconds(0.1);
-            t->setAttr("sub_to", "flusher");
+            t->setArgs1(tick_arg);
 
             res.push_back(t);
         } else if (op->getParents().front() == "tick") {
             // We have a tick op, check if its the one we sent ourselves
             // to schedule the next look.
-            Element val;
-            if (op->copyAttr("sub_to", val) != 0 ||
-                !val.isString() || val.String() != "flusher") {
+            if (op->getArgs().empty() ||
+                op->getArgs().front()->getName() != "flusher") {
                 std::cout << "Not for us" << std::endl << std::flush;
                 return;
             }

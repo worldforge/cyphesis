@@ -1,5 +1,12 @@
 2007-02-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Don't complain about unknown tick types.
+
+	* tools/cycmd.cpp: Use a cleaner more consistent way to identify
+	  tick ops that are for this client.
+
+2007-02-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cycmd.cpp: All add_agent command to specify avatar type,
 	  so cycmd is usable with non-priveleged accounts.
 
@@ -15662,4 +15669,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1751 2007-02-07 23:00:43 alriddoch Exp $
+$Id: ChangeLog,v 1.1752 2007-02-07 23:08:26 alriddoch Exp $

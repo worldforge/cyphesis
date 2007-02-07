@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.291 2007-01-22 19:01:03 alriddoch Exp $
+// $Id: Character.cpp,v 1.292 2007-02-07 23:08:27 alriddoch Exp $
 
 #include "Character.h"
 
@@ -402,7 +402,8 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.
         } else {
-            log(ERROR, String::compose("Tick to unknown subsystem \"%1\" arrived", arg->getName()).c_str());
+            debug(std::cout << "Tick to unknown subsystem " << arg->getName()
+                            << " arrived" << std::endl << std::flush;);
         }
     } else {
         // DIGEST
