@@ -1,3 +1,5 @@
+Stop using sub_to in cycmd for tick ops. Use name instead.
+
 Make enable/disable database a run time option.
 
 Instrument BaseMind/MemMap to detect mutiple additions of the same thing
