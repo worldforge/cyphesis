@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.107 2007-01-09 11:51:47 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.108 2007-02-07 23:00:41 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -1121,10 +1121,16 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
 
         encoder->streamObjectsMessage(m);
     } else if (cmd == "add_agent") {
+        std::string agent_type("creator");
+
+        if (!arg.empty()) {
+            agent_type = arg;
+        }
+        
         Create c;
 
         Anonymous cmap;
-        cmap->setParents(std::list<std::string>(1, "creator"));
+        cmap->setParents(std::list<std::string>(1, agent_type));
         cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);

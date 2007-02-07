@@ -1,3 +1,8 @@
+2007-02-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* tools/cycmd.cpp: All add_agent command to specify avatar type,
+	  so cycmd is usable with non-priveleged accounts.
+
 2007-02-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/BaseMind.h: Remove m_world as it no longer has to mask
@@ -15657,4 +15662,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1750 2007-02-06 01:58:36 alriddoch Exp $
+$Id: ChangeLog,v 1.1751 2007-02-07 23:00:43 alriddoch Exp $
