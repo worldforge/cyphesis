@@ -1,3 +1,9 @@
+2007-02-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Update all the tests to report their failure in
+	  a clean and readable way, with as much information as possible
+	  to help the user if they fail.
+
 2007-02-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp: Don't complain about unknown tick types.
@@ -15669,4 +15675,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1752 2007-02-07 23:08:26 alriddoch Exp $
+$Id: ChangeLog,v 1.1753 2007-02-08 20:03:33 alriddoch Exp $

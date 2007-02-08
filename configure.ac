@@ -183,7 +183,9 @@ AC_CHECK_LIB(python${python_version}, Py_Initialize,
     [
         python_libs="-L${python_lib_path} -lpython${python_version}"
         PYTHON_LINKER_FLAGS="-export-dynamic"
-    ],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
+    ],AC_MSG_ERROR([
+Cannot find python libraries. Do you have python development installed? Please
+see http://www.python.org/ for details of how to download and install Python.]),
     [-L${python_lib_path} ${PYTHON_UTIL_LIBS}])
 ])
 
@@ -193,7 +195,10 @@ AC_CHECK_LIB(python${python_version}, Py_Initialize,
 [
     python_libs="-L${python_lib_path} -lpython${python_version}"
     PYTHON_LINKER_FLAGS="-export-dynamic"
-],AC_MSG_ERROR([Cannot find python libraries. Do you have python development installed?]),
+],AC_MSG_ERROR([
+Cannot find python libraries. Do you have python development installed?
+Please see http://www.python.org/ for details of how to download and install
+Python.]),
 [-L${python_lib_path} ${PYTHON_UTIL_LIBS}])
 
 fi
@@ -206,7 +211,10 @@ AM_PATH_LIBGCRYPT(1.2.0,
     COMMON_LIBS="$COMMON_LIBS $LIBGCRYPT_LIBS"
 ],
 [
-    AC_MSG_ERROR([Cannot find libgcrypt for encrypted passwords. Please install libgcrypt development libraries.])
+    AC_MSG_ERROR([
+Cannot find libgcrypt for encrypted passwords. Please see
+http://directory.fsf.org/security/libgcrypt.html for details of how to
+download and install libgcrypt development libraries.])
 ])
 
 PKG_PROG_PKG_CONFIG
@@ -224,9 +232,28 @@ PKG_CHECK_MODULES(DEPS, atlascpp-0.6 varconf-1.0 >= 0.6.4,
     ],
     [
         AC_MSG_RESULT([no])
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge libraries:
+        AC_MSG_ERROR([
+Cannot find valid versions of required WorldForge libraries:
 $DEPS_PKG_ERRORS
-Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+Perhaps you should add the directory containing the missing libraries to the
+PKG_CONFIG_PATH environment variable.
+Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
+libraries required and where to obtain them.])
+    ])
+
+PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
+    [
+        MATH_LIBS="$MATH_LIBS $WFMATH_LIBS"
+    ],
+    [
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([
+Cannot find valid versions of required WorldForge maths library, wfmath:
+$WFMATH_PKG_ERRORS
+Perhaps you should add the directory containing the missing libraries to the
+PKG_CONFIG_PATH environment variable.
+Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
+libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(MERCATOR, mercator-0.2,
@@ -236,7 +263,13 @@ PKG_CHECK_MODULES(MERCATOR, mercator-0.2,
     ],
     [
         AC_MSG_RESULT([no])
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge terrain library, mercator. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+        AC_MSG_ERROR([
+Cannot find valid versions of required WorldForge terrain library, mercator:
+$MERCATOR_PKG_ERRORS
+Perhaps you should add the directory containing the missing libraries to the
+PKG_CONFIG_PATH environment variable.
+Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
+libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.3,
@@ -246,16 +279,13 @@ PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.3,
     ],
     [
         AC_MSG_RESULT([no])
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge network library, skstream. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
-    ])
-
-PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
-    [
-        MATH_LIBS="$MATH_LIBS $WFMATH_LIBS"
-    ],
-    [
-        AC_MSG_RESULT([no])
-        AC_MSG_ERROR([Cannot find valid versions of required WorldForge maths library, wfmath. Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the libraries required and where to obtain them.])
+        AC_MSG_ERROR([
+Cannot find valid versions of required WorldForge network library, skstream:
+$SKSTREAM_PKG_ERRORS
+Perhaps you should add the directory containing the missing libraries to the
+PKG_CONFIG_PATH environment variable.
+Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
+libraries required and where to obtain them.])
     ])
 
 PKG_CHECK_MODULES(AVAHI, avahi-client,
@@ -287,7 +317,10 @@ AM_PATH_PSQL(7.1.0,
             PGSQL_LIBS="$PGSQL_LIBS $PG_LIBS"
         fi
     ],
-    AC_MSG_ERROR([Cannot find PostgreSQL config or config failed. Please install PostgreSQL and ensure than pg_config is on the PATH.])
+    AC_MSG_ERROR([
+Cannot find PostgreSQL config or config failed. Please install PostgreSQL and
+ensure than pg_config is on the PATH. See http://www.postgresql.org/ for
+details of how to download the software.])
 )
 
 ac_save_LIBS="$LIBS"
@@ -295,7 +328,9 @@ LIBS="$LIBS $PG_LIBS"
 AC_CHECK_LIB(pq,PQconnectdb,
 [
     PGSQL_LIBS="$PGSQL_LIBS -lpq"
-],AC_MSG_ERROR([Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development software?]))
+],AC_MSG_ERROR([
+Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development
+software?]))
 LIBS="$ac_save_LIBS"
 
 READLINE_LIBS=
@@ -304,7 +339,9 @@ AC_CHECK_LIB(termcap,tgetent,
     [READLINE_LIBS="$READLINE_LIBS -ltermcap"],
     AC_CHECK_LIB(ncurses, tgetent, 
         [READLINE_LIBS="$READLINE_LIBS -lncurses"],
-        AC_MSG_WARN([Cannot find tgetent in termcap or ncurses libraries! This may be a problem for readline.])
+        AC_MSG_WARN([
+Cannot find tgetent in termcap or ncurses libraries!
+This may be a problem for readline.])
     )
 )
 
@@ -315,32 +352,33 @@ AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h)
 AC_CHECK_LIB(readline,readline,
     [
         READLINE_LIBS="$READLINE_LIBS -lreadline"
+        AC_COMPILE_IFELSE(
+          [
+            AC_LANG_PROGRAM(
+              [[
+                #include <stdio.h>
+                #include <readline/readline.h>
+              ]],
+              [[
+                readline("test > ")
+              ]]
+            )
+          ],
+          [
+            AC_DEFINE(READLINE_CXX_SANE, 1, Define if readline headers are C++ aware)
+          ],
+          [
+            AC_MSG_WARN(Readline C++ workaround enabled)
+          ]
+        )
     ],
     [
-        AC_MSG_WARN([Cannot find readline!])
+        AC_MSG_WARN([
+Cannot find readline! Please see http://directory.fsf.org/readline.html for
+details of how to download and install the missing library.])
     ],[ $READLINE_LIBS ]
 )
     
-AC_COMPILE_IFELSE(
-  [
-    AC_LANG_PROGRAM(
-      [[
-        #include <stdio.h>
-        #include <readline/readline.h>
-      ]],
-      [[
-        readline("test > ")
-      ]]
-    )
-  ],
-  [
-    AC_DEFINE(READLINE_CXX_SANE, 1, Define if readline headers are C++ aware)
-  ],
-  [
-    AC_MSG_WARN(Readline C++ workaround enabled)
-  ]
-)
-
 AC_SUBST(VARCONF_LIBS)
 AC_SUBST(READLINE_LIBS)
 AC_SUBST(COMMON_LIBS)
