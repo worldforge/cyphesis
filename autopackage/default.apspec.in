@@ -2,6 +2,7 @@
 
 [Meta]
 RootName: @worldforge.org/cyphesis:$SOFTWAREVERSION
+PackageFileName: cyphesis-$SOFTWAREVERSION.package
 DisplayName: Cyphesis
 ShortName: cyphesis
 Maintainer: Al Riddoch <alriddoch@zepler.org>
@@ -10,13 +11,7 @@ Summary: Cyphesis is a simple MMORPG server
 URL: http://www.worldforge.org/dev/eng/servers/cyphesis
 License: GNU General Public License, Version 2
 SoftwareVersion: @VERSION@
-AutopackageTarget: 1.0
-
-# Only uncomment InterfaceVersion if your package exposes interfaces to other software,
-# for instance if it includes DSOs or python/perl modules. See the developer guide for more info,
-# or ask on autopackage-dev if you don't understand interface versioning in autopackage.
-#
-# InterfaceVersion: 0.0
+AutopackageTarget: 1.2
 
 [Description]
 Cyphesis is a very simple world simulator. NPCs that do things according to
@@ -29,9 +24,9 @@ This package includes the rules data, scripts and map data required for the
 Mason game. Use this package if you intend to run an Mason server.
 
 [BuildPrepare]
-export CC=gcc
-export CXX=g++
-prepareBuild --enable-static-link
+# export CC=gcc
+# export CXX=g++
+prepareBuild
 
 [BuildUnprepare]
 unprepareBuild
@@ -51,6 +46,7 @@ installMan 1 man/man*/*
 copyFiles etc/cyphesis "$PREFIX/etc"
 installData share/cyphesis
 mkdirs "$PREFIX/var/tmp"
+# installMenuItem
 
 [Uninstall]
 # Usually just the following line is enough to uninstall everything
