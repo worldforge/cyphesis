@@ -132,7 +132,11 @@ AC_CHECK_HEADER(python2.5/Python.h,
                 python_include_path=-I${python_prefix}/include/python2.2
                 python_version=2.2
             ],[
-                AC_MSG_ERROR([Cannot find python headers for Python 2.2 or later. Please install Python. If Python is installed somewhere other than in /usr the please use the --with-python=DIR option to point to the prefix where Python is installed.])
+                AC_MSG_ERROR([
+Cannot find python headers for Python 2.2 or later.
+Please see http://www.python.org/ for details of how to download and install
+Python. If Python is installed somewhere other than in /usr the please use the
+--with-python=DIR option to point to the prefix where Python is installed.])
             ])
         ])
     ])
@@ -214,7 +218,8 @@ AM_PATH_LIBGCRYPT(1.2.0,
     AC_MSG_ERROR([
 Cannot find libgcrypt for encrypted passwords. Please see
 http://directory.fsf.org/security/libgcrypt.html for details of how to
-download and install libgcrypt development libraries.])
+download and install libgcrypt development libraries. If it is installed
+please ensure libgcrypt-config is on the PATH.])
 ])
 
 PKG_PROG_PKG_CONFIG

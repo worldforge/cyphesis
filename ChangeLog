@@ -1,3 +1,8 @@
+2007-02-13  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Make some of the error messages a little more verbose,
+	  and consistent.
+
 2007-02-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* autopackage/default.apspec.in: Update autopackage spec to latest
@@ -15680,4 +15685,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1754 2007-02-10 15:42:56 alriddoch Exp $
+$Id: ChangeLog,v 1.1755 2007-02-13 15:15:08 alriddoch Exp $
