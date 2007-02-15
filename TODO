@@ -1,3 +1,5 @@
+metaserver needs to reinitialise if bind is lost.
+
 Make sure autopackage uses /var/tmp rather than PREFIX/var/tmp
 
 Make enable/disable database a run time option.
