@@ -1,3 +1,9 @@
+2007-02-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/define_world.py: Add function by Max Randor to
+	  plant a field full of vegetables. Use it to populate the village
+	  fields with carrots and turnips.
+
 2007-02-13  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Make some of the error messages a little more verbose,
@@ -15685,4 +15691,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1755 2007-02-13 15:15:08 alriddoch Exp $
+$Id: ChangeLog,v 1.1756 2007-02-15 13:56:28 alriddoch Exp $

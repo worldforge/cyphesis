@@ -259,8 +259,13 @@ def default(mapeditor):
     m.make('house3',type='house3',pos=(150,125,22),orientation=directions[2])
     m.make('house3',type='house3',pos=(171,142,22),orientation=directions[5])
 
-    m.make('field',type='ploughed_field',pos=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8}, bbox=[20,20,0])
-    m.make('field',type='ploughed_field',pos=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8}, bbox=[20,20,0])
+    carrotfield_points = [ [0,0], [0,20], [20,20], [20,0] ] # this is so these values can be reused as an argument in plantfield as well as in 'points' in the m.make command
+    carrotfield = m.make('field',type='ploughed_field',pos=(120,170,30),status=1.0,area={'points' : carrotfield_points, 'layer' : 8}, bbox=[20,20,0]) # this makes a carrot field storing its identity in carrotfield
+    turnipfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
+    turnipfield = m.make('field',type='ploughed_field',pos=(142,170,30),status=1.0,area={'points' : turnipfield_points, 'layer' : 8}, bbox=[20,20,0])
+
+    plantfield(m,'carrot',carrotfield,carrotfield_points)# calls the plantfield funtion with (the entity to be planted, the identity of the field to be planted in, the distance between the furrows, the distance between the plants along the furrows, the points of the corners of the field)
+    plantfield(m,'turnip',turnipfield,turnipfield_points)
 
     village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]], 'layer':7 }
     m.make('village_square', pos=(150, 150, 22), type='path', area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
@@ -559,6 +564,49 @@ def default(mapeditor):
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     #m.tell_importance(guard,il.defend,'>',il.patrol)
+
+##TODO - plantfield function - by MaxRandor##
+# I am not sure about the flexibility of the code in terms of the field not being on a plane, dealing with bumpy ground, but I am not sure the creation of the field can deal with that either.
+# Z values for the corners of the field are a bit iffy.
+##
+def plantfield(m,plant,field,field_points,furrowdist=1,plantspacing=1):
+    '''Plant a field.
+    
+    first argument is for the object to plant the field with string
+    second argument is the variable containing the identity of the field that is to be created (field = m.make(....))
+    third argument is the space between the furrows
+    fourth argument is the space between the plants along the furrows.
+    4-3 this diagram shows which corners are which. 1 is the origin corner defiend in pos
+    | |
+    1-2
+    '''
+    # corner 1 is no longer needed as parent = field.id makes it obselete.
+    # corner 2 obtained from the data in points in the m.make function
+    corner2 = [field_points[3][0],field_points[3][1],0]
+    # as above but different point
+    corner3 = [field_points[2][0],field_points[2][1],0]
+    # corner 4 is corner 3 -corner 2
+    corner4 = [corner3[0]-corner2[0],corner3[1]-corner2[1],corner3[2]-corner2[2]]
+    # the distance along the front of the field pythagoras in three dimensions
+    frontfieldist = sqrt(corner2[0]**2 + corner2[1]**2 + corner2[2]**2)
+    # the number of furrows is the distance that there is to cover / the distance between each furrow
+    numfurrow = frontfieldist / furrowdist
+    # the increase in x,y,z of the start position of each furrow
+    furrowincr = [corner2[0]/numfurrow,corner2[1]/numfurrow,corner2[2]/numfurrow]
+    # the distance along the side of the field
+    sidefieldist = sqrt(corner4[0]**2 + corner4[1]**2 + corner4[2]**2)
+    # the number of plants in each furrow
+    numplants = sidefieldist / plantspacing
+    # the increase in x,y,z of the position of the plants along the lenght of the furrow
+    plantincr = [corner4[0]/numplants, corner4[1]/numplants, corner4[2]/numplants]
+    for i in range(numfurrow):
+        # start a new furrow
+        furrowstart = [furrowincr[0]*i, furrowincr[1]*i, furrowincr[2]*i]
+        for j in range(numplants):
+            # calculate the plant position by adding the right number of increments to the furrowstart
+            plantpos = [furrowstart[0] + plantincr[0]*j, furrowstart[1] + plantincr[1]*j, furrowstart[2] + plantincr[2]*j]
+            # make the plant (note that the plant is randomly facing any direction)
+            m.make(plant,type=plant,pos=plantpos,orientation=directions[randint(0,7)], parent = field.id)
 
 def add_pigs(mapeditor):
 #   general things
