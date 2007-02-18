@@ -1,3 +1,11 @@
+2007-02-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add nouns for a
+	  number of tools, by Max Randor.
+
+	* rulesets/mason/define_world.py: Make many more tools available for
+	  sale, by Max Randor.
+
 2007-02-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* scripts/cyphesis-setup.sh: Add new untested script that automates
@@ -15700,4 +15708,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1757 2007-02-17 20:16:29 alriddoch Exp $
+$Id: ChangeLog,v 1.1758 2007-02-18 21:59:02 alriddoch Exp $

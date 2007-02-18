@@ -103,9 +103,19 @@ keep=(il.keep,"keep()")
 sell=(il.sell,"sell_trade()")
 patrol=(il.patrol,"patrol()")
 
-toolprices = [('axe', 'price', '4'), 
+# Things for Blackum Decker to sell need to be stated here with prices
+toolprices = [('bowl', 'price', '3'),
+              ('pole', 'price', '4'),
+              ('hammer', 'price', '4'),
+              ('bottle', 'price', '4'),
+              ('cleaver', 'price', '3'),
+              ('trowel', 'price', '3'),
+              ('axe', 'price', '5'), 
               ('shovel', 'price', '5'),
-              ('tinderbox', 'price', '8')]
+              ('pickaxe', 'price', '6'),
+              ('scythe', 'price', '7'),
+              ('tinderbox', 'price', '8'),
+              ('bucksaw', 'price', '10')]
 
 toolmerc_knowledge=[('market', 'location', tool_stall_pos)]
 
@@ -388,7 +398,7 @@ def default(mapeditor):
     m.make('wall',type='wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
     m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
-
+    # An NPC Butcher
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
                    pos=butcher_pos,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'ham', 'market')"))
@@ -417,7 +427,7 @@ def default(mapeditor):
     m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     tailor=m.make('Bok Forgo',type='merchant',desc='the tailor',
-                  pos=tailor_pos,age=probability.fertility_age,sex='mail')
+                  pos=tailor_pos,age=probability.fertility_age,sex='male')
     m.learn(tailor,(il.help,"add_help(['Get your clothes here.','Everything to keep you looking your best is here.'])"))
     
     m.know(tailor, tailor_knowledge)
@@ -452,10 +462,12 @@ def default(mapeditor):
     m.own(tmerchant, stall)
 
     tools=[]
-    tooltypes=['shovel', 'axe', 'tinderbox']
+    # the different tools must be stated here \|/
+    tooltypes=['shovel', 'axe', 'tinderbox', 'bowl', 'pole', 'bottle',
+               'cleaver', 'pickaxe', 'scythe', 'bucksaw','trowel','hammer'] 
     
-    for i in range(0, 15):
-        tty = tooltypes[randint(0,2)]
+    for i in range(0, 20):
+        tty = tooltypes[randint(0,len(tooltypes)-1)]
         tools.append(m.make(tty,type=tty,pos=(uniform(-0.7, 0.7),uniform(-0.5,0.5),0.6),parent=stall.id,orientation=directions[randint(0,7)]))
     
     m.own(tmerchant,tools)
