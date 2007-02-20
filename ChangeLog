@@ -1,5 +1,10 @@
 2007-02-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp: Clean up database error messages, and add
+	  hint about disabling the database if this is required.
+
+2007-02-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Improve the presentation of Database error
 	  messages.
 
@@ -15737,4 +15742,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1761 2007-02-20 01:12:51 alriddoch Exp $
+$Id: ChangeLog,v 1.1762 2007-02-20 14:56:33 alriddoch Exp $

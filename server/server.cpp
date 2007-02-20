@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.141 2007-02-20 01:12:51 alriddoch Exp $
+// $Id: server.cpp,v 1.142 2007-02-20 14:56:31 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -91,8 +91,8 @@ int main(int argc, char ** argv)
     if (database_flag) {
         int dbstatus = Persistance::init();
         if (dbstatus < 0) {
-            log(ERROR, _("Error opening databases. Database disabled."));
             database_flag = false;
+            log(ERROR, "Error opening database. Database disabled.");
             if (dbstatus == -2) {
                 log(INFO, "Database connection established, but unable to create required tables.");
                 log(INFO, "Please ensure that any obsolete database tables have been removed.");
@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
                 log(INFO, "Unable to connect to the RDBMS.");
                 log(INFO, "Please ensure that the RDBMS is running, the cyphesis database exists and is accessible to the user running cyphesis.");
             }
-            // return EXIT_DATABASE_ERROR;
+            log(INFO, "To disable this message please run:\n\n    cyconfig --cyphesis:usedatabase=false\n\nto permanently disable database usage.");
         }
 
         // If the restricted flag is set in the config file, then we
