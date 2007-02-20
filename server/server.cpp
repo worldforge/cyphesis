@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.139 2006-11-03 18:55:41 alriddoch Exp $
+// $Id: server.cpp,v 1.140 2007-02-20 00:52:42 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -78,13 +78,17 @@ int main(int argc, char ** argv)
         }
     }
 
+    if (global_conf->findItem("cyphesis", "usedatabase")) {
+        database_flag = global_conf->getItem("cyphesis","usedatabase");
+    }
+
     // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
 
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
-    if (consts::enable_database) {
+    if (database_flag) {
         int dbstatus = Persistance::init();
         if (dbstatus < 0) {
             log(CRITICAL, _("Critical error opening databases. Init failed."));
@@ -172,7 +176,7 @@ int main(int argc, char ** argv)
     // not creating a new world using the contents of the database as a
     // template
 
-    if (consts::enable_database) {
+    if (database_flag) {
         log(INFO, _("Restoring world from database..."));
 
         Restoration restore(server);

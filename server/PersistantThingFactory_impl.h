@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory_impl.h,v 1.10 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: PersistantThingFactory_impl.h,v 1.11 2007-02-20 00:52:42 alriddoch Exp $
 
 #ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
 #define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
@@ -29,6 +29,31 @@ void PersistorConnection<T>::persist()
 }
 
 template <class T>
+ThingFactory<T>::~ThingFactory()
+{
+}
+
+template <class T>
+T * ThingFactory<T>::newPersistantThing(const std::string & id, long intId, PersistorBase ** p)
+{
+    return new T(id, intId);
+}
+
+template <class T>
+int ThingFactory<T>::populate(Entity &)
+{
+    return 0;
+}
+
+template <class T>
+FactoryBase * ThingFactory<T>::duplicateFactory()
+{
+    FactoryBase * f = new ThingFactory<T>(*this);
+    f->m_parent = this;
+    return f;
+}
+
+template <class T>
 PersistantThingFactory<T>::~PersistantThingFactory()
 {
     if (m_master) {
@@ -37,23 +62,11 @@ PersistantThingFactory<T>::~PersistantThingFactory()
 }
 
 template <class T>
-T * PersistantThingFactory<T>::newThing(const std::string & id, long intId)
-{
-    return new T(id, intId);
-}
-
-template <class T>
 T * PersistantThingFactory<T>::newPersistantThing(const std::string & id, long intId, PersistorBase ** p)
 {
     T * t = new T(id, intId);
     *p = new PersistorConnection<T>(*t, m_p);
     return t;
-}
-
-template <class T>
-int PersistantThingFactory<T>::populate(Entity &)
-{
-    return 0;
 }
 
 template <class T>
@@ -68,12 +81,6 @@ template <class T>
 ForbiddenThingFactory<T>::~ForbiddenThingFactory()
 {
     delete &m_p;
-}
-
-template <class T>
-T * ForbiddenThingFactory<T>::newThing(const std::string &, long)
-{
-    return 0;
 }
 
 template <class T>

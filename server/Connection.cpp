@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.163 2007-01-17 23:12:21 alriddoch Exp $
+// $Id: Connection.cpp,v 1.164 2007-02-20 00:52:43 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -32,7 +32,6 @@
 
 #include "common/id.h"
 #include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
 #include "common/Update.h"
 #include "common/globals.h"
@@ -283,7 +282,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     // account, either from existing account ....
     Account * player = m_server.getAccountByName(username);
     // or if not, from the database
-    if (consts::enable_database && player == 0) {
+    if (database_flag && player == 0) {
         debug(std::cout << "No account called " << username
                         << " in server. Checking in database."
                         << std::endl << std::flush;);
@@ -363,9 +362,9 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     }
     const std::string & password = passwd_attr.String();
 
-    if ((0 != m_server.getAccountByName(username)) ||
-        (consts::enable_database && Persistance::instance()->findAccount(username)) ||
-        (username.empty()) || (password.empty())) {
+    if (username.empty() || password.empty() ||
+        (0 != m_server.getAccountByName(username)) ||
+        (database_flag && Persistance::instance()->findAccount(username))) {
         // Account exists, or creation data is duff
         clientError(op, "Account creation is invalid", res);
         return;
@@ -375,7 +374,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         clientError(op, "Account creation failed", res);
         return;
     }
-    if (consts::enable_database) {
+    if (database_flag) {
         Persistance::instance()->putAccount(*player);
     }
     Info info;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.cpp,v 1.14 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: PersistantThingFactory.cpp,v 1.15 2007-02-20 00:52:42 alriddoch Exp $
 
 #include <Python.h>
 
@@ -29,8 +29,6 @@
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Food.h"
-#include "rulesets/Line.h"
-#include "rulesets/Area.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Structure.h"
 #include "rulesets/Stackable.h"
@@ -49,8 +47,14 @@ FactoryBase::~FactoryBase()
     }
 }
 
+template <>
+World * ThingFactory<World>::newPersistantThing(const std::string & id, long intId, PersistorBase ** p)
+{
+    return 0;
+}
+
 template<>
-int PersistantThingFactory<Character>::populate(Entity & e)
+int ThingFactory<Character>::populate(Entity & e)
 {
     EntityFactory::instance()->addStatisticsScript((Character &)e);
     return 0;
@@ -61,8 +65,6 @@ template class PersistorConnection<Thing>;
 template class PersistorConnection<Character>;
 template class PersistorConnection<Creator>;
 template class PersistorConnection<Food>;
-template class PersistorConnection<Line>;
-template class PersistorConnection<Area>;
 template class PersistorConnection<Plant>;
 template class PersistorConnection<Structure>;
 template class PersistorConnection<Stackable>;
@@ -73,10 +75,9 @@ template class PersistantThingFactory<Thing>;
 template class PersistantThingFactory<Character>;
 template class PersistantThingFactory<Creator>;
 template class PersistantThingFactory<Food>;
-template class PersistantThingFactory<Line>;
-template class PersistantThingFactory<Area>;
 template class PersistantThingFactory<Plant>;
 template class PersistantThingFactory<Structure>;
 template class PersistantThingFactory<Stackable>;
 
 template class ForbiddenThingFactory<World>;
+template class ThingFactory<World>;

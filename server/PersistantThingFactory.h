@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.21 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.22 2007-02-20 00:52:42 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -78,10 +78,23 @@ class FactoryBase {
 
     virtual ~FactoryBase();
 
-    virtual Entity * newThing(const std::string & id, long intId) = 0;
     virtual Entity * newPersistantThing(const std::string & id, long intId, PersistorBase **) = 0;
     virtual int populate(Entity &) = 0;
     virtual FactoryBase * duplicateFactory() = 0;
+};
+
+template <class T>
+class ThingFactory : public FactoryBase {
+  protected:
+    ThingFactory(ThingFactory<T> & o) { }
+  public:
+    ThingFactory() { }
+    virtual ~ThingFactory();
+
+    virtual T * newPersistantThing(const std::string & id, long intId,
+                                   PersistorBase ** p);
+    virtual int populate(Entity &);
+    virtual FactoryBase * duplicateFactory();
 };
 
 // How do we make sure the peristance hooks are put in place in a typesafe way
@@ -90,7 +103,7 @@ class FactoryBase {
 /// \brief Class template for factories for creating instances of the give
 /// entity class
 template <class T>
-class PersistantThingFactory : public FactoryBase {
+class PersistantThingFactory : public ThingFactory<T> {
   protected:
     PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p),
                                                             m_master(false) { }
@@ -101,9 +114,7 @@ class PersistantThingFactory : public FactoryBase {
     PersistantThingFactory() : m_p(* new Persistor<T>()), m_master(true) { }
     virtual ~PersistantThingFactory();
  
-    virtual T * newThing(const std::string & id, long intId);
     virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
-    virtual int populate(Entity &);
     virtual FactoryBase * duplicateFactory();
 };
 
@@ -117,7 +128,6 @@ class ForbiddenThingFactory : public FactoryBase {
 
     virtual ~ForbiddenThingFactory();
  
-    virtual T * newThing(const std::string & id, long intId);
     virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
     virtual int populate(Entity &);
     virtual FactoryBase * duplicateFactory();

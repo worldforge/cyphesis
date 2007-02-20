@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.21 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: globals.h,v 1.22 2007-02-20 00:52:42 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -37,6 +37,7 @@ extern std::vector<std::string> rulesets;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern bool restricted_flag;
+extern bool database_flag;
 extern bool pvp_flag;
 extern bool pvp_offl_flag;
 extern int timeoffset;

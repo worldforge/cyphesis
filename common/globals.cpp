@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.37 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: globals.cpp,v 1.38 2007-02-20 00:52:42 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -41,6 +41,7 @@ std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
+bool database_flag = true;
 bool pvp_flag = false;
 bool pvp_offl_flag = false;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning

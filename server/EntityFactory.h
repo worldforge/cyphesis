@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.46 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.47 2007-02-20 00:52:42 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -58,7 +58,6 @@ class EntityFactory {
 
     BaseWorld & m_world;
     RuleWaitList m_waitingRules;
-    PersistantThingFactory<Entity> * m_eft;
 
     void getRulesFromFiles(Atlas::Message::MapType&);
     void installRules();

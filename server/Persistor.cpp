@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.cpp,v 1.34 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Persistor.cpp,v 1.35 2007-02-20 00:52:42 alriddoch Exp $
 
 #include "Persistor.h"
 #include "Persistor_impl.h"
@@ -32,7 +32,6 @@
 #include "rulesets/Structure.h"
 #include "rulesets/World.h"
 
-#include "common/const.h"
 #include "common/Database.h"
 #include "common/terrain_utils.h"
 
@@ -68,9 +67,7 @@ Persistor<Entity>::Persistor(bool temp) : m_class("entity")
     desc["mass"] = 1.0;
     desc["seq"] = 0;
     desc["attributes"] = "";
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc);
-    }
+    Database::instance()->registerEntityTable(m_class, desc);
 }
 
 template<>
@@ -79,9 +76,7 @@ Persistor<Thing>::Persistor(bool temp) : m_class("thing")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "entity");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "entity");
 }
 
 template<>
@@ -90,9 +85,7 @@ Persistor<Line>::Persistor(bool temp) : m_class("line")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -101,9 +94,7 @@ Persistor<Area>::Persistor(bool temp) : m_class("area")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -116,9 +107,7 @@ Persistor<Character>::Persistor(bool temp) : m_class("character")
     desc["drunkness"] = 1.0;
     desc["food"] = 1.0;
     desc["right_hand_wield"] = "        ";
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -138,9 +127,7 @@ Persistor<Plant>::Persistor(bool temp) : m_class("plant")
     desc["fruitName"] = "                                                                                ";
     desc["fruitChance"] = 1;
     desc["sizeAdult"] = 1.0;
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -149,9 +136,7 @@ Persistor<Food>::Persistor(bool temp) : m_class("food")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -161,9 +146,7 @@ Persistor<Stackable>::Persistor(bool temp) : m_class("stackable")
     MapType desc;
     // FIXME Sort out attributes
     desc["num"] = 1;
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -172,9 +155,7 @@ Persistor<Structure>::Persistor(bool temp) : m_class("structure")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "thing");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "thing");
 }
 
 template<>
@@ -183,15 +164,11 @@ Persistor<World>::Persistor(bool temp) : m_class("world")
     if (temp) { return; }
     MapType desc;
     // FIXME Sort out attributes
-    if (consts::enable_database) {
-        Database::instance()->registerEntityTable(m_class, desc, "entity");
-    }
+    Database::instance()->registerEntityTable(m_class, desc, "entity");
 
     desc.clear();
     desc["height"] = 0.1f;
-    if (consts::enable_database) {
-        Database::instance()->registerArrayTable("terrain", 2, desc);
-    }
+    Database::instance()->registerArrayTable("terrain", 2, desc);
 }
 
 template<>

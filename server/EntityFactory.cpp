@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.99 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.100 2007-02-20 00:52:42 alriddoch Exp $
 
 #include <Python.h>
 
@@ -68,30 +68,37 @@ static const bool debug_flag = false;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
-EntityFactory::EntityFactory(BaseWorld & w) : m_world(w),
-             m_eft(new PersistantThingFactory<Entity>())
+EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
 {
-    installFactory("game_entity", "world", new ForbiddenThingFactory<World>());
-    PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
-    installFactory("game_entity", "thing", tft);
-    // FIXME #1 No longer need these three once Line and Area are removed from
-    // the code.
-    // installFactory("thing", "feature", tft->duplicateFactory());
-    // installFactory("feature", "line", new PersistantThingFactory<Line>());
-    // installFactory("feature", "area", new PersistantThingFactory<Area>());
-    installFactory("thing", "character",
-                   new PersistantThingFactory<Character>());
-    installFactory("character", "creator",
-                   new PersistantThingFactory<Creator>());
-    installFactory("thing", "plant", new PersistantThingFactory<Plant>());
-    installFactory("thing", "food", new PersistantThingFactory<Food>());
-    installFactory("thing", "stackable",
-                   new PersistantThingFactory<Stackable>());
-    installFactory("thing", "structure",
-                   new PersistantThingFactory<Structure>());
+    if (consts::enable_persistence && database_flag) {
+        installFactory("game_entity", "world", new ForbiddenThingFactory<World>());
+        PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
+        installFactory("game_entity", "thing", tft);
+        installFactory("thing", "character",
+                       new PersistantThingFactory<Character>());
+        installFactory("character", "creator",
+                       new PersistantThingFactory<Creator>());
+        installFactory("thing", "plant", new PersistantThingFactory<Plant>());
+        installFactory("thing", "food", new PersistantThingFactory<Food>());
+        installFactory("thing", "stackable",
+                       new PersistantThingFactory<Stackable>());
+        installFactory("thing", "structure",
+                       new PersistantThingFactory<Structure>());
+    } else {
+        installFactory("game_entity", "world", new ThingFactory<World>());
+        ThingFactory<Thing> * tft = new ThingFactory<Thing>();
+        installFactory("game_entity", "thing", tft);
+        installFactory("thing", "character", new ThingFactory<Character>());
+        installFactory("character", "creator", new ThingFactory<Creator>());
+        installFactory("thing", "plant", new ThingFactory<Plant>());
+        installFactory("thing", "food", new ThingFactory<Food>());
+        installFactory("thing", "stackable", new ThingFactory<Stackable>());
+        installFactory("thing", "structure", new ThingFactory<Structure>());
+    }
 
     m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
 
+    // The property manager instance installs itself at construction time.
     new CorePropertyManager();
 }
 
@@ -127,11 +134,7 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
         return 0;
     }
     FactoryBase * factory = I->second;
-    if (consts::enable_persistence) {
-        thing = factory->newPersistantThing(id, intId, &pc);
-    } else {
-        thing = factory->newThing(id, intId);
-    }
+    thing = factory->newPersistantThing(id, intId, &pc);
     if (thing == 0) {
         return 0;
     }
@@ -235,8 +238,6 @@ void EntityFactory::flushFactories()
     for (FactoryDict::const_iterator I = m_factories.begin(); I != Iend; ++I) {
         delete I->second;
     }
-    delete m_eft;
-    m_eft = NULL;
     m_factories.clear();
     StatisticsFactoryDict::const_iterator J = m_statisticsFactories.begin();
     StatisticsFactoryDict::const_iterator Jend = m_statisticsFactories.end();
@@ -658,7 +659,7 @@ void EntityFactory::installRules()
 {
     MapType ruleTable;
 
-    if (consts::enable_database) {
+    if (database_flag) {
         Persistance * p = Persistance::instance();
         p->getRules(ruleTable);
     } else {
