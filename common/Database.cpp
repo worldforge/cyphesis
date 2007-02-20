@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.87 2006-12-31 15:56:35 alriddoch Exp $
+// $Id: Database.cpp,v 1.88 2007-02-20 01:12:48 alriddoch Exp $
 
 #include "Database.h"
 
@@ -140,7 +140,7 @@ int Database::initConnection(bool createDatabase)
     }
 
     if (PQstatus(m_connection) != CONNECTION_OK) {
-        log(ERROR, String::compose("Connection to database failed: \"%1\"", PQerrorMessage(m_connection)).c_str());
+        log(ERROR, String::compose("Connection to database failed: \n%1", PQerrorMessage(m_connection)).c_str());
         return -1;
     }
 
