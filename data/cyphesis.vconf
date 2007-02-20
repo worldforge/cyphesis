@@ -28,6 +28,7 @@ nice=1
 # Leave control of NPCs to AI client
 useaiclient="false"
 # Database configuration
+usedatabase="true"
 # Do not specify a host, unless it is something other than localhost
 # dbserver = "darkstar"
 # Name of the database in the rdbms

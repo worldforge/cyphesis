@@ -1,5 +1,9 @@
 2007-02-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/cyphesis.vconf: Add default value for database config flag.
+
+2007-02-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp, common/globals.h: Add a config flag
 	  to control whether database code is enabled.
 
@@ -15725,4 +15729,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1759 2007-02-20 00:52:41 alriddoch Exp $
+$Id: ChangeLog,v 1.1760 2007-02-20 00:53:49 alriddoch Exp $
