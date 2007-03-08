@@ -286,9 +286,9 @@ class pick_up_focus(Goal):
             if id==None: return 0
             what=me.map.get(id)
             if what==None: return 0
-        if what.location.parent.id!=me.id:
-            if what.location.parent.id!=me.location.parent.id:
-                me.remove_knowledge('focus',self.what)
+        # If its not not near us on the ground, forget about it.
+        if what.location.parent.id!=me.location.parent.id:
+            me.remove_knowledge('focus',self.what)
         return what.location.parent.id==me.id
     def pick_it_up(self, me):
         what=self.what

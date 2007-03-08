@@ -802,6 +802,13 @@ def test_forester(mapeditor):
     m.learn(settler,(il.trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
     m.make('oak',pos=(32,32,0))
 
+def test_warrior(mapeditor):
+
+    m=editor(mapeditor)
+    # An NPC warrior
+    warrior=m.make('warrior',type='warrior',pos=(0, 12, 0), sex='male')
+    m.learn(warrior,(il.trade,"gather('loaf')"))
+
 def test_chicken(mapeditor):
 
     m=editor(mapeditor)

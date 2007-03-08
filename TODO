@@ -1,3 +1,6 @@
+acquire_thing still takes a reference to self when initialising. Not good
+enough, must fix.
+
 Can we just install non-Persistent factories in EntityFactory if database
 is disabled? Think so, then we could remove database checks from the persistor
 code.

@@ -11,7 +11,7 @@ socket_DATA =
 
 install-data-hook:
 	chmod 1777 $(DESTDIR)$(socketdir)
-	@echo -e \\n
+	@echo 
 	@echo "Cyphesis is not yet ready to run."
 	@echo "Unless you have configured the server to run without a database, Cyphesis"
 	@echo "requires access to a PostgreSQL database to store rules and account data."
@@ -19,7 +19,7 @@ install-data-hook:
 	@echo "PostgreSQL account and database required."
 	@echo 
 	@echo "For detailed instructions please see the README file."
-	@echo -e \\n
+	@echo 
 
 EXTRA_DIST = cyphesis.spec Doxyfile autogen.sh \
              cyphesis.init cyclient.init cyphesis.sysconfig \
