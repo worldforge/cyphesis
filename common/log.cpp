@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.21 2007-01-11 17:28:25 alriddoch Exp $
+// $Id: log.cpp,v 1.22 2007-03-19 16:17:08 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -30,6 +30,12 @@ extern "C" {
 #endif // HAVE_SYSLOG_H
   #include <errno.h>
 }
+
+#ifndef _WIN32
+static const char * TIME_FORMAT = "%F %T";
+#else
+static const char * TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
+#endif
 
 static void logDate(std::ostream & log_stream)
 {
@@ -51,7 +57,7 @@ static void logDate(std::ostream & log_stream)
 #endif // HAVE_LOCALTIME_R
 
     char buf[256];
-    int count = strftime(buf, sizeof(buf) / sizeof(char), "%F %T", local_time);
+    int count = strftime(buf, sizeof(buf) / sizeof(char), TIME_FORMAT, local_time);
 
     if (count == 0) {
         log_stream << "[TIME_ERROR]";

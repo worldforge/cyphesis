@@ -1,3 +1,16 @@
+2007-03-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/log.cpp: Use a supported date format on Windows.
+
+2007-01-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/TestDataSet.cpp, TestDataSet.h: New class to handle a large
+	  set of test Atlas data to throw at various code that accepts Atlas
+	  data from the wire.
+
+	* tests/Makefile.am: Add network libs to a unit test, so it will
+	  build on platforms where gethostname is in the network libs.
+
 2007-03-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* Makefile.am: Remove GNU echo isms.
@@ -15753,4 +15766,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1763 2007-03-08 14:14:00 alriddoch Exp $
+$Id: ChangeLog,v 1.1764 2007-03-19 16:17:06 alriddoch Exp $
