@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.38 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: globals.cpp,v 1.39 2007-03-19 16:21:48 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -149,6 +149,12 @@ int loadConfig(int argc, char ** argv, bool server)
         ruleset = global_conf->getItem(ruleset, "ruleset").as_string();
         rulesets.push_back(ruleset);
     };
+
+    if (rulesets.empty()) {
+        log(ERROR, "No ruleset specified in config. Using \"basic\" rules.");
+        log(INFO, "The basic rules don't allow much, so this should be rectified.");
+        rulesets.push_back("basic");
+    }
 
     return optind;
 }

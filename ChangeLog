@@ -1,5 +1,10 @@
 2007-03-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Use "basic" if no ruleset is specified in the
+	  config.
+
+2007-03-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp: Use a supported date format on Windows.
 
 2007-01-26  Al Riddoch  <alriddoch@zepler.org>
@@ -15766,4 +15771,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1764 2007-03-19 16:17:06 alriddoch Exp $
+$Id: ChangeLog,v 1.1765 2007-03-19 16:21:47 alriddoch Exp $
