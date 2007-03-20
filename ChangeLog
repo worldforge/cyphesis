@@ -1,3 +1,9 @@
+2007-03-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/globals.cpp: Try and be smarter about the temporary directory
+	  used for logging and socket files so that it works on centrally
+	  installed autopackages.
+
 2007-03-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp: Use "basic" if no ruleset is specified in the
@@ -15771,4 +15777,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1765 2007-03-19 16:21:47 alriddoch Exp $
+$Id: ChangeLog,v 1.1766 2007-03-20 14:50:39 alriddoch Exp $

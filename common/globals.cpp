@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.39 2007-03-19 16:21:48 alriddoch Exp $
+// $Id: globals.cpp,v 1.40 2007-03-20 14:50:39 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -24,10 +24,13 @@
 #include "prefix.h"
 #include "globals.h"
 #include "log.h"
+#include "compose.hpp"
 
 #include "modules/DateTime.h"
 
 #include <varconf/config.h>
+
+#include <sys/stat.h>
 
 #include <cassert>
 
@@ -48,6 +51,24 @@ int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
 int peer_port_num = 6769;
+
+static const char * FALLBACK_LOCALSTATEDIR = "/var";
+
+static int check_tmp_path(const std::string & dir)
+{
+    std::string tmp_directory = var_directory + "/tmp";
+    struct stat tmp_stat;
+
+    if (::stat(tmp_directory.c_str(), &tmp_stat) != 0) {
+        return -1;
+    }
+
+    if (!S_ISDIR(tmp_stat.st_mode)) {
+        return -1;
+    }
+
+    return 0;
+}
 
 int loadConfig(int argc, char ** argv, bool server)
 {
@@ -154,6 +175,27 @@ int loadConfig(int argc, char ** argv, bool server)
         log(ERROR, "No ruleset specified in config. Using \"basic\" rules.");
         log(INFO, "The basic rules don't allow much, so this should be rectified.");
         rulesets.push_back("basic");
+    }
+
+    if (check_tmp_path(var_directory) != 0) {
+        if (var_directory != "/usr/var") {
+            // Binreloc enabled builds installed system wide have localstatedir
+            // set to something that is never writable, so must always fall
+            // back to /var/tmp, so we should not display the message.
+            log(WARNING,
+                String::compose("No temporary directory found at \"%1/tmp\"",
+                                var_directory).c_str());
+        }
+        if (check_tmp_path(FALLBACK_LOCALSTATEDIR) != 0) {
+            log(CRITICAL, String::compose("No temporary directory available at \"%1/tmp\" or \"%1/tmp\".", var_directory, FALLBACK_LOCALSTATEDIR).c_str());
+        } else {
+            if (var_directory != "/usr/var") {
+                log(NOTICE,
+                    String::compose("Using \"%1/tmp\" as temporary directory",
+                                    FALLBACK_LOCALSTATEDIR).c_str());
+            }
+            var_directory = FALLBACK_LOCALSTATEDIR;
+        }
     }
 
     return optind;
