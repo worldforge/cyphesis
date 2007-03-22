@@ -1,3 +1,7 @@
+Look up in Python Nutshell about correct pre-processor stuff for python
+version and Py_ssize_t, and read up on ref-counting + exceptions. Read
+whole section on embedding.
+
 acquire_thing still takes a reference to self when initialising. Not good
 enough, must fix.
 
