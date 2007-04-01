@@ -1,3 +1,8 @@
+2007-04-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/Database.cpp: Improve error reporting when dealing with
+	  persistence tables.
+
 2007-04-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Oplist.cpp, rulesets/Py_Operation.cpp: Use the python
@@ -15785,4 +15790,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1767 2007-04-01 20:55:26 alriddoch Exp $
+$Id: ChangeLog,v 1.1768 2007-04-01 23:33:06 alriddoch Exp $
