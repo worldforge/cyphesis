@@ -15,27 +15,25 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: random.h,v 1.9 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: random.h,v 1.10 2007-04-01 20:55:27 alriddoch Exp $
 
 #ifndef COMMON_RANDOM_H
 #define COMMON_RANDOM_H
 
-extern "C" {
-    #include <stdlib.h>
-}
+#include <cstdlib>
 
 static inline int randint(int min, int max)
 {
     if (max == min) {
         return min;
     } else {
-        return rand() % (max - min) + min;
+        return ::rand() % (max - min) + min;
     }
 }
 
 static inline float uniform(float min, float max)
 {
-    return ((float)rand() / RAND_MAX) * (max - min) + min;
+    return ((float)::rand() / RAND_MAX) * (max - min) + min;
 }
 
 #endif // COMMON_RANDOM_H

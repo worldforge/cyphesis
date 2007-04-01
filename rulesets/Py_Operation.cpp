@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.cpp,v 1.57 2007-01-12 12:38:07 alriddoch Exp $
+// $Id: Py_Operation.cpp,v 1.58 2007-04-01 20:55:27 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
@@ -325,8 +325,8 @@ static PyObject* Operation_get_name(PyOperation * self)
  * Operation sequence methods.
  */
 
-#if PY_MINOR_VERSION < 5
-#define Py_ssize_t int
+#if PY_VERSION_HEX < 0x02050000
+typedef int Py_ssize_t;
 #endif
 
 static Py_ssize_t Operation_seq_length(PyOperation * self)

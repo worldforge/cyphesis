@@ -1,3 +1,11 @@
+2007-04-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_Oplist.cpp, rulesets/Py_Operation.cpp: Use the python
+	  hex version, as its more reliable for comparison when setting up
+	  typedefs for older python versions.
+
+	* common/random.h: Use the C++ version of stdlib.h.
+
 2007-03-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp: Try and be smarter about the temporary directory
@@ -15777,4 +15785,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1766 2007-03-20 14:50:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1767 2007-04-01 20:55:26 alriddoch Exp $
