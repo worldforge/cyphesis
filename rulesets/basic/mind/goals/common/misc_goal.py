@@ -10,6 +10,8 @@ try:
 except ImportError:
   from whrandom import *
 
+import types
+
 ######################## MAKE LOTS OF SOMETHING ###############################
 
 class make_amount(Goal):
@@ -168,32 +170,37 @@ class spot_something(Goal):
         Goal.__init__(self, "spot a thing",
                       self.do_I_have,
                       [self.do])
-        self.what=what
+        if type(what) == types.ListType:
+            self.what = what
+        else:
+            self.what = [ what ]
         self.range=range
         self.condition=condition
         self.vars=["what","range"]
     def do_I_have(self, me):
-        something=me.get_knowledge('focus', self.what)
-        if something and me.map.get(something)==None:
-            # No longer exists
-            me.remove_knowledge('focus', self.what)
-            something=None
-        return something!=None
+        for what in self.what:
+            something=me.get_knowledge('focus', what)
+            if something:
+                if me.map.get(something) == None:
+                   me.remove_knowledge('focus', what)
+                else:
+                   return 1
     def do(self,me):
-        thing_all=me.map.find_by_type(self.what)
-        nearest=None
-        nearsqrdist=self.range*self.range
-        for thing in thing_all:
-            sqr_dist = square_distance(me.location, thing.location)
-            # FIXME We need a more sophisticated check for parent. Perhaps just
-            # check its not in a persons inventory? Requires the ability to
-            # do decent type checks
-            if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
-                if self.condition(thing):
-                    nearest = thing
-                    nearsqrdist = nearsqrdist
-        if nearest:
-            me.add_knowledge('focus', self.what, nearest.id)
+        for what in self.what:
+            thing_all=me.map.find_by_type(what)
+            nearest=None
+            nearsqrdist=self.range*self.range
+            for thing in thing_all:
+                sqr_dist = square_distance(me.location, thing.location)
+                # FIXME We need a more sophisticated check for parent. Perhaps just
+                # check its not in a persons inventory? Requires the ability to
+                # do decent type checks
+                if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
+                    if self.condition(thing):
+                        nearest = thing
+                        nearsqrdist = nearsqrdist
+            if nearest:
+                me.add_knowledge('focus', what, nearest.id)
                       
 ############################ FETCH SOMETHING GOAL ########################
 

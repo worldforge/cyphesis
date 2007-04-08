@@ -16,6 +16,8 @@ try:
 except ImportError:
   from whrandom import *
 
+import types
+
 ############################ MOVE ME ####################################
 
 class move_me(Goal):
@@ -216,31 +218,35 @@ class move_me_to_focus(Goal):
         Goal.__init__(self,"move me to this thing",
                       self.am_i_at_it,
                       [self.move_me_to_it])
-        self.what=what
+        if type(what) == types.ListType:
+            self.what = what
+        else:
+            self.what = [ what ]
         self.vars=["what"]
     def am_i_at_it(self, me):
-        what = self.what
-        if type(what)==StringType:
-            id=me.get_knowledge('focus',what)
-            if id==None: return 0
-            what=me.map.get(id)
-            if what==None: return 0
-        if square_horizontal_distance(me.location, what.location) < 4: # 2 * 2
-            return 1
-        else:
-            return 0
+        for what in self.what:
+            id = me.get_knowledge('focus', what)
+            if id == None: continue
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+                continue
+            if square_horizontal_distance(me.location, thing.location) < 4:
+                return 1
+        return 0
 
     def move_me_to_it(self, me):
-        what = self.what
-        if type(what)==StringType:
-            id=me.get_knowledge('focus',what)
-            if id==None: return
-            what=me.map.get(id)
-            if what==None: return
-        target=what.location.copy()
-        if target.parent.id==me.location.parent.id:
-            target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
-            return Operation("move", Entity(me.id, location=target))
+        for what in self.what:
+            id = me.get_knowledge('focus', what)
+            if id == None: continue
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+                return
+            target=thing.location.copy()
+            if target.parent.id==me.location.parent.id:
+                target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
+                return Operation("move", Entity(me.id, location=target))
 
 ############################ MOVE THING TO ME ####################################
 
@@ -276,28 +282,37 @@ class pick_up_focus(Goal):
                       self.is_it_with_me,
                       [move_me_to_focus(what),
                        self.pick_it_up])
-        self.what=what
+        if type(what) == types.ListType:
+            self.what = what
+        else:
+            self.what = [ what ]
         self.vars=["what"]
     def is_it_with_me(self, me):
         #CHEAT!: cludge
-        what=self.what
-        if type(what)==StringType:
-            id=me.get_knowledge('focus',what)
-            if id==None: return 0
-            what=me.map.get(id)
-            if what==None: return 0
-        # If its not not near us on the ground, forget about it.
-        if what.location.parent.id!=me.location.parent.id:
-            me.remove_knowledge('focus',self.what)
-        return what.location.parent.id==me.id
+        for what in self.what:
+            id=me.get_knowledge('focus', what)
+            if id == None: continue
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+                continue
+            # If its not not near us on the ground, forget about it.
+            if thing.location.parent.id != me.location.parent.id:
+                me.remove_knowledge('focus', what)
+                continue
+            if thing.location.parent.id != me.id:
+                return 0
+        return 1
     def pick_it_up(self, me):
-        what=self.what
-        if type(what)==StringType:
-            id=me.get_knowledge('focus',what)
-            if id==None: return
-            what=me.map.get(id)
-            if what==None: return
-        return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
+        for what in self.what:
+            id=me.get_knowledge('focus', what)
+            if id==None: continue
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+                continue
+            if thing.location.parent.id != me.id:
+                return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
 
 ############################ WANDER ####################################
 

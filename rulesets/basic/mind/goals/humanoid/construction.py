@@ -5,6 +5,8 @@ from physics import *
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
 
+import types
+
 # Gather a resource from nearby
 # This is designed to be placed early in a complex goal, so it returns
 # as fulfilled when it has nothing to do
@@ -14,22 +16,24 @@ class gather(Goal):
                       self.is_there_none_around,
                       [spot_something(what),
                        pick_up_focus(what)])
-        self.what=what
+        if type(what) == types.ListType:
+            self.what = what
+        else:
+            self.what = [ what ]
         self.vars=["what"]
     def is_there_none_around(self, me):
         # A suitably range
-        square_nearest_dist=30
+        square_near_dist=30
         nearest=None
-        what_all=me.map.find_by_type(self.what)
-        for thing in what_all:
-            square_dist=square_distance(me.location, thing.location)
-            if square_dist<square_nearest_dist and thing.location.parent.id!=me.id:
-                nearest=thing
-                square_nearest_dist=square_dist
-        if nearest:
-            return 0
-        else:
-            return 1
+        nothing_near = 1
+        for what in self.what:
+            what_all=me.map.find_by_type(what)
+            for thing in what_all:
+                square_dist=square_distance(me.location, thing.location)
+                if square_dist < square_near_dist and \
+                   thing.location.parent.id != me.id:
+                    return 0
+        return 1
 
 # Harvest a resource from source at a place using a tool
 class harvest_resource(Goal):

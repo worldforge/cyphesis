@@ -1,3 +1,14 @@
+2007-04-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/basic/mind/goals/humanoid/construction.py:
+	  Re-write goals relating to gathering things off the ground
+	  to be clearer, more efficient, and to deal with lists of types.
+
+	* rulesets/mason/define_world.py: Use warrior test to test gathering
+	  lists of types.
+
 2007-04-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* autopackage/default.apspec.in: Re-enable static linking of C++
@@ -15795,4 +15806,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1769 2007-04-07 19:33:13 alriddoch Exp $
+$Id: ChangeLog,v 1.1770 2007-04-08 22:05:39 alriddoch Exp $

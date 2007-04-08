@@ -532,6 +532,7 @@ def default(mapeditor):
     m.know(warriors, [('services','price','5')])
     m.learn(warriors,(il.help,"add_help(['The forest is a dangerous place.','If you need some help protecting your pigs,','I can help you out for a day or so.','I will need some gold for food and equipment.','For 5 coins I can work for you until sundown.','After sundown you should make sure your pigs are safe,','and get indoors yourself.','If you want to hire my services,','let me know by saying you would like to hire me.'],['I would like to hire your services','I can take care of my pigs alone'])"))
     m.learn(warriors,(il.hire,"hire_trade()"))
+    m.learn(warriors,(il.forage,"gather('boots')"))
     m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
 
@@ -807,7 +808,7 @@ def test_warrior(mapeditor):
     m=editor(mapeditor)
     # An NPC warrior
     warrior=m.make('warrior',type='warrior',pos=(0, 12, 0), sex='male')
-    m.learn(warrior,(il.trade,"gather('loaf')"))
+    m.learn(warrior,(il.trade,"gather(['loaf', 'axe'])"))
 
 def test_chicken(mapeditor):
 
