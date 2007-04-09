@@ -1,5 +1,10 @@
 2007-04-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Have the warriors for hire gather
+	  up all the junk that is left around when unused characters die.
+
+2007-04-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py,
 	  rulesets/basic/mind/goals/common/move.py,
 	  rulesets/basic/mind/goals/humanoid/construction.py:
@@ -15806,4 +15811,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1770 2007-04-08 22:05:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1771 2007-04-09 01:56:58 alriddoch Exp $
