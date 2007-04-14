@@ -1,3 +1,6 @@
+Pig seller seems to assume he is being given coins when actually they
+are being handed round by other people.
+
 Look up in Python Nutshell about correct pre-processor stuff for python
 version and Py_ssize_t, and read up on ref-counting + exceptions. Read
 whole section on embedding.
