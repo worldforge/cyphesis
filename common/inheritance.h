@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.32 2007-01-14 21:55:22 alriddoch Exp $
+// $Id: inheritance.h,v 1.33 2007-04-22 23:07:19 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -44,7 +44,6 @@ class Inheritance {
 
     Inheritance();
 
-    void flush();
   public:
     static Inheritance & instance();
     static void clear();
@@ -63,6 +62,7 @@ class Inheritance {
     bool hasClass(const std::string & parent);
     int addChild(const Atlas::Objects::Root & obj);
     bool isTypeOf(const std::string &, const std::string &) const;
+    void flush();
 };
 
 Atlas::Objects::Root atlasOpDefinition(const std::string & name,

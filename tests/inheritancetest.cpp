@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritancetest.cpp,v 1.16 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: inheritancetest.cpp,v 1.17 2007-04-22 23:07:19 alriddoch Exp $
 
 #include "common/inheritance.h"
 
@@ -34,6 +34,8 @@
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
+using Atlas::Objects::smart_dynamic_cast;
+using Atlas::Objects::Operation::RootOperation;
 
 void descendTree(const Root & type, Inheritance & i, int & count)
 {
@@ -64,6 +66,8 @@ int main()
 {
     Inheritance & i = Inheritance::instance();
 
+    assert(&i == &Inheritance::instance());
+
     assert(i.opEnumerate("login") == OP_LOGIN);
     assert(i.opEnumerate("logout") == OP_LOGOUT);
     assert(i.opEnumerate("action") == OP_ACTION);
@@ -93,6 +97,32 @@ int main()
     assert(i.opEnumerate("error") == OP_ERROR);
     assert(i.opEnumerate("squigglymuff") == OP_INVALID);
 
+    const int OP_SQUIGGLYMUFF = Atlas::Objects::Factories::instance()->addFactory("squigglymuff", &Atlas::Objects::generic_factory);
+    
+    i.opInstall("squigglymuff", OP_SQUIGGLYMUFF);
+
+    // We haven't actually added the class yet
+    assert(!i.hasClass("squigglymuff"));
+
+    assert(i.opEnumerate("squigglymuff") != OP_INVALID);
+    assert(i.opEnumerate("squigglymuff") == OP_SQUIGGLYMUFF);
+
+    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == OP_LOGIN);
+    Root login_obj = Atlas::Objects::Factories::instance()->createObject("login");
+    RootOperation login_op = smart_dynamic_cast<RootOperation>(login_obj);
+    assert(login_op.isValid());
+    assert(i.opEnumerate(login_op) == OP_LOGIN);
+
+    Root squigglymuff_obj = Atlas::Objects::Factories::instance()->createObject("squigglymuff");
+    RootOperation squigglymuff_op = smart_dynamic_cast<RootOperation>(squigglymuff_obj);
+    assert(squigglymuff_op.isValid());
+    assert(i.opEnumerate(squigglymuff_op) == OP_SQUIGGLYMUFF);
+
+    assert(i.hasClass("root"));
+    assert(i.hasClass("root_entity"));
+    assert(i.hasClass("root_operation"));
+    assert(i.hasClass("login"));
+    
     const Root & rt = i.getClass("root");
 
     // Make sure the type tree is coherent, and contains a decent
@@ -107,7 +137,40 @@ int main()
     r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
     assert(i.addChild(r) != 0);
 
+    assert(!i.hasClass("squigglymuff"));
+
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "root_operation"));
+    assert(i.addChild(r) == 0);
+
+    assert(i.hasClass("squigglymuff"));
+
     assert(i.isTypeOf("disappearance", "root_operation"));
     assert(i.isTypeOf("root_operation", "root_operation"));
     assert(!i.isTypeOf("root_operation", "talk"));
+
+    // Make sure it clears out okay
+    i.flush();
+    assert(i.opEnumerate("login") == OP_INVALID);
+    assert(i.opEnumerate("squigglymuff") == OP_INVALID);
+    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == OP_LOGIN);
+    assert(i.opEnumerate(login_op) == OP_LOGIN);
+    assert(i.opEnumerate(squigglymuff_op) == OP_SQUIGGLYMUFF);
+
+    // Make sure the type for root can no longer be retrieved
+    const Root & non_root = i.getClass("root");
+    assert(i.getAllObjects().empty());
+    assert(!non_root.isValid());
+
+    // Make sure installing a child of root still fails.
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "root"));
+    assert(i.addChild(r) != 0);
+
+    assert(!i.hasClass("root"));
+    assert(!i.hasClass("root_entity"));
+    assert(!i.hasClass("root_operation"));
+    assert(!i.hasClass("login"));
+    assert(!i.hasClass("squigglymuff"));
+    
 }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.33 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.34 2007-04-22 23:07:18 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -94,6 +94,7 @@ Inheritance::Inheritance() : noClass(0)
 void Inheritance::flush()
 {
     atlasObjects.clear();
+    opLookup.clear();
 }
 
 Inheritance & Inheritance::instance()
@@ -153,15 +154,15 @@ int Inheritance::addChild(const Atlas::Objects::Root & obj)
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
     if (atlasObjects.find(child) != atlasObjects.end()) {
-        std::string msg = std::string("Installing type ") + child 
-                        + "(" + parent + ") which was already installed";
+        std::string msg = std::string("Installing type \"") + child 
+                        + "\"(\"" + parent + "\") which was already installed";
         log(ERROR, msg.c_str());
         return -1;
     }
     RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
-        std::string msg = std::string("Installing type ") + child 
-                        + " which has unknown parent \"" + parent + "\"";
+        std::string msg = std::string("Installing type \"") + child 
+                        + "\" which has unknown parent \"" + parent + "\"";
         log(ERROR, msg.c_str());
         return -1;
     }

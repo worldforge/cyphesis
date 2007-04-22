@@ -1,3 +1,17 @@
+2007-04-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.h: Expose flush() method for testing.
+
+	* common/inheritance.cpp: Improve error messages, and include
+	  the operation dictionary in the data structures cleared by flush().
+
+	* tests/logtest.cpp: Add more cases to cover the logging functions
+	  for libc errno reporting.
+
+	* tests/inheritancetest.cpp: Add many more cases to cover previously
+	  untested methods, and verify everything is as it should be when
+	  the class is cleared using flush().
+
 2007-04-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/log.h, common/log.cpp: Expose a new function to set up the
@@ -15829,4 +15843,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1774 2007-04-22 22:14:09 alriddoch Exp $
+$Id: ChangeLog,v 1.1775 2007-04-22 23:07:18 alriddoch Exp $

@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: logtest.cpp,v 1.5 2007-04-22 22:14:11 alriddoch Exp $
+// $Id: logtest.cpp,v 1.6 2007-04-22 23:07:19 alriddoch Exp $
 
 #include "common/log.h"
 #include "common/globals.h"
 
 #include <cassert>
+
+#include <errno.h>
 
 int main()
 {
@@ -32,6 +34,30 @@ int main()
     log(WARNING, "Warning log message.");
     log(SCRIPT_ERROR, "Script Error log message.");
     log(CRITICAL, "Critical log message.");
+
+    errno = 0;
+    logSysError(INFO);
+    logSysError(SCRIPT);
+    logSysError(NOTICE);
+    logSysError(WARNING);
+    logSysError(SCRIPT_ERROR);
+    logSysError(CRITICAL);
+
+    errno = -1;
+    logSysError(INFO);
+    logSysError(SCRIPT);
+    logSysError(NOTICE);
+    logSysError(WARNING);
+    logSysError(SCRIPT_ERROR);
+    logSysError(CRITICAL);
+
+    errno = EINVAL;
+    logSysError(INFO);
+    logSysError(SCRIPT);
+    logSysError(NOTICE);
+    logSysError(WARNING);
+    logSysError(SCRIPT_ERROR);
+    logSysError(CRITICAL);
 
     assert(testEventLog("/dev/null"));
 
