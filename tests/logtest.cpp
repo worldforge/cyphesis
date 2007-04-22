@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: logtest.cpp,v 1.4 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: logtest.cpp,v 1.5 2007-04-22 22:14:11 alriddoch Exp $
 
 #include "common/log.h"
 #include "common/globals.h"
@@ -33,5 +33,16 @@ int main()
     log(SCRIPT_ERROR, "Script Error log message.");
     log(CRITICAL, "Critical log message.");
 
+    assert(testEventLog("/dev/null"));
+
+    logEvent(START, "Test start event log message");
+    logEvent(STOP, "Test stop event log message");
+    logEvent(CONNECT, "Test connect event log message");
+    logEvent(DISCONNECT, "Test disconnect event log message");
+    logEvent(LOGIN, "Test login event log message");
+    logEvent(LOGOUT, "Test logout event log message");
+    logEvent(TAKE_CHAR, "Test take character event log message");
+    logEvent(DROP_CHAR, "Test drop character event log message");
+    
     return 0;
 }

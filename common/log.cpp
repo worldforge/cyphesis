@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.22 2007-03-19 16:17:08 alriddoch Exp $
+// $Id: log.cpp,v 1.23 2007-04-22 22:14:10 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -79,6 +79,12 @@ static void open_event_log()
         log(ERROR, String::compose("Unable to open event log file \"%1\"", event_log_file).c_str());
         logSysError(ERROR);
     }
+}
+
+bool testEventLog(const char * path)
+{
+   event_log.open(path, std::ios::out);
+   event_log.is_open();
 }
 
 void initLogger()

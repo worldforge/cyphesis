@@ -1,5 +1,12 @@
 2007-04-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/log.h, common/log.cpp: Expose a new function to set up the
+	  event log system for testing.
+
+	* tests/logtest.cpp: Add test cases for the event log calls.
+
+2007-04-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Increment to new version for release one of these
 	  days.
 
@@ -15822,4 +15829,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1773 2007-04-22 22:06:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1774 2007-04-22 22:14:09 alriddoch Exp $

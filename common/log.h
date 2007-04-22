@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.h,v 1.16 2006-11-02 02:02:41 alriddoch Exp $
+// $Id: log.h,v 1.17 2007-04-22 22:14:10 alriddoch Exp $
 
 #ifndef COMMON_LOG_H
 #define COMMON_LOG_H
@@ -37,5 +37,7 @@ void rotateLogger();
 void log(LogLevel, const char * msg);
 void logEvent(LogEvent, const char * msg);
 void logSysError(LogLevel);
+
+bool testEventLog(const char * path);
 
 #endif // COMMON_LOG_H
