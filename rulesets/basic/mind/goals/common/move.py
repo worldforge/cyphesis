@@ -429,6 +429,9 @@ class accompany(Goal):
         self.vars=["who"]
     def am_i_with(self, me):
         who=me.map.get(self.who)
+        if who == None:
+            self.irrelevant = 1
+            return 1
         dist=distance_to(me.location, who.location)
         # Are we further than 3 metres away
         if dist.square_mag() > 25:
@@ -445,6 +448,9 @@ class accompany(Goal):
             return 1
     def follow(self, me):
         who=me.map.get(self.who)
+        if who == None:
+            self.irrelevant = 1
+            return
         dist=distance_to(me.location, who.location)
         target = Location(me.location.parent)
         square_dist=dist.square_mag()

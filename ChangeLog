@@ -1,3 +1,9 @@
+2007-04-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/move.py: Expire the accompany goal
+	  used by mercenaries when the person they are working for no longer
+	  exists.
+
 2007-04-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Have the warriors for hire gather
@@ -15811,4 +15817,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1771 2007-04-09 01:56:58 alriddoch Exp $
+$Id: ChangeLog,v 1.1772 2007-04-22 21:54:00 alriddoch Exp $
