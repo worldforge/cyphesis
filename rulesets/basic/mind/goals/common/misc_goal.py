@@ -81,13 +81,12 @@ class get_thing(Goal):
         return me.things.has_key(self.what)
 
 class buy_thing(get_thing):
-    def __init__(self, me, what):
+    def __init__(self, what):
         #CHEAT!: doesn't work for static goals ;-(
         #goal systems needs redesign
-        place=me.get_knowledge("place",what)
         Goal.__init__(self,"buy thing by name (I am at shop)",
                       self.do_I_have_it,
-                      [move_me(place),
+                      [move_me_place(what),
                        self.buy_it])
         self.what=what
         self.vars=["what"]
@@ -105,7 +104,7 @@ class buy_thing(get_thing):
 ############################ ACQUIRE THING: BASE ##############################
 
 class acquire(Goal):
-    def is_it_in_my_inventory(self,me):
+    def is_it_in_my_inventory(self, me):
         if me.things.has_key(self.what):
             return me.things[self.what][0].location.parent==me
         return 0
@@ -113,10 +112,10 @@ class acquire(Goal):
 ############################ ACQUIRE KNOWN THING ##############################
 
 class acquire_known_thing(acquire):
-    def __init__(self, me, what):
+    def __init__(self, what):
         Goal.__init__(self,"acquire known thing by name",
                       self.is_it_in_my_inventory,
-                      [buy_thing(me,what),
+                      [buy_thing(what),
                        pick_up_possession(what)])
         self.what=what
         self.vars=["what"]
@@ -124,21 +123,21 @@ class acquire_known_thing(acquire):
 ############################ ACQUIRE THING ####################################
 
 class acquire_thing(acquire):
-    def __init__(self, me, what):
+    def __init__(self, what):
         Goal.__init__(self,"acquire thing by name",
                       self.is_it_in_my_inventory,
                       [get_knowledge(what),
-                       acquire_known_thing(me,what)])
+                       acquire_known_thing(what)])
         self.what=what
         self.vars=["what"]
         
 ############################ TASK WITH PLACE AND TOOL #########################
 
 class task(Goal):
-    def __init__(self, me, desc, time, place, what, tool):
+    def __init__(self, desc, time, place, what, tool):
         Goal.__init__(self,desc,
                       false,
-                      [acquire_thing(me,tool),
+                      [acquire_thing(tool),
                        move_me_area(place),
                        spot_something(what),
                        move_me_to_focus(what),
@@ -268,18 +267,18 @@ class feed(Goal):
 ########################## BUY AND EAT A MEAL #################################
 
 class meal(feed):
-    def __init__(self, me, what, time, place, seat=None):
+    def __init__(self, what, time, place, seat=None):
         if seat==None:
             Goal.__init__(self,"have a meal",
                           self.am_i_full,
                           [move_me_area(place,10),
-                           acquire_thing(me,what),
+                           acquire_thing(what),
                            self.eat],time)
         else:
             Goal.__init__(self,"have a meal",
                           self.am_i_full,
                           [move_me_area(place,10),
-                           acquire_thing(me,what),
+                           acquire_thing(what),
                            sit_down(seat),
                            self.eat],time)
         self.what=what
@@ -329,7 +328,7 @@ class peck(feed):
 ############################ BROWSE (FIND FOOD, EAT SOME, MOVE ON) ###########
 
 class browse(feed):
-    def __init__(self, me, what, min_status):
+    def __init__(self, what, min_status):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
                       [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o,"status") and o.status > s)),
@@ -354,7 +353,7 @@ class browse(feed):
 ############################ PREDATOR (HUNT SOMETHING, THEN EAT IT) ###########
 
 class predate(feed):
-    def __init__(self, me, what, range):
+    def __init__(self, what, range):
         Goal.__init__(self, "predate something",
                       self.am_i_full,
                       [spot_something(what, range=range),
@@ -366,7 +365,7 @@ class predate(feed):
         self.vars=["what","range"]
 
 class predate_small(feed):
-    def __init__(self, me, what, range, max_mass):
+    def __init__(self, what, range, max_mass):
         Goal.__init__(self, "predate something",
                       self.am_i_full,
                       [spot_something(what, range, condition=(lambda o,m=max_mass:hasattr(o,"mass") and o.mass < m)),
@@ -381,11 +380,11 @@ class predate_small(feed):
 ################### HUNT (SEARCH FOR SOMETHING, THEN KILL IT) #################
 
 class hunt(Goal):
-    def __init__(self, me, with, what, range):
+    def __init__(self, with, what, range):
         Goal.__init__(self, "hunt something",
                       self.none_in_range,
                       [spot_something(what, range),
-                       acquire_thing(me, with),
+                       acquire_thing(with),
                        hunt_for(what, range, 7),
                        self.fight])
         self.with=with
@@ -493,10 +492,10 @@ class sell_trade(Goal):
 ################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ################
 
 class trade(Goal):
-    def __init__(self, me, wbuy, tool, wsell, where, when=None):
+    def __init__(self, wbuy, tool, wsell, where, when=None):
         Goal.__init__(self, "trade at a market",
                       false,
-                      [acquire_thing(me,tool),
+                      [acquire_thing(tool),
                        buy_trade(wbuy, where),
                        self.process],
                       when)

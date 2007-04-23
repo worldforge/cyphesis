@@ -115,6 +115,23 @@ class move_me_area(Goal):
         #print "Latching at location"
         self.arrived=1
 
+############################ MOVE ME PLACE ####################################
+
+class move_me_place(move_me):
+    def __init__(self, what):
+        Goal.__init__(self, "move me to a place where I can get something",
+                      self.am_I_at_loc,
+                      [self.move_to_loc])
+        self.what = what
+        self.vars = ["what"]
+    def get_location_instance(self, me):
+        location = me.get_knowledge("place", self.what)
+        if type(location) == StringType:
+            location = me.get_knowledge("location", location)
+        if not location:
+            return None
+        return location
+
 ############################ MOVE THING ####################################
 
 class move_it(Goal):
@@ -331,7 +348,7 @@ class wander(Goal):
 ############################ WANDER & SEARCH ############################
 
 class search(Goal):
-    def __init__(self, me, what):
+    def __init__(self, what):
         Goal.__init__(self, "search for a thing",
                       self.do_I_have,
                       [wander(false),

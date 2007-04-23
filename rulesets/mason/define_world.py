@@ -135,7 +135,7 @@ deer_goals=[(il.avoid,"avoid(['settler','orc'],30.0)"),
             (il.avoid,"avoid(['fire'],10.0)"),
             (il.forage,"forage('apple')"),
             (il.forage,"forage('mushroom')"),
-            (il.browse,"browse(self, 'fir', 0.8)"),
+            (il.browse,"browse('fir', 0.8)"),
             (il.flock,"flock()")]
 
 chicken_goals=[(il.avoid,"avoid(['orc','wolf'],10.0)"),
@@ -148,13 +148,13 @@ squirrel_goals=[(il.avoid,"avoid(['wolf','crab'],10.0)"),
                 (il.forage,"forage('pinekernel')")]
 
 wolf_goals=[(il.forage,"forage('ham')"),
-            (il.hunt,"predate(self,'pig',30.0)"),
-            (il.hunt,"predate(self,'crab',20.0)"),
-            (il.hunt,"predate(self,'squirrel',10.0)"),
+            (il.hunt,"predate('pig',30.0)"),
+            (il.hunt,"predate('crab',20.0)"),
+            (il.hunt,"predate('squirrel',10.0)"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
 
 crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
-            (il.hunt,"predate_small(self,'pig',30.0,10.0)")]
+            (il.hunt,"predate_small('pig',30.0,10.0)")]
 
 lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
@@ -383,14 +383,14 @@ def default(mapeditor):
     axe=m.make('axe',type='axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
-    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
+    m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
 
     # An NPC forester
     settler=m.make('forester',type='settler',pos=(0, 12, 0), sex='male')
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
     m.know(settler,[('forest','location',(30,30,0))])
-    m.learn(settler,(il.trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
+    m.learn(settler,(il.trade,"plant_seeds('acorn','oak','forest','trowel')"))
 
     home1_pos=(90,-90,settlement_height)
     
@@ -401,7 +401,7 @@ def default(mapeditor):
     # An NPC Butcher
     butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
                    pos=butcher_pos,age=probability.fertility_age,sex='male')
-    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'ham', 'market')"))
+    m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','closed','evening')"))
@@ -484,8 +484,8 @@ def default(mapeditor):
     m.learn(merchant,(il.keep,"keep_livestock('pig', 'sty', 'sowee')"))
     m.learn(merchant,(il.sell,"sell_trade('pig', 'market', 'morning')"))
     m.learn(merchant,(il.sell,"sell_trade('pig', 'market', 'afternoon')"))
-    m.learn(merchant,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
-    m.learn(merchant,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
+    m.learn(merchant,(il.lunch,"meal('ham','midday', 'inn')"))
+    m.learn(merchant,(il.sup,"meal('beer', 'evening', 'inn')"))
     m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement','settler')"))
     m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'],['I would like to buy a pig', 'Pehaps I will buy one later'])"))
     piglets=[]
@@ -533,8 +533,8 @@ def default(mapeditor):
     m.learn(warriors,(il.help,"add_help(['The forest is a dangerous place.','If you need some help protecting your pigs,','I can help you out for a day or so.','I will need some gold for food and equipment.','For 5 coins I can work for you until sundown.','After sundown you should make sure your pigs are safe,','and get indoors yourself.','If you want to hire my services,','let me know by saying you would like to hire me.'],['I would like to hire your services','I can take care of my pigs alone'])"))
     m.learn(warriors,(il.hire,"hire_trade()"))
     m.learn(warriors,(il.forage,"gather(['boots', 'cloak', 'shirt', 'trousers', 'hat', 'skull', 'coin'])"))
-    m.learn(warriors,(il.lunch,"meal(self, 'ham','midday', 'inn')"))
-    m.learn(warriors,(il.sup,"meal(self, 'beer', 'evening', 'inn')"))
+    m.learn(warriors,(il.lunch,"meal('ham','midday', 'inn')"))
+    m.learn(warriors,(il.sup,"meal('beer', 'evening', 'inn')"))
 
     # Goblins
 
@@ -675,7 +675,7 @@ def test_browse(mapeditor):
     
     m=editor(mapeditor)
     deer = m.make('deer', type='deer', pos=(5, 0, settlement_height))
-    m.learn(deer, (il.browse,"browse(self, 'fir', 0.8)"))
+    m.learn(deer, (il.browse,"browse('fir', 0.8)"))
     m.make('fir',type='fir',pos=(-10,-0,settlement_height))
     m.make('fir',type='fir',pos=(-0,-10,settlement_height))
     m.make('fir',type='fir',pos=(0,10,settlement_height))
@@ -772,7 +772,7 @@ def test_butcher(mapeditor):
     cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
                    place='market', pos=(3,2.5,settlement_height))
     m.own(butcher,cleaver)
-    m.learn(butcher,(il.trade,"trade(self, 'pig', 'cleaver', 'cut', 'ham', 'market')"))
+    m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'cut', 'ham', 'market')"))
     piglet = m.make('pig', type='pig', pos=(3,2,0))
 
 def test_pig(mapeditor):
@@ -789,7 +789,7 @@ def test_settler(mapeditor):
     axe=m.make('axe',type='axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
-    m.learn(settler,(il.trade,"harvest_resource(self,'lumber','oak','forest','axe')"))
+    m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
     m.make('oak',pos=(32,32,0))
 
 def test_forester(mapeditor):
@@ -800,7 +800,7 @@ def test_forester(mapeditor):
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
     m.know(settler,[('forest','location',(30,30,0))])
-    m.learn(settler,(il.trade,"plant_seeds(self,'acorn','oak','forest','trowel')"))
+    m.learn(settler,(il.trade,"plant_seeds('acorn','oak','forest','trowel')"))
     m.make('oak',pos=(32,32,0))
 
 def test_warrior(mapeditor):

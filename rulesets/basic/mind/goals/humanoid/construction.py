@@ -37,10 +37,10 @@ class gather(Goal):
 
 # Harvest a resource from source at a place using a tool
 class harvest_resource(Goal):
-    def __init__(self, me, what, source, place, tool):
+    def __init__(self, what, source, place, tool):
         Goal.__init__(self, "Gather a resource using a tool",
                       false,
-                      [acquire_thing(me,tool),
+                      [acquire_thing(tool),
                        move_me_area(place),
                        gather(what),
                        spot_something(source),
@@ -66,10 +66,10 @@ class harvest_resource(Goal):
         return Operation("use",Entity(target, objtype="obj"))
 
 class plant_seeds(Goal):
-    def __init__(self, me, what, source, place, tool):
+    def __init__(self, what, source, place, tool):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,
-                      [acquire_thing(me, tool),
+                      [acquire_thing(tool),
                        move_me_area(place),
                        spot_something(source),
                        move_me_to_focus(source),
