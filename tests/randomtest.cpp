@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: randomtest.cpp,v 1.3 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: randomtest.cpp,v 1.4 2007-04-23 11:33:41 alriddoch Exp $
 
 #include "common/random.h"
 
@@ -30,24 +30,45 @@ int main()
     int int2 = randint(-2000000, 2000000);
     int previ = randint(std::min(int1, int2), std::max(int1, int2));
 
+    assert(int1 != int2);
+    assert(previ != int1);
+    assert(previ != int2);
+
     float float1 = uniform(-2000000.f, 2000000.f);
     float float2 = uniform(-2000000.f, 2000000.f);
     float prevf = uniform(std::min(float1, float2), std::max(float1, float2));
 
-    for (int i = 0; i < 1000; ++i) {
-        int int1 = randint(-2000000, 2000000);
-        int int2 = randint(-2000000, 2000000);
+    assert(float1 != float2);
+    assert(prevf != float1);
+    assert(prevf != float2);
 
-        float float1 = uniform(-2000000.f, 2000000.f);
-        float float2 = uniform(-2000000.f, 2000000.f);
+    for (int i = 0; i < 1000; ++i) {
+        int1 = randint(-2000000, 2000000);
+        int2 = randint(-2000000, 2000000);
+
+        assert(int1 != int2);
+
+        float1 = uniform(-2000000.f, 2000000.f);
+        float2 = uniform(-2000000.f, 2000000.f);
+
+        assert(float1 != float2);
 
         int num = randint(std::min(int1, int2), std::max(int1, int2));
-        std::cout << num << ":" << previ << " " << int1 << ":" << int2 << std::endl << std::flush;
+        std::cout << num << ":" << previ << " " << int1 << ":" << int2
+                  << std::endl << std::flush;
+        assert(num != int1);
+        assert(num != int2);
         assert(num != previ);
+        assert(num > std::min(int1, int2));
+        assert(num < std::max(int1, int2));
         previ = num;
 
         float fl = uniform(std::min(float1, float2), std::max(float1, float2));
         assert(fl != prevf);
+        assert(fl != float1);
+        assert(fl != float2);
+        assert(fl > std::min(float1, float2));
+        assert(fl < std::max(float1, float2));
         prevf = fl;
     }
 }
