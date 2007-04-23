@@ -1,5 +1,9 @@
 2007-04-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/systemtest.cpp: Cover security check function, and priority.
+
+2007-04-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.h: Expose flush() method for testing.
 
 	* common/inheritance.cpp: Improve error messages, and include
@@ -15843,4 +15847,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1775 2007-04-22 23:07:18 alriddoch Exp $
+$Id: ChangeLog,v 1.1776 2007-04-23 11:22:13 alriddoch Exp $
