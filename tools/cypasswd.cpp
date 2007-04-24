@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cypasswd.cpp,v 1.34 2006-12-26 18:24:26 alriddoch Exp $
+// $Id: cypasswd.cpp,v 1.35 2007-04-24 12:59:29 alriddoch Exp $
 
 /// \page cypasswd_index
 ///
@@ -55,9 +55,24 @@ using Atlas::Message::MapType;
 #define SET 1
 #define DEL 2
 
-void usage(char * n)
+void usage(std::ostream & stream, char * n, bool verbose = false)
 {
-    std::cerr << "usage: " << n << " [ { -a | -s | -d } account ]" << std::endl << std::flush;
+    stream << "usage: " << n << std::endl;
+    stream << "       " << n << " { -a | -s | -d } account" << std::endl;
+    stream << "       " << n << " -h" << std::endl;
+    if (!verbose) {
+        stream << std::flush;
+        return;
+    }
+    stream << std::endl;
+    stream << "Help options" << std::endl;
+    stream << "  -h                          Display this help" << std::endl;
+    stream << std::endl;
+    stream << "Managing accounts" << std::endl;
+    stream << "  -a                          Add a new account" << std::endl;
+    stream << "  -s                          Set the password on" << std::endl;
+    stream << "                              an existing account" << std::endl;
+    stream << "  -d                          Delete an account" << std::endl;
 }
 
 int main(int argc, char ** argv)
@@ -82,17 +97,23 @@ int main(int argc, char ** argv)
                 action = SET;
             } else if (c == 'd') {
                 action = DEL;
+            } else if (c == 'h') {
+                usage(std::cout, argv[0], true);
+                return 0;
             } else {
-                usage(argv[0]);
+                usage(std::cerr, argv[0]);
                 return 1;
             }
             acname = argv[2];
         } else {
-            usage(argv[0]);
+            usage(std::cerr, argv[0]);
             return 1;
         }
+    } else if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'h') {
+        usage(std::cout, argv[0], true);
+        return 0;
     } else {
-        usage(argv[0]);
+        usage(std::cerr, argv[0]);
         return 1;
     }
 

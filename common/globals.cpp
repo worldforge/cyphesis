@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.40 2007-03-20 14:50:39 alriddoch Exp $
+// $Id: globals.cpp,v 1.41 2007-04-24 12:59:28 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -74,6 +74,9 @@ int loadConfig(int argc, char ** argv, bool server)
 {
     global_conf = varconf::Config::inst();
 
+    global_conf->setParameterLookup('h', "help");
+    global_conf->setParameterLookup('?', "help");
+
     // See if the user has set the install directory on the command line
     bool home_dir_config = false;
     char * home = getenv("HOME");
@@ -84,6 +87,10 @@ int loadConfig(int argc, char ** argv, bool server)
     }
 
     global_conf->getCmdline(argc, argv);
+
+    if (global_conf->findItem("", "help")) {
+        std::cout << "Got request for usage" << std::endl << std::flush;
+    }
 
     // Check if the config directory has been overriden at this point, as if
     // it has, that will affect loading the main config.

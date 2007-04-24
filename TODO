@@ -6,13 +6,6 @@ are being handed round by other people.
 Look up in Python Nutshell and read up on ref-counting + exceptions. Read
 whole section on embedding.
 
-acquire_thing still takes a reference to self when initialising. Not good
-enough, must fix.
-
-Can we just install non-Persistent factories in EntityFactory if database
-is disabled? Think so, then we could remove database checks from the persistor
-code.
-
 ServerRouting owns accounts currently, so have it encapsulate the whole
 database thing. Check if the findAccount test is a good reason not to do
 this.
@@ -20,8 +13,6 @@ this.
 metaserver needs to reinitialise if bind is lost.
 
 Make sure autopackage uses /var/tmp rather than PREFIX/var/tmp
-
-Make enable/disable database a run time option.
 
 Instrument BaseMind/MemMap to detect mutiple additions of the same thing
 to the same mind.

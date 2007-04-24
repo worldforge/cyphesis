@@ -1,5 +1,12 @@
 2007-04-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cypasswd.cpp: Improve the usage documentation.
+
+	* common/globals.cpp: Add a varconf parameter lookup to allow
+	  shorthand arguments to be used to request usage information.
+
+2007-04-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py,
 	  rulesets/basic/mind/goals/common/move.py,
 	  rulesets/basic/mind/goals/humanoid/construction.py,
@@ -15861,4 +15868,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1778 2007-04-23 23:42:38 alriddoch Exp $
+$Id: ChangeLog,v 1.1779 2007-04-24 12:59:26 alriddoch Exp $
