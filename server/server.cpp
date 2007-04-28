@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.143 2007-04-28 15:21:18 alriddoch Exp $
+// $Id: server.cpp,v 1.144 2007-04-28 16:45:15 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -73,6 +73,7 @@ int main(int argc, char ** argv)
 
             return 0;
         } else if (config_status == CONFIG_HELP) {
+            showUsage(argv[0], USAGE_SERVER);
             return 0;
         } else if (config_status != CONFIG_ERROR) {
             log(ERROR, "Unknown error reading configuration.");

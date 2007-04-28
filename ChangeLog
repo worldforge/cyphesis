@@ -1,5 +1,15 @@
 2007-04-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp, common/globals.h: Add interfact and mechanism
+	  for showing usage data for all the programs given one central
+	  location for the data.
+
+	* server/server.cpp: Test out the usage function.
+
+	* tools/cypasswd.cpp: Display usage using the old mechanism.
+
+2007-04-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* commong/globals.h, common/globals.cpp: Add definitions for different
 	  error codes from reading the config file, in particular codes that
 	  indicate that the user has requested version, help or usage
@@ -15883,4 +15893,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1780 2007-04-28 15:21:17 alriddoch Exp $
+$Id: ChangeLog,v 1.1781 2007-04-28 16:45:13 alriddoch Exp $

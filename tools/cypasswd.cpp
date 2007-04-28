@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cypasswd.cpp,v 1.36 2007-04-28 15:21:18 alriddoch Exp $
+// $Id: cypasswd.cpp,v 1.37 2007-04-28 16:45:16 alriddoch Exp $
 
 /// \page cypasswd_index
 ///
@@ -84,6 +84,7 @@ int main(int argc, char ** argv)
             reportVersion(argv[0]);
             return 0;
         } else if (config_status == CONFIG_HELP) {
+            usage(std::cout, argv[0]);
             return 0;
         } else if (config_status != CONFIG_ERROR) {
             log(ERROR, "Unknown error reading configuration.");

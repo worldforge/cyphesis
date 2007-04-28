@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.42 2007-04-28 15:21:18 alriddoch Exp $
+// $Id: globals.cpp,v 1.43 2007-04-28 16:45:15 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -31,6 +31,8 @@
 #include "modules/DateTime.h"
 
 #include <varconf/config.h>
+
+#include <algorithm>
 
 #include <sys/stat.h>
 
@@ -55,6 +57,32 @@ int slave_port_num = 6768;
 int peer_port_num = 6769;
 
 static const char * FALLBACK_LOCALSTATEDIR = "/var";
+static const char * DEFAULT_RULESET = "basic";
+
+static const int S = USAGE_SERVER;
+static const int C = USAGE_CLIENT;
+static const int M = USAGE_CYCMD;
+static const int D = USAGE_DBASE;
+
+typedef struct {
+    const char * arg;
+    const char * dflt;
+    const char * description;
+    int flags;
+} usage_data;
+
+static const usage_data usage[] = {
+    { "--cyphesis:directory=<directory>", "", "Directory where server data and scripts can be found", S|C },
+    { "--cyphesis:confdir=<directory>", "", "Directory where server config can be found", S|C },
+    { "--cyphesis:vardir=<directory>", "", "Directory where temporary files can be stored", S|C },
+    { "--cyphesis:ruleset=<name>", DEFAULT_RULESET, "Ruleset name", S|C },
+    { "--cyphesis:servername=<name>", "<hostname>", "Published name of the server", S|C },
+    { "--cyphesis:tcpport=<portnumber>", "6767", "", S|C },
+    { "--cyphesis:=<>", "", "", S|C },
+    { "--cyphesis:=<>", "", "", S|C },
+    { "--cyphesis:=<>", "", "", S|C },
+    { 0, 0, 0, 0 }
+};
 
 static int check_tmp_path(const std::string & dir)
 {
@@ -187,9 +215,9 @@ int loadConfig(int argc, char ** argv, bool server)
     };
 
     if (rulesets.empty()) {
-        log(ERROR, "No ruleset specified in config. Using \"basic\" rules.");
+        log(ERROR, String::compose("No ruleset specified in config. Using \"%1\" rules.", DEFAULT_RULESET).c_str());
         log(INFO, "The basic rules don't allow much, so this should be rectified.");
-        rulesets.push_back("basic");
+        rulesets.push_back(DEFAULT_RULESET);
     }
 
     if (check_tmp_path(var_directory) != 0) {
@@ -220,4 +248,35 @@ void reportVersion(const char * prgname)
 {
     std::cout << prgname << " (cyphesis) " << consts::version
               << " (WorldForge)" << std::endl << std::flush;
+}
+
+void showUsage(const char * prgname, int args)
+{
+    std::cout << "Usage: " << prgname << " [options]" << std::endl;
+    std::cout << "Options:" << std::endl;
+    
+    size_t column_width = 0;
+
+    const usage_data * ud = &usage[0];
+    for (; ud->arg != 0; ++ud) {
+        column_width = std::max(column_width, strlen(ud->arg));
+    }
+
+    std::cout << "Column_width " << column_width << std::endl << std::flush;
+    
+    ud = &usage[0];
+    for (; ud->arg != 0; ++ud) {
+        if ((ud->flags | args) == 0) {
+            continue;
+        }
+        std::cout << "  " << ud->arg;
+        if (ud->dflt != 0 && strlen(ud->dflt) != 0) {
+            std::cout << std::string(column_width - strlen(ud->arg) + 2, ' ')
+                      << "= " << ud->dflt << std::endl;
+        } else {
+            std::cout << std::endl;
+        }
+        std::cout << "      " << ud->description << std::endl;
+    }
+    std::cout << std::flush;
 }
