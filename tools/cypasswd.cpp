@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cypasswd.cpp,v 1.35 2007-04-24 12:59:29 alriddoch Exp $
+// $Id: cypasswd.cpp,v 1.36 2007-04-28 15:21:18 alriddoch Exp $
 
 /// \page cypasswd_index
 ///
@@ -32,6 +32,7 @@
 
 #include "common/accountbase.h"
 #include "common/globals.h"
+#include "common/log.h"
 
 #include <string>
 #include <iostream>
@@ -77,7 +78,16 @@ void usage(std::ostream & stream, char * n, bool verbose = false)
 
 int main(int argc, char ** argv)
 {
-    if (loadConfig(argc, argv) < 0) {
+    int config_status = loadConfig(argc, argv);
+    if (config_status < 0) {
+        if (config_status == CONFIG_VERSION) {
+            reportVersion(argv[0]);
+            return 0;
+        } else if (config_status == CONFIG_HELP) {
+            return 0;
+        } else if (config_status != CONFIG_ERROR) {
+            log(ERROR, "Unknown error reading configuration.");
+        }
         // Fatal error loading config file
         return 1;
     }

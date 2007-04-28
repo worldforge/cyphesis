@@ -92,6 +92,7 @@ cyaddrules_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/prefix.o \
+                   $(top_builddir)/common/const.o \
                    $(top_builddir)/common/log.o \
                    $(NETWORKTOOL_LIBS) \
                    $(TOOL_LIBS)
@@ -102,6 +103,7 @@ cyloadrules_LDADD = $(top_builddir)/modules/DateTime.o \
                     $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/prefix.o \
+                    $(top_builddir)/common/const.o \
                     $(top_builddir)/common/log.o \
                     $(top_builddir)/common/id.o \
                     $(DBTOOL_LIBS)
@@ -112,6 +114,7 @@ cydumprules_LDADD = $(top_builddir)/modules/DateTime.o \
                     $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/prefix.o \
+                    $(top_builddir)/common/const.o \
                     $(top_builddir)/common/log.o \
                     $(top_builddir)/common/id.o \
                     $(DBTOOL_LIBS)
@@ -123,6 +126,7 @@ cypasswd_LDADD = $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/common/accountbase.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/prefix.o \
+                 $(top_builddir)/common/const.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/id.o \
                  $(top_builddir)/common/system.o \

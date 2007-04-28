@@ -15,14 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.41 2007-04-24 12:59:28 alriddoch Exp $
+// $Id: globals.cpp,v 1.42 2007-04-28 15:21:18 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include "prefix.h"
 #include "globals.h"
+
+#include "prefix.h"
+#include "const.h"
 #include "log.h"
 #include "compose.hpp"
 
@@ -77,6 +79,8 @@ int loadConfig(int argc, char ** argv, bool server)
     global_conf->setParameterLookup('h', "help");
     global_conf->setParameterLookup('?', "help");
 
+    global_conf->setParameterLookup('v', "version");
+
     // See if the user has set the install directory on the command line
     bool home_dir_config = false;
     char * home = getenv("HOME");
@@ -88,8 +92,12 @@ int loadConfig(int argc, char ** argv, bool server)
 
     global_conf->getCmdline(argc, argv);
 
+    if (global_conf->findItem("", "version")) {
+        return CONFIG_VERSION;
+    }
+
     if (global_conf->findItem("", "help")) {
-        std::cout << "Got request for usage" << std::endl << std::flush;
+        return CONFIG_HELP;
     }
 
     // Check if the config directory has been overriden at this point, as if
@@ -113,7 +121,7 @@ int loadConfig(int argc, char ** argv, bool server)
         } else {
             log(INFO, "Please ensure that cyphesis has been installed correctly.");
         }
-        return -1;
+        return CONFIG_ERROR;
     }
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
@@ -206,4 +214,10 @@ int loadConfig(int argc, char ** argv, bool server)
     }
 
     return optind;
+}
+
+void reportVersion(const char * prgname)
+{
+    std::cout << prgname << " (cyphesis) " << consts::version
+              << " (WorldForge)" << std::endl << std::flush;
 }

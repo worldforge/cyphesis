@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.22 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: globals.h,v 1.23 2007-04-28 15:21:18 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -45,6 +45,12 @@ extern int client_port_num;
 extern int slave_port_num;
 extern int peer_port_num;
 
+static const int CONFIG_OKAY = 0;
+static const int CONFIG_ERROR = -1;
+static const int CONFIG_HELP = -2;
+static const int CONFIG_VERSION = -3;
+
 int loadConfig(int argc, char ** argv, bool server = false);
+void reportVersion(const char * prgname);
 
 #endif // COMMON_GLOBALS_H

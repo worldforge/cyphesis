@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.142 2007-02-20 14:56:31 alriddoch Exp $
+// $Id: server.cpp,v 1.143 2007-04-28 15:21:18 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -64,7 +64,19 @@ int main(int argc, char ** argv)
 
     interactive_signals();
 
-    if (loadConfig(argc, argv, true) < 0) {
+    int config_status = loadConfig(argc, argv, true);
+    if (config_status < 0) {
+        if (config_status == CONFIG_VERSION) {
+            std::cout << argv[0] << " (cyphesis) " << consts::version
+                      << " (WorldForge build " << consts::buildId << ")"
+                      << std::endl << std::flush;
+
+            return 0;
+        } else if (config_status == CONFIG_HELP) {
+            return 0;
+        } else if (config_status != CONFIG_ERROR) {
+            log(ERROR, "Unknown error reading configuration.");
+        }
         // Fatal error loading config file
         return EXIT_CONFIG_ERROR;
     }

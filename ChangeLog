@@ -1,3 +1,18 @@
+2007-04-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* commong/globals.h, common/globals.cpp: Add definitions for different
+	  error codes from reading the config file, in particular codes that
+	  indicate that the user has requested version, help or usage
+	  information. Add a function for reporting the version of tools.
+
+	* server/server.cpp: Add support for version or usage arguments,
+	  including specific reporting of the server build number, which is
+	  does not apply when reporting the version of other components.
+
+	* tools/Makefile.am: Fix the globals modules dependency on consts.
+
+	* tools/cypasswd.cpp: Add support for version or usage arguments.
+
 2007-04-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cypasswd.cpp: Improve the usage documentation.
@@ -15868,4 +15883,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1779 2007-04-24 12:59:26 alriddoch Exp $
+$Id: ChangeLog,v 1.1780 2007-04-28 15:21:17 alriddoch Exp $
