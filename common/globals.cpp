@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.43 2007-04-28 16:45:15 alriddoch Exp $
+// $Id: globals.cpp,v 1.44 2007-04-28 20:13:08 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -38,12 +38,16 @@
 
 #include <cassert>
 
+static const char * DEFAULT_RULESET = "basic";
+static const char * DEFAULT_CLIENT_SOCKET = "cyphesis.sock";
+static const char * DEFAULT_SLAVE_SOCKET = "cyslave.sock";
+
 varconf::Config * global_conf = NULL;
 std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
-std::string client_socket_name("cyphesis.sock");
-std::string slave_socket_name("cyslave.sock");
+std::string client_socket_name(DEFAULT_CLIENT_SOCKET);
+std::string slave_socket_name(DEFAULT_SLAVE_SOCKET);
 std::vector<std::string> rulesets;
 bool exit_flag = false;
 bool daemon_flag = false;
@@ -57,7 +61,6 @@ int slave_port_num = 6768;
 int peer_port_num = 6769;
 
 static const char * FALLBACK_LOCALSTATEDIR = "/var";
-static const char * DEFAULT_RULESET = "basic";
 
 static const int S = USAGE_SERVER;
 static const int C = USAGE_CLIENT;
@@ -65,22 +68,36 @@ static const int M = USAGE_CYCMD;
 static const int D = USAGE_DBASE;
 
 typedef struct {
-    const char * arg;
+    const char * section;
+    const char * option;
+    const char * value;
     const char * dflt;
     const char * description;
     int flags;
 } usage_data;
 
 static const usage_data usage[] = {
-    { "--cyphesis:directory=<directory>", "", "Directory where server data and scripts can be found", S|C },
-    { "--cyphesis:confdir=<directory>", "", "Directory where server config can be found", S|C },
-    { "--cyphesis:vardir=<directory>", "", "Directory where temporary files can be stored", S|C },
-    { "--cyphesis:ruleset=<name>", DEFAULT_RULESET, "Ruleset name", S|C },
-    { "--cyphesis:servername=<name>", "<hostname>", "Published name of the server", S|C },
-    { "--cyphesis:tcpport=<portnumber>", "6767", "", S|C },
-    { "--cyphesis:=<>", "", "", S|C },
-    { "--cyphesis:=<>", "", "", S|C },
-    { "--cyphesis:=<>", "", "", S|C },
+    { "cyphesis", "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
+    { "cyphesis", "confdir", "<directory>", "", "Directory where server config can be found", S|C },
+    { "cyphesis", "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C },
+    { "cyphesis", "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C },
+    { "cyphesis", "servername", "<name>", "<hostname>", "Published name of the server", S|C },
+    { "cyphesis", "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C },
+    { "cyphesis", "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C },
+    { "cyphesis", "restricted", "true|false", "false", "Flag to control restricted mode", S },
+    { "cyphesis", "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
+    { "cyphesis", "metaserver", "<hostname>", "metaserver.worldforge.org", "Hostname to use as the metaserver", S },
+    { "cyphesis", "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
+    { "cyphesis", "useaiclient", "true|false", "false", "Flag to control whether AI is to be driven by a client", S },
+    { "cyphesis", "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S },
+    { "cyphesis", "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S },
+    { "cyphesis", "dbuser", "<dbusername>", "<username>", "Database user name for access", S },
+    { "cyphesis", "dbpasswd", "<dbusername>", "", "Database password for access", S },
+    { "client", "package", "<package_name>", "define_world", "Python package which contains the world initialisation code", C },
+    { "client", "function", "<function_name>", "default", "Python function to initialise the world", C },
+    { "client", "serverhost", "<hostname>", "localhost", "Hostname of the server to connect to", S|C },
+    { "client", "account", "<username>", "admin", "Account name to use to authenticate to the server", S|C },
+    { "client", "password", "<password>", "", "Password to use to authenticate to the server", S|C },
     { 0, 0, 0, 0 }
 };
 
@@ -258,24 +275,28 @@ void showUsage(const char * prgname, int args)
     size_t column_width = 0;
 
     const usage_data * ud = &usage[0];
-    for (; ud->arg != 0; ++ud) {
-        column_width = std::max(column_width, strlen(ud->arg));
+    for (; ud->section != 0; ++ud) {
+        column_width = std::max(column_width, strlen(ud->section) + strlen(ud->option) + strlen(ud->value) + 2);
     }
 
-    std::cout << "Column_width " << column_width << std::endl << std::flush;
-    
     ud = &usage[0];
-    for (; ud->arg != 0; ++ud) {
-        if ((ud->flags | args) == 0) {
+    for (; ud->section != 0; ++ud) {
+        if ((ud->flags & args) == 0) {
             continue;
         }
-        std::cout << "  " << ud->arg;
-        if (ud->dflt != 0 && strlen(ud->dflt) != 0) {
-            std::cout << std::string(column_width - strlen(ud->arg) + 2, ' ')
-                      << "= " << ud->dflt << std::endl;
-        } else {
-            std::cout << std::endl;
+        std::cout << "  --" << ud->section << ":" << ud->option;
+        if (ud->value != 0 && strlen(ud->value) != 0) {
+            std::cout << "=" << ud->value;
         }
+        if (ud->dflt != 0 && strlen(ud->dflt) != 0) {
+            size_t len = strlen(ud->section) + 1 + strlen(ud->option);
+            if (ud->value != 0 && strlen(ud->value) != 0) {
+                len += (strlen(ud->value) + 1);
+            }
+            std::cout << std::string(column_width - len + 2, ' ')
+                      << "= " << ud->dflt;
+        }
+        std::cout << std::endl;
         std::cout << "      " << ud->description << std::endl;
     }
     std::cout << std::flush;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.24 2007-04-28 16:45:15 alriddoch Exp $
+// $Id: globals.h,v 1.25 2007-04-28 20:13:08 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -51,9 +51,9 @@ static const int CONFIG_HELP = -2;
 static const int CONFIG_VERSION = -3;
 
 static const int USAGE_SERVER = 1 << 0;
-static const int USAGE_CLIENT = 1 << 0;
-static const int USAGE_CYCMD = 1 << 0;
-static const int USAGE_DBASE = 1 << 0;
+static const int USAGE_CLIENT = 1 << 1;
+static const int USAGE_CYCMD = 1 << 2;
+static const int USAGE_DBASE = 1 << 3;
 
 int loadConfig(int argc, char ** argv, bool server = false);
 void reportVersion(const char * prgname);
