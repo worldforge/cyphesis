@@ -1,5 +1,12 @@
 2007-04-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.h, common/globals.cpp: Break option data down into
+	  sections, fix scoping, and fill out most of the options used.
+
+	* client/client.cpp: Add version and usage reporting calls.
+
+2007-04-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp, common/globals.h: Add interfact and mechanism
 	  for showing usage data for all the programs given one central
 	  location for the data.
@@ -15893,4 +15900,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1781 2007-04-28 16:45:13 alriddoch Exp $
+$Id: ChangeLog,v 1.1782 2007-04-29 02:11:25 alriddoch Exp $

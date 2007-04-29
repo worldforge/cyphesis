@@ -152,7 +152,8 @@ class NPCMind(BaseMind):
             self.add_thing(obj)
             if original_op.from_ != self.id:
                 self.transfers.append((op.from_, obj.id))
-            if obj.type[0]=="coin":
+            if obj.type[0]=="coin" and op.from_ != self.id:
+                print "money transer ", obj.location.parent.id, self.id, op.from_, original_op.from_
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
     #replaced with dynamically added add_extinguish_fire -goal

@@ -56,8 +56,15 @@ class Logging(Thing):
             # print "Normal ", normal, normal.dot(Vector3D(0,0,1))
             if normal.dot(Vector3D(0,0,1)) > 0.8:
                 # print "Fall down"
-                chop=Operation("cut", Entity(self.target), to=self.tool)
-                res.append(chop)
+                # chop=Operation("cut", Entity(self.target), to=self.tool)
+                # res.append(chop)
+                axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
+                axis.normalize()
+                orient = target.location.orientation
+                orient.rotation(axis, PI / 2)
+                move_arg = entity(self.target)
+                move_arg.location.parent FIXME from here:
+                move = Operation("move", Entity(self.target), to = self.target)
             elif current_status > 0.2:
                 set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
                 res.append(set)

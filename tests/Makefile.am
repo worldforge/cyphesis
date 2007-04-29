@@ -36,6 +36,7 @@ check_PROGRAMS = $(TESTS)
 logtest_SOURCES = logtest.cpp
 logtest_LDADD = $(top_builddir)/modules/DateTime.o \
                 $(top_builddir)/common/log.o \
+                $(top_builddir)/common/const.o \
                 $(top_builddir)/common/prefix.o \
                 $(top_builddir)/common/globals.o
 
@@ -45,6 +46,7 @@ inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \
                         $(top_builddir)/common/log.o \
+                        $(top_builddir)/common/const.o \
                         $(top_builddir)/common/prefix.o \
                         $(top_builddir)/common/globals.o
 
@@ -58,6 +60,7 @@ BaseEntitytest_LDADD = $(top_builddir)/modules/DateTime.o \
                        $(top_builddir)/common/inheritance.o \
                        $(top_builddir)/common/custom.o \
                        $(top_builddir)/common/log.o \
+                       $(top_builddir)/common/const.o \
                        $(top_builddir)/common/prefix.o \
                        $(top_builddir)/common/globals.o \
                        $(top_builddir)/common/serialno.o
@@ -70,6 +73,7 @@ OOGThingtest_LDADD = $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/common/custom.o \
                      $(top_builddir)/common/operations.o \
                      $(top_builddir)/common/log.o \
+                     $(top_builddir)/common/const.o \
                      $(top_builddir)/common/prefix.o \
                      $(top_builddir)/common/globals.o \
                      $(top_builddir)/common/serialno.o
@@ -78,6 +82,7 @@ systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/system.o \
                    $(top_builddir)/common/log.o \
+                   $(top_builddir)/common/const.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/globals.o \
                    $(NETWORK_LIBS)
@@ -147,6 +152,7 @@ AtlasFileLoadertest_SOURCES = AtlasFileLoadertest.cpp
 AtlasFileLoadertest_LDADD = $(top_builddir)/common/AtlasFileLoader.o \
                             $(top_builddir)/modules/DateTime.o \
                             $(top_builddir)/common/log.o \
+                            $(top_builddir)/common/const.o \
                             $(top_builddir)/common/prefix.o \
                             $(top_builddir)/common/globals.o
 
@@ -165,12 +171,14 @@ Databasetest_LDADD = $(top_builddir)/common/Database.o \
                      $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/common/log.o \
                      $(top_builddir)/common/id.o \
+                     $(top_builddir)/common/const.o \
                      $(top_builddir)/common/prefix.o \
                      $(top_builddir)/common/globals.o
 
 idtest_SOURCES = idtest.cpp
 idtest_LDADD = $(top_builddir)/modules/DateTime.o \
                $(top_builddir)/common/log.o \
+               $(top_builddir)/common/const.o \
                $(top_builddir)/common/prefix.o \
                $(top_builddir)/common/globals.o \
                $(top_builddir)/common/id.o
@@ -182,6 +190,7 @@ accountbasetest_LDADD = $(top_builddir)/common/accountbase.o \
                         $(top_builddir)/common/system.o \
                         $(top_builddir)/common/log.o \
                         $(top_builddir)/common/id.o \
+                        $(top_builddir)/common/const.o \
                         $(top_builddir)/common/prefix.o \
                         $(top_builddir)/common/globals.o
 
