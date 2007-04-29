@@ -1,3 +1,14 @@
+2007-04-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/NPCMind.py: Make sure money transfers are only
+	  detected if the NPC is not picking up the money themselves.
+
+	* rulesets/mason/world/tasks/Logging.py: Half written broken re-write
+	  of the way the logging task handles causing the tree to fall over.
+
+	* tests/Makefile.am: Fix depencies in the tests affected by version
+	  reporting code.
+
 2007-04-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.h, common/globals.cpp: Break option data down into
@@ -15900,4 +15911,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1782 2007-04-29 02:11:25 alriddoch Exp $
+$Id: ChangeLog,v 1.1783 2007-04-29 02:21:54 alriddoch Exp $
