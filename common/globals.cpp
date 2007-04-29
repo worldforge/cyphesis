@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.44 2007-04-28 20:13:08 alriddoch Exp $
+// $Id: globals.cpp,v 1.45 2007-04-29 13:32:31 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -78,26 +78,29 @@ typedef struct {
 
 static const usage_data usage[] = {
     { "cyphesis", "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
-    { "cyphesis", "confdir", "<directory>", "", "Directory where server config can be found", S|C },
-    { "cyphesis", "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C },
-    { "cyphesis", "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C },
+    { "cyphesis", "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
+    { "cyphesis", "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
+    { "cyphesis", "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
     { "cyphesis", "servername", "<name>", "<hostname>", "Published name of the server", S|C },
-    { "cyphesis", "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C },
-    { "cyphesis", "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C },
+    { "cyphesis", "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
+    { "cyphesis", "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
     { "cyphesis", "restricted", "true|false", "false", "Flag to control restricted mode", S },
     { "cyphesis", "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
     { "cyphesis", "metaserver", "<hostname>", "metaserver.worldforge.org", "Hostname to use as the metaserver", S },
     { "cyphesis", "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
     { "cyphesis", "useaiclient", "true|false", "false", "Flag to control whether AI is to be driven by a client", S },
-    { "cyphesis", "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S },
-    { "cyphesis", "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S },
-    { "cyphesis", "dbuser", "<dbusername>", "<username>", "Database user name for access", S },
-    { "cyphesis", "dbpasswd", "<dbusername>", "", "Database password for access", S },
+    { "cyphesis", "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S|D },
+    { "cyphesis", "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S|D },
+    { "cyphesis", "dbuser", "<dbusername>", "<username>", "Database user name for access", S|D },
+    { "cyphesis", "dbpasswd", "<dbusername>", "", "Database password for access", S|D },
     { "client", "package", "<package_name>", "define_world", "Python package which contains the world initialisation code", C },
     { "client", "function", "<function_name>", "default", "Python function to initialise the world", C },
-    { "client", "serverhost", "<hostname>", "localhost", "Hostname of the server to connect to", S|C },
+    { "client", "serverhost", "<hostname>", "localhost", "Hostname of the server to connect to", S|C|M },
     { "client", "account", "<username>", "admin", "Account name to use to authenticate to the server", S|C },
     { "client", "password", "<password>", "", "Password to use to authenticate to the server", S|C },
+    { "client", "useslave", "true|false", "false", "Flag to control connecting to an AI slave server, not master world server" , S|M },
+    { "slave", "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
+    { "slave", "unixport", "<filename>", DEFAULT_SLAVE_SOCKET, "Local listen socket for admin connections to the AI slave server", M },
     { 0, 0, 0, 0 }
 };
 
@@ -267,9 +270,13 @@ void reportVersion(const char * prgname)
               << " (WorldForge)" << std::endl << std::flush;
 }
 
-void showUsage(const char * prgname, int args)
+void showUsage(const char * prgname, int args, const char * extras)
 {
-    std::cout << "Usage: " << prgname << " [options]" << std::endl;
+    std::cout << "Usage: " << prgname << " [options]";
+    if (extras != 0) {
+        std::cout << " " << extras;
+    }
+    std::cout << std::endl;
     std::cout << "Options:" << std::endl;
     
     size_t column_width = 0;

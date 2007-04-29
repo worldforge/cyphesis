@@ -1,5 +1,17 @@
 2007-04-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.h, common/globals.cpp: Flag the usage data for
+	  cycmd and database tools. Add an additional argument to the
+	  usage function for programs which take additional non-varconf
+	  arguments.
+
+	* tools/cyaddrules.cpp, tools/cycmd.cpp, tools/cydumprules.cpp,
+	  tools/cyloadrules.cpp: Add usage to the rest of the tools.
+
+	* client/client.cpp: Add additional argument usage information.
+
+2007-04-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py: Make sure money transfers are only
 	  detected if the NPC is not picking up the money themselves.
 
@@ -15911,4 +15923,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1783 2007-04-29 02:21:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1784 2007-04-29 13:32:27 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.cpp,v 1.26 2007-04-28 20:13:08 alriddoch Exp $
+// $Id: client.cpp,v 1.27 2007-04-29 13:32:30 alriddoch Exp $
 
 #include "ObserverClient.h"
 #include "ClientPropertyManager.h"
@@ -45,7 +45,7 @@ int main(int argc, char ** argv)
             reportVersion(argv[0]);
             return 0;
         } else if (config_status == CONFIG_HELP) {
-            showUsage(argv[0], USAGE_CLIENT);
+            showUsage(argv[0], USAGE_CLIENT, "[ [package.]function]");
             return 0;
         } else if (config_status != CONFIG_ERROR) {
             log(ERROR, "Unknown error reading configuration.");

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.25 2007-04-28 20:13:08 alriddoch Exp $
+// $Id: globals.h,v 1.26 2007-04-29 13:32:31 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -57,6 +57,6 @@ static const int USAGE_DBASE = 1 << 3;
 
 int loadConfig(int argc, char ** argv, bool server = false);
 void reportVersion(const char * prgname);
-void showUsage(const char * prgname, int args);
+void showUsage(const char * prgname, int args, const char * extras = 0);
 
 #endif // COMMON_GLOBALS_H

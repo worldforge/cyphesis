@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.8 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.9 2007-04-29 13:32:31 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -28,6 +28,7 @@
 
 #include "common/Database.h"
 #include "common/globals.h"
+#include "common/log.h"
 
 #include <Atlas/Formatter.h>
 #include <Atlas/Objects/Decoder.h>
@@ -101,10 +102,23 @@ static void usage(char * prgname)
 
 int main(int argc, char ** argv)
 {
-    int optind;
-
-    if ((optind = loadConfig(argc, argv)) < 0) {
+    int config_status = loadConfig(argc, argv, true);
+    if (config_status < 0) {
+        if (config_status == CONFIG_VERSION) {
+            reportVersion(argv[0]);
+            return 0;
+        } else if (config_status == CONFIG_HELP) {
+            showUsage(argv[0], USAGE_DBASE);
+            return 0;
+        } else if (config_status != CONFIG_ERROR) {
+            log(ERROR, "Unknown error reading configuration.");
+        }
         // Fatal error loading config file
+        return 1;
+    } 
+
+    if (config_status != argc) {
+        showUsage(argv[0], USAGE_DBASE);
         return 1;
     }
 
@@ -118,46 +132,41 @@ int main(int argc, char ** argv)
 
     Atlas::Message::QueuedDecoder decoder;
 
-    if (optind == argc) {
-        std::vector<std::string>::const_iterator I = rulesets.begin();
-        std::vector<std::string>::const_iterator Iend = rulesets.end();
-        for (; I != Iend; ++I) {
-            std::cout << "Dumping rules from " << *I << std::endl << std::flush;
+    std::vector<std::string>::const_iterator I = rulesets.begin();
+    std::vector<std::string>::const_iterator Iend = rulesets.end();
+    for (; I != Iend; ++I) {
+        std::cout << "Dumping rules from " << *I << std::endl << std::flush;
 
-            MapType rule_store;
+        MapType rule_store;
 
-            db->readRuleTable(*I, rule_store);
+        db->readRuleTable(*I, rule_store);
 
-            std::fstream file;
-            std::string filename = *I + ".xml";
-           
-            file.open(filename.c_str(), std::ios::out);
-            
-            Atlas::Codecs::XML codec(file, decoder);
-            Atlas::Formatter formatter(file, codec);
-            Atlas::Message::Encoder encoder(formatter);
+        std::fstream file;
+        std::string filename = *I + ".xml";
+       
+        file.open(filename.c_str(), std::ios::out);
+        
+        Atlas::Codecs::XML codec(file, decoder);
+        Atlas::Formatter formatter(file, codec);
+        Atlas::Message::Encoder encoder(formatter);
 
-            formatter.streamBegin();
+        formatter.streamBegin();
 
-            MapType::const_iterator J = rule_store.begin();
-            MapType::const_iterator Jend = rule_store.end();
-            for (; J != Jend; ++J) {
-                if (!J->second.isMap()) {
-                    std::cerr << "WARNING: Non map rule found in database"
-                              << std::endl << std::flush;
-                    continue;
-                }
-                encoder.streamMessageElement(J->second.asMap());
+        MapType::const_iterator J = rule_store.begin();
+        MapType::const_iterator Jend = rule_store.end();
+        for (; J != Jend; ++J) {
+            if (!J->second.isMap()) {
+                std::cerr << "WARNING: Non map rule found in database"
+                          << std::endl << std::flush;
+                continue;
             }
-
-            formatter.streamEnd();
-
-            std::cout << rule_store.size() << " classes stores in " << filename
-                      << std::endl << std::flush;
+            encoder.streamMessageElement(J->second.asMap());
         }
-    } else {
-        usage(argv[0]);
-        return 1;
+
+        formatter.streamEnd();
+
+        std::cout << rule_store.size() << " classes stores in " << filename
+                  << std::endl << std::flush;
     }
 
     delete db;

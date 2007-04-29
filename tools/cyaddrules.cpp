@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.10 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: cyaddrules.cpp,v 1.11 2007-04-29 13:32:31 alriddoch Exp $
 
 /// \page cyaddrules_index
 ///
@@ -33,6 +33,7 @@
 
 #include "common/Database.h"
 #include "common/globals.h"
+#include "common/log.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -127,12 +128,22 @@ static void usage(char * prgname)
 
 int main(int argc, char ** argv)
 {
-    int optind;
-
-    if ((optind = loadConfig(argc, argv)) < 0) {
+    int config_status = loadConfig(argc, argv, true);
+    if (config_status < 0) {
+        if (config_status == CONFIG_VERSION) {
+            reportVersion(argv[0]);
+            return 0;
+        } else if (config_status == CONFIG_HELP) {
+            showUsage(argv[0], USAGE_CYCMD, "[<rulesetname> <atlas-xml-file>]");
+            return 0;
+        } else if (config_status != CONFIG_ERROR) {
+            log(ERROR, "Unknown error reading configuration.");
+        }
         // Fatal error loading config file
         return 1;
     }
+
+    int optind = config_status;
 
     AdminClient bridge;
 
