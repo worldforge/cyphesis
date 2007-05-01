@@ -1,3 +1,9 @@
+2007-05-01  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Logging.py: Comment out broken attempt
+	  at re-wrting this task and revert the original obsolete
+	  implementation.
+
 2007-04-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/globalstest.cpp: Add a test covering the function that reports
@@ -15931,4 +15937,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1785 2007-04-29 14:17:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1786 2007-05-01 00:27:09 alriddoch Exp $
