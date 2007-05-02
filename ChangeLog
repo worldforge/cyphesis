@@ -1,5 +1,10 @@
 2007-05-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Add version and help options to the usage
+	  information.
+
+2007-05-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Logging.py: Comment out broken attempt
 	  at re-wrting this task and revert the original obsolete
 	  implementation.
@@ -15937,4 +15942,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1786 2007-05-01 00:27:09 alriddoch Exp $
+$Id: ChangeLog,v 1.1787 2007-05-02 00:14:38 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.45 2007-04-29 13:32:31 alriddoch Exp $
+// $Id: globals.cpp,v 1.46 2007-05-02 00:14:40 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -285,6 +285,12 @@ void showUsage(const char * prgname, int args, const char * extras)
     for (; ud->section != 0; ++ud) {
         column_width = std::max(column_width, strlen(ud->section) + strlen(ud->option) + strlen(ud->value) + 2);
     }
+
+    std::cout << "  --help, -h        Display this information"
+              << std::endl;
+
+    std::cout << "  --version, -v     Display the version information and exit"
+              << std::endl << std::endl;
 
     ud = &usage[0];
     for (; ud->section != 0; ++ud) {

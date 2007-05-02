@@ -1,0 +1,1 @@
+valgrind --tool=massif --depth=8 --alloc-fn=PyObject_Malloc --alloc-fn=__gnu_cxx::__pool\<true\>::_M_initialize\(\) ./server/cyphesis
