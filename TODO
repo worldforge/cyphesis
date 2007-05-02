@@ -1,3 +1,5 @@
+Fix parameter lookup in varconf.
+
 Add a call to Atlas-C++ which takes a bit field of attribute bits, and returns
 a bitfield of attribute bits that was requested but not present. Reduces
 error checking complexity loads.
