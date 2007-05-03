@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMDNSPublisher.cpp,v 1.14 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommMDNSPublisher.cpp,v 1.15 2007-05-03 11:13:10 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -394,7 +394,7 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
                                                (AvahiPublishFlags)0,
                                                m_commServer.m_server.getName().c_str(),
                                                "_worldforge._tcp", NULL, NULL,
-                                               6767, txt);
+                                               client_port_num, txt);
     if (ret < 0) {
         log(ERROR, "Avahi service publish failed");
         return;
