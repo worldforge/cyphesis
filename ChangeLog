@@ -1,3 +1,9 @@
+2007-05-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.12
+
 2007-05-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CommMDNSPublisher.cpp: Use the configured port number, not
@@ -15947,4 +15953,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1788 2007-05-03 11:13:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1789 2007-05-06 11:17:34 alriddoch Exp $
