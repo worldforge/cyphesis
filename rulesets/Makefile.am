@@ -2,6 +2,8 @@
 
 INCLUDES = -I$(top_srcdir)
 
+RULESETS = basic mason
+
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 
@@ -76,14 +78,11 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    PythonArithmeticScript.cpp PythonArithmeticScript.h
 
 dist-hook:
-	(cd $(top_srcdir)/rulesets; tar cf - `find basic -name \*.py`) | (cd $(distdir); tar xf -)
-	(cd $(top_srcdir)/rulesets; tar cf - `find mason -name \*.py`) | (cd $(distdir); tar xf -)
+	(cd $(top_srcdir)/rulesets && tar cf - `find $(RULESETS) -name \*.py`) | (cd $(distdir) && tar xf -)
 
 install-data-local:
-	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
-	(cd $(top_srcdir)/rulesets; tar cf - --mode o+rX `find basic -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xpf -)
-	(cd $(top_srcdir)/rulesets; tar cf - --mode o+rX `find mason -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xpf -)
+	(cd $(top_srcdir)/rulesets && find $(RULESETS) -type d | grep -v CVS | xargs -I PYRDIR $(install_sh) -d $(DESTDIR)$(datadir)/cyphesis/rulesets/PYRDIR)
+	(cd $(top_srcdir)/rulesets && tar cf - --mode o+rX `find $(RULESETS) -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets && tar xpf -)
 
 uninstall-local:
-	find $(DESTDIR)$(datadir)/cyphesis/rulesets/basic -name \*.py | xargs rm
-	find $(DESTDIR)$(datadir)/cyphesis/rulesets/mason -name \*.py | xargs rm
+	(cd $(top_srcdir)/rulesets && find $(RULESETS) -name \*.py | xargs -I PYRFILE rm -f $(DESTDIR)$(datadir)/cyphesis/rulesets/PYRFILE)

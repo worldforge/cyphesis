@@ -1,5 +1,14 @@
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Makefile.am: Revise the way python files are installed
+	  so that directories are created with the right permissions,
+	  ruleset names are referred to in only one place, uninstall does
+	  not delete any source files which are not present in the source
+	  tree, and potentially dangerous commandlines are aborted if
+	  critical directories are missing.
+
+2007-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Makefile.am: Add options to tar to ensure that python
 	  source files are installed with the right permissions.
 
@@ -15958,4 +15967,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1790 2007-05-07 01:23:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1791 2007-05-07 03:03:37 alriddoch Exp $
