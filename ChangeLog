@@ -1,5 +1,11 @@
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Makefile.am: Use find expressions to omit CVS control
+	  directories from the installed python tree. Clean up the directories
+	  the contain the python source during uninstall.
+
+2007-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Makefile.am: Revise the way python files are installed
 	  so that directories are created with the right permissions,
 	  ruleset names are referred to in only one place, uninstall does
@@ -15967,4 +15973,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1791 2007-05-07 03:03:37 alriddoch Exp $
+$Id: ChangeLog,v 1.1792 2007-05-07 17:44:33 alriddoch Exp $
