@@ -81,8 +81,8 @@ dist-hook:
 
 install-data-local:
 	mkdir -p $(DESTDIR)$(datadir)/cyphesis/rulesets
-	(cd $(top_srcdir)/rulesets; tar cf - `find basic -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
-	(cd $(top_srcdir)/rulesets; tar cf - `find mason -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xf -)
+	(cd $(top_srcdir)/rulesets; tar cf - --mode o+rX `find basic -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xpf -)
+	(cd $(top_srcdir)/rulesets; tar cf - --mode o+rX `find mason -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets; tar xpf -)
 
 uninstall-local:
 	find $(DESTDIR)$(datadir)/cyphesis/rulesets/basic -name \*.py | xargs rm

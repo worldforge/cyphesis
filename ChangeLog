@@ -1,3 +1,8 @@
+2007-05-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Makefile.am: Add options to tar to ensure that python
+	  source files are installed with the right permissions.
+
 2007-05-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* NEWS: Update NEWS announcement for release.
@@ -15953,4 +15958,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1789 2007-05-06 11:17:34 alriddoch Exp $
+$Id: ChangeLog,v 1.1790 2007-05-07 01:23:11 alriddoch Exp $
