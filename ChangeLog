@@ -1,5 +1,9 @@
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	common/globals.cpp: Fix the namespacing of the access system call.
+
+2007-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Fix the check_tmp_path() function, so it is
 	  actually checking the path it has been given, add an access check
 	  so we detect a temporary directory that exists but does not have
@@ -15988,4 +15992,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1794 2007-05-07 22:45:15 alriddoch Exp $
+$Id: ChangeLog,v 1.1795 2007-05-07 22:53:13 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.47 2007-05-07 22:45:16 alriddoch Exp $
+// $Id: globals.cpp,v 1.48 2007-05-07 22:53:48 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -117,7 +117,7 @@ static int check_tmp_path(const std::string & dir)
         return -1;
     }
 
-    if (access(tmp_directory.c_str(), W_OK) != 0) {
+    if (::access(tmp_directory.c_str(), W_OK) != 0) {
         return -1;
     }
 
