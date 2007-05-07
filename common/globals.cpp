@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.46 2007-05-02 00:14:40 alriddoch Exp $
+// $Id: globals.cpp,v 1.47 2007-05-07 22:45:16 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -106,7 +106,7 @@ static const usage_data usage[] = {
 
 static int check_tmp_path(const std::string & dir)
 {
-    std::string tmp_directory = var_directory + "/tmp";
+    std::string tmp_directory = dir + "/tmp";
     struct stat tmp_stat;
 
     if (::stat(tmp_directory.c_str(), &tmp_stat) != 0) {
@@ -114,6 +114,10 @@ static int check_tmp_path(const std::string & dir)
     }
 
     if (!S_ISDIR(tmp_stat.st_mode)) {
+        return -1;
+    }
+
+    if (access(tmp_directory.c_str(), W_OK) != 0) {
         return -1;
     }
 
@@ -250,7 +254,7 @@ int loadConfig(int argc, char ** argv, bool server)
                                 var_directory).c_str());
         }
         if (check_tmp_path(FALLBACK_LOCALSTATEDIR) != 0) {
-            log(CRITICAL, String::compose("No temporary directory available at \"%1/tmp\" or \"%1/tmp\".", var_directory, FALLBACK_LOCALSTATEDIR).c_str());
+            log(CRITICAL, String::compose("No temporary directory available at \"%1/tmp\" or \"%2/tmp\".", var_directory, FALLBACK_LOCALSTATEDIR).c_str());
         } else {
             if (var_directory != "/usr/var") {
                 log(NOTICE,
