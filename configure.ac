@@ -28,6 +28,7 @@ MDNS_LIBS=
 PGSQL_LIBS=
 
 PYTHON_LINKER_FLAGS=
+TAR_PERM_FLAGS=
 
 dnl Test for C++ compiler
 
@@ -383,7 +384,15 @@ Cannot find readline! Please see http://directory.fsf.org/readline.html for
 details of how to download and install the missing library.])
     ],[ $READLINE_LIBS ]
 )
-    
+
+AC_MSG_CHECKING([whether tar allows permissions to be overriden])
+if tar cf /dev/null --mode o+rX /dev/null 2> /dev/null ; then
+    TAR_PERM_FLAGS="--mode o+rX"
+    AC_MSG_RESULT([yes])
+else
+    AC_MSG_RESULT([no])
+fi
+
 AC_SUBST(VARCONF_LIBS)
 AC_SUBST(READLINE_LIBS)
 AC_SUBST(COMMON_LIBS)
@@ -400,6 +409,7 @@ AC_SUBST(STATIC_LIBSTDCPP)
 AC_SUBST(STATIC_LIBGCC)
 
 AC_SUBST(PYTHON_LINKER_FLAGS)
+AC_SUBST(TAR_PERM_FLAGS)
 
 dnl Generate files
 AC_CONFIG_FILES([

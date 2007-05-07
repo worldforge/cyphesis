@@ -1,5 +1,13 @@
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Add a check to make sure tar takes the --mode
+	  flag.
+
+	* rulesets/Makefile.am: Use tar mode flag only if configure has
+	  detected the capability.
+
+2007-05-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Makefile.am: Use find expressions to omit CVS control
 	  directories from the installed python tree. Clean up the directories
 	  the contain the python source during uninstall.
@@ -15973,4 +15981,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1792 2007-05-07 17:44:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1793 2007-05-07 18:02:47 alriddoch Exp $
