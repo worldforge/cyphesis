@@ -1,3 +1,8 @@
+autopackage still does not work as root, because the /usr/var/tmp directory
+exists, but is not usable by users, and because the tar commands that install
+the python files don't set the permissions correctly. Use tar --mode which
+will have to be checked for in configure.
+
 Add a way to handle per-host config in a single config file.
 
 Fix parameter lookup in varconf.
