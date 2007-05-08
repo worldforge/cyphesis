@@ -1,3 +1,7 @@
+2007-05-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/mason.xml: Add two stubb classes for dealing with construction.
+
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
 	common/globals.cpp: Fix the namespacing of the access system call.
@@ -15992,4 +15996,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1795 2007-05-07 22:53:13 alriddoch Exp $
+$Id: ChangeLog,v 1.1796 2007-05-08 01:18:48 alriddoch Exp $

@@ -267,6 +267,24 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="parameters">
+        <list name="default"></list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">blueprint</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="burn_speed">
         <float name="default">0.6</float>
         <string name="visibility">public</string>
@@ -698,6 +716,20 @@
       <string name="language">python</string>
       <string name="name">world.tasks.Combat</string>
     </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">construction</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
   </map>
 
   <map>
