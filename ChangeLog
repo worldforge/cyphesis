@@ -1,3 +1,8 @@
+2007-05-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Add experimental check for some platform specific
+	  libraries.
+
 2007-05-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Add two stubb classes for dealing with construction.
@@ -15996,4 +16001,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1796 2007-05-08 01:18:48 alriddoch Exp $
+$Id: ChangeLog,v 1.1797 2007-05-28 07:33:33 alriddoch Exp $

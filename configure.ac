@@ -72,6 +72,27 @@ AC_CHECK_FUNCS([unlink usleep Sleep gettimeofday getnameinfo])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
+AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])
+AC_COMPILE_IFELSE(
+    [
+      AC_LANG_PROGRAM(
+        [[
+          #include <CoreFoundation/CFBundle.h>
+        ]],
+        [[
+          CFBundleRef appBundle = CFBundleGetMainBundle();
+        ]]
+      )
+    ],
+    [
+        AC_MSG_RESULT([yes])
+        COMMON_LIBS="$COMMON_LIBS -Wl,-framework,CoreFoundation"
+    ],
+    [
+        AC_MSG_RESULT([no])
+    ]
+)
+
 dnl allow the user to provide the directory where python is installed in
 
 AC_CACHE_CHECK(for location of python, python_prefix,
