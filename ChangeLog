@@ -1,5 +1,10 @@
 2007-05-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* scripts/gen_mac_app.sh: Script to configure cyphesis in a way
+	  it just might be able to run as a Mac application.
+
+2007-05-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Add experimental check for some platform specific
 	  libraries.
 
@@ -16001,4 +16006,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1797 2007-05-28 07:33:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1798 2007-05-28 10:12:00 alriddoch Exp $
