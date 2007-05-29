@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.cpp,v 1.27 2006-11-03 20:40:05 alriddoch Exp $
+// $Id: CommUnixListener.cpp,v 1.28 2007-05-29 00:39:18 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -82,8 +82,6 @@ int CommUnixListener::read()
 void CommUnixListener::dispatch()
 {
 }
-
-#define UNIX_PATH_MAX 108
 
 /// \brief Create and bind the listen socket.
 ///

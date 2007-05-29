@@ -1,5 +1,10 @@
 2007-05-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommUnixListener.cpp: Remove unused and misleading definition
+	  for maximum unix socket address path length.
+
+2007-05-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* scripts/Info.plist: Add package list spec.
 
 	* scripts/gen_mac_app.sh: Use pre-created package list rather than
@@ -16013,4 +16018,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1799 2007-05-29 00:36:53 alriddoch Exp $
+$Id: ChangeLog,v 1.1800 2007-05-29 00:39:18 alriddoch Exp $
