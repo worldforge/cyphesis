@@ -1,5 +1,12 @@
 2007-05-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* scripts/Info.plist: Add package list spec.
+
+	* scripts/gen_mac_app.sh: Use pre-created package list rather than
+	  trying to generate it on the fly.
+
+2007-05-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* scripts/gen_mac_app.sh: Script to configure cyphesis in a way
 	  it just might be able to run as a Mac application.
 
@@ -16006,4 +16013,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1798 2007-05-28 10:12:00 alriddoch Exp $
+$Id: ChangeLog,v 1.1799 2007-05-29 00:36:53 alriddoch Exp $
