@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.28 2006-11-03 18:55:41 alriddoch Exp $
+// $Id: system.cpp,v 1.29 2007-05-31 05:03:38 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -128,6 +128,15 @@ extern "C" void report_abort(int signo)
 #endif
 }
 
+extern "C" void report_status(int signo)
+{
+    if (exit_flag) {
+        log(NOTICE, "Shutting down");
+    } else {
+        log(NOTICE, "Running");
+    }
+}
+
 extern "C" void rotate_logs(int signo)
 {
     rotateLogger();
@@ -172,7 +181,16 @@ void interactive_signals()
     action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_abort;
     sigaction(SIGABRT, &action, NULL);
-#else
+
+#ifdef __APPLE__
+#warning Apple
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = report_status;
+    sigaction(SIGINFO, &action, NULL);
+#endif // __APPLE__
+
+#else // defined(HAVE_SIGACTION)
     signal(SIGINT, shutdown_on_signal);
     signal(SIGTERM, shutdown_on_signal);
 #ifndef _WIN32
@@ -182,7 +200,7 @@ void interactive_signals()
 #endif // _WIN32
     signal(SIGSEGV, report_segfault);
     signal(SIGABRT, report_abort);
-#endif
+#endif // defined(HAVE_SIGACTION)
 }
 
 void daemon_signals()

@@ -1,5 +1,10 @@
 2007-05-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.cpp: Add support for SIGINFO on BSD systems and
+	  report something vaguely useful.
+
+2007-05-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* scripts/Info.plist: Correct the syntax.
 
 2007-05-28  Al Riddoch  <alriddoch@zepler.org>
@@ -16022,4 +16027,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1801 2007-05-31 03:09:48 alriddoch Exp $
+$Id: ChangeLog,v 1.1802 2007-05-31 05:03:38 alriddoch Exp $
