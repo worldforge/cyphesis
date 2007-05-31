@@ -11,12 +11,12 @@
   <key>CFBundleName</key>
   <string>BARRG</string>
   <key>LSBackgroundOnly</key>
-  <boolean>true</boolean>
+  <string>1</string>
   <key>LSHasLocalizedDisplayName</key>
-  <boolean>false</boolean>
+  <string>0</string>
   <key>NSHumanReadableCopyright</key>
   <string>Copright 2007 Alistair Riddoch</string>
   <key>LSHasLocalizedDisplayName</key>
-  <boolean>false</boolean>
+  <string>0</string>
 </dict>
 </plist>
