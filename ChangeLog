@@ -1,3 +1,18 @@
+2007-06-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Logging.py: Implement logging entirely
+	  in the task, instead of relying on functionality in the plant
+	  class.
+
+	* rulesets/Py_Quaternion.cpp: Implement rotation method as in the
+	  the wfmath class, as required for Logging.
+
+	* rulesets/Plant.cpp: Add an error message if the old plant
+	  functionality gets called.
+
+	* rulesets/basic/world/objects/tools/Axe.py: Add an error message
+	  noting that this method should not be called.
+
 2007-05-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.cpp: Add support for SIGINFO on BSD systems and
@@ -16027,4 +16042,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1802 2007-05-31 05:03:38 alriddoch Exp $
+$Id: ChangeLog,v 1.1803 2007-06-04 08:30:27 alriddoch Exp $

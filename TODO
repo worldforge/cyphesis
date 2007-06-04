@@ -1,3 +1,8 @@
+Remove Chop and possibly cut from the C++ core.
+
+Remove Axe python class, and gradualy migrate away from the other tool
+scripts too.
+
 Add a way to handle per-host config in a single config file.
 
 Fix parameter lookup in varconf.

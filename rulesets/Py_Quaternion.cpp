@@ -15,9 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Quaternion.cpp,v 1.14 2007-01-12 12:38:08 alriddoch Exp $
+// $Id: Py_Quaternion.cpp,v 1.15 2007-06-04 08:30:27 alriddoch Exp $
 
 #include "Py_Quaternion.h"
+
+#include "Py_Vector3D.h"
 
 static PyObject * Quaternion_as_list(PyQuaternion * self)
 {
@@ -44,9 +46,29 @@ static PyObject * Quaternion_is_valid(PyQuaternion * self)
     return ret;
 }
 
+static PyObject * Quaternion_rotation(PyQuaternion * self, PyObject * args)
+{
+    PyObject * axis_arg;
+    double angle;
+    if (!PyArg_ParseTuple(args, "Od", &axis_arg, &angle)) {
+        return NULL;
+    }
+    if (!PyVector3D_Check(axis_arg)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must be a Vector3D");
+        return NULL;
+    }
+    PyVector3D * axis = (PyVector3D *)axis_arg;
+
+    self->rotation.rotation(axis->coords, angle);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef Quaternion_methods[] = {
     {"as_list",         (PyCFunction)Quaternion_as_list, METH_NOARGS},
     {"is_valid",        (PyCFunction)Quaternion_is_valid,METH_NOARGS},
+    {"rotation",        (PyCFunction)Quaternion_rotation,METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };
 

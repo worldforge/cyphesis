@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.79 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Plant.cpp,v 1.80 2007-06-04 08:30:27 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -100,6 +100,7 @@ int Plant::dropFruit(OpVector & res)
 
 void Plant::ChopOperation(const Operation & op, OpVector & res)
 {
+    log(ERROR, "Don't call this");
     debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
     Element mode;
     if (getAttr("mode", mode) && mode.isString() && mode.String() == "felled") {

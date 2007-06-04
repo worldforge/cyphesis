@@ -6,6 +6,8 @@ from physics import *
 from Quaternion import Quaternion
 from Vector3D import Vector3D
 
+import math
+
 try:
   from random import *
 except ImportError:
@@ -56,22 +58,39 @@ class Logging(Thing):
             # print "Normal ", normal, normal.dot(Vector3D(0,0,1))
             if normal.dot(Vector3D(0,0,1)) > 0.8:
                 # print "Fall down"
-                chop=Operation("cut", Entity(self.target), to=self.tool)
-                res.append(chop)
-                # axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
-                # axis.normalize()
-                # orient = target.location.orientation
-                # orient.rotation(axis, PI / 2)
-                # move_arg = entity(self.target)
-                # move_arg.location.parent FIXME from here:
-                # move = Operation("move", Entity(self.target), to = self.target)
+                axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
+                axis = axis.unit_vector()
+                orient = target.location.orientation
+                orient.rotation(axis, math.pi / 2)
+
+                move_location = target.location.copy()
+                move_location.orientation = orient
+
+                move = Operation("move", Entity(self.target, mode='felled',
+                                                location=move_location),
+                                 to = self.target)
+                res.append(move)
             elif current_status > 0.2:
                 set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
                 res.append(set)
                 # print "TRIM",current_status
             else:
-                chop=Operation("cut", Entity(self.target), to=self.tool)
-                res.append(chop)
+                # print "become log"
+                set = Operation("set", Entity(self.target, status = -1),
+                                to = self.target)
+                res.append(set)
+                create_loc = target.location.copy()
+                create_loc.orientation = target.location.orientation
+                create = Operation("create",
+                                   Entity(parents = ["lumber"],
+                                          mass = target.mass, 
+                                          location = create_loc,
+                                          bbox = target.bbox),
+                                   to = self.target)
+                res.append(create)
+                                               
+                # chop=Operation("cut", Entity(self.target), to = self.tool)
+                # res.append(chop)
         self.progress = 1 - current_status
         self.rate = 0.1 / 1.75
         
