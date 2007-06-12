@@ -1,3 +1,7 @@
+Re-implement mining using the pickaxe as a task.
+
+self.progress seems to start out at -2 in Slice. Uninitialised?
+
 Remove Chop and possibly cut from the C++ core.
 
 Remove Axe python class, and gradualy migrate away from the other tool
