@@ -1,5 +1,10 @@
 2007-06-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Remove the tool script for the bucksaw class, as
+	  we now depend entirely on task scripts for bucksaw functionality.
+
+2007-06-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add a meat property to the pig class, so the
 	  rules for butchering can be made more generic.
 
@@ -16062,4 +16067,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1807 2007-06-12 19:00:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1808 2007-06-12 19:32:30 alriddoch Exp $
