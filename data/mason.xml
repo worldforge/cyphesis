@@ -1902,6 +1902,9 @@
         <float name="default">30</float>
         <string name="visibility">private</string>
       </map>
+      <map name="meat">
+        <string name="default">ham</string>
+      </map>
     </map>
     <string name="id">pig</string>
     <map name="mind">
