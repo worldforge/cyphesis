@@ -1,5 +1,10 @@
 2007-06-12  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/objects/tools/Bucksaw.py: Add an error message
+	  if this code gets called, as it should no longer be.
+
+2007-06-12  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/AdminClient.cpp: Add a message reporting when a rule is not
 	  uploaded because it has been overridden.
 
@@ -16047,4 +16052,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1804 2007-06-12 18:56:21 alriddoch Exp $
+$Id: ChangeLog,v 1.1805 2007-06-12 18:57:53 alriddoch Exp $
