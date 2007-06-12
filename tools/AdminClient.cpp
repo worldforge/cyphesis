@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AdminClient.cpp,v 1.17 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: AdminClient.cpp,v 1.18 2007-06-12 18:56:21 alriddoch Exp $
 
 #include "AdminClient.h"
 
@@ -286,6 +286,9 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     login_flag = false;
 
     if (m_uploadedRules.find(id) != m_uploadedRules.end()) {
+        std::cout << "Overriden rule " << id << " ignored."
+                  << std::endl << std::flush;
+
         return -1;
     }
 
