@@ -75,7 +75,7 @@
 
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
-	common/globals.cpp: Fix the namespacing of the access system call.
+	* common/globals.cpp: Fix the namespacing of the access system call.
 
 2007-05-07  Al Riddoch  <alriddoch@zepler.org>
 
@@ -16067,4 +16067,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1808 2007-06-12 19:32:30 alriddoch Exp $
+$Id: ChangeLog,v 1.1809 2007-06-13 16:14:36 alriddoch Exp $
