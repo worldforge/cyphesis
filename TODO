@@ -1,3 +1,5 @@
+I am pretty sure it no longer makes sense to have inherited rulesets.
+
 Re-implement mining using the pickaxe as a task.
 
 self.progress seems to start out at -2 in Slice. Uninitialised?
