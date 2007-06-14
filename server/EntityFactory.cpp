@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.100 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.101 2007-06-14 18:07:11 alriddoch Exp $
 
 #include <Python.h>
 
@@ -343,6 +343,8 @@ int EntityFactory::installTaskClass(const std::string & className,
                                     const std::string & parent,
                                     const MapType & classDesc)
 {
+    Inheritance & i = Inheritance::instance();
+
     TaskFactoryDict::const_iterator I = m_taskFactories.find(className);
     if (I != m_taskFactories.end()) {
         log(ERROR, String::compose("Attempt to install task \"%1\" which is already installed", className).c_str());
@@ -384,6 +386,9 @@ int EntityFactory::installTaskClass(const std::string & className,
             J = activation.find("operation");
             if (J != act_end && J->second.isString()) {
                 const std::string & activation_op = J->second.String();
+                if (!i.hasClass(activation_op)) {
+                    log(WARNING, String::compose("Activation op_definition \"%1\" does not exist for task class \"%2\".", activation_op, className).c_str());
+                }
                 m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
             }
         }
@@ -397,8 +402,6 @@ int EntityFactory::installTaskClass(const std::string & className,
     // std::cout << "Attempting to install " << className << " which is a "
               // << parent << std::endl << std::flush;
     m_taskFactories.insert(std::make_pair(className, factory));
-
-    Inheritance & i = Inheritance::instance();
 
     i.addChild(atlasClass(className, parent));
 

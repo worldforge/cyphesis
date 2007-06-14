@@ -41,6 +41,7 @@ SERVER_LIBS = \
     /usr/lib/libcom_err.a \
     $(PYTHON_LIBS) \
     /usr/lib/libutil.a \
+    /usr/lib/libz.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
     -ldl -lc -lm -lpthread -lgcc_s

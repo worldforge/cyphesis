@@ -1,3 +1,8 @@
+2007-06-14  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Add some warnings when task classes linked
+	  to other classes may be suspect.
+
 2007-06-12  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/mason.xml: Remove the tool script for the bucksaw class, as
@@ -16067,4 +16072,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1809 2007-06-13 16:14:36 alriddoch Exp $
+$Id: ChangeLog,v 1.1810 2007-06-14 18:07:10 alriddoch Exp $
