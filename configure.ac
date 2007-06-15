@@ -374,7 +374,7 @@ This may be a problem for readline.])
 
 dnl General header checks
 AC_CHECK_HEADERS(termios.h unistd.h signal.h syslog.h sys/utsname.h sys/wait.h)
-AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h)
+AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h dirent.h)
 
 AC_CHECK_LIB(readline,readline,
     [

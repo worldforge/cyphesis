@@ -1,3 +1,16 @@
+2007-06-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* configure.ac: Check for dirent.h.
+
+	* common/AtlasFileLoader.cpp: Report duplicate IDs when loading rule
+	  data.
+
+	* data/basic.xml: Remove obsolete old overriden rules, as we will
+	  no longer be doing rules that way.
+
+	* server/EntityFactory.cpp: When loading rulesets directly from
+	  files, also load all files in ruleset.d.
+
 2007-06-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Add some warnings when task classes linked
@@ -16072,4 +16085,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1810 2007-06-14 18:07:10 alriddoch Exp $
+$Id: ChangeLog,v 1.1811 2007-06-15 15:18:55 alriddoch Exp $

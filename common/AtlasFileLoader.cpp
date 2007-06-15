@@ -15,11 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.cpp,v 1.7 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: AtlasFileLoader.cpp,v 1.8 2007-06-15 15:18:55 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
 #include "common/log.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
@@ -43,6 +44,10 @@ void AtlasFileLoader::messageArrived(const MapType & msg)
     }
     std::string msg_id = id.String();
     o.erase(I);
+    if (m_messages.find(msg_id) != m_messages.end()) {
+        log(WARNING, String::compose("Duplicate object ID \"%1\" loaded.",
+                                     msg_id).c_str());
+    }
     m_messages[msg_id] = o;
     ++m_count;
 }

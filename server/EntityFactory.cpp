@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.101 2007-06-14 18:07:11 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.102 2007-06-15 15:18:55 alriddoch Exp $
 
 #include <Python.h>
 
@@ -57,6 +57,12 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/RootOperation.h>
+
+#include <sys/types.h>
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#endif // HAS_DIRENT_H
+
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -652,9 +658,33 @@ void EntityFactory::getRulesFromFiles(MapType & rules)
         std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
         AtlasFileLoader f(filename, rules);
         if (!f.isOpen()) {
-            log(ERROR, "Unable to open rule file.");
+            log(ERROR, String::compose("Unable to open rule file \"%1\".",
+                                       filename).c_str());
+        } else {
+            f.read();
         }
-        f.read();
+
+        std::string dirname = etc_directory + "/cyphesis/" + *I + ".d";
+        DIR * rules_dir = ::opendir(dirname.c_str());
+        if (rules_dir == 0) {
+            std::cout << "No " << dirname << " for rules" << std::endl << std::flush;
+            continue;
+        }
+        while (struct dirent * rules_entry = readdir(rules_dir)) {
+            if (rules_entry->d_name[0] == '.') {
+                std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
+                continue;
+            }
+            filename = etc_directory + "/cyphesis/" + *I + ".d/" + rules_entry->d_name;
+            
+            AtlasFileLoader f(filename, rules);
+            if (!f.isOpen()) {
+                log(ERROR, String::compose("Unable to open rule file \"%1\".",
+                                           filename).c_str());
+            } else {
+                f.read();
+            }
+        }
     }
 }
 
