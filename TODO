@@ -1,3 +1,6 @@
+Implement blocking rules until all associated rules can be verified so
+tasks can't get installed without their activation ops and classes existing.
+
 I am pretty sure it no longer makes sense to have inherited rulesets.
 
 Re-implement mining using the pickaxe as a task.
