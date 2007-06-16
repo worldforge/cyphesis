@@ -1,3 +1,14 @@
+2007-06-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/Makefile.am: Install the xml files for mason into the mason.d
+	  subdir, as the rule loading code now prefers.
+
+	* server/EntityFactory.cpp, tools/cyaddrules.cpp,
+	  tools/cyloadrules.cpp: Modify the way rule xml files are loaded
+	  so files from the ruleset specific subdirectory are loaded first,
+	  and the legacy way of doing it is done if this files, with a warning
+	  message.
+
 2007-06-15  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Check for dirent.h.
@@ -16085,4 +16096,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1811 2007-06-15 15:18:55 alriddoch Exp $
+$Id: ChangeLog,v 1.1812 2007-06-16 13:39:54 alriddoch Exp $

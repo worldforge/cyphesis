@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.11 2007-04-29 13:32:31 alriddoch Exp $
+// $Id: cyaddrules.cpp,v 1.12 2007-06-16 13:39:55 alriddoch Exp $
 
 /// \page cyaddrules_index
 ///
@@ -42,6 +42,8 @@
 
 #include <string>
 #include <fstream>
+
+#include <dirent.h>
 
 using Atlas::Message::MapType;
 
@@ -213,15 +215,42 @@ int main(int argc, char ** argv)
         std::vector<std::string>::const_iterator Iend = rulesets.end();
         for (; I != Iend; ++I) {
             std::cout << "Reading rules from " << *I << std::endl << std::flush;
-            std::string filename = etc_directory + "/cyphesis/" + *I + ".xml";
-            ServerRulesFileLoader f(filename, *I, bridge);
-            if (!f.isOpen()) {
-                std::cerr << "ERROR: Unable to open file " << filename
-                          << std::endl << std::flush;
-                return 1;
+            std::string filename;
+
+            std::string dirname = etc_directory + "/cyphesis/" + *I + ".d";
+            DIR * rules_dir = ::opendir(dirname.c_str());
+            if (rules_dir == 0) {
+                filename = etc_directory + "/cyphesis/" + *I + ".xml";
+                ServerRulesFileLoader f(filename, *I, bridge);
+                if (f.isOpen()) {
+                    std::cerr << "WARNING: Reading legacy rule data from \""
+                              << filename << "\""
+                              << std::endl << std::flush;
+                    f.read();
+                    f.report();
+                }
+                continue;
             }
-            f.read();
-            f.report();
+            while (struct dirent * rules_entry = ::readdir(rules_dir)) {
+                if (rules_entry->d_name[0] == '.') {
+                    std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
+                    continue;
+                }
+                filename = etc_directory + "/cyphesis/" + *I + ".d/"
+                                         + rules_entry->d_name;
+
+                ServerRulesFileLoader f(filename, *I, bridge);
+                if (!f.isOpen()) {
+                    std::cerr << "ERROR: Unable to open file " << filename
+                              << std::endl << std::flush;
+                } else {
+                    f.read();
+                    f.report();
+                }
+            }
+            // We are not interested in loading inherited rulesets if the data
+            // is in a directory.
+            break;
         }
     } else {
         usage(argv[0]);
