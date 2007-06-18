@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.160 2007-01-12 12:38:08 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.161 2007-06-18 13:19:53 alriddoch Exp $
 
 #include "Python.h"
 
@@ -1043,10 +1043,17 @@ void init_python_api()
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
     if (sys_path != 0) {
         if (PyList_Check(sys_path)) {
+            // Add the path to the non-ruleset specific code.
+            std::string p = share_directory + "/cyphesis/scripts";
+            PyObject * path = PyString_FromString(p.c_str());
+            PyList_Append(sys_path, path);
+            Py_DECREF(path);
+
+            // Add the paths to the ruleset specific code.
             std::vector<std::string>::const_iterator I = Ibeg;
             for (; I != Iend; ++I) {
-                std::string p = share_directory + "/cyphesis/rulesets/" + *I;
-                PyObject * path = PyString_FromString(p.c_str());
+                p = share_directory + "/cyphesis/rulesets/" + *I;
+                path = PyString_FromString(p.c_str());
                 PyList_Append(sys_path, path);
                 Py_DECREF(path);
             }

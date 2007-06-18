@@ -1,3 +1,15 @@
+2007-06-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Add a new directory to the python path
+	  containing non ruleset specific code that is required by any
+	  normal python scripts.
+
+	* rulesets/Makefile.am: Install non ruleset specific python code
+	  that was historically in common into a separate place.
+
+	* irulesets/mason/define_world.py: Import the editor functionality
+	  from the new location.
+
 2007-06-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/Makefile.am: Install the xml files for mason into the mason.d
@@ -16096,4 +16108,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1812 2007-06-16 13:39:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1813 2007-06-18 13:19:52 alriddoch Exp $
