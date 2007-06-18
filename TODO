@@ -1,3 +1,6 @@
+Apply behavior to newly created skellys. Now that the mind classes have been
+removed, skeletons need goals to do anything.
+
 Implement blocking rules until all associated rules can be verified so
 tasks can't get installed without their activation ops and classes existing.
 

@@ -1903,10 +1903,6 @@
       </map>
     </map>
     <string name="id">pig</string>
-    <map name="mind">
-      <string name="language">python</string>
-      <string name="name">mind.PigMind</string>
-    </map>
     <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
@@ -2263,10 +2259,6 @@
     <map name="attributes">
     </map>
     <string name="id">skeleton</string>
-    <map name="mind">
-      <string name="language">python</string>
-      <string name="name">mind.SkelMind</string>
-    </map>
     <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>
@@ -2798,10 +2790,6 @@
       </map>
     </map>
     <string name="id">wolf</string>
-    <map name="mind">
-      <string name="language">python</string>
-      <string name="name">mind.WolfMind</string>
-    </map>
     <string name="objtype">class</string>
     <list name="parents">
       <string>character</string>

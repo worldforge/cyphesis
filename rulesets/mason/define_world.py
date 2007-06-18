@@ -129,6 +129,8 @@ pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage('acorn')"),
            (il.forage,"forage('apple')"),
            (il.forage,"forage('mushroom')"),
+           (il.flock,"driven()"),
+           (il.peck,"summons('foo')"),
            (il.herd,"herd()")]
 
 deer_goals=[(il.avoid,"avoid(['settler','orc'],30.0)"),
@@ -158,6 +160,8 @@ crab_goals=[(il.avoid,"avoid('wolf',10.0)"),
 
 lych_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
+
+skeleton_goals=[(il.hunt,"chase(['pig', 'farmer', 'guard', 'settler'])")]
 
 
 # N, E, S, W, NE, SE, SW, NW in order
@@ -368,6 +372,7 @@ def default(mapeditor):
     m.learn(crab,crab_goals)
 
     skeleton = m.make('skeleton', type='skeleton', pos=(-38,-25,settlement_height))
+    m.learn(skeleton,skeleton_goals)
 
     squirrel = m.make('squirrel', type='squirrel', desc='test squirrel',
                     pos=(-32,-15,settlement_height))
@@ -662,6 +667,15 @@ def add_village(mapeditor):
 
     m.make('field',type='ploughed_field',pos=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
     m.make('field',type='ploughed_field',pos=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
+
+def test_skeleton(mapeditor):
+#   general things
+
+    m=editor(mapeditor)
+
+    skeleton = m.make('skeleton', type='skeleton', pos=(-38,-25,settlement_height))
+    m.learn(skeleton,skeleton_goals)
+
 def test_pig(mapeditor):
 #   general things
 
