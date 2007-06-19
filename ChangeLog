@@ -1,5 +1,10 @@
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Makefile.am: Ensure the basic code now omitted from
+	  rulesets is distributed.
+
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp, common/globals.h: Change the type and name
 	  of the ruleset list to a string.
 
@@ -16266,4 +16271,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1818 2007-06-19 13:19:57 alriddoch Exp $
+$Id: ChangeLog,v 1.1819 2007-06-19 13:42:12 alriddoch Exp $
