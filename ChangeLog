@@ -1,5 +1,23 @@
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/world/objects/buildings/House.py,
+	  rulesets/basic/world/objects/buildings/StoneHouse.py,
+	  rulesets/basic/world/objects/buildings/__init__.py,
+	  rulesets/basic/world/objects/elements/Fire.py,
+	  rulesets/basic/world/objects/elements/__init__.py,
+	  rulesets/basic/world/objects/tools/Axe.py,
+	  rulesets/basic/world/objects/tools/Bow.py,
+	  rulesets/basic/world/objects/tools/Pickaxe.py,
+	  rulesets/basic/world/objects/tools/Scythe.py,
+	  rulesets/basic/world/objects/tools/Shovel.py,
+	  rulesets/basic/world/objects/tools/Sword.py,
+	  rulesets/basic/world/objects/tools/__init__.py:
+	  Remove files that are no longer used from here, and have
+	  been duplicated in the mason ruleset.
+
+
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Remove the messy import hooks that make
 	  inherited rulesets work, but screw up module reloading.
 
@@ -16230,4 +16248,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1815 2007-06-19 12:36:42 alriddoch Exp $
+$Id: ChangeLog,v 1.1816 2007-06-19 12:41:23 alriddoch Exp $
