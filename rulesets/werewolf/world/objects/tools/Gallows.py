@@ -5,7 +5,7 @@
 from Point3D import Point3D
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Gallows(Thing):
     """This is the gallows, which hangs villagers"""

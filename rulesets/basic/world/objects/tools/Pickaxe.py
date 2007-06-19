@@ -4,7 +4,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Pickaxe(Thing):
     """This is a pickaxe for heavy digging and quarrying """

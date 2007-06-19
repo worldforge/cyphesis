@@ -11,7 +11,7 @@ try:
 except ImportError:
   from whrandom import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Sharpen(Thing):
     """ A proof of concept task for sharpening a log into a stake."""

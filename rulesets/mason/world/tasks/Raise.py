@@ -13,7 +13,7 @@ try:
 except ImportError:
   from whrandom import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Raise(Thing):
     """ A proof of concept task for raiseing a heavy item from the ground."""

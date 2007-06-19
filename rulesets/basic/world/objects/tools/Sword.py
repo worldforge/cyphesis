@@ -4,7 +4,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Sword(Thing):
     """This is base class for swords, this one just ordinary sword"""

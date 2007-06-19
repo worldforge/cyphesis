@@ -12,7 +12,7 @@ if const.server_python:
     from mind.BaseMind import BaseMind
 else:
     from Vector3D import Vector3D
-    from world.objects.Thing import Thing
+    from cyphesis.Thing import Thing
     from server import WorldTime
     BaseMind = Thing
 

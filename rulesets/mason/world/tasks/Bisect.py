@@ -6,7 +6,7 @@ from physics import *
 from Quaternion import Quaternion
 from Vector3D import Vector3D
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Bisect(Thing):
     """ A task for cutting a section of material in two."""

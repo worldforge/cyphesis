@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.161 2007-06-18 13:19:53 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.162 2007-06-19 12:36:43 alriddoch Exp $
 
 #include "Python.h"
 
@@ -1204,8 +1204,8 @@ void init_python_api()
     }
     PyModule_AddObject(vector3d, "Vector3D", (PyObject *)&PyVector3D_Type);
 
-    PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-    PyRun_SimpleString((char *)importCmd.c_str());
+    // PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
+    // PyRun_SimpleString((char *)importCmd.c_str());
 
     debug(std::cout << Py_GetPath() << std::endl << std::flush;);
 }

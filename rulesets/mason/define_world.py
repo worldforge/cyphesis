@@ -8,7 +8,7 @@ except ImportError:
   from whrandom import *
 from mind.panlingua import interlinguish
 il=interlinguish
-from world import probability
+from cyphesis import probability
 from cyphesis.editor import editor
 from Quaternion import Quaternion
 from Vector3D import Vector3D

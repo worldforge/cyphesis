@@ -4,7 +4,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Shovel(Thing):
     """This is a shovel for light digging"""

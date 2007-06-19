@@ -3,7 +3,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Pile(Thing):
     """Using a pile to extinguish the fire"""

@@ -12,7 +12,7 @@ try:
 except ImportError:
   from whrandom import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Ram(Thing):
     """ A proof of concept task for drivinf object into the ground."""

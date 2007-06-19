@@ -2,7 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 from common import log,const
 
 # Rate at which energy is used per tick

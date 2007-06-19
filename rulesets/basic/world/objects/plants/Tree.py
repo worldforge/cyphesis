@@ -1,6 +1,6 @@
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 from common import log,const
 #from world.objects.plants import prob
 try:

@@ -3,9 +3,8 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 from common import const
-from world import probability
 from world.objects.buildings.House import House
 
 class Stonehouse(House):

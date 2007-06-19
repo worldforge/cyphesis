@@ -1,6 +1,6 @@
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 from misc import set_kw
 
 class Skull(Thing):

@@ -4,7 +4,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Scythe(Thing):
     """This is a scythe for light cutting vegetation"""

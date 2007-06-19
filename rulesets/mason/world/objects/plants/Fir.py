@@ -1,5 +1,5 @@
 from atlas import *
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 import atlas
 

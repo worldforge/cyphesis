@@ -2,11 +2,12 @@
 
 INCLUDES = -I$(top_srcdir)
 
-RULESETS = basic mason
+RULESETS = basic/mind mason
 
 moduledir = $(DESTDIR)$(datadir)/cyphesis/scripts/cyphesis
 module_DATA = basic/__init__.py \
               basic/world/objects/Thing.py \
+              basic/world/probability.py \
               basic/editor.py
 
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \

@@ -11,7 +11,7 @@ try:
 except ImportError:
   from whrandom import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Combat(Thing):
     """A very simple combat system example."""

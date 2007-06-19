@@ -3,9 +3,9 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
+from cyphesis import probability
 from common import log,const
-from world import probability
 
 if const.server_python:
     from world.physics.Vector3D import Vector3D

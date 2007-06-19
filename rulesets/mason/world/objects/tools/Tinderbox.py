@@ -3,7 +3,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 from Point3D import Point3D
 
 class Tinderbox(Thing):

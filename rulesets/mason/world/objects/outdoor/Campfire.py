@@ -3,7 +3,7 @@
 
 from atlas import *
 
-from world.objects.Thing import Thing
+from cyphesis.Thing import Thing
 
 class Campfire(Thing):
     def burn_operation(self, op):

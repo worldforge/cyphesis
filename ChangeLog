@@ -1,3 +1,105 @@
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Python_API.cpp: Remove the messy import hooks that make
+	  inherited rulesets work, but screw up module reloading.
+
+	* rulesets/acorn/mind/SkelMind.py,
+	  rulesets/acorn/world/objects/Weather.py,
+	  rulesets/acorn/world/objects/animals/Crab.py,
+	  rulesets/acorn/world/objects/animals/Deer.py,
+	  rulesets/acorn/world/objects/animals/Pig.py,
+	  rulesets/acorn/world/objects/animals/Squirrel.py,
+	  rulesets/acorn/world/objects/animals/Wolf.py,
+	  rulesets/acorn/world/objects/buildings/FarmHouse1.py,
+	  rulesets/acorn/world/objects/buildings/FarmHouse2.py,
+	  rulesets/acorn/world/objects/buildings/FarmHouse3.py,
+	  rulesets/acorn/world/objects/buildings/FarmStand.py,
+	  rulesets/acorn/world/objects/buildings/FishShop.py,
+	  rulesets/acorn/world/objects/buildings/House1.py,
+	  rulesets/acorn/world/objects/buildings/House2.py,
+	  rulesets/acorn/world/objects/buildings/House3.py,
+	  rulesets/acorn/world/objects/buildings/House4.py,
+	  rulesets/acorn/world/objects/buildings/House5.py,
+	  rulesets/acorn/world/objects/buildings/Inn1.py,
+	  rulesets/acorn/world/objects/buildings/Inn2.py,
+	  rulesets/acorn/world/objects/buildings/ItemShop.py,
+	  rulesets/acorn/world/objects/buildings/Mansion.py,
+	  rulesets/acorn/world/objects/buildings/MetalShop.py,
+	  rulesets/acorn/world/objects/buildings/Ruin.py,
+	  rulesets/acorn/world/objects/buildings/Shack.py,
+	  rulesets/acorn/world/objects/buildings/Stall.py,
+	  rulesets/acorn/world/objects/buildings/Sty.py,
+	  rulesets/acorn/world/objects/buildings/VacantShop1e.py,
+	  rulesets/acorn/world/objects/buildings/VacantShop1w.py,
+	  rulesets/acorn/world/objects/buildings/VacantShop2.py,
+	  rulesets/acorn/world/objects/outdoor/Campfire.py,
+	  rulesets/acorn/world/objects/plants/Tree.py,
+	  rulesets/acorn/world/objects/plants/seeds/Acorn.py,
+	  rulesets/acorn/world/objects/plants/seeds/Apple.py,
+	  rulesets/acorn/world/objects/plants/seeds/Seed.py,
+	  rulesets/acorn/world/objects/tools/Cleaver.py,
+	  rulesets/acorn/world/objects/undead/Arm.py,
+	  rulesets/acorn/world/objects/undead/Pelvis.py,
+	  rulesets/acorn/world/objects/undead/Ribcage.py,
+	  rulesets/acorn/world/objects/undead/Shin.py,
+	  rulesets/acorn/world/objects/undead/Skull.py,
+	  rulesets/acorn/world/objects/undead/Thigh.py,
+	  rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/world/objects/Pile.py,
+	  rulesets/basic/world/objects/animals/Animal.py,
+	  rulesets/basic/world/objects/buildings/House.py,
+	  rulesets/basic/world/objects/buildings/StoneHouse.py,
+	  rulesets/basic/world/objects/elements/Fire.py,
+	  rulesets/basic/world/objects/plants/Tree.py,
+	  rulesets/basic/world/objects/tools/Axe.py,
+	  rulesets/basic/world/objects/tools/Bow.py,
+	  rulesets/basic/world/objects/tools/Pickaxe.py,
+	  rulesets/basic/world/objects/tools/Scythe.py,
+	  rulesets/basic/world/objects/tools/Shovel.py,
+	  rulesets/basic/world/objects/tools/Sword.py,
+	  rulesets/mason/world/objects/Pile.py,
+	  rulesets/mason/world/objects/Weather.py,
+	  rulesets/mason/world/objects/animals/Deer.py,
+	  rulesets/mason/world/objects/animals/Pig.py,
+	  rulesets/mason/world/objects/buildings/House.py,
+	  rulesets/mason/world/objects/buildings/House3.py,
+	  rulesets/mason/world/objects/buildings/StoneHouse.py,
+	  rulesets/mason/world/objects/clothing/Garment.py,
+	  rulesets/mason/world/objects/elements/Fire.py,
+	  rulesets/mason/world/objects/outdoor/Campfire.py,
+	  rulesets/mason/world/objects/outdoor/Gravestone.py,
+	  rulesets/mason/world/objects/plants/Fir.py,
+	  rulesets/mason/world/objects/plants/seeds/Acorn.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/mason/world/objects/plants/seeds/Fircone.py,
+	  rulesets/mason/world/objects/plants/seeds/Seed.py,
+	  rulesets/mason/world/objects/tools/Axe.py,
+	  rulesets/mason/world/objects/tools/Bow.py,
+	  rulesets/mason/world/objects/tools/Bucksaw.py,
+	  rulesets/mason/world/objects/tools/Cleaver.py,
+	  rulesets/mason/world/objects/tools/Pickaxe.py,
+	  rulesets/mason/world/objects/tools/Rope.py,
+	  rulesets/mason/world/objects/tools/Scythe.py,
+	  rulesets/mason/world/objects/tools/Shovel.py,
+	  rulesets/mason/world/objects/tools/Sword.py,
+	  rulesets/mason/world/objects/tools/Tinderbox.py,
+	  rulesets/mason/world/objects/tools/Torch.py,
+	  rulesets/mason/world/objects/tools/Trowel.py,
+	  rulesets/mason/world/objects/undead/Skeleton.py,
+	  rulesets/mason/world/tasks/Bisect.py,
+	  rulesets/mason/world/tasks/Combat.py,
+	  rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Ram.py,
+	  rulesets/mason/world/tasks/Sharpen.py,
+	  rulesets/mason/world/tasks/Slice.py,
+	  rulesets/mason/define_world.py:
+	  Convert rulesets over to inheriting from the Thing class in
+	  the new non ruleset specific location.
+	  
+	* rulesets/basic/mind/goals/animal/domestic.py: Add file missing from
+	  previous commit.
+
 2007-06-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/goals/common/trigger.py: Generic common trigger
@@ -16128,4 +16230,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1814 2007-06-18 17:46:14 alriddoch Exp $
+$Id: ChangeLog,v 1.1815 2007-06-19 12:36:42 alriddoch Exp $
