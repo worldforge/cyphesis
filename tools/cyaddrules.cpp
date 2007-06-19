@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.12 2007-06-16 13:39:55 alriddoch Exp $
+// $Id: cyaddrules.cpp,v 1.13 2007-06-19 13:19:58 alriddoch Exp $
 
 /// \page cyaddrules_index
 ///
@@ -211,35 +211,30 @@ int main(int argc, char ** argv)
         f.read();
         f.report();
     } else if (optind == argc) {
-        std::vector<std::string>::const_iterator I = rulesets.begin();
-        std::vector<std::string>::const_iterator Iend = rulesets.end();
-        for (; I != Iend; ++I) {
-            std::cout << "Reading rules from " << *I << std::endl << std::flush;
-            std::string filename;
+        std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
+        std::string filename;
 
-            std::string dirname = etc_directory + "/cyphesis/" + *I + ".d";
-            DIR * rules_dir = ::opendir(dirname.c_str());
-            if (rules_dir == 0) {
-                filename = etc_directory + "/cyphesis/" + *I + ".xml";
-                ServerRulesFileLoader f(filename, *I, bridge);
-                if (f.isOpen()) {
-                    std::cerr << "WARNING: Reading legacy rule data from \""
-                              << filename << "\""
-                              << std::endl << std::flush;
-                    f.read();
-                    f.report();
-                }
-                continue;
+        std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+        DIR * rules_dir = ::opendir(dirname.c_str());
+        if (rules_dir == 0) {
+            filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
+            ServerRulesFileLoader f(filename, ruleset, bridge);
+            if (f.isOpen()) {
+                std::cerr << "WARNING: Reading legacy rule data from \""
+                          << filename << "\""
+                          << std::endl << std::flush;
+                f.read();
+                f.report();
             }
+        } else {
             while (struct dirent * rules_entry = ::readdir(rules_dir)) {
                 if (rules_entry->d_name[0] == '.') {
                     std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
                     continue;
                 }
-                filename = etc_directory + "/cyphesis/" + *I + ".d/"
-                                         + rules_entry->d_name;
-
-                ServerRulesFileLoader f(filename, *I, bridge);
+                filename = dirname + "/" + rules_entry->d_name;
+    
+                ServerRulesFileLoader f(filename, ruleset, bridge);
                 if (!f.isOpen()) {
                     std::cerr << "ERROR: Unable to open file " << filename
                               << std::endl << std::flush;
@@ -248,9 +243,6 @@ int main(int argc, char ** argv)
                     f.report();
                 }
             }
-            // We are not interested in loading inherited rulesets if the data
-            // is in a directory.
-            break;
         }
     } else {
         usage(argv[0]);

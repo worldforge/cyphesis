@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.163 2007-06-19 12:54:54 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.164 2007-06-19 13:19:58 alriddoch Exp $
 
 #include "Python.h"
 
@@ -1010,17 +1010,6 @@ static PyMethodDef common_methods[] = {
 
 void init_python_api()
 {
-    std::string importCmd("ruleset_import_hooks.install([");
-    std::vector<std::string>::const_iterator Ibeg = rulesets.begin();
-    std::vector<std::string>::const_iterator Iend = rulesets.end();
-    for (std::vector<std::string>::const_iterator I = Ibeg; I != Iend; ++I) {
-        if (I != Ibeg) {
-            importCmd = importCmd + ",";
-        }
-        importCmd = importCmd + "\"" + *I + "\"";
-    }
-    importCmd = importCmd + "])\n";
-
     Py_Initialize();
 
     PyObject * sys_name = PyString_FromString("sys");
@@ -1054,14 +1043,11 @@ void init_python_api()
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
-            // Add the paths to the ruleset specific code.
-            std::vector<std::string>::const_iterator I = Ibeg;
-            for (; I != Iend; ++I) {
-                p = share_directory + "/cyphesis/rulesets/" + *I;
-                path = PyString_FromString(p.c_str());
-                PyList_Append(sys_path, path);
-                Py_DECREF(path);
-            }
+            // Add the path to the ruleset specific code.
+            p = share_directory + "/cyphesis/rulesets/" + ruleset;
+            path = PyString_FromString(p.c_str());
+            PyList_Append(sys_path, path);
+            Py_DECREF(path);
         } else {
             log(CRITICAL, "Python sys.path is not a list");
         }

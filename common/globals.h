@@ -15,13 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.26 2007-04-29 13:32:31 alriddoch Exp $
+// $Id: globals.h,v 1.27 2007-06-19 13:19:58 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
 
 #include <string>
-#include <vector>
 
 namespace varconf {
   class Config;
@@ -33,7 +32,7 @@ extern std::string etc_directory;
 extern std::string var_directory;
 extern std::string client_socket_name;
 extern std::string slave_socket_name;
-extern std::vector<std::string> rulesets;
+extern std::string ruleset;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern bool restricted_flag;

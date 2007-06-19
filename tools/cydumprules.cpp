@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.9 2007-04-29 13:32:31 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.10 2007-06-19 13:19:58 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -132,42 +132,38 @@ int main(int argc, char ** argv)
 
     Atlas::Message::QueuedDecoder decoder;
 
-    std::vector<std::string>::const_iterator I = rulesets.begin();
-    std::vector<std::string>::const_iterator Iend = rulesets.end();
-    for (; I != Iend; ++I) {
-        std::cout << "Dumping rules from " << *I << std::endl << std::flush;
+    std::cout << "Dumping rules from " << ruleset << std::endl << std::flush;
 
-        MapType rule_store;
+    MapType rule_store;
 
-        db->readRuleTable(*I, rule_store);
+    db->readRuleTable(ruleset, rule_store);
 
-        std::fstream file;
-        std::string filename = *I + ".xml";
-       
-        file.open(filename.c_str(), std::ios::out);
-        
-        Atlas::Codecs::XML codec(file, decoder);
-        Atlas::Formatter formatter(file, codec);
-        Atlas::Message::Encoder encoder(formatter);
+    std::fstream file;
+    std::string filename = ruleset + ".xml";
+   
+    file.open(filename.c_str(), std::ios::out);
+    
+    Atlas::Codecs::XML codec(file, decoder);
+    Atlas::Formatter formatter(file, codec);
+    Atlas::Message::Encoder encoder(formatter);
 
-        formatter.streamBegin();
+    formatter.streamBegin();
 
-        MapType::const_iterator J = rule_store.begin();
-        MapType::const_iterator Jend = rule_store.end();
-        for (; J != Jend; ++J) {
-            if (!J->second.isMap()) {
-                std::cerr << "WARNING: Non map rule found in database"
-                          << std::endl << std::flush;
-                continue;
-            }
-            encoder.streamMessageElement(J->second.asMap());
+    MapType::const_iterator J = rule_store.begin();
+    MapType::const_iterator Jend = rule_store.end();
+    for (; J != Jend; ++J) {
+        if (!J->second.isMap()) {
+            std::cerr << "WARNING: Non map rule found in database"
+                      << std::endl << std::flush;
+            continue;
         }
-
-        formatter.streamEnd();
-
-        std::cout << rule_store.size() << " classes stores in " << filename
-                  << std::endl << std::flush;
+        encoder.streamMessageElement(J->second.asMap());
     }
+
+    formatter.streamEnd();
+
+    std::cout << rule_store.size() << " classes stores in " << filename
+              << std::endl << std::flush;
 
     delete db;
     return 0;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.144 2007-04-28 16:45:15 alriddoch Exp $
+// $Id: server.cpp,v 1.145 2007-06-19 13:19:58 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -178,7 +178,7 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
-    ServerRouting server(world, rulesets.front(), server_name,
+    ServerRouting server(world, ruleset, server_name,
                          server_id, int_id,
                          lobby_id, lobby_int_id);
 

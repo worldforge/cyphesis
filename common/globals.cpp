@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.49 2007-06-19 12:54:54 alriddoch Exp $
+// $Id: globals.cpp,v 1.50 2007-06-19 13:19:58 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -48,7 +48,7 @@ std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
 std::string client_socket_name(DEFAULT_CLIENT_SOCKET);
 std::string slave_socket_name(DEFAULT_SLAVE_SOCKET);
-std::vector<std::string> rulesets;
+std::string ruleset;
 bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
@@ -230,15 +230,13 @@ int loadConfig(int argc, char ** argv, bool server)
         pvp_offl_flag = global_conf->getItem("game", "player_vs_player_offline");
     }
 
-    // Load up the rulesets. Rulesets are hierarchical, and are read in until
-    // one is read in that does not specify its parent ruleset.
+    // Load up the ruleset.
     if (global_conf->findItem("cyphesis", "ruleset")) {
-        std::string ruleset = global_conf->getItem("cyphesis", "ruleset").as_string();
-        rulesets.push_back(ruleset);
+        ruleset = global_conf->getItem("cyphesis", "ruleset").as_string();
     } else {
         log(ERROR, String::compose("No ruleset specified in config. Using \"%1\" rules.", DEFAULT_RULESET).c_str());
         log(INFO, "The basic rules don't allow much, so this should be rectified.");
-        rulesets.push_back(DEFAULT_RULESET);
+        ruleset = DEFAULT_RULESET;
     }
 
     if (check_tmp_path(var_directory) != 0) {

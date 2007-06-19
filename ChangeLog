@@ -1,5 +1,15 @@
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp, common/globals.h: Change the type and name
+	  of the ruleset list to a string.
+
+	* rulesets/Python_API.cpp, server/EntityFactory.cpp,
+	  server/server.cpp, tools/cyaddrules.cpp, tools/cydumprules.cpp,
+	  tools/cyloadrules.cpp: Switch to using single ruleset config
+	  variable.
+
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Remove loading config data for inherited
 	  rulesets.
 
@@ -16256,4 +16266,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1817 2007-06-19 12:54:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1818 2007-06-19 13:19:57 alriddoch Exp $

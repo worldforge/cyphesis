@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyloadrules.cpp,v 1.36 2007-06-16 13:39:55 alriddoch Exp $
+// $Id: cyloadrules.cpp,v 1.37 2007-06-19 13:19:58 alriddoch Exp $
 
 /// \page cyloadrules_index
 ///
@@ -202,34 +202,29 @@ int main(int argc, char ** argv)
         f.report();
     } else if (optind == argc) {
         db->clearRules();
-        std::vector<std::string>::const_iterator I = rulesets.begin();
-        std::vector<std::string>::const_iterator Iend = rulesets.end();
-        for (; I != Iend; ++I) {
-            std::cout << "Reading rules from " << *I << std::endl << std::flush;
-            std::string filename;
+        std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
+        std::string filename;
 
-            std::string dirname = etc_directory + "/cyphesis/" + *I + ".d";
-            DIR * rules_dir = ::opendir(dirname.c_str());
-            if (rules_dir == 0) {
-                filename = etc_directory + "/cyphesis/" + *I + ".xml";
-                DatabaseFileLoader f(filename, *db);
-                if (f.isOpen()) {
-                    std::cerr << "WARNING: Reading legacy rule data from \""
-                              << filename << "\""
-                              << std::endl << std::flush;
-                    db->setRuleset(*I);
-                    f.read();
-                    f.report();
-                }
-                continue;
+        std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+        DIR * rules_dir = ::opendir(dirname.c_str());
+        if (rules_dir == 0) {
+            filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
+            DatabaseFileLoader f(filename, *db);
+            if (f.isOpen()) {
+                std::cerr << "WARNING: Reading legacy rule data from \""
+                          << filename << "\""
+                          << std::endl << std::flush;
+                db->setRuleset(ruleset);
+                f.read();
+                f.report();
             }
+        } else {
             while (struct dirent * rules_entry = ::readdir(rules_dir)) {
                 if (rules_entry->d_name[0] == '.') {
                     std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
                     continue;
                 }
-                filename = etc_directory + "/cyphesis/" + *I + ".d/"
-                                         + rules_entry->d_name;
+                filename = dirname + "/" + rules_entry->d_name;
             
                 DatabaseFileLoader f(filename, *db);
                 if (!f.isOpen()) {
@@ -241,9 +236,6 @@ int main(int argc, char ** argv)
                     f.report();
                 }
             }
-            // We are not interested in loading inherited rulesets if the data
-            // is in a directory.
-            break;
         }
     } else {
         usage(argv[0]);

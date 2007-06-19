@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.103 2007-06-16 13:39:55 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.104 2007-06-19 13:19:58 alriddoch Exp $
 
 #include <Python.h>
 
@@ -652,41 +652,34 @@ int EntityFactory::modifyRule(const std::string & class_name,
 
 void EntityFactory::getRulesFromFiles(MapType & rules)
 {
-    std::vector<std::string>::const_iterator I = rulesets.begin();
-    std::vector<std::string>::const_iterator Iend = rulesets.end();
-    for (; I != Iend; ++I) {
-        std::string filename;
+    std::string filename;
 
-        std::string dirname = etc_directory + "/cyphesis/" + *I + ".d";
-        DIR * rules_dir = ::opendir(dirname.c_str());
-        if (rules_dir == 0) {
-            filename = etc_directory + "/cyphesis/" + *I + ".xml";
-            AtlasFileLoader f(filename, rules);
-            if (f.isOpen()) {
-                log(WARNING, String::compose("Reading legacy rule data from \"%1\".",
-                                             filename).c_str());
-                f.read();
-            }
+    std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+    DIR * rules_dir = ::opendir(dirname.c_str());
+    if (rules_dir == 0) {
+        filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
+        AtlasFileLoader f(filename, rules);
+        if (f.isOpen()) {
+            log(WARNING, String::compose("Reading legacy rule data from \"%1\".",
+                                         filename).c_str());
+            f.read();
+        }
+        return;
+    }
+    while (struct dirent * rules_entry = ::readdir(rules_dir)) {
+        if (rules_entry->d_name[0] == '.') {
+            std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
             continue;
         }
-        while (struct dirent * rules_entry = ::readdir(rules_dir)) {
-            if (rules_entry->d_name[0] == '.') {
-                std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
-                continue;
-            }
-            filename = etc_directory + "/cyphesis/" + *I + ".d/" + rules_entry->d_name;
-            
-            AtlasFileLoader f(filename, rules);
-            if (!f.isOpen()) {
-                log(ERROR, String::compose("Unable to open rule file \"%1\".",
-                                           filename).c_str());
-            } else {
-                f.read();
-            }
+        filename = dirname + "/" + rules_entry->d_name;
+        
+        AtlasFileLoader f(filename, rules);
+        if (!f.isOpen()) {
+            log(ERROR, String::compose("Unable to open rule file \"%1\".",
+                                       filename).c_str());
+        } else {
+            f.read();
         }
-        // We are not interested in loading inherited rulesets if the data
-        // is in a directory.
-        break;
     }
 }
 

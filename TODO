@@ -1,3 +1,6 @@
+Now that inherited rulesets have been removed, the ruleset column in the
+database has a different meaning, and dumprules no longer does the right thing.
+
 Apply behavior to newly created skellys. Now that the mind classes have been
 removed, skeletons need goals to do anything.
 
