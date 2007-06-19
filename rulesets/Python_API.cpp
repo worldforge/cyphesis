@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.162 2007-06-19 12:36:43 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.163 2007-06-19 12:54:54 alriddoch Exp $
 
 #include "Python.h"
 
@@ -1046,6 +1046,11 @@ void init_python_api()
             // Add the path to the non-ruleset specific code.
             std::string p = share_directory + "/cyphesis/scripts";
             PyObject * path = PyString_FromString(p.c_str());
+            PyList_Append(sys_path, path);
+            Py_DECREF(path);
+
+            p = share_directory + "/cyphesis/rulesets/basic";
+            path = PyString_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 

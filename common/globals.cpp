@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.48 2007-05-07 22:53:48 alriddoch Exp $
+// $Id: globals.cpp,v 1.49 2007-06-19 12:54:54 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -232,13 +232,10 @@ int loadConfig(int argc, char ** argv, bool server)
 
     // Load up the rulesets. Rulesets are hierarchical, and are read in until
     // one is read in that does not specify its parent ruleset.
-    std::string ruleset = "cyphesis";
-    while (global_conf->findItem(ruleset, "ruleset")) {
-        ruleset = global_conf->getItem(ruleset, "ruleset").as_string();
+    if (global_conf->findItem("cyphesis", "ruleset")) {
+        std::string ruleset = global_conf->getItem("cyphesis", "ruleset").as_string();
         rulesets.push_back(ruleset);
-    };
-
-    if (rulesets.empty()) {
+    } else {
         log(ERROR, String::compose("No ruleset specified in config. Using \"%1\" rules.", DEFAULT_RULESET).c_str());
         log(INFO, "The basic rules don't allow much, so this should be rectified.");
         rulesets.push_back(DEFAULT_RULESET);

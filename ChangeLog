@@ -1,5 +1,13 @@
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Remove loading config data for inherited
+	  rulesets.
+
+	* rulesets/Python_API.cpp: Add the python path for mind code
+	  manually, and only add one path for the ruleset.
+
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/world/objects/buildings/House.py,
 	  rulesets/basic/world/objects/buildings/StoneHouse.py,
 	  rulesets/basic/world/objects/buildings/__init__.py,
@@ -16248,4 +16256,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1816 2007-06-19 12:41:23 alriddoch Exp $
+$Id: ChangeLog,v 1.1817 2007-06-19 12:54:54 alriddoch Exp $
