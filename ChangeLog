@@ -1,5 +1,10 @@
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/cydumprules.cpp: Re work the rule dumper to use the ruleset
+	  column more correctly.
+
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.spec.in: Fix up the rpm spec for the new layout of config
 	  files and script directories.
 
@@ -16275,4 +16280,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1820 2007-06-19 13:48:06 alriddoch Exp $
+$Id: ChangeLog,v 1.1821 2007-06-19 17:45:56 alriddoch Exp $

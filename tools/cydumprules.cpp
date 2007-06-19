@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.10 2007-06-19 13:19:58 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.11 2007-06-19 17:45:56 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -75,6 +75,22 @@ class RuleReader {
         return m_instance;
     }
 
+    /// \brief Read all the rules sets from the rules table
+    ///
+    void readRuleTableSets(std::set<std::string> & sets) {
+        std::stringstream query;
+        query << "SELECT ruleset FROM " << m_connection.rule();
+        DatabaseResult res = m_connection.runSimpleSelectQuery(query.str());
+        DatabaseResult::const_iterator I = res.begin();
+        DatabaseResult::const_iterator Iend = res.end();
+        for (; I != Iend; ++I) {
+            std::string ruleset_name = I.column("ruleset");
+            if (sets.find(ruleset_name) == sets.end()) {
+                sets.insert(ruleset_name);
+            }
+        }
+    }
+
     /// \brief Read all the rules in one ruleset from the rules table.
     ///
     /// @param ruleset the name of the ruleset to be read.
@@ -132,38 +148,47 @@ int main(int argc, char ** argv)
 
     Atlas::Message::QueuedDecoder decoder;
 
-    std::cout << "Dumping rules from " << ruleset << std::endl << std::flush;
-
     MapType rule_store;
+    std::set<std::string> rulesets;
 
-    db->readRuleTable(ruleset, rule_store);
+    db->readRuleTableSets(rulesets);
 
-    std::fstream file;
-    std::string filename = ruleset + ".xml";
+    std::set<std::string>::const_iterator I = rulesets.begin();
+    std::set<std::string>::const_iterator Iend = rulesets.end();
+    for(; I != Iend; ++I) {
+        const std::string & ruleset = *I;
+
+        std::cout << "Dumping rules from " << ruleset
+                  << std::endl << std::flush;
+
+        db->readRuleTable(ruleset, rule_store);
+
+        std::fstream file;
    
-    file.open(filename.c_str(), std::ios::out);
+        file.open(ruleset.c_str(), std::ios::out);
     
-    Atlas::Codecs::XML codec(file, decoder);
-    Atlas::Formatter formatter(file, codec);
-    Atlas::Message::Encoder encoder(formatter);
+        Atlas::Codecs::XML codec(file, decoder);
+        Atlas::Formatter formatter(file, codec);
+        Atlas::Message::Encoder encoder(formatter);
 
-    formatter.streamBegin();
+        formatter.streamBegin();
 
-    MapType::const_iterator J = rule_store.begin();
-    MapType::const_iterator Jend = rule_store.end();
-    for (; J != Jend; ++J) {
-        if (!J->second.isMap()) {
-            std::cerr << "WARNING: Non map rule found in database"
-                      << std::endl << std::flush;
-            continue;
+        MapType::const_iterator J = rule_store.begin();
+        MapType::const_iterator Jend = rule_store.end();
+        for (; J != Jend; ++J) {
+            if (!J->second.isMap()) {
+                std::cerr << "WARNING: Non map rule found in database"
+                          << std::endl << std::flush;
+                continue;
+            }
+            encoder.streamMessageElement(J->second.asMap());
         }
-        encoder.streamMessageElement(J->second.asMap());
+
+        formatter.streamEnd();
+
+        std::cout << rule_store.size() << " classes stores in " << ruleset
+                  << std::endl << std::flush;
     }
-
-    formatter.streamEnd();
-
-    std::cout << rule_store.size() << " classes stores in " << filename
-              << std::endl << std::flush;
 
     delete db;
     return 0;
