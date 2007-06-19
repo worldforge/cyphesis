@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.h,v 1.32 2006-12-12 15:54:24 alriddoch Exp $
+// $Id: Plant.h,v 1.33 2007-06-19 22:17:43 alriddoch Exp $
 
 #ifndef RULESETS_PLANT_H
 #define RULESETS_PLANT_H
@@ -58,7 +58,6 @@ class Plant : public Plant_parent {
     const int getFruitChance() const { return m_fruitChance; }
     const double getSizeAdult() const { return m_sizeAdult; }
 
-    virtual void ChopOperation(const Operation &, OpVector &);
     virtual void NourishOperation(const Operation &, OpVector &);
     virtual void SetupOperation(const Operation &, OpVector &);
     virtual void TickOperation(const Operation &, OpVector &);

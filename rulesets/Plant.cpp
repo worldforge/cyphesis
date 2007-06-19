@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.80 2007-06-04 08:30:27 alriddoch Exp $
+// $Id: Plant.cpp,v 1.81 2007-06-19 22:17:43 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -96,57 +96,6 @@ int Plant::dropFruit(OpVector & res)
         res.push_back(create);
     }
     return drop;
-}
-
-void Plant::ChopOperation(const Operation & op, OpVector & res)
-{
-    log(ERROR, "Don't call this");
-    debug(std::cout << "Plant got chop op" << std::endl << std::flush;);
-    Element mode;
-    if (getAttr("mode", mode) && mode.isString() && mode.String() == "felled") {
-        debug(std::cout << "Plant is already down" << std::endl << std::flush;);
-        Set set_op;
-        Anonymous set_arg;
-        set_arg->setId(getId());
-        set_arg->setAttr("status", -1);
-        set_op->setArgs1(set_arg);
-        set_op->setTo(getId());
-        res.push_back(set_op);
-
-        if (m_location.bBox().isValid()) {
-            debug(std::cout << "Plant replaced by log" << std::endl << std::flush;);
-            Create create_op;
-            Anonymous create_arg;
-            create_arg->setParents(std::list<std::string>(1,"lumber"));
-            create_arg->setAttr("mass", getMass());
-            m_location.addToEntity(create_arg);
-            create_op->setArgs1(create_arg);
-            create_op->setTo(getId());
-            res.push_back(create_op);
-        }
-        return;
-    }
-    // FIXME In the future it will take more than one chop to chop down a tree.
-    Move move;
-    Anonymous move_arg;
-    if (m_location.m_loc != NULL) {
-        move_arg->setLoc(m_location.m_loc->getId());
-    } else {
-        log(ERROR, "Plant generating invalid Move op because LOC is NULL");
-    }
-    Vector3D axis(uniform(-1, 1), uniform(-1, 1), 0);
-    axis.normalize();
-    // FIXME Make tree fall away from axe, by using cross product of
-    // distance to axe, and vertical axis as axis of rotation
-    Quaternion orient(m_location.orientation());
-    orient.rotation(axis, M_PI/2);
-    move_arg->setAttr("orientation", orient.toAtlas());
-    move_arg->setAttr("mode", "felled");
-    ::addToEntity(m_location.pos(), move_arg->modifyPos());
-    move_arg->setId(getId());
-    move->setArgs1(move_arg);
-    move->setTo(getId());
-    res.push_back(move);
 }
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)

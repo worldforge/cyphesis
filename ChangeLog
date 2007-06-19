@@ -1,5 +1,13 @@
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* configure.ac: Increment version.
+
+	* rulesets/Plant.cpp, rulesets/Plant.h: Remove the chop operation
+	  handler, now completely obsolete as that functionality is done
+	  by the task script.
+
+2007-06-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cydumprules.cpp: Re work the rule dumper to use the ruleset
 	  column more correctly.
 
@@ -16280,4 +16288,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1821 2007-06-19 17:45:56 alriddoch Exp $
+$Id: ChangeLog,v 1.1822 2007-06-19 22:17:42 alriddoch Exp $
