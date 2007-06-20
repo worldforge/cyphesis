@@ -1,3 +1,12 @@
+GetOp is not part of IG, so illustrates for OOG dispatch to be different from
+IG.
+
+Get rid of eating of live entities, make eating of food based on a
+property, and remove Eat from the core functionality.
+
+Make burn_speed an operation handling property, and get rid of burn from
+the core functionality.
+
 Apply behavior to newly created skellys. Now that the mind classes have been
 removed, skeletons need goals to do anything.
 
