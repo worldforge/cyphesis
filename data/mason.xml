@@ -535,6 +535,10 @@
 
   <map>
     <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.5</float>
         <string name="visibility">public</string>
@@ -1571,6 +1575,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.5</float>
         <string name="visibility">public</string>
@@ -1738,6 +1746,10 @@
           <float>0.05</float>
           <float>0.1</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">0.1</float>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -2129,6 +2141,10 @@
 
   <map>
     <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.05</float>
         <string name="visibility">public</string>
@@ -2634,6 +2650,12 @@
   </map>
 
   <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
     <string name="id">tuber</string>
     <string name="objtype">class</string>
     <list name="parents">
@@ -2643,6 +2665,10 @@
   
   <map>
     <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.5</float>
         <string name="visibility">public</string>

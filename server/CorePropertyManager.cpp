@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.18 2007-01-27 16:35:37 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.19 2007-06-21 20:26:53 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -27,7 +27,9 @@
 #include "rulesets/SolidProperty.h"
 #include "rulesets/Entity.h"
 
+#include "common/Eat.h"
 #include "common/types.h"
+#include "common/Nourish.h"
 #include "common/PropertyFactory_impl.h"
 #include "common/DynamicProperty_impl.h"
 
@@ -41,7 +43,9 @@
 #include <iostream>
 
 using Atlas::Message::Element;
+using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
@@ -86,6 +90,47 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     return OPERATION_IGNORED;
 }
 
+HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
+{
+    PropertyBase * pb = e->getProperty("biomass");
+    if (pb == NULL) {
+        debug(std::cout << "Eat HANDLER no biomass" << std::endl 
+                        << std::flush;);
+        return OPERATION_IGNORED;
+    }
+    
+    Element val;
+    pb->get(val);
+    if (!val.isNum()) {
+        debug(std::cout << "Delete HANDLER decays non-float" << std::endl 
+                        << std::flush;);
+        return OPERATION_IGNORED;
+    }
+    double biomass = val.asNum();
+
+    Anonymous self;
+    self->setId(e->getId());
+    self->setAttr("status", -1);
+
+    Set s;
+    s->setTo(e->getId());
+    s->setArgs1(self);
+
+    const std::string & to = op->getFrom();
+    Anonymous nour_arg;
+    nour_arg->setId(to);
+    nour_arg->setAttr("mass", biomass);
+
+    Nourish n;
+    n->setTo(to);
+    n->setArgs1(nour_arg);
+
+    res.push_back(s);
+    res.push_back(n);
+
+    return OPERATION_IGNORED;
+}
+
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
@@ -97,6 +142,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["decays"] = new ActivePropertyBuilder<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyBuilder<OutfitProperty>;
     m_propertyFactories["solid"] = new EntityPropertyBuilder<SolidProperty>;
+    m_propertyFactories["biomass"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory_impl.h,v 1.5 2007-01-27 16:35:37 alriddoch Exp $
+// $Id: ActivePropertyFactory_impl.h,v 1.6 2007-06-21 20:26:53 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_IMPL_H
@@ -39,6 +39,29 @@ PropertyBase * ActivePropertyBuilder<T>::newProperty(Entity * property_owner)
 {
     // Install operation handler on property_owner
     property_owner->installHandler(m_operationClassNo, m_handler);
+
+    return new T();
+}
+
+/// \brief MultiActivePropertyBuilder constructor
+///
+/// @param handlers Map of operation class that will trigger a handler to
+/// the handler it will trigger.
+template<class T>
+MultiActivePropertyBuilder<T>::MultiActivePropertyBuilder(const HandlerMap &
+                                                          handlers) :
+                               m_handlers(handlers)
+{
+}
+
+template <class T>
+PropertyBase * MultiActivePropertyBuilder<T>::newProperty(Entity * owner)
+{
+    HandlerMap::const_iterator I = m_handlers.begin();
+    HandlerMap::const_iterator Iend = m_handlers.end();
+    for (; I != Iend; ++I) {
+        owner->installHandler(I->first, I->second);
+    }
 
     return new T();
 }

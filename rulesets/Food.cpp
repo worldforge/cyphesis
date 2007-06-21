@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Food.cpp,v 1.44 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: Food.cpp,v 1.45 2007-06-21 20:26:53 alriddoch Exp $
 
 #include "Food.h"
 #include "Script.h"
@@ -41,29 +41,6 @@ Food::Food(const std::string & id, long intId) : Food_parent(id, intId)
 
 Food::~Food()
 {
-}
-
-void Food::EatOperation(const Operation & op, OpVector & res)
-{
-    Anonymous self;
-    self->setId(getId());
-    self->setAttr("status", -1);
-
-    Set s;
-    s->setTo(getId());
-    s->setArgs1(self);
-
-    const std::string & to = op->getFrom();
-    Anonymous nour_arg;
-    nour_arg->setId(to);
-    nour_arg->setAttr("mass", m_mass);
-
-    Nourish n;
-    n->setTo(to);
-    n->setArgs1(nour_arg);
-
-    res.push_back(s);
-    res.push_back(n);
 }
 
 void Food::BurnOperation(const Operation & op, OpVector & res)

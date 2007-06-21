@@ -223,6 +223,10 @@
 
   <map>
     <map name="attributes">
+      <map name="biomass">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">ham</string>
     <string name="objtype">class</string>

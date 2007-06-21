@@ -1,3 +1,19 @@
+2007-06-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/ActivePropertyFactory.h,
+	  rulesets/ActivePropertyFactory_impl.h: Add a new type of property
+	  builder than can install multiple operation handlers.
+
+	* server/CorePropertyManager.cpp: Add a new active dynamic property
+	  "biomass" for things which can be eaten, which handles the Eat
+	  operation.
+
+	* rulesets/Food.cpp, rulesets/Food.h: Remove the old Eat operation
+	  handler.
+
+	* data/basic.xml, data/mason.xml: Give all the food entity rules
+	  some biomass.
+
 2007-06-19  Al Riddoch  <alriddoch@zepler.org>
 
 	* configure.ac: Increment version.
@@ -16288,4 +16304,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1822 2007-06-19 22:17:42 alriddoch Exp $
+$Id: ChangeLog,v 1.1823 2007-06-21 20:26:53 alriddoch Exp $
