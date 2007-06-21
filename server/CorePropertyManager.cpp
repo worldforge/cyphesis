@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.19 2007-06-21 20:26:53 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.20 2007-06-21 21:02:39 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -42,6 +42,7 @@
 
 #include <iostream>
 
+using Atlas::Objects::Root;
 using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Create;
@@ -102,7 +103,7 @@ HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
     Element val;
     pb->get(val);
     if (!val.isNum()) {
-        debug(std::cout << "Delete HANDLER decays non-float" << std::endl 
+        debug(std::cout << "Eat HANDLER biomass non-float" << std::endl 
                         << std::flush;);
         return OPERATION_IGNORED;
     }
@@ -126,6 +127,56 @@ HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
     n->setArgs1(nour_arg);
 
     res.push_back(s);
+    res.push_back(n);
+
+    return OPERATION_IGNORED;
+}
+
+HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
+{
+    if (op->getArgs().empty()) {
+        e->error(op, "Fire op has no argument", res, e->getId());
+        return OPERATION_IGNORED;
+    }
+
+    PropertyBase * pb = e->getProperty("burn_speed");
+    if (pb == NULL) {
+        debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
+                        << std::flush;);
+        return OPERATION_IGNORED;
+    }
+    
+    Element val;
+    pb->get(val);
+    if (!val.isNum()) {
+        debug(std::cout << "Burn HANDLER burn_speed non-float" << std::endl 
+                        << std::flush;);
+        return OPERATION_IGNORED;
+    }
+
+    double burn_speed = val.asNum();
+    const Root & fire_ent = op->getArgs().front();
+    double consumed = burn_speed * fire_ent->getAttr("status").asNum();
+
+    const std::string & to = fire_ent->getId();
+    Anonymous nour_ent;
+    nour_ent->setId(to);
+    nour_ent->setAttr("mass", consumed);
+
+    Set s;
+    s->setTo(e->getId());
+
+    Anonymous self_ent;
+    self_ent->setId(e->getId());
+    self_ent->setAttr("status", e->getStatus() - (consumed / e->getMass()));
+    s->setArgs1(self_ent);
+    
+    res.push_back(s);
+
+    Nourish n;
+    n->setTo(to);
+    n->setArgs1(nour_ent);
+
     res.push_back(n);
 
     return OPERATION_IGNORED;
