@@ -1,5 +1,10 @@
 2007-06-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml, data/mason.xml: Remove inheritance from food class,
+	  as food is now entirely property based.
+
+2007-06-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp, tools/cyaddrules.cpp,
 	  tools/cyloadrules.cpp: Remove some directory walking debug output.
 
@@ -16330,4 +16335,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1827 2007-06-22 12:58:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1828 2007-06-22 13:07:04 alriddoch Exp $

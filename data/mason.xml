@@ -1587,7 +1587,7 @@
     <string name="id">loaf</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>food</string>
+      <string>thing</string>
     </list>
   </map>
 
@@ -1760,7 +1760,7 @@
     <string name="id">mushroom</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>food</string>
+      <string>thing</string>
     </list>
   </map>
 
@@ -2153,7 +2153,7 @@
     <string name="id">seed</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>food</string>
+      <string>thing</string>
     </list>
     <map name="script">
       <string name="language">python</string>
@@ -2659,7 +2659,7 @@
     <string name="id">tuber</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>food</string>
+      <string>thing</string>
     </list>
   </map>
   
