@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.h,v 1.69 2006-12-30 23:13:33 alriddoch Exp $
+// $Id: Thing.h,v 1.70 2007-06-22 12:42:36 alriddoch Exp $
 
 #ifndef RULESETS_THING_H
 #define RULESETS_THING_H
@@ -42,7 +42,6 @@ class Thing : public Thing_parent {
 
     virtual void ActionOperation(const Operation & op, OpVector &);
     virtual void DeleteOperation(const Operation & op, OpVector &);
-    virtual void BurnOperation(const Operation & op, OpVector &);
     virtual void MoveOperation(const Operation & op, OpVector &);
     virtual void SetOperation(const Operation & op, OpVector &);
     virtual void UpdateOperation(const Operation & op, OpVector &);

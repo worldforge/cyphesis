@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.212 2007-01-09 00:44:57 alriddoch Exp $
+// $Id: Thing.cpp,v 1.213 2007-06-22 12:42:36 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -87,42 +87,6 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
-}
-
-void Thing::BurnOperation(const Operation & op, OpVector & res)
-{
-    if (op->getArgs().empty()) {
-        error(op, "Fire op has no argument", res, getId());
-        return;
-    }
-    MapType::const_iterator I = m_attributes.find("burn_speed");
-    if ((I == m_attributes.end()) || !I->second.isNum()) {
-        return;
-    }
-    double bspeed = I->second.asNum();
-    const Root & fire_ent = op->getArgs().front();
-    double consumed = bspeed * fire_ent->getAttr("status").asNum();
-
-    const std::string & to = fire_ent->getId();
-    Anonymous nour_ent;
-    nour_ent->setId(to);
-    nour_ent->setAttr("mass", consumed);
-
-    Set s;
-    s->setTo(getId());
-
-    Anonymous self_ent;
-    self_ent->setId(getId());
-    self_ent->setAttr("status", m_status - (consumed / m_mass));
-    s->setArgs1(self_ent);
-
-    res.push_back(s);
-
-    Nourish n;
-    n->setTo(to);
-    n->setArgs1(nour_ent);
-
-    res.push_back(n);
 }
 
 void Thing::MoveOperation(const Operation & op, OpVector & res)

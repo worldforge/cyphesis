@@ -1,3 +1,11 @@
+2007-06-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CorePropertyManager.cpp: Finish installing the burn speed
+	  property, now tested.
+
+	* rulesets/Thing.cpp, rulesets/Thing.h: Remove legacy Burn operation
+	  handler.
+
 2007-06-21  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CorePropertyManager.cpp: Add a new active dynamic property
@@ -16309,4 +16317,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1824 2007-06-21 21:02:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1825 2007-06-22 12:42:35 alriddoch Exp $

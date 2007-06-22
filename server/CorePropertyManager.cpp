@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.20 2007-06-21 21:02:39 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.21 2007-06-22 12:42:36 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -28,8 +28,10 @@
 #include "rulesets/Entity.h"
 
 #include "common/Eat.h"
-#include "common/types.h"
+#include "common/Burn.h"
 #include "common/Nourish.h"
+
+#include "common/types.h"
 #include "common/PropertyFactory_impl.h"
 #include "common/DynamicProperty_impl.h"
 
@@ -45,6 +47,7 @@
 using Atlas::Objects::Root;
 using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Burn;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Entity::Anonymous;
@@ -194,6 +197,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["outfit"] = new PropertyBuilder<OutfitProperty>;
     m_propertyFactories["solid"] = new EntityPropertyBuilder<SolidProperty>;
     m_propertyFactories["biomass"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
+    m_propertyFactories["burn_speed"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()
