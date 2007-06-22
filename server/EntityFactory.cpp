@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.104 2007-06-19 13:19:58 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.105 2007-06-22 12:59:00 alriddoch Exp $
 
 #include <Python.h>
 
@@ -668,7 +668,6 @@ void EntityFactory::getRulesFromFiles(MapType & rules)
     }
     while (struct dirent * rules_entry = ::readdir(rules_dir)) {
         if (rules_entry->d_name[0] == '.') {
-            std::cout << "Skipping " << rules_entry->d_name << std::endl << std::flush;
             continue;
         }
         filename = dirname + "/" + rules_entry->d_name;

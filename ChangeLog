@@ -1,5 +1,10 @@
 2007-06-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp, tools/cyaddrules.cpp,
+	  tools/cyloadrules.cpp: Remove some directory walking debug output.
+
+2007-06-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/op_switch.h,
 	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Food.cpp,
 	  rulesets/Food.h, rulesets/World.cpp, rulesets/World.h,
@@ -16325,4 +16330,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1826 2007-06-22 12:56:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1827 2007-06-22 12:58:59 alriddoch Exp $
