@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.102 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: World.cpp,v 1.103 2007-06-22 12:56:34 alriddoch Exp $
 
 #include "World.h"
 
@@ -418,11 +418,6 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     s->setTo(op->getFrom());
     res.push_back(s);
-}
-
-void World::BurnOperation(const Operation & op, OpVector & res)
-{
-    // Can't burn the world.
 }
 
 void World::MoveOperation(const Operation & op, OpVector & res)

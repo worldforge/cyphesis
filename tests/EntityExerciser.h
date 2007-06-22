@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityExerciser.h,v 1.21 2006-12-05 20:44:53 alriddoch Exp $
+// $Id: EntityExerciser.h,v 1.22 2007-06-22 12:56:34 alriddoch Exp $
 
 #ifndef TESTS_ENTITY_EXERCISER_H
 #define TESTS_ENTITY_EXERCISER_H
@@ -170,13 +170,6 @@ inline void EntityExerciser<EntityType>::runOperations()
         OpVector ov;
         op->setFrom(m_ent.getId());
         m_ent.EatOperation(op, ov);
-        flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Burn op;
-        dispatchOp(op);
-        OpVector ov;
-        m_ent.BurnOperation(op, ov);
         flushOperations(ov);
     }
     {

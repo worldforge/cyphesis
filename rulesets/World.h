@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.h,v 1.33 2006-12-12 15:54:24 alriddoch Exp $
+// $Id: World.h,v 1.34 2007-06-22 12:56:34 alriddoch Exp $
 
 #ifndef RULESETS_WORLD_H
 #define RULESETS_WORLD_H
@@ -81,7 +81,6 @@ class World : public World_parent {
 
     virtual void EatOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
-    virtual void BurnOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);

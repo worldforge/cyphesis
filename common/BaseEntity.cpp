@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.95 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.96 2007-06-22 12:56:34 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -27,7 +27,6 @@
 
 #include "Add.h"
 #include "Attack.h"
-#include "Burn.h"
 #include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
@@ -173,14 +172,6 @@ void BaseEntity::DivideOperation(const Operation & op, OpVector & res)
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
 void BaseEntity::EatOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Process a Burn operation.
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseEntity::BurnOperation(const Operation & op, OpVector & res)
 {
 }
 

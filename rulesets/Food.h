@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Food.h,v 1.19 2007-06-21 20:26:53 alriddoch Exp $
+// $Id: Food.h,v 1.20 2007-06-22 12:56:34 alriddoch Exp $
 
 #ifndef RULESETS_FOOD_H
 #define RULESETS_FOOD_H
@@ -33,8 +33,6 @@ class Food : public Food_parent {
   public:
     explicit Food(const std::string & id, long intId);
     virtual ~Food();
-
-    virtual void BurnOperation(const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_FOOD_H

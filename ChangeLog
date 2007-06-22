@@ -1,5 +1,13 @@
 2007-06-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/op_switch.h,
+	  rulesets/Character.cpp, rulesets/Character.h, rulesets/Food.cpp,
+	  rulesets/Food.h, rulesets/World.cpp, rulesets/World.h,
+	  tests/EntityExerciser.h: Purge the burn operation from the core
+	  operation handling code. One down, many still to go.
+
+2007-06-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CorePropertyManager.cpp: Finish installing the burn speed
 	  property, now tested.
 
@@ -16317,4 +16325,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1825 2007-06-22 12:42:35 alriddoch Exp $
+$Id: ChangeLog,v 1.1826 2007-06-22 12:56:33 alriddoch Exp $

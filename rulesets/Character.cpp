@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.292 2007-02-07 23:08:27 alriddoch Exp $
+// $Id: Character.cpp,v 1.293 2007-06-22 12:56:34 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1297,14 +1297,6 @@ void Character::mindDivideOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
-/// \brief Filter a Burn operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindBurnOperation(const Operation & op, OpVector & res)
-{
-}
-
 /// \brief Filter a Get operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1546,15 +1538,6 @@ bool Character::w2mDeleteOperation(const Operation & op)
 /// @param op The operation to be filtered.
 /// @return true if the operation should be passed.
 bool Character::w2mEatOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Burn operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mBurnOperation(const Operation & op)
 {
     return false;
 }

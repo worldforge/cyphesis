@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Food.cpp,v 1.45 2007-06-21 20:26:53 alriddoch Exp $
+// $Id: Food.cpp,v 1.46 2007-06-22 12:56:34 alriddoch Exp $
 
 #include "Food.h"
 #include "Script.h"
@@ -42,38 +42,3 @@ Food::Food(const std::string & id, long intId) : Food_parent(id, intId)
 Food::~Food()
 {
 }
-
-void Food::BurnOperation(const Operation & op, OpVector & res)
-{
-    if (op->getArgs().empty()) {
-       error(op, "Burn op has no argument", res, getId());
-       return;
-    }
-    double cooked = 0;
-    Element cooked_attr;
-    if (getAttr("cooked", cooked_attr) && cooked_attr.isNum()) {
-        cooked = cooked_attr.asNum();
-    }
-    const Root & arg = op->getArgs().front();
-    Anonymous set_arg;
-    set_arg->setId(getId());
-    // Currently this cooks pretty quick, and at the same speed for
-    // everything. No mechanism for this yet.
-    Element status_attr;
-    if (arg->copyAttr("status", status_attr) != 0 || !status_attr.isNum()) {
-        error(op, "Burn op with no fire status", res, getId());
-    } else {
-        double fire_size = status_attr.asNum();
-        set_arg->setAttr("cooked", cooked + (fire_size/m_mass));
-        if (cooked > 1.0) {
-            set_arg->setAttr("status", m_status - (m_attributes["burn_speed"].asNum()) * fire_size);
-        }
-    }
-
-    Set s;
-    s->setTo(getId());
-    s->setArgs1(set_arg);
-
-    res.push_back(s);
-}
-
