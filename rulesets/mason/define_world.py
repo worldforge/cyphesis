@@ -175,6 +175,11 @@ forests = [
            ('fir', 200, -300, 300,  200,  300, 50)
           ]
 
+tree_styles = {
+            'oak' : ['gnarly', 'knotted', 'weathered'], 
+            'fir' : ['gnarly', 'knotted', 'weathered']
+            }
+
 #observer calls this
 def default(mapeditor):
 #   general things
@@ -253,10 +258,10 @@ def default(mapeditor):
     m.make('boundary',type='boundary',pos=(-500, 320,-20),bbox=[821,2,300],mode="fixed")
     m.make('boundary',type='boundary',pos=( 320,-321,-20),bbox=[2,642,300],mode="fixed")
 
-    m.make('fir',type='fir',pos=(-10,-0,settlement_height))
-    m.make('fir',type='fir',pos=(-0,-10,settlement_height))
-    m.make('fir',type='fir',pos=(0,10,settlement_height))
-    m.make('fir',type='fir',pos=(10,0,settlement_height))
+    m.make('fir',type='fir',pos=(-10,-0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',type='fir',pos=(-0,-10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',type='fir',pos=(0,10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',type='fir',pos=(10,0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
 
     path_area={'points' : [ [-26,-62], [-36,-31], [-26,-14], [2,-1], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ], 'layer' : 7}
     m.make('path to village',type='path',pos=(10, 20,settlement_height), area=path_area,bbox=[-38,-62,0,169,154,1])
@@ -335,7 +340,7 @@ def default(mapeditor):
 
     for i in forests:
         for j in range(0, i[1]):
-            m.make(i[0],type=i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
+            m.make(i[0],type=i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
 
     m.make('weather',type='weather',desc='object that describes the weather',
            pos=(0,1,0), rain=0.0)
@@ -857,14 +862,16 @@ def test_graveyard(mapeditor):
     
     path_area={'points' : [ [2, 0], [20, 20], [45, 60], [65, 70], [83, 40], [106, -15], [105, -12], [82, 36], [66, 67], [44, 57], [18, 16], [0, -4]], 'layer' : 7}
     m.make('path to graveyard',type='path',pos=(-150, 110, graveyard_height), area=path_area,bbox=[100,8,1])
+    gravestone_styles = ['simple', 'rounded', 'stylish']
+        
 
-    m.make('gravestone1', type='gravestone_rounded', pos=(-145, 107, graveyard_height), orientation=directions[1])
-    m.make('gravestone2', type='gravestone_simple', pos=(-147, 104, graveyard_height), orientation=directions[2])
-    m.make('gravestone3', type='gravestone_stylish', pos=(-148, 109, graveyard_height), orientation=directions[3])
-    m.make('gravestone4', type='gravestone_rounded', pos=(-150, 117, graveyard_height), orientation=directions[2])
-    m.make('gravestone5', type='gravestone_rounded', pos=(-143, 111, graveyard_height), orientation=directions[4])
-    m.make('gravestone6', type='gravestone_stylish', pos=(-149, 110, graveyard_height), orientation=directions[3])
-    m.make('gravestone7', type='gravestone_stylish', pos=(-147, 116, graveyard_height), orientation=directions[2])
+    m.make('gravestone1', type='gravestone', pos=(-145, 107, graveyard_height), orientation=directions[1], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone2', type='gravestone', pos=(-147, 104, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone3', type='gravestone', pos=(-148, 109, graveyard_height), orientation=directions[3], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone4', type='gravestone', pos=(-150, 117, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone5', type='gravestone', pos=(-143, 111, graveyard_height), orientation=directions[4], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone6', type='gravestone', pos=(-149, 110, graveyard_height), orientation=directions[3], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone7', type='gravestone', pos=(-147, 116, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
     
     lych=m.make('lych', type='lych', pos=(-140, 130, graveyard_height))
     m.learn(lych,lych2_goals)

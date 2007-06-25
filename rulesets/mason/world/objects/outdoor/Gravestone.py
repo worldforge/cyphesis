@@ -27,15 +27,6 @@ def create_skeletonpart(self, op):
     retops = retops + Operation("create", Entity(name=item,parents=[item],location=newloc.copy()), to=self)
     return retops
 
-class Gravestone_stylish(Thing):
+class Gravestone(Thing):
     def dig_operation(self, op):
-        return create_skeletonpart(self, op)    
-
-class Gravestone_rounded(Thing):
-    def dig_operation(self, op):
-        return create_skeletonpart(self, op)    
-     
-class Gravestone_simple(Thing):
-    def dig_operation(self, op):
-        return create_skeletonpart(self, op)    
-     
+        return create_skeletonpart(self, op)
