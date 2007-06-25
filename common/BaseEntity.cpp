@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.96 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.97 2007-06-25 18:53:38 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -27,7 +27,6 @@
 
 #include "Add.h"
 #include "Attack.h"
-#include "Chop.h"
 #include "Cut.h"
 #include "Eat.h"
 #include "Nourish.h"
@@ -116,14 +115,6 @@ void BaseEntity::ActionOperation(const Operation & op, OpVector & res)
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
 void BaseEntity::AddOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Process a Chop operation.
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseEntity::ChopOperation(const Operation & op, OpVector & res)
 {
 }
 

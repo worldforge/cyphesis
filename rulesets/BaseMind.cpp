@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.102 2006-12-26 18:46:08 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.103 2007-06-25 18:53:38 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -28,7 +28,6 @@
 
 #include "common/Attack.h"
 #include "common/Burn.h"
-#include "common/Chop.h"
 #include "common/Cut.h"
 #include "common/Eat.h"
 #include "common/Setup.h"

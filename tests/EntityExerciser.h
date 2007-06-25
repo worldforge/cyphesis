@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityExerciser.h,v 1.22 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: EntityExerciser.h,v 1.23 2007-06-25 18:53:39 alriddoch Exp $
 
 #ifndef TESTS_ENTITY_EXERCISER_H
 #define TESTS_ENTITY_EXERCISER_H
@@ -24,7 +24,6 @@
 
 #include "common/Add.h"
 #include "common/Burn.h"
-#include "common/Chop.h"
 #include "common/Connect.h"
 #include "common/Cut.h"
 #include "common/Delve.h"
@@ -120,13 +119,6 @@ inline void EntityExerciser<EntityType>::runOperations()
         dispatchOp(op);
         OpVector ov;
         m_ent.ActionOperation(op, ov);
-        flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Chop op;
-        dispatchOp(op);
-        OpVector ov;
-        m_ent.ChopOperation(op, ov);
         flushOperations(ov);
     }
     {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.293 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: Character.cpp,v 1.294 2007-06-25 18:53:38 alriddoch Exp $
 
 #include "Character.h"
 
@@ -41,7 +41,6 @@
 #include "common/Add.h"
 #include "common/Attack.h"
 #include "common/Burn.h"
-#include "common/Chop.h"
 #include "common/Cut.h"
 #include "common/Eat.h"
 #include "common/Nourish.h"
@@ -647,17 +646,6 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     }
 }
 
-void Character::ChopOperation(const Operation & op, OpVector & res)
-{
-    Set s;
-    Anonymous sarg;
-    sarg->setId(getId());
-    sarg->setAttr("status", getStatus() - 0.2);
-    s->setArgs1(sarg);
-    s->setTo(getId());
-    res.push_back(s);
-}
-
 /// \brief Filter a Login operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1209,14 +1197,6 @@ void Character::mindSoundOperation(const Operation & op, OpVector & res)
 {
 }
 
-/// \brief Filter a Chop operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindChopOperation(const Operation & op, OpVector & res)
-{
-}
-
 /// \brief Filter a Combine operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1479,33 +1459,6 @@ bool Character::w2mAttackOperation(const Operation & op)
     return false;
 }
 
-/// \brief Filter a Login operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mLoginOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Logout operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mLogoutOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Chop operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mChopOperation(const Operation & op)
-{
-    return false;
-}
-
 /// \brief Filter a Create operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
@@ -1587,29 +1540,11 @@ bool Character::w2mCombineOperation(const Operation & op)
     return false;
 }
 
-/// \brief Filter a Get operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mGetOperation(const Operation & op)
-{
-    return false;
-}
-
 /// \brief Filter a Imaginary operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
 /// @return true if the operation should be passed.
 bool Character::w2mImaginaryOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Info operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mInfoOperation(const Operation & op)
 {
     return false;
 }

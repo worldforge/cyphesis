@@ -1,5 +1,18 @@
 2007-06-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h, common/op_switch.h,
+	  rulesets/Character.cpp, rulesets/Character.h: Remove the chop
+	  operation completely from the core code. Remove some OOG
+	  operations from the world to mind filter, as they should never
+	  occur.
+
+	* rulesets/BaseMind.cpp, rulesets/Plant.cpp: Remove some obsolete
+	  operation header includes.
+
+	* tests/EntityExerciser.h: Remove Chop from the test for entity.
+
+2007-06-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml, data/mason.xml: Remove inheritance from food class,
 	  as food is now entirely property based.
 
@@ -16335,4 +16348,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1828 2007-06-22 13:07:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1829 2007-06-25 18:53:38 alriddoch Exp $

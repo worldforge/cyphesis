@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.81 2007-06-19 22:17:43 alriddoch Exp $
+// $Id: Plant.cpp,v 1.82 2007-06-25 18:53:38 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -30,8 +30,6 @@
 
 #include "common/Tick.h"
 #include "common/Eat.h"
-#include "common/Chop.h"
-#include "common/Nourish.h"
 
 #include <wfmath/atlasconv.h>
 

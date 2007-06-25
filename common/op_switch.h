@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: op_switch.h,v 1.31 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: op_switch.h,v 1.32 2007-06-25 18:53:38 alriddoch Exp $
 
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
@@ -95,8 +95,6 @@
                 _prefix ## AddOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
                 _prefix ## AttackOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::CHOP_NO) { \
-                _prefix ## ChopOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::CUT_NO) { \
                 _prefix ## CutOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \
@@ -138,20 +136,8 @@
         case OP_DIVIDE: \
             return _prefix ## DivideOperation(_op); \
             break; \
-        case OP_GET: \
-            return _prefix ## GetOperation(_op); \
-            break; \
         case OP_IMAGINARY: \
             return _prefix ## ImaginaryOperation(_op); \
-            break; \
-        case OP_INFO: \
-            return _prefix ## InfoOperation(_op); \
-            break; \
-        case OP_LOGIN: \
-            return _prefix ## LoginOperation(_op); \
-            break; \
-        case OP_LOGOUT: \
-            return _prefix ## LogoutOperation(_op); \
             break; \
         case OP_LOOK: \
             return _prefix ## LookOperation(_op); \
@@ -188,8 +174,6 @@
         default: \
             if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
                 return _prefix ## AttackOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::CHOP_NO) { \
-                return _prefix ## ChopOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::CUT_NO) { \
                 return _prefix ## CutOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \

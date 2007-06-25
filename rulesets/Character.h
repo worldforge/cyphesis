@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.93 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: Character.h,v 1.94 2007-06-25 18:53:38 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -126,13 +126,11 @@ class Character : public Character_parent {
     virtual void NourishOperation(const Operation & op, OpVector &);
     virtual void WieldOperation(const Operation & op, OpVector &);
     virtual void AttackOperation(const Operation & op, OpVector &);
-    virtual void ChopOperation(const Operation & op, OpVector &);
 
     virtual void mindActionOperation(const Operation &, OpVector &);
     virtual void mindAddOperation(const Operation &, OpVector &);
     virtual void mindAppearanceOperation(const Operation &, OpVector &);
     virtual void mindAttackOperation(const Operation &, OpVector &);
-    virtual void mindChopOperation(const Operation &, OpVector &);
     virtual void mindCombineOperation(const Operation &, OpVector &);
     virtual void mindCreateOperation(const Operation &, OpVector &);
     virtual void mindCutOperation(const Operation &, OpVector &);
@@ -162,20 +160,15 @@ class Character : public Character_parent {
     virtual void mindErrorOperation(const Operation &, OpVector &);
     virtual void mindOtherOperation(const Operation &, OpVector &);
 
-    bool w2mLoginOperation(const Operation &);
-    bool w2mLogoutOperation(const Operation &);
     bool w2mActionOperation(const Operation &);
     bool w2mAttackOperation(const Operation &);
-    bool w2mChopOperation(const Operation &);
     bool w2mCombineOperation(const Operation &);
     bool w2mCreateOperation(const Operation &);
     bool w2mCutOperation(const Operation &);
     bool w2mDeleteOperation(const Operation &);
     bool w2mDivideOperation(const Operation &);
     bool w2mEatOperation(const Operation &);
-    bool w2mGetOperation(const Operation &);
     bool w2mImaginaryOperation(const Operation &);
-    bool w2mInfoOperation(const Operation &);
     bool w2mMoveOperation(const Operation &);
     bool w2mNourishOperation(const Operation &);
     bool w2mSetOperation(const Operation &);
