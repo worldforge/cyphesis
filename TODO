@@ -1,3 +1,5 @@
+Fix gravestone code so it doesn't try and create bones with velocity.
+
 GetOp is not part of IG, so illustrates for OOG dispatch to be different from
 IG.
 
