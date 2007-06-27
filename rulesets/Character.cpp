@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.294 2007-06-25 18:53:38 alriddoch Exp $
+// $Id: Character.cpp,v 1.295 2007-06-27 23:37:23 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1347,19 +1347,6 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
-/// \brief Filter a Cut operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindCutOperation(const Operation & op, OpVector & res)
-{
-    // FIXME This should go very soon, probably elminated from the mind
-    // switch if we can.
-    log(WARNING, "mindCutOperation: Unexpected Cut op from mind");
-    op->setTo(getId());
-    res.push_back(op);
-}
-
 /// \brief Filter a Eat operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1464,15 +1451,6 @@ bool Character::w2mAttackOperation(const Operation & op)
 /// @param op The operation to be filtered.
 /// @return true if the operation should be passed.
 bool Character::w2mCreateOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Cut operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mCutOperation(const Operation & op)
 {
     return false;
 }

@@ -1,9 +1,6 @@
 GetOp is not part of IG, so illustrates for OOG dispatch to be different from
 IG.
 
-Make burn_speed an operation handling property, and get rid of burn from
-the core functionality.
-
 Apply behavior to newly created skellys. Now that the mind classes have been
 removed, skeletons need goals to do anything.
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.94 2007-06-25 18:53:38 alriddoch Exp $
+// $Id: Character.h,v 1.95 2007-06-27 23:37:23 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -133,7 +133,6 @@ class Character : public Character_parent {
     virtual void mindAttackOperation(const Operation &, OpVector &);
     virtual void mindCombineOperation(const Operation &, OpVector &);
     virtual void mindCreateOperation(const Operation &, OpVector &);
-    virtual void mindCutOperation(const Operation &, OpVector &);
     virtual void mindDeleteOperation(const Operation &, OpVector &);
     virtual void mindDisappearanceOperation(const Operation &, OpVector &);
     virtual void mindDivideOperation(const Operation &, OpVector &);
@@ -164,7 +163,6 @@ class Character : public Character_parent {
     bool w2mAttackOperation(const Operation &);
     bool w2mCombineOperation(const Operation &);
     bool w2mCreateOperation(const Operation &);
-    bool w2mCutOperation(const Operation &);
     bool w2mDeleteOperation(const Operation &);
     bool w2mDivideOperation(const Operation &);
     bool w2mEatOperation(const Operation &);

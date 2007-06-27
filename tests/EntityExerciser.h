@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityExerciser.h,v 1.23 2007-06-25 18:53:39 alriddoch Exp $
+// $Id: EntityExerciser.h,v 1.24 2007-06-27 23:37:23 alriddoch Exp $
 
 #ifndef TESTS_ENTITY_EXERCISER_H
 #define TESTS_ENTITY_EXERCISER_H
@@ -133,13 +133,6 @@ inline void EntityExerciser<EntityType>::runOperations()
         dispatchOp(op);
         OpVector ov;
         m_ent.CreateOperation(op, ov);
-        flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Cut op;
-        dispatchOp(op);
-        OpVector ov;
-        m_ent.CutOperation(op, ov);
         flushOperations(ov);
     }
     {

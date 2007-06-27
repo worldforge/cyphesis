@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.97 2007-06-25 18:53:38 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.98 2007-06-27 23:37:23 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -131,14 +131,6 @@ void BaseEntity::CombineOperation(const Operation & op, OpVector & res)
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
 void BaseEntity::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Process a Cut operation.
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseEntity::CutOperation(const Operation & op, OpVector & res)
 {
 }
 
