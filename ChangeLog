@@ -1,3 +1,8 @@
+2007-06-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/objects/outdoor/Gravestone.py: Make sure
+	  velocity is not set on skeleton parts found in a grave.
+
 2007-06-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml: Remove the script from sword, as it does nothing
@@ -16362,4 +16367,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1831 2007-06-26 12:06:55 alriddoch Exp $
+$Id: ChangeLog,v 1.1832 2007-06-27 23:22:12 alriddoch Exp $

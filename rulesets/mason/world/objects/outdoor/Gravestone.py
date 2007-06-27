@@ -20,7 +20,7 @@ When digging at a grave, skeleton parts will be created. We might want to add so
 def create_skeletonpart(self, op):
     retops = Message()
     newloc=self.location.copy()
-    newloc.velocity=Vector3D(0,0,0)
+    newloc.velocity=Vector3D()
     items = ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']
     item = items[randint(0,5)]
     newloc.coordinates = newloc.coordinates + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
