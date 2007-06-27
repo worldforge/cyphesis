@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: custom.cpp,v 1.45 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: custom.cpp,v 1.46 2007-06-27 23:59:03 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -38,22 +38,6 @@
 #include "Update.h"
 
 #include <Atlas/Objects/Entity.h>
-
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::AdminEntity;
-using Atlas::Objects::Operation::Add;
-using Atlas::Objects::Operation::Burn;
-using Atlas::Objects::Operation::Cut;
-using Atlas::Objects::Operation::Chop;
-using Atlas::Objects::Operation::Delve;
-using Atlas::Objects::Operation::Dig;
-using Atlas::Objects::Operation::Eat;
-using Atlas::Objects::Operation::Monitor;
-using Atlas::Objects::Operation::Mow;
-using Atlas::Objects::Operation::Nourish;
-using Atlas::Objects::Operation::Setup;
-using Atlas::Objects::Operation::Tick;
-using Atlas::Objects::Operation::Unseen;
 
 void installCustomOperations()
 {

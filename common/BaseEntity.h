@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.h,v 1.88 2007-06-27 23:37:23 alriddoch Exp $
+// $Id: BaseEntity.h,v 1.89 2007-06-27 23:59:03 alriddoch Exp $
 
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
@@ -71,7 +71,6 @@ class BaseEntity : virtual public sigc::trackable {
 
     virtual void operation(const Operation &, OpVector &);
 
-    virtual void ActionOperation(const Operation &, OpVector &);
     virtual void AddOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
     virtual void AttackOperation(const Operation &, OpVector &);

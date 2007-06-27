@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.213 2007-06-22 12:42:36 alriddoch Exp $
+// $Id: Thing.cpp,v 1.214 2007-06-27 23:59:03 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -70,14 +70,6 @@ Thing::~Thing()
 {
     assert(m_motion != 0);
     delete m_motion;
-}
-
-void Thing::ActionOperation(const Operation & op, OpVector & res)
-{
-    log(ERROR, String::compose("Action::Operation called on %1(%2), but it should be abstract", getId(), getType()).c_str());
-    Sight s;
-    s->setArgs1(op);
-    res.push_back(s);
 }
 
 void Thing::DeleteOperation(const Operation & op, OpVector & res)

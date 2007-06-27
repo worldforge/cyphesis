@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.95 2007-06-27 23:37:23 alriddoch Exp $
+// $Id: Character.h,v 1.96 2007-06-27 23:59:03 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -127,7 +127,6 @@ class Character : public Character_parent {
     virtual void WieldOperation(const Operation & op, OpVector &);
     virtual void AttackOperation(const Operation & op, OpVector &);
 
-    virtual void mindActionOperation(const Operation &, OpVector &);
     virtual void mindAddOperation(const Operation &, OpVector &);
     virtual void mindAppearanceOperation(const Operation &, OpVector &);
     virtual void mindAttackOperation(const Operation &, OpVector &);
@@ -159,7 +158,6 @@ class Character : public Character_parent {
     virtual void mindErrorOperation(const Operation &, OpVector &);
     virtual void mindOtherOperation(const Operation &, OpVector &);
 
-    bool w2mActionOperation(const Operation &);
     bool w2mAttackOperation(const Operation &);
     bool w2mCombineOperation(const Operation &);
     bool w2mCreateOperation(const Operation &);

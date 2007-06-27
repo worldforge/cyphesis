@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.98 2007-06-27 23:37:23 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.99 2007-06-27 23:59:03 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -27,7 +27,6 @@
 
 #include "Add.h"
 #include "Attack.h"
-#include "Cut.h"
 #include "Eat.h"
 #include "Nourish.h"
 #include "Setup.h"
@@ -99,14 +98,6 @@ void BaseEntity::LoginOperation(const Operation & op, OpVector & res)
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
 void BaseEntity::LogoutOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Process a Action operation.
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseEntity::ActionOperation(const Operation & op, OpVector & res)
 {
 }
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.295 2007-06-27 23:37:23 alriddoch Exp $
+// $Id: Character.cpp,v 1.296 2007-06-27 23:59:03 alriddoch Exp $
 
 #include "Character.h"
 
@@ -40,8 +40,6 @@
 
 #include "common/Add.h"
 #include "common/Attack.h"
-#include "common/Burn.h"
-#include "common/Cut.h"
 #include "common/Eat.h"
 #include "common/Nourish.h"
 #include "common/Setup.h"
@@ -660,34 +658,6 @@ void Character::mindLoginOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindLogoutOperation(const Operation & op, OpVector & res)
 {
-}
-
-/// \brief Filter a Action operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindActionOperation(const Operation & op, OpVector & res)
-{
-    // FIXME Make sure it doesn't happen again. Action should probably be
-    // removed from the main switch.
-    log(ERROR, "Explicit Action operation from client");
-    
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindActionOperation: action op has no argument");
-        return;
-    }
-    const Root & arg = args.front();
-    Element action;
-    if (arg->copyAttr("action", action) == -1) {
-        log(ERROR, "mindActionOperation: action op arg has no action");
-        return;
-    } else {
-        std::cout << "Action: " << action.asString() << std::endl << std::flush;
-    }
-
-    op->setTo(getId());
-    res.push_back(op);
 }
 
 /// \brief Filter a Add operation coming from the mind
@@ -1426,15 +1396,6 @@ void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
     op->setTo(getId());
     res.push_back(op);
-}
-
-/// \brief Filter a Action operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mActionOperation(const Operation & op)
-{
-    return false;
 }
 
 /// \brief Filter a Attack operation coming from the world to the mind

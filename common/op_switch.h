@@ -15,16 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: op_switch.h,v 1.33 2007-06-27 23:37:23 alriddoch Exp $
+// $Id: op_switch.h,v 1.34 2007-06-27 23:59:03 alriddoch Exp $
 
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
 
 #define OP_SWITCH(_op, _op_no, _result, _prefix) \
     switch (_op_no) { \
-        case OP_ACTION: \
-            _prefix ## ActionOperation(_op, _result); \
-            break; \
         case OP_APPEARANCE: \
             _prefix ## AppearanceOperation(_op, _result); \
             break; \
@@ -113,9 +110,6 @@
 
 #define POLL_OP_SWITCH(_op, _op_no, _prefix) \
     switch (_op_no) { \
-        case OP_ACTION: \
-            return _prefix ## ActionOperation(_op); \
-            break; \
         case OP_APPEARANCE: \
             return _prefix ## AppearanceOperation(_op); \
             break; \
