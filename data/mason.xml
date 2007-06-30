@@ -2136,6 +2136,25 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">slaughter</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">cleaver</string>
+      <string name="target">character</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Slaughter</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">slice</string>
     <string name="objtype">class</string>
     <list name="parents">

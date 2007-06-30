@@ -409,7 +409,7 @@ def default(mapeditor):
     m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     # An NPC Butcher
-    butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
+    butcher=m.make('Ulad Bargan',type='settler',desc='the butcher',
                    pos=butcher_pos,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))

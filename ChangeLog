@@ -1,3 +1,17 @@
+2007-06-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/basic.xml: Remove the explicit class for butcher, and just use
+	  the settler class. Character appearance should not be determined by
+	  class.
+
+	* data/mason.xml: Add a new slaughter task class, work in progress.
+
+	* rulesets/mason/world/tasks/Slaughter.py: Incomplete script for
+	  slaughter task.
+
+	* rulesets/mason/define_world.py: The butcher is now an instance of
+	  settler.
+
 2007-06-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h, common/custom.cpp,
@@ -16381,4 +16395,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1834 2007-06-27 23:59:02 alriddoch Exp $
+$Id: ChangeLog,v 1.1835 2007-06-30 16:08:46 alriddoch Exp $
