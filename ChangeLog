@@ -1,5 +1,16 @@
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Reap.py: New task to implement reaping
+	  grass with a scythe.
+
+	* server/EntityFactory.cpp: Report an error more clearly.
+
+	* data/mason.xml: Fix a bug in the gravestone rule.
+
+	* date/mason.xml: Add new reap task class.
+
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/op_switch.h, rulesets/Character.cpp, rulesets/Character.h:
 	  Strip all the negative matching out of the filter for operations
 	  going from world to mind, instead only dispatch those that pass, or
@@ -16437,4 +16448,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1843 2007-07-02 21:11:08 alriddoch Exp $
+$Id: ChangeLog,v 1.1844 2007-07-02 21:58:01 alriddoch Exp $

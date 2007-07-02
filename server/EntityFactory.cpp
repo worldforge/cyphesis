@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.106 2007-07-02 15:49:07 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.107 2007-07-02 21:58:01 alriddoch Exp $
 
 #include <Python.h>
 
@@ -314,7 +314,7 @@ void EntityFactory::populateFactory(const std::string & className,
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
-                log(ERROR, "Attribute description in rule is not a map.");
+                log(ERROR, String::compose("Attribute description in rule %1 is not a map.", className).c_str());
                 continue;
             }
             const MapType & attr = K->second.asMap();

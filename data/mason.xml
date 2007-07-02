@@ -1179,7 +1179,10 @@
         <float name="default">100</float>
         <string name="visibility">public</string>
       </map>
-      <string name="style">simple</string>
+      <map name="style">
+        <string name="default">simple</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
   </map>  
   
@@ -2001,6 +2004,25 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Raise</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">reap</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">scythe</string>
+      <string name="target">world</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Reap</string>
     </map>
   </map>
 

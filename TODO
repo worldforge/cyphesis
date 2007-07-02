@@ -1,3 +1,5 @@
+Add functionality to make sure grass can only be reaped from grassy areas.
+
 Re-write scythe functionality to be a task script, which only
 works while you are moving.
 
