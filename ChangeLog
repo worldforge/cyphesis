@@ -1,3 +1,7 @@
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Slaughter.py: Work in progress.
+
 2007-06-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml: Remove the explicit class for butcher, and just use
@@ -16395,4 +16399,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1835 2007-06-30 16:08:46 alriddoch Exp $
+$Id: ChangeLog,v 1.1836 2007-07-02 12:17:38 alriddoch Exp $

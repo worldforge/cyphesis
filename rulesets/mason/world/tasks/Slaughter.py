@@ -8,6 +8,8 @@ from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
 
+print 'Seeting up slaugheter'
+
 class Slaughter(Thing):
     """ A task for cutting a log into boards."""
     def cut_operation(self, op):
@@ -21,6 +23,8 @@ class Slaughter(Thing):
         self.target = op[0].id
         self.tool = op.to
 
+        self.count = 0
+
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         print "Slaughter.tick"
@@ -30,6 +34,10 @@ class Slaughter(Thing):
             # print "Target is no more"
             self.irrelevant()
             return
+
+        if self.count == 0:
+            self.count = int(target.mass)
+            print "setting target mass to ", self.count
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
@@ -46,24 +54,30 @@ class Slaughter(Thing):
 
         res=Message()
 
-        set=Operation("set", Entity(target.id, bbox=new_bbox), to=target)
-        res.append(set)
+        if target.mass < 1:
+            set = Operation("set", Entity(target.id, status = -1), to = target)
+            res.append(set)
+        else:
 
-        chunk_loc = target.location.copy()
-        meat_type = 'meat'
+            set = Operation("set", Entity(target.id, mass = target.mass - 1),
+                            to = target)
+            res.append(set)
 
-        if hasattr(target, 'meat'):
-            meat_type = target.meat
+            chunk_loc = target.location.copy()
+            meat_type = 'meat'
 
-        chunk_loc.coordinates = target.location.coordinates
+            if hasattr(target, 'meat'):
+                meat_type = target.meat
 
-        chunk_loc.orientation = target.location.orientation
+            chunk_loc.coordinates = target.location.coordinates
 
-        create=Operation("create",
-                         Entity(name = meat_type,
-                                type = meat_type,
-                                location = chunk_loc), to = target)
-        res.append(create)
+            chunk_loc.orientation = target.location.orientation
+
+            create=Operation("create",
+                             Entity(name = meat_type,
+                                    type = meat_type,
+                                    location = chunk_loc), to = target)
+            res.append(create)
 
         if width - self.width > self.width:
             self.progress = 0
