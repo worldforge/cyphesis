@@ -1,5 +1,12 @@
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Set the mass of ham to 1 by default.
+
+	* rulesets/mason/world/tasks/Slaughter.py: Finish task for
+	  slaughtering animals for meat.
+
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Slaughter.py: Work in progress.
 
 2007-06-30  Al Riddoch  <alriddoch@zepler.org>
@@ -16399,4 +16406,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1836 2007-07-02 12:17:38 alriddoch Exp $
+$Id: ChangeLog,v 1.1837 2007-07-02 14:04:20 alriddoch Exp $

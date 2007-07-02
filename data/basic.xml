@@ -213,6 +213,10 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="biomass">
         <float name="default">1.0</float>
         <string name="visibility">public</string>

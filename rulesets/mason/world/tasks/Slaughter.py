@@ -8,13 +8,11 @@ from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
 
-print 'Seeting up slaugheter'
-
 class Slaughter(Thing):
     """ A task for cutting a log into boards."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        print "Slaughter.cut"
+        # print "Slaughter.cut"
 
         if len(op) < 1:
             sys.stderr.write("Slaughter task has no target in cut op")
@@ -27,7 +25,7 @@ class Slaughter(Thing):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Slaughter.tick"
+        # print "Slaughter.tick"
 
         target=self.character.world.get_object(self.target)
         if not target:
@@ -37,28 +35,22 @@ class Slaughter(Thing):
 
         if self.count == 0:
             self.count = int(target.mass)
-            print "setting target mass to ", self.count
+            # print "setting target mass to ", self.count
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
             # print "Too far away"
             return self.next_tick(1.75)
-        else:
-            self.progress += self.rate * 1.75
 
-        self.rate = 0.1 / 1.75
-
-        if self.progress < 1:
-            # print "Not done yet"
-            return self.next_tick(1.75)
+        self.progress = (self.count - target.mass) / self.count
+        self.rate = (1.0 / self.count) / 1.75
 
         res=Message()
 
-        if target.mass < 1:
+        if target.mass <= 1:
             set = Operation("set", Entity(target.id, status = -1), to = target)
             res.append(set)
         else:
-
             set = Operation("set", Entity(target.id, mass = target.mass - 1),
                             to = target)
             res.append(set)
@@ -76,6 +68,7 @@ class Slaughter(Thing):
         create=Operation("create",
                          Entity(name = meat_type,
                                 type = meat_type,
+                                mass = 1,
                                 location = chunk_loc), to = target)
         res.append(create)
 
