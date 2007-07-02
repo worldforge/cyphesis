@@ -841,10 +841,6 @@
     <list name="parents">
       <string>character</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.animals.Deer</string>
-    </map>
   </map>
 
   <map>
@@ -1865,10 +1861,6 @@
     <list name="parents">
       <string>character</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.animals.Pig</string>
-    </map>
   </map>
 
   <map>

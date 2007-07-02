@@ -1,5 +1,10 @@
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Remove scripts from pig and deer which are made
+	  obsolete by new Slaughter task.
+
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml, data/mason.xml: Add type information for venison
 	  from deer.
 
@@ -16411,4 +16416,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1838 2007-07-02 14:14:22 alriddoch Exp $
+$Id: ChangeLog,v 1.1839 2007-07-02 14:19:00 alriddoch Exp $
