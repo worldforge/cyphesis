@@ -832,6 +832,9 @@
         <float name="default">150</float>
         <string name="visibility">private</string>
       </map>
+      <map name="meat">
+        <string name="default">venison</string>
+      </map>
     </map>
     <string name="id">deer</string>
     <string name="objtype">class</string>
