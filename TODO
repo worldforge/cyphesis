@@ -1,3 +1,9 @@
+Re-write scythe functionality to be a task script, which only
+works while you are moving.
+
+Re-write goals for butcher so they now interact correctly with the task
+implementation.
+
 GetOp is not part of IG, so illustrates for OOG dispatch to be different from
 IG.
 
