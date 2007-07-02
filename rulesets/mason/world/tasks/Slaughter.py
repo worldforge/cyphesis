@@ -63,29 +63,21 @@ class Slaughter(Thing):
                             to = target)
             res.append(set)
 
-            chunk_loc = target.location.copy()
-            meat_type = 'meat'
+        chunk_loc = target.location.copy()
+        meat_type = 'meat'
 
-            if hasattr(target, 'meat'):
-                meat_type = target.meat
+        if hasattr(target, 'meat'):
+            meat_type = target.meat
 
-            chunk_loc.coordinates = target.location.coordinates
+        chunk_loc.coordinates = target.location.coordinates
 
-            chunk_loc.orientation = target.location.orientation
+        chunk_loc.orientation = target.location.orientation
 
-            create=Operation("create",
-                             Entity(name = meat_type,
-                                    type = meat_type,
-                                    location = chunk_loc), to = target)
-            res.append(create)
-
-        if width - self.width > self.width:
-            self.progress = 0
-        else:
-            # FIXME Integrate with other set op.
-            # Add create to convert remaining fragment into a board
-            set=Operation("set", Entity(target.id, status=-1), to=target)
-            res.append(set)
+        create=Operation("create",
+                         Entity(name = meat_type,
+                                type = meat_type,
+                                location = chunk_loc), to = target)
+        res.append(create)
 
         res.append(self.next_tick(1.75))
 
