@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.96 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: Character.h,v 1.97 2007-07-02 21:11:08 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -158,31 +158,15 @@ class Character : public Character_parent {
     virtual void mindErrorOperation(const Operation &, OpVector &);
     virtual void mindOtherOperation(const Operation &, OpVector &);
 
-    bool w2mAttackOperation(const Operation &);
-    bool w2mCombineOperation(const Operation &);
-    bool w2mCreateOperation(const Operation &);
-    bool w2mDeleteOperation(const Operation &);
-    bool w2mDivideOperation(const Operation &);
-    bool w2mEatOperation(const Operation &);
-    bool w2mImaginaryOperation(const Operation &);
-    bool w2mMoveOperation(const Operation &);
-    bool w2mNourishOperation(const Operation &);
-    bool w2mSetOperation(const Operation &);
     bool w2mSightOperation(const Operation &);
     bool w2mSoundOperation(const Operation &);
     bool w2mTouchOperation(const Operation &);
     bool w2mTickOperation(const Operation &);
     bool w2mUnseenOperation(const Operation &);
-    bool w2mUpdateOperation(const Operation &);
-    bool w2mLookOperation(const Operation &);
     bool w2mSetupOperation(const Operation &);
-    bool w2mTalkOperation(const Operation &);
     bool w2mAppearanceOperation(const Operation &);
     bool w2mDisappearanceOperation(const Operation &);
-    bool w2mUseOperation(const Operation &);
-    bool w2mWieldOperation(const Operation &);
     bool w2mErrorOperation(const Operation &);
-    bool w2mOtherOperation(const Operation &);
 
     void sendMind(const Operation & op, OpVector &);
     void mind2body(const Operation & op, OpVector &);

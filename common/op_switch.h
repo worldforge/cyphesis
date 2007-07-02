@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: op_switch.h,v 1.34 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: op_switch.h,v 1.35 2007-07-02 21:11:08 alriddoch Exp $
 
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
@@ -113,32 +113,8 @@
         case OP_APPEARANCE: \
             return _prefix ## AppearanceOperation(_op); \
             break; \
-        case OP_COMBINE: \
-            return _prefix ## CombineOperation(_op); \
-            break; \
-        case OP_CREATE: \
-            return _prefix ## CreateOperation(_op); \
-            break; \
-        case OP_DELETE: \
-            return _prefix ## DeleteOperation(_op); \
-            break; \
         case OP_DISAPPEARANCE: \
             return _prefix ## DisappearanceOperation(_op); \
-            break; \
-        case OP_DIVIDE: \
-            return _prefix ## DivideOperation(_op); \
-            break; \
-        case OP_IMAGINARY: \
-            return _prefix ## ImaginaryOperation(_op); \
-            break; \
-        case OP_LOOK: \
-            return _prefix ## LookOperation(_op); \
-            break; \
-        case OP_MOVE: \
-            return _prefix ## MoveOperation(_op); \
-            break; \
-        case OP_SET: \
-            return _prefix ## SetOperation(_op); \
             break; \
         case OP_SIGHT: \
             return _prefix ## SightOperation(_op); \
@@ -146,17 +122,8 @@
         case OP_SOUND: \
             return _prefix ## SoundOperation(_op); \
             break; \
-        case OP_TALK: \
-            return _prefix ## TalkOperation(_op); \
-            break; \
         case OP_TOUCH: \
             return _prefix ## TouchOperation(_op); \
-            break; \
-        case OP_USE: \
-            return _prefix ## UseOperation(_op); \
-            break; \
-        case OP_WIELD: \
-            return _prefix ## WieldOperation(_op); \
             break; \
         case OP_ERROR: \
             return _prefix ## ErrorOperation(_op); \
@@ -164,22 +131,12 @@
         case OP_INVALID: \
             break; \
         default: \
-            if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
-                return _prefix ## AttackOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \
-                return _prefix ## EatOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::NOURISH_NO) { \
-                return _prefix ## NourishOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::SETUP_NO) { \
+            if (_op_no == Atlas::Objects::Operation::SETUP_NO) { \
                 return _prefix ## SetupOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
                 return _prefix ## TickOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::UNSEEN_NO) { \
                 return _prefix ## UnseenOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \
-                return _prefix ## UpdateOperation(_op); \
-            } else { \
-                return _prefix ## OtherOperation(_op); \
             } \
             break; \
     }

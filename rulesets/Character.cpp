@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.297 2007-07-02 20:45:24 alriddoch Exp $
+// $Id: Character.cpp,v 1.298 2007-07-02 21:11:08 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1398,114 +1398,6 @@ void Character::mindOtherOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
-/// \brief Filter a Attack operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mAttackOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Create operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mCreateOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Delete operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mDeleteOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Eat operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mEatOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Move operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mMoveOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Set operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mSetOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Look operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mLookOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Divide operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mDivideOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Combine operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mCombineOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Imaginary operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mImaginaryOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Talk operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mTalkOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Nourish operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mNourishOperation(const Operation & op)
-{
-    return false;
-}
-
 /// \brief Filter a Appearance operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
@@ -1533,17 +1425,6 @@ bool Character::w2mErrorOperation(const Operation & op)
     return true;
 }
 
-/// \brief Filter any other operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mOtherOperation(const Operation & op)
-{
-    const std::string & ot = op->getParents().front();
-    log(WARNING, String::compose("Unexpeced %1 op going from world 2 mind", ot).c_str());
-    return false;
-}
-
 /// \brief Filter a Setup operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
@@ -1555,24 +1436,6 @@ bool Character::w2mSetupOperation(const Operation & op)
             return true;
         }
     }
-    return false;
-}
-
-/// \brief Filter a Use operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mUseOperation(const Operation & op)
-{
-    return false;
-}
-
-/// \brief Filter a Wield operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mWieldOperation(const Operation & op)
-{
     return false;
 }
 
@@ -1597,15 +1460,6 @@ bool Character::w2mTickOperation(const Operation & op)
 bool Character::w2mUnseenOperation(const Operation & op)
 {
     return true;
-}
-
-/// \brief Filter a Update operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mUpdateOperation(const Operation & op)
-{
-    return false;
 }
 
 /// \brief Filter a Sight operation coming from the world to the mind
