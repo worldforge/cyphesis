@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.296 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: Character.cpp,v 1.297 2007-07-02 20:45:24 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1719,8 +1719,6 @@ void Character::operation(const Operation & op, OpVector & res)
         sendMind(op, mres);
         OpVector::const_iterator Iend = mres.end();
         for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
-            //Operation * mr2 = mind2_res.front();
-            // Need to be very careful about what this actually does
             externalOperation(*I);
         }
     }

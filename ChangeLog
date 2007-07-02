@@ -1,5 +1,9 @@
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Remove some long obsolete comments.
+
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Remove the script from cleaver as all the
 	  functionality is now tasks.
 
@@ -16426,4 +16430,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1841 2007-07-02 17:34:40 alriddoch Exp $
+$Id: ChangeLog,v 1.1842 2007-07-02 20:45:24 alriddoch Exp $
