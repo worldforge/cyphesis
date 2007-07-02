@@ -1,5 +1,10 @@
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Remove factory for food core base class,
+	  as it is no longer used.
+
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Remove scripts from pig and deer which are made
 	  obsolete by new Slaughter task.
 
@@ -16416,4 +16421,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1839 2007-07-02 14:19:00 alriddoch Exp $
+$Id: ChangeLog,v 1.1840 2007-07-02 15:49:07 alriddoch Exp $

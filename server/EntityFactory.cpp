@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.105 2007-06-22 12:59:00 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.106 2007-07-02 15:49:07 alriddoch Exp $
 
 #include <Python.h>
 
@@ -85,7 +85,6 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
         installFactory("character", "creator",
                        new PersistantThingFactory<Creator>());
         installFactory("thing", "plant", new PersistantThingFactory<Plant>());
-        installFactory("thing", "food", new PersistantThingFactory<Food>());
         installFactory("thing", "stackable",
                        new PersistantThingFactory<Stackable>());
         installFactory("thing", "structure",
@@ -97,7 +96,6 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
         installFactory("thing", "character", new ThingFactory<Character>());
         installFactory("character", "creator", new ThingFactory<Creator>());
         installFactory("thing", "plant", new ThingFactory<Plant>());
-        installFactory("thing", "food", new ThingFactory<Food>());
         installFactory("thing", "stackable", new ThingFactory<Stackable>());
         installFactory("thing", "structure", new ThingFactory<Structure>());
     }
