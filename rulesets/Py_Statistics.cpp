@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Statistics.cpp,v 1.16 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Statistics.cpp,v 1.17 2007-07-03 13:42:50 alriddoch Exp $
 
 #include "Py_Statistics.h"
 
