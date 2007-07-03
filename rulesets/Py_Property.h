@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: Py_Property.h,v 1.6 2007-07-03 02:03:59 alriddoch Exp $
 
 #ifndef RULESETS_PY_PROPERTY_H
 #define RULESETS_PY_PROPERTY_H
@@ -25,6 +25,7 @@
 class Entity;
 class PropertyBase;
 class StatisticsProperty;
+class TerrainProperty;
 
 /// \brief Wrapper for generic properties. This is in effect a base class
 /// for wrappers for properties of more specific type, all of which will
@@ -48,6 +49,16 @@ typedef struct {
     /// \brief StatisticsProperty object handled by this wrapper
     StatisticsProperty * m_property;
 } PyStatisticsProperty;
+
+/// \brief Wrapper for statistics property.
+/// \ingroup PythonWrappers
+typedef struct {
+    PyObject_HEAD
+    /// \brief Entity object that owns the Property
+    Entity * m_entity;
+    /// \brief TerrainProperty object handled by this wrapper
+    TerrainProperty * m_property;
+} PyTerrainProperty;
 
 PyObject * Property_asPyObject(PropertyBase * property, Entity * owner);
 

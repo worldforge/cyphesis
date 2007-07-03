@@ -1,5 +1,17 @@
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Property.h, rulesets/Py_Property.cpp: Add handling
+	  for a Python wrapper for terrain property.
+
+	* rulesets/TerrainProperty.h, rulesets/TerrainProperty.cpp:
+	  Copy functions from World for getting information about surface
+	  and height from the terrain property.
+
+	* tests/Makefile.am: Update the linker options for the flags now that
+	  the core property code references the mercator terrain library.
+
+2007-07-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/Location.h, rulesets/Py_BBox.h, rulesets/Py_Point3D.h,
 	  rulesets/Py_Quaternion.h, rulesets/Py_Vector3D.h,
 	  server/CommMDNSPublisher.cpp: Use double quotes not angle brackets
@@ -16455,4 +16467,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1845 2007-07-03 01:22:48 alriddoch Exp $
+$Id: ChangeLog,v 1.1846 2007-07-03 02:03:59 alriddoch Exp $

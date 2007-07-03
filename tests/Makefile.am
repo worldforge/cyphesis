@@ -402,7 +402,7 @@ Charactertest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                       $(top_builddir)/modules/libmodules.a \
                       $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
-                      $(MATH_LIBS)
+                      $(TERRAIN_LIBS)
 Charactertest_LDFLAGS = -export-dynamic
 
 Creatortest_SOURCES = Creatortest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
@@ -413,7 +413,7 @@ Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                     $(top_builddir)/modules/libmodules.a \
                     $(top_builddir)/physics/libphysics.a \
                     $(top_builddir)/common/libcommon.a \
-                    $(MATH_LIBS)
+                    $(TERRAIN_LIBS)
 Creatortest_LDFLAGS = -export-dynamic
 
 ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
@@ -441,7 +441,7 @@ Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/physics/libphysics.a \
                  $(top_builddir)/common/libcommon.a \
-                 $(MATH_LIBS)
+                 $(TERRAIN_LIBS)
 Tasktest_LDFLAGS = -export-dynamic
 
 EntityPropertytest_SOURCES = EntityPropertytest.cpp
@@ -453,7 +453,7 @@ EntityPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                            $(top_builddir)/modules/libmodules.a \
                            $(top_builddir)/physics/libphysics.a \
                            $(top_builddir)/common/libcommon.a \
-                           $(MATH_LIBS)
+                           $(TERRAIN_LIBS)
 
 AllPropertytest_SOURCES = AllPropertytest.cpp PropertyExerciser.cpp \
                                               PropertyExerciser.h
@@ -465,7 +465,7 @@ AllPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(TERRAIN_LIBS) $(MATH_LIBS)
+                        $(TERRAIN_LIBS)
 
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \

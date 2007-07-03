@@ -15,14 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.8 2006-12-10 17:53:53 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.9 2007-07-03 02:03:59 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
+#include "common/log.h"
+#include "common/debug.h"
+
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
-
-#include "common/debug.h"
+#include <Mercator/Surface.h>
 
 #include <sstream>
 
@@ -86,7 +88,8 @@ void TerrainProperty::set(const Element & ent)
         return;
     }
     const MapType & t = ent.asMap();
-    debug(std::cout << "World::setTerrain()" << std::endl << std::flush;);
+    debug(std::cout << "TerrainProperty::setTerrain()"
+                    << std::endl << std::flush;);
 
     const Pointstore & basePoints = m_data.getPoints();
 
@@ -129,4 +132,53 @@ void TerrainProperty::set(const Element & ent)
             
         }
     }
+}
+
+/// \brief Calculate the terrain height at the given x,y coordinates
+float TerrainProperty::getHeight(float x, float y)
+{
+    Mercator::Segment * s = m_data.getSegment(x, y);
+    if (s != 0 && !s->isValid()) {
+        s->populate();
+    }
+    return m_data.get(x, y);
+}
+
+/// \brief Get a number encoding the surface type at the given x,y coordinates
+///
+/// @param pos the x,y coordinates of the point on the terrain
+/// @param material a reference to the integer to be used to store the
+/// material identifier at this location.
+int TerrainProperty::getSurface(const Point3D & pos, int & material)
+{
+    float x = pos.x(),
+          y = pos.y();
+    Mercator::Segment * segment = m_data.getSegment(x, y);
+    if (segment == 0) {
+        debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
+        return -1;
+    }
+    if (!segment->isValid()) {
+        segment->populate();
+    }
+    x = x - segment->getResolution() * segment->getXRef();
+    y = y - segment->getResolution() * segment->getYRef();
+    const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
+    WFMath::Vector<3> normal;
+    float height = -23;
+    segment->getHeightAndNormal(x, y, height, normal);
+    debug(std::cout << "At the point " << x << "," << y
+                    << " of the segment the height is " << height << std::endl;
+          std::cout << "The segment has " << surfaces.size()
+                    << std::endl << std::flush;);
+    if (surfaces.size() == 0) {
+        log(ERROR, "The terrain has no surface data");
+        return -1;
+    }
+    Mercator::Surface & tileSurface = *surfaces.begin()->second;
+    if (!tileSurface.isValid()) {
+        tileSurface.populate();
+    }
+    material = tileSurface((int)x, (int)y, 0);
+    return 0;
 }

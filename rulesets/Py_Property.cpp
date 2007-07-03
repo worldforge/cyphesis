@@ -15,13 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.cpp,v 1.5 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Property.cpp,v 1.6 2007-07-03 02:03:59 alriddoch Exp $
 
 #include "Py_Property.h"
 
 #include "Py_Statistics.h"
 #include "StatisticsProperty.h"
 #include "Statistics.h"
+#include "TerrainProperty.h"
 #include "PythonArithmeticScript.h"
 
 #include "common/log.h"
@@ -46,6 +47,12 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
             ps->m_entity = owner;
             return (PyObject*)ps;
         }
+    }
+    TerrainProperty * tp = dynamic_cast<TerrainProperty *>(property);
+    if (tp != 0) {
+        std::cout << "It's a terrain property" << std::endl << std::flush;
+        // Create a new python wrapper for this script, or even re-use an
+        // existing wrapper if that is possible.
     }
     return 0;
 }
