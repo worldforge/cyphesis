@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMDNSPublisher.cpp,v 1.15 2007-05-03 11:13:10 alriddoch Exp $
+// $Id: CommMDNSPublisher.cpp,v 1.16 2007-07-03 01:22:47 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -34,12 +34,12 @@
 #include "CommServer.h"
 #include "ServerRouting.h"
 
-#include <common/log.h>
-#include <common/const.h>
-#include <common/debug.h>
-#include <common/globals.h>
-#include <common/BaseWorld.h>
-#include <common/compose.hpp>
+#include "common/log.h"
+#include "common/const.h"
+#include "common/debug.h"
+#include "common/globals.h"
+#include "common/BaseWorld.h"
+#include "common/compose.hpp"
 
 #include <iostream>
 

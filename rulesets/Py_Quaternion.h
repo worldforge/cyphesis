@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Quaternion.h,v 1.10 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: Py_Quaternion.h,v 1.11 2007-07-03 01:22:47 alriddoch Exp $
 
 #ifndef RULESETS_PY_QUATERNION_H
 #define RULESETS_PY_QUATERNION_H
 
 #include <Python.h>
 
-#include <physics/Quaternion.h>
+#include "physics/Quaternion.h"
 
 /// \brief Wrapper for Quaternion in Python
 ///

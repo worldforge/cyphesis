@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Location.h,v 1.65 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: Location.h,v 1.66 2007-07-03 01:22:47 alriddoch Exp $
 
 #ifndef MODULES_LOCATION_H
 #define MODULES_LOCATION_H
 
-#include <physics/Vector3D.h>
-#include <physics/BBox.h>
-#include <physics/Quaternion.h>
+#include "physics/Vector3D.h"
+#include "physics/BBox.h"
+#include "physics/Quaternion.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
