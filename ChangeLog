@@ -1,5 +1,12 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: New task class for shovel.
+
+	* rulesets/mason/world/tasks/Dig.py: Add new task script for using
+	  a shovel to get piles of material like sand and mud from the ground.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: New task class for pickaxe. Remove useless script
 	  from rope.
 
@@ -16498,4 +16505,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1850 2007-07-04 20:38:23 alriddoch Exp $
+$Id: ChangeLog,v 1.1851 2007-07-04 21:05:34 alriddoch Exp $
