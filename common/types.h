@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: types.h,v 1.39 2007-01-10 21:58:49 alriddoch Exp $
+// $Id: types.h,v 1.40 2007-07-04 22:00:15 alriddoch Exp $
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
@@ -66,9 +66,6 @@ class Entity;
 #define OP_UPDATE Atlas::Objects::Operation::UPDATE_NO
 #define OP_USE Atlas::Objects::Operation::USE_NO
 #define OP_WIELD Atlas::Objects::Operation::WIELD_NO
-#define OP_DELVE Atlas::Objects::Operation::DELVE_NO
-#define OP_DIG Atlas::Objects::Operation::DIG_NO
-#define OP_MOW Atlas::Objects::Operation::MOW_NO
 // #define OP_OTHER Atlas::Objects::Operation::OTHER_NO
 #define OP_INVALID (-1)
 

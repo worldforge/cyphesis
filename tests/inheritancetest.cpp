@@ -15,12 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritancetest.cpp,v 1.17 2007-04-22 23:07:19 alriddoch Exp $
+// $Id: inheritancetest.cpp,v 1.18 2007-07-04 22:00:15 alriddoch Exp $
 
 #include "common/inheritance.h"
 
-#include "common/Chop.h"
-#include "common/Cut.h"
 #include "common/Eat.h"
 #include "common/Burn.h"
 #include "common/Nourish.h"
@@ -71,10 +69,8 @@ int main()
     assert(i.opEnumerate("login") == OP_LOGIN);
     assert(i.opEnumerate("logout") == OP_LOGOUT);
     assert(i.opEnumerate("action") == OP_ACTION);
-    assert(i.opEnumerate("chop") == OP_CHOP);
     assert(i.opEnumerate("combine") == OP_COMBINE);
     assert(i.opEnumerate("create") == OP_CREATE);
-    assert(i.opEnumerate("cut") == OP_CUT);
     assert(i.opEnumerate("delete") == OP_DELETE);
     assert(i.opEnumerate("divide") == OP_DIVIDE);
     assert(i.opEnumerate("eat") == OP_EAT);

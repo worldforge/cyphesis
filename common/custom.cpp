@@ -15,15 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: custom.cpp,v 1.47 2007-07-04 21:20:40 alriddoch Exp $
+// $Id: custom.cpp,v 1.48 2007-07-04 22:00:15 alriddoch Exp $
 
 #include "inheritance.h"
 
 #include "Add.h"
 #include "Attack.h"
 #include "Burn.h"
-#include "Chop.h"
-#include "Cut.h"
 #include "Drop.h"
 #include "Eat.h"
 #include "Monitor.h"
@@ -48,14 +46,6 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("burn", "affect"));
     Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory);
     i.opInstall("burn", OP_BURN);
-
-    i.addChild(atlasOpDefinition("chop", "affect"));
-    Atlas::Objects::Operation::CHOP_NO = atlas_factories->addFactory("chop", &Atlas::Objects::generic_factory);
-    i.opInstall("chop", OP_CHOP);
-
-    i.addChild(atlasOpDefinition("cut", "action"));
-    Atlas::Objects::Operation::CUT_NO = atlas_factories->addFactory("cut", &Atlas::Objects::generic_factory);
-    i.opInstall("cut", OP_CUT);
 
     i.addChild(atlasOpDefinition("eat", "action"));
     Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);

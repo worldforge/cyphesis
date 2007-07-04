@@ -1,3 +1,6 @@
+POS can't change in Dig and Delve, so make them irrelevant if its not the right
+kind of terrain.
+
 Add range check to Dig and Delve, and see if it can be done more generally.
 
 Write tasks for shovel digging, pickaxe, and trowel planting.

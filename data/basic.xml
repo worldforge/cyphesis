@@ -105,6 +105,14 @@
   </map>
 
   <map>
+    <string name="id">chop</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>affect</string>
+    </list>
+  </map>
+
+  <map>
     <map name="attributes">
       <map name="mass">
         <float name="default">0.01</float>
@@ -124,6 +132,14 @@
 
   <map>
     <string name="id">collapse</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">cut</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>

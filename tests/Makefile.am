@@ -1,7 +1,7 @@
 COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
                OOGThingtest systemtest type_utilstest \
-               consttest randomtest Addtest Attacktest Burntest Choptest \
-               Connecttest Cuttest Droptest Eattest \
+               consttest randomtest Addtest Attacktest Burntest \
+               Connecttest Droptest Eattest \
                Monitortest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
                BaseWorldtest Databasetest idtest accountbasetest \
@@ -103,14 +103,8 @@ Attacktest_LDADD = $(top_builddir)/common/operations.o
 Burntest_SOURCES = Burntest.cpp
 Burntest_LDADD = $(top_builddir)/common/operations.o
 
-Choptest_SOURCES = Choptest.cpp
-Choptest_LDADD = $(top_builddir)/common/operations.o
-
 Connecttest_SOURCES = Connecttest.cpp
 Connecttest_LDADD = $(top_builddir)/common/operations.o
-
-Cuttest_SOURCES = Cuttest.cpp
-Cuttest_LDADD = $(top_builddir)/common/operations.o
 
 Droptest_SOURCES = Droptest.cpp
 Droptest_LDADD = $(top_builddir)/common/operations.o

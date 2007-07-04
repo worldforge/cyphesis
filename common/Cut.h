@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Cut.h,v 1.16 2006-12-12 15:54:22 alriddoch Exp $
+// $Id: Cut.h,v 1.17 2007-07-04 22:00:15 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef COMMON_CUT_H
 #define COMMON_CUT_H

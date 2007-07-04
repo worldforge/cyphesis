@@ -15,16 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Tasktest.cpp,v 1.9 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: Tasktest.cpp,v 1.10 2007-07-04 22:00:15 alriddoch Exp $
 
 #include "Fell.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 
-#include "common/Cut.h"
-
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Generic.h>
 
 #include <iostream>
 
@@ -57,7 +55,7 @@ int main()
 
         assert(res.empty());
 
-        Atlas::Objects::Operation::Cut c;
+        Atlas::Objects::Operation::Generic c;
 
         fell.initTask(c, res);
 

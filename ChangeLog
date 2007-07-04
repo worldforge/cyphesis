@@ -1,5 +1,16 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Provide entirely data driven definitions for Cut
+	  and Chop ops.
+
+	* common/Chop.h, common/Cut.h, common/Makefile.am, common/custom.cpp,
+	  common/operations.cpp, common/types.h, tests/Makefile.am,
+	  tests/Tasktest.cpp, tests/allOperations.h,
+	  tests/inheritancetest.cpp: Remove the hard coded Cut and Chop op
+	  definitions completely from the build.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityExerciser.h, tests/Makefile.am, tests/allOperations.h:
 	  Remove Delve, Dig and Mow from the tests.
 
@@ -16526,4 +16537,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1854 2007-07-04 21:29:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1855 2007-07-04 22:00:14 alriddoch Exp $

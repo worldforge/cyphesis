@@ -15,16 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: allOperations.h,v 1.9 2007-07-04 21:29:11 alriddoch Exp $
+// $Id: allOperations.h,v 1.10 2007-07-04 22:00:15 alriddoch Exp $
 
 #ifndef TESTS_ALL_OPERATIONS_H
 #define TESTS_ALL_OPERATIONS_H
 
 #include "common/Add.h"
 #include "common/Burn.h"
-#include "common/Chop.h"
 #include "common/Connect.h"
-#include "common/Cut.h"
 #include "common/Eat.h"
 #include "common/Monitor.h"
 #include "common/Nourish.h"
