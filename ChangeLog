@@ -1,5 +1,10 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Delve.py: Handle delving up ice as well,
+	  and make it more data driven.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: New task class for shovel.
 
 	* rulesets/mason/world/tasks/Dig.py: Add new task script for using
@@ -16505,4 +16510,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1851 2007-07-04 21:05:34 alriddoch Exp $
+$Id: ChangeLog,v 1.1852 2007-07-04 21:13:15 alriddoch Exp $

@@ -8,10 +8,10 @@ from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
 
-print "Importing Delve"
-
 class Delve(Thing):
     """ A task for cutting a log into boards."""
+
+    materials = { 0: 'boulder', 4: 'ice' }
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Delve.cut"
@@ -55,7 +55,7 @@ class Delve(Thing):
 
         surface = target.terrain.get_surface(self.character.location.coordinates)
         # print "SURFACE %d at %s" % (surface, self.pos)
-        if surface is not 0:
+        if surface not in Delve.materials:
             # print "Not rock"
             return self.next_tick(1.75)
 
@@ -67,8 +67,8 @@ class Delve(Thing):
         chunk_loc.coordinates = self.pos
 
         create=Operation("create",
-                         Entity(name = "boulder",
-                                type = "boulder",
+                         Entity(name = Delve.materials[surface],
+                                type = Delve.materials[surface],
                                 location = chunk_loc), to = target)
         res.append(create)
 
