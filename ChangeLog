@@ -1,3 +1,8 @@
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Py_TerrainProperty.cpp: New wrapper for terrain property.
+	  Work in progress.
+
 2007-07-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Py_Property.h, rulesets/Py_Property.cpp: Add handling
@@ -16467,4 +16472,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1846 2007-07-03 02:03:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1847 2007-07-04 01:06:59 alriddoch Exp $

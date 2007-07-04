@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.103 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: World.cpp,v 1.104 2007-07-04 01:06:59 alriddoch Exp $
 
 #include "World.h"
 
@@ -295,6 +295,7 @@ void World::digOperation(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void World::mowOperation(const Operation & op, OpVector & res)
 {
+    std::cerr << "DON@T CAALL ME" << std::endl << std::flush;
     if (op->getArgs().empty()) {
         // This op comes from a tool, so sending error back is kinda pointless
         error(op, "Delve op has no args", res, getId());
