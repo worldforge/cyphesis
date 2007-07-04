@@ -368,10 +368,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Scythe</string>
-    </map>
   </map>
 
   <map>

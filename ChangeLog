@@ -1,5 +1,13 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Remove the script for scythe as it is no longer
+	  used.
+
+	* rulesets/World.cpp: Remove mow operation from World, as this is now
+	  handled by a task.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_Property.h, rulesets/Py_Property.cpp,
 	  rulesets/Py_TerrainProperty.cpp, rulesets/Makefile.am,
 	  rulesets/Python_API.cpp: Complete implementation of terrain
@@ -16482,4 +16490,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1848 2007-07-04 16:42:10 alriddoch Exp $
+$Id: ChangeLog,v 1.1849 2007-07-04 17:09:39 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.104 2007-07-04 01:06:59 alriddoch Exp $
+// $Id: World.cpp,v 1.105 2007-07-04 17:09:40 alriddoch Exp $
 
 #include "World.h"
 
@@ -289,60 +289,6 @@ void World::digOperation(const Operation & op, OpVector & res)
     }
 }
 
-/// \brief Process a Mow operation
-///
-/// @param op The operation to be processed
-/// @param res The result of the operation is returned here.
-void World::mowOperation(const Operation & op, OpVector & res)
-{
-    std::cerr << "DON@T CAALL ME" << std::endl << std::flush;
-    if (op->getArgs().empty()) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op has no args", res, getId());
-        return;
-    }
-    const Root & arg = op->getArgs().front();
-    RootEntity mow_arg = smart_dynamic_cast<RootEntity>(arg);
-    if (!mow_arg.isValid()) {
-        error(op, "Mow op has malformed args", res, getId());
-        return;
-    }
-    if (!mow_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Mow op to world has no POS in args", res, getId());
-        return;
-    }
-    WFMath::Point<3> mow_pos;
-    if (fromStdVector(mow_pos, mow_arg->getPos()) != 0) {
-        error(op, "Mow op to world has bad POS in args", res, getId());
-        return;
-    }
-    debug(std::cout << "Got mow on world at " << mow_pos
-                    << std::endl << std::flush;);
-    int material;
-    if (getSurface(mow_pos, material) != 0) {
-        return;
-    }
-    debug(std::cout << "The material at this point is " << material
-                    << std::endl << std::flush;);
-    switch (material) {
-      case GRASS:
-        {
-            Create c;
-            Anonymous carg;
-            carg->setParents(std::list<std::string>(1, "grass"));
-            carg->setId(getId());
-            carg->setPos(mow_arg->getPos());;
-            c->setArgs1(carg);
-            c->setTo(getId());
-            res.push_back(c);
-        }
-        break;
-      default:
-        break;
-    }
-}
-
 void World::EatOperation(const Operation & op, OpVector & res)
 {
     const std::string & from_id = op->getFrom();
@@ -439,8 +385,6 @@ void World::OtherOperation(const Operation & op, OpVector & res)
         delveOperation(op, res);
     } else if (class_no == Atlas::Objects::Operation::DIG_NO) {
         digOperation(op, res);
-    } else if (class_no == Atlas::Objects::Operation::MOW_NO) {
-        mowOperation(op, res);
     }
 }
 
