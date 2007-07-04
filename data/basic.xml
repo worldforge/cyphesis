@@ -304,10 +304,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Pickaxe</string>
-    </map>
   </map>
 
   <map>
@@ -396,10 +392,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Shovel</string>
-    </map>
   </map>
 
   <map>

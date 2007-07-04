@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.h,v 1.34 2007-06-22 12:56:34 alriddoch Exp $
+// $Id: World.h,v 1.35 2007-07-04 21:20:41 alriddoch Exp $
 
 #ifndef RULESETS_WORLD_H
 #define RULESETS_WORLD_H
@@ -75,15 +75,10 @@ class World : public World_parent {
     float getHeight(float x, float y);
     int getSurface(const Point3D &,  int &);
 
-    void delveOperation(const Operation &, OpVector &);
-    void digOperation(const Operation &, OpVector &);
-    void mowOperation(const Operation &, OpVector &);
-
     virtual void EatOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
-    virtual void OtherOperation(const Operation &, OpVector &);
 };
 
 #endif // RULESETS_WORLD_H

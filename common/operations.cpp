@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: operations.cpp,v 1.26 2006-12-12 15:54:22 alriddoch Exp $
+// $Id: operations.cpp,v 1.27 2007-07-04 21:20:40 alriddoch Exp $
 
 #include "Add.h"
 #include "Attack.h"
@@ -23,10 +23,7 @@
 #include "Cut.h"
 #include "Eat.h"
 #include "Burn.h"
-#include "Delve.h"
-#include "Dig.h"
 #include "Drop.h"
-#include "Mow.h"
 #include "Nourish.h"
 #include "Pickup.h"
 #include "Setup.h"
@@ -51,11 +48,8 @@ int BURN_NO = -1;
 int CHOP_NO = -1;
 int CONNECT_NO = -1;
 int CUT_NO = -1;
-int DELVE_NO = -1;
-int DIG_NO = -1;
 int DROP_NO = -1;
 int MONITOR_NO = -1;
-int MOW_NO = -1;
 int EAT_NO = -1;
 int UNSEEN_NO = -1;
 int UPDATE_NO = -1;

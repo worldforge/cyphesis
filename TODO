@@ -1,7 +1,4 @@
-Add functionality to make sure grass can only be reaped from grassy areas.
-
-Re-write scythe functionality to be a task script, which only
-works while you are moving.
+Write tasks for shovel digging, pickaxe, and trowel planting.
 
 Re-write goals for butcher so they now interact correctly with the task
 implementation.
@@ -18,11 +15,6 @@ tasks can't get installed without their activation ops and classes existing.
 Re-implement mining using the pickaxe as a task.
 
 self.progress seems to start out at -2 in Slice. Uninitialised?
-
-Remove Chop and possibly cut from the C++ core.
-
-Remove Axe python class, and gradualy migrate away from the other tool
-scripts too.
 
 Add a way to handle per-host config in a single config file.
 

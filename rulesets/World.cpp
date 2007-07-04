@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.105 2007-07-04 17:09:40 alriddoch Exp $
+// $Id: World.cpp,v 1.106 2007-07-04 21:20:41 alriddoch Exp $
 
 #include "World.h"
 
@@ -27,10 +27,7 @@
 #include "common/debug.h"
 #include "common/inheritance.h"
 
-#include "common/Delve.h"
-#include "common/Dig.h"
 #include "common/Eat.h"
-#include "common/Mow.h"
 #include "common/Nourish.h"
 
 #include <Mercator/Terrain.h>
@@ -138,157 +135,6 @@ int World::getSurface(const Point3D & pos, int & material)
     return 0;
 }
 
-/// \brief Process a Delve operation
-///
-/// @param op The operation to be processed
-/// @param res The result of the operation is returned here.
-void World::delveOperation(const Operation & op, OpVector & res)
-{
-    if (op->getArgs().empty()) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op has no args", res, getId());
-        return;
-    }
-    const Root & arg = op->getArgs().front();
-    RootEntity delve_arg = smart_dynamic_cast<RootEntity>(arg);
-    if (!delve_arg.isValid()) {
-        error(op, "Delve op has malformed args", res, getId());
-        return;
-    }
-    if (!delve_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Delve op to world has no POS in args", res, getId());
-        return;
-    }
-    WFMath::Point<3> delve_pos;
-    if (fromStdVector(delve_pos, delve_arg->getPos()) != 0) {
-        error(op, "Delve op to world has bad POS in args", res, getId());
-        return;
-    }
-    debug(std::cout << "Got delve on world at " << delve_pos
-                    << std::endl << std::flush;);
-    int material;
-    if (getSurface(delve_pos, material) != 0) {
-        return;
-    }
-    debug(std::cout << "The material at this point is " << material
-                    << std::endl << std::flush;);
-    switch (material) {
-      case ROCK:
-        {
-            Create c;
-            Anonymous carg;
-            carg->setParents(std::list<std::string>(1, "boulder"));
-            carg->setName("boulder");
-            carg->setLoc(getId());
-            carg->setPos(delve_arg->getPos());
-            c->setArgs1(carg);
-            c->setTo(getId());
-            res.push_back(c);
-        }
-        break;
-      case SNOW:
-        {
-            Create c;
-            Anonymous carg;
-            carg->setParents(std::list<std::string>(1, "ice"));
-            carg->setName("ice");;
-            carg->setLoc(getId());
-            carg->setPos(delve_arg->getPos());
-            c->setArgs1(carg);
-            c->setTo(getId());
-            res.push_back(c);
-        }
-        break;
-      default:
-        break;
-    }
-}
-
-/// \brief Process a Dig operation
-///
-/// @param op The operation to be processed
-/// @param res The result of the operation is returned here.
-void World::digOperation(const Operation & op, OpVector & res)
-{
-    if (op->getArgs().empty()) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Dig op has no args", res, getId());
-        return;
-    }
-    const Root & arg = op->getArgs().front();
-    RootEntity dig_arg = smart_dynamic_cast<RootEntity>(arg);
-    if (!dig_arg.isValid()) {
-        error(op, "Dig op has malformed args", res, getId());
-        return;
-    }
-    if (!dig_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        // This op comes from a tool, so sending error back is kinda pointless
-        error(op, "Dig op to world has no POS in args", res, getId());
-        return;
-    }
-    WFMath::Point<3> dig_pos;
-    if (fromStdVector(dig_pos, dig_arg->getPos()) != 0) {
-        error(op, "Dig op to world has bad POS in args", res, getId());
-        return;
-    }
-    debug(std::cout << "Got dig on world at " << dig_pos
-                    << std::endl << std::flush;);
-    int material;
-    if (getSurface(dig_pos, material) != 0) {
-        return;
-    }
-    debug(std::cout << "The material at this point is " << material
-                    << std::endl << std::flush;);
-    switch (material) {
-      case SAND:
-        {
-            Create c;
-            Anonymous carg;
-            carg->setParents(std::list<std::string>(1, "pile"));
-            carg->setAttr("material", "sand");
-            carg->setName("sand");
-            carg->setLoc(getId());
-            carg->setPos(dig_arg->getPos());
-            c->setArgs1(carg);
-            c->setTo(getId());
-            res.push_back(c);
-        }
-        break;
-      case GRASS:
-        {
-            Create c;
-            Anonymous carg;
-            carg->setParents(std::list<std::string>(1, "pile"));
-            carg->setAttr("material", "earth");
-            carg->setName("earth");
-            carg->setLoc(getId());
-            carg->setPos(dig_arg->getPos());
-            c->setArgs1(carg);
-            c->setTo(getId());
-            res.push_back(c);
-        }
-        break;
-      case SILT:
-        {
-            Create c;
-            Anonymous carg;
-            carg->setParents(std::list<std::string>(1, "pile"));
-            carg->setAttr("material", "silt");
-            carg->setName("silt");
-            carg->setLoc(getId());
-            carg->setPos(dig_arg->getPos());
-            c->setArgs1(carg);
-            c->setTo(getId());
-            res.push_back(c);
-        }
-        break;
-
-      default:
-        break;
-    }
-}
-
 void World::EatOperation(const Operation & op, OpVector & res)
 {
     const std::string & from_id = op->getFrom();
@@ -376,15 +222,3 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
 {
     // Deleting has no effect.
 }
-
-void World::OtherOperation(const Operation & op, OpVector & res)
-{
-    int class_no = op->getClassNo();
-
-    if (class_no == Atlas::Objects::Operation::DELVE_NO) {
-        delveOperation(op, res);
-    } else if (class_no == Atlas::Objects::Operation::DIG_NO) {
-        digOperation(op, res);
-    }
-}
-

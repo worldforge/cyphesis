@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: custom.cpp,v 1.46 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: custom.cpp,v 1.47 2007-07-04 21:20:40 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -24,12 +24,9 @@
 #include "Burn.h"
 #include "Chop.h"
 #include "Cut.h"
-#include "Delve.h"
-#include "Dig.h"
 #include "Drop.h"
 #include "Eat.h"
 #include "Monitor.h"
-#include "Mow.h"
 #include "Nourish.h"
 #include "Pickup.h"
 #include "Setup.h"
@@ -60,14 +57,6 @@ void installCustomOperations()
     Atlas::Objects::Operation::CUT_NO = atlas_factories->addFactory("cut", &Atlas::Objects::generic_factory);
     i.opInstall("cut", OP_CUT);
 
-    i.addChild(atlasOpDefinition("delve", "affect"));
-    Atlas::Objects::Operation::DELVE_NO = atlas_factories->addFactory("delve", &Atlas::Objects::generic_factory);
-    i.opInstall("delve", OP_DELVE);
-
-    i.addChild(atlasOpDefinition("dig", "affect"));
-    Atlas::Objects::Operation::DIG_NO = atlas_factories->addFactory("dig", &Atlas::Objects::generic_factory);
-    i.opInstall("dig", OP_DIG);
-
     i.addChild(atlasOpDefinition("eat", "action"));
     Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);
     i.opInstall("eat", OP_EAT);
@@ -75,10 +64,6 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("monitor", "affect"));
     Atlas::Objects::Operation::MONITOR_NO = atlas_factories->addFactory("monitor", &Atlas::Objects::generic_factory);
     i.opInstall("monitor", OP_MONITOR);
-
-    i.addChild(atlasOpDefinition("mow", "affect"));
-    Atlas::Objects::Operation::MOW_NO = atlas_factories->addFactory("mow", &Atlas::Objects::generic_factory);
-    i.opInstall("mow", OP_MOW);
 
     i.addChild(atlasOpDefinition("nourish", "affect"));
     Atlas::Objects::Operation::NOURISH_NO = atlas_factories->addFactory("nourish", &Atlas::Objects::generic_factory);
