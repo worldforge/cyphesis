@@ -1,3 +1,5 @@
+Add range check to Dig and Delve, and see if it can be done more generally.
+
 Write tasks for shovel digging, pickaxe, and trowel planting.
 
 Re-write goals for butcher so they now interact correctly with the task
