@@ -75,6 +75,7 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_Task.cpp Py_Task.h \
 			    Py_Statistics.cpp Py_Statistics.h \
 			    Py_Property.cpp Py_Property.h \
+			    Py_TerrainProperty.cpp \
 			    Python_API.cpp Python_API.h \
 			    Python_Script_Utils.h \
 			    PythonWrapper.cpp PythonWrapper.h \

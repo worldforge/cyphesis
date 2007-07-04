@@ -1,5 +1,15 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Py_Property.h, rulesets/Py_Property.cpp,
+	  rulesets/Py_TerrainProperty.cpp, rulesets/Makefile.am,
+	  rulesets/Python_API.cpp: Complete implementation of terrain
+	  property wrapper.
+
+	* rulesets/mason/world/tasks/Reap.py: Check the surface to make sure
+	  it is grass. Remove deubg output.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Py_TerrainProperty.cpp: New wrapper for terrain property.
 	  Work in progress.
 
@@ -16472,4 +16482,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1847 2007-07-04 01:06:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1848 2007-07-04 16:42:10 alriddoch Exp $

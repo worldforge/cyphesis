@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.cpp,v 1.6 2007-07-03 02:03:59 alriddoch Exp $
+// $Id: Py_Property.cpp,v 1.7 2007-07-04 16:42:11 alriddoch Exp $
 
 #include "Py_Property.h"
 
@@ -50,9 +50,11 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
     }
     TerrainProperty * tp = dynamic_cast<TerrainProperty *>(property);
     if (tp != 0) {
-        std::cout << "It's a terrain property" << std::endl << std::flush;
-        // Create a new python wrapper for this script, or even re-use an
-        // existing wrapper if that is possible.
+        // Create a new python wrapper for this property.
+        PyTerrainProperty * prop = newPyTerrainProperty();
+        prop->m_entity = owner;
+        prop->m_property = tp;
+        return (PyObject*)prop;
     }
     return 0;
 }

@@ -15,17 +15,60 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_TerrainProperty.cpp,v 1.1 2007-07-04 01:06:59 alriddoch Exp $
+// $Id: Py_TerrainProperty.cpp,v 1.2 2007-07-04 16:42:11 alriddoch Exp $
 
-#include "Py_TerrainProperty.h"
+#include "Py_Property.h"
 
-#include "Py_Thing.h"
-#include "Character.h"
+#include "Py_Point3D.h"
 
-#include "Task.h"
+#include "TerrainProperty.h"
+
+static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
+                                            PyObject * args)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    double x, y;
+    if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
+        return NULL;
+    }
+    float height = self->m_property->getHeight(x, y);
+    return PyFloat_FromDouble(height);
+}
+
+static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
+                                             PyObject * args)
+{
+#ifndef NDEBUG
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyPoint3D * pos;
+    if (!PyArg_ParseTuple(args, "O", &pos)) {
+        return NULL;
+    }
+    if (!PyPoint3D_Check(pos)) {
+        PyErr_SetString(PyExc_TypeError, "Position for surface must be Point3D");
+        return NULL;
+    }
+    int surface;
+    if (self->m_property->getSurface(pos->coords, surface) != 0) {
+        PyErr_SetString(PyExc_TypeError, "How the hell should I know");
+        return NULL;
+    }
+    return PyInt_FromLong(surface);
+}
 
 static PyMethodDef TerrainProperty_methods[] = {
-    {NULL,          NULL}           /* sentinel */
+    {"get_height",   (PyCFunction)TerrainProperty_getHeight,     METH_VARARGS},
+    {"get_surface",  (PyCFunction)TerrainProperty_getSurface,    METH_VARARGS},
+    {NULL,           NULL}           /* sentinel */
 };
 
 static void TerrainProperty_dealloc(PyTerrainProperty *self)
@@ -33,65 +76,43 @@ static void TerrainProperty_dealloc(PyTerrainProperty *self)
     self->ob_type->tp_free(self);
 }
 
-static PyObject * TerrainProperty_getattro(PyTerrainProperty *self, PyObject *pn)
+static PyObject * TerrainProperty_getattr(PyTerrainProperty *self, char * name)
 {
-    // We use getattro rather than the simpler getattr because otherwise
-    // overriding of scripts does not work correctly. Statistics objects
-    // in game inherit directly from this class.
-    char * name = PyString_AS_STRING(pn);
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.getattro");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
         return NULL;
     }
 #endif // NDEBUG
-    // We check for methods first rather the last as is more usual. This is
-    // so that a value is returned for any statistic requested, so we can
-    // drop back to a default for anything not expicitly supported.
-    // First check for methods in the script instance.
-    PyObject * method = PyObject_GenericGetAttr((PyObject*)self, pn);
-    if (method != 0) {
-        return method;
-    }
-    // Second check for methods in this base class method table.
-    method = Py_FindMethod(Statistics_methods, (PyObject *)self, name);
-    if (method != 0) {
-        return method;
-    }
-    // If no method was found, Py_FindMethod sets an exception, which we don't
-    // really want.
-    PyErr_Clear();
-
-    if (strcmp(name, "character") == 0) {
-        return wrapEntity(self->m_entity);
-    }
-    return PyFloat_FromDouble(dynamic_cast<Character*>(self->m_entity)->statistics().get(name));
+    return Py_FindMethod(TerrainProperty_methods, (PyObject *)self, name);
 }
 
-static int Statistics_setattro(PyStatistics *self, PyObject *pn, PyObject *v)
+static int TerrainProperty_setattr(PyTerrainProperty * self,
+                                   char * name,
+                                   PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.setattro");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.setattro");
         return -1;
     }
 #endif // NDEBUG
-    // FIXME Allow setting of statistics values.
-    // char * name = PyString_AS_STRING(pn);
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
 
-static int Statistics_compare(PyStatistics *self, PyStatistics *other)
+static int TerrainProperty_compare(PyTerrainProperty *self, PyTerrainProperty *other)
 {
     if ((self->m_entity == NULL) || (other->m_entity == NULL)) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.compare");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.compare");
         return -1;
     }
     return (self->m_entity == other->m_entity) ? 0 : 1;
 }
 
-static PyObject * Statistics_new(PyTypeObject * type, PyObject *, PyObject *)
+static PyObject * TerrainProperty_new(PyTypeObject * type,
+                                      PyObject *,
+                                      PyObject *)
 {
     // This looks allot like the default implementation, except we set some
     // stuff to null.
@@ -99,20 +120,13 @@ static PyObject * Statistics_new(PyTypeObject * type, PyObject *, PyObject *)
     return (PyObject *)self;
 }
 
-static int TerrainProperty_init(PyTerrainProperty * self, PyObject * args, PyObject * kwd)
+static int TerrainProperty_init(PyTerrainProperty * self,
+                                PyObject * args,
+                                PyObject * kwd)
 {
-    PyObject * entity;
-
-    if (!PyArg_ParseTuple(args, "O", &entity)) {
+    if (!PyArg_ParseTuple(args, "")) {
         return -1;
     }
-
-    if (!PyEntity_Check(entity)) {
-        PyErr_SetString(PyExc_TypeError, "Arg to TerrainProperty must be an entity.");
-        return -1;
-    }
-    PyCharacter * character = (PyCharacter *)entity;
-    self->m_entity = character->m_entity;
 
     return 0;
 }
@@ -126,8 +140,8 @@ PyTypeObject PyTerrainProperty_Type = {
         // methods 
         (destructor)TerrainProperty_dealloc,              // tp_dealloc
         0,                                                // tp_print
-        0,                                                // tp_getattr
-        0,                                                // tp_setattr
+        (getattrfunc)TerrainProperty_getattr,             // tp_getattr
+        (setattrfunc)TerrainProperty_setattr,             // tp_setattr
         (cmpfunc)TerrainProperty_compare,                 // tp_compare
         0,                                                // tp_repr
         0,                                                // tp_as_number
@@ -136,8 +150,8 @@ PyTypeObject PyTerrainProperty_Type = {
         0,                                                // tp_hash
         0,                                                // tp_call
         0,                                                // tp_str
-        (getattrofunc)TerrainProperty_getattro,           // tp_getattro
-        (setattrofunc)TerrainProperty_setattro,           // tp_setattro
+        0,                                                // tp_getattro
+        0,                                                // tp_setattro
         0,                                                // tp_as_buffer
         Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,         // tp_flags
         "TerrainProperty objects",                        // tp_doc
@@ -162,8 +176,8 @@ PyTypeObject PyTerrainProperty_Type = {
 
 PyTerrainProperty * newPyTerrainProperty()
 {
-    PyStatistics * self;
-    self = PyObject_NEW(PyStatistics, &PyStatistics_Type);
+    PyTerrainProperty * self;
+    self = PyObject_NEW(PyTerrainProperty, &PyTerrainProperty_Type);
     if (self == NULL) {
         return NULL;
     }

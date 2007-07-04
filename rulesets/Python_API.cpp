@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.164 2007-06-19 13:19:58 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.165 2007-07-04 16:42:11 alriddoch Exp $
 
 #include "Python.h"
 
@@ -37,6 +37,7 @@
 #include "Py_RootEntity.h"
 #include "Py_Oplist.h"
 #include "Py_Statistics.h"
+#include "Py_Property.h"
 
 #include "PythonThingScript.h"
 #include "PythonMindScript.h"
@@ -1195,8 +1196,11 @@ void init_python_api()
     }
     PyModule_AddObject(vector3d, "Vector3D", (PyObject *)&PyVector3D_Type);
 
-    // PyRun_SimpleString("from hooks import ruleset_import_hooks\n");
-    // PyRun_SimpleString((char *)importCmd.c_str());
+    if (PyType_Ready(&PyTerrainProperty_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready TerrainProperty wrapper type");
+        return;
+    }
+
 
     debug(std::cout << Py_GetPath() << std::endl << std::flush;);
 }

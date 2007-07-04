@@ -8,13 +8,11 @@ from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
 
-print "IMPORTING REAP"
-
 class Reap(Thing):
     """ A task for cutting a log into boards."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        print "Reap.cut"
+        # print "Reap.cut"
 
         if len(op) < 1:
             sys.stderr.write("Reap task has no target in cut op")
@@ -25,17 +23,17 @@ class Reap(Thing):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Reap.tick"
+        # print "Reap.tick"
 
         target=self.character.world.get_object(self.target)
         if not target:
-            print "Target is no more"
+            # print "Target is no more"
             self.irrelevant()
             return
 
         if self.count == 0:
             self.count = int(target.mass)
-            print "setting target mass to ", self.count
+            # print "setting target mass to ", self.count
 
 
         if not self.character.location.velocity.is_valid() or \
@@ -43,7 +41,7 @@ class Reap(Thing):
            self.character.location.velocity.square_mag() > 5:
             self.rate = 0
             self.progress = 0
-            print "Not moving the right speed"
+            # print "Not moving the right speed"
             return self.next_tick(1.75)
 
         old_rate = self.rate
@@ -52,7 +50,12 @@ class Reap(Thing):
         self.progress = 0.01
 
         if old_rate < 0.1:
-            print "Wasn't moving right speed"
+            # print "Wasn't moving right speed"
+            return self.next_tick(1.75)
+
+        surface = target.terrain.get_surface(self.character.location.coordinates)
+        if surface is not 2:
+            # print "Not grass"
             return self.next_tick(1.75)
 
         res=Message()

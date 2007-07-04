@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.h,v 1.6 2007-07-03 02:03:59 alriddoch Exp $
+// $Id: Py_Property.h,v 1.7 2007-07-04 16:42:11 alriddoch Exp $
 
 #ifndef RULESETS_PY_PROPERTY_H
 #define RULESETS_PY_PROPERTY_H
@@ -60,6 +60,10 @@ typedef struct {
     TerrainProperty * m_property;
 } PyTerrainProperty;
 
+extern PyTypeObject PyTerrainProperty_Type;
+
 PyObject * Property_asPyObject(PropertyBase * property, Entity * owner);
+
+PyTerrainProperty * newPyTerrainProperty();
 
 #endif // RULESETS_PY_PROPERTY_H
