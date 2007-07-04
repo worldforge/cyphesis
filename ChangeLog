@@ -1,5 +1,13 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: New task class for pickaxe. Remove useless script
+	  from rope.
+
+	* rulesets/mason/world/tasks/Delve.py: Add new task for using a
+	  pickaxe to get rock from the terrain.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml: Remove the script for scythe as it is no longer
 	  used.
 
@@ -16490,4 +16498,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1849 2007-07-04 17:09:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1850 2007-07-04 20:38:23 alriddoch Exp $

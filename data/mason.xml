@@ -841,6 +841,25 @@
 
   <map>
     <map name="attributes">
+    </map>
+    <string name="id">delve</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">pickaxe</string>
+      <string name="target">world</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Delve</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-0.75</float>
@@ -2089,10 +2108,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Rope</string>
-    </map>
   </map>
 
   <map>
