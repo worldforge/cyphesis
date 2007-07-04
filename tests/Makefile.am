@@ -1,8 +1,8 @@
 COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
                OOGThingtest systemtest type_utilstest \
                consttest randomtest Addtest Attacktest Burntest Choptest \
-               Connecttest Cuttest Delvetest Digtest Droptest Eattest \
-               Monitortest Mowtest Nourishtest Pickuptest Setuptest \
+               Connecttest Cuttest Droptest Eattest \
+               Monitortest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
                BaseWorldtest Databasetest idtest accountbasetest \
                debugtest globalstest
@@ -112,12 +112,6 @@ Connecttest_LDADD = $(top_builddir)/common/operations.o
 Cuttest_SOURCES = Cuttest.cpp
 Cuttest_LDADD = $(top_builddir)/common/operations.o
 
-Delvetest_SOURCES = Delvetest.cpp
-Delvetest_LDADD = $(top_builddir)/common/operations.o
-
-Digtest_SOURCES = Digtest.cpp
-Digtest_LDADD = $(top_builddir)/common/operations.o
-
 Droptest_SOURCES = Droptest.cpp
 Droptest_LDADD = $(top_builddir)/common/operations.o
 
@@ -126,9 +120,6 @@ Eattest_LDADD = $(top_builddir)/common/operations.o
 
 Monitortest_SOURCES = Monitortest.cpp
 Monitortest_LDADD = $(top_builddir)/common/operations.o
-
-Mowtest_SOURCES = Mowtest.cpp
-Mowtest_LDADD = $(top_builddir)/common/operations.o
 
 Nourishtest_SOURCES = Nourishtest.cpp
 Nourishtest_LDADD = $(top_builddir)/common/operations.o

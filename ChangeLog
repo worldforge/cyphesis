@@ -1,5 +1,10 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityExerciser.h, tests/Makefile.am, tests/allOperations.h:
+	  Remove Delve, Dig and Mow from the tests.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml: Strip entity scripts off pickaxe and shovel.
 
 	* rulesets/World.h, rulesets/World.cpp: Remove handlers used to
@@ -16521,4 +16526,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1853 2007-07-04 21:20:40 alriddoch Exp $
+$Id: ChangeLog,v 1.1854 2007-07-04 21:29:11 alriddoch Exp $
