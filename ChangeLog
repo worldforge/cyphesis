@@ -1,4 +1,4 @@
-2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+2007-07-05  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Area.cpp, rulesets/Area.h, rulesets/Food.cpp,
 	  rulesets/Food.h, rulesets/Line.cpp, rulesets/Line.h:
@@ -16558,4 +16558,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1857 2007-07-05 17:51:40 alriddoch Exp $
+$Id: ChangeLog,v 1.1858 2007-07-05 17:51:59 alriddoch Exp $
