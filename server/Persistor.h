@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.h,v 1.13 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Persistor.h,v 1.14 2007-07-05 17:51:41 alriddoch Exp $
 
 #ifndef SERVER_PERSISTOR_H
 #define SERVER_PERSISTOR_H
@@ -39,8 +39,6 @@ class Persistor : virtual public sigc::trackable {
 
     void uEntity(Entity &, std::string &);
     void uCharacter(Character &, std::string &);
-    void uLine(Line &, std::string &);
-    void uArea(Area &, std::string &);
     void uPlant(Plant &, std::string &);
 
     void cEntity(Entity &, std::string &, std::string &);

@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Area.cpp,v 1.28 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: Area.cpp,v 1.29 2007-07-05 17:51:41 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include "Area.h"
 

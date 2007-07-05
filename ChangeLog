@@ -1,5 +1,19 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Area.cpp, rulesets/Area.h, rulesets/Food.cpp,
+	  rulesets/Food.h, rulesets/Line.cpp, rulesets/Line.h:
+	  Remove these unused core entity classes from the build.
+
+	* rulesets/attributes.h, server/EntityFactory.cpp,
+	  server/PersistantThingFactory.cpp, server/Persistor.cpp,
+	  server/Persistor.h, server/Persistor_impl.h, server/Restoration.cpp,
+	  server/Restorer.cpp: Remove the unused classes above from the
+	  persistence code.
+
+	* tests/Makefile.am: Remove tests for the removed classes.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Delve.py,
 	  rulesets/mason/world/tasks/Dig.py: Use the right coordinates for
 	  checking position on the terrain, and abort the task if
@@ -16544,4 +16558,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1856 2007-07-05 13:03:36 alriddoch Exp $
+$Id: ChangeLog,v 1.1857 2007-07-05 17:51:40 alriddoch Exp $

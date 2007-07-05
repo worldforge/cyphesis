@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restoration.cpp,v 1.30 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Restoration.cpp,v 1.31 2007-07-05 17:51:41 alriddoch Exp $
 
 #include "Restoration.h"
 #include "Restorer.h"
@@ -24,9 +24,6 @@
 
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
-#include "rulesets/Food.h"
-#include "rulesets/Area.h"
-#include "rulesets/Line.h"
 #include "rulesets/Structure.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
@@ -50,9 +47,6 @@ Restoration::Restoration(ServerRouting & svr) : server(svr),
     m_restorers["character"] = &Restorer<Character>::restore;
     m_restorers["creator"] = &Restorer<Creator>::restore;
     m_restorers["plant"] = &Restorer<Plant>::restore;
-    m_restorers["food"] = &Restorer<Food>::restore;
-    m_restorers["line"] = &Restorer<Line>::restore;
-    m_restorers["area"] = &Restorer<Area>::restore;
     m_restorers["structure"] = &Restorer<Structure>::restore;
     m_restorers["stackable"] = &Restorer<Stackable>::restore;
 }

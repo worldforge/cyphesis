@@ -17,8 +17,6 @@ removed, skeletons need goals to do anything.
 Implement blocking rules until all associated rules can be verified so
 tasks can't get installed without their activation ops and classes existing.
 
-Re-implement mining using the pickaxe as a task.
-
 self.progress seems to start out at -2 in Slice. Uninitialised?
 
 Add a way to handle per-host config in a single config file.
@@ -28,8 +26,6 @@ Fix parameter lookup in varconf.
 Add a call to Atlas-C++ which takes a bit field of attribute bits, and returns
 a bitfield of attribute bits that was requested but not present. Reduces
 error checking complexity loads.
-
-How about a ruleset.d directory concept?
 
 Pig seller seems to assume he is being given coins when actually they
 are being handed round by other people.

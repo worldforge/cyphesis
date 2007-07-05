@@ -11,7 +11,7 @@ PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 
-RULESETS_TESTS = Entitytest Areatest Foodtest Linetest Planttest \
+RULESETS_TESTS = Entitytest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
                  Containertest Tasktest EntityPropertytest \
@@ -264,49 +264,6 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/rulesets/Script.o \
                    $(top_builddir)/common/libcommon.a \
                    $(MATH_LIBS)
-
-Areatest_SOURCES = Areatest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Areatest_LDADD = $(top_builddir)/modules/Location.o \
-                 $(top_builddir)/modules/DateTime.o \
-                 $(top_builddir)/physics/libphysics.a \
-                 $(top_builddir)/rulesets/Area.o \
-                 $(top_builddir)/rulesets/Entity.o \
-                 $(top_builddir)/rulesets/EntityProperties.o \
-                 $(top_builddir)/rulesets/AtlasProperties.o \
-                 $(top_builddir)/rulesets/Thing.o \
-                 $(top_builddir)/rulesets/Motion.o \
-                 $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/common/libcommon.a \
-                 $(MATH_LIBS)
-
-Foodtest_SOURCES = Foodtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Foodtest_LDADD = $(top_builddir)/modules/Location.o \
-                 $(top_builddir)/modules/DateTime.o \
-                 $(top_builddir)/physics/libphysics.a \
-                 $(top_builddir)/rulesets/Food.o \
-                 $(top_builddir)/rulesets/Entity.o \
-                 $(top_builddir)/rulesets/EntityProperties.o \
-                 $(top_builddir)/rulesets/AtlasProperties.o \
-                 $(top_builddir)/rulesets/Thing.o \
-                 $(top_builddir)/rulesets/Motion.o \
-                 $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/common/libcommon.a \
-                 $(MATH_LIBS)
-
-Linetest_SOURCES = Linetest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Linetest_LDADD = $(top_builddir)/modules/Location.o \
-                 $(top_builddir)/modules/DateTime.o \
-                 $(top_builddir)/physics/libphysics.a \
-                 $(top_builddir)/rulesets/Line.o \
-                 $(top_builddir)/rulesets/LineProperty.o \
-                 $(top_builddir)/rulesets/Entity.o \
-                 $(top_builddir)/rulesets/EntityProperties.o \
-                 $(top_builddir)/rulesets/AtlasProperties.o \
-                 $(top_builddir)/rulesets/Thing.o \
-                 $(top_builddir)/rulesets/Motion.o \
-                 $(top_builddir)/rulesets/Script.o \
-                 $(top_builddir)/common/libcommon.a \
-                 $(MATH_LIBS)
 
 Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Planttest_LDADD = $(top_builddir)/modules/Location.o \

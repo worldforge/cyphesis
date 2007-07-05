@@ -15,16 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer.cpp,v 1.19 2007-01-03 22:48:03 alriddoch Exp $
+// $Id: Restorer.cpp,v 1.20 2007-07-05 17:51:41 alriddoch Exp $
 
 #include "Restorer_impl.h"
 
 #include "rulesets/Creator.h"
 #include "rulesets/World.h"
 #include "rulesets/Plant.h"
-#include "rulesets/Food.h"
-#include "rulesets/Area.h"
-#include "rulesets/Line.h"
 #include "rulesets/Structure.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
@@ -36,9 +33,6 @@ template <> Persistor<Thing> Restorer<Thing>::m_persist(true);
 template <> Persistor<Character> Restorer<Character>::m_persist(true);
 template <> Persistor<Creator> Restorer<Creator>::m_persist(true);
 template <> Persistor<Plant> Restorer<Plant>::m_persist(true);
-template <> Persistor<Food> Restorer<Food>::m_persist(true);
-template <> Persistor<Area> Restorer<Area>::m_persist(true);
-template <> Persistor<Line> Restorer<Line>::m_persist(true);
 template <> Persistor<Stackable> Restorer<Stackable>::m_persist(true);
 template <> Persistor<Structure> Restorer<Structure>::m_persist(true);
 template <> Persistor<World> Restorer<World>::m_persist(true);
@@ -86,9 +80,6 @@ template class Restorer<Thing>;
 template class Restorer<Character>;
 template class Restorer<Creator>;
 template class Restorer<Plant>;
-template class Restorer<Food>;
-template class Restorer<Area>;
-template class Restorer<Line>;
 template class Restorer<Stackable>;
 template class Restorer<Structure>;
 template class Restorer<World>;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor_impl.h,v 1.34 2007-01-03 22:48:03 alriddoch Exp $
+// $Id: Persistor_impl.h,v 1.35 2007-07-05 17:51:41 alriddoch Exp $
 
 #ifndef SERVER_PERSISTOR_IMPL_H
 #define SERVER_PERSISTOR_IMPL_H
@@ -107,16 +107,6 @@ void Persistor<T>::uCharacter(Character & t, std::string & c)
     if (!empty) {
         c += q.str();
     }
-}
-
-template <class T>
-void Persistor<T>::uLine(Line & t, std::string & c)
-{
-}
-
-template <class T>
-void Persistor<T>::uArea(Area & t, std::string & c)
-{
 }
 
 template <class T>

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.107 2007-07-02 21:58:01 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.108 2007-07-05 17:51:41 alriddoch Exp $
 
 #include <Python.h>
 
@@ -35,11 +35,8 @@
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
-#include "rulesets/Food.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/Structure.h"
-#include "rulesets/Line.h"
-#include "rulesets/Area.h"
 #include "rulesets/World.h"
 
 #include "rulesets/Python_Script_Utils.h"

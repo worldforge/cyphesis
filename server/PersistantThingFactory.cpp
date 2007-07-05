@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.cpp,v 1.15 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: PersistantThingFactory.cpp,v 1.16 2007-07-05 17:51:41 alriddoch Exp $
 
 #include <Python.h>
 
@@ -28,7 +28,6 @@
 #include "rulesets/Thing.h"
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
-#include "rulesets/Food.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Structure.h"
 #include "rulesets/Stackable.h"
@@ -64,7 +63,6 @@ template class PersistorConnection<Entity>;
 template class PersistorConnection<Thing>;
 template class PersistorConnection<Character>;
 template class PersistorConnection<Creator>;
-template class PersistorConnection<Food>;
 template class PersistorConnection<Plant>;
 template class PersistorConnection<Structure>;
 template class PersistorConnection<Stackable>;
@@ -74,7 +72,6 @@ template class PersistantThingFactory<Entity>;
 template class PersistantThingFactory<Thing>;
 template class PersistantThingFactory<Character>;
 template class PersistantThingFactory<Creator>;
-template class PersistantThingFactory<Food>;
 template class PersistantThingFactory<Plant>;
 template class PersistantThingFactory<Structure>;
 template class PersistantThingFactory<Stackable>;

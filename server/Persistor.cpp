@@ -15,18 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.cpp,v 1.35 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: Persistor.cpp,v 1.36 2007-07-05 17:51:41 alriddoch Exp $
 
 #include "Persistor.h"
 #include "Persistor_impl.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Thing.h"
-#include "rulesets/Line.h"
-#include "rulesets/Area.h"
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
-#include "rulesets/Food.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/Structure.h"
@@ -131,15 +128,6 @@ Persistor<Plant>::Persistor(bool temp) : m_class("plant")
 }
 
 template<>
-Persistor<Food>::Persistor(bool temp) : m_class("food")
-{
-    if (temp) { return; }
-    MapType desc;
-    // FIXME Sort out attributes
-    Database::instance()->registerEntityTable(m_class, desc, "thing");
-}
-
-template<>
 Persistor<Stackable>::Persistor(bool temp) : m_class("stackable")
 {
     if (temp) { return; }
@@ -186,26 +174,6 @@ void Persistor<Creator>::update(Creator * t)
 {
     // Creator entities are not persisted
     // Is this really needed? Probably not, as its never called.
-}
-
-template<>
-void Persistor<Line>::update(Line * t)
-{
-    std::string columns;
-    uLine(*t, columns);
-    uEntity(*t, columns);
-    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
-    t->clearUpdateFlags();
-}
-
-template<>
-void Persistor<Area>::update(Area * t)
-{
-    std::string columns;
-    uArea(*t, columns);
-    uEntity(*t, columns);
-    Database::instance()->updateEntityRow(m_class, t->getId(), columns);
-    t->clearUpdateFlags();
 }
 
 template<>
@@ -353,11 +321,8 @@ void Persistor<World>::persist(World & t)
 
 template class Persistor<Entity>;
 template class Persistor<Thing>;
-template class Persistor<Line>;
-template class Persistor<Area>;
 template class Persistor<Character>;
 template class Persistor<Creator>;
-template class Persistor<Food>;
 template class Persistor<Plant>;
 template class Persistor<Stackable>;
 template class Persistor<Structure>;
