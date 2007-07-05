@@ -1,5 +1,12 @@
 2007-07-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Delve.py,
+	  rulesets/mason/world/tasks/Dig.py: Use the right coordinates for
+	  checking position on the terrain, and abort the task if
+	  there is nothing there to dig or delve.
+
+2007-07-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/basic.xml: Provide entirely data driven definitions for Cut
 	  and Chop ops.
 
@@ -16537,4 +16544,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1855 2007-07-04 22:00:14 alriddoch Exp $
+$Id: ChangeLog,v 1.1856 2007-07-05 13:03:36 alriddoch Exp $

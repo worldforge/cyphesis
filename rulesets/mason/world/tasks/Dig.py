@@ -4,6 +4,7 @@
 from atlas import *
 from physics import *
 from Quaternion import Quaternion
+from Point3D import Point3D
 from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
@@ -23,7 +24,7 @@ class Dig(Thing):
         self.target = op[0].id
         self.tool = op.to
 
-        self.pos = Vector3D(op[0].pos)
+        self.pos = Point3D(op[0].pos)
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
@@ -53,11 +54,12 @@ class Dig(Thing):
 
         self.progress = 0
 
-        surface = target.terrain.get_surface(self.character.location.coordinates)
+        surface = target.terrain.get_surface(self.pos)
         # print "SURFACE %d at %s" % (surface, self.pos)
         if surface not in Dig.materials:
             print "Not right"
-            return self.next_tick(1.75)
+            self.irrelevant()
+            return
 
         res=Message()
 
