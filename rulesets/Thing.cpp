@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.214 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: Thing.cpp,v 1.215 2007-07-06 14:58:28 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -74,6 +74,11 @@ Thing::~Thing()
 
 void Thing::DeleteOperation(const Operation & op, OpVector & res)
 {
+    if (m_location.m_loc == 0) {
+        log(ERROR, String::compose("Deleting %1(%2) when it is not in the world.", getType(), getId()).c_str());
+        return;
+    }
+    assert(m_location.m_loc != 0);
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     Sight s;
