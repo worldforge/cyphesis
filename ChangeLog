@@ -1,4 +1,10 @@
-2007-07-05  Al Riddoch  <alriddoch@zepler.org>
+2007-07-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Don't use "with"
+	  as a variable name as it is about to become a reserved word in
+	  Python 2.6.
+
+2007-07-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Makefile.am: Add a temporary fix that removes the top
 	  level module init file for basic/world so old installations of the
@@ -16564,4 +16570,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1859 2007-07-06 00:27:45 alriddoch Exp $
+$Id: ChangeLog,v 1.1860 2007-07-06 00:41:26 alriddoch Exp $

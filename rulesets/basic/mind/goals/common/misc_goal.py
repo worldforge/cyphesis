@@ -380,18 +380,18 @@ class predate_small(feed):
 ################### HUNT (SEARCH FOR SOMETHING, THEN KILL IT) #################
 
 class hunt(Goal):
-    def __init__(self, with, what, range):
+    def __init__(self, weapon, what, range):
         Goal.__init__(self, "hunt something",
                       self.none_in_range,
                       [spot_something(what, range),
-                       acquire_thing(with),
+                       acquire_thing(weapon),
                        hunt_for(what, range, 7),
                        self.fight])
-        self.with=with
+        self.weapon=weapon
         self.what=what
         self.range=range
         self.square_range=range*range
-        self.vars=["with", "what", "range"]
+        self.vars=["weapon", "what", "range"]
     def none_in_range(self, me):
         thing_all=me.map.find_by_type(self.what)
         for thing in thing_all:
@@ -399,10 +399,10 @@ class hunt(Goal):
                 return 0
         return 1
     def fight(self, me):
-        if me.things.has_key(self.with)==0:
+        if me.things.has_key(self.weapon)==0:
             print "no weapon"
             return
-        weapon=me.find_thing(self.with)[0]
+        weapon=me.find_thing(self.weapon)[0]
         if me.things.has_key(weapon.ammo)==0:
             print "no ammo"
             return
