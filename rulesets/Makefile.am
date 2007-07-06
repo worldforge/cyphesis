@@ -87,6 +87,8 @@ dist-hook:
 install-data-local:
 	(cd $(top_srcdir)/rulesets && find $(RULESETS) -type d ! -name CVS | xargs -I PYRDIR $(install_sh) -d $(DESTDIR)$(datadir)/cyphesis/rulesets/PYRDIR)
 	(cd $(top_srcdir)/rulesets && tar cf - $(TAR_PERM_FLAGS) `find $(RULESETS) -name \*.py`) | (cd $(DESTDIR)$(datadir)/cyphesis/rulesets && tar xpf -)
+	rm -f $(DESTDIR)$(datadir)/cyphesis/rulesets/basic/world/__init__.py
+	rm -f $(DESTDIR)$(datadir)/cyphesis/rulesets/basic/world/__init__.py?
 
 uninstall-local:
 	(cd $(top_srcdir)/rulesets && find $(RULESETS) -name \*.py | xargs -I PYRFILE rm -f $(DESTDIR)$(datadir)/cyphesis/rulesets/PYRFILE)
