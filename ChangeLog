@@ -1,5 +1,12 @@
 2007-07-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: When moving, check if the entity has
+	  LOC set. If not, print an error, and assert. This may be a
+	  valid way to check for the TLVE, rather than relying on the
+	  world class.
+
+2007-07-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: When deleting, check if the entity has
 	  LOC set. If not, print an error, and assert. This may be a
 	  valid way to check for the TLVE, rather than relying on the
@@ -16577,4 +16584,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1861 2007-07-06 14:58:28 alriddoch Exp $
+$Id: ChangeLog,v 1.1862 2007-07-06 15:09:39 alriddoch Exp $

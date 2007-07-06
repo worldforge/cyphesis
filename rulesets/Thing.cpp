@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.215 2007-07-06 14:58:28 alriddoch Exp $
+// $Id: Thing.cpp,v 1.216 2007-07-06 15:09:39 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -76,9 +76,9 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
 {
     if (m_location.m_loc == 0) {
         log(ERROR, String::compose("Deleting %1(%2) when it is not in the world.", getType(), getId()).c_str());
+        assert(m_location.m_loc != 0);
         return;
     }
-    assert(m_location.m_loc != 0);
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
     Sight s;
@@ -89,6 +89,12 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
 void Thing::MoveOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
+
+    if (m_location.m_loc == 0) {
+        log(ERROR, String::compose("Moving %1(%2) when it is not in the world.", getType(), getId()).c_str());
+        assert(m_location.m_loc != 0);
+        return;
+    }
 
     // Check the validity of the operation.
     const std::vector<Root> & args = op->getArgs();
