@@ -1,3 +1,6 @@
+When a task cannot be installed because of pre-reqs, record the error so
+it can be reported.
+
 Push to remove the world class, making it all more driven by data behavior.
 
 POS can't change in Dig and Delve, so make them irrelevant if its not the right

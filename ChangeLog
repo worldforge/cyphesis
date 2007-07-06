@@ -1,5 +1,11 @@
 2007-07-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: When processing a new task rule, check
+	  that the operation and tool classes referenced have been installed.
+	  If not, make the class pending on those classes.
+
+2007-07-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: When moving, check if the entity has
 	  LOC set. If not, print an error, and assert. This may be a
 	  valid way to check for the TLVE, rather than relying on the
@@ -16584,4 +16590,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1862 2007-07-06 15:09:39 alriddoch Exp $
+$Id: ChangeLog,v 1.1863 2007-07-06 16:36:12 alriddoch Exp $

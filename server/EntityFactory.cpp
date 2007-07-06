@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.108 2007-07-05 17:51:41 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.109 2007-07-06 16:36:12 alriddoch Exp $
 
 #include <Python.h>
 
@@ -384,11 +384,20 @@ int EntityFactory::installTaskClass(const std::string & className,
         J = activation.find("tool");
         if (J != act_end && J->second.isString()) {
             const std::string & activation_tool = J->second.String();
+            if (!i.hasClass(activation_tool)) {
+                // FIXME Record this error for reporting later.
+                delete factory;
+                m_waitingRules.insert(make_pair(activation_tool, make_pair(className, classDesc)));
+                return 1;
+            }
             J = activation.find("operation");
             if (J != act_end && J->second.isString()) {
                 const std::string & activation_op = J->second.String();
                 if (!i.hasClass(activation_op)) {
-                    log(WARNING, String::compose("Activation op_definition \"%1\" does not exist for task class \"%2\".", activation_op, className).c_str());
+                    // FIXME Record this error for reporting later.
+                    delete factory;
+                    m_waitingRules.insert(make_pair(activation_op, make_pair(className, classDesc)));
+                    return 1;
                 }
                 m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
             }
@@ -548,7 +557,7 @@ int EntityFactory::installRule(const std::string & className,
         const std::string & wClassName = I->second.first;
         const MapType & wClassDesc = I->second.second;
         debug(std::cout << "WAITING rule " << wClassName
-                        << " now ready" << std::endl << std::flush;);
+                        << " now ready from " << className << std::endl << std::flush;);
         installRule(wClassName, wClassDesc);
     }
     m_waitingRules.erase(className);
@@ -709,7 +718,7 @@ void EntityFactory::installRules()
     RuleWaitList::const_iterator Jend = m_waitingRules.end();
     for (; J != Jend; ++J) {
         const std::string & wParentName = J->first;
-        log(ERROR, String::compose("Rule \"%1\" with parent \"%2\" is an orphan", J->second.first, wParentName).c_str());
+        log(ERROR, String::compose("Rule \"%1\" with parent \"%2\" is an orphan of %3", J->second.first, wParentName, J->first).c_str());
     }
 }
 
