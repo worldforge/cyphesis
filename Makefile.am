@@ -16,7 +16,7 @@ install-data-hook:
 	@echo "Unless you have configured the server to run without a database, Cyphesis"
 	@echo "requires access to a PostgreSQL database to store rules and account data."
 	@echo "Please run 'sudo $(top_srcdir)/scripts/cyphesis-setup.sh' to create the"
-	@echo "PostgreSQL account and database required."
+	@echo "PostgreSQL account and database required, or run it as root."
 	@echo 
 	@echo "For detailed instructions please see the README file."
 	@echo 

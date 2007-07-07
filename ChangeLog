@@ -1,3 +1,8 @@
+2007-07-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* Makefile.am, scripts/cyphesis-setup.sh: Get the script for setting
+	  up database working fairly smoothly.
+
 2007-07-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: When processing a new task rule, check
@@ -16590,4 +16595,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1863 2007-07-06 16:36:12 alriddoch Exp $
+$Id: ChangeLog,v 1.1864 2007-07-07 16:21:12 alriddoch Exp $
