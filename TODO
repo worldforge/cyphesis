@@ -1,3 +1,9 @@
+There is a chance something could get screwed up in waitingRules.
+If something depends on two classes, and the second is not present the first
+time it fires, m_waitingRules will get modified mid iteration, and then
+the waiting item will get removed despite the fact that is has not been
+installed.
+
 When a task cannot be installed because of pre-reqs, record the error so
 it can be reported.
 
