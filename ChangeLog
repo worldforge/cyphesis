@@ -1,3 +1,12 @@
+2007-07-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Cultivate.py: Add new task script for
+	  cultivating plants from seed.
+
+	* data/mason.xml: Add task class for cultivate. Add GERMINATES
+	  property to all seed classes. Remove germinate operation definition
+	  and trowel script.
+
 2007-07-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* Makefile.am, scripts/cyphesis-setup.sh: Get the script for setting
@@ -16595,4 +16604,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1864 2007-07-07 16:21:12 alriddoch Exp $
+$Id: ChangeLog,v 1.1865 2007-07-08 19:38:02 alriddoch Exp $

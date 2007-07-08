@@ -2,6 +2,10 @@
 
   <map>
     <map name="attributes">
+      <map name="germinates">
+        <string name="default">oak</string>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.05</float>
         <string name="visibility">public</string>
@@ -22,6 +26,10 @@
     <map name="attributes">
       <map name="alcohol">
         <float name="default">0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="germinates">
+        <string name="default">appletree</string>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -777,6 +785,25 @@
 
   <map>
     <map name="attributes">
+    </map>
+    <string name="id">cultivate</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">sow</string>
+      <string name="tool">trowel</string>
+      <string name="target">seed</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Cultivate</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-2</float>
@@ -970,6 +997,10 @@
 
   <map>
     <map name="attributes">
+      <map name="germinates">
+        <string name="default">fir</string>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.1</float>
         <string name="visibility">public</string>
@@ -1132,14 +1163,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">germinate</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
     </list>
   </map>
 
@@ -2135,6 +2158,10 @@
         <float name="default">0.05</float>
         <string name="visibility">public</string>
       </map>
+      <map name="germinates">
+        <string name="default">plant</string>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.05</float>
         <string name="visibility">public</string>
@@ -2652,10 +2679,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Trowel</string>
-    </map>
   </map>
 
   <map>
