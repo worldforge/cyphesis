@@ -1,5 +1,9 @@
 2007-07-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml: Remove a few pointless entity scripts.
+
+2007-07-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Cultivate.py: Add new task script for
 	  cultivating plants from seed.
 
@@ -16604,4 +16608,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1865 2007-07-08 19:38:02 alriddoch Exp $
+$Id: ChangeLog,v 1.1866 2007-07-08 19:55:28 alriddoch Exp $

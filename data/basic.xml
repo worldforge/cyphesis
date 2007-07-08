@@ -356,10 +356,6 @@
     <list name="parents">
       <string>thing</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.Pile</string>
-    </map>
   </map>
 
   <map>
@@ -426,10 +422,6 @@
     <list name="parents">
       <string>house</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.buildings.StoneHouse</string>
-    </map>
   </map>
 
   <map>

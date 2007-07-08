@@ -1,3 +1,13 @@
+Write a task to beat down fire with shovel.
+
+Specify contents of the house in the class rule, rather than using the script
+to create it. Contained entity data format again, just like blueprint.
+CONSTITUANTS?
+
+Add a transient property which indicates that something does not last, and
+should not be persisted. This would allow most of the seed scripts to be
+removed.
+
 There is a chance something could get screwed up in waitingRules.
 If something depends on two classes, and the second is not present the first
 time it fires, m_waitingRules will get modified mid iteration, and then
@@ -13,8 +23,6 @@ POS can't change in Dig and Delve, so make them irrelevant if its not the right
 kind of terrain.
 
 Add range check to Dig and Delve, and see if it can be done more generally.
-
-Write tasks for shovel digging, pickaxe, and trowel planting.
 
 Re-write goals for butcher so they now interact correctly with the task
 implementation.
