@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory_impl.h,v 1.11 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: PersistantThingFactory_impl.h,v 1.12 2007-07-08 23:45:12 alriddoch Exp $
 
 #ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
 #define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
@@ -26,6 +26,16 @@ template <class T>
 void PersistorConnection<T>::persist()
 {
     m_p.persist(m_t);
+}
+
+template <class T>
+ThingFactory<T>::ThingFactory(ThingFactory<T> & o)
+{
+}
+
+template <class T>
+ThingFactory<T>::ThingFactory()
+{
 }
 
 template <class T>

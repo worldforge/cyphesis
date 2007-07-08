@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.109 2007-07-06 16:36:12 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.110 2007-07-08 23:45:12 alriddoch Exp $
 
 #include <Python.h>
 
@@ -110,6 +110,9 @@ EntityFactory::~EntityFactory()
 
 void EntityFactory::initWorld()
 {
+    if (!consts::enable_persistence) {
+        return;
+    }
     FactoryDict::const_iterator I = m_factories.find("world");
     if (I == m_factories.end()) {
         log(CRITICAL, "No world factory");

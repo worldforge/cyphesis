@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.22 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.23 2007-07-08 23:45:12 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -86,9 +86,9 @@ class FactoryBase {
 template <class T>
 class ThingFactory : public FactoryBase {
   protected:
-    ThingFactory(ThingFactory<T> & o) { }
+    ThingFactory(ThingFactory<T> & o);
   public:
-    ThingFactory() { }
+    ThingFactory();
     virtual ~ThingFactory();
 
     virtual T * newPersistantThing(const std::string & id, long intId,

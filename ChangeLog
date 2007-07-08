@@ -1,3 +1,19 @@
+2007-07-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* scripts/cyphesis-setup.sh: Complete the database setup script
+	  functionality. Clean up the output, and polish.
+
+	* server/PersistantThingFactory.cpp, server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h: Partially specialise the non
+	  persistent entity factory so we can register the persistor database
+	  tables for the world object when persistence is disabled, so the
+	  state of this entity can be restored.
+
+	* server/server.cpp: Tidy up the startup output.
+
+	* server/EntityFactory.cpp: Don't try and set up world persistence if
+	  it is turned off.
+
 2007-07-08  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/basic.xml: Remove a few pointless entity scripts.
@@ -16608,4 +16624,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1866 2007-07-08 19:55:28 alriddoch Exp $
+$Id: ChangeLog,v 1.1867 2007-07-08 23:45:12 alriddoch Exp $

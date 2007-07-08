@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.145 2007-06-19 13:19:58 alriddoch Exp $
+// $Id: server.cpp,v 1.146 2007-07-08 23:45:12 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -209,7 +209,7 @@ int main(int argc, char ** argv)
             
         }
 
-        log(INFO, _(" world restored"));
+        log(INFO, _("Restored world."));
 
         CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
                                         Persistance::instance()->m_connection);
