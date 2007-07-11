@@ -1,3 +1,12 @@
+2007-07-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.spec.in: Update dependencies now that rpms are included in
+	  in major distributions under a slightly more sensible name.
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.13
+
 2007-07-09  Al Riddoch  <alriddoch@zepler.org>
 
 	* scripts/cyphesis-setup.sh: Complete the database setup script
@@ -16624,4 +16633,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1867 2007-07-08 23:45:12 alriddoch Exp $
+$Id: ChangeLog,v 1.1868 2007-07-11 01:42:54 alriddoch Exp $
