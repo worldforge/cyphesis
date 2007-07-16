@@ -1,3 +1,8 @@
+2007-07-16  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Fix a race condition in the code that
+	  loads rules that depend on other rules.
+
 2007-07-11  Al Riddoch  <alriddoch@zepler.org>
 
 	* cyphesis.spec.in: Update dependencies now that rpms are included in
@@ -16633,4 +16638,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1868 2007-07-11 01:42:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1869 2007-07-16 22:56:34 alriddoch Exp $

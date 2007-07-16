@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.110 2007-07-08 23:45:12 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.111 2007-07-16 22:56:35 alriddoch Exp $
 
 #include <Python.h>
 
@@ -556,14 +556,24 @@ int EntityFactory::installRule(const std::string & className,
     // could be installed
     RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
     RuleWaitList::iterator Iend = m_waitingRules.upper_bound(className);
+    std::map<std::string, MapType> readyRules;
     for (; I != Iend; ++I) {
         const std::string & wClassName = I->second.first;
         const MapType & wClassDesc = I->second.second;
+        readyRules.insert(std::make_pair(wClassName, wClassDesc));
         debug(std::cout << "WAITING rule " << wClassName
-                        << " now ready from " << className << std::endl << std::flush;);
-        installRule(wClassName, wClassDesc);
+                        << " now ready from " << className
+                        << std::endl << std::flush;);
     }
     m_waitingRules.erase(className);
+        
+    std::map<std::string, MapType>::const_iterator K = readyRules.begin();
+    std::map<std::string, MapType>::const_iterator Kend = readyRules.end();
+    for (; K != Kend; ++K) {
+        const std::string & rClassName = K->first;
+        const MapType & rClassDesc = K->second;
+        installRule(rClassName, rClassDesc);
+    }
     return 0;
 }
 

@@ -1,3 +1,6 @@
+Add unit tests to make sure rule install order with multiple dependencies
+is okay.
+
 Write a task to beat down fire with shovel.
 
 Specify contents of the house in the class rule, rather than using the script
