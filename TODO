@@ -1,4 +1,6 @@
-Fill out auto activation op stuff.
+Fill out auto activation op stuff. Now that operations is automatic,
+need to ensure children inherit the behavior as well as the value, which
+requires some work on the activations.
 
 In EntityFactory, we should abort a task install if the target does not exist.
 

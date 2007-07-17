@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.112 2007-07-17 02:26:43 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.113 2007-07-17 17:13:26 alriddoch Exp $
 
 #include <Python.h>
 
@@ -343,6 +343,22 @@ bool EntityFactory::isTask(const std::string & className)
     return (m_taskFactories.find(className) != m_taskFactories.end());
 }
 
+static void updateChildren(FactoryBase * factory)
+{
+    std::set<FactoryBase *>::const_iterator I = factory->m_children.begin();
+    std::set<FactoryBase *>::const_iterator Iend = factory->m_children.end();
+    for (; I != Iend; ++I) {
+        FactoryBase * child_factory = *I;
+        child_factory->m_attributes = factory->m_attributes;
+        MapType::const_iterator J = child_factory->m_classAttributes.begin();
+        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
+        for (; J != Jend; ++J) {
+            child_factory->m_attributes[J->first] = J->second;
+        }
+        updateChildren(child_factory);
+    }
+}
+
 int EntityFactory::installTaskClass(const std::string & className,
                                     const std::string & parent,
                                     const MapType & classDesc)
@@ -416,6 +432,9 @@ int EntityFactory::installTaskClass(const std::string & className,
                 MapType::iterator L = tool_factory->m_classAttributes.find("operations");
                 if (L == tool_factory->m_classAttributes.end()) {
                     std::cout << "Got nothing" << std::endl << std::flush;
+                    tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
+                    tool_factory->m_attributes["operations"] = ListType(1, activation_op);
+                    updateChildren(tool_factory);
                 } else {
                     std::cout << "Got something" << std::endl << std::flush;
                     if (L->second.isList()) {
@@ -428,6 +447,7 @@ int EntityFactory::installTaskClass(const std::string & className,
                             debug_dump(L->second.List());
                             debug_dump(tool_factory->m_classAttributes["operations"].asList());
                             debug_dump(tool_factory->m_attributes["operations"].asList());
+                            updateChildren(tool_factory);
                         } else {
                             std::cout << "It was in there" << std::endl << std::flush;
                         }
@@ -606,22 +626,6 @@ int EntityFactory::installRule(const std::string & className,
         installRule(rClassName, rClassDesc);
     }
     return 0;
-}
-
-static void updateChildren(FactoryBase * factory)
-{
-    std::set<FactoryBase *>::const_iterator I = factory->m_children.begin();
-    std::set<FactoryBase *>::const_iterator Iend = factory->m_children.end();
-    for (; I != Iend; ++I) {
-        FactoryBase * child_factory = *I;
-        child_factory->m_attributes = factory->m_attributes;
-        MapType::const_iterator J = child_factory->m_classAttributes.begin();
-        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
-        for (; J != Jend; ++J) {
-            child_factory->m_attributes[J->first] = J->second;
-        }
-        updateChildren(child_factory);
-    }
 }
 
 int EntityFactory::modifyEntityClass(const std::string & className,

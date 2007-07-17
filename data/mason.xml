@@ -473,12 +473,6 @@
         <float name="default">10</float>
         <string name="visibility">public</string>
       </map>
-      <map name="operations">
-        <list name="default">
-          <string>cut</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">bucksaw</string>
     <string name="objtype">class</string>
@@ -663,12 +657,6 @@
     <map name="attributes">
       <map name="mass">
         <float name="default">1.5</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>cut</string>
-        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -1272,12 +1260,6 @@
       </map>
       <map name="mass">
         <float name="default">4</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>strike</string>
-        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -2001,12 +1983,6 @@
         <float name="default">2</float>
         <string name="visibility">public</string>
       </map>
-      <map name="operations">
-        <list name="default">
-          <string>lever</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">pole</string>
     <string name="objtype">class</string>
@@ -2135,13 +2111,6 @@
       </map>
       <map name="mass">
         <float name="default">5</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>attach</string>
-          <string>pull</string>
-        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -2665,12 +2634,6 @@
       </map>
       <map name="mass">
         <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>sow</string>
-        </list>
         <string name="visibility">public</string>
       </map>
     </map>

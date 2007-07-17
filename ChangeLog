@@ -1,5 +1,16 @@
 2007-07-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Complete the code that populates
+	  operations on a tool based on the task activations in the
+	  ruleset, removing the need for world builders to synchronise
+	  this data manually.
+
+	* data/basic.xml, data/mason.xml: Remove operations from all tools
+	  that only use them for activating tasks, now that this is handled
+	  automatically.
+
+2007-07-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/debug.cpp: Add template specialisation for dumping lists.
 
 	* server/EntityFactory.cpp: Add part completed code for adding tool
@@ -16653,4 +16664,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1871 2007-07-17 02:26:43 alriddoch Exp $
+$Id: ChangeLog,v 1.1872 2007-07-17 17:13:25 alriddoch Exp $

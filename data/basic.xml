@@ -43,17 +43,25 @@
         <float name="default">1.5</float>
         <string name="visibility">public</string>
       </map>
-      <map name="operations">
-        <list name="default">
-          <string>cut</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">axe</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">axel</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>axe</string>
     </list>
   </map>
 
@@ -308,12 +316,6 @@
         <float name="default">5</float>
         <string name="visibility">public</string>
       </map>
-      <map name="operations">
-        <list name="default">
-          <string>cut</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">pickaxe</string>
     <string name="objtype">class</string>
@@ -364,12 +366,6 @@
         <float name="default">5</float>
         <string name="visibility">public</string>
       </map>
-      <map name="operations">
-        <list name="default">
-          <string>cut</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">scythe</string>
     <string name="objtype">class</string>
@@ -390,12 +386,6 @@
     <map name="attributes">
       <map name="mass">
         <float name="default">5</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>cut</string>
-        </list>
         <string name="visibility">public</string>
       </map>
     </map>
