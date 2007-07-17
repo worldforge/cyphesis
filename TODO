@@ -1,3 +1,7 @@
+Fill out auto activation op stuff.
+
+In EntityFactory, we should abort a task install if the target does not exist.
+
 Add unit tests to make sure rule install order with multiple dependencies
 is okay.
 

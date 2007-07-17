@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.111 2007-07-16 22:56:35 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.112 2007-07-17 02:26:43 alriddoch Exp $
 
 #include <Python.h>
 
@@ -67,7 +67,7 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
@@ -393,6 +393,16 @@ int EntityFactory::installTaskClass(const std::string & className,
                 m_waitingRules.insert(make_pair(activation_tool, make_pair(className, classDesc)));
                 return 1;
             }
+            FactoryDict::const_iterator K = m_factories.find(activation_tool);
+            if (K == m_factories.end()) {
+                std::cout << "GOT NO FACTORY" << std::endl << std::flush;
+                delete factory;
+                m_waitingRules.insert(make_pair(activation_tool, make_pair(className, classDesc)));
+                return 1;
+            } else {
+                std::cout << "GOT FACTORY" << std::endl << std::flush;
+            }
+            FactoryBase * tool_factory = K->second;
             J = activation.find("operation");
             if (J != act_end && J->second.isString()) {
                 const std::string & activation_op = J->second.String();
@@ -403,6 +413,27 @@ int EntityFactory::installTaskClass(const std::string & className,
                     return 1;
                 }
                 m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
+                MapType::iterator L = tool_factory->m_classAttributes.find("operations");
+                if (L == tool_factory->m_classAttributes.end()) {
+                    std::cout << "Got nothing" << std::endl << std::flush;
+                } else {
+                    std::cout << "Got something" << std::endl << std::flush;
+                    if (L->second.isList()) {
+                        ListType::const_iterator M = L->second.List().begin();
+                        for (; M != L->second.List().end() && *M != activation_op; ++M);
+                        if (M == L->second.List().end()) {
+                            std::cout << "It wasn't in " << L->first << std::endl << std::flush;
+                            L->second.List().push_back(activation_op);
+                            tool_factory->m_attributes[L->first] = L->second.List();
+                            debug_dump(L->second.List());
+                            debug_dump(tool_factory->m_classAttributes["operations"].asList());
+                            debug_dump(tool_factory->m_attributes["operations"].asList());
+                        } else {
+                            std::cout << "It was in there" << std::endl << std::flush;
+                        }
+                    }
+                }
+                
             }
         }
         J = activation.find("target");

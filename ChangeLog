@@ -1,5 +1,12 @@
 2007-07-17  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/debug.cpp: Add template specialisation for dumping lists.
+
+	* server/EntityFactory.cpp: Add part completed code for adding tool
+	  operations dynamically to tools.
+
+2007-07-17  Al Riddoch  <alriddoch@zepler.org>
+
 	* autopackage/default.apspec.in: Explicitly enable binreloc for
 	  autopackage builds.
 
@@ -16646,4 +16653,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1870 2007-07-17 01:27:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1871 2007-07-17 02:26:43 alriddoch Exp $

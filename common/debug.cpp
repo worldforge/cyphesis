@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: debug.cpp,v 1.3 2006-12-07 09:02:44 alriddoch Exp $
+// $Id: debug.cpp,v 1.4 2007-07-17 02:26:43 alriddoch Exp $
 
 #include "debug.h"
 
@@ -75,4 +75,10 @@ template <>
 void debug_dump<MapType>(const MapType & map)
 {
     output(map, 0);
+}
+
+template <>
+void debug_dump<ListType>(const ListType & list)
+{
+    output(list, 0);
 }
