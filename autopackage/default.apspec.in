@@ -26,7 +26,7 @@ Mason game. Use this package if you intend to run an Mason server.
 [BuildPrepare]
 # export CC=gcc
 # export CXX=g++
-prepareBuild --enable-static-link
+prepareBuild --enable-static-link --enable-binreloc
 
 [BuildUnprepare]
 unprepareBuild

@@ -36,12 +36,14 @@ DBTOOL_LIBS = \
     /usr/lib/libgssapi_krb5.a \
     /usr/lib/libk5crypto.a \
     /usr/lib/libkrb5support.a \
+    /usr/lib/libkeyutils.a \
     /usr/lib/libgcrypt.a \
     /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
     /usr/lib/libcrypt.a \
     /usr/lib/libresolv.a \
     /usr/lib/libcom_err.a \
+    /usr/lib/libz.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
     -ldl -lpthread -lc -lm -lgcc_s

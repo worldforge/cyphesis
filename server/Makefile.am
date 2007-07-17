@@ -33,6 +33,7 @@ SERVER_LIBS = \
     /usr/lib/libgssapi_krb5.a \
     /usr/lib/libk5crypto.a \
     /usr/lib/libkrb5support.a \
+    /usr/lib/libkeyutils.a \
     /usr/lib/libgcrypt.a \
     /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
@@ -41,6 +42,7 @@ SERVER_LIBS = \
     /usr/lib/libcom_err.a \
     $(PYTHON_LIBS) \
     /usr/lib/libutil.a \
+    /usr/lib/libz.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
     -ldl -lc -lm -lpthread -lgcc_s
