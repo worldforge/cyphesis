@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.113 2007-07-17 17:13:26 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.114 2007-07-24 00:27:50 alriddoch Exp $
 
 #include <Python.h>
 
@@ -67,7 +67,7 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 EntityFactory * EntityFactory::m_instance = NULL;
 
@@ -411,12 +411,9 @@ int EntityFactory::installTaskClass(const std::string & className,
             }
             FactoryDict::const_iterator K = m_factories.find(activation_tool);
             if (K == m_factories.end()) {
-                std::cout << "GOT NO FACTORY" << std::endl << std::flush;
                 delete factory;
                 m_waitingRules.insert(make_pair(activation_tool, make_pair(className, classDesc)));
                 return 1;
-            } else {
-                std::cout << "GOT FACTORY" << std::endl << std::flush;
             }
             FactoryBase * tool_factory = K->second;
             J = activation.find("operation");
@@ -431,12 +428,10 @@ int EntityFactory::installTaskClass(const std::string & className,
                 m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
                 MapType::iterator L = tool_factory->m_classAttributes.find("operations");
                 if (L == tool_factory->m_classAttributes.end()) {
-                    std::cout << "Got nothing" << std::endl << std::flush;
                     tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
                     tool_factory->m_attributes["operations"] = ListType(1, activation_op);
                     updateChildren(tool_factory);
                 } else {
-                    std::cout << "Got something" << std::endl << std::flush;
                     if (L->second.isList()) {
                         ListType::const_iterator M = L->second.List().begin();
                         for (; M != L->second.List().end() && *M != activation_op; ++M);
@@ -448,8 +443,6 @@ int EntityFactory::installTaskClass(const std::string & className,
                             debug_dump(tool_factory->m_classAttributes["operations"].asList());
                             debug_dump(tool_factory->m_attributes["operations"].asList());
                             updateChildren(tool_factory);
-                        } else {
-                            std::cout << "It was in there" << std::endl << std::flush;
                         }
                     }
                 }

@@ -1,3 +1,7 @@
+2007-07-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp: Remove and disable debug output.
+
 2007-07-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Complete the code that populates
@@ -16664,4 +16668,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1872 2007-07-17 17:13:25 alriddoch Exp $
+$Id: ChangeLog,v 1.1873 2007-07-24 00:27:49 alriddoch Exp $
