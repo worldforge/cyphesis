@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.21 2007-06-22 12:42:36 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.22 2007-07-26 10:43:32 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -30,6 +30,7 @@
 #include "common/Eat.h"
 #include "common/Burn.h"
 #include "common/Nourish.h"
+#include "common/Setup.h"
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
@@ -185,6 +186,33 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
     return OPERATION_IGNORED;
 }
 
+HandlerResult transient_handler(Entity * e,
+                                const Operation & op,
+                                OpVector & res)
+{
+    Element transient_time;
+    if (!e->getAttr("transient", transient_time)) {
+        return OPERATION_IGNORED;
+    }
+
+    if (!transient_time.isFloat()) {
+        return OPERATION_IGNORED;
+    }
+
+    Set s;
+    s->setTo(e->getId());
+    s->setFutureSeconds(transient_time.Float());
+
+    Anonymous set_arg;
+    set_arg->setId(e->getId());
+    set_arg->setAttr("status", -1);
+    s->setArgs1(set_arg);
+
+    res.push_back(s);
+
+    return OPERATION_IGNORED;
+}
+
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
@@ -198,6 +226,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["solid"] = new EntityPropertyBuilder<SolidProperty>;
     m_propertyFactories["biomass"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
     m_propertyFactories["burn_speed"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
+    m_propertyFactories["transient"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()

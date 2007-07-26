@@ -1,5 +1,17 @@
 2007-07-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CorePropertyManager.cpp: Add a new active property handler,
+	  that schedules the destruction of an entity after a timeout.
+
+	* data/mason.xml: Add biomass and transient properties to Acorn,
+	  making most of the script obsolete.
+
+	* rulesets/mason/world/objects/plants/seeds/Acorn.py: Remove handlers
+	  for eating and handling decay from the script, now that this
+	  functionality is taken by properties.
+
+2007-07-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.h, server/EntityFactory.cpp: Improve the
 	  mechanism for identifying rules which have broken dependencies.
 
@@ -16673,4 +16685,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1874 2007-07-26 00:15:52 alriddoch Exp $
+$Id: ChangeLog,v 1.1875 2007-07-26 10:43:30 alriddoch Exp $
