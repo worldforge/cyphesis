@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.47 2007-02-20 00:52:42 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.48 2007-07-26 00:15:53 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -40,13 +40,23 @@ typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
 typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
 typedef std::map<std::string, ArithmeticFactory *> StatisticsFactoryDict;
 
+
+/// \brief Class to handle rules that cannot yet be installed, and the reason
+class RuleWaiting {
+  public:
+    std::string name;
+    Atlas::Message::MapType desc;
+    std::string reason;
+};
+
+typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
+
 /// \brief Class to handle the creation of all entities for the world.
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.
 class EntityFactory {
   protected:
-    typedef std::multimap<std::string, std::pair<std::string, Atlas::Message::MapType> > RuleWaitList;
     explicit EntityFactory(BaseWorld & w);
     ~EntityFactory();
     static EntityFactory * m_instance;
@@ -77,6 +87,11 @@ class EntityFactory {
     int modifyTaskClass(const std::string &, const Atlas::Objects::Root &);
     int modifyEntityClass(const std::string &, const Atlas::Objects::Root &);
     int modifyOpDefinition(const std::string &, const Atlas::Objects::Root &);
+
+    void waitForRule(const std::string &,
+                     const Atlas::Message::MapType &,
+                     const std::string &,
+                     const std::string &);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);

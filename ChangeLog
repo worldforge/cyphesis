@@ -1,3 +1,8 @@
+2007-07-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.h, server/EntityFactory.cpp: Improve the
+	  mechanism for identifying rules which have broken dependencies.
+
 2007-07-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/EntityFactory.cpp: Remove and disable debug output.
@@ -16668,4 +16673,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1873 2007-07-24 00:27:49 alriddoch Exp $
+$Id: ChangeLog,v 1.1874 2007-07-26 00:15:52 alriddoch Exp $
