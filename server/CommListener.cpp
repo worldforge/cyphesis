@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommListener.cpp,v 1.39 2006-11-03 20:40:05 alriddoch Exp $
+// $Id: CommListener.cpp,v 1.40 2007-07-29 03:33:35 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -119,7 +119,9 @@ int CommListener::accept()
                            (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {
-        log(ERROR, String::compose("System error accepting network connection: ", strerror(errno)).c_str());
+        log(ERROR,
+            String::compose("System error accepting network connection: %1",
+                            strerror(errno)));
         return -1;
     }
     debug(std::cout << "Accepted" << std::endl << std::flush;);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.132 2007-01-17 23:00:58 alriddoch Exp $
+// $Id: Entity.cpp,v 1.133 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -365,9 +365,9 @@ void Entity::scriptSubscribe(const std::string & op)
                         << std::endl << std::flush;);
         subscribe(op, n);
     } else {
-        std::string msg = std::string("SCRIPT requesting subscription to ")
-                        + op + " but inheritance could not give me a reference";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("SCRIPT requesting subscription to \"%1\" "
+                                   "but inheritance could not give me "
+                                   "a reference.", op));
     }
 #endif
 }

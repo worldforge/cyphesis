@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.35 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.36 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
@@ -92,7 +92,8 @@ bool PythonEntityScript::operation(const std::string & opname,
             res.push_back(*I);
         }
     } else {
-       log(ERROR, String::compose("Python script \"%1\" returned an invalid result", op_name).c_str());
+       log(ERROR, String::compose("Python script \"%1\" returned an "
+                                  "invalid result.", op_name));
     }
     
     Py_DECREF(ret);

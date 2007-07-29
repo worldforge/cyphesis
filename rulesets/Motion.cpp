@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.14 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Motion.cpp,v 1.15 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -204,7 +204,9 @@ bool Motion::resolveCollision()
             // Container we are supposed to changing to is wrong.
             // Just stop where we currently are. Debugging is required to work out
             // why this happens
-            log(ERROR, String::compose("BAD COLLISION: %1(%2) with %3(%4)%5 when LOC is currently %6(%7)%8.",
+            log(ERROR, String::compose("BAD COLLISION: %1(%2) with "
+                                       "%3(%4)%5 when LOC is currently "
+                                       "%6(%7)%8.",
                                        m_entity.getId(),
                                        m_entity.getType(),
                                        m_collEntity->getId(),
@@ -212,7 +214,7 @@ bool Motion::resolveCollision()
                                        location.m_pos,
                                        location.m_loc->getId(),
                                        location.m_loc->getType(),
-                                       location.m_pos).c_str());
+                                       location.m_pos));
             // reset();
             location.m_velocity = Vector3D(0,0,0);
             moving = false;

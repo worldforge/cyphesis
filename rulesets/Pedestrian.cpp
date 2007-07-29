@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.cpp,v 1.79 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Pedestrian.cpp,v 1.80 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Pedestrian.h"
 
@@ -127,7 +127,9 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, String::compose("Mode on entity is a %1 in Pedestrain::getUpdatedLocation", Element::typeName(mode_attr.getType())).c_str());
+            log(ERROR, String::compose("MODE on entity is a \"%1\" "
+                                       "in Pedestrain::getUpdatedLocation.",
+                                       Element::typeName(mode_attr.getType())));
         }
     }
 

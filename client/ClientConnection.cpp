@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.41 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: ClientConnection.cpp,v 1.42 2007-07-29 03:33:33 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -84,9 +84,9 @@ void ClientConnection::objectArrived(const Atlas::Objects::Root & obj)
     if (!op.isValid()) {
         const std::list<std::string> & parents = obj->getParents();
         if (parents.empty()) {
-            log(ERROR, String::compose("Object of type \"%1\" with no parent arrived from server", obj->getObjtype()).c_str());
+            log(ERROR, String::compose("Object of type \"%1\" with no parent arrived from server", obj->getObjtype()));
         } else {
-            log(ERROR, String::compose("Object of type \"%1\" with parent \"%2\" arrived from server", obj->getObjtype(), obj->getParents().front()).c_str());
+            log(ERROR, String::compose("Object of type \"%1\" with parent \"%2\" arrived from server", obj->getObjtype(), obj->getParents().front()));
         }
         return;
     }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.cpp,v 1.9 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: ScriptFactory.cpp,v 1.10 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "ScriptFactory.h"
 
@@ -26,6 +26,7 @@
 #include "rulesets/Entity.h"
 
 #include "common/log.h"
+#include "common/compose.hpp"
 
 /// \brief ScriptFactory constructor
 /// 
@@ -49,16 +50,14 @@ int PythonScriptFactory::getClass()
     classname[0] = toupper(classname[0]);
     m_class = PyObject_GetAttrString(m_module, (char *)classname.c_str());
     if (m_class == NULL) {
-        std::string msg = std::string("Could not find python class ")
-                        + m_package + "." + classname;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Could not find python class %1.%2",
+                                   m_package, classname));
         PyErr_Print();
         return -1;
     }
     if (PyCallable_Check(m_class) == 0) {
-        std::string msg = std::string("Could not instance python class ")
-                        + m_package + "." + classname;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Could not instance python class %1.%2",
+                                   m_package, classname));
         Py_DECREF(m_class);
         m_class = 0;
         return -1;
@@ -80,8 +79,7 @@ PythonScriptFactory::PythonScriptFactory(const std::string & package,
     m_module = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (m_module == NULL) {
-        std::string msg = std::string("Missing python module ") + m_package;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Missing python module \"%1\"", m_package));
         PyErr_Print();
         return;
     }
@@ -124,9 +122,8 @@ int PythonScriptFactory::refreshClass()
     }
     PyObject * new_module = PyImport_ReloadModule(m_module);
     if (new_module == 0) {
-        std::string msg = std::string("Error reloading python module ")
-                                     + m_package;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Error reloading python module \"%1\"",
+                                   m_package));
         PyErr_Clear();
         return -1;
     }

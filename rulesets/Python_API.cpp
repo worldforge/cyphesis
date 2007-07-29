@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.165 2007-07-04 16:42:11 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.166 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Python.h"
 
@@ -46,6 +46,7 @@
 #include "BaseMind.h"
 
 #include "common/inheritance.h"
+#include "common/compose.hpp"
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -175,7 +176,7 @@ static void python_log(LogLevel lvl, const char * msg)
     for (p = message.find_first_of('\n');
          p != std::string::npos;
          p = message.find_first_of('\n', n)) {
-        log(lvl, message.substr(n, p - n).c_str());
+        log(lvl, message.substr(n, p - n));
         n = p + 1;
     }
     if (message.size() > n) {
@@ -285,24 +286,21 @@ static PyObject * Get_PyClass(const std::string & package,
     PyObject * module = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (module == NULL) {
-        std::string msg = std::string("Missing python module ") + package;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Missing python module \"%1\"", package));
         PyErr_Print();
         return NULL;
     }
     PyObject * pyClass = PyObject_GetAttrString(module, (char *)classname.c_str());
     Py_DECREF(module);
     if (pyClass == NULL) {
-        std::string msg = std::string("Could not find python class ")
-                        + package + "." + classname;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Could not find python class \"%1.%2\"",
+                                   package, classname));
         PyErr_Print();
         return NULL;
     }
     if (PyCallable_Check(pyClass) == 0) {
-        std::string msg = std::string("Could not instance python class ")
-                        + package + "." + classname;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
+                                   package, classname));
         Py_DECREF(pyClass);
         return NULL;
     }
@@ -341,15 +339,13 @@ void Subscribe_Script(Entity * entity, PyObject * pyclass,
 #if 0
     PyObject * dmap = PyObject_GetAttrString(pyclass, "__dict__");
     if (dmap == NULL) {
-        std::string msg = std::string( "Python class for ") + package
-                        + " has no __dict__";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Python class for \"%1\" has no __dict__",
+                                   package));
         return;
     }
     if (!PyDict_Check(dmap)) {
-        std::string msg = std::string( "Python class for ") + package
-                        + " is malformed";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Python class for \"%1\" is malformed",
+                                   package));
         return;
     }
     PyObject * keys = PyDict_Keys(dmap);
@@ -357,8 +353,8 @@ void Subscribe_Script(Entity * entity, PyObject * pyclass,
     PyObject * keys = PyObject_Dir(pyclass);
 #endif
     if (keys == NULL) {
-        std::string msg = std::string("Error getting attribute list of Python class for ") + package;
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Error getting attribute list of Python "
+                                   "class for %1", package));
         return;
     }
     for(int i = 0; i < PyList_Size(keys); i++) {

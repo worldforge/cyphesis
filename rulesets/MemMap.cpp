@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.96 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.97 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -212,7 +212,7 @@ MemEntity * MemMap::get(const std::string & id) const
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) {
         // This shouldn't really occur, and shouldn't be a problem
-        log(ERROR, "MemMap::get queried for empty id string");
+        log(ERROR, "MemMap::get queried for empty ID string.");
         return NULL;
     }
 
@@ -238,7 +238,7 @@ MemEntity * MemMap::getAdd(const std::string & id)
     long intId = integerId(id);
 
     if (intId == -1) {
-        log(ERROR, String::compose("MemMap::getAdd: Invalid ID \"%1\".", id).c_str());
+        log(ERROR, String::compose("MemMap::getAdd: Invalid ID \"%1\".", id));
         return NULL;
     }
 
@@ -271,21 +271,21 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
 // entity is visible, as we may have received it because we can see the
 // creator.
 {
-    debug( std::cout << "MemMap::update" << std::endl << std::flush;);
+    debug( std::cout << "MemMap::updateAdd" << std::endl << std::flush;);
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "MemMap::update, Missing id in updated entity");
+        log(ERROR, "MemMap::updateAdd, Missing id in updated entity");
         return NULL;
     }
     const std::string & id = ent->getId();
     if (id.empty()) {
-        log(ERROR, "MemMap::update, Empty id in updated entity");
+        log(ERROR, "MemMap::updateAdd, Empty ID in updated entity.");
         return NULL;
     }
 
     long intId = integerId(id);
 
     if (intId == -1) {
-        log(ERROR, String::compose("MemMap::updateAdd: Invalid ID \"%1\".", id).c_str());
+        log(ERROR, String::compose("MemMap::updateAdd: Invalid ID \"%1\".", id));
         return NULL;
     }
 

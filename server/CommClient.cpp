@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommClient.cpp,v 1.59 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommClient.cpp,v 1.60 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "CommClient.h"
 #include "CommServer.h"
@@ -155,9 +155,14 @@ void CommClient::objectArrived(const Atlas::Objects::Root & obj)
     if (!op.isValid()) {
         const std::list<std::string> & parents = obj->getParents();
         if (parents.empty()) {
-            log(ERROR, String::compose("Object of type \"%1\" with no parent arrived from client", obj->getObjtype()).c_str());
+            log(ERROR, String::compose("Object of type \"%1\" with no parent "
+                                       "arrived from client",
+                                       obj->getObjtype()));
         } else {
-            log(ERROR, String::compose("Object of type \"%1\" with parent \"%2\" arrived from client", obj->getObjtype(), obj->getParents().front()).c_str());
+            log(ERROR, String::compose("Object of type \"%1\" with parent "
+                                       "\"%2\" arrived from client",
+                                       obj->getObjtype(),
+                                       obj->getParents().front()));
         }
         return;
     }

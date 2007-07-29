@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: id.cpp,v 1.7 2006-10-26 00:48:05 alriddoch Exp $
+// $Id: id.cpp,v 1.8 2007-07-29 03:33:33 alriddoch Exp $
 
 #include "common/id.h"
 #include "common/log.h"
@@ -37,7 +37,7 @@ long forceIntegerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
-        log(CRITICAL, String::compose("Unable to convert ID \"%1\" to an integer", id).c_str());
+        log(CRITICAL, String::compose("Unable to convert ID \"%1\" to an integer", id));
         abort();
     }
 

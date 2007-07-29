@@ -993,6 +993,10 @@
 
   <map>
     <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="germinates">
         <string name="default">fir</string>
         <string name="visibility">public</string>
@@ -1001,16 +1005,16 @@
         <float name="default">0.1</float>
         <string name="visibility">public</string>
       </map>
+      <map name="transient">
+        <float name="default">1800</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">fircone</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>seed</string>
     </list>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.seeds.Fircone</string>
-    </map>
   </map>
 
   <map>

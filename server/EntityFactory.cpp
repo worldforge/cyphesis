@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.115 2007-07-26 00:15:53 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.116 2007-07-29 03:33:35 alriddoch Exp $
 
 #include <Python.h>
 
@@ -175,9 +175,14 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     }
     if (thing->m_location.velocity().isValid()) {
         if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): Entity has velocity set from the attributes given by the creator", id, type).c_str());
+            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): "
+                                       "Entity has velocity set from the "
+                                       "attributes given by the creator",
+                                       id, type));
         } else {
-            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): Entity has velocity set from an unknown source", id, type).c_str());
+            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): "
+                                       "Entity has velocity set from an "
+                                       "unknown source", id, type));
         }
         thing->m_location.m_velocity.setValid(false);
     }
@@ -314,7 +319,8 @@ void EntityFactory::populateFactory(const std::string & className,
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
-                log(ERROR, String::compose("Attribute description in rule %1 is not a map.", className).c_str());
+                log(ERROR, String::compose("Attribute description in rule %1 "
+                                           "is not a map.", className));
                 continue;
             }
             const MapType & attr = K->second.asMap();
@@ -367,7 +373,8 @@ int EntityFactory::installTaskClass(const std::string & className,
 
     TaskFactoryDict::const_iterator I = m_taskFactories.find(className);
     if (I != m_taskFactories.end()) {
-        log(ERROR, String::compose("Attempt to install task \"%1\" which is already installed", className).c_str());
+        log(ERROR, String::compose("Attempt to install task \"%1\" which is "
+                                   "already installed.", className));
     }
     
     TaskFactory * factory = 0;
@@ -386,7 +393,9 @@ int EntityFactory::installTaskClass(const std::string & className,
                 if (script_language == "python") {
                     factory = new PythonTaskScriptFactory(script_name, className);
                 } else {
-                    log(ERROR, String::compose("Unknown script language \"%1\" for task \"%2\"", script_language, className).c_str());
+                    log(ERROR, String::compose("Unknown script language \"%1\" "
+                                               "for task \"%2\".",
+                                               script_language, className));
                 }
             }
         }
@@ -415,8 +424,11 @@ int EntityFactory::installTaskClass(const std::string & className,
             FactoryDict::const_iterator K = m_factories.find(activation_tool);
             if (K == m_factories.end()) {
                 delete factory;
-                waitForRule(className, classDesc, activation_tool, "not an entity class");
-                return 1;
+                log(ERROR, String::compose("Task class \"%1\" is activated "
+                                           "by tool \"%2\" which is not an "
+                                           "entity class.", className,
+                                           activation_tool));
+                return -1;
             }
             FactoryBase * tool_factory = K->second;
             J = activation.find("operation");
@@ -490,7 +502,10 @@ int EntityFactory::installEntityClass(const std::string & className,
     FactoryBase * parent_factory = I->second;
     FactoryBase * factory = parent_factory->duplicateFactory();
     if (factory == 0) {
-        log(ERROR, String::compose("Attempt to install rule \"%1\" which has parent \"%2\" which cannot be instantiated", className, parent).c_str());
+        log(ERROR,
+            String::compose("Attempt to install rule \"%1\" which has parent "
+                            "\"%2\" which cannot be instantiated",
+                            className, parent));
         return -1;
     }
 
@@ -548,37 +563,32 @@ int EntityFactory::installRule(const std::string & className,
     MapType::const_iterator J = classDesc.find("objtype");
     MapType::const_iterator Jend = classDesc.end();
     if (J == Jend || !J->second.isString()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has no objtype. Skipping.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" has no objtype. Skipping.",
+                                   className));
         return -1;
     }
     const std::string & objtype = J->second.String();
     J = classDesc.find("parents");
     if (J == Jend) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has no parents. Skipping.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" has no parents. Skipping.",
+                                   className));
         return -1;
     }
     if (!J->second.isList()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has malformed parents. Skipping.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" has malformed parents. "
+                                   "Skipping.", className));
         return -1;
     }
     const ListType & parents = J->second.asList();
     if (parents.empty()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has empty parents. Skipping.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" has empty parents. Skipping.",
+                                   className));
         return -1;
     }
     const Element & p1 = parents.front();
     if (!p1.isString() || p1.String().empty()) {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has malformed first parent. Skipping.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" has %2 first parent. Skipping.",
+                                   className, Element::typeName(p1.getType())));
         return -1;
     }
     const std::string & parent = p1.String();
@@ -600,10 +610,8 @@ int EntityFactory::installRule(const std::string & className,
             return ret;
         }
     } else {
-        std::string msg = std::string("Rule \"") + className 
-                          + "\" has unknown objtype=\"" + objtype
-                          + "\". Skipping.";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Rule \"%1\" has unknown objtype=\"%2\". "
+                                   "Skipping.", className, objtype));
         return -1;
     }
 
@@ -637,7 +645,8 @@ int EntityFactory::modifyEntityClass(const std::string & className,
 {
     FactoryDict::const_iterator I = m_factories.find(className);
     if (I == m_factories.end()) {
-        log(ERROR, String::compose("Could not find factory for existing entity class \"%1\".", className).c_str());
+        log(ERROR, String::compose("Could not find factory for existing "
+                                   "entity class \"%1\".", className));
         return -1;
     }
     FactoryBase * factory = I->second;
@@ -656,7 +665,9 @@ int EntityFactory::modifyEntityClass(const std::string & className,
         // This is non fatal, but nice to know it has happened.
         // This should only happen if the client attempted to modify the
         // type data for a core hard coded type.
-        log(ERROR, String::compose("EntityFactory::modifyEntityClass: \"%1\" modified by client, so has no parent factory", className).c_str());
+        log(ERROR, String::compose("EntityFactory::modifyEntityClass: \"%1\" "
+                                   "modified by client, so has no parent "
+                                   "factory.", className));
     }
     factory->m_classAttributes = MapType();
 
@@ -672,7 +683,8 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
-        log(ERROR, String::compose("Could not find factory for existing task class \"%1\"", class_name).c_str());
+        log(ERROR, String::compose("Could not find factory for existing task "
+                                   "class \"%1\"", class_name));
         return -1;
     }
     // FIXME Actually update the task factory.
@@ -694,7 +706,8 @@ int EntityFactory::modifyRule(const std::string & class_name,
 {
     Root o = Inheritance::instance().getClass(class_name);
     if (!o.isValid()) {
-        log(ERROR, String::compose("Could not find existing type \"%1\" in inheritance", class_name).c_str());
+        log(ERROR, String::compose("Could not find existing type \"%1\" "
+                                   "in inheritance", class_name));
         return -1;
     }
     if (o->getParents().front() == "task") {
@@ -734,7 +747,7 @@ void EntityFactory::getRulesFromFiles(MapType & rules)
         AtlasFileLoader f(filename, rules);
         if (f.isOpen()) {
             log(WARNING, String::compose("Reading legacy rule data from \"%1\".",
-                                         filename).c_str());
+                                         filename));
             f.read();
         }
         return;
@@ -748,7 +761,7 @@ void EntityFactory::getRulesFromFiles(MapType & rules)
         AtlasFileLoader f(filename, rules);
         if (!f.isOpen()) {
             log(ERROR, String::compose("Unable to open rule file \"%1\".",
-                                       filename).c_str());
+                                       filename));
         } else {
             f.read();
         }
@@ -786,7 +799,7 @@ void EntityFactory::installRules()
     RuleWaitList::const_iterator J = m_waitingRules.begin();
     RuleWaitList::const_iterator Jend = m_waitingRules.end();
     for (; J != Jend; ++J) {
-        log(ERROR, J->second.reason.c_str());
+        log(ERROR, J->second.reason);
     }
 }
 

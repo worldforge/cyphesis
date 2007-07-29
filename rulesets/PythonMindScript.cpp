@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.cpp,v 1.36 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: PythonMindScript.cpp,v 1.37 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "PythonMindScript.h"
 
@@ -85,8 +85,12 @@ bool PythonMindScript::operation(const std::string & op_type,
             log(ERROR, "Reporting python error");
             PyErr_Print();
             if (op_type == "tick") {
-                std::string msg = std::string("Mind script for ") + mind.getId() + ", named " + mind.getName() + " has reported an error processing a tick operation. This NPC is probably now inactive.";
-                log(ERROR, msg.c_str());
+                log(ERROR,
+                    String::compose("Mind script for \"%1\", named \"%2\" "
+                                    "has reported an error processing a tick "
+                                    "operation. "
+                                    "This NPC is probably now inactive.",
+                                    mind.getId(), mind.getName()));
             }
         }
         return false;

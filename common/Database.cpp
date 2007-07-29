@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.89 2007-04-01 23:33:07 alriddoch Exp $
+// $Id: Database.cpp,v 1.90 2007-07-29 03:33:33 alriddoch Exp $
 
 #include "Database.h"
 
@@ -50,7 +50,7 @@ static void databaseNotice(void * arg, const char * message)
     std::string msg = std::string("DATABASE: ") + message;
     // Remove the trailing \n from the message.
     msg = msg.substr(0, msg.size() - 1);
-    log(NOTICE, msg.c_str());
+    log(NOTICE, msg);
 }
 
 Database::Database() : m_rule_db("rules"),
@@ -140,7 +140,8 @@ int Database::initConnection(bool createDatabase)
     }
 
     if (PQstatus(m_connection) != CONNECTION_OK) {
-        log(ERROR, String::compose("Connection to database failed: \n%1", PQerrorMessage(m_connection)).c_str());
+        log(ERROR, String::compose("Connection to database failed: \n%1",
+                                   PQerrorMessage(m_connection)));
         return -1;
     }
 
@@ -480,7 +481,7 @@ void Database::reportError()
     }
     std::string msg = std::string("DATABASE: ") + message;
     msg = msg.substr(0, msg.size() - 1);
-    log(ERROR, msg.c_str());
+    log(ERROR, msg);
 }
 
 const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)

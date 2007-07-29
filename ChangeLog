@@ -1,3 +1,31 @@
+2007-07-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/log.cpp, common/log.h: Switch to taking a C++ string reference
+	  rather than a char *, as it is not really an optimisation, and it
+	  makes the code simpler to read and write.
+
+	* client/BaseClient.cpp, client/ClientConnection.cpp,
+	  common/AtlasFileLoader.cpp, common/BaseEntity.cpp,
+	  common/Database.cpp, common/globals.cpp, common/id.cpp,
+	  common/inheritance.cpp, common/log.cpp, common/log.h,
+	  rulesets/Character.cpp, rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/MemMap.cpp, rulesets/Motion.cpp, rulesets/Pedestrian.cpp,
+	  rulesets/Py_Object.cpp, rulesets/Py_RootEntity.cpp,
+	  rulesets/PythonMindScript.cpp, rulesets/PythonThingScript.cpp,
+	  rulesets/Python_API.cpp, rulesets/Thing.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/ArithmeticFactory.cpp,
+	  server/CommClient.cpp, server/CommListener.cpp,
+	  server/CommMDNSPublisher.cpp, server/CommServer.cpp,
+	  server/Connection.cpp, server/EntityFactory.cpp,
+	  server/Persistance.cpp, server/Restoration.cpp,
+	  server/ScriptFactory.cpp, server/TaskFactory.cpp,
+	  server/WorldRouter.cpp, server/server.cpp: Convert over to using
+	  new API correctly.
+
+	* data/mason.xml: Add biomass and transient to fircone, making its
+	  script obsolete:
+
+
 2007-07-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/CorePropertyManager.cpp: Add a new active property handler,
@@ -16685,4 +16713,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1875 2007-07-26 10:43:30 alriddoch Exp $
+$Id: ChangeLog,v 1.1876 2007-07-29 03:33:33 alriddoch Exp $

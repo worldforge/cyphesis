@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.164 2007-02-20 00:52:43 alriddoch Exp $
+// $Id: Connection.cpp,v 1.165 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -429,10 +429,19 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
                 if (character->m_externalMind != 0) {
                     ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
                     if (em == 0) {
-                        log(ERROR, String::compose("Character %1(%2) has external mind object which is not an ExternalMind", chr->getType(), chr->getId()).c_str());
+                        log(ERROR, String::compose("Character %1(%2) has "
+                                                   "external mind object which "
+                                                   "is not an ExternalMind",
+                                                   chr->getType(),
+                                                   chr->getId()));
                     } else {
                         if (&em->m_connection != this) {
-                            log(ERROR, String::compose("Connection(%1) has found a character in its dictionery which is connected to another Connection(%2)", getId(), em->m_connection.getId()).c_str());
+                            log(ERROR,
+                                String::compose("Connection(%1) has found a "
+                                                "character in its dictionery "
+                                                "which is connected to another "
+                                                "Connection(%2)", getId(),
+                                                em->m_connection.getId()));
                             removeObject(J->second->getIntId());
                         }
                     }

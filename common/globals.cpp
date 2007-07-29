@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.50 2007-06-19 13:19:58 alriddoch Exp $
+// $Id: globals.cpp,v 1.51 2007-07-29 03:33:33 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -164,10 +164,9 @@ int loadConfig(int argc, char ** argv, bool server)
                                                  "/cyphesis/cyphesis.vconf",
                                                  varconf::GLOBAL);
     if (!main_config) {
-        std::string msg("Unable to read main config file ");
-        msg += etc_directory;
-        msg += "/cyphesis/cyphesis.vconf.";
-        log(CRITICAL, msg.c_str());
+        log(CRITICAL, String::compose("Unable to read main config file \"%1\"",
+                                      etc_directory +
+                                      "/cyphesis/cyphesis.vconf"));
         if (home_dir_config) {
             log(INFO, "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis.");
         } else {
@@ -234,8 +233,10 @@ int loadConfig(int argc, char ** argv, bool server)
     if (global_conf->findItem("cyphesis", "ruleset")) {
         ruleset = global_conf->getItem("cyphesis", "ruleset").as_string();
     } else {
-        log(ERROR, String::compose("No ruleset specified in config. Using \"%1\" rules.", DEFAULT_RULESET).c_str());
-        log(INFO, "The basic rules don't allow much, so this should be rectified.");
+        log(ERROR, String::compose("No ruleset specified in config. "
+                                   "Using \"%1\" rules.", DEFAULT_RULESET));
+        log(INFO, "The basic rules don't allow much, "
+                  "so this should be rectified.");
         ruleset = DEFAULT_RULESET;
     }
 
@@ -246,15 +247,18 @@ int loadConfig(int argc, char ** argv, bool server)
             // back to /var/tmp, so we should not display the message.
             log(WARNING,
                 String::compose("No temporary directory found at \"%1/tmp\"",
-                                var_directory).c_str());
+                                var_directory));
         }
         if (check_tmp_path(FALLBACK_LOCALSTATEDIR) != 0) {
-            log(CRITICAL, String::compose("No temporary directory available at \"%1/tmp\" or \"%2/tmp\".", var_directory, FALLBACK_LOCALSTATEDIR).c_str());
+            log(CRITICAL, String::compose("No temporary directory available "
+                                          "at \"%1/tmp\" or \"%2/tmp\".",
+                                          var_directory,
+                                          FALLBACK_LOCALSTATEDIR));
         } else {
             if (var_directory != "/usr/var") {
                 log(NOTICE,
                     String::compose("Using \"%1/tmp\" as temporary directory",
-                                    FALLBACK_LOCALSTATEDIR).c_str());
+                                    FALLBACK_LOCALSTATEDIR));
             }
             var_directory = FALLBACK_LOCALSTATEDIR;
         }

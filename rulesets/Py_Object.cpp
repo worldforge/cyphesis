@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Object.cpp,v 1.45 2007-01-12 12:38:07 alriddoch Exp $
+// $Id: Py_Object.cpp,v 1.46 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Py_Object.h"
 #include "Py_Operation.h"
@@ -98,7 +98,8 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    log(WARNING, String::compose("Setting %1 attribute on an Atlas Message", name).c_str());
+    log(WARNING, String::compose("Setting \"%1\" attribute on an Atlas Message",
+                                 name));
     if (self->m_obj->isMap()) {
         MapType & omap = self->m_obj->asMap();
         Element v_obj = PyObject_asMessageElement(v);

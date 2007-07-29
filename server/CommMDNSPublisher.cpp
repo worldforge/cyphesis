@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMDNSPublisher.cpp,v 1.16 2007-07-03 01:22:47 alriddoch Exp $
+// $Id: CommMDNSPublisher.cpp,v 1.17 2007-07-29 03:33:35 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -374,7 +374,8 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
     }
 
     if (m_group == 0) {
-        log(ERROR, String::compose("Avahi group creation failure. %1", avahi_strerror(avahi_client_errno(client))).c_str());
+        log(ERROR, String::compose("Avahi group creation failure. %1",
+                                   avahi_strerror(avahi_client_errno(client))));
         return;
     }
 

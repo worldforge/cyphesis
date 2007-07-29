@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.23 2007-04-22 22:14:10 alriddoch Exp $
+// $Id: log.cpp,v 1.24 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -76,7 +76,8 @@ static void open_event_log()
     event_log.open(event_log_file.c_str(), std::ios::out | std::ios::app);
 
     if (!event_log.is_open()) {
-        log(ERROR, String::compose("Unable to open event log file \"%1\"", event_log_file).c_str());
+        log(ERROR, String::compose("Unable to open event log file \"%1\"",
+                                   event_log_file));
         logSysError(ERROR);
     }
 }
@@ -107,7 +108,7 @@ void rotateLogger()
     open_event_log();
 }
 
-void log(LogLevel lvl, const char * msg)
+void log(LogLevel lvl, const std::string & msg)
 {
 #ifdef HAVE_SYSLOG
     if (daemon_flag) {
@@ -134,7 +135,7 @@ void log(LogLevel lvl, const char * msg)
                 type = LOG_CRIT;
                 break;
         };
-        syslog(type, msg);
+        syslog(type, msg.c_str());
     } else {
 #else // HAVE_SYSLOG
     {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.214 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.215 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -263,7 +263,9 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
                 ent->setAttr("mode", "fixed");
             }
         } else {
-            log(ERROR, String::compose("Mode on entity is a %1 in WorldRouter::addEntity", Element::typeName(mode_attr.getType())).c_str());
+            log(ERROR, String::compose("Mode on entity is a %1 in "
+                                       "WorldRouter::addEntity",
+                                       Element::typeName(mode_attr.getType())));
         }
     }
     ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
@@ -313,9 +315,9 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
 
     Entity * ent = EntityFactory::instance()->newEntity(id, intId, typestr, attrs);
     if (ent == 0) {
-        std::string msg = std::string("Attempt to create an entity of type \"")
-                          + typestr + "\" but type is unknown or forbidden";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
+                                   "but type is unknown or forbidden",
+                                   typestr));
         return 0;
     }
     return addEntity(ent);
@@ -331,7 +333,8 @@ Task * WorldRouter::newTask(const std::string & name, Character & owner)
 {
     Task * task = EntityFactory::instance()->newTask(name, owner);
     if (task == 0) {
-        log(ERROR, String::compose("Attempt to create a task of type \"%1\" but type is unknown or forbidden", name).c_str());
+        log(ERROR, String::compose("Attempt to create a task of type \"%1\" "
+                                   "but type is unknown or forbidden", name));
     }
     return task;
 }
@@ -404,7 +407,7 @@ bool WorldRouter::broadcastPerception(const Operation & op) const
     }
     log(WARNING, String::compose("Broadcasting %1 op from %2",
                                  op->getParents().front(),
-                                 op->getFrom()).c_str());
+                                 op->getFrom()));
     return false;
 }
 
@@ -543,12 +546,10 @@ bool WorldRouter::idle(int sec, int usec)
             operation(oqe.op, oqe.from);
         }
         catch (...) {
-            std::string msg = std::string("Exception caught in world.idle()")
-                            + " thrown while processing "
-                            // + oqe->getParents().front()
-                            + " operation sent to " + oqe->getTo()
-                            + " from " + oqe->getFrom() + ".";
-            log(ERROR, msg.c_str());
+            log(ERROR, String::compose("Exception caught in world.idle() "
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\"",
+                                       oqe->getTo(), oqe->getFrom()));
         }
         m_operationQueue.erase(I);
         I = m_operationQueue.begin();
@@ -564,12 +565,10 @@ bool WorldRouter::idle(int sec, int usec)
             operation(oqe.op, oqe.from);
         }
         catch (...) {
-            std::string msg = std::string("Exception caught in world.idle()")
-                            + " thrown while processing "
-                            // + oqe->getParents().front()
-                            + " operation sent to " + oqe->getTo()
-                            + " from " + oqe->getFrom() + ".";
-            log(ERROR, msg.c_str());
+            log(ERROR, String::compose("Exception caught in world.idle() "
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\"",
+                                       oqe->getTo(), oqe->getFrom()));
         }
         m_immediateQueue.erase(I);
         I = m_immediateQueue.begin();

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.cpp,v 1.8 2007-06-15 15:18:55 alriddoch Exp $
+// $Id: AtlasFileLoader.cpp,v 1.9 2007-07-29 03:33:33 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
@@ -46,7 +46,7 @@ void AtlasFileLoader::messageArrived(const MapType & msg)
     o.erase(I);
     if (m_messages.find(msg_id) != m_messages.end()) {
         log(WARNING, String::compose("Duplicate object ID \"%1\" loaded.",
-                                     msg_id).c_str());
+                                     msg_id));
     }
     m_messages[msg_id] = o;
     ++m_count;

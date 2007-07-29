@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.113 2006-12-26 14:30:44 alriddoch Exp $
+// $Id: Admin.cpp,v 1.114 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -81,7 +81,9 @@ static void addTypeToList(const Root & type, ListType & typeList)
         return;
     }
     if (!children.isList()) {
-        log(ERROR, String::compose("Type %1 children attribute has type %2 instead of string.", type->getId(), Element::typeName(children.getType())).c_str());
+        log(ERROR, String::compose("Type %1 children attribute has type "
+                                   "%2 instead of string.", type->getId(),
+                                   Element::typeName(children.getType())));
         return;
     }
     ListType::const_iterator I = children.List().begin();
@@ -89,7 +91,8 @@ static void addTypeToList(const Root & type, ListType & typeList)
     for (; I != Iend; ++I) {
         Root child = Inheritance::instance().getClass(I->asString());
         if (!child.isValid()) {
-            log(ERROR, String::compose("Unable to find %1 in inheritance table", I->asString()).c_str());
+            log(ERROR, String::compose("Unable to find %1 in inheritance table",
+                                       I->asString()));
             continue;
         }
         addTypeToList(child, typeList);

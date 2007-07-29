@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.cpp,v 1.41 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: BaseClient.cpp,v 1.42 2007-07-29 03:33:33 alriddoch Exp $
 
 #include "BaseClient.h"
 
@@ -132,7 +132,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     long intId = integerId(id);
 
     if (intId == -1) {
-        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id).c_str());
+        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id));
     }
 
     CreatorClient * obj = new CreatorClient(id, intId, type, m_connection);

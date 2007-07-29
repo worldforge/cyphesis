@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restoration.cpp,v 1.31 2007-07-05 17:51:41 alriddoch Exp $
+// $Id: Restoration.cpp,v 1.32 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "Restoration.h"
 #include "Restorer.h"
@@ -120,7 +120,8 @@ void Restoration::restoreChildren(Entity * loc)
             long intId = integerId(id);
 
             if (intId == -1) {
-                log(ERROR, String::compose("Invalid ID \"%1\" from database while restoring.", id).c_str());
+                log(ERROR, String::compose("Invalid ID \"%1\" from database "
+                                           "while restoring.", id));
                 continue;
             }
 

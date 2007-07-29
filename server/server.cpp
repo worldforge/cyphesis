@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.146 2007-07-08 23:45:12 alriddoch Exp $
+// $Id: server.cpp,v 1.147 2007-07-29 03:33:35 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -242,10 +242,9 @@ int main(int argc, char ** argv)
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(commServer);
     if (localListener->setup(client_socket_name) != 0) {
-        std::stringstream str;
-        str << "Could not create local listen socket with address \"";
-        str << localListener->getPath() << "\".";
-        log(ERROR, str.str().c_str());
+        log(ERROR, String::compose("Could not create local listen socket "
+                                   "with address \"%1\"",
+                                   localListener->getPath()));
         delete localListener;
     } else {
         commServer.addSocket(localListener);

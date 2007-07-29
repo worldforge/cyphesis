@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.47 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.48 2007-07-29 03:33:35 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -147,7 +147,7 @@ Account * Persistance::getAccount(const std::string & name)
     long intId = integerId(id);
     if (intId == -1) {
         dr.clear();
-        log(ERROR, String::compose("Invalid ID \"%1\" for account from database.", id).c_str());
+        log(ERROR, String::compose("Invalid ID \"%1\" for account from database.", id));
         return 0;
     }
     c = dr.field("password");
@@ -205,7 +205,9 @@ void Persistance::registerCharacters(Account & ac,
 
         EntityDict::const_iterator J = worldObjects.find(intId);
         if (J == worldObjects.end()) {
-            log(WARNING, String::compose("Persistance: Got character id \"%1\" from database which does not exist in world", id).c_str());
+            log(WARNING, String::compose("Persistance: Got character id \"%1\" "
+                                         "from database which does not exist "
+                                         "in world.", id));
             continue;
         }
         ac.addCharacter(J->second);

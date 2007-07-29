@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.216 2007-07-06 15:09:39 alriddoch Exp $
+// $Id: Thing.cpp,v 1.217 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -75,7 +75,8 @@ Thing::~Thing()
 void Thing::DeleteOperation(const Operation & op, OpVector & res)
 {
     if (m_location.m_loc == 0) {
-        log(ERROR, String::compose("Deleting %1(%2) when it is not in the world.", getType(), getId()).c_str());
+        log(ERROR, String::compose("Deleting %1(%2) when it is not "
+                                   "in the world.", getType(), getId()));
         assert(m_location.m_loc != 0);
         return;
     }
@@ -91,7 +92,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
 
     if (m_location.m_loc == 0) {
-        log(ERROR, String::compose("Moving %1(%2) when it is not in the world.", getType(), getId()).c_str());
+        log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
+                                   getType(), getId()));
         assert(m_location.m_loc != 0);
         return;
     }
@@ -195,7 +197,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, String::compose("Mode on entity is a %1 in Thing::MoveOperation", Element::typeName(mode_attr.getType())).c_str());
+            log(ERROR, String::compose("Mode on entity is a \"%1\" in "
+                                       "Thing::MoveOperation",
+                                       Element::typeName(mode_attr.getType())));
         }
     }
 
@@ -554,7 +558,9 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         if (mode_attr.isString()) {
             mode = mode_attr.String();
         } else {
-            log(ERROR, String::compose("Mode on entity is a %1 in Thing::UpdateOperation", Element::typeName(mode_attr.getType())).c_str());
+            log(ERROR, String::compose("Mode on entity is a \"%1\" "
+                                       "in Thing::UpdateOperation",
+                                       Element::typeName(mode_attr.getType())));
         }
     }
 

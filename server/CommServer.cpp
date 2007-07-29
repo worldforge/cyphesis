@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.cpp,v 1.58 2006-11-02 05:14:55 alriddoch Exp $
+// $Id: CommServer.cpp,v 1.59 2007-07-29 03:33:35 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -56,7 +56,7 @@ CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
     // a good choice here.
     m_epollFd = epoll_create(64);
     if (m_epollFd < 0) {
-        log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)).c_str());
+        log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)));
         exit_flag = true;
     }
 #endif // HAVE_EPOLL_CREATE
@@ -130,7 +130,7 @@ void CommServer::poll()
 
     if (rval <  0) {
         if (errno != EINTR) {
-            log(CYLOG_ERROR, String::compose("epoll_wait: %1", strerror(errno)).c_str());
+            log(CYLOG_ERROR, String::compose("epoll_wait: %1", strerror(errno)));
         }
         return;
     }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.298 2007-07-02 21:11:08 alriddoch Exp $
+// $Id: Character.cpp,v 1.299 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Character.h"
 
@@ -605,12 +605,16 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     }
 
     if (attacker->m_task != 0) {
-        log(ERROR, String::compose("AttackOperation: Attack op aborted because attacker %1(%2) busy", attacker->getId(), attacker->getType()).c_str());
+        log(ERROR, String::compose("AttackOperation: Attack op aborted "
+                                   "because attacker %1(%2) busy.",
+                                   attacker->getId(), attacker->getType()));
         return;
     }
 
     if (m_task != 0) {
-        log(ERROR, String::compose("AttackOperation: Attack op aborted because defender %1(%2) busy", getId(), getType()).c_str());
+        log(ERROR, String::compose("AttackOperation: Attack op aborted "
+                                   "because defender %1(%2) busy.",
+                                   getId(), getType()));
         return;
     }
 
@@ -850,12 +854,18 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 
     Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
     if (!obj.isValid()) {
-        log(ERROR, String::compose("Character::mindUseOperation Unknown op type %1 requested by %2 tool", op_type, tool->getType()).c_str());
+        log(ERROR,
+            String::compose("Character::mindUseOperation Unknown op type "
+                            "\"%1\" requested by \"%2\" tool.",
+                            op_type, tool->getType()));
         return;
     }
     Operation rop = smart_dynamic_cast<Operation>(obj);
     if (!rop.isValid()) {
-        log(ERROR, String::compose("Character::mindUseOperation Op type %1 requested by %2 tool, but it is not an operation type", op_type, tool->getType()).c_str());
+        log(ERROR, String::compose("Character::mindUseOperation Op type "
+                                   "\"%1\" requested by %2 tool, "
+                                   "but it is not an operation type",
+                                   op_type, tool->getType()));
         // FIXME Think hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
@@ -884,7 +894,10 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
             // If initialising the task did not result in any operation at all
             // then the task cannot work correctly. In this case all we can
             // do is flag an error, and get rid of the task.
-            log(ERROR, String::compose("Character::mindUseOperation Op type %1 of tool %2 activated a task, but it did not initialise", op_type, tool->getType()).c_str());
+            log(ERROR, String::compose("Character::mindUseOperation Op type "
+                                       "\"%1\" of tool \"%2\" activated a task,"
+                                       " but it did not initialise",
+                                       op_type, tool->getType()));
             m_task->irrelevant();
             clearTask();
         }
@@ -1535,11 +1548,14 @@ void Character::mind2body(const Operation & op, OpVector & res)
     debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
 
     if (!op->isDefaultTo()) {
-        log(ERROR, String::compose("Operation \"%1\" from mind with TO set", op->getParents().front()).c_str());
+        log(ERROR, String::compose("Operation \"%1\" from mind with TO set.",
+                                   op->getParents().front()));
         return;
     }
     if (!op->isDefaultFutureSeconds() && op->getClassNo() != OP_TICK) {
-        log(ERROR, String::compose("Operation \"%1\" from mind with FUTURE_SECONDS set", op->getParents().front()).c_str());
+        log(ERROR, String::compose("Operation \"%1\" from mind with "
+                                   "FUTURE_SECONDS set.",
+                                   op->getParents().front()));
     }
     OpNo otype = op->getClassNo();
     OP_SWITCH(op, otype, res, mind)

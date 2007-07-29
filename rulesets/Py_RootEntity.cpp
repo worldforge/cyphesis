@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_RootEntity.cpp,v 1.11 2007-01-12 12:38:08 alriddoch Exp $
+// $Id: Py_RootEntity.cpp,v 1.12 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Py_RootEntity.h"
 #include "Py_Object.h"
@@ -143,10 +143,12 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
     Element atlas_val = PyObject_asMessageElement(v);
     if (!atlas_val.isNone()) {
         if (atlas_val.isMap()) {
-            log(NOTICE, String::compose("Setting %1 as map attribute on RootEntity", name).c_str());
+            log(NOTICE, String::compose("Setting \"%1\" as map attribute "
+                                        "on RootEntity.", name));
         }
         if (atlas_val.isList()) {
-            log(NOTICE, String::compose("Setting %1 as list attribute on RootEntity", name).c_str());
+            log(NOTICE, String::compose("Setting \"%1\" as list attribute "
+                                        "on RootEntity.", name));
         }
         self->entity->setAttr(name, atlas_val);
         return 0;

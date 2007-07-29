@@ -15,11 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.34 2007-04-22 23:07:18 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.35 2007-07-29 03:33:33 alriddoch Exp $
 
 #include "inheritance.h"
 
 #include "log.h"
+#include "compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -154,16 +155,16 @@ int Inheritance::addChild(const Atlas::Objects::Root & obj)
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
     if (atlasObjects.find(child) != atlasObjects.end()) {
-        std::string msg = std::string("Installing type \"") + child 
-                        + "\"(\"" + parent + "\") which was already installed";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Installing type \"%1\"(\"%2\") "
+                                   "which was already installed",
+                                   child, parent));
         return -1;
     }
     RootDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
-        std::string msg = std::string("Installing type \"") + child 
-                        + "\" which has unknown parent \"" + parent + "\"";
-        log(ERROR, msg.c_str());
+        log(ERROR, String::compose("Installing type \"%1\" "
+                                   "which has unknown parent \"%2\".",
+                                   child, parent));;
         return -1;
     }
     Element children(ListType(1, child));

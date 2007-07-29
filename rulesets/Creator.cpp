@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.78 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Creator.cpp,v 1.79 2007-07-29 03:33:34 alriddoch Exp $
 
 #include "Creator.h"
 
@@ -140,7 +140,9 @@ void Creator::externalOperation(const Operation & op)
             // Make it appear like it came from target itself;
             to->sendWorld(op);
         } else {
-            log(ERROR, String::compose("Creator operation from client is to unknown ID %1", op->getTo()).c_str());
+            log(ERROR, String::compose("Creator operation from client "
+                                       "is to unknown ID \"%1\"",
+                                       op->getTo()));
 
             Unseen u;
 
