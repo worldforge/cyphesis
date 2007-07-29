@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.116 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.117 2007-07-29 18:03:57 alriddoch Exp $
 
 #include <Python.h>
 
@@ -455,12 +455,8 @@ int EntityFactory::installTaskClass(const std::string & className,
                         ListType::const_iterator M = L->second.List().begin();
                         for (; M != L->second.List().end() && *M != activation_op; ++M);
                         if (M == L->second.List().end()) {
-                            std::cout << "It wasn't in " << L->first << std::endl << std::flush;
                             L->second.List().push_back(activation_op);
                             tool_factory->m_attributes[L->first] = L->second.List();
-                            debug_dump(L->second.List());
-                            debug_dump(tool_factory->m_classAttributes["operations"].asList());
-                            debug_dump(tool_factory->m_attributes["operations"].asList());
                             updateChildren(tool_factory);
                         }
                     }
@@ -766,6 +762,7 @@ void EntityFactory::getRulesFromFiles(MapType & rules)
             f.read();
         }
     }
+    ::closedir(rules_dir);
 }
 
 void EntityFactory::installRules()

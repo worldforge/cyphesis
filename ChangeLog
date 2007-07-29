@@ -1,5 +1,10 @@
 2007-07-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Remove some left over debug output.
+	  Fix a directory object leaked.
+
+2007-07-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp, common/log.h, common/BaseEntity.cpp,
 	  common/BaseEntity.h: Switch to taking a C++ string reference rather
 	  than a char *, for the rest of the logging and error related
@@ -9,7 +14,6 @@
 	  rulesets/PythonMindScript.cpp, server/Account.cpp,
 	  server/Admin.cpp, server/Connection.cpp, server/Player.cpp,
 	  tools/cyisoload.cpp: Convert over to using the new API correctly.
-
 
 2007-07-29  Al Riddoch  <alriddoch@zepler.org>
 
@@ -16731,4 +16735,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1878 2007-07-29 12:22:58 alriddoch Exp $
+$Id: ChangeLog,v 1.1879 2007-07-29 18:03:56 alriddoch Exp $

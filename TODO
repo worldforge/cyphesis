@@ -533,8 +533,6 @@ Implement data driven gui dialogues, in Sear and perhaps equator.
         |                                                       |
         ---------------------------------------------------------
 
-BaseEntity::error() should take string.
-
 Are attributes inherited? I think not. Need to be.
 
 Carefully use flags to check for illegal stuff from client/mind ops.
@@ -1036,10 +1034,6 @@ PyModule_AddStringConstant() when setting up the python consts module.
 Look at re-writing python API code to work with python GC
 
 Look at using zipfiles to store entrie trees of python files for a ruleset.
-Look at making sure .pyc and .pyo files are included in the distribution.
-
-Check if "common" module reference in init_python_api() should be decrefed,
-and also any others.
 
 Still plenty of python object leaks. Need to carefully see if references are
 being handled right in the mind code.
