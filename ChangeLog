@@ -1,5 +1,10 @@
 2007-07-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Don't use camel casing for local
+	  variables or function arguments.
+
+2007-07-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/AtlasFileLoader.cpp, common/AtlasFileLoader.h: Fix a leaked
 	  codec object.
 
@@ -16740,4 +16745,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1880 2007-07-29 20:23:19 alriddoch Exp $
+$Id: ChangeLog,v 1.1881 2007-07-29 20:35:47 alriddoch Exp $

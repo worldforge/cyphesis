@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.117 2007-07-29 18:03:57 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.118 2007-07-29 20:35:48 alriddoch Exp $
 
 #include <Python.h>
 
@@ -262,14 +262,14 @@ void EntityFactory::flushFactories()
     m_taskFactories.clear();
 }
 
-void EntityFactory::populateFactory(const std::string & className,
+void EntityFactory::populateFactory(const std::string & class_name,
                                     FactoryBase * factory,
-                                    const MapType & classDesc)
+                                    const MapType & class_desc)
 {
     // Establish whether this rule has an associated script, and
     // if so, use it.
-    MapType::const_iterator J = classDesc.find("script");
-    MapType::const_iterator Jend = classDesc.end();
+    MapType::const_iterator J = class_desc.find("script");
+    MapType::const_iterator Jend = class_desc.end();
     if ((J != Jend) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
@@ -286,7 +286,7 @@ void EntityFactory::populateFactory(const std::string & className,
                 }
                 if (factory->m_scriptFactory == 0) {
                     if (script_language == "python") {
-                        factory->m_scriptFactory = new PythonScriptFactory(script_name, className);
+                        factory->m_scriptFactory = new PythonScriptFactory(script_name, class_name);
                     } else {
                         log(ERROR, "Unknown script language.");
                     }
@@ -297,7 +297,7 @@ void EntityFactory::populateFactory(const std::string & className,
 
     // Establish whether this rule has an associated mind rule,
     // and handle it.
-    J = classDesc.find("mind");
+    J = class_desc.find("mind");
     if ((J != Jend) && (J->second.isMap())) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
@@ -308,19 +308,19 @@ void EntityFactory::populateFactory(const std::string & className,
             // if ((J != script.end()) && (J->second.isString())) {
                 // const std::string & mindLang = J->second.String();
             // }
-            MindFactory::instance()->addMindType(className, mindType);
+            MindFactory::instance()->addMindType(class_name, mindType);
         }
     }
 
     // Store the default attribute for entities create by this rule.
-    J = classDesc.find("attributes");
+    J = class_desc.find("attributes");
     if ((J != Jend) && (J->second.isMap())) {
         const MapType & attrs = J->second.asMap();
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
                 log(ERROR, String::compose("Attribute description in rule %1 "
-                                           "is not a map.", className));
+                                           "is not a map.", class_name));
                 continue;
             }
             const MapType & attr = K->second.asMap();
@@ -335,18 +335,18 @@ void EntityFactory::populateFactory(const std::string & className,
     }
 
     // Check whether it should be available to players as a playable character.
-    J = classDesc.find("playable");
+    J = class_desc.find("playable");
     if ((J != Jend) && (J->second.isInt())) {
-        Player::playableTypes.insert(className);
+        Player::playableTypes.insert(class_name);
     }
 }
 
-bool EntityFactory::isTask(const std::string & className)
+bool EntityFactory::isTask(const std::string & class_name)
 {
-    if (className == "task") {
+    if (class_name == "task") {
         return true;
     }
-    return (m_taskFactories.find(className) != m_taskFactories.end());
+    return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
 static void updateChildren(FactoryBase * factory)
@@ -365,23 +365,23 @@ static void updateChildren(FactoryBase * factory)
     }
 }
 
-int EntityFactory::installTaskClass(const std::string & className,
+int EntityFactory::installTaskClass(const std::string & class_name,
                                     const std::string & parent,
-                                    const MapType & classDesc)
+                                    const MapType & class_desc)
 {
     Inheritance & i = Inheritance::instance();
 
-    TaskFactoryDict::const_iterator I = m_taskFactories.find(className);
+    TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I != m_taskFactories.end()) {
         log(ERROR, String::compose("Attempt to install task \"%1\" which is "
-                                   "already installed.", className));
+                                   "already installed.", class_name));
     }
     
     TaskFactory * factory = 0;
     // Establish whether this rule has an associated script, and
     // if so, use it.
-    MapType::const_iterator J = classDesc.find("script");
-    MapType::const_iterator Jend = classDesc.end();
+    MapType::const_iterator J = class_desc.find("script");
+    MapType::const_iterator Jend = class_desc.end();
     if ((J != Jend) && J->second.isMap()) {
         const MapType & script = J->second.Map();
         J = script.find("name");
@@ -391,11 +391,11 @@ int EntityFactory::installTaskClass(const std::string & className,
             if ((J != script.end()) && (J->second.isString())) {
                 const std::string & script_language = J->second.String();
                 if (script_language == "python") {
-                    factory = new PythonTaskScriptFactory(script_name, className);
+                    factory = new PythonTaskScriptFactory(script_name, class_name);
                 } else {
                     log(ERROR, String::compose("Unknown script language \"%1\" "
                                                "for task \"%2\".",
-                                               script_language, className));
+                                               script_language, class_name));
                 }
             }
         }
@@ -405,7 +405,7 @@ int EntityFactory::installTaskClass(const std::string & className,
         return -1;
     }
 
-    J = classDesc.find("activation");
+    J = class_desc.find("activation");
     if ((J != Jend) && J->second.isMap()) {
         const MapType & activation = J->second.Map();
         MapType::const_iterator act_end = activation.end();
@@ -415,10 +415,10 @@ int EntityFactory::installTaskClass(const std::string & className,
             if (!i.hasClass(activation_tool)) {
                 // FIXME Record this error for reporting later.
                 delete factory;
-                waitForRule(className, classDesc, activation_tool,
+                waitForRule(class_name, class_desc, activation_tool,
                             String::compose("Task \"%1\" is activated by tool "
                                             "\"%2\" which does not exist.",
-                                            className, activation_tool));
+                                            class_name, activation_tool));
                 return 1;
             }
             FactoryDict::const_iterator K = m_factories.find(activation_tool);
@@ -426,7 +426,7 @@ int EntityFactory::installTaskClass(const std::string & className,
                 delete factory;
                 log(ERROR, String::compose("Task class \"%1\" is activated "
                                            "by tool \"%2\" which is not an "
-                                           "entity class.", className,
+                                           "entity class.", class_name,
                                            activation_tool));
                 return -1;
             }
@@ -437,10 +437,10 @@ int EntityFactory::installTaskClass(const std::string & className,
                 if (!i.hasClass(activation_op)) {
                     // FIXME Record this error for reporting later.
                     delete factory;
-                    waitForRule(className, classDesc, activation_op,
+                    waitForRule(class_name, class_desc, activation_op,
                                 String::compose("Task \"%1\" is activated by "
                                                 "operation \"%2\" which does "
-                                                "not exist.", className,
+                                                "not exist.", class_name,
                                                 activation_op));
                     return 1;
                 }
@@ -471,28 +471,28 @@ int EntityFactory::installTaskClass(const std::string & className,
         }
     }
 
-    // std::cout << "Attempting to install " << className << " which is a "
+    // std::cout << "Attempting to install " << class_name << " which is a "
               // << parent << std::endl << std::flush;
-    m_taskFactories.insert(std::make_pair(className, factory));
+    m_taskFactories.insert(std::make_pair(class_name, factory));
 
-    i.addChild(atlasClass(className, parent));
+    i.addChild(atlasClass(class_name, parent));
 
     return 0;
 }
 
-int EntityFactory::installEntityClass(const std::string & className,
+int EntityFactory::installEntityClass(const std::string & class_name,
                                       const std::string & parent,
-                                      const MapType & classDesc)
+                                      const MapType & class_desc)
 {
     // Get the new factory for this rule
     FactoryDict::const_iterator I = m_factories.find(parent);
     if (I == m_factories.end()) {
-        debug(std::cout << "class \"" << className
+        debug(std::cout << "class \"" << class_name
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
-        waitForRule(className, classDesc, parent,
+        waitForRule(class_name, class_desc, parent,
                     String::compose("Entity \"%1\" has parent \"%2\" which "
-                                    "does not exist.", className, parent));
+                                    "does not exist.", class_name, parent));
         return 1;
     }
     FactoryBase * parent_factory = I->second;
@@ -501,7 +501,7 @@ int EntityFactory::installEntityClass(const std::string & className,
         log(ERROR,
             String::compose("Attempt to install rule \"%1\" which has parent "
                             "\"%2\" which cannot be instantiated",
-                            className, parent));
+                            class_name, parent));
         return -1;
     }
 
@@ -511,13 +511,13 @@ int EntityFactory::installEntityClass(const std::string & className,
     // overriden with the defaults for this class.
     factory->m_attributes = parent_factory->m_attributes;
 
-    populateFactory(className, factory, classDesc);
+    populateFactory(class_name, factory, class_desc);
 
-    debug(std::cout << "INSTALLING " << className << ":" << parent
+    debug(std::cout << "INSTALLING " << class_name << ":" << parent
                     << std::endl << std::flush;);
 
     // Install the factory in place.
-    installFactory(parent, className, factory);
+    installFactory(parent, class_name, factory);
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factory);
@@ -525,106 +525,106 @@ int EntityFactory::installEntityClass(const std::string & className,
     return 0;
 }
 
-int EntityFactory::installOpDefinition(const std::string & className,
+int EntityFactory::installOpDefinition(const std::string & class_name,
                                        const std::string & parent,
-                                       const MapType & classDesc)
+                                       const MapType & class_desc)
 {
     Inheritance & i = Inheritance::instance();
 
     if (!i.hasClass(parent)) {
-        debug(std::cout << "op_definition \"" << className
+        debug(std::cout << "op_definition \"" << class_name
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
-        waitForRule(className, classDesc, parent,
+        waitForRule(class_name, class_desc, parent,
                     String::compose("Operation \"%1\" has parent \"%2\" which "
-                                    "does not exist.", className, parent));
+                                    "does not exist.", class_name, parent));
         return 1;
     }
 
-    Atlas::Objects::Root r = atlasOpDefinition(className, parent);
+    Atlas::Objects::Root r = atlasOpDefinition(class_name, parent);
 
     if (i.addChild(r) != 0) {
         return -1;
     }
 
-    int op_no = Atlas::Objects::Factories::instance()->addFactory(className, &Atlas::Objects::generic_factory);
-    i.opInstall(className, op_no);
+    int op_no = Atlas::Objects::Factories::instance()->addFactory(class_name, &Atlas::Objects::generic_factory);
+    i.opInstall(class_name, op_no);
 
     return 0;
 }
 
-int EntityFactory::installRule(const std::string & className,
-                               const MapType & classDesc)
+int EntityFactory::installRule(const std::string & class_name,
+                               const MapType & class_desc)
 {
-    MapType::const_iterator J = classDesc.find("objtype");
-    MapType::const_iterator Jend = classDesc.end();
+    MapType::const_iterator J = class_desc.find("objtype");
+    MapType::const_iterator Jend = class_desc.end();
     if (J == Jend || !J->second.isString()) {
         log(ERROR, String::compose("Rule \"%1\" has no objtype. Skipping.",
-                                   className));
+                                   class_name));
         return -1;
     }
     const std::string & objtype = J->second.String();
-    J = classDesc.find("parents");
+    J = class_desc.find("parents");
     if (J == Jend) {
         log(ERROR, String::compose("Rule \"%1\" has no parents. Skipping.",
-                                   className));
+                                   class_name));
         return -1;
     }
     if (!J->second.isList()) {
         log(ERROR, String::compose("Rule \"%1\" has malformed parents. "
-                                   "Skipping.", className));
+                                   "Skipping.", class_name));
         return -1;
     }
     const ListType & parents = J->second.asList();
     if (parents.empty()) {
         log(ERROR, String::compose("Rule \"%1\" has empty parents. Skipping.",
-                                   className));
+                                   class_name));
         return -1;
     }
     const Element & p1 = parents.front();
     if (!p1.isString() || p1.String().empty()) {
         log(ERROR, String::compose("Rule \"%1\" has %2 first parent. Skipping.",
-                                   className, Element::typeName(p1.getType())));
+                                   class_name, Element::typeName(p1.getType())));
         return -1;
     }
     const std::string & parent = p1.String();
     if (objtype == "class") {
         if (isTask(parent)) {
-            int ret = installTaskClass(className, parent, classDesc);
+            int ret = installTaskClass(class_name, parent, class_desc);
             if (ret != 0) {
                 return ret;
             }
         } else {
-            int ret = installEntityClass(className, parent, classDesc);
+            int ret = installEntityClass(class_name, parent, class_desc);
             if (ret != 0) {
                 return ret;
             }
         }
     } else if (objtype == "op_definition") {
-        int ret = installOpDefinition(className, parent, classDesc);
+        int ret = installOpDefinition(class_name, parent, class_desc);
         if (ret != 0) {
             return ret;
         }
     } else {
         log(ERROR, String::compose("Rule \"%1\" has unknown objtype=\"%2\". "
-                                   "Skipping.", className, objtype));
+                                   "Skipping.", class_name, objtype));
         return -1;
     }
 
     // Install any rules that were waiting for this rule before they
     // could be installed
-    RuleWaitList::iterator I = m_waitingRules.lower_bound(className);
-    RuleWaitList::iterator Iend = m_waitingRules.upper_bound(className);
+    RuleWaitList::iterator I = m_waitingRules.lower_bound(class_name);
+    RuleWaitList::iterator Iend = m_waitingRules.upper_bound(class_name);
     std::map<std::string, MapType> readyRules;
     for (; I != Iend; ++I) {
         const std::string & wClassName = I->second.name;
         const MapType & wClassDesc = I->second.desc;
         readyRules.insert(std::make_pair(wClassName, wClassDesc));
         debug(std::cout << "WAITING rule " << wClassName
-                        << " now ready from " << className
+                        << " now ready from " << class_name
                         << std::endl << std::flush;);
     }
-    m_waitingRules.erase(className);
+    m_waitingRules.erase(class_name);
         
     std::map<std::string, MapType>::const_iterator K = readyRules.begin();
     std::map<std::string, MapType>::const_iterator Kend = readyRules.end();
@@ -636,13 +636,13 @@ int EntityFactory::installRule(const std::string & className,
     return 0;
 }
 
-int EntityFactory::modifyEntityClass(const std::string & className,
-                                     const Root & classDesc)
+int EntityFactory::modifyEntityClass(const std::string & class_name,
+                                     const Root & class_desc)
 {
-    FactoryDict::const_iterator I = m_factories.find(className);
+    FactoryDict::const_iterator I = m_factories.find(class_name);
     if (I == m_factories.end()) {
         log(ERROR, String::compose("Could not find factory for existing "
-                                   "entity class \"%1\".", className));
+                                   "entity class \"%1\".", class_name));
         return -1;
     }
     FactoryBase * factory = I->second;
@@ -663,11 +663,11 @@ int EntityFactory::modifyEntityClass(const std::string & className,
         // type data for a core hard coded type.
         log(ERROR, String::compose("EntityFactory::modifyEntityClass: \"%1\" "
                                    "modified by client, so has no parent "
-                                   "factory.", className));
+                                   "factory.", class_name));
     }
     factory->m_classAttributes = MapType();
 
-    populateFactory(className, factory, classDesc->asMessage());
+    populateFactory(class_name, factory, class_desc->asMessage());
 
     updateChildren(factory);
 
@@ -675,7 +675,7 @@ int EntityFactory::modifyEntityClass(const std::string & className,
 }
 
 int EntityFactory::modifyTaskClass(const std::string & class_name,
-                                   const Root & classDesc)
+                                   const Root & class_desc)
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
@@ -691,14 +691,14 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
 }
 
 int EntityFactory::modifyOpDefinition(const std::string & class_name,
-                                      const Root & classDesc)
+                                      const Root & class_desc)
 {
     // Nothing to actually do
     return 0;
 }
 
 int EntityFactory::modifyRule(const std::string & class_name,
-                              const Root & classDesc)
+                              const Root & class_desc)
 {
     Root o = Inheritance::instance().getClass(class_name);
     if (!o.isValid()) {
@@ -707,11 +707,11 @@ int EntityFactory::modifyRule(const std::string & class_name,
         return -1;
     }
     if (o->getParents().front() == "task") {
-        return modifyTaskClass(class_name, classDesc);
-    } else if (classDesc->getObjtype() == "op_definition") {
-        return modifyOpDefinition(class_name, classDesc);
+        return modifyTaskClass(class_name, class_desc);
+    } else if (class_desc->getObjtype() == "op_definition") {
+        return modifyOpDefinition(class_name, class_desc);
     } else {
-        return modifyEntityClass(class_name, classDesc);
+        return modifyEntityClass(class_name, class_desc);
     }
 }
 
@@ -786,9 +786,9 @@ void EntityFactory::installRules()
 
     MapType::const_iterator Iend = ruleTable.end();
     for (MapType::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
-        const std::string & className = I->first;
-        const MapType & classDesc = I->second.asMap();
-        installRule(className, classDesc);
+        const std::string & class_name = I->first;
+        const MapType & class_desc = I->second.asMap();
+        installRule(class_name, class_desc);
     }
     // Report on the non-cleared rules.
     // Perhaps we can keep them too?
@@ -801,16 +801,16 @@ void EntityFactory::installRules()
 }
 
 void EntityFactory::installFactory(const std::string & parent,
-                                   const std::string & className,
+                                   const std::string & class_name,
                                    FactoryBase * factory)
 {
     assert(factory != 0);
 
-    m_factories[className] = factory;
+    m_factories[class_name] = factory;
 
     Inheritance & i = Inheritance::instance();
 
-    i.addChild(atlasClass(className, parent));
+    i.addChild(atlasClass(class_name, parent));
 }
 
 FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
