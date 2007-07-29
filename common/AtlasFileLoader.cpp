@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.cpp,v 1.9 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: AtlasFileLoader.cpp,v 1.10 2007-07-29 20:23:19 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
@@ -62,4 +62,9 @@ AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                 m_count(0), m_messages(m)
 {
     m_codec = new Atlas::Codecs::XML(m_file, *this);
+}
+
+AtlasFileLoader::~AtlasFileLoader()
+{
+    delete m_codec;
 }

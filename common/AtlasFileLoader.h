@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.h,v 1.6 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: AtlasFileLoader.h,v 1.7 2007-07-29 20:23:19 alriddoch Exp $
 
 #ifndef COMMON_ATLAS_FILE_LOADER_H
 #define COMMON_ATLAS_FILE_LOADER_H
@@ -41,6 +41,7 @@ class AtlasFileLoader : public Atlas::Message::DecoderBase {
     virtual void messageArrived(const Atlas::Message::MapType & msg);
   public:
     AtlasFileLoader(const std::string & filename, Atlas::Message::MapType & m);
+    ~AtlasFileLoader();
 
     /// Indicate if the input file has been opened successfully
     bool isOpen() {
