@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.114 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: Admin.cpp,v 1.115 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -223,7 +223,8 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
             K->second->addToEntity(info_arg);
             info->setArgs1(info_arg);
         } else {
-            error(op, String::compose("Unknown object id \"%1\" requested", id).c_str(), res, getId());
+            error(op, String::compose("Unknown object id \"%1\" requested", id),
+                  res, getId());
             return;
         }
     } else if ((objtype == "class") ||
@@ -231,12 +232,17 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
                (objtype == "op_definition")) {
         const Root & o = Inheritance::instance().getClass(id);
         if (!o.isValid()) {
-            error(op, String::compose("Unknown type definition for \"%1\" requested", id).c_str(), res);
+            error(op, String::compose("Unknown type definition for \"%1\" "
+                                      "requested", id),
+                  res);
             return;
         }
         info->setArgs1(o);
     } else {
-        error(op, String::compose("Unknown object type \"%1\" requested for \"%2\"", objtype, id).c_str(), res, getId());
+        error(op,
+              String::compose("Unknown object type \"%1\" requested for \"%2\"",
+                              objtype, id),
+              res, getId());
         return;
     }
     res.push_back(info);
@@ -283,7 +289,8 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
             }
             return;
         }
-        error(op, "Client attempting to use obsolete Set to install new type", res, getId());
+        error(op, "Client attempting to use obsolete Set to install new type",
+              res, getId());
         return;
     } else {
         error(op, "Unknow object type set", res, getId());
@@ -320,19 +327,20 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         const std::string & id = arg->getId();
 
         if (parent.empty()) {
-            error(op, "Attempt to install type with empty parent", res, getId());
+            error(op, "Attempt to install type with empty parent", res,
+                  getId());
             return;
         }
         if (Inheritance::instance().hasClass(id)) {
-            error(op, "Attempt to install type that already exists", res, getId());
+            error(op, "Attempt to install type that already exists", res,
+                  getId());
             return;
         }
         const Root & o = Inheritance::instance().getClass(parent);
         if (!o.isValid()) {
-            std::string msg("Attempt to install type with non-existant parent \"");
-            msg += parent;
-            msg += "\"";
-            error(op, msg.c_str(), res, getId());
+            error(op, String::compose("Attempt to install type with "
+                                      "non-existant parent \"%1\"", parent),
+                  res, getId());
             return;
         }
         if (EntityFactory::instance()->installRule(id, arg->asMessage()) == 0) {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.165 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: Connection.cpp,v 1.166 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -66,7 +66,7 @@ Connection::Connection(CommClient & client,
                                               m_server(svr)
 {
     m_server.incClients();
-    logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr).c_str());
+    logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr));
 }
 
 Connection::~Connection()
@@ -78,7 +78,7 @@ Connection::~Connection()
 
     debug(std::cout << "destroy called" << std::endl << std::flush;);
     
-    logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()).c_str());
+    logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
     BaseDict::const_iterator Iend = m_objects.end();
     for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
@@ -125,7 +125,8 @@ Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
     if (ac != 0) {
         m_server.m_lobby.delAccount(ac);
         ac->m_connection = 0;
-        logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(), ac->getId(), ac->m_username, event).c_str());
+        logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
+                                         ac->getId(), ac->m_username, event));
         return ac;
     }
     Character * character = dynamic_cast<Character *>(obj);
@@ -149,7 +150,12 @@ Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
 
             delete character->m_externalMind;
             character->m_externalMind = 0;
-            logEvent(DROP_CHAR, String::compose("%1 - %2 %5 character %3(%4)", getId(), character->getId(), character->getName(), character->getType(), event).c_str());
+            logEvent(DROP_CHAR, String::compose("%1 - %2 %5 character %3(%4)",
+                                                getId(),
+                                                character->getId(),
+                                                character->getName(),
+                                                character->getType(),
+                                                event));
         }
     }
     return 0;
@@ -158,7 +164,9 @@ Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
 void Connection::addObject(BaseEntity * obj)
 {
     m_objects[obj->getIntId()] = obj;
-    obj->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Connection::objectDeleted), obj->getIntId()));
+    obj->destroyed.connect(sigc::bind(sigc::mem_fun(this,
+                                                    &Connection::objectDeleted),
+                                      obj->getIntId()));
 }
 
 void Connection::removeObject(long id)
@@ -223,7 +231,10 @@ void Connection::operation(const Operation & op, OpVector & res)
     debug(std::cout << "send on to " << from << std::endl << std::flush;);
     BaseDict::const_iterator I = m_objects.find(integerId(from));
     if (I == m_objects.end()) {
-        error(op, String::compose("Client \"%1\" op from \"%2\" is from non-existant object.", op->getParents().front(), from).c_str(), res);
+        error(op, String::compose("Client \"%1\" op from \"%2\" is from "
+                                  "non-existant object.",
+                                  op->getParents().front(), from),
+              res);
         return;
     }
     BaseEntity * b_ent = I->second;
@@ -244,7 +255,10 @@ void Connection::operation(const Operation & op, OpVector & res)
 
         res.push_back(info);
 
-        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character %3(%4)", getId(), ig_ent->getId(), ig_ent->getName(), ig_ent->getType()).c_str());
+        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character %3(%4)",
+                                            getId(), ig_ent->getId(),
+                                            ig_ent->getName(),
+                                            ig_ent->getType()));
     }
     ig_ent->externalOperation(op);
 }
@@ -320,7 +334,8 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("%1 %2 - Login account %3", getId(), player->getId(), username).c_str());
+    logEvent(LOGIN, String::compose("%1 %2 - Login account %3",
+                                    getId(), player->getId(), username));
 }
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
@@ -384,7 +399,8 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("%1 %2 - Create account %3", getId(), player->getId(), username).c_str());
+    logEvent(LOGIN, String::compose("%1 %2 - Create account %3", getId(),
+                                    player->getId(), username));
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)
@@ -414,7 +430,9 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     }
     BaseDict::iterator I = m_objects.find(obj_id);
     if (I == m_objects.end()) {
-        error(op, String::compose("Got logout for unknown entity ID(%1)", obj_id).c_str(), res);
+        error(op, String::compose("Got logout for unknown entity ID(%1)",
+                                  obj_id),
+              res);
         return;
     }
     Account * ac = removePlayer(I->second, "Logout");
@@ -483,7 +501,9 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
         Atlas::Objects::Root o = Inheritance::instance().getClass(id);
         if (!o.isValid()) {
-            error(op, String::compose("Unknown type definition for \"%1\" requested", id).c_str(), res);
+            error(op, String::compose("Unknown type definition for \"%1\" "
+                                      "requested", id),
+                  res);
             return;
         }
         info->setArgs1(o);

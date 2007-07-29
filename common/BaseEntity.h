@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.h,v 1.89 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: BaseEntity.h,v 1.90 2007-07-29 12:22:58 alriddoch Exp $
 
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
@@ -103,7 +103,7 @@ class BaseEntity : virtual public sigc::trackable {
     virtual void ErrorOperation(const Operation &, OpVector &);
 
     void callOperation(const Operation &, OpVector &);
-    void error(const Operation &, const char * errstring, OpVector &,
+    void error(const Operation &, const std::string & errstring, OpVector &,
                const std::string & to = "") const;
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;

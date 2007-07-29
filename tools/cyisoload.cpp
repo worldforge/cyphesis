@@ -147,7 +147,7 @@ int main(int argc, char ** argv)
                     c[1] = object->anchor.GetY();
                     c[2] = object->anchor.GetZ();
                     omap["pos"] = c;
-                    db->storeInWorld(omap, id.str().c_str());
+                    db->storeInWorld(omap, id.str());
                 }
                 // Get basename, lookup custumise and load into database
                 cout << graphic << " " << key << endl;

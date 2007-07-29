@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.24 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: log.cpp,v 1.25 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -173,7 +173,7 @@ void log(LogLevel lvl, const std::string & msg)
     }
 }
 
-void logEvent(LogEvent lev, const char * msg)
+void logEvent(LogEvent lev, const std::string & msg)
 {
     if (!event_log.is_open()) {
         return;

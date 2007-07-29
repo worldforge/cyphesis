@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.100 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.101 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -336,7 +336,7 @@ void BaseEntity::callOperation(const Operation & op, OpVector & res)
 /// @param errstring A message describing the error.
 /// @param res The resulting error operation is returned here.
 /// @param to The error operation should be directed to this ID.
-void BaseEntity::error(const Operation& op, const char* errstring,
+void BaseEntity::error(const Operation& op, const std::string & errstring,
                        OpVector & res, const std::string & to) const
 {
     Error e;

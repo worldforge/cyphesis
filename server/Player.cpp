@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Player.cpp,v 1.47 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Player.cpp,v 1.48 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "Player.h"
 
@@ -90,7 +90,10 @@ int Player::characterError(const Operation & op,
     // Parents must have been checked already before calling this method
     const std::string & type = ent->getParents().front(); 
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
-        error(op, String::compose("You cannot create a character of type \"%1\".", type).c_str(), res, getId());
+        error(op,
+              String::compose("You cannot create a character of type \"%1\".",
+                              type),
+              res, getId());
         return true;
     }
     return false;

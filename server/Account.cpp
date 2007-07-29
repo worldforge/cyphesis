@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.152 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Account.cpp,v 1.153 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "Account.h"
 
@@ -196,7 +196,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
                                         chr->getId(),
                                         chr->getName(),
                                         chr->getType(),
-                                        m_username).c_str());
+                                        m_username));
 
     return chr;
 }
@@ -204,7 +204,8 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 void Account::LogoutOperation(const Operation & op, OpVector & res)
 {
     if (m_connection == 0) {
-        log(ERROR, "Account::LogoutOperation on account that doesn't seem to be connected.");
+        log(ERROR, "Account::LogoutOperation on account that doesn't seem to "
+                   "be connected.");
         return;
     }
 

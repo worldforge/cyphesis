@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.90 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: Database.cpp,v 1.91 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "Database.h"
 
@@ -315,7 +315,7 @@ bool Database::putObject(const std::string & table,
     enc.streamMessageElement(o);
     codec.streamEnd();
 
-    debug(std::cout << "Encoded to: " << str.str().c_str() << " "
+    debug(std::cout << "Encoded to: " << str.str() << " "
                << str.str().size() << std::endl << std::flush;);
     std::string query = std::string("INSERT INTO ") + table + " VALUES ('" + key;
     StringVector::const_iterator Iend = c.end();
@@ -533,7 +533,7 @@ bool Database::runCommandQuery(const std::string & query)
     }
     if (!commandOk()) {
         log(ERROR, "Error running command query row.");
-        log(NOTICE, query.c_str());
+        log(NOTICE, query);
         reportError();
         debug(std::cout << "Row query didn't work"
                         << std::endl << std::flush;);
@@ -882,7 +882,8 @@ bool Database::registerEntityTable(const std::string & classname,
     }
 
     if (entityTables.find(classname) != entityTables.end()) {
-        log(ERROR, String::compose("Attempt to register entity table \"%1\" which is already registered.", classname).c_str());
+        log(ERROR, String::compose("Attempt to register entity table \"%1\" "
+                                   "which is already registered.", classname));
         return false;
     }
     if (!parent.empty()) {
@@ -1072,7 +1073,8 @@ const DatabaseResult Database::selectEntityRow(const std::string & id,
     std::string table = (classname == "" ? "entity" : classname);
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
-        log(ERROR, String::compose("Attempt to select from entity table \"%1\" which is not registered.", classname).c_str());
+        log(ERROR, String::compose("Attempt to select from entity table \"%1\" "
+                                   "which is not registered.", classname));
         return DatabaseResult(0);
     }
     std::string query = "SELECT * FROM ";
@@ -1091,7 +1093,8 @@ const DatabaseResult Database::selectOnlyByLoc(const std::string & loc,
 {
     TableDict::const_iterator I = entityTables.find(classname);
     if (I == entityTables.end()) {
-        log(ERROR, String::compose("Attempt to select from entity table \"%1\" which is not registered.", classname).c_str());
+        log(ERROR, String::compose("Attempt to select from entity table \"%1\" "
+                                   "which is not registered.", classname));
         return DatabaseResult(0);
     }
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.cpp,v 1.37 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: PythonMindScript.cpp,v 1.38 2007-07-29 12:22:58 alriddoch Exp $
 
 #include "PythonMindScript.h"
 
@@ -112,7 +112,8 @@ bool PythonMindScript::operation(const std::string & op_type,
             ret_list.push_back(*I);
         }
     } else {
-        log(ERROR, String::compose("Python script \"%1\" returned an invalid result", op_name).c_str());
+        log(ERROR, String::compose("Python script \"%1\" returned an invalid "
+                                   "result", op_name));
     }
     
     Py_DECREF(ret);
@@ -126,7 +127,10 @@ void PythonMindScript::hook(const std::string & function, Entity * entity)
         return;
     }
 
-    PyObject * ret = PyObject_CallMethod(scriptObject, (char *)(function.c_str()), "(O)", wrapper);
+    PyObject * ret = PyObject_CallMethod(scriptObject,
+                                         (char *)(function.c_str()),
+                                         "(O)",
+                                         wrapper);
     Py_DECREF(wrapper);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {

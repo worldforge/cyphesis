@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.h,v 1.18 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: log.h,v 1.19 2007-07-29 12:22:58 alriddoch Exp $
 
 #ifndef COMMON_LOG_H
 #define COMMON_LOG_H
@@ -37,7 +37,7 @@ typedef enum log_event { START, STOP, CONNECT, DISCONNECT, LOGIN, LOGOUT,
 void initLogger();
 void rotateLogger();
 void log(LogLevel, const std::string & msg);
-void logEvent(LogEvent, const char * msg);
+void logEvent(LogEvent, const std::string & msg);
 void logSysError(LogLevel);
 
 bool testEventLog(const char * path);
