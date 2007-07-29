@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.166 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.167 2007-07-29 21:23:43 alriddoch Exp $
 
 #include "Python.h"
 
@@ -290,36 +290,36 @@ static PyObject * Get_PyClass(const std::string & package,
         PyErr_Print();
         return NULL;
     }
-    PyObject * pyClass = PyObject_GetAttrString(module, (char *)classname.c_str());
+    PyObject * py_class = PyObject_GetAttrString(module, (char *)classname.c_str());
     Py_DECREF(module);
-    if (pyClass == NULL) {
+    if (py_class == NULL) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
                                    package, classname));
         PyErr_Print();
         return NULL;
     }
-    if (PyCallable_Check(pyClass) == 0) {
+    if (PyCallable_Check(py_class) == 0) {
         log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
                                    package, classname));
-        Py_DECREF(pyClass);
+        Py_DECREF(py_class);
         return NULL;
     }
 #if 0
     // In later versions of python using PyType_* will become the right thing
     // to do. This might become true when things have been done right with
     // installing types.
-    if (PyType_Check(pyClass) == 0) {
+    if (PyType_Check(py_class) == 0) {
         std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
     } else {
         std::cerr << "PyType_Check returned true" << std::endl << std::flush;
     }
 #endif
-    return pyClass;
+    return py_class;
 }
 
-PyObject * Create_PyScript(PyObject * wrapper, PyObject * pyClass)
+PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
 {
-    PyObject * pyob = PyEval_CallFunction(pyClass,"(O)", wrapper);
+    PyObject * pyob = PyEval_CallFunction(py_class,"(O)", wrapper);
     
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {
@@ -377,13 +377,13 @@ void Subscribe_Script(Entity * entity, PyObject * pyclass,
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type)
 {
-    PyObject * pyClass = Get_PyClass(package, type);
-    if (pyClass == NULL) { return; }
+    PyObject * py_class = Get_PyClass(package, type);
+    if (py_class == NULL) { return; }
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
-    Subscribe_Script(mind, pyClass, package);
-    PyObject * o = Create_PyScript((PyObject *)wrapper, pyClass);
-    Py_DECREF(pyClass);
+    Subscribe_Script(mind, py_class, package);
+    PyObject * o = Create_PyScript((PyObject *)wrapper, py_class);
+    Py_DECREF(py_class);
 
     if (o != NULL) {
         mind->setScript(new PythonMindScript(o, (PyObject *)wrapper, *mind));
@@ -1018,13 +1018,13 @@ void init_python_api()
         return;
     }
 
-    PyObject * outLogger = (PyObject*)PyObject_NEW(PyLogger, &PyOutLogger_Type);
-    PyObject_SetAttrString(sys_module, "stdout", outLogger);
-    Py_DECREF(outLogger);
+    PyObject * out_logger = (PyObject*)PyObject_NEW(PyLogger, &PyOutLogger_Type);
+    PyObject_SetAttrString(sys_module, "stdout", out_logger);
+    Py_DECREF(out_logger);
 
-    PyObject * errLogger = (PyObject*)PyObject_NEW(PyLogger, &PyErrLogger_Type);
-    PyObject_SetAttrString(sys_module, "stderr", errLogger);
-    Py_DECREF(errLogger);
+    PyObject * err_logger = (PyObject*)PyObject_NEW(PyLogger, &PyErrLogger_Type);
+    PyObject_SetAttrString(sys_module, "stderr", err_logger);
+    Py_DECREF(err_logger);
 
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
     if (sys_path != 0) {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.9 2007-07-03 02:03:59 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.10 2007-07-29 21:23:43 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -91,7 +91,7 @@ void TerrainProperty::set(const Element & ent)
     debug(std::cout << "TerrainProperty::setTerrain()"
                     << std::endl << std::flush;);
 
-    const Pointstore & basePoints = m_data.getPoints();
+    const Pointstore & base_points = m_data.getPoints();
 
     MapType::const_iterator I = t.find("points");
     if ((I != t.end()) && (I->second.isMap())) {
@@ -109,8 +109,8 @@ void TerrainProperty::set(const Element & ent)
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
 
-            Pointstore::const_iterator J = basePoints.find(x);
-            if ((J == basePoints.end()) ||
+            Pointstore::const_iterator J = base_points.find(x);
+            if ((J == base_points.end()) ||
                 (J->second.find(y) == J->second.end())) {
                 // Newly added point.
                 m_createdTerrain[x].insert(y);
@@ -175,10 +175,10 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
         log(ERROR, "The terrain has no surface data");
         return -1;
     }
-    Mercator::Surface & tileSurface = *surfaces.begin()->second;
-    if (!tileSurface.isValid()) {
-        tileSurface.populate();
+    Mercator::Surface & tile_surface = *surfaces.begin()->second;
+    if (!tile_surface.isValid()) {
+        tile_surface.populate();
     }
-    material = tileSurface((int)x, (int)y, 0);
+    material = tile_surface((int)x, (int)y, 0);
     return 0;
 }

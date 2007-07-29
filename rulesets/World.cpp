@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.106 2007-07-04 21:20:41 alriddoch Exp $
+// $Id: World.cpp,v 1.107 2007-07-29 21:23:43 alriddoch Exp $
 
 #include "World.h"
 
@@ -127,11 +127,11 @@ int World::getSurface(const Point3D & pos, int & material)
         log(ERROR, "The terrain has no surface data");
         return -1;
     }
-    Mercator::Surface & tileSurface = *surfaces.begin()->second;
-    if (!tileSurface.isValid()) {
-        tileSurface.populate();
+    Mercator::Surface & tile_surface = *surfaces.begin()->second;
+    if (!tile_surface.isValid()) {
+        tile_surface.populate();
     }
-    material = tileSurface((int)x, (int)y, 0);
+    material = tile_surface((int)x, (int)y, 0);
     return 0;
 }
 

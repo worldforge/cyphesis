@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.217 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Thing.cpp,v 1.218 2007-07-29 21:23:43 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -220,7 +220,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     const double & current_time = BaseWorld::instance().getTime();
 
-    Point3D oldpos = m_location.pos();
+    Point3D old_pos = m_location.pos();
 
     // Update pos
     fromStdVector(m_location.m_pos, ent->getPos());
@@ -305,7 +305,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // FIXME Why only for a perceptive moving entity? Surely other entities
     // must gain/lose sight of this entity if it's moving?
     if (isPerceptive()) {
-        checkVisibility(oldpos, res);
+        checkVisibility(old_pos, res);
     }
     m_seq++;
     updated.emit();
@@ -316,9 +316,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 /// Check how this entity's position has changed since the last update
 /// and how this has affected which entities it can see, and which can see
 /// it. Return Appearance and Disappearance operations as required.
-/// @param oldpos The coordinates of this entity before the update
+/// @param old_pos The coordinates of this entity before the update
 /// @param res Resulting operations are returned here
-void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
+void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
 {
     debug(std::cout << "testing range" << std::endl;);
     float fromSquSize = m_location.squareBoxSize();
@@ -331,25 +331,25 @@ void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
     EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
     EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
     for(; I != Iend; ++I) {
-        float oldDist = squareDistance((*I)->m_location.pos(), oldpos),
-              newDist = squareDistance((*I)->m_location.pos(), m_location.pos()),
-              oSquSize = (*I)->m_location.squareBoxSize();
+        float old_dist = squareDistance((*I)->m_location.pos(), old_pos),
+              new_dist = squareDistance((*I)->m_location.pos(), m_location.pos()),
+              squ_size = (*I)->m_location.squareBoxSize();
 
         // Build appear and disappear lists, and send operations
         // Also so operations to (dis)appearing perceptive
         // entities saying that we are (dis)appearing
         if ((*I)->isPerceptive()) {
-            bool wasInRange = ((fromSquSize / oldDist) > consts::square_sight_factor),
-                 isInRange = ((fromSquSize / newDist) > consts::square_sight_factor);
-            if (wasInRange != isInRange) {
-                if (wasInRange) {
+            bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor),
+                 is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
+            if (was_in_range != is_in_range) {
+                if (was_in_range) {
                     // Send operation to the entity in question so it
                     // knows it is losing sight of us.
                     Disappearance d;
                     d->setArgs1(this_ent);
                     d->setTo((*I)->getId());
                     res.push_back(d);
-                } else /*if (isInRange)*/ {
+                } else /*if (is_in_range)*/ {
                     // Send operation to the entity in question so it
                     // knows it is gaining sight of us.
                     // FIXME We don't need to do this, cos its about
@@ -362,18 +362,18 @@ void Thing::checkVisibility(const Point3D & oldpos, OpVector & res)
             }
         }
         
-        bool couldSee = ((oSquSize / oldDist) > consts::square_sight_factor),
-             canSee = ((oSquSize / newDist) > consts::square_sight_factor);
-        if (couldSee ^ canSee) {
+        bool could_see = ((squ_size / old_dist) > consts::square_sight_factor),
+             can_see = ((squ_size / new_dist) > consts::square_sight_factor);
+        if (could_see ^ can_see) {
             Anonymous that_ent;
             that_ent->setId((*I)->getId());
             that_ent->setStamp((*I)->getSeq());
-            if (couldSee) {
+            if (could_see) {
                 // We are losing sight of that object
                 disappear.push_back(that_ent);
                 debug(std::cout << getId() << ": losing site of "
                                 << (*I)->getId() << std::endl;);
-            } else /*if (canSee)*/ {
+            } else /*if (can_see)*/ {
                 // We are gaining sight of that object
                 appear.push_back(that_ent);
                 debug(std::cout << getId() << ": gaining site of "
@@ -564,7 +564,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         }
     }
 
-    Point3D oldpos = m_location.pos();
+    Point3D old_pos = m_location.pos();
 
     bool moving = true;
 
@@ -651,7 +651,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // FIXME Why only for a perceptive moving entity? Surely other entities
     // must gain/lose sight of this entity if it's moving?
     if (isPerceptive()) {
-        checkVisibility(oldpos, res);
+        checkVisibility(old_pos, res);
     }
     updated.emit();
 }

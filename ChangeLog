@@ -1,5 +1,12 @@
 2007-07-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/MemMap.cpp, rulesets/Motion.cpp,
+	  rulesets/Python_API.cpp, rulesets/TerrainProperty.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp: Don't use camel casing for
+	  local variables or function arguments.
+
+2007-07-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Don't use camel casing for local
 	  variables or function arguments.
 
@@ -16745,4 +16752,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1881 2007-07-29 20:35:47 alriddoch Exp $
+$Id: ChangeLog,v 1.1882 2007-07-29 21:23:40 alriddoch Exp $

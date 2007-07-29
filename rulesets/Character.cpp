@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.299 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Character.cpp,v 1.300 2007-07-29 21:23:42 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1082,12 +1082,12 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
                          << std::flush;);
         if (!new_orientation.isValid()) {
             // This is a character walking, so it should stap upright
-            Vector3D uprightDirection = direction;
-            uprightDirection[cZ] = 0;
-            if (uprightDirection.mag() > 0) {
-                uprightDirection.normalize();
+            Vector3D upright_direction = direction;
+            upright_direction[cZ] = 0;
+            if (upright_direction.mag() > 0) {
+                upright_direction.normalize();
                 new_orientation = quaternionFromTo(Vector3D(1,0,0),
-                                                   uprightDirection);
+                                                   upright_direction);
                 debug( std::cout << "Orientation: " << new_orientation
                                  << std::endl << std::flush;);
             }
@@ -1118,9 +1118,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Orientation" << ret_location.orientation()
                     << std::endl << std::flush;);
 
-    Operation moveOp = m_movement.generateMove(ret_location);
-    assert(moveOp.isValid());
-    res.push_back(moveOp);
+    Operation move_op = m_movement.generateMove(ret_location);
+    assert(move_op.isValid());
+    res.push_back(move_op);
 
     if (m_movement.hasTarget() &&
         ret_location.velocity().isValid() &&

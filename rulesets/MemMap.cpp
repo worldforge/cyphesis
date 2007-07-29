@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.97 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.98 2007-07-29 21:23:42 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -112,13 +112,13 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
     }
 }
 
-MemEntity * MemMap::newEntity(const std::string & id, long intId,
+MemEntity * MemMap::newEntity(const std::string & id, long int_id,
                               const RootEntity & ent)
 // Create a new entity from an Atlas message.
 {
-    assert(m_entities.find(intId) == m_entities.end());
+    assert(m_entities.find(int_id) == m_entities.end());
 
-    MemEntity * entity = new MemEntity(id, intId);
+    MemEntity * entity = new MemEntity(id, int_id);
 
     readEntity(entity, ent);
 
@@ -144,15 +144,15 @@ void MemMap::sendLooks(OpVector & res)
     m_additionsById.clear();
 }
 
-MemEntity * MemMap::addId(const std::string & id, long intId)
+MemEntity * MemMap::addId(const std::string & id, long int_id)
 // Queue the ID of an entity we are interested in
 {
     assert(!id.empty());
-    assert(m_entities.find(intId) == m_entities.end());
+    assert(m_entities.find(int_id) == m_entities.end());
 
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
-    MemEntity * entity = new MemEntity(id, intId);
+    MemEntity * entity = new MemEntity(id, int_id);
     return addEntity(entity);
 }
 
@@ -161,9 +161,9 @@ void MemMap::del(const std::string & id)
 {
     debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
 
-    long intId = integerId(id);
+    long int_id = integerId(id);
 
-    MemEntityDict::iterator I = m_entities.find(intId);
+    MemEntityDict::iterator I = m_entities.find(int_id);
     if (I != m_entities.end()) {
         MemEntity * ent = I->second;
         assert(ent != 0);
@@ -216,9 +216,9 @@ MemEntity * MemMap::get(const std::string & id) const
         return NULL;
     }
 
-    long intId = integerId(id);
+    long int_id = integerId(id);
 
-    MemEntityDict::const_iterator I = m_entities.find(intId);
+    MemEntityDict::const_iterator I = m_entities.find(int_id);
     if (I != m_entities.end()) {
         assert(I->second != 0);
         return I->second;
@@ -235,19 +235,19 @@ MemEntity * MemMap::getAdd(const std::string & id)
         return NULL;
     }
 
-    long intId = integerId(id);
+    long int_id = integerId(id);
 
-    if (intId == -1) {
+    if (int_id == -1) {
         log(ERROR, String::compose("MemMap::getAdd: Invalid ID \"%1\".", id));
         return NULL;
     }
 
-    MemEntityDict::const_iterator I = m_entities.find(intId);
+    MemEntityDict::const_iterator I = m_entities.find(int_id);
     if (I != m_entities.end()) {
         assert(I->second != 0);
         return I->second;
     }
-    return addId(id, intId);
+    return addId(id, int_id);
 }
 
 void MemMap::addContents(const RootEntity & ent)
@@ -282,17 +282,17 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
         return NULL;
     }
 
-    long intId = integerId(id);
+    long int_id = integerId(id);
 
-    if (intId == -1) {
+    if (int_id == -1) {
         log(ERROR, String::compose("MemMap::updateAdd: Invalid ID \"%1\".", id));
         return NULL;
     }
 
-    MemEntityDict::const_iterator I = m_entities.find(intId);
+    MemEntityDict::const_iterator I = m_entities.find(int_id);
     MemEntity * entity;
     if (I == m_entities.end()) {
-        entity = newEntity(id, intId, ent);
+        entity = newEntity(id, int_id, ent);
     } else {
         entity = I->second;
         updateEntity(entity, ent);
