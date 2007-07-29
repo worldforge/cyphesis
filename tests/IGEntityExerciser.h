@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.11 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.12 2007-07-29 11:40:48 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -28,7 +28,11 @@
 template <class EntityType>
 class IGEntityExerciser : public EntityExerciser<EntityType> {
   public:
-    explicit IGEntityExerciser(EntityType & e) : EntityExerciser<EntityType>(e) { new TestPropertyManager; }
+    explicit IGEntityExerciser(EntityType & e) :
+                               EntityExerciser<EntityType>(e) {
+        new TestPropertyManager;
+        e.m_location.m_loc = new Entity("0", 0);
+    }
 
     bool checkAttributes(const std::set<std::string> & attr_names);
     bool checkProperties(const std::set<std::string> & prop_names);

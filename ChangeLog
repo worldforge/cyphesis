@@ -1,5 +1,10 @@
 2007-07-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/IGEntityExerciser.h: Add a world entity to all IG entities
+	  before testing, to ensure they are apropriatly rigged up for testing.
+
+2007-07-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp, common/log.h: Switch to taking a C++ string reference
 	  rather than a char *, as it is not really an optimisation, and it
 	  makes the code simpler to read and write.
@@ -16713,4 +16718,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1876 2007-07-29 03:33:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1877 2007-07-29 11:40:47 alriddoch Exp $
