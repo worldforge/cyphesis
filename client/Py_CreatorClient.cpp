@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_CreatorClient.cpp,v 1.33 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: Py_CreatorClient.cpp,v 1.34 2007-07-30 18:12:50 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -282,7 +282,7 @@ static int CreatorClient_setattr(PyCreatorClient *self, char *name, PyObject *v)
 
 static int CreatorClient_compare(PyCreatorClient *self, PyCreatorClient *other)
 {
-    if ((self->m_mind == NULL) || (other->m_mind == NULL)) {
+    if (self->m_mind == NULL || other->m_mind == NULL) {
         return -1;
     }
     return (self->m_mind == other->m_mind) ? 0 : 1;

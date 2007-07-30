@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_WorldTime.cpp,v 1.26 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_WorldTime.cpp,v 1.27 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_WorldTime.h"
 
@@ -60,7 +60,7 @@ static PyMethodDef WorldTime_methods[] = {
 
 static void WorldTime_dealloc(PyWorldTime *self)
 {
-    if ((self->own) && (self->time != NULL)) {
+    if (self->own && self->time != NULL) {
         delete self->time;
     }
     self->ob_type->tp_free(self);

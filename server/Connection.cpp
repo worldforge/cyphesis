@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.166 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: Connection.cpp,v 1.167 2007-07-30 18:12:52 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -244,7 +244,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         return;
     }
     Character * character = dynamic_cast<Character *>(b_ent);
-    if ((character != NULL) && (character->m_externalMind == NULL)) {
+    if (character != NULL && character->m_externalMind == NULL) {
         debug(std::cout << "Subscribing existing character" << std::endl
                         << std::flush;);
         connectAvatar(character);

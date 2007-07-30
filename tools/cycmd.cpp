@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.110 2007-04-29 13:32:31 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.111 2007-07-30 18:12:52 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -725,7 +725,7 @@ void Interactive<Stream>::runCommand(char * cmd)
     if (arg != NULL) {
         *arg++ = 0;
         int len = strlen(arg);
-        while ((len > 0) && (arg[--len] == ' ')) { arg[len] = 0; }
+        while (len > 0 && arg[--len] == ' ') { arg[len] = 0; }
     } else {
         arg = "";
     }
@@ -1000,7 +1000,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         encoder->streamObjectsMessage(g);
     } else if (cmd == "install") {
         size_t space = arg.find(' ');
-        if ((space == std::string::npos) || (space >= (arg.size() - 1))) {
+        if (space == std::string::npos || space >= (arg.size() - 1)) {
             std::cout << "usage: install <type id> <parent id>"
                       << std::endl << std::flush;
         } else {
@@ -1035,7 +1035,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         t->setArgs1(ent);
         t->setFrom(accountId);
         encoder->streamObjectsMessage(t);
-    } else if ((cmd == "help") || (cmd == "?")) {
+    } else if (cmd == "help" || cmd == "?") {
         reply_expected = false;
         help();
     } else if (cmd == "query") {

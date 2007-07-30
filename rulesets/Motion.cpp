@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.16 2007-07-29 21:23:43 alriddoch Exp $
+// $Id: Motion.cpp,v 1.17 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -150,7 +150,7 @@ float Motion::checkCollisions()
         }
         // There is a small possibility that if
         // coll_time_2 == coll_time == move_tick, we will miss a collision
-        if ((coll_time_2 - coll_time) > (consts::move_tick / 10)) {
+        if (coll_time_2 - coll_time > consts::move_tick / 10) {
             debug( std::cout << "passing into it " << coll_time << ":"
                              << coll_time_2 << std::endl << std::flush;);
             // We are entering collEntity.
@@ -234,7 +234,7 @@ bool Motion::resolveCollision()
             // This code relies on m_collNormal being a unit vector
             float vel_square_mag = location.velocity().sqrMag();
             location.m_velocity -= m_collNormal * Dot(m_collNormal, location.m_velocity);
-            if ((location.m_velocity.mag() / consts::base_velocity) > 0.05) {
+            if (location.m_velocity.mag() / consts::base_velocity > 0.05) {
                 m_collEntity = NULL;
                 location.m_velocity.normalize();
                 location.m_velocity *= sqrt(vel_square_mag);

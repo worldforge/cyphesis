@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.115 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: Admin.cpp,v 1.116 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -206,7 +206,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         return;
     }
     Info info;
-    if ((objtype == "object") || (objtype == "obj")) {
+    if (objtype == "object" || objtype == "obj") {
         long intId = integerId(id);
 
         const BaseDict & OOGDict = m_connection->m_server.getObjects();
@@ -227,9 +227,9 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
                   res, getId());
             return;
         }
-    } else if ((objtype == "class") ||
-               (objtype == "meta") ||
-               (objtype == "op_definition")) {
+    } else if (objtype == "class" ||
+               objtype == "meta" ||
+               objtype == "op_definition") {
         const Root & o = Inheritance::instance().getClass(id);
         if (!o.isValid()) {
             error(op, String::compose("Unknown type definition for \"%1\" "
@@ -267,7 +267,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
 
-    if ((objtype == "object") || (objtype == "obj")) {
+    if (objtype == "object" || objtype == "obj") {
 
         long intId = integerId(id);
 

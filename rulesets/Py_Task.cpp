@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Task.cpp,v 1.15 2007-01-12 12:38:08 alriddoch Exp $
+// $Id: Py_Task.cpp,v 1.16 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Task.h"
 
@@ -185,7 +185,7 @@ static int Task_setattr(PyTask *self, char *name, PyObject *v)
 
 static int Task_compare(PyTask *self, PyTask *other)
 {
-    if ((self->m_task == NULL) || (other->m_task == NULL)) {
+    if (self->m_task == NULL || other->m_task == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL Task in Task.compare");
         return -1;
     }

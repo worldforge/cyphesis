@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.91 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: Database.cpp,v 1.92 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Database.h"
 
@@ -275,7 +275,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
                         << " table" << std::endl << std::flush;);
         return false;
     }
-    if ((PQntuples(res) < 1) || (PQnfields(res) < 2)) {
+    if (PQntuples(res) < 1 || PQnfields(res) < 2) {
         debug(std::cout << "No entry for " << key << " in " << table
                         << " table" << std::endl << std::flush;);
         PQclear(res);
@@ -424,7 +424,7 @@ bool Database::getTable(const std::string & table, MapType &o)
         return false;
     }
     int results = PQntuples(res);
-    if ((results < 1) || (PQnfields(res) < 2)) {
+    if (results < 1 || PQnfields(res) < 2) {
         debug(std::cout << "No entries in " << table
                         << " table" << std::endl << std::flush;);
         PQclear(res);
@@ -559,7 +559,7 @@ bool Database::registerRelation(std::string & tablename,
 
     std::string createquery = "CREATE TABLE ";
     createquery += tablename;
-    if ((kind == OneToOne) || (kind == ManyToOne)) {
+    if (kind == OneToOne || kind == ManyToOne) {
         createquery += " (source integer UNIQUE REFERENCES ";
     } else {
         createquery += " (source integer REFERENCES ";
@@ -567,7 +567,7 @@ bool Database::registerRelation(std::string & tablename,
     createquery += sourcetable;
 #if 0
     // FIXME Referential integrity not supported on inherited tables.
-    if ((kind == OneToOne) || (kind == OneToMany)) {
+    if (kind == OneToOne || kind == OneToMany) {
         createquery += " (id), target integer UNIQUE REFERENCES ";
     } else {
         createquery += " (id), target integer REFERENCES ";
@@ -575,7 +575,7 @@ bool Database::registerRelation(std::string & tablename,
     createquery += targettable;
     createquery += " (id))";
 #else
-    if ((kind == OneToOne) || (kind == OneToMany)) {
+    if (kind == OneToOne || kind == OneToMany) {
         createquery += " (id), target integer UNIQUE) WITHOUT OIDS";
     } else {
         createquery += " (id), target integer) WITHOUT OIDS";
@@ -607,7 +607,7 @@ bool Database::registerRelation(std::string & tablename,
     }
     allTables.insert(tablename);
 #if 0
-    if ((kind == ManyToOne) || (kind == OneToOne)) {
+    if (kind == ManyToOne || kind == OneToOne) {
         return true;
     } else {
         std::string indexQuery = "CREATE INDEX ";

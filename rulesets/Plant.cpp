@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.82 2007-06-25 18:53:38 alriddoch Exp $
+// $Id: Plant.cpp,v 1.83 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -189,7 +189,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             dropped--;
         }
     }
-    if ((dropped != 0) || (m_status < 1.)) {
+    if (dropped != 0 || m_status < 1.) {
         set_arg->setAttr("fruits", m_fruits);
     }
     set_op->setArgs1(set_arg);

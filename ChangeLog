@@ -1,5 +1,22 @@
 2007-07-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/Py_CreatorClient.cpp, common/Database.cpp,
+	  common/accountbase.cpp, common/system.cpp, rulesets/Character.cpp,
+	  rulesets/Motion.cpp, rulesets/Plant.cpp, rulesets/Py_Location.cpp,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Operation.cpp,
+	  rulesets/Py_Point3D.cpp, rulesets/Py_Statistics.cpp,
+	  rulesets/Py_Task.cpp, rulesets/Py_TerrainProperty.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Py_Vector3D.cpp,
+	  rulesets/Py_WorldTime.cpp, rulesets/Python_API.cpp,
+	  rulesets/TerrainProperty.cpp, server/Admin.cpp,
+	  server/CommServer.cpp, server/Connection.cpp,
+	  server/EntityFactory.cpp, server/WorldRouter.cpp,
+	  tools/cycmd.cpp, tools/cyconvertrules.cpp, tools/cyctrl.cpp:
+	  Remove unnecessary () from conditional expressions, where operator
+	  binding is clear.
+
+2007-07-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/mason.xml: Add an activation for the combat task, as we now
 	  require it.
 
@@ -16763,4 +16780,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1884 2007-07-30 11:27:34 alriddoch Exp $
+$Id: ChangeLog,v 1.1885 2007-07-30 18:12:50 alriddoch Exp $

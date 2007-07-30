@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.167 2007-07-29 21:23:43 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.168 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Python.h"
 
@@ -411,7 +411,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
         return NULL;
     }
     if (refO != NULL) {
-        if ((!PyEntity_Check(refO)) && (!PyWorld_Check(refO)) && (!PyMind_Check(refO))) {
+        if (!PyEntity_Check(refO) && !PyWorld_Check(refO) && !PyMind_Check(refO)) {
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
                 decrefO = true;
@@ -422,7 +422,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
                 return NULL;
             }
         }
-        if ((coordsO != NULL) && (!PyPoint3D_Check(coordsO))) {
+        if (coordsO != NULL && !PyPoint3D_Check(coordsO)) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             if (decrefO) { Py_DECREF(refO); }
             return NULL;
@@ -626,7 +626,7 @@ static PyObject * quaternion_new(PyObject * self, PyObject * args)
                 break;
             case 1:
                 clist = PyTuple_GetItem(args, 0);
-                if ((!PyList_Check(clist)) || (PyList_Size(clist) != 4)) {
+                if (!PyList_Check(clist) || PyList_Size(clist) != 4) {
                     PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list 4 long");
                     return NULL;
                 }
@@ -780,10 +780,10 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     if (id != NULL) {
         ent->setId(id);
     }
-    if ((kwds != NULL) && (PyDict_Check(kwds))) {
+    if (kwds != NULL && PyDict_Check(kwds)) {
         PyObject * keys = PyDict_Keys(kwds);
         PyObject * vals = PyDict_Values(kwds);
-        if ((keys == NULL) || (vals == NULL)) {
+        if (keys == NULL || vals == NULL) {
             PyErr_SetString(PyExc_RuntimeError, "Error in keywords");
             return NULL;
         }

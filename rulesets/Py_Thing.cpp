@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.59 2007-01-12 12:38:08 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.60 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -311,7 +311,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
 
 static int Entity_compare(PyEntity *self, PyEntity *other)
 {
-    if ((self->m_entity == NULL) || (other->m_entity == NULL)) {
+    if (self->m_entity == NULL || other->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL Entity in Entity.compare");
         return -1;
     }

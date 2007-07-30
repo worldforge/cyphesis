@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.29 2007-05-31 05:03:38 alriddoch Exp $
+// $Id: system.cpp,v 1.30 2007-07-30 18:12:51 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -408,7 +408,7 @@ int check_password(const std::string & pwd, const std::string & hash)
     std::string new_hash;
     size_t hash_size = hash.size();
 
-    if ((hash_size < (digest_length * 2 + 5)) || (hash.substr(0, 3) != "$1$")) {
+    if (hash_size < (digest_length * 2 + 5) || hash.substr(0, 3) != "$1$") {
         // Get a hash of password with no salt
         hash_password(pwd, "", new_hash);
     } else {

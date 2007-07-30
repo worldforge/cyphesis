@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.cpp,v 1.59 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: CommServer.cpp,v 1.60 2007-07-30 18:12:52 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -203,7 +203,7 @@ void CommServer::poll()
         return;
     }
 
-    if ((rval == 0) && !pendingConnections) {
+    if (rval == 0 && !pendingConnections) {
         return;
     }
     

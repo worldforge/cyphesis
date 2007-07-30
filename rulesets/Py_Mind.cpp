@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.38 2007-01-12 12:38:06 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.39 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -194,7 +194,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
 
 static int Mind_compare(PyMind *self, PyMind *other)
 {
-    if ((self->m_mind == NULL) || (other->m_mind == NULL)) {
+    if (self->m_mind == NULL || other->m_mind == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.compare");
         return -1;
     }

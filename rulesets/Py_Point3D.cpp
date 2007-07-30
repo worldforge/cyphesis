@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Point3D.cpp,v 1.12 2006-10-26 00:48:11 alriddoch Exp $
+// $Id: Py_Point3D.cpp,v 1.13 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Point3D.h"
 
@@ -165,7 +165,7 @@ static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
             break;
         case 1:
             clist = PyTuple_GetItem(args, 0);
-            if ((!PyList_Check(clist)) || (PyList_Size(clist) != 3)) {
+            if (!PyList_Check(clist) || PyList_Size(clist) != 3) {
                 PyErr_SetString(PyExc_TypeError, "Point3D() from single value must a list 3 long");
                 return -1;
             }

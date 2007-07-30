@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: accountbase.cpp,v 1.15 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: accountbase.cpp,v 1.16 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "accountbase.h"
 
@@ -35,13 +35,13 @@ int AccountBase::init()
 bool AccountBase::putAccount(const Atlas::Message::MapType & account)
 {
     Atlas::Message::MapType::const_iterator I = account.find("username");
-    if ((I == account.end()) || (!I->second.isString())) {
+    if (I == account.end() || !I->second.isString()) {
         return false;
     }
     const std::string & username = I->second.String();
     
     I = account.find("password");
-    if ((I == account.end()) || (!I->second.isString())) {
+    if (I == account.end() || !I->second.isString()) {
         return false;
     }
     const std::string & password = I->second.String();
@@ -50,7 +50,7 @@ bool AccountBase::putAccount(const Atlas::Message::MapType & account)
     
     std::string type = "player";
     I = account.find("type");
-    if ((I != account.end()) && (I->second.isString())) {
+    if (I != account.end() && I->second.isString()) {
         type = I->second.String();
     }
     
@@ -81,7 +81,7 @@ bool AccountBase::modAccount(const Atlas::Message::MapType & account,
     bool empty = true;
 
     Atlas::Message::MapType::const_iterator I = account.find("type");
-    if ((I != account.end()) && (I->second.isString())) {
+    if (I != account.end() && I->second.isString()) {
         empty = false;
         columns += "type = '";
         columns += I->second.String();
@@ -89,7 +89,7 @@ bool AccountBase::modAccount(const Atlas::Message::MapType & account,
     }
 
     I = account.find("password");
-    if ((I != account.end()) && (I->second.isString())) {
+    if (I != account.end() && I->second.isString()) {
         if (!empty) { columns += ", "; }
         std::string hash;
         encrypt_password(I->second.String(), hash);

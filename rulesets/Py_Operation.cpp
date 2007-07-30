@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.cpp,v 1.58 2007-04-01 20:55:27 alriddoch Exp $
+// $Id: Py_Operation.cpp,v 1.59 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
@@ -596,7 +596,7 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
 #endif // NDEBUG
     if (strcmp(name, "from_") == 0) {
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
-        if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
+        if (thing_id == NULL || !PyString_Check(thing_id)) {
             PyErr_SetString(PyExc_TypeError, "invalid from");
             if (thing_id != NULL) {
                 Py_DECREF(thing_id);
@@ -609,7 +609,7 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
     }
     if (strcmp(name, "to") == 0) {
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
-        if ((thing_id == NULL) || (!PyString_Check(thing_id))) {
+        if (thing_id == NULL || !PyString_Check(thing_id)) {
             PyErr_SetString(PyExc_TypeError, "invalid to");
             if (thing_id != NULL) {
                 Py_DECREF(thing_id);

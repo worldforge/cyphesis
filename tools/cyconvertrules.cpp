@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconvertrules.cpp,v 1.11 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: cyconvertrules.cpp,v 1.12 2007-07-30 18:12:52 alriddoch Exp $
 
 /// \page cyconvertrules_index
 ///
@@ -117,7 +117,7 @@ void FileConverter::messageArrived(const MapType & omap)
         // in the new format by the more conventional atlas list of strings.
         MapType::const_iterator J = ent.find("parent");
         MapType::const_iterator Jend = ent.end();
-        if ((J == Jend) || (!J->second.isString())) {
+        if (J == Jend || !J->second.isString()) {
             std::cerr << "Rule \"" << I->first << "\" has no parent."
                       << std::endl << std::flush;
             continue;
@@ -137,11 +137,11 @@ void FileConverter::messageArrived(const MapType & omap)
                 continue;
             }
             newObject["attributes"] = MapType();
-            MapType & newAttrs = newObject["attributes"].asMap();
-            const MapType & attributes = J->second.asMap();
+            MapType & newAttrs = newObject["attributes"].Map();
+            const MapType & attributes = J->second.Map();
             MapType::const_iterator aend = attributes.end();
             for(J = attributes.begin(); J != aend; ++J) {
-                MapType & attr = (newAttrs[J->first] = MapType()).asMap();
+                MapType & attr = (newAttrs[J->first] = MapType()).Map();
                 attr["default"] = J->second;
                 attr["visibility"] = "public";
             }

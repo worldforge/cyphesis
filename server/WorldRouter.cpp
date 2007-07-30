@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.215 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.216 2007-07-30 18:12:52 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -156,7 +156,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
     op->setFutureSeconds(0.);
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();
-    for (; (I != Iend) && ((*I).op->getSeconds() <= t) ; ++I);
+    for (; I != Iend && (*I).op->getSeconds() <= t; ++I);
     m_operationQueue.insert(I, OpQueEntry(op, ent));
 }
 
@@ -171,7 +171,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
 Operation WorldRouter::getOperationFromQueue()
 {
     OpQueue::const_iterator I = m_operationQueue.begin();
-    if ((I == m_operationQueue.end()) || ((*I)->getSeconds() > m_realTime)) {
+    if (I == m_operationQueue.end() || (*I)->getSeconds() > m_realTime) {
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
@@ -537,8 +537,7 @@ bool WorldRouter::idle(int sec, int usec)
     unsigned int op_count = 0;
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();
-    while ((++op_count < 10) && (I != Iend) &&
-           ((*I)->getSeconds() <= m_realTime)) {
+    while (++op_count < 10 && I != Iend && (*I)->getSeconds() <= m_realTime) {
         assert(I != m_operationQueue.end());
         OpQueEntry & oqe = *I;
         Dispatching.emit(oqe.op);
@@ -557,7 +556,7 @@ bool WorldRouter::idle(int sec, int usec)
 
     I = m_immediateQueue.begin();
     Iend = m_immediateQueue.end();
-    while ((++op_count < 10) && (I != Iend)) {
+    while (++op_count < 10 && I != Iend) {
         assert(I != m_immediateQueue.end());
         OpQueEntry & oqe = *I;
         Dispatching.emit(oqe.op);

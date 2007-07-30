@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_TerrainProperty.cpp,v 1.2 2007-07-04 16:42:11 alriddoch Exp $
+// $Id: Py_TerrainProperty.cpp,v 1.3 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Property.h"
 
@@ -103,7 +103,7 @@ static int TerrainProperty_setattr(PyTerrainProperty * self,
 
 static int TerrainProperty_compare(PyTerrainProperty *self, PyTerrainProperty *other)
 {
-    if ((self->m_entity == NULL) || (other->m_entity == NULL)) {
+    if (self->m_entity == NULL || other->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.compare");
         return -1;
     }

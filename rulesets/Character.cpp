@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.300 2007-07-29 21:23:42 alriddoch Exp $
+// $Id: Character.cpp,v 1.301 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Character.h"
 
@@ -119,7 +119,7 @@ void Character::metabolise(OpVector & res, double ammount)
     // We should probably call this whenever the entity performs a movement.
 
     // If status is very high, we gain weight
-    if ((m_status > (1.5 + energyLaidDown)) && (m_mass < m_maxMass)) {
+    if (m_status > (1.5 + energyLaidDown) && m_mass < m_maxMass) {
         m_status -= energyLaidDown;
         m_mass += weightGain;
         mass_changed = true;
@@ -127,7 +127,7 @@ void Character::metabolise(OpVector & res, double ammount)
         // If status is relatively is not very high, then energy is burned
         double energy_used = energyConsumption * ammount;
         double weight_used = weightConsumption * m_mass * ammount;
-        if ((m_status <= 0.5) && (m_mass > weight_used)) {
+        if (m_status <= 0.5 && m_mass > weight_used) {
             // Drain away a little energy and lose some weight
             // This ensures there is a long term penalty to allowing something
             // to starve
@@ -404,7 +404,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         }
     } else {
         // DIGEST
-        if ((m_food >= foodConsumption) && (m_status < 2)) {
+        if (m_food >= foodConsumption && m_status < 2) {
             // It is important that the metabolise bit is done next, as this
             // handles the status change
             m_status = m_status + foodConsumption;
@@ -983,8 +983,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             res.push_back(u);
             return;
         }
-        if ((other->getMass() < 0) ||
-            (other->getMass() > m_statistics.get("strength"))) {
+        if (other->getMass() < 0 ||
+            other->getMass() > m_statistics.get("strength")) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }

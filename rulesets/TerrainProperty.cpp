@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.10 2007-07-29 21:23:43 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.11 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -94,7 +94,7 @@ void TerrainProperty::set(const Element & ent)
     const Pointstore & base_points = m_data.getPoints();
 
     MapType::const_iterator I = t.find("points");
-    if ((I != t.end()) && (I->second.isMap())) {
+    if (I != t.end() && I->second.isMap()) {
         const MapType & points = I->second.asMap();
         MapType::const_iterator Iend = points.end();
         for (MapType::const_iterator I = points.begin(); I != Iend; ++I) {
@@ -110,15 +110,15 @@ void TerrainProperty::set(const Element & ent)
             int y = (int)point[1].asNum();
 
             Pointstore::const_iterator J = base_points.find(x);
-            if ((J == base_points.end()) ||
-                (J->second.find(y) == J->second.end())) {
+            if (J == base_points.end() ||
+                J->second.find(y) == J->second.end()) {
                 // Newly added point.
                 m_createdTerrain[x].insert(y);
             } else {
                 // Modified point
                 PointSet::const_iterator K = m_createdTerrain.find(x);
-                if ((K == m_createdTerrain.end()) ||
-                    (K->second.find(y) == K->second.end())) {
+                if (K == m_createdTerrain.end() ||
+                    K->second.find(y) == K->second.end()) {
                     // Already in database
                     m_modifiedTerrain[x].insert(y);
                 }

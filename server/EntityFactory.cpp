@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.119 2007-07-30 01:54:26 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.120 2007-07-30 18:12:52 alriddoch Exp $
 
 #include <Python.h>
 
@@ -314,7 +314,7 @@ int EntityFactory::populateFactory(const std::string & class_name,
             const std::string & mindType = J->second.String();
             // language is unused. might need it one day
             // J = script.find("language");
-            // if ((J != script.end()) && (J->second.isString())) {
+            // if (J != script.end() && J->second.isString()) {
                 // const std::string & mindLang = J->second.String();
             // }
             MindFactory::instance()->addMindType(class_name, mindType);

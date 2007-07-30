@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Location.cpp,v 1.45 2007-01-12 12:38:06 alriddoch Exp $
+// $Id: Py_Location.cpp,v 1.46 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Location.h"
 #include "Py_Thing.h"
@@ -46,7 +46,7 @@ static PyMethodDef Location_methods[] = {
 
 static void Location_dealloc(PyLocation *self)
 {
-    if ((self->owner == 0) && (self->location != NULL)) {
+    if (self->owner == 0 && self->location != NULL) {
         delete self->location;
     }
     PyObject_Free(self);
@@ -113,12 +113,12 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
         self->location->m_loc = thing->m_entity;
         return 0;
     }
-    if ((strcmp(name, "bbox") == 0) && PyBBox_Check(v)) {
+    if (strcmp(name, "bbox") == 0 && PyBBox_Check(v)) {
         PyBBox * box = (PyBBox *)v;
         self->location->setBBox(box->box);
         return 0;
     }
-    if ((strcmp(name, "orientation") == 0) && PyQuaternion_Check(v)) {
+    if (strcmp(name, "orientation") == 0 && PyQuaternion_Check(v)) {
         PyQuaternion * quat = (PyQuaternion *)v;
         self->location->m_orientation = quat->rotation;
         return 0;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyctrl.cpp,v 1.6 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: cyctrl.cpp,v 1.7 2007-07-30 18:12:52 alriddoch Exp $
 
 #error This file has been removed from the build
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
     int ret;
     ctask_t job;
     int server_pid = -1;
-    if ((argc != 2) || (strcmp(argv[1], "--help") == 0)) {
+    if (argc != 2 || strcmp(argv[1], "--help") == 0) {
         usage(argv);
         return 1;
     }

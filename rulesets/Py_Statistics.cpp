@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Statistics.cpp,v 1.17 2007-07-03 13:42:50 alriddoch Exp $
+// $Id: Py_Statistics.cpp,v 1.18 2007-07-30 18:12:51 alriddoch Exp $
 
 #include "Py_Statistics.h"
 
@@ -84,7 +84,7 @@ static int Statistics_setattro(PyStatistics *self, PyObject *pn, PyObject *v)
 
 static int Statistics_compare(PyStatistics *self, PyStatistics *other)
 {
-    if ((self->m_entity == NULL) || (other->m_entity == NULL)) {
+    if (self->m_entity == NULL || other->m_entity == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Statistics.compare");
         return -1;
     }
