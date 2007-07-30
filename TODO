@@ -1,3 +1,7 @@
+EntityFactory has got really convoluted. Try and verify that the same things
+are done when a tool is updated as when it is loaded. May be good to break
+things down into smaller functions.
+
 script_factory->refreshClass is called before populateFactory(). Seems weird.
 Surely the script might have been changed? If it has, what causes it to be
 loaded?

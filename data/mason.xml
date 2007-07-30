@@ -712,6 +712,10 @@
     <list name="parents">
       <string>task</string>
     </list>
+    <map name="activation">
+      <string name="operation">attack</string>
+      <string name="tool">sword</string>
+    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Combat</string>

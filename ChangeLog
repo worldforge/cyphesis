@@ -1,5 +1,10 @@
 2007-07-30  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/mason.xml: Add an activation for the combat task, as we now
+	  require it.
+
+2007-07-30  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp, server/EntityFactory.h: Major overhaul of
 	  error reporting when installing rules, covering many new cases, and
 	  reporting errors more clearly.
@@ -16758,4 +16763,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1883 2007-07-30 01:54:25 alriddoch Exp $
+$Id: ChangeLog,v 1.1884 2007-07-30 11:27:34 alriddoch Exp $
