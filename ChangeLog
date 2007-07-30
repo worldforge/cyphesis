@@ -1,3 +1,9 @@
+2007-07-30  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/EntityFactory.cpp, server/EntityFactory.h: Major overhaul of
+	  error reporting when installing rules, covering many new cases, and
+	  reporting errors more clearly.
+
 2007-07-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Character.cpp, rulesets/MemMap.cpp, rulesets/Motion.cpp,
@@ -16752,4 +16758,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1882 2007-07-29 21:23:40 alriddoch Exp $
+$Id: ChangeLog,v 1.1883 2007-07-30 01:54:25 alriddoch Exp $

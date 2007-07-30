@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.118 2007-07-29 20:35:48 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.119 2007-07-30 01:54:26 alriddoch Exp $
 
 #include <Python.h>
 
@@ -262,46 +262,55 @@ void EntityFactory::flushFactories()
     m_taskFactories.clear();
 }
 
-void EntityFactory::populateFactory(const std::string & class_name,
-                                    FactoryBase * factory,
-                                    const MapType & class_desc)
+int EntityFactory::populateFactory(const std::string & class_name,
+                                   FactoryBase * factory,
+                                   const MapType & class_desc)
 {
     // Establish whether this rule has an associated script, and
     // if so, use it.
     MapType::const_iterator J = class_desc.find("script");
     MapType::const_iterator Jend = class_desc.end();
-    if ((J != Jend) && (J->second.isMap())) {
+    if (J != Jend && J->second.isMap()) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
-        if ((J != script.end()) && (J->second.isString())) {
-            const std::string & script_name = J->second.String();
-            J = script.find("language");
-            if ((J != script.end()) && (J->second.isString())) {
-                const std::string & script_language = J->second.String();
-                if (factory->m_scriptFactory != 0) {
-                    if (factory->m_scriptFactory->package() != script_name) {
-                        delete factory->m_scriptFactory;
-                        factory->m_scriptFactory = 0;
-                    }
-                }
-                if (factory->m_scriptFactory == 0) {
-                    if (script_language == "python") {
-                        factory->m_scriptFactory = new PythonScriptFactory(script_name, class_name);
-                    } else {
-                        log(ERROR, "Unknown script language.");
-                    }
-                }
+        if (J == script.end() || !J->second.isString()) {
+            log(ERROR, String::compose("Entity \"%1\" script has no name.",
+                                       class_name));
+            return -1;
+        }
+        const std::string & script_name = J->second.String();
+        J = script.find("language");
+        if (J == script.end() || !J->second.isString()) {
+            log(ERROR, String::compose("Entity \"%1\" script has no language.",
+                                       class_name));
+            return -1;
+        }
+        const std::string & script_language = J->second.String();
+        if (script_language != "python") {
+            log(ERROR, String::compose("Entity \"%1\" script has unknown "
+                                       "language \"%2\".",
+                                       class_name, script_language));
+            return -1;
+        }
+        if (factory->m_scriptFactory != 0) {
+            if (factory->m_scriptFactory->package() != script_name) {
+                delete factory->m_scriptFactory;
+                factory->m_scriptFactory = 0;
             }
+        }
+        if (factory->m_scriptFactory == 0) {
+            factory->m_scriptFactory = new PythonScriptFactory(script_name,
+                                                               class_name);
         }
     }
 
     // Establish whether this rule has an associated mind rule,
     // and handle it.
     J = class_desc.find("mind");
-    if ((J != Jend) && (J->second.isMap())) {
+    if (J != Jend && J->second.isMap()) {
         const MapType & script = J->second.asMap();
         J = script.find("name");
-        if ((J != script.end()) && (J->second.isString())) {
+        if (J != script.end() && J->second.isString()) {
             const std::string & mindType = J->second.String();
             // language is unused. might need it one day
             // J = script.find("language");
@@ -314,7 +323,7 @@ void EntityFactory::populateFactory(const std::string & class_name,
 
     // Store the default attribute for entities create by this rule.
     J = class_desc.find("attributes");
-    if ((J != Jend) && (J->second.isMap())) {
+    if (J != Jend && J->second.isMap()) {
         const MapType & attrs = J->second.asMap();
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
@@ -336,9 +345,11 @@ void EntityFactory::populateFactory(const std::string & class_name,
 
     // Check whether it should be available to players as a playable character.
     J = class_desc.find("playable");
-    if ((J != Jend) && (J->second.isInt())) {
+    if (J != Jend && J->second.isInt()) {
         Player::playableTypes.insert(class_name);
     }
+
+    return 0;
 }
 
 bool EntityFactory::isTask(const std::string & class_name)
@@ -377,102 +388,134 @@ int EntityFactory::installTaskClass(const std::string & class_name,
                                    "already installed.", class_name));
     }
     
-    TaskFactory * factory = 0;
-    // Establish whether this rule has an associated script, and
-    // if so, use it.
+    // Establish that this rule has an associated script.
     MapType::const_iterator J = class_desc.find("script");
     MapType::const_iterator Jend = class_desc.end();
-    if ((J != Jend) && J->second.isMap()) {
-        const MapType & script = J->second.Map();
-        J = script.find("name");
-        if ((J != script.end()) && (J->second.isString())) {
-            const std::string & script_name = J->second.String();
-            J = script.find("language");
-            if ((J != script.end()) && (J->second.isString())) {
-                const std::string & script_language = J->second.String();
-                if (script_language == "python") {
-                    factory = new PythonTaskScriptFactory(script_name, class_name);
-                } else {
-                    log(ERROR, String::compose("Unknown script language \"%1\" "
-                                               "for task \"%2\".",
-                                               script_language, class_name));
-                }
-            }
-        }
+    if (J == Jend || !J->second.isMap()) {
+        log(ERROR, String::compose("Task \"%1\" has no script.", class_name));
+        return -1;
     }
+    const MapType & script = J->second.Map();
 
-    if (factory == 0) {
+    J = script.find("name");
+    if (J == script.end() || !J->second.isString()) {
+        log(ERROR, String::compose("Task \"%1\" script has no name.",
+                                   class_name));
+        return -1;
+    }
+    const std::string & script_name = J->second.String();
+
+    J = script.find("language");
+    if (J == script.end() || !J->second.isString()) {
+        log(ERROR, String::compose("Task \"%1\" script has no language.",
+                                   class_name));
+        return -1;
+    }
+    const std::string & script_language = J->second.String();
+
+    if (script_language != "python") {
+        log(ERROR, String::compose("Task \"%1\" script has unknown language "
+                                   "\"%2\".", class_name, script_language));
         return -1;
     }
 
+    TaskFactory * factory = new PythonTaskScriptFactory(script_name, class_name);
+
     J = class_desc.find("activation");
-    if ((J != Jend) && J->second.isMap()) {
-        const MapType & activation = J->second.Map();
-        MapType::const_iterator act_end = activation.end();
-        J = activation.find("tool");
-        if (J != act_end && J->second.isString()) {
-            const std::string & activation_tool = J->second.String();
-            if (!i.hasClass(activation_tool)) {
-                // FIXME Record this error for reporting later.
-                delete factory;
-                waitForRule(class_name, class_desc, activation_tool,
-                            String::compose("Task \"%1\" is activated by tool "
-                                            "\"%2\" which does not exist.",
-                                            class_name, activation_tool));
-                return 1;
-            }
-            FactoryDict::const_iterator K = m_factories.find(activation_tool);
-            if (K == m_factories.end()) {
-                delete factory;
-                log(ERROR, String::compose("Task class \"%1\" is activated "
-                                           "by tool \"%2\" which is not an "
-                                           "entity class.", class_name,
-                                           activation_tool));
-                return -1;
-            }
-            FactoryBase * tool_factory = K->second;
-            J = activation.find("operation");
-            if (J != act_end && J->second.isString()) {
-                const std::string & activation_op = J->second.String();
-                if (!i.hasClass(activation_op)) {
-                    // FIXME Record this error for reporting later.
-                    delete factory;
-                    waitForRule(class_name, class_desc, activation_op,
-                                String::compose("Task \"%1\" is activated by "
-                                                "operation \"%2\" which does "
-                                                "not exist.", class_name,
-                                                activation_op));
-                    return 1;
-                }
-                m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
-                MapType::iterator L = tool_factory->m_classAttributes.find("operations");
-                if (L == tool_factory->m_classAttributes.end()) {
-                    tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
-                    tool_factory->m_attributes["operations"] = ListType(1, activation_op);
-                    updateChildren(tool_factory);
-                } else {
-                    if (L->second.isList()) {
-                        ListType::const_iterator M = L->second.List().begin();
-                        for (; M != L->second.List().end() && *M != activation_op; ++M);
-                        if (M == L->second.List().end()) {
-                            L->second.List().push_back(activation_op);
-                            tool_factory->m_attributes[L->first] = L->second.List();
-                            updateChildren(tool_factory);
-                        }
-                    }
-                }
-                
-            }
-        }
-        J = activation.find("target");
-        if (J != act_end && J->second.isString()) {
-            const std::string & target_base = J->second.String();
-            factory->m_target = target_base;
-        }
+    if (J == Jend || !J->second.isMap()) {
+        delete factory;
+        log(ERROR, String::compose("Task \"%1\" has no activation.",
+                                   class_name));
+        return -1;
+    }
+    const MapType & activation = J->second.Map();
+
+    MapType::const_iterator act_end = activation.end();
+    J = activation.find("tool");
+    if (J == act_end || !J->second.isString()) {
+        delete factory;
+        log(ERROR, String::compose("Task \"%1\" activation has no tool.",
+                                   class_name));
+        return -1;
+    }
+    const std::string & activation_tool = J->second.String();
+
+    if (!i.hasClass(activation_tool)) {
+        delete factory;
+        waitForRule(class_name, class_desc, activation_tool,
+                    String::compose("Task \"%1\" is activated by tool "
+                                    "\"%2\" which does not exist.",
+                                    class_name, activation_tool));
+        return 1;
+    }
+    FactoryDict::const_iterator K = m_factories.find(activation_tool);
+    if (K == m_factories.end()) {
+        delete factory;
+        log(ERROR, String::compose("Task class \"%1\" is activated "
+                                   "by tool \"%2\" which is not an "
+                                   "entity class.", class_name,
+                                   activation_tool));
+        return -1;
+    }
+    FactoryBase * tool_factory = K->second;
+
+    J = activation.find("operation");
+    if (J == act_end || !J->second.isString()) {
+        delete factory;
+        log(ERROR, String::compose("Task \"%1\" activation has no operation.",
+                                   class_name));
+        return -1;
     }
 
-    // std::cout << "Attempting to install " << class_name << " which is a "
-              // << parent << std::endl << std::flush;
+    const std::string & activation_op = J->second.String();
+    if (!i.hasClass(activation_op)) {
+        delete factory;
+        waitForRule(class_name, class_desc, activation_op,
+                    String::compose("Task \"%1\" is activated by operation "
+                                    "\"%2\" which does not exist.",
+                                    class_name, activation_op));
+        return 1;
+    }
+
+    J = activation.find("target");
+    if (J != act_end) {
+        if (!J->second.isString()) {
+            delete factory;
+            log(ERROR, String::compose("Task \"%1\" activation has \"%2\" "
+                                       " target.", class_name,
+                                       Element::typeName(J->second.getType())));
+            return -1;
+        }
+        const std::string & target_base = J->second.String();
+        if (!i.hasClass(target_base)) {
+            delete factory;
+            waitForRule(class_name, class_desc, target_base,
+                        String::compose("Task \"%1\" is activated on target "
+                                        "\"%2\" which does not exist.",
+                                        class_name, target_base));
+            return 1;
+        }
+        factory->m_target = target_base;
+    }
+
+    m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
+    MapType::iterator L = tool_factory->m_classAttributes.find("operations");
+    if (L == tool_factory->m_classAttributes.end()) {
+        tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
+        tool_factory->m_attributes["operations"] = ListType(1, activation_op);
+        updateChildren(tool_factory);
+    } else {
+        if (L->second.isList()) {
+            ListType::const_iterator M = L->second.List().begin();
+            for (; M != L->second.List().end() && *M != activation_op; ++M);
+            if (M == L->second.List().end()) {
+                L->second.List().push_back(activation_op);
+                tool_factory->m_attributes[L->first] = L->second.List();
+                updateChildren(tool_factory);
+            }
+        }
+    }
+    
     m_taskFactories.insert(std::make_pair(class_name, factory));
 
     i.addChild(atlasClass(class_name, parent));
@@ -511,7 +554,10 @@ int EntityFactory::installEntityClass(const std::string & class_name,
     // overriden with the defaults for this class.
     factory->m_attributes = parent_factory->m_attributes;
 
-    populateFactory(class_name, factory, class_desc);
+    if (populateFactory(class_name, factory, class_desc) != 0) {
+        delete factory;
+        return -1;
+    }
 
     debug(std::cout << "INSTALLING " << class_name << ":" << parent
                     << std::endl << std::flush;);
@@ -653,6 +699,9 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
         script_factory->refreshClass();
     }
 
+    MapType backup_attributes = factory->m_attributes,
+            backup_class_attributes = factory->m_classAttributes;
+
     // Copy the defaults from the parent. In populateFactory this may be
     // overriden with the defaults for this class.
     if (factory->m_parent != 0) {
@@ -662,12 +711,17 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
         // This should only happen if the client attempted to modify the
         // type data for a core hard coded type.
         log(ERROR, String::compose("EntityFactory::modifyEntityClass: \"%1\" "
-                                   "modified by client, so has no parent "
+                                   "modified by client, but has no parent "
                                    "factory.", class_name));
+        factory->m_attributes = MapType();
     }
     factory->m_classAttributes = MapType();
 
-    populateFactory(class_name, factory, class_desc->asMessage());
+    if (populateFactory(class_name, factory, class_desc->asMessage()) != 0) {
+        factory->m_attributes = backup_attributes;
+        factory->m_classAttributes = backup_class_attributes;
+        return -1;
+    }
 
     updateChildren(factory);
 
