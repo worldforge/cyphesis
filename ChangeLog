@@ -1,3 +1,8 @@
+2007-07-31  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/IGEntityExerciser.h: Expand the operations injected into
+	  IG entity classes, to try and trigger every error message.
+
 2007-07-30  Al Riddoch  <alriddoch@zepler.org>
 
 	* client/Py_CreatorClient.cpp, common/Database.cpp,
@@ -16780,4 +16785,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1885 2007-07-30 18:12:50 alriddoch Exp $
+$Id: ChangeLog,v 1.1886 2007-07-31 19:14:31 alriddoch Exp $
