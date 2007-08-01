@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.15 2007-08-01 15:21:06 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.16 2007-08-01 17:48:44 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -205,10 +205,13 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
 
-        move_arg->setLoc(EntityExerciser<EntityType>::m_ent.m_location.m_loc->getId());
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        if (EntityExerciser<EntityType>::m_ent.m_location.m_loc != 0) {
+            move_arg->setLoc(EntityExerciser<EntityType>::m_ent.m_location.m_loc->getId());
+            EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
+            EntityExerciser<EntityType>::flushOperations(ov);
+        }
 
+        move_arg->setLoc(EntityExerciser<EntityType>::m_ent.getId());
         addToEntity(EntityExerciser<EntityType>::m_ent.m_location.pos(), move_arg->modifyPos());
         EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
