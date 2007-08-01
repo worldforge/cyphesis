@@ -15,13 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.13 2007-07-31 19:14:32 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.14 2007-08-01 01:04:38 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
 
 #include "EntityExerciser.h"
+
 #include "TestPropertyManager.h"
+#include "TestWorld.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -32,6 +34,8 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
                                EntityExerciser<EntityType>(e) {
         new TestPropertyManager;
         e.m_location.m_loc = new Entity("0", 0);
+        new TestWorld(*e.m_location.m_loc);
+        BaseWorld::instance().addEntity(&e);
     }
 
     bool checkAttributes(const std::set<std::string> & attr_names);
@@ -106,6 +110,24 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         OpVector ov;
         EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Root bad_arg;
+        op->setArgs1(bad_arg);
+        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Entity::Anonymous create_arg;
+        op->setArgs1(create_arg);
+        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        create_arg->setParents(std::list<std::string>(1, ""));
+        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        create_arg->setParents(std::list<std::string>(1, "thing"));
+        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Delete op;
@@ -171,13 +193,29 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
 
+        move_arg->setLoc("242");
+        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        move_arg->setLoc(EntityExerciser<EntityType>::m_ent.getId());
+        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
         move_arg->setLoc(EntityExerciser<EntityType>::m_ent.m_location.m_loc->getId());
         EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
 
-        // addToEntity(EntityExerciser<EntityType>::m_ent.m_location.pos(), move_arg->modifyPos());
-        // EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        // EntityExerciser<EntityType>::flushOperations(ov);
+        addToEntity(EntityExerciser<EntityType>::m_ent.m_location.pos(), move_arg->modifyPos());
+        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        move_arg->setAttr("mode", 1);
+        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        move_arg->removeAttr("mode");
+        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Nourish op;
@@ -240,6 +278,15 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         Atlas::Objects::Operation::Setup op;
         EntityExerciser<EntityType>::dispatchOp(op);
         OpVector ov;
+        EntityExerciser<EntityType>::m_ent.SetupOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Entity::Anonymous set_arg;
+        op->setArgs1(set_arg);
+        EntityExerciser<EntityType>::m_ent.SetupOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        EntityExerciser<EntityType>::m_ent.setStatus(-1);
         EntityExerciser<EntityType>::m_ent.SetupOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
     }

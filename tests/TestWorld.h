@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TestWorld.h,v 1.6 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: TestWorld.h,v 1.7 2007-08-01 01:04:38 alriddoch Exp $
 
 #ifndef TESTS_TEST_WORLD_H
 #define TESTS_TEST_WORLD_H
 
 #include "common/BaseWorld.h"
+
+#include "rulesets/Entity.h"
 
 /// Test implementation of the BaseWorld interface
 class TestWorld : public BaseWorld {
@@ -28,7 +30,10 @@ class TestWorld : public BaseWorld {
     explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
 
     virtual bool idle(int, int) { return false; }
-    virtual Entity * addEntity(Entity * ent, bool setup = true) { return 0; }
+    virtual Entity * addEntity(Entity * ent, bool setup = true) { 
+        m_eobjects[ent->getIntId()] = ent;
+        return 0;
+    }
     virtual Entity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
