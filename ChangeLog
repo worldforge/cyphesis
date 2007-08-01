@@ -1,5 +1,13 @@
 2007-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/IGEntityExerciser.h: Treat entities with ID 0 a little
+	  differently as they should be rigged up as the world for testing.
+
+	* tests/Creatortest.cpp, tests/Worldtest.cpp: Remove the test world
+	  is it is now set up in the exerciser.
+
+2007-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/IGEntityExerciser.h: Add more test coverage for operations
 	  to trigger errer detection in Thing.MoveOperation.
 
@@ -16793,4 +16801,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1887 2007-08-01 01:04:37 alriddoch Exp $
+$Id: ChangeLog,v 1.1888 2007-08-01 15:21:05 alriddoch Exp $

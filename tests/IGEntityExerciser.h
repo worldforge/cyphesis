@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.14 2007-08-01 01:04:38 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.15 2007-08-01 15:21:06 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -33,8 +33,12 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
     explicit IGEntityExerciser(EntityType & e) :
                                EntityExerciser<EntityType>(e) {
         new TestPropertyManager;
-        e.m_location.m_loc = new Entity("0", 0);
-        new TestWorld(*e.m_location.m_loc);
+        if (e.getIntId() == 0) {
+            new TestWorld(e);
+        } else {
+            e.m_location.m_loc = new Entity("0", 0);
+            new TestWorld(*e.m_location.m_loc);
+        }
         BaseWorld::instance().addEntity(&e);
     }
 

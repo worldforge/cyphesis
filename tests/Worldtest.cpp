@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Worldtest.cpp,v 1.24 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Worldtest.cpp,v 1.25 2007-08-01 15:21:06 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -30,8 +30,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    World e("1", 1);
-    TestWorld tw(e);
+    World e("0", 0);
 
     IGEntityExerciser<World> ee(e);
 
