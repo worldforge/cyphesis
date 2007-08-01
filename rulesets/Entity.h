@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.86 2007-01-17 23:00:59 alriddoch Exp $
+// $Id: Entity.h,v 1.87 2007-08-01 21:19:07 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -148,6 +148,11 @@ class Entity : public BaseEntity {
     /// \brief Accessor for pointer to script object
     Script * script() const {
         return m_script;
+    }
+
+    /// \brief Accessor for pointer to motion object
+    Motion * motion() const {
+        return m_motion;
     }
 
     /// \brief Send an operation to the world for dispatch.

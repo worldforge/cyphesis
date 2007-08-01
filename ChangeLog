@@ -1,5 +1,12 @@
 2007-08-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h: Add an accessor for the motion object.
+
+	* tests/IGEntityExerciser.h: Add more coverate for Set and Update
+	  ops.
+
+2007-08-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/IGEntityExerciser.h: Don't try and refer to the entity
 	  parent if the entity being tested is the world.
 
@@ -16806,4 +16813,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1889 2007-08-01 17:48:44 alriddoch Exp $
+$Id: ChangeLog,v 1.1890 2007-08-01 21:19:06 alriddoch Exp $

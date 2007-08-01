@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.16 2007-08-01 17:48:44 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.17 2007-08-01 21:19:07 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -24,6 +24,8 @@
 
 #include "TestPropertyManager.h"
 #include "TestWorld.h"
+
+#include "rulesets/Motion.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -237,6 +239,20 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         OpVector ov;
         EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Root bad_arg;
+        op->setArgs1(bad_arg);
+        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Entity::Anonymous set_arg;
+        op->setArgs1(set_arg);
+        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        op->setAttr("status", -1);
+        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Sight op;
@@ -316,6 +332,40 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         EntityExerciser<EntityType>::dispatchOp(op);
         OpVector ov;
         EntityExerciser<EntityType>::m_ent.UseOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+    }
+    {
+        Atlas::Objects::Operation::Update op;
+        EntityExerciser<EntityType>::dispatchOp(op);
+        OpVector ov;
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Root bad_arg;
+        op->setArgs1(bad_arg);
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        Atlas::Objects::Entity::Anonymous update_arg;
+        op->setArgs1(update_arg);
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        update_arg->setName("foo");
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        update_arg->setAttr("status", -1);
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        EntityExerciser<EntityType>::m_ent.m_location.m_velocity = Vector3D();
+        op->setRefno(EntityExerciser<EntityType>::m_ent.motion()->serialno());
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
+        EntityExerciser<EntityType>::flushOperations(ov);
+
+        EntityExerciser<EntityType>::m_ent.m_location.m_velocity = Vector3D(1,0,0);
+        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
         EntityExerciser<EntityType>::flushOperations(ov);
     }
     {
