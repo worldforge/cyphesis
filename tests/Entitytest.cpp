@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entitytest.cpp,v 1.13 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Entitytest.cpp,v 1.14 2007-08-01 23:05:29 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -39,9 +39,6 @@ int main()
     // Subscribe the entity to every class of op
     std::set<std::string> opNames;
     ee.addAllOperations(opNames);
-
-    // Throw an op of every type at the entity again now it is subscribed
-    ee.runOperations();
 
     std::set<std::string> attrNames;
     attrNames.insert("status");
@@ -97,6 +94,10 @@ int main()
 
     // Read the contents of the Atlas Message back in
     e.merge(entityAsAtlas);
+
+    // Throw an op of every type at the entity again now it is subscribed,
+    // and full of data.
+    ee.runOperations();
 
     return 0;
 }

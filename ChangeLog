@@ -1,3 +1,14 @@
+2007-08-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.cpp: Initialise motion pointer to zero, so
+	  so tests know whether it is there.
+
+	* rulesets/Thing.cpp: Don't attempt to do a movement update if
+	  LOC is zero. It is a sign something not quite right is going on.
+
+	* tests/IGEntityExerciser.h: Check motion is not null before using
+	  it.
+
 2007-08-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.h: Add an accessor for the motion object.
@@ -16813,4 +16824,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1890 2007-08-01 21:19:06 alriddoch Exp $
+$Id: ChangeLog,v 1.1891 2007-08-01 23:05:28 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.17 2007-08-01 21:19:07 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.18 2007-08-01 23:05:29 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -57,7 +57,7 @@ inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::s
     std::set<std::string>::const_iterator I = attr_names.begin();
     std::set<std::string>::const_iterator Iend = attr_names.end();
     for (; I != Iend; ++I) {
-        if (!this->EntityExerciser<EntityType>::m_ent.getAttr(*I, null)) {
+        if (!this->m_ent.getAttr(*I, null)) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
                       << std::endl << std::flush;
             return false;
@@ -72,7 +72,7 @@ inline bool IGEntityExerciser<EntityType>::checkProperties(const std::set<std::s
     std::set<std::string>::const_iterator I = prop_names.begin();
     std::set<std::string>::const_iterator Iend = prop_names.end();
     for (; I != Iend; ++I) {
-        if (this->EntityExerciser<EntityType>::m_ent.getProperty(*I) == NULL) {
+        if (this->m_ent.getProperty(*I) == NULL) {
             std::cerr << "Entity does not have \"" << *I << "\" property."
                       << std::endl << std::flush;
             return false;
@@ -86,308 +86,310 @@ inline void IGEntityExerciser<EntityType>::runOperations()
 {
     {
         Atlas::Objects::Operation::Login op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.LoginOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.LoginOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous login_arg;
         op->setArgs1(login_arg);
-        EntityExerciser<EntityType>::m_ent.LoginOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.LoginOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Logout op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.LogoutOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.LogoutOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Combine op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.CombineOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.CombineOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Create op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.CreateOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Root bad_arg;
         op->setArgs1(bad_arg);
-        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.CreateOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous create_arg;
         op->setArgs1(create_arg);
-        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.CreateOperation(op, ov);
+        this->flushOperations(ov);
 
         create_arg->setParents(std::list<std::string>(1, ""));
-        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.CreateOperation(op, ov);
+        this->flushOperations(ov);
 
         create_arg->setParents(std::list<std::string>(1, "thing"));
-        EntityExerciser<EntityType>::m_ent.CreateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.CreateOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Delete op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.DeleteOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.DeleteOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Divide op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.DivideOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.DivideOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Eat op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        op->setFrom(EntityExerciser<EntityType>::m_ent.getId());
-        EntityExerciser<EntityType>::m_ent.EatOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        op->setFrom(this->m_ent.getId());
+        this->m_ent.EatOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Get op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.GetOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.GetOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Imaginary op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.ImaginaryOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.ImaginaryOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Info op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.InfoOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.InfoOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Move op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Root bad_arg;
         op->setArgs1(bad_arg);
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous move_arg;
         op->setArgs1(move_arg);
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
-        move_arg->setId(EntityExerciser<EntityType>::m_ent.getId());
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        move_arg->setId(this->m_ent.getId());
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
         move_arg->setLoc("242");
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
-        move_arg->setLoc(EntityExerciser<EntityType>::m_ent.getId());
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        move_arg->setLoc(this->m_ent.getId());
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
-        if (EntityExerciser<EntityType>::m_ent.m_location.m_loc != 0) {
-            move_arg->setLoc(EntityExerciser<EntityType>::m_ent.m_location.m_loc->getId());
-            EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-            EntityExerciser<EntityType>::flushOperations(ov);
+        if (this->m_ent.m_location.m_loc != 0) {
+            move_arg->setLoc(this->m_ent.m_location.m_loc->getId());
+            this->m_ent.MoveOperation(op, ov);
+            this->flushOperations(ov);
         }
 
-        move_arg->setLoc(EntityExerciser<EntityType>::m_ent.getId());
-        addToEntity(EntityExerciser<EntityType>::m_ent.m_location.pos(), move_arg->modifyPos());
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        move_arg->setLoc(this->m_ent.getId());
+        addToEntity(this->m_ent.m_location.pos(), move_arg->modifyPos());
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
         move_arg->setAttr("mode", 1);
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
 
         move_arg->removeAttr("mode");
-        EntityExerciser<EntityType>::m_ent.MoveOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Nourish op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.NourishOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.NourishOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Set op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SetOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Root bad_arg;
         op->setArgs1(bad_arg);
-        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SetOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous set_arg;
         op->setArgs1(set_arg);
-        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SetOperation(op, ov);
+        this->flushOperations(ov);
 
         op->setAttr("status", -1);
-        EntityExerciser<EntityType>::m_ent.SetOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SetOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Sight op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.SightOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SightOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Sound op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.SoundOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SoundOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Talk op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.TalkOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.TalkOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Touch op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.TouchOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.TouchOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Tick op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.TickOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Look op;
-        op->setFrom(EntityExerciser<EntityType>::m_ent.getId());
-        EntityExerciser<EntityType>::dispatchOp(op);
+        op->setFrom(this->m_ent.getId());
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.LookOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.LookOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Setup op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.SetupOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SetupOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous set_arg;
         op->setArgs1(set_arg);
-        EntityExerciser<EntityType>::m_ent.SetupOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.SetupOperation(op, ov);
+        this->flushOperations(ov);
 
-        EntityExerciser<EntityType>::m_ent.setStatus(-1);
-        EntityExerciser<EntityType>::m_ent.SetupOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.setStatus(-1);
+        this->m_ent.SetupOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Appearance op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.AppearanceOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.AppearanceOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Disappearance op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.DisappearanceOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.DisappearanceOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Use op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.UseOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.UseOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Update op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Root bad_arg;
         op->setArgs1(bad_arg);
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous update_arg;
         op->setArgs1(update_arg);
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
 
         update_arg->setName("foo");
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
 
         update_arg->setAttr("status", -1);
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
 
-        EntityExerciser<EntityType>::m_ent.m_location.m_velocity = Vector3D();
-        op->setRefno(EntityExerciser<EntityType>::m_ent.motion()->serialno());
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.m_location.m_velocity = Vector3D();
+        if (this->m_ent.motion() != 0) {
+            op->setRefno(this->m_ent.motion()->serialno());
+        }
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
 
-        EntityExerciser<EntityType>::m_ent.m_location.m_velocity = Vector3D(1,0,0);
-        EntityExerciser<EntityType>::m_ent.UpdateOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.m_location.m_velocity = Vector3D(1,0,0);
+        this->m_ent.UpdateOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Wield op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.WieldOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.WieldOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Error op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.ErrorOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.ErrorOperation(op, ov);
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::RootOperation op;
-        EntityExerciser<EntityType>::dispatchOp(op);
+        this->dispatchOp(op);
         OpVector ov;
-        EntityExerciser<EntityType>::m_ent.OtherOperation(op, ov);
-        EntityExerciser<EntityType>::flushOperations(ov);
+        this->m_ent.OtherOperation(op, ov);
+        this->flushOperations(ov);
     }
 }
 

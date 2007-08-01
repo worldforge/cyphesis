@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.218 2007-07-29 21:23:43 alriddoch Exp $
+// $Id: Thing.cpp,v 1.219 2007-08-01 23:05:29 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -525,6 +525,14 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // an update of some properties which have changed.
     if (op->isDefaultRefno()) {
         updateProperties(op, res);
+        return;
+    }
+
+    // If LOC is null, this cannot be part of the world, or must be the
+    // world itself, so should not be involved in any movement.
+    if (m_location.m_loc == 0) {
+        log(ERROR, String::compose("Updating %1(%2) when it is not in the world.",
+                                   getType(), getId()));
         return;
     }
 

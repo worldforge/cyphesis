@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.133 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Entity.cpp,v 1.134 2007-08-01 23:05:28 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -75,7 +75,8 @@ const std::set<std::string> & Entity::immutables()
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_refCount(0), m_destroyed(false),
-                                         m_script(&noScript), m_seq(0),
+                                         m_script(&noScript), m_motion(0),
+                                         m_seq(0),
                                          m_status(1), m_type("entity"),
                                          m_mass(-1), m_perceptive(false),
                                          m_update_flags(0)
