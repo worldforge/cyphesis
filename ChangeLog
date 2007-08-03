@@ -1,3 +1,8 @@
+2007-08-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Motion.cpp: Make sure collision flag is initialised,
+	  so that calls to Update are deterministic.
+
 2007-08-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Entity.cpp: Initialise motion pointer to zero, so
@@ -16824,4 +16829,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1891 2007-08-01 23:05:28 alriddoch Exp $
+$Id: ChangeLog,v 1.1892 2007-08-03 18:04:12 alriddoch Exp $

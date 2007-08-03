@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.17 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Motion.cpp,v 1.18 2007-08-03 18:04:14 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -33,7 +33,8 @@
 
 static const bool debug_flag = false;
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0)
+Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+                                m_collision(false)
 {
 }
 
