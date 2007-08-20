@@ -15,11 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMetaClient.cpp,v 1.18 2006-10-26 00:48:13 alriddoch Exp $
+// $Id: CommMetaClient.cpp,v 1.19 2007-08-20 16:35:56 alriddoch Exp $
 
 #include "CommMetaClient.h"
-
-#include "protocol_instructions.h"
 
 #include "common/debug.h"
 #include "common/log.h"
@@ -30,6 +28,16 @@
 #include <iostream>
 
 static const bool debug_flag = false;
+
+static const uint32_t SKEEP_ALIVE = 1;
+static const uint32_t CKEEP_ALIVE = 2;
+static const uint32_t HANDSHAKE = 3;
+static const uint32_t SERVERSHAKE = 4;
+static const uint32_t CLIENTSHAKE = 5;
+static const uint32_t TERMINATE = 6;
+static const uint32_t LIST_REQ = 7;
+static const uint32_t LIST_RESP = 8;
+static const uint32_t PROTO_ERANGE = 9;
 
 static inline char *pack_uint32(uint32_t data, char *buffer, unsigned int *size)
 {

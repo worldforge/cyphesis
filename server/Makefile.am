@@ -103,7 +103,6 @@ cyphesis_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
-		protocol_instructions.h \
 		server.cpp server.h
 
 nodist_cyphesis_SOURCES = \
@@ -149,7 +148,6 @@ cyslave_SOURCES = \
 		CommLocalClient.cpp CommLocalClient.h \
 		CommSlaveClient.cpp CommSlaveClient.h \
 		CommServer.cpp CommServer.h \
-		protocol_instructions.h \
 		slave.cpp
 
 cyslave_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)

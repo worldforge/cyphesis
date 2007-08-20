@@ -21,6 +21,9 @@
 
     The author can be reached via e-mail to dragonm@leech.org
 */
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef PROTOCOL_INSTRUCTIONS_H
 #define PROTOCOL_INSTRUCTIONS_H
 

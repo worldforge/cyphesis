@@ -1,3 +1,12 @@
+2007-08-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/CommMetaClient.cpp: Get rid of the header file for metaserver
+	  protocol constants, as it is not consistently licensed with the rest
+	  of the code.
+
+	* server/protocol_instructions.h, server/Makefile.am: Remove the
+	  obsolete metaserver protocol header from the build.
+
 2007-08-03  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Motion.cpp: Make sure collision flag is initialised,
@@ -16829,4 +16838,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1892 2007-08-03 18:04:12 alriddoch Exp $
+$Id: ChangeLog,v 1.1893 2007-08-20 16:35:54 alriddoch Exp $
