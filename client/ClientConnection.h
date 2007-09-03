@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.h,v 1.22 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: ClientConnection.h,v 1.23 2007-09-03 23:27:45 alriddoch Exp $
 
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
@@ -63,6 +63,7 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
 
+    int linger();
     int negotiate();
 
     virtual void objectArrived(const Atlas::Objects::Root &);

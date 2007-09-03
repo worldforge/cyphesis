@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.42 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: ClientConnection.cpp,v 1.43 2007-09-03 23:27:45 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -51,6 +51,7 @@ ClientConnection::ClientConnection() :
 
 ClientConnection::~ClientConnection()
 {
+    std::cout << "ClientConnection destruct" << std::endl << std::flush;
     if (encoder != NULL) {
         delete encoder;
     }
@@ -169,6 +170,7 @@ int ClientConnection::connectLocal(const std::string & sockname)
 
     client_fd = ios.getSocket();
 
+    linger();
     int ret = negotiate();
 
     if (ret == -1) {
@@ -193,7 +195,20 @@ int ClientConnection::connect(const std::string & server)
 
     client_fd = ios.getSocket();
 
+    linger();
     return negotiate();
+}
+
+int ClientConnection::linger()
+{
+    struct linger {
+        int   l_onoff;
+        int   l_linger;
+    } listenLinger = { 1, 10 };
+    ::setsockopt(client_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
+                                                   sizeof(listenLinger));
+    // Ensure the address can be reused once we are done with it.
+    return 0;
 }
 
 int ClientConnection::negotiate()

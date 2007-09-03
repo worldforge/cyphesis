@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.cpp,v 1.27 2007-04-29 13:32:30 alriddoch Exp $
+// $Id: client.cpp,v 1.28 2007-09-03 23:27:45 alriddoch Exp $
 
 #include "ObserverClient.h"
 #include "ClientPropertyManager.h"
@@ -110,6 +110,7 @@ int main(int argc, char ** argv)
         }
         observer.load(package, function);
         //observer.run();
+        delete &observer;
     }
     catch (...) {
         std::cerr << "EMERGENCY: cyclient: Exception caught in main; exiting" << std::endl << std::flush;
