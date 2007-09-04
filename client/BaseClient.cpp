@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.cpp,v 1.42 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: BaseClient.cpp,v 1.43 2007-09-04 10:51:27 alriddoch Exp $
 
 #include "BaseClient.h"
 
@@ -33,6 +33,7 @@
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
+using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
@@ -146,6 +147,16 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     // the python version? If so, do we need to keep track of a full world
     // model here, or just in the minds (when we become an AI client
     return obj;
+}
+
+void BaseClient::logout()
+{
+    Logout logout;
+    send(logout);
+
+    if (m_connection.wait() != 0) {
+        std::cerr << "ERROR: Failed to logout" << std::endl << std::flush;
+    }
 }
 
 // I'm making this pure virtual, to see if that is desired.

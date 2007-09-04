@@ -1,5 +1,17 @@
 2007-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/ClientConnection.cpp: Remove debug output.
+
+	* client/BaseClient.h, client/BaseClient.cpp: Add a logout method
+	  so that the client can be disconnected.
+
+	* client/client.cpp: Once the client is complete, call logout to
+	  ensure all messages sent to the server have been processed.
+	  Logout waits for the server to acknowledge that the connection is
+	  is complete.
+
+2007-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/client.cpp: Delete the observer client once it is
 	  is finished with.
 
@@ -16847,4 +16859,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1894 2007-09-03 23:27:45 alriddoch Exp $
+$Id: ChangeLog,v 1.1895 2007-09-04 10:51:26 alriddoch Exp $

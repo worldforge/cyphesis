@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.cpp,v 1.28 2007-09-03 23:27:45 alriddoch Exp $
+// $Id: client.cpp,v 1.29 2007-09-04 10:51:27 alriddoch Exp $
 
 #include "ObserverClient.h"
 #include "ClientPropertyManager.h"
@@ -110,6 +110,7 @@ int main(int argc, char ** argv)
         }
         observer.load(package, function);
         //observer.run();
+        observer.logout();
         delete &observer;
     }
     catch (...) {

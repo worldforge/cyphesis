@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.43 2007-09-03 23:27:45 alriddoch Exp $
+// $Id: ClientConnection.cpp,v 1.44 2007-09-04 10:51:27 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -51,7 +51,6 @@ ClientConnection::ClientConnection() :
 
 ClientConnection::~ClientConnection()
 {
-    std::cout << "ClientConnection destruct" << std::endl << std::flush;
     if (encoder != NULL) {
         delete encoder;
     }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.h,v 1.21 2006-12-26 14:30:43 alriddoch Exp $
+// $Id: BaseClient.h,v 1.22 2007-09-04 10:51:27 alriddoch Exp $
 
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
@@ -46,6 +46,7 @@ class BaseClient {
     Atlas::Message::MapType createPlayer(const std::string & name,
                                          const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
+    void logout();
     void handleNet();
     
     /// \brief Function called when nothing else is going on
