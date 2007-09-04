@@ -1,5 +1,9 @@
 2007-09-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Clean up the deer test.
+
+2007-09-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/ClientConnection.cpp: Remove debug output.
 
 	* client/BaseClient.h, client/BaseClient.cpp: Add a logout method
@@ -16859,4 +16863,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1895 2007-09-04 10:51:26 alriddoch Exp $
+$Id: ChangeLog,v 1.1896 2007-09-04 10:57:56 alriddoch Exp $

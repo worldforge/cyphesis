@@ -910,6 +910,7 @@ def test_deer(mapeditor):
     d=m.make('deer', type='deer', pos=(5, 0, settlement_height))
     m.learn(d,deer_goals)
     # m.make('settler', type='settler', pos=(0, 0, settlement_height))
+
 def add_castle(mapeditor):
     
     m=editor(mapeditor)
