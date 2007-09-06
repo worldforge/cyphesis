@@ -125,6 +125,7 @@ def add_vso_word(words,index):
 add_vso_word('own','#own_verb1')
 add_vso_word('learn','#learn_verb1')
 add_vso_word('price','#price_verb1')
+add_vso_word('list','#list_verb1')
 
 #>This is for verbs like the above which require a predicate
 # know pig price 5

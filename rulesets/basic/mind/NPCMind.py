@@ -259,6 +259,26 @@ class NPCMind(BaseMind):
             elif predicate=='about':
                 return Operation('talk', Entity(say=k)) + self.face(self.map.get(op.from_))
             return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(self.map.get(op.from_))
+    def interlinguish_list_verb1_operation(self, op, say):
+        """Handle a sentence of the form 'List (me) ....'
+
+        Accept queries about what we know. Mostly this is for debugging
+        and for the time being it is useful to answer these queries no matter
+        who hasks."""
+        # Currently no checking for trus here.
+        # We are being liberal with interpretation of "subject" and "object"
+        subject=say[1].word
+        predicate=say[2].word
+        if not hasattr(self.knowledge, predicate):
+            return None
+        d=getattr(self.knowledge, predicate)
+        res = Message()
+        res = res + self.face(self.map.get(op.from_))
+        for key in d:
+            res = res + Operation('talk',
+                                  Entity(say="The " + predicate + " of " + key +
+                                             " is " + str(d[key])))
+        return res
     def interlinguish_learn_verb1_operation(self, op, say):
         """Handle a sentence of the form 'learn ....'
 

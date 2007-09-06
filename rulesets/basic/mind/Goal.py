@@ -26,6 +26,8 @@ class Goal:
         #it's checked at start of check_goal_rec
         #and NPCMind.py fulfill_goals uses it too to remove goals from list
         self.irrelevant=0
+    def __repr__(self):
+        return self.info()
     def info(self):
         name=self.__class__.__name__
         if name=="Goal":

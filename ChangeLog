@@ -1,3 +1,13 @@
+2007-09-06  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add the list verb.
+
+	* rulesets/basic/mind/Goal.py: Add a __repr__() method to make it
+	  more intuitive to get a text representation of a goal.
+
+	* rulesets/basic/mind/NPCMind.py: Add a handler for the list verb
+	  that causes all the matching knowledge to be listed.
+
 2007-09-04  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Clean up the deer test.
@@ -16863,4 +16873,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1896 2007-09-04 10:57:56 alriddoch Exp $
+$Id: ChangeLog,v 1.1897 2007-09-06 22:17:57 alriddoch Exp $
