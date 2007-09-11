@@ -1,9 +1,3 @@
-Sometimes when entities get stalled, everything is completing as expected,
-but the entity is not getting the sound talks. It looks like if the last things
-in the define_world function is AI programming, which are not checked for
-reply, the script and the client can terminate before all the operations
-have been send.
-
 EntityFactory has got really convoluted. Try and verify that the same things
 are done when a tool is updated as when it is loaded. May be good to break
 things down into smaller functions.
