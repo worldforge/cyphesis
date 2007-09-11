@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.11 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.12 2007-09-11 14:47:40 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -79,6 +79,8 @@ bool TerrainProperty::get(Element & ent) const
             point[2] = (FloatType)(J->second.height());
         }
     }
+
+    t["surfaces"] = m_surfaces;
     return true;
 }
 
@@ -131,6 +133,11 @@ void TerrainProperty::set(const Element & ent)
 
             
         }
+    }
+
+    I = t.find("surfaces");
+    if (I != t.end() && I->second.isList()) {
+        m_surfaces = I->second.List();
     }
 }
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.h,v 1.11 2007-07-03 02:03:59 alriddoch Exp $
+// $Id: TerrainProperty.h,v 1.12 2007-09-11 14:47:40 alriddoch Exp $
 
 #ifndef RULESETS_TERRAIN_PROPERTY_H
 #define RULESETS_TERRAIN_PROPERTY_H
@@ -38,6 +38,10 @@ class TerrainProperty : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     Mercator::Terrain & m_data;
+    /// FIXME This should be a reference for consistency. Or could it
+    /// even be stored in the mercator terrain entity.
+    /// \brief Collection of surface data, cos I don't care!
+    Atlas::Message::ListType m_surfaces;
     /// \brief Reference to variable storing the set of modified points
     PointSet & m_modifiedTerrain;
     /// \brief Reference to variable storing the set of newly created points

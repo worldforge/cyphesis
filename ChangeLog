@@ -1,3 +1,11 @@
+2007-09-11  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h:
+	  Add storage for terrain.surfaces subproperty.
+
+	* rulesets/mason/define_world.py: Add some surface settings to the
+	  default moraf terrain.
+
 2007-09-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/basic/mind/panlingua/interlinguish.py: Add the list verb.
@@ -16873,4 +16881,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1897 2007-09-06 22:17:57 alriddoch Exp $
+$Id: ChangeLog,v 1.1898 2007-09-11 14:47:39 alriddoch Exp $

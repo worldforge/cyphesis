@@ -246,10 +246,20 @@ def default(mapeditor):
             maxy = y
         if not maxz or z > maxz:
             maxz = z
+
+    surfaces = [
+        {'name': 'rock', 'pattern': 'fill' },
+        {'name': 'sand', 'pattern': 'band', 'params': [2.0, 1.5] },
+        {'name': 'grass', 'pattern': 'grass', 'params': [1.0, 80.0, 0.5, 1.0] },
+        {'name': 'silt', 'pattern': 'depth', 'params': [0.0, -10.0] },
+        {'name': 'snow', 'pattern': 'high', 'params': [110.0] },
+    ]
+
+    
         
     # print minx, ":", miny, ":", minz, ":", maxx, ":", maxy, ":", maxz
 
-    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+    m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
 
 # a wall around the world
 
