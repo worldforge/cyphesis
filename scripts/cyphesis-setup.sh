@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# $Id: cyphesis-setup.sh,v 1.3 2007-07-08 23:45:12 alriddoch Exp $
+# $Id: cyphesis-setup.sh,v 1.4 2007-09-18 17:06:04 alriddoch Exp $
 
 # The main purpose of this script is to get round the issue of access to
 # to the database required by cyphesis.
@@ -84,7 +84,7 @@ POSTGRESQL_TEMPLATE=template1
 # means the user does not have access. The database account we create
 # has the right to create databases.
 if sudo -u ${USERNAME} ${POSTGRESQL_QUERY_CMD} -c "" ${POSTGRESQL_TEMPLATE} 2> /dev/null ; then
-    echo PostgreSQL user ${USERNAME} already exists.
+    echo PostgreSQL user ${USERNAME} already exists. Good.
 else
     echo Creating PostgreSQL account for user ${USERNAME}...
     sudo -u ${POSTGRESQL_SUSER} ${CREATE_USER_CMD} -A -d -q -R ${USERNAME} || \
