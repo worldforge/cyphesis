@@ -1,5 +1,13 @@
 2007-09-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Define shader parameters as a map
+	  of named values. Shader types and parameters are now 100% compatible
+	  with the interface offered by Mercator::ShaderFactories so it should
+	  no longer be necessary for clients to do lots of work discovering
+	  which shaders to instance.
+
+2007-09-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* scripts/cyphesis-setup.sh: Clarify the message when a database
 	  account is found to already exist.
 
@@ -16886,4 +16894,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1899 2007-09-18 17:08:07 alriddoch Exp $
+$Id: ChangeLog,v 1.1900 2007-09-18 17:15:41 alriddoch Exp $

@@ -249,10 +249,15 @@ def default(mapeditor):
 
     surfaces = [
         {'name': 'rock', 'pattern': 'fill' },
-        {'name': 'sand', 'pattern': 'band', 'params': [2.0, 1.5] },
-        {'name': 'grass', 'pattern': 'grass', 'params': [1.0, 80.0, 0.5, 1.0] },
-        {'name': 'silt', 'pattern': 'depth', 'params': [0.0, -10.0] },
-        {'name': 'snow', 'pattern': 'high', 'params': [110.0] },
+        {'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold': 2.0,
+                                                       'highThreshold': 1.5 } },
+        {'name': 'grass', 'pattern': 'grass', 'params': {'lowThreshold': 1.0,
+                                                         'highThreshold': 80.0,
+                                                         'cutoff': 0.5,
+                                                         'intercept': 1.0 } },
+        {'name': 'silt', 'pattern': 'depth', 'params': {'waterLevel': 0.0,
+                                                        'murkyDepth': -10.0 } },
+        {'name': 'snow', 'pattern': 'high', 'params': {'threshold': 110.0 } },
     ]
 
     
