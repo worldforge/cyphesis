@@ -1,3 +1,8 @@
+2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+
+	* Doxyfile-python: Remove some obsolete python directories from
+	  those scanned for documentation.
+
 2007-09-18  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Define shader parameters as a map
@@ -16894,4 +16899,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1900 2007-09-18 17:15:41 alriddoch Exp $
+$Id: ChangeLog,v 1.1901 2007-09-21 23:35:04 alriddoch Exp $
