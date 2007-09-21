@@ -1,5 +1,10 @@
 2007-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* Doxyfile, Doxyfile-python: Bring doxygen config files up to date
+	  with the latest version.
+
+2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* Doxyfile-python: Remove some obsolete python directories from
 	  those scanned for documentation.
 
@@ -16899,4 +16904,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1901 2007-09-21 23:35:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1902 2007-09-21 23:57:49 alriddoch Exp $
