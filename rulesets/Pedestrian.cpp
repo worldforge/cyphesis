@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.cpp,v 1.80 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Pedestrian.cpp,v 1.81 2007-09-22 15:34:04 alriddoch Exp $
 
 #include "Pedestrian.h"
 
@@ -39,6 +39,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
+/// \brief Constructor
+///
+/// @param body the Entity this Movement is tracking.
 Pedestrian::Pedestrian(Entity & body) : Movement(body)
 {
 }
@@ -53,6 +56,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
     // This may seem a little weird. Everything is handled in squares to
     // reduce the number of square roots that have to be calculated. In
     // this case only one is required.
+    // FIXME #11 Why is this calculation here inside of inside?
     double basic_square_distance = velocity.sqrMag()
                                    * consts::square_basic_tick;
     if (m_targetPos.isValid()) {
@@ -145,6 +149,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     return 0;
 }
 
+// FIXME #12 Why is new_location not const?
 Operation Pedestrian::generateMove(Location & new_location)
 {
     // Create move operation

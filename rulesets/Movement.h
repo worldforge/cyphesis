@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Movement.h,v 1.32 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Movement.h,v 1.33 2007-09-22 15:34:04 alriddoch Exp $
 
 #ifndef RULESETS_MOVEMENT_H
 #define RULESETS_MOVEMENT_H
@@ -34,6 +34,7 @@ class Location;
 /// movement.
 class Movement {
   protected:
+    /// The Entity this Movement is tracking.
     Entity & m_body;
     Point3D m_targetPos;
     int m_serialno;
@@ -58,10 +59,26 @@ class Movement {
     void reset();
     bool updateNeeded(const Location & location) const;
 
+    /// \brief Determine the time before the next update is required.
+    ///
+    /// Calculate how long before the Entity will reach its intended target.
+    /// If there is no target, or the target is some distance away, then
+    /// the default tick is returned.
+    /// @param coordinates the current position.
+    /// @param velocity the current velocity.
     virtual double getTickAddition(const Point3D & coordinates,
                                    const Vector3D & velocity) const = 0;
-    virtual int getUpdatedLocation(Location &) = 0;
-    virtual Operation generateMove(Location &) = 0;
+    /// \brief Calculate the update position of the entity.
+    ///
+    /// @param return_location the returned Location data.
+    virtual int getUpdatedLocation(Location & return_location) = 0;
+    /// \brief Generate a new Move operation to implement the movement.
+    ///
+    /// Create a Move operation object, and set up the argument to describe
+    /// how the Entity is moving.
+    /// @param new_location Location data about the entity once movement has
+    /// changed.
+    virtual Operation generateMove(Location & new_location) = 0;
 };
 
 #endif // RULESETS_MOVEMENT_H

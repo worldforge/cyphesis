@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.49 2007-07-30 01:54:26 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.50 2007-09-22 15:34:04 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -44,8 +44,11 @@ typedef std::map<std::string, ArithmeticFactory *> StatisticsFactoryDict;
 /// \brief Class to handle rules that cannot yet be installed, and the reason
 class RuleWaiting {
   public:
+    /// Name of the rule.
     std::string name;
+    /// Complete description of the rule.
     Atlas::Message::MapType desc;
+    /// Message giving a description of why this rule has not been installed.
     std::string reason;
 };
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Peer.h,v 1.5 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Peer.h,v 1.6 2007-09-22 15:34:05 alriddoch Exp $
 
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
@@ -33,7 +33,9 @@ class Peer : public OOGThing {
   protected:
     
   public:
+    /// The client socket used to connect to the peer.
     CommClient & m_commClient;
+    /// The server routing object of this server.
     ServerRouting & m_server;
 
     Peer(CommClient & client, ServerRouting & svr,

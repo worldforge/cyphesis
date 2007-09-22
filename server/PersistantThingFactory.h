@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.23 2007-07-08 23:45:12 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.24 2007-09-22 15:34:05 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -78,8 +78,15 @@ class FactoryBase {
 
     virtual ~FactoryBase();
 
-    virtual Entity * newPersistantThing(const std::string & id, long intId, PersistorBase **) = 0;
+    /// \brief Create a new Entity and make it persistent.
+    ///
+    /// @param id a string giving the identifier of the Entity.
+    /// @param intId an integer giving the identifier of the Entity.
+    /// @param pb a pointer to the persistor object for the Entity.
+    virtual Entity * newPersistantThing(const std::string & id, long intId, PersistorBase ** pb) = 0;
+    /// \brief Add anything required to the entity after it has been created.
     virtual int populate(Entity &) = 0;
+    /// \brief Create a copy of this factory.
     virtual FactoryBase * duplicateFactory() = 0;
 };
 

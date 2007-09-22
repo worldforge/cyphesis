@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Player.cpp,v 1.48 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: Player.cpp,v 1.49 2007-09-22 15:34:05 alriddoch Exp $
 
 #include "Player.h"
 
@@ -31,6 +31,13 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
+/// \brief Constructor
+///
+/// @param conn the Connection this account is being created by.
+/// @param username a string giving the username.
+/// @param passwd a string giving the password.
+/// @param id a string giving the identifier of the account.
+/// @param intId an integer giving the identifier of the account.
 Player::Player(Connection * conn, const std::string& username,
                const std::string& passwd, const std::string & id, long intId) :
                Account(conn, username, passwd, id, intId)
