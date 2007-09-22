@@ -1,5 +1,12 @@
 2007-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/log.cpp: Return correctly from the event log testing
+	  function.
+
+	* tools/cydumprules.cpp: Remove obsolete usage reporting function.
+
+2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* Doxyfile, Doxyfile-python: Bring doxygen config files up to date
 	  with the latest version.
 
@@ -16904,4 +16911,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1902 2007-09-21 23:57:49 alriddoch Exp $
+$Id: ChangeLog,v 1.1903 2007-09-22 15:05:34 alriddoch Exp $

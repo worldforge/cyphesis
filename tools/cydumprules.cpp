@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.11 2007-06-19 17:45:56 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.12 2007-09-22 15:05:35 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -110,11 +110,6 @@ class RuleReader {
 };
 
 RuleReader * RuleReader::m_instance = NULL;
-
-static void usage(char * prgname)
-{
-    std::cerr << "usage: " << prgname << std::endl << std::flush;
-}
 
 int main(int argc, char ** argv)
 {

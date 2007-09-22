@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.25 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: log.cpp,v 1.26 2007-09-22 15:05:35 alriddoch Exp $
 
 #include "log.h"
 #include "globals.h"
@@ -85,7 +85,7 @@ static void open_event_log()
 bool testEventLog(const char * path)
 {
    event_log.open(path, std::ios::out);
-   event_log.is_open();
+   return event_log.is_open();
 }
 
 void initLogger()
