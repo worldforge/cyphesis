@@ -1,5 +1,10 @@
 2007-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/mind/NPCMind.py: Clean up formatting, and make
+	  the code more readable.
+
+2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/log.cpp: Return correctly from the event log testing
 	  function.
 
@@ -16911,4 +16916,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1903 2007-09-22 15:05:34 alriddoch Exp $
+$Id: ChangeLog,v 1.1904 2007-09-22 15:19:21 alriddoch Exp $

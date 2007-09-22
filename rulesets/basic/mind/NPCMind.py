@@ -257,8 +257,11 @@ class NPCMind(BaseMind):
             elif k_type!=StringType:
                 k='difficult to explain'
             elif predicate=='about':
-                return Operation('talk', Entity(say=k)) + self.face(self.map.get(op.from_))
-            return Operation('talk', Entity(say="The "+predicate+" of "+object+" is "+k)) + self.face(self.map.get(op.from_))
+                return Operation('talk', Entity(say=k)) + \
+                       self.face(self.map.get(op.from_))
+            return Operation('talk', Entity(say="The " + predicate + " of " +
+                                                object + " is " + k)) + \
+                   self.face(self.map.get(op.from_))
     def interlinguish_list_verb1_operation(self, op, say):
         """Handle a sentence of the form 'List (me) ....'
 
