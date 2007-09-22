@@ -1,5 +1,11 @@
 2007-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Movement.h, rulesets/Pedestrian.cpp, rulesets/Pedestrian.h:
+	  Change the movement API so update Location is const when passed to
+	  generateMove.
+
+2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/PropertyManager.h, rulesets/Movement.h,
 	  rulesets/Pedestrian.cpp, server/EntityFactory.h, server/Peer.cpp,
 	  server/Peer.h, server/PersistantThingFactory.h, server/Player.cpp:
@@ -16923,4 +16929,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1905 2007-09-22 15:34:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1906 2007-09-22 15:40:17 alriddoch Exp $

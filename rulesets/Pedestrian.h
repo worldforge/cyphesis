@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.h,v 1.19 2006-10-26 00:48:10 alriddoch Exp $
+// $Id: Pedestrian.h,v 1.20 2007-09-22 15:40:18 alriddoch Exp $
 
 #ifndef RULESETS_PEDESTRIAN_H
 #define RULESETS_PEDESTRIAN_H
@@ -34,7 +34,7 @@ class Pedestrian : public Movement {
     double getTickAddition(const Point3D & coordinates,
                            const Vector3D & velocity) const;
     int getUpdatedLocation(Location &);
-    Operation generateMove(Location &);
+    Operation generateMove(const Location &);
 };
 
 #endif // RULESETS_PEDESTRIAN_H

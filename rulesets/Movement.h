@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Movement.h,v 1.33 2007-09-22 15:34:04 alriddoch Exp $
+// $Id: Movement.h,v 1.34 2007-09-22 15:40:18 alriddoch Exp $
 
 #ifndef RULESETS_MOVEMENT_H
 #define RULESETS_MOVEMENT_H
@@ -78,7 +78,7 @@ class Movement {
     /// how the Entity is moving.
     /// @param new_location Location data about the entity once movement has
     /// changed.
-    virtual Operation generateMove(Location & new_location) = 0;
+    virtual Operation generateMove(const Location & new_location) = 0;
 };
 
 #endif // RULESETS_MOVEMENT_H

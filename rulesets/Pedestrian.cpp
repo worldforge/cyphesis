@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.cpp,v 1.81 2007-09-22 15:34:04 alriddoch Exp $
+// $Id: Pedestrian.cpp,v 1.82 2007-09-22 15:40:18 alriddoch Exp $
 
 #include "Pedestrian.h"
 
@@ -149,8 +149,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     return 0;
 }
 
-// FIXME #12 Why is new_location not const?
-Operation Pedestrian::generateMove(Location & new_location)
+Operation Pedestrian::generateMove(const Location & new_location)
 {
     // Create move operation
     Move moveOp;

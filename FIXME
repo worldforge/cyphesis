@@ -1,4 +1,4 @@
-#12  2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+#12  2007-09-22  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* rulesets/Pedestrian.cpp: Why is the new_location parameter of
 	  generateMove not const? It does not seem to be modified.
