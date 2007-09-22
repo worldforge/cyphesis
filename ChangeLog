@@ -1,5 +1,10 @@
 2007-09-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Pedestrian.cpp: Move a calculation into an if clause, to
+	  save a few cycles.
+
+2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Movement.h, rulesets/Pedestrian.cpp, rulesets/Pedestrian.h:
 	  Change the movement API so update Location is const when passed to
 	  generateMove.
@@ -16929,4 +16934,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1906 2007-09-22 15:40:17 alriddoch Exp $
+$Id: ChangeLog,v 1.1907 2007-09-22 15:46:14 alriddoch Exp $

@@ -3,7 +3,7 @@
 	* rulesets/Pedestrian.cpp: Why is the new_location parameter of
 	  generateMove not const? It does not seem to be modified.
 
-#11  2007-09-22  Al Riddoch  <alriddoch@zepler.org>
+#11  2007-09-22  Al Riddoch  <alriddoch@zepler.org> FIXED
 
 	* rulesets/Pedestrian.cpp: Move this calculation inside the if check
 	  and test well.

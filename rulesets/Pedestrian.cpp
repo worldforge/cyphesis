@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.cpp,v 1.82 2007-09-22 15:40:18 alriddoch Exp $
+// $Id: Pedestrian.cpp,v 1.83 2007-09-22 15:46:14 alriddoch Exp $
 
 #include "Pedestrian.h"
 
@@ -56,10 +56,9 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
     // This may seem a little weird. Everything is handled in squares to
     // reduce the number of square roots that have to be calculated. In
     // this case only one is required.
-    // FIXME #11 Why is this calculation here inside of inside?
-    double basic_square_distance = velocity.sqrMag()
-                                   * consts::square_basic_tick;
     if (m_targetPos.isValid()) {
+        double basic_square_distance = velocity.sqrMag()
+                                       * consts::square_basic_tick;
         double square_distance = squareDistance(coordinates, m_targetPos);
         debug( std::cout << "basic_distance: " << basic_square_distance
                          << std::endl << std::flush;);
