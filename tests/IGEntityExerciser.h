@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.19 2007-09-25 09:12:16 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.20 2007-09-25 09:42:32 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -292,26 +292,58 @@ inline void IGEntityExerciser<EntityType>::runOperations()
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
         }
         this->flushOperations(ov);
+
+        Atlas::Objects::Entity::Anonymous nourish_arg;
+        op->setArgs1(nourish_arg);
+        this->dispatchOp(op);
+        this->m_ent.NourishOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
+        this->flushOperations(ov);
+
+        nourish_arg->setAttr("mass", 23);
+        this->dispatchOp(op);
+        this->m_ent.NourishOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+        }
+        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Set op;
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.SetOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
-        Atlas::Objects::Root bad_arg;
-        op->setArgs1(bad_arg);
+        Atlas::Objects::Root empty_arg;
+        op->setArgs1(empty_arg);
         this->m_ent.SetOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+        }
         this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous set_arg;
         op->setArgs1(set_arg);
         this->m_ent.SetOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+        }
         this->flushOperations(ov);
 
         op->setAttr("status", -1);
         this->m_ent.SetOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+            if (ov.size() > 1) {
+                assert(ov[1]->getClassNo() == Atlas::Objects::Operation::DELETE_NO);
+            }
+        }
         this->flushOperations(ov);
     }
     {
