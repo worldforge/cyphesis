@@ -1,3 +1,6 @@
+Make IGEntityExerciser succeed in stimulating the Create op.
+Make IGEntityExerciser succeed in stimulating the Move op.
+
 Create a simple class that fully encapsulates having a python script in
 a general way, which can then be used by entity, task, statistics etc.
 

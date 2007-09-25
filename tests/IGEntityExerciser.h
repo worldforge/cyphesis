@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.18 2007-08-01 23:05:29 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.19 2007-09-25 09:12:16 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -115,24 +115,39 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.CreateOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         Atlas::Objects::Root bad_arg;
         op->setArgs1(bad_arg);
         this->m_ent.CreateOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous create_arg;
         op->setArgs1(create_arg);
         this->m_ent.CreateOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         create_arg->setParents(std::list<std::string>(1, ""));
         this->m_ent.CreateOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         create_arg->setParents(std::list<std::string>(1, "thing"));
         this->m_ent.CreateOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
     }
     {
@@ -140,6 +155,9 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.DeleteOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+        }
         this->flushOperations(ov);
     }
     {
@@ -183,47 +201,77 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         Atlas::Objects::Root bad_arg;
         op->setArgs1(bad_arg);
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous move_arg;
         op->setArgs1(move_arg);
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         move_arg->setId(this->m_ent.getId());
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         move_arg->setLoc("242");
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         move_arg->setLoc(this->m_ent.getId());
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         if (this->m_ent.m_location.m_loc != 0) {
             move_arg->setLoc(this->m_ent.m_location.m_loc->getId());
             this->m_ent.MoveOperation(op, ov);
+            if (!ov.empty()) {
+                assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+            }
             this->flushOperations(ov);
         }
 
         move_arg->setLoc(this->m_ent.getId());
         addToEntity(this->m_ent.m_location.pos(), move_arg->modifyPos());
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         move_arg->setAttr("mode", 1);
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
 
         move_arg->removeAttr("mode");
         this->m_ent.MoveOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
     }
     {
@@ -231,6 +279,18 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.NourishOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
+        this->flushOperations(ov);
+
+        Atlas::Objects::Root bad_arg;
+        op->setArgs1(bad_arg);
+        this->dispatchOp(op);
+        this->m_ent.NourishOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        }
         this->flushOperations(ov);
     }
     {

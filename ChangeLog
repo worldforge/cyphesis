@@ -1,3 +1,9 @@
+2007-09-25  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/IGEntityExerciser.h: Provide more coverage of the operation
+	  error permutations, and add some verification of the type of
+	  operation in the results.
+
 2007-09-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Add.h, rulesets/SolidProperty: Fill out some more doc
@@ -16939,4 +16945,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1908 2007-09-24 13:00:41 alriddoch Exp $
+$Id: ChangeLog,v 1.1909 2007-09-25 09:12:16 alriddoch Exp $
