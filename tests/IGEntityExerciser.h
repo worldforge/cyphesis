@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.20 2007-09-25 09:42:32 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.21 2007-09-27 14:10:09 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -365,6 +365,9 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.TalkOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SOUND_NO);
+        }
         this->flushOperations(ov);
     }
     {
@@ -379,6 +382,44 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.TickOperation(op, ov);
+        if (!ov.empty()) {
+            // assert(ov.front()->getClassNo() == Atlas::Objects::Operation::TICK_NO);
+            // FIXME We expect TICK, or some others.
+        }
+        this->flushOperations(ov);
+
+        Atlas::Objects::Root tick_arg;
+        op->setArgs1(tick_arg);
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->setName("move");
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->setAttr("serialno", "non-number");
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->setAttr("serialno", -1);
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->setAttr("serialno", 0);
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->removeAttr("serialno");
+        tick_arg->setName("task");
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->setName("mind");
+        this->m_ent.TickOperation(op, ov);
+        this->flushOperations(ov);
+
+        tick_arg->setName("non-existant-subsystem");
+        this->m_ent.TickOperation(op, ov);
         this->flushOperations(ov);
     }
     {
@@ -387,6 +428,9 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent.LookOperation(op, ov);
+        if (!ov.empty()) {
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+        }
         this->flushOperations(ov);
     }
     {
@@ -396,12 +440,8 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->m_ent.SetupOperation(op, ov);
         this->flushOperations(ov);
 
-        Atlas::Objects::Entity::Anonymous set_arg;
-        op->setArgs1(set_arg);
-        this->m_ent.SetupOperation(op, ov);
-        this->flushOperations(ov);
-
-        this->m_ent.setStatus(-1);
+        Atlas::Objects::Entity::Anonymous setup_arg;
+        op->setArgs1(setup_arg);
         this->m_ent.SetupOperation(op, ov);
         this->flushOperations(ov);
     }
