@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.21 2007-09-27 14:10:09 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.22 2007-09-29 15:37:16 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -506,6 +506,19 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         Atlas::Objects::Operation::Wield op;
         this->dispatchOp(op);
         OpVector ov;
+        this->m_ent.WieldOperation(op, ov);
+        this->flushOperations(ov);
+
+        Atlas::Objects::Root bad_arg;
+        op->setArgs1(bad_arg);
+        this->m_ent.WieldOperation(op, ov);
+        this->flushOperations(ov);
+
+        bad_arg->setId("23");
+        this->m_ent.WieldOperation(op, ov);
+        this->flushOperations(ov);
+
+        bad_arg->setId("1");
         this->m_ent.WieldOperation(op, ov);
         this->flushOperations(ov);
     }
