@@ -1,3 +1,12 @@
+There need to be two different filters on movement. The first pass should
+determine what is possible given the desired input. The second should
+determine side effects of the movement. Can we really separate them, given
+that the side effects modify the effort and possibility of the movement?
+
+Blocking movement thingies are going to have to go. Handling move ops should
+just schedule the move. We pass to some collision subsystem, and then send
+the result once the result it back.
+
 Make IGEntityExerciser succeed in stimulating the Create op.
 Make IGEntityExerciser succeed in stimulating the Move op.
 

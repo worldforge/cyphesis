@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.52 2007-10-01 04:43:14 alriddoch Exp $
+// $Id: globals.cpp,v 1.53 2007-10-01 04:57:15 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -164,7 +164,7 @@ int loadConfig(int argc, char ** argv, bool server)
                                                  "/cyphesis/cyphesis.vconf",
                                                  varconf::GLOBAL);
     if (!main_config) {
-        log(CRITICAL, String::compose("Unable to read main config file \"%1\"",
+        log(ERROR, String::compose("Unable to read main config file \"%1\"",
                                       etc_directory +
                                       "/cyphesis/cyphesis.vconf"));
         if (home_dir_config) {
@@ -172,7 +172,6 @@ int loadConfig(int argc, char ** argv, bool server)
         } else {
             log(INFO, "Please ensure that cyphesis has been installed correctly.");
         }
-        return CONFIG_ERROR;
     }
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");

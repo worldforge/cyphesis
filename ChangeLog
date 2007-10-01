@@ -1,5 +1,12 @@
 2007-10-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Make a missing config file no longer fatal,
+	  as the default are now sane, and do work.
+
+	* server/server.cpp: Fix up some error and status messages.
+
+2007-10-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Make the default ruleset "mason" as basic
 	  no longer exists in the default install. Remove some error
 	  messages which no longer apply.
@@ -16979,4 +16986,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1915 2007-10-01 04:43:13 alriddoch Exp $
+$Id: ChangeLog,v 1.1916 2007-10-01 04:57:15 alriddoch Exp $
