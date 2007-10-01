@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.120 2007-07-30 18:12:52 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.121 2007-10-01 03:31:35 alriddoch Exp $
 
 #include <Python.h>
 
@@ -534,8 +534,8 @@ int EntityFactory::installEntityClass(const std::string & class_name,
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         waitForRule(class_name, class_desc, parent,
-                    String::compose("Entity \"%1\" has parent \"%2\" which "
-                                    "does not exist.", class_name, parent));
+                    String::compose("Entity rule \"%1\" has parent \"%2\" which"
+                                    " does not exist.", class_name, parent));
         return 1;
     }
     FactoryBase * parent_factory = I->second;
@@ -832,7 +832,7 @@ void EntityFactory::installRules()
 
     if (ruleTable.empty()) {
         log(ERROR, "Rule database table contains no rules.");
-        if (consts::enable_database) {
+        if (database_flag) {
             log(NOTICE, "Attempting to load temporary ruleset from files.");
             getRulesFromFiles(ruleTable);
         }
