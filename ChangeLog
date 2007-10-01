@@ -1,5 +1,11 @@
 2007-10-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Make the default ruleset "mason" as basic
+	  no longer exists in the default install. Remove some error
+	  messages which no longer apply.
+
+2007-10-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/const.h: Remove the hard coded flag that used to disable
 	  the database code.
 
@@ -16973,4 +16979,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1914 2007-10-01 03:40:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1915 2007-10-01 04:43:13 alriddoch Exp $

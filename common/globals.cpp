@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.51 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: globals.cpp,v 1.52 2007-10-01 04:43:14 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -38,7 +38,7 @@
 
 #include <cassert>
 
-static const char * DEFAULT_RULESET = "basic";
+static const char * DEFAULT_RULESET = "mason";
 static const char * DEFAULT_CLIENT_SOCKET = "cyphesis.sock";
 static const char * DEFAULT_SLAVE_SOCKET = "cyslave.sock";
 
@@ -235,8 +235,6 @@ int loadConfig(int argc, char ** argv, bool server)
     } else {
         log(ERROR, String::compose("No ruleset specified in config. "
                                    "Using \"%1\" rules.", DEFAULT_RULESET));
-        log(INFO, "The basic rules don't allow much, "
-                  "so this should be rectified.");
         ruleset = DEFAULT_RULESET;
     }
 
