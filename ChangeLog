@@ -1,5 +1,10 @@
 2007-10-01  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/const.h: Remove the hard coded flag that used to disable
+	  the database code.
+
+2007-10-01  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Clean up an error message. Modify the logic
 	  when rules aren't loaded, so the error messages make more sense.
 
@@ -16968,4 +16973,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1913 2007-10-01 03:31:34 alriddoch Exp $
+$Id: ChangeLog,v 1.1914 2007-10-01 03:40:04 alriddoch Exp $
