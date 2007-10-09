@@ -1,3 +1,7 @@
+2007-10-09  Al Riddoch  <alriddoch@zepler.org>
+
+	* modules/EntityRef.h: Simplify the sigc++ signal used.
+
 2007-10-01  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp: Make a missing config file no longer fatal,
@@ -16986,4 +16990,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1916 2007-10-01 04:57:15 alriddoch Exp $
+$Id: ChangeLog,v 1.1917 2007-10-09 14:44:50 alriddoch Exp $

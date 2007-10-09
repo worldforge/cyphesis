@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityRef.h,v 1.1 2006-12-04 00:50:38 alriddoch Exp $
+// $Id: EntityRef.h,v 1.2 2007-10-09 14:44:51 alriddoch Exp $
 
 #ifndef MODULES_ENTITY_REF_H
 #define MODULES_ENTITY_REF_H
@@ -78,7 +78,7 @@ class EntityRef : public sigc::trackable
         return (m_inner < e.m_inner);
     }
 
-    sigc::signal0<void> Changed;
+    sigc::signal<void> Changed;
 };
 
 #endif // MODULES_ENTITY_REF_H
