@@ -1,5 +1,9 @@
 2007-10-09  Al Riddoch  <alriddoch@zepler.org>
 
+	* NEWS, configure.ac: Increment version and NEWS for release later.
+
+2007-10-09  Al Riddoch  <alriddoch@zepler.org>
+
 	* modules/EntityRef.h: Simplify the sigc++ signal used.
 
 2007-10-01  Al Riddoch  <alriddoch@zepler.org>
@@ -16990,4 +16994,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1917 2007-10-09 14:44:50 alriddoch Exp $
+$Id: ChangeLog,v 1.1918 2007-10-17 11:18:41 alriddoch Exp $
