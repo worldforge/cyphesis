@@ -1,0 +1,585 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="germinates">
+        <string name="default">oak</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="transient">
+        <float name="default">1800</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">acorn</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>seed</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.seeds.Acorn</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="alcohol">
+        <float name="default">0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="germinates">
+        <string name="default">appletree</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">apple</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>seed</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.seeds.Apple</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.4</float>
+          <float>-0.4</float>
+          <float>0</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.025</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruitChance">
+        <int name="default">15</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruitName">
+        <string name="default">apple</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruits">
+        <int name="default">3</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">3000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">appletree</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.2</float>
+          <float>-0.2</float>
+          <float>0</float>
+          <float>0.2</float>
+          <float>0.2</float>
+          <float>12</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">birch</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">carrot</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tuber</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>7</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">8</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">150</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">300</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">fir</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.Fir</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="germinates">
+        <string name="default">fir</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="transient">
+        <float name="default">1800</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">fircone</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>seed</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.2</float>
+          <float>-0.2</float>
+          <float>0</float>
+          <float>0.2</float>
+          <float>0.2</float>
+          <float>0.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">flower</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0.7</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">grass</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">3000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">hickory</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>0.0</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.65</float>
+          <float>0.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">leaf</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.05</float>
+          <float>-0.05</float>
+          <float>0</float>
+          <float>0.05</float>
+          <float>0.05</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mushroom</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="area">
+        <map name="default">
+          <list name="points">
+            <list>
+              <float>-3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>-5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>-3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>-5</float>
+            </list>
+          </list>
+          <int name="layer">6</int>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-2</float>
+          <float>-2</float>
+          <float>0</float>
+          <float>2</float>
+          <float>2</float>
+          <float>12</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.025</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruitName">
+        <string name="default">acorn</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruits">
+        <int name="default">20</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">6000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">oak</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.025</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">6000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">poplar</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="germinates">
+        <string name="default">plant</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.05</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">seed</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.plants.seeds.Seed</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tree</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>plant</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tuber</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+  
+  <map>
+    <map name="attributes">
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">turnip</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tuber</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>1</float>
+          <float>6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="height">
+        <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">3000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">willow</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>tree</string>
+    </list>
+  </map>
+
+</atlas>

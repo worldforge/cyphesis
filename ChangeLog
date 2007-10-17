@@ -1,4 +1,9 @@
-2007-10-09  Al Riddoch  <alriddoch@zepler.org>
+2007-10-17  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/plants.xml, data/mason.xml: Move all the plant types from mason
+	  into their own rules file.
+
+2007-10-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* NEWS, configure.ac: Increment version and NEWS for release later.
 
@@ -16994,4 +16999,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1918 2007-10-17 11:18:41 alriddoch Exp $
+$Id: ChangeLog,v 1.1919 2007-10-17 19:20:38 alriddoch Exp $
