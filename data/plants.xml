@@ -160,6 +160,31 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>-0.8</float>
+          <float>-0.8</float>
+          <float>0</float>
+          <float>0.8</float>
+          <float>0.8</float>
+          <float>0.8</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">fern</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-0.25</float>
           <float>-0.25</float>
           <float>0</float>

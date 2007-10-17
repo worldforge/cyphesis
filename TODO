@@ -1,3 +1,7 @@
+Datagram classes in skstream, Address classes in skstream. Datagram can be
+sent to an address, without re-encoding. Datagram can be treated as stream.
+Address can encapsulate getaddrinfo results, or stand alone endpoints.
+
 There need to be two different filters on movement. The first pass should
 determine what is possible given the desired input. The second should
 determine side effects of the movement. Can we really separate them, given
