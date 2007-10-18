@@ -125,35 +125,6 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.2</float>
-          <float>-0.1</float>
-          <float>0</float>
-          <float>0.2</float>
-          <float>0.1</float>
-          <float>0.3</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="worn">
-        <string name="default">feet</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">boots</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="mass">
         <float name="default">0.2</float>
         <string name="visibility">public</string>
@@ -195,31 +166,6 @@
       </map>
     </map>
     <string name="id">bowl</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.2</float>
-          <float>-0.1</float>
-          <float>0</float>
-          <float>0.2</float>
-          <float>0.1</float>
-          <float>0.3</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">bunny</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
@@ -282,66 +228,12 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.3</float>
-          <float>-0.2</float>
-          <float>0</float>
-          <float>0.3</float>
-          <float>0.2</float>
-          <float>0.6</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">3</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">chicken</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="mass">
         <float name="default">1.5</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">cleaver</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>-0.1</float>
-          <float>0</float>
-          <float>0.1</float>
-          <float>0.1</float>
-          <float>0.3</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">0.5</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="worn">
-        <string name="default">back</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">cloak</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
@@ -377,53 +269,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1.5</float>
-          <float>-0.5</float>
-          <float>0</float>
-          <float>2.25</float>
-          <float>0.5</float>
-          <float>2.0</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">80</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">2000</float>
-        <string name="visibility">private</string>
-      </map>
-    </map>
-    <string name="id">cow</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">30</float>
-        <string name="visibility">private</string>
-      </map>
-    </map>
-    <string name="id">crab</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
@@ -466,27 +311,6 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">100</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">150</float>
-        <string name="visibility">private</string>
-      </map>
-      <map name="meat">
-        <string name="default">venison</string>
-      </map>
-    </map>
-    <string name="id">deer</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
     </map>
     <string name="id">delve</string>
     <string name="objtype">class</string>
@@ -521,64 +345,6 @@
       <string name="language">python</string>
       <string name="name">world.tasks.Dig</string>
     </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.75</float>
-          <float>-0.3</float>
-          <float>0</float>
-          <float>0.75</float>
-          <float>0.3</float>
-          <float>0.75</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">10</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">20</float>
-        <string name="visibility">private</string>
-      </map>
-    </map>
-    <string name="id">dog</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.4</float>
-          <float>-0.03</float>
-          <float>-0.1</float>
-          <float>0.15</float>
-          <float>0.03</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mode">
-        <string name="default">swimming</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">fish</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
   </map>
 
   <map>
@@ -690,31 +456,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1.5</float>
-          <float>-0.4</float>
-          <float>0</float>
-          <float>1.5</float>
-          <float>0.4</float>
-          <float>3</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">300</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">horse</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
@@ -938,40 +679,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>area</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.375</float>
-          <float>-0.125</float>
-          <float>0</float>
-          <float>0.5625</float>
-          <float>0.125</float>
-          <float>0.5</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="min">3</float>
-        <float name="default">5</float>
-        <float name="max">30</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">30</float>
-        <string name="visibility">private</string>
-      </map>
-      <map name="meat">
-        <string name="default">ham</string>
-      </map>
-    </map>
-    <string name="id">pig</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
@@ -1298,35 +1005,6 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-1</float>
-          <float>-1.5</float>
-          <float>0</float>
-          <float>1.5</float>
-          <float>1.5</float>
-          <float>1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">10</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">10</float>
-        <string name="visibility">private</string>
-      </map>
-    </map>
-    <string name="id">spider</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
           <float>-0.1</float>
           <float>-0.1</float>
           <float>0</float>
@@ -1396,35 +1074,6 @@
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.5</float>
-          <float>-0.075</float>
-          <float>0</float>
-          <float>0.3</float>
-          <float>0.075</float>
-          <float>0.2</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">2</float>
-        <string name="visibility">private</string>
-      </map>
-    </map>
-    <string name="id">squirrel</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
@@ -1608,35 +1257,6 @@
       <string name="language">python</string>
       <string name="name">world.objects.Weather</string>
     </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.6</float>
-          <float>-0.26</float>
-          <float>0</float>
-          <float>1.3</float>
-          <float>0.26</float>
-          <float>1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxmass">
-        <float name="default">30</float>
-        <string name="visibility">private</string>
-      </map>
-    </map>
-    <string name="id">wolf</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
   </map>
 
   <map>
