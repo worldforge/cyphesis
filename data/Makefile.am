@@ -1,7 +1,7 @@
 EXTRA_DIST = acorn.xml werewolf.xml
 
 MASON_RULES = animals.xml basic.xml buildings.xml clothing.xml mason.xml \
-              plants.xml
+              plants.xml tools.xml
 
 confdir = $(sysconfdir)/cyphesis
 dist_conf_DATA = cyphesis.vconf

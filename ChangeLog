@@ -1,5 +1,10 @@
 2007-10-18  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/tools.xml, data/mason.xml: Move all the tool types from
+	  mason into their own rules file.
+
+2007-10-18  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/animals.xml, data/mason.xml: Move all the animal types from
 	  mason into their own rules file.
 
@@ -17020,4 +17025,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1923 2007-10-18 15:40:06 alriddoch Exp $
+$Id: ChangeLog,v 1.1924 2007-10-18 15:59:08 alriddoch Exp $
