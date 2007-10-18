@@ -1,13 +1,4 @@
 <atlas>
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">archer</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
 
   <map>
     <map name="attributes">
@@ -48,20 +39,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1.5</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">axel</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>axe</string>
     </list>
   </map>
 
@@ -163,30 +140,10 @@
   </map>
 
   <map>
-    <map name="attributes">
-    </map>
-    <string name="id">druid</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
     <string name="id">extinguish</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>root_operation</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">farmer</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
@@ -223,16 +180,6 @@
       <string name="language">python</string>
       <string name="name">world.objects.elements.Fire</string>
     </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">guard</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
   </map>
 
   <map>
@@ -293,20 +240,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="decays">
-        <string name="default">skull</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">merchant</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
@@ -461,16 +394,6 @@
 
   <map>
     <map name="attributes">
-    </map>
-    <string name="id">swineherd</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="mass">
         <float name="default">1.5</float>
         <string name="visibility">public</string>
@@ -508,16 +431,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">warrior</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
     </list>
   </map>
 
