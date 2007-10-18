@@ -1,0 +1,136 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">50</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">goblin</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <int name="playable">1</int>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">lych</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">marshall</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">mercenary</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="strength">
+        <float name="default">0.3</float>
+        <string name="visibility">private</string>
+      </map>
+      <map name="agility">
+        <float name="default">0.3</float>
+        <string name="visibility">private</string>
+      </map>
+    </map>
+    <string name="id">mobile</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">orc</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="decays">
+        <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="guise">
+        <map name="default">
+          <map name="material">
+            <string name="dress">ragged</string>
+            <string name="head">simon</string>
+            <string name="pants">ragged</string>
+          </map>
+          <map name="mesh">
+            <string name="dress">2</string>
+            <string name="head">1</string>
+            <string name="pants">1</string>
+          </map>
+        </map>
+      </map>
+    </map>
+    <string name="id">settler</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>mobile</string>
+    </list>
+    <int name="playable">1</int>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">skeleton</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>character</string>
+    </list>
+    <int name="playable">1</int>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.objects.undead.Skeleton</string>
+    </map>
+  </map>
+
+</atlas>
