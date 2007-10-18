@@ -1,3 +1,8 @@
+2007-10-18  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/buildings.xml, data/mason.xml: Move all the building types from
+	  mason into their own rules file.
+
 2007-10-17  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/plants.xml: Add a fern.
@@ -17003,4 +17008,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1920 2007-10-17 22:20:47 alriddoch Exp $
+$Id: ChangeLog,v 1.1921 2007-10-18 03:36:25 alriddoch Exp $
