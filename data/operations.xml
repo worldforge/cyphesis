@@ -1,0 +1,43 @@
+<atlas>
+
+  <map>
+    <string name="id">ignite</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">lever</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">sow</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">strike</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">wear</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+</atlas>

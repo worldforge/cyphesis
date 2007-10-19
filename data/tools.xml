@@ -2,6 +2,20 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">1.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">axe</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-1</float>
@@ -91,6 +105,20 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">pickaxe</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-0.02</float>
@@ -133,6 +161,34 @@
       </map>
     </map>
     <string name="id">rope</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">scythe</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">shovel</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>

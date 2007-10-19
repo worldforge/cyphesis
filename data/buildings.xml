@@ -471,6 +471,79 @@
 
   <map>
     <map name="attributes">
+      <map name="burn_speed">
+        <float name="default">0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="material">
+        <string name="default">stone</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">stonehouse</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>house</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="area">
+        <map name="default">
+          <list name="points">
+            <list>
+              <float>0</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>0</float>
+            </list>
+          </list>
+          <int name="layer">7</int>
+        </map>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>5</float>
+          <float>5</float>
+          <float>3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">200</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">sty</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">tent</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-5</float>
