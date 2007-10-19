@@ -1,5 +1,10 @@
 2007-10-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/operations.xml, data/basic.xml: Move some operation definitions
+	  from basic into their own rules file.
+
+2007-10-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/weapons.xml, data/basic.xml: Move some weapon types
 	  from basic into their own rules file.
 
@@ -17060,4 +17065,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1931 2007-10-19 13:55:01 alriddoch Exp $
+$Id: ChangeLog,v 1.1932 2007-10-19 14:05:07 alriddoch Exp $

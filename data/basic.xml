@@ -40,14 +40,6 @@
   </map>
 
   <map>
-    <string name="id">chop</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>affect</string>
-    </list>
-  </map>
-
-  <map>
     <map name="attributes">
       <map name="mass">
         <float name="default">0.01</float>
@@ -62,38 +54,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>stackable</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">collapse</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">cut</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">disperse</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">extinguish</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
     </list>
   </map>
 
@@ -226,14 +186,6 @@
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">shoot</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
     </list>
   </map>
 

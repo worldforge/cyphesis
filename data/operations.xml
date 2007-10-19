@@ -1,6 +1,46 @@
 <atlas>
 
   <map>
+    <string name="id">chop</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>affect</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">collapse</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">cut</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">disperse</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">extinguish</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">ignite</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -13,6 +53,14 @@
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">shoot</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
     </list>
   </map>
 
