@@ -1,5 +1,10 @@
 2007-10-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/basic.xml, data/tools.xml, data/buildings.xml: Move a bunch
+	  of things from basic into the right places.
+
+2007-10-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/operations.xml, data/tasks.xml: Move some operation definitions
 	  from basic into their own rules file.
 
@@ -17050,4 +17055,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1929 2007-10-19 13:46:16 alriddoch Exp $
+$Id: ChangeLog,v 1.1930 2007-10-19 13:48:22 alriddoch Exp $
