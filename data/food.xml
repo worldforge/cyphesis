@@ -1,0 +1,68 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">ham</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.15</float>
+          <float>-0.3</float>
+          <float>0</float>
+          <float>0.15</float>
+          <float>0.5</float>
+          <float>0.2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">loaf</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">venison</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+</atlas>

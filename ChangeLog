@@ -1,5 +1,13 @@
 2007-10-19  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/food.xml, data/basic.xml, data/mason.xml: Move some food types
+	  from basic and mason into their own file.
+
+	* data/construction.xml, data/basic.xml: Move a construction type from
+	  basic into the right file.
+
+2007-10-19  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/operations.xml, data/basic.xml: Move some operation definitions
 	  from basic into their own rules file.
 
@@ -14643,7 +14651,7 @@
 	  example/client/InheritanceClient.h: Update to use skstream.
 
 	* server/ServerRouting.cpp, server/ServerRouting.h,
-          common/serialno.h, common/serialno.cpp: Switch to using
+	  common/serialno.h, common/serialno.cpp: Switch to using
 	  a more global easier to access source of serial numbers.
 
 2001-11-11  Al Riddoch  <alriddoch@zepler.org>
@@ -17065,4 +17073,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1932 2007-10-19 14:05:07 alriddoch Exp $
+$Id: ChangeLog,v 1.1933 2007-10-19 14:51:20 alriddoch Exp $
