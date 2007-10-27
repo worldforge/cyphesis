@@ -1,0 +1,98 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">boundary</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">forest</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>area</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="mass">
+        <float name="default">-1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">path</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>area</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="area">
+        <map name="default">
+          <list name="points">
+            <list>
+              <float>-3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>-5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>-3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>5</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>3.5</float>
+            </list>
+            <list>
+              <float>5</float>
+              <float>0</float>
+            </list>
+            <list>
+              <float>3.5</float>
+              <float>-3.5</float>
+            </list>
+            <list>
+              <float>0</float>
+              <float>-5</float>
+            </list>
+          </list>
+          <int name="layer">8</int>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-5</float>
+          <float>-5</float>
+          <float>0</float>
+          <float>5</float>
+          <float>5</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">ploughed_field</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>area</string>
+    </list>
+  </map>
+
+</atlas>
