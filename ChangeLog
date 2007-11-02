@@ -1,3 +1,8 @@
+2007-11-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* man/Makefile.am: Remove the man pages on maintainer-clean, so they
+	  can be re-created in a maintainer rebuild.
+
 2007-10-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* data/terrain.xml, data/mason.xml: Move some terrain related
@@ -17078,4 +17083,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1934 2007-10-27 08:33:24 alriddoch Exp $
+$Id: ChangeLog,v 1.1935 2007-11-02 02:54:11 alriddoch Exp $
