@@ -1,5 +1,11 @@
 2007-11-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.14
+
+2007-11-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* man/Makefile.am: Remove the man pages on maintainer-clean, so they
 	  can be re-created in a maintainer rebuild.
 
@@ -17083,4 +17089,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1935 2007-11-02 02:54:11 alriddoch Exp $
+$Id: ChangeLog,v 1.1936 2007-11-02 23:53:40 alriddoch Exp $
