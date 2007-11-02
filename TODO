@@ -1,3 +1,16 @@
+Core cyphesis daemon is very simple and robust. Never crashes. It launches
+and monitors and number of child daemons. Simplest configuration is a single
+child daemon. It reads and parses the config mostly for checking purposes.
+Write common infrastructure which can check the contents of the config
+for errant values, and report them. Use the current help data structures.
+There should in the eventual configuration be one watcher daemon, one
+simulation daemon, one persistor daemon, and one spatial processing daemon per
+CPU. Simulation should be network bound, peristence should be disk bound, and
+spatial should be CPU bound.
+
+Experiment with factory base classes. Can we have a base class for BaseEntity,
+inherit from it overriding with a function that returns Entity.
+
 Datagram classes in skstream, Address classes in skstream. Datagram can be
 sent to an address, without re-encoding. Datagram can be treated as stream.
 Address can encapsulate getaddrinfo results, or stand alone endpoints.
