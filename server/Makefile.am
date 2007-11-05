@@ -116,6 +116,7 @@ buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
+		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
@@ -149,5 +150,8 @@ cyslave_SOURCES = \
 		CommSlaveClient.cpp CommSlaveClient.h \
 		CommServer.cpp CommServer.h \
 		slave.cpp
+
+nodist_cyslave_SOURCES = \
+		buildid.cpp
 
 cyslave_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)

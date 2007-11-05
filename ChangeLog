@@ -1,5 +1,9 @@
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Makefile.am: Update build rules so cyslave links.
+
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.h: Export the function template for making config
 	  easier.
 
@@ -17120,4 +17124,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1940 2007-11-05 18:29:54 alriddoch Exp $
+$Id: ChangeLog,v 1.1941 2007-11-05 19:23:30 alriddoch Exp $
