@@ -5,8 +5,8 @@ RootName: @worldforge.org/cyphesis:$SOFTWAREVERSION
 PackageFileName: cyphesis-$SOFTWAREVERSION.package
 DisplayName: Cyphesis
 ShortName: cyphesis
-Maintainer: Al Riddoch <alriddoch@zepler.org>
-Packager: Al Riddoch <alriddoch@zepler.org>
+Maintainer: Al Riddoch <alriddoch@googlemail.com>
+Packager: Al Riddoch <alriddoch@googlemail.com>
 Summary: Cyphesis is a simple MMORPG server
 URL: http://www.worldforge.org/dev/eng/servers/cyphesis
 License: GNU General Public License, Version 2
@@ -42,7 +42,7 @@ require @python.org/python @PYTHON_VERSION@
 [Install]
 # Put your installation script here
 installExe bin/*
-installMan 1 man/man*/*
+installMan 1 man/man1/*
 copyFiles etc/cyphesis "$PREFIX/etc"
 installData share/cyphesis
 mkdirs "$PREFIX/var/tmp"

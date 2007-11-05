@@ -1,5 +1,10 @@
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* autopackage/default.apspec.in: Update the email addresses, and tweak
+	  the way man pages are included to be a little cleaner.
+
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Add a template function that ensures config
 	  values are read without having to repeat the section and key.
 	  Much less verbose and more obvious. Set the default ruleset in a
@@ -17110,4 +17115,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1938 2007-11-05 04:11:38 alriddoch Exp $
+$Id: ChangeLog,v 1.1939 2007-11-05 18:28:59 alriddoch Exp $
