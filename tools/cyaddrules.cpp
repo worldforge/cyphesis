@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.14 2007-06-22 12:59:00 alriddoch Exp $
+// $Id: cyaddrules.cpp,v 1.15 2007-11-05 19:42:10 alriddoch Exp $
 
 /// \page cyaddrules_index
 ///
@@ -150,25 +150,20 @@ int main(int argc, char ** argv)
     AdminClient bridge;
 
     std::string server;
-    if (global_conf->findItem("client", "serverhost")) {
-        server = global_conf->getItem("client", "serverhost").as_string();
-    }
+    readConfigItem("client", "serverhost", server);
 
     int useslave = 0;
-    if (global_conf->findItem("client", "useslave")) {
-        useslave = global_conf->getItem("client", "useslave");
-    }
+    readConfigItem("client", "useslave", useslave);
 
-    if (global_conf->findItem("client", "account")) {
-        bridge.setUsername(global_conf->getItem("client", "account").as_string());
-    } else {
-        bridge.setUsername("admin");
-    }
+    std::string username("admin");
+    readConfigItem("client", "account", username);
+    bridge.setUsername(username);
 
-
-    if (global_conf->findItem("client", "password")) {
-        bridge.setPassword(global_conf->getItem("client", "password").as_string());
+    std::string passwd;
+    if (readConfigItem("client", "password", passwd) == 0) {
+        bridge.setPassword(passwd);
     }
+    passwd.clear();
 
     if (server.empty()) {
         std::string localSocket = var_directory + "/tmp/";

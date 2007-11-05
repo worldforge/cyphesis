@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.111 2007-07-30 18:12:52 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.112 2007-11-05 19:42:10 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -1260,14 +1260,10 @@ int main(int argc, char ** argv)
     int optind = config_status;
 
     std::string server;
-    if (global_conf->findItem("client", "serverhost")) {
-        server = global_conf->getItem("client", "serverhost").as_string();
-    }
+    readConfigItem("client", "serverhost", server);
 
     int useslave = 0;
-    if (global_conf->findItem("client", "useslave")) {
-        useslave = global_conf->getItem("client", "useslave");
-    }
+    readConfigItem("client", "useslave", useslave);
 
     bool interactive = true;
     std::string cmd;
