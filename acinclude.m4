@@ -21,7 +21,7 @@ AC_ARG_WITH(psql-prefix,[  --with-psql-prefix=PREFIX
 AC_ARG_WITH(psql-exec-prefix,[  --with-psql-exec-prefix=PREFIX
                           Exec prefix where psql is installed (optional)],
             psql_exec_prefix="$withval", psql_exec_prefix="")
-AC_ARG_ENABLE(psqltest, [  --disable-psqltest     Do not try to compile and run a test psql program],
+AC_ARG_ENABLE(psqltest, [  --disable-psqltest      Do not try to compile and run a test psql program],
 		    , enable_psqltest=yes)
 
   if test x$psql_exec_prefix != x ; then

@@ -1,3 +1,17 @@
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
+	* cyphesis.spec.in: Disable dependency tracking and use multiple CPU
+	  cores when building the rpm.
+
+	* configure.ac: Remove the need for libtool. Clean up some bit rot.
+
+	* AUTHORS: Update email addresses, and make it clearer who did what.
+
+	* acinclude.m4: Clean up the help text formatting in the postgresql
+	  macro.
+
+	* autogen.sh: Remove libtoolize.
+
 2007-11-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* NEWS: Update NEWS announcement for release.
@@ -17089,4 +17103,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1936 2007-11-02 23:53:40 alriddoch Exp $
+$Id: ChangeLog,v 1.1937 2007-11-05 03:20:53 alriddoch Exp $

@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT([cyphesis],[0.5.14],[alriddoch@zepler.org])
+AC_INIT([cyphesis],[0.5.14],[alriddoch@googlemail.com])
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -16,9 +16,9 @@ AM_BINRELOC
 
 AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
 
-dnl Need libtool
+dnl Don't need libtool
 
-AC_PROG_LIBTOOL
+dnl AC_PROG_LIBTOOL
 
 COMMON_LIBS=
 TERRAIN_LIBS=
@@ -30,9 +30,41 @@ PGSQL_LIBS=
 PYTHON_LINKER_FLAGS=
 TAR_PERM_FLAGS=
 
-dnl Test for C++ compiler
+dnl Test for C++ compiler options
 
 AC_PROG_CXX
+AC_PROG_CPP
+AC_PROG_RANLIB
+
+python_prefix=/usr
+AC_ARG_WITH(python,
+[  --with-python=DIR       Prefix where python is installed in [default=/usr]],
+[
+    if test $withval != yes; then
+        python_prefix=$withval
+    fi
+])
+
+dnl allow the user to specify that most libraries should be statically linked
+
+STATIC_LIBSTDCPP=
+STATIC_LIBGCC=
+
+AC_ARG_ENABLE(static_link,
+  [  --enable-static-link    enable static link of some libs [default=no]],
+  [
+    if test "$enableval" = "yes"; then
+      link_static="true"
+      STATIC_LIBSTDCPP=`$CXX -print-file-name=libstdc++.a`
+      STATIC_LIBGCC=`$CXX -print-file-name=libgcc.a`
+    else
+      link_static="false"
+    fi
+  ],[
+    link_static="false"
+  ]
+)
+AM_CONDITIONAL(LINK_STATIC, test x"$link_static" = xtrue)
 
 AC_MSG_CHECKING(whether gcc needs -fno-strict-aliasing)
 AC_PREPROC_IFELSE([
@@ -64,6 +96,8 @@ AC_ARG_ENABLE(debug,
     ]
 )
 
+dnl allow the user to provide the directory where python is installed in
+
 AC_LANG(C++)
 
 AC_CHECK_FUNCS([sigset sigaction epoll_create poll localtime_r syslog uname])
@@ -93,39 +127,9 @@ AC_COMPILE_IFELSE(
     ]
 )
 
-dnl allow the user to provide the directory where python is installed in
-
-AC_CACHE_CHECK(for location of python, python_prefix,
-[
-    python_prefix=/usr
-    AC_ARG_WITH(python,
-    [  --with-python=DIR       Prefix where python is installed in [default=/usr]],
-    [
-        if test $withval != yes; then
-            python_prefix=$withval
-        fi
-    ])
-])
-
-STATIC_LIBSTDCPP=
-STATIC_LIBGCC=
-
-AC_ARG_ENABLE(static_link,
-  [  --enable-static-link    enable static link of some libs [default=no]],
-  [
-    if test "$enableval" = "yes"; then
-      link_static="true"
-      STATIC_LIBSTDCPP=`$CXX -print-file-name=libstdc++.a`
-      STATIC_LIBGCC=`$CXX -print-file-name=libgcc.a`
-    else
-      link_static="false"
-    fi
-  ],[
-    link_static="false"
-  ]
-)
-AM_CONDITIONAL(LINK_STATIC, test x"$link_static" = xtrue)
-
+dnl General header checks
+AC_CHECK_HEADERS(termios.h signal.h syslog.h sys/utsname.h sys/wait.h)
+AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h dirent.h)
 
 dnl then check for the header file Python.h and set
 dnl python_include_path and python_version
@@ -371,10 +375,6 @@ Cannot find tgetent in termcap or ncurses libraries!
 This may be a problem for readline.])
     )
 )
-
-dnl General header checks
-AC_CHECK_HEADERS(termios.h unistd.h signal.h syslog.h sys/utsname.h sys/wait.h)
-AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h dirent.h)
 
 AC_CHECK_LIB(readline,readline,
     [
