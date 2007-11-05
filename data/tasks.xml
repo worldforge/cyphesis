@@ -208,4 +208,22 @@
     </map>
   </map>
 
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">trailblaze</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">strike</string>
+      <string name="tool">theodolite</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Trailblaze</string>
+    </map>
+  </map>
+
 </atlas>

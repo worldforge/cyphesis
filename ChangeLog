@@ -1,5 +1,13 @@
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Trailblaze.py: Add a new task script
+	  for character defined roads. Work in progress.
+
+	* data/tasks.xml, data/tools.xml: Add tool and task classes for
+	  trailblazing.
+
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/cyaddrules.cpp, tools/cycmd.cpp: Use less verbose function
 	  template to read config values.
 
@@ -17139,4 +17147,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1944 2007-11-05 19:42:10 alriddoch Exp $
+$Id: ChangeLog,v 1.1945 2007-11-05 20:41:15 alriddoch Exp $
