@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.27 2007-06-19 13:19:58 alriddoch Exp $
+// $Id: globals.h,v 1.28 2007-11-05 18:29:55 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -53,6 +53,10 @@ static const int USAGE_SERVER = 1 << 0;
 static const int USAGE_CLIENT = 1 << 1;
 static const int USAGE_CYCMD = 1 << 2;
 static const int USAGE_DBASE = 1 << 3;
+
+template <typename T>
+int readConfigItem(const std::string & section, const std::string & key,
+                   T & storage);
 
 int loadConfig(int argc, char ** argv, bool server = false);
 void reportVersion(const char * prgname);

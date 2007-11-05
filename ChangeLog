@@ -1,5 +1,10 @@
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.h: Export the function template for making config
+	  easier.
+
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* autopackage/default.apspec.in: Update the email addresses, and tweak
 	  the way man pages are included to be a little cleaner.
 
@@ -17115,4 +17120,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1939 2007-11-05 18:28:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1940 2007-11-05 18:29:54 alriddoch Exp $
