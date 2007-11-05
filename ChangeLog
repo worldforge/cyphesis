@@ -1,5 +1,10 @@
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp, server/slave.cpp: Use less verbose function
+	  template to read config values.
+
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Makefile.am: Update build rules so cyslave links.
 
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
@@ -17124,4 +17129,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1941 2007-11-05 19:23:30 alriddoch Exp $
+$Id: ChangeLog,v 1.1942 2007-11-05 19:24:50 alriddoch Exp $

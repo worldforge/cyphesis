@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.148 2007-10-01 04:57:16 alriddoch Exp $
+// $Id: server.cpp,v 1.149 2007-11-05 19:24:50 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -91,9 +91,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    if (global_conf->findItem("cyphesis", "usedatabase")) {
-        database_flag = global_conf->getItem("cyphesis","usedatabase");
-    }
+    readConfigItem("cyphesis", "usedatabase", database_flag);
 
     // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
@@ -115,43 +113,32 @@ int main(int argc, char ** argv)
             }
             log(INFO, "To disable this message please run:\n\n    cyconfig --cyphesis:usedatabase=false\n\nto permanently disable database usage.");
         }
+    }
 
-        // If the restricted flag is set in the config file, then we
-        // don't allow connecting users to create accounts. Accounts must
-        // be created manually by the server administrator.
-        if (global_conf->findItem("cyphesis", "restricted")) {
-            restricted_flag = global_conf->getItem("cyphesis","restricted");
-            if (restricted_flag) {
-                log(INFO, "Setting restricted mode.");
-            }
+    // If the restricted flag is set in the config file, then we
+    // don't allow connecting users to create accounts. Accounts must
+    // be created manually by the server administrator.
+    if (readConfigItem("cyphesis", "restricted", restricted_flag) == 0) {
+        if (restricted_flag) {
+            log(INFO, "Setting restricted mode.");
         }
     }
 
-    if (global_conf->findItem("cyphesis", "inittime")) {
-        timeoffset = global_conf->getItem("cyphesis","inittime");
-    }
+    readConfigItem("cyphesis", "inittime", timeoffset);
 
     bool useMetaserver = false;
-    if (global_conf->findItem("cyphesis", "usemetaserver")) {
-        useMetaserver = global_conf->getItem("cyphesis","usemetaserver");
-    }
+    readConfigItem("cyphesis", "usemetaserver", useMetaserver);
 
     std::string mserver("metaserver.worldforge.org");
-    if (global_conf->findItem("cyphesis", "metaserver")) {
-        mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
-    }
+    readConfigItem("cyphesis", "metaserver", mserver);
 
     std::string server_name;
-    if (global_conf->findItem("cyphesis", "servername")) {
-        server_name = global_conf->getItem("cyphesis","servername").as_string();
-    } else {
+    if (readConfigItem("cyphesis","servername", server_name) != 0) {
         server_name = get_hostname();
     }
 
-    int nice=0;
-    if (global_conf->findItem("cyphesis", "nice")) {
-        nice = global_conf->getItem("cyphesis", "nice");
-    }
+    int nice = 0;
+    readConfigItem("cyphesis", "nice", nice);
     
     // Start up the python subsystem.
     init_python_api();

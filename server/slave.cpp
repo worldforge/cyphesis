@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: slave.cpp,v 1.13 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: slave.cpp,v 1.14 2007-11-05 19:24:50 alriddoch Exp $
 
 #include "CommServer.h"
 #include "CommSlaveListener.h"
@@ -73,33 +73,24 @@ int main(int argc, char ** argv)
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.
-    if (global_conf->findItem("cyphesis", "restricted")) {
-        restricted_flag = global_conf->getItem("cyphesis","restricted");
+    if (readConfigItem("cyphesis","restricted", restricted_flag) == 0) {
         if (restricted_flag) {
             log(INFO, "Setting restricted mode.");
         }
     }
 
-    if (global_conf->findItem("cyphesis", "inittime")) {
-        timeoffset = global_conf->getItem("cyphesis","inittime");
-    }
+    readConfigItem("cyphesis","inittime", timeoffset);
 
     std::string mserver("metaserver.worldforge.org");
-    if (global_conf->findItem("cyphesis", "metaserver")) {
-        mserver = global_conf->getItem("cyphesis", "metaserver").as_string();
-    }
+    readConfigItem("cyphesis", "metaserver", mserver);
 
     std::string serverName;
-    if (global_conf->findItem("cyphesis", "servername")) {
-        serverName = global_conf->getItem("cyphesis","servername").as_string();
-    } else {
+    if (readConfigItem("cyphesis","servername", serverName) != 0) {
         serverName = get_hostname();
     }
 
     std::string serverHostname("localhost");
-    if (global_conf->findItem("slave", "server")) {
-        serverHostname = global_conf->getItem("slave","server").as_string();
-    }
+    readConfigItem("slave","server", serverHostname);
     
     // Start up the python subsystem.
     init_python_api();
@@ -124,7 +115,7 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
-    ServerRouting server(world, rulesets.front(), serverName,
+    ServerRouting server(world, ruleset, serverName,
                          server_id, int_id,
                          lobby_id, lobby_int_id);
 
