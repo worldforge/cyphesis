@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.53 2007-10-01 04:57:15 alriddoch Exp $
+// $Id: globals.cpp,v 1.54 2007-11-05 04:11:38 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -48,7 +48,7 @@ std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
 std::string client_socket_name(DEFAULT_CLIENT_SOCKET);
 std::string slave_socket_name(DEFAULT_SLAVE_SOCKET);
-std::string ruleset;
+std::string ruleset(DEFAULT_RULESET);
 bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
@@ -124,6 +124,26 @@ static int check_tmp_path(const std::string & dir)
     return 0;
 }
 
+template <typename T>
+int readConfigItem(const std::string & section, const std::string & key, T & storage)
+{
+    if (global_conf->findItem(section, key)) {
+        storage = global_conf->getItem(section, key);
+        return 0;
+    }
+    return -1;
+}
+
+template<>
+int readConfigItem<std::string>(const std::string & section, const std::string & key, std::string & storage)
+{
+    if (global_conf->findItem(section, key)) {
+        storage = global_conf->getItem(section, key).as_string();
+        return 0;
+    }
+    return -1;
+}
+
 int loadConfig(int argc, char ** argv, bool server)
 {
     global_conf = varconf::Config::inst();
@@ -155,7 +175,7 @@ int loadConfig(int argc, char ** argv, bool server)
     // Check if the config directory has been overriden at this point, as if
     // it has, that will affect loading the main config.
     if (global_conf->findItem("cyphesis", "confdir")) {
-        etc_directory = global_conf->getItem("cyphesis", "confdir").as_string();
+        readConfigItem("cyphesis", "confdir", etc_directory);
     }
 
     // Load up the rest of the system config file, and then ensure that
@@ -188,53 +208,30 @@ int loadConfig(int argc, char ** argv, bool server)
 
     // Config is now loaded. Now set the values of some globals.
 
-    if (global_conf->findItem("cyphesis", "directory")) {
-        share_directory = global_conf->getItem("cyphesis", "directory").as_string();
-    }
+    readConfigItem("cyphesis", "directory", share_directory);
 
-    if (global_conf->findItem("cyphesis", "confdir")) {
-        etc_directory = global_conf->getItem("cyphesis", "confdir").as_string();
-    }
+    readConfigItem("cyphesis", "confdir", etc_directory);
 
-    if (global_conf->findItem("cyphesis", "vardir")) {
-        var_directory = global_conf->getItem("cyphesis", "vardir").as_string();
-    }
+    readConfigItem("cyphesis", "vardir", var_directory);
 
-    if (global_conf->findItem("cyphesis", "daemon") && server) {
-        daemon_flag = global_conf->getItem("cyphesis","daemon");
-    }
+    readConfigItem("cyphesis","daemon", daemon_flag);
 
-    if (global_conf->findItem("cyphesis", "tcpport")) {
-        client_port_num = global_conf->getItem("cyphesis","tcpport");
-    }
+    readConfigItem("cyphesis","tcpport", client_port_num);
 
-    if (global_conf->findItem("cyphesis", "unixport")) {
-        client_socket_name = global_conf->getItem("cyphesis","unixport").as_string();
-    }
+    readConfigItem("cyphesis","unixport", client_socket_name);
 
-    if (global_conf->findItem("slave", "tcpport")) {
-        slave_port_num = global_conf->getItem("slave","tcpport");
-    }
+    readConfigItem("slave","tcpport", slave_port_num);
 
-    if (global_conf->findItem("slave", "unixport")) {
-        slave_socket_name = global_conf->getItem("slave","unixport").as_string();
-    }
+    readConfigItem("slave","unixport", slave_socket_name);
 
-    if (global_conf->findItem("game", "player_vs_player")) {
-        pvp_flag = global_conf->getItem("game", "player_vs_player");
-    }
+    readConfigItem("game", "player_vs_player", pvp_flag);
 
-    if (global_conf->findItem("game", "player_vs_player_offline")) {
-        pvp_offl_flag = global_conf->getItem("game", "player_vs_player_offline");
-    }
+    readConfigItem("game", "player_vs_player_offline", pvp_offl_flag);
 
     // Load up the ruleset.
-    if (global_conf->findItem("cyphesis", "ruleset")) {
-        ruleset = global_conf->getItem("cyphesis", "ruleset").as_string();
-    } else {
+    if (readConfigItem("cyphesis", "ruleset", ruleset)) {
         log(ERROR, String::compose("No ruleset specified in config. "
                                    "Using \"%1\" rules.", DEFAULT_RULESET));
-        ruleset = DEFAULT_RULESET;
     }
 
     if (check_tmp_path(var_directory) != 0) {

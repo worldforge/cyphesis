@@ -1,5 +1,12 @@
 2007-11-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp: Add a template function that ensures config
+	  values are read without having to repeat the section and key.
+	  Much less verbose and more obvious. Set the default ruleset in a
+	  more sane way.
+
+2007-11-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* cyphesis.spec.in: Disable dependency tracking and use multiple CPU
 	  cores when building the rpm.
 
@@ -17103,4 +17110,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1937 2007-11-05 03:20:53 alriddoch Exp $
+$Id: ChangeLog,v 1.1938 2007-11-05 04:11:38 alriddoch Exp $
