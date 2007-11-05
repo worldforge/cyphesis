@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.92 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Database.cpp,v 1.93 2007-11-05 19:35:33 alriddoch Exp $
 
 #include "Database.h"
 
@@ -96,32 +96,34 @@ bool Database::commandOk()
 int Database::initConnection(bool createDatabase)
 {
     std::stringstream conninfos;
-    if (global_conf->findItem("cyphesis", "dbserver")) {
-        std::string db_server(global_conf->getItem("cyphesis", "dbserver"));
+
+    std::string db_server;
+    if (readConfigItem("cyphesis", "dbserver", db_server) == 0) {
         if (db_server.empty()) {
-            log(WARNING, "Empty database hostname specified in config file. Using none.");
+            log(WARNING, "Empty database hostname specified in config file. "
+                         "Using none.");
         } else {
-            conninfos << "host=" << " ";
+            conninfos << "host=" << db_server << " ";
         }
     }
 
     std::string dbname = "cyphesis";
-    if (global_conf->findItem("cyphesis", "dbname")) {
-        dbname = global_conf->getItem("cyphesis", "dbname").as_string();
-    }
+    readConfigItem("cyphesis", "dbname", dbname);
     conninfos << "dbname=" << dbname << " ";
 
-    if (global_conf->findItem("cyphesis", "dbuser")) {
-        std::string db_user(global_conf->getItem("cyphesis", "dbuser"));
+    std::string db_user;
+    if (readConfigItem("cyphesis", "dbuser", db_user) == 0) {
         if (db_user.empty()) {
-            log(WARNING, "Empty username specified in config file. Using current user.");
+            log(WARNING, "Empty username specified in config file. "
+                         "Using current user.");
         } else {
             conninfos << "user=" << db_user << " ";
         }
     }
 
-    if (global_conf->findItem("cyphesis", "dbpasswd")) {
-        conninfos << "password=" << global_conf->getItem("cyphesis", "dbpasswd").as_string() << " ";
+    std::string db_passwd;
+    if (readConfigItem("cyphesis", "dbpasswd", db_passwd) == 0) {
+        conninfos << "password=" << db_passwd << " ";
     }
 
     const std::string cinfo = conninfos.str();

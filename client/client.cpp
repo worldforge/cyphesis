@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.cpp,v 1.29 2007-09-04 10:51:27 alriddoch Exp $
+// $Id: client.cpp,v 1.30 2007-11-05 19:35:32 alriddoch Exp $
 
 #include "ObserverClient.h"
 #include "ClientPropertyManager.h"
@@ -59,29 +59,19 @@ int main(int argc, char ** argv)
     assert(optind <= argc);
 
     std::string server = "localhost";
-    if (global_conf->findItem("client", "serverhost")) {
-        server = global_conf->getItem("client", "serverhost").as_string();
-    }
+    readConfigItem("client", "serverhost", server);
 
     std::string account = "admin";
-    if (global_conf->findItem("client", "account")) {
-        account = global_conf->getItem("client", "account").as_string();
-    }
+    readConfigItem("client", "account", account);
 
     std::string password;
-    if (global_conf->findItem("client", "password")) {
-        password = global_conf->getItem("client", "password").as_string();
-    }
+    readConfigItem("client", "password", password);
 
     std::string package;
-    if (global_conf->findItem("client", "package")) {
-        package = global_conf->getItem("client", "package").as_string();
-    }
+    readConfigItem("client", "package", package);
 
     std::string function;
-    if (global_conf->findItem("client", "function")) {
-        function = global_conf->getItem("client", "function").as_string();
-    }
+    readConfigItem("client", "function", function);
 
     if (optind == (argc - 1)) {
         std::string arg(argv[optind]);
