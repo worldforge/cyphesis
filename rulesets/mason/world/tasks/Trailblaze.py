@@ -43,6 +43,8 @@ class Trailblaze(Thing):
 
         if not self.points:
             print 'Iniit'
+            self.rate = 0
+            self.progress = 0
             if 'world' in target.type:
                 print 'World'
                 new_loc = Location(target, self.character.location.coordinates)
@@ -56,7 +58,23 @@ class Trailblaze(Thing):
                 self.irrelevant()
                 return
         else:
-            print 'Progress'
+            if not self.character.location.velocity.is_valid() or \
+               self.character.location.velocity.square_mag() < 1:
+                if self.rate:
+                    print 'terminated'
+                    print self.points
+                    # Finish up, and create the path
+                    self.irrelevant()
+                    return
+                else:
+                    print 'Progress'
+                    self.progress = 0
+                    self.rate = 1 / 1.75
+            else:
+                self.progress = 0
+                self.rate = 0
+                print 'Drawing'
+                self.points.append(self.character.location.coordinates)
         res.append(self.next_tick(1.75))
         return res
 
