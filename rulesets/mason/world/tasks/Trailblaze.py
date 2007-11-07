@@ -64,8 +64,9 @@ class Trailblaze(Thing):
                     print 'terminated'
                     print self.points
                     # Finish up, and create the path
+                    self._create_path(res)
                     self.irrelevant()
-                    return
+                    return res
                 else:
                     print 'Progress'
                     self.progress = 0
@@ -77,6 +78,13 @@ class Trailblaze(Thing):
                 self.points.append(self.character.location.coordinates)
         res.append(self.next_tick(1.75))
         return res
+
+    def _create_path(self, res):
+        line = []
+        area = []
+
+        create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line
+        return
 
         new_status = target.status - 0.1
 
