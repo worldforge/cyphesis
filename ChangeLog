@@ -1,3 +1,7 @@
+2007-11-08  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/mason/world/tasks/Trailblaze.py: More work in progress.
+
 2007-11-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/world/tasks/Trailblaze.py: More work in progress.
@@ -17155,4 +17159,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1947 2007-11-07 17:43:10 alriddoch Exp $
+$Id: ChangeLog,v 1.1948 2007-11-08 16:22:34 alriddoch Exp $

@@ -81,29 +81,40 @@ class Trailblaze(Thing):
 
     def _create_path(self, res):
         line = []
+        # The left side of the path
         area = []
+        # The right side of the path
+        area_tail = []
+        count = len(self.points)
+
+        for i in range(count):
+            point = self.points[i]
+            line.append([point.x, point,y, point.z])
+            if i == 0:
+                # The first point on the path. Make it the start of both sides
+                area.append([point.x, point,y])
+                area_tail.append([point.x, point,y])
+                print 'Begin'
+                continue
+            if i == count - 1:
+                # The end point of the path. Make it the end of left side.
+                area.append([point.x, point,y])
+                print 'End'
+                continue
+            # vector from previous
+            vfp = (point - self.points[i - 1]).unit_vector()
+            # vector to next
+            vtn = (self.points[i + 1] - point).unit_vector()
+
+            area.append([- vfp.y - vtn.y, vfp.x + vtn.x])
+            area_tail.end([vfp.y + vtn.y, - vfp.x - vtn.x])
+
+            print 'Including this one'
+
+        # Reverse the right side of the path
+        area_tail.reverse()
+        # and append it to the left side to make an area boundary
+        area += area_tail()
 
         create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line
         return
-
-        new_status = target.status - 0.1
-
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
-            self.progress = 1 - new_status
-            self.rate = 0
-            return self.next_tick(1.75)
-
-        set=Operation("set", Entity(self.target, status=new_status), to=target)
-        res.append(set)
-        if new_status < 0:
-            new_loc = target.location.copy()
-            new_loc.bbox = target.location.bbox
-            new_loc.orientation = target.location.orientation
-            create=Operation("create", Entity(name='stake',type='stake',location=new_loc), to=target)
-            res.append(create)
-        self.progress = 1 - new_status
-        self.rate = 0.1 / 1.75
-        
-        res.append(self.next_tick(1.75))
-
-        return res
