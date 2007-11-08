@@ -64,7 +64,7 @@ class Trailblaze(Thing):
                     print 'terminated'
                     print self.points
                     # Finish up, and create the path
-                    self._create_path(res)
+                    self._create_path(target, res)
                     self.irrelevant()
                     return res
                 else:
@@ -79,7 +79,7 @@ class Trailblaze(Thing):
         res.append(self.next_tick(1.75))
         return res
 
-    def _create_path(self, res):
+    def _create_path(self, target, res):
         line = []
         # The left side of the path
         area = []
@@ -116,5 +116,6 @@ class Trailblaze(Thing):
         # and append it to the left side to make an area boundary
         area += area_tail()
 
-        create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line
+        create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line), to=target)
+        res.append(create)
         return
