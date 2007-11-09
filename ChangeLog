@@ -1,5 +1,10 @@
 2007-11-08  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/world/tasks/Trailblaze.py: Task to allow players to
+	  create roads is now functional.
+
+2007-11-08  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/mason/world/tasks/Trailblaze.py: Fix _create_path to
 	  generate the operation correctly.
 
@@ -17164,4 +17169,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1949 2007-11-08 21:34:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1950 2007-11-09 16:19:14 alriddoch Exp $

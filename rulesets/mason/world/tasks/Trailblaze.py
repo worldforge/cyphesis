@@ -42,11 +42,9 @@ class Trailblaze(Thing):
             return
 
         if not self.points:
-            print 'Iniit'
             self.rate = 0
             self.progress = 0
             if 'world' in target.type:
-                print 'World'
                 new_loc = Location(target, self.character.location.coordinates)
                 create = Operation("create", Entity(name='pile', type='pile', location = new_loc), to=target)
                 res.append(create)
@@ -60,22 +58,21 @@ class Trailblaze(Thing):
         else:
             if not self.character.location.velocity.is_valid() or \
                self.character.location.velocity.square_mag() < 1:
+                if self.character.location.coordinates != self.points[-1:][0]:
+                    self.points.append(self.character.location.coordinates)
                 if self.rate:
-                    print 'terminated'
-                    print self.points
                     # Finish up, and create the path
                     self._create_path(target, res)
                     self.irrelevant()
                     return res
                 else:
-                    print 'Progress'
                     self.progress = 0
                     self.rate = 1 / 1.75
             else:
                 self.progress = 0
                 self.rate = 0
-                print 'Drawing'
-                self.points.append(self.character.location.coordinates)
+                if self.character.location.coordinates != self.points[-1:][0]:
+                    self.points.append(self.character.location.coordinates)
         res.append(self.next_tick(1.75))
         return res
 
@@ -87,35 +84,60 @@ class Trailblaze(Thing):
         area_tail = []
         count = len(self.points)
 
+        minx = 0
+        miny = 0
+        minz = 0
+
+        maxx = 0
+        maxy = 0
+        maxz = 0
+
+        origin = self.points[0]
         for i in range(count):
             point = self.points[i]
-            line.append([point.x, point,y, point.z])
+            local_point = point - origin
+            line.append([local_point.x, local_point.y, local_point.z])
             if i == 0:
                 # The first point on the path. Make it the start of both sides
-                area.append([point.x, point,y])
-                area_tail.append([point.x, point,y])
-                print 'Begin'
+                vtn = (self.points[i + 1] - point).unit_vector()
+                area.append([local_point.x - 2 * vtn.y, local_point.y + 2 * vtn.x])
+                area_tail.append([local_point.x + 2 * vtn.y, local_point.y - 2 * vtn.x])
+                # area_tail.append([point.x, point.y])
                 continue
+
+            minx = min(minx, local_point.x)
+            miny = min(miny, local_point.y)
+            minz = min(minz, local_point.z)
+
+            maxx = max(maxx, local_point.x)
+            maxy = max(maxy, local_point.y)
+            maxz = max(maxz, local_point.z)
+
             if i == count - 1:
                 # The end point of the path. Make it the end of left side.
-                area.append([point.x, point,y])
-                print 'End'
+                vfp = (point - self.points[i - 1]).unit_vector()
+                area.append([local_point.x - 2 * vfp.y, local_point.y + 2 * vfp.x])
+                area_tail.append([local_point.x + 2 * vfp.y, local_point.y - 2 * vfp.x])
                 continue
             # vector from previous
             vfp = (point - self.points[i - 1]).unit_vector()
             # vector to next
             vtn = (self.points[i + 1] - point).unit_vector()
 
-            area.append([- vfp.y - vtn.y, vfp.x + vtn.x])
-            area_tail.end([vfp.y + vtn.y, - vfp.x - vtn.x])
+            area.append([local_point.x - vfp.y - vtn.y, local_point.y + vfp.x + vtn.x])
+            area_tail.append([local_point.x + vfp.y + vtn.y, local_point.y - vfp.x - vtn.x])
 
-            print 'Including this one'
 
         # Reverse the right side of the path
         area_tail.reverse()
         # and append it to the left side to make an area boundary
-        area += area_tail()
+        area += area_tail
 
-        create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line), to=target)
+        # FIXME Add bbox
+        new_loc = Location(target, self.points[0])
+        # create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line), to=target)
+        bbox = [minx, miny, minz, maxx, maxy, maxz]
+        print "area %r box %r" % (area, bbox)
+        create = Operation('create', Entity(name='path', type='path', location=new_loc, bbox=bbox, area={'points' : area, 'layer' : 7}, line=line), to=target)
         res.append(create)
         return
