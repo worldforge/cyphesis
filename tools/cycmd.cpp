@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.112 2007-11-05 19:42:10 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.113 2007-11-14 22:40:18 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -1242,7 +1242,7 @@ static void usage(char * prg)
 
 int main(int argc, char ** argv)
 {
-    int config_status = loadConfig(argc, argv, true); 
+    int config_status = loadConfig(argc, argv, USAGE_CYCMD); 
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             reportVersion(argv[0]);

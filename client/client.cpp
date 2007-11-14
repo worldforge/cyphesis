@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.cpp,v 1.30 2007-11-05 19:35:32 alriddoch Exp $
+// $Id: client.cpp,v 1.31 2007-11-14 22:40:18 alriddoch Exp $
 
 #include "ObserverClient.h"
 #include "ClientPropertyManager.h"
@@ -39,7 +39,7 @@ static void usage(const char * prgname)
 
 int main(int argc, char ** argv)
 {
-    int config_status = loadConfig(argc, argv, true); 
+    int config_status = loadConfig(argc, argv, USAGE_CLIENT); 
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             reportVersion(argv[0]);

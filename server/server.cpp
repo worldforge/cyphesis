@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.149 2007-11-05 19:24:50 alriddoch Exp $
+// $Id: server.cpp,v 1.150 2007-11-14 22:40:18 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -64,7 +64,7 @@ int main(int argc, char ** argv)
 
     interactive_signals();
 
-    int config_status = loadConfig(argc, argv, true);
+    int config_status = loadConfig(argc, argv, USAGE_SERVER);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             std::cout << argv[0] << " (cyphesis) " << consts::version

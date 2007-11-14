@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.54 2007-11-05 04:11:38 alriddoch Exp $
+// $Id: globals.cpp,v 1.55 2007-11-14 22:40:18 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -86,8 +86,10 @@ static const usage_data usage[] = {
     { "cyphesis", "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
     { "cyphesis", "restricted", "true|false", "false", "Flag to control restricted mode", S },
     { "cyphesis", "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
+    { "cyphesis", "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
     { "cyphesis", "metaserver", "<hostname>", "metaserver.worldforge.org", "Hostname to use as the metaserver", S },
     { "cyphesis", "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
+    { "cyphesis", "nice", "<level>", "1", "Reduce the priority level of the server", S },
     { "cyphesis", "useaiclient", "true|false", "false", "Flag to control whether AI is to be driven by a client", S },
     { "cyphesis", "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S|D },
     { "cyphesis", "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S|D },
@@ -101,6 +103,7 @@ static const usage_data usage[] = {
     { "client", "useslave", "true|false", "false", "Flag to control connecting to an AI slave server, not master world server" , S|M },
     { "slave", "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
     { "slave", "unixport", "<filename>", DEFAULT_SLAVE_SOCKET, "Local listen socket for admin connections to the AI slave server", M },
+    { "slave", "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
     { 0, 0, 0, 0 }
 };
 
@@ -144,7 +147,46 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
     return -1;
 }
 
-int loadConfig(int argc, char ** argv, bool server)
+typedef std::map<std::string, std::string> OptionHelp;
+typedef std::map<std::string, OptionHelp> UsageHelp;
+
+static int check_config(varconf::Config & config,
+                        int usage_groups = USAGE_SERVER|
+                                           USAGE_CLIENT|
+                                           USAGE_CYCMD|
+                                           USAGE_DBASE)
+{
+    UsageHelp usage_help;
+
+    const usage_data * ud = &usage[0];
+    for (; ud->section != 0; ++ud) {
+        if ((ud->flags & usage_groups) == 0) {
+            continue;
+        }
+        usage_help[ud->section].insert(std::make_pair(ud->option, ud->description));
+    }
+    
+    UsageHelp::const_iterator I = usage_help.begin();
+    UsageHelp::const_iterator Iend = usage_help.end();
+    for (; I != Iend; ++I) {
+        const std::string & section_name = I->first;
+        const OptionHelp & section_help = I->second;
+        const varconf::sec_map & section = config.getSection(section_name);
+
+        varconf::sec_map::const_iterator J = section.begin();
+        varconf::sec_map::const_iterator Jend = section.end();
+        for (; J != Jend; ++J) {
+            const std::string & option_name = J->first;
+            if (section_help.find(J->first) == section_help.end()) {
+                log(WARNING, String::compose("Invalid option -- %1:%2",
+                                             section_name, option_name));
+            }
+        }
+    }
+    return 0;
+}
+
+int loadConfig(int argc, char ** argv, int usage)
 {
     global_conf = varconf::Config::inst();
 
@@ -152,6 +194,12 @@ int loadConfig(int argc, char ** argv, bool server)
     global_conf->setParameterLookup('?', "help");
 
     global_conf->setParameterLookup('v', "version");
+
+    // Check the commmand line config doesn't contain any unknown or
+    // inappropriate options.
+    varconf::Config test_cmdline;
+    test_cmdline.getCmdline(argc, argv);
+    check_config(test_cmdline, usage);
 
     // See if the user has set the install directory on the command line
     bool home_dir_config = false;
@@ -174,9 +222,7 @@ int loadConfig(int argc, char ** argv, bool server)
 
     // Check if the config directory has been overriden at this point, as if
     // it has, that will affect loading the main config.
-    if (global_conf->findItem("cyphesis", "confdir")) {
-        readConfigItem("cyphesis", "confdir", etc_directory);
-    }
+    readConfigItem("cyphesis", "confdir", etc_directory);
 
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
@@ -196,7 +242,10 @@ int loadConfig(int argc, char ** argv, bool server)
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
+
     int optind = global_conf->getCmdline(argc, argv);
+
+    check_config(*global_conf);
 
     // Write out any changes that have been overriden at user scope. It
     // may be a good idea to do this at shutdown.
@@ -214,15 +263,15 @@ int loadConfig(int argc, char ** argv, bool server)
 
     readConfigItem("cyphesis", "vardir", var_directory);
 
-    readConfigItem("cyphesis","daemon", daemon_flag);
+    readConfigItem("cyphesis", "daemon", daemon_flag);
 
-    readConfigItem("cyphesis","tcpport", client_port_num);
+    readConfigItem("cyphesis", "tcpport", client_port_num);
 
-    readConfigItem("cyphesis","unixport", client_socket_name);
+    readConfigItem("cyphesis", "unixport", client_socket_name);
 
-    readConfigItem("slave","tcpport", slave_port_num);
+    readConfigItem("slave", "tcpport", slave_port_num);
 
-    readConfigItem("slave","unixport", slave_socket_name);
+    readConfigItem("slave", "unixport", slave_socket_name);
 
     readConfigItem("game", "player_vs_player", pvp_flag);
 
@@ -267,7 +316,7 @@ void reportVersion(const char * prgname)
               << " (WorldForge)" << std::endl << std::flush;
 }
 
-void showUsage(const char * prgname, int args, const char * extras)
+void showUsage(const char * prgname, int usage_flags, const char * extras)
 {
     std::cout << "Usage: " << prgname << " [options]";
     if (extras != 0) {
@@ -291,7 +340,7 @@ void showUsage(const char * prgname, int args, const char * extras)
 
     ud = &usage[0];
     for (; ud->section != 0; ++ud) {
-        if ((ud->flags & args) == 0) {
+        if ((ud->flags & usage_flags) == 0) {
             continue;
         }
         std::cout << "  --" << ud->section << ":" << ud->option;

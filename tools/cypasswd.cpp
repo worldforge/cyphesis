@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cypasswd.cpp,v 1.37 2007-04-28 16:45:16 alriddoch Exp $
+// $Id: cypasswd.cpp,v 1.38 2007-11-14 22:40:18 alriddoch Exp $
 
 /// \page cypasswd_index
 ///
@@ -78,7 +78,7 @@ void usage(std::ostream & stream, char * n, bool verbose = false)
 
 int main(int argc, char ** argv)
 {
-    int config_status = loadConfig(argc, argv);
+    int config_status = loadConfig(argc, argv, USAGE_DBASE);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             reportVersion(argv[0]);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.12 2007-09-22 15:05:35 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.13 2007-11-14 22:40:18 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -113,7 +113,7 @@ RuleReader * RuleReader::m_instance = NULL;
 
 int main(int argc, char ** argv)
 {
-    int config_status = loadConfig(argc, argv, true);
+    int config_status = loadConfig(argc, argv, USAGE_DBASE);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             reportVersion(argv[0]);

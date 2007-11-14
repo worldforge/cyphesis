@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyloadrules.cpp,v 1.38 2007-06-22 12:59:00 alriddoch Exp $
+// $Id: cyloadrules.cpp,v 1.39 2007-11-14 22:40:18 alriddoch Exp $
 
 /// \page cyloadrules_index
 ///
@@ -165,7 +165,7 @@ static void usage(char * prgname)
 
 int main(int argc, char ** argv)
 {
-    int config_status = loadConfig(argc, argv, true);
+    int config_status = loadConfig(argc, argv, USAGE_DBASE);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             reportVersion(argv[0]);
