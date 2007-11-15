@@ -1,5 +1,10 @@
 2007-11-15  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h, server/EntityFactory.cpp: Store rich class
+	  data for entity class types.
+
+2007-11-15  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/AtlasFileLoader.cpp, common/AtlasFileLoader.h: Switch to
 	  loading and storing the file using the Atlas Objects Decoder.
 
@@ -17191,4 +17196,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1952 2007-11-15 02:07:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1953 2007-11-15 15:56:30 alriddoch Exp $

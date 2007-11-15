@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.51 2007-11-15 02:07:05 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.52 2007-11-15 15:56:30 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -76,8 +76,11 @@ class EntityFactory {
 
     void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
     void installRules();
-    void installFactory(const std::string &, const std::string &, FactoryBase*);
-    int populateFactory(const std::string & className,
+    void installFactory(const std::string & parent,
+                        const std::string & class_name,
+                        FactoryBase *,
+                        Atlas::Objects::Root classDesc = 0);
+    int populateFactory(const std::string & class_name,
                         FactoryBase * factory,
                         const Atlas::Message::MapType & classDesc);
     FactoryBase * getNewFactory(const std::string &);

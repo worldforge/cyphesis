@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.122 2007-11-15 02:07:05 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.123 2007-11-15 15:56:30 alriddoch Exp $
 
 #include <Python.h>
 
@@ -565,7 +565,7 @@ int EntityFactory::installEntityClass(const std::string & class_name,
                     << std::endl << std::flush;);
 
     // Install the factory in place.
-    installFactory(parent, class_name, factory);
+    installFactory(parent, class_name, factory, class_desc);
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factory);
@@ -839,7 +839,8 @@ void EntityFactory::installRules()
 
 void EntityFactory::installFactory(const std::string & parent,
                                    const std::string & class_name,
-                                   FactoryBase * factory)
+                                   FactoryBase * factory,
+                                   Root class_desc)
 {
     assert(factory != 0);
 
@@ -847,7 +848,13 @@ void EntityFactory::installFactory(const std::string & parent,
 
     Inheritance & i = Inheritance::instance();
 
-    i.addChild(atlasClass(class_name, parent));
+    if (class_desc.isValid()) {
+        assert(class_desc->getId() == class_name);
+        assert(class_desc->getParents().front() == parent);
+        i.addChild(class_desc);
+    } else {
+        i.addChild(atlasClass(class_name, parent));
+    }
 }
 
 FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
