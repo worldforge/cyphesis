@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.121 2007-10-01 03:31:35 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.122 2007-11-15 02:07:05 alriddoch Exp $
 
 #include <Python.h>
 
@@ -378,10 +378,8 @@ static void updateChildren(FactoryBase * factory)
 
 int EntityFactory::installTaskClass(const std::string & class_name,
                                     const std::string & parent,
-                                    const MapType & class_desc)
+                                    const Root & class_desc)
 {
-    Inheritance & i = Inheritance::instance();
-
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I != m_taskFactories.end()) {
         log(ERROR, String::compose("Attempt to install task \"%1\" which is "
@@ -389,16 +387,17 @@ int EntityFactory::installTaskClass(const std::string & class_name,
     }
     
     // Establish that this rule has an associated script.
-    MapType::const_iterator J = class_desc.find("script");
-    MapType::const_iterator Jend = class_desc.end();
-    if (J == Jend || !J->second.isMap()) {
+    Element script_attr;
+    if (class_desc->copyAttr("script", script_attr) != 0 ||
+        !script_attr.isMap()) {
         log(ERROR, String::compose("Task \"%1\" has no script.", class_name));
         return -1;
     }
-    const MapType & script = J->second.Map();
+    const MapType & script = script_attr.Map();
 
-    J = script.find("name");
-    if (J == script.end() || !J->second.isString()) {
+    MapType::const_iterator J = script.find("name");
+    MapType::const_iterator script_end = script.end();
+    if (J == script_end || !J->second.isString()) {
         log(ERROR, String::compose("Task \"%1\" script has no name.",
                                    class_name));
         return -1;
@@ -406,7 +405,7 @@ int EntityFactory::installTaskClass(const std::string & class_name,
     const std::string & script_name = J->second.String();
 
     J = script.find("language");
-    if (J == script.end() || !J->second.isString()) {
+    if (J == script_end || !J->second.isString()) {
         log(ERROR, String::compose("Task \"%1\" script has no language.",
                                    class_name));
         return -1;
@@ -421,14 +420,15 @@ int EntityFactory::installTaskClass(const std::string & class_name,
 
     TaskFactory * factory = new PythonTaskScriptFactory(script_name, class_name);
 
-    J = class_desc.find("activation");
-    if (J == Jend || !J->second.isMap()) {
+    Element activation_attr;
+    if (class_desc->copyAttr("activation", activation_attr) != 0 ||
+        !activation_attr.isMap()) {
         delete factory;
         log(ERROR, String::compose("Task \"%1\" has no activation.",
                                    class_name));
         return -1;
     }
-    const MapType & activation = J->second.Map();
+    const MapType & activation = activation_attr.Map();
 
     MapType::const_iterator act_end = activation.end();
     J = activation.find("tool");
@@ -439,6 +439,8 @@ int EntityFactory::installTaskClass(const std::string & class_name,
         return -1;
     }
     const std::string & activation_tool = J->second.String();
+
+    Inheritance & i = Inheritance::instance();
 
     if (!i.hasClass(activation_tool)) {
         delete factory;
@@ -518,14 +520,14 @@ int EntityFactory::installTaskClass(const std::string & class_name,
     
     m_taskFactories.insert(std::make_pair(class_name, factory));
 
-    i.addChild(atlasClass(class_name, parent));
+    i.addChild(class_desc);
 
     return 0;
 }
 
 int EntityFactory::installEntityClass(const std::string & class_name,
                                       const std::string & parent,
-                                      const MapType & class_desc)
+                                      const Root & class_desc)
 {
     // Get the new factory for this rule
     FactoryDict::const_iterator I = m_factories.find(parent);
@@ -554,7 +556,7 @@ int EntityFactory::installEntityClass(const std::string & class_name,
     // overriden with the defaults for this class.
     factory->m_attributes = parent_factory->m_attributes;
 
-    if (populateFactory(class_name, factory, class_desc) != 0) {
+    if (populateFactory(class_name, factory, class_desc->asMessage()) != 0) {
         delete factory;
         return -1;
     }
@@ -573,7 +575,7 @@ int EntityFactory::installEntityClass(const std::string & class_name,
 
 int EntityFactory::installOpDefinition(const std::string & class_name,
                                        const std::string & parent,
-                                       const MapType & class_desc)
+                                       const Root & class_desc)
 {
     Inheritance & i = Inheritance::instance();
 
@@ -589,7 +591,7 @@ int EntityFactory::installOpDefinition(const std::string & class_name,
 
     Atlas::Objects::Root r = atlasOpDefinition(class_name, parent);
 
-    if (i.addChild(r) != 0) {
+    if (i.addChild(class_desc) != 0) {
         return -1;
     }
 
@@ -600,40 +602,21 @@ int EntityFactory::installOpDefinition(const std::string & class_name,
 }
 
 int EntityFactory::installRule(const std::string & class_name,
-                               const MapType & class_desc)
+                               const Root & class_desc)
 {
-    MapType::const_iterator J = class_desc.find("objtype");
-    MapType::const_iterator Jend = class_desc.end();
-    if (J == Jend || !J->second.isString()) {
-        log(ERROR, String::compose("Rule \"%1\" has no objtype. Skipping.",
-                                   class_name));
-        return -1;
-    }
-    const std::string & objtype = J->second.String();
-    J = class_desc.find("parents");
-    if (J == Jend) {
-        log(ERROR, String::compose("Rule \"%1\" has no parents. Skipping.",
-                                   class_name));
-        return -1;
-    }
-    if (!J->second.isList()) {
-        log(ERROR, String::compose("Rule \"%1\" has malformed parents. "
-                                   "Skipping.", class_name));
-        return -1;
-    }
-    const ListType & parents = J->second.asList();
+    const std::string & objtype = class_desc->getObjtype();
+    const std::list<std::string> & parents = class_desc->getParents();
     if (parents.empty()) {
         log(ERROR, String::compose("Rule \"%1\" has empty parents. Skipping.",
                                    class_name));
         return -1;
     }
-    const Element & p1 = parents.front();
-    if (!p1.isString() || p1.String().empty()) {
-        log(ERROR, String::compose("Rule \"%1\" has %2 first parent. Skipping.",
-                                   class_name, Element::typeName(p1.getType())));
+    const std::string & parent = parents.front();
+    if (parent.empty()) {
+        log(ERROR, String::compose("Rule \"%1\" has empty first parent."
+                                   " Skipping.", class_name));
         return -1;
     }
-    const std::string & parent = p1.String();
     if (objtype == "class") {
         if (isTask(parent)) {
             int ret = installTaskClass(class_name, parent, class_desc);
@@ -661,10 +644,10 @@ int EntityFactory::installRule(const std::string & class_name,
     // could be installed
     RuleWaitList::iterator I = m_waitingRules.lower_bound(class_name);
     RuleWaitList::iterator Iend = m_waitingRules.upper_bound(class_name);
-    std::map<std::string, MapType> readyRules;
+    std::map<std::string, Root> readyRules;
     for (; I != Iend; ++I) {
         const std::string & wClassName = I->second.name;
-        const MapType & wClassDesc = I->second.desc;
+        const Root & wClassDesc = I->second.desc;
         readyRules.insert(std::make_pair(wClassName, wClassDesc));
         debug(std::cout << "WAITING rule " << wClassName
                         << " now ready from " << class_name
@@ -672,11 +655,11 @@ int EntityFactory::installRule(const std::string & class_name,
     }
     m_waitingRules.erase(class_name);
         
-    std::map<std::string, MapType>::const_iterator K = readyRules.begin();
-    std::map<std::string, MapType>::const_iterator Kend = readyRules.end();
+    std::map<std::string, Root>::const_iterator K = readyRules.begin();
+    std::map<std::string, Root>::const_iterator Kend = readyRules.end();
     for (; K != Kend; ++K) {
         const std::string & rClassName = K->first;
-        const MapType & rClassDesc = K->second;
+        const Root & rClassDesc = K->second;
         installRule(rClassName, rClassDesc);
     }
     return 0;
@@ -774,7 +757,7 @@ int EntityFactory::modifyRule(const std::string & class_name,
 /// Note that a rule cannot yet be installed because it depends on something
 /// that has not yet occured, or a more fatal condition has occured.
 void EntityFactory::waitForRule(const std::string & rulename,
-                                const MapType & ruledesc,
+                                const Root & ruledesc,
                                 const std::string & dependent,
                                 const std::string & reason)
 {
@@ -786,7 +769,7 @@ void EntityFactory::waitForRule(const std::string & rulename,
     m_waitingRules.insert(std::make_pair(dependent, rule));
 }
 
-void EntityFactory::getRulesFromFiles(MapType & rules)
+void EntityFactory::getRulesFromFiles(std::map<std::string, Root> & rules)
 {
     std::string filename;
 
@@ -821,11 +804,11 @@ void EntityFactory::getRulesFromFiles(MapType & rules)
 
 void EntityFactory::installRules()
 {
-    MapType ruleTable;
+    std::map<std::string, Root> ruleTable;
 
     if (database_flag) {
         Persistance * p = Persistance::instance();
-        p->getRules(ruleTable);
+        // FIXME p->getRules(ruleTable);
     } else {
         getRulesFromFiles(ruleTable);
     }
@@ -838,10 +821,10 @@ void EntityFactory::installRules()
         }
     }
 
-    MapType::const_iterator Iend = ruleTable.end();
-    for (MapType::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
+    RootDict::const_iterator Iend = ruleTable.end();
+    for (RootDict::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
         const std::string & class_name = I->first;
-        const MapType & class_desc = I->second.asMap();
+        const Root & class_desc = I->second;
         installRule(class_name, class_desc);
     }
     // Report on the non-cleared rules.

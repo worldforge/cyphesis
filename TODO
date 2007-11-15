@@ -1,3 +1,8 @@
+Switch over to using Atlas::Objects as the fundamental unit in the objects
+code. Needs AtlasFileLoader to be converted over. This is the best first step
+before we have a type tree. Done. Now get rules loading from the Database once
+more, as the database code insists on MapType.
+
 Core cyphesis daemon is very simple and robust. Never crashes. It launches
 and monitors and number of child daemons. Simplest configuration is a single
 child daemon. It reads and parses the config mostly for checking purposes.

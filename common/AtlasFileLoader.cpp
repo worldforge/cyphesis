@@ -15,40 +15,34 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.cpp,v 1.10 2007-07-29 20:23:19 alriddoch Exp $
+// $Id: AtlasFileLoader.cpp,v 1.11 2007-11-15 02:07:04 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"
 
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
+using Atlas::Objects::Root;
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
 /// \brief Called from the base class when a complete message has been decoded
-void AtlasFileLoader::messageArrived(const MapType & msg)
+void AtlasFileLoader::objectArrived(const Root & obj)
 {
-    MapType o = msg;
-    MapType::iterator I = o.find("id");
-    if (I == o.end()) {
-        log(WARNING, "Message without ID read from file");
+    if (obj->isDefaultId()) {
+        log(ERROR, "Object without ID read from file");
         return;
     }
-    Element & id = I->second;
-    if (!id.isString()) {
-        log(WARNING, "Message without non-string ID read from file");
-        return;
+    const std::string & id = obj->getId();
+    if (m_messages.find(id) != m_messages.end()) {
+        log(WARNING, String::compose("Duplicate object ID \"%1\" loaded.", id));
     }
-    std::string msg_id = id.String();
-    o.erase(I);
-    if (m_messages.find(msg_id) != m_messages.end()) {
-        log(WARNING, String::compose("Duplicate object ID \"%1\" loaded.",
-                                     msg_id));
-    }
-    m_messages[msg_id] = o;
+    m_messages[id] = obj;
     ++m_count;
 }
 
@@ -57,7 +51,7 @@ void AtlasFileLoader::messageArrived(const MapType & msg)
 /// @param filename Name of the file to be loaded
 /// @param m Data store for the data loaded from the file
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
-                                 MapType & m) :
+                                 std::map<std::string, Root> & m) :
                 m_file(filename.c_str(), std::ios::in),
                 m_count(0), m_messages(m)
 {

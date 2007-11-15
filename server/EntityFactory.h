@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.50 2007-09-22 15:34:04 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.51 2007-11-15 02:07:05 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
 class Entity;
@@ -47,7 +49,7 @@ class RuleWaiting {
     /// Name of the rule.
     std::string name;
     /// Complete description of the rule.
-    Atlas::Message::MapType desc;
+    Atlas::Objects::Root desc;
     /// Message giving a description of why this rule has not been installed.
     std::string reason;
 };
@@ -72,7 +74,7 @@ class EntityFactory {
     BaseWorld & m_world;
     RuleWaitList m_waitingRules;
 
-    void getRulesFromFiles(Atlas::Message::MapType&);
+    void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
     void installRules();
     void installFactory(const std::string &, const std::string &, FactoryBase*);
     int populateFactory(const std::string & className,
@@ -81,18 +83,18 @@ class EntityFactory {
     FactoryBase * getNewFactory(const std::string &);
     bool isTask(const std::string &);
     int installTaskClass(const std::string &, const std::string &,
-                           const Atlas::Message::MapType&);
+                           const Atlas::Objects::Root&);
     int installEntityClass(const std::string &, const std::string &,
-                           const Atlas::Message::MapType&);
+                           const Atlas::Objects::Root&);
     int installOpDefinition(const std::string &, const std::string &,
-                            const Atlas::Message::MapType&);
+                            const Atlas::Objects::Root&);
 
     int modifyTaskClass(const std::string &, const Atlas::Objects::Root &);
     int modifyEntityClass(const std::string &, const Atlas::Objects::Root &);
     int modifyOpDefinition(const std::string &, const Atlas::Objects::Root &);
 
     void waitForRule(const std::string &,
-                     const Atlas::Message::MapType &,
+                     const Atlas::Objects::Root &,
                      const std::string &,
                      const std::string &);
   public:
@@ -120,7 +122,7 @@ class EntityFactory {
                         const std::string &, Character &) const;
     int addStatisticsScript(Character &) const;
 
-    int installRule(const std::string &, const Atlas::Message::MapType&);
+    int installRule(const std::string &, const Atlas::Objects::Root &);
     int modifyRule(const std::string &, const Atlas::Objects::Root &);
 };
 

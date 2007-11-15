@@ -15,19 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.h,v 1.7 2007-07-29 20:23:19 alriddoch Exp $
+// $Id: AtlasFileLoader.h,v 1.8 2007-11-15 02:07:04 alriddoch Exp $
 
 #ifndef COMMON_ATLAS_FILE_LOADER_H
 #define COMMON_ATLAS_FILE_LOADER_H
 
-#include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codec.h>
 
 #include <fstream>
 
 /// Class to read old cyphesis rules on standard input, and output in new
 /// standard format.
-class AtlasFileLoader : public Atlas::Message::DecoderBase {
+class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder {
   private:
     /// Input file
     std::fstream m_file;
@@ -36,11 +36,12 @@ class AtlasFileLoader : public Atlas::Message::DecoderBase {
     /// Counter for messages read from input
     int m_count;
     /// Store for the messages loaded
-    Atlas::Message::MapType & m_messages;
+    std::map<std::string, Atlas::Objects::Root> & m_messages;
 
-    virtual void messageArrived(const Atlas::Message::MapType & msg);
+    virtual void objectArrived(const Atlas::Objects::Root & obj);
   public:
-    AtlasFileLoader(const std::string & filename, Atlas::Message::MapType & m);
+    AtlasFileLoader(const std::string & filename,
+                    std::map<std::string, Atlas::Objects::Root> & m);
     ~AtlasFileLoader();
 
     /// Indicate if the input file has been opened successfully

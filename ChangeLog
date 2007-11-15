@@ -1,3 +1,14 @@
+2007-11-15  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/AtlasFileLoader.cpp, common/AtlasFileLoader.h: Switch to
+	  loading and storing the file using the Atlas Objects Decoder.
+
+	* server/EntityFactory.cpp, server/EntityFactory.h: Switch to using
+	  Atlas Objects rather than Messages in most places. Makes much of
+	  the code cleaner, and allows storage of richer class data.
+
+	* server/Admin.cpp: Update to match the modified EntityFactory API.
+
 2007-11-14  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp, common/globals.h: Modify the loadConfig
@@ -17180,4 +17191,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1951 2007-11-14 22:40:17 alriddoch Exp $
+$Id: ChangeLog,v 1.1952 2007-11-15 02:07:04 alriddoch Exp $
