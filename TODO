@@ -3,6 +3,8 @@ code. Needs AtlasFileLoader to be converted over. This is the best first step
 before we have a type tree. Done. Now get rules loading from the Database once
 more, as the database code insists on MapType. Could we store the attribute
 defaults in the Atlas default type thingy? Would this cause problems?
+So, when we are creating a Atlas::Objects::Anonymous instances, need to
+be able to set up the default object so it just works.
 
 Core cyphesis daemon is very simple and robust. Never crashes. It launches
 and monitors and number of child daemons. Simplest configuration is a single

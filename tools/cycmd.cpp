@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.113 2007-11-14 22:40:18 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.114 2007-11-16 02:41:39 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -567,14 +567,14 @@ void Interactive<Stream>::infoArrived(const Operation & op)
     const Root & ent = op->getArgs().front();
     if (login_flag) {
         std::cout << "login success" << std::endl << std::flush;
-        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        if (ent->isDefaultId()) {
             std::cerr << "ERROR: Response to login does not contain account id"
                       << std::endl << std::flush;
             
         } else {
             accountId = ent->getId();
         }
-        if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+        if (!ent->isDefaultParents()) {
             const std::list<std::string> & parents = ent->getParents();
             if (!parents.empty()) {
                 accountType = parents.front();
