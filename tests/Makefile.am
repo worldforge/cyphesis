@@ -268,7 +268,6 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
 Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
-                  $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/rulesets/Plant.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
@@ -276,13 +275,13 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
+                  $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/common/libcommon.a \
                   $(MATH_LIBS)
 
 Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
-                      $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/rulesets/Stackable.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
@@ -290,13 +289,13 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
+                      $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
 Structuretest_SOURCES = Structuretest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
-                      $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/rulesets/Structure.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
@@ -304,26 +303,26 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
+                      $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
 Thingtest_SOURCES = Thingtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
-                  $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
+                  $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/common/libcommon.a \
                   $(MATH_LIBS)
 
 Worldtest_SOURCES = Worldtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
-                  $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
@@ -333,6 +332,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
+                  $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/common/libcommon.a \
                   $(TERRAIN_LIBS)
 
@@ -361,13 +361,13 @@ Creatortest_LDFLAGS = -export-dynamic
 ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
 ThingupdatePropertiestest_LDADD = $(top_builddir)/modules/Location.o \
                                   $(top_builddir)/modules/DateTime.o \
-                                  $(top_builddir)/physics/libphysics.a \
                                   $(top_builddir)/rulesets/Entity.o \
                                   $(top_builddir)/rulesets/EntityProperties.o \
                                   $(top_builddir)/rulesets/AtlasProperties.o \
                                   $(top_builddir)/rulesets/Thing.o \
                                   $(top_builddir)/rulesets/Motion.o \
                                   $(top_builddir)/rulesets/Script.o \
+                                  $(top_builddir)/physics/libphysics.a \
                                   $(top_builddir)/common/libcommon.a \
                                   $(MATH_LIBS)
 
@@ -375,11 +375,11 @@ Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
 
 Tasktest_SOURCES = Tasktest.cpp Fell.cpp Fell.h
-Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+Tasktest_LDADD = $(top_builddir)/rulesets/Python_API.o \
+                 $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
                  $(top_builddir)/rulesets/librulesetbase.a \
-                 $(top_builddir)/rulesets/Python_API.o \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/physics/libphysics.a \
                  $(top_builddir)/common/libcommon.a \
@@ -387,11 +387,11 @@ Tasktest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
 Tasktest_LDFLAGS = -export-dynamic
 
 EntityPropertytest_SOURCES = EntityPropertytest.cpp
-EntityPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+EntityPropertytest_LDADD = $(top_builddir)/rulesets/Python_API.o \
+                           $(top_builddir)/rulesets/libscriptpython.a \
                            $(top_builddir)/rulesets/librulesetentity.a \
                            $(top_builddir)/rulesets/librulesetmind.a \
                            $(top_builddir)/rulesets/librulesetbase.a \
-                           $(top_builddir)/rulesets/Python_API.o \
                            $(top_builddir)/modules/libmodules.a \
                            $(top_builddir)/physics/libphysics.a \
                            $(top_builddir)/common/libcommon.a \
@@ -399,11 +399,11 @@ EntityPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
 
 AllPropertytest_SOURCES = AllPropertytest.cpp PropertyExerciser.cpp \
                                               PropertyExerciser.h
-AllPropertytest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
+AllPropertytest_LDADD = $(top_builddir)/rulesets/Python_API.o \
+                        $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
                         $(top_builddir)/rulesets/librulesetbase.a \
-                        $(top_builddir)/rulesets/Python_API.o \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
