@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.cpp,v 1.60 2007-07-30 18:12:52 alriddoch Exp $
+// $Id: CommServer.cpp,v 1.61 2007-11-20 13:04:33 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -60,6 +60,8 @@ CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
         exit_flag = true;
     }
 #endif // HAVE_EPOLL_CREATE
+    // Initialise the time
+    gettimeofday(&m_timeVal, NULL);
 }
 
 CommServer::~CommServer()

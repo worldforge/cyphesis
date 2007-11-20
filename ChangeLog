@@ -1,5 +1,10 @@
 2007-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/CommServer.cpp: Make sure the time is initialised in the
+	  constructor.
+
+2007-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* tools/Makefile.am, tools/cyconfig.cpp, tools/cyconvertrules.cpp:
 	  Add support for --help and --version to everything.
 
@@ -17215,4 +17220,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1957 2007-11-20 02:40:37 alriddoch Exp $
+$Id: ChangeLog,v 1.1958 2007-11-20 13:04:33 alriddoch Exp $
