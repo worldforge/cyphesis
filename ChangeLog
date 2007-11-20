@@ -1,3 +1,8 @@
+2007-11-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* tests/AtlasFileLoadertest.cpp: Update the tests now that the data
+	  format handled by the loader has changed.
+
 2007-11-16  Al Riddoch  <alriddoch@zepler.org>
 
 	* tools/cycmd.cpp: Make some checks clearer.
@@ -17200,4 +17205,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1954 2007-11-16 02:41:38 alriddoch Exp $
+$Id: ChangeLog,v 1.1955 2007-11-20 00:38:05 alriddoch Exp $

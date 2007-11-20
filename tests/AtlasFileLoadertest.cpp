@@ -15,11 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoadertest.cpp,v 1.3 2007-01-03 22:29:47 alriddoch Exp $
+// $Id: AtlasFileLoadertest.cpp,v 1.4 2007-11-20 00:38:05 alriddoch Exp $
 
 #include "common/AtlasFileLoader.h"
 
-#include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
 
@@ -27,13 +28,13 @@ int main()
 {
     {
         // Test constructor
-        Atlas::Message::MapType data;
+        std::map<std::string, Atlas::Objects::Root> data;
         AtlasFileLoader loader("foo", data);
     }
 
     {
         // Test destructor
-        Atlas::Message::MapType data;
+        std::map<std::string, Atlas::Objects::Root> data;
         AtlasFileLoader * loader = new AtlasFileLoader("foo", data);
 
         delete loader;
@@ -41,7 +42,7 @@ int main()
 
     {
         // Test isOpen
-        Atlas::Message::MapType data;
+        std::map<std::string, Atlas::Objects::Root> data;
         AtlasFileLoader loader("foo", data);
 
         assert(!loader.isOpen());
@@ -49,7 +50,7 @@ int main()
 
     {
         // Test count
-        Atlas::Message::MapType data;
+        std::map<std::string, Atlas::Objects::Root> data;
         AtlasFileLoader loader("foo", data);
 
         assert(loader.count() == 0);
