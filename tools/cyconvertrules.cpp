@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconvertrules.cpp,v 1.12 2007-07-30 18:12:52 alriddoch Exp $
+// $Id: cyconvertrules.cpp,v 1.13 2007-11-20 02:40:37 alriddoch Exp $
 
 /// \page cyconvertrules_index
 ///
@@ -281,10 +281,10 @@ void FileConverter::output(const ListType & o)
     }
 }
 
-static void usage(char * prgname)
+static void usage(char * prgname, std::ostream & stream = std::cerr)
 {
-    std::cerr << "usage: " << prgname << " <old rule file>"
-              << std::endl << std::flush;
+    stream << "usage: " << prgname << " <old rule file>"
+           << std::endl << std::flush;
     return;
 }
 
@@ -292,6 +292,19 @@ int main(int argc, char ** argv)
 {
     // We require the user to specify the input file
     if (argc != 2) {
+        usage(argv[0]);
+        return 1;
+    }
+
+    if (argv[1][0] == '-') {
+        if (strcmp(argv[1], "--version") == 0) {
+            reportVersion(argv[0]);
+            return 0;
+        }
+        if (strcmp(argv[1], "--help") == 0) {
+            usage(argv[0], std::cout);
+            return 0;
+        }
         usage(argv[0]);
         return 1;
     }

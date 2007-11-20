@@ -83,10 +83,20 @@ cycmd_LDADD = $(top_builddir)/modules/DateTime.o \
               $(TOOL_LIBS)
 
 cyconfig_SOURCES = cyconfig.cpp
-cyconfig_LDADD = $(TOOL_LIBS)
+cyconfig_LDADD = $(top_builddir)/modules/DateTime.o \
+                 $(top_builddir)/common/globals.o \
+                 $(top_builddir)/common/prefix.o \
+                 $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/const.o \
+                 $(TOOL_LIBS)
 
 cyconvertrules_SOURCES = cyconvertrules.cpp
-cyconvertrules_LDADD = $(TOOL_LIBS)
+cyconvertrules_LDADD = $(top_builddir)/modules/DateTime.o \
+                       $(top_builddir)/common/globals.o \
+                       $(top_builddir)/common/prefix.o \
+                       $(top_builddir)/common/log.o \
+                       $(top_builddir)/common/const.o \
+                       $(TOOL_LIBS)
 
 cyaddrules_SOURCES = cyaddrules.cpp AdminClient.cpp AdminClient.h
 

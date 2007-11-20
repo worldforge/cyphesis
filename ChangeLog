@@ -1,5 +1,10 @@
 2007-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* tools/Makefile.am, tools/cyconfig.cpp, tools/cyconvertrules.cpp:
+	  Add support for --help and --version to everything.
+
+2007-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Makefile.am: Fix the link order now that we don't have libtool
 	  to fix it for us.
 
@@ -17210,4 +17215,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1956 2007-11-20 01:18:29 alriddoch Exp $
+$Id: ChangeLog,v 1.1957 2007-11-20 02:40:37 alriddoch Exp $

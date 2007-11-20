@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconfig.cpp,v 1.9 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: cyconfig.cpp,v 1.10 2007-11-20 02:40:37 alriddoch Exp $
 
 /// \page cyconfig_index
 ///
@@ -28,6 +28,8 @@
 ///
 /// This tool is work in progress, and could in the long run assimilate
 /// the functionality of cyaddrules, cyloadrules and others.
+
+#include "common/globals.h"
 
 #include <varconf/config.h>
 
@@ -76,6 +78,16 @@ int main(int argc, char ** argv)
     varconf::Config * global_conf = varconf::Config::inst();
     global_conf->readFromFile(homeDirConfig);
     int optind = global_conf->getCmdline(argc, argv);
+
+    if (global_conf->findItem("", "version")) {
+        reportVersion(argv[0]);
+        return 0;
+    }
+
+    if (global_conf->findItem("", "help")) {
+        showUsage(argv[0], USAGE_SERVER);
+        return 0;
+    }
 
     if (optind > 0 && optind < argc) {
         runCommand(argc - optind, &argv[optind]);
