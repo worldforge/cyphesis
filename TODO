@@ -1,3 +1,7 @@
+m_age is not being initialised in quaternions in both the passing out,
+and passing into container cases. Both the collision entity
+and the entity collding have it uninitialised in the passing in case.
+
 Switch over to using Atlas::Objects as the fundamental unit in the objects
 code. Needs AtlasFileLoader to be converted over. This is the best first step
 before we have a type tree. Done. Now get rules loading from the Database once

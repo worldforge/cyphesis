@@ -1,5 +1,11 @@
 2007-11-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/MemMap.cpp: Initialise the next index when going through
+	  the map checking for entities that we should remove. Avoid a lookup
+	  when it is the wrong thing.
+
+2007-11-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/CommServer.cpp: Make sure the time is initialised in the
 	  constructor.
 
@@ -17220,4 +17226,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1958 2007-11-20 13:04:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1959 2007-11-20 18:32:50 alriddoch Exp $

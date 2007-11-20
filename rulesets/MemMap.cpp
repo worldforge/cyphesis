@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.98 2007-07-29 21:23:42 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.99 2007-11-20 18:32:50 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -167,7 +167,7 @@ void MemMap::del(const std::string & id)
     if (I != m_entities.end()) {
         MemEntity * ent = I->second;
         assert(ent != 0);
-        long next;
+        long next = -1;
         if (m_checkIterator != m_entities.end()) {
             next = m_checkIterator->first;
         }
@@ -196,7 +196,12 @@ void MemMap::del(const std::string & id)
             }
         }
 
-        m_checkIterator = m_entities.find(next);
+        if (next != -1) {
+            m_checkIterator = m_entities.find(next);
+        } else {
+            m_checkIterator = m_entities.begin();
+        }
+
         std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
         std::vector<std::string>::const_iterator Jend = m_deleteHooks.end();
         for(; J != Jend; ++J) {
@@ -381,7 +386,8 @@ const Element MemMap::asMessage()
 
 void MemMap::check(const double & time)
 {
-    if (m_checkIterator == m_entities.end()) {
+    MemEntityDict::const_iterator entities_end = m_entities.end();
+    if (m_checkIterator == entities_end) {
         m_checkIterator = m_entities.begin();
     } else {
         MemEntity * me = m_checkIterator->second;
@@ -390,8 +396,8 @@ void MemMap::check(const double & time)
             debug(std::cout << me->getId() << "|" << me->getType()
                       << " is a waste of space" << std::endl << std::flush;);
             MemEntityDict::const_iterator J = m_checkIterator;
-            long next;
-            if (++J != m_entities.end()) {
+            long next = -1;
+            if (++J != entities_end) {
                 next = J->first;
             }
             m_entities.erase(m_checkIterator);
@@ -403,7 +409,11 @@ void MemMap::check(const double & time)
             // FIXME This is required until MemMap uses parent refcounting
             me->m_location.m_loc = 0;
 
-            m_checkIterator = m_entities.find(next);
+            if (next != -1) {
+                m_checkIterator = m_entities.find(next);
+            } else {
+                m_checkIterator = m_entities.begin();
+            }
             // attribute of its its parent.
             me->decRef();
         } else {
