@@ -1,5 +1,11 @@
 2007-11-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h, server/EntityFactory.cpp: Re-order the
+	  arguments to installFactory() so they are consistent with all the
+	  other calls.
+
+2007-11-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.h: Clean up formatting, and name all the
 	  arguments.
 
@@ -17236,4 +17242,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1961 2007-11-21 22:36:48 alriddoch Exp $
+$Id: ChangeLog,v 1.1962 2007-11-21 22:45:32 alriddoch Exp $

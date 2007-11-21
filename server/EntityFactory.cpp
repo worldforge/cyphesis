@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.123 2007-11-15 15:56:30 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.124 2007-11-21 22:45:32 alriddoch Exp $
 
 #include <Python.h>
 
@@ -74,27 +74,27 @@ EntityFactory * EntityFactory::m_instance = NULL;
 EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
 {
     if (consts::enable_persistence && database_flag) {
-        installFactory("game_entity", "world", new ForbiddenThingFactory<World>());
+        installFactory("world", "game_entity", new ForbiddenThingFactory<World>());
         PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
-        installFactory("game_entity", "thing", tft);
-        installFactory("thing", "character",
+        installFactory("thing", "game_entity", tft);
+        installFactory("character", "thing",
                        new PersistantThingFactory<Character>());
-        installFactory("character", "creator",
+        installFactory("creator", "character",
                        new PersistantThingFactory<Creator>());
-        installFactory("thing", "plant", new PersistantThingFactory<Plant>());
-        installFactory("thing", "stackable",
+        installFactory("plant", "thing", new PersistantThingFactory<Plant>());
+        installFactory("stackable","thing", 
                        new PersistantThingFactory<Stackable>());
-        installFactory("thing", "structure",
+        installFactory("structure", "thing",
                        new PersistantThingFactory<Structure>());
     } else {
-        installFactory("game_entity", "world", new ThingFactory<World>());
+        installFactory("world", "game_entity", new ThingFactory<World>());
         ThingFactory<Thing> * tft = new ThingFactory<Thing>();
-        installFactory("game_entity", "thing", tft);
-        installFactory("thing", "character", new ThingFactory<Character>());
-        installFactory("character", "creator", new ThingFactory<Creator>());
-        installFactory("thing", "plant", new ThingFactory<Plant>());
-        installFactory("thing", "stackable", new ThingFactory<Stackable>());
-        installFactory("thing", "structure", new ThingFactory<Structure>());
+        installFactory("thing", "game_entity", tft);
+        installFactory("character", "thing", new ThingFactory<Character>());
+        installFactory("creator", "character", new ThingFactory<Creator>());
+        installFactory("plant", "thing", new ThingFactory<Plant>());
+        installFactory("stackable", "thing", new ThingFactory<Stackable>());
+        installFactory("structure", "thing", new ThingFactory<Structure>());
     }
 
     m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
@@ -565,7 +565,7 @@ int EntityFactory::installEntityClass(const std::string & class_name,
                     << std::endl << std::flush;);
 
     // Install the factory in place.
-    installFactory(parent, class_name, factory, class_desc);
+    installFactory(class_name, parent, factory, class_desc);
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factory);
@@ -721,8 +721,8 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
         return -1;
     }
     // FIXME Actually update the task factory.
-    // TaskFactory * factory = I->second;
-    // assert(factory != 0);
+    TaskFactory * factory = I->second;
+    assert(factory != 0);
 
     return 0;
 }
@@ -807,7 +807,7 @@ void EntityFactory::installRules()
     std::map<std::string, Root> ruleTable;
 
     if (database_flag) {
-        Persistance * p = Persistance::instance();
+        // FIXME Persistance * p = Persistance::instance();
         // FIXME p->getRules(ruleTable);
     } else {
         getRulesFromFiles(ruleTable);
@@ -837,8 +837,8 @@ void EntityFactory::installRules()
     }
 }
 
-void EntityFactory::installFactory(const std::string & parent,
-                                   const std::string & class_name,
+void EntityFactory::installFactory(const std::string & class_name,
+                                   const std::string & parent,
                                    FactoryBase * factory,
                                    Root class_desc)
 {
