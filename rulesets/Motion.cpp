@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.18 2007-08-03 18:04:14 alriddoch Exp $
+// $Id: Motion.cpp,v 1.19 2007-11-21 22:27:45 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -197,6 +197,8 @@ bool Motion::resolveCollision()
                                                  m_collEntity->m_location.orientation() :
                                                  identity;
             location.m_pos = location.m_pos.toLocalCoords(m_collEntity->m_location.pos(), coll_orientation);
+            assert(location.m_orientation.isValid());
+            assert(coll_orientation.isValid());
             location.m_orientation /= coll_orientation;
             location.m_velocity.rotate(coll_orientation.inverse());
 
