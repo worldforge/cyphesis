@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.52 2007-11-15 15:56:30 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.53 2007-11-21 22:36:48 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -78,28 +78,34 @@ class EntityFactory {
     void installRules();
     void installFactory(const std::string & parent,
                         const std::string & class_name,
-                        FactoryBase *,
+                        FactoryBase * factory,
                         Atlas::Objects::Root classDesc = 0);
     int populateFactory(const std::string & class_name,
                         FactoryBase * factory,
                         const Atlas::Message::MapType & classDesc);
-    FactoryBase * getNewFactory(const std::string &);
-    bool isTask(const std::string &);
-    int installTaskClass(const std::string &, const std::string &,
+    FactoryBase * getNewFactory(const std::string & parent);
+    bool isTask(const std::string & class_name);
+    int installTaskClass(const std::string & class_name,
+                         const std::string & parent,
+                         const Atlas::Objects::Root & class_desc);
+    int installEntityClass(const std::string & class_name,
+                           const std::string & parent,
                            const Atlas::Objects::Root&);
-    int installEntityClass(const std::string &, const std::string &,
-                           const Atlas::Objects::Root&);
-    int installOpDefinition(const std::string &, const std::string &,
-                            const Atlas::Objects::Root&);
+    int installOpDefinition(const std::string & class_name,
+                            const std::string & parent,
+                            const Atlas::Objects::Root & class_desc);
 
-    int modifyTaskClass(const std::string &, const Atlas::Objects::Root &);
-    int modifyEntityClass(const std::string &, const Atlas::Objects::Root &);
-    int modifyOpDefinition(const std::string &, const Atlas::Objects::Root &);
+    int modifyTaskClass(const std::string & class_name,
+                        const Atlas::Objects::Root & class_desc);
+    int modifyEntityClass(const std::string & class_name,
+                          const Atlas::Objects::Root & class_desc);
+    int modifyOpDefinition(const std::string & class_name,
+                           const Atlas::Objects::Root & class_desc);
 
-    void waitForRule(const std::string &,
-                     const Atlas::Objects::Root &,
-                     const std::string &,
-                     const std::string &);
+    void waitForRule(const std::string & class_name,
+                     const Atlas::Objects::Root & class_desc,
+                     const std::string & dependent,
+                     const std::string & reason);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityFactory(w);

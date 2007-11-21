@@ -1,5 +1,10 @@
 2007-11-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.h: Clean up formatting, and name all the
+	  arguments.
+
+2007-11-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Motion.cpp: Add some asserts that proved useful in working
 	  out why orientation data was sometimes uninitialised.
 
@@ -17231,4 +17236,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1960 2007-11-21 22:27:45 alriddoch Exp $
+$Id: ChangeLog,v 1.1961 2007-11-21 22:36:48 alriddoch Exp $
