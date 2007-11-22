@@ -1,3 +1,9 @@
+Add an argument to Location::addToEntity which specifies which need to be
+set as zero values of they are not set. This should make it easier to
+deal with the concept of POSless entities, and perhaps entities without
+velocity. Would be nice to get rid of any situation where something has
+zero velocity, as this is annoying to have to check for.
+
 Fix new PythonArithmeticScript() from being leaked. ArithmeticFactory(124)
 Shader surfaces are being leaked from TerrainProperty::set(130)
 
@@ -11,7 +17,12 @@ before we have a type tree. Done. Now get rules loading from the Database once
 more, as the database code insists on MapType. Could we store the attribute
 defaults in the Atlas default type thingy? Would this cause problems?
 So, when we are creating a Atlas::Objects::Anonymous instances, need to
-be able to set up the default object so it just works.
+be able to set up the default object so it just works. A barrier to this being
+really useful is the way Atlas-C++ currently handles defaults. It does not send
+them at all. Need to modify so it sends them if they have been flagged on
+the defaults object. Default to not flagging, and then modify sending behavoir.
+Think about using an inherited interface to prevent calling getName()
+which might cause a crash.
 
 Core cyphesis daemon is very simple and robust. Never crashes. It launches
 and monitors and number of child daemons. Simplest configuration is a single
