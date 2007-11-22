@@ -1,5 +1,11 @@
 2007-11-22  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Update the entity factory tests to
+	  comply with the new API, and fix pre-conditions which break
+	  recently added assertions.
+
+2007-11-22  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.h, server/EntityFactory.cpp: Clean up header
 	  a little. Add some alerts for consistency. Stub out a method
 	  for updating a task factory from a class description.
@@ -17258,4 +17264,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1965 2007-11-22 01:05:10 alriddoch Exp $
+$Id: ChangeLog,v 1.1966 2007-11-22 02:06:52 alriddoch Exp $

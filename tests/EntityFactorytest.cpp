@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactorytest.cpp,v 1.11 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: EntityFactorytest.cpp,v 1.12 2007-11-22 02:06:52 alriddoch Exp $
 
 #include "TestWorld.h"
 
@@ -31,41 +31,43 @@
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Root;
 
 class ExposedEntityFactory : public EntityFactory {
   public:
     explicit ExposedEntityFactory(BaseWorld & w) : EntityFactory(w) { }
 
-    void getRulesFromFiles(MapType & rules) {
+    void getRulesFromFiles(std::map<std::string, Root> & rules) {
         EntityFactory::getRulesFromFiles(rules);
     }
     void installRules() {
         EntityFactory::installRules();
     }
-    void installFactory(const std::string & parent,
-                        const std::string & clss, FactoryBase * factory) {
-        EntityFactory::installFactory(parent, clss, factory);
+    void installFactory(const std::string & class_name,
+                        const std::string & parent,
+                        FactoryBase * factory) {
+        EntityFactory::installFactory(class_name, parent, factory);
     }
-    void populateFactory(const std::string & className,
-                         FactoryBase * factory,
-                         const MapType & classDesc) {
-        EntityFactory::populateFactory(className, factory, classDesc);
+    void populateEntityFactory(const std::string & class_name,
+                               FactoryBase * factory,
+                               const MapType & class_desc) {
+        EntityFactory::populateEntityFactory(class_name, factory, class_desc);
     }
     FactoryBase * getNewFactory(const std::string & clss) {
         return EntityFactory::getNewFactory(clss);
     }
-    int installEntityClass(const std::string & className,
+    int installEntityClass(const std::string & class_name,
                            const std::string & parent,
-                           const MapType & classDesc) {
-        return EntityFactory::installEntityClass(className, parent, classDesc);
+                           const Root & class_desc) {
+        return EntityFactory::installEntityClass(class_name, parent, class_desc);
     }
-    int installOpDefinition(const std::string & opDefName,
+    int installOpDefinition(const std::string & op_def_name,
                             const std::string & parent,
-                            const MapType & opDefDesc) {
-        return EntityFactory::installOpDefinition(opDefName, parent, opDefDesc);
+                            const Root & op_def_desc) {
+        return EntityFactory::installOpDefinition(op_def_name, parent, op_def_desc);
     }
 
-    const FactoryDict & factoryDict() const { return m_factories; }
+    const FactoryDict & factoryDict() const { return m_entityFactories; }
 
 };
 
@@ -169,13 +171,15 @@ int main(int argc, char ** argv)
 
         // Set up a type description for a new type, and install it.
         {
-            MapType custom_type_description;
+            Root custom_type_description;
             MapType attrs;
             MapType test_custom_type_attr;
             test_custom_type_attr["default"] = "test_value";
             test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_type_attr"] = test_custom_type_attr;
-            custom_type_description["attributes"] = attrs;
+            custom_type_description->setAttr("attributes", attrs);
+            custom_type_description->setId("custom_type");
+            custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
             ret = entity_factory.installEntityClass("custom_type", "thing", custom_type_description);
 
@@ -230,13 +234,15 @@ int main(int argc, char ** argv)
         // Set up a type description for a second new type which inherits
         // from the first, and install it.
         {
-            MapType custom_inherited_type_description;
+            Root custom_inherited_type_description;
             MapType attrs;
             MapType test_custom_type_attr;
             test_custom_type_attr["default"] = "test_inherited_value";
             test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
-            custom_inherited_type_description["attributes"] = attrs;
+            custom_inherited_type_description->setAttr("attributes", attrs);
+            custom_inherited_type_description->setId("custom_inherited_type");
+            custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
 
             ret = entity_factory.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description);
 
@@ -310,6 +316,7 @@ int main(int argc, char ** argv)
             test_custom_type_attr["visibility"] = "public";
             attrs["no_custom_type_attr"] = test_custom_type_attr;
 
+            nonexistant_description->setId("nonexistant");
             nonexistant_description->setAttr("attributes", attrs);
 
             ret = entity_factory.modifyRule("nonexistant", nonexistant_description);
@@ -320,6 +327,7 @@ int main(int argc, char ** argv)
         // Modify the second custom type removing its custom attribute
         {
             Anonymous new_custom_inherited_type_description;
+            new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
 
             ret = entity_factory.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
@@ -389,6 +397,7 @@ int main(int argc, char ** argv)
         // Modify the first custom type removing its custom attribute
         {
             Anonymous new_custom_type_description;
+            new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", MapType());
 
             ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
@@ -499,6 +508,7 @@ int main(int argc, char ** argv)
             new_custom_type_attr["visibility"] = "public";
             attrs["new_custom_type_attr"] = new_custom_type_attr;
 
+            new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", attrs);
 
             ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
