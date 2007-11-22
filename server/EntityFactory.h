@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.56 2007-11-22 00:56:48 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.57 2007-11-22 01:05:10 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -80,11 +80,16 @@ class EntityFactory {
                         const std::string & parent,
                         FactoryBase * factory,
                         Atlas::Objects::Root classDesc = 0);
-    int populateFactory(const std::string & class_name,
-                        FactoryBase * factory,
-                        const Atlas::Message::MapType & classDesc);
     FactoryBase * getNewFactory(const std::string & parent);
     bool isTask(const std::string & class_name);
+
+    int populateEntityFactory(const std::string & class_name,
+                              FactoryBase * factory,
+                              const Atlas::Message::MapType & class_desc);
+    int populateTaskFactory(const std::string & class_name,
+                            TaskFactory * factory,
+                            const Atlas::Message::MapType & class_desc);
+
     int installTaskClass(const std::string & class_name,
                          const std::string & parent,
                          const Atlas::Objects::Root & class_desc);

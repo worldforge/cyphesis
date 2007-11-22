@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.126 2007-11-22 00:56:48 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.127 2007-11-22 01:05:10 alriddoch Exp $
 
 #include <Python.h>
 
@@ -262,10 +262,12 @@ void EntityFactory::flushFactories()
     m_taskFactories.clear();
 }
 
-int EntityFactory::populateFactory(const std::string & class_name,
-                                   FactoryBase * factory,
-                                   const MapType & class_desc)
+int EntityFactory::populateEntityFactory(const std::string & class_name,
+                                         FactoryBase * factory,
+                                         const MapType & class_desc)
 {
+    // assert(class_name == class_desc->getId());
+
     // Establish whether this rule has an associated script, and
     // if so, use it.
     MapType::const_iterator J = class_desc.find("script");
@@ -352,6 +354,14 @@ int EntityFactory::populateFactory(const std::string & class_name,
     return 0;
 }
 
+int EntityFactory::populateTaskFactory(const std::string & class_name,
+                                       TaskFactory * factory,
+                                       const MapType & class_desc)
+{
+    // assert(class_name == class_desc->getId());
+
+}
+
 bool EntityFactory::isTask(const std::string & class_name)
 {
     if (class_name == "task") {
@@ -380,6 +390,8 @@ int EntityFactory::installTaskClass(const std::string & class_name,
                                     const std::string & parent,
                                     const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I != m_taskFactories.end()) {
         log(ERROR, String::compose("Attempt to install task \"%1\" which is "
@@ -529,6 +541,8 @@ int EntityFactory::installEntityClass(const std::string & class_name,
                                       const std::string & parent,
                                       const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     // Get the new factory for this rule
     FactoryDict::const_iterator I = m_entityFactories.find(parent);
     if (I == m_entityFactories.end()) {
@@ -552,11 +566,12 @@ int EntityFactory::installEntityClass(const std::string & class_name,
 
     assert(factory->m_parent == parent_factory);
 
-    // Copy the defaults from the parent. In populateFactory this may be
+    // Copy the defaults from the parent. In populateEntityFactory this may be
     // overriden with the defaults for this class.
     factory->m_attributes = parent_factory->m_attributes;
 
-    if (populateFactory(class_name, factory, class_desc->asMessage()) != 0) {
+    if (populateEntityFactory(class_name, factory,
+                              class_desc->asMessage()) != 0) {
         delete factory;
         return -1;
     }
@@ -577,6 +592,8 @@ int EntityFactory::installOpDefinition(const std::string & class_name,
                                        const std::string & parent,
                                        const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     Inheritance & i = Inheritance::instance();
 
     if (!i.hasClass(parent)) {
@@ -604,6 +621,8 @@ int EntityFactory::installOpDefinition(const std::string & class_name,
 int EntityFactory::installRule(const std::string & class_name,
                                const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     const std::string & objtype = class_desc->getObjtype();
     const std::list<std::string> & parents = class_desc->getParents();
     if (parents.empty()) {
@@ -668,6 +687,8 @@ int EntityFactory::installRule(const std::string & class_name,
 int EntityFactory::modifyEntityClass(const std::string & class_name,
                                      const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     FactoryDict::const_iterator I = m_entityFactories.find(class_name);
     if (I == m_entityFactories.end()) {
         log(ERROR, String::compose("Could not find factory for existing "
@@ -685,7 +706,7 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
     MapType backup_attributes = factory->m_attributes,
             backup_class_attributes = factory->m_classAttributes;
 
-    // Copy the defaults from the parent. In populateFactory this may be
+    // Copy the defaults from the parent. In populateEntityFactory this may be
     // overriden with the defaults for this class.
     if (factory->m_parent != 0) {
         factory->m_attributes = factory->m_parent->m_attributes;
@@ -700,7 +721,8 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
     }
     factory->m_classAttributes = MapType();
 
-    if (populateFactory(class_name, factory, class_desc->asMessage()) != 0) {
+    if (populateEntityFactory(class_name, factory,
+                              class_desc->asMessage()) != 0) {
         factory->m_attributes = backup_attributes;
         factory->m_classAttributes = backup_class_attributes;
         return -1;
@@ -714,6 +736,8 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
 int EntityFactory::modifyTaskClass(const std::string & class_name,
                                    const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
         log(ERROR, String::compose("Could not find factory for existing task "
@@ -737,6 +761,8 @@ int EntityFactory::modifyOpDefinition(const std::string & class_name,
 int EntityFactory::modifyRule(const std::string & class_name,
                               const Root & class_desc)
 {
+    assert(class_name == class_desc->getId());
+
     Root o = Inheritance::instance().getClass(class_name);
     if (!o.isValid()) {
         log(ERROR, String::compose("Could not find existing type \"%1\" "
