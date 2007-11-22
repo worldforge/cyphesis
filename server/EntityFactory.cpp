@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.125 2007-11-22 00:47:39 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.126 2007-11-22 00:56:48 alriddoch Exp $
 
 #include <Python.h>
 
@@ -113,8 +113,8 @@ void EntityFactory::initWorld()
     if (!consts::enable_persistence) {
         return;
     }
-    FactoryDict::const_iterator I = m_factories.find("world");
-    if (I == m_factories.end()) {
+    FactoryDict::const_iterator I = m_entityFactories.find("world");
+    if (I == m_entityFactories.end()) {
         log(CRITICAL, "No world factory");
         return;
     }
@@ -132,9 +132,9 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
-    FactoryDict::const_iterator I = m_factories.find(type);
+    FactoryDict::const_iterator I = m_entityFactories.find(type);
     PersistorBase * pc = 0;
-    if (I == m_factories.end()) {
+    if (I == m_entityFactories.end()) {
         return 0;
     }
     FactoryBase * factory = I->second;
@@ -243,11 +243,11 @@ int EntityFactory::addStatisticsScript(Character & character) const
 
 void EntityFactory::flushFactories()
 {
-    FactoryDict::const_iterator Iend = m_factories.end();
-    for (FactoryDict::const_iterator I = m_factories.begin(); I != Iend; ++I) {
+    FactoryDict::const_iterator Iend = m_entityFactories.end();
+    for (FactoryDict::const_iterator I = m_entityFactories.begin(); I != Iend; ++I) {
         delete I->second;
     }
-    m_factories.clear();
+    m_entityFactories.clear();
     StatisticsFactoryDict::const_iterator J = m_statisticsFactories.begin();
     StatisticsFactoryDict::const_iterator Jend = m_statisticsFactories.end();
     for (; J != Jend; ++J) {
@@ -450,8 +450,8 @@ int EntityFactory::installTaskClass(const std::string & class_name,
                                     class_name, activation_tool));
         return 1;
     }
-    FactoryDict::const_iterator K = m_factories.find(activation_tool);
-    if (K == m_factories.end()) {
+    FactoryDict::const_iterator K = m_entityFactories.find(activation_tool);
+    if (K == m_entityFactories.end()) {
         delete factory;
         log(ERROR, String::compose("Task class \"%1\" is activated "
                                    "by tool \"%2\" which is not an "
@@ -530,8 +530,8 @@ int EntityFactory::installEntityClass(const std::string & class_name,
                                       const Root & class_desc)
 {
     // Get the new factory for this rule
-    FactoryDict::const_iterator I = m_factories.find(parent);
-    if (I == m_factories.end()) {
+    FactoryDict::const_iterator I = m_entityFactories.find(parent);
+    if (I == m_entityFactories.end()) {
         debug(std::cout << "class \"" << class_name
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
@@ -668,8 +668,8 @@ int EntityFactory::installRule(const std::string & class_name,
 int EntityFactory::modifyEntityClass(const std::string & class_name,
                                      const Root & class_desc)
 {
-    FactoryDict::const_iterator I = m_factories.find(class_name);
-    if (I == m_factories.end()) {
+    FactoryDict::const_iterator I = m_entityFactories.find(class_name);
+    if (I == m_entityFactories.end()) {
         log(ERROR, String::compose("Could not find factory for existing "
                                    "entity class \"%1\".", class_name));
         return -1;
@@ -844,7 +844,7 @@ void EntityFactory::installFactory(const std::string & class_name,
 {
     assert(factory != 0);
 
-    m_factories[class_name] = factory;
+    m_entityFactories[class_name] = factory;
 
     Inheritance & i = Inheritance::instance();
 
@@ -859,8 +859,8 @@ void EntityFactory::installFactory(const std::string & class_name,
 
 FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
 {
-    FactoryDict::const_iterator I = m_factories.find(parent);
-    if (I == m_factories.end()) {
+    FactoryDict::const_iterator I = m_entityFactories.find(parent);
+    if (I == m_entityFactories.end()) {
         return 0;
     }
     return I->second->duplicateFactory();

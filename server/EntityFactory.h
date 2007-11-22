@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.55 2007-11-22 00:47:39 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.56 2007-11-22 00:56:48 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -66,7 +66,7 @@ class EntityFactory {
     ~EntityFactory();
     static EntityFactory * m_instance;
 
-    FactoryDict m_factories;
+    FactoryDict m_entityFactories;
     TaskFactoryDict m_taskFactories;
     TaskFactoryActivationDict m_taskActivations;
     StatisticsFactoryDict m_statisticsFactories;
