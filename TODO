@@ -1,3 +1,6 @@
+Fix new PythonArithmeticScript() from being leaked. ArithmeticFactory(124)
+Shader surfaces are being leaked from TerrainProperty::set(130)
+
 m_age is not being initialised in quaternions in both the passing out,
 and passing into container cases. Both the collision entity
 and the entity collding have it uninitialised in the passing in case.
