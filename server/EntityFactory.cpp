@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.124 2007-11-21 22:45:32 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.125 2007-11-22 00:47:39 alriddoch Exp $
 
 #include <Python.h>
 
@@ -231,13 +231,13 @@ Task * EntityFactory::activateTask(const std::string & tool,
     return 0;
 }
 
-int EntityFactory::addStatisticsScript(Character & chr) const
+int EntityFactory::addStatisticsScript(Character & character) const
 {
     StatisticsFactoryDict::const_iterator I = m_statisticsFactories.begin();
     if (I == m_statisticsFactories.end()) {
         return -1;
     }
-    I->second->newScript(chr);
+    I->second->newScript(character);
     return 0;
 }
 

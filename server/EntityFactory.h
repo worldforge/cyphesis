@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.54 2007-11-21 22:45:32 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.55 2007-11-22 00:47:39 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -122,17 +122,24 @@ class EntityFactory {
     }
     void initWorld();
 
-    Entity * newEntity(const std::string &, long, const std::string &,
-                       const Atlas::Objects::Entity::RootEntity &) const;
+    Entity * newEntity(const std::string & id,
+                       long intId,
+                       const std::string & type,
+                       const Atlas::Objects::Entity::RootEntity & attrs) const;
     void flushFactories();
 
-    Task * newTask(const std::string &, Character &) const;
-    Task * activateTask(const std::string &, const std::string &,
-                        const std::string &, Character &) const;
-    int addStatisticsScript(Character &) const;
+    Task * newTask(const std::string & name,
+                   Character & owner) const;
+    Task * activateTask(const std::string & tool,
+                        const std::string & op,
+                        const std::string & target,
+                        Character & owner) const;
+    int addStatisticsScript(Character & character) const;
 
-    int installRule(const std::string &, const Atlas::Objects::Root &);
-    int modifyRule(const std::string &, const Atlas::Objects::Root &);
+    int installRule(const std::string & class_name,
+                    const Atlas::Objects::Root & class_desc);
+    int modifyRule(const std::string & class_name,
+                   const Atlas::Objects::Root & class_desc);
 };
 
 #endif // SERVER_ENTITY_FACTORY_H
