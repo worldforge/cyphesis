@@ -1,3 +1,8 @@
+2007-11-23  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/mind/NPCMind.py: Rename some arguments to make
+	  way for some changes to the code.
+
 2007-11-22  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/EntityFactorytest.cpp: Update the entity factory tests to
@@ -17264,4 +17269,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1966 2007-11-22 02:06:52 alriddoch Exp $
+$Id: ChangeLog,v 1.1967 2007-11-23 11:13:35 alriddoch Exp $
