@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.301 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Character.cpp,v 1.302 2007-11-23 11:19:41 alriddoch Exp $
 
 #include "Character.h"
 
@@ -415,6 +415,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             food_ent->setId(getId());
             food_ent->setAttr("food", m_food);
             s->setTo(getId());
+            s->setFrom(getId());
             s->setArgs1(food_ent);
 
             Sight si;
@@ -485,6 +486,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 
     Set s;
     s->setArgs1(food_ent);
+    // FIXME FROM, SECONDS?
 
     Sight si;
     si->setTo(getId());

@@ -1,5 +1,10 @@
 2007-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp: Set FROM on fake Set operations used in
+	  metabolism.
+
+2007-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Thing.cpp: Set FROM and SECONDS on Set operations generated
 	  by Updates.
 
@@ -17279,4 +17284,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1969 2007-11-23 11:17:25 alriddoch Exp $
+$Id: ChangeLog,v 1.1970 2007-11-23 11:19:41 alriddoch Exp $

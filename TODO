@@ -1,3 +1,5 @@
+Check if SECONDS is set before using it?
+
 Add an argument to Location::addToEntity which specifies which need to be
 set as zero values of they are not set. This should make it easier to
 deal with the concept of POSless entities, and perhaps entities without
