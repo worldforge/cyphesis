@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: op_switch.h,v 1.35 2007-07-02 21:11:08 alriddoch Exp $
+// $Id: op_switch.h,v 1.36 2007-11-23 16:18:18 alriddoch Exp $
 
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
@@ -142,19 +142,19 @@
     }
 
 
-#define SUB_OP_SWITCH(_op, _sub_op_no, _result, _prefix, _sub_op) \
+#define SUB_OP_SWITCH(_op, _sub_op_no, _result, _prefix) \
     switch (_sub_op_no) { \
         case OP_CREATE: \
-            _prefix ## CreateOperation(_op, _sub_op, _result); \
+            _prefix ## CreateOperation(_op, _result); \
             break; \
         case OP_DELETE: \
-            _prefix ## DeleteOperation(_op, _sub_op, _result); \
+            _prefix ## DeleteOperation(_op, _result); \
             break; \
         case OP_MOVE: \
-            _prefix ## MoveOperation(_op, _sub_op, _result); \
+            _prefix ## MoveOperation(_op, _result); \
             break; \
         case OP_SET: \
-            _prefix ## SetOperation(_op, _sub_op, _result); \
+            _prefix ## SetOperation(_op, _result); \
             break; \
         case OP_INVALID: \
             break; \

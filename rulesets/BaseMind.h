@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.h,v 1.50 2007-02-06 01:58:37 alriddoch Exp $
+// $Id: BaseMind.h,v 1.51 2007-11-23 16:18:18 alriddoch Exp $
 
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
@@ -53,10 +53,10 @@ class BaseMind : public MemEntity {
     /// \brief Set this mind as active
     void awake() { m_isAwake = true; }
 
-    void sightCreateOperation(const Operation &, const Operation &, OpVector &);
-    void sightDeleteOperation(const Operation &, const Operation &, OpVector &);
-    void sightMoveOperation(const Operation &, const Operation &, OpVector &);
-    void sightSetOperation(const Operation &, const Operation &, OpVector &);
+    void sightCreateOperation(const Operation &, OpVector &);
+    void sightDeleteOperation(const Operation &, OpVector &);
+    void sightMoveOperation(const Operation &, OpVector &);
+    void sightSetOperation(const Operation &, OpVector &);
 
     virtual void scriptSubscribe(const std::string &);
 
@@ -67,8 +67,8 @@ class BaseMind : public MemEntity {
     virtual void AppearanceOperation(const Operation &, OpVector &);
     virtual void DisappearanceOperation(const Operation &, OpVector &);
 
-    void callSightOperation(const Operation &, const Operation &, OpVector &);
-    void callSoundOperation(const Operation &, const Operation &, OpVector &);
+    void callSightOperation(const Operation &, OpVector &);
+    void callSoundOperation(const Operation &, OpVector &);
 
     friend class PythonMindScript;
 };

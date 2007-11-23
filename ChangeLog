@@ -1,5 +1,11 @@
 2007-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/op_switch.h, rulesets/BaseMind.cpp, rulesets/BaseMind.h:
+	  Get rid of complicated dispatch of perception and sub operation
+	  separately.
+
+2007-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Script.h, rulesets/Script.cpp,
 	  rulesets/PythonThingScript.h, rulesets/PythonThingScript.cpp,
 	  rulesets/PythonMindScript.h, rulesets/PythonMindScript.cpp:
@@ -17298,4 +17304,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1971 2007-11-23 16:06:52 alriddoch Exp $
+$Id: ChangeLog,v 1.1972 2007-11-23 16:18:18 alriddoch Exp $
