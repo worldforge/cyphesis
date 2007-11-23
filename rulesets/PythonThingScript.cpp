@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.36 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.37 2007-11-23 16:06:53 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
@@ -44,8 +44,7 @@ PythonEntityScript::~PythonEntityScript()
 
 bool PythonEntityScript::operation(const std::string & opname,
                                    const Operation & op,
-                                   OpVector & res,
-                                   const Operation * sub_op)
+                                   OpVector & res)
 {
     assert(scriptObject != NULL);
     std::string op_name = opname + "_operation";

@@ -139,29 +139,27 @@ class NPCMind(BaseMind):
     def load_operation(self, op):
         print "LOAD"
     ########## Sight operations
-    def sight_create_operation(self, original_op, op):
+    def sight_create_operation(self, op):
         """Note our ownership of entities we created."""
         #BaseMind version overridden!
         obj=self.map.add(op[0], op.getSeconds())
-        assert(original_op.from_ == op.to)
-        if original_op.from_==self.id:
+        if op.to==self.id:
             self.add_thing(obj)
-    def sight_move_operation(self, original_op, op):
+    def sight_move_operation(self, op):
         """change position in out local map"""
         obj=self.map.update(op[0], op.getSeconds())
         if obj.location.parent.id==self.id:
             self.add_thing(obj)
-            assert(original_op.from_ == op.to)
-            if original_op.from_ != self.id:
+            if op.to != self.id:
                 self.transfers.append((op.from_, obj.id))
             if obj.type[0]=="coin" and op.from_ != self.id:
-                print "money transer ", obj.location.parent.id, self.id, op.from_, original_op.from_
+                print "money transer ", obj.location.parent.id, self.id, op.from_, op.to
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
     #replaced with dynamically added add_extinguish_fire -goal
     #ie: NPC is first teached that when it sees "sight_burn" it needs to
     #execute above goal, which then adds extinguish_fire goal and executes it
-##     def sight_burn_operation(self, original_op, op):
+##     def sight_burn_operation(self, op):
 ##         #CHEAT!:
 ##         fire=self.map.get(op[0].id)
 ##         if fire:
@@ -173,12 +171,13 @@ class NPCMind(BaseMind):
 ##         log.debug(2,"sight_burn_operation: add goal updating")
     ########## Talk operations
     def admin_sound(self, op):
-        return op[0].from_==self.id
+        assert(op.from_ == op.to)
+        return op.from_ == self.id
 
-    def interlinguish_warning(self, sound_op, say, msg):
+    def interlinguish_warning(self, op, say, msg):
         log.debug(1,str(self.id)+" interlinguish_warning: "+str(msg)+\
-                  ": "+str(say[0].lexlink.id[1:]),sound_op)
-    def interlinguish_desire_verb3_buy_verb1_operation(self, sound_op, say):
+                  ": "+str(say[0].lexlink.id[1:]),op)
+    def interlinguish_desire_verb3_buy_verb1_operation(self, op, say):
         """Handle a sentence of the form 'I would iike to buy a ....'
 
         Check if we have any of the type of thing the other character is
@@ -190,35 +189,35 @@ class NPCMind(BaseMind):
             price=self.get_knowledge("price", object)
             if not price:
                 return
-            goal=mind.goals.common.misc_goal.transaction(object, sound_op.from_, price)
-            who=self.map.get(sound_op.from_)
+            goal=mind.goals.common.misc_goal.transaction(object, op.to, price)
+            who=self.map.get(op.to)
             self.goals.insert(0,goal)
             return Operation("talk", Entity(say=who.name+" one "+object+" will be "+str(price)+" coins")) + self.face(who)
-    def interlinguish_desire_verb3_operation(self, sound_op, say):
+    def interlinguish_desire_verb3_operation(self, op, say):
         """Handle a sentence of the form 'I would like to ...'"""
         object=say[2:]
         verb=interlinguish.get_verb(object)
         operation_method=self.find_op_method(verb,"interlinguish_desire_verb3_",
                                              self.interlinguish_undefined_operation)
         res = Message()
-        res = res + self.call_interlinguish_triggers(verb, "interlinguish_desire_verb3_", sound_op, object)
-        res = res + operation_method(sound_op, object)
+        res = res + self.call_interlinguish_triggers(verb, "interlinguish_desire_verb3_", op, object)
+        res = res + operation_method(op, object)
         return res
-    def interlinguish_be_verb1_operation(self, sound_op, say):
-        if not self.admin_sound(sound_op):
-            return self.interlinguish_warning(sound_op,say,"You are not admin")
+    def interlinguish_be_verb1_operation(self, op, say):
+        if not self.admin_sound(op):
+            return self.interlinguish_warning(op,say,"You are not admin")
         res=interlinguish.match_importance(say)
         if res:
             return self.add_importance(res['sub'].id,'>',res['obj'].id)
         else:
-            return self.interlinguish_warning(sound_op,say,"Unkown assertion")
-    def interlinguish_know_verb1_operation(self, sound_op, say):
+            return self.interlinguish_warning(op,say,"Unkown assertion")
+    def interlinguish_know_verb1_operation(self, op, say):
         """Handle a sentence of the form 'know subject predicate object'
 
         Accept admin instruction about knowledge, and store the triple
         in our knowledge base."""
-        if not self.admin_sound(sound_op):
-            return self.interlinguish_warning(sound_op,say,"You are not admin")
+        if not self.admin_sound(op):
+            return self.interlinguish_warning(op,say,"You are not admin")
         subject=say[1].word
         predicate=say[2].word
         object=say[3].word
@@ -231,7 +230,7 @@ class NPCMind(BaseMind):
             self.add_knowledge(predicate,subject,loc)
         else:
             self.add_knowledge(predicate,subject,object)
-    def interlinguish_tell_verb1_operation(self, sound_op, say):
+    def interlinguish_tell_verb1_operation(self, op, say):
         """Handle a sentence of the form 'Tell (me) ....'
 
         Accept queries about what we know. Mostly this is for debugging
@@ -260,11 +259,11 @@ class NPCMind(BaseMind):
                 k='difficult to explain'
             elif predicate=='about':
                 return Operation('talk', Entity(say=k)) + \
-                       self.face(self.map.get(sound_op.from_))
+                       self.face(self.map.get(op.to))
             return Operation('talk', Entity(say="The " + predicate + " of " +
                                                 object + " is " + k)) + \
-                   self.face(self.map.get(sound_op.from_))
-    def interlinguish_list_verb1_operation(self, sound_op, say):
+                   self.face(self.map.get(op.to))
+    def interlinguish_list_verb1_operation(self, op, say):
         """Handle a sentence of the form 'List (me) ....'
 
         Accept queries about what we know. Mostly this is for debugging
@@ -278,13 +277,13 @@ class NPCMind(BaseMind):
             return None
         d=getattr(self.knowledge, predicate)
         res = Message()
-        res = res + self.face(self.map.get(sound_op.from_))
+        res = res + self.face(self.map.get(op.to))
         for key in d:
             res = res + Operation('talk',
                                   Entity(say="The " + predicate + " of " + key +
                                              " is " + str(d[key])))
         return res
-    def interlinguish_learn_verb1_operation(self, sound_op, say):
+    def interlinguish_learn_verb1_operation(self, op, say):
         """Handle a sentence of the form 'learn ....'
 
         The learn sentence contains two components, and can hardly
@@ -294,19 +293,19 @@ class NPCMind(BaseMind):
         Obviously accepting a code fragment from the client is very
         dangerous, and we need to be carefull that the admin_sound() check
         works."""
-        if not self.admin_sound(sound_op):
-            return self.interlinguish_warning(sound_op,say,"You are not admin")
+        if not self.admin_sound(op):
+            return self.interlinguish_warning(op,say,"You are not admin")
         subject=say[1].word
         object=say[2].word
         self.add_goal(subject,object)
-    def interlinguish_own_verb1_operation(self, sound_op, say):
+    def interlinguish_own_verb1_operation(self, op, say):
         """Handle a sentence of the form ' own ...'
 
         Sentences of this form from the admin inform us that we own an
         entity. This is essential when an entity needs to be used as a
         tool, or raw material."""
-        if not self.admin_sound(sound_op):
-            return self.interlinguish_warning(sound_op,say,"You are not admin")
+        if not self.admin_sound(op):
+            return self.interlinguish_warning(op,say,"You are not admin")
 ##         print self,"own:",say[1].word,say[2].word
         subject=self.map.get_add(say[1].word)
 ##         print "subject found:",subject
@@ -316,15 +315,15 @@ class NPCMind(BaseMind):
 ##             foo
         if subject.id==self.id:
             self.add_thing(object)
-    def interlinguish_undefined_operation(self, sound_op, say):
+    def interlinguish_undefined_operation(self, op, say):
         #CHEAT!: any way to handle these?
-        log.debug(2,str(self.id)+" interlinguish_undefined_operation:",sound_op)
+        log.debug(2,str(self.id)+" interlinguish_undefined_operation:",op)
         log.debug(2,str(say))
     def talk_undefined_operation(self, op, say):
         #CHEAT!: any way to handle these?
         pass
     ########## Sound operations
-    def sound_talk_operation(self, original_op, op):
+    def sound_talk_operation(self, op):
         """Handle the sound of a talk operation from another character.
 
         The spoken sentence comes in as a sentence string, which
@@ -333,7 +332,6 @@ class NPCMind(BaseMind):
         is then used to call methods and activate triggers, such as
         dynamic goals."""
 
-        assert(original_op.from_ == op.to)
         talk_entity=op[0]
         res = Message()
         if interlinguish.convert_english_to_interlinguish(self,talk_entity):
@@ -341,13 +339,13 @@ class NPCMind(BaseMind):
             verb=interlinguish.get_verb(say)
             operation_method=self.find_op_method(verb,"interlinguish_",
                                   self.interlinguish_undefined_operation)
-            res = res + self.call_interlinguish_triggers(verb, "interlinguish_", original_op,say)
+            res = res + self.call_interlinguish_triggers(verb, "interlinguish_", op, say)
         else:
             operation_method=self.talk_undefined_operation
             say=talk_entity
             if hasattr(say,"say"): say=say.say
         log.debug(3,"talk: "+str(operation_method))
-        res = res + operation_method(original_op,say)
+        res = res + operation_method(op,say)
         return res
     ########## Other operations
     def call_interlinguish_triggers(self, verb, prefix, op, say):

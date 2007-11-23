@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.h,v 1.13 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: PythonMindScript.h,v 1.14 2007-11-23 16:06:53 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_MIND_SCRIPT_H
 #define RULESETS_PYTHON_MIND_SCRIPT_H
@@ -34,8 +34,7 @@ class PythonMindScript : public PythonScript {
     virtual ~PythonMindScript();
     virtual bool operation(const std::string & opname,
                            const Atlas::Objects::Operation::RootOperation & op,
-                           OpVector & res,
-                           const Atlas::Objects::Operation::RootOperation * sub_op = 0);
+                           OpVector & res);
     virtual void hook(const std::string &, Entity *);
 };
 

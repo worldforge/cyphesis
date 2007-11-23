@@ -28,9 +28,9 @@ class hire_trade(DynamicGoal):
             print "No price"
             return
         #print "I go for " + str(price) + " coins"
-        goal = mind.goals.common.misc_goal.hireling_transaction('services', op.from_, price)
+        goal = mind.goals.common.misc_goal.hireling_transaction('services', op.to, price)
         me.goals.insert(0,goal)
-        return Operation("talk", Entity(say=me.map.get(op.from_).name+" one day will be "+str(price)+" coins"))
+        return Operation("talk", Entity(say=me.map.get(op.to).name+" one day will be "+str(price)+" coins"))
 
 class buy_from(Goal):
     def __init__(self, what, cost, who, desc="buy livestock from someone"):
@@ -94,11 +94,11 @@ class buy_livestock(DynamicGoal):
     def event(self, me, op, say):
         object=say[1].word
         thing=me.map.get(object)
-        who=me.map.get(op.from_)
+        who=me.map.get(op.to)
         if thing==None:
             if object != self.what:
                 return Operation("talk", Entity(say=who.name+", I am not interested in buying your "+str(object)+"."))
-            me.goals.insert(0, buy_from(self.what, self.cost, op.from_))
+            me.goals.insert(0, buy_from(self.what, self.cost, op.to))
             return Operation("talk", Entity(say=who.name+" which "+object+" would you like to sell?"))
         if not self.what in thing.type: return
         if thing in me.find_thing(self.what): return

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Script.cpp,v 1.14 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: Script.cpp,v 1.15 2007-11-23 16:06:53 alriddoch Exp $
 
 #include "Script.h"
 
@@ -36,13 +36,11 @@ Script::~Script()
 /// @param opname The string representing the type of the operation
 /// @param op The operation to be passed
 /// @param res The result of the operation is returned here
-/// @param sub_op The sub operation associated with some operations
 /// @return true if operation was accepted, false if it was not handled
 /// or an error occured.
 bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res,
-                       const Atlas::Objects::Operation::RootOperation * sub_op)
+                       OpVector & res)
 {
    return false;
 }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.cpp,v 1.38 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: PythonMindScript.cpp,v 1.39 2007-11-23 16:06:53 alriddoch Exp $
 
 #include "PythonMindScript.h"
 
@@ -47,8 +47,7 @@ PythonMindScript::~PythonMindScript()
 
 bool PythonMindScript::operation(const std::string & op_type,
                                  const Operation & op,
-                                 OpVector & ret_list,
-                                 const Operation * sub_op_ptr)
+                                 OpVector & res)
 {
     assert(scriptObject != NULL);
     std::string op_name = op_type + "_operation";
@@ -65,17 +64,8 @@ bool PythonMindScript::operation(const std::string & op_type,
     PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = op;
     PyObject * ret;
-    if (sub_op_ptr == NULL) {
-        ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
+    ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
                                          "(O)", py_op);
-    } else {
-        const Operation & sub_op = *sub_op_ptr;
-        PyOperation * py_sub_op = newPyOperation();
-        py_sub_op->operation = sub_op;
-        ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
-                                         "(OO)", py_op, py_sub_op);
-        Py_DECREF(py_sub_op);
-    }
     Py_DECREF(py_op);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {
@@ -102,14 +92,14 @@ bool PythonMindScript::operation(const std::string & op_type,
     } else if (PyOperation_Check(ret)) {
         PyOperation * op = (PyOperation*)ret;
         assert(op->operation.isValid());
-        ret_list.push_back(op->operation);
+        res.push_back(op->operation);
     } else if (PyOplist_Check(ret)) {
         PyOplist * op = (PyOplist*)ret;
         assert(op->ops != NULL);
         const OpVector & o = *op->ops;
         OpVector::const_iterator Iend = o.end();
         for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
-            ret_list.push_back(*I);
+            res.push_back(*I);
         }
     } else {
         log(ERROR, String::compose("Python script \"%1\" returned an invalid "

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.105 2007-11-23 11:15:36 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.106 2007-11-23 16:06:53 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -229,7 +229,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
         std::string event_name("sound_");
         event_name += op2->getParents().front();
 
-        if (m_script->operation(event_name, op, res, &op2) == 0) {
+        if (m_script->operation(event_name, op2, res) == 0) {
             callSoundOperation(op, op2, res);
         }
     }
@@ -252,7 +252,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         std::string event_name("sight_");
         event_name += op2->getParents().front();
 
-        if (m_script->operation(event_name, op, res, &op2) == 0) {
+        if (m_script->operation(event_name, op2, res) == 0) {
             callSightOperation(op, op2, res);
         }
     } else /* if (op2->getObjtype() == "object") */ {

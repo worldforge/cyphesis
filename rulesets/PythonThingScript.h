@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.h,v 1.20 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: PythonThingScript.h,v 1.21 2007-11-23 16:06:53 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_THING_SCRIPT_H
 #define RULESETS_PYTHON_THING_SCRIPT_H
@@ -32,8 +32,7 @@ class PythonEntityScript : public PythonScript {
 
     virtual bool operation(const std::string & opname,
                            const Atlas::Objects::Operation::RootOperation & op,
-                           OpVector & res,
-                           const Atlas::Objects::Operation::RootOperation * sub_op = 0);
+                           OpVector & res);
     virtual void hook(const std::string & function, Entity * entity);
 };
 
