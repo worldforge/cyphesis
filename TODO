@@ -1,4 +1,20 @@
-Check if SECONDS is set before using it?
+New Atlas-C++ has no inheritance tree, just one class in Objects. Instead
+it has function to create the instances, which create the defaults object
+if required, pass it in, and return a smartptr to an instance from the pool.
+Convenience versions of these function could take op arguments for operations,
+or IDs or the like for entities.
+
+Once TypeNode is embedded, get rid of inheritance.h from Entity.h, clean up
+getType() so it returns the right thing, and go from there.
+Fix the fact that MemMap depends on type defaulting to the string "entity".
+Sort out how to handle types in the mind.
+Make MindFactory key on type pointer rather than string.
+Restorer is now well and trully busted, where we try and read type.
+Walking the tree in Inheritance::isTypeOf() is not re-written correctly
+yet. Use the pointer.
+Activations should use type nodes perhaps.
+
+Check if SECONDS is set before using it? All ops in basemind should do this.
 
 Add an argument to Location::addToEntity which specifies which need to be
 set as zero values of they are not set. This should make it easier to
@@ -8,10 +24,6 @@ zero velocity, as this is annoying to have to check for.
 
 Fix new PythonArithmeticScript() from being leaked. ArithmeticFactory(124)
 Shader surfaces are being leaked from TerrainProperty::set(130)
-
-m_age is not being initialised in quaternions in both the passing out,
-and passing into container cases. Both the collision entity
-and the entity collding have it uninitialised in the passing in case.
 
 Switch over to using Atlas::Objects as the fundamental unit in the objects
 code. Needs AtlasFileLoader to be converted over. This is the best first step
