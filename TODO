@@ -1,3 +1,9 @@
+Modify security in NPCMind so we can do the goals without broadcasting the
+talk ops. Use the TO on the Talk op to determine if this is an admin op,
+so that clients can redirect ops easily. Need to verify that checking
+Sound.FROM is the only reason interlinguish functions need the op. It
+may be possible to get rid of passing in orignal_op completely.
+
 New Atlas-C++ has no inheritance tree, just one class in Objects. Instead
 it has function to create the instances, which create the defaults object
 if required, pass it in, and return a smartptr to an instance from the pool.
