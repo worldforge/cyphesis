@@ -1,5 +1,10 @@
 2007-11-23  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/BaseMind.cpp: Stop using the sight op when getting
+	  updates.
+
+2007-11-23  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/mind/NPCMind.py: Rename some arguments to make
 	  way for some changes to the code.
 
@@ -17269,4 +17274,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1967 2007-11-23 11:13:35 alriddoch Exp $
+$Id: ChangeLog,v 1.1968 2007-11-23 11:15:36 alriddoch Exp $

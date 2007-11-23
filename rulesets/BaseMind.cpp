@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.104 2007-06-27 23:59:03 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.105 2007-11-23 11:15:36 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -128,7 +128,7 @@ void BaseMind::scriptSubscribe(const std::string & op)
 /// @param op The Sight operation to be processed.
 /// @param sub_op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseMind::sightCreateOperation(const Operation & op,
+void BaseMind::sightCreateOperation(const Operation & ,
                                     const Operation & sub_op, OpVector & res)
 {
     const std::vector<Root> & args = sub_op->getArgs();
@@ -143,7 +143,7 @@ void BaseMind::sightCreateOperation(const Operation & op,
     }
     // This does not send a look, so anything added this way will not
     // get flagged as visible until we get an appearance. This is important.
-    m_map.updateAdd(ent, op->getSeconds());
+    m_map.updateAdd(ent, sub_op->getSeconds());
 }
 
 /// \brief Process the Sight of a Delete operation.
@@ -151,7 +151,7 @@ void BaseMind::sightCreateOperation(const Operation & op,
 /// @param op The Sight operation to be processed.
 /// @param sub_op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseMind::sightDeleteOperation(const Operation & op,
+void BaseMind::sightDeleteOperation(const Operation & ,
                                     const Operation & sub_op, OpVector & res)
 {
     debug( std::cout << "Sight Delete operation" << std::endl << std::flush;);
@@ -174,7 +174,7 @@ void BaseMind::sightDeleteOperation(const Operation & op,
 /// @param op The Sight operation to be processed.
 /// @param sub_op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseMind::sightMoveOperation(const Operation & op,
+void BaseMind::sightMoveOperation(const Operation & ,
                                   const Operation & sub_op, OpVector & res)
 {
     debug( std::cout << "BaseMind::sightOperation(Sight, Move)" << std::endl << std::flush;);
@@ -188,7 +188,7 @@ void BaseMind::sightMoveOperation(const Operation & op,
         log(ERROR, "Got sight(move) of non-entity");
         return;
     }
-    m_map.updateAdd(ent, op->getSeconds());
+    m_map.updateAdd(ent, sub_op->getSeconds());
 }
 
 /// \brief Process the Sight of a Set operation.
@@ -196,7 +196,7 @@ void BaseMind::sightMoveOperation(const Operation & op,
 /// @param op The Sight operation to be processed.
 /// @param sub_op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseMind::sightSetOperation(const Operation & op,
+void BaseMind::sightSetOperation(const Operation & ,
                                  const Operation & sub_op, OpVector & res)
 {
     const std::vector<Root> & args = sub_op->getArgs();
@@ -209,7 +209,7 @@ void BaseMind::sightSetOperation(const Operation & op,
         log(ERROR, "Got sight(set) of non-entity");
         return;
     }
-    m_map.updateAdd(ent, op->getSeconds());
+    m_map.updateAdd(ent, sub_op->getSeconds());
 }
 
 void BaseMind::SoundOperation(const Operation & op, OpVector & res)
