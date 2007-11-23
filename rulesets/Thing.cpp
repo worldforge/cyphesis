@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.219 2007-08-01 23:05:29 alriddoch Exp $
+// $Id: Thing.cpp,v 1.220 2007-11-23 11:17:25 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -512,6 +512,8 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
 
     Set set;
     set->setTo(getId());
+    set->setFrom(getId());
+    set->setSeconds(op->getSeconds());
     set->setArgs1(set_arg);
 
     Sight sight;
