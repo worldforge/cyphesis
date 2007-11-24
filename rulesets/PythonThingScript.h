@@ -15,14 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.h,v 1.21 2007-11-23 16:06:53 alriddoch Exp $
+// $Id: PythonThingScript.h,v 1.22 2007-11-24 16:52:33 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_THING_SCRIPT_H
 #define RULESETS_PYTHON_THING_SCRIPT_H
 
 #include "PythonScript.h"
-
-class Entity;
 
 /// \brief Script class for Python scripts attached to an Entity
 class PythonEntityScript : public PythonScript {

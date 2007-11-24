@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.cpp,v 1.39 2007-11-23 16:06:53 alriddoch Exp $
+// $Id: PythonMindScript.cpp,v 1.40 2007-11-24 16:52:33 alriddoch Exp $
 
 #include "PythonMindScript.h"
 
@@ -23,21 +23,22 @@
 #include "Py_Oplist.h"
 #include "Py_Thing.h"
 
-#include "Entity.h"
-#include "BaseMind.h"
-#include "MemMap.h"
+#include "common/Tick.h"
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/types.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootOperation.h>
 
+#include <iostream>
+
 static const bool debug_flag = false;
 
 /// \brief PythonMindScript constructor
-PythonMindScript::PythonMindScript(PyObject * o, PyObject * w, BaseMind & m) :
-                  PythonScript(o, w), mind(m)
+PythonMindScript::PythonMindScript(PyObject * o, PyObject * w) :
+                  PythonScript(o, w)
 {
 }
 
@@ -74,13 +75,12 @@ bool PythonMindScript::operation(const std::string & op_type,
         } else {
             log(ERROR, "Reporting python error");
             PyErr_Print();
-            if (op_type == "tick") {
+            if (op->getClassNo() == OP_TICK) {
                 log(ERROR,
-                    String::compose("Mind script for \"%1\", named \"%2\" "
-                                    "has reported an error processing a tick "
-                                    "operation. "
-                                    "This NPC is probably now inactive.",
-                                    mind.getId(), mind.getName()));
+                    String::compose("Script for \"%1\" has reported an error "
+                                    "processing a tick operation. "
+                                    "This entity is probably now inactive.",
+                                    op->getTo()));
             }
         }
         return false;
@@ -103,7 +103,7 @@ bool PythonMindScript::operation(const std::string & op_type,
         }
     } else {
         log(ERROR, String::compose("Python script \"%1\" returned an invalid "
-                                   "result", op_name));
+                                   "result.", op_name));
     }
     
     Py_DECREF(ret);

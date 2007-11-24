@@ -15,20 +15,24 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.37 2007-11-23 16:06:53 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.38 2007-11-24 16:52:33 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
+#include "Py_Thing.h"
 
-#include "Entity.h"
+#include "common/Tick.h"
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/types.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootOperation.h>
+
+#include <iostream>
 
 static const bool debug_flag = false;
 
@@ -42,12 +46,12 @@ PythonEntityScript::~PythonEntityScript()
 {
 }
 
-bool PythonEntityScript::operation(const std::string & opname,
+bool PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
 {
     assert(scriptObject != NULL);
-    std::string op_name = opname + "_operation";
+    std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
                                                             << std::flush;);
     // This check isn't really necessary, except it saves the conversion
@@ -71,6 +75,13 @@ bool PythonEntityScript::operation(const std::string & opname,
         } else {
             log(ERROR, "Reporting python error");
             PyErr_Print();
+            if (op->getClassNo() == OP_TICK) {
+                log(ERROR,
+                    String::compose("Script for \"%1\" has reported an error "
+                                    "processing a tick operation. "
+                                    "This entity is probably now inactive.",
+                                    op->getTo()));
+            }
         }
         return false;
     }
@@ -91,14 +102,33 @@ bool PythonEntityScript::operation(const std::string & opname,
             res.push_back(*I);
         }
     } else {
-       log(ERROR, String::compose("Python script \"%1\" returned an "
-                                  "invalid result.", op_name));
+        log(ERROR, String::compose("Python script \"%1\" returned an invalid "
+                                   "result.", op_name));
     }
     
     Py_DECREF(ret);
     return true;
 }
 
-void PythonEntityScript::hook(const std::string &, Entity *)
+void PythonEntityScript::hook(const std::string & function, Entity * entity)
 {
+    PyObject * wrapper = wrapEntity(entity);
+    if (wrapper == NULL) {
+        return;
+    }
+
+    PyObject * ret = PyObject_CallMethod(scriptObject,
+                                         (char *)(function.c_str()),
+                                         "(O)",
+                                         wrapper);
+    Py_DECREF(wrapper);
+    if (ret == NULL) {
+        if (PyErr_Occurred() == NULL) {
+            log(NOTICE, "No hook");
+        } else {
+            log(ERROR, "Reporting python error");
+            PyErr_Print();
+        }
+    }
+    Py_DECREF(ret);
 }

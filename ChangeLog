@@ -1,3 +1,10 @@
+2007-11-24  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/PythonMindScript.cpp, rulesets/PythonMindScript.h,
+	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h:
+	  Eliminate the difference between the code in these two classes,
+	  as they really don't need to be different.
+
 2007-11-23  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/op_switch.h, rulesets/BaseMind.cpp, rulesets/BaseMind.h:
@@ -17304,4 +17311,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1972 2007-11-23 16:18:18 alriddoch Exp $
+$Id: ChangeLog,v 1.1973 2007-11-24 16:52:33 alriddoch Exp $
