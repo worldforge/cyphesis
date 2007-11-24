@@ -1,5 +1,10 @@
 2007-11-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Python_API.cpp, rulesets/Makefile.am: Remove now oboleted
+	  PythonMindScript from the code, and the build.
+
+2007-11-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/PythonMindScript.cpp, rulesets/PythonMindScript.h,
 	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h:
 	  Eliminate the difference between the code in these two classes,
@@ -17311,4 +17316,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1973 2007-11-24 16:52:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1974 2007-11-24 16:54:09 alriddoch Exp $

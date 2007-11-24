@@ -78,7 +78,6 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    PythonWrapper.cpp PythonWrapper.h \
 			    PythonScript.cpp PythonScript.h \
 			    PythonThingScript.cpp PythonThingScript.h \
-			    PythonMindScript.cpp PythonMindScript.h \
 			    PythonArithmeticScript.cpp PythonArithmeticScript.h
 
 dist-hook:

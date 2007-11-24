@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.168 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.169 2007-11-24 16:54:09 alriddoch Exp $
 
 #include "Python.h"
 
@@ -40,9 +40,7 @@
 #include "Py_Property.h"
 
 #include "PythonThingScript.h"
-#include "PythonMindScript.h"
 #include "World.h"
-#include "Entity.h"
 #include "BaseMind.h"
 
 #include "common/inheritance.h"
@@ -386,7 +384,7 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     Py_DECREF(py_class);
 
     if (o != NULL) {
-        mind->setScript(new PythonMindScript(o, (PyObject *)wrapper, *mind));
+        mind->setScript(new PythonEntityScript(o, (PyObject *)wrapper));
     }
 }
 
