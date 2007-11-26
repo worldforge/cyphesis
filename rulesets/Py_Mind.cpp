@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.39 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.40 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -82,7 +82,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyObject * ent = PyString_FromString(self->m_mind->getType().c_str());
+        PyObject * ent = PyString_FromString(self->m_mind->getType()->name().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;

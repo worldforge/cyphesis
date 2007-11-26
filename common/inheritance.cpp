@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.35 2007-07-29 03:33:33 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.36 2007-11-26 02:57:05 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -57,6 +57,10 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 
+TypeNode::TypeNode() : m_parent(0)
+{
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
@@ -83,11 +87,15 @@ Root atlasClass(const std::string & name, const std::string & parent)
 
 Inheritance::Inheritance() : noClass(0)
 {
-    Atlas::Objects::Entity::Anonymous root;
+    Atlas::Objects::Entity::Anonymous root_desc;
 
-    root->setParents(std::list<std::string>(0));
-    root->setObjtype("meta");
-    root->setId("root");
+    root_desc->setParents(std::list<std::string>(0));
+    root_desc->setObjtype("meta");
+    root_desc->setId("root");
+
+    TypeNode * root = new TypeNode;
+    root->name() = "root";
+    root->description() = root_desc;
 
     atlasObjects["root"] = root;
 }
@@ -132,25 +140,35 @@ OpNo Inheritance::opEnumerate(const Operation & op) const
     return op->getClassNo();
 }
 
-const Atlas::Objects::Root & Inheritance::getClass(const std::string & parent)
+const Root & Inheritance::getClass(const std::string & parent)
 {
-    RootDict::const_iterator I = atlasObjects.find(parent);
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return noClass;
+    }
+    return I->second->description();
+}
+
+const TypeNode * Inheritance::getType(const std::string & parent)
+{
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return 0;
     }
     return I->second;
 }
 
 bool Inheritance::hasClass(const std::string & parent)
 {
-    RootDict::const_iterator I = atlasObjects.find(parent);
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return false;
     }
     return true;
 }
 
-int Inheritance::addChild(const Atlas::Objects::Root & obj)
+TypeNode * Inheritance::addChild(const Root & obj,
+                                 const Atlas::Message::MapType & defaults)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
@@ -158,46 +176,59 @@ int Inheritance::addChild(const Atlas::Objects::Root & obj)
         log(ERROR, String::compose("Installing type \"%1\"(\"%2\") "
                                    "which was already installed",
                                    child, parent));
-        return -1;
+        return 0;
     }
-    RootDict::const_iterator I = atlasObjects.find(parent);
+    TypeNodeDict::iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         log(ERROR, String::compose("Installing type \"%1\" "
                                    "which has unknown parent \"%2\".",
                                    child, parent));;
-        return -1;
+        return 0;
     }
     Element children(ListType(1, child));
-    if (I->second->copyAttr("children", children) == 0) {
+    if (I->second->description()->copyAttr("children", children) == 0) {
         assert(children.isList());
         children.asList().push_back(child);
     }
-    I->second->setAttr("children", children);
-    atlasObjects[child] = obj;
-    return 0;
+    I->second->description()->setAttr("children", children);
+
+    TypeNode * type = new TypeNode;
+    type->name() = child;
+    type->description() = obj;
+    type->defaults() = defaults;
+    type->setParent(I->second);
+
+    atlasObjects[child] = type;
+
+    return type;
 }
 
 bool Inheritance::isTypeOf(const std::string & instance,
-                           const std::string & type) const
+                           const std::string & base_type) const
 {
-    if (instance == type) {
+    if (instance == base_type) {
         return true;
     }
-    RootDict::const_iterator I = atlasObjects.find(instance);
-    RootDict::const_iterator Iend = atlasObjects.end();
-    for (; I != Iend;) {
-        const std::list<std::string> & parents = I->second->getParents();
-        if (parents.empty()) {
-            break;
-        }
-        const std::string & parent = I->second->getParents().front();
-        if (parent == type) {
+    TypeNodeDict::const_iterator I = atlasObjects.find(instance);
+    TypeNodeDict::const_iterator Iend = atlasObjects.end();
+    if (I == Iend) {
+        return false;
+    }
+    return this->isTypeOf(I->second, base_type);
+}
+
+bool Inheritance::isTypeOf(const TypeNode * instance,
+                           const std::string & base_type) const
+{
+    const TypeNode * node = instance;
+    for (; node->parent() != 0;) {
+        const TypeNode * parent = node->parent();
+        if (parent->name() == base_type) {
             return true;
         }
-        I = atlasObjects.find(parent);
+        node = node->parent();
     }
     return false;
-    // Walk up the tree.
 }
 
 using Atlas::Objects::Operation::RootOperation;

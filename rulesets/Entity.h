@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.87 2007-08-01 21:19:07 alriddoch Exp $
+// $Id: Entity.h,v 1.88 2007-11-26 02:57:05 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -26,6 +26,7 @@
 
 #include "common/BaseEntity.h"
 #include "common/BaseWorld.h"
+#include "common/inheritance.h"
 
 #include <sigc++/connection.h>
 
@@ -55,6 +56,7 @@ class EntityType {
 class Motion;
 class Script;
 class PropertyBase;
+class TypeNode;
 
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
@@ -101,8 +103,8 @@ class Entity : public BaseEntity {
     int m_seq;
     /// Health/damage coeficient
     double m_status;
-    /// Easy access to primary parent
-    std::string m_type;
+    /// Class of which this is an instance
+    const TypeNode * m_type;
     /// Entities name
     std::string m_name;
     /// Mass in kg
@@ -173,7 +175,7 @@ class Entity : public BaseEntity {
     /// \brief Accessor for name property
     const std::string & getName() const { return m_name; }
     /// \brief Accessor for entity type property
-    const std::string & getType() const { return m_type; }
+    const TypeNode * getType() const { return m_type; }
     /// \brief Accessor for mass property
     const double getMass() const { return m_mass; }
 
@@ -194,7 +196,7 @@ class Entity : public BaseEntity {
     }
 
     /// \brief Set the value of the entity type property
-    void setType(const std::string & t) {
+    void setType(const TypeNode * t) {
         m_type = t;
     }
 

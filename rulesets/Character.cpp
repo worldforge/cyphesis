@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.302 2007-11-23 11:19:41 alriddoch Exp $
+// $Id: Character.cpp,v 1.303 2007-11-26 02:57:05 alriddoch Exp $
 
 #include "Character.h"
 
@@ -885,7 +885,10 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Task * task = BaseWorld::instance().activateTask(tool->getType(), op_type, target_ent->getType(), *this);
+    Task * task = BaseWorld::instance().activateTask(tool->getType()->name(),
+                                                     op_type,
+                                                     target_ent->getType()->name(),
+                                                     *this);
     if (task != NULL) {
         setTask(task);
         assert(res.empty());

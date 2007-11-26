@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.h,v 1.51 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: MemMap.h,v 1.52 2007-11-26 02:57:06 alriddoch Exp $
 
 #ifndef RULESETS_MEM_MAP_H
 #define RULESETS_MEM_MAP_H
@@ -31,6 +31,7 @@
 class MemEntity;
 class Script;
 class Location;
+class TypeNode;
 
 typedef std::vector<MemEntity *> MemEntityVector;
 typedef std::map<long, MemEntity *> MemEntityDict;
@@ -39,6 +40,8 @@ typedef std::map<long, MemEntity *> MemEntityDict;
 class MemMap {
   private:
     friend class BaseMind;
+
+    static const TypeNode * m_entity_type;
 
     MemEntityDict m_entities;
     MemEntityDict::iterator m_checkIterator;

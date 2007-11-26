@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackable.cpp,v 1.51 2007-01-01 17:57:09 alriddoch Exp $
+// $Id: Stackable.cpp,v 1.52 2007-11-26 02:57:06 alriddoch Exp $
 
 // A stackable object, ie one which can represent multiple object of the
 // same type. Used for things like coins.
@@ -133,7 +133,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
         m_num -= new_num;
         
         Anonymous create_arg;
-        create_arg->setParents(std::list<std::string>(1, m_type));
+        create_arg->setParents(std::list<std::string>(1, m_type->name()));
         if (new_num > 1) {
             create_arg->setAttr("num", new_num);
         }

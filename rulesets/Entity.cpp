@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.134 2007-08-01 23:05:28 alriddoch Exp $
+// $Id: Entity.cpp,v 1.135 2007-11-26 02:57:05 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -77,7 +77,7 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_refCount(0), m_destroyed(false),
                                          m_script(&noScript), m_motion(0),
                                          m_seq(0),
-                                         m_status(1), m_type("entity"),
+                                         m_status(1), m_type(0),
                                          m_mass(-1), m_perceptive(false),
                                          m_update_flags(0)
 {
@@ -237,7 +237,7 @@ void Entity::addToEntity(const RootEntity & ent) const
         J->second->add(J->first, ent);
     }
     ent->setStamp(m_seq);
-    ent->setParents(std::list<std::string>(1, m_type));
+    ent->setParents(std::list<std::string>(1, m_type->name()));
     m_location.addToEntity(ent);
     ent->setObjtype("obj");
 }

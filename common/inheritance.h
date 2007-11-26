@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.33 2007-04-22 23:07:19 alriddoch Exp $
+// $Id: inheritance.h,v 1.34 2007-11-26 02:57:05 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -33,11 +33,58 @@ void installCustomEntities();
 
 typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
+class TypeNode {
+  protected:
+    std::string m_name;
+
+    Atlas::Message::MapType m_defaults;
+
+    Atlas::Objects::Root m_description;
+
+    const TypeNode * m_parent;
+  public:
+    TypeNode();
+
+    const std::string & name() const {
+        return m_name;
+    }
+
+    std::string & name() {
+        return m_name;
+    }
+
+    const Atlas::Message::MapType & defaults() const {
+        return m_defaults;
+    }
+
+    Atlas::Message::MapType & defaults() {
+        return m_defaults;
+    }
+
+    Atlas::Objects::Root & description() {
+        return m_description;
+    }
+
+    const Atlas::Objects::Root & description() const {
+        return m_description;
+    }
+
+    const TypeNode * parent() const {
+        return m_parent;
+    }
+
+    void setParent(const TypeNode * parent) {
+        m_parent = parent;
+    }
+};
+
+typedef std::map<std::string, const TypeNode *> TypeNodeDict;
+
 /// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance {
   protected:
     const Atlas::Objects::Root noClass;
-    RootDict atlasObjects;
+    TypeNodeDict atlasObjects;
     OpNoDict opLookup;
 
     static Inheritance * m_instance;
@@ -52,16 +99,22 @@ class Inheritance {
         opLookup[op] = no;
     }
 
-    const RootDict & getAllObjects() const {
+    const TypeNodeDict & getAllObjects() const {
         return atlasObjects;
     }
 
     OpNo opEnumerate(const std::string & parent) const;
     OpNo opEnumerate(const Operation &) const;
     const Atlas::Objects::Root & getClass(const std::string & parent);
+    const TypeNode * getType(const std::string & parent);
     bool hasClass(const std::string & parent);
-    int addChild(const Atlas::Objects::Root & obj);
-    bool isTypeOf(const std::string &, const std::string &) const;
+    TypeNode * addChild(const Atlas::Objects::Root & obj,
+                        const Atlas::Message::MapType & defaults =
+                        Atlas::Message::MapType());
+    bool isTypeOf(const std::string & instance,
+                  const std::string & base_type) const;
+    bool isTypeOf(const TypeNode * instance,
+                  const std::string & base_type) const;
     void flush();
 };
 

@@ -1,3 +1,26 @@
+2007-11-26  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.cpp, common/inheritance.h: Introduce a type
+	  node class as a carrier for all information, including default
+	  values for a type.
+
+	* rulesets/Entity.h, rulesets/Entity.cpp, rulesets/Character.cpp:
+	  Use a TypeNode pointer rather than a string giving the type
+	  of an entity.
+
+	* client/Py_CreatorClient.cpp, rulesets/MemMap.cpp, rulesets/MemMap.h,
+	  rulesets/MindFactory.cpp, rulesets/MindFactory.h,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp, rulesets/Stackable.cpp,
+	  rulesets/World.cpp, server/PersistantThingFactory.h,
+	  server/Restorer_impl.h, server/WorldRouter.cpp:
+	  Adapt all the code that deals with types. Set the type pointer
+	  up correctly in BaseMind.
+
+	* server/EntityFactory.cpp: Initialise the TypeNode pointer on new
+	  entities.
+
+	* tests/inheritancetest.cpp: Adapt the test to cope with TypeNode.
+
 2007-11-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Python_API.cpp, rulesets/Makefile.am: Remove now oboleted
@@ -17316,4 +17339,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1974 2007-11-24 16:54:09 alriddoch Exp $
+$Id: ChangeLog,v 1.1975 2007-11-26 02:57:04 alriddoch Exp $

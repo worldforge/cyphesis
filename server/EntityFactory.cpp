@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.127 2007-11-22 01:05:10 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.128 2007-11-26 02:57:06 alriddoch Exp $
 
 #include <Python.h>
 
@@ -144,7 +144,7 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     }
     debug( std::cout << "[" << type << " " << thing->getName() << "]"
                      << std::endl << std::flush;);
-    thing->setType(type);
+    thing->setType(factory->m_type);
     // Sort out python object
     if (factory->m_scriptFactory != 0) {
         debug(std::cout << "Class " << type << " has a python class"
@@ -608,7 +608,7 @@ int EntityFactory::installOpDefinition(const std::string & class_name,
 
     Atlas::Objects::Root r = atlasOpDefinition(class_name, parent);
 
-    if (i.addChild(class_desc) != 0) {
+    if (i.addChild(class_desc) == 0) {
         return -1;
     }
 
@@ -877,9 +877,9 @@ void EntityFactory::installFactory(const std::string & class_name,
     if (class_desc.isValid()) {
         assert(class_desc->getId() == class_name);
         assert(class_desc->getParents().front() == parent);
-        i.addChild(class_desc);
+        factory->m_type = i.addChild(class_desc);
     } else {
-        i.addChild(atlasClass(class_name, parent));
+        factory->m_type = i.addChild(atlasClass(class_name, parent));
     }
 }
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creatortest.cpp,v 1.23 2007-08-01 15:21:06 alriddoch Exp $
+// $Id: Creatortest.cpp,v 1.24 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -36,6 +36,9 @@ int main(int argc, char ** argv)
     init_python_api();
 
     Creator e("1", 1);
+    TypeNode type;
+    type.name() = "creator";
+    e.setType(&type);
 
     IGEntityExerciser<Creator> ee(e);
 

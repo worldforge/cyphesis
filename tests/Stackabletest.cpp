@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackabletest.cpp,v 1.9 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: Stackabletest.cpp,v 1.10 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -30,6 +30,9 @@ using Atlas::Message::ListType;
 int main()
 {
     Stackable e("1", 1);
+    TypeNode type;
+    type.name() = "stackable";
+    e.setType(&type);
 
     IGEntityExerciser<Stackable> ee(e);
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritancetest.cpp,v 1.18 2007-07-04 22:00:15 alriddoch Exp $
+// $Id: inheritancetest.cpp,v 1.19 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "common/inheritance.h"
 
@@ -127,17 +127,17 @@ int main()
     descendTree(rt, i, count);
     assert(count > 20);
 
-    // Make sure inserting a type with unknown parents fails with non-zero
+    // Make sure inserting a type with unknown parents fails with null
     Root r;
     r->setId("squigglymuff");
     r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
-    assert(i.addChild(r) != 0);
+    assert(i.addChild(r) == 0);
 
     assert(!i.hasClass("squigglymuff"));
 
     r->setId("squigglymuff");
     r->setParents(std::list<std::string>(1, "root_operation"));
-    assert(i.addChild(r) == 0);
+    assert(i.addChild(r) != 0);
 
     assert(i.hasClass("squigglymuff"));
 
@@ -161,7 +161,7 @@ int main()
     // Make sure installing a child of root still fails.
     r->setId("squigglymuff");
     r->setParents(std::list<std::string>(1, "root"));
-    assert(i.addChild(r) != 0);
+    assert(i.addChild(r) == 0);
 
     assert(!i.hasClass("root"));
     assert(!i.hasClass("root_entity"));

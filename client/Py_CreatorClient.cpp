@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_CreatorClient.cpp,v 1.34 2007-07-30 18:12:50 alriddoch Exp $
+// $Id: Py_CreatorClient.cpp,v 1.35 2007-11-26 02:57:05 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -199,7 +199,7 @@ static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyList_Append(list, PyString_FromString(self->m_mind->getType().c_str()));
+        PyList_Append(list, PyString_FromString(self->m_mind->getType()->name().c_str()));
         return list;
     }
     if (strcmp(name, "map") == 0) {

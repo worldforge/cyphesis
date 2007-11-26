@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Worldtest.cpp,v 1.25 2007-08-01 15:21:06 alriddoch Exp $
+// $Id: Worldtest.cpp,v 1.26 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -31,6 +31,9 @@ using Atlas::Message::ListType;
 int main()
 {
     World e("0", 0);
+    TypeNode type;
+    type.name() = "world";
+    e.setType(&type);
 
     IGEntityExerciser<World> ee(e);
 

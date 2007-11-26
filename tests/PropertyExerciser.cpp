@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.6 2007-01-14 21:55:23 alriddoch Exp $
+// $Id: PropertyExerciser.cpp,v 1.7 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
@@ -82,9 +82,9 @@ PropertyExerciser::PropertyExerciser()
     string_values.push_back("pwu3dc5012cw*/-+3+Q£%$\"q%2");
 
     // Add all the standard class names to the string values list
-    const RootDict & allTypes = Inheritance::instance().getAllObjects();
-    RootDict::const_iterator J = allTypes.begin();
-    RootDict::const_iterator Jend = allTypes.end();
+    const TypeNodeDict & allTypes = Inheritance::instance().getAllObjects();
+    TypeNodeDict::const_iterator J = allTypes.begin();
+    TypeNodeDict::const_iterator Jend = allTypes.end();
     for (; J != Jend; ++J) {
         string_values.push_back(J->first);
     }

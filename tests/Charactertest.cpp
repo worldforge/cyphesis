@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Charactertest.cpp,v 1.11 2007-01-03 22:48:03 alriddoch Exp $
+// $Id: Charactertest.cpp,v 1.12 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -35,6 +35,9 @@ int main(int argc, char ** argv)
     init_python_api();
 
     Character e("1", 1);
+    TypeNode type;
+    type.name() = "character";
+    e.setType(&type);
 
     IGEntityExerciser<Character> ee(e);
 

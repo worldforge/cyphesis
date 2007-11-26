@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.216 2007-07-30 18:12:52 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.217 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -100,18 +100,19 @@ void WorldRouter::updateTime(int sec, int usec)
 /// The Entity representing the world is implicity constructed.
 /// Currently the world entity is included in the perceptives list,
 /// but I am not clear why. Need to look into why.
-WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId))
+WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
+                                                  consts::rootWorldIntId))
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     m_initTime = tv.tv_sec;
     updateTime(tv.tv_sec, tv.tv_usec);
     m_gameWorld.incRef();
-    m_gameWorld.setType("world");
+    EntityFactory::init(*this);
+    m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
-    EntityFactory::init(*this);
 }
 
 /// \brief Destructor for the world object.
@@ -606,7 +607,7 @@ Entity * WorldRouter::findByType(const std::string & type)
 {
     EntityDict::const_iterator Iend = m_eobjects.end();
     for(EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
-        if (I->second->getType() == type) {
+        if (I->second->getType()->name() == type) {
             return I->second;
         }
     }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.99 2007-11-20 18:32:50 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.100 2007-11-26 02:57:05 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -39,6 +39,8 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
+
+const TypeNode * MemMap::m_entity_type = 0;
 
 MemEntity * MemMap::addEntity(MemEntity * entity)
 {
@@ -69,9 +71,12 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
     if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         const std::list<std::string> & parents = ent->getParents();
         if (!parents.empty()) {
-            if (entity->getType() == "entity") {
-                entity->setType(parents.front());
-            } else if (entity->getType() != parents.front()) {
+            if (entity->getType() == m_entity_type) {
+                const TypeNode * type = Inheritance::instance().getType(parents.front());
+                if (type != 0) {
+                    entity->setType(type);
+                }
+            } else if (entity->getType()->name() != parents.front()) {
                 debug(std::cout << "Attempting to mutate " << entity->getType()
                                 << " into " << parents.front()
                                 << std::endl << std::flush;);
@@ -119,6 +124,7 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
     assert(m_entities.find(int_id) == m_entities.end());
 
     MemEntity * entity = new MemEntity(id, int_id);
+    entity->setType(m_entity_type);
 
     readEntity(entity, ent);
 
@@ -127,6 +133,10 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
 
 MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
 {
+    if (m_entity_type == 0) {
+        m_entity_type = Inheritance::instance().getType("game_entity");
+        assert(m_entity_type != 0);
+    }
 }
 
 void MemMap::sendLooks(OpVector & res)
@@ -153,6 +163,7 @@ MemEntity * MemMap::addId(const std::string & id, long int_id)
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
     MemEntity * entity = new MemEntity(id, int_id);
+    entity->setType(m_entity_type);
     return addEntity(entity);
 }
 
@@ -315,7 +326,7 @@ MemEntityVector MemMap::findByType(const std::string & what)
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
         MemEntity * item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
-        if (item->isVisible() && item->getType() == what) {
+        if (item->isVisible() && item->getType()->name() == what) {
             res.push_back(I->second);
         }
     }
@@ -362,7 +373,7 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius,
             log(ERROR, "Weird entity in memory");
             continue;
         }
-        if (!item->isVisible() || item->getType() != what) {
+        if (!item->isVisible() || item->getType()->name() != what) {
             continue;
         }
         if (squareDistance(loc.pos(), item->m_location.pos()) < square_range) {
@@ -393,7 +404,7 @@ void MemMap::check(const double & time)
         MemEntity * me = m_checkIterator->second;
         assert(me != 0);
         if (!me->isVisible() && ((time - me->lastSeen()) > 600) && (me->m_contains.empty())) {
-            debug(std::cout << me->getId() << "|" << me->getType()
+            debug(std::cout << me->getId() << "|" << me->getType()->name()
                       << " is a waste of space" << std::endl << std::flush;);
             MemEntityDict::const_iterator J = m_checkIterator;
             long next = -1;
@@ -417,7 +428,7 @@ void MemMap::check(const double & time)
             // attribute of its its parent.
             me->decRef();
         } else {
-            debug(std::cout << me->getId() << "|" << me->getType() << "|"
+            debug(std::cout << me->getId() << "|" << me->getType()->name() << "|"
                             << me->lastSeen() << "|" << me->isVisible()
                             << " is fine" << std::endl << std::flush;);
             ++m_checkIterator;

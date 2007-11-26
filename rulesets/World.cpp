@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.107 2007-07-29 21:23:43 alriddoch Exp $
+// $Id: World.cpp,v 1.108 2007-11-26 02:57:06 alriddoch Exp $
 
 #include "World.h"
 
@@ -151,7 +151,7 @@ void World::EatOperation(const Operation & op, OpVector & res)
         return;
     }
    
-    const std::string & from_type = from->getType();
+    const TypeNode * from_type = from->getType();
     if (Inheritance::instance().isTypeOf(from_type, "plant")) {
         if (material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);
