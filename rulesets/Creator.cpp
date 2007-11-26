@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.79 2007-07-29 03:33:34 alriddoch Exp $
+// $Id: Creator.cpp,v 1.80 2007-11-26 15:06:33 alriddoch Exp $
 
 #include "Creator.h"
 
@@ -117,11 +117,11 @@ void Creator::externalOperation(const Operation & op)
     debug( std::cout << "Creator::externalOperation("
                      << op->getParents().front() << ")" << std::endl
                      << std::flush;);
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
+    if (op->isDefaultTo()) {
         debug( std::cout << "Creator handling op normally" << std::endl
                          << std::flush;);
         Creator_parent::externalOperation(op);
-    } else if (op->getTo() == getId() && !op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
+    } else if (op->getTo() == getId() && op->isDefaultFutureSeconds()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;
         callOperation(op, lres);

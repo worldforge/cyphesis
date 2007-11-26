@@ -1,5 +1,9 @@
 2007-11-26  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Creator.cpp: Clean up some attribute checks.
+
+2007-11-26  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.cpp, common/inheritance.h: Introduce a type
 	  node class as a carrier for all information, including default
 	  values for a type.
@@ -17339,4 +17343,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1975 2007-11-26 02:57:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1976 2007-11-26 15:06:32 alriddoch Exp $
