@@ -24,9 +24,8 @@ from math import *
 
 #'Breakfast' goal is type of 'eating'.
 
-# Heights are all 0 for now, as uclient doesn't differentiate
-# Once clients and servers can handle terrain properlly, then we
-# can start thinking in more ernest about heights
+# Heights are all 0 for now, as entity positions will be adjusted to terrain
+# height.
 settlement_height=0
 forest_height=0
 graveyard_height=0
@@ -35,7 +34,6 @@ graveyard_height=0
 hall_pos=(5,3,settlement_height)
 forest_pos=(-20,-60,settlement_height)
 
-village_pos=(150,150,22)
 pig_sty_pos=(8,8,settlement_height)
 butcher_stall_pos=(155,140,settlement_height)
 butcher_pos=(153,142,settlement_height)
@@ -268,41 +266,41 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('boundary',type='boundary',pos=(-500,-321,-20),bbox=[2,642,300],mode="fixed")
-    m.make('boundary',type='boundary',pos=(-500,-321,-20),bbox=[821,2,300],mode="fixed")
-    m.make('boundary',type='boundary',pos=(-500, 320,-20),bbox=[821,2,300],mode="fixed")
-    m.make('boundary',type='boundary',pos=( 320,-321,-20),bbox=[2,642,300],mode="fixed")
+    m.make('boundary',pos=(-500,-321,-20),bbox=[2,642,300],mode="fixed")
+    m.make('boundary',pos=(-500,-321,-20),bbox=[821,2,300],mode="fixed")
+    m.make('boundary',pos=(-500, 320,-20),bbox=[821,2,300],mode="fixed")
+    m.make('boundary',pos=( 320,-321,-20),bbox=[2,642,300],mode="fixed")
 
-    m.make('fir',type='fir',pos=(-10,-0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-    m.make('fir',type='fir',pos=(-0,-10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-    m.make('fir',type='fir',pos=(0,10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-    m.make('fir',type='fir',pos=(10,0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(-10,-0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(-0,-10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(0,10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(10,0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
 
     path_area={'points' : [ [-26,-62], [-36,-31], [-26,-14], [2,-1], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ], 'layer' : 7}
-    m.make('path to village',type='path',pos=(10, 20,settlement_height), area=path_area,bbox=[-38,-62,0,169,154,1])
+    m.make('path', name='path to village',pos=(10, 20,settlement_height), area=path_area,bbox=[-38,-62,0,169,154,1])
 
-    m.make('tower',type='tower',pos=(210,210,5))
-    m.make('gallows',type='gallows',pos=(185,175,5))
+    m.make('tower',pos=(210,210,5))
+    m.make('gallows',pos=(185,175,5))
 
-    m.make('house3',type='house3',pos=(158,150,22),orientation=directions[1])
-    m.make('house3',type='house3',pos=(158,158,22),orientation=directions[4])
-    m.make('house3',type='house3',pos=(150,158,22),orientation=directions[0])
-    m.make('house3',type='house3',pos=(142,158,22),orientation=directions[7])
-    m.make('house3',type='house3',pos=(142,150,22),orientation=directions[3])
-    m.make('house3',type='house3',pos=(142,142,22),orientation=directions[6])
-    m.make('house3',type='house3',pos=(150,125,22),orientation=directions[2])
-    m.make('house3',type='house3',pos=(171,142,22),orientation=directions[5])
+    m.make('house3',pos=(158,150,22),orientation=directions[1])
+    m.make('house3',pos=(158,158,22),orientation=directions[4])
+    m.make('house3',pos=(150,158,22),orientation=directions[0])
+    m.make('house3',pos=(142,158,22),orientation=directions[7])
+    m.make('house3',pos=(142,150,22),orientation=directions[3])
+    m.make('house3',pos=(142,142,22),orientation=directions[6])
+    m.make('house3',pos=(150,125,22),orientation=directions[2])
+    m.make('house3',pos=(171,142,22),orientation=directions[5])
 
     carrotfield_points = [ [0,0], [0,20], [20,20], [20,0] ] # this is so these values can be reused as an argument in plantfield as well as in 'points' in the m.make command
-    carrotfield = m.make('field',type='ploughed_field',pos=(120,170,30),status=1.0,area={'points' : carrotfield_points, 'layer' : 8}, bbox=[20,20,0]) # this makes a carrot field storing its identity in carrotfield
+    carrotfield = m.make('ploughed_field', name='field',pos=(120,170,30),status=1.0,area={'points' : carrotfield_points, 'layer' : 8}, bbox=[20,20,0]) # this makes a carrot field storing its identity in carrotfield
     turnipfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
-    turnipfield = m.make('field',type='ploughed_field',pos=(142,170,30),status=1.0,area={'points' : turnipfield_points, 'layer' : 8}, bbox=[20,20,0])
+    turnipfield = m.make('ploughed_field', name='field',pos=(142,170,30),status=1.0,area={'points' : turnipfield_points, 'layer' : 8}, bbox=[20,20,0])
 
     plantfield(m,'carrot',carrotfield,carrotfield_points)# calls the plantfield funtion with (the entity to be planted, the identity of the field to be planted in, the distance between the furrows, the distance between the plants along the furrows, the points of the corners of the field)
     plantfield(m,'turnip',turnipfield,turnipfield_points)
 
     village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]], 'layer':7 }
-    m.make('village_square', pos=(150, 150, 22), type='path', area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
+    m.make('path', name='village_square', pos=(150, 150, 22), area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
 
     chickens=[]
     xbase = uniform(140,160)
@@ -310,7 +308,7 @@ def default(mapeditor):
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
-        d=m.make('chicken', type='chicken', pos=(xpos, ypos, settlement_height))
+        d=m.make('chicken', pos=(xpos, ypos, settlement_height))
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
@@ -321,80 +319,80 @@ def default(mapeditor):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
-        d=m.make('fish', type='fish', pos=(xpos, ypos, zpos))
+        d=m.make('fish', pos=(xpos, ypos, zpos))
         fish.append(d)
     
-    # m.make('sherwood',type='forest',pos=(-50, 10,settlement_height),bbox=[40,40,40])
+    # m.make('forest', name='sherwood',pos=(-50, 10,settlement_height),bbox=[40,40,40])
 
-    m.make('jetty',type='jetty',pos=(-22,-48,0))
-    m.make('boat',type='boat',pos=(-22,-56,0),mode="floating")
+    m.make('jetty',pos=(-22,-48,0))
+    m.make('boat',pos=(-22,-56,0),mode="floating")
 
 # a camp near the origin
 
-    #cfire=m.make('campfire',type='campfire',pos=(0,4,settlement_height))
-    #m.make('fire',type='fire',pos=(0.7,0.7,0),parent=cfire.id)
-    #m.make('tent',type='tent',pos=(-1,8,settlement_height),bbox=[2.5,2.5,3])
-    #m.make('lumber',type='lumber',pos=(-1,3,settlement_height))
-    #m.make('lumber',type='lumber',pos=(-1,2.5,settlement_height))
+    #cfire=m.make('campfire',pos=(0,4,settlement_height))
+    #m.make('fire',pos=(0.7,0.7,0),parent=cfire.id)
+    #m.make('tent',pos=(-1,8,settlement_height),bbox=[2.5,2.5,3])
+    #m.make('lumber',pos=(-1,3,settlement_height))
+    #m.make('lumber',pos=(-1,2.5,settlement_height))
 
-    # hall=m.make('hall',type='hall',pos=hall_pos)
+    # hall=m.make('hall',pos=hall_pos)
 
     # Fire in the centre of the hall
-    # cfire=m.make('campfire',type='campfire',pos=(6,6,settlement_height),
+    # cfire=m.make('campfire',pos=(6,6,settlement_height),
                                             # parent=hall.id)
-    # m.make('fire',type='fire',pos=(0.7,0.7,0),parent=cfire.id)
+    # m.make('fire',pos=(0.7,0.7,0),parent=cfire.id)
 
-    cfire=m.make('campfire',type='campfire',pos=(3,9,settlement_height))
-    m.make('fire',type='fire',pos=(0,0,0),parent=cfire.id)
+    cfire=m.make('campfire',pos=(3,9,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
 
-    cfire=m.make('campfire',type='campfire',pos=(11,1,settlement_height))
-    m.make('fire',type='fire',pos=(0,0,0),parent=cfire.id)
+    cfire=m.make('campfire',pos=(11,1,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
 
     for i in range(0, 20):
-        m.make('lumber',type='lumber',pos=(uniform(-200,0),uniform(-200,0),settlement_height))
+        m.make('lumber',pos=(uniform(-200,0),uniform(-200,0),settlement_height))
 
     for i in forests:
         for j in range(0, i[1]):
-            m.make(i[0],type=i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
+            m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
 
-    m.make('weather',type='weather',desc='object that describes the weather',
+    m.make('weather',desc='object that describes the weather',
            pos=(0,1,0), rain=0.0)
 
 #   bones all over the place
     for i in range(0, 10):
         xpos = uniform(-200,200)
         ypos = uniform(-200,200)
-        m.make('skull', type='skull', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('pelvis', type='pelvis', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('arm', type='arm', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('thigh', type='thigh', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('shin', type='shin', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('ribcage', type='ribcage', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('skull', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('pelvis', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('arm', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('thigh', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('shin', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('ribcage', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
 
 #   the lych, who makes bones into skeletons
-    lych=m.make('lych', type='lych', pos=(-21, -89, settlement_height))
+    lych=m.make('lych', pos=(-21, -89, settlement_height))
     m.learn(lych,lych_goals)
     m.know(lych,lych_knowledge)
     m.tell_importance(lych,il.assemble,'>',il.patrol)
 
 #   animals
-    piglet = m.make('pig', type='pig', pos=(-3,-1,settlement_height))
+    piglet = m.make('pig', pos=(-3,-1,settlement_height))
     m.learn(piglet,pig_goals)
 
-    wolf = m.make('wolf', type='wolf', pos=(90,-90,settlement_height))
+    wolf = m.make('wolf', pos=(90,-90,settlement_height))
     m.learn(wolf,wolf_goals)
     m.know(wolf,wolf_knowledge)
     m.tell_importance(wolf,il.forage,'>',il.hunt)
     m.tell_importance(wolf,il.forage,'>',il.patrol)
     m.tell_importance(wolf,il.hunt,'>',il.patrol)
 
-    crab = m.make('crab', type='crab', pos=(-90,90,settlement_height))
+    crab = m.make('crab', pos=(-90,90,settlement_height))
     m.learn(crab,crab_goals)
 
-    skeleton = m.make('skeleton', type='skeleton', pos=(-38,-25,settlement_height))
+    skeleton = m.make('skeleton', pos=(-38,-25,settlement_height))
     m.learn(skeleton,skeleton_goals)
 
-    squirrel = m.make('squirrel', type='squirrel', desc='test squirrel',
+    squirrel = m.make('squirrel', desc='test squirrel',
                     pos=(-32,-15,settlement_height))
     m.know(squirrel,sknowledge)
     m.learn(squirrel,squirrel_goals)
@@ -405,13 +403,13 @@ def default(mapeditor):
 
     # An NPC settler
     settler=m.make('settler',pos=(1,1,0), sex='male')
-    axe=m.make('axe',type='axe',pos=(0,0,0),parent=settler.id)
+    axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
 
     # An NPC forester
-    settler=m.make('forester',type='settler',pos=(0, 12, 0), sex='male')
+    settler=m.make('settler', name='forester',pos=(0, 12, 0), sex='male')
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
     m.know(settler,[('forest','location',(30,30,0))])
@@ -419,12 +417,12 @@ def default(mapeditor):
 
     home1_pos=(90,-90,settlement_height)
     
-    stall=m.make('Market Stall',type='stall',pos=butcher_stall_pos, orientation=directions[5])
-    m.make('wall',type='wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+    stall=m.make('stall', name='Market Stall',pos=butcher_stall_pos, orientation=directions[5])
+    m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     # An NPC Butcher
-    butcher=m.make('Ulad Bargan',type='settler',desc='the butcher',
+    butcher=m.make('settler', name='Ulad Bargan',desc='the butcher',
                    pos=butcher_pos,age=probability.fertility_age,sex='male')
     m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
@@ -435,7 +433,7 @@ def default(mapeditor):
     m.know(butcher,bprices)
 
     
-    cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
+    cleaver=m.make('cleaver', desc='cleaver for cutting meat',
                    place='market', pos=(0, 0, 0), parent=butcher.id)
     m.own(butcher,cleaver)
     m.own(butcher, stall)
@@ -443,15 +441,15 @@ def default(mapeditor):
     m.learn(butcher,(il.sell,"sell_trade('ham', 'market')"))
     coins=[]
     for i in range(0, 60):
-        coins.append(m.make('coin',type='coin',pos=(0,0,0),parent=butcher.id))
+        coins.append(m.make('coin',pos=(0,0,0),parent=butcher.id))
     m.own(butcher,coins)
     
 # 	clothing-merchant
-    stall = m.make('Tailor Stall', type='stall', pos=tailor_stall_pos, orientation=directions[7])
-    m.make('wall',type='wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+    stall = m.make('stall', name='Tailor Stall', pos=tailor_stall_pos, orientation=directions[7])
+    m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
-    tailor=m.make('Bok Forgo',type='merchant',desc='the tailor',
+    tailor=m.make('merchant', name='Bok Forgo',desc='the tailor',
                   pos=tailor_pos,age=probability.fertility_age,sex='male')
     m.learn(tailor,(il.help,"add_help(['Get your clothes here.','Everything to keep you looking your best is here.'])"))
     
@@ -468,16 +466,16 @@ def default(mapeditor):
         gty = garment_types[randint(0, len(garment_types)-1)]
         gsty = garment_styles[randint(0, len(garment_styles)-1)]
         gname = '%s %s' % (gsty, gty)
-        clothes.append(m.make(gname,type=gty,pos=(0, uniform(-0.7, 0.7), 0), parent=stall.id))
+        clothes.append(m.make(gty,name=gname,pos=(0, uniform(-0.7, 0.7), 0), parent=stall.id))
 
     m.own(tailor, clothes)
 
 # 	tool-merchant
-    stall = m.make('Tool Stall', type='stall', pos=tool_stall_pos, orientation=directions[2])
-    m.make('wall',type='wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',type='wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+    stall = m.make('stall', name='Tool Stall', pos=tool_stall_pos, orientation=directions[2])
+    m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+    m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
-    tmerchant=m.make('Blackun Decker',type='merchant',desc='the tool merchant',
+    tmerchant=m.make('merchant', name='Blackun Decker',desc='the tool merchant',
                  pos=tool_merchant_pos,age=probability.fertility_age,sex='male')
     m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.','Everything a settler needs is available at great prices.'])"))
 
@@ -493,15 +491,15 @@ def default(mapeditor):
     
     for i in range(0, 20):
         tty = tooltypes[randint(0,len(tooltypes)-1)]
-        tools.append(m.make(tty,type=tty,pos=(uniform(-0.7, 0.7),uniform(-0.5,0.5),0.6),parent=stall.id,orientation=directions[randint(0,7)]))
+        tools.append(m.make(tty,pos=(uniform(-0.7, 0.7),uniform(-0.5,0.5),0.6),parent=stall.id,orientation=directions[randint(0,7)]))
     
     m.own(tmerchant,tools)
 
     home2_pos=(80,80,settlement_height)
-    merchant=m.make('Dyfed Searae',type='merchant',desc='the pig merchant',
+    merchant=m.make('merchant', name='Dyfed Searae',desc='the pig merchant',
                     pos=pig_sty_pos,age=probability.fertility_age,
                     sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
-    sty=m.make('sty',type='sty',pos=pig_sty_pos)
+    sty=m.make('sty',pos=pig_sty_pos)
     m.know(merchant,mknowledge)
     m.know(merchant,area)
     m.know(merchant,mprices)
@@ -515,11 +513,11 @@ def default(mapeditor):
     m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'],['I would like to buy a pig', 'Pehaps I will buy one later'])"))
     piglets=[]
     for i in range(0, 6):
-        piglets.append(m.make('pig',type='pig',pos=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
+        piglets.append(m.make('pig',pos=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
     m.learn(piglets,pig_goals)
     m.own(merchant,piglets)
 
-    marshall=m.make('Gorun Iksa',type='marshall',desc='the duke\'s marshall',
+    marshall=m.make('marshall', name='Gorun Iksa',desc='the duke\'s marshall',
                     pos=(14,12,settlement_height), sex='male')
     m.know(marshall, [('deed','price','50')])
     m.know(marshall, area)
@@ -534,19 +532,19 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('Vonaa Barile',type='mercenary',pos=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
-    bow=m.make('bow',type='bow',pos=(0,0,0), parent=warrior.id)
+    warrior=m.make('mercenary', name='Vonaa Barile',pos=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
-        arrow=m.make('arrow',type='arrow',pos=(0,0,0), parent=warrior.id)
+        arrow=m.make('arrow',pos=(0,0,0), parent=warrior.id)
         m.own(warrior,arrow)
     warriors.append(warrior)
 
-    warrior=m.make('Lile Birloc', type='mercenary',pos=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
-    bow=m.make('bow',type='bow',pos=(0,0,0), parent=warrior.id)
+    warrior=m.make('mercenary', name='Lile Birloc',pos=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
-        arrow=m.make('arrow',type='arrow',pos=(0,0,0), parent=warrior.id)
+        arrow=m.make('arrow',pos=(0,0,0), parent=warrior.id)
         m.own(warrior,arrow)
     warriors.append(warrior)
 
@@ -563,27 +561,27 @@ def default(mapeditor):
 
     # Goblins
 
-    cfire=m.make('campfire',type='campfire',pos=(100,-50,settlement_height))
-    m.make('fire',type='fire',pos=(0,0,0),parent=cfire.id)
+    cfire=m.make('campfire',pos=(100,-50,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
 
-    cfire=m.make('campfire',type='campfire',pos=(90,-50,settlement_height))
-    m.make('fire',type='fire',pos=(0,0,0),parent=cfire.id)
+    cfire=m.make('campfire',pos=(90,-50,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
 
     for i in range(10, 350, 5):
         direction=Vector3D(sin(radians(i)) * uniform(0,2), cos(radians(i)) * uniform(0,2), 10).unit_vector()
         orient=Quaternion(Vector3D(0,0,1), direction)
-        m.make('stake',type='stake',pos=(100 + 14 * sin(radians(i)), -50 + 16 * cos(radians(i)), -1), bbox=[-0.5,-0.5,0,0.5,0.5,5 + uniform(0,2)], orientation=orient.as_list(), mass=2000, mode="relative")
+        m.make('stake',pos=(100 + 14 * sin(radians(i)), -50 + 16 * cos(radians(i)), -1), bbox=[-0.5,-0.5,0,0.5,0.5,5 + uniform(0,2)], orientation=orient.as_list(), mass=2000, mode="relative")
         
     camp_area_points=[]
     for i in range(10, 350, 17):
         camp_area_points.append([14 * sin(radians(i)), 16 * cos(radians(i))])
     camp_area={'points': camp_area_points, 'layer':7 }
-    m.make('camp_area', pos=camp_pos, type='path', area=camp_area, bbox=[-14, -16, 0, 14, 16, 1])
+    m.make('path', name='camp_area', pos=camp_pos, area=camp_area, bbox=[-14, -16, 0, 14, 16, 1])
 
     goblin_guards=[]
-    goblin=m.make('goblin', type='goblin', pos=(102, -33, settlement_height))
+    goblin=m.make('goblin', pos=(102, -33, settlement_height))
     goblin_guards.append(goblin)
-    goblin=m.make('goblin', type='goblin', pos=(98, -33, settlement_height))
+    goblin=m.make('goblin', pos=(98, -33, settlement_height))
     goblin_guards.append(goblin)
 
     m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
@@ -594,7 +592,7 @@ def default(mapeditor):
     for i in range(0, 10):
         xpos = xbase + uniform(-20,20)
         ypos = ybase + uniform(-20,20)
-        d=m.make('deer', type='deer', pos=(xpos, ypos, settlement_height))
+        d=m.make('deer', pos=(xpos, ypos, settlement_height))
         deers.append(d)
     m.learn(deers,deer_goals)
     
@@ -644,7 +642,7 @@ def plantfield(m,plant,field,field_points,furrowdist=1,plantspacing=1):
             # calculate the plant position by adding the right number of increments to the furrowstart
             plantpos = [furrowstart[0] + plantincr[0]*j, furrowstart[1] + plantincr[1]*j, furrowstart[2] + plantincr[2]*j]
             # make the plant (note that the plant is randomly facing any direction)
-            m.make(plant,type=plant,pos=plantpos,orientation=directions[randint(0,7)], parent = field.id)
+            m.make(plant,pos=plantpos,orientation=directions[randint(0,7)], parent = field.id)
 
 def add_pigs(mapeditor):
 #   general things
@@ -656,7 +654,7 @@ def add_pigs(mapeditor):
 
     piglets=[]
     for i in range(0, 6):
-        piglets.append(m.make('pig',type='pig',pos=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
+        piglets.append(m.make('pig',pos=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
     m.learn(piglets,pig_goals)
     m.own(merchant,piglets)
 
@@ -665,55 +663,55 @@ def add_memtest(mapeditor):
 
     m=editor(mapeditor)
 
-    m.make('settler',type='settler',pos=(0,5,5))
-    m.make('oak',type='oak',pos=(5,0,5))
+    m.make('settler',pos=(0,5,5))
+    m.make('oak',pos=(5,0,5))
 
 def add_village(mapeditor):
 #   general things
 
     m=editor(mapeditor)
 
-    m.make('tower',type='tower',pos=(210,210,5))
-    m.make('gallows',type='gallows',pos=(185,175,5))
+    m.make('tower',pos=(210,210,5))
+    m.make('gallows',pos=(185,175,5))
 
-    m.make('house3',type='house3',pos=(158,150,22),orientation=directions[1])
-    m.make('house3',type='house3',pos=(158,158,22),orientation=directions[4])
-    m.make('house3',type='house3',pos=(150,158,22),orientation=directions[0])
-    m.make('house3',type='house3',pos=(142,158,22),orientation=directions[7])
-    m.make('house3',type='house3',pos=(142,150,22),orientation=directions[3])
-    m.make('house3',type='house3',pos=(142,142,22),orientation=directions[6])
-    m.make('house3',type='house3',pos=(150,142,22),orientation=directions[2])
-    m.make('house3',type='house3',pos=(158,142,22),orientation=directions[5])
+    m.make('house3',pos=(158,150,22),orientation=directions[1])
+    m.make('house3',pos=(158,158,22),orientation=directions[4])
+    m.make('house3',pos=(150,158,22),orientation=directions[0])
+    m.make('house3',pos=(142,158,22),orientation=directions[7])
+    m.make('house3',pos=(142,150,22),orientation=directions[3])
+    m.make('house3',pos=(142,142,22),orientation=directions[6])
+    m.make('house3',pos=(150,142,22),orientation=directions[2])
+    m.make('house3',pos=(158,142,22),orientation=directions[5])
 
-    m.make('field',type='ploughed_field',pos=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
-    m.make('field',type='ploughed_field',pos=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
+    m.make('ploughed_field', name='field',pos=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
+    m.make('ploughed_field', name='field',pos=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
 
 def test_skeleton(mapeditor):
 #   general things
 
     m=editor(mapeditor)
 
-    skeleton = m.make('skeleton', type='skeleton', pos=(-38,-25,settlement_height))
+    skeleton = m.make('skeleton', pos=(-38,-25,settlement_height))
     m.learn(skeleton,skeleton_goals)
 
 def test_pig(mapeditor):
 #   general things
 
     m=editor(mapeditor)
-    pig = m.make('pig', type='pig', pos=(3,3,settlement_height))
+    pig = m.make('pig', pos=(3,3,settlement_height))
     m.learn(pig,pig_goals)
-    m.make('acorn', type='acorn', pos=(4,4,settlement_height))
+    m.make('acorn', pos=(4,4,settlement_height))
 
 def test_browse(mapeditor):
 #   test if browsing works
     
     m=editor(mapeditor)
-    deer = m.make('deer', type='deer', pos=(5, 0, settlement_height))
+    deer = m.make('deer', pos=(5, 0, settlement_height))
     m.learn(deer, (il.browse,"browse('fir', 0.8)"))
-    m.make('fir',type='fir',pos=(-10,-0,settlement_height))
-    m.make('fir',type='fir',pos=(-0,-10,settlement_height))
-    m.make('fir',type='fir',pos=(0,10,settlement_height))
-    m.make('fir',type='fir',pos=(10,0,settlement_height))
+    m.make('fir',pos=(-10,-0,settlement_height))
+    m.make('fir',pos=(-0,-10,settlement_height))
+    m.make('fir',pos=(0,10,settlement_height))
+    m.make('fir',pos=(10,0,settlement_height))
     
 def test_forest(mapeditor):
 #   test if browsing works
@@ -721,7 +719,7 @@ def test_forest(mapeditor):
     m=editor(mapeditor)
     for i in forests:
         for j in range(0, i[1]):
-            m.make(i[0],type=i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
+            m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
 
    
 def modify_terrain(mapeditor):
@@ -795,32 +793,32 @@ def test_coll(mapeditor):
 
     m=editor(mapeditor)
 
-    sty=m.make('sty',type='sty',pos=pig_sty_pos,status=1.0,bbox=[5,5,3], orientation=directions[0])
+    sty=m.make('sty',pos=pig_sty_pos,status=1.0,bbox=[5,5,3], orientation=directions[0])
 
 def test_butcher(mapeditor):
 
     m=editor(mapeditor)
 
-    butcher=m.make('Ulad Bargan',type='butcher',desc='the butcher',
+    butcher=m.make('butcher', name='Ulad Bargan',desc='the butcher',
                  pos=(3,3,0),age=probability.fertility_age,sex='male')
-    cleaver=m.make('cleaver', type='cleaver', desc='cleaver for cutting meat',
+    cleaver=m.make('cleaver', desc='cleaver for cutting meat',
                    place='market', pos=(3,2.5,settlement_height))
     m.own(butcher,cleaver)
     m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'cut', 'ham', 'market')"))
-    piglet = m.make('pig', type='pig', pos=(3,2,0))
+    piglet = m.make('pig', pos=(3,2,0))
 
 def test_pig(mapeditor):
 
     m=editor(mapeditor)
 
-    piglet = m.make('pig', type='pig', pos=(-3,-1,settlement_height))
+    piglet = m.make('pig', pos=(-3,-1,settlement_height))
     m.learn(piglet,pig_goals)
 
 def test_settler(mapeditor):
 
     m=editor(mapeditor)
     settler=m.make('settler',pos=(1,1,0), sex='male')
-    axe=m.make('axe',type='axe',pos=(0,0,0),parent=settler.id)
+    axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
@@ -830,7 +828,7 @@ def test_forester(mapeditor):
 
     m=editor(mapeditor)
     # An NPC forester
-    settler=m.make('forester',type='settler',pos=(0, 12, 0), sex='male')
+    settler=m.make('settler', name='forester',pos=(0, 12, 0), sex='male')
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
     m.know(settler,[('forest','location',(30,30,0))])
@@ -841,21 +839,21 @@ def test_warrior(mapeditor):
 
     m=editor(mapeditor)
     # An NPC warrior
-    warrior=m.make('warrior',type='warrior',pos=(0, 12, 0), sex='male')
+    warrior=m.make('warrior',pos=(0, 12, 0), sex='male')
     m.learn(warrior,(il.trade,"gather(['loaf', 'axe'])"))
 
 def test_chicken(mapeditor):
 
     m=editor(mapeditor)
 
-    chuck = m.make('chicken', type='chicken', pos=(-3,-1,settlement_height))
+    chuck = m.make('chicken', pos=(-3,-1,settlement_height))
     m.learn(chuck,chicken_goals)
 
 def test_path(mapeditor):
 
     m=editor(mapeditor)
     path_area={'points' : [ [2,0], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2,-1] ], 'layer' : 7}
-    m.make('path to village',type='path',pos=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])
+    m.make('path', name='path to village',pos=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])
    
     
 lych2_knowledge=[('w1','location',(-140,110,graveyard_height)),
@@ -869,26 +867,26 @@ lych2_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm
 def test_graveyard(mapeditor):
     m = editor(mapeditor)
     
-    m.make('mausoleum of harrington', type='mausoleum', pos=mausoleum_pos, orientation=directions[0])
-    m.make('steps',type='wall',pos=(-160,100,graveyard_height),bbox=[4,4,2])
+    m.make('mausoleum', name='mausoleum of harrington', pos=mausoleum_pos, orientation=directions[0])
+    m.make('wall', name='steps',pos=(-160,100,graveyard_height),bbox=[4,4,2])
     
     graveyard_area={'points': [[-10, -8], [15, -11], [13,23], [-8, 8]], 'layer':7 }
-    m.make('graveyard', pos=(-150, 110, graveyard_height), type='path', area=graveyard_area, bbox=[-10, -11,0, 15, 23, 1])
+    m.make('path', name='graveyard', pos=(-150, 110, graveyard_height), area=graveyard_area, bbox=[-10, -11,0, 15, 23, 1])
     
     path_area={'points' : [ [2, 0], [20, 20], [45, 60], [65, 70], [83, 40], [106, -15], [105, -12], [82, 36], [66, 67], [44, 57], [18, 16], [0, -4]], 'layer' : 7}
-    m.make('path to graveyard',type='path',pos=(-150, 110, graveyard_height), area=path_area,bbox=[100,8,1])
+    m.make('path', name='path to graveyard',pos=(-150, 110, graveyard_height), area=path_area,bbox=[100,8,1])
     gravestone_styles = ['simple', 'rounded', 'stylish']
         
 
-    m.make('gravestone1', type='gravestone', pos=(-145, 107, graveyard_height), orientation=directions[1], style = gravestone_styles[randint(0,2)])
-    m.make('gravestone2', type='gravestone', pos=(-147, 104, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
-    m.make('gravestone3', type='gravestone', pos=(-148, 109, graveyard_height), orientation=directions[3], style = gravestone_styles[randint(0,2)])
-    m.make('gravestone4', type='gravestone', pos=(-150, 117, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
-    m.make('gravestone5', type='gravestone', pos=(-143, 111, graveyard_height), orientation=directions[4], style = gravestone_styles[randint(0,2)])
-    m.make('gravestone6', type='gravestone', pos=(-149, 110, graveyard_height), orientation=directions[3], style = gravestone_styles[randint(0,2)])
-    m.make('gravestone7', type='gravestone', pos=(-147, 116, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone1', pos=(-145, 107, graveyard_height), orientation=directions[1], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone2', pos=(-147, 104, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone3', pos=(-148, 109, graveyard_height), orientation=directions[3], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone4', pos=(-150, 117, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone5', pos=(-143, 111, graveyard_height), orientation=directions[4], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone6', pos=(-149, 110, graveyard_height), orientation=directions[3], style = gravestone_styles[randint(0,2)])
+    m.make('gravestone', name='gravestone7', pos=(-147, 116, graveyard_height), orientation=directions[2], style = gravestone_styles[randint(0,2)])
     
-    lych=m.make('lych', type='lych', pos=(-140, 130, graveyard_height))
+    lych=m.make('lych', pos=(-140, 130, graveyard_height))
     m.learn(lych,lych2_goals)
     m.know(lych,lych2_knowledge)
     m.tell_importance(lych,il.assemble,'>',il.patrol)
@@ -896,14 +894,14 @@ def test_graveyard(mapeditor):
 def test_fire(mapeditor):
     m = editor(mapeditor)
 
-    cfire=m.make('campfire',type='campfire',pos=(3,9,settlement_height))
-    # m.make('fire',type='fire',pos=(0,0,0),parent=cfire.id)
+    cfire=m.make('campfire',pos=(3,9,settlement_height))
+    # m.make('fire',pos=(0,0,0),parent=cfire.id)
 
 def test_own(mapeditor):
 
     m=editor(mapeditor)
     settler=m.make('settler',pos=(1,1,0), sex='male')
-    axe=m.make('axe',type='axe',pos=(0,0,0),parent=settler.id)
+    axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
 
 
@@ -911,9 +909,9 @@ def test_goblins(mapeditor):
 
     m=editor(mapeditor)
     goblin_guards=[]
-    goblin=m.make('goblin', type='goblin', pos=(102, -33, settlement_height))
+    goblin=m.make('goblin', pos=(102, -33, settlement_height))
     goblin_guards.append(goblin)
-    goblin=m.make('goblin', type='goblin', pos=(98, -33, settlement_height))
+    goblin=m.make('goblin', pos=(98, -33, settlement_height))
     goblin_guards.append(goblin)
 
     m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
@@ -922,9 +920,9 @@ def test_deer(mapeditor):
 
     m=editor(mapeditor)
 
-    d=m.make('deer', type='deer', pos=(5, 0, settlement_height))
+    d=m.make('deer', pos=(5, 0, settlement_height))
     m.learn(d,deer_goals)
-    # m.make('settler', type='settler', pos=(0, 0, settlement_height))
+    # m.make('settler', pos=(0, 0, settlement_height))
 
 def add_castle(mapeditor):
     
@@ -978,47 +976,47 @@ def add_castle(mapeditor):
     # put the keep on the peninsula
     
     # the foundation looks ugly in sear and does not work in ember, so I left it out. coordinates are probably wrong
-    #m.make('castle_foundation', type='castle_foundation', pos=(-415, -70, settlement_height))
+    #m.make('castle_foundation', pos=(-415, -70, settlement_height))
 
     # castle wall
-    m.make('castle_outer_wall', type='castle_outer_wall', pos=(-427.639, -30.2512, settlement_height), orientation=[0,0,0.7,0.7])
+    m.make('castle_outer_wall', pos=(-427.639, -30.2512, settlement_height), orientation=[0,0,0.7,0.7])
 
     # gateway 
-    m.make('gateway', type='gateway', pos=(-380.753, -31.7661, settlement_height), orientation=[0,0,0.7,0.7])
+    m.make('gateway', pos=(-380.753, -31.7661, settlement_height), orientation=[0,0,0.7,0.7])
 
     # the keep
-    m.make('keep', type='keep', pos=(-459.231, -79.5895, settlement_height), orientation=[0,0,0,-1])
+    m.make('keep', pos=(-459.231, -79.5895, settlement_height), orientation=[0,0,0,-1])
 
     # top right tower
-    m.make('bailey1', type='bailey1', pos=(-477.46, 41.1592, settlement_height), orientation=[0,0,-1,0.02])
+    m.make('bailey1', pos=(-477.46, 41.1592, settlement_height), orientation=[0,0,-1,0.02])
 
     # bottom left tower
-    m.make('bailey2', type='bailey2', pos=(-387.035, -98.432, settlement_height), orientation=[0,0,-0.7,-0.7])
+    m.make('bailey2', pos=(-387.035, -98.432, settlement_height), orientation=[0,0,-0.7,-0.7])
 
     # bottom right tower
-    m.make('don_jon', type='don_jon', pos=(-382.011, 43.1961, settlement_height), orientation=[0,0,0,-1])
+    m.make('don_jon', pos=(-382.011, 43.1961, settlement_height), orientation=[0,0,0,-1])
 
     # armory
-    m.make('armory', type='armory', pos=(-426.873, 45.0104, settlement_height), orientation=[0,0,-0.7,-0.7])
+    m.make('armory', pos=(-426.873, 45.0104, settlement_height), orientation=[0,0,-0.7,-0.7])
     
     # castle_house 1
-    m.make('castle_house1', type='castle_house', pos=(-405.272, -80.1143, settlement_height), orientation=[0,0,0,1])
+    m.make('castle_house', name='castle_house1', pos=(-405.272, -80.1143, settlement_height), orientation=[0,0,0,1])
 
     # castle_house 2
-    m.make('castle_house2', type='castle_house', pos=(-425.233, -79.6156, settlement_height), orientation=[0,0,0,1])
+    m.make('castle_house', name='castle_house2', pos=(-425.233, -79.6156, settlement_height), orientation=[0,0,0,1])
     
     # castle_house 3
-    m.make('castle_house3', type='castle_house', pos=(-454.223, -50.518, settlement_height), orientation=[0,0,0.5,-0.868])
+    m.make('castle_house', name='castle_house3', pos=(-454.223, -50.518, settlement_height), orientation=[0,0,0.5,-0.868])
 
     # castle_house 4
-    m.make('castle_house4', type='castle_house', pos=(-456.11, -26.3539, settlement_height), orientation=[0,0,0.7,-0.7])
+    m.make('castle_house', name='castle_house4', pos=(-456.11, -26.3539, settlement_height), orientation=[0,0,0.7,-0.7])
 
     # inn 
-    m.make('inn', type='inn', pos=(-454.429, 12.7224, settlement_height), orientation=[0,0,0.28,1])
+    m.make('inn', pos=(-454.429, 12.7224, settlement_height), orientation=[0,0,0.28,1])
 
     castle_path_area = {'points': [[-400, -34], [-372, -34], [-350, -42], [-300, -56], [-215, -42], [-180, -5], [-125, -6], [-86, -4],
         [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
-    m.make('path to castle',type='path',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
+    m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
  
 
 def kill_world(mapeditor):
@@ -1032,18 +1030,18 @@ def test_attachment(mapeditor):
 
     m=editor(mapeditor)
 
-    m.make('axe', type='axe', attachment=23)
+    m.make('axe', attachment=23)
 
 def make_shirt(mapeditor):
 
     m=editor(mapeditor)
 
-    m.make('shirt', type='shirt', worn='chest', attachment=23, mass=2)
-    m.make('acorn', type='acorn', worn='chest', pos=(1,1,1), attachment=23, mass=2)
+    m.make('shirt', worn='chest', attachment=23, mass=2)
+    m.make('acorn', worn='chest', pos=(1,1,1), attachment=23, mass=2)
 
 def test_decays(mapeditor):
 
     m=editor(mapeditor)
 
-    m.make('axe', type='axe', decays='oak')
+    m.make('axe', decays='oak')
 

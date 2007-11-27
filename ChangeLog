@@ -1,3 +1,11 @@
+2007-11-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/basic/editor.py: Make the default argument of m.make
+	  the type, and name optional.
+
+	* rulesets/mason/define_world.py: Swap the type to the default
+	  argument of m.make, and strip the names off most entities.
+
 2007-11-26  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Creator.cpp: Clean up some attribute checks.
@@ -17343,4 +17351,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1976 2007-11-26 15:06:32 alriddoch Exp $
+$Id: ChangeLog,v 1.1977 2007-11-27 18:59:33 alriddoch Exp $
