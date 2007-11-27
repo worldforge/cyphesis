@@ -1,5 +1,11 @@
 2007-11-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Move a bunch of random animals
+	  to the end of world initialisation, so they don't create physics
+	  load before everything else is set up.
+
+2007-11-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/editor.py: Make the default argument of m.make
 	  the type, and name optional.
 
@@ -17351,4 +17357,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1977 2007-11-27 18:59:33 alriddoch Exp $
+$Id: ChangeLog,v 1.1978 2007-11-27 19:21:35 alriddoch Exp $

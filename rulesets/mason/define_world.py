@@ -302,26 +302,6 @@ def default(mapeditor):
     village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]], 'layer':7 }
     m.make('path', name='village_square', pos=(150, 150, 22), area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
 
-    chickens=[]
-    xbase = uniform(140,160)
-    ybase = uniform(130,150)
-    for i in range(0, 10):
-        xpos = xbase + uniform(-5,5)
-        ypos = ybase + uniform(-5,5)
-        d=m.make('chicken', pos=(xpos, ypos, settlement_height))
-        chickens.append(d)
-    m.learn(chickens,chicken_goals)
-
-    fish=[]
-    xbase = lake_pos[0]
-    ybase = lake_pos[1]
-    for i in range(0, 10):
-        xpos = xbase + uniform(-5,5)
-        ypos = ybase + uniform(-5,5)
-        zpos = uniform(-4,0)
-        d=m.make('fish', pos=(xpos, ypos, zpos))
-        fish.append(d)
-    
     # m.make('forest', name='sherwood',pos=(-50, 10,settlement_height),bbox=[40,40,40])
 
     m.make('jetty',pos=(-22,-48,0))
@@ -595,6 +575,26 @@ def default(mapeditor):
         d=m.make('deer', pos=(xpos, ypos, settlement_height))
         deers.append(d)
     m.learn(deers,deer_goals)
+    
+    chickens=[]
+    xbase = uniform(140,160)
+    ybase = uniform(130,150)
+    for i in range(0, 10):
+        xpos = xbase + uniform(-5,5)
+        ypos = ybase + uniform(-5,5)
+        d=m.make('chicken', pos=(xpos, ypos, settlement_height))
+        chickens.append(d)
+    m.learn(chickens,chicken_goals)
+
+    fish=[]
+    xbase = lake_pos[0]
+    ybase = lake_pos[1]
+    for i in range(0, 10):
+        xpos = xbase + uniform(-5,5)
+        ypos = ybase + uniform(-5,5)
+        zpos = uniform(-4,0)
+        d=m.make('fish', pos=(xpos, ypos, zpos))
+        fish.append(d)
     
 
     # I am not sure if we need a guard
