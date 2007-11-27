@@ -1,8 +1,3 @@
-Eliminate the difference between PythonMindScript and PythonThingScript.
-
-Can we key admin on TO rather than FROM? Non-admin cannot route talk ops with
-TO.
-
 Modify security in NPCMind so we can do the goals without broadcasting the
 talk ops. Use the TO on the Talk op to determine if this is an admin op,
 so that clients can redirect ops easily. Need to verify that checking
