@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CreatorClient.cpp,v 1.32 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: CreatorClient.cpp,v 1.33 2007-11-28 20:22:42 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -39,9 +39,8 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::smart_dynamic_cast;
 
 CreatorClient::CreatorClient(const std::string & id, long intId,
-                             const std::string & name,
                              ClientConnection &c) :
-                             CharacterClient(id, intId, name, c)
+                             CharacterClient(id, intId, c)
 {
 }
 

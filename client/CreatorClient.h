@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CreatorClient.h,v 1.17 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: CreatorClient.h,v 1.18 2007-11-28 20:22:42 alriddoch Exp $
 
 #ifndef CLIENT_CREATOR_CLIENT_H
 #define CLIENT_CREATOR_CLIENT_H
@@ -29,7 +29,7 @@ class CreatorClient : public CharacterClient {
   private:
     Entity * sendLook(const Operation & op);
   public:
-    CreatorClient(const std::string &, long, const std::string&, ClientConnection&);
+    CreatorClient(const std::string &, long, ClientConnection&);
 
     Entity * make(const Atlas::Objects::Entity::RootEntity &);
     void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);

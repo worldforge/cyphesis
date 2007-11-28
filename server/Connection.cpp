@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.167 2007-07-30 18:12:52 alriddoch Exp $
+// $Id: Connection.cpp,v 1.168 2007-11-28 20:22:43 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -150,10 +150,9 @@ Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
 
             delete character->m_externalMind;
             character->m_externalMind = 0;
-            logEvent(DROP_CHAR, String::compose("%1 - %2 %5 character %3(%4)",
+            logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
                                                 getId(),
                                                 character->getId(),
-                                                character->getName(),
                                                 character->getType(),
                                                 event));
         }
@@ -255,9 +254,8 @@ void Connection::operation(const Operation & op, OpVector & res)
 
         res.push_back(info);
 
-        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character %3(%4)",
+        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
                                             getId(), ig_ent->getId(),
-                                            ig_ent->getName(),
                                             ig_ent->getType()));
     }
     ig_ent->externalOperation(op);

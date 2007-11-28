@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.h,v 1.51 2007-11-23 16:18:18 alriddoch Exp $
+// $Id: BaseMind.h,v 1.52 2007-11-28 20:22:42 alriddoch Exp $
 
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
@@ -40,7 +40,7 @@ class BaseMind : public MemEntity {
     /// \brief World time as far as this mind is aware
     WorldTime m_time;
   public:
-    BaseMind(const std::string &, long, const std::string &);
+    BaseMind(const std::string &, long);
     virtual ~BaseMind();
 
     /// \brief Accessor for the memory map of world entities

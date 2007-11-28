@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.153 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: Account.cpp,v 1.154 2007-11-28 20:22:43 alriddoch Exp $
 
 #include "Account.h"
 
@@ -189,12 +189,11 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
     }
 
-    logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character %4(%5) "
-                                        "by account %6",
+    logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
+                                        "by account %5",
                                         m_connection->getId(),
                                         getId(),
                                         chr->getId(),
-                                        chr->getName(),
                                         chr->getType(),
                                         m_username));
 

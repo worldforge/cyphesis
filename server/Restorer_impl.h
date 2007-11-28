@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer_impl.h,v 1.26 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: Restorer_impl.h,v 1.27 2007-11-28 20:22:43 alriddoch Exp $
 
 #ifndef SERVER_RESTORER_IMPL_H
 #define SERVER_RESTORER_IMPL_H
@@ -36,7 +36,6 @@ template <class T>
 void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
 {
     // dr.readColumn("type", this->m_type);
-    dr.readColumn("name", this->m_name);
     dr.readColumn("px", this->m_location.m_pos.x());
     dr.readColumn("py", this->m_location.m_pos.y());
     dr.readColumn("pz", this->m_location.m_pos.z());

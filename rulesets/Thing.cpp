@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.220 2007-11-23 11:17:25 alriddoch Exp $
+// $Id: Thing.cpp,v 1.221 2007-11-28 20:22:43 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -462,7 +462,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
     // ID and PARENTS are immutable.
     if (!arg->isDefaultName()) {
         // Update the name
-        set_arg->setName(getName());
+        // FIXME How?
     }
     if (!arg->isDefaultContains()) {
         // Update the contains

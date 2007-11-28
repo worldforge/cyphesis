@@ -1,5 +1,18 @@
 2007-11-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/BaseClient.cpp, client/CharacterClient.cpp,
+	  client/CharacterClient.h, client/CreatorClient.cpp,
+	  client/CreatorClient.h, rulesets/BaseMind.cpp, rulesets/BaseMind.h,
+	  rulesets/Character.cpp, rulesets/Entity.cpp, rulesets/Entity.h,
+	  rulesets/MindFactory.cpp, rulesets/MindFactory.h, rulesets/Thing.cpp,
+	  rulesets/World.cpp, server/Account.cpp, server/Connection.cpp,
+	  server/EntityFactory.cpp, server/Persistor.cpp,
+	  server/Persistor_impl.h, server/Restorer_impl.h,
+	  server/WorldRouter.cpp: Remove the hard name attribute, now that
+	  most entities don't set it.
+
+2007-11-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h: Remove an old experimental type class, and clean
 	  up includes.
 
@@ -17367,4 +17380,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1979 2007-11-28 10:56:59 alriddoch Exp $
+$Id: ChangeLog,v 1.1980 2007-11-28 20:22:42 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CharacterClient.cpp,v 1.29 2006-12-26 18:24:25 alriddoch Exp $
+// $Id: CharacterClient.cpp,v 1.30 2007-11-28 20:22:42 alriddoch Exp $
 
 #include "CharacterClient.h"
 
@@ -34,9 +34,8 @@ static const bool debug_flag = false;
 /// @param name The name of the avatar used by this remote agent
 /// @param c The network connection to the server used for communication
 CharacterClient::CharacterClient(const std::string & id, long intId,
-                                 const std::string & name,
                                  ClientConnection & c) :
-                                 BaseMind(id, intId, name), m_connection(c)
+                                 BaseMind(id, intId), m_connection(c)
 {
 }
 

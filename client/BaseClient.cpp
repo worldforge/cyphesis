@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.cpp,v 1.43 2007-09-04 10:51:27 alriddoch Exp $
+// $Id: BaseClient.cpp,v 1.44 2007-11-28 20:22:42 alriddoch Exp $
 
 #include "BaseClient.h"
 
@@ -136,7 +136,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
         log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id));
     }
 
-    CreatorClient * obj = new CreatorClient(id, intId, type, m_connection);
+    CreatorClient * obj = new CreatorClient(id, intId, m_connection);
     obj->merge(ent->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to
     // set it to.

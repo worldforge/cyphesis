@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MindFactory.cpp,v 1.14 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: MindFactory.cpp,v 1.15 2007-11-28 20:22:42 alriddoch Exp $
 
 #include <Python.h>
 
@@ -36,10 +36,9 @@ MindFactory::MindFactory()
 }
 
 BaseMind * MindFactory::newMind(const std::string & id, long intId,
-                                const std::string & name,
                                 const TypeNode * const type)
 {
-    BaseMind * mind = new BaseMind(id, intId, name);
+    BaseMind * mind = new BaseMind(id, intId);
     mind->setType(type);
     std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
     MindFactory::mindmap_t::const_iterator I = m_mindTypes.find(type->name());

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MindFactory.h,v 1.10 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: MindFactory.h,v 1.11 2007-11-28 20:22:43 alriddoch Exp $
 
 #ifndef RULESETS_MIND_FACTORY_H
 #define RULESETS_MIND_FACTORY_H
@@ -50,7 +50,6 @@ class MindFactory {
         }
     }
     BaseMind * newMind(const std::string &, long,
-                       const std::string &,
                        const TypeNode * const );
 
     void addMindType(const std::string & type, const std::string & mind) {

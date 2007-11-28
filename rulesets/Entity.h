@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.89 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: Entity.h,v 1.90 2007-11-28 20:22:42 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -84,8 +84,6 @@ class Entity : public BaseEntity {
     double m_status;
     /// Class of which this is an instance
     const TypeNode * m_type;
-    /// Entities name
-    std::string m_name;
     /// Mass in kg
     double m_mass;
     /// Is this perceptive
@@ -151,8 +149,6 @@ class Entity : public BaseEntity {
     const int getSeq() const { return m_seq; }
     /// \brief Accessor for status property
     const double getStatus() const { return m_status; }
-    /// \brief Accessor for name property
-    const std::string & getName() const { return m_name; }
     /// \brief Accessor for entity type property
     const TypeNode * getType() const { return m_type; }
     /// \brief Accessor for mass property
@@ -167,11 +163,6 @@ class Entity : public BaseEntity {
     /// \brief Set the value of the status property
     void setStatus(const double s) {
         m_status = s;
-    }
-
-    /// \brief Set the value of the status property
-    void setName(const std::string & n) {
-        m_name = n;
     }
 
     /// \brief Set the value of the entity type property

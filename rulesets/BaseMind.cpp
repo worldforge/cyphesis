@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.107 2007-11-23 16:18:18 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.108 2007-11-28 20:22:42 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -49,12 +49,10 @@ static const bool debug_flag = false;
 /// @param id String identifier
 /// @param intId Integer identifier
 /// @param body_name The name attribute of the body this mind controls
-BaseMind::BaseMind(const std::string & id, long intId,
-                   const std::string & body_name) : MemEntity(id, intId),
-                                                    m_map(m_script),
-                                                    m_isAwake(true)
+BaseMind::BaseMind(const std::string & id, long intId) : MemEntity(id, intId),
+                                                         m_map(m_script),
+                                                         m_isAwake(true)
 {
-    m_name = body_name;
     setVisible(true);
     m_map.addEntity(this);
 }

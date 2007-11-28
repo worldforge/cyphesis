@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor_impl.h,v 1.35 2007-07-05 17:51:41 alriddoch Exp $
+// $Id: Persistor_impl.h,v 1.36 2007-11-28 20:22:43 alriddoch Exp $
 
 #ifndef SERVER_PERSISTOR_IMPL_H
 #define SERVER_PERSISTOR_IMPL_H
@@ -74,10 +74,6 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
     if (t.getUpdateFlags() & a_status) {
         if (!empty) { q << ", "; } else { empty = false; }
         q << "status = " << t.getStatus();
-    }
-    if (t.getUpdateFlags() & a_name) {
-        if (!empty) { q << ", "; } else { empty = false; }
-        q << "name = '" << t.getName() << "'";
     }
     if (t.getUpdateFlags() & a_mass) {
         if (!empty) { q << ", "; } else { empty = false; }
@@ -164,7 +160,6 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
         q << "'f', 0, 0, 0, 0, 0, 0, ";
     }
     q << t.getStatus() << cs
-      << sq << t.getName() << sq << cs
       << t.getMass() << cs
       << t.getSeq() << cs;
 

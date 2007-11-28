@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.303 2007-11-26 02:57:05 alriddoch Exp $
+// $Id: Character.cpp,v 1.304 2007-11-28 20:22:42 alriddoch Exp $
 
 #include "Character.h"
 
@@ -324,8 +324,7 @@ void Character::SetupOperation(const Operation & op, OpVector & res)
         // AI minds, so  we need to handle them somehow differently.
         // Perhaps the Restore op (different from Setup op) is needed?
 
-        m_mind = MindFactory::instance()->newMind(getId(), getIntId(),
-                                                  m_name, m_type);
+        m_mind = MindFactory::instance()->newMind(getId(), getIntId(), m_type);
 
         Operation s(op.copy());
         Anonymous setup_arg;

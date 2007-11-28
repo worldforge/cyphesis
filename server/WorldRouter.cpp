@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.218 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.219 2007-11-28 20:22:43 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -589,10 +589,13 @@ bool WorldRouter::idle(int sec, int usec)
 /// instance with this name was not found.
 Entity * WorldRouter::findByName(const std::string & name)
 {
+    Element name_attr;
     EntityDict::const_iterator Iend = m_eobjects.end();
     for (EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
-        if (I->second->getName() == name) {
-            return I->second;
+        if (I->second->getAttr("name", name_attr)) {
+            if (name_attr == name) {
+                return I->second;
+            }
         }
     }
     return NULL;

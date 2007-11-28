@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.128 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.129 2007-11-28 20:22:43 alriddoch Exp $
 
 #include <Python.h>
 
@@ -142,7 +142,7 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     if (thing == 0) {
         return 0;
     }
-    debug( std::cout << "[" << type << " " << thing->getName() << "]"
+    debug( std::cout << "[" << type << "]"
                      << std::endl << std::flush;);
     thing->setType(factory->m_type);
     // Sort out python object
@@ -360,6 +360,7 @@ int EntityFactory::populateTaskFactory(const std::string & class_name,
 {
     // assert(class_name == class_desc->getId());
 
+    return 0;
 }
 
 bool EntityFactory::isTask(const std::string & class_name)

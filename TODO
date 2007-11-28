@@ -1,3 +1,5 @@
+Sort out NAME property that is dynamic and efficient.
+
 Modify security in NPCMind so we can do the goals without broadcasting the
 talk ops. Use the TO on the Talk op to determine if this is an admin op,
 so that clients can redirect ops easily. Need to verify that checking

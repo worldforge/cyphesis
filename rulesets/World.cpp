@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.108 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: World.cpp,v 1.109 2007-11-28 20:22:43 alriddoch Exp $
 
 #include "World.h"
 
@@ -172,6 +172,7 @@ void World::EatOperation(const Operation & op, OpVector & res)
 
 void World::LookOperation(const Operation & op, OpVector & res)
 {
+    assert(m_location.m_loc == 0);
     // Let the worldrouter know we have been looked at.
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
@@ -215,10 +216,12 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
 void World::MoveOperation(const Operation & op, OpVector & res)
 {
+    assert(m_location.m_loc == 0);
     // Can't move the world.
 }
 
 void World::DeleteOperation(const Operation & op, OpVector & res)
 {
+    assert(m_location.m_loc == 0);
     // Deleting has no effect.
 }
