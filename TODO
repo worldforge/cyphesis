@@ -1,3 +1,6 @@
+Remove mass and status hard properties. If status is set to -1, the logic
+to then delete the entity can be in some property code, and it will still work.
+
 Sort out NAME property that is dynamic and efficient.
 
 Modify security in NPCMind so we can do the goals without broadcasting the

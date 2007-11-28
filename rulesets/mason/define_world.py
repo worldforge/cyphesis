@@ -247,7 +247,7 @@ def default(mapeditor):
 
     surfaces = [
         {'name': 'rock', 'pattern': 'fill' },
-        {'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold': 2.0,
+        {'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold': -2.0,
                                                        'highThreshold': 1.5 } },
         {'name': 'grass', 'pattern': 'grass', 'params': {'lowThreshold': 1.0,
                                                          'highThreshold': 80.0,

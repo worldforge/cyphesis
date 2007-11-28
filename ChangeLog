@@ -1,5 +1,10 @@
 2007-11-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/mason/define_world.py: Fix the low threshold of the
+	  sandy beach shader to be below water level.
+
+2007-11-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/basic/editor.py: Don't pre-pend the name on sentences
 	  sent to program the AIs.
 
@@ -17393,4 +17398,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1981 2007-11-28 20:51:43 alriddoch Exp $
+$Id: ChangeLog,v 1.1982 2007-11-28 21:28:47 alriddoch Exp $
