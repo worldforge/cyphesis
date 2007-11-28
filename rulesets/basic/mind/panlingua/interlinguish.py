@@ -267,9 +267,10 @@ def convert_english_to_interlinguish(me, say_entity):
         say=say_entity.say
     except AttributeError:
         return 0
-    name_begin=me.name+", "
-    if say[:len(name_begin)]==name_begin:
-        say=say[len(name_begin):]
+    if hasattr(me,'name'):
+        name_begin=me.name+", "
+        if say[:len(name_begin)]==name_begin:
+            say=say[len(name_begin):]
     match=importance_pattern.match(say)
     if match:
         sub=word2node.get(string.lower(match.group(1)))

@@ -153,7 +153,6 @@ class NPCMind(BaseMind):
             if op.to != self.id:
                 self.transfers.append((op.from_, obj.id))
             if obj.type[0]=="coin" and op.from_ != self.id:
-                print "money transer ", obj.location.parent.id, self.id, op.from_, op.to
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
     #replaced with dynamically added add_extinguish_fire -goal
@@ -192,7 +191,7 @@ class NPCMind(BaseMind):
             goal=mind.goals.common.misc_goal.transaction(object, op.to, price)
             who=self.map.get(op.to)
             self.goals.insert(0,goal)
-            return Operation("talk", Entity(say=who.name+" one "+object+" will be "+str(price)+" coins")) + self.face(who)
+            return Operation("talk", Entity(say=self.thing_name(who)+" one "+object+" will be "+str(price)+" coins")) + self.face(who)
     def interlinguish_desire_verb3_operation(self, op, say):
         """Handle a sentence of the form 'I would like to ...'"""
         object=say[2:]
@@ -433,6 +432,11 @@ class NPCMind(BaseMind):
                     return cmp=='>'
         return 1
     ########## things we own
+    def thing_name(self,thing):
+        if hasattr(thing, 'name'):
+            return thing.name
+        return thing.type[0]
+    ########## things we own
     def add_thing(self,thing):
         """I own this thing"""
         #CHEAT!: this feature not yet supported
@@ -440,13 +444,11 @@ class NPCMind(BaseMind):
 ##             thing.location=self.get_knowledge("location",thing.place)
         log.debug(3,str(self)+" "+str(thing)+" before add_thing: "+str(self.things))
         #thought about owing thing
-        desc="I own %s." % thing.name
+        name = self.thing_name(thing)
+        desc="I own %s." % name
         what=thing.as_entity()
         ent = Entity(description=desc, what=what)
         self.send(Operation("thought",ent))
-        name=thing.name
-        if not name or name=='':
-            name=thing.type[0]
         dictlist.add_value(self.things,name,thing)
         log.debug(3,"\tafter: "+str(self.things))
     def find_thing(self, thing):
@@ -454,7 +456,7 @@ class NPCMind(BaseMind):
             #return found list or empty list
             return self.things.get(thing,[])
         found=[]
-        for t in self.things.get(thing.name,[]):
+        for t in self.things.get(self.thing_name(thing),[]):
             if t==thing: found.append(t)
         return found
     def remove_thing(self, thing):

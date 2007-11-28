@@ -1,5 +1,18 @@
 2007-11-28  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/basic/editor.py: Don't pre-pend the name on sentences
+	  sent to program the AIs.
+
+	* rulesets/basic/mind/NPCMind.py: Replace all the places where
+	  the name of an entity is taken with a function which checks
+	  for the name, but then uses the type if it is not present.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Fix the code
+	  that strips the name from the beginning of sentences so that
+	  it checks first.
+
+2007-11-28  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/BaseClient.cpp, client/CharacterClient.cpp,
 	  client/CharacterClient.h, client/CreatorClient.cpp,
 	  client/CreatorClient.h, rulesets/BaseMind.cpp, rulesets/BaseMind.h,
@@ -17380,4 +17393,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1980 2007-11-28 20:22:42 alriddoch Exp $
+$Id: ChangeLog,v 1.1981 2007-11-28 20:51:43 alriddoch Exp $

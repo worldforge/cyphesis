@@ -78,7 +78,7 @@ class editor:
         self._say(target,'learn',goal[0],goal[1])
     #Interlinguish
     def _tell(self,target,string,interlinguish):
-        es=Entity(say=target.name+", "+string)
+        es=Entity(say=string)
         self.m.send(Operation("talk",es,to=target))
     def tell_importance(self,target,sub,cmp,obj):
         s,i=il.importance(sub,cmp,obj)
