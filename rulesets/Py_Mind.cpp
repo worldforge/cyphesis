@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.40 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.41 2007-11-28 10:57:00 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -28,6 +28,8 @@
 #include "Py_WorldTime.h"
 #include "PythonWrapper.h"
 #include "BaseMind.h"
+
+#include "common/inheritance.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.217 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.218 2007-11-28 10:57:00 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -32,6 +32,7 @@
 #include "common/system.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
+#include "common/inheritance.h"
 
 #include "common/Setup.h"
 

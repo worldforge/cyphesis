@@ -1,3 +1,13 @@
+2007-11-28  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/Entity.h: Remove an old experimental type class, and clean
+	  up includes.
+
+	* client/Py_CreatorClient.cpp, rulesets/MemMap.cpp,
+	  rulesets/MindFactory.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Stackable.cpp,
+	  server/WorldRouter.cpp: Add necessary includes.
+
 2007-11-27  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Move a bunch of random animals
@@ -17357,4 +17367,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1978 2007-11-27 19:21:35 alriddoch Exp $
+$Id: ChangeLog,v 1.1979 2007-11-28 10:56:59 alriddoch Exp $

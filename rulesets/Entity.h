@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.88 2007-11-26 02:57:05 alriddoch Exp $
+// $Id: Entity.h,v 1.89 2007-11-28 10:57:00 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -26,32 +26,11 @@
 
 #include "common/BaseEntity.h"
 #include "common/BaseWorld.h"
-#include "common/inheritance.h"
 
 #include <sigc++/connection.h>
 
 #include <iostream>
 #include <cassert>
-
-// Work in progress, this will be a way of inferring type relationships,
-// and will replace the simple string type currently used.
-
-/// \brief Experimental class in development to handle the inheritance tree
-class EntityType {
-  protected:
-    std::string m_typeName;
-    EntityType * const m_parent;
-  public:
-    explicit EntityType(const std::string & n,
-                        EntityType * const parent = 0) : m_typeName(n),
-                                                         m_parent(parent) {
-
-    }
-
-    bool isA(const EntityType & other) {
-        return false;
-    }
-};
 
 class Motion;
 class Script;

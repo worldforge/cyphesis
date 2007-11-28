@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MindFactory.cpp,v 1.13 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: MindFactory.cpp,v 1.14 2007-11-28 10:57:00 alriddoch Exp $
 
 #include <Python.h>
 
@@ -25,6 +25,7 @@
 #include "Python_Script_Utils.h"
 
 #include "common/debug.h"
+#include "common/inheritance.h"
 
 static const bool debug_flag = false;
 

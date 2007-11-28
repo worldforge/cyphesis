@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.61 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.62 2007-11-28 10:57:00 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -32,6 +32,7 @@
 
 #include "common/log.h"
 #include "common/Property.h"
+#include "common/inheritance.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

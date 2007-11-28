@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.100 2007-11-26 02:57:05 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.101 2007-11-28 10:57:00 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -26,6 +26,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/inheritance.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

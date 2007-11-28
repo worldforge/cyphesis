@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_CreatorClient.cpp,v 1.35 2007-11-26 02:57:05 alriddoch Exp $
+// $Id: Py_CreatorClient.cpp,v 1.36 2007-11-28 10:57:00 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -31,6 +31,7 @@
 #include "rulesets/Py_Map.h"
 
 #include "common/debug.h"
+#include "common/inheritance.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
