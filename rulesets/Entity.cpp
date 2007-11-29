@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.136 2007-11-28 20:22:42 alriddoch Exp $
+// $Id: Entity.cpp,v 1.137 2007-11-29 01:13:27 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -81,7 +81,6 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
                                          m_mass(-1), m_perceptive(false),
                                          m_update_flags(0)
 {
-    m_properties["status"] = new Property<double>(m_status, a_status);
     m_properties["id"] = new IdProperty(getId());
     m_properties["mass"] = new Property<double>(m_mass, a_mass);
     m_properties["contains"] = new ContainsProperty(m_contains);

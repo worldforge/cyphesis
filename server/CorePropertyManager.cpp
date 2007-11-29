@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.22 2007-07-26 10:43:32 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.23 2007-11-29 01:13:27 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -25,6 +25,7 @@
 #include "rulesets/LineProperty.h"
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/SolidProperty.h"
+#include "rulesets/StatusProperty.h"
 #include "rulesets/Entity.h"
 
 #include "common/Eat.h"
@@ -224,6 +225,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["decays"] = new ActivePropertyBuilder<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyBuilder<OutfitProperty>;
     m_propertyFactories["solid"] = new EntityPropertyBuilder<SolidProperty>;
+    m_propertyFactories["status"] = new EntityPropertyBuilder<StatusProperty>;
     m_propertyFactories["biomass"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
     m_propertyFactories["burn_speed"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
     m_propertyFactories["transient"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);

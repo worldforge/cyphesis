@@ -1,3 +1,22 @@
+2007-11-29  Al Riddoch  <alriddoch@zepler.org>
+
+	* rulesets/StatusProperty.cpp, rulesets/StatusProperty.h: 
+	  Add a dynamic property that deletes the entity when it goes
+	  below zero, removing the need for the hard coded property
+	  of the same name.
+
+	* rulesets/Makefile.am: Add the new property to the build.
+
+	* server/CorePropertyManager.cpp: Add the new property to the system.
+
+	* rulesets/mason/define_world.py: Add a test for setting the status
+	  to below zero.
+
+	* rulesets/Entity.cpp: Remove the hard property for status.
+
+	* rulesets/Thing.cpp: Remove the code that checks the hard
+	  status property to see if the entity needs to be deleted.
+
 2007-11-28  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/mason/define_world.py: Fix the low threshold of the
@@ -17398,4 +17417,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1982 2007-11-28 21:28:47 alriddoch Exp $
+$Id: ChangeLog,v 1.1983 2007-11-29 01:13:27 alriddoch Exp $

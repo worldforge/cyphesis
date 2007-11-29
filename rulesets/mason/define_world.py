@@ -1026,6 +1026,13 @@ def kill_world(mapeditor):
     world=m.look()
     m.set(world.id, status=-1)
 
+def kill_tree(mapeditor):
+
+    m=editor(mapeditor)
+
+    tree=m.make('oak')
+    m.set(tree.id, status=-1)
+
 def test_attachment(mapeditor):
 
     m=editor(mapeditor)

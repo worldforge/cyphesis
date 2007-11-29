@@ -1,3 +1,5 @@
+Remove the remnants of status, now the real stuff has gone.
+
 Remove mass and status hard properties. If status is set to -1, the logic
 to then delete the entity can be in some property code, and it will still work.
 
