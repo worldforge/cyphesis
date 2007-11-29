@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Linetest.cpp,v 1.9 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: Linetest.cpp,v 1.10 2007-11-29 01:30:04 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -44,9 +44,7 @@ int main()
     ee.runOperations();
 
     std::set<std::string> attrNames;
-    attrNames.insert("status");
     attrNames.insert("id");
-    attrNames.insert("name");
     attrNames.insert("mass");
     attrNames.insert("bbox");
     attrNames.insert("contains");

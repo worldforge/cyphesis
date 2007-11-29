@@ -1,5 +1,17 @@
 2007-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Areatest.cpp, tests/Charactertest.cpp, tests/Creatortest.cpp,
+	  tests/Entitytest.cpp, tests/Foodtest.cpp, tests/Linetest.cpp,
+	  tests/Planttest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Thingtest.cpp,
+	  tests/Worldtest.cpp: Remove the STATUS and NAME properties
+	  from those expected to be on all entities.
+
+	* tests/ThingupdatePropertiestest.cpp: Comment out all the code
+	  as it depends on the NAME property being hard coded.
+
+2007-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/StatusProperty.cpp, rulesets/StatusProperty.h: 
 	  Add a dynamic property that deletes the entity when it goes
 	  below zero, removing the need for the hard coded property
@@ -17417,4 +17429,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1983 2007-11-29 01:13:27 alriddoch Exp $
+$Id: ChangeLog,v 1.1984 2007-11-29 01:30:04 alriddoch Exp $
