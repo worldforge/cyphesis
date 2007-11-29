@@ -1,3 +1,9 @@
+An entity in mind has properties. This is causing it to pickup a status
+property, which in turn causes it to generate operations for the
+world. Every time a mind sees the world with a status of -1, it generates
+an op which tries to delete the world, which bypasses the check
+because it is a different pointer from the real world.
+
 Fix the scripts that think status should still be there.
 
 Remove the remnants of status, now the real stuff has gone.
