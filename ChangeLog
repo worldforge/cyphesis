@@ -1,5 +1,13 @@
 2007-11-29  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Thing.cpp: Provide a more verbose error message about
+	  incorrect updates.
+
+	* rulesets/mason/define_world.py: Make sure the arguments to
+	  the python builtin range() is always an integer.
+
+2007-11-29  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Areatest.cpp, tests/Charactertest.cpp, tests/Creatortest.cpp,
 	  tests/Entitytest.cpp, tests/Foodtest.cpp, tests/Linetest.cpp,
 	  tests/Planttest.cpp, tests/Stackabletest.cpp,
@@ -17429,4 +17437,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1984 2007-11-29 01:30:04 alriddoch Exp $
+$Id: ChangeLog,v 1.1985 2007-11-29 02:37:51 alriddoch Exp $

@@ -626,13 +626,13 @@ def plantfield(m,plant,field,field_points,furrowdist=1,plantspacing=1):
     # the distance along the front of the field pythagoras in three dimensions
     frontfieldist = sqrt(corner2[0]**2 + corner2[1]**2 + corner2[2]**2)
     # the number of furrows is the distance that there is to cover / the distance between each furrow
-    numfurrow = frontfieldist / furrowdist
+    numfurrow = int(frontfieldist / furrowdist)
     # the increase in x,y,z of the start position of each furrow
     furrowincr = [corner2[0]/numfurrow,corner2[1]/numfurrow,corner2[2]/numfurrow]
     # the distance along the side of the field
     sidefieldist = sqrt(corner4[0]**2 + corner4[1]**2 + corner4[2]**2)
     # the number of plants in each furrow
-    numplants = sidefieldist / plantspacing
+    numplants = int(sidefieldist / plantspacing)
     # the increase in x,y,z of the position of the plants along the lenght of the furrow
     plantincr = [corner4[0]/numplants, corner4[1]/numplants, corner4[2]/numplants]
     for i in range(numfurrow):

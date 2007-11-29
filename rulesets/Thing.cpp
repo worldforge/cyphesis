@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.222 2007-11-29 01:13:27 alriddoch Exp $
+// $Id: Thing.cpp,v 1.223 2007-11-29 02:37:51 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -487,8 +487,8 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
                 // Copy the attribute into the Sight(Set()) arg
                 set_arg->setAttr(attr, K->second);
             } else {
-                error(op, "Got update for non-existant attribute or property",
-                      res, getId());
+                error(op, String::compose("Got update for non-existant attribute or property \"%1\"",
+                                          attr), res, getId());
             }
         }
     }
