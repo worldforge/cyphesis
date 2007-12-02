@@ -11,7 +11,7 @@ PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 
-RULESETS_TESTS = Entitytest Planttest \
+RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Structuretest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
                  Containertest Tasktest EntityPropertytest \
@@ -254,6 +254,12 @@ EntityReftest_LDADD = $(top_builddir)/modules/EntityRef.o \
                       $(MATH_LIBS)
 
 # RULESETS_TESTS
+
+LocatedEntitytest_SOURCES = LocatedEntitytest.cpp
+LocatedEntitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
+                          $(top_builddir)/modules/Location.o \
+                          $(top_builddir)/modules/DateTime.o \
+                          $(top_builddir)/common/libcommon.a
 
 Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
 Entitytest_LDADD = $(top_builddir)/modules/Location.o \

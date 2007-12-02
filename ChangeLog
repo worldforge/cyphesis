@@ -1,5 +1,10 @@
 2007-12-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/LocatedEntitytest.cpp: Add full coverage for current code
+	  in LocatedEntity.
+
+2007-12-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.h: Make the attribute interface virtual.
 
 	* rulesets/LocatedEntity.cpp: Add in basic implementatios without
@@ -17455,4 +17460,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1988 2007-12-02 20:53:50 alriddoch Exp $
+$Id: ChangeLog,v 1.1989 2007-12-02 20:54:51 alriddoch Exp $
