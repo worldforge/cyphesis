@@ -1,3 +1,7 @@
+Make sure Location refers only to LocatedEntity.
+Make Entity inherit from LocatedEntity, and remove the functionality that
+is in LocatedEnitty from Entity.
+
 An entity in mind has properties. This is causing it to pickup a status
 property, which in turn causes it to generate operations for the
 world. Every time a mind sees the world with a status of -1, it generates

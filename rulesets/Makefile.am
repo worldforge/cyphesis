@@ -13,7 +13,8 @@ dist_module_DATA = basic/__init__.py \
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 
-librulesetbase_a_SOURCES = Entity.cpp Entity.h \
+librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
+			   Entity.cpp Entity.h \
 			   attributes.h \
 			   EntityProperties.cpp \
 			   AtlasProperties.cpp AtlasProperties.h \
