@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.219 2007-11-28 20:22:43 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.220 2007-12-02 18:30:18 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -241,6 +241,7 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
 {
     debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
                     << std::flush;);
+    assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
     assert(ent->m_location.isValid());
 
@@ -371,6 +372,7 @@ void WorldRouter::delEntity(Entity * ent)
         log(WARNING, "Attempt to delete game world");
         return;
     }
+    assert(ent->getIntId() != 0);
     m_perceptives.erase(ent);
     m_eobjects.erase(ent->getIntId());
     ent->destroy();

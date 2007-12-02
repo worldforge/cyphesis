@@ -1,3 +1,8 @@
+2007-12-02  Al Riddoch  <alriddoch@zepler.org>
+
+	* server/WorldRouter.cpp: Add some checks to make sure the world
+	  state is consistent.
+
 2007-11-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/Thing.cpp: Provide a more verbose error message about
@@ -17437,4 +17442,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1985 2007-11-29 02:37:51 alriddoch Exp $
+$Id: ChangeLog,v 1.1986 2007-12-02 18:30:18 alriddoch Exp $
