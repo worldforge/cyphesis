@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Script.cpp,v 1.15 2007-11-23 16:06:53 alriddoch Exp $
+// $Id: Script.cpp,v 1.16 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "Script.h"
 
@@ -52,7 +52,7 @@ bool Script::operation(const std::string & opname,
 /// used and supported in the mind code.
 /// @param function name of the function to call in the script
 /// @param entity which has triggered this hook
-void Script::hook(const std::string & function, Entity * entity)
+void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
 

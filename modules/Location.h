@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Location.h,v 1.66 2007-07-03 01:22:47 alriddoch Exp $
+// $Id: Location.h,v 1.67 2007-12-02 23:49:05 alriddoch Exp $
 
 #ifndef MODULES_LOCATION_H
 #define MODULES_LOCATION_H
@@ -29,7 +29,7 @@
 
 #include <sigc++/trackable.h>
 
-class Entity;
+class LocatedEntity;
 
 class Location : virtual public sigc::trackable {
   private:
@@ -44,7 +44,7 @@ class Location : virtual public sigc::trackable {
     float m_radius; // Radius of bounding sphere of box
     float m_squareRadius;
   public:
-    Entity * m_loc;
+    LocatedEntity * m_loc;
     Point3D m_pos;   // Coords relative to m_loc entity
     Vector3D m_velocity; // Veclociy vector, relative to m_loc entity.
     Vector3D m_acceleration; // Acceleration vector, relative to m_loc entity.
@@ -54,9 +54,12 @@ class Location : virtual public sigc::trackable {
     BBox m_bBox;
 
     Location();
-    explicit Location(Entity * rf);
-    explicit Location(Entity * rf, const Point3D & crds);
-    explicit Location(Entity * rf, const Point3D & crds, const Vector3D & vel);
+    explicit Location(LocatedEntity * rf);
+    explicit Location(LocatedEntity * rf,
+                      const Point3D & pos);
+    explicit Location(LocatedEntity * rf,
+                      const Point3D & pos,
+                      const Vector3D & velocity);
 
     const float boxSize() const { return m_boxSize; }
     const float squareBoxSize() const { return m_squareBoxSize; }

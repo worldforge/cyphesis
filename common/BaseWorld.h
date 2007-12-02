@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.h,v 1.49 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: BaseWorld.h,v 1.50 2007-12-02 23:49:05 alriddoch Exp $
 
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
@@ -32,6 +32,7 @@
 #include <cassert>
 
 class Entity;
+class LocatedEntity;
 class Task;
 class Character;
 
@@ -132,7 +133,7 @@ class BaseWorld {
     virtual Entity * findByType(const std::string & type) = 0;
 
     /// \brief Provide an adjusted height for the given entity.
-    virtual float constrainHeight(Entity *, const Point3D &,
+    virtual float constrainHeight(LocatedEntity *, const Point3D &,
                                   const std::string &) = 0;
 
     /// \brief Add an entity provided to the list of perceptive entities.

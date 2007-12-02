@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.101 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.102 2007-12-02 23:49:06 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -86,7 +86,7 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
     }
     entity->merge(ent->asMessage());
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        Entity * old_loc = entity->m_location.m_loc;
+        LocatedEntity * old_loc = entity->m_location.m_loc;
         const std::string & new_loc_id = ent->getLoc();
         // Has LOC been changed?
         if (old_loc == 0 || new_loc_id != old_loc->getId()) {
@@ -187,7 +187,7 @@ void MemMap::del(const std::string & id)
 
         // Handling re-parenting is done very similarly to Entity::destroy,
         // but is slightly different as we tolerate LOC being null.
-        Entity * ent_loc = ent->m_location.m_loc;
+        LocatedEntity * ent_loc = ent->m_location.m_loc;
         if (ent_loc != 0) {
             // Remove deleted entity from its parents contains
             ent_loc->m_contains.erase(ent);
@@ -196,10 +196,10 @@ void MemMap::del(const std::string & id)
         ent->m_location.m_loc = 0;
 
         // Add deleted entities children into its parents contains
-        EntitySet::const_iterator K = ent->m_contains.begin();
-        EntitySet::const_iterator Kend = ent->m_contains.end();
+        LocatedEntitySet::const_iterator K = ent->m_contains.begin();
+        LocatedEntitySet::const_iterator Kend = ent->m_contains.end();
         for (; K != Kend; ++K) {
-            Entity * child_ent = *K;
+            LocatedEntity * child_ent = *K;
             child_ent->m_location.m_loc = ent_loc;
             // FIXME adjust pos and:
             // FIXME take account of orientation
@@ -358,14 +358,14 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius,
     }
     return res;
 #else
-    Entity * place = loc.m_loc;
+    LocatedEntity * place = loc.m_loc;
     MemEntity * place_by_id = get(place->getId());
     if (place != place_by_id) {
         log(ERROR, "WTF!");
         return res;
     }
-    EntitySet::const_iterator I = place->m_contains.begin();
-    EntitySet::const_iterator Iend = place->m_contains.end();
+    LocatedEntitySet::const_iterator I = place->m_contains.begin();
+    LocatedEntitySet::const_iterator Iend = place->m_contains.end();
     float square_range = radius * radius;
     for (; I != Iend; ++I) {
         assert(*I != 0);

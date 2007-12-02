@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Script.h,v 1.18 2007-11-23 16:06:53 alriddoch Exp $
+// $Id: Script.h,v 1.19 2007-12-02 23:49:07 alriddoch Exp $
 
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
@@ -27,7 +27,7 @@
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 
-class Entity;
+class LocatedEntity;
 
 /// \brief Base class for script objects attached to entities.
 ///
@@ -40,7 +40,7 @@ class Script {
     virtual bool operation(const std::string & opname,
                            const Atlas::Objects::Operation::RootOperation & op,
                            OpVector & res);
-    virtual void hook(const std::string & function, Entity * entity);
+    virtual void hook(const std::string & function, LocatedEntity * entity);
 };
 
 extern Script noScript;

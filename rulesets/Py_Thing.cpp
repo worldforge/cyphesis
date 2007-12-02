@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.62 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.63 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -37,7 +37,7 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-static PyObject * Entity_as_entity(PyEntity * self)
+static PyObject * Entity_as_entity(PyLocatedEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL) {
@@ -53,6 +53,11 @@ static PyObject * Entity_as_entity(PyEntity * self)
     self->m_entity->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
+
+static PyMethodDef LocatedEntity_methods[] = {
+    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
+    {NULL,              NULL}           /* sentinel */
+};
 
 static PyObject * Entity_send_world(PyEntity * self, PyOperation * op)
 {
@@ -184,6 +189,9 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         PyErr_SetString(PyExc_AttributeError, name);
         return NULL;
     }
+    if (strcmp(name, "id") == 0) {
+        return (PyObject *)PyString_FromString(self->m_entity->getId().c_str());
+    }
     if (strcmp(name, "type") == 0) {
         PyObject * list = PyList_New(0);
         if (list == NULL) {
@@ -210,10 +218,10 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        EntitySet::const_iterator I = self->m_entity->m_contains.begin();
-        EntitySet::const_iterator Iend = self->m_entity->m_contains.end();
+        LocatedEntitySet::const_iterator I = self->m_entity->m_contains.begin();
+        LocatedEntitySet::const_iterator Iend = self->m_entity->m_contains.end();
         for (; I != Iend; ++I) {
-            Entity * child = *I;
+            LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
             if (wrapper == NULL) {
                 Py_DECREF(list);
@@ -338,30 +346,40 @@ PyTypeObject PyEntity_Type = {
         0,                              /*tp_hash*/
 };
 
-PyObject * wrapEntity(Entity * entity)
+PyObject * wrapEntity(LocatedEntity * le)
 {
     PyObject * wrapper;
-    PythonWrapper * pw = dynamic_cast<PythonWrapper *>(entity->script());
+    PythonWrapper * pw = dynamic_cast<PythonWrapper *>(le->script());
     if (pw == 0) {
-        Character * ch_entity = dynamic_cast<Character *>(entity);
-        if (ch_entity != 0) {
-            PyCharacter * pc = newPyCharacter();
-            if (pc == NULL) {
-                return NULL;
-            }
-            pc->m_entity = ch_entity;
-            wrapper = (PyObject *)pc;
+        Entity * entity = dynamic_cast<Entity *>(le);
+        if (entity != 0) {
+          Character * ch_entity = dynamic_cast<Character *>(entity);
+          if (ch_entity != 0) {
+              PyCharacter * pc = newPyCharacter();
+              if (pc == NULL) {
+                  return NULL;
+              }
+              pc->m_entity = ch_entity;
+              wrapper = (PyObject *)pc;
+          } else {
+              PyEntity * pe = newPyEntity();
+              if (pe == NULL) {
+                  return NULL;
+              }
+              pe->m_entity = entity;
+              wrapper = (PyObject *)pe;
+          }
         } else {
-            PyEntity * pe = newPyEntity();
-            if (pe == NULL) {
-                return NULL;
-            }
-            pe->m_entity = entity;
-            wrapper = (PyObject *)pe;
+          PyLocatedEntity * pe = newPyLocatedEntity();
+          if (pe == NULL) {
+              return NULL;
+          }
+          pe->m_entity = le;
+          wrapper = (PyObject *)pe;
         }
-        if (entity->script() == &noScript) {
+        if (le->script() == &noScript) {
             pw = new PythonWrapper(wrapper);
-            entity->setScript(pw);
+            le->setScript(pw);
         } else {
             log(WARNING, "Entity has script of unknown type");
         }
@@ -371,6 +389,18 @@ PyObject * wrapEntity(Entity * entity)
         Py_INCREF(wrapper);
     }
     return wrapper;
+}
+
+PyLocatedEntity * newPyLocatedEntity()
+{
+    PyLocatedEntity * self;
+    self = PyObject_NEW(PyLocatedEntity, &PyEntity_Type);
+    if (self == NULL) {
+        return NULL;
+    }
+    self->Entity_attr = NULL;
+    self->m_methods = LocatedEntity_methods;
+    return self;
 }
 
 PyEntity * newPyEntity()

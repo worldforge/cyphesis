@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.108 2007-11-28 20:22:42 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.109 2007-12-02 23:49:06 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -62,9 +62,9 @@ BaseMind::~BaseMind()
     m_map.m_entities.erase(getIntId());
     // FIXME Remove this once MemMap uses parent refcounting
     m_location.m_loc = 0;
-    debug(std::cout << getId() << ":" << getType() << " flushing mind with "
-                    << m_map.getEntities().size() << " entities in it"
-                    << std::endl << std::flush;);
+    // debug(std::cout << getId() << ":" << getType() << " flushing mind with "
+                    // << m_map.getEntities().size() << " entities in it"
+                    // << std::endl << std::flush;);
     m_map.flush();
 }
 

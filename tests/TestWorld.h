@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TestWorld.h,v 1.7 2007-08-01 01:04:38 alriddoch Exp $
+// $Id: TestWorld.h,v 1.8 2007-12-02 23:49:07 alriddoch Exp $
 
 #ifndef TESTS_TEST_WORLD_H
 #define TESTS_TEST_WORLD_H
@@ -44,8 +44,9 @@ class TestWorld : public BaseWorld {
     virtual void message(const Operation & op, Entity & ent) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual float constrainHeight(Entity*, const Point3D&,
-                                  const std::string&) { return 0.f; }
+    virtual float constrainHeight(LocatedEntity * parent,
+                                  const Point3D & pos,
+                                  const std::string & mode) { return 0.f; }
     virtual void addPerceptive(Entity *) { }
 };
 

@@ -15,16 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.91 2007-12-02 20:53:51 alriddoch Exp $
+// $Id: Entity.h,v 1.92 2007-12-02 23:49:06 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
 
 #include "attributes.h"
+#include "LocatedEntity.h"
 
 #include "modules/Location.h"
 
-#include "common/BaseEntity.h"
 #include "common/BaseWorld.h"
 
 #include <sigc++/connection.h>
@@ -33,9 +33,6 @@
 #include <cassert>
 
 class Motion;
-class Script;
-class PropertyBase;
-class TypeNode;
 
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
@@ -57,76 +54,34 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 /// This is now also intended to be the base for in-game persistance.
 /// It implements the basic types required for persistance.
 /// \ingroup EntityClasses
-class Entity : public BaseEntity {
+class Entity : public LocatedEntity {
   private:
-    static std::set<std::string> m_immutable;
-    static const std::set<std::string> & immutables();
-
-    /// Count of references held by other objects to this entity
-    int m_refCount;
     /// Flag indicating that this entity has been destroyed
     bool m_destroyed;
   protected:
-    /// Script associated with this entity
-    Script * m_script;
     /// Motion behavoir of this entity
     Motion * m_motion;
-    /// Map of non-hardcoded attributes
-    Atlas::Message::MapType m_attributes;
     /// Map of properties
     PropertyDict m_properties;
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
 
-    /// Sequence number
-    int m_seq;
     /// Health/damage coeficient
     double m_status;
-    /// Class of which this is an instance
-    const TypeNode * m_type;
     /// Mass in kg
     double m_mass;
     /// Is this perceptive
     bool m_perceptive;
   public:
-    /// Full details of location
-    Location m_location;
-    /// List of entities which use this as ref
-    EntitySet m_contains;
     /// Flags indicating changes to attributes
     unsigned int m_update_flags;
 
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
 
-    /// \brief Increment the reference count on this entity
-    void incRef() {
-        ++m_refCount;
-    }
-
-    /// \brief Decrement the reference count on this entity
-    void decRef() {
-        if (m_refCount <= 0) {
-            assert(m_refCount == 0);
-            delete this;
-        } else {
-            --m_refCount;
-        }
-    }
-
-    /// \brief Check the reference count on this entity
-    int checkRef() const {
-        return m_refCount;
-    }
-
     /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const {
         return m_destroyed;
-    }
-
-    /// \brief Accessor for pointer to script object
-    Script * script() const {
-        return m_script;
     }
 
     /// \brief Accessor for pointer to motion object
@@ -145,12 +100,8 @@ class Entity : public BaseEntity {
 
     /// \brief Accessor for update flags
     const int getUpdateFlags() const { return m_update_flags; }
-    /// \brief Accessor for sequence number
-    const int getSeq() const { return m_seq; }
     /// \brief Accessor for status property
     const double getStatus() const { return m_status; }
-    /// \brief Accessor for entity type property
-    const TypeNode * getType() const { return m_type; }
     /// \brief Accessor for mass property
     const double getMass() const { return m_mass; }
 
@@ -165,19 +116,9 @@ class Entity : public BaseEntity {
         m_status = s;
     }
 
-    /// \brief Set the value of the entity type property
-    void setType(const TypeNode * t) {
-        m_type = t;
-    }
-
     /// \brief Set the value of the mass property
     void setMass(const double w) {
         m_mass = w;
-    }
-
-    /// \brief Accessor for soft attribute map
-    const Atlas::Message::MapType & getAttributes() const {
-        return m_attributes;
     }
 
     virtual bool hasAttr(const std::string & name) const;
@@ -186,14 +127,10 @@ class Entity : public BaseEntity {
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
 
-    PropertyBase * getProperty(const std::string & name) const;
+    virtual PropertyBase * getProperty(const std::string & name) const;
     void setProperty(const std::string & name, PropertyBase * prop);
 
     void installHandler(int, Handler);
-
-    void setScript(Script * scrpt);
-    void merge(const Atlas::Message::MapType &);
-    void changeContainer(Entity *);
 
     void destroy();
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.137 2007-11-29 01:13:27 alriddoch Exp $
+// $Id: Entity.cpp,v 1.138 2007-12-02 23:49:06 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -48,37 +48,11 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-/// \brief Set of attribute names which must not be changed
-///
-/// The attributes named are special and are modified using high level
-/// operations, such as Move, not via Set operations, or assigned by
-/// normal means.
-std::set<std::string> Entity::m_immutable;
-
-/// \brief Singleton accessor for immutables
-///
-/// The immutable attribute set m_immutables is initialised if necessary,
-/// and a reference is returned.
-const std::set<std::string> & Entity::immutables()
-{
-    if (m_immutable.empty()) {
-        m_immutable.insert("parents");
-        m_immutable.insert("pos");
-        m_immutable.insert("loc");
-        m_immutable.insert("velocity");
-        m_immutable.insert("orientation");
-        m_immutable.insert("contains");
-    }
-    return m_immutable;
-}
-
 /// \brief Entity constructor
-Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
-                                         m_refCount(0), m_destroyed(false),
-                                         m_script(&noScript), m_motion(0),
-                                         m_seq(0),
-                                         m_status(1), m_type(0),
-                                         m_mass(-1), m_perceptive(false),
+Entity::Entity(const std::string & id, long intId) : LocatedEntity(id, intId),
+                                         m_destroyed(false), m_motion(0),
+                                         m_status(1), m_mass(-1),
+                                         m_perceptive(false),
                                          m_update_flags(0)
 {
     m_properties["id"] = new IdProperty(getId());
@@ -92,9 +66,6 @@ Entity::Entity(const std::string & id, long intId) : BaseEntity(id, intId),
 
 Entity::~Entity()
 {
-    if (m_script != NULL && m_script != &noScript) {
-        delete m_script;
-    }
     PropertyDict::const_iterator I = m_properties.begin();
     PropertyDict::const_iterator Iend = m_properties.end();
     for (; I != Iend; ++I) {
@@ -105,11 +76,6 @@ Entity::~Entity()
     }
 }
 
-/// \brief Check if this entity has a property with the given name
-///
-/// @param name Name of attribute to be checked
-/// @return trye if this entity has an attribute with the name given
-/// false otherwise
 bool Entity::hasAttr(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
@@ -124,12 +90,6 @@ bool Entity::hasAttr(const std::string & name) const
     
 }
 
-/// \brief Get the value of an attribute
-///
-/// @param name Name of attribute to be retrieved
-/// @param attr Reference used to store value
-/// @return trye if this entity has an attribute with the name given
-/// false otherwise
 bool Entity::getAttr(const std::string & name, Element & attr) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
@@ -144,10 +104,6 @@ bool Entity::getAttr(const std::string & name, Element & attr) const
     return false;
 }
 
-/// \brief Set the value of an attribute
-///
-/// @param name Name of attribute to be changed
-/// @param attr Value to be stored
 void Entity::setAttr(const std::string & name, const Element & attr)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
@@ -175,11 +131,6 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     m_update_flags |= a_attr;
 }
 
-/// \brief Get the property object for a given attribute
-///
-/// @param name name of the attribute for which the property is required.
-/// @return a pointer to the property, or zero if the attributes does
-/// not exist, or is not stored using a property object.
 PropertyBase * Entity::getProperty(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
@@ -249,18 +200,6 @@ void Entity::installHandler(int class_no, Handler handler)
     m_operationHandlers.insert(std::make_pair(class_no, handler));
 }
 
-/// \brief Associate a script with this entity
-///
-/// The previously associated script is deleted.
-/// @param scrpt Pointer to the script to be associated with this entity
-void Entity::setScript(Script * scrpt)
-{
-    if (m_script != NULL && m_script != &noScript) {
-        delete m_script;
-    }
-    m_script = scrpt;
-}
-
 /// \brief Destroy this entity
 ///
 /// Do the jobs required to remove this entity from the world. Handles
@@ -268,10 +207,10 @@ void Entity::setScript(Script * scrpt)
 void Entity::destroy()
 {
     assert(m_location.m_loc != NULL);
-    EntitySet & loc_contains = m_location.m_loc->m_contains;
-    EntitySet::const_iterator Iend = m_contains.end();
-    for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
-        Entity * obj = *I;
+    LocatedEntitySet & loc_contains = m_location.m_loc->m_contains;
+    LocatedEntitySet::const_iterator Iend = m_contains.end();
+    for (LocatedEntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
+        LocatedEntity * obj = *I;
         // FIXME take account of orientation
         // FIXME velocity and orientation  need to be adjusted
         // Remove the reference to ourself.
@@ -295,58 +234,12 @@ void Entity::destroy()
     // are broadcast ops left that we have not yet sent.
 
     if (m_location.m_loc->m_contains.empty()) {
-        m_location.m_loc->m_update_flags |= a_cont;
-        m_location.m_loc->updated.emit();
+        Entity * loc = dynamic_cast<Entity *>(m_location.m_loc);
+        loc->m_update_flags |= a_cont;
+        loc->updated.emit();
     }
     m_destroyed = true;
     destroyed.emit();
-}
-
-/// \brief Read attributes from an Atlas element
-///
-/// @param ent The Atlas map element containing the attribute values
-void Entity::merge(const MapType & ent)
-{
-    const std::set<std::string> & imm = immutables();
-    MapType::const_iterator Iend = ent.end();
-    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
-        const std::string & key = I->first;
-        if (imm.find(key) != imm.end()) continue;
-        setAttr(key, I->second);
-    }
-}
-
-/// \brief Change the container of an entity
-///
-/// @param new_loc The entity which is to become this entities new
-/// container.
-void Entity::changeContainer(Entity * new_loc)
-{
-    m_location.m_loc->m_contains.erase(this);
-    if (m_location.m_loc->m_contains.empty()) {
-        m_location.m_loc->m_update_flags |= a_cont;
-        m_location.m_loc->updated.emit();
-    }
-    bool was_empty = new_loc->m_contains.empty();
-    new_loc->m_contains.insert(this);
-    if (was_empty) {
-        new_loc->m_update_flags |= a_cont;
-        new_loc->updated.emit();
-    }
-    assert(m_location.m_loc->checkRef() > 0);
-    m_location.m_loc->decRef();
-    m_location.m_loc = new_loc;
-    m_location.m_loc->incRef();
-    assert(m_location.m_loc->checkRef() > 0);
-    m_update_flags |= a_loc;
-
-    containered.emit();
-
-    std::list<sigc::connection>::iterator I = containered_oneshots.begin();
-    std::list<sigc::connection>::iterator Iend = containered_oneshots.end();
-    for (; I != Iend; ++I) {
-        I->disconnect();
-    }
 }
 
 /// \brief Subscribe this entity to operations of the type given

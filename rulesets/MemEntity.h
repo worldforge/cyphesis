@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemEntity.h,v 1.12 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: MemEntity.h,v 1.13 2007-12-02 23:49:06 alriddoch Exp $
 
 #ifndef RULESETS_MEM_ENTITY_H
 #define RULESETS_MEM_ENTITY_H
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 /// \brief This class is used to represent entities inside MemMap used
 /// by the mind of an AI.
@@ -28,7 +28,7 @@
 /// It adds a flag to indicate if this entity is currently visible, and
 /// a means of tracking when it was last seen, so garbage entities can
 /// be cleaned up.
-class MemEntity : public Entity {
+class MemEntity : public LocatedEntity {
   protected:
     bool m_visible;
     double m_lastSeen;

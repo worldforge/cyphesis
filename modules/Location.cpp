@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Location.cpp,v 1.69 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: Location.cpp,v 1.70 2007-12-02 23:49:05 alriddoch Exp $
 
 #include "rulesets/Entity.h"
 
@@ -40,7 +40,7 @@ Location::Location() :
 {
 }
 
-Location::Location(Entity * rf) :
+Location::Location(LocatedEntity * rf) :
     m_simple(true), m_solid(true),
     m_boxSize(consts::minBoxSize),
     m_squareBoxSize(consts::minSqrBoxSize),
@@ -48,19 +48,21 @@ Location::Location(Entity * rf) :
 {
 }
 
-Location::Location(Entity * rf, const Point3D & crds) :
+Location::Location(LocatedEntity * rf, const Point3D & pos) :
     m_simple(true), m_solid(true),
     m_boxSize(consts::minBoxSize),
     m_squareBoxSize(consts::minSqrBoxSize),
-    m_loc(rf), m_pos(crds)
+    m_loc(rf), m_pos(pos)
 {
 }
 
-Location::Location(Entity * rf, const Point3D& crds, const Vector3D& vel) :
+Location::Location(LocatedEntity * rf,
+                   const Point3D& pos,
+                   const Vector3D& velocity) :
     m_simple(true), m_solid(true),
     m_boxSize(consts::minBoxSize),
     m_squareBoxSize(consts::minSqrBoxSize),
-    m_loc(rf), m_pos(crds), m_velocity(vel)
+    m_loc(rf), m_pos(pos), m_velocity(velocity)
 {
 }
 

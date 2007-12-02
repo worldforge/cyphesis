@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.97 2007-07-02 21:11:08 alriddoch Exp $
+// $Id: Character.h,v 1.98 2007-12-02 23:49:06 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -84,8 +84,8 @@ class Character : public Character_parent {
 
     void metabolise(OpVector &, double ammount = 1); 
     void wieldDropped();
-    Entity * findInContains(Entity * ent, const std::string & id);
-    Entity * findInInventory(const std::string & id);
+    LocatedEntity * findInContains(LocatedEntity * ent, const std::string & id);
+    LocatedEntity * findInInventory(const std::string & id);
 
     friend class Movement;
   public:

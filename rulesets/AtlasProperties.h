@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasProperties.h,v 1.1 2007-01-03 21:55:31 alriddoch Exp $
+// $Id: AtlasProperties.h,v 1.2 2007-12-02 23:49:06 alriddoch Exp $
 
 #ifndef RULESETS_ATLAS_PROPERTIES_H
 #define RULESETS_ATLAS_PROPERTIES_H
@@ -45,9 +45,9 @@ class NameProperty : public Property<std::string> {
 
 /// \brief Class to handle Entity contains property
 /// \ingroup PropertyClasses
-class ContainsProperty : public ImmutableProperty<EntitySet> {
+class ContainsProperty : public ImmutableProperty<LocatedEntitySet> {
   public:
-    explicit ContainsProperty(EntitySet & data);
+    explicit ContainsProperty(LocatedEntitySet & data);
 
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };

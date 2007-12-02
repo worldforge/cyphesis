@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.1 2007-12-02 19:20:55 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.2 2007-12-02 23:49:06 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -26,10 +26,17 @@
 
 class LocatedEntity;
 
-typedef std::set<Entity *> LocatedEntitySet;
+typedef std::set<LocatedEntity *> LocatedEntitySet;
+
+class Script;
+class TypeNode;
+class PropertyBase;
 
 class LocatedEntity : public BaseEntity {
   private:
+    static std::set<std::string> m_immutable;
+    static const std::set<std::string> & immutables();
+
     /// Count of references held by other objects to this entity
     int m_refCount;
   protected:
@@ -38,6 +45,11 @@ class LocatedEntity : public BaseEntity {
 
     /// Sequence number
     int m_seq;
+
+    /// Script associated with this entity
+    Script * m_script;
+    /// Class of which this is an instance
+    const TypeNode * m_type;
 
   public:
     /// Full details of location
@@ -73,13 +85,31 @@ class LocatedEntity : public BaseEntity {
         return m_attributes;
     }
 
+    /// \brief Accessor for pointer to script object
+    Script * script() const {
+        return m_script;
+    }
+
+    /// \brief Accessor for sequence number
+    const int getSeq() const { return m_seq; }
+    /// \brief Accessor for entity type property
+    const TypeNode * getType() const { return m_type; }
+
+    /// \brief Set the value of the entity type property
+    void setType(const TypeNode * t) {
+        m_type = t;
+    }
+
     virtual bool hasAttr(const std::string & name) const;
     virtual bool getAttr(const std::string & name,
                          Atlas::Message::Element &) const;
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
+    virtual PropertyBase * getProperty(const std::string & name) const;
 
-    void changeContainer(Entity *);
+    void setScript(Script * scrpt);
+    void changeContainer(LocatedEntity *);
+    void merge(const Atlas::Message::MapType &);
 };
 
 #endif // RULESETS_LOCATED_ENTITY_H

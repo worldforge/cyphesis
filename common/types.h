@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: types.h,v 1.40 2007-07-04 22:00:15 alriddoch Exp $
+// $Id: types.h,v 1.41 2007-12-02 23:49:05 alriddoch Exp $
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
@@ -28,6 +28,7 @@
 
 class BaseEntity;
 class Entity;
+class LocatedEntity;
 
 #define OP_ACTION Atlas::Objects::Operation::ACTION_NO
 #define OP_ADD Atlas::Objects::Operation::ADD_NO
@@ -78,6 +79,7 @@ typedef std::vector<std::string> IdList;
 
 typedef std::map<long, Entity *> EntityDict;
 typedef std::set<Entity *> EntitySet;
+typedef std::set<LocatedEntity *> LocatedEntitySet;
 
 typedef std::vector<Operation> OpVector;
 typedef std::map<std::string,OpNo> OpNoDict;

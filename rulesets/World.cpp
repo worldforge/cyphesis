@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.109 2007-11-28 20:22:43 alriddoch Exp $
+// $Id: World.cpp,v 1.110 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "World.h"
 
@@ -196,8 +196,8 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     std::list<std::string> & contlist = sarg->modifyContains();
     contlist.clear();
-    EntitySet::const_iterator Iend = m_contains.end();
-    for (EntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
+    LocatedEntitySet::const_iterator Iend = m_contains.end();
+    for (LocatedEntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
         float fromSquSize = (*I)->m_location.squareBoxSize();
         float dist = squareDistance((*I)->m_location, from->m_location);
         float view_factor = fromSquSize / dist;

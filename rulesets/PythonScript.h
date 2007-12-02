@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonScript.h,v 1.15 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: PythonScript.h,v 1.16 2007-12-02 23:49:07 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_SCRIPT_H
 #define RULESETS_PYTHON_SCRIPT_H
@@ -23,8 +23,6 @@
 #include <Python.h>
 
 #include "PythonWrapper.h"
-
-class Entity;
 
 /// \brief Base Script class for Python scripts
 class PythonScript : public PythonWrapper {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.38 2007-11-24 16:52:33 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.39 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
@@ -110,7 +110,8 @@ bool PythonEntityScript::operation(const std::string & op_type,
     return true;
 }
 
-void PythonEntityScript::hook(const std::string & function, Entity * entity)
+void PythonEntityScript::hook(const std::string & function,
+                              LocatedEntity * entity)
 {
     PyObject * wrapper = wrapEntity(entity);
     if (wrapper == NULL) {

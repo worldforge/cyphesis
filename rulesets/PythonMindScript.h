@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonMindScript.h,v 1.16 2007-11-24 17:03:19 alriddoch Exp $
+// $Id: PythonMindScript.h,v 1.17 2007-12-02 23:49:07 alriddoch Exp $
 
 #error This file has been removed from the build
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -34,7 +34,7 @@ class PythonMindScript : public PythonScript {
     virtual bool operation(const std::string & opname,
                            const Atlas::Objects::Operation::RootOperation & op,
                            OpVector & res);
-    virtual void hook(const std::string & function, Entity * entity);
+    virtual void hook(const std::string & function, LocatedEntity * entity);
 };
 
 #endif // RULESETS_PYTHON_MIND_SCRIPT_H

@@ -1,5 +1,32 @@
 2007-12-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* client/CreatorClient.cpp, client/CreatorClient.h,
+	  client/Py_CreatorClient.cpp, common/BaseWorld.h, common/types.h,
+	  modules/Location.cpp, modules/Location.h,
+	  rulesets/AtlasProperties.cpp, rulesets/AtlasProperties.h,
+	  rulesets/BaseMind.cpp, rulesets/Character.cpp, rulesets/Character.h,
+	  rulesets/Entity.cpp, rulesets/Entity.h,
+	  rulesets/EntityProperties.cpp, rulesets/LocatedEntity.cpp,
+	  rulesets/LocatedEntity.h, rulesets/MemEntity.cpp,
+	  rulesets/MemEntity.h, rulesets/MemMap.cpp, rulesets/Motion.cpp,
+	  rulesets/Motion.h, rulesets/Py_Location.h, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Py_Thing.h,
+	  rulesets/PythonMindScript.h, rulesets/PythonScript.h,
+	  rulesets/PythonThingScript.cpp, rulesets/PythonThingScript.h,
+	  rulesets/Python_API.cpp, rulesets/Script.cpp, rulesets/Script.h,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Refactor all the entity code so there is now
+	  a new base class for entities in the world simulation, and in the
+	  mind which only contains things which are trully common to both.
+	  This moves a lot of functionality which should not have been
+	  present in mind entities away, and makes that code safer and more
+	  efficient.
+
+	* tests/TestWorld.h: Update the test world API to match the base
+	  class.
+
+2007-12-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/LocatedEntitytest.cpp: Add full coverage for current code
 	  in LocatedEntity.
 
@@ -17460,4 +17487,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1989 2007-12-02 20:54:51 alriddoch Exp $
+$Id: ChangeLog,v 1.1990 2007-12-02 23:49:05 alriddoch Exp $

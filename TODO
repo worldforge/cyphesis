@@ -1,6 +1,17 @@
+Rip out scriptSubscribe as it is not being used.
+
+If a server is run without a name, it takes the default port, and default
+socket name and runs with auto name. If it is given a name, it derives the
+socket from that name, and opens an arbitrary port.
+
 Make sure Location refers only to LocatedEntity.
 Make Entity inherit from LocatedEntity, and remove the functionality that
-is in LocatedEnitty from Entity.
+is in LocatedEntity from Entity.
+changeContainer needs sorting to make a whole load of stuff work again.
+Separate functionality for removing from container, and adding to new
+container.
+Py_Thing.cpp calls getStatus() unsafely, as it might not be that kind of
+entity.
 
 An entity in mind has properties. This is causing it to pickup a status
 property, which in turn causes it to generate operations for the
@@ -530,7 +541,7 @@ Py_Location now holders pointer to owning Entity if any. Now we need to
 incref and decref in the important places.
 
 We need to be able to check if things are visible from goal scripts, so
-a MemEntity version of the Enitty wrapper is required.
+a MemEntity version of the Entity wrapper is required.
 This would mean we could make buy_thing goal expire when seller goes out
 of sight.
 

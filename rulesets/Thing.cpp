@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.223 2007-11-29 02:37:51 alriddoch Exp $
+// $Id: Thing.cpp,v 1.224 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -129,7 +129,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             return;
         }
         debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
-        Entity * test_loc = new_loc;
+        LocatedEntity * test_loc = new_loc;
         for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
             if (test_loc == this) {
                 error(op, "Attempt to move into itself", res, getId());
@@ -328,8 +328,8 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
     this_ent->setId(getId());
     this_ent->setStamp(m_seq);
 
-    EntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
-    EntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
+    LocatedEntitySet::const_iterator I = m_location.m_loc->m_contains.begin();
+    LocatedEntitySet::const_iterator Iend = m_location.m_loc->m_contains.end();
     for(; I != Iend; ++I) {
         float old_dist = squareDistance((*I)->m_location.pos(), old_pos),
               new_dist = squareDistance((*I)->m_location.pos(), m_location.pos()),
@@ -338,7 +338,10 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
         // Build appear and disappear lists, and send operations
         // Also so operations to (dis)appearing perceptive
         // entities saying that we are (dis)appearing
-        if ((*I)->isPerceptive()) {
+        // FIXME Should this be Entity *
+        Entity * viewer = dynamic_cast<Entity *>(*I);
+        assert(viewer != 0);
+        if (viewer->isPerceptive()) {
             bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor),
                  is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
             if (was_in_range != is_in_range) {

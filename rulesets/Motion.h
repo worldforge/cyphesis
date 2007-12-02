@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.h,v 1.11 2006-10-26 00:48:09 alriddoch Exp $
+// $Id: Motion.h,v 1.12 2007-12-02 23:49:06 alriddoch Exp $
 
 #ifndef RULESETS_MOTION_H
 #define RULESETS_MOTION_H
@@ -27,6 +27,7 @@
 #include <string>
 
 class Entity;
+class LocatedEntity;
 
 /// \brief Base class for handling Entity movement
 ///
@@ -50,7 +51,7 @@ class Motion {
     /// Collision predicted flag
     bool m_collision;
     /// Entity with which collision will occur
-    Entity * m_collEntity;
+    LocatedEntity * m_collEntity;
     /// Collision will cause passing in or out of container
     bool m_collLocChange;
     /// Normal to the collision surface

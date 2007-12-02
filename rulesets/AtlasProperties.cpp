@@ -15,11 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasProperties.cpp,v 1.1 2007-01-03 21:55:31 alriddoch Exp $
+// $Id: AtlasProperties.cpp,v 1.2 2007-12-02 23:49:06 alriddoch Exp $
 
 #include "AtlasProperties.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include "common/type_utils.h"
 #include "common/debug.h"
@@ -53,8 +53,8 @@ void NameProperty::add(const std::string & s, const RootEntity & ent) const
     ent->setName(m_data);
 }
 
-ContainsProperty::ContainsProperty(EntitySet & data) :
-                                   ImmutableProperty<EntitySet>(data)
+ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+                                   ImmutableProperty<LocatedEntitySet>(data)
 {
 }
 
@@ -62,8 +62,8 @@ void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
 {
     std::list<std::string> & contains = ent->modifyContains();
     contains.clear();
-    EntitySet::const_iterator Iend = m_data.end();
-    for (EntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
+    LocatedEntitySet::const_iterator Iend = m_data.end();
+    for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contains.push_back((*I)->getId());
     }
 }

@@ -15,21 +15,51 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.2 2007-12-02 20:53:51 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.3 2007-12-02 23:49:06 alriddoch Exp $
 
 #include "LocatedEntity.h"
+
+#include "Script.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+/// \brief Set of attribute names which must not be changed
+///
+/// The attributes named are special and are modified using high level
+/// operations, such as Move, not via Set operations, or assigned by
+/// normal means.
+std::set<std::string> LocatedEntity::m_immutable;
+
+/// \brief Singleton accessor for immutables
+///
+/// The immutable attribute set m_immutables is initialised if necessary,
+/// and a reference is returned.
+const std::set<std::string> & LocatedEntity::immutables()
+{
+    if (m_immutable.empty()) {
+        m_immutable.insert("parents");
+        m_immutable.insert("pos");
+        m_immutable.insert("loc");
+        m_immutable.insert("velocity");
+        m_immutable.insert("orientation");
+        m_immutable.insert("contains");
+    }
+    return m_immutable;
+}
+
 /// \brief LocatedEntity constructor
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-                             BaseEntity(id, intId), m_refCount(0), m_seq(0)
+                             BaseEntity(id, intId), m_refCount(0),
+                             m_seq(0), m_script(&noScript), m_type(0)
 {
 }
 
 LocatedEntity::~LocatedEntity()
 {
+    if (m_script != NULL && m_script != &noScript) {
+        delete m_script;
+    }
     if (m_location.m_loc != 0) {
         // m_location.m_loc->decRef();
     }
@@ -78,4 +108,79 @@ void LocatedEntity::setAttr(const std::string & name, const Element & attr)
         return;
     }
     J->second = attr;
+}
+
+/// \brief Get the property object for a given attribute
+///
+/// @param name name of the attribute for which the property is required.
+/// @return a pointer to the property, or zero if the attributes does
+/// not exist, or is not stored using a property object.
+PropertyBase * LocatedEntity::getProperty(const std::string & name) const
+{
+    return 0;
+}
+
+/// \brief Associate a script with this entity
+///
+/// The previously associated script is deleted.
+/// @param scrpt Pointer to the script to be associated with this entity
+void LocatedEntity::setScript(Script * scrpt)
+{
+    if (m_script != NULL && m_script != &noScript) {
+        delete m_script;
+    }
+    m_script = scrpt;
+}
+
+/// \brief Change the container of an entity
+///
+/// @param new_loc The entity which is to become this entities new
+/// container.
+void LocatedEntity::changeContainer(LocatedEntity * new_loc)
+{
+    m_location.m_loc->m_contains.erase(this);
+#if 0
+    if (m_location.m_loc->m_contains.empty()) {
+        m_location.m_loc->m_update_flags |= a_cont;
+        m_location.m_loc->updated.emit();
+    }
+#endif
+    bool was_empty = new_loc->m_contains.empty();
+    new_loc->m_contains.insert(this);
+#if 0
+    if (was_empty) {
+        new_loc->m_update_flags |= a_cont;
+        new_loc->updated.emit();
+    }
+#endif
+    assert(m_location.m_loc->checkRef() > 0);
+    m_location.m_loc->decRef();
+    m_location.m_loc = new_loc;
+    m_location.m_loc->incRef();
+    assert(m_location.m_loc->checkRef() > 0);
+#if 0
+    m_update_flags |= a_loc;
+
+    containered.emit();
+
+    std::list<sigc::connection>::iterator I = containered_oneshots.begin();
+    std::list<sigc::connection>::iterator Iend = containered_oneshots.end();
+    for (; I != Iend; ++I) {
+        I->disconnect();
+    }
+#endif
+}
+
+/// \brief Read attributes from an Atlas element
+///
+/// @param ent The Atlas map element containing the attribute values
+void LocatedEntity::merge(const MapType & ent)
+{
+    const std::set<std::string> & imm = immutables();
+    MapType::const_iterator Iend = ent.end();
+    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
+        const std::string & key = I->first;
+        if (imm.find(key) != imm.end()) continue;
+        setAttr(key, I->second);
+    }
 }

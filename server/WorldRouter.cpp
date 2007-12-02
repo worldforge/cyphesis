@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.220 2007-12-02 18:30:18 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.221 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -190,7 +190,8 @@ Operation WorldRouter::getOperationFromQueue()
 /// This function recurses through the parents until it finds
 /// A parent which defines the height.
 /// @return the modified Z coord of the position.
-float WorldRouter::constrainHeight(Entity * parent, const Point3D & pos,
+float WorldRouter::constrainHeight(LocatedEntity * parent,
+                                   const Point3D & pos,
                                    const std::string & mode)
 {
     assert(parent != 0);
@@ -277,8 +278,10 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     ent->m_location.m_loc->m_contains.insert(ent);
     ent->m_location.m_loc->incRef();
     if (cont_change) {
-        ent->m_location.m_loc->m_update_flags |= a_cont;
-        ent->m_location.m_loc->updated.emit();
+        Entity * loc = dynamic_cast<Entity *>(ent->m_location.m_loc);
+        assert(loc != 0);
+        loc->m_update_flags |= a_cont;
+        loc->updated.emit();
     }
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);

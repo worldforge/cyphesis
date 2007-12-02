@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.41 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.42 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -79,6 +79,9 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         PyErr_SetString(PyExc_AttributeError, name);
         return NULL;
     }
+    if (strcmp(name, "id") == 0) {
+        return (PyObject *)PyString_FromString(self->m_mind->getId().c_str());
+    }
     if (strcmp(name, "type") == 0) {
         PyObject * list = PyList_New(0);
         if (list == NULL) {
@@ -110,10 +113,10 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        EntitySet::const_iterator I = self->m_mind->m_contains.begin();
-        EntitySet::const_iterator Iend = self->m_mind->m_contains.end();
+        LocatedEntitySet::const_iterator I = self->m_mind->m_contains.begin();
+        LocatedEntitySet::const_iterator Iend = self->m_mind->m_contains.end();
         for (; I != Iend; ++I) {
-            Entity * child = *I;
+            LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
             if (wrapper == NULL) {
                 Py_DECREF(list);
@@ -131,7 +134,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
             return v;
         }
     }
-    Entity * mind = self->m_mind;
+    LocatedEntity * mind = self->m_mind;
     Element attr;
     if (mind->getAttr(name, attr)) {
         return MessageElement_asPyObject(attr);
@@ -147,23 +150,10 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    if (strcmp(name, "status") == 0) {
-        // This needs to be here until we can sort the difference
-        // between floats and ints in python.
-        if (PyInt_Check(v)) {
-            self->m_mind->setStatus((double)PyInt_AsLong(v));
-        } else if (PyFloat_Check(v)) {
-            self->m_mind->setStatus(PyFloat_AsDouble(v));
-        } else {
-            PyErr_SetString(PyExc_TypeError, "status must be numeric type");
-            return -1;
-        }
-        return 0;
-    }
     if (strcmp(name, "map") == 0) {
         return -1;
     }
-    Entity * entity = self->m_mind;
+    LocatedEntity * entity = self->m_mind;
     // Should we support removal of attributes?
     //std::string attr(name);
     //if (v == NULL) {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.h,v 1.18 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: Py_Thing.h,v 1.19 2007-12-02 23:49:07 alriddoch Exp $
 
 #ifndef RULESETS_PY_THING_H
 #define RULESETS_PY_THING_H
@@ -23,7 +23,20 @@
 #include <Python.h>
 
 class Entity;
+class LocatedEntity;
 class Character;
+
+/// \brief Wrapper for LocatedEntity in Python
+/// \ingroup PythonWrappers
+typedef struct {
+    PyObject_HEAD
+    /// \brief Storage for additional attributes
+    PyObject * Entity_attr;  // Attributes dictionary
+    /// \brief Entity object handled by this wrapper
+    LocatedEntity * m_entity;
+    /// \brief Pointer to the method table
+    struct PyMethodDef * m_methods;
+} PyLocatedEntity;
 
 /// \brief Wrapper for Entity in Python
 /// \ingroup PythonWrappers
@@ -53,7 +66,8 @@ extern PyTypeObject PyEntity_Type;
 
 #define PyEntity_Check(_o) ((_o)->ob_type == &PyEntity_Type)
 
-PyObject * wrapEntity(Entity * entity);
+PyObject * wrapEntity(LocatedEntity * entity);
+PyLocatedEntity * newPyLocatedEntity();
 PyEntity * newPyEntity();
 PyCharacter * newPyCharacter();
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.169 2007-11-24 16:54:09 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.170 2007-12-02 23:49:07 alriddoch Exp $
 
 #include "Python.h"
 
@@ -379,7 +379,7 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     if (py_class == NULL) { return; }
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
-    Subscribe_Script(mind, py_class, package);
+    // Subscribe_Script(mind, py_class, package);
     PyObject * o = Create_PyScript((PyObject *)wrapper, py_class);
     Py_DECREF(py_class);
 
@@ -403,7 +403,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
     PyLocation *o;
     // We need to deal with actual args here
     PyObject * refO = NULL, * coordsO = NULL;
-    Entity * ref_ent = NULL;
+    LocatedEntity * ref_ent = NULL;
     bool decrefO = false;
     if (!PyArg_ParseTuple(args, "|OO", &refO, &coordsO)) {
         return NULL;

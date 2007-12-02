@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CreatorClient.cpp,v 1.33 2007-11-28 20:22:42 alriddoch Exp $
+// $Id: CreatorClient.cpp,v 1.34 2007-12-02 23:49:05 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -44,7 +44,7 @@ CreatorClient::CreatorClient(const std::string & id, long intId,
 {
 }
 
-Entity * CreatorClient::make(const RootEntity & entity)
+LocatedEntity * CreatorClient::make(const RootEntity & entity)
 {
     Create op;
     op->setArgs1(entity);
@@ -112,7 +112,7 @@ Entity * CreatorClient::make(const RootEntity & entity)
     const std::string & created_type = created->getParents().front();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(created, res->getSeconds());
+    LocatedEntity * obj = m_map.updateAdd(created, res->getSeconds());
     return obj;
 }
 
@@ -127,7 +127,7 @@ void CreatorClient::sendSet(const std::string & id,
     send(op);
 }
 
-Entity * CreatorClient::look(const std::string & id)
+LocatedEntity * CreatorClient::look(const std::string & id)
 {
     Look op;
     if (!id.empty()) {
@@ -139,7 +139,7 @@ Entity * CreatorClient::look(const std::string & id)
     return sendLook(op);
 }
 
-Entity * CreatorClient::lookFor(const RootEntity & ent)
+LocatedEntity * CreatorClient::lookFor(const RootEntity & ent)
 {
     Look op;
     op->setArgs1(ent);
@@ -147,7 +147,7 @@ Entity * CreatorClient::lookFor(const RootEntity & ent)
     return sendLook(op);
 }
 
-Entity * CreatorClient::sendLook(const Operation & op)
+LocatedEntity * CreatorClient::sendLook(const Operation & op)
 {
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
@@ -180,7 +180,7 @@ Entity * CreatorClient::sendLook(const Operation & op)
     }
     const std::string & created_id = seen->getId();
     std::cout << "Seen: " << created_id << std::endl << std::flush;
-    Entity * obj = m_map.updateAdd(seen, res->getSeconds());
+    LocatedEntity * obj = m_map.updateAdd(seen, res->getSeconds());
     return obj;
 }
 

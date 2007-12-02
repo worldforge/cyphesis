@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperties.cpp,v 1.12 2006-10-26 00:48:08 alriddoch Exp $
+// $Id: EntityProperties.cpp,v 1.13 2007-12-02 23:49:06 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -99,20 +99,20 @@ void ImmutableProperty<IdList>::add(const std::string & s, const RootEntity & en
 }
 
 template<>
-bool ImmutableProperty<EntitySet>::get(Element & e) const
+bool ImmutableProperty<LocatedEntitySet>::get(Element & e) const
 {
     e = ListType();
     ListType & contlist = e.asList();
-    EntitySet::const_iterator Iend = m_data.end();
-    for (EntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
+    LocatedEntitySet::const_iterator Iend = m_data.end();
+    for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
     }
     return true;
 }
 
 template<>
-void ImmutableProperty<EntitySet>::add(const std::string & s,
-                                       MapType & ent) const
+void ImmutableProperty<LocatedEntitySet>::add(const std::string & s,
+                                              MapType & ent) const
 {
     if (!m_data.empty()) {
         get(ent[s]);
@@ -120,8 +120,8 @@ void ImmutableProperty<EntitySet>::add(const std::string & s,
 }
 
 template<>
-void ImmutableProperty<EntitySet>::add(const std::string & s,
-                                       const RootEntity & ent) const
+void ImmutableProperty<LocatedEntitySet>::add(const std::string & s,
+                                              const RootEntity & ent) const
 {
     if (!m_data.empty()) {
         Element v;
@@ -174,7 +174,7 @@ void SignalProperty<BBox>::set(const Element & e)
 template class Property<BBox>;
 template class Property<IdList>;
 
-template class ImmutableProperty<EntitySet>;
+template class ImmutableProperty<LocatedEntitySet>;
 template class ImmutableProperty<Container>;
 
 template class SignalProperty<BBox>;

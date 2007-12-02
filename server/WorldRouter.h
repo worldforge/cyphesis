@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.h,v 1.79 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: WorldRouter.h,v 1.80 2007-12-02 23:49:07 alriddoch Exp $
 
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
@@ -92,7 +92,9 @@ class WorldRouter : public BaseWorld {
     virtual void message(const Operation &, Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
-    virtual float constrainHeight(Entity *, const Point3D &, const std::string &);
+    virtual float constrainHeight(LocatedEntity * parent,
+                                  const Point3D & pos,
+                                  const std::string & mode);
 };
 
 #endif // SERVER_WORLD_ROUTER_H

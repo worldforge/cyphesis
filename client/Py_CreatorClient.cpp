@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_CreatorClient.cpp,v 1.36 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: Py_CreatorClient.cpp,v 1.37 2007-12-02 23:49:05 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -68,12 +68,12 @@ static PyObject * CreatorClient_make(PyCreatorClient * self,
         PyErr_SetString(PyExc_TypeError, "Can only make Atlas entity");
         return NULL;
     }
-    Entity * retval = self->m_mind->make(entity->entity);
+    LocatedEntity * retval = self->m_mind->make(entity->entity);
     if (retval == NULL) {
         PyErr_SetString(PyExc_RuntimeError, "Entity creation failed");
         return NULL;
     }
-    PyEntity * ret = newPyEntity();
+    PyLocatedEntity * ret = newPyLocatedEntity();
     ret->m_entity = retval;
     return (PyObject *)ret;
 }
@@ -113,12 +113,12 @@ static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * py_id)
         return NULL;
     }
     char * id = PyString_AsString(py_id);
-    Entity * retval = self->m_mind->look(id);
+    LocatedEntity * retval = self->m_mind->look(id);
     if (retval == NULL) {
         PyErr_SetString(PyExc_RuntimeError, "Entity look failed");
         return NULL;
     }
-    PyEntity * ret = newPyEntity();
+    PyLocatedEntity * ret = newPyLocatedEntity();
     ret->m_entity = retval;
     return (PyObject *)ret;
 }
@@ -135,12 +135,12 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
         PyErr_SetString(PyExc_TypeError, "Can only look for Atlas description");
         return NULL;
     }
-    Entity * retval = self->m_mind->lookFor(ent->entity);
+    LocatedEntity * retval = self->m_mind->lookFor(ent->entity);
     if (retval == NULL) {
         PyErr_SetString(PyExc_RuntimeError, "Entity look_for failed");
         return NULL;
     }
-    PyEntity * ret = newPyEntity();
+    PyLocatedEntity * ret = newPyLocatedEntity();
     ret->m_entity = retval;
     return (PyObject *)ret;
 }
@@ -226,7 +226,7 @@ static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
             return v;
         }
     }
-    Entity * thing = self->m_mind;
+    LocatedEntity * thing = self->m_mind;
     Element attr;
     if (!thing->getAttr(name, attr)) {
         return Py_FindMethod(CreatorClient_methods, (PyObject *)self, name);
@@ -249,23 +249,10 @@ static int CreatorClient_setattr(PyCreatorClient *self, char *name, PyObject *v)
             return -1;
         }
     }
-    if (strcmp(name, "status") == 0) {
-        // This needs to be here until we can sort the difference
-        // between floats and ints in python.
-        if (PyInt_Check(v)) {
-            self->m_mind->setStatus((double)PyInt_AsLong(v));
-        } else if (PyFloat_Check(v)) {
-            self->m_mind->setStatus(PyFloat_AsDouble(v));
-        } else {
-            PyErr_SetString(PyExc_TypeError, "status must be numeric type");
-            return -1;
-        }
-        return 0;
-    }
     if (strcmp(name, "map") == 0) {
         return -1;
     }
-    Entity * thing = self->m_mind;
+    LocatedEntity * thing = self->m_mind;
     //std::string attr(name);
     //if (v == NULL) {
         //thing->attributes.erase(attr);
