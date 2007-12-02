@@ -1,5 +1,12 @@
 2007-12-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h: Make the attribute interface virtual.
+
+	* rulesets/LocatedEntity.cpp: Add in basic implementatios without
+	  properties of the attribute interface.
+
+2007-12-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h:
 	  Add a new base class for entities with location data and
 	  attributes.
@@ -17448,4 +17455,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1987 2007-12-02 19:20:55 alriddoch Exp $
+$Id: ChangeLog,v 1.1988 2007-12-02 20:53:50 alriddoch Exp $
