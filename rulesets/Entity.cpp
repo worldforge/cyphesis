@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.139 2007-12-03 20:40:55 alriddoch Exp $
+// $Id: Entity.cpp,v 1.140 2007-12-03 23:18:51 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -51,12 +51,10 @@ static const bool debug_flag = false;
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) : LocatedEntity(id, intId),
                                          m_destroyed(false), m_motion(0),
-                                         m_mass(-1),
                                          m_perceptive(false),
                                          m_update_flags(0)
 {
     m_properties["id"] = new IdProperty(getId());
-    m_properties["mass"] = new Property<double>(m_mass, a_mass);
     m_properties["contains"] = new ContainsProperty(m_contains);
 
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.24 2007-12-03 20:40:56 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.25 2007-12-03 23:18:52 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -176,7 +176,12 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
     if (status == 0 || !status->get(new_status) || new_status.isNum()) {
         new_status = 1.f;
     }
-    new_status = new_status.asNum() - (consumed / e->getMass());
+    Element mass_attr(1.f);
+    e->getAttr("mass", mass_attr);
+    if (!mass_attr.isFloat()) {
+        mass_attr = 1.f;
+    }
+    new_status = new_status.asNum() - (consumed / mass_attr.Float());
     Anonymous self_ent;
     self_ent->setId(e->getId());
     self_ent->setAttr("status", new_status);
@@ -236,6 +241,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["burn_speed"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
     m_propertyFactories["transient"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);
     m_propertyFactories["food"] = new PropertyBuilder<DynamicProperty<double> >;
+    m_propertyFactories["mass"] = new PropertyBuilder<DynamicProperty<double> >;
 }
 
 CorePropertyManager::~CorePropertyManager()

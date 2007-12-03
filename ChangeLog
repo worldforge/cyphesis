@@ -1,5 +1,22 @@
 2007-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/animals.xml: Give all the animals BIOMASS.
+
+	* data/characters.xml: Add mass to some character classes that were
+	  missing it.
+
+	* rulesets/Character.cpp, rulesets/Character.h, rulesets/Entity.cpp,
+	  rulesets/Entity.h, rulesets/Plant.cpp, rulesets/Statistics.cpp,
+	  rulesets/World.cpp, server/CorePropertyManager.cpp,
+	  server/Persistor.cpp, server/Persistor_impl.h,
+	  server/Restorer_impl.h: Remove the hard coded mass property from
+	  Entity.
+
+	* rulesets/mason/world/statistics/Statistics.py: Fix scripts which
+	  assume entities will have mass.
+
+2007-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Character.cpp, rulesets/Character.h, rulesets/Entity.cpp,
 	  rulesets/Entity.h, rulesets/Plant.cpp, rulesets/Py_Thing.cpp,
 	  rulesets/StatusProperty.cpp, rulesets/attributes.h,
@@ -17516,4 +17533,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1994 2007-12-03 20:40:55 alriddoch Exp $
+$Id: ChangeLog,v 1.1995 2007-12-03 23:18:51 alriddoch Exp $

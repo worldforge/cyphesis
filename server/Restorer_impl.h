@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer_impl.h,v 1.28 2007-12-03 20:40:56 alriddoch Exp $
+// $Id: Restorer_impl.h,v 1.29 2007-12-03 23:18:52 alriddoch Exp $
 
 #ifndef SERVER_RESTORER_IMPL_H
 #define SERVER_RESTORER_IMPL_H
@@ -59,7 +59,6 @@ void Restorer<T>::rEntity(DatabaseResult::const_iterator & dr)
         hc.setValid();
         this->m_location.modifyBBox();
     }
-    dr.readColumn("mass", this->m_mass);
     dr.readColumn("seq", this->m_seq);
     dr.readColumn("attributes", this->m_attributes);
 }

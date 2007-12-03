@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Statistics.cpp,v 1.10 2006-12-10 22:48:01 alriddoch Exp $
+// $Id: Statistics.cpp,v 1.11 2007-12-03 23:18:52 alriddoch Exp $
 
 #include "Statistics.h"
 
@@ -33,6 +33,7 @@ using Atlas::Objects::Operation::Sight;
 
 using Atlas::Objects::Entity::Anonymous;
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
 /// \brief Statistics constructor
@@ -59,7 +60,12 @@ float Statistics::get(const std::string & name)
 float Statistics::get_default(const std::string & name)
 {
     if (name == "strength") {
-        return m_character.getMass();
+        Element mass_attr;
+        if (m_character.getAttr("mass", mass_attr) && mass_attr.isFloat()) {
+            return mass_attr.Float();
+        } else {
+            return 0.f;
+        }
     } else if (name == "attack") {
         return 1.f;
     } else if (name == "defence") {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.110 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: World.cpp,v 1.111 2007-12-03 23:18:52 alriddoch Exp $
 
 #include "World.h"
 
@@ -50,6 +50,7 @@
 
 static const bool debug_flag = false;
 
+using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 using Atlas::Objects::Root;
@@ -158,7 +159,12 @@ void World::EatOperation(const Operation & op, OpVector & res)
             Nourish nourish;
             nourish->setTo(from_id);
             Anonymous nour_arg;
-            nour_arg->setAttr("mass", log(from->getMass() + 1));
+            Element mass;
+            from->getAttr("mass", mass);
+            if (!mass.isFloat()) {
+                mass = 0.;
+            }
+            nour_arg->setAttr("mass", log(mass.Float() + 1));
             nourish->setArgs1(nour_arg);
             res.push_back(nourish);
         }

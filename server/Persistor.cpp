@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.cpp,v 1.38 2007-12-03 20:40:56 alriddoch Exp $
+// $Id: Persistor.cpp,v 1.39 2007-12-03 23:18:52 alriddoch Exp $
 
 #include "Persistor.h"
 #include "Persistor_impl.h"
@@ -288,8 +288,7 @@ void Persistor<World>::cEntity(Entity & t, std::string & c, std::string & v)
     } else {
         q << "'f', 0, 0, 0, 0, 0, 0, ";
     }
-    q << t.getMass() << cs
-      << t.getSeq() << cs;
+    q << t.getSeq() << cs;
 
     if (t.getAttributes().empty()) {
         q << "''";

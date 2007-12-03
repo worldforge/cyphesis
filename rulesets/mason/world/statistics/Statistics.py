@@ -19,4 +19,7 @@ class Statistics(rulesets.Statistics):
         if name == "defence":
             return 1
         if name == "strength":
-            return self.character.mass
+            if hasattr(self.character, 'mass'):
+                return self.character.mass
+            else:
+                return 0

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.306 2007-12-03 20:40:55 alriddoch Exp $
+// $Id: Character.cpp,v 1.307 2007-12-03 23:18:51 alriddoch Exp $
 
 #include "Character.h"
 
@@ -152,36 +152,43 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
 
+    PropertyBase * mass_prop = getProperty("mass");
+    float mass = 0.f;
+    if (mass_prop != 0 && mass_prop->get(value) && value.isFloat()) {
+        mass = value.Float();
+    }
     // If status is very high, we gain weight
-    if (status > (1.5 + energyLaidDown) && m_mass < m_maxMass) {
+    if (status > (1.5 + energyLaidDown) && mass < m_maxMass) {
         status -= energyLaidDown;
-        m_mass += weightGain;
+        mass += weightGain;
         mass_changed = true;
     } else {
         // If status is relatively is not very high, then energy is burned
         double energy_used = energyConsumption * ammount;
-        double weight_used = weightConsumption * m_mass * ammount;
-        if (status <= 0.5 && m_mass > weight_used) {
+        double weight_used = weightConsumption * mass * ammount;
+        if (status <= 0.5 && mass > weight_used) {
             // Drain away a little energy and lose some weight
             // This ensures there is a long term penalty to allowing something
             // to starve
             status -= (energy_used / 2);
-            m_mass = m_mass - weight_used;
+            mass -= weight_used;
             mass_changed = true;
         } else {
             // Just drain away a little energy
             status -= energy_used;
         }
     }
-    status_prop->set(status);
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
         m_stamina = 1.;
         stamina_changed = true;
     }
 
+    status_prop->set(status);
     update_arg->setAttr("status", status);
-    if (mass_changed) {
-        update_arg->setAttr("mass", m_mass);
+
+    if (mass_changed && mass_prop != 0) {
+        mass_prop->set(mass);
+        update_arg->setAttr("mass", mass);
     }
     if (stamina_changed) {
         update_arg->setAttr("stamina", m_stamina);
@@ -253,7 +260,6 @@ Character::Character(const std::string & id, long intId) :
                                             m_maxMass(100),
                                             m_mind(0), m_externalMind(0)
 {
-    m_mass = 60;
     m_location.setBBox(BBox(WFMath::Point<3>(-0.25, -0.25, 0),
                             WFMath::Point<3>(0.25, 0.25, 2)));
 
@@ -453,30 +459,6 @@ void Character::TalkOperation(const Operation & op, OpVector & res)
     Sound s;
     s->setArgs1(op);
     res.push_back(s);
-}
-
-void Character::EatOperation(const Operation & op, OpVector & res)
-{
-    // This is identical to Food::Operation(Eat &)
-    // Perhaps animal should inherit from Food?
-    Set s;
-    Anonymous self_ent;
-    self_ent->setId(getId());
-    self_ent->setAttr("status", -1);
-    s->setTo(getId());
-    s->setArgs1(self_ent);
-
-    const std::string & to = op->getFrom();
-
-    Nourish n;
-    Anonymous nour_ent;
-    nour_ent->setId(to);
-    nour_ent->setAttr("mass", m_mass);
-    n->setTo(to);
-    n->setArgs1(nour_ent);
-
-    res.push_back(s);
-    res.push_back(n);
 }
 
 void Character::NourishOperation(const Operation & op, OpVector & res)
@@ -1015,8 +997,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             res.push_back(u);
             return;
         }
-        if (other->getMass() < 0 ||
-            other->getMass() > m_statistics.get("strength")) {
+        Element mass;
+        if (!other->getAttr("mass", mass) || !mass.isFloat() ||
+            mass.Float() > m_statistics.get("strength")) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }

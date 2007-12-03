@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.84 2007-12-03 20:40:55 alriddoch Exp $
+// $Id: Plant.cpp,v 1.85 2007-12-03 23:18:52 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -163,7 +163,12 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
         set_arg->setAttr("status", new_status);
 
-        double new_mass = m_mass + m_nourishment;
+        Element mass_attr;
+        double mass = 0;
+        if (getAttr("mass", mass_attr) && mass_attr.isFloat()) {
+            mass = mass_attr.Float();
+        }
+        double new_mass = mass + m_nourishment;
         m_nourishment = 0;
         Element maxmass_attr;
         if (getAttr("maxmass", maxmass_attr)) {
@@ -172,21 +177,26 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             }
         }
         set_arg->setAttr("mass", new_mass);
+        if (hasAttr("biomass")) {
+            set_arg->setAttr("biomass", new_mass);
+        }
 
-        double scale = new_mass / m_mass;
-        double height_scale = pow(scale, 0.33333f);
-        debug(std::cout << "scale " << scale << ", " << height_scale
-                        << std::endl << std::flush;);
-        const BBox & ob = m_location.bBox();
-        BBox new_bbox(Point3D(ob.lowCorner().x() * height_scale,
-                              ob.lowCorner().y() * height_scale,
-                              ob.lowCorner().z() * height_scale),
-                      Point3D(ob.highCorner().x() * height_scale,
-                              ob.highCorner().y() * height_scale,
-                              ob.highCorner().z() * height_scale));
-        debug(std::cout << "Old " << ob
-                        << "New " << new_bbox << std::endl << std::flush;);
-        set_arg->setAttr("bbox", new_bbox.toAtlas());
+        if (mass != 0) {
+            double scale = new_mass / mass;
+            double height_scale = pow(scale, 0.33333f);
+            debug(std::cout << "scale " << scale << ", " << height_scale
+                            << std::endl << std::flush;);
+            const BBox & ob = m_location.bBox();
+            BBox new_bbox(Point3D(ob.lowCorner().x() * height_scale,
+                                  ob.lowCorner().y() * height_scale,
+                                  ob.lowCorner().z() * height_scale),
+                          Point3D(ob.highCorner().x() * height_scale,
+                                  ob.highCorner().y() * height_scale,
+                                  ob.highCorner().z() * height_scale));
+            debug(std::cout << "Old " << ob
+                            << "New " << new_bbox << std::endl << std::flush;);
+            set_arg->setAttr("bbox", new_bbox.toAtlas());
+        }
     }
 
     int dropped = dropFruit(res);

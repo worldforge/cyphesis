@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.93 2007-12-03 20:40:55 alriddoch Exp $
+// $Id: Entity.h,v 1.94 2007-12-03 23:18:52 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -30,7 +30,6 @@
 #include <sigc++/connection.h>
 
 #include <iostream>
-#include <cassert>
 
 class Motion;
 
@@ -66,8 +65,6 @@ class Entity : public LocatedEntity {
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
 
-    /// Mass in kg
-    double m_mass;
     /// Is this perceptive
     bool m_perceptive;
   public:
@@ -98,19 +95,12 @@ class Entity : public LocatedEntity {
 
     /// \brief Accessor for update flags
     const int getUpdateFlags() const { return m_update_flags; }
-    /// \brief Accessor for mass property
-    const double getMass() const { return m_mass; }
 
     /// \brief Check if this entity is flagged as perceptive
     const bool isPerceptive() const { return m_perceptive; }
 
     /// \brief Reset the update flags
     void clearUpdateFlags() { m_update_flags = 0; }
-
-    /// \brief Set the value of the mass property
-    void setMass(const double w) {
-        m_mass = w;
-    }
 
     virtual bool hasAttr(const std::string & name) const;
     virtual bool getAttr(const std::string & name,
