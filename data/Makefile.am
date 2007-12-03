@@ -12,3 +12,6 @@ dist_ruleset_DATA = $(MASON_RULES)
 
 confbackupdir = $(datadir)/doc/cyphesis-$(VERSION)/conf
 confbackup_DATA = cyphesis.vconf $(MASON_RULES) acorn.xml werewolf.xml
+
+check-local:
+	$(XMLLINT) -noout $(MASON_RULES)

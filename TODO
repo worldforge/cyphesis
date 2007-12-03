@@ -2,7 +2,8 @@ Rip out scriptSubscribe as it is not being used.
 
 If a server is run without a name, it takes the default port, and default
 socket name and runs with auto name. If it is given a name, it derives the
-socket from that name, and opens an arbitrary port.
+socket from that name, and opens an arbitrary port. Look at sorting out
+openID for this too.
 
 Make sure Location refers only to LocatedEntity.
 Make Entity inherit from LocatedEntity, and remove the functionality that

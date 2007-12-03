@@ -36,6 +36,8 @@ AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_RANLIB
 
+AC_PATH_PROG([XMLLINT], [xmllint], [true])
+
 python_prefix=/usr
 AC_ARG_WITH(python,
 [  --with-python=DIR       Prefix where python is installed in [default=/usr]],
