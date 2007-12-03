@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.94 2007-12-03 23:18:52 alriddoch Exp $
+// $Id: Entity.h,v 1.95 2007-12-03 23:55:11 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -46,10 +46,6 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 /// This class provides hard-coded attributes which are common to most
 /// in game objects, the dynamic attributes map, and a means to access both
 /// transparantly without needing to know which are which.
-/// It provides a physical location for the entity, and a contains list
-/// which lists other entities which specify their location with reference to
-/// this one. It also provides the script interface for handling operations
-/// in scripts rather than in the C++ code.
 /// This is now also intended to be the base for in-game persistance.
 /// It implements the basic types required for persistance.
 /// \ingroup EntityClasses

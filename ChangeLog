@@ -1,5 +1,11 @@
 2007-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Entity.h, rulesets/LocatedEntity.h: Update the doc strings
+	  as the role of Entity has changed now that some of it's
+	  functionality is in LocatedEntity.
+
+2007-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* data/Makefile.am: Update the xml check so it works with out of
 	  srcdir builds.
 
@@ -17546,4 +17552,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1997 2007-12-03 23:43:21 alriddoch Exp $
+$Id: ChangeLog,v 1.1998 2007-12-03 23:55:11 alriddoch Exp $

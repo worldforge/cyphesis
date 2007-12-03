@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.2 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.3 2007-12-03 23:55:12 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -32,6 +32,16 @@ class Script;
 class TypeNode;
 class PropertyBase;
 
+/// \brief This is the base class from which in-game and in-memory objects
+/// inherit.
+///
+/// This class should not normally be instantiated directly.
+/// This class provides hard-coded attributes that are common to all
+/// in-game objects, and objects in the memory on an NPC.
+/// It provides a physical location for the entity, and a contains list
+/// which lists other entities which specify their location with reference to
+/// this one. It also provides the script interface for handling operations
+/// in scripts rather than in the C++ code.
 class LocatedEntity : public BaseEntity {
   private:
     static std::set<std::string> m_immutable;
