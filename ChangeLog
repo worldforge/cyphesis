@@ -1,5 +1,10 @@
 2007-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* data/Makefile.am: Update the xml check so it works with out of
+	  srcdir builds.
+
+2007-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/Areatest.cpp, tests/Charactertest.cpp, tests/Creatortest.cpp,
 	  tests/Entitytest.cpp, tests/Foodtest.cpp, tests/Linetest.cpp,
 	  tests/Planttest.cpp, tests/Stackabletest.cpp, tests/Structuretest.cpp,
@@ -17541,4 +17546,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1996 2007-12-03 23:29:19 alriddoch Exp $
+$Id: ChangeLog,v 1.1997 2007-12-03 23:43:21 alriddoch Exp $

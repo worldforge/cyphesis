@@ -14,4 +14,7 @@ confbackupdir = $(datadir)/doc/cyphesis-$(VERSION)/conf
 confbackup_DATA = cyphesis.vconf $(MASON_RULES) acorn.xml werewolf.xml
 
 check-local:
-	$(XMLLINT) -noout $(MASON_RULES)
+	@for rule in $(MASON_RULES) ; do \
+	  echo $(XMLLINT) -noout $(srcdir)/$$rule; \
+	  $(XMLLINT) -noout $(srcdir)/$$rule; \
+	done;
