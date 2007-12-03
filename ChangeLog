@@ -1,3 +1,8 @@
+2007-12-03  Al Riddoch  <alriddoch@zepler.org>
+
+	* data/basic.xml: Add status to the fire entity as the script needs
+	  it to be there.
+
 2007-12-02  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/AllPropertytest.cpp, tests/IGEntityExerciser.h,
@@ -17492,4 +17497,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1991 2007-12-03 00:00:50 alriddoch Exp $
+$Id: ChangeLog,v 1.1992 2007-12-03 17:29:19 alriddoch Exp $
