@@ -1,5 +1,17 @@
 2007-12-03  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/Character.cpp, rulesets/Character.h, rulesets/Entity.cpp,
+	  rulesets/Entity.h, rulesets/Plant.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/StatusProperty.cpp, rulesets/attributes.h,
+	  server/CorePropertyManager.cpp, server/Persistor.cpp,
+	  server/Persistor_impl.h, server/Restorer.cpp,
+	  server/Restorer_impl.h: Remove the hard coded status property from
+	  Entity, and the hard coded food property from character. Fix
+	  the logic handling digestion and plants to use the new softer
+	  properties.
+
+2007-12-03  Al Riddoch  <alriddoch@zepler.org>
+
 	* configure.ac: Add a test for the xmllint program.
 
 	* data/Makefile.am: Use xmllint to make sure the rules data files are
@@ -17504,4 +17516,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1993 2007-12-03 17:30:46 alriddoch Exp $
+$Id: ChangeLog,v 1.1994 2007-12-03 20:40:55 alriddoch Exp $

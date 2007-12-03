@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.98 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: Character.h,v 1.99 2007-12-03 20:40:55 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -60,8 +60,6 @@ class Character : public Character_parent {
     // Properties
     /// \brief Level of stamina character has left
     double m_stamina;
-    /// \brief Ammount of food available for digestion
-    double m_food;
     /// \brief Maximum mass of this type of creature
     double m_maxMass;
 
@@ -104,8 +102,6 @@ class Character : public Character_parent {
 
     /// \brief Accessor for raw stamina property
     const double getStamina() const { return m_stamina; }
-    /// \brief Accessor for raw food property
-    const double getFood() const { return m_food; }
     /// \brief Accessor for raw right hand wield property
     const std::string & getRightHandWield() const {
         return m_rightHandWield->getId();

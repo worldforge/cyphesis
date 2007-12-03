@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor_impl.h,v 1.36 2007-11-28 20:22:43 alriddoch Exp $
+// $Id: Persistor_impl.h,v 1.37 2007-12-03 20:40:56 alriddoch Exp $
 
 #ifndef SERVER_PERSISTOR_IMPL_H
 #define SERVER_PERSISTOR_IMPL_H
@@ -71,10 +71,6 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
         if (!empty) { q << ", "; } else { empty = false; }
         q << "cont = " << t.m_contains.size();
     }
-    if (t.getUpdateFlags() & a_status) {
-        if (!empty) { q << ", "; } else { empty = false; }
-        q << "status = " << t.getStatus();
-    }
     if (t.getUpdateFlags() & a_mass) {
         if (!empty) { q << ", "; } else { empty = false; }
         q << "mass = " << t.getMass();
@@ -94,15 +90,6 @@ void Persistor<T>::uEntity(Entity & t, std::string & c)
 template <class T>
 void Persistor<T>::uCharacter(Character & t, std::string & c)
 {
-    std::stringstream q;
-    bool empty = c.empty();
-    if (t.getUpdateFlags() & a_food) {
-        if (!empty) { q << ", "; } else { empty = false; }
-        q << "food = " << t.getFood();
-    }
-    if (!empty) {
-        c += q.str();
-    }
 }
 
 template <class T>
@@ -159,8 +146,7 @@ void Persistor<T>::cEntity(Entity & t, std::string & c, std::string & v)
     } else {
         q << "'f', 0, 0, 0, 0, 0, 0, ";
     }
-    q << t.getStatus() << cs
-      << t.getMass() << cs
+    q << t.getMass() << cs
       << t.getSeq() << cs;
 
     if (t.getAttributes().empty()) {
@@ -188,8 +174,7 @@ void Persistor<T>::cCharacter(Character & t, std::string & c, std::string & v)
     c += "food, right_hand_wield";
 
     std::stringstream q;
-    q << t.getFood() << cs
-      << sq << t.getRightHandWield() << sq;
+    q << sq << t.getRightHandWield() << sq;
 
     if (!v.empty()) {
         v += cs;

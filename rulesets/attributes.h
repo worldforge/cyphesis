@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: attributes.h,v 1.10 2007-07-05 17:51:41 alriddoch Exp $
+// $Id: attributes.h,v 1.11 2007-12-03 20:40:55 alriddoch Exp $
 
 #ifndef RULESETS_ATTRIBUTES_H
 #define RULESETS_ATTRIBUTES_H
@@ -26,14 +26,11 @@ static const uint32_t a_loc	= 1 << 0,	// Entity
                       a_pos	= 1 << 1,	// Entity
                       a_orient	= 1 << 2,	// Entity
                       a_bbox	= 1 << 3,	// Entity
-                      a_status	= 1 << 4,	// Entity
-                      a_type	= 1 << 5,	// Entity
-                      a_cont	= 1 << 6,	// Entity
-                      a_attr	= 1 << 7,	// Entity
-                      a_name	= 1 << 8,	// Entity
-                      a_mass	= 1 << 9,	// Entity
-                      a_food	= 1 << 10,	// Character
-                      a_fruit	= 1 << 11,	// Plant
-                      a_terrain	= 1 << 12;	// World
+                      a_type	= 1 << 4,	// Entity
+                      a_cont	= 1 << 5,	// Entity
+                      a_attr	= 1 << 6,	// Entity
+                      a_mass	= 1 << 7,	// Entity
+                      a_fruit	= 1 << 8,	// Plant
+                      a_terrain	= 1 << 9;	// World
 
 #endif // RULESETS_ATTRIBUTES_H

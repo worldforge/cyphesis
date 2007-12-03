@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.305 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: Character.cpp,v 1.306 2007-12-03 20:40:55 alriddoch Exp $
 
 #include "Character.h"
 
@@ -37,6 +37,7 @@
 #include "common/inheritance.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
+#include "common/PropertyManager.h"
 
 #include "common/Add.h"
 #include "common/Attack.h"
@@ -118,35 +119,67 @@ void Character::metabolise(OpVector & res, double ammount)
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
 
+    PropertyBase * status_prop = getProperty("status");
+    if (status_prop == 0) {
+        status_prop = PropertyManager::instance()->addProperty(this, "status");
+        if (status_prop == 0) {
+            log(ERROR, "Unable to get a STATUS property.");
+            return;
+        }
+        m_properties["status"] = status_prop;
+        status_prop->set(1.f);
+    }
+    Element value;
+    status_prop->get(value);
+    assert(value.isFloat());
+    float status = value.asFloat();
+
+    Anonymous update_arg;
+    update_arg->setId(getId());
+
+    PropertyBase * food_prop = getProperty("food");
+    // DIGEST
+    if (food_prop != 0 && food_prop->get(value) && value.isFloat()) {
+        float food = value.Float();
+        if (food >= foodConsumption && status < 2) {
+            // It is important that the metabolise bit is done next, as this
+            // handles the status change
+            status += foodConsumption;
+            food -= foodConsumption;
+            food_prop->set(food);
+
+            update_arg->setAttr("food", food);
+        }
+    }
+
     // If status is very high, we gain weight
-    if (m_status > (1.5 + energyLaidDown) && m_mass < m_maxMass) {
-        m_status -= energyLaidDown;
+    if (status > (1.5 + energyLaidDown) && m_mass < m_maxMass) {
+        status -= energyLaidDown;
         m_mass += weightGain;
         mass_changed = true;
     } else {
         // If status is relatively is not very high, then energy is burned
         double energy_used = energyConsumption * ammount;
         double weight_used = weightConsumption * m_mass * ammount;
-        if (m_status <= 0.5 && m_mass > weight_used) {
+        if (status <= 0.5 && m_mass > weight_used) {
             // Drain away a little energy and lose some weight
             // This ensures there is a long term penalty to allowing something
             // to starve
-            m_status -= (energy_used / 2);
+            status -= (energy_used / 2);
             m_mass = m_mass - weight_used;
             mass_changed = true;
         } else {
             // Just drain away a little energy
-            m_status -= energy_used;
+            status -= energy_used;
         }
     }
+    status_prop->set(status);
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
         m_stamina = 1.;
         stamina_changed = true;
     }
 
-    Anonymous update_arg;
-    update_arg->setId(getId());
-    update_arg->setAttr("status", m_status);
+    update_arg->setAttr("status", status);
     if (mass_changed) {
         update_arg->setAttr("mass", m_mass);
     }
@@ -217,7 +250,7 @@ Character::Character(const std::string & id, long intId) :
                                             m_movement(*new Pedestrian(*this)),
                                             m_task(0), m_isAlive(true),
                                             m_stamina(1.),
-                                            m_food(0), m_maxMass(100),
+                                            m_maxMass(100),
                                             m_mind(0), m_externalMind(0)
 {
     m_mass = 60;
@@ -403,27 +436,6 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                             << " arrived" << std::endl << std::flush;);
         }
     } else {
-        // DIGEST
-        if (m_food >= foodConsumption && m_status < 2) {
-            // It is important that the metabolise bit is done next, as this
-            // handles the status change
-            m_status = m_status + foodConsumption;
-            m_food = m_food - foodConsumption;
-
-            Set s;
-            Anonymous food_ent;
-            food_ent->setId(getId());
-            food_ent->setAttr("food", m_food);
-            s->setTo(getId());
-            s->setFrom(getId());
-            s->setArgs1(food_ent);
-
-            Sight si;
-            si->setTo(getId());
-            si->setArgs1(s);
-            res.push_back(si);
-        }
-
         // METABOLISE
         metabolise(res);
         
@@ -478,11 +490,26 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     if (arg->copyAttr("mass", mass_attr) != 0 || !mass_attr.isNum()) {
         return;
     }
-    m_food = m_food + mass_attr.asNum();
+
+    PropertyBase * food_property = getProperty("food");
+    if (food_property == 0) {
+        food_property = PropertyManager::instance()->addProperty(this, "food");
+        if (food_property == 0) {
+            log(ERROR, "Unable to set a FOOD property.");
+            return;
+        }
+        m_properties["food"] = food_property;
+    }
+    Element value;
+    food_property->get(value);
+    assert(value.isFloat());
+    float food = value.Float();
+    food = food + mass_attr.asNum();
+    food_property->set(food);
 
     Anonymous food_ent;
     food_ent->setId(getId());
-    food_ent->setAttr("food", m_food);
+    food_ent->setAttr("food", food);
 
     Set s;
     s->setArgs1(food_ent);

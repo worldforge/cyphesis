@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.92 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: Entity.h,v 1.93 2007-12-03 20:40:55 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -66,8 +66,6 @@ class Entity : public LocatedEntity {
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
 
-    /// Health/damage coeficient
-    double m_status;
     /// Mass in kg
     double m_mass;
     /// Is this perceptive
@@ -100,8 +98,6 @@ class Entity : public LocatedEntity {
 
     /// \brief Accessor for update flags
     const int getUpdateFlags() const { return m_update_flags; }
-    /// \brief Accessor for status property
-    const double getStatus() const { return m_status; }
     /// \brief Accessor for mass property
     const double getMass() const { return m_mass; }
 
@@ -110,11 +106,6 @@ class Entity : public LocatedEntity {
 
     /// \brief Reset the update flags
     void clearUpdateFlags() { m_update_flags = 0; }
-
-    /// \brief Set the value of the status property
-    void setStatus(const double s) {
-        m_status = s;
-    }
 
     /// \brief Set the value of the mass property
     void setMass(const double w) {

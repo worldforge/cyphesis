@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.63 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.64 2007-12-03 20:40:55 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -271,19 +271,6 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    if (strcmp(name, "status") == 0) {
-        // This needs to be here until we can sort the difference
-        // between floats and ints in python.
-        if (PyInt_Check(v)) {
-            self->m_entity->setStatus((double)PyInt_AsLong(v));
-        } else if (PyFloat_Check(v)) {
-            self->m_entity->setStatus(PyFloat_AsDouble(v));
-        } else {
-            PyErr_SetString(PyExc_TypeError, "status must be numeric type");
-            return -1;
-        }
-        return 0;
-    }
     if (strcmp(name, "map") == 0) {
         PyErr_SetString(PyExc_AttributeError, "map attribute forbidden");
         return -1;

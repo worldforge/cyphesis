@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.83 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Plant.cpp,v 1.84 2007-12-03 20:40:55 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -148,14 +148,21 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     Anonymous set_arg;
     set_arg->setId(getId());
 
-    double status = m_status;
+    Element new_status(1.);
+    PropertyBase * status = getProperty("status");
+    if (status != 0) {
+        status->get(new_status);
+    }
+    assert(new_status.isFloat());
     if (m_nourishment <= 0) {
-        status -= 0.1;
+        new_status = new_status.Float() - 0.1;
     } else {
-        status += 0.1;
-        if (status > 1.) {
-            status = 1.;
+        new_status = new_status.Float() + 0.1;
+        if (new_status.Float() > 1.) {
+            new_status = 1.;
         }
+        set_arg->setAttr("status", new_status);
+
         double new_mass = m_mass + m_nourishment;
         m_nourishment = 0;
         Element maxmass_attr;
@@ -165,6 +172,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             }
         }
         set_arg->setAttr("mass", new_mass);
+
         double scale = new_mass / m_mass;
         double height_scale = pow(scale, 0.33333f);
         debug(std::cout << "scale " << scale << ", " << height_scale
@@ -189,7 +197,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             dropped--;
         }
     }
-    if (dropped != 0 || m_status < 1.) {
+    if (dropped != 0 || new_status.Float() < 1.) {
         set_arg->setAttr("fruits", m_fruits);
     }
     set_op->setArgs1(set_arg);

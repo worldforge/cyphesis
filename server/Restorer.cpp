@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer.cpp,v 1.20 2007-07-05 17:51:41 alriddoch Exp $
+// $Id: Restorer.cpp,v 1.21 2007-12-03 20:40:56 alriddoch Exp $
 
 #include "Restorer_impl.h"
 
@@ -40,7 +40,6 @@ template <> Persistor<World> Restorer<World>::m_persist(true);
 template<>
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)
 {
-    dr.readColumn("food", m_food);
 }
 
 template<>
