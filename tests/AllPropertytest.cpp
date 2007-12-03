@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AllPropertytest.cpp,v 1.3 2007-01-16 01:07:49 alriddoch Exp $
+// $Id: AllPropertytest.cpp,v 1.4 2007-12-03 00:00:50 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
@@ -170,7 +170,7 @@ int main()
     }
 
     {
-        EntitySet test_entityset_val;
+        LocatedEntitySet test_entityset_val;
         ContainsProperty test_property(test_entityset_val);
         assert(exerciser.exerciseProperty(test_property, TYPE_LIST) == 0);
     }

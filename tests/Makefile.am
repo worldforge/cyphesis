@@ -144,6 +144,7 @@ AtlasFileLoadertest_LDADD = $(top_builddir)/common/AtlasFileLoader.o \
 BaseWorldtest_SOURCES = BaseWorldtest.cpp
 BaseWorldtest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
+                      $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/AtlasProperties.o \
@@ -217,7 +218,8 @@ transformtest_SOURCES = transformtest.cpp
 transformtest_LDADD = $(MATH_LIBS)
 
 distancetest_SOURCES = distancetest.cpp
-distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
+distancetest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
+                     $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/AtlasProperties.o \
                      $(top_builddir)/rulesets/Script.o \
@@ -231,6 +233,7 @@ distancetest_LDADD = $(top_builddir)/rulesets/Entity.o \
 Locationtest_SOURCES = Locationtest.cpp
 Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
+                     $(top_builddir)/rulesets/LocatedEntity.o \
                      $(top_builddir)/rulesets/Entity.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/AtlasProperties.o \
@@ -246,6 +249,7 @@ EntityReftest_SOURCES = EntityReftest.cpp
 EntityReftest_LDADD = $(top_builddir)/modules/EntityRef.o \
                       $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
+                      $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/AtlasProperties.o \
@@ -257,6 +261,7 @@ EntityReftest_LDADD = $(top_builddir)/modules/EntityRef.o \
 
 LocatedEntitytest_SOURCES = LocatedEntitytest.cpp
 LocatedEntitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
+                          $(top_builddir)/rulesets/Script.o \
                           $(top_builddir)/modules/Location.o \
                           $(top_builddir)/modules/DateTime.o \
                           $(top_builddir)/common/libcommon.a
@@ -264,6 +269,7 @@ LocatedEntitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
 Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
 Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/modules/DateTime.o \
+                   $(top_builddir)/rulesets/LocatedEntity.o \
                    $(top_builddir)/rulesets/Entity.o \
                    $(top_builddir)/rulesets/EntityProperties.o \
                    $(top_builddir)/rulesets/AtlasProperties.o \
@@ -275,6 +281,7 @@ Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h En
 Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/rulesets/Plant.o \
+                   $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
@@ -289,6 +296,7 @@ Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp IGEntityExerci
 Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/rulesets/Stackable.o \
+                      $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/AtlasProperties.o \
@@ -303,6 +311,7 @@ Structuretest_SOURCES = Structuretest.cpp TestPropertyManager.cpp IGEntityExerci
 Structuretest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/rulesets/Structure.o \
+                      $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/AtlasProperties.o \
@@ -316,6 +325,7 @@ Structuretest_LDADD = $(top_builddir)/modules/Location.o \
 Thingtest_SOURCES = Thingtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Thingtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
+                  $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
@@ -329,6 +339,7 @@ Thingtest_LDADD = $(top_builddir)/modules/Location.o \
 Worldtest_SOURCES = Worldtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
+                  $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
@@ -367,6 +378,7 @@ Creatortest_LDFLAGS = -export-dynamic
 ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
 ThingupdatePropertiestest_LDADD = $(top_builddir)/modules/Location.o \
                                   $(top_builddir)/modules/DateTime.o \
+                                  $(top_builddir)/rulesets/LocatedEntity.o \
                                   $(top_builddir)/rulesets/Entity.o \
                                   $(top_builddir)/rulesets/EntityProperties.o \
                                   $(top_builddir)/rulesets/AtlasProperties.o \

@@ -1,5 +1,10 @@
 2007-12-02  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/AllPropertytest.cpp, tests/IGEntityExerciser.h,
+	  tests/Makefile.am: Fix the tests up so the build and run again.
+
+2007-12-02  Al Riddoch  <alriddoch@zepler.org>
+
 	* client/CreatorClient.cpp, client/CreatorClient.h,
 	  client/Py_CreatorClient.cpp, common/BaseWorld.h, common/types.h,
 	  modules/Location.cpp, modules/Location.h,
@@ -17487,4 +17492,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.1990 2007-12-02 23:49:05 alriddoch Exp $
+$Id: ChangeLog,v 1.1991 2007-12-03 00:00:50 alriddoch Exp $
