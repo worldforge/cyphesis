@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.171 2007-12-04 00:04:00 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.172 2007-12-04 00:07:34 alriddoch Exp $
 
 #include "Python.h"
 
@@ -338,7 +338,6 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     if (py_class == NULL) { return; }
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
-    // Subscribe_Script(mind, py_class, package);
     PyObject * o = Create_PyScript((PyObject *)wrapper, py_class);
     Py_DECREF(py_class);
 
