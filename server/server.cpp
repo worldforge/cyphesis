@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.150 2007-11-14 22:40:18 alriddoch Exp $
+// $Id: server.cpp,v 1.151 2007-12-04 19:18:17 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -91,7 +91,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    readConfigItem("cyphesis", "usedatabase", database_flag);
+    readConfigItem(instance, "usedatabase", database_flag);
 
     // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
@@ -118,27 +118,31 @@ int main(int argc, char ** argv)
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.
-    if (readConfigItem("cyphesis", "restricted", restricted_flag) == 0) {
+    if (readConfigItem(instance, "restricted", restricted_flag) == 0) {
         if (restricted_flag) {
             log(INFO, "Setting restricted mode.");
         }
     }
 
-    readConfigItem("cyphesis", "inittime", timeoffset);
+    readConfigItem(instance, "inittime", timeoffset);
 
     bool useMetaserver = false;
-    readConfigItem("cyphesis", "usemetaserver", useMetaserver);
+    readConfigItem(instance, "usemetaserver", useMetaserver);
 
     std::string mserver("metaserver.worldforge.org");
-    readConfigItem("cyphesis", "metaserver", mserver);
+    readConfigItem(instance, "metaserver", mserver);
 
     std::string server_name;
-    if (readConfigItem("cyphesis","servername", server_name) != 0) {
-        server_name = get_hostname();
+    if (readConfigItem(instance, "servername", server_name) != 0) {
+        if (instance == "cyphesis") {
+            server_name = get_hostname();
+        } else {
+            server_name = instance;
+        }
     }
 
     int nice = 0;
-    readConfigItem("cyphesis", "nice", nice);
+    readConfigItem(instance, "nice", nice);
     
     // Start up the python subsystem.
     init_python_api();
@@ -212,9 +216,22 @@ int main(int argc, char ** argv)
     }
 
     CommListener * listener = new CommListener(commServer);
-    if (listener->setup(client_port_num) != 0) {
-        log(ERROR, "Could not create client listen socket. Init failed.");
-        return EXIT_SOCKET_ERROR;
+    if (client_port_num < 0) {
+        client_port_num = dynamic_port_start;
+        for (; client_port_num <= dynamic_port_end; client_port_num++) {
+            if (listener->setup(client_port_num) == 0) {
+                break;
+            }
+        }
+        if (client_port_num > dynamic_port_end) {
+            log(ERROR, "Could not find free client listen socket. Init failed.");
+            return EXIT_SOCKET_ERROR;
+        }
+    } else {
+        if (listener->setup(client_port_num) != 0) {
+            log(ERROR, "Could not create client listen socket. Init failed.");
+            return EXIT_SOCKET_ERROR;
+        }
     }
     commServer.addSocket(listener);
 

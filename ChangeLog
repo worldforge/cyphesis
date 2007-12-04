@@ -1,5 +1,14 @@
 2007-12-04  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.cpp, common/globals.h: Add a new config setting for
+	  the instance short name, and support per-instance configuration.
+	  Add config settings for a dynamic port range.
+
+	* server/server.cpp: Support per-instance configuration and use a
+	  dynamic port for non-default instances.
+
+2007-12-04  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Python_API.cpp: Remove commented out call to
 	  Subscribe_Script().
 
@@ -17568,4 +17577,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2000 2007-12-04 00:07:34 alriddoch Exp $
+$Id: ChangeLog,v 1.2001 2007-12-04 19:18:17 alriddoch Exp $

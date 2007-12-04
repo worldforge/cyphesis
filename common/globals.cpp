@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.55 2007-11-14 22:40:18 alriddoch Exp $
+// $Id: globals.cpp,v 1.56 2007-12-04 19:18:17 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -41,8 +41,10 @@
 static const char * DEFAULT_RULESET = "mason";
 static const char * DEFAULT_CLIENT_SOCKET = "cyphesis.sock";
 static const char * DEFAULT_SLAVE_SOCKET = "cyslave.sock";
+static const char * DEFAULT_INSTANCE = "cyphesis";
 
 varconf::Config * global_conf = NULL;
+std::string instance(DEFAULT_INSTANCE);
 std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
@@ -59,6 +61,8 @@ int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
 int peer_port_num = 6769;
+int dynamic_port_start = 6780;
+int dynamic_port_end = 6799;
 
 static const char * FALLBACK_LOCALSTATEDIR = "/var";
 
@@ -77,12 +81,15 @@ typedef struct {
 } usage_data;
 
 static const usage_data usage[] = {
+    { "cyphesis", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
     { "cyphesis", "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
     { "cyphesis", "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
     { "cyphesis", "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
     { "cyphesis", "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
     { "cyphesis", "servername", "<name>", "<hostname>", "Published name of the server", S|C },
     { "cyphesis", "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
+    { "cyphesis", "dynamic_port_start", "<portnumber>", "6780", "Lowest port to try and used for dyanmic ports", S },
+    { "cyphesis", "dynamic_port_end", "<portnumber>", "6780", "Highest port to try and used for dyanmic ports", S },
     { "cyphesis", "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
     { "cyphesis", "restricted", "true|false", "false", "Flag to control restricted mode", S },
     { "cyphesis", "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
@@ -186,6 +193,8 @@ static int check_config(varconf::Config & config,
     return 0;
 }
 
+void readInstanceConfiguration(const std::string & section);
+
 int loadConfig(int argc, char ** argv, int usage)
 {
     global_conf = varconf::Config::inst();
@@ -255,19 +264,37 @@ int loadConfig(int argc, char ** argv, int usage)
 
     assert(optind > 0);
 
+    readConfigItem("cyphesis", "instance", instance);
+
+    readConfigItem("cyphesis", "dynamic_port_start", dynamic_port_start);
+    readConfigItem("cyphesis", "dynamic_port_end", dynamic_port_end);
+
+    readInstanceConfiguration(instance);
+
+    return optind;
+}
+
+void readInstanceConfiguration(const std::string & section)
+{
     // Config is now loaded. Now set the values of some globals.
 
-    readConfigItem("cyphesis", "directory", share_directory);
+    readConfigItem(section, "directory", share_directory);
 
-    readConfigItem("cyphesis", "confdir", etc_directory);
+    readConfigItem(section, "confdir", etc_directory);
 
-    readConfigItem("cyphesis", "vardir", var_directory);
+    readConfigItem(section, "vardir", var_directory);
 
-    readConfigItem("cyphesis", "daemon", daemon_flag);
+    readConfigItem(section, "daemon", daemon_flag);
 
-    readConfigItem("cyphesis", "tcpport", client_port_num);
+    if (readConfigItem(section, "tcpport", client_port_num) != 0) {
+        if (section != DEFAULT_INSTANCE) {
+            client_port_num = -1;
+        }
+    }
 
-    readConfigItem("cyphesis", "unixport", client_socket_name);
+    if (readConfigItem(section, "unixport", client_socket_name) != 0) {
+        client_socket_name = String::compose("cyphesis_%1.sock", section);
+    }
 
     readConfigItem("slave", "tcpport", slave_port_num);
 
@@ -278,7 +305,7 @@ int loadConfig(int argc, char ** argv, int usage)
     readConfigItem("game", "player_vs_player_offline", pvp_offl_flag);
 
     // Load up the ruleset.
-    if (readConfigItem("cyphesis", "ruleset", ruleset)) {
+    if (readConfigItem(section, "ruleset", ruleset)) {
         log(ERROR, String::compose("No ruleset specified in config. "
                                    "Using \"%1\" rules.", DEFAULT_RULESET));
     }
@@ -307,7 +334,6 @@ int loadConfig(int argc, char ** argv, int usage)
         }
     }
 
-    return optind;
 }
 
 void reportVersion(const char * prgname)

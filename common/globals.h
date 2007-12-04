@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.29 2007-11-14 22:40:18 alriddoch Exp $
+// $Id: globals.h,v 1.30 2007-12-04 19:18:17 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -27,6 +27,7 @@ namespace varconf {
 }
 
 extern varconf::Config * global_conf;
+extern std::string instance;
 extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
@@ -43,6 +44,8 @@ extern int timeoffset;
 extern int client_port_num;
 extern int slave_port_num;
 extern int peer_port_num;
+extern int dynamic_port_start;
+extern int dynamic_port_end;
 
 static const int CONFIG_OKAY = 0;
 static const int CONFIG_ERROR = -1;
