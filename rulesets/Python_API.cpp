@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.170 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.171 2007-12-04 00:04:00 alriddoch Exp $
 
 #include "Python.h"
 
@@ -329,47 +329,6 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
     }
     Py_DECREF(wrapper);
     return pyob;
-}
-
-void Subscribe_Script(Entity * entity, PyObject * pyclass,
-                      const std::string& package)
-{
-#if 0
-    PyObject * dmap = PyObject_GetAttrString(pyclass, "__dict__");
-    if (dmap == NULL) {
-        log(ERROR, String::compose("Python class for \"%1\" has no __dict__",
-                                   package));
-        return;
-    }
-    if (!PyDict_Check(dmap)) {
-        log(ERROR, String::compose("Python class for \"%1\" is malformed",
-                                   package));
-        return;
-    }
-    PyObject * keys = PyDict_Keys(dmap);
-#else
-    PyObject * keys = PyObject_Dir(pyclass);
-#endif
-    if (keys == NULL) {
-        log(ERROR, String::compose("Error getting attribute list of Python "
-                                   "class for %1", package));
-        return;
-    }
-    for(int i = 0; i < PyList_Size(keys); i++) {
-        std::string method(PyString_AsString(PyList_GetItem(keys, i)));
-        std::string::size_type l = method.find("_operation", 0, 10);
-        if (l == std::string::npos) {
-            debug(std::cout << method << " is not a method" << std::endl
-                            << std::flush;);
-        } else {
-            std::string op_name = method.substr(0,l);
-            debug(std::cout << method << " is a method, it contains _op.. at "
-                            << l << " so we can register for "
-                            << method.substr(0,l) << std::endl << std::flush;);
-            entity->scriptSubscribe(op_name);
-        }
-    }
-    Py_DECREF(keys);
 }
 
 void Create_PyMind(BaseMind * mind, const std::string & package,

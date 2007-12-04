@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.95 2007-12-03 23:55:11 alriddoch Exp $
+// $Id: Entity.h,v 1.96 2007-12-04 00:04:00 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -110,8 +110,6 @@ class Entity : public LocatedEntity {
     void installHandler(int, Handler);
 
     void destroy();
-
-    virtual void scriptSubscribe(const std::string &);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;

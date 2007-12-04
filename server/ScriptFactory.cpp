@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.cpp,v 1.10 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: ScriptFactory.cpp,v 1.11 2007-12-04 00:04:00 alriddoch Exp $
 
 #include "ScriptFactory.h"
 
@@ -103,7 +103,6 @@ int PythonScriptFactory::addScript(Entity * entity)
     }
     PyEntity * wrapper = newPyEntity();
     wrapper->m_entity = entity;
-    Subscribe_Script(entity, m_class, m_package);
     PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
 
     if (script == NULL) {

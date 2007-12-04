@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.h,v 1.52 2007-11-28 20:22:42 alriddoch Exp $
+// $Id: BaseMind.h,v 1.53 2007-12-04 00:04:00 alriddoch Exp $
 
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
@@ -57,8 +57,6 @@ class BaseMind : public MemEntity {
     void sightDeleteOperation(const Operation &, OpVector &);
     void sightMoveOperation(const Operation &, OpVector &);
     void sightSetOperation(const Operation &, OpVector &);
-
-    virtual void scriptSubscribe(const std::string &);
 
     virtual void operation(const Operation &, OpVector &);
 

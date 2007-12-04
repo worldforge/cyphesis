@@ -5,27 +5,8 @@ socket name and runs with auto name. If it is given a name, it derives the
 socket from that name, and opens an arbitrary port. Look at sorting out
 openID for this too.
 
-Make sure Location refers only to LocatedEntity.
-Make Entity inherit from LocatedEntity, and remove the functionality that
-is in LocatedEntity from Entity.
-changeContainer needs sorting to make a whole load of stuff work again.
 Separate functionality for removing from container, and adding to new
 container.
-Py_Thing.cpp calls getStatus() unsafely, as it might not be that kind of
-entity.
-
-An entity in mind has properties. This is causing it to pickup a status
-property, which in turn causes it to generate operations for the
-world. Every time a mind sees the world with a status of -1, it generates
-an op which tries to delete the world, which bypasses the check
-because it is a different pointer from the real world.
-
-Fix the scripts that think status should still be there.
-
-Remove the remnants of status, now the real stuff has gone.
-
-Remove mass and status hard properties. If status is set to -1, the logic
-to then delete the entity can be in some property code, and it will still work.
 
 Sort out NAME property that is dynamic and efficient.
 

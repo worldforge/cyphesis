@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.140 2007-12-03 23:18:51 alriddoch Exp $
+// $Id: Entity.cpp,v 1.141 2007-12-04 00:04:00 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -238,28 +238,6 @@ void Entity::destroy()
     }
     m_destroyed = true;
     destroyed.emit();
-}
-
-/// \brief Subscribe this entity to operations of the type given
-///
-/// @param op Type of operation this entity should be subscribed to
-void Entity::scriptSubscribe(const std::string & op)
-{
-    // FIXME Need to keep track efficiently of what script has, preferably
-    // with something like a std::set of class numbers for quick efficient
-    // checking
-#if 0
-    OpNo n = Inheritance::instance().opEnumerate(op);
-    if (n != OP_INVALID) {
-        debug(std::cout << "SCRIPT requesting subscription to " << op
-                        << std::endl << std::flush;);
-        subscribe(op, n);
-    } else {
-        log(ERROR, String::compose("SCRIPT requesting subscription to \"%1\" "
-                                   "but inheritance could not give me "
-                                   "a reference.", op));
-    }
-#endif
 }
 
 /// \brief Process an operation from an external source.

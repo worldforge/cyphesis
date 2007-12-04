@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.109 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.110 2007-12-04 00:04:00 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -66,59 +66,6 @@ BaseMind::~BaseMind()
                     // << m_map.getEntities().size() << " entities in it"
                     // << std::endl << std::flush;);
     m_map.flush();
-}
-
-void BaseMind::scriptSubscribe(const std::string & op)
-{
-#if 0
-    std::string::size_type l = op.find("_");
-    if (l == std::string::npos) {
-        OpNo n = Inheritance::instance().opEnumerate(op);
-        if (n != OP_INVALID) {
-            debug(std::cout << "MINDSCRIPT requesting subscription to " << op
-                            << std::endl << std::flush;);
-            subscribe(op, n);
-        } else {
-            debug(std::cout << "MINDSCRIPT requesting subscription to " << op
-                            << " but inheritance could not give me a reference"
-                            << std::endl << std::flush;);
-        }
-        return;
-    }
-    // This only works cos sight and sound are the same length
-    std::string subop = op.substr(6, std::string::npos);
-    OpNo subno = Inheritance::instance().opEnumerate(subop);
-    if (subno == OP_INVALID) {
-        debug(std::cerr << "Mind script requested subscription to " << op
-                        << " operations, of which the argument is " << subop
-                        << " but I can't work out what it wants."
-                        << std::endl << std::flush;);
-        return;
-    }
-#if defined(__GNUC__) && __GNUC__ < 3
-    if (!op.substr(0,6).compare("sight_")) {
-#else
-    if (!op.compare(0,6,"sight_")) {
-#endif
-        debug(std::cout << "MINDSCRIPT requesting subscription to sight of "
-                        << subop << " ops" << std::endl << std::flush;);
-        sightSubscribe(subop, subno);
-#if defined(__GNUC__) && __GNUC__ < 3
-    } else if (!op.substr(0,6).compare("sound_")) {
-#else
-    } else if (!op.compare(0,6,"sound_")) {
-#endif
-        debug(std::cout << "MINDSCRIPT requesting subscription to sound of "
-                        << subop << " ops" << std::endl << std::flush;);
-        soundSubscribe(subop, subno);
-    } else {
-        debug(std::cerr << "Mind script requested subscription to " << op
-                        << " operations, of which the argument is " << subop
-                        << " but op arguments for that kind of op are not yet"
-                        << " supported by the mind scriptig interface"
-                        << std::endl << std::flush;);
-    }
-#endif
 }
 
 /// \brief Process the Sight of a Create operation.
