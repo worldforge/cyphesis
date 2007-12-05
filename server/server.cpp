@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.152 2007-12-05 01:23:53 alriddoch Exp $
+// $Id: server.cpp,v 1.153 2007-12-05 14:11:07 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -111,7 +111,10 @@ int main(int argc, char ** argv)
                 log(INFO, "Unable to connect to the RDBMS.");
                 log(INFO, "Please ensure that the RDBMS is running, the cyphesis database exists and is accessible to the user running cyphesis.");
             }
-            log(INFO, "To disable this message please run:\n\n    cyconfig --cyphesis:usedatabase=false\n\nto permanently disable database usage.");
+            log(INFO, String::compose("To disable this message please run:\n\n"
+                                      "    cyconfig --%1:usedatabase=false\n\n"
+                                      "to permanently disable database usage.",
+                                      instance));
         }
     }
 

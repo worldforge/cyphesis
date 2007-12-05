@@ -13,6 +13,8 @@ settings. Might need to move things into the cyphesis section.
 Add setting for config file.
 Make sure nice is working for all instances.
 echo -n 'username:phpMyID:password' | openssl md5
+Fix cyconfig so it never stores the instance name.
+Get rid of the ruleset warning in non-default instance.
 
 Separate functionality for removing from container, and adding to new
 container.
