@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.151 2007-12-04 19:18:17 alriddoch Exp $
+// $Id: server.cpp,v 1.152 2007-12-05 01:23:53 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    int nice = 0;
+    int nice = 1;
     readConfigItem(instance, "nice", nice);
     
     // Start up the python subsystem.

@@ -1,5 +1,10 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/server.cpp: Make nice default to 1, so that it works the
+	  same on all instances.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.cpp: Move the instance configuration setting out
 	  of a section, and fix the usage code so it can deal correctly with
 	  this.
@@ -17588,4 +17593,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2003 2007-12-05 01:21:11 alriddoch Exp $
+$Id: ChangeLog,v 1.2004 2007-12-05 01:23:52 alriddoch Exp $
