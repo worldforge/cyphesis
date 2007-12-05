@@ -1,3 +1,5 @@
+Fix leak of all typenodes.
+
 Move bbox out of Location, and make it a soft property only.
 
 If a server is run without a name, it takes the default port, and default
