@@ -1,5 +1,17 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.h, common/globals.cpp: Provide a separate function
+	  for saving user settings back to the home directory. When
+	  configuring a new instance, store the ruleset in user settings,
+	  and log an informational message rather than a warning.
+
+	* server/server.cpp: When dynamically assigning a port to a new
+	  instance, store the port in user settings, and log an informational
+	  message. Save the user configuration once the validity has been
+	  completely verified and applied.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Fix up the warning message so it gives correct
 	  instructions about disabling the database for instances.
 
@@ -17602,4 +17614,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2006 2007-12-05 14:11:06 alriddoch Exp $
+$Id: ChangeLog,v 1.2007 2007-12-05 17:33:19 alriddoch Exp $

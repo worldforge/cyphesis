@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.153 2007-12-05 14:11:07 alriddoch Exp $
+// $Id: server.cpp,v 1.154 2007-12-05 17:33:19 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -230,6 +230,11 @@ int main(int argc, char ** argv)
             log(ERROR, "Could not find free client listen socket. Init failed.");
             return EXIT_SOCKET_ERROR;
         }
+        log(INFO, String::compose("Auto configuring new instance \"%1\" "
+                                  "to use port %2.",
+                                  instance, client_port_num));
+        global_conf->setItem(instance, "tcpport", client_port_num,
+                             varconf::USER);
     } else {
         if (listener->setup(client_port_num) != 0) {
             log(ERROR, "Could not create client listen socket. Init failed.");
@@ -281,6 +286,11 @@ int main(int argc, char ** argv)
     }
 
 #endif // defined(HAVE_LIBHOWL)
+
+    // Configuration is now complete, and verified as somewhat sane, so
+    // we save the updated user config.
+
+    updateUserConfiguration();
 
     log(INFO, "Running");
     logEvent(START, "- - - Standalone server startup");

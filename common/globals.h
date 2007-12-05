@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.30 2007-12-04 19:18:17 alriddoch Exp $
+// $Id: globals.h,v 1.31 2007-12-05 17:33:19 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -64,5 +64,6 @@ int readConfigItem(const std::string & section, const std::string & key,
 int loadConfig(int argc, char ** argv, int usage = USAGE_CLIENT);
 void reportVersion(const char * prgname);
 void showUsage(const char * prgname, int usage_flags, const char * extras = 0);
+void updateUserConfiguration();
 
 #endif // COMMON_GLOBALS_H

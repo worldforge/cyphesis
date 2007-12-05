@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.57 2007-12-05 01:21:11 alriddoch Exp $
+// $Id: globals.cpp,v 1.58 2007-12-05 17:33:19 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -256,12 +256,6 @@ int loadConfig(int argc, char ** argv, int usage)
 
     check_config(*global_conf);
 
-    // Write out any changes that have been overriden at user scope. It
-    // may be a good idea to do this at shutdown.
-    if (home != NULL) {
-        global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf", varconf::USER);
-    }
-
     assert(optind > 0);
 
     readConfigItem("", "instance", instance);
@@ -272,6 +266,18 @@ int loadConfig(int argc, char ** argv, int usage)
     readInstanceConfiguration(instance);
 
     return optind;
+}
+
+void updateUserConfiguration()
+{
+    char * home = getenv("HOME");
+
+    // Write out any changes that have been overriden at user scope. It
+    // may be a good idea to do this at shutdown.
+    if (home != NULL) {
+        global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf", varconf::USER);
+    }
+
 }
 
 void readInstanceConfiguration(const std::string & section)
@@ -306,8 +312,15 @@ void readInstanceConfiguration(const std::string & section)
 
     // Load up the ruleset.
     if (readConfigItem(section, "ruleset", ruleset)) {
-        log(ERROR, String::compose("No ruleset specified in config. "
-                                   "Using \"%1\" rules.", DEFAULT_RULESET));
+        if (section == DEFAULT_INSTANCE) {
+            log(ERROR, String::compose("No ruleset specified in config. "
+                                       "Using \"%1\" rules.", DEFAULT_RULESET));
+        } else {
+            log(INFO, String::compose("Auto configuring new instance \"%1\" "
+                                      "to use ruleset \"%2\".",
+                                      instance, ruleset));
+            global_conf->setItem(section, "ruleset", ruleset, varconf::USER);
+        }
     }
 
     if (check_tmp_path(var_directory) != 0) {
