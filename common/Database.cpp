@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.93 2007-11-05 19:35:33 alriddoch Exp $
+// $Id: Database.cpp,v 1.94 2007-12-05 01:29:05 alriddoch Exp $
 
 #include "Database.h"
 
@@ -98,7 +98,7 @@ int Database::initConnection(bool createDatabase)
     std::stringstream conninfos;
 
     std::string db_server;
-    if (readConfigItem("cyphesis", "dbserver", db_server) == 0) {
+    if (readConfigItem(::instance, "dbserver", db_server) == 0) {
         if (db_server.empty()) {
             log(WARNING, "Empty database hostname specified in config file. "
                          "Using none.");
@@ -108,11 +108,11 @@ int Database::initConnection(bool createDatabase)
     }
 
     std::string dbname = "cyphesis";
-    readConfigItem("cyphesis", "dbname", dbname);
+    readConfigItem(::instance, "dbname", dbname);
     conninfos << "dbname=" << dbname << " ";
 
     std::string db_user;
-    if (readConfigItem("cyphesis", "dbuser", db_user) == 0) {
+    if (readConfigItem(::instance, "dbuser", db_user) == 0) {
         if (db_user.empty()) {
             log(WARNING, "Empty username specified in config file. "
                          "Using current user.");
@@ -122,7 +122,7 @@ int Database::initConnection(bool createDatabase)
     }
 
     std::string db_passwd;
-    if (readConfigItem("cyphesis", "dbpasswd", db_passwd) == 0) {
+    if (readConfigItem(::instance, "dbpasswd", db_passwd) == 0) {
         conninfos << "password=" << db_passwd << " ";
     }
 

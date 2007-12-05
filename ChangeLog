@@ -1,5 +1,9 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp: Allow per-instance database configuration.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/server.cpp: Make nice default to 1, so that it works the
 	  same on all instances.
 
@@ -17593,4 +17597,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2004 2007-12-05 01:23:52 alriddoch Exp $
+$Id: ChangeLog,v 1.2005 2007-12-05 01:29:05 alriddoch Exp $
