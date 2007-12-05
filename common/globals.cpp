@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.56 2007-12-04 19:18:17 alriddoch Exp $
+// $Id: globals.cpp,v 1.57 2007-12-05 01:21:11 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -81,7 +81,7 @@ typedef struct {
 } usage_data;
 
 static const usage_data usage[] = {
-    { "cyphesis", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
+    { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
     { "cyphesis", "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
     { "cyphesis", "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
     { "cyphesis", "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
@@ -264,7 +264,7 @@ int loadConfig(int argc, char ** argv, int usage)
 
     assert(optind > 0);
 
-    readConfigItem("cyphesis", "instance", instance);
+    readConfigItem("", "instance", instance);
 
     readConfigItem("cyphesis", "dynamic_port_start", dynamic_port_start);
     readConfigItem("cyphesis", "dynamic_port_end", dynamic_port_end);
@@ -369,7 +369,11 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
         if ((ud->flags & usage_flags) == 0) {
             continue;
         }
-        std::cout << "  --" << ud->section << ":" << ud->option;
+        if (strlen(ud->section) != 0) {
+            std::cout << "  --" << ud->section << ":" << ud->option;
+        } else {
+            std::cout << "  --" << ud->option;
+        }
         if (ud->value != 0 && strlen(ud->value) != 0) {
             std::cout << "=" << ud->value;
         }

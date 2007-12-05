@@ -11,6 +11,7 @@ Add instance configuration support to tools and clients.
 Make "instance" not in a section, along with other non-instance specific
 settings. Might need to move things into the cyphesis section.
 Add setting for config file.
+Make sure nice is working for all instances.
 
 Separate functionality for removing from container, and adding to new
 container.
