@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.32 2007-12-05 21:27:33 alriddoch Exp $
+// $Id: globals.h,v 1.33 2007-12-05 21:57:18 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -60,6 +60,13 @@ static const int USAGE_SERVER = 1 << 0;
 static const int USAGE_CLIENT = 1 << 1;
 static const int USAGE_CYCMD = 1 << 2;
 static const int USAGE_DBASE = 1 << 3;
+
+/// Database setup all ok
+static const int DATABASE_OKAY = 0;
+/// Database connection error
+static const int DATABASE_CONERR = -1;
+/// Database table creation error
+static const int DATABASE_TABERR = -2;
 
 template <typename T>
 int readConfigItem(const std::string & section, const std::string & key,

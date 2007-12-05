@@ -1,5 +1,9 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.h: Add database error return codes.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.h, common/globals.cpp: Add exported variables for
 	  the names of the main config sections.
 
@@ -17619,4 +17623,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2008 2007-12-05 21:27:33 alriddoch Exp $
+$Id: ChangeLog,v 1.2009 2007-12-05 21:57:18 alriddoch Exp $
