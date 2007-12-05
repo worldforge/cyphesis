@@ -1,5 +1,10 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/globals.h, common/globals.cpp: Add exported variables for
+	  the names of the main config sections.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.h, common/globals.cpp: Provide a separate function
 	  for saving user settings back to the home directory. When
 	  configuring a new instance, store the ruleset in user settings,
@@ -17614,4 +17619,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2007 2007-12-05 17:33:19 alriddoch Exp $
+$Id: ChangeLog,v 1.2008 2007-12-05 21:27:33 alriddoch Exp $

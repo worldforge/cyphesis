@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.58 2007-12-05 17:33:19 alriddoch Exp $
+// $Id: globals.cpp,v 1.59 2007-12-05 21:27:33 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -37,6 +37,10 @@
 #include <sys/stat.h>
 
 #include <cassert>
+
+const char * CYPHESIS = "cyphesis";
+const char * CLIENT = "client";
+const char * SLAVE = "slave";
 
 static const char * DEFAULT_RULESET = "mason";
 static const char * DEFAULT_CLIENT_SOCKET = "cyphesis.sock";
@@ -82,35 +86,35 @@ typedef struct {
 
 static const usage_data usage[] = {
     { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
-    { "cyphesis", "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
-    { "cyphesis", "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
-    { "cyphesis", "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
-    { "cyphesis", "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
-    { "cyphesis", "servername", "<name>", "<hostname>", "Published name of the server", S|C },
-    { "cyphesis", "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
-    { "cyphesis", "dynamic_port_start", "<portnumber>", "6780", "Lowest port to try and used for dyanmic ports", S },
-    { "cyphesis", "dynamic_port_end", "<portnumber>", "6780", "Highest port to try and used for dyanmic ports", S },
-    { "cyphesis", "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
-    { "cyphesis", "restricted", "true|false", "false", "Flag to control restricted mode", S },
-    { "cyphesis", "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
-    { "cyphesis", "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
-    { "cyphesis", "metaserver", "<hostname>", "metaserver.worldforge.org", "Hostname to use as the metaserver", S },
-    { "cyphesis", "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
-    { "cyphesis", "nice", "<level>", "1", "Reduce the priority level of the server", S },
-    { "cyphesis", "useaiclient", "true|false", "false", "Flag to control whether AI is to be driven by a client", S },
-    { "cyphesis", "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S|D },
-    { "cyphesis", "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S|D },
-    { "cyphesis", "dbuser", "<dbusername>", "<username>", "Database user name for access", S|D },
-    { "cyphesis", "dbpasswd", "<dbusername>", "", "Database password for access", S|D },
-    { "client", "package", "<package_name>", "define_world", "Python package which contains the world initialisation code", C },
-    { "client", "function", "<function_name>", "default", "Python function to initialise the world", C },
-    { "client", "serverhost", "<hostname>", "localhost", "Hostname of the server to connect to", S|C|M },
-    { "client", "account", "<username>", "admin", "Account name to use to authenticate to the server", S|C },
-    { "client", "password", "<password>", "", "Password to use to authenticate to the server", S|C },
-    { "client", "useslave", "true|false", "false", "Flag to control connecting to an AI slave server, not master world server" , S|M },
-    { "slave", "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
-    { "slave", "unixport", "<filename>", DEFAULT_SLAVE_SOCKET, "Local listen socket for admin connections to the AI slave server", M },
-    { "slave", "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
+    { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
+    { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
+    { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
+    { CYPHESIS, "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
+    { CYPHESIS, "servername", "<name>", "<hostname>", "Published name of the server", S|C },
+    { CYPHESIS, "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
+    { CYPHESIS, "dynamic_port_start", "<portnumber>", "6780", "Lowest port to try and used for dyanmic ports", S },
+    { CYPHESIS, "dynamic_port_end", "<portnumber>", "6780", "Highest port to try and used for dyanmic ports", S },
+    { CYPHESIS, "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
+    { CYPHESIS, "restricted", "true|false", "false", "Flag to control restricted mode", S },
+    { CYPHESIS, "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
+    { CYPHESIS, "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
+    { CYPHESIS, "metaserver", "<hostname>", "metaserver.worldforge.org", "Hostname to use as the metaserver", S },
+    { CYPHESIS, "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
+    { CYPHESIS, "nice", "<level>", "1", "Reduce the priority level of the server", S },
+    { CYPHESIS, "useaiclient", "true|false", "false", "Flag to control whether AI is to be driven by a client", S },
+    { CYPHESIS, "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S|D },
+    { CYPHESIS, "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S|D },
+    { CYPHESIS, "dbuser", "<dbusername>", "<username>", "Database user name for access", S|D },
+    { CYPHESIS, "dbpasswd", "<dbusername>", "", "Database password for access", S|D },
+    { CLIENT, "package", "<package_name>", "define_world", "Python package which contains the world initialisation code", C },
+    { CLIENT, "function", "<function_name>", "default", "Python function to initialise the world", C },
+    { CLIENT, "serverhost", "<hostname>", "localhost", "Hostname of the server to connect to", S|C|M },
+    { CLIENT, "account", "<username>", "admin", "Account name to use to authenticate to the server", S|C },
+    { CLIENT, "password", "<password>", "", "Password to use to authenticate to the server", S|C },
+    { CLIENT, "useslave", "true|false", "false", "Flag to control connecting to an AI slave server, not master world server" , S|M },
+    { SLAVE, "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
+    { SLAVE, "unixport", "<filename>", DEFAULT_SLAVE_SOCKET, "Local listen socket for admin connections to the AI slave server", M },
+    { SLAVE, "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
     { 0, 0, 0, 0 }
 };
 

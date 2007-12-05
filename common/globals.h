@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.31 2007-12-05 17:33:19 alriddoch Exp $
+// $Id: globals.h,v 1.32 2007-12-05 21:27:33 alriddoch Exp $
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -25,6 +25,10 @@
 namespace varconf {
   class Config;
 }
+
+extern const char * CYPHESIS;
+extern const char * CLIENT;
+extern const char * SLAVE;
 
 extern varconf::Config * global_conf;
 extern std::string instance;
