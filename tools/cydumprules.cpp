@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.13 2007-11-14 22:40:18 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.14 2007-12-05 22:43:47 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -64,7 +64,7 @@ class RuleReader {
     static RuleReader * instance() {
         if (m_instance == NULL) {
             m_instance = new RuleReader();
-            if (m_instance->m_connection.initConnection(true) != 0) {
+            if (m_instance->m_connection.initConnection() != 0) {
                 delete m_instance;
                 m_instance = 0;
             } else if (!m_instance->m_connection.initRule(true)) {

@@ -1,5 +1,15 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Remove the flag specifying
+	  that the database should be created at connection time, as we
+	  basically can't do this. Make the default database name depend on
+	  instance name currently in use.
+
+	* common/accountbase.cpp, tools/cydumprules.cpp, tools/cyloadrules.cpp:
+	  Fix code for the change to the database API.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/globals.h: Add database error return codes.
 
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
@@ -17623,4 +17633,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2009 2007-12-05 21:57:18 alriddoch Exp $
+$Id: ChangeLog,v 1.2010 2007-12-05 22:43:46 alriddoch Exp $

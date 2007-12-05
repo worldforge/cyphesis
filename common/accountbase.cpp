@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: accountbase.cpp,v 1.16 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: accountbase.cpp,v 1.17 2007-12-05 22:43:47 alriddoch Exp $
 
 #include "accountbase.h"
 
@@ -26,7 +26,7 @@
 /// \brief Initialise a connection to the accounts database
 int AccountBase::init()
 {
-    return m_connection.initConnection(false);
+    return m_connection.initConnection();
 }
 
 /// \brief Store a new Account in the database

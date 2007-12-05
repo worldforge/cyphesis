@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.49 2006-12-06 08:11:25 alriddoch Exp $
+// $Id: Database.h,v 1.50 2007-12-05 22:43:47 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -115,7 +115,7 @@ class Database {
     static Database * instance();
     static void cleanup();
 
-    int initConnection(bool createDatabase = false);
+    int initConnection();
     bool initRule(bool createTables = false);
 
     void shutdownConnection();

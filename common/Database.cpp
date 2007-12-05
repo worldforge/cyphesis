@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2000-2007 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.94 2007-12-05 01:29:05 alriddoch Exp $
+// $Id: Database.cpp,v 1.95 2007-12-05 22:43:47 alriddoch Exp $
 
 #include "Database.h"
 
@@ -93,7 +93,7 @@ bool Database::commandOk()
     return status;
 }
 
-int Database::initConnection(bool createDatabase)
+int Database::initConnection()
 {
     std::stringstream conninfos;
 
@@ -107,7 +107,12 @@ int Database::initConnection(bool createDatabase)
         }
     }
 
-    std::string dbname = "cyphesis";
+    std::string dbname;
+    if (::instance == CYPHESIS) {
+        dbname = CYPHESIS;
+    } else {
+        dbname = String::compose("%1_%2", CYPHESIS, ::instance);
+    }
     readConfigItem(::instance, "dbname", dbname);
     conninfos << "dbname=" << dbname << " ";
 
@@ -127,12 +132,6 @@ int Database::initConnection(bool createDatabase)
     }
 
     const std::string cinfo = conninfos.str();
-
-    if (createDatabase) {
-        // Currently not able to create the database
-    }
-
-    
 
     m_connection = PQconnectdb(cinfo.c_str());
 
