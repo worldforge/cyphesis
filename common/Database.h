@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.50 2007-12-05 22:43:47 alriddoch Exp $
+// $Id: Database.h,v 1.51 2007-12-05 23:40:05 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -112,10 +112,13 @@ class Database {
 
     void reportError();
 
+    int connect(const std::string & context, std::string & error_msg);
+
     static Database * instance();
     static void cleanup();
 
     int initConnection();
+    int createInstanceDatabase();
     bool initRule(bool createTables = false);
 
     void shutdownConnection();

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.154 2007-12-05 17:33:19 alriddoch Exp $
+// $Id: server.cpp,v 1.155 2007-12-05 23:40:05 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -100,16 +100,21 @@ int main(int argc, char ** argv)
     // database support, this will open the various databases used to
     // store server data.
     if (database_flag) {
-        int dbstatus = Persistance::init();
+        Persistance * p = Persistance::instance();
+        int dbstatus = p->init();
         if (dbstatus < 0) {
             database_flag = false;
             log(ERROR, "Error opening database. Database disabled.");
-            if (dbstatus == -2) {
-                log(INFO, "Database connection established, but unable to create required tables.");
-                log(INFO, "Please ensure that any obsolete database tables have been removed.");
+            if (dbstatus == DATABASE_TABERR) {
+                log(INFO, "Database connection established, "
+                          "but unable to create required tables.");
+                log(INFO, "Please ensure that any obsolete database "
+                          "tables have been removed.");
             } else {
                 log(INFO, "Unable to connect to the RDBMS.");
-                log(INFO, "Please ensure that the RDBMS is running, the cyphesis database exists and is accessible to the user running cyphesis.");
+                log(INFO, "Please ensure that the RDBMS is running, "
+                          "the cyphesis database exists and is accessible "
+                          "to the user running cyphesis.");
             }
             log(INFO, String::compose("To disable this message please run:\n\n"
                                       "    cyconfig --%1:usedatabase=false\n\n"
@@ -328,7 +333,7 @@ int main(int argc, char ** argv)
       // cause the destruction of the server and world objects, and the entire
       // world contents
 
-    Persistance::shutdown();
+    Persistance::instance()->shutdown();
 
     EntityFactory::instance()->flushFactories();
     EntityFactory::del();

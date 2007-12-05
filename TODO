@@ -18,6 +18,8 @@ Get rid of the ruleset warning in non-default instance.
 Tweak logging so it makes instances identifiable in syslog.
 Add better error reporting for daemon if an instance cannot find a new port
 number.
+Recommand allowing the cyphesis database user to add more users, so it can
+configure instance databases.
 
 Separate functionality for removing from container, and adding to new
 container.

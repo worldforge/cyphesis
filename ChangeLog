@@ -1,5 +1,19 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.cpp, common/Database.h: Add a new API for
+	  attempting to bootstrap an instance database from the master.
+
+	* server/Persistance.h, server/Persistance.cpp: Make some of the
+	  functions in the persistence API non-static, so they work
+	  more cleanly and consistently. Use the new return codes
+	  specified in the config header. If an instance can't get a database
+	  connection, use the master database to try and create one.
+
+	* server/server.cpp: Use the persistence code the way it is
+	  intended to be used.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp, common/Database.h: Remove the flag specifying
 	  that the database should be created at connection time, as we
 	  basically can't do this. Make the default database name depend on
@@ -17633,4 +17647,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2010 2007-12-05 22:43:46 alriddoch Exp $
+$Id: ChangeLog,v 1.2011 2007-12-05 23:40:05 alriddoch Exp $

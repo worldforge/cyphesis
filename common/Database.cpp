@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.95 2007-12-05 22:43:47 alriddoch Exp $
+// $Id: Database.cpp,v 1.96 2007-12-05 23:40:05 alriddoch Exp $
 
 #include "Database.h"
 
@@ -93,7 +93,37 @@ bool Database::commandOk()
     return status;
 }
 
-int Database::initConnection()
+int Database::createInstanceDatabase()
+{
+    assert(::instance != CYPHESIS);
+
+    std::string error_message;
+
+    if (connect(CYPHESIS, error_message) != 0) {
+        log(ERROR, String::compose("Connection to master database failed: \n%1",
+                                   PQerrorMessage(m_connection)));
+        return -1;
+    }
+
+    std::string dbname;
+    if (::instance == CYPHESIS) {
+        dbname = CYPHESIS;
+    } else {
+        dbname = String::compose("%1_%2", CYPHESIS, ::instance);
+    }
+    readConfigItem(::instance, "dbname", dbname);
+
+    if (!runCommandQuery(String::compose("CREATE DATABASE %1", dbname))) {
+        shutdownConnection();
+        return -1;
+    }
+
+    shutdownConnection();
+
+    return 0;
+}
+
+int Database::connect(const std::string & context, std::string & error_msg)
 {
     std::stringstream conninfos;
 
@@ -136,11 +166,25 @@ int Database::initConnection()
     m_connection = PQconnectdb(cinfo.c_str());
 
     if (m_connection == NULL) {
-        log(ERROR, "Database connection failed with unknown error");
+        error_msg = "Unknown error";
         return -1;
     }
 
     if (PQstatus(m_connection) != CONNECTION_OK) {
+        error_msg = PQerrorMessage(m_connection);
+        PQfinish(m_connection);
+        m_connection = 0;
+        return -1;
+    }
+
+    return 0;
+}
+
+int Database::initConnection()
+{
+    std::string error_message;
+
+    if (connect(::instance, error_message) != 0) {
         log(ERROR, String::compose("Connection to database failed: \n%1",
                                    PQerrorMessage(m_connection)));
         return -1;

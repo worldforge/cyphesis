@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.h,v 1.25 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Persistance.h,v 1.26 2007-12-05 23:40:05 alriddoch Exp $
 
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H
@@ -43,8 +43,8 @@ class Persistance {
     Database & m_connection;
 
     static Persistance * instance();
-    static int init();
-    static void shutdown();
+    int init();
+    void shutdown();
 
     bool findAccount(const std::string &);
     Account * getAccount(const std::string &);

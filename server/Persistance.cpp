@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.48 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.49 2007-12-05 23:40:05 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -51,34 +51,43 @@ Persistance * Persistance::instance()
 
 int Persistance::init()
 {
-    Persistance * p = instance();
-    assert(p != 0);
+    assert(this != 0);
 
-    if (p->m_connection.initConnection(false) != 0) {
-        return -1;
+    if (m_connection.initConnection() != 0) {
+        if (::instance == CYPHESIS) {
+            return DATABASE_CONERR;
+        }
+        if (m_connection.createInstanceDatabase() != 0) {
+            log(ERROR, "Database creation failed.");
+            return DATABASE_CONERR;
+        }
+        if (m_connection.initConnection() != 0) {
+            log(ERROR, "Still couldn't connect.");
+            return DATABASE_CONERR;
+        }
     }
 
-    if (!p->m_connection.registerEntityIdGenerator()) {
+    if (!m_connection.registerEntityIdGenerator()) {
         log(ERROR, "Faled to register Id generator in database.");
-        return -2;
+        return DATABASE_TABERR;
     }
 
-    bool i = p->m_connection.initRule(true);
+    bool i = m_connection.initRule(true);
 
     MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
-    bool j = p->m_connection.registerSimpleTable("accounts", tableDesc);
-    bool k = p->m_connection.registerRelation(p->m_characterRelation,
+    bool j = m_connection.registerSimpleTable("accounts", tableDesc);
+    bool k = m_connection.registerRelation(m_characterRelation,
                                               "accounts",
                                               "entity_ent");
 
-    if (!p->findAccount("admin")) {
+    if (!findAccount("admin")) {
         debug(std::cout << "Bootstraping admin account."
                         << std::endl << std::flush;);
         std::string adminAccountId;
-        long adminAccountIntId = p->m_connection.newId(adminAccountId);
+        long adminAccountIntId = m_connection.newId(adminAccountId);
         if (adminAccountIntId < 0) {
             log(CRITICAL, "Unable to get admin account ID from Database");
             return -2;
@@ -87,7 +96,7 @@ int Persistance::init()
         Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
                                 adminAccountId, adminAccountIntId);
         
-        p->putAccount(dummyAdminAccount);
+        putAccount(dummyAdminAccount);
     }
 
     return (i && j && k) ? 0 : -2;
@@ -95,11 +104,8 @@ int Persistance::init()
 
 void Persistance::shutdown()
 {
-    Persistance * p = m_instance;
-    if (p == NULL) { return; }
-    p->m_connection.shutdownConnection();
-    delete &p->m_connection;
-    delete p;
+    m_connection.shutdownConnection();
+    delete &m_connection;
     m_instance = NULL;
 }
 
