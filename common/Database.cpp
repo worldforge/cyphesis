@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.96 2007-12-05 23:40:05 alriddoch Exp $
+// $Id: Database.cpp,v 1.97 2007-12-05 23:54:23 alriddoch Exp $
 
 #include "Database.h"
 
@@ -101,7 +101,7 @@ int Database::createInstanceDatabase()
 
     if (connect(CYPHESIS, error_message) != 0) {
         log(ERROR, String::compose("Connection to master database failed: \n%1",
-                                   PQerrorMessage(m_connection)));
+                                   error_message));
         return -1;
     }
 
@@ -128,7 +128,7 @@ int Database::connect(const std::string & context, std::string & error_msg)
     std::stringstream conninfos;
 
     std::string db_server;
-    if (readConfigItem(::instance, "dbserver", db_server) == 0) {
+    if (readConfigItem(context, "dbserver", db_server) == 0) {
         if (db_server.empty()) {
             log(WARNING, "Empty database hostname specified in config file. "
                          "Using none.");
@@ -138,16 +138,16 @@ int Database::connect(const std::string & context, std::string & error_msg)
     }
 
     std::string dbname;
-    if (::instance == CYPHESIS) {
+    if (context == CYPHESIS) {
         dbname = CYPHESIS;
     } else {
         dbname = String::compose("%1_%2", CYPHESIS, ::instance);
     }
-    readConfigItem(::instance, "dbname", dbname);
+    readConfigItem(context, "dbname", dbname);
     conninfos << "dbname=" << dbname << " ";
 
     std::string db_user;
-    if (readConfigItem(::instance, "dbuser", db_user) == 0) {
+    if (readConfigItem(context, "dbuser", db_user) == 0) {
         if (db_user.empty()) {
             log(WARNING, "Empty username specified in config file. "
                          "Using current user.");
@@ -157,7 +157,7 @@ int Database::connect(const std::string & context, std::string & error_msg)
     }
 
     std::string db_passwd;
-    if (readConfigItem(::instance, "dbpasswd", db_passwd) == 0) {
+    if (readConfigItem(context, "dbpasswd", db_passwd) == 0) {
         conninfos << "password=" << db_passwd << " ";
     }
 
@@ -186,7 +186,7 @@ int Database::initConnection()
 
     if (connect(::instance, error_message) != 0) {
         log(ERROR, String::compose("Connection to database failed: \n%1",
-                                   PQerrorMessage(m_connection)));
+                                   error_message));
         return -1;
     }
 

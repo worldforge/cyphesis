@@ -20,6 +20,7 @@ Add better error reporting for daemon if an instance cannot find a new port
 number.
 Recommand allowing the cyphesis database user to add more users, so it can
 configure instance databases.
+If we use a dynamic port, increment the start port.
 
 Separate functionality for removing from container, and adding to new
 container.
