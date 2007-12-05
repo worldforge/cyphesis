@@ -15,6 +15,7 @@ Make sure nice is working for all instances.
 echo -n 'username:phpMyID:password' | openssl md5
 Fix cyconfig so it never stores the instance name.
 Get rid of the ruleset warning in non-default instance.
+Tweak logging so it makes instances identifiable in syslog.
 
 Separate functionality for removing from container, and adding to new
 container.
