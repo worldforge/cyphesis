@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.97 2007-12-05 23:54:23 alriddoch Exp $
+// $Id: Database.cpp,v 1.98 2007-12-06 02:49:32 alriddoch Exp $
 
 #include "Database.h"
 
@@ -233,10 +233,10 @@ bool Database::initRule(bool createTables)
 
 void Database::shutdownConnection()
 {
-    assert(m_connection != 0);
-
-    PQfinish(m_connection);
-    m_connection = 0;
+    if (m_connection != 0) {
+        PQfinish(m_connection);
+        m_connection = 0;
+    }
 }
 
 Database * Database::instance()
