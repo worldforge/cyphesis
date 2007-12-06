@@ -1,5 +1,14 @@
 2007-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/system.h: Add a new exit status code indicating that no
+	  ports were available in the dynamic range.
+
+	* server/server.cpp, common/system.cpp: When there are no ports
+	  available, write an appropriate message, and a hint describing
+	  how to allocate more.
+
+2007-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistance.cpp: Change the log message so it is clearer
 	  what is happening.
 
@@ -17674,4 +17683,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2015 2007-12-06 14:03:18 alriddoch Exp $
+$Id: ChangeLog,v 1.2016 2007-12-06 23:50:14 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.h,v 1.11 2006-11-02 02:38:15 alriddoch Exp $
+// $Id: system.h,v 1.12 2007-12-06 23:50:14 alriddoch Exp $
 
 #ifndef COMMON_SYSTEM_H
 #define COMMON_SYSTEM_H
@@ -31,7 +31,8 @@
 // These exit status values might be passed back to our waiting parent, so we
 // can embed information about the nature of the error.
 #define EXIT_DATABASE_ERROR   (EXIT_FAILURE | 1 << 1)
-#define EXIT_SOCKET_ERROR     (EXIT_FAILURE | 2 << 1)
+#define EXIT_SOCKET_ERROR     (EXIT_FAILURE | 1 << 2)
+#define EXIT_PORT_ERROR       (EXIT_FAILURE | 1 << 3)
 
 // Magic number returned by the security check if everything is okay.
 #define SECURITY_OKAY         (0xff7a64e1)

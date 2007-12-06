@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.156 2007-12-06 02:46:33 alriddoch Exp $
+// $Id: server.cpp,v 1.157 2007-12-06 23:50:14 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -232,8 +232,13 @@ int main(int argc, char ** argv)
             }
         }
         if (client_port_num > dynamic_port_end) {
-            log(ERROR, "Could not find free client listen socket. Init failed.");
-            return EXIT_SOCKET_ERROR;
+            log(ERROR, "Could not find free client listen socket. "
+                       "Init failed.");
+            log(INFO, String::compose("To allocate 8 more ports please run:"
+                                      "\n\n    cyconfig "
+                                      "--cyphesis:dynamic_port_end=%1\n\n",
+                                      dynamic_port_end + 8));
+            return EXIT_PORT_ERROR;
         }
         log(INFO, String::compose("Auto configuring new instance \"%1\" "
                                   "to use port %2.",

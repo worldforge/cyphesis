@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.30 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: system.cpp,v 1.31 2007-12-06 23:50:14 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -26,6 +26,7 @@
 #include "log.h"
 #include "debug.h"
 #include "globals.h"
+#include "compose.hpp"
 
 #include <wfmath/MersenneTwister.h>
 
@@ -326,6 +327,13 @@ int daemonise()
                     log(ERROR, "Cyphesis was unable to connect to the database.");
                 } else if (estatus == EXIT_SOCKET_ERROR) {
                     log(ERROR, "Cyphesis was unable to open a listen socket.");
+                } else if (estatus == EXIT_PORT_ERROR) {
+                    log(ERROR, "Could not find free client listen socket. "
+                               "Init failed.");
+                    log(INFO, String::compose("To allocate 8 more ports please"
+                                              " run:\n\n    cyconfig "
+                                              "--cyphesis:dynamic_port_end=%1"
+                                              "\n\n", dynamic_port_end + 8));
                 } else {
                     log(ERROR, "Cyphesis exited unexpectedly at initialisation.");
                 }

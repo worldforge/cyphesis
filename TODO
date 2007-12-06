@@ -16,13 +16,7 @@ settings. Might need to move things into the cyphesis section.
 Add setting for config file.
 Make sure nice is working for all instances.
 echo -n 'username:phpMyID:password' | openssl md5
-Fix cyconfig so it never stores the instance name.
-Get rid of the ruleset warning in non-default instance.
 Tweak logging so it makes instances identifiable in syslog.
-Add better error reporting for daemon if an instance cannot find a new port
-number.
-Recommand allowing the cyphesis database user to add more users, so it can
-configure instance databases.
 If we use a dynamic port, increment the start port.
 
 Separate functionality for removing from container, and adding to new
