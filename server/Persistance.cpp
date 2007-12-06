@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.50 2007-12-06 02:46:33 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.51 2007-12-06 14:03:19 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -57,8 +57,6 @@ int Persistance::init()
         if (::instance == CYPHESIS) {
             return DATABASE_CONERR;
         }
-        log(INFO, String::compose("Auto creating database for new instance "
-                                  "\"%1\".", ::instance));
         if (m_connection.createInstanceDatabase() != 0) {
             log(ERROR, "Database creation failed.");
             return DATABASE_CONERR;
@@ -67,6 +65,8 @@ int Persistance::init()
             log(ERROR, "Still couldn't connect.");
             return DATABASE_CONERR;
         }
+        log(INFO, String::compose("Auto created database for new instance "
+                                  "\"%1\".", ::instance));
     }
 
     if (!m_connection.registerEntityIdGenerator()) {

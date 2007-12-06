@@ -1,5 +1,10 @@
 2007-12-06  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistance.cpp: Change the log message so it is clearer
+	  what is happening.
+
+2007-12-06  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Remove an assert, and only shutdown the
 	  database connection if one currently exists.
 
@@ -17669,4 +17674,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2014 2007-12-06 02:49:32 alriddoch Exp $
+$Id: ChangeLog,v 1.2015 2007-12-06 14:03:18 alriddoch Exp $
