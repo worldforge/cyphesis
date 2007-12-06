@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.155 2007-12-05 23:40:05 alriddoch Exp $
+// $Id: server.cpp,v 1.156 2007-12-06 02:46:33 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -240,6 +240,8 @@ int main(int argc, char ** argv)
                                   instance, client_port_num));
         global_conf->setItem(instance, "tcpport", client_port_num,
                              varconf::USER);
+        global_conf->setItem(CYPHESIS, "dynamic_port_start",
+                             client_port_num + 1, varconf::USER);
     } else {
         if (listener->setup(client_port_num) != 0) {
             log(ERROR, "Could not create client listen socket. Init failed.");

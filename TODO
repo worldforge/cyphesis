@@ -1,3 +1,5 @@
+Put locks around writing the user config file.
+
 Fix leak of all typenodes.
 
 Move bbox out of Location, and make it a soft property only.
@@ -6,7 +8,8 @@ If a server is run without a name, it takes the default port, and default
 socket name and runs with auto name. If it is given a name, it derives the
 socket from that name, and opens an arbitrary port. Look at sorting out
 openID for this too. libopkele
-Write instance configuration to a file.
+Write instance configuration to a file. Make sure to add the current port,
+and also store the overriden value for the start of the port scanning range.
 Add instance configuration support to tools and clients.
 Make "instance" not in a section, along with other non-instance specific
 settings. Might need to move things into the cyphesis section.

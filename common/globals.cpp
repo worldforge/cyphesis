@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.59 2007-12-05 21:27:33 alriddoch Exp $
+// $Id: globals.cpp,v 1.60 2007-12-06 02:46:33 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -135,6 +135,25 @@ static int check_tmp_path(const std::string & dir)
         return -1;
     }
 
+    return 0;
+}
+
+static int force_simple_name(const std::string & in, std::string & out)
+{
+    out = std::string(in.size(), ' ');
+
+    for (unsigned int i = 0; i < in.size(); ++i) {
+        int c = in[i];
+        if (islower(c) || isdigit(c)) {
+            out[i] = c;
+        } else if (isalpha(c)) {
+            out[i] = ::tolower(c);
+        } else if (isspace(c) || c == '_') {
+            out[i] = '_';
+        } else {
+            return -1;
+        }
+    }
     return 0;
 }
 
@@ -262,7 +281,17 @@ int loadConfig(int argc, char ** argv, int usage)
 
     assert(optind > 0);
 
-    readConfigItem("", "instance", instance);
+    std::string raw_instance;
+
+    if (readConfigItem("", "instance", raw_instance) == 0) {
+        if (force_simple_name(raw_instance, instance) != 0) {
+            log(ERROR, "Invalid instance name.");
+            return CONFIG_ERROR;
+        }
+        if (raw_instance != instance) {
+            log(INFO, String::compose("Using instance name \"%1\".", instance));
+        }
+    }
 
     readConfigItem("cyphesis", "dynamic_port_start", dynamic_port_start);
     readConfigItem("cyphesis", "dynamic_port_end", dynamic_port_end);

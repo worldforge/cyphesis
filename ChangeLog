@@ -1,5 +1,17 @@
 2007-12-05  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistance.cpp: Add an information message when attempting
+	  to create a new instance database.
+
+	* server/server.cpp: Store a new value for the start of the dynamic
+	  port range, if one is allocated.
+
+	* common/globals.cpp: Force the instance name into lower case
+	  alphanumeric, and underscore only. Reject it if it can't easily
+	  be forced.
+
+2007-12-05  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.cpp: Fix the logic for creating per instance
 	  databases.
 
@@ -17652,4 +17664,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2012 2007-12-05 23:54:22 alriddoch Exp $
+$Id: ChangeLog,v 1.2013 2007-12-06 02:46:32 alriddoch Exp $
