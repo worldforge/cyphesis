@@ -1,3 +1,10 @@
+2007-12-07  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/log.cpp: Fix conditional compilation to use UNIX
+	  functionality, broken for ages. syslogging now works again.
+	  Change the ident used for logging, and include the instance
+	  name.
+
 2007-12-06  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/system.h: Add a new exit status code indicating that no
@@ -17683,4 +17690,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2016 2007-12-06 23:50:14 alriddoch Exp $
+$Id: ChangeLog,v 1.2017 2007-12-07 00:27:13 alriddoch Exp $

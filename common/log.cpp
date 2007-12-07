@@ -15,7 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.26 2007-09-22 15:05:35 alriddoch Exp $
+// $Id: log.cpp,v 1.27 2007-12-07 00:27:14 alriddoch Exp $
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "log.h"
 #include "globals.h"
@@ -46,9 +50,9 @@ static void logDate(std::ostream & log_stream)
 
     struct tm local_time_buffer;
 
-    local_time = local_time_buffer;
+    local_time = &local_time_buffer;
 
-    if (localtime_r(&now, local_time) != &local_time) {
+    if (localtime_r(&now, local_time) != local_time) {
         log_stream << "[TIME_ERROR]";
         return;
     }
@@ -91,8 +95,9 @@ bool testEventLog(const char * path)
 void initLogger()
 {
 #ifdef HAVE_SYSLOG
+    std::string ident = String::compose("Cyphesis{%1}", instance);
     if (daemon_flag) {
-        openlog("WorldForge Cyphesis", LOG_PID, LOG_USER);
+        openlog(strdup(ident.c_str()), LOG_PID, LOG_DAEMON);
     }
 #endif // HAVE_SYSLOG
 
