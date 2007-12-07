@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TaskFactory.h,v 1.9 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: TaskFactory.h,v 1.10 2007-12-07 00:59:37 alriddoch Exp $
 
 #ifndef SERVER_TASK_FACTORY_H
 #define SERVER_TASK_FACTORY_H
@@ -29,7 +29,7 @@ class Character;
 
 class ScriptFactory;
 
-/// \brief Base class for for factories for creating task
+/// \brief Factory interface for for factories for creating tasks
 ///
 /// An Entity consists of an instance of one of a number of C++ classes
 /// optionally with a script. Stores information about default attributes,

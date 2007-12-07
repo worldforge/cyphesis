@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.57 2007-11-22 01:05:10 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.58 2007-12-07 00:59:37 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -56,7 +56,7 @@ class RuleWaiting {
 
 typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
 
-/// \brief Class to handle the creation of all entities for the world.
+/// \brief Builder to handle the creation of all entities for the world.
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.

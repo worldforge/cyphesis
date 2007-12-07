@@ -1,5 +1,11 @@
 2007-12-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/PropertyFactory.h, server/EntityFactory.h,
+	  server/TaskFactory.h: Fix up doc comments, using some more
+	  Design Pattern compliant terminology.
+
+2007-12-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Persistance.cpp: Delete the Persistance instance on shutdown.
 
 	* common/inheritance.cpp: Delete the TypeNodes in Inheritance on
@@ -17697,4 +17703,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2018 2007-12-07 00:44:07 alriddoch Exp $
+$Id: ChangeLog,v 1.2019 2007-12-07 00:59:37 alriddoch Exp $
