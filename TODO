@@ -1,7 +1,5 @@
 Put locks around writing the user config file.
 
-Fix leak of all typenodes.
-
 Move bbox out of Location, and make it a soft property only.
 
 Add instance configuration support to tools and clients.

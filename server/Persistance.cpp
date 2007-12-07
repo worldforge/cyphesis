@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.51 2007-12-06 14:03:19 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.52 2007-12-07 00:44:08 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -108,6 +108,8 @@ void Persistance::shutdown()
 {
     m_connection.shutdownConnection();
     delete &m_connection;
+    assert(this == m_instance);
+    delete m_instance;
     m_instance = NULL;
 }
 

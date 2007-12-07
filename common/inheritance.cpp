@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.36 2007-11-26 02:57:05 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.37 2007-12-07 00:44:08 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -102,6 +102,11 @@ Inheritance::Inheritance() : noClass(0)
 
 void Inheritance::flush()
 {
+    TypeNodeDict::const_iterator I = atlasObjects.begin();
+    TypeNodeDict::const_iterator Iend = atlasObjects.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
     atlasObjects.clear();
     opLookup.clear();
 }
