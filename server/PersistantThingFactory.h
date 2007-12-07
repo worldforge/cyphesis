@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.25 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.26 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -25,12 +25,11 @@
 #include <set>
 
 class Entity;
+class ScriptFactory;
+class TypeNode;
 
 template <class T>
 class Persistor;
-
-class ScriptFactory;
-class TypeNode;
 
 /// \brief Interface class for connecting a newly created entity to its
 /// persistor

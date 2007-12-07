@@ -15,16 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.h,v 1.19 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: Py_Thing.h,v 1.20 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef RULESETS_PY_THING_H
 #define RULESETS_PY_THING_H
 
 #include <Python.h>
 
+class Character;
 class Entity;
 class LocatedEntity;
-class Character;
 
 /// \brief Wrapper for LocatedEntity in Python
 /// \ingroup PythonWrappers

@@ -15,15 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Statistics.h,v 1.8 2006-12-10 22:48:02 alriddoch Exp $
+// $Id: Statistics.h,v 1.9 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef RULESETS_STATISTICS_H
 #define RULESETS_STATISTICS_H
 
 #include "common/types.h"
 
-class Character;
 class ArithmeticScript;
+class Character;
 
 /// \brief This class handles presentation of a characters statistics.
 ///

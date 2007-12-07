@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.h,v 1.14 2007-07-05 17:51:41 alriddoch Exp $
+// $Id: Persistor.h,v 1.15 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_PERSISTOR_H
 #define SERVER_PERSISTOR_H
@@ -24,10 +24,10 @@
 
 #include <string>
 
-class Entity;
-class Character;
-class Line;
 class Area;
+class Character;
+class Entity;
+class Line;
 class Plant;
 
 /// \brief Class template for handling persisting entity attributes in

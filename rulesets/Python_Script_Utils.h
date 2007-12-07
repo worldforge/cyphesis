@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_Script_Utils.h,v 1.4 2007-12-04 00:04:00 alriddoch Exp $
+// $Id: Python_Script_Utils.h,v 1.5 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef RULESETS_PYTHON_SCRIPT_UTILS_H
 #define RULESETS_PYTHON_SCRIPT_UTILS_H
@@ -24,8 +24,8 @@
 
 #include <string>
 
-class Entity;
 class BaseMind;
+class Entity;
 
 void Create_PyEntity(Entity * entity, const std::string & package,
                                     const std::string & type);

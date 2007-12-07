@@ -15,15 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyFactory.h,v 1.6 2007-12-07 00:59:37 alriddoch Exp $
+// $Id: PropertyFactory.h,v 1.7 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
 
 #include <string>
 
-class PropertyBase;
 class Entity;
+class PropertyBase;
 
 /// \brief Factory interface for factories to create Property objects.
 class PropertyFactory {

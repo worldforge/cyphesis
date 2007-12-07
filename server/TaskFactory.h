@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TaskFactory.h,v 1.10 2007-12-07 00:59:37 alriddoch Exp $
+// $Id: TaskFactory.h,v 1.11 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_TASK_FACTORY_H
 #define SERVER_TASK_FACTORY_H
@@ -24,10 +24,9 @@
 
 #include <string>
 
-class Task;
 class Character;
-
 class ScriptFactory;
+class Task;
 
 /// \brief Factory interface for for factories for creating tasks
 ///

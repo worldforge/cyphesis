@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restoration.h,v 1.12 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Restoration.h,v 1.13 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_RESTORATION_H
 #define SERVER_RESTORATION_H
@@ -25,9 +25,9 @@
 #include <string>
 #include <map>
 
-class ServerRouting;
 class Database;
 class Entity;
+class ServerRouting;
 
 /// \brief Class to orchestrate restoring the complete world state from
 /// the database at startup

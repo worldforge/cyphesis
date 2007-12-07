@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.h,v 1.50 2007-12-02 23:49:05 alriddoch Exp $
+// $Id: BaseWorld.h,v 1.51 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
@@ -31,10 +31,10 @@
 
 #include <cassert>
 
+class Character;
 class Entity;
 class LocatedEntity;
 class Task;
-class Character;
 
 /// \brief Base class for game world manager object.
 ///

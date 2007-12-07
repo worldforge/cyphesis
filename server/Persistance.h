@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.h,v 1.26 2007-12-05 23:40:05 alriddoch Exp $
+// $Id: Persistance.h,v 1.27 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H
@@ -24,9 +24,9 @@
 
 #include <string>
 
-class Entity;
 class Account;
 class Database;
+class Entity;
 
 typedef std::map<long, Entity *> EntityDict;
 

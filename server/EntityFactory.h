@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.58 2007-12-07 00:59:37 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.59 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -25,13 +25,13 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-class Entity;
-class Character;
-class Task;
-class FactoryBase;
-class TaskFactory;
 class ArithmeticFactory;
 class BaseWorld;
+class Character;
+class Entity;
+class FactoryBase;
+class Task;
+class TaskFactory;
 
 template <class T>
 class PersistantThingFactory;

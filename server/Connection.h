@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.56 2007-01-17 23:00:59 alriddoch Exp $
+// $Id: Connection.h,v 1.57 2007-12-07 01:19:16 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -24,10 +24,10 @@
 
 #include <sigc++/connection.h>
 
-class ServerRouting;
-class CommClient;
 class Account;
 class Character;
+class CommClient;
+class ServerRouting;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///

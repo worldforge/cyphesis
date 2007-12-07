@@ -1,5 +1,16 @@
 2007-12-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/BaseWorld.h, common/PropertyFactory.h, rulesets/Character.h,
+	  rulesets/LocatedEntity.h, rulesets/MemMap.h, rulesets/Py_Location.h,
+	  rulesets/Py_Thing.h, rulesets/Python_Script_Utils.h,
+	  rulesets/Statistics.h, server/Connection.h, server/EntityFactory.h,
+	  server/Persistance.h, server/PersistantThingFactory.h,
+	  server/Persistor.h, server/Restoration.h, server/TaskFactory.h:
+	  Sort forward declarations alphabetically, because alphabetical
+	  is good.
+
+2007-12-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/PropertyFactory.h, server/EntityFactory.h,
 	  server/TaskFactory.h: Fix up doc comments, using some more
 	  Design Pattern compliant terminology.
@@ -17703,4 +17714,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2019 2007-12-07 00:59:37 alriddoch Exp $
+$Id: ChangeLog,v 1.2020 2007-12-07 01:19:16 alriddoch Exp $
