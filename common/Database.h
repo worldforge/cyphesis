@@ -15,13 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.51 2007-12-05 23:40:05 alriddoch Exp $
+// $Id: Database.h,v 1.52 2007-12-07 17:42:58 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
 
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 #include <libpq-fe.h>
 
@@ -34,13 +37,44 @@ class Decoder : public Atlas::Message::DecoderBase {
         m_check = true;
         m_msg = msg;
     }
+
     bool m_check;
     Atlas::Message::MapType m_msg;
   public:
-    Decoder() : m_check (false) { }
-    bool check() const { return m_check; }
+    Decoder() : m_check (false) {
+    }
+
+    bool check() const {
+        return m_check;
+    }
+
     const Atlas::Message::MapType & get() {
-        m_check = false; return m_msg;
+        m_check = false;
+        return m_msg;
+    }
+};
+
+/// \brief Class to handle decoding Atlas encoded database records
+class ObjectDecoder : public Atlas::Objects::ObjectsDecoder {
+  private:
+    virtual void objectArrived(const Atlas::Objects::Root & obj) {
+        m_check = true;
+        m_obj = obj;
+    }
+
+    bool m_check;
+    Atlas::Objects::Root m_obj;
+  public:
+    ObjectDecoder() : m_check (false) {
+    }
+
+    bool check() const {
+        return m_check;
+    }
+
+    const Atlas::Objects::Root & get() {
+        m_check = false;
+        return m_obj;
     }
 };
 
@@ -68,6 +102,7 @@ class Database {
     bool m_queryInProgress;
 
     Decoder m_d;
+    ObjectDecoder m_od;
 
     PGconn * m_connection;
 
@@ -91,7 +126,10 @@ class Database {
     bool queryInProgress() const { return m_queryInProgress; }
 
     bool decodeObject(const std::string & data,
-                      Atlas::Message::MapType &);
+                      Atlas::Objects::Root &);
+
+    bool decodeMessage(const std::string & data,
+                       Atlas::Message::MapType &);
     bool encodeObject(const Atlas::Message::MapType &,
                       std::string &);
     bool putObject(const std::string & table,
@@ -107,7 +145,7 @@ class Database {
     bool delObject(const std::string &, const std::string & key);
     bool hasKey(const std::string &, const std::string & key);
     bool getTable(const std::string & table,
-                  Atlas::Message::MapType &);
+                  std::map<std::string, Atlas::Objects::Root> &);
     bool clearTable(const std::string & table);
 
     void reportError();

@@ -1,5 +1,19 @@
 2007-12-07  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Database.h, common/Database.cpp: Add a new decoder for atlas
+	  objects, and use it when getting the full contents of a table
+	  full of Atlas data.
+
+	* server/Persistance.cpp, server/Persistance.h: Modify the API
+	  for getting the rules table to use atlas objects rather than
+	  messages.
+
+	* server/EntityFactory.cpp: Re-enable loading rules from the
+	  Database, now that the data is available from the peristence
+	  API in the right format.
+
+2007-12-07  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/BaseWorld.h, common/PropertyFactory.h, rulesets/Character.h,
 	  rulesets/LocatedEntity.h, rulesets/MemMap.h, rulesets/Py_Location.h,
 	  rulesets/Py_Thing.h, rulesets/Python_Script_Utils.h,
@@ -17714,4 +17728,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2020 2007-12-07 01:19:16 alriddoch Exp $
+$Id: ChangeLog,v 1.2021 2007-12-07 17:42:58 alriddoch Exp $

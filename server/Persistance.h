@@ -15,14 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.h,v 1.27 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: Persistance.h,v 1.28 2007-12-07 17:42:59 alriddoch Exp $
 
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H
 
-#include <Atlas/Message/Element.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 #include <string>
+#include <map>
 
 class Account;
 class Database;
@@ -53,7 +54,7 @@ class Persistance {
     void addCharacter(const Account &, const Entity &);
     void delCharacter(const std::string &);
     
-    bool getRules(Atlas::Message::MapType & m);
+    bool getRules(std::map<std::string, Atlas::Objects::Root> & m);
     bool clearRules();
 };
 

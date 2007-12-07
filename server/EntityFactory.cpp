@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.129 2007-11-28 20:22:43 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.130 2007-12-07 17:42:58 alriddoch Exp $
 
 #include <Python.h>
 
@@ -834,8 +834,8 @@ void EntityFactory::installRules()
     std::map<std::string, Root> ruleTable;
 
     if (database_flag) {
-        // FIXME Persistance * p = Persistance::instance();
-        // FIXME p->getRules(ruleTable);
+        Persistance * p = Persistance::instance();
+        p->getRules(ruleTable);
     } else {
         getRulesFromFiles(ruleTable);
     }

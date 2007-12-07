@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cydumprules.cpp,v 1.14 2007-12-05 22:43:47 alriddoch Exp $
+// $Id: cydumprules.cpp,v 1.15 2007-12-07 17:42:59 alriddoch Exp $
 
 /// \page cydumprules_index
 ///
@@ -104,7 +104,7 @@ class RuleReader {
         DatabaseResult::const_iterator Iend = res.end();
         for (; I != Iend; ++I) {
             MapType & data = (o[I.column("id")] = MapType()).asMap();
-            m_connection.decodeObject(I.column("contents"), data);
+            m_connection.decodeMessage(I.column("contents"), data);
         }
     }
 };

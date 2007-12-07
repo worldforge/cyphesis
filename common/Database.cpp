@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.98 2007-12-06 02:49:32 alriddoch Exp $
+// $Id: Database.cpp,v 1.99 2007-12-07 17:42:58 alriddoch Exp $
 
 #include "Database.h"
 
@@ -38,6 +38,7 @@
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 
 typedef Atlas::Codecs::XML Serialiser;
 
@@ -257,7 +258,33 @@ void Database::cleanup()
 }
 
 bool Database::decodeObject(const std::string & data,
-                            MapType &o)
+                            Root &o)
+{
+    if (data.empty()) {
+        return true;
+    }
+
+    std::stringstream str(data, std::ios::in);
+
+    Serialiser codec(str, m_od);
+    Atlas::Message::Encoder enc(codec);
+
+    // Clear the decoder
+    m_d.get();
+
+    codec.poll();
+
+    if (!m_od.check()) {
+        log(WARNING, "Database entry does not appear to be decodable");
+        return false;
+    }
+
+    o = m_od.get();
+    return true;
+}
+
+bool Database::decodeMessage(const std::string & data,
+                             MapType &o)
 {
     if (data.empty()) {
         return true;
@@ -333,7 +360,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
     debug(std::cout << "Got record " << key << " from database, value " << data
                     << std::endl << std::flush;);
 
-    bool ret = decodeObject(data, o);
+    bool ret = decodeMessage(data, o);
     PQclear(res);
 
     while ((res = PQgetResult(m_connection)) != NULL) {
@@ -445,7 +472,8 @@ bool Database::hasKey(const std::string & table, const std::string & key)
     return ret;
 }
 
-bool Database::getTable(const std::string & table, MapType &o)
+bool Database::getTable(const std::string & table,
+                        std::map<std::string, Root> & contents)
 {
     if (m_connection == 0) {
         log(CRITICAL, "Database connection is down. This is okay during tests");
@@ -486,7 +514,7 @@ bool Database::getTable(const std::string & table, MapType &o)
         return false;
     }
 
-    MapType t;
+    Root t;
     for(int i = 0; i < results; ++i) {
         const char * key = PQgetvalue(res, i, id_column);
         const char * data = PQgetvalue(res, i, contents_column);
@@ -494,7 +522,7 @@ bool Database::getTable(const std::string & table, MapType &o)
                    << data << std::endl << std::flush;);
 
         if (decodeObject(data, t)) {
-            o[key] = t;
+            contents[key] = t;
         }
 
     }
@@ -1610,5 +1638,5 @@ void DatabaseResult::const_iterator::readColumn(const char * column,
         return;
     }
     const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
-    Database::instance()->decodeObject(v, val);
+    Database::instance()->decodeMessage(v, val);
 }

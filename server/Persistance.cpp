@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.52 2007-12-07 00:44:08 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.53 2007-12-07 17:42:59 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -32,6 +32,7 @@
 #include "common/compose.hpp"
 
 using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
@@ -235,9 +236,9 @@ void Persistance::delCharacter(const std::string & id)
     m_connection.removeRelationRowByOther(m_characterRelation, id);
 }
 
-bool Persistance::getRules(MapType & m)
+bool Persistance::getRules(std::map<std::string, Root> & t)
 {
-    return m_connection.getTable(m_connection.rule(), m);
+    return m_connection.getTable(m_connection.rule(), t);
 }
 
 bool Persistance::clearRules()
