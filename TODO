@@ -1,3 +1,7 @@
+Re-factor abstract factories to be called Kits, and high level factories that
+assemble arrangements of objects as Builders. Concrete factories can then
+use the suffix factory.
+
 Put locks around writing the user config file.
 
 Move bbox out of Location, and make it a soft property only.
