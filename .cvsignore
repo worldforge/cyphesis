@@ -19,6 +19,5 @@ python_doc
 gmon.out
 install-sh
 libtool
-ltmain.sh
 missing
 stamp-h1
