@@ -1,3 +1,14 @@
+2007-12-10  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/globals.cpp: Add usage information for --help and --version
+	  so that the checker does not warn about them.
+
+	* configure.ac: Increment version.
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.15
+
 2007-12-07  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/Database.h, common/Database.cpp: Add a new decoder for atlas
@@ -17728,4 +17739,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2021 2007-12-07 17:42:58 alriddoch Exp $
+$Id: ChangeLog,v 1.2022 2007-12-13 00:21:48 alriddoch Exp $

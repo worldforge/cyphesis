@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.60 2007-12-06 02:46:33 alriddoch Exp $
+// $Id: globals.cpp,v 1.61 2007-12-13 00:21:48 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -85,6 +85,8 @@ typedef struct {
 } usage_data;
 
 static const usage_data usage[] = {
+    { "", "help", "", "", "Display usage information and exit", S|C|M|D },
+    { "", "version", "", "", "Display the version information and exit", S|C|M|D },
     { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
     { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
     { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
@@ -404,7 +406,7 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
         column_width = std::max(column_width, strlen(ud->section) + strlen(ud->option) + strlen(ud->value) + 2);
     }
 
-    std::cout << "  --help, -h        Display this information"
+    std::cout << "  --help, -h        Display usage information and exit"
               << std::endl;
 
     std::cout << "  --version, -v     Display the version information and exit"
