@@ -5,7 +5,6 @@ Build srpm from tarball.
 Edit spec to set Release: info to specify platform, and build rpm.
 Upload to sourceforge and ftp.
 Announce on sourceforge, sourceforge news, WF cyphesis site, WF news,
-WF general+announce, happypenguin, linuxgames, freshmeat, tucows?
+WF general+announce, happypenguin, linuxgames, freshmeat, launchpad.
 Remember Packager tags are important for rpmfind indexing.
 
-configure database off in consts, make and run makeinstaller.
