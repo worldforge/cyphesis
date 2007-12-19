@@ -1,3 +1,5 @@
+B&W style village construction. Nursery, plus schools for training.
+
 Re-factor abstract factories to be called Kits, and high level factories that
 assemble arrangements of objects as Builders. Concrete factories can then
 use the suffix factory.
