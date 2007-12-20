@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.27 2007-12-20 19:33:38 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.28 2007-12-20 20:51:28 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -33,6 +33,10 @@ class Persistor;
 
 /// \brief Interface class for connecting a newly created entity to its
 /// persistor
+///
+/// When an entity is newly created, it is necessary to write it to
+/// the persistent store after it has been fully initialised. This
+/// connector allows the call to be made to the persistor.
 class PersistorBase {
   public:
     virtual ~PersistorBase() { }

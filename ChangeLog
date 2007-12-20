@@ -1,5 +1,13 @@
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp: Delete the peristance connector in
+	  the right place.
+
+	* server/PersistantThingFactory.h: Document what the persistor 
+	  connector does more clearly.
+
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* tests/EntityFactorytest.cpp: Fix up the tests to use the updated
 	  class names.
 
@@ -17776,4 +17784,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2027 2007-12-20 20:00:23 alriddoch Exp $
+$Id: ChangeLog,v 1.2028 2007-12-20 20:51:28 alriddoch Exp $
