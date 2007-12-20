@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactorytest.cpp,v 1.12 2007-11-22 02:06:52 alriddoch Exp $
+// $Id: EntityFactorytest.cpp,v 1.13 2007-12-20 20:00:23 alriddoch Exp $
 
 #include "TestWorld.h"
 
@@ -33,38 +33,38 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
-class ExposedEntityFactory : public EntityFactory {
+class ExposedEntityBuilder : public EntityBuilder {
   public:
-    explicit ExposedEntityFactory(BaseWorld & w) : EntityFactory(w) { }
+    explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder(w) { }
 
     void getRulesFromFiles(std::map<std::string, Root> & rules) {
-        EntityFactory::getRulesFromFiles(rules);
+        EntityBuilder::getRulesFromFiles(rules);
     }
     void installRules() {
-        EntityFactory::installRules();
+        EntityBuilder::installRules();
     }
     void installFactory(const std::string & class_name,
                         const std::string & parent,
-                        FactoryBase * factory) {
-        EntityFactory::installFactory(class_name, parent, factory);
+                        EntityKit * factory) {
+        EntityBuilder::installFactory(class_name, parent, factory);
     }
     void populateEntityFactory(const std::string & class_name,
-                               FactoryBase * factory,
+                               EntityKit * factory,
                                const MapType & class_desc) {
-        EntityFactory::populateEntityFactory(class_name, factory, class_desc);
+        EntityBuilder::populateEntityFactory(class_name, factory, class_desc);
     }
-    FactoryBase * getNewFactory(const std::string & clss) {
-        return EntityFactory::getNewFactory(clss);
+    EntityKit * getNewFactory(const std::string & clss) {
+        return EntityBuilder::getNewFactory(clss);
     }
     int installEntityClass(const std::string & class_name,
                            const std::string & parent,
                            const Root & class_desc) {
-        return EntityFactory::installEntityClass(class_name, parent, class_desc);
+        return EntityBuilder::installEntityClass(class_name, parent, class_desc);
     }
     int installOpDefinition(const std::string & op_def_name,
                             const std::string & parent,
                             const Root & op_def_desc) {
-        return EntityFactory::installOpDefinition(op_def_name, parent, op_def_desc);
+        return EntityBuilder::installOpDefinition(op_def_name, parent, op_def_desc);
     }
 
     const FactoryDict & factoryDict() const { return m_entityFactories; }
@@ -84,16 +84,16 @@ int main(int argc, char ** argv)
         TestWorld test_world(e);
         Anonymous attributes;
 
-        EntityFactory::init(test_world);
+        EntityBuilder::init(test_world);
 
-        assert(EntityFactory::instance() != 0);
+        assert(EntityBuilder::instance() != 0);
 
-        assert(EntityFactory::instance()->newEntity("1", 1, "world", attributes) == 0);
-        assert(EntityFactory::instance()->newEntity("1", 1, "nonexistant", attributes) == 0);
-        assert(EntityFactory::instance()->newEntity("1", 1, "thing", attributes) != 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes) != 0);
 
-        EntityFactory::del();
-        assert(EntityFactory::instance() == 0);
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
     }
 
     {
@@ -102,25 +102,25 @@ int main(int argc, char ** argv)
         Anonymous attributes;
         Atlas::Message::Element val;
 
-        EntityFactory::init(test_world);
+        EntityBuilder::init(test_world);
 
-        assert(EntityFactory::instance() != 0);
+        assert(EntityBuilder::instance() != 0);
 
-        Entity * test_ent = EntityFactory::instance()->newEntity("1", 1, "thing", attributes);
+        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
         assert(!test_ent->getAttr("funky", val));
         assert(val.isNone());
 
         attributes->setAttr("funky", "true");
 
-        test_ent = EntityFactory::instance()->newEntity("1", 1, "thing", attributes);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
         assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
 
-        EntityFactory::del();
-        assert(EntityFactory::instance() == 0);
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
     }
 
     {
@@ -129,9 +129,9 @@ int main(int argc, char ** argv)
         TestWorld test_world(e);
         Atlas::Message::Element val;
 
-        // Instance of EntityFactory with all protected methods exposed
+        // Instance of EntityBuilder with all protected methods exposed
         // for testing
-        ExposedEntityFactory entity_factory(test_world);
+        ExposedEntityBuilder entity_factory(test_world);
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -190,7 +190,7 @@ int main(int argc, char ** argv)
         // the custom type we just installed.
         FactoryDict::const_iterator I = factory_dict.find("custom_type");
         assert(I != factory_dict.end());
-        FactoryBase * custom_type_factory = I->second;
+        EntityKit * custom_type_factory = I->second;
 
         // Check the factory has the attributes we described on the custom
         // type.
@@ -253,7 +253,7 @@ int main(int argc, char ** argv)
         // the second newly installed type
         I = factory_dict.find("custom_inherited_type");
         assert(I != factory_dict.end());
-        FactoryBase * custom_inherited_type_factory = I->second;
+        EntityKit * custom_inherited_type_factory = I->second;
         assert(custom_inherited_type_factory != 0);
 
         // Check that the factory has inherited the attributes from the

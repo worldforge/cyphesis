@@ -1,5 +1,10 @@
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/EntityFactorytest.cpp: Fix up the tests to use the updated
+	  class names.
+
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp, server/EntityFactory.h,
 	  server/PersistantThingFactory.cpp, server/PersistantThingFactory.h,
 	  server/PersistantThingFactory_impl.h: Rename the base class for
@@ -17771,4 +17776,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2026 2007-12-20 19:33:38 alriddoch Exp $
+$Id: ChangeLog,v 1.2027 2007-12-20 20:00:23 alriddoch Exp $
