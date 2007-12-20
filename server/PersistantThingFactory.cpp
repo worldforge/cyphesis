@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.cpp,v 1.17 2007-07-08 23:45:12 alriddoch Exp $
+// $Id: PersistantThingFactory.cpp,v 1.18 2007-12-20 19:27:13 alriddoch Exp $
 
 #include <Python.h>
 
@@ -55,7 +55,7 @@ World * ThingFactory<World>::newPersistantThing(const std::string & id, long int
 template<>
 int ThingFactory<Character>::populate(Entity & e)
 {
-    EntityFactory::instance()->addStatisticsScript((Character &)e);
+    EntityBuilder::instance()->addStatisticsScript((Character &)e);
     return 0;
 }
 

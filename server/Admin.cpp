@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.117 2007-11-15 02:07:05 alriddoch Exp $
+// $Id: Admin.cpp,v 1.118 2007-12-20 19:27:13 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -279,7 +279,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         // Manipulate attributes of existing objects.
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
-            if (EntityFactory::instance()->modifyRule(id, arg) == 0) {
+            if (EntityBuilder::instance()->modifyRule(id, arg) == 0) {
                 Info info;
                 info->setTo(getId());
                 info->setArgs1(arg);
@@ -343,7 +343,7 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
                   res, getId());
             return;
         }
-        if (EntityFactory::instance()->installRule(id, arg) == 0) {
+        if (EntityBuilder::instance()->installRule(id, arg) == 0) {
             Info info;
             info->setTo(getId());
             info->setArgs1(arg);

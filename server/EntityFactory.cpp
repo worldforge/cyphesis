@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.130 2007-12-07 17:42:58 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.131 2007-12-20 19:27:13 alriddoch Exp $
 
 #include <Python.h>
 
@@ -69,9 +69,9 @@ using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
-EntityFactory * EntityFactory::m_instance = NULL;
+EntityBuilder * EntityBuilder::m_instance = NULL;
 
-EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
+EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
 {
     if (consts::enable_persistence && database_flag) {
         installFactory("world", "game_entity", new ForbiddenThingFactory<World>());
@@ -103,12 +103,12 @@ EntityFactory::EntityFactory(BaseWorld & w) : m_world(w)
     new CorePropertyManager();
 }
 
-EntityFactory::~EntityFactory()
+EntityBuilder::~EntityBuilder()
 {
     delete PropertyManager::instance();
 }
 
-void EntityFactory::initWorld()
+void EntityBuilder::initWorld()
 {
     if (!consts::enable_persistence) {
         return;
@@ -126,7 +126,7 @@ void EntityFactory::initWorld()
     wft->m_p.persist((World&)m_world.m_gameWorld);
 }
 
-Entity * EntityFactory::newEntity(const std::string & id, long intId,
+Entity * EntityBuilder::newEntity(const std::string & id, long intId,
                                   const std::string & type,
                                   const RootEntity & attributes) const
 {
@@ -175,12 +175,12 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     }
     if (thing->m_location.velocity().isValid()) {
         if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): "
+            log(ERROR, String::compose("EntityBuilder::newEntity(%1, %2): "
                                        "Entity has velocity set from the "
                                        "attributes given by the creator",
                                        id, type));
         } else {
-            log(ERROR, String::compose("EntityFactory::newEntity(%1, %2): "
+            log(ERROR, String::compose("EntityBuilder::newEntity(%1, %2): "
                                        "Entity has velocity set from an "
                                        "unknown source", id, type));
         }
@@ -194,7 +194,7 @@ Entity * EntityFactory::newEntity(const std::string & id, long intId,
     return thing;
 }
 
-Task * EntityFactory::newTask(const std::string & name, Character & owner) const
+Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
     if (I == m_taskFactories.end()) {
@@ -203,7 +203,7 @@ Task * EntityFactory::newTask(const std::string & name, Character & owner) const
     return I->second->newTask(owner);
 }
 
-Task * EntityFactory::activateTask(const std::string & tool,
+Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
                                    const std::string & target,
                                    Character & owner) const
@@ -231,7 +231,7 @@ Task * EntityFactory::activateTask(const std::string & tool,
     return 0;
 }
 
-int EntityFactory::addStatisticsScript(Character & character) const
+int EntityBuilder::addStatisticsScript(Character & character) const
 {
     StatisticsFactoryDict::const_iterator I = m_statisticsFactories.begin();
     if (I == m_statisticsFactories.end()) {
@@ -241,7 +241,7 @@ int EntityFactory::addStatisticsScript(Character & character) const
     return 0;
 }
 
-void EntityFactory::flushFactories()
+void EntityBuilder::flushFactories()
 {
     FactoryDict::const_iterator Iend = m_entityFactories.end();
     for (FactoryDict::const_iterator I = m_entityFactories.begin(); I != Iend; ++I) {
@@ -262,7 +262,7 @@ void EntityFactory::flushFactories()
     m_taskFactories.clear();
 }
 
-int EntityFactory::populateEntityFactory(const std::string & class_name,
+int EntityBuilder::populateEntityFactory(const std::string & class_name,
                                          FactoryBase * factory,
                                          const MapType & class_desc)
 {
@@ -354,7 +354,7 @@ int EntityFactory::populateEntityFactory(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::populateTaskFactory(const std::string & class_name,
+int EntityBuilder::populateTaskFactory(const std::string & class_name,
                                        TaskFactory * factory,
                                        const MapType & class_desc)
 {
@@ -363,7 +363,7 @@ int EntityFactory::populateTaskFactory(const std::string & class_name,
     return 0;
 }
 
-bool EntityFactory::isTask(const std::string & class_name)
+bool EntityBuilder::isTask(const std::string & class_name)
 {
     if (class_name == "task") {
         return true;
@@ -387,7 +387,7 @@ static void updateChildren(FactoryBase * factory)
     }
 }
 
-int EntityFactory::installTaskClass(const std::string & class_name,
+int EntityBuilder::installTaskClass(const std::string & class_name,
                                     const std::string & parent,
                                     const Root & class_desc)
 {
@@ -538,7 +538,7 @@ int EntityFactory::installTaskClass(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::installEntityClass(const std::string & class_name,
+int EntityBuilder::installEntityClass(const std::string & class_name,
                                       const std::string & parent,
                                       const Root & class_desc)
 {
@@ -589,7 +589,7 @@ int EntityFactory::installEntityClass(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::installOpDefinition(const std::string & class_name,
+int EntityBuilder::installOpDefinition(const std::string & class_name,
                                        const std::string & parent,
                                        const Root & class_desc)
 {
@@ -619,7 +619,7 @@ int EntityFactory::installOpDefinition(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::installRule(const std::string & class_name,
+int EntityBuilder::installRule(const std::string & class_name,
                                const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
@@ -685,7 +685,7 @@ int EntityFactory::installRule(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::modifyEntityClass(const std::string & class_name,
+int EntityBuilder::modifyEntityClass(const std::string & class_name,
                                      const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
@@ -715,7 +715,7 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
         // This is non fatal, but nice to know it has happened.
         // This should only happen if the client attempted to modify the
         // type data for a core hard coded type.
-        log(ERROR, String::compose("EntityFactory::modifyEntityClass: \"%1\" "
+        log(ERROR, String::compose("EntityBuilder::modifyEntityClass: \"%1\" "
                                    "modified by client, but has no parent "
                                    "factory.", class_name));
         factory->m_attributes = MapType();
@@ -734,7 +734,7 @@ int EntityFactory::modifyEntityClass(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::modifyTaskClass(const std::string & class_name,
+int EntityBuilder::modifyTaskClass(const std::string & class_name,
                                    const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
@@ -752,14 +752,14 @@ int EntityFactory::modifyTaskClass(const std::string & class_name,
     return 0;
 }
 
-int EntityFactory::modifyOpDefinition(const std::string & class_name,
+int EntityBuilder::modifyOpDefinition(const std::string & class_name,
                                       const Root & class_desc)
 {
     // Nothing to actually do
     return 0;
 }
 
-int EntityFactory::modifyRule(const std::string & class_name,
+int EntityBuilder::modifyRule(const std::string & class_name,
                               const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
@@ -783,7 +783,7 @@ int EntityFactory::modifyRule(const std::string & class_name,
 ///
 /// Note that a rule cannot yet be installed because it depends on something
 /// that has not yet occured, or a more fatal condition has occured.
-void EntityFactory::waitForRule(const std::string & rulename,
+void EntityBuilder::waitForRule(const std::string & rulename,
                                 const Root & ruledesc,
                                 const std::string & dependent,
                                 const std::string & reason)
@@ -796,7 +796,7 @@ void EntityFactory::waitForRule(const std::string & rulename,
     m_waitingRules.insert(std::make_pair(dependent, rule));
 }
 
-void EntityFactory::getRulesFromFiles(std::map<std::string, Root> & rules)
+void EntityBuilder::getRulesFromFiles(std::map<std::string, Root> & rules)
 {
     std::string filename;
 
@@ -829,7 +829,7 @@ void EntityFactory::getRulesFromFiles(std::map<std::string, Root> & rules)
     ::closedir(rules_dir);
 }
 
-void EntityFactory::installRules()
+void EntityBuilder::installRules()
 {
     std::map<std::string, Root> ruleTable;
 
@@ -864,7 +864,7 @@ void EntityFactory::installRules()
     }
 }
 
-void EntityFactory::installFactory(const std::string & class_name,
+void EntityBuilder::installFactory(const std::string & class_name,
                                    const std::string & parent,
                                    FactoryBase * factory,
                                    Root class_desc)
@@ -884,7 +884,7 @@ void EntityFactory::installFactory(const std::string & class_name,
     }
 }
 
-FactoryBase * EntityFactory::getNewFactory(const std::string & parent)
+FactoryBase * EntityBuilder::getNewFactory(const std::string & parent)
 {
     FactoryDict::const_iterator I = m_entityFactories.find(parent);
     if (I == m_entityFactories.end()) {

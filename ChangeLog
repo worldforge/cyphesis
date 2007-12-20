@@ -1,5 +1,12 @@
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp, server/EntityFactory.h, server/Admin.cpp,
+	  server/PersistantThingFactory.cpp, server/WorldRouter.cpp,
+	  server/server.cpp: Rename EntityFactory to EntityBuilder, to make
+	  it's function clearer.
+
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/PropertyFactory.h, common/PropertyFactory_impl.h,
 	  rulesets/ActivePropertyFactory.h,
 	  rulesets/ActivePropertyFactory_impl.h,
@@ -17757,4 +17764,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2024 2007-12-20 18:47:28 alriddoch Exp $
+$Id: ChangeLog,v 1.2025 2007-12-20 19:27:12 alriddoch Exp $

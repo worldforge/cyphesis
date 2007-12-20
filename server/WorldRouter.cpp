@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.221 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.222 2007-12-20 19:27:13 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -109,7 +109,7 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
     m_initTime = tv.tv_sec;
     updateTime(tv.tv_sec, tv.tv_usec);
     m_gameWorld.incRef();
-    EntityFactory::init(*this);
+    EntityBuilder::init(*this);
     m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
@@ -319,7 +319,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
         return 0;
     }
 
-    Entity * ent = EntityFactory::instance()->newEntity(id, intId, typestr, attrs);
+    Entity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs);
     if (ent == 0) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
@@ -337,7 +337,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
 /// @return a pointer to the new task
 Task * WorldRouter::newTask(const std::string & name, Character & owner)
 {
-    Task * task = EntityFactory::instance()->newTask(name, owner);
+    Task * task = EntityBuilder::instance()->newTask(name, owner);
     if (task == 0) {
         log(ERROR, String::compose("Attempt to create a task of type \"%1\" "
                                    "but type is unknown or forbidden", name));
@@ -359,7 +359,7 @@ Task * WorldRouter::activateTask(const std::string & tool,
                                  const std::string & target,
                                  Character & owner)
 {
-    return EntityFactory::instance()->activateTask(tool, op, target, owner);
+    return EntityBuilder::instance()->activateTask(tool, op, target, owner);
 }
 
 /// \brief Remove an entity from the world.

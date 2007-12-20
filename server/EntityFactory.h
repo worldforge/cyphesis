@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.59 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.60 2007-12-20 19:27:13 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -60,11 +60,11 @@ typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.
-class EntityFactory {
+class EntityBuilder {
   protected:
-    explicit EntityFactory(BaseWorld & w);
-    ~EntityFactory();
-    static EntityFactory * m_instance;
+    explicit EntityBuilder(BaseWorld & w);
+    ~EntityBuilder();
+    static EntityBuilder * m_instance;
 
     FactoryDict m_entityFactories;
     TaskFactoryDict m_taskFactories;
@@ -113,10 +113,10 @@ class EntityFactory {
                      const std::string & reason);
   public:
     static void init(BaseWorld & w) {
-        m_instance = new EntityFactory(w);
+        m_instance = new EntityBuilder(w);
         m_instance->installRules();
     }
-    static EntityFactory * instance() {
+    static EntityBuilder * instance() {
         return m_instance;
     }
     static void del() {

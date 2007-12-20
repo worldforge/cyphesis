@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.157 2007-12-06 23:50:14 alriddoch Exp $
+// $Id: server.cpp,v 1.158 2007-12-20 19:27:13 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -195,7 +195,7 @@ int main(int argc, char ** argv)
         Restoration restore(server);
         if (restore.read() == 1) {
             debug(std::cout << "Bootstrapping world" << std::endl << std::flush;);
-            EntityFactory::instance()->initWorld();
+            EntityBuilder::instance()->initWorld();
             assert(!world.m_gameWorld.m_location.m_pos.isValid());
             assert(!world.m_gameWorld.m_location.m_orientation.isValid());
         } else {
@@ -342,8 +342,8 @@ int main(int argc, char ** argv)
 
     Persistance::instance()->shutdown();
 
-    EntityFactory::instance()->flushFactories();
-    EntityFactory::del();
+    EntityBuilder::instance()->flushFactories();
+    EntityBuilder::del();
     MindFactory::del();
 
     Inheritance::clear();
