@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.158 2007-12-20 19:27:13 alriddoch Exp $
+// $Id: server.cpp,v 1.159 2007-12-20 21:19:05 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -31,7 +31,6 @@
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
-#include "Restoration.h"
 #include "WorldRouter.h"
 #include "Admin.h"
 
@@ -190,25 +189,15 @@ int main(int argc, char ** argv)
     // template
 
     if (database_flag) {
-        log(INFO, _("Restoring world from database..."));
+        // log(INFO, _("Restoring world from database..."));
 
-        Restoration restore(server);
-        if (restore.read() == 1) {
-            debug(std::cout << "Bootstrapping world" << std::endl << std::flush;);
-            EntityBuilder::instance()->initWorld();
-            assert(!world.m_gameWorld.m_location.m_pos.isValid());
-            assert(!world.m_gameWorld.m_location.m_orientation.isValid());
-        } else {
-            // The world should not have POS or ORIENTATION, but will have
-            // picked one up when restored from the database.
-            world.m_gameWorld.m_location.m_pos = Point3D(0,0,0);
-            world.m_gameWorld.m_location.m_pos.setValid(false);
-            world.m_gameWorld.m_location.m_orientation = Quaternion();
-            // world.m_gameWorld.m_location.m_orientation.setValid(false);
-            
-        }
+        // FIXME Do the following steps.
+        // Read the world entity if any from the database.
+        // If there was none, set it up by calling EntityBuilder::initWorld()
+        // If it was there, make sure it did not get any of the wrong
+        // position or orientation data.
 
-        log(INFO, _("Restored world."));
+        // log(INFO, _("Restored world."));
 
         CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
                                         Persistance::instance()->m_connection);

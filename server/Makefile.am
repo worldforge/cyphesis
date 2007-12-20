@@ -74,8 +74,6 @@ cyphesis_SOURCES = \
 		Persistance.cpp Persistance.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
 		PersistantThingFactory_impl.h \
-		Restoration.cpp Restoration.h \
-		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
@@ -122,8 +120,6 @@ cyslave_SOURCES = \
 		Persistance.cpp Persistance.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
 		PersistantThingFactory_impl.h \
-		Restoration.cpp Restoration.h \
-		Restorer.cpp Restorer_impl.h Restorer.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \

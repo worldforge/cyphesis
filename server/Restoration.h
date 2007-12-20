@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restoration.h,v 1.13 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: Restoration.h,v 1.14 2007-12-20 21:19:05 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef SERVER_RESTORATION_H
 #define SERVER_RESTORATION_H
