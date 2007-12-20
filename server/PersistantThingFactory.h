@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.26 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.27 2007-12-20 19:33:38 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -59,9 +59,9 @@ class PersistorConnection : public PersistorBase {
 /// An Entity consists of an instance of one of a number of C++ classes
 /// optionally with a script. Stores information about default attributes,
 /// script language and class name.
-class FactoryBase {
+class EntityKit {
   protected:
-    FactoryBase();
+    EntityKit();
   public:
     ScriptFactory * m_scriptFactory;
     /// Default attribute values for this class
@@ -71,14 +71,14 @@ class FactoryBase {
     Atlas::Message::MapType m_attributes;
     /// Factory for class from which the class handled by this factory
     /// inherits.
-    FactoryBase * m_parent;
+    EntityKit * m_parent;
     /// Set of factories for classes which inherit from the class handled
     /// by this factory.
-    std::set<FactoryBase *> m_children;
+    std::set<EntityKit *> m_children;
     /// Inheritance type of this class.
     TypeNode * m_type;
 
-    virtual ~FactoryBase();
+    virtual ~EntityKit();
 
     /// \brief Create a new Entity and make it persistent.
     ///
@@ -89,11 +89,11 @@ class FactoryBase {
     /// \brief Add anything required to the entity after it has been created.
     virtual int populate(Entity &) = 0;
     /// \brief Create a copy of this factory.
-    virtual FactoryBase * duplicateFactory() = 0;
+    virtual EntityKit * duplicateFactory() = 0;
 };
 
 template <class T>
-class ThingFactory : public FactoryBase {
+class ThingFactory : public EntityKit {
   protected:
     ThingFactory(ThingFactory<T> & o);
   public:
@@ -103,7 +103,7 @@ class ThingFactory : public FactoryBase {
     virtual T * newPersistantThing(const std::string & id, long intId,
                                    PersistorBase ** p);
     virtual int populate(Entity &);
-    virtual FactoryBase * duplicateFactory();
+    virtual EntityKit * duplicateFactory();
 };
 
 // How do we make sure the peristance hooks are put in place in a typesafe way
@@ -124,13 +124,13 @@ class PersistantThingFactory : public ThingFactory<T> {
     virtual ~PersistantThingFactory();
  
     virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
-    virtual FactoryBase * duplicateFactory();
+    virtual EntityKit * duplicateFactory();
 };
 
 /// \brief Class template for factories for entity classes which cannot or
 /// should not be instanced
 template <class T>
-class ForbiddenThingFactory : public FactoryBase {
+class ForbiddenThingFactory : public EntityKit {
   public:
     Persistor<T> & m_p;
     ForbiddenThingFactory() : m_p(* new Persistor<T>()) { }
@@ -139,7 +139,7 @@ class ForbiddenThingFactory : public FactoryBase {
  
     virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
     virtual int populate(Entity &);
-    virtual FactoryBase * duplicateFactory();
+    virtual EntityKit * duplicateFactory();
 };
 
 #endif // SERVER_THING_FACTORY_H

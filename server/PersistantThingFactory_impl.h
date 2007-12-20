@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory_impl.h,v 1.12 2007-07-08 23:45:12 alriddoch Exp $
+// $Id: PersistantThingFactory_impl.h,v 1.13 2007-12-20 19:33:38 alriddoch Exp $
 
 #ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
 #define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
@@ -56,9 +56,9 @@ int ThingFactory<T>::populate(Entity &)
 }
 
 template <class T>
-FactoryBase * ThingFactory<T>::duplicateFactory()
+EntityKit * ThingFactory<T>::duplicateFactory()
 {
-    FactoryBase * f = new ThingFactory<T>(*this);
+    EntityKit * f = new ThingFactory<T>(*this);
     f->m_parent = this;
     return f;
 }
@@ -80,9 +80,9 @@ T * PersistantThingFactory<T>::newPersistantThing(const std::string & id, long i
 }
 
 template <class T>
-FactoryBase * PersistantThingFactory<T>::duplicateFactory()
+EntityKit * PersistantThingFactory<T>::duplicateFactory()
 {
-    FactoryBase * f = new PersistantThingFactory<T>(*this);
+    EntityKit * f = new PersistantThingFactory<T>(*this);
     f->m_parent = this;
     return f;
 }
@@ -106,7 +106,7 @@ int ForbiddenThingFactory<T>::populate(Entity &)
 }
 
 template <class T>
-FactoryBase * ForbiddenThingFactory<T>::duplicateFactory()
+EntityKit * ForbiddenThingFactory<T>::duplicateFactory()
 {
     return 0;
 }

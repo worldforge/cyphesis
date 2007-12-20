@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.60 2007-12-20 19:27:13 alriddoch Exp $
+// $Id: EntityFactory.h,v 1.61 2007-12-20 19:33:38 alriddoch Exp $
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -29,14 +29,14 @@ class ArithmeticFactory;
 class BaseWorld;
 class Character;
 class Entity;
-class FactoryBase;
+class EntityKit;
 class Task;
 class TaskFactory;
 
 template <class T>
 class PersistantThingFactory;
 
-typedef std::map<std::string, FactoryBase *> FactoryDict;
+typedef std::map<std::string, EntityKit *> FactoryDict;
 typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
 typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
 typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
@@ -78,13 +78,13 @@ class EntityBuilder {
     void installRules();
     void installFactory(const std::string & class_name,
                         const std::string & parent,
-                        FactoryBase * factory,
+                        EntityKit * factory,
                         Atlas::Objects::Root classDesc = 0);
-    FactoryBase * getNewFactory(const std::string & parent);
+    EntityKit * getNewFactory(const std::string & parent);
     bool isTask(const std::string & class_name);
 
     int populateEntityFactory(const std::string & class_name,
-                              FactoryBase * factory,
+                              EntityKit * factory,
                               const Atlas::Message::MapType & class_desc);
     int populateTaskFactory(const std::string & class_name,
                             TaskFactory * factory,

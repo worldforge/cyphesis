@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.131 2007-12-20 19:27:13 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.132 2007-12-20 19:33:38 alriddoch Exp $
 
 #include <Python.h>
 
@@ -137,7 +137,7 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     if (I == m_entityFactories.end()) {
         return 0;
     }
-    FactoryBase * factory = I->second;
+    EntityKit * factory = I->second;
     thing = factory->newPersistantThing(id, intId, &pc);
     if (thing == 0) {
         return 0;
@@ -263,7 +263,7 @@ void EntityBuilder::flushFactories()
 }
 
 int EntityBuilder::populateEntityFactory(const std::string & class_name,
-                                         FactoryBase * factory,
+                                         EntityKit * factory,
                                          const MapType & class_desc)
 {
     // assert(class_name == class_desc->getId());
@@ -371,12 +371,12 @@ bool EntityBuilder::isTask(const std::string & class_name)
     return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
-static void updateChildren(FactoryBase * factory)
+static void updateChildren(EntityKit * factory)
 {
-    std::set<FactoryBase *>::const_iterator I = factory->m_children.begin();
-    std::set<FactoryBase *>::const_iterator Iend = factory->m_children.end();
+    std::set<EntityKit *>::const_iterator I = factory->m_children.begin();
+    std::set<EntityKit *>::const_iterator Iend = factory->m_children.end();
     for (; I != Iend; ++I) {
-        FactoryBase * child_factory = *I;
+        EntityKit * child_factory = *I;
         child_factory->m_attributes = factory->m_attributes;
         MapType::const_iterator J = child_factory->m_classAttributes.begin();
         MapType::const_iterator Jend = child_factory->m_classAttributes.end();
@@ -472,7 +472,7 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
                                    activation_tool));
         return -1;
     }
-    FactoryBase * tool_factory = K->second;
+    EntityKit * tool_factory = K->second;
 
     J = activation.find("operation");
     if (J == act_end || !J->second.isString()) {
@@ -555,8 +555,8 @@ int EntityBuilder::installEntityClass(const std::string & class_name,
                                     " does not exist.", class_name, parent));
         return 1;
     }
-    FactoryBase * parent_factory = I->second;
-    FactoryBase * factory = parent_factory->duplicateFactory();
+    EntityKit * parent_factory = I->second;
+    EntityKit * factory = parent_factory->duplicateFactory();
     if (factory == 0) {
         log(ERROR,
             String::compose("Attempt to install rule \"%1\" which has parent "
@@ -696,7 +696,7 @@ int EntityBuilder::modifyEntityClass(const std::string & class_name,
                                    "entity class \"%1\".", class_name));
         return -1;
     }
-    FactoryBase * factory = I->second;
+    EntityKit * factory = I->second;
     assert(factory != 0);
     
     ScriptFactory * script_factory = factory->m_scriptFactory;
@@ -866,7 +866,7 @@ void EntityBuilder::installRules()
 
 void EntityBuilder::installFactory(const std::string & class_name,
                                    const std::string & parent,
-                                   FactoryBase * factory,
+                                   EntityKit * factory,
                                    Root class_desc)
 {
     assert(factory != 0);
@@ -884,7 +884,7 @@ void EntityBuilder::installFactory(const std::string & class_name,
     }
 }
 
-FactoryBase * EntityBuilder::getNewFactory(const std::string & parent)
+EntityKit * EntityBuilder::getNewFactory(const std::string & parent)
 {
     FactoryDict::const_iterator I = m_entityFactories.find(parent);
     if (I == m_entityFactories.end()) {

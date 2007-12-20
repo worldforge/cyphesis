@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.cpp,v 1.18 2007-12-20 19:27:13 alriddoch Exp $
+// $Id: PersistantThingFactory.cpp,v 1.19 2007-12-20 19:33:38 alriddoch Exp $
 
 #include <Python.h>
 
@@ -35,11 +35,11 @@
 
 #include "common/log.h"
 
-FactoryBase::FactoryBase() : m_scriptFactory(0)
+EntityKit::EntityKit() : m_scriptFactory(0)
 {
 }
 
-FactoryBase::~FactoryBase()
+EntityKit::~EntityKit()
 {
     if (m_scriptFactory != 0) {
         delete m_scriptFactory;
