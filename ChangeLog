@@ -1,3 +1,10 @@
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/PropertyFactory.cpp, common/PropertyFactory.h,
+	  rulesets/ActivePropertyFactory.h, rulesets/EntityPropertyFactory.h,
+	  server/CorePropertyManager.cpp, server/CorePropertyManager.h:
+	  Rename abstract base class for property factorys to PropertyKit.
+
 2007-12-10  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/globals.cpp: Add usage information for --help and --version
@@ -17739,4 +17746,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2022 2007-12-13 00:21:48 alriddoch Exp $
+$Id: ChangeLog,v 1.2023 2007-12-20 18:42:43 alriddoch Exp $

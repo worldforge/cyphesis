@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.h,v 1.4 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: CorePropertyManager.h,v 1.5 2007-12-20 18:42:43 alriddoch Exp $
 
 #ifndef SERVER_CORE_PROPERTY_MANAGER_H
 #define SERVER_CORE_PROPERTY_MANAGER_H
@@ -24,16 +24,16 @@
 
 #include <map>
 
-class PropertyFactory;
+class PropertyKit;
 
-typedef std::map<std::string, PropertyFactory *> PropertyFactoryDict;
+typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
 
 /// \brief Property manager for the core server. Handles assigning properties
 /// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
   protected:
     // Data structure for factories and the like?
-    std::map<std::string, PropertyFactory *> m_propertyFactories;
+    std::map<std::string, PropertyKit *> m_propertyFactories;
   public:
     CorePropertyManager();
     virtual ~CorePropertyManager();

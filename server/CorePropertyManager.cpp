@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.25 2007-12-03 23:18:52 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.26 2007-12-20 18:42:43 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -246,8 +246,8 @@ CorePropertyManager::CorePropertyManager()
 
 CorePropertyManager::~CorePropertyManager()
 {
-    std::map<std::string, PropertyFactory *>::const_iterator I = m_propertyFactories.begin();
-    std::map<std::string, PropertyFactory *>::const_iterator Iend = m_propertyFactories.end();
+    std::map<std::string, PropertyKit *>::const_iterator I = m_propertyFactories.begin();
+    std::map<std::string, PropertyKit *>::const_iterator Iend = m_propertyFactories.end();
     for (; I != Iend; ++I) {
         assert(I->second != 0);
         delete I->second;
