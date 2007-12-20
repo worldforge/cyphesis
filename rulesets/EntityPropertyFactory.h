@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityPropertyFactory.h,v 1.2 2007-12-20 18:42:43 alriddoch Exp $
+// $Id: EntityPropertyFactory.h,v 1.3 2007-12-20 18:47:29 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_PROPERTY_FACTORY_H
 #define RULESETS_ENTITY_PROPERTY_FACTORY_H
@@ -26,7 +26,7 @@
 /// \brief Factory class template to create Property objects which require
 /// a pointer to their entity
 template <class T>
-class EntityPropertyBuilder : public PropertyKit {
+class EntityPropertyFactory : public PropertyKit {
   public:
     virtual PropertyBase * newProperty(Entity *);
 };

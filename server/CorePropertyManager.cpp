@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.26 2007-12-20 18:42:43 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.27 2007-12-20 18:47:29 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -56,7 +56,7 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-template class PropertyBuilder<Dynamic<LineProperty, CoordList> >;
+template class PropertyFactory<Dynamic<LineProperty, CoordList> >;
 
 HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 {
@@ -227,21 +227,21 @@ HandlerResult transient_handler(Entity * e,
 
 CorePropertyManager::CorePropertyManager()
 {
-    m_propertyFactories["stamina"] = new PropertyBuilder<DynamicProperty<double> >;
-    m_propertyFactories["coords"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
-    m_propertyFactories["points"] = new PropertyBuilder<Dynamic<LineProperty, CoordList> >;
-    m_propertyFactories["start_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
-    m_propertyFactories["end_intersections"] = new PropertyBuilder<DynamicProperty<IdList> >;
-    m_propertyFactories["attachment"] = new ActivePropertyBuilder<DynamicProperty<int> >(Atlas::Objects::Operation::MOVE_NO, test_handler);
-    m_propertyFactories["decays"] = new ActivePropertyBuilder<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
-    m_propertyFactories["outfit"] = new PropertyBuilder<OutfitProperty>;
-    m_propertyFactories["solid"] = new EntityPropertyBuilder<SolidProperty>;
-    m_propertyFactories["status"] = new EntityPropertyBuilder<StatusProperty>;
-    m_propertyFactories["biomass"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
-    m_propertyFactories["burn_speed"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
-    m_propertyFactories["transient"] = new ActivePropertyBuilder<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);
-    m_propertyFactories["food"] = new PropertyBuilder<DynamicProperty<double> >;
-    m_propertyFactories["mass"] = new PropertyBuilder<DynamicProperty<double> >;
+    m_propertyFactories["stamina"] = new PropertyFactory<DynamicProperty<double> >;
+    m_propertyFactories["coords"] = new PropertyFactory<Dynamic<LineProperty, CoordList> >;
+    m_propertyFactories["points"] = new PropertyFactory<Dynamic<LineProperty, CoordList> >;
+    m_propertyFactories["start_intersections"] = new PropertyFactory<DynamicProperty<IdList> >;
+    m_propertyFactories["end_intersections"] = new PropertyFactory<DynamicProperty<IdList> >;
+    m_propertyFactories["attachment"] = new ActivePropertyFactory<DynamicProperty<int> >(Atlas::Objects::Operation::MOVE_NO, test_handler);
+    m_propertyFactories["decays"] = new ActivePropertyFactory<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
+    m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
+    m_propertyFactories["solid"] = new EntityPropertyFactory<SolidProperty>;
+    m_propertyFactories["status"] = new EntityPropertyFactory<StatusProperty>;
+    m_propertyFactories["biomass"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
+    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
+    m_propertyFactories["transient"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);
+    m_propertyFactories["food"] = new PropertyFactory<DynamicProperty<double> >;
+    m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
 }
 
 CorePropertyManager::~CorePropertyManager()

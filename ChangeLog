@@ -1,5 +1,16 @@
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/PropertyFactory.h, common/PropertyFactory_impl.h,
+	  rulesets/ActivePropertyFactory.h,
+	  rulesets/ActivePropertyFactory_impl.h,
+	  rulesets/EntityPropertyFactory.h,
+	  rulesets/EntityPropertyFactory_impl.h,
+	  server/CorePropertyManager.cpp:
+	  Rename all property factory classes to have PropertyFactory as the
+	  suffix.
+
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/PropertyFactory.cpp, common/PropertyFactory.h,
 	  rulesets/ActivePropertyFactory.h, rulesets/EntityPropertyFactory.h,
 	  server/CorePropertyManager.cpp, server/CorePropertyManager.h:
@@ -17746,4 +17757,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2023 2007-12-20 18:42:43 alriddoch Exp $
+$Id: ChangeLog,v 1.2024 2007-12-20 18:47:28 alriddoch Exp $

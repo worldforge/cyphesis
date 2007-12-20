@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityPropertyFactory_impl.h,v 1.1 2007-01-27 16:35:37 alriddoch Exp $
+// $Id: EntityPropertyFactory_impl.h,v 1.2 2007-12-20 18:47:29 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_PROPERTY_FACTORY_IMPL_H
 #define RULESETS_ENTITY_PROPERTY_FACTORY_IMPL_H
@@ -23,7 +23,7 @@
 #include "EntityPropertyFactory.h"
 
 template <class T>
-PropertyBase * EntityPropertyBuilder<T>::newProperty(Entity * property_owner)
+PropertyBase * EntityPropertyFactory<T>::newProperty(Entity * property_owner)
 {
     return new T(property_owner);
 }
