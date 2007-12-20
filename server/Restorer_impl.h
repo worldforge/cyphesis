@@ -15,14 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer_impl.h,v 1.29 2007-12-03 23:18:52 alriddoch Exp $
+// $Id: Restorer_impl.h,v 1.30 2007-12-20 21:07:51 alriddoch Exp $
 
 #ifndef SERVER_RESTORER_IMPL_H
 #define SERVER_RESTORER_IMPL_H
 
 #include "Restorer.h"
-
-#include "Persistor.h"
 
 #include "common/Database.h"
 
@@ -78,8 +76,6 @@ Entity * Restorer<T>::restore(const std::string & id, long intId,
     Restorer<T> * rt = (Restorer<T> *)t;
 
     rt->populate(dr);
-
-    m_persist.hookup(*t);
 
     return t;
 }

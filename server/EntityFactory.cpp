@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.133 2007-12-20 20:51:28 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.134 2007-12-20 21:07:51 alriddoch Exp $
 
 #include <Python.h>
 
@@ -27,7 +27,6 @@
 #include "TaskFactory.h"
 #include "ArithmeticFactory.h"
 #include "Persistance.h"
-#include "Persistor.h"
 #include "Player.h"
 
 #include "rulesets/Thing.h"
@@ -123,7 +122,7 @@ void EntityBuilder::initWorld()
         log(CRITICAL, "Its not a world factory");
         return;
     }
-    wft->m_p.persist((World&)m_world.m_gameWorld);
+    // FIXME Persist the new world.
 }
 
 Entity * EntityBuilder::newEntity(const std::string & id, long intId,

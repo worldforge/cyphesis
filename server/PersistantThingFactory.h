@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.28 2007-12-20 20:51:28 alriddoch Exp $
+// $Id: PersistantThingFactory.h,v 1.29 2007-12-20 21:07:51 alriddoch Exp $
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -28,9 +28,6 @@ class Entity;
 class ScriptFactory;
 class TypeNode;
 
-template <class T>
-class Persistor;
-
 /// \brief Interface class for connecting a newly created entity to its
 /// persistor
 ///
@@ -42,20 +39,6 @@ class PersistorBase {
     virtual ~PersistorBase() { }
 
     virtual void persist() = 0;
-};
-
-/// \brief Class template for connecting a newly created entity to its
-/// persistor
-template <class T>
-class PersistorConnection : public PersistorBase {
-  private:
-    T & m_t;
-    Persistor<T> & m_p;
-  public:
-    PersistorConnection(T & t, Persistor<T> & p) : m_t(t), m_p(p) { }
-
-    /// Use p to hook up t into the persistance code
-    void persist();
 };
 
 /// \brief Base class for for factories for creating entities
@@ -89,7 +72,9 @@ class EntityKit {
     /// @param id a string giving the identifier of the Entity.
     /// @param intId an integer giving the identifier of the Entity.
     /// @param pb a pointer to the persistor object for the Entity.
-    virtual Entity * newPersistantThing(const std::string & id, long intId, PersistorBase ** pb) = 0;
+    virtual Entity * newPersistantThing(const std::string & id,
+                                        long intId,
+                                        PersistorBase ** pb) = 0;
     /// \brief Add anything required to the entity after it has been created.
     virtual int populate(Entity &) = 0;
     /// \brief Create a copy of this factory.
@@ -104,7 +89,8 @@ class ThingFactory : public EntityKit {
     ThingFactory();
     virtual ~ThingFactory();
 
-    virtual T * newPersistantThing(const std::string & id, long intId,
+    virtual T * newPersistantThing(const std::string & id,
+                                   long intId,
                                    PersistorBase ** p);
     virtual int populate(Entity &);
     virtual EntityKit * duplicateFactory();
@@ -118,16 +104,14 @@ class ThingFactory : public EntityKit {
 template <class T>
 class PersistantThingFactory : public ThingFactory<T> {
   protected:
-    PersistantThingFactory(PersistantThingFactory<T> & p) : m_p(p.m_p),
-                                                            m_master(false) { }
+    PersistantThingFactory(PersistantThingFactory<T> & p) { }
   public:
-    Persistor<T> & m_p;
-    const bool m_master;
-
-    PersistantThingFactory() : m_p(* new Persistor<T>()), m_master(true) { }
+    PersistantThingFactory() { }
     virtual ~PersistantThingFactory();
  
-    virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
+    virtual T * newPersistantThing(const std::string & id,
+                                   long intId,
+                                   PersistorBase ** p);
     virtual EntityKit * duplicateFactory();
 };
 
@@ -136,12 +120,13 @@ class PersistantThingFactory : public ThingFactory<T> {
 template <class T>
 class ForbiddenThingFactory : public EntityKit {
   public:
-    Persistor<T> & m_p;
-    ForbiddenThingFactory() : m_p(* new Persistor<T>()) { }
+    ForbiddenThingFactory() { }
 
     virtual ~ForbiddenThingFactory();
  
-    virtual T * newPersistantThing(const std::string & id, long intId, PersistorBase ** p);
+    virtual T * newPersistantThing(const std::string & id,
+                                   long intId,
+                                   PersistorBase ** p);
     virtual int populate(Entity &);
     virtual EntityKit * duplicateFactory();
 };

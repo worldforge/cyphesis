@@ -15,12 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.cpp,v 1.19 2007-12-20 19:33:38 alriddoch Exp $
+// $Id: PersistantThingFactory.cpp,v 1.20 2007-12-20 21:07:51 alriddoch Exp $
 
 #include <Python.h>
 
 #include "PersistantThingFactory_impl.h"
-#include "Persistor.h"
 #include "ScriptFactory.h"
 #include "EntityFactory.h"
 
@@ -59,27 +58,6 @@ int ThingFactory<Character>::populate(Entity & e)
     return 0;
 }
 
-template<>
-ThingFactory<World>::ThingFactory()
-{
-    // These constructors register the tables with the database layer that
-    // we can use to restore the world state even though persistence is
-    // disabled.
-    if (database_flag) {
-        Persistor<Entity> tmp_entity_persistor;
-        Persistor<World> tmp_world_persistor;
-    }
-}
-
-template class PersistorConnection<Entity>;
-template class PersistorConnection<Thing>;
-template class PersistorConnection<Character>;
-template class PersistorConnection<Creator>;
-template class PersistorConnection<Plant>;
-template class PersistorConnection<Structure>;
-template class PersistorConnection<Stackable>;
-template class PersistorConnection<World>;
-
 template class PersistantThingFactory<Entity>;
 template class PersistantThingFactory<Thing>;
 template class PersistantThingFactory<Character>;
@@ -89,6 +67,7 @@ template class PersistantThingFactory<Structure>;
 template class PersistantThingFactory<Stackable>;
 
 template class ForbiddenThingFactory<World>;
+
 template class ThingFactory<Thing>;
 template class ThingFactory<Character>;
 template class ThingFactory<Creator>;

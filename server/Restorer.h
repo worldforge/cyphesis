@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer.h,v 1.20 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Restorer.h,v 1.21 2007-12-20 21:07:51 alriddoch Exp $
 
 #ifndef SERVER_RESTORER_H
 #define SERVER_RESTORER_H
@@ -57,8 +57,6 @@ class Restorer : public T {
     void rCharacter(DatabaseResult::const_iterator & dr);
     void rPlant(DatabaseResult::const_iterator & dr);
   public:
-    static Persistor<T> m_persist;
-
     void populate(DatabaseResult::const_iterator & dr);
 
     static Entity * restore(const std::string & id, long intId,

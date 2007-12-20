@@ -71,7 +71,6 @@ cyphesis_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
-		Persistor.cpp Persistor_impl.h Persistor.h \
 		Persistance.cpp Persistance.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
 		PersistantThingFactory_impl.h \
@@ -120,7 +119,6 @@ cyslave_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
-		Persistor.cpp Persistor_impl.h Persistor.h \
 		Persistance.cpp Persistance.h \
 		PersistantThingFactory.cpp PersistantThingFactory.h \
 		PersistantThingFactory_impl.h \

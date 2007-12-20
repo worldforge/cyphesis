@@ -1,5 +1,14 @@
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/EntityFactory.cpp, server/Makefile.am,
+	  server/PersistantThingFactory.cpp, server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h, server/Persistor.h,
+	  server/Restoration.cpp, server/Restorer.cpp, server/Restorer.h,
+	  server/Restorer_impl.h: Remove the templated persistor code from
+	  the build.
+
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/EntityFactory.cpp: Delete the peristance connector in
 	  the right place.
 
@@ -17784,4 +17793,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2028 2007-12-20 20:51:28 alriddoch Exp $
+$Id: ChangeLog,v 1.2029 2007-12-20 21:07:51 alriddoch Exp $

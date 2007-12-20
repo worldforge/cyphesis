@@ -15,11 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restoration.cpp,v 1.32 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: Restoration.cpp,v 1.33 2007-12-20 21:07:51 alriddoch Exp $
 
 #include "Restoration.h"
 #include "Restorer.h"
-#include "Persistor.h"
 #include "ServerRouting.h"
 
 #include "rulesets/Creator.h"
@@ -186,7 +185,7 @@ int Restoration::read()
     Restorer<World> & world = (Restorer<World> &)server.m_world.m_gameWorld;
     world.populate(I);
     if (consts::enable_persistence) {
-        Restorer<World>::m_persist.hookup(world);
+        // FIXME Arrange for changes to the world to be stored.
     }
     res.clear();
     restoreChildren(&server.m_world.m_gameWorld);

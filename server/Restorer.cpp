@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restorer.cpp,v 1.21 2007-12-03 20:40:56 alriddoch Exp $
+// $Id: Restorer.cpp,v 1.22 2007-12-20 21:07:51 alriddoch Exp $
 
 #include "Restorer_impl.h"
 
@@ -27,15 +27,6 @@
 #include "rulesets/World.h"
 
 #include "common/terrain_utils.h"
-
-template <> Persistor<Entity> Restorer<Entity>::m_persist(true);
-template <> Persistor<Thing> Restorer<Thing>::m_persist(true);
-template <> Persistor<Character> Restorer<Character>::m_persist(true);
-template <> Persistor<Creator> Restorer<Creator>::m_persist(true);
-template <> Persistor<Plant> Restorer<Plant>::m_persist(true);
-template <> Persistor<Stackable> Restorer<Stackable>::m_persist(true);
-template <> Persistor<Structure> Restorer<Structure>::m_persist(true);
-template <> Persistor<World> Restorer<World>::m_persist(true);
 
 template<>
 void Restorer<Character>::rCharacter(DatabaseResult::const_iterator & dr)

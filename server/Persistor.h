@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.h,v 1.15 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: Persistor.h,v 1.16 2007-12-20 21:07:51 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef SERVER_PERSISTOR_H
 #define SERVER_PERSISTOR_H
