@@ -1,5 +1,10 @@
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
+	* tests/Makefile.am: Remove obsolete persistence code from tests
+	  that used to depend on it.
+
+2007-12-20  Al Riddoch  <alriddoch@zepler.org>
+
 	* server/Makefile.am, server/Restoration.h, server/Restorer.h,
 	  server/server.cpp: Remove the counter part templated restorer
 	  code from the build.
@@ -17799,4 +17804,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2030 2007-12-20 21:19:04 alriddoch Exp $
+$Id: ChangeLog,v 1.2031 2007-12-20 21:23:26 alriddoch Exp $

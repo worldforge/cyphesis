@@ -431,7 +431,6 @@ EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/CorePropertyManager.o \
                           $(top_builddir)/server/PersistantThingFactory.o \
-                          $(top_builddir)/server/Persistor.o \
                           $(top_builddir)/server/Persistance.o \
                           $(top_builddir)/server/Account.o \
                           $(top_builddir)/server/Admin.o \
