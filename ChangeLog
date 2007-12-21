@@ -1,3 +1,12 @@
+2007-12-21  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/terrain_utils.h, common/Makefile.am: Remove the persistence
+	  code used to save terrain data.
+
+	* common/Database.cpp, common/Database.h: Remove the object
+	  relational API for persisting entity data, and put the code
+	  beyond use.
+
 2007-12-20  Al Riddoch  <alriddoch@zepler.org>
 
 	* tests/Makefile.am: Remove obsolete persistence code from tests
@@ -17804,4 +17813,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2031 2007-12-20 21:23:26 alriddoch Exp $
+$Id: ChangeLog,v 1.2032 2007-12-21 16:42:35 alriddoch Exp $

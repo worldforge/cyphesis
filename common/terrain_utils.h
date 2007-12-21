@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: terrain_utils.h,v 1.3 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: terrain_utils.h,v 1.4 2007-12-21 16:42:36 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef COMMON_TERRAIN_UTILS_H
 #define COMMON_TERRAIN_UTILS_H

@@ -24,7 +24,6 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      operations.cpp \
 		      globals.cpp globals.h \
 		      Database.cpp Database.h \
-		      terrain_utils.cpp terrain_utils.h \
 		      system.cpp system.h \
 		      serialno.cpp serialno.h \
 		      inheritance.cpp custom.cpp inheritance.h \

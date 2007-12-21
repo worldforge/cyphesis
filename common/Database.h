@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.52 2007-12-07 17:42:58 alriddoch Exp $
+// $Id: Database.h,v 1.53 2007-12-21 16:42:36 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -80,7 +80,6 @@ class ObjectDecoder : public Atlas::Objects::ObjectsDecoder {
 
 class DatabaseResult;
 
-typedef std::map<std::string, std::string> TableDict;
 typedef std::vector<std::string> StringVector;
 typedef std::set<std::string> TableSet;
 typedef std::pair<std::string, ExecStatusType> DatabaseQuery;
@@ -97,7 +96,6 @@ class Database {
     std::string m_rule_db;
 
     TableSet allTables;
-    TableDict entityTables;
     QueryQue pendingQueries;
     bool m_queryInProgress;
 
@@ -203,46 +201,6 @@ class Database {
     bool registerEntityIdGenerator();
     long newId(std::string & id);
 
-    // Interface for inherited tables for storing IG entities.
-
-    bool registerEntityTable(const std::string & classname,
-                             const Atlas::Message::MapType & row,
-                             const std::string & parent = "");
-    bool createEntityRow(const std::string & classname,
-                         const std::string & id,
-                         const std::string & columns,
-                         const std::string & values);
-    bool updateEntityRow(const std::string & classname,
-                         const std::string & id,
-                         const std::string & columns);
-    bool removeEntityRow(const std::string & classname,
-                         const std::string & id);
-    const DatabaseResult selectEntityRow(const std::string & id,
-                                         const std::string & classname = "");
-    const DatabaseResult selectClassByLoc(const std::string & loc);
-    const DatabaseResult selectOnlyByLoc(const std::string & loc,
-                                         const std::string & classname);
-
-    // Interface for tables for sparse sequences or arrays of data. Terrain
-    // control points and other spatial data.
-
-    bool registerArrayTable(const std::string & name,
-                            unsigned int dimension,
-                            const Atlas::Message::MapType & row_data);
-    const DatabaseResult selectArrayRows(const std::string & name,
-                                         const std::string & id);
-    bool createArrayRow(const std::string & name,
-                        const std::string & id,
-                        const std::vector<int> & key,
-                        const Atlas::Message::MapType & data);
-    bool updateArrayRow(const std::string & name,
-                        const std::string & id,
-                        const std::vector<int> & key,
-                        const Atlas::Message::MapType & data);
-    bool removeArrayRow(const std::string & name,
-                        const std::string & id,
-                        const std::vector<int> & key);
-                                   
     // Interface for CommPSQLSocket, so it can give us feedback
     
     void queryResult(ExecStatusType);

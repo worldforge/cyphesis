@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.99 2007-12-07 17:42:58 alriddoch Exp $
+// $Id: Database.cpp,v 1.100 2007-12-21 16:42:36 alriddoch Exp $
 
 #include "Database.h"
 
@@ -942,6 +942,7 @@ long Database::newId(std::string & id)
     return forceIntegerId(id);
 }
 
+#if 0
 bool Database::registerEntityTable(const std::string & classname,
                                    const MapType & row,
                                    const std::string & parent)
@@ -1199,7 +1200,9 @@ const DatabaseResult Database::selectClassByLoc(const std::string & loc)
 
     return runSimpleSelectQuery(query);
 }
+#endif // 0
 
+#if 0
 // Interface for tables for sparse sequences or arrays of data. Terrain
 // control points and other spatial data.
 
@@ -1434,6 +1437,7 @@ bool Database::removeArrayRow(const std::string & name,
     /// Not sure we need this one yet, so lets no bother for now ;)
     return false;
 }
+#endif // 0
 
 // General functions for handling queries at the low level.
 
