@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.53 2007-12-21 16:42:36 alriddoch Exp $
+// $Id: Database.h,v 1.54 2007-12-21 19:51:25 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -90,7 +90,7 @@ typedef std::deque<DatabaseQuery> QueryQue;
 /// Most SQL is generated from here, including queries for handling all
 /// table creation, queries to simple non-inherited tables and more
 class Database {
-  private:
+  protected:
     static Database * m_instance;
 
     std::string m_rule_db;
@@ -217,11 +217,7 @@ class Database {
 /// This allows the result to be used in the upper layers in a database
 /// independant way.
 class DatabaseResult {
-#if defined (__GNUC__) && __GNUC__ < 3 && __GNUC_MINOR__ <= 95
   private:
-#else
-  public:
-#endif
     PGresult * m_res;
   public:
     explicit DatabaseResult(PGresult * r) : m_res(r) { }
