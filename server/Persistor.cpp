@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistor.cpp,v 1.39 2007-12-03 23:18:52 alriddoch Exp $
+// $Id: Persistor.cpp,v 1.40 2007-12-24 02:49:29 alriddoch Exp $
+
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include "Persistor.h"
 #include "Persistor_impl.h"

@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Restoration.cpp,v 1.33 2007-12-20 21:07:51 alriddoch Exp $
+// $Id: Restoration.cpp,v 1.34 2007-12-24 02:49:30 alriddoch Exp $
+
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include "Restoration.h"
 #include "Restorer.h"

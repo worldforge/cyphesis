@@ -1,5 +1,12 @@
 2007-12-24  Al Riddoch  <alriddoch@zepler.org>
 
+	* server/Persistor.cpp, server/Persistor_impl.h,
+	  server/Restoration.cpp, server/Restorer.cpp,
+	  server/Restorer_impl.h: Add errors to files removed from the
+	  build.
+
+2007-12-24  Al Riddoch  <alriddoch@zepler.org>
+
 	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/LocatedEntity.cpp,
 	  rulesets/LocatedEntity.h: Remove raw atlas attributes, and use
 	  properties for everything, cutting down the differences in
@@ -17837,4 +17844,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2035 2007-12-24 00:32:11 alriddoch Exp $
+$Id: ChangeLog,v 1.2036 2007-12-24 02:49:29 alriddoch Exp $
