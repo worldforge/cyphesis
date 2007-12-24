@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.141 2007-12-04 00:04:00 alriddoch Exp $
+// $Id: Entity.cpp,v 1.142 2007-12-24 00:06:20 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -80,10 +80,6 @@ bool Entity::hasAttr(const std::string & name) const
     if (I != m_properties.end()) {
         return true;
     }
-    MapType::const_iterator J = m_attributes.find(name);
-    if (J != m_attributes.end()) {
-        return true;
-    }
     return false;
     
 }
@@ -93,11 +89,6 @@ bool Entity::getAttr(const std::string & name, Element & attr) const
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second->get(attr);
-    }
-    MapType::const_iterator J = m_attributes.find(name);
-    if (J != m_attributes.end()) {
-        attr = J->second;
-        return true;
     }
     return false;
 }
@@ -110,23 +101,15 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         m_update_flags |= I->second->flags();
         return;
     }
-    MapType::iterator J = m_attributes.find(name);
-    if (J == m_attributes.end()) {
-        PropertyBase * prop = PropertyManager::instance()->addProperty(this,
-                                                                       name);
-        if (prop != 0) {
-            prop->set(attr);
-            m_properties[name] = prop;
-            m_update_flags |= prop->flags();
-        } else {
-            m_attributes[name] = attr;
-            m_update_flags |= a_attr;
-        }
-        return;
+    PropertyBase * prop = PropertyManager::instance()->addProperty(this, name);
+    if (prop == 0) {
+        prop = new SoftProperty(attr);
+    } else {
+        prop->set(attr);
     }
-    J->second = attr;
-    // m_attributes[name] = attr;
-    m_update_flags |= a_attr;
+    m_properties[name] = prop;
+    m_update_flags |= prop->flags();
+    return;
 }
 
 PropertyBase * Entity::getProperty(const std::string & name) const
@@ -153,6 +136,7 @@ void Entity::setProperty(const std::string & name, PropertyBase * prop)
 void Entity::addToMessage(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
+    assert(m_attributes.empty());
     MapType::const_iterator Iend = m_attributes.end();
     for (MapType::const_iterator I = m_attributes.begin(); I != Iend; ++I) {
         omap[I->first] = I->second;
@@ -174,6 +158,7 @@ void Entity::addToMessage(MapType & omap) const
 void Entity::addToEntity(const RootEntity & ent) const
 {
     // We need to have a list of keys to pull from attributes.
+    assert(m_attributes.empty());
     MapType::const_iterator Iend = m_attributes.end();
     for (MapType::const_iterator I = m_attributes.begin(); I != Iend; ++I) {
         ent->setAttr(I->first, I->second);

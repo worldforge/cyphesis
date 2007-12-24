@@ -1,5 +1,14 @@
 2007-12-21  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/Property.h, common/Property.cpp: Add a soft property class,
+	  which can take values of any type.
+
+	* rulesets/Entity.cpp: Use soft property for any values for which
+	  there is no assigned property factory, and avoid using raw atlas
+	  attributes completely.
+
+2007-12-21  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/Database.h: Remove a nasty hack for old compilers, and
 	  make the private part of Database protected.
 
@@ -17818,4 +17827,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2033 2007-12-21 19:51:24 alriddoch Exp $
+$Id: ChangeLog,v 1.2034 2007-12-24 00:06:20 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.17 2006-12-27 00:32:33 alriddoch Exp $
+// $Id: Property.h,v 1.18 2007-12-24 00:06:20 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -95,6 +95,18 @@ class SignalProperty : public Property<T>, virtual public sigc::trackable {
 
     /// \brief Signal that is emitted when this Property is modified.
     sigc::signal<void> modified;
+};
+
+class SoftProperty : public PropertyBase {
+  protected:
+    Atlas::Message::Element m_data;
+  public:
+    explicit SoftProperty(const Atlas::Message::Element & data);
+
+    /// \brief Copy the value of the property into an Atlas Message
+    virtual bool get(Atlas::Message::Element & val) const;
+    /// \brief Read the value of the property from an Atlas Message
+    virtual void set(const Atlas::Message::Element & val);
 };
 
 #endif // COMMON_PROPERTY_H

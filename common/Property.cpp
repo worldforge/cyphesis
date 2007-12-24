@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.cpp,v 1.13 2007-01-14 21:55:22 alriddoch Exp $
+// $Id: Property.cpp,v 1.14 2007-12-24 00:06:20 alriddoch Exp $
 
 #include "Property_impl.h"
 
@@ -97,6 +97,22 @@ void ImmutableProperty<std::string>::add(const std::string & s,
     if (!m_data.empty()) {
         ent[s] = m_data;
     }
+}
+
+SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
+              PropertyBase(0), m_data(data)
+{
+}
+
+bool SoftProperty::get(Atlas::Message::Element & val) const
+{
+    val = m_data;
+    return true;
+}
+
+void SoftProperty::set(const Atlas::Message::Element & val)
+{
+    m_data = val;
 }
 
 template class Property<int>;
