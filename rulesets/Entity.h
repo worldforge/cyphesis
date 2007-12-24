@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.96 2007-12-04 00:04:00 alriddoch Exp $
+// $Id: Entity.h,v 1.97 2007-12-24 00:32:11 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -32,8 +32,6 @@
 #include <iostream>
 
 class Motion;
-
-typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief Classes that model in world entities
 ///
@@ -56,8 +54,6 @@ class Entity : public LocatedEntity {
   protected:
     /// Motion behavoir of this entity
     Motion * m_motion;
-    /// Map of properties
-    PropertyDict m_properties;
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
 
@@ -98,13 +94,9 @@ class Entity : public LocatedEntity {
     /// \brief Reset the update flags
     void clearUpdateFlags() { m_update_flags = 0; }
 
-    virtual bool hasAttr(const std::string & name) const;
-    virtual bool getAttr(const std::string & name,
-                         Atlas::Message::Element &) const;
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
 
-    virtual PropertyBase * getProperty(const std::string & name) const;
     void setProperty(const std::string & name, PropertyBase * prop);
 
     void installHandler(int, Handler);

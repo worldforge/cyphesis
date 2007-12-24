@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.224 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: Thing.cpp,v 1.225 2007-12-24 00:32:12 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -473,9 +473,6 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
     PropertyDict::const_iterator J;
     PropertyDict::const_iterator Jend = m_properties.end();
 
-    MapType::const_iterator K;
-    MapType::const_iterator Kend = m_attributes.end();
-
     for (; I != Iend; ++I) {
         const std::string & attr = I->first;
         debug(std::cout << "  " << attr << std::endl << std::flush;);
@@ -485,14 +482,8 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
             // Dump the property value into the Sight(Set()) arg
             J->second->add(attr, set_arg);
         } else {
-            K = m_attributes.find(attr);
-            if (K != Kend) {
-                // Copy the attribute into the Sight(Set()) arg
-                set_arg->setAttr(attr, K->second);
-            } else {
-                error(op, String::compose("Got update for non-existant attribute or property \"%1\"",
-                                          attr), res, getId());
-            }
+            error(op, String::compose("Got update for non-existant property "
+                                      "\"%1\"", attr), res, getId());
         }
     }
 

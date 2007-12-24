@@ -15,11 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.3 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.4 2007-12-24 00:32:11 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
 #include "Script.h"
+
+#include "common/Property.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -72,8 +74,8 @@ LocatedEntity::~LocatedEntity()
 /// false otherwise
 bool LocatedEntity::hasAttr(const std::string & name) const
 {
-    MapType::const_iterator J = m_attributes.find(name);
-    if (J != m_attributes.end()) {
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
         return true;
     }
     return false;
@@ -88,10 +90,9 @@ bool LocatedEntity::hasAttr(const std::string & name) const
 /// false otherwise
 bool LocatedEntity::getAttr(const std::string & name, Element & attr) const
 {
-    MapType::const_iterator J = m_attributes.find(name);
-    if (J != m_attributes.end()) {
-        attr = J->second;
-        return true;
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second->get(attr);
     }
     return false;
 }
@@ -102,12 +103,13 @@ bool LocatedEntity::getAttr(const std::string & name, Element & attr) const
 /// @param attr Value to be stored
 void LocatedEntity::setAttr(const std::string & name, const Element & attr)
 {
-    MapType::iterator J = m_attributes.find(name);
-    if (J == m_attributes.end()) {
-        m_attributes[name] = attr;
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        I->second->set(attr);
         return;
     }
-    J->second = attr;
+    m_properties[name] = new SoftProperty(attr);
+    return;
 }
 
 /// \brief Get the property object for a given attribute
@@ -117,6 +119,10 @@ void LocatedEntity::setAttr(const std::string & name, const Element & attr)
 /// not exist, or is not stored using a property object.
 PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
     return 0;
 }
 

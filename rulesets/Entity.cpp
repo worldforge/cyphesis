@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.142 2007-12-24 00:06:20 alriddoch Exp $
+// $Id: Entity.cpp,v 1.143 2007-12-24 00:32:11 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -74,25 +74,6 @@ Entity::~Entity()
     }
 }
 
-bool Entity::hasAttr(const std::string & name) const
-{
-    PropertyDict::const_iterator I = m_properties.find(name);
-    if (I != m_properties.end()) {
-        return true;
-    }
-    return false;
-    
-}
-
-bool Entity::getAttr(const std::string & name, Element & attr) const
-{
-    PropertyDict::const_iterator I = m_properties.find(name);
-    if (I != m_properties.end()) {
-        return I->second->get(attr);
-    }
-    return false;
-}
-
 void Entity::setAttr(const std::string & name, const Element & attr)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
@@ -112,15 +93,6 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     return;
 }
 
-PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    PropertyDict::const_iterator I = m_properties.find(name);
-    if (I != m_properties.end()) {
-        return I->second;
-    }
-    return 0;
-}
-
 /// \brief Set the property object for a given attribute
 ///
 /// @param name name of the attribute for which the property is given
@@ -136,11 +108,6 @@ void Entity::setProperty(const std::string & name, PropertyBase * prop)
 void Entity::addToMessage(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
-    assert(m_attributes.empty());
-    MapType::const_iterator Iend = m_attributes.end();
-    for (MapType::const_iterator I = m_attributes.begin(); I != Iend; ++I) {
-        omap[I->first] = I->second;
-    }
     PropertyDict::const_iterator J = m_properties.begin();
     PropertyDict::const_iterator Jend = m_properties.end();
     for (; J != Jend; ++J) {
@@ -158,11 +125,6 @@ void Entity::addToMessage(MapType & omap) const
 void Entity::addToEntity(const RootEntity & ent) const
 {
     // We need to have a list of keys to pull from attributes.
-    assert(m_attributes.empty());
-    MapType::const_iterator Iend = m_attributes.end();
-    for (MapType::const_iterator I = m_attributes.begin(); I != Iend; ++I) {
-        ent->setAttr(I->first, I->second);
-    }
     PropertyDict::const_iterator J = m_properties.begin();
     PropertyDict::const_iterator Jend = m_properties.end();
     for (; J != Jend; ++J) {

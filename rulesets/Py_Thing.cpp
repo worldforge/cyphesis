@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.64 2007-12-03 20:40:55 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.65 2007-12-24 00:32:12 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -254,11 +254,6 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
             Py_INCREF(Py_None);
             return Py_None;
         }
-    }
-    const MapType & attrs = entity->getAttributes();
-    MapType::const_iterator I = attrs.find(name);
-    if (I != attrs.end()) {
-        return MessageElement_asPyObject(I->second);
     }
     return Py_FindMethod(self->m_methods, (PyObject *)self, name);
 }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.4 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.5 2007-12-24 00:32:11 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -30,6 +30,7 @@ class Script;
 class TypeNode;
 
 typedef std::set<LocatedEntity *> LocatedEntitySet;
+typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
@@ -49,8 +50,8 @@ class LocatedEntity : public BaseEntity {
     /// Count of references held by other objects to this entity
     int m_refCount;
   protected:
-    /// Map of non-hardcoded attributes
-    Atlas::Message::MapType m_attributes;
+    /// Map of properties
+    PropertyDict m_properties;
 
     /// Sequence number
     int m_seq;
@@ -87,11 +88,6 @@ class LocatedEntity : public BaseEntity {
     /// \brief Check the reference count on this entity
     int checkRef() const {
         return m_refCount;
-    }
-
-    /// \brief Accessor for soft attribute map
-    const Atlas::Message::MapType & getAttributes() const {
-        return m_attributes;
     }
 
     /// \brief Accessor for pointer to script object
