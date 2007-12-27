@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.134 2007-12-20 21:07:51 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.135 2007-12-27 03:19:52 alriddoch Exp $
 
 #include <Python.h>
 
@@ -59,12 +59,13 @@
 #include <dirent.h>
 #endif // HAS_DIRENT_H
 
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
+
+typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
 static const bool debug_flag = false;
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.34 2007-11-26 02:57:05 alriddoch Exp $
+// $Id: inheritance.h,v 1.35 2007-12-27 03:19:53 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -30,8 +30,6 @@
 void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
-
-typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
 class TypeNode {
   protected:

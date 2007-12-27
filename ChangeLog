@@ -1,3 +1,8 @@
+2007-12-27  Al Riddoch  <alriddoch@zepler.org>
+
+	* common/inheritance.h, server/EntityFactory.cpp: Move a typedef
+	  into the only cpp file where it is used.
+
 2007-12-24  Al Riddoch  <alriddoch@zepler.org>
 
 	* server/Persistor.cpp, server/Persistor_impl.h,
@@ -17844,4 +17849,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2036 2007-12-24 02:49:29 alriddoch Exp $
+$Id: ChangeLog,v 1.2037 2007-12-27 03:19:53 alriddoch Exp $
