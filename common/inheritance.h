@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.35 2007-12-27 03:19:53 alriddoch Exp $
+// $Id: inheritance.h,v 1.36 2007-12-27 03:31:48 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -27,54 +27,11 @@
 
 #include <iostream>
 
+class TypeNode;
+
 void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
-
-class TypeNode {
-  protected:
-    std::string m_name;
-
-    Atlas::Message::MapType m_defaults;
-
-    Atlas::Objects::Root m_description;
-
-    const TypeNode * m_parent;
-  public:
-    TypeNode();
-
-    const std::string & name() const {
-        return m_name;
-    }
-
-    std::string & name() {
-        return m_name;
-    }
-
-    const Atlas::Message::MapType & defaults() const {
-        return m_defaults;
-    }
-
-    Atlas::Message::MapType & defaults() {
-        return m_defaults;
-    }
-
-    Atlas::Objects::Root & description() {
-        return m_description;
-    }
-
-    const Atlas::Objects::Root & description() const {
-        return m_description;
-    }
-
-    const TypeNode * parent() const {
-        return m_parent;
-    }
-
-    void setParent(const TypeNode * parent) {
-        m_parent = parent;
-    }
-};
 
 typedef std::map<std::string, const TypeNode *> TypeNodeDict;
 

@@ -15,11 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.37 2007-12-07 00:44:08 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.38 2007-12-27 03:31:48 alriddoch Exp $
 
 #include "inheritance.h"
 
 #include "log.h"
+#include "TypeNode.h"
 #include "compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
@@ -56,10 +57,6 @@ using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
-
-TypeNode::TypeNode() : m_parent(0)
-{
-}
 
 Inheritance * Inheritance::m_instance = NULL;
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.143 2007-12-24 00:32:11 alriddoch Exp $
+// $Id: Entity.cpp,v 1.144 2007-12-27 03:31:48 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -24,7 +24,7 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/inheritance.h"
+#include "common/TypeNode.h"
 #include "common/PropertyManager.h"
 
 #include <wfmath/atlasconv.h>

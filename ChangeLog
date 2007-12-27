@@ -1,5 +1,20 @@
 2007-12-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* common/TypeNode.h, common/TypeNode.cpp: Move TypeNode into
+	  its own files.
+
+	* common/Makefile.am, common/inheritance.cpp, common/inheritance.h:
+	  Add the new files to the build and remove the old implementation.
+
+	* client/Py_CreatorClient.cpp, rulesets/Character.cpp,
+	  rulesets/Entity.cpp, rulesets/MemMap.cpp,
+	  rulesets/MindFactory.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Stackable.cpp,
+	  server/WorldRouter.cpp: Fix up the includes for all code that
+	  uses TypeNode.
+
+2007-12-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/inheritance.h, server/EntityFactory.cpp: Move a typedef
 	  into the only cpp file where it is used.
 
@@ -17849,4 +17864,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2037 2007-12-27 03:19:53 alriddoch Exp $
+$Id: ChangeLog,v 1.2038 2007-12-27 03:31:47 alriddoch Exp $

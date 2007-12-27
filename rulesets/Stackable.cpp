@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackable.cpp,v 1.53 2007-11-28 10:57:00 alriddoch Exp $
+// $Id: Stackable.cpp,v 1.54 2007-12-27 03:31:48 alriddoch Exp $
 
 // A stackable object, ie one which can represent multiple object of the
 // same type. Used for things like coins.
@@ -26,7 +26,7 @@
 
 #include "common/Property.h"
 #include "common/log.h"
-#include "common/inheritance.h"
+#include "common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
