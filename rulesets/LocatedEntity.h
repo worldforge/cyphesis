@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.5 2007-12-24 00:32:11 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.6 2007-12-29 01:33:57 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -24,13 +24,8 @@
 
 #include "common/BaseEntity.h"
 
-class LocatedEntity;
-class PropertyBase;
 class Script;
 class TypeNode;
-
-typedef std::set<LocatedEntity *> LocatedEntitySet;
-typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.

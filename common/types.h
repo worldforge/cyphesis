@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: types.h,v 1.41 2007-12-02 23:49:05 alriddoch Exp $
+// $Id: types.h,v 1.42 2007-12-29 01:33:57 alriddoch Exp $
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
@@ -29,6 +29,7 @@
 class BaseEntity;
 class Entity;
 class LocatedEntity;
+class PropertyBase;
 
 #define OP_ACTION Atlas::Objects::Operation::ACTION_NO
 #define OP_ADD Atlas::Objects::Operation::ADD_NO
@@ -83,6 +84,8 @@ typedef std::set<LocatedEntity *> LocatedEntitySet;
 
 typedef std::vector<Operation> OpVector;
 typedef std::map<std::string,OpNo> OpNoDict;
+
+typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 typedef enum {
     OPERATION_BLOCKED, // Handler has determined that op should stop here
