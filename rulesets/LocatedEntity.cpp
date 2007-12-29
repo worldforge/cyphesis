@@ -15,13 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.4 2007-12-24 00:32:11 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.5 2007-12-29 01:53:26 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
 #include "Script.h"
 
 #include "common/Property.h"
+#include "common/TypeNode.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -93,6 +94,12 @@ bool LocatedEntity::getAttr(const std::string & name, Element & attr) const
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second->get(attr);
+    }
+    if (m_type != 0) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return I->second->get(attr);
+        }
     }
     return false;
 }

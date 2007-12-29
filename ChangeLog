@@ -1,5 +1,11 @@
 2007-12-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.cpp: Add code to getAttr so it looks in
+	  the default properties on the TypeNode if the instances does not
+	  have the property.
+
+2007-12-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/TypeNode.h: Change the type of defaults over to properties.
 
 	* common/inheritance.cpp, common/inheritance.h: Modify the API
@@ -17881,4 +17887,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2041 2007-12-29 01:50:39 alriddoch Exp $
+$Id: ChangeLog,v 1.2042 2007-12-29 01:53:26 alriddoch Exp $
