@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.111 2007-12-03 23:18:52 alriddoch Exp $
+// $Id: World.cpp,v 1.112 2007-12-29 01:31:04 alriddoch Exp $
 
 #include "World.h"
 
@@ -189,7 +189,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    // Pass entity to addPerceptive
+    // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 
     Sight s;

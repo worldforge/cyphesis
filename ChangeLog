@@ -1,5 +1,9 @@
 2007-12-27  Al Riddoch  <alriddoch@zepler.org>
 
+	* rulesets/World.cpp: Fix a brief and blatantly obvious comment.
+
+2007-12-27  Al Riddoch  <alriddoch@zepler.org>
+
 	* common/TypeNode.h, common/TypeNode.cpp: Move TypeNode into
 	  its own files.
 
@@ -17864,4 +17868,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2038 2007-12-27 03:31:47 alriddoch Exp $
+$Id: ChangeLog,v 1.2039 2007-12-29 01:31:04 alriddoch Exp $
