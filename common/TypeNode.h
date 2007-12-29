@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TypeNode.h,v 1.1 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: TypeNode.h,v 1.2 2007-12-29 01:50:41 alriddoch Exp $
 
 #ifndef COMMON_TYPE_NODE_H
 #define COMMON_TYPE_NODE_H
@@ -31,7 +31,7 @@ class TypeNode {
   protected:
     std::string m_name;
 
-    Atlas::Message::MapType m_defaults;
+    PropertyDict m_defaults;
 
     Atlas::Objects::Root m_description;
 
@@ -47,11 +47,11 @@ class TypeNode {
         return m_name;
     }
 
-    const Atlas::Message::MapType & defaults() const {
+    const PropertyDict & defaults() const {
         return m_defaults;
     }
 
-    Atlas::Message::MapType & defaults() {
+    PropertyDict & defaults() {
         return m_defaults;
     }
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.36 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: inheritance.h,v 1.37 2007-12-29 01:50:41 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -64,8 +64,7 @@ class Inheritance {
     const TypeNode * getType(const std::string & parent);
     bool hasClass(const std::string & parent);
     TypeNode * addChild(const Atlas::Objects::Root & obj,
-                        const Atlas::Message::MapType & defaults =
-                        Atlas::Message::MapType());
+                        const PropertyDict & defaults = PropertyDict());
     bool isTypeOf(const std::string & instance,
                   const std::string & base_type) const;
     bool isTypeOf(const TypeNode * instance,

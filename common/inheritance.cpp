@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.38 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.39 2007-12-29 01:50:41 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -170,7 +170,7 @@ bool Inheritance::hasClass(const std::string & parent)
 }
 
 TypeNode * Inheritance::addChild(const Root & obj,
-                                 const Atlas::Message::MapType & defaults)
+                                 const PropertyDict & defaults)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();

@@ -1,9 +1,17 @@
-2007-12-27  Al Riddoch  <alriddoch@zepler.org>
+2007-12-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/TypeNode.h: Change the type of defaults over to properties.
+
+	* common/inheritance.cpp, common/inheritance.h: Modify the API
+	  for specifying defaults on a new TypeNode to take the new
+	  property based data.
+
+2007-12-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* common/types.h, rulesets/LocatedEntity.h: Clean up typedefs, and
 	  make sure they are used from the right includes.
 
-2007-12-27  Al Riddoch  <alriddoch@zepler.org>
+2007-12-29  Al Riddoch  <alriddoch@zepler.org>
 
 	* rulesets/World.cpp: Fix a brief and blatantly obvious comment.
 
@@ -17873,4 +17881,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2040 2007-12-29 01:33:57 alriddoch Exp $
+$Id: ChangeLog,v 1.2041 2007-12-29 01:50:39 alriddoch Exp $
