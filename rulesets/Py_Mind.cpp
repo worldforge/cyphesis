@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.43 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.44 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -113,8 +113,8 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        LocatedEntitySet::const_iterator I = self->m_mind->m_contains.begin();
-        LocatedEntitySet::const_iterator Iend = self->m_mind->m_contains.end();
+        LocatedEntitySet::const_iterator I = self->m_mind->m_contains->begin();
+        LocatedEntitySet::const_iterator Iend = self->m_mind->m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);

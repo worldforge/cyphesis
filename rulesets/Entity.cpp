@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.144 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: Entity.cpp,v 1.145 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -55,7 +55,7 @@ Entity::Entity(const std::string & id, long intId) : LocatedEntity(id, intId),
                                          m_update_flags(0)
 {
     m_properties["id"] = new IdProperty(getId());
-    m_properties["contains"] = new ContainsProperty(m_contains);
+    m_properties["contains"] = new ContainsProperty(*m_contains);
 
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
     sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));
@@ -152,9 +152,9 @@ void Entity::installHandler(int class_no, Handler handler)
 void Entity::destroy()
 {
     assert(m_location.m_loc != NULL);
-    LocatedEntitySet & loc_contains = m_location.m_loc->m_contains;
-    LocatedEntitySet::const_iterator Iend = m_contains.end();
-    for (LocatedEntitySet::const_iterator I = m_contains.begin(); I != Iend; ++I) {
+    LocatedEntitySet & loc_contains = *m_location.m_loc->m_contains;
+    LocatedEntitySet::const_iterator Iend = m_contains->end();
+    for (LocatedEntitySet::const_iterator I = m_contains->begin(); I != Iend; ++I) {
         LocatedEntity * obj = *I;
         // FIXME take account of orientation
         // FIXME velocity and orientation  need to be adjusted
@@ -178,7 +178,7 @@ void Entity::destroy()
     // yet, and we need to keep a reference to our parent in case there
     // are broadcast ops left that we have not yet sent.
 
-    if (m_location.m_loc->m_contains.empty()) {
+    if (m_location.m_loc->m_contains->empty()) {
         Entity * loc = dynamic_cast<Entity *>(m_location.m_loc);
         loc->m_update_flags |= a_cont;
         loc->updated.emit();

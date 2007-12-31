@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.6 2007-12-29 01:33:57 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.7 2007-12-31 17:39:26 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -60,7 +60,7 @@ class LocatedEntity : public BaseEntity {
     /// Full details of location
     Location m_location;
     /// List of entities which use this as ref
-    LocatedEntitySet m_contains;
+    LocatedEntitySet * m_contains;
 
     explicit LocatedEntity(const std::string & id, long intId);
     virtual ~LocatedEntity();

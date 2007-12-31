@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.20 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: Motion.cpp,v 1.21 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -76,8 +76,9 @@ float Motion::checkCollisions()
     m_collLocChange = false;
     m_collision = false;
     // Check against everything within the current container
-    LocatedEntitySet::const_iterator I = m_entity.m_location.m_loc->m_contains.begin();
-    LocatedEntitySet::const_iterator Iend = m_entity.m_location.m_loc->m_contains.end();
+    assert(m_entity.m_location.m_loc->m_contains != 0);
+    LocatedEntitySet::const_iterator I = m_entity.m_location.m_loc->m_contains->begin();
+    LocatedEntitySet::const_iterator Iend = m_entity.m_location.m_loc->m_contains->end();
     for (; I != Iend; ++I) {
         // Don't check for collisions with ourselves
         if ((*I) == &m_entity) { continue; }
@@ -134,8 +135,8 @@ float Motion::checkCollisions()
         }
         float coll_time_2 = consts::move_tick;
         // rloc is now m_entity.m_location of character with loc set to m_collEntity
-        I = m_collEntity->m_contains.begin();
-        Iend = m_collEntity->m_contains.end();
+        I = m_collEntity->m_contains->begin();
+        Iend = m_collEntity->m_contains->end();
         for (; I != Iend; ++I) {
             const Location & other_location = (*I)->m_location;
             if (!other_location.bBox().isValid()) { continue; }

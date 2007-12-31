@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.223 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.224 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -275,8 +275,8 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     }
     ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
                                                 ent->m_location.pos(), mode);
-    bool cont_change = ent->m_location.m_loc->m_contains.empty();
-    ent->m_location.m_loc->m_contains.insert(ent);
+    bool cont_change = ent->m_location.m_loc->m_contains->empty();
+    ent->m_location.m_loc->m_contains->insert(ent);
     ent->m_location.m_loc->incRef();
     if (cont_change) {
         Entity * loc = dynamic_cast<Entity *>(ent->m_location.m_loc);

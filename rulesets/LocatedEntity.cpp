@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.5 2007-12-29 01:53:26 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.6 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
@@ -54,7 +54,8 @@ const std::set<std::string> & LocatedEntity::immutables()
 /// \brief LocatedEntity constructor
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                              BaseEntity(id, intId), m_refCount(0),
-                             m_seq(0), m_script(&noScript), m_type(0)
+                             m_seq(0), m_script(&noScript), m_type(0),
+                             m_contains(new LocatedEntitySet)
 {
 }
 
@@ -151,15 +152,16 @@ void LocatedEntity::setScript(Script * scrpt)
 /// container.
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
-    m_location.m_loc->m_contains.erase(this);
+    assert(m_location.m_loc->m_contains != 0);
+    m_location.m_loc->m_contains->erase(this);
 #if 0
-    if (m_location.m_loc->m_contains.empty()) {
+    if (m_location.m_loc->m_contains->empty()) {
         m_location.m_loc->m_update_flags |= a_cont;
         m_location.m_loc->updated.emit();
     }
 #endif
-    bool was_empty = new_loc->m_contains.empty();
-    new_loc->m_contains.insert(this);
+    bool was_empty = new_loc->m_contains->empty();
+    new_loc->m_contains->insert(this);
 #if 0
     if (was_empty) {
         new_loc->m_update_flags |= a_cont;

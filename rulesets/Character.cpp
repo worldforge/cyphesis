@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.308 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: Character.cpp,v 1.309 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "Character.h"
 
@@ -221,14 +221,14 @@ void Character::wieldDropped()
 LocatedEntity * Character::findInContains(LocatedEntity * ent,
                                           const std::string & id)
 {
-    LocatedEntitySet::const_iterator I = ent->m_contains.begin();
-    LocatedEntitySet::const_iterator Iend = ent->m_contains.end();
+    LocatedEntitySet::const_iterator I = ent->m_contains->begin();
+    LocatedEntitySet::const_iterator Iend = ent->m_contains->end();
     for (; I != Iend; ++I) {
         LocatedEntity * child = *I;
         if (child->getId() == id) {
             return *I;
         }
-        if (!child->m_contains.empty()) {
+        if (!child->m_contains->empty()) {
             LocatedEntity * found = findInContains(child, id);
             if (found != 0) {
                 return found;
@@ -535,8 +535,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    LocatedEntitySet::const_iterator K = m_contains.find(item);
-    if (K == m_contains.end()) {
+    LocatedEntitySet::const_iterator K = m_contains->find(item);
+    if (K == m_contains->end()) {
         error(op, "Wield arg is not in inventory", res, getId());
         return;
     }

@@ -1,3 +1,13 @@
+2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp, rulesets/Entity.cpp,
+	  rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h,
+	  rulesets/MemMap.cpp, rulesets/Motion.cpp, rulesets/Py_Mind.cpp,
+	  rulesets/Py_Thing.cpp, rulesets/Thing.cpp, rulesets/World.cpp,
+	  server/WorldRouter.cpp: Change LocatedEntity::m_contains into
+	  a pointer so that the majority of entities that can not contain
+	  anything don't waste the storage.
+
 2007-12-29  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/LocatedEntity.cpp: Add code to getAttr so it looks in
@@ -17887,4 +17897,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2042 2007-12-29 01:53:26 alriddoch Exp $
+$Id: ChangeLog,v 1.2043 2007-12-31 17:39:25 alriddoch Exp $

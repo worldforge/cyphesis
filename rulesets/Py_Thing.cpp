@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.66 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.67 2007-12-31 17:39:26 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -218,8 +218,8 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        LocatedEntitySet::const_iterator I = self->m_entity->m_contains.begin();
-        LocatedEntitySet::const_iterator Iend = self->m_entity->m_contains.end();
+        LocatedEntitySet::const_iterator I = self->m_entity->m_contains->begin();
+        LocatedEntitySet::const_iterator Iend = self->m_entity->m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
