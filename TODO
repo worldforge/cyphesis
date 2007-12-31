@@ -1,3 +1,12 @@
+Character::m_rightHandWield needs to stop being hard coded. Should
+be really easy to do. Make it a dynamic property always, add install
+it as required.
+
+Contains set should not even exist on most entities. Pointer is all that is
+required, and could possibly actually be on Location rather than on
+LocatedEntity. This also reduces the number of properties assigned to
+everything by default.
+
 Why do we need attributes when a soft property class can do the job?
 
 B&W style village construction. Nursery, plus schools for training.
