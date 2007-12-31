@@ -43,6 +43,7 @@ logtest_LDADD = $(top_builddir)/modules/DateTime.o \
 inheritancetest_SOURCES = inheritancetest.cpp
 inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/inheritance.o \
+                        $(top_builddir)/common/TypeNode.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \
                         $(top_builddir)/common/log.o \
@@ -58,6 +59,7 @@ BaseEntitytest_LDADD = $(top_builddir)/modules/DateTime.o \
                        $(top_builddir)/common/BaseEntity.o \
                        $(top_builddir)/common/operations.o \
                        $(top_builddir)/common/inheritance.o \
+                       $(top_builddir)/common/TypeNode.o \
                        $(top_builddir)/common/custom.o \
                        $(top_builddir)/common/log.o \
                        $(top_builddir)/common/const.o \
@@ -70,6 +72,7 @@ OOGThingtest_LDADD = $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/common/OOGThing.o \
                      $(top_builddir)/common/BaseEntity.o \
                      $(top_builddir)/common/inheritance.o \
+                     $(top_builddir)/common/TypeNode.o \
                      $(top_builddir)/common/custom.o \
                      $(top_builddir)/common/operations.o \
                      $(top_builddir)/common/log.o \
