@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.7 2007-12-31 18:00:14 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.8 2007-12-31 18:11:02 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
@@ -64,10 +64,8 @@ LocatedEntity::~LocatedEntity()
     if (m_script != NULL && m_script != &noScript) {
         delete m_script;
     }
-    // This can't be done both here and in ~Entity, so it needs to
-    // be in one or the other.
     if (m_location.m_loc != 0) {
-        // m_location.m_loc->decRef();
+        m_location.m_loc->decRef();
     }
     if (m_contains != 0) {
         delete m_contains;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.145 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: Entity.cpp,v 1.146 2007-12-31 18:11:02 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -68,9 +68,6 @@ Entity::~Entity()
     PropertyDict::const_iterator Iend = m_properties.end();
     for (; I != Iend; ++I) {
         delete I->second;
-    }
-    if (m_location.m_loc != 0) {
-        m_location.m_loc->decRef();
     }
 }
 

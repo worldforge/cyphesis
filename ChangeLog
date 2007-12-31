@@ -1,5 +1,11 @@
 2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.cpp, rulesets/LocatedEntity.cpp: Move the code the
+	  decremements the reference to containing entity into the
+	  LocatedEntity destructor where it belongs.
+
+2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/LocatedEntity.cpp: Fix leak of m_contains.
 
 2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
@@ -17901,4 +17907,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2044 2007-12-31 18:00:14 alriddoch Exp $
+$Id: ChangeLog,v 1.2045 2007-12-31 18:11:01 alriddoch Exp $
