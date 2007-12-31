@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entitytest.cpp,v 1.16 2007-12-03 23:29:20 alriddoch Exp $
+// $Id: Entitytest.cpp,v 1.17 2007-12-31 18:41:44 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -79,7 +79,7 @@ int main()
     
     // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
-    assert(!ee.checkProperties(attrNames));
+    assert(ee.checkProperties(attrNames));
 
     MapType entityAsAtlas;
 
