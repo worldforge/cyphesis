@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.8 2007-12-31 18:11:02 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.9 2007-12-31 19:07:10 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
@@ -61,6 +61,11 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
 
 LocatedEntity::~LocatedEntity()
 {
+    PropertyDict::const_iterator I = m_properties.begin();
+    PropertyDict::const_iterator Iend = m_properties.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
     if (m_script != NULL && m_script != &noScript) {
         delete m_script;
     }

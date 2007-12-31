@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.146 2007-12-31 18:11:02 alriddoch Exp $
+// $Id: Entity.cpp,v 1.147 2007-12-31 19:07:10 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -64,11 +64,6 @@ Entity::Entity(const std::string & id, long intId) : LocatedEntity(id, intId),
 
 Entity::~Entity()
 {
-    PropertyDict::const_iterator I = m_properties.begin();
-    PropertyDict::const_iterator Iend = m_properties.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
 }
 
 void Entity::setAttr(const std::string & name, const Element & attr)

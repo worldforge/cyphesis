@@ -1,5 +1,10 @@
 2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.cpp, rulesets/LocatedEntity.cpp: Move cleaning
+	  up properties into the LocatedEntity destructor, so none are leaked.
+
+2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Entitytest.cpp: Remove the difference between attribute and
 	  property checks, as all attributes are now handled by the property
 	  mechanism.
@@ -17925,4 +17930,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2048 2007-12-31 18:41:43 alriddoch Exp $
+$Id: ChangeLog,v 1.2049 2007-12-31 19:07:10 alriddoch Exp $
