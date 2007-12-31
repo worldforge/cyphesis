@@ -1,3 +1,17 @@
+In a compound object, that contains sub-objects, COMPONENTS can be like
+CONTAINS, but COMPONENTS do not have a separate existence. They are destroyed
+if the entity is destroyed, and do not have globally addressable IDs.
+They can still be represented by Entity, but won't be in the global ID
+dictionary. This leads to the idea of a component property interface whcih
+abstracts looking up component IDs. An accompanying stamp can reduce the
+frequency with which clients need to inspect the components, as they should
+change very infrequently.
+
+SEQ is not being used in the memmap code, as it is not being set.
+
+Re-write plant using properties when we can write scripts for property
+handlers.
+
 Character::m_rightHandWield needs to stop being hard coded. Should
 be really easy to do. Make it a dynamic property always, add install
 it as required.
@@ -6,8 +20,6 @@ Contains set should not even exist on most entities. Pointer is all that is
 required, and could possibly actually be on Location rather than on
 LocatedEntity. This also reduces the number of properties assigned to
 everything by default.
-
-Why do we need attributes when a soft property class can do the job?
 
 B&W style village construction. Nursery, plus schools for training.
 
@@ -28,8 +40,6 @@ echo -n 'username:phpMyID:password' | openssl md5
 
 Separate functionality for removing from container, and adding to new
 container.
-
-Sort out NAME property that is dynamic and efficient.
 
 Modify security in NPCMind so we can do the goals without broadcasting the
 talk ops. Use the TO on the Talk op to determine if this is an admin op,

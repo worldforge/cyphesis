@@ -1,0 +1,4 @@
+#!/bin/sh
+
+find . -name \*.h -print0 | xargs -0 grep -l "^#error This file has been removed from the build" | xargs rm
+find . -name \*.cpp -print0 | xargs -0 grep -l "^#error This file has been removed from the build" | xargs rm
