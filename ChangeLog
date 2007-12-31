@@ -1,5 +1,9 @@
 2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.cpp: Fix leak of m_contains.
+
+2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp, rulesets/Entity.cpp,
 	  rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h,
 	  rulesets/MemMap.cpp, rulesets/Motion.cpp, rulesets/Py_Mind.cpp,
@@ -17897,4 +17901,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2043 2007-12-31 17:39:25 alriddoch Exp $
+$Id: ChangeLog,v 1.2044 2007-12-31 18:00:14 alriddoch Exp $
