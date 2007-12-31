@@ -1,3 +1,8 @@
+Entities in the core no longer have a pointer to the world. Can
+the scripts be written so that the wrapper no longer needs to pretent
+such a property exists? Also time in mind. Exposed as an attribute for
+some reason.
+
 In a compound object, that contains sub-objects, COMPONENTS can be like
 CONTAINS, but COMPONENTS do not have a separate existence. They are destroyed
 if the entity is destroyed, and do not have globally addressable IDs.
