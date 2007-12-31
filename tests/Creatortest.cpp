@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creatortest.cpp,v 1.26 2007-12-03 23:29:20 alriddoch Exp $
+// $Id: Creatortest.cpp,v 1.27 2007-12-31 18:31:27 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -23,6 +23,8 @@
 
 #include "rulesets/Creator.h"
 #include "rulesets/Python_API.h"
+
+#include "common/TypeNode.h"
 
 #include <cassert>
 

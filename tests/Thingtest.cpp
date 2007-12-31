@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thingtest.cpp,v 1.13 2007-12-03 23:29:20 alriddoch Exp $
+// $Id: Thingtest.cpp,v 1.14 2007-12-31 18:31:27 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
 #include "rulesets/Thing.h"
+
+#include "common/TypeNode.h"
 
 #include <cassert>
 

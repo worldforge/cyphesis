@@ -1,5 +1,11 @@
 2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Charactertest.cpp, tests/Creatortest.cpp,
+	  tests/Stackabletest.cpp, tests/Structuretest.cpp,
+	  tests/Thingtest.cpp, tests/Worldtest.cpp: Add TypeNode.h include.
+
+2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Makefile.am: Add TypeNode.o to tests as required.
 
 	* tests/Planttest.cpp: Add TypeNode.h include.
@@ -17913,4 +17919,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2046 2007-12-31 18:20:29 alriddoch Exp $
+$Id: ChangeLog,v 1.2047 2007-12-31 18:31:26 alriddoch Exp $
