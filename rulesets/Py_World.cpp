@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_World.cpp,v 1.34 2007-01-12 12:38:08 alriddoch Exp $
+// $Id: Py_World.cpp,v 1.35 2008-01-04 23:55:58 alriddoch Exp $
 
 #include "Py_World.h"
 #include "Py_WorldTime.h"
@@ -37,7 +37,7 @@ static PyObject * World_get_time(PyWorld *self)
     if (wtime == NULL) {
         return NULL;
     }
-    wtime->time = new WorldTime((int)self->world->getTime());
+    wtime->time = new WorldTime((int)BaseWorld::instance().getTime());
     wtime->own = true;
     return (PyObject *)wtime;
 }
@@ -54,7 +54,7 @@ static PyObject * World_get_object(PyWorld *self, PyObject * id)
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
         return NULL;
     }
-    Entity * ent = self->world->getEntity(PyString_AsString(id));
+    Entity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
     if (ent == NULL) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -86,7 +86,7 @@ static int World_compare(PyWorld * self, PyObject * other)
         return (self->world == other_world->world) ? 0 : 1;
     } else if (PyEntity_Check(other)) {
         PyEntity * other_entity = (PyEntity *)other;
-        return (&self->world->m_gameWorld == other_entity->m_entity) ? 0 : 1;
+        return (&BaseWorld::instance().m_gameWorld == other_entity->m_entity) ? 0 : 1;
     }
     return -1;
 }
