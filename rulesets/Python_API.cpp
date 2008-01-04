@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.173 2008-01-04 00:45:39 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.174 2008-01-04 23:57:30 alriddoch Exp $
 
 #include "Python.h"
 
@@ -1108,6 +1108,9 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
+
+    PyWorld * world = newPyWorld();
+    PyModule_AddObject(server, "world", (PyObject *)world);
 
     PyObject * rules = Py_InitModule("rulesets", no_methods);
     if (rules == NULL) {

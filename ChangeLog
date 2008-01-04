@@ -1,5 +1,11 @@
 2008-01-04  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Python_API.cpp: Add an instance of the world wrapper to
+	  the server module, which should then be used instead of the
+	  world attribute on entities.
+
+2008-01-04  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Py_World.cpp: Modify the world wrapper so it does not
 	  require a pointer to the world router instance, and uses it as
 	  a singleton instead.
@@ -17953,4 +17959,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2052 2008-01-04 23:55:58 alriddoch Exp $
+$Id: ChangeLog,v 1.2053 2008-01-04 23:57:30 alriddoch Exp $
