@@ -3,12 +3,8 @@
 
 from atlas import *
 
-#if const.server_python:
-#from world.physics.Vector3D import Vector3D
-#else:
 from Vector3D import Vector3D
 
-#from common import const
 from mind.Goal import Goal
 from mind.NPCMind import *
 

@@ -5,10 +5,7 @@ from atlas import *
 from types import *
 from common import const
 
-if const.server_python:
-    from world.physics.Vector3D import Vector3D
-else:
-    from Vector3D import Vector3D
+from Vector3D import Vector3D
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 

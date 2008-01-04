@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.172 2007-12-04 00:07:34 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.173 2008-01-04 00:45:39 alriddoch Exp $
 
 #include "Python.h"
 
@@ -1056,10 +1056,6 @@ void init_python_api()
     /// Create the common.const module
     PyObject * _const = PyModule_New("const");
     PyDict_SetItemString(common_dict, "const", _const);
-
-    o = PyInt_FromLong(0);
-    PyObject_SetAttrString(_const, "server_python", o);
-    Py_DECREF(o);
 
     o = PyInt_FromLong(consts::debug_level);
     PyObject_SetAttrString(_const, "debug_level", o);

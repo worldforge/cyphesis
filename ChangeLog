@@ -1,3 +1,15 @@
+2008-01-04  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Python_API.cpp: Remove the server_python flag used to
+	  allow scripts to run unmodified on the obsolete python prototype.
+
+	* rulesets/basic/mind/NPCMind.py,
+	  rulesets/basic/mind/goals/animal/herd.py,
+	  rulesets/basic/mind/goals/common/common.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/mason/world/objects/buildings/House.py: Remove support
+	  for running these scripts on the obsolete python prototype.
+
 2007-12-31  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Entity.cpp, rulesets/LocatedEntity.cpp: Move cleaning
@@ -17930,4 +17942,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2049 2007-12-31 19:07:10 alriddoch Exp $
+$Id: ChangeLog,v 1.2050 2008-01-04 00:45:39 alriddoch Exp $

@@ -7,14 +7,10 @@ from Quaternion import Quaternion
 from common import const
 from types import *
 
-if const.server_python:
-    from world.physics.Vector3D import Vector3D
-    from mind.BaseMind import BaseMind
-else:
-    from Vector3D import Vector3D
-    from cyphesis.Thing import Thing
-    from server import WorldTime
-    BaseMind = Thing
+from Vector3D import Vector3D
+from cyphesis.Thing import Thing
+from server import WorldTime
+BaseMind = Thing
 
 from mind.Memory import Memory
 from mind.Knowledge import Knowledge

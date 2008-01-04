@@ -4,11 +4,8 @@
 from common import const
 from physics import *
 
-if const.server_python:
-    from world.physics.Vector3D import Vector3D
-else:
-    from Vector3D import Vector3D
-    from Point3D import Point3D
+from Vector3D import Vector3D
+from Point3D import Point3D
 
 from mind.goals.common.common import *
 try:
