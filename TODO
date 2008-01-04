@@ -1,3 +1,6 @@
+Quaternion and BBox need to be more like Vector3D and Point3D, and all 4 should
+really be in physics.
+
 Entities in the core no longer have a pointer to the world. Can
 the scripts be written so that the wrapper no longer needs to pretent
 such a property exists? Also time in mind. Exposed as an attribute for
