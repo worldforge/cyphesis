@@ -9,8 +9,6 @@ from types import *
 
 from Vector3D import Vector3D
 from cyphesis.Thing import Thing
-from server import WorldTime
-BaseMind = Thing
 
 from mind.Memory import Memory
 from mind.Knowledge import Knowledge
@@ -31,7 +29,7 @@ def get_dict_func(self, func_str, func_undefined):
         func=func_undefined
     return func
 
-class NPCMind(BaseMind):
+class NPCMind(Thing):
     """Mind class for most mobile entities in the game.
 
     An NPCMind object is associated with all NPC and similar entities on a
