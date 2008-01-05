@@ -1,5 +1,9 @@
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Makefile.am: Fix dependencies so tests build.
+
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.cpp: Clean up the syntax and line length in
 	  destroy() to make the code more readable.
 
@@ -18038,4 +18042,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2059 2008-01-05 17:53:52 alriddoch Exp $
+$Id: ChangeLog,v 1.2060 2008-01-05 20:45:02 alriddoch Exp $
