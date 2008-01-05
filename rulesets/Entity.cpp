@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.148 2008-01-05 14:05:05 alriddoch Exp $
+// $Id: Entity.cpp,v 1.149 2008-01-05 17:53:52 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -146,22 +146,24 @@ void Entity::destroy()
     if (m_contains != 0) {
         LocatedEntitySet::const_iterator Iend = m_contains->end();
         for (LocatedEntitySet::const_iterator I = m_contains->begin(); I != Iend; ++I) {
-            LocatedEntity * obj = *I;
+            Location & child = (*I)->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
             // Remove the reference to ourself.
             decRef();
-            obj->m_location.m_loc = m_location.m_loc;
+            child.m_loc = m_location.m_loc;
             m_location.m_loc->incRef();
             if (m_location.orientation().isValid()) {
-                obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
-                obj->m_location.m_velocity.rotate(m_location.orientation());
-                obj->m_location.m_orientation *= m_location.orientation();
+                child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
+                                                         m_location.orientation());
+                child.m_velocity.rotate(m_location.orientation());
+                child.m_orientation *= m_location.orientation();
             } else {
                 static const Quaternion identity(1, 0, 0, 0);
-                obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), identity);
+                child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
+                                                         identity);
             }
-            loc_contains.insert(obj);
+            loc_contains.insert(*I);
         }
     }
     loc_contains.erase(this);
