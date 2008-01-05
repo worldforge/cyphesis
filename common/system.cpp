@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.31 2007-12-06 23:50:14 alriddoch Exp $
+// $Id: system.cpp,v 1.32 2008-01-05 01:33:55 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -112,7 +112,7 @@ extern "C" void shutdown_on_signal(int signo)
 extern "C" void report_segfault(int signo)
 {
     log(CRITICAL, "Segmentation fault");
-    log(NOTICE, "Please report this bug to alriddoch@zepler.org");
+    log(NOTICE, "Please report this bug to " PACKAGE_BUGREPORT);
 
 #if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);
@@ -122,7 +122,7 @@ extern "C" void report_segfault(int signo)
 extern "C" void report_abort(int signo)
 {
     log(CRITICAL, "Aborted");
-    log(NOTICE, "Please report this bug to alriddoch@zepler.org");
+    log(NOTICE, "Please report this bug to " PACKAGE_BUGREPORT);
 
 #if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);

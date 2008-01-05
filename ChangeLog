@@ -1,5 +1,10 @@
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/system.cpp: Use PACKAGE_BUGREPORT from autoconf for the
+	  email address to report bugs to in error messages.
+
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Py_Thing.cpp: Remove the world attribute on Entity
 	  wrapper.
 
@@ -18011,4 +18016,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2056 2008-01-05 00:52:20 alriddoch Exp $
+$Id: ChangeLog,v 1.2057 2008-01-05 01:33:55 alriddoch Exp $
