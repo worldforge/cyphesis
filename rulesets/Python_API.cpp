@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.174 2008-01-04 23:57:30 alriddoch Exp $
+// $Id: Python_API.cpp,v 1.175 2008-01-05 00:05:29 alriddoch Exp $
 
 #include "Python.h"
 
@@ -385,15 +385,7 @@ static PyObject * location_new(PyObject * self, PyObject * args)
         }
     
         if (PyWorld_Check(refO)) {
-            PyWorld * ref = (PyWorld*)refO;
-#ifndef NDEBUG
-            if (ref->world == NULL) {
-                PyErr_SetString(PyExc_AssertionError, "Parent world is invalid");
-                if (decrefO) { Py_DECREF(refO); }
-                return NULL;
-            }
-#endif // NDEBUG
-            ref_ent = &ref->world->m_gameWorld;
+            ref_ent = &BaseWorld::instance().m_gameWorld;
         } else if (PyMind_Check(refO)) {
             PyMind * ref = (PyMind*)refO;
 #ifndef NDEBUG

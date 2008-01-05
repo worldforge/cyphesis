@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.67 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.68 2008-01-05 00:05:29 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -210,7 +210,6 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
     }
     if (strcmp(name, "world") == 0) {
         PyWorld * world = newPyWorld();
-        world->world = &BaseWorld::instance();
         return (PyObject *)world;
     }
     if (strcmp(name, "contains") == 0) {

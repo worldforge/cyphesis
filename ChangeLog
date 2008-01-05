@@ -1,5 +1,15 @@
 2008-01-04  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Py_World.h: Remove the pointer to the world router from
+	  its wrapper, as all the wrapper code should now use the singleton
+	  interface.
+
+	* rulesets/Python_API.cpp, rulesets/Py_World.cpp,
+	  rulesets/Py_Thing.cpp: Fix up all the code which uses the world
+	  router pointer.
+
+2008-01-04  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Python_API.cpp: Add an instance of the world wrapper to
 	  the server module, which should then be used instead of the
 	  world attribute on entities.
@@ -17959,4 +17969,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2053 2008-01-04 23:57:30 alriddoch Exp $
+$Id: ChangeLog,v 1.2054 2008-01-05 00:05:29 alriddoch Exp $

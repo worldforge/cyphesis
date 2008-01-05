@@ -15,21 +15,17 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_World.h,v 1.14 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: Py_World.h,v 1.15 2008-01-05 00:05:29 alriddoch Exp $
 
 #ifndef RULESETS_PY_WORLD_H
 #define RULESETS_PY_WORLD_H
 
 #include <Python.h>
 
-class BaseWorld;
-
 /// \brief Wrapper for World in Python
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
-    /// \brief World manager object handled by this wrapper
-    BaseWorld * world;
 } PyWorld;
 
 extern PyTypeObject PyWorld_Type;
