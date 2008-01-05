@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.68 2008-01-05 00:05:29 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.69 2008-01-05 00:52:21 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -207,10 +207,6 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         loc->location = &self->m_entity->m_location;
         loc->owner = self->m_entity;
         return (PyObject *)loc;
-    }
-    if (strcmp(name, "world") == 0) {
-        PyWorld * world = newPyWorld();
-        return (PyObject *)world;
     }
     if (strcmp(name, "contains") == 0) {
         PyObject * list = PyList_New(0);

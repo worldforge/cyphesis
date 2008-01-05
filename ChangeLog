@@ -1,5 +1,10 @@
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Py_Thing.cpp: Remove the world attribute on Entity
+	  wrapper.
+
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/acorn/world/objects/animals/Deer.py,
 	  rulesets/acorn/world/objects/animals/Pig.py,
 	  rulesets/acorn/world/objects/outdoor/Campfire.py,
@@ -18006,4 +18011,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2055 2008-01-05 00:40:32 alriddoch Exp $
+$Id: ChangeLog,v 1.2056 2008-01-05 00:52:20 alriddoch Exp $
