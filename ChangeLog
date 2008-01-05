@@ -1,5 +1,10 @@
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp: Fix a missed check for m_contains being
+	  null.
+
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Makefile.am: Fix dependencies so tests build.
 
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
@@ -18042,4 +18047,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2060 2008-01-05 20:45:02 alriddoch Exp $
+$Id: ChangeLog,v 1.2061 2008-01-05 23:22:52 alriddoch Exp $

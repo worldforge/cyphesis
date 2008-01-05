@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.310 2008-01-05 14:05:05 alriddoch Exp $
+// $Id: Character.cpp,v 1.311 2008-01-05 23:22:52 alriddoch Exp $
 
 #include "Character.h"
 
@@ -231,7 +231,7 @@ LocatedEntity * Character::findInContains(LocatedEntity * ent,
         if (child->getId() == id) {
             return *I;
         }
-        if (!child->m_contains->empty()) {
+        if (child->m_contains != 0 && !child->m_contains->empty()) {
             LocatedEntity * found = findInContains(child, id);
             if (found != 0) {
                 return found;
