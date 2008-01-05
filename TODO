@@ -1,5 +1,8 @@
-Perhaps Entity::destroy() can make code less verbose using an alias
-for obj->m_location ?
+Break down interface a bit more.
+Operation handling interface: just operation()
+Located interface, like LocatedEntity
+Identified interface.
+Which interfaces is the need for a destroyed signal included in?
 
 Quaternion and BBox need to be more like Vector3D and Point3D, and all 4 should
 really be in physics.
