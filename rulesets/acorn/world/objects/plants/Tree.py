@@ -8,6 +8,8 @@ from misc import set_kw
 from whrandom import *
 from Vector3D import Vector3D
 
+import server
+
 debug_tree = 0
 
 """
@@ -131,7 +133,7 @@ class Tree(Thing):
                 randz = 0
                 if hasattr(self,"coords_modify"):
                     randx,randy,randz=coords_modify(randx,randy,randz)
-                fruit=Entity(name=self.fruitname,location=Location(self.world,Vector3D(randx,randy,randz)),parents=[self.fruitname])
+                fruit=Entity(name=self.fruitname,location=Location(server.world,Vector3D(randx,randy,randz)),parents=[self.fruitname])
                 result = result + Operation("create",fruit,to=self)
                 if debug_tree:
                     print fruit

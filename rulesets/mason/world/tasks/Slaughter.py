@@ -8,6 +8,8 @@ from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Slaughter(Thing):
     """ A task for cutting a log into boards."""
     def cut_operation(self, op):
@@ -27,7 +29,7 @@ class Slaughter(Thing):
         """ Op handler for regular tick op """
         # print "Slaughter.tick"
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()

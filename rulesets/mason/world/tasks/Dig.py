@@ -9,6 +9,8 @@ from Vector3D import Vector3D
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Dig(Thing):
     """ A task for cutting a log into boards."""
 
@@ -30,7 +32,7 @@ class Dig(Thing):
         """ Op handler for regular tick op """
         # print "Dig.tick"
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()

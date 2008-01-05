@@ -8,6 +8,8 @@ from Vector3D import Vector3D
 
 from common import const
 
+import server
+
 try:
   from random import *
 except ImportError:
@@ -32,7 +34,7 @@ class Raise(Thing):
         """ Op handler for regular tick op """
         # print "Raise.tick"
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()

@@ -13,6 +13,8 @@ except ImportError:
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Trailblaze(Thing):
     """ A proof of concept task for making new paths and roads."""
     def strike_operation(self, op):
@@ -35,7 +37,7 @@ class Trailblaze(Thing):
         # print "Trailblaze.tick"
         res=Message()
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()

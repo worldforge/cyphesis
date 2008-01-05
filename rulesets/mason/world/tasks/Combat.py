@@ -13,6 +13,8 @@ except ImportError:
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Combat(Thing):
     """A very simple combat system example."""
     def attack_operation(self, op):
@@ -36,7 +38,7 @@ class Combat(Thing):
             # We do not have initiative
         # Attach this task to the attacker. Its already implicitly attached
         # to the defender who owns this task.
-        a=self.character.world.get_object(self.oponent)
+        a=server.world.get_object(self.oponent)
         # Check if the attacking characters stamina is too low for combat
         if not a or a.stamina < 0.1:
             self.irrelevant()
@@ -73,7 +75,7 @@ class Combat(Thing):
             self.irrelevant()
             return
 
-        defender = self.character.world.get_object(self.oponent)
+        defender = server.world.get_object(self.oponent)
         if not defender:
             # print "No defender"
             self.irrelevant()

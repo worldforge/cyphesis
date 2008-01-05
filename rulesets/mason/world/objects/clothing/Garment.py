@@ -5,12 +5,13 @@ from atlas import *
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Garment(Thing):
     """This is base class for clothing. This mechanism is just a quick hacky
        way to modify the guise attribute."""
     def wear_operation(self, op):
-        #to_ = self.world.get_object(op[1].id)
-        wearer = self.world.get_object(op.from_)
+        wearer = server.world.get_object(op.from_)
         guise = wearer.guise
         # return Operation("set",op[0],Entity(op.from_, ),to=to_)
         print type(guise)

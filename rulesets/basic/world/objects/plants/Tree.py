@@ -9,6 +9,8 @@ except ImportError:
   from whrandom import *
 from Vector3D import Vector3D
 
+import server
+
 debug_tree = 0
 
 """
@@ -172,7 +174,7 @@ class Tree(Thing):
 
 
         # add energy #
-        if self.world.get_time()=="night":
+        if server.world.get_time()=="night":
             if debug_tree:
                 print "Its night"
             # Put your night stuff in this operation 
@@ -209,9 +211,9 @@ class Tree(Thing):
 
         # Should people be informed of leave changes?
         if debug_tree:
-            print self.world.get_time().season, " is the current season"
-        if not (self.world.get_time() == dormantseason):
-           if self.world.get_time() == fallseason :
+            print server.world.get_time().season, " is the current season"
+        if not (server.world.get_time() == dormantseason):
+           if server.world.get_time() == fallseason :
               
               #Fall season is when stops the growing of leaves and 
               if self.leaves > 0:
@@ -242,7 +244,7 @@ class Tree(Thing):
                     if hasattr(self,"coords_modify"):
                        randx,randy,randz=coords_modify(randx,randy,randz)
                     
-                    fruit=Entity(location=Location(self.world,Point3D(randx,randy,randz)),type=[fruitname])
+                    fruit=Entity(location=Location(server.world,Point3D(randx,randy,randz)),type=[fruitname])
                     result = result + Operation("create",fruit,to=self)
                  
                     if debug_tree:
@@ -290,7 +292,7 @@ class Tree(Thing):
                     if hasattr(self,"coords_modify"):
                        randx,randy,randz=coords_modify(randx,randy,randz)
                        
-                    fruit=Entity(location=Location(self.world,Point3D(randx,randy,randz)),type=[fruitname])
+                    fruit=Entity(location=Location(server.world,Point3D(randx,randy,randz)),type=[fruitname])
                     result = result + Operation("create",fruit,to=self)
                  
                  
@@ -317,13 +319,13 @@ class Tree(Thing):
         else:
           pass
 
-        seconds=self.world.get_time().seconds()
+        seconds=server.world.get_time().seconds()
         
         if debug_tree:
             print self.last_growth, " time last growth ", seconds, " time now"
             print self.last_growth + growthspeed * self.size * 1000, "till next growth"
 
-        if self.world.get_time() != dormantseason:
+        if server.world.get_time() != dormantseason:
 
            if debug_tree:
                print "Time to check to see if the tree can grow"
@@ -343,7 +345,7 @@ class Tree(Thing):
 
            else:
 
-               if  self.flowers < amountofflowers * self.size and self.world.get_time() == flowerseason and self.energy > flowerusage :
+               if  self.flowers < amountofflowers * self.size and server.world.get_time() == flowerseason and self.energy > flowerusage :
                  if debug_tree:
                      print "I'm going to grow a flower"
                  self.energy = self.energy - flowerusage

@@ -8,7 +8,6 @@ from cyphesis.Thing import Thing
 class Cleaver(Thing):
     """This is base class for axes, this one just ordinary axe"""
     def cut_operation(self, op):
-        #to_ = self.world.get_object(op[1].id)
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")

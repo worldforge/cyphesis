@@ -1,4 +1,41 @@
-2008-01-04  Al Riddoch  <alriddoch@googlemail.com>
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/acorn/world/objects/animals/Deer.py,
+	  rulesets/acorn/world/objects/animals/Pig.py,
+	  rulesets/acorn/world/objects/outdoor/Campfire.py,
+	  rulesets/acorn/world/objects/plants/Tree.py,
+	  rulesets/acorn/world/objects/tools/Cleaver.py,
+	  rulesets/basic/world/objects/plants/Tree.py,
+	  rulesets/mason/world/objects/animals/Deer.py,
+	  rulesets/mason/world/objects/animals/Pig.py,
+	  rulesets/mason/world/objects/clothing/Garment.py,
+	  rulesets/mason/world/objects/elements/Fire.py,
+	  rulesets/mason/world/objects/outdoor/Campfire.py,
+	  rulesets/mason/world/objects/tools/Bow.py,
+	  rulesets/mason/world/objects/tools/Bucksaw.py,
+	  rulesets/mason/world/objects/tools/Cleaver.py,
+	  rulesets/mason/world/objects/tools/Sword.py,
+	  rulesets/mason/world/objects/tools/Tinderbox.py,
+	  rulesets/mason/world/objects/tools/Torch.py,
+	  rulesets/mason/world/objects/tools/Trowel.py,
+	  rulesets/mason/world/tasks/Bisect.py,
+	  rulesets/mason/world/tasks/Combat.py,
+	  rulesets/mason/world/tasks/Cultivate.py,
+	  rulesets/mason/world/tasks/Delve.py,
+	  rulesets/mason/world/tasks/Dig.py,
+	  rulesets/mason/world/tasks/Logging.py,
+	  rulesets/mason/world/tasks/Raise.py,
+	  rulesets/mason/world/tasks/Ram.py,
+	  rulesets/mason/world/tasks/Reap.py,
+	  rulesets/mason/world/tasks/Sharpen.py,
+	  rulesets/mason/world/tasks/Slaughter.py,
+	  rulesets/mason/world/tasks/Slice.py,
+	  rulesets/mason/world/tasks/Trailblaze.py,
+	  rulesets/werewolf/world/objects/tools/Gallows.py:
+	  Remove code that accesses the world attribute on Entity,
+	  replacing where necessary with server.world.
+
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Py_World.h: Remove the pointer to the world router from
 	  its wrapper, as all the wrapper code should now use the singleton
@@ -17969,4 +18006,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2054 2008-01-05 00:05:29 alriddoch Exp $
+$Id: ChangeLog,v 1.2055 2008-01-05 00:40:32 alriddoch Exp $

@@ -13,6 +13,8 @@ except ImportError:
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Sharpen(Thing):
     """ A proof of concept task for sharpening a log into a stake."""
     def cut_operation(self, op):
@@ -31,7 +33,7 @@ class Sharpen(Thing):
         # print "Sharpen.tick"
         res=Message()
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()

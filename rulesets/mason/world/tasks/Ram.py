@@ -14,6 +14,8 @@ except ImportError:
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Ram(Thing):
     """ A proof of concept task for drivinf object into the ground."""
     def strike_operation(self, op):
@@ -28,7 +30,7 @@ class Ram(Thing):
         """ Op handler for regular tick op """
         res = Message()
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()

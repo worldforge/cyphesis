@@ -6,6 +6,8 @@ from atlas import *
 from cyphesis.Thing import Thing
 from common import const
 
+import server
+
 class Fire(Thing):
     """fire to burn things up"""
     def setup_operation(self, op):
@@ -25,7 +27,7 @@ class Fire(Thing):
             # return Operation("delete",Entity(self.id),to=self)
 
         #Have we burned up our parent container?
-        if self.world==self.location.parent:
+        if server.world==self.location.parent:
             return Operation("delete",Entity(self.id),to=self)
 
         #Send burn operation to parent container

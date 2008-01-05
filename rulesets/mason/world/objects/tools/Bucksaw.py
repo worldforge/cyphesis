@@ -9,7 +9,6 @@ class Bucksaw(Thing):
     """This is a large saw for cutting logs"""
     def cut_operation(self, op):
         print "Bucksaw.cur_operation() Don't call this."
-        #to_ = self.world.get_object(op[1].id)
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")

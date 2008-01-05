@@ -22,7 +22,6 @@ class Deer(Thing):
         res.append(Operation("set",ent,to=self))
         venison_ent=Entity(name='venison',parents=['venison'])
         if (len(op)>1):
-            #to_=self.world.get_object(op[1].id)
             to_ = op[1].id
         else:
             to_=self

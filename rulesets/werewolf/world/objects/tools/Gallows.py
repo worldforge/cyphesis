@@ -10,9 +10,6 @@ from cyphesis.Thing import Thing
 class Gallows(Thing):
     """This is the gallows, which hangs villagers"""
     def hang_operation(self, op):
-        #to_ = self.world.get_object(op[1].id)
-        #if not to_:
-            #return self.error(op,"To is undefined object")
         to_ = op[0].id
         reply = Message()
         loc_ = Location(self.id, Point3D(2.5,2.5,3))

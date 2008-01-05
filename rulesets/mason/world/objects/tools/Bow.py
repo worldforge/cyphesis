@@ -7,12 +7,14 @@ from atlas import *
 from cyphesis.Thing import Thing
 from Vector3D import Vector3D
 
+import server
+
 class Bow(Thing):
     """This is base class for bows, this one just ordinary bow"""
     def shoot_operation(self, op):
         ammo = op[0].id
         to_ = op[1].id
-        target = self.world.get_object(to_)
+        target = server.world.get_object(to_)
         vel = target.location.coordinates - self.location.parent.location.coordinates
         time = vel.mag() / 5
         vel = vel.unit_vector() * 5

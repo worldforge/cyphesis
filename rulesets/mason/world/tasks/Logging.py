@@ -15,6 +15,8 @@ except ImportError:
 
 from cyphesis.Thing import Thing
 
+import server
+
 class Logging(Thing):
     """ A proof of concept task for logging."""
     def cut_operation(self, op):
@@ -32,7 +34,7 @@ class Logging(Thing):
         """ Op handler for regular tick op """
         # print "Logging.tick"
 
-        target=self.character.world.get_object(self.target)
+        target=server.world.get_object(self.target)
         if not target:
             # print "Target is no more"
             self.irrelevant()
