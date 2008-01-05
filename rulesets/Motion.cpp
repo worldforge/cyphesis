@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.21 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: Motion.cpp,v 1.22 2008-01-05 14:05:05 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -135,20 +135,23 @@ float Motion::checkCollisions()
         }
         float coll_time_2 = consts::move_tick;
         // rloc is now m_entity.m_location of character with loc set to m_collEntity
-        I = m_collEntity->m_contains->begin();
-        Iend = m_collEntity->m_contains->end();
-        for (; I != Iend; ++I) {
-            const Location & other_location = (*I)->m_location;
-            if (!other_location.bBox().isValid()) { continue; }
-            Vector3D normal;
-            float t = consts::move_tick + 1;
-            if (!predictCollision(rloc, other_location, t, normal) || (t < 0)) {
-                continue;
+        if (m_collEntity->m_contains != 0) {
+            I = m_collEntity->m_contains->begin();
+            Iend = m_collEntity->m_contains->end();
+            for (; I != Iend; ++I) {
+                const Location & other_location = (*I)->m_location;
+                if (!other_location.bBox().isValid()) { continue; }
+                    Vector3D normal;
+                float t = consts::move_tick + 1;
+                if (!predictCollision(rloc, other_location, t, normal) ||
+                    t < 0) {
+                    continue;
+                }
+                if (t <= coll_time_2) {
+                    coll_time_2 = t;
+                }
+                // What to do with the normal?
             }
-            if (t <= coll_time_2) {
-                coll_time_2 = t;
-            }
-            // What to do with the normal?
         }
         // There is a small possibility that if
         // coll_time_2 == coll_time == move_tick, we will miss a collision

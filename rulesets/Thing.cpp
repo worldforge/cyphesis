@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.226 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: Thing.cpp,v 1.227 2008-01-05 14:05:06 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -328,6 +328,8 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
     this_ent->setId(getId());
     this_ent->setStamp(m_seq);
 
+    assert(m_location.m_loc != 0);
+    assert(m_location.m_loc->m_contains != 0);
     LocatedEntitySet::const_iterator I = m_location.m_loc->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = m_location.m_loc->m_contains->end();
     for(; I != Iend; ++I) {

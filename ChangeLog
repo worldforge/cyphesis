@@ -1,5 +1,22 @@
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h:
+	  Don't allocated storage for m_contains by default, only
+	  on demand. Add a convenience method which checks, and
+	  allocates the storage if required. Set up the ID property
+	  on this base class rather then Entity.
+
+	* rulesets/Py_Thing.cpp: Remove special handling of ID attribute
+	  as it is now handled by the property.
+
+	* rulesets/Character.cpp, rulesets/Entity.cpp, rulesets/MemMap.cpp,
+	  rulesets/Motion.cpp, rulesets/Py_Mind.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/WorldRouter.cpp:
+	  Make sure all parts of the code where contains is used have
+	  the right checks, as it could be null.
+
+2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/system.cpp: Use PACKAGE_BUGREPORT from autoconf for the
 	  email address to report bugs to in error messages.
 
@@ -18016,4 +18033,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2057 2008-01-05 01:33:55 alriddoch Exp $
+$Id: ChangeLog,v 1.2058 2008-01-05 14:05:05 alriddoch Exp $

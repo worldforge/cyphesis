@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.69 2008-01-05 00:52:21 alriddoch Exp $
+// $Id: Py_Thing.cpp,v 1.70 2008-01-05 14:05:06 alriddoch Exp $
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -189,9 +189,6 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         PyErr_SetString(PyExc_AttributeError, name);
         return NULL;
     }
-    if (strcmp(name, "id") == 0) {
-        return (PyObject *)PyString_FromString(self->m_entity->getId().c_str());
-    }
     if (strcmp(name, "type") == 0) {
         PyObject * list = PyList_New(0);
         if (list == NULL) {
@@ -209,6 +206,10 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         return (PyObject *)loc;
     }
     if (strcmp(name, "contains") == 0) {
+        if (self->m_entity->m_contains == 0) {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
         PyObject * list = PyList_New(0);
         if (list == NULL) {
             return NULL;

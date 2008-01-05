@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.113 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: World.cpp,v 1.114 2008-01-05 14:05:06 alriddoch Exp $
 
 #include "World.h"
 
@@ -178,7 +178,10 @@ void World::EatOperation(const Operation & op, OpVector & res)
 
 void World::LookOperation(const Operation & op, OpVector & res)
 {
+    // We must be the top level entity
     assert(m_location.m_loc == 0);
+    // We must contains something, or where the hell did the look come from?
+    assert(m_contains != 0);
     // Let the worldrouter know we have been looked at.
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
@@ -200,21 +203,23 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     // FIXME integrate setting terrain with setting contains.
 
-    std::list<std::string> & contlist = sarg->modifyContains();
-    contlist.clear();
-    LocatedEntitySet::const_iterator Iend = m_contains->end();
-    LocatedEntitySet::const_iterator I = m_contains->begin();
-    for (; I != Iend; ++I) {
-        float fromSquSize = (*I)->m_location.squareBoxSize();
-        float dist = squareDistance((*I)->m_location, from->m_location);
-        float view_factor = fromSquSize / dist;
-        if (view_factor > consts::square_sight_factor) {
-            contlist.push_back((*I)->getId());
+    if (m_contains != 0) {
+        std::list<std::string> & contlist = sarg->modifyContains();
+        contlist.clear();
+        LocatedEntitySet::const_iterator Iend = m_contains->end();
+        LocatedEntitySet::const_iterator I = m_contains->begin();
+        for (; I != Iend; ++I) {
+            float fromSquSize = (*I)->m_location.squareBoxSize();
+            float dist = squareDistance((*I)->m_location, from->m_location);
+            float view_factor = fromSquSize / dist;
+            if (view_factor > consts::square_sight_factor) {
+                contlist.push_back((*I)->getId());
+            }
         }
-    }
-    if (contlist.empty()) {
-        debug(std::cout << "WARNING: contains empty." << std::endl << std::flush;);
-        sarg->removeAttr("contains");
+        if (contlist.empty()) {
+            debug(std::cout << "WARNING: contains empty." << std::endl << std::flush;);
+            sarg->removeAttr("contains");
+        }
     }
 
     s->setTo(op->getFrom());

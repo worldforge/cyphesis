@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.104 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: MemMap.cpp,v 1.105 2008-01-05 14:05:05 alriddoch Exp $
 
 #include "MemMap.h"
 
@@ -96,6 +96,9 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
             if (old_loc != 0) {
                 assert(old_loc->m_contains != 0);
                 old_loc->m_contains->erase(entity);
+            }
+            if (entity->m_location.m_loc->m_contains == 0) {
+                entity->m_location.m_loc->m_contains = new LocatedEntitySet;
             }
             entity->m_location.m_loc->m_contains->insert(entity);
         }
@@ -198,16 +201,18 @@ void MemMap::del(const std::string & id)
         // FIXME This is required until MemMap uses parent refcounting
         ent->m_location.m_loc = 0;
 
-        // Add deleted entities children into its parents contains
-        LocatedEntitySet::const_iterator K = ent->m_contains->begin();
-        LocatedEntitySet::const_iterator Kend = ent->m_contains->end();
-        for (; K != Kend; ++K) {
-            LocatedEntity * child_ent = *K;
-            child_ent->m_location.m_loc = ent_loc;
-            // FIXME adjust pos and:
-            // FIXME take account of orientation
-            if (ent_loc != 0) {
-                ent_loc->m_contains->insert(child_ent);
+        if (ent->m_contains != 0) {
+            // Add deleted entity's children into its parents contains
+            LocatedEntitySet::const_iterator K = ent->m_contains->begin();
+            LocatedEntitySet::const_iterator Kend = ent->m_contains->end();
+            for (; K != Kend; ++K) {
+                LocatedEntity * child_ent = *K;
+                child_ent->m_location.m_loc = ent_loc;
+                // FIXME adjust pos and:
+                // FIXME take account of orientation
+                if (ent_loc != 0) {
+                    ent_loc->m_contains->insert(child_ent);
+                }
             }
         }
 
@@ -362,6 +367,9 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius,
     return res;
 #else
     LocatedEntity * place = loc.m_loc;
+    if (place->m_contains == 0) {
+        return res;
+    }
     MemEntity * place_by_id = get(place->getId());
     if (place != place_by_id) {
         log(ERROR, "WTF!");
@@ -407,7 +415,8 @@ void MemMap::check(const double & time)
     } else {
         MemEntity * me = m_checkIterator->second;
         assert(me != 0);
-        if (!me->isVisible() && ((time - me->lastSeen()) > 600) && (me->m_contains->empty())) {
+        if (!me->isVisible() && (time - me->lastSeen()) > 600 &&
+            (me->m_contains == 0 || me->m_contains->empty())) {
             debug(std::cout << me->getId() << "|" << me->getType()->name()
                       << " is a waste of space" << std::endl << std::flush;);
             MemEntityDict::const_iterator J = m_checkIterator;

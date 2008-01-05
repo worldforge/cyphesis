@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Mind.cpp,v 1.44 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: Py_Mind.cpp,v 1.45 2008-01-05 14:05:05 alriddoch Exp $
 
 #include "Py_Mind.h"
 #include "Py_Thing.h"
@@ -109,6 +109,10 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         return (PyObject *)worldtime;
     }
     if (strcmp(name, "contains") == 0) {
+        if (self->m_mind->m_contains == 0) {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
         PyObject * list = PyList_New(0);
         if (list == NULL) {
             return NULL;

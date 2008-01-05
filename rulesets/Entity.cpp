@@ -15,16 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.147 2007-12-31 19:07:10 alriddoch Exp $
+// $Id: Entity.cpp,v 1.148 2008-01-05 14:05:05 alriddoch Exp $
 
 #include "Entity.h"
 
 #include "Script.h"
-#include "AtlasProperties.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
+#include "common/Property.h"
 #include "common/PropertyManager.h"
 
 #include <wfmath/atlasconv.h>
@@ -54,9 +54,6 @@ Entity::Entity(const std::string & id, long intId) : LocatedEntity(id, intId),
                                          m_perceptive(false),
                                          m_update_flags(0)
 {
-    m_properties["id"] = new IdProperty(getId());
-    m_properties["contains"] = new ContainsProperty(*m_contains);
-
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
     sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));
     m_properties["bbox"] = sp;
@@ -143,26 +140,29 @@ void Entity::installHandler(int class_no, Handler handler)
 /// removing from the containership tree.
 void Entity::destroy()
 {
-    assert(m_location.m_loc != NULL);
+    assert(m_location.m_loc != 0);
+    assert(m_location.m_loc->m_contains != 0);
     LocatedEntitySet & loc_contains = *m_location.m_loc->m_contains;
-    LocatedEntitySet::const_iterator Iend = m_contains->end();
-    for (LocatedEntitySet::const_iterator I = m_contains->begin(); I != Iend; ++I) {
-        LocatedEntity * obj = *I;
-        // FIXME take account of orientation
-        // FIXME velocity and orientation  need to be adjusted
-        // Remove the reference to ourself.
-        decRef();
-        obj->m_location.m_loc = m_location.m_loc;
-        m_location.m_loc->incRef();
-        if (m_location.orientation().isValid()) {
-            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
-            obj->m_location.m_velocity.rotate(m_location.orientation());
-            obj->m_location.m_orientation *= m_location.orientation();
-        } else {
-            static const Quaternion identity(1, 0, 0, 0);
-            obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), identity);
+    if (m_contains != 0) {
+        LocatedEntitySet::const_iterator Iend = m_contains->end();
+        for (LocatedEntitySet::const_iterator I = m_contains->begin(); I != Iend; ++I) {
+            LocatedEntity * obj = *I;
+            // FIXME take account of orientation
+            // FIXME velocity and orientation  need to be adjusted
+            // Remove the reference to ourself.
+            decRef();
+            obj->m_location.m_loc = m_location.m_loc;
+            m_location.m_loc->incRef();
+            if (m_location.orientation().isValid()) {
+                obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
+                obj->m_location.m_velocity.rotate(m_location.orientation());
+                obj->m_location.m_orientation *= m_location.orientation();
+            } else {
+                static const Quaternion identity(1, 0, 0, 0);
+                obj->m_location.m_pos = obj->m_location.m_pos.toParentCoords(m_location.pos(), identity);
+            }
+            loc_contains.insert(obj);
         }
-        loc_contains.insert(obj);
     }
     loc_contains.erase(this);
 
@@ -170,7 +170,7 @@ void Entity::destroy()
     // yet, and we need to keep a reference to our parent in case there
     // are broadcast ops left that we have not yet sent.
 
-    if (m_location.m_loc->m_contains->empty()) {
+    if (loc_contains.empty()) {
         Entity * loc = dynamic_cast<Entity *>(m_location.m_loc);
         loc->m_update_flags |= a_cont;
         loc->updated.emit();

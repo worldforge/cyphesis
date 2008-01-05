@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.7 2007-12-31 17:39:26 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.8 2008-01-05 14:05:05 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -108,6 +108,7 @@ class LocatedEntity : public BaseEntity {
     virtual PropertyBase * getProperty(const std::string & name) const;
 
     void setScript(Script * scrpt);
+    void makeContainer();
     void changeContainer(LocatedEntity *);
     void merge(const Atlas::Message::MapType &);
 };
