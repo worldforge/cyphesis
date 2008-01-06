@@ -1,3 +1,7 @@
+Fix the rest of defaults on the TypeNode.
+
+Use onFoo() methods to implement some of the signals we expect.
+
 Break down interface a bit more.
 Operation handling interface: just operation()
 Located interface, like LocatedEntity
