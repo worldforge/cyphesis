@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.101 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: Character.h,v 1.102 2008-01-06 21:17:20 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -63,12 +63,6 @@ class Character : public Character_parent {
     /// \brief Maximum mass of this type of creature
     double m_maxMass;
 
-    /// \brief Identifier of entity in the characters right hand
-    EntityRef m_rightHandWield;
-    /// \brief Sigc connection used to ensure the entity is removed
-    /// when it changes containers.
-    sigc::connection m_rightHandWieldConnection;
-
     /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
     /// \brief Food consumed by digestion per tick
@@ -102,10 +96,6 @@ class Character : public Character_parent {
 
     /// \brief Accessor for raw stamina property
     const double getStamina() const { return m_stamina; }
-    /// \brief Accessor for raw right hand wield property
-    const std::string & getRightHandWield() const {
-        return m_rightHandWield->getId();
-    }
 
     void setTask(Task *);
     void updateTask();

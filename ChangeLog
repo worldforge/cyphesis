@@ -1,3 +1,12 @@
+2008-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/EntityProperty.h, rulesets/EntityProperty.cpp:
+	  Refactor so this property is always dynamic, and add an accessor.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Remove the hard
+	  coded entity references used for wield tool, and replace with
+	  a dynamic property.
+
 2008-01-05  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp: Fix a missed check for m_contains being
@@ -18047,4 +18056,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2061 2008-01-05 23:22:52 alriddoch Exp $
+$Id: ChangeLog,v 1.2062 2008-01-06 21:17:19 alriddoch Exp $

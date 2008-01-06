@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.cpp,v 1.4 2006-12-30 16:45:04 alriddoch Exp $
+// $Id: EntityProperty.cpp,v 1.5 2008-01-06 21:17:20 alriddoch Exp $
 
 #include "EntityProperty.h"
 
@@ -23,7 +23,7 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
-EntityProperty::EntityProperty(EntityRef & data) : PropertyBase(0), m_data(data)
+EntityProperty::EntityProperty() : PropertyBase(0)
 {
 }
 
