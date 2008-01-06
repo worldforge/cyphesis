@@ -1,3 +1,6 @@
+Fix the issue of leaked sigc++ connections, as connections to tool.containered
+are added, but never disconnected.
+
 Fix the rest of defaults on the TypeNode.
 
 Use onFoo() methods to implement some of the signals we expect.
