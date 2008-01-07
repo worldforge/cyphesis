@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entitytest.cpp,v 1.17 2007-12-31 18:41:44 alriddoch Exp $
+// $Id: Entitytest.cpp,v 1.18 2008-01-07 01:35:33 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -43,7 +43,6 @@ int main()
     std::set<std::string> attrNames;
     attrNames.insert("id");
     attrNames.insert("bbox");
-    attrNames.insert("contains");
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));

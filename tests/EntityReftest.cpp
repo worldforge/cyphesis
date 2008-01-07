@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityReftest.cpp,v 1.2 2006-12-05 00:21:34 alriddoch Exp $
+// $Id: EntityReftest.cpp,v 1.3 2008-01-07 01:35:33 alriddoch Exp $
 
 #include "modules/EntityRef.h"
 
@@ -78,13 +78,16 @@ void checkSignal()
         emitted = false;
 
         Entity e("1", 1);
-        Entity container("2", 2);
+        Entity * container = new Entity("2", 2);
 
         // Set the location of the entity being tested, as destroy requires it.
-        e.m_location.m_loc = &container;
+        e.m_location.m_loc = container;
+        // Make sure the container has a contains structure, as destroy
+        // requires it.
+        container->m_contains = new LocatedEntitySet;
         // Increment the refcount on the container, else the tested Entity's
         // destructor will delete it.
-        container.incRef();
+        container->incRef();
 
         EntityRef ref(&e);
 
@@ -139,60 +142,60 @@ int main()
 
     {
         // Check the initialising constructor via get
-        Entity e("1", 1);
-        EntityRef ref(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
 
-        assert(ref.get() == &e);
+        assert(ref.get() == e);
     }
 
     {
         // Check the initialising constructor via dereference
-        Entity e("1", 1);
-        EntityRef ref(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
 
-        assert(&(*ref) == &e);
+        assert(&(*ref) == e);
     }
 
     {
         // Check the initialising constructor via ->
-        Entity e("1", 1);
-        EntityRef ref(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
 
-        assert(ref.operator->() == &e);
+        assert(ref.operator->() == e);
     }
 
     {
         // Check the initialising constructor via ==
-        Entity e("1", 1);
-        EntityRef ref(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
 
-        assert(ref == &e);
+        assert(ref == e);
     }
 
     {
         // Check the copy constructor
-        Entity e("1", 1);
-        EntityRef ref(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
         EntityRef ref2(ref);
 
-        assert(ref2.get() == &e);
+        assert(ref2.get() == e);
     }
 
     {
         // Check the comparison operator
-        Entity e("1", 1);
-        EntityRef ref(&e);
-        EntityRef ref2(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
+        EntityRef ref2(e);
 
         assert(ref == ref2);
     }
 
     {
         // Check the comparison operator
-        Entity e("1", 1);
-        Entity e2("2", 2);
-        EntityRef ref(&e);
-        EntityRef ref2(&e2);
+        Entity * e = new Entity("1", 1);
+        Entity * e2 = new Entity("2", 2);
+        EntityRef ref(e);
+        EntityRef ref2(e2);
 
         assert(!(ref == ref2));
     }
@@ -221,43 +224,46 @@ int main()
 
     {
         // Check the less than operator
-        Entity e("1", 1);
-        EntityRef ref(&e);
-        EntityRef ref2(&e);
+        Entity * e = new Entity("1", 1);
+        EntityRef ref(e);
+        EntityRef ref2(e);
 
         assert(!(ref < ref2) && !(ref2 < ref));
     }
 
     {
         // Check the less than operator
-        Entity e("1", 1);
-        Entity e2("2", 2);
-        EntityRef ref(&e);
-        EntityRef ref2(&e2);
+        Entity * e = new Entity("1", 1);
+        Entity * e2 = new Entity("2", 2);
+        EntityRef ref(e);
+        EntityRef ref2(e2);
 
         assert(ref < ref2 || ref2 < ref);
     }
 
     {
         // Check the assignment operator
-        Entity e("1", 1);
+        Entity * e = new Entity("1", 1);
         EntityRef ref;
 
-        ref = EntityRef(&e);
+        ref = EntityRef(e);
 
-        assert(ref.get() == &e);
+        assert(ref.get() == e);
     }
 
     {
         // Check that destroying the Entity makes the reference null.
         Entity e("1", 1);
-        Entity container("2", 2);
+        Entity * container = new Entity("2", 2);
 
         // Set the location of the entity being tested, as destroy requires it.
-        e.m_location.m_loc = &container;
+        e.m_location.m_loc = container;
+        // Make sure the container has a contains structure, as destroy
+        // requires it.
+        container->m_contains = new LocatedEntitySet;
         // Increment the refcount on the container, else the tested Entity's
         // destructor will delete it.
-        container.incRef();
+        container->incRef();
 
         EntityRef ref(&e);
 

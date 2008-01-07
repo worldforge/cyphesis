@@ -1,5 +1,13 @@
 2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Entitytest.cpp: Update so that it no longer expects the
+	  contains property to be set by default.
+
+	* tests/EntityReftest.cpp: Fix tests so that when calling destroy
+	  on an Entity, it's hierarchy is as expected.
+
+2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/EntityPropertytest.cpp: Fix the test to account for the
 	  new dynamic nature of this property.
 
@@ -18078,4 +18086,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2065 2008-01-07 01:18:26 alriddoch Exp $
+$Id: ChangeLog,v 1.2066 2008-01-07 01:35:32 alriddoch Exp $
