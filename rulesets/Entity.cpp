@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.149 2008-01-05 17:53:52 alriddoch Exp $
+// $Id: Entity.cpp,v 1.150 2008-01-07 00:06:18 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -213,4 +213,11 @@ void Entity::operation(const Operation & op, OpVector & res)
         I->second(this, op, res);
     }
     return callOperation(op, res);
+}
+
+void Entity::onContainered()
+{
+    containered.emit();
+
+    containered.clear();
 }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.10 2008-01-05 14:05:05 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.11 2008-01-07 00:06:19 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
@@ -144,6 +144,12 @@ PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
+/// \brief Called when the container of this entity changes.
+///
+void LocatedEntity::onContainered()
+{
+}
+
 /// \brief Associate a script with this entity
 ///
 /// The previously associated script is deleted.
@@ -196,16 +202,10 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
     m_location.m_loc = new_loc;
     m_location.m_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
+
+    onContainered();
 #if 0
     m_update_flags |= a_loc;
-
-    containered.emit();
-
-    std::list<sigc::connection>::iterator I = containered_oneshots.begin();
-    std::list<sigc::connection>::iterator Iend = containered_oneshots.end();
-    for (; I != Iend; ++I) {
-        I->disconnect();
-    }
 #endif
 }
 

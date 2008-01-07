@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.97 2007-12-24 00:32:11 alriddoch Exp $
+// $Id: Entity.h,v 1.98 2008-01-07 00:06:18 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -109,14 +109,13 @@ class Entity : public LocatedEntity {
     virtual void externalOperation(const Operation & op);
     virtual void operation(const Operation &, OpVector &);
 
+    virtual void onContainered();
+
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;
 
-    /// Signal indicating that this entity has changed its LOC
+    /// Single shot signal indicating that this entity has changed its LOC
     sigc::signal<void> containered;
-
-    /// Signal connections to be removed after firing
-    std::list<sigc::connection> containered_oneshots;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)

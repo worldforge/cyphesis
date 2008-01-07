@@ -1,5 +1,18 @@
 2008-01-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h: Add a virtual
+	  function that is called when the location of an entity changes.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Implement the virtual
+	  function called when location changes and use it to call the
+	  containered signal. Remove the containered_oneshots list, and
+	  make containered inherently one shot only.
+
+	* rulesets/OutfitProperty.cpp: Remove the use of containered_oneshots
+	  is this mechanism is obsolete and has been removed.
+
+2008-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/EntityProperty.h, rulesets/EntityProperty.cpp:
 	  Refactor so this property is always dynamic, and add an accessor.
 
@@ -18056,4 +18069,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2062 2008-01-06 21:17:19 alriddoch Exp $
+$Id: ChangeLog,v 1.2063 2008-01-07 00:06:18 alriddoch Exp $
