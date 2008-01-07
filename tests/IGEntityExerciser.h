@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.23 2007-12-03 00:00:50 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.24 2008-01-07 14:29:42 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -39,6 +39,8 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
             new TestWorld(e);
         } else {
             e.m_location.m_loc = new Entity("0", 0);
+            e.m_location.m_loc->m_contains = new LocatedEntitySet;
+            e.m_location.m_loc->m_contains->insert(&e);
             new TestWorld(*dynamic_cast<Entity*>(e.m_location.m_loc));
         }
         BaseWorld::instance().addEntity(&e);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.22 2008-01-05 14:05:05 alriddoch Exp $
+// $Id: Motion.cpp,v 1.23 2008-01-07 14:29:42 alriddoch Exp $
 
 #include "Motion.h"
 
@@ -76,6 +76,7 @@ float Motion::checkCollisions()
     m_collLocChange = false;
     m_collision = false;
     // Check against everything within the current container
+    assert(m_entity.m_location.m_loc != 0);
     assert(m_entity.m_location.m_loc->m_contains != 0);
     LocatedEntitySet::const_iterator I = m_entity.m_location.m_loc->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = m_entity.m_location.m_loc->m_contains->end();
