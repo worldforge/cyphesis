@@ -1,5 +1,10 @@
 2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/EntityPropertytest.cpp: Fix the test to account for the
+	  new dynamic nature of this property.
+
+2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.h: Remove an obsolete include.
 
 2008-01-06  Al Riddoch  <alriddoch@googlemail.com>
@@ -18073,4 +18078,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2064 2008-01-07 00:22:53 alriddoch Exp $
+$Id: ChangeLog,v 1.2065 2008-01-07 01:18:26 alriddoch Exp $

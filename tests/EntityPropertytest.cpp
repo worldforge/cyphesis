@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityPropertytest.cpp,v 1.2 2006-12-31 15:56:35 alriddoch Exp $
+// $Id: EntityPropertytest.cpp,v 1.3 2008-01-07 01:18:26 alriddoch Exp $
 
 #include "rulesets/EntityProperty.h"
 
@@ -34,13 +34,13 @@ int main()
 
     {
         // Test constructor
-        PropertyBase * pb = new EntityProperty(*new EntityRef);
+        PropertyBase * pb = new EntityProperty();
         delete pb;
     }
 
     {
         // Check constructor has set flags correctly to zero
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         assert(pb->flags() == 0);
         delete pb;
     }
@@ -49,7 +49,7 @@ int main()
         // Check getting the value fails when property is unassigned
         Element val;
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         assert(pb->get(val) == false);
         delete pb;
     }
@@ -58,7 +58,7 @@ int main()
         // Check that setting the value to a pointer works
         Entity ent("1", 1);
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
         delete pb;
     }
@@ -68,7 +68,7 @@ int main()
         Entity ent("1", 1);
         Element val;
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
         assert(pb->get(val) == true);
         assert(val.isString());
@@ -81,7 +81,7 @@ int main()
         MapType map;
         static const std::string key = "foo";
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
 
         MapType::const_iterator I = map.find(key);
         assert(I == map.end());
@@ -101,7 +101,7 @@ int main()
         static const std::string key = "foo";
         Element val;
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
 
         assert(!arg->hasAttr(key));
         assert(arg->copyAttr(key, val) != 0);
@@ -122,7 +122,7 @@ int main()
         static const std::string key = "id";
         Element val;
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
 
         assert(!arg->hasAttr(key));
         // Hard coded attribute ID has not been set, so returns false, but
@@ -144,7 +144,7 @@ int main()
         MapType map;
         static const std::string key = "foo";
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
 
         MapType::const_iterator I = map.find(key);
@@ -166,7 +166,7 @@ int main()
         static const std::string key = "foo";
         Element val;
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
 
         assert(!arg->hasAttr(key));
@@ -188,7 +188,7 @@ int main()
         static const std::string key = "id";
         Element val;
 
-        PropertyBase * pb = new EntityProperty(* new EntityRef);
+        PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
 
         assert(!arg->hasAttr(key));
