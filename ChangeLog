@@ -1,5 +1,10 @@
 2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/IGEntityExerciser.h: When testing the world, ensure it has
+	  a container storage, as code expect this.
+
+2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* Charactertest.cpp, Creatortest.cpp, Planttest.cpp,
 	  Stackabletest.cpp, Structuretest.cpp, Thingtest.cpp,
 	  Worldtest.cpp: Update tests so they no longer expect the
@@ -18101,4 +18106,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2068 2008-01-07 14:35:48 alriddoch Exp $
+$Id: ChangeLog,v 1.2069 2008-01-07 14:40:16 alriddoch Exp $
