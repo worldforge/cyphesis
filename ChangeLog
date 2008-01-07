@@ -1,5 +1,12 @@
 2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* Charactertest.cpp, Creatortest.cpp, Planttest.cpp,
+	  Stackabletest.cpp, Structuretest.cpp, Thingtest.cpp,
+	  Worldtest.cpp: Update tests so they no longer expect the
+	  contains property to be set by default.
+
+2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Motion.cpp: Add more thorough assert checks.
 
 	* tests/IGEntityExerciser.h: Ensure the containership is complete and
@@ -18094,4 +18101,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2067 2008-01-07 14:29:42 alriddoch Exp $
+$Id: ChangeLog,v 1.2068 2008-01-07 14:35:48 alriddoch Exp $

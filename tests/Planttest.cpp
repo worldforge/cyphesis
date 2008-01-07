@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Planttest.cpp,v 1.13 2007-12-31 18:20:29 alriddoch Exp $
+// $Id: Planttest.cpp,v 1.14 2008-01-07 14:35:48 alriddoch Exp $
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -51,7 +51,6 @@ int main()
     std::set<std::string> attrNames;
     attrNames.insert("id");
     attrNames.insert("bbox");
-    attrNames.insert("contains");
     attrNames.insert("fruits");
     attrNames.insert("radius");
     attrNames.insert("fruitName");
