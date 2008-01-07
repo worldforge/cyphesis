@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.98 2008-01-07 00:06:18 alriddoch Exp $
+// $Id: Entity.h,v 1.99 2008-01-07 00:22:53 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -26,8 +26,6 @@
 #include "modules/Location.h"
 
 #include "common/BaseWorld.h"
-
-#include <sigc++/connection.h>
 
 #include <iostream>
 
