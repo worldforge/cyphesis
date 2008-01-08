@@ -1,5 +1,10 @@
 2008-01-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp: Use getSpecificProperty() to replace
+	  last other dynamic_cast of property.
+
+2008-01-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/LocatedEntity.h: Add a template function for quickly
 	  querying a property of the required type.
 
@@ -18114,4 +18119,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2070 2008-01-08 15:21:42 alriddoch Exp $
+$Id: ChangeLog,v 1.2071 2008-01-08 19:40:06 alriddoch Exp $

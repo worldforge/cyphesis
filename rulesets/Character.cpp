@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.313 2008-01-08 15:21:44 alriddoch Exp $
+// $Id: Character.cpp,v 1.314 2008-01-08 19:40:08 alriddoch Exp $
 
 #include "Character.h"
 
@@ -559,12 +559,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
         
         if (worn_attr.isString()) {
-            OutfitProperty * outfit;
-            PropertyBase * prop = getProperty("outfit");
-            if (prop != 0) {
-                outfit = dynamic_cast<OutfitProperty*>(prop);
-                assert(outfit != 0);
-            } else {
+            OutfitProperty * outfit = getSpecificProperty<OutfitProperty>("outfit");
+            if (outfit == 0) {
                 // FIXME #8 really hacked in, should use manager
                 outfit = new OutfitProperty;
                 m_properties["outfit"] = outfit;
