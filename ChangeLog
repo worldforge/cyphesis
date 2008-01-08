@@ -1,5 +1,14 @@
 2008-01-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.h: Add an additional template function for
+	  forcing the existence of a property of the required type.
+
+	* rulesets/Character.cpp: Make the code further simpler and more
+	  readable by using the new template function to require a property
+	  exist.
+
+2008-01-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp: Use getSpecificProperty() to replace
 	  last other dynamic_cast of property.
 
@@ -18119,4 +18128,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2071 2008-01-08 19:40:06 alriddoch Exp $
+$Id: ChangeLog,v 1.2072 2008-01-08 21:13:14 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.314 2008-01-08 19:40:08 alriddoch Exp $
+// $Id: Character.cpp,v 1.315 2008-01-08 21:13:14 alriddoch Exp $
 
 #include "Character.h"
 
@@ -100,6 +100,7 @@ const double Character::energyLaidDown = 0.1;
 const double Character::weightGain = 0.5;
 
 static const std::string RIGHT_HAND_WIELD = "right_hand_wield";
+static const std::string OUTFIT = "outfit";
 
 /// \brief Calculate how the Characters metabolism has affected it in the
 /// last tick
@@ -559,16 +560,11 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
         
         if (worn_attr.isString()) {
-            OutfitProperty * outfit = getSpecificProperty<OutfitProperty>("outfit");
-            if (outfit == 0) {
-                // FIXME #8 really hacked in, should use manager
-                outfit = new OutfitProperty;
-                m_properties["outfit"] = outfit;
-            }
+            OutfitProperty * outfit = requireSpecificProperty<OutfitProperty>(OUTFIT);
             outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
-            update_arg->setAttr("outfit", MapType());
+            update_arg->setAttr(OUTFIT, MapType());
         } else {
             log(WARNING, "Got clothing with non-string worn attribute.");
         }
@@ -580,16 +576,12 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     } else {
         debug(std::cout << "Got wield for a tool" << std::endl << std::flush;);
 
-        EntityProperty * rhw = getSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
-        if (rhw == 0) {
-            rhw = new EntityProperty;
-        } else {
-            // FIXME Make sure we don't stay linked to the previous wielded
-            // tool.
-            // if (m_rightHandWieldConnection.connected()) {
-                // m_rightHandWieldConnection.disconnect();
-            // }
-        }
+        EntityProperty * rhw = requireSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
+        // FIXME Make sure we don't stay linked to the previous wielded
+        // tool.
+        // if (m_rightHandWieldConnection.connected()) {
+            // m_rightHandWieldConnection.disconnect();
+        // }
 
         // The value is ignored by the update handler, but should be the
         // right type.
