@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.312 2008-01-06 21:17:20 alriddoch Exp $
+// $Id: Character.cpp,v 1.313 2008-01-08 15:21:44 alriddoch Exp $
 
 #include "Character.h"
 
@@ -510,15 +510,8 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
-        PropertyBase * pb = getProperty(RIGHT_HAND_WIELD);
-        if (pb == 0) {
-            return;
-        }
-
-        EntityProperty * rhw = dynamic_cast<EntityProperty*>(pb);
-        assert(rhw != 0);
+        EntityProperty * rhw = getSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
         if (rhw == 0) {
-            log(ERROR, "Right hand wield property is not an EntityProperty.");
             return;
         }
 
@@ -591,19 +584,10 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     } else {
         debug(std::cout << "Got wield for a tool" << std::endl << std::flush;);
 
-        PropertyBase * pb = getProperty(RIGHT_HAND_WIELD);
-        EntityProperty * rhw;
-        if (pb == 0) {
+        EntityProperty * rhw = getSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
+        if (rhw == 0) {
             rhw = new EntityProperty;
         } else {
-            rhw = dynamic_cast<EntityProperty *>(pb);
-            assert(rhw != 0);
-            if (rhw == 0) {
-                log(ERROR, "Right hand wield property is not an EntityProperty.");
-                return;
-            }
-
-
             // FIXME Make sure we don't stay linked to the previous wielded
             // tool.
             // if (m_rightHandWieldConnection.connected()) {
@@ -770,30 +754,18 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    PropertyBase * pb = getProperty(RIGHT_HAND_WIELD);
-    if (pb == 0) {
+    EntityProperty * rhw = getSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
+    if (rhw == 0) {
         error(op, "Character::mindUseOp No tool wielded.", res, getId());
         return;
     }
 
-    EntityProperty * rhw = dynamic_cast<EntityProperty*>(pb);
-    assert(rhw != 0);
-    if (rhw == 0) {
-        log(ERROR, "Right hand wield property is not an EntityProperty.");
-        return;
-    }
-
-    if (rhw->data() == 0) {
+    Entity * tool = rhw->data().get();
+    if (tool == 0) {
         error(op, "Character::mindUseOp No tool wielded.", res, getId());
         return;
     }
     // FIXME Get a tool id from the op attributes?
-
-    Entity * tool = rhw->data().get();
-    if (tool == 0) {
-        error(op, "Character::mindUseOp Tool does not exist.", res, getId());
-        return;
-    }
 
     Element toolOpAttr;
     std::set<std::string> toolOps;

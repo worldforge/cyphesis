@@ -1,3 +1,11 @@
+2008-01-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/LocatedEntity.h: Add a template function for quickly
+	  querying a property of the required type.
+
+	* rulesets/Character.cpp: Use getSpecificProperty() to improve
+	  brevity and readability of some of the code.
+
 2008-01-07  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tests/IGEntityExerciser.h: When testing the world, ensure it has
@@ -18106,4 +18114,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2069 2008-01-07 14:40:16 alriddoch Exp $
+$Id: ChangeLog,v 1.2070 2008-01-08 15:21:42 alriddoch Exp $

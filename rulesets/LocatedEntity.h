@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.9 2008-01-07 00:06:19 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.10 2008-01-08 15:21:44 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -113,6 +113,18 @@ class LocatedEntity : public BaseEntity {
     void makeContainer();
     void changeContainer(LocatedEntity *);
     void merge(const Atlas::Message::MapType &);
+
+    template <class PropertyT>
+    PropertyT * getSpecificProperty(const std::string & name)
+    {
+        PropertyBase * p = getProperty(name);
+        if (p != 0) {
+            return dynamic_cast<PropertyT *>(p);
+        }
+        return 0;
+    }
+
+
 };
 
 #endif // RULESETS_LOCATED_ENTITY_H
