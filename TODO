@@ -1,3 +1,6 @@
+Once defaults work, handle pulling from defaults in the SpecificProperty
+templates.
+
 Fix the issue of leaked sigc++ connections, as connections to tool.containered
 are added, but never disconnected.
 
