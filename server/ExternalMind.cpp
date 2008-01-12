@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalMind.cpp,v 1.20 2007-01-28 23:51:08 alriddoch Exp $
+// $Id: ExternalMind.cpp,v 1.21 2008-01-12 22:41:12 alriddoch Exp $
 
 #include "ExternalMind.h"
 
@@ -55,11 +55,11 @@ void ExternalMind::operation(const Operation & op, OpVector &)
     // Set ops which make the characters status less than 0.1, and sends
     // emotes that the character is hungry.
     const std::vector<Root> & args = op->getArgs();
-    if (op->getClassNo() == OP_SIGHT && !args.empty()) {
+    if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO && !args.empty()) {
         Operation sub_op = smart_dynamic_cast<Operation>(args.front());
         if (sub_op.isValid()) {
             const std::vector<Root> & sub_args = sub_op->getArgs();
-            if (sub_op->getClassNo() == OP_SET && !sub_args.empty()) {
+            if (sub_op->getClassNo() == Atlas::Objects::Operation::SET_NO && !sub_args.empty()) {
                 const Root & arg = sub_args.front();
                 Element status_value;
                 if (arg->getId() == getId() and

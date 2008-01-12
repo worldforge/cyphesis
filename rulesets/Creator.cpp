@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.80 2007-11-26 15:06:33 alriddoch Exp $
+// $Id: Creator.cpp,v 1.81 2008-01-12 22:41:12 alriddoch Exp $
 
 #include "Creator.h"
 
@@ -83,25 +83,25 @@ void Creator::operation(const Operation & op, OpVector & res)
     // to prevent anyone from messing with us, like SetOperation().
     OpNo op_no = op->getClassNo();
     switch(op_no) {
-        case OP_CREATE:
+        case Atlas::Objects::Operation::CREATE_NO:
             CreateOperation(op, res);
             break;
-        case OP_LOOK:
+        case Atlas::Objects::Operation::LOOK_NO:
             LookOperation(op, res);
             break;
-        case OP_MOVE:
+        case Atlas::Objects::Operation::MOVE_NO:
             MoveOperation(op, res);
             break;
-        case OP_DELETE:
+        case Atlas::Objects::Operation::DELETE_NO:
             DeleteOperation(op, res);
             // Prevent Delete op from being sent to mind, so another delete
             // is not created in response.
             return;
             break;
         default:
-            if (op_no == OP_SETUP) {
+            if (op_no == Atlas::Objects::Operation::SETUP_NO) {
                 BaseWorld::instance().addPerceptive(this);
-            } else if (op_no == OP_TICK) {
+            } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
                 TickOperation(op, res);
             }
             break;

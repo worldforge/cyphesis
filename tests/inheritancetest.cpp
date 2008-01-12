@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritancetest.cpp,v 1.19 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: inheritancetest.cpp,v 1.20 2008-01-12 22:41:12 alriddoch Exp $
 
 #include "common/inheritance.h"
 
@@ -66,53 +66,53 @@ int main()
 
     assert(&i == &Inheritance::instance());
 
-    assert(i.opEnumerate("login") == OP_LOGIN);
-    assert(i.opEnumerate("logout") == OP_LOGOUT);
-    assert(i.opEnumerate("action") == OP_ACTION);
-    assert(i.opEnumerate("combine") == OP_COMBINE);
-    assert(i.opEnumerate("create") == OP_CREATE);
-    assert(i.opEnumerate("delete") == OP_DELETE);
-    assert(i.opEnumerate("divide") == OP_DIVIDE);
-    assert(i.opEnumerate("eat") == OP_EAT);
-    assert(i.opEnumerate("burn") == OP_BURN);
-    assert(i.opEnumerate("get") == OP_GET);
-    assert(i.opEnumerate("imaginary") == OP_IMAGINARY);
-    assert(i.opEnumerate("info") == OP_INFO);
-    assert(i.opEnumerate("move") == OP_MOVE);
-    assert(i.opEnumerate("nourish") == OP_NOURISH);
-    assert(i.opEnumerate("set") == OP_SET);
-    assert(i.opEnumerate("sight") == OP_SIGHT);
-    assert(i.opEnumerate("sound") == OP_SOUND);
-    assert(i.opEnumerate("talk") == OP_TALK);
-    assert(i.opEnumerate("touch") == OP_TOUCH);
-    assert(i.opEnumerate("tick") == OP_TICK);
-    assert(i.opEnumerate("look") == OP_LOOK);
-    assert(i.opEnumerate("setup") == OP_SETUP);
-    assert(i.opEnumerate("appearance") == OP_APPEARANCE);
-    assert(i.opEnumerate("disappearance") == OP_DISAPPEARANCE);
-    assert(i.opEnumerate("error") == OP_ERROR);
+    assert(i.opEnumerate("login") == Atlas::Objects::Operation::LOGIN_NO);
+    assert(i.opEnumerate("logout") == Atlas::Objects::Operation::LOGOUT_NO);
+    assert(i.opEnumerate("action") == Atlas::Objects::Operation::ACTION_NO);
+    assert(i.opEnumerate("combine") == Atlas::Objects::Operation::COMBINE_NO);
+    assert(i.opEnumerate("create") == Atlas::Objects::Operation::CREATE_NO);
+    assert(i.opEnumerate("delete") == Atlas::Objects::Operation::DELETE_NO);
+    assert(i.opEnumerate("divide") == Atlas::Objects::Operation::DIVIDE_NO);
+    assert(i.opEnumerate("eat") == Atlas::Objects::Operation::EAT_NO);
+    assert(i.opEnumerate("burn") == Atlas::Objects::Operation::BURN_NO);
+    assert(i.opEnumerate("get") == Atlas::Objects::Operation::GET_NO);
+    assert(i.opEnumerate("imaginary") == Atlas::Objects::Operation::IMAGINARY_NO);
+    assert(i.opEnumerate("info") == Atlas::Objects::Operation::INFO_NO);
+    assert(i.opEnumerate("move") == Atlas::Objects::Operation::MOVE_NO);
+    assert(i.opEnumerate("nourish") == Atlas::Objects::Operation::NOURISH_NO);
+    assert(i.opEnumerate("set") == Atlas::Objects::Operation::SET_NO);
+    assert(i.opEnumerate("sight") == Atlas::Objects::Operation::SIGHT_NO);
+    assert(i.opEnumerate("sound") == Atlas::Objects::Operation::SOUND_NO);
+    assert(i.opEnumerate("talk") == Atlas::Objects::Operation::TALK_NO);
+    assert(i.opEnumerate("touch") == Atlas::Objects::Operation::TOUCH_NO);
+    assert(i.opEnumerate("tick") == Atlas::Objects::Operation::TICK_NO);
+    assert(i.opEnumerate("look") == Atlas::Objects::Operation::LOOK_NO);
+    assert(i.opEnumerate("setup") == Atlas::Objects::Operation::SETUP_NO);
+    assert(i.opEnumerate("appearance") == Atlas::Objects::Operation::APPEARANCE_NO);
+    assert(i.opEnumerate("disappearance") == Atlas::Objects::Operation::DISAPPEARANCE_NO);
+    assert(i.opEnumerate("error") == Atlas::Objects::Operation::ERROR_NO);
     assert(i.opEnumerate("squigglymuff") == OP_INVALID);
 
-    const int OP_SQUIGGLYMUFF = Atlas::Objects::Factories::instance()->addFactory("squigglymuff", &Atlas::Objects::generic_factory);
+    const int SQUIGGLYMUFF_NO = Atlas::Objects::Factories::instance()->addFactory("squigglymuff", &Atlas::Objects::generic_factory);
     
-    i.opInstall("squigglymuff", OP_SQUIGGLYMUFF);
+    i.opInstall("squigglymuff", SQUIGGLYMUFF_NO);
 
     // We haven't actually added the class yet
     assert(!i.hasClass("squigglymuff"));
 
     assert(i.opEnumerate("squigglymuff") != OP_INVALID);
-    assert(i.opEnumerate("squigglymuff") == OP_SQUIGGLYMUFF);
+    assert(i.opEnumerate("squigglymuff") == SQUIGGLYMUFF_NO);
 
-    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == OP_LOGIN);
+    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == Atlas::Objects::Operation::LOGIN_NO);
     Root login_obj = Atlas::Objects::Factories::instance()->createObject("login");
     RootOperation login_op = smart_dynamic_cast<RootOperation>(login_obj);
     assert(login_op.isValid());
-    assert(i.opEnumerate(login_op) == OP_LOGIN);
+    assert(i.opEnumerate(login_op) == Atlas::Objects::Operation::LOGIN_NO);
 
     Root squigglymuff_obj = Atlas::Objects::Factories::instance()->createObject("squigglymuff");
     RootOperation squigglymuff_op = smart_dynamic_cast<RootOperation>(squigglymuff_obj);
     assert(squigglymuff_op.isValid());
-    assert(i.opEnumerate(squigglymuff_op) == OP_SQUIGGLYMUFF);
+    assert(i.opEnumerate(squigglymuff_op) == SQUIGGLYMUFF_NO);
 
     assert(i.hasClass("root"));
     assert(i.hasClass("root_entity"));
@@ -149,9 +149,9 @@ int main()
     i.flush();
     assert(i.opEnumerate("login") == OP_INVALID);
     assert(i.opEnumerate("squigglymuff") == OP_INVALID);
-    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == OP_LOGIN);
-    assert(i.opEnumerate(login_op) == OP_LOGIN);
-    assert(i.opEnumerate(squigglymuff_op) == OP_SQUIGGLYMUFF);
+    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == Atlas::Objects::Operation::LOGIN_NO);
+    assert(i.opEnumerate(login_op) == Atlas::Objects::Operation::LOGIN_NO);
+    assert(i.opEnumerate(squigglymuff_op) == SQUIGGLYMUFF_NO);
 
     // Make sure the type for root can no longer be retrieved
     const Root & non_root = i.getClass("root");

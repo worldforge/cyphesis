@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.37 2007-12-29 01:50:41 alriddoch Exp $
+// $Id: inheritance.h,v 1.38 2008-01-12 22:41:11 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
@@ -34,6 +34,7 @@ void installCustomOperations();
 void installCustomEntities();
 
 typedef std::map<std::string, const TypeNode *> TypeNodeDict;
+typedef std::map<std::string,OpNo> OpNoDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance {

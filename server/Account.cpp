@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.155 2008-01-12 18:08:05 alriddoch Exp $
+// $Id: Account.cpp,v 1.156 2008-01-12 22:41:12 alriddoch Exp $
 
 #include "Account.h"
 
@@ -264,28 +264,28 @@ void Account::operation(const Operation & op, OpVector & res)
 {
     const OpNo op_no = op->getClassNo();
     switch (op_no) {
-        case OP_CREATE:
+        case Atlas::Objects::Operation::CREATE_NO:
             CreateOperation(op, res);
             break;
-        case OP_GET:
+        case Atlas::Objects::Operation::GET_NO:
             GetOperation(op, res);
             break;
-        case OP_IMAGINARY:
+        case Atlas::Objects::Operation::IMAGINARY_NO:
             ImaginaryOperation(op, res);
             break;
-        case OP_LOGIN:
+        case Atlas::Objects::Operation::LOGIN_NO:
             LoginOperation(op, res);
             break;
-        case OP_LOGOUT:
+        case Atlas::Objects::Operation::LOGOUT_NO:
             LogoutOperation(op, res);
             break;
-        case OP_LOOK:
+        case Atlas::Objects::Operation::LOOK_NO:
             LookOperation(op, res);
             break;
-        case OP_SET:
+        case Atlas::Objects::Operation::SET_NO:
             SetOperation(op, res);
             break;
-        case OP_TALK:
+        case Atlas::Objects::Operation::TALK_NO:
             TalkOperation(op, res);
             break;
         case OP_INVALID:

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: custom.cpp,v 1.48 2007-07-04 22:00:15 alriddoch Exp $
+// $Id: custom.cpp,v 1.49 2008-01-12 22:41:11 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -41,51 +41,51 @@ void installCustomOperations()
 
     i.addChild(atlasOpDefinition("add", "set"));
     Atlas::Objects::Operation::ADD_NO = atlas_factories->addFactory("add", &Atlas::Objects::generic_factory);
-    i.opInstall("add", OP_ADD);
+    i.opInstall("add", Atlas::Objects::Operation::ADD_NO);
 
     i.addChild(atlasOpDefinition("burn", "affect"));
     Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory);
-    i.opInstall("burn", OP_BURN);
+    i.opInstall("burn", Atlas::Objects::Operation::BURN_NO);
 
     i.addChild(atlasOpDefinition("eat", "action"));
     Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);
-    i.opInstall("eat", OP_EAT);
+    i.opInstall("eat", Atlas::Objects::Operation::EAT_NO);
 
     i.addChild(atlasOpDefinition("monitor", "affect"));
     Atlas::Objects::Operation::MONITOR_NO = atlas_factories->addFactory("monitor", &Atlas::Objects::generic_factory);
-    i.opInstall("monitor", OP_MONITOR);
+    i.opInstall("monitor", Atlas::Objects::Operation::MONITOR_NO);
 
     i.addChild(atlasOpDefinition("nourish", "affect"));
     Atlas::Objects::Operation::NOURISH_NO = atlas_factories->addFactory("nourish", &Atlas::Objects::generic_factory);
-    i.opInstall("nourish", OP_NOURISH);
+    i.opInstall("nourish", Atlas::Objects::Operation::NOURISH_NO);
 
     i.addChild(atlasOpDefinition("setup", "root_operation"));
     Atlas::Objects::Operation::SETUP_NO = atlas_factories->addFactory("setup", &Atlas::Objects::generic_factory);
-    i.opInstall("setup", OP_SETUP);
+    i.opInstall("setup", Atlas::Objects::Operation::SETUP_NO);
 
     i.addChild(atlasOpDefinition("tick", "root_operation"));
     Atlas::Objects::Operation::TICK_NO = atlas_factories->addFactory("tick", &Atlas::Objects::generic_factory);
-    i.opInstall("tick", OP_TICK);
+    i.opInstall("tick", Atlas::Objects::Operation::TICK_NO);
 
     i.addChild(atlasOpDefinition("unseen", "perception"));
     Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory);
-    i.opInstall("unseen", OP_UNSEEN);
+    i.opInstall("unseen", Atlas::Objects::Operation::UNSEEN_NO);
 
     i.addChild(atlasOpDefinition("attack", "action"));
     Atlas::Objects::Operation::ATTACK_NO = atlas_factories->addFactory("attack", &Atlas::Objects::generic_factory);
-    i.opInstall("attack", OP_ATTACK);
+    i.opInstall("attack", Atlas::Objects::Operation::ATTACK_NO);
 
     i.addChild(atlasOpDefinition("pickup", "action"));
     Atlas::Objects::Operation::PICKUP_NO = atlas_factories->addFactory("pickup", &Atlas::Objects::generic_factory);
-    i.opInstall("pickup", OP_PICKUP);
+    i.opInstall("pickup", Atlas::Objects::Operation::PICKUP_NO);
 
     i.addChild(atlasOpDefinition("drop", "action"));
     Atlas::Objects::Operation::DROP_NO = atlas_factories->addFactory("drop", &Atlas::Objects::generic_factory);
-    i.opInstall("drop", OP_DROP);
+    i.opInstall("drop", Atlas::Objects::Operation::DROP_NO);
 
     i.addChild(atlasOpDefinition("update", "tick"));
     Atlas::Objects::Operation::UPDATE_NO = atlas_factories->addFactory("update", &Atlas::Objects::generic_factory);
-    i.opInstall("update", OP_DROP);
+    i.opInstall("update", Atlas::Objects::Operation::UPDATE_NO);
 
 }
 

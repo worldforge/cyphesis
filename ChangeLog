@@ -1,5 +1,16 @@
 2008-01-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/BaseEntity.cpp, common/custom.cpp, common/inheritance.cpp,
+	  common/inheritance.h, common/op_switch.h, common/types.h,
+	  rulesets/Character.cpp, rulesets/Creator.cpp,
+	  rulesets/PythonThingScript.cpp, server/Account.cpp,
+	  server/Connection.cpp, server/ExternalMind.cpp,
+	  tests/OOGThingtest.cpp, tests/inheritancetest.cpp:
+	  Remove a set of pointless definitions, and use the originals
+	  throughout the code.
+
+2008-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/OperationRouter.cpp, common/OperationRouter.h: Interface
 	  class for objects when can handle or route operations.
 
@@ -18151,4 +18162,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2073 2008-01-12 18:08:03 alriddoch Exp $
+$Id: ChangeLog,v 1.2074 2008-01-12 22:41:10 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.39 2007-12-29 01:50:41 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.40 2008-01-12 22:41:11 alriddoch Exp $
 
 #include "inheritance.h"
 
@@ -253,58 +253,58 @@ void installStandardObjects()
 
     i.addChild(atlasOpDefinition("root_operation", "root"));
     i.addChild(atlasOpDefinition("action", "root_operation"));
-    i.opInstall("action", OP_ACTION);
+    i.opInstall("action", Atlas::Objects::Operation::ACTION_NO);
     i.addChild(atlasOpDefinition("create", "action"));
-    i.opInstall("create", OP_CREATE);
+    i.opInstall("create", Atlas::Objects::Operation::CREATE_NO);
     i.addChild(atlasOpDefinition("delete", "action"));
-    i.opInstall("delete", OP_DELETE);
+    i.opInstall("delete", Atlas::Objects::Operation::DELETE_NO);
     i.addChild(atlasOpDefinition("info", "root_operation"));
-    i.opInstall("info", OP_INFO);
+    i.opInstall("info", Atlas::Objects::Operation::INFO_NO);
     i.addChild(atlasOpDefinition("set", "action"));
-    i.opInstall("set", OP_SET);
+    i.opInstall("set", Atlas::Objects::Operation::SET_NO);
     i.addChild(atlasOpDefinition("get", "action"));
-    i.opInstall("get", OP_GET);
+    i.opInstall("get", Atlas::Objects::Operation::GET_NO);
     i.addChild(atlasOpDefinition("perception", "info"));
     i.addChild(atlasOpDefinition("error", "info"));
-    i.opInstall("error", OP_ERROR);
+    i.opInstall("error", Atlas::Objects::Operation::ERROR_NO);
     i.addChild(atlasOpDefinition("combine", "create"));
-    i.opInstall("combine", OP_COMBINE);
+    i.opInstall("combine", Atlas::Objects::Operation::COMBINE_NO);
     i.addChild(atlasOpDefinition("divide", "create"));
-    i.opInstall("divide", OP_DIVIDE);
+    i.opInstall("divide", Atlas::Objects::Operation::DIVIDE_NO);
     i.addChild(atlasOpDefinition("communicate", "create"));
     i.addChild(atlasOpDefinition("move", "set"));
-    i.opInstall("move", OP_MOVE);
+    i.opInstall("move", Atlas::Objects::Operation::MOVE_NO);
     i.addChild(atlasOpDefinition("affect", "set"));
-    i.opInstall("affect", OP_MOVE);
+    i.opInstall("affect", Atlas::Objects::Operation::MOVE_NO);
     i.addChild(atlasOpDefinition("perceive", "get"));
     i.addChild(atlasOpDefinition("login", "get"));
-    i.opInstall("login", OP_LOGIN);
+    i.opInstall("login", Atlas::Objects::Operation::LOGIN_NO);
     i.addChild(atlasOpDefinition("logout", "login"));
-    i.opInstall("logout", OP_LOGOUT);
+    i.opInstall("logout", Atlas::Objects::Operation::LOGOUT_NO);
     i.addChild(atlasOpDefinition("sight", "perception"));
-    i.opInstall("sight", OP_SIGHT);
+    i.opInstall("sight", Atlas::Objects::Operation::SIGHT_NO);
     i.addChild(atlasOpDefinition("sound", "perception"));
-    i.opInstall("sound", OP_SOUND);
+    i.opInstall("sound", Atlas::Objects::Operation::SOUND_NO);
     i.addChild(atlasOpDefinition("smell", "perception"));
     i.addChild(atlasOpDefinition("feel", "perception"));
     i.addChild(atlasOpDefinition("imaginary", "action"));
-    i.opInstall("imaginary", OP_IMAGINARY);
+    i.opInstall("imaginary", Atlas::Objects::Operation::IMAGINARY_NO);
     i.addChild(atlasOpDefinition("talk", "communicate"));
-    i.opInstall("talk", OP_TALK);
+    i.opInstall("talk", Atlas::Objects::Operation::TALK_NO);
     i.addChild(atlasOpDefinition("look", "perceive"));
-    i.opInstall("look", OP_LOOK);
+    i.opInstall("look", Atlas::Objects::Operation::LOOK_NO);
     i.addChild(atlasOpDefinition("listen", "perceive"));
     i.addChild(atlasOpDefinition("sniff", "perceive"));
     i.addChild(atlasOpDefinition("touch", "perceive"));
-    i.opInstall("touch", OP_TOUCH);
+    i.opInstall("touch", Atlas::Objects::Operation::TOUCH_NO);
     i.addChild(atlasOpDefinition("appearance", "sight"));
-    i.opInstall("appearance", OP_APPEARANCE);
+    i.opInstall("appearance", Atlas::Objects::Operation::APPEARANCE_NO);
     i.addChild(atlasOpDefinition("disappearance", "sight"));
-    i.opInstall("disappearance", OP_DISAPPEARANCE);
+    i.opInstall("disappearance", Atlas::Objects::Operation::DISAPPEARANCE_NO);
     i.addChild(atlasOpDefinition("use", "action"));
-    i.opInstall("use", OP_USE);
+    i.opInstall("use", Atlas::Objects::Operation::USE_NO);
     i.addChild(atlasOpDefinition("wield", "set"));
-    i.opInstall("wield", OP_WIELD);
+    i.opInstall("wield", Atlas::Objects::Operation::WIELD_NO);
 
 
 

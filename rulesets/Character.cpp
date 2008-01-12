@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.315 2008-01-08 21:13:14 alriddoch Exp $
+// $Id: Character.cpp,v 1.316 2008-01-12 22:41:11 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1572,7 +1572,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
                                    op->getParents().front()));
         return;
     }
-    if (!op->isDefaultFutureSeconds() && op->getClassNo() != OP_TICK) {
+    if (!op->isDefaultFutureSeconds() && op->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
         log(ERROR, String::compose("Operation \"%1\" from mind with "
                                    "FUTURE_SECONDS set.",
                                    op->getParents().front()));

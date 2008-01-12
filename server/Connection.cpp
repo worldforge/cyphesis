@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.169 2008-01-12 18:08:05 alriddoch Exp $
+// $Id: Connection.cpp,v 1.170 2008-01-12 22:41:12 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -225,16 +225,16 @@ void Connection::operation(const Operation & op, OpVector & res)
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
         const OpNo op_no = op->getClassNo();
         switch (op_no) {
-            case OP_CREATE:
+            case Atlas::Objects::Operation::CREATE_NO:
                 CreateOperation(op, res);
                 break;
-            case OP_GET:
+            case Atlas::Objects::Operation::GET_NO:
                 GetOperation(op, res);
                 break;
-            case OP_LOGIN:
+            case Atlas::Objects::Operation::LOGIN_NO:
                 LoginOperation(op, res);
                 break;
-            case OP_LOGOUT:
+            case Atlas::Objects::Operation::LOGOUT_NO:
                 LogoutOperation(op, res);
                 break;
             case OP_INVALID:
