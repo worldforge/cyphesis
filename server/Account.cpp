@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.154 2007-11-28 20:22:43 alriddoch Exp $
+// $Id: Account.cpp,v 1.155 2008-01-12 18:08:05 alriddoch Exp $
 
 #include "Account.h"
 
@@ -258,6 +258,42 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
     ent->setAttr("characters", charlist);
     BaseEntity::addToEntity(ent);
+}
+
+void Account::operation(const Operation & op, OpVector & res)
+{
+    const OpNo op_no = op->getClassNo();
+    switch (op_no) {
+        case OP_CREATE:
+            CreateOperation(op, res);
+            break;
+        case OP_GET:
+            GetOperation(op, res);
+            break;
+        case OP_IMAGINARY:
+            ImaginaryOperation(op, res);
+            break;
+        case OP_LOGIN:
+            LoginOperation(op, res);
+            break;
+        case OP_LOGOUT:
+            LogoutOperation(op, res);
+            break;
+        case OP_LOOK:
+            LookOperation(op, res);
+            break;
+        case OP_SET:
+            SetOperation(op, res);
+            break;
+        case OP_TALK:
+            TalkOperation(op, res);
+            break;
+        case OP_INVALID:
+            break;
+        default:
+            OtherOperation(op, res);
+            break;
+    }
 }
 
 void Account::CreateOperation(const Operation & op, OpVector & res)

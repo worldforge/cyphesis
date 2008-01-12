@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.h,v 1.54 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: Account.h,v 1.55 2008-01-12 18:08:05 alriddoch Exp $
 
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
@@ -67,6 +67,8 @@ class Account : public OOGThing {
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+
+    virtual void operation(const Operation &, OpVector &);
 
     virtual void LogoutOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);

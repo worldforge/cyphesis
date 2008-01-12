@@ -1,3 +1,5 @@
+rename removePlayer to something more suitable.
+
 Once defaults work, handle pulling from defaults in the SpecificProperty
 templates.
 

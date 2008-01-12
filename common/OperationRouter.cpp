@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2007 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,30 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Peer.cpp,v 1.8 2008-01-12 18:08:05 alriddoch Exp $
+// $Id: OperationRouter.cpp,v 1.1 2008-01-12 18:08:04 alriddoch Exp $
 
-#include "Peer.h"
+#include "OperationRouter.h"
 
-#include "common/id.h"
-
-/// \brief Constructor
-///
-/// @param client the client socket used to connect to the peer.
-/// @param svr the server routing object of this server.
-/// @param addr a string representation of the address of the peer.
-/// @param id a string giving the indentifier of the peer connection.
-Peer::Peer(CommClient & client,
-           ServerRouting & svr,
-           const std::string & addr,
-           const std::string & id) :
-      OOGThing(id, forceIntegerId(id)), m_commClient(client), m_server(svr)
-{
-}
-
-Peer::~Peer()
-{
-}
-
-void Peer::operation(const Operation &, OpVector &)
+OperationRouter::~OperationRouter()
 {
 }

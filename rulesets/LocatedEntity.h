@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.11 2008-01-08 21:13:14 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.12 2008-01-12 18:08:04 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -114,6 +114,7 @@ class LocatedEntity : public BaseEntity {
     void changeContainer(LocatedEntity *);
     void merge(const Atlas::Message::MapType &);
 
+    /// \brief Get a property that is required to of a given type.
     template <class PropertyT>
     PropertyT * getSpecificProperty(const std::string & name)
     {
@@ -124,16 +125,18 @@ class LocatedEntity : public BaseEntity {
         return 0;
     }
 
+    /// \brief Require that a property of a given type is set.
     template <class PropertyT>
     PropertyT * requireSpecificProperty(const std::string & name,
-                                        const Atlas::Message::Element & def_val = 
-                                        Atlas::Message::Element())
+                                        const Atlas::Message::Element & def_val
+                                        = Atlas::Message::Element())
     {
         PropertyBase * p = getProperty(name);
-        PropertyT * sp;
+        PropertyT * sp = 0;
         if (p != 0) {
             sp = dynamic_cast<PropertyT *>(p);
-        } else {
+        }
+        if (sp == 0) {
             m_properties[name] = sp = new PropertyT;
             sp->set(def_val);
         }

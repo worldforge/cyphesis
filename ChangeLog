@@ -1,3 +1,26 @@
+2008-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/OperationRouter.cpp, common/OperationRouter.h: Interface
+	  class for objects when can handle or route operations.
+
+	* common/BaseEntity.h, common/BaseEntity.cpp: Remove standard
+	  implementation of operation handler, forcing class to provide
+	  more specific implementations.
+
+	* rulesets/LocatedEntity.h, rulesets/LocatedEntity.cpp: Add an
+	  implementation of the OperationRouter interface, suitable for
+	  IG operations.
+
+	* server/ServerRouting.h, server/Peer.cpp, server/Peer.h,
+	  rulesets/MemEntity.h: Add placeholder OperationRouter
+	  implementations.
+
+	* server/Connection.cpp: Update OperationRouter implementation to
+	  be better suited.
+
+	* server/Account.cpp, server/Account.h: Implement OperationRouter
+	  for accounts.
+
 2008-01-08  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/LocatedEntity.h: Add an additional template function for
@@ -18128,4 +18151,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2072 2008-01-08 21:13:14 alriddoch Exp $
+$Id: ChangeLog,v 1.2073 2008-01-12 18:08:03 alriddoch Exp $

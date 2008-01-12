@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Peer.h,v 1.6 2007-09-22 15:34:05 alriddoch Exp $
+// $Id: Peer.h,v 1.7 2008-01-12 18:08:06 alriddoch Exp $
 
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
@@ -41,6 +41,8 @@ class Peer : public OOGThing {
     Peer(CommClient & client, ServerRouting & svr,
          const std::string & addr, const std::string & id);
     virtual ~Peer();
+
+    virtual void operation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_PEER_H

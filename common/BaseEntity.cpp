@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.101 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.102 2008-01-12 18:08:04 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -80,11 +80,11 @@ void BaseEntity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) con
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void BaseEntity::operation(const Operation & op, OpVector & res)
-{
-    debug( std::cout << "BaseEntity::operation" << std::endl << std::flush;);
-    return callOperation(op, res);
-}
+// void BaseEntity::operation(const Operation & op, OpVector & res)
+// {
+    // debug( std::cout << "BaseEntity::operation" << std::endl << std::flush;);
+    // return callOperation(op, res);
+// }
 
 /// \brief Process a Login operation.
 ///

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.168 2007-11-28 20:22:43 alriddoch Exp $
+// $Id: Connection.cpp,v 1.169 2008-01-12 18:08:05 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -223,7 +223,26 @@ void Connection::operation(const Operation & op, OpVector & res)
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
     if (!op->hasAttrFlag(Atlas::Objects::Operation::FROM_FLAG)) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
-        callOperation(op, res);
+        const OpNo op_no = op->getClassNo();
+        switch (op_no) {
+            case OP_CREATE:
+                CreateOperation(op, res);
+                break;
+            case OP_GET:
+                GetOperation(op, res);
+                break;
+            case OP_LOGIN:
+                LoginOperation(op, res);
+                break;
+            case OP_LOGOUT:
+                LogoutOperation(op, res);
+                break;
+            case OP_INVALID:
+                break;
+            default:
+                OtherOperation(op, res);
+                break;
+        }
         return;
     }
     const std::string & from = op->getFrom();

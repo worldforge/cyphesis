@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.h,v 1.90 2007-07-29 12:22:58 alriddoch Exp $
+// $Id: BaseEntity.h,v 1.91 2008-01-12 18:08:04 alriddoch Exp $
 
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
 
-#include "types.h"
+#include "OperationRouter.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -40,7 +40,7 @@
 /// possible.
 /// It has an id member which is typically used to store it in a STL map or
 /// dictionary as they are called elsewhere in this code.
-class BaseEntity : virtual public sigc::trackable {
+class BaseEntity : public OperationRouter, virtual public sigc::trackable {
   private:
     /// \brief String identifier
     const std::string m_id;
@@ -68,8 +68,6 @@ class BaseEntity : virtual public sigc::trackable {
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
-
-    virtual void operation(const Operation &, OpVector &);
 
     virtual void AddOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);

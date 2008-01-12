@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.h,v 1.51 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: ServerRouting.h,v 1.52 2008-01-12 18:08:06 alriddoch Exp $
 
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
@@ -130,6 +130,8 @@ class ServerRouting : public OOGThing {
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+
+    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
 };
 
 #endif // SERVER_SERVER_ROUTING_H
