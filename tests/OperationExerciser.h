@@ -15,12 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationExerciser.h,v 1.2 2006-12-05 21:58:47 alriddoch Exp $
+// $Id: OperationExerciser.h,v 1.3 2008-01-13 01:32:56 alriddoch Exp $
 
 #ifndef TESTS_OPERATION_EXERCISER_H
 #define TESTS_OPERATION_EXERCISER_H
-
-#include "common/types.h"
 
 #include <cassert>
 

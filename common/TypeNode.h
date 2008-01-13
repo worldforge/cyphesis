@@ -15,17 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TypeNode.h,v 1.2 2007-12-29 01:50:41 alriddoch Exp $
+// $Id: TypeNode.h,v 1.3 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef COMMON_TYPE_NODE_H
 #define COMMON_TYPE_NODE_H
-
-#include "types.h"
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
+
+class PropertyBase;
+
+typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 class TypeNode {
   protected:

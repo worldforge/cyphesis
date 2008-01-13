@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.h,v 1.55 2008-01-12 18:08:05 alriddoch Exp $
+// $Id: Account.h,v 1.56 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
@@ -23,6 +23,8 @@
 #include "common/OOGThing.h"
 
 class Connection;
+
+typedef std::map<long, Entity *> EntityDict;
 
 /// \brief This is the base class for storing information about uses who
 /// can use this server.

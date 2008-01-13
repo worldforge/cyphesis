@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.h,v 1.52 2008-01-12 18:08:06 alriddoch Exp $
+// $Id: ServerRouting.h,v 1.53 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
@@ -29,6 +29,8 @@
 
 class BaseWorld;
 class Lobby;
+
+typedef std::map<long, BaseEntity *> BaseDict;
 
 /// \brief ServerRouting represents the core of the server.
 ///

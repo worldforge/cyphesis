@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Statistics.h,v 1.9 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: Statistics.h,v 1.10 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef RULESETS_STATISTICS_H
 #define RULESETS_STATISTICS_H
 
-#include "common/types.h"
+#include "common/OperationRouter.h"
 
 class ArithmeticScript;
 class Character;

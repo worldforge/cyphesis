@@ -15,13 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.40 2008-01-12 22:41:11 alriddoch Exp $
+// $Id: inheritance.cpp,v 1.41 2008-01-13 01:32:55 alriddoch Exp $
 
 #include "inheritance.h"
 
 #include "log.h"
 #include "TypeNode.h"
 #include "compose.hpp"
+#include "OperationRouter.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -137,7 +138,7 @@ OpNo Inheritance::opEnumerate(const std::string & parent) const
     }
 }
 
-OpNo Inheritance::opEnumerate(const Operation & op) const
+OpNo Inheritance::opEnumerate(const Atlas::Objects::Operation::RootOperation & op) const
 {
     return op->getClassNo();
 }

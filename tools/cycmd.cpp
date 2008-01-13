@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.114 2007-11-16 02:41:39 alriddoch Exp $
+// $Id: cycmd.cpp,v 1.115 2008-01-13 01:32:56 alriddoch Exp $
 
 /// \page cycmd_index
 ///
@@ -34,7 +34,7 @@
 #endif
 
 #include "common/log.h"
-#include "common/types.h"
+#include "common/OperationRouter.h"
 #include "common/globals.h"
 
 #include "common/Tick.h"

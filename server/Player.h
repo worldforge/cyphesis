@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Player.h,v 1.30 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: Player.h,v 1.31 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef SERVER_PLAYER_H
 #define SERVER_PLAYER_H
 
 #include "Account.h"
+
+#include <set>
 
 /// \brief This is a class for handling users who are regular players
 class Player : public Account {

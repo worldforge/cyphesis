@@ -1,3 +1,17 @@
+2008-01-13  Al Riddoch  <alriddoch@googlemail.com>
+
+	* client/BaseClient.cpp, client/ClientConnection.cpp,
+	  common/BaseWorld.h, common/OperationRouter.h, common/TypeNode.h,
+	  common/inheritance.cpp, common/inheritance.h, common/types.h,
+	  rulesets/ActivePropertyFactory.h, rulesets/AtlasProperties.h,
+	  rulesets/EntityPropertyFactory.h, rulesets/LocatedEntity.h,
+	  rulesets/MemMap.h, rulesets/Motion.h, rulesets/Movement.h,
+	  rulesets/Pedestrian.h, rulesets/PythonThingScript.cpp,
+	  rulesets/Statistics.h, rulesets/Task.h, server/Account.h,
+	  server/Connection.h, server/Player.h, server/ServerRouting.h,
+	  server/WorldRouter.h, tests/OperationExerciser.h, tools/cycmd.cpp:
+	  A major clean up and re-work in internal headers.
+
 2008-01-12  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/BaseEntity.cpp, common/custom.cpp, common/inheritance.cpp,
@@ -18162,4 +18176,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2074 2008-01-12 22:41:10 alriddoch Exp $
+$Id: ChangeLog,v 1.2075 2008-01-13 01:32:54 alriddoch Exp $

@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory.h,v 1.6 2007-12-20 18:47:28 alriddoch Exp $
+// $Id: ActivePropertyFactory.h,v 1.7 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_H
 
-#include "common/types.h"
+#include "common/OperationRouter.h"
 #include "common/PropertyFactory.h"
 
 /// \brief Factory class template to create active Property objects.

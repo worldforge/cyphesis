@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.h,v 1.12 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: Motion.h,v 1.13 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef RULESETS_MOTION_H
 #define RULESETS_MOTION_H
 
 #include "physics/Vector3D.h"
 
-#include "common/types.h"
+#include <Atlas/Objects/ObjectsFwd.h>
 
 #include <string>
 
@@ -101,14 +101,14 @@ class Motion {
     /// Generate an Update operation scheduled to occur at an apropriate
     /// time for this movement. This is typically when an entity gets
     /// a move operation so it know when to schedule the next movement update.
-    virtual Operation * genUpdateOperation();
+    virtual Atlas::Objects::Operation::RootOperation * genUpdateOperation();
     
     /// \brief Generate a Move operation.
     ///
     /// Generate a Move operation scheduled to occur immediatly. This is
     /// generally called when an entity gets a Tick operation so it updates
     /// its location data, and broadcasts that info
-    virtual Operation * genMoveOperation();
+    virtual Atlas::Objects::Operation::RootOperation * genMoveOperation();
 
     // Collision bullshit?
     float checkCollisions();

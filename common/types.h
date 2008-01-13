@@ -15,47 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: types.h,v 1.43 2008-01-12 22:41:11 alriddoch Exp $
+// $Id: types.h,v 1.44 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
 
-#include <Atlas/Objects/ObjectsFwd.h>
-
-#include <set>
-#include <map>
 #include <vector>
 
-class BaseEntity;
-class Entity;
-class LocatedEntity;
-class PropertyBase;
-
-#define OP_INVALID (-1)
-
-typedef int OpNo;
-
-typedef Atlas::Objects::Operation::RootOperation Operation;
-
-typedef std::map<long, BaseEntity *> BaseDict;
 typedef std::vector<std::string> IdList;
-
-typedef std::map<long, Entity *> EntityDict;
-typedef std::set<Entity *> EntitySet;
-typedef std::set<LocatedEntity *> LocatedEntitySet;
-
-typedef std::vector<Operation> OpVector;
-
-typedef std::map<std::string, PropertyBase *> PropertyDict;
-
-typedef enum {
-    OPERATION_BLOCKED, // Handler has determined that op should stop here
-    OPERATION_HANDLED, // Handler has done something, but op should continue
-    OPERATION_IGNORED, // Handler has done nothing
-} HandlerResult;
-
-typedef HandlerResult (*Handler)(Entity *, const Operation &, OpVector &);
-typedef std::map<int, Handler> HandlerMap;
-
 
 #endif // TYPES_H

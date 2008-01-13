@@ -15,14 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.h,v 1.80 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: WorldRouter.h,v 1.81 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
 
 #include "common/BaseWorld.h"
+#include "common/OperationRouter.h"
 
 #include <list>
+#include <set>
 
 extern "C" {
     #include <sys/time.h>
@@ -52,6 +54,7 @@ struct OpQueEntry {
 #endif
 
 typedef std::list<OpQueEntry> OpQueue;
+typedef std::set<Entity *> EntitySet;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///

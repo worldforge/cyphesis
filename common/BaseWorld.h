@@ -15,17 +15,17 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.h,v 1.51 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: BaseWorld.h,v 1.52 2008-01-13 01:32:54 alriddoch Exp $
 
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
 
 #include "globals.h"
-#include "types.h"
 
 #include "physics/Vector3D.h"
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/signal.h>
 
@@ -35,6 +35,8 @@ class Character;
 class Entity;
 class LocatedEntity;
 class Task;
+
+typedef std::map<long, Entity *> EntityDict;
 
 /// \brief Base class for game world manager object.
 ///
@@ -124,7 +126,8 @@ class BaseWorld {
                                 const std::string &, Character &) = 0;
 
     /// \brief Pass an operation to the world.
-    virtual void message(const Operation &, Entity & obj) = 0;
+    virtual void message(const Atlas::Objects::Operation::RootOperation &,
+                         Entity & obj) = 0;
 
     /// \brief Find an entity of the given name.
     virtual Entity * findByName(const std::string & name) = 0;
@@ -140,7 +143,7 @@ class BaseWorld {
     virtual void addPerceptive(Entity *) = 0;
 
     /// \brief Signal that an operation is being dispatched.
-    sigc::signal<void, Operation> Dispatching;
+    sigc::signal<void, Atlas::Objects::Operation::RootOperation> Dispatching;
 };
 
 #endif // COMMON_BASE_WORLD_H

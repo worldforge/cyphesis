@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.40 2008-01-12 22:41:12 alriddoch Exp $
+// $Id: PythonThingScript.cpp,v 1.41 2008-01-13 01:32:55 alriddoch Exp $
 
 #include "PythonThingScript.h"
 
@@ -27,8 +27,8 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/types.h"
 #include "common/compose.hpp"
+#include "common/OperationRouter.h"
 
 #include <Atlas/Objects/RootOperation.h>
 

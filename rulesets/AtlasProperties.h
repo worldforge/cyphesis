@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasProperties.h,v 1.2 2007-12-02 23:49:06 alriddoch Exp $
+// $Id: AtlasProperties.h,v 1.3 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef RULESETS_ATLAS_PROPERTIES_H
 #define RULESETS_ATLAS_PROPERTIES_H
 
 #include "common/Property.h"
 
-#include "common/types.h"
+#include <set>
 
 /// \brief Class to handle Entity id property
 /// \ingroup PropertyClasses
@@ -42,6 +42,10 @@ class NameProperty : public Property<std::string> {
 
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
+
+class LocatedEntity;
+
+typedef std::set<LocatedEntity *> LocatedEntitySet;
 
 /// \brief Class to handle Entity contains property
 /// \ingroup PropertyClasses

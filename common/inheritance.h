@@ -15,26 +15,29 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.38 2008-01-12 22:41:11 alriddoch Exp $
+// $Id: inheritance.h,v 1.39 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
 
-#include "types.h"
-
+#include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
 
+class PropertyBase;
 class TypeNode;
 
 void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
 
+typedef int OpNo;
+
+typedef std::map<std::string, OpNo> OpNoDict;
+typedef std::map<std::string, PropertyBase *> PropertyDict;
 typedef std::map<std::string, const TypeNode *> TypeNodeDict;
-typedef std::map<std::string,OpNo> OpNoDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance {
@@ -60,7 +63,7 @@ class Inheritance {
     }
 
     OpNo opEnumerate(const std::string & parent) const;
-    OpNo opEnumerate(const Operation &) const;
+    OpNo opEnumerate(const Atlas::Objects::Operation::RootOperation &) const;
     const Atlas::Objects::Root & getClass(const std::string & parent);
     const TypeNode * getType(const std::string & parent);
     bool hasClass(const std::string & parent);

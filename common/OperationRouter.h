@@ -15,12 +15,33 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationRouter.h,v 1.1 2008-01-12 18:08:04 alriddoch Exp $
+// $Id: OperationRouter.h,v 1.2 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef COMMON_OPERATION_ROUTER_H
 #define COMMON_OPERATION_ROUTER_H
 
-#include "types.h"
+#include <Atlas/Objects/ObjectsFwd.h>
+
+#include <map>
+#include <vector>
+
+#define OP_INVALID (-1)
+
+class Entity;
+
+typedef Atlas::Objects::Operation::RootOperation Operation;
+
+typedef std::vector<Operation> OpVector;
+typedef int OpNo;
+
+typedef enum {
+    OPERATION_BLOCKED, // Handler has determined that op should stop here
+    OPERATION_HANDLED, // Handler has done something, but op should continue
+    OPERATION_IGNORED, // Handler has done nothing
+} HandlerResult;
+
+typedef HandlerResult (*Handler)(Entity *, const Operation &, OpVector &);
+typedef std::map<int, Handler> HandlerMap;
 
 /// \brief Interface class for all objects that can route operations around.
 ///

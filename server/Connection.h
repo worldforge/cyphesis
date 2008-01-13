@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.57 2007-12-07 01:19:16 alriddoch Exp $
+// $Id: Connection.h,v 1.58 2008-01-13 01:32:55 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -28,6 +28,8 @@ class Account;
 class Character;
 class CommClient;
 class ServerRouting;
+
+typedef std::map<long, BaseEntity *> BaseDict;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.44 2007-09-04 10:51:27 alriddoch Exp $
+// $Id: ClientConnection.cpp,v 1.45 2008-01-13 01:32:54 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -25,7 +25,6 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/types.h"
 #include "common/globals.h"
 #include "common/compose.hpp"
 
@@ -41,6 +40,7 @@
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::RootOperation;
 
 static bool debug_flag = false;
 
@@ -56,7 +56,7 @@ ClientConnection::~ClientConnection()
     }
 }
 
-void ClientConnection::operation(const Operation & op)
+void ClientConnection::operation(const RootOperation & op)
 {
 #if 0
     const std::string & from = op->getFrom();
@@ -80,7 +80,7 @@ void ClientConnection::operation(const Operation & op)
 
 void ClientConnection::objectArrived(const Atlas::Objects::Root & obj)
 {
-    Operation op = Atlas::Objects::smart_dynamic_cast<Operation>(obj);
+    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
         const std::list<std::string> & parents = obj->getParents();
         if (parents.empty()) {
@@ -102,13 +102,13 @@ void ClientConnection::objectArrived(const Atlas::Objects::Root & obj)
     }
 }
 
-void ClientConnection::errorArrived(const Operation & op)
+void ClientConnection::errorArrived(const RootOperation & op)
 {
     debug(std::cout << "ERROR" << std::endl << std::flush;);
     error_flag = true;
 }
 
-void ClientConnection::infoArrived(const Operation & op)
+void ClientConnection::infoArrived(const RootOperation & op)
 {
     debug(std::cout << "INFO" << std::endl << std::flush;);
     const std::string & from = op->getFrom();
@@ -276,7 +276,7 @@ int ClientConnection::wait()
    return error_flag ? -1 : 0;
 }
 
-void ClientConnection::send(const Operation & op)
+void ClientConnection::send(const RootOperation & op)
 {
     /* debug(Atlas::Codecs::XML c((std::iostream&)std::cout, (Atlas::Bridge*)this);
           Atlas::Objects::Encoder enc(&c);
@@ -317,13 +317,13 @@ void ClientConnection::poll(int timeOut)
     }
 }
 
-Operation ClientConnection::pop()
+RootOperation ClientConnection::pop()
 {
     poll();
     if (operationQueue.empty()) {
-        return Operation(0);
+        return RootOperation(0);
     }
-    Operation op = operationQueue.front();
+    RootOperation op = operationQueue.front();
     operationQueue.pop_front();
     return op;
 }
