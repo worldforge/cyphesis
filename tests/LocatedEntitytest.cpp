@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntitytest.cpp,v 1.1 2007-12-02 20:54:51 alriddoch Exp $
+// $Id: LocatedEntitytest.cpp,v 1.2 2008-01-14 16:10:19 alriddoch Exp $
 
 #include "rulesets/LocatedEntity.h"
 
@@ -24,22 +24,29 @@
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
+class LocatedEntityTest : public LocatedEntity {
+  public:
+    LocatedEntityTest(const std::string & id, int iid) : LocatedEntity(id, iid) { }
+
+    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
+};
+
 int main()
 {
     // Test constructor
     {
-        new LocatedEntity("1", 1);
+        new LocatedEntityTest("1", 1);
     }
 
     // Test destructor
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         delete e;
     }
 
     // Test checkRef()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         assert(e->checkRef() == 0);
         delete e;
@@ -47,7 +54,7 @@ int main()
 
     // Test incRef()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->incRef();
         assert(e->checkRef() == 1);
@@ -56,7 +63,7 @@ int main()
 
     // Test decRef()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->incRef();
         e->decRef();
@@ -66,7 +73,7 @@ int main()
 
     // Test decRef()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->decRef();
         // Enitity deleted - verified as not leaked
@@ -74,7 +81,7 @@ int main()
 
     // Test setAttr()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->setAttr("foo", "bar");
         e->decRef();
@@ -82,7 +89,7 @@ int main()
     
     // Test setAttr()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->setAttr("foo", "bar");
         e->setAttr("foo", 23);
@@ -91,7 +98,7 @@ int main()
 
     // Test getAttr()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         Atlas::Message::Element val;
 
         bool ret = e->getAttr("foo", val);
@@ -102,7 +109,7 @@ int main()
 
     // Test getAttr()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         Atlas::Message::Element val;
 
         e->setAttr("foo", "bar");
@@ -114,7 +121,7 @@ int main()
 
     // Test hasAttr()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         Atlas::Message::Element val;
 
         bool ret = e->hasAttr("foo");
@@ -124,7 +131,7 @@ int main()
 
     // Test hasAttr()
     {
-        LocatedEntity * e = new LocatedEntity("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         Atlas::Message::Element val;
 
         e->setAttr("foo", "bar");

@@ -1,3 +1,12 @@
+2008-01-14  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/BaseEntitytest.cpp, tests/EntityExerciser.h,
+	  tests/LocatedEntitytest.cpp, tests/Makefile.am,
+	  tests/OOGThingtest.cpp, tests/OperationExerciser.cpp,
+	  tests/OperationExerciser.h, tests/inheritancetest.cpp: Fix tests
+	  to account for header changes, and the fact that some of the
+	  base classes are now abstract.
+
 2008-01-13  Al Riddoch  <alriddoch@googlemail.com>
 
 	* client/BaseClient.cpp, client/ClientConnection.cpp,
@@ -18176,4 +18185,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2075 2008-01-13 01:32:54 alriddoch Exp $
+$Id: ChangeLog,v 1.2076 2008-01-14 16:10:18 alriddoch Exp $

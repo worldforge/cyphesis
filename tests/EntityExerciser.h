@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityExerciser.h,v 1.26 2007-07-04 21:29:11 alriddoch Exp $
+// $Id: EntityExerciser.h,v 1.27 2008-01-14 16:10:19 alriddoch Exp $
 
 #ifndef TESTS_ENTITY_EXERCISER_H
 #define TESTS_ENTITY_EXERCISER_H
 
-#include "common/inheritance.h"
+#include "common/OperationRouter.h"
 
 #include "common/Add.h"
 #include "common/Burn.h"
@@ -35,6 +35,8 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <set>
 
 #include <cassert>
 

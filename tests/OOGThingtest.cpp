@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OOGThingtest.cpp,v 1.9 2008-01-12 22:41:12 alriddoch Exp $
+// $Id: OOGThingtest.cpp,v 1.10 2008-01-14 16:10:19 alriddoch Exp $
 
 #include "EntityExerciser.h"
 #include "allOperations.h"
@@ -27,6 +27,8 @@
 class OOGThingTest : public OOGThing {
   public:
     OOGThingTest() : OOGThing("1", 1) { }
+
+    virtual void operation(const Operation &, OpVector &) { }
 };
 
 int main()

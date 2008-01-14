@@ -15,9 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritancetest.cpp,v 1.20 2008-01-12 22:41:12 alriddoch Exp $
+// $Id: inheritancetest.cpp,v 1.21 2008-01-14 16:10:19 alriddoch Exp $
 
 #include "common/inheritance.h"
+#include "common/OperationRouter.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"

@@ -15,10 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationExerciser.cpp,v 1.1 2006-12-05 09:40:01 alriddoch Exp $
+// $Id: OperationExerciser.cpp,v 1.2 2008-01-14 16:10:19 alriddoch Exp $
 
 #include "OperationExerciser.h"
-
-void test_operation(const Operation & op)
-{
-}

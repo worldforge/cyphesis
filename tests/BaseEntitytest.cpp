@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntitytest.cpp,v 1.10 2006-12-06 07:48:02 alriddoch Exp $
+// $Id: BaseEntitytest.cpp,v 1.11 2008-01-14 16:10:19 alriddoch Exp $
 
 #include "EntityExerciser.h"
 #include "allOperations.h"
@@ -27,6 +27,8 @@
 class BaseEntityTest : public BaseEntity {
   public:
     BaseEntityTest(const std::string & id, int iid) : BaseEntity(id, iid) { }
+
+    virtual void operation(const Operation &, OpVector &) { }
 };
 
 int main()
