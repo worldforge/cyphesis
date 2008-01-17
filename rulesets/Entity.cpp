@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.150 2008-01-07 00:06:18 alriddoch Exp $
+// $Id: Entity.cpp,v 1.151 2008-01-17 18:54:36 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -23,9 +23,18 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/op_switch.h"
 #include "common/TypeNode.h"
 #include "common/Property.h"
 #include "common/PropertyManager.h"
+
+#include "common/Add.h"
+#include "common/Attack.h"
+#include "common/Eat.h"
+#include "common/Nourish.h"
+#include "common/Setup.h"
+#include "common/Tick.h"
+#include "common/Update.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -181,6 +190,90 @@ void Entity::destroy()
     destroyed.emit();
 }
 
+void Entity::AppearanceOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::AttackOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::CombineOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::DeleteOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::DisappearanceOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::DivideOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::EatOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::ImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::LookOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::MoveOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::NourishOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SetupOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SightOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SoundOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::TalkOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::TickOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::TouchOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::UpdateOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
 /// \brief Process an operation from an external source.
 ///
 /// The ownership of the operation passed in at this point is handed
@@ -213,6 +306,16 @@ void Entity::operation(const Operation & op, OpVector & res)
         I->second(this, op, res);
     }
     return callOperation(op, res);
+}
+
+/// \brief Find and call the handler for an operation
+///
+/// @param op The operation to be processed.
+/// @param res The result of the operation is returned here.
+void Entity::callOperation(const Operation & op, OpVector & res)
+{
+    const OpNo op_no = op->getClassNo();
+    OP_SWITCH(op, op_no, res,)
 }
 
 void Entity::onContainered()

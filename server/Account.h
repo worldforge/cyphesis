@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.h,v 1.56 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: Account.h,v 1.57 2008-01-17 18:54:36 alriddoch Exp $
 
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
@@ -78,6 +78,7 @@ class Account : public OOGThing {
     virtual void ImaginaryOperation(const Operation &, OpVector &);
     virtual void TalkOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
+    virtual void GetOperation(const Operation &, OpVector &);
 
     void addCharacter(Entity *);
 

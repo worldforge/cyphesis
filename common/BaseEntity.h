@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.h,v 1.91 2008-01-12 18:08:04 alriddoch Exp $
+// $Id: BaseEntity.h,v 1.92 2008-01-17 18:54:05 alriddoch Exp $
 
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
@@ -69,38 +69,6 @@ class BaseEntity : public OperationRouter, virtual public sigc::trackable {
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
-    virtual void AddOperation(const Operation &, OpVector &);
-    virtual void AppearanceOperation(const Operation &, OpVector &);
-    virtual void AttackOperation(const Operation &, OpVector &);
-    virtual void CombineOperation(const Operation &, OpVector &);
-    virtual void CreateOperation(const Operation &, OpVector &);
-    virtual void DeleteOperation(const Operation &, OpVector &);
-    virtual void DisappearanceOperation(const Operation &, OpVector &);
-    virtual void DivideOperation(const Operation &, OpVector &);
-    virtual void EatOperation(const Operation &, OpVector &);
-    virtual void GetOperation(const Operation &, OpVector &);
-    virtual void ImaginaryOperation(const Operation &, OpVector &);
-    virtual void InfoOperation(const Operation &, OpVector &);
-    virtual void LoginOperation(const Operation &, OpVector &);
-    virtual void LogoutOperation(const Operation &, OpVector &);
-    virtual void LookOperation(const Operation &, OpVector &);
-    virtual void MoveOperation(const Operation &, OpVector &);
-    virtual void NourishOperation(const Operation &, OpVector &);
-    virtual void SetOperation(const Operation &, OpVector &);
-    virtual void SetupOperation(const Operation &, OpVector &);
-    virtual void SightOperation(const Operation &, OpVector &);
-    virtual void SoundOperation(const Operation &, OpVector &);
-    virtual void TalkOperation(const Operation &, OpVector &);
-    virtual void TickOperation(const Operation &, OpVector &);
-    virtual void TouchOperation(const Operation &, OpVector &);
-    virtual void UpdateOperation(const Operation &, OpVector &);
-    virtual void UseOperation(const Operation &, OpVector &);
-    virtual void WieldOperation(const Operation &, OpVector &);
-
-    virtual void OtherOperation(const Operation &, OpVector &);
-    virtual void ErrorOperation(const Operation &, OpVector &);
-
-    void callOperation(const Operation &, OpVector &);
     void error(const Operation &, const std::string & errstring, OpVector &,
                const std::string & to = "") const;
     void clientError(const Operation &, const std::string & errstring,

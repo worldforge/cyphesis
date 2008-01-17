@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.110 2007-12-04 00:04:00 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.111 2008-01-17 18:54:36 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -272,7 +272,24 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     if (m_script->operation(op->getParents().front(), op, res) != 0) {
         return;
     }
-    callOperation(op, res);
+    const OpNo op_no = op->getClassNo();
+    switch (op_no) {
+        case Atlas::Objects::Operation::SIGHT_NO:
+            SightOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::SOUND_NO:
+            SoundOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::APPEARANCE_NO:
+            AppearanceOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::DISAPPEARANCE_NO:
+            DisappearanceOperation(op, res);
+            break;
+        default:
+            // ERROR
+            break;
+    }
 }
 
 void BaseMind::callSightOperation(const Operation & op,

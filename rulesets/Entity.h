@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.99 2008-01-07 00:22:53 alriddoch Exp $
+// $Id: Entity.h,v 1.100 2008-01-17 18:54:36 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -104,8 +104,32 @@ class Entity : public LocatedEntity {
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
+    virtual void AppearanceOperation(const Operation &, OpVector &);
+    virtual void AttackOperation(const Operation &, OpVector &);
+    virtual void CombineOperation(const Operation &, OpVector &);
+    virtual void CreateOperation(const Operation &, OpVector &);
+    virtual void DeleteOperation(const Operation &, OpVector &);
+    virtual void DisappearanceOperation(const Operation &, OpVector &);
+    virtual void DivideOperation(const Operation &, OpVector &);
+    virtual void EatOperation(const Operation &, OpVector &);
+    virtual void ImaginaryOperation(const Operation &, OpVector &);
+    virtual void LookOperation(const Operation &, OpVector &);
+    virtual void MoveOperation(const Operation &, OpVector &);
+    virtual void NourishOperation(const Operation &, OpVector &);
+    virtual void SetOperation(const Operation &, OpVector &);
+    virtual void SetupOperation(const Operation &, OpVector &);
+    virtual void SightOperation(const Operation &, OpVector &);
+    virtual void SoundOperation(const Operation &, OpVector &);
+    virtual void TalkOperation(const Operation &, OpVector &);
+    virtual void TickOperation(const Operation &, OpVector &);
+    virtual void TouchOperation(const Operation &, OpVector &);
+    virtual void UpdateOperation(const Operation &, OpVector &);
+    virtual void WieldOperation(const Operation &, OpVector &);
+
     virtual void externalOperation(const Operation & op);
     virtual void operation(const Operation &, OpVector &);
+
+    void callOperation(const Operation &, OpVector &);
 
     virtual void onContainered();
 

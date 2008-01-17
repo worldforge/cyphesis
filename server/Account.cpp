@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.156 2008-01-12 22:41:12 alriddoch Exp $
+// $Id: Account.cpp,v 1.157 2008-01-17 18:54:36 alriddoch Exp $
 
 #include "Account.h"
 
@@ -272,9 +272,6 @@ void Account::operation(const Operation & op, OpVector & res)
             break;
         case Atlas::Objects::Operation::IMAGINARY_NO:
             ImaginaryOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::LOGIN_NO:
-            LoginOperation(op, res);
             break;
         case Atlas::Objects::Operation::LOGOUT_NO:
             LogoutOperation(op, res);
@@ -538,4 +535,8 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         return;
     }
     error(op, "Unknown look target", res, getId());
+}
+
+void Account::GetOperation(const Operation & op, OpVector & res)
+{
 }
