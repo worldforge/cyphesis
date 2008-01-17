@@ -35,6 +35,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      PropertyFactory_impl.h \
 		      PropertyManager.cpp PropertyManager.h \
 		      OperationRouter.cpp OperationRouter.h \
+		      Identified.cpp Identified.h \
 		      BaseEntity.cpp BaseEntity.h \
 		      OOGThing.cpp OOGThing.h \
 		      BaseWorld.cpp BaseWorld.h \
