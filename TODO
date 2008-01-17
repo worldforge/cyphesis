@@ -1,3 +1,6 @@
+Use a broadcast cost heuristic to determine how often movement updates should
+done for an entity.
+
 Remove look from BaseMind::operation
 
 Migrate everything out of BaseEntity until nothing remains, at which point

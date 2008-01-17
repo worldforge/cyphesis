@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.111 2008-01-17 18:54:36 alriddoch Exp $
+// $Id: BaseMind.cpp,v 1.112 2008-01-17 19:52:25 alriddoch Exp $
 
 #include "BaseMind.h"
 
@@ -266,7 +266,6 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     m_time.update((int)op->getSeconds());
     m_map.check(op->getSeconds());
     m_map.getAdd(op->getFrom());
-    Operation look(0);
     m_map.sendLooks(res);
     m_script->operation("call_triggers", op, res);
     if (m_script->operation(op->getParents().front(), op, res) != 0) {
