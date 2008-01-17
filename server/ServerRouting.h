@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.h,v 1.53 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: ServerRouting.h,v 1.54 2008-01-17 16:42:24 alriddoch Exp $
 
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
@@ -30,7 +30,7 @@
 class BaseWorld;
 class Lobby;
 
-typedef std::map<long, BaseEntity *> BaseDict;
+typedef std::map<long, OperationRouter *> RouterMap;
 
 /// \brief ServerRouting represents the core of the server.
 ///
@@ -39,7 +39,7 @@ typedef std::map<long, BaseEntity *> BaseDict;
 class ServerRouting : public OOGThing {
   private:
     /// A mapping of ID to object of all the OOG objects in the server.
-    BaseDict m_objects;
+    RouterMap m_objects;
     /// A mapping of ID to object of all the accounts in the server.
     AccountDict m_accounts;
     /// The text name of the ruleset this server is running.
@@ -81,7 +81,7 @@ class ServerRouting : public OOGThing {
     }
 
     /// Accessor for OOG objects map.
-    const BaseDict & getObjects() const {
+    const RouterMap & getObjects() const {
         return m_objects;
     }
 
@@ -89,8 +89,8 @@ class ServerRouting : public OOGThing {
     ///
     /// @return a pointer to the object with the given id, or
     /// zero if no object with this id is present.
-    BaseEntity * getObject(const std::string & id) const {
-        BaseDict::const_iterator I = m_objects.find(integerId(id));
+    OperationRouter * getObject(const std::string & id) const {
+        RouterMap::const_iterator I = m_objects.find(integerId(id));
         if (I == m_objects.end()) {
             return 0;
         } else {

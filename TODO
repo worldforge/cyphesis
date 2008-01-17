@@ -1,3 +1,7 @@
+Migrate everything out of BaseEntity until nothing remains, at which point
+rename it to IdentifiedRouter or something like that, inheriting from
+Identified. LocatedEnity should eventually not inherit from it.
+
 rename removePlayer to something more suitable.
 
 Once defaults work, handle pulling from defaults in the SpecificProperty

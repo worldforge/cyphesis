@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.170 2008-01-12 22:41:12 alriddoch Exp $
+// $Id: Connection.cpp,v 1.171 2008-01-17 16:42:24 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -80,8 +80,8 @@ Connection::~Connection()
     
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
-    BaseDict::const_iterator Iend = m_objects.end();
-    for (BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
+    RouterMap::const_iterator Iend = m_objects.end();
+    for (RouterMap::const_iterator I = m_objects.begin(); I != Iend; ++I) {
         removePlayer(I->second, "Disconnect");
     }
 
@@ -119,7 +119,8 @@ Account * Connection::addPlayer(const std::string& username,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::removePlayer(BaseEntity * obj, const std::string & event)
+Account * Connection::removePlayer(OperationRouter * obj,
+                                   const std::string & event)
 {
     Account * ac = dynamic_cast<Account *>(obj);
     if (ac != 0) {
@@ -247,7 +248,7 @@ void Connection::operation(const Operation & op, OpVector & res)
     }
     const std::string & from = op->getFrom();
     debug(std::cout << "send on to " << from << std::endl << std::flush;);
-    BaseDict::const_iterator I = m_objects.find(integerId(from));
+    RouterMap::const_iterator I = m_objects.find(integerId(from));
     if (I == m_objects.end()) {
         error(op, String::compose("Client \"%1\" op from \"%2\" is from "
                                   "non-existant object.",
@@ -255,13 +256,13 @@ void Connection::operation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    BaseEntity * b_ent = I->second;
-    Entity * ig_ent = dynamic_cast<Entity *>(b_ent);
+    OperationRouter * obj = I->second;
+    Entity * ig_ent = dynamic_cast<Entity *>(obj);
     if (ig_ent == NULL) {
-        b_ent->operation(op, res);
+        obj->operation(op, res);
         return;
     }
-    Character * character = dynamic_cast<Character *>(b_ent);
+    Character * character = dynamic_cast<Character *>(obj);
     if (character != NULL && character->m_externalMind == NULL) {
         debug(std::cout << "Subscribing existing character" << std::endl
                         << std::flush;);
@@ -445,7 +446,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         error(op, "Got logout for non numeric entity ID", res);
         return;
     }
-    BaseDict::iterator I = m_objects.find(obj_id);
+    RouterMap::iterator I = m_objects.find(obj_id);
     if (I == m_objects.end()) {
         error(op, String::compose("Got logout for unknown entity ID(%1)",
                                   obj_id),

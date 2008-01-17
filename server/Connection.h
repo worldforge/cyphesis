@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.58 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: Connection.h,v 1.59 2008-01-17 16:42:24 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -29,7 +29,7 @@ class Character;
 class CommClient;
 class ServerRouting;
 
-typedef std::map<long, BaseEntity *> BaseDict;
+typedef std::map<long, OperationRouter *> RouterMap;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///
@@ -40,7 +40,7 @@ typedef std::map<long, BaseEntity *> BaseDict;
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
 class Connection : public OOGThing {
-    BaseDict m_objects;
+    RouterMap m_objects;
 
     /// \brief Flag to indicate if this connection has already been
     /// disconnected from the entities associated with it.
@@ -52,7 +52,7 @@ class Connection : public OOGThing {
     bool m_obsolete;
 
     Account * addPlayer(const std::string &, const std::string &);
-    Account * removePlayer(BaseEntity *, const std::string & event);
+    Account * removePlayer(OperationRouter *, const std::string & event);
   protected:
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;

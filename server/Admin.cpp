@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.118 2007-12-20 19:27:13 alriddoch Exp $
+// $Id: Admin.cpp,v 1.119 2008-01-17 16:42:24 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -174,7 +174,7 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
     if (account_id == getId()) {
        Account::LogoutOperation(op, res);
     }
-    BaseEntity * account = m_connection->m_server.getObject(account_id);
+    OperationRouter * account = m_connection->m_server.getObject(account_id);
     if (!account) {
         error(op, "Logout failed", res, getId());
         return;
@@ -209,14 +209,20 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
     if (objtype == "object" || objtype == "obj") {
         long intId = integerId(id);
 
-        const BaseDict & OOGDict = m_connection->m_server.getObjects();
-        BaseDict::const_iterator J = OOGDict.find(intId);
+        const RouterMap & OOGDict = m_connection->m_server.getObjects();
+        RouterMap::const_iterator J = OOGDict.find(intId);
         const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
         EntityDict::const_iterator K = worldDict.find(intId);
 
         if (J != OOGDict.end()) {
+            BaseEntity * obj = dynamic_cast<BaseEntity *>(J->second);
+            if (obj == 0) {
+                error(op, String::compose("Object id \"%1\" cannot be "
+                                          "represented", id), res, getId());
+                return;
+            }
             Anonymous info_arg;
-            J->second->addToEntity(info_arg);
+            obj->addToEntity(info_arg);
             info->setArgs1(info_arg);
         } else if (K != worldDict.end()) {
             Anonymous info_arg;

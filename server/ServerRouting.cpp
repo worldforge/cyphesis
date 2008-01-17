@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.cpp,v 1.65 2006-12-27 10:49:08 alriddoch Exp $
+// $Id: ServerRouting.cpp,v 1.66 2008-01-17 16:42:24 alriddoch Exp $
 
 #include "ServerRouting.h"
 #include "Lobby.h"
@@ -53,10 +53,8 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 /// Server destructor, implicitly destroys all OOG objects in the server.
 ServerRouting::~ServerRouting()
 {
-    BaseDict::const_iterator Iend = m_objects.end();
-    for(BaseDict::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        debug(std::cout << "Del " << I->second->getId() << std::endl
-                        << std::flush;);
+    RouterMap::const_iterator Iend = m_objects.end();
+    for(RouterMap::const_iterator I = m_objects.begin(); I != Iend; ++I) {
         delete I->second;
     }
     delete &m_lobby;
