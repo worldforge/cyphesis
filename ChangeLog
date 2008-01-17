@@ -1,5 +1,11 @@
 2008-01-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/EntityExerciser.h, tests/IGEntityExerciser.h: Remove
+	  operation calls from the operation router tests which no longer
+	  exist in the interface.
+
+2008-01-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/BaseMind.cpp: Remove an obsolete local variable.
 
 2008-01-17  Al Riddoch  <alriddoch@googlemail.com>
@@ -18214,4 +18220,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2079 2008-01-17 19:52:24 alriddoch Exp $
+$Id: ChangeLog,v 1.2080 2008-01-17 19:53:39 alriddoch Exp $

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityExerciser.h,v 1.27 2008-01-14 16:10:19 alriddoch Exp $
+// $Id: EntityExerciser.h,v 1.28 2008-01-17 19:53:39 alriddoch Exp $
 
 #ifndef TESTS_ENTITY_EXERCISER_H
 #define TESTS_ENTITY_EXERCISER_H
@@ -101,186 +101,107 @@ inline void EntityExerciser<EntityType>::runOperations()
     {
         Atlas::Objects::Operation::Login op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.LoginOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Logout op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.LogoutOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Combine op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.CombineOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Create op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.CreateOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Delete op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.DeleteOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Divide op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.DivideOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Eat op;
         dispatchOp(op);
-        OpVector ov;
-        op->setFrom(m_ent.getId());
-        m_ent.EatOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Get op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.GetOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Imaginary op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.ImaginaryOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Info op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.InfoOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Move op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.MoveOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Nourish op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.NourishOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Set op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.SetOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Sight op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.SightOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Sound op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.SoundOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Talk op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.TalkOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Touch op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.TouchOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Tick op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.TickOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Look op;
         op->setFrom(m_ent.getId());
         dispatchOp(op);
-        OpVector ov;
-        m_ent.LookOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Setup op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.SetupOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Appearance op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.AppearanceOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Disappearance op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.DisappearanceOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Use op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.UseOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Wield op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.WieldOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Error op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.ErrorOperation(op, ov);
-        flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::RootOperation op;
         dispatchOp(op);
-        OpVector ov;
-        m_ent.OtherOperation(op, ov);
-        flushOperations(ov);
     }
 }
 

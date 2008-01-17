@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.25 2008-01-07 14:40:16 alriddoch Exp $
+// $Id: IGEntityExerciser.h,v 1.26 2008-01-17 19:53:39 alriddoch Exp $
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -90,21 +90,14 @@ inline void IGEntityExerciser<EntityType>::runOperations()
     {
         Atlas::Objects::Operation::Login op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.LoginOperation(op, ov);
-        this->flushOperations(ov);
 
         Atlas::Objects::Entity::Anonymous login_arg;
         op->setArgs1(login_arg);
-        this->m_ent.LoginOperation(op, ov);
-        this->flushOperations(ov);
+        this->dispatchOp(op);
     }
     {
         Atlas::Objects::Operation::Logout op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.LogoutOperation(op, ov);
-        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Combine op;
@@ -181,9 +174,6 @@ inline void IGEntityExerciser<EntityType>::runOperations()
     {
         Atlas::Objects::Operation::Get op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.GetOperation(op, ov);
-        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Imaginary op;
@@ -195,9 +185,6 @@ inline void IGEntityExerciser<EntityType>::runOperations()
     {
         Atlas::Objects::Operation::Info op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.InfoOperation(op, ov);
-        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Move op;
@@ -465,9 +452,6 @@ inline void IGEntityExerciser<EntityType>::runOperations()
     {
         Atlas::Objects::Operation::Use op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.UseOperation(op, ov);
-        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::Update op;
@@ -528,16 +512,10 @@ inline void IGEntityExerciser<EntityType>::runOperations()
     {
         Atlas::Objects::Operation::Error op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.ErrorOperation(op, ov);
-        this->flushOperations(ov);
     }
     {
         Atlas::Objects::Operation::RootOperation op;
         this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.OtherOperation(op, ov);
-        this->flushOperations(ov);
     }
 }
 
