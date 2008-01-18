@@ -1,5 +1,19 @@
 2008-01-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Identified.cpp, common/Identified.h: Add a new base class
+	  which combines Identified with OperationRouter.
+
+	* server/CommClient.cpp, server/CommClient.h: Modify CommClient to
+	  refer to it's operation routing object purely by the OperationRouter
+	  interface.
+
+	* server/Connection.cpp, server/Connection.h,
+	  server/TrustedConnection.cpp: Re-factor connection routers so
+	  they no longer inherit from BaseEntity, and instead inherit
+	  cleanly from the minimum required interfaces.
+
+2008-01-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Identified.cpp, common/Identified.h: New base class for
 	  anything that has an identity.
 
@@ -18225,4 +18239,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2081 2008-01-17 23:31:07 alriddoch Exp $
+$Id: ChangeLog,v 1.2082 2008-01-18 15:26:44 alriddoch Exp $

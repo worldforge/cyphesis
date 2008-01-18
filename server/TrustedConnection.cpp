@@ -15,9 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TrustedConnection.cpp,v 1.10 2006-12-10 17:53:53 alriddoch Exp $
+// $Id: TrustedConnection.cpp,v 1.11 2008-01-18 15:26:45 alriddoch Exp $
 
 #include "TrustedConnection.h"
+
+#include "common/id.h"
 
 /// \brief TrustedConnection constructor
 ///
@@ -29,6 +31,7 @@ TrustedConnection::TrustedConnection(CommClient & client,
                                      ServerRouting & svr,
                                      const std::string & addr,
                                      const std::string & id) :
+                                     Identified(id, forceIntegerId(id)),
                                      Connection(client, svr, addr, id)
 {
 }

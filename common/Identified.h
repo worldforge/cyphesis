@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Identified.h,v 1.1 2008-01-17 23:31:08 alriddoch Exp $
+// $Id: Identified.h,v 1.2 2008-01-18 15:26:45 alriddoch Exp $
 
 #ifndef COMMON_IDENTIFIED_H
 #define COMMON_IDENTIFIED_H
@@ -51,6 +51,11 @@ class Identified {
                const std::string & to = "") const;
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;
+};
+
+class IdentifiedRouter : public OperationRouter, virtual public Identified {
+  protected:
+    explicit IdentifiedRouter(const std::string & id, long intId);
 };
 
 #endif // COMMON_IDENTIFIED_H

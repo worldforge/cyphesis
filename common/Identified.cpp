@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Identified.cpp,v 1.1 2008-01-17 23:31:08 alriddoch Exp $
+// $Id: Identified.cpp,v 1.2 2008-01-18 15:26:44 alriddoch Exp $
 
 #include "Identified.h"
 
@@ -99,4 +99,9 @@ void Identified::clientError(const Operation & op,
     }
 
     res.push_back(e);
+}
+
+IdentifiedRouter::IdentifiedRouter(const std::string & id,
+                                   long intId) : Identified(id, intId)
+{
 }

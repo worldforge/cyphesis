@@ -15,16 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.59 2008-01-17 16:42:24 alriddoch Exp $
+// $Id: Connection.h,v 1.60 2008-01-18 15:26:45 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
-#include "common/OOGThing.h"
-
-#include <sigc++/connection.h>
+#include "common/Identified.h"
 
 class Account;
+class BaseEntity;
 class Character;
 class CommClient;
 class ServerRouting;
@@ -39,7 +38,7 @@ typedef std::map<long, OperationRouter *> RouterMap;
 /// and any other entities that that are associated with those accounts,
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
-class Connection : public OOGThing {
+class Connection : public IdentifiedRouter {
     RouterMap m_objects;
 
     /// \brief Flag to indicate if this connection has already been

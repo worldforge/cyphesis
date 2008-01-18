@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommClient.cpp,v 1.60 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: CommClient.cpp,v 1.61 2008-01-18 15:26:45 alriddoch Exp $
 
 #include "CommClient.h"
 #include "CommServer.h"
@@ -36,7 +36,7 @@
 
 static const bool debug_flag = false;
 
-CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
+CommClient::CommClient(CommServer & svr, int fd, OperationRouter & c) :
             CommSocket(svr), Idle(svr),
             m_clientIos(fd),
             m_codec(NULL), m_encoder(NULL),
@@ -47,7 +47,7 @@ CommClient::CommClient(CommServer & svr, int fd, BaseEntity & c) :
     m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos);
 }
 
-CommClient::CommClient(CommServer & svr, BaseEntity & c) :
+CommClient::CommClient(CommServer & svr, OperationRouter & c) :
             CommSocket(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL),
             m_connection(c), m_connectTime(svr.time())

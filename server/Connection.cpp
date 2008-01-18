@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.171 2008-01-17 16:42:24 alriddoch Exp $
+// $Id: Connection.cpp,v 1.172 2008-01-18 15:26:45 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -61,9 +61,11 @@ Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id) :
-            OOGThing(id, forceIntegerId(id)), m_obsolete(false),
-                                              m_commClient(client),
-                                              m_server(svr)
+            Identified(id, forceIntegerId(id)),
+            IdentifiedRouter(id, forceIntegerId(id)),
+                                                m_obsolete(false),
+                                                m_commClient(client),
+                                                m_server(svr)
 {
     m_server.incClients();
     logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr));
@@ -241,7 +243,7 @@ void Connection::operation(const Operation & op, OpVector & res)
             case OP_INVALID:
                 break;
             default:
-                OtherOperation(op, res);
+                error(op, "Unknown operation", res);
                 break;
         }
         return;
