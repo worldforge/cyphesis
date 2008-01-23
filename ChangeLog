@@ -1,3 +1,8 @@
+2008-01-23  Al Riddoch  <alriddoch@googlemail.com>
+
+	* valgrind-python.supp: Uncomment supressions required if Python
+	  has not been re-compiled.
+
 2008-01-17  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Identified.cpp, common/Identified.h: Add a new base class
@@ -18239,4 +18244,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2082 2008-01-18 15:26:44 alriddoch Exp $
+$Id: ChangeLog,v 1.2083 2008-01-23 17:54:03 alriddoch Exp $
