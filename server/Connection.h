@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.60 2008-01-18 15:26:45 alriddoch Exp $
+// $Id: Connection.h,v 1.61 2008-01-23 18:03:50 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
 #include "common/Identified.h"
+
+#include <sigc++/trackable.h>
 
 class Account;
 class BaseEntity;
@@ -38,7 +40,7 @@ typedef std::map<long, OperationRouter *> RouterMap;
 /// and any other entities that that are associated with those accounts,
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
-class Connection : public IdentifiedRouter {
+class Connection : public IdentifiedRouter, virtual public sigc::trackable {
     RouterMap m_objects;
 
     /// \brief Flag to indicate if this connection has already been

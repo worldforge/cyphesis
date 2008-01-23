@@ -1,5 +1,10 @@
 2008-01-23  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Connection.h: Add sigc::trackable back into the inheritance
+	  for Connection, so it gets disconnected from signals on destruction.
+
+2008-01-23  Al Riddoch  <alriddoch@googlemail.com>
+
 	* valgrind-python.supp: Uncomment supressions required if Python
 	  has not been re-compiled.
 
@@ -18244,4 +18249,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2083 2008-01-23 17:54:03 alriddoch Exp $
+$Id: ChangeLog,v 1.2084 2008-01-23 18:03:49 alriddoch Exp $
