@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.85 2007-12-03 23:18:52 alriddoch Exp $
+// $Id: Plant.cpp,v 1.86 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -47,7 +47,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Plant::Plant(const std::string & id, long intId) : Plant_parent(id, intId),
+Plant::Plant(const std::string & id, long intId) :
+       Identified(id, intId),
+       Plant_parent(id, intId),
                                                    m_fruits(0),
                                                    m_radius(1),
                                                    m_fruitChance(2),

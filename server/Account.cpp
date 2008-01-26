@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.157 2008-01-17 18:54:36 alriddoch Exp $
+// $Id: Account.cpp,v 1.158 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Account.h"
 
@@ -66,10 +66,14 @@ static const bool debug_flag = false;
 /// @param passwd Password for this account
 /// @param id String identifier for this account
 /// @param intId Integer identifier for this account
-Account::Account(Connection * conn, const std::string & uname,
-                 const std::string& passwd, const std::string & id, long intId)
-                 : OOGThing(id, intId), m_connection(conn),
-                   m_username(uname), m_password(passwd)
+Account::Account(Connection * conn,
+                 const std::string & uname,
+                 const std::string & passwd,
+                 const std::string & id,
+                 long intId) :
+         Identified(id, intId),
+         OOGThing(id, intId), m_connection(conn), m_username(uname),
+                              m_password(passwd)
 {
 }
 

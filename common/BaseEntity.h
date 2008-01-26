@@ -15,19 +15,17 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.h,v 1.92 2008-01-17 18:54:05 alriddoch Exp $
+// $Id: BaseEntity.h,v 1.93 2008-01-26 17:43:21 alriddoch Exp $
 
 #ifndef COMMON_BASE_ENTITY_H
 #define COMMON_BASE_ENTITY_H
 
-#include "OperationRouter.h"
+#include "Identified.h"
 
 #include <Atlas/Message/Element.h>
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
-
-#include <string>
 
 /// \brief This is the base class from which all other entity like classes
 /// inherit, both in game and out of game.
@@ -40,13 +38,8 @@
 /// possible.
 /// It has an id member which is typically used to store it in a STL map or
 /// dictionary as they are called elsewhere in this code.
-class BaseEntity : public OperationRouter, virtual public sigc::trackable {
+class BaseEntity : public IdentifiedRouter, virtual public sigc::trackable {
   private:
-    /// \brief String identifier
-    const std::string m_id;
-    /// \brief Integer identifier
-    const long m_intId;
-
     /// \brief Copy constructor private and un-implemented to prevent slicing
     BaseEntity(const BaseEntity &);
     /// \brief Assignment operator private and un-implemented to prevent slicing
@@ -56,23 +49,8 @@ class BaseEntity : public OperationRouter, virtual public sigc::trackable {
   public:
     virtual ~BaseEntity();
 
-    /// \brief Read only accessor for string identity
-    const std::string & getId() const {
-        return m_id;
-    }
-
-    /// \brief Read only accessor for Integer identity
-    long getIntId() const {
-        return m_intId;
-    }
-
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
-
-    void error(const Operation &, const std::string & errstring, OpVector &,
-               const std::string & to = "") const;
-    void clientError(const Operation &, const std::string & errstring,
-                     OpVector &, const std::string & to = "") const;
 
     /// \brief Signal emitted when this entity is removed from the server
     ///

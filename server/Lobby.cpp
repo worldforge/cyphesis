@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Lobby.cpp,v 1.38 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Lobby.cpp,v 1.39 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Lobby.h"
 
@@ -39,7 +39,8 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-             OOGThing(id, intId), m_server(s)
+       Identified(id, intId),
+       OOGThing(id, intId), m_server(s)
 {
 }
 

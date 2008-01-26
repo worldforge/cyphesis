@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.cpp,v 1.66 2008-01-17 16:42:24 alriddoch Exp $
+// $Id: ServerRouting.cpp,v 1.67 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "ServerRouting.h"
 #include "Lobby.h"
@@ -45,6 +45,7 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & name,
                              const std::string & id, long intId,
                              const std::string & lId, long lIntId) :
+        Identified(id, intId),
         OOGThing(id, intId), m_svrRuleset(ruleset), m_svrName(name),
         m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
 {

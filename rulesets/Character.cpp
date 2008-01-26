@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.316 2008-01-12 22:41:11 alriddoch Exp $
+// $Id: Character.cpp,v 1.317 2008-01-26 17:43:21 alriddoch Exp $
 
 #include "Character.h"
 
@@ -257,13 +257,14 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 /// @param id String identifier
 /// @param intId Integer identifier
 Character::Character(const std::string & id, long intId) :
-                                            Character_parent(id, intId),
-                                            m_statistics(*this),
-                                            m_movement(*new Pedestrian(*this)),
-                                            m_task(0), m_isAlive(true),
-                                            m_stamina(1.),
-                                            m_maxMass(100),
-                                            m_mind(0), m_externalMind(0)
+           Identified(id, intId),
+           Character_parent(id, intId),
+               m_statistics(*this),
+               m_movement(*new Pedestrian(*this)),
+               m_task(0), m_isAlive(true),
+               m_stamina(1.),
+               m_maxMass(100),
+               m_mind(0), m_externalMind(0)
 {
     m_location.setBBox(BBox(WFMath::Point<3>(-0.25, -0.25, 0),
                             WFMath::Point<3>(0.25, 0.25, 2)));

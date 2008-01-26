@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.227 2008-01-05 14:05:06 alriddoch Exp $
+// $Id: Thing.cpp,v 1.228 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -61,7 +61,9 @@ using Atlas::Objects::Entity::RootEntity;
 static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangiable entities.
-Thing::Thing(const std::string & id, long intId) : Thing_parent(id, intId)
+Thing::Thing(const std::string & id, long intId) :
+       Identified(id, intId),
+       Thing_parent(id, intId)
 {
     m_motion = new Motion(*this);
 }

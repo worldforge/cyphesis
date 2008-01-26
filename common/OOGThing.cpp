@@ -15,14 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OOGThing.cpp,v 1.11 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: OOGThing.cpp,v 1.12 2008-01-26 17:43:21 alriddoch Exp $
 
 #include "OOGThing.h"
 
 /// \brief Constructor called from classes that inherit from OOGThing
 ///
 /// @param id identifier of new entity
-OOGThing::OOGThing(const std::string & id, long intId) : BaseEntity(id, intId)
+OOGThing::OOGThing(const std::string & id, long intId) :
+          Identified(id, intId),
+          BaseEntity(id, intId)
 {
 }
 

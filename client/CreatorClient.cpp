@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CreatorClient.cpp,v 1.34 2007-12-02 23:49:05 alriddoch Exp $
+// $Id: CreatorClient.cpp,v 1.35 2008-01-26 17:43:21 alriddoch Exp $
 
 #include "Py_CreatorClient.h"
 
@@ -40,7 +40,8 @@ using Atlas::Objects::smart_dynamic_cast;
 
 CreatorClient::CreatorClient(const std::string & id, long intId,
                              ClientConnection &c) :
-                             CharacterClient(id, intId, c)
+               Identified(id, intId),
+               CharacterClient(id, intId, c)
 {
 }
 

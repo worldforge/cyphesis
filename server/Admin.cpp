@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.119 2008-01-17 16:42:24 alriddoch Exp $
+// $Id: Admin.cpp,v 1.120 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -55,9 +55,13 @@ using Atlas::Objects::Entity::RootEntity;
 static const bool debug_flag = false;
 
 /// \brief Admin constructor
-Admin::Admin(Connection * conn, const std::string& username,
-             const std::string& passwd, const std::string & id, long intId) :
-             Account(conn, username, passwd, id, intId)
+Admin::Admin(Connection * conn,
+             const std::string & username,
+             const std::string & passwd,
+             const std::string & id,
+             long intId) :
+       Identified(id, intId),
+       Account(conn, username, passwd, id, intId)
 {
 }
 

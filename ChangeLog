@@ -1,3 +1,19 @@
+2008-01-26  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/BaseEntity.cpp, common/BaseEntity.h: Remove the code that
+	  handle ID, and just inherit from Identified.
+
+	* client/CharacterClient.cpp, client/CreatorClient.cpp,
+	  common/OOGThing.cpp, rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/LocatedEntity.cpp, rulesets/MemEntity.cpp,
+	  rulesets/Plant.cpp, rulesets/Stackable.cpp, rulesets/Structure.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp, server/Account.cpp,
+	  server/Admin.cpp, server/ExternalMind.cpp, server/Lobby.cpp,
+	  server/Peer.cpp, server/Player.cpp, server/ServerRouting.cpp,
+	  server/SlaveClientConnection.cpp: Add calls to the virtually
+	  inherited Identified constructor as required.
+
 2008-01-23  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/Connection.h: Add sigc::trackable back into the inheritance
@@ -18249,4 +18265,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2084 2008-01-23 18:03:49 alriddoch Exp $
+$Id: ChangeLog,v 1.2085 2008-01-26 17:43:20 alriddoch Exp $

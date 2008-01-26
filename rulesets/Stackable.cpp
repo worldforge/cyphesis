@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Stackable.cpp,v 1.54 2007-12-27 03:31:48 alriddoch Exp $
+// $Id: Stackable.cpp,v 1.55 2008-01-26 17:43:22 alriddoch Exp $
 
 // A stackable object, ie one which can represent multiple object of the
 // same type. Used for things like coins.
@@ -44,7 +44,8 @@ using Atlas::Objects::Entity::Anonymous;
 /// @param id identifier of this Entity
 /// @param intId identifier of this Entity
 Stackable::Stackable(const std::string & id, long intId) :
-                                             Stackable_parent(id, intId),
+           Identified(id, intId),
+           Stackable_parent(id, intId),
                                              m_num(1)
 {
     m_properties["num"] = new Property<int>(m_num, 0);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.81 2008-01-12 22:41:12 alriddoch Exp $
+// $Id: Creator.cpp,v 1.82 2008-01-26 17:43:21 alriddoch Exp $
 
 #include "Creator.h"
 
@@ -40,7 +40,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Creator::Creator(const std::string & id, long intId) : Creator_parent(id, intId)
+Creator::Creator(const std::string & id, long intId) :
+         Identified(id, intId),
+         Creator_parent(id, intId)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
 }

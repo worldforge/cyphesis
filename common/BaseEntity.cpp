@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.104 2008-01-17 18:54:05 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.105 2008-01-26 17:43:21 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -50,8 +50,9 @@ static const bool debug_flag = false;
 ///
 /// @param id String identifier
 /// @param intId Integer identifier
-BaseEntity::BaseEntity(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
+BaseEntity::BaseEntity(const std::string & id, long intId) :
+            Identified(id, intId),
+            IdentifiedRouter(id, intId)
 {
 }
 
@@ -75,6 +76,7 @@ void BaseEntity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) con
     ent->setId(getId());
 }
 
+#if 0
 /// \brief Report an Error.
 ///
 /// The error reported is noted in the log, and an error operation is
@@ -143,4 +145,4 @@ void BaseEntity::clientError(const Operation & op,
 
     res.push_back(e);
 }
-
+#endif // 0

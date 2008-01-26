@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Structure.cpp,v 1.6 2006-12-13 00:00:11 alriddoch Exp $
+// $Id: Structure.cpp,v 1.7 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Structure.h"
 
@@ -24,7 +24,8 @@
 /// @param id identifier of this structure entity
 /// @param intId integer identifier of this structure entity
 Structure::Structure(const std::string & id, long intId) :
-                                             Structure_parent(id, intId)
+           Identified(id, intId),
+           Structure_parent(id, intId)
 {
     m_location.setSimple(false);
 }

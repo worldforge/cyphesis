@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.114 2008-01-05 14:05:06 alriddoch Exp $
+// $Id: World.cpp,v 1.115 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "World.h"
 
@@ -65,9 +65,11 @@ using Atlas::Objects::smart_dynamic_cast;
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief Constructor for the World entity
-World::World(const std::string & id, long intId) : World_parent(id, intId),
-             m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
-             m_tileShader(*new Mercator::TileShader)
+World::World(const std::string & id, long intId) :
+       Identified(id, intId),
+       World_parent(id, intId),
+           m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
+           m_tileShader(*new Mercator::TileShader)
 {
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
                                                   m_modifiedTerrain, a_terrain);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.151 2008-01-17 18:54:36 alriddoch Exp $
+// $Id: Entity.cpp,v 1.152 2008-01-26 17:43:21 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -58,10 +58,10 @@ using Atlas::Objects::smart_dynamic_cast;
 static const bool debug_flag = false;
 
 /// \brief Entity constructor
-Entity::Entity(const std::string & id, long intId) : LocatedEntity(id, intId),
-                                         m_destroyed(false), m_motion(0),
-                                         m_perceptive(false),
-                                         m_update_flags(0)
+Entity::Entity(const std::string & id, long intId) :
+        Identified(id, intId),
+        LocatedEntity(id, intId), m_destroyed(false), m_motion(0),
+        m_perceptive(false), m_update_flags(0)
 {
     SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
     sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));

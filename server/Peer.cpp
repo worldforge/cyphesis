@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Peer.cpp,v 1.8 2008-01-12 18:08:05 alriddoch Exp $
+// $Id: Peer.cpp,v 1.9 2008-01-26 17:43:22 alriddoch Exp $
 
 #include "Peer.h"
 
@@ -31,6 +31,7 @@ Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
            const std::string & id) :
+      Identified(id, forceIntegerId(id)),
       OOGThing(id, forceIntegerId(id)), m_commClient(client), m_server(svr)
 {
 }
