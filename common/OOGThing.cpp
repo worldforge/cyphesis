@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OOGThing.cpp,v 1.12 2008-01-26 17:43:21 alriddoch Exp $
+// $Id: OOGThing.cpp,v 1.13 2008-01-28 23:48:31 alriddoch Exp $
 
 #include "OOGThing.h"
 
@@ -31,10 +31,3 @@ OOGThing::OOGThing(const std::string & id, long intId) :
 OOGThing::~OOGThing()
 {
 }
-
-void OOGThing::OtherOperation(const Operation & op, OpVector & res)
-{
-    
-    error(op, "Unknown operation", res);
-}
-

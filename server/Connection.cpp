@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.172 2008-01-18 15:26:45 alriddoch Exp $
+// $Id: Connection.cpp,v 1.173 2008-01-28 23:48:32 alriddoch Exp $
 
 #include "Connection.h"
 
@@ -61,9 +61,7 @@ Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id) :
-            Identified(id, forceIntegerId(id)),
-            IdentifiedRouter(id, forceIntegerId(id)),
-                                                m_obsolete(false),
+            Identified(id, forceIntegerId(id)), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
@@ -121,7 +119,7 @@ Account * Connection::addPlayer(const std::string& username,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::removePlayer(OperationRouter * obj,
+Account * Connection::removePlayer(IdentifiedRouter * obj,
                                    const std::string & event)
 {
     Account * ac = dynamic_cast<Account *>(obj);
@@ -163,12 +161,17 @@ Account * Connection::removePlayer(OperationRouter * obj,
     return 0;
 }
 
-void Connection::addObject(BaseEntity * obj)
+void Connection::addEntity(Entity * ent)
+{
+    addObject(ent);
+    ent->destroyed.connect(sigc::bind(sigc::mem_fun(this,
+                                                    &Connection::objectDeleted),
+                                      ent->getIntId()));
+}
+
+void Connection::addObject(IdentifiedRouter * obj)
 {
     m_objects[obj->getIntId()] = obj;
-    obj->destroyed.connect(sigc::bind(sigc::mem_fun(this,
-                                                    &Connection::objectDeleted),
-                                      obj->getIntId()));
 }
 
 void Connection::removeObject(long id)
@@ -258,7 +261,7 @@ void Connection::operation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    OperationRouter * obj = I->second;
+    IdentifiedRouter * obj = I->second;
     Entity * ig_ent = dynamic_cast<Entity *>(obj);
     if (ig_ent == NULL) {
         obj->operation(op, res);
@@ -342,7 +345,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     EntityDict::const_iterator J = player->getCharacters().begin();
     EntityDict::const_iterator Jend = player->getCharacters().end();
     for (; J != Jend; ++J) {
-        addObject(J->second);
+        addEntity(J->second);
     }
     player->m_connection = this;
     m_server.m_lobby.addAccount(player);

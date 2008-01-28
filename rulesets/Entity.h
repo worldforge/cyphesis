@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.100 2008-01-17 18:54:36 alriddoch Exp $
+// $Id: Entity.h,v 1.101 2008-01-28 23:48:31 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -138,6 +138,13 @@ class Entity : public LocatedEntity {
 
     /// Single shot signal indicating that this entity has changed its LOC
     sigc::signal<void> containered;
+
+    /// \brief Signal emitted when this entity is removed from the server
+    ///
+    /// Note that this is usually well before the object is actually deleted
+    /// and marks the conceptual destruction of the concept this entity
+    /// represents, not the destruction of this object.
+    sigc::signal<void> destroyed;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)

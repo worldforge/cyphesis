@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Lobby.h,v 1.22 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Lobby.h,v 1.23 2008-01-28 23:48:33 alriddoch Exp $
 
 #ifndef SERVER_LOBBY_H
 #define SERVER_LOBBY_H
@@ -29,7 +29,7 @@ class ServerRouting;
 ///
 /// This allows chat between all connected players, and provides a forum for
 /// discusion out of the context of the game.
-class Lobby : public OOGThing {
+class Lobby : public IdentifiedRouter {
   private:
     AccountDict m_accounts;
     ServerRouting & m_server;

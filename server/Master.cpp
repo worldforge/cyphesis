@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Master.cpp,v 1.4 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Master.cpp,v 1.5 2008-01-28 23:48:33 alriddoch Exp $
 
 #include "Master.h"
 
 #include "common/id.h"
 
 Master::Master(CommClient & cli, ServerRouting & svr, const std::string & id) :
-        OOGThing(id, forceIntegerId(id)), m_commClient(cli), m_server(svr)
+        Identified(id, forceIntegerId(id)), m_commClient(cli), m_server(svr)
 {
 }
 

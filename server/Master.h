@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Master.h,v 1.5 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: Master.h,v 1.6 2008-01-28 23:48:33 alriddoch Exp $
 
 #ifndef SERVER_MASTER_H
 #define SERVER_MASTER_H
 
-#include "common/OOGThing.h"
+#include "common/Identified.h"
 
 class CommClient;
 class ServerRouting;
@@ -29,7 +29,7 @@ class ServerRouting;
 /// program is a slave.
 ///
 /// This is designed to be used from a cyphesis process running as an AI slave.
-class Master : public OOGThing {
+class Master : public IdentifiedRouter {
   protected:
     
   public:

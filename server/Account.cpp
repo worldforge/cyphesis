@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.158 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: Account.cpp,v 1.159 2008-01-28 23:48:32 alriddoch Exp $
 
 #include "Account.h"
 
@@ -72,7 +72,7 @@ Account::Account(Connection * conn,
                  const std::string & id,
                  long intId) :
          Identified(id, intId),
-         OOGThing(id, intId), m_connection(conn), m_username(uname),
+         m_connection(conn), m_username(uname),
                               m_password(passwd)
 {
 }
@@ -130,7 +130,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         // starts getting hard to tell whether or not they exist.
         m_charactersDict[chr->getIntId()] = chr;
         chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
-        m_connection->addObject(chr);
+        m_connection->addEntity(chr);
         if (consts::enable_persistence) {
             Persistance::instance()->addCharacter(*this, *chr);
         }
@@ -243,7 +243,8 @@ void Account::addToMessage(MapType & omap) const
         charlist.push_back(I->first);
     }
     omap["characters"] = charlist;
-    BaseEntity::addToMessage(omap);
+    omap["objtype"] = "obj";
+    omap["id"] = getId();
 }
 
 void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
@@ -261,7 +262,8 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
         charlist.push_back(I->second->getId());
     }
     ent->setAttr("characters", charlist);
-    BaseEntity::addToEntity(ent);
+    ent->setObjtype("obj");
+    ent->setId(getId());
 }
 
 void Account::operation(const Operation & op, OpVector & res)
@@ -543,4 +545,9 @@ void Account::LookOperation(const Operation & op, OpVector & res)
 
 void Account::GetOperation(const Operation & op, OpVector & res)
 {
+}
+
+void Account::OtherOperation(const Operation & op, OpVector & res)
+{
+    error(op, "Unknown operation", res);
 }

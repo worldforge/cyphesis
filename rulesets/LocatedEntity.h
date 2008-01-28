@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.13 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.14 2008-01-28 23:48:32 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
 
 #include "modules/Location.h"
 
-#include "common/BaseEntity.h"
+#include "common/Identified.h"
 
 #include <set>
 
@@ -44,7 +44,7 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 /// which lists other entities which specify their location with reference to
 /// this one. It also provides the script interface for handling operations
 /// in scripts rather than in the C++ code.
-class LocatedEntity : public BaseEntity {
+class LocatedEntity : public IdentifiedRouter {
   private:
     static std::set<std::string> m_immutable;
     static const std::set<std::string> & immutables();

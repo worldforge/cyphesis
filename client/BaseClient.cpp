@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.cpp,v 1.45 2008-01-13 01:32:54 alriddoch Exp $
+// $Id: BaseClient.cpp,v 1.46 2008-01-28 23:48:31 alriddoch Exp $
 
 #include "BaseClient.h"
 
@@ -25,7 +25,6 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
-#include "common/BaseEntity.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SlaveClientConnection.h,v 1.4 2006-12-12 15:54:24 alriddoch Exp $
+// $Id: SlaveClientConnection.h,v 1.5 2008-01-28 23:48:33 alriddoch Exp $
 
 #ifndef SERVER_SLAVE_CLIENT_CONNECTION_H
 #define SERVER_SLAVE_CLIENT_CONNECTION_H
 
-#include "common/OOGThing.h"
+#include "common/Identified.h"
 
 class CommClient;
 class ServerRouting;
@@ -30,7 +30,7 @@ class ServerRouting;
 ///
 /// This behaves much like Connection, but handles the different behavoir
 /// required because cyphesis is not the authoritative point for logins.
-class SlaveClientConnection : public OOGThing {
+class SlaveClientConnection : public IdentifiedRouter {
   public:
     /// \brief network object the client is connected to
     CommClient & m_commClient;

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Lobby.cpp,v 1.39 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: Lobby.cpp,v 1.40 2008-01-28 23:48:33 alriddoch Exp $
 
 #include "Lobby.h"
 
@@ -39,8 +39,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Identified(id, intId),
-       OOGThing(id, intId), m_server(s)
+       Identified(id, intId), m_server(s)
 {
 }
 
@@ -133,7 +132,8 @@ void Lobby::addToMessage(MapType & omap) const
     }
     omap["people"] = player_list;
     omap["rooms"] = ListType();
-    BaseEntity::addToMessage(omap);
+    omap["objtype"] = "obj";
+    omap["id"] = getId();
 }
 
 void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
@@ -148,5 +148,6 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
     ent->setAttr("people", player_list);
     ent->setAttr("rooms", ListType());
-    BaseEntity::addToEntity(ent);
+    ent->setObjtype("obj");
+    ent->setId(getId());
 }

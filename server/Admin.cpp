@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.cpp,v 1.120 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: Admin.cpp,v 1.121 2008-01-28 23:48:32 alriddoch Exp $
 
 #include "Admin.h"
 
@@ -178,7 +178,7 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
     if (account_id == getId()) {
        Account::LogoutOperation(op, res);
     }
-    OperationRouter * account = m_connection->m_server.getObject(account_id);
+    IdentifiedRouter * account = m_connection->m_server.getObject(account_id);
     if (!account) {
         error(op, "Logout failed", res, getId());
         return;
@@ -219,12 +219,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         EntityDict::const_iterator K = worldDict.find(intId);
 
         if (J != OOGDict.end()) {
-            BaseEntity * obj = dynamic_cast<BaseEntity *>(J->second);
-            if (obj == 0) {
-                error(op, String::compose("Object id \"%1\" cannot be "
-                                          "represented", id), res, getId());
-                return;
-            }
+            IdentifiedRouter * obj = J->second;
             Anonymous info_arg;
             obj->addToEntity(info_arg);
             info->setArgs1(info_arg);

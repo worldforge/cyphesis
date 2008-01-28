@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalMind.cpp,v 1.22 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: ExternalMind.cpp,v 1.23 2008-01-28 23:48:32 alriddoch Exp $
 
 #include "ExternalMind.h"
 
@@ -36,8 +36,7 @@ using Atlas::Objects::Operation::Imaginary;
 ExternalMind::ExternalMind(Connection & connection,
                            const std::string & id,
                            long intId) :
-              Identified(id, intId),
-              BaseEntity(id, intId), m_connection(connection)
+              Identified(id, intId), m_connection(connection)
 {
 }
 

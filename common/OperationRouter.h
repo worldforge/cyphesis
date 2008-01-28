@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationRouter.h,v 1.2 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: OperationRouter.h,v 1.3 2008-01-28 23:48:31 alriddoch Exp $
 
 #ifndef COMMON_OPERATION_ROUTER_H
 #define COMMON_OPERATION_ROUTER_H
@@ -42,15 +42,5 @@ typedef enum {
 
 typedef HandlerResult (*Handler)(Entity *, const Operation &, OpVector &);
 typedef std::map<int, Handler> HandlerMap;
-
-/// \brief Interface class for all objects that can route operations around.
-///
-/// This class basically provides in interface for delivering operations to
-/// an object.
-class OperationRouter {
-  public:
-    virtual ~OperationRouter() = 0;
-    virtual void operation(const Operation &, OpVector &) = 0;
-};
 
 #endif // COMMON_OPERATION_ROUTER_H

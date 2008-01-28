@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Identified.h,v 1.2 2008-01-18 15:26:45 alriddoch Exp $
+// $Id: Identified.h,v 1.3 2008-01-28 23:48:31 alriddoch Exp $
 
 #ifndef COMMON_IDENTIFIED_H
 #define COMMON_IDENTIFIED_H
 
 #include "OperationRouter.h"
+
+#include <Atlas/Message/Element.h>
 
 #include <string>
 
@@ -53,9 +55,14 @@ class Identified {
                      OpVector &, const std::string & to = "") const;
 };
 
-class IdentifiedRouter : public OperationRouter, virtual public Identified {
+class IdentifiedRouter : virtual public Identified {
   protected:
-    explicit IdentifiedRouter(const std::string & id, long intId);
+    IdentifiedRouter();
+  public:
+    virtual ~IdentifiedRouter() = 0;
+    virtual void operation(const Operation &, OpVector &) = 0;
+    virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };
 
 #endif // COMMON_IDENTIFIED_H

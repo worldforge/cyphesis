@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Peer.h,v 1.7 2008-01-12 18:08:06 alriddoch Exp $
+// $Id: Peer.h,v 1.8 2008-01-28 23:48:33 alriddoch Exp $
 
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
 
-#include "common/OOGThing.h"
+#include "common/Identified.h"
 
 class CommClient;
 class ServerRouting;
@@ -29,7 +29,7 @@ class ServerRouting;
 /// to this one
 ///
 /// This is the main point of dispatch for any operation from the peer.
-class Peer : public OOGThing {
+class Peer : public IdentifiedRouter {
   protected:
     
   public:

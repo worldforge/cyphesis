@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalMind.h,v 1.14 2006-10-26 00:48:14 alriddoch Exp $
+// $Id: ExternalMind.h,v 1.15 2008-01-28 23:48:32 alriddoch Exp $
 
 #ifndef SERVER_EXTERNAL_MIND_H
 #define SERVER_EXTERNAL_MIND_H
 
-#include "common/BaseEntity.h"
+#include "common/Identified.h"
 
 class Connection;
 
@@ -29,7 +29,7 @@ class Connection;
 ///
 /// Essentially used to relay in-game operations that pass to the mind on
 /// to the client.
-class ExternalMind : public BaseEntity {
+class ExternalMind : public IdentifiedRouter {
   public:
     Connection & m_connection;
 

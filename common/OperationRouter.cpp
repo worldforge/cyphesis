@@ -15,10 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationRouter.cpp,v 1.1 2008-01-12 18:08:04 alriddoch Exp $
+// $Id: OperationRouter.cpp,v 1.2 2008-01-28 23:48:31 alriddoch Exp $
 
 #include "OperationRouter.h"
-
-OperationRouter::~OperationRouter()
-{
-}

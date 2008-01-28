@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseEntity.cpp,v 1.105 2008-01-26 17:43:21 alriddoch Exp $
+// $Id: BaseEntity.cpp,v 1.106 2008-01-28 23:48:31 alriddoch Exp $
 
 #include "BaseEntity.h"
 
@@ -58,22 +58,6 @@ BaseEntity::BaseEntity(const std::string & id, long intId) :
 
 BaseEntity::~BaseEntity()
 {
-}
-
-/// \brief Copy the attribute values of this object to an Atlas Message
-void BaseEntity::addToMessage(Atlas::Message::MapType & omap) const
-{
-    debug( std::cout << "BaseEntity::addToMessage" << std::endl << std::flush;);
-    omap["objtype"] = "obj";
-    omap["id"] = getId();
-}
-
-/// \brief Copy the attribute values of this object to an Atlas Entity
-void BaseEntity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-    debug( std::cout << "BaseEntity::addToEntity" << std::endl << std::flush;);
-    ent->setObjtype("obj");
-    ent->setId(getId());
 }
 
 #if 0

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OOGThing.h,v 1.13 2006-10-26 00:48:03 alriddoch Exp $
+// $Id: OOGThing.h,v 1.14 2008-01-28 23:48:31 alriddoch Exp $
 
 #ifndef COMMON_OOG_THING_H
 #define COMMON_OOG_THING_H
@@ -23,15 +23,11 @@
 #include "BaseEntity.h"
 
 /// \brief This is the base class from which all OOG entity classes inherit.
-///
-/// This class only overrides OtherOperation() ensuring that operations on
-/// unknown types flag an error.
 class OOGThing : public BaseEntity {
   protected:
     explicit OOGThing(const std::string & id, long intId);
   public:
     virtual ~OOGThing();
-    virtual void OtherOperation(const Operation & op, OpVector &);
 };
 
 #endif // COMMON_OOG_THING_H

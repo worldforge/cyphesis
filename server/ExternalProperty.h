@@ -15,22 +15,22 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalProperty.h,v 1.1 2007-01-17 23:00:59 alriddoch Exp $
+// $Id: ExternalProperty.h,v 1.2 2008-01-28 23:48:33 alriddoch Exp $
 
 #ifndef SERVER_EXTERNAL_PROPERTY_H
 #define SERVER_EXTERNAL_PROPERTY_H
 
 #include "common/Property.h"
 
-class BaseEntity;
+class IdentifiedRouter;
 
 /// \brief Class to handle whether or not a character has an external mind
 /// \ingroup PropertyClasses
 class ExternalProperty : public PropertyBase {
   protected:
-    BaseEntity * & m_data;
+    IdentifiedRouter * & m_data;
   public:
-    explicit ExternalProperty(BaseEntity * & data);
+    explicit ExternalProperty(IdentifiedRouter * & data);
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

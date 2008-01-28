@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SlaveClientConnection.cpp,v 1.6 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: SlaveClientConnection.cpp,v 1.7 2008-01-28 23:48:33 alriddoch Exp $
 
 #include "SlaveClientConnection.h"
 
@@ -27,8 +27,7 @@
 SlaveClientConnection::SlaveClientConnection(const std::string & id,
                                              CommClient & client,
                                              ServerRouting & svr) :
-                       Identified(id, -1),
-                       OOGThing(id, -1), m_commClient(client), m_server(svr)
+                       Identified(id, -1), m_commClient(client), m_server(svr)
 {
 }
 

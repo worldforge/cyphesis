@@ -1,3 +1,21 @@
+2008-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* client/BaseClient.cpp, common/BaseEntity.cpp, common/BaseEntity.h,
+	  common/Identified.cpp, common/Identified.h, common/Makefile.am,
+	  common/OOGThing.cpp, common/OOGThing.h, common/OperationRouter.cpp,
+	  common/OperationRouter.h, rulesets/Character.h, rulesets/Entity.h,
+	  rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h,
+	  server/Account.cpp, server/Account.h, server/Admin.cpp,
+	  server/CommClient.cpp, server/CommClient.h, server/Connection.cpp,
+	  server/Connection.h, server/ExternalMind.cpp, server/ExternalMind.h,
+	  server/ExternalProperty.cpp, server/ExternalProperty.h,
+	  server/Lobby.cpp, server/Lobby.h, server/Master.cpp, server/Master.h,
+	  server/Peer.cpp, server/Peer.h, server/ServerRouting.cpp,
+	  server/ServerRouting.h, server/SlaveClientConnection.cpp,
+	  server/SlaveClientConnection.h: Factor out the more pointless base
+	  classes, in favor of simple interface. Move destroyed signal to
+	  Entity, which is the only place it is needed.
+
 2008-01-26  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/BaseEntity.cpp, common/BaseEntity.h: Remove the code that
@@ -18265,4 +18283,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2085 2008-01-26 17:43:20 alriddoch Exp $
+$Id: ChangeLog,v 1.2086 2008-01-28 23:48:30 alriddoch Exp $

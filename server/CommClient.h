@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommClient.h,v 1.55 2008-01-18 15:26:45 alriddoch Exp $
+// $Id: CommClient.h,v 1.56 2008-01-28 23:48:32 alriddoch Exp $
 
 #ifndef SERVER_COMM_CLIENT_H
 #define SERVER_COMM_CLIENT_H
@@ -38,7 +38,7 @@ namespace Atlas {
   class Negotiate;
 }
 
-class OperationRouter;
+class IdentifiedRouter;
 
 /// \brief Base class for Atlas clients connected to the server.
 ///
@@ -60,7 +60,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, pub
     /// \brief Atlas negotiator for handling codec negotiation.
     Atlas::Negotiate * m_negotiate;
     /// \brief Server side object for handling connection level operations.
-    OperationRouter & m_connection;
+    IdentifiedRouter & m_connection;
     /// \brief Time connection was opened
     time_t m_connectTime;
 
@@ -79,8 +79,8 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, pub
 
     virtual void idle(time_t t);
   public:
-    CommClient(CommServer &, int fd, OperationRouter &);
-    CommClient(CommServer &, OperationRouter &);
+    CommClient(CommServer &, int fd, IdentifiedRouter &);
+    CommClient(CommServer &, IdentifiedRouter &);
     virtual ~CommClient();
 
     void disconnect() { m_clientIos.shutdown(); }

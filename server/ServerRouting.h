@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.h,v 1.54 2008-01-17 16:42:24 alriddoch Exp $
+// $Id: ServerRouting.h,v 1.55 2008-01-28 23:48:33 alriddoch Exp $
 
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
@@ -23,20 +23,20 @@
 #include "Account.h"
 
 #include "common/id.h"
-#include "common/OOGThing.h"
+#include "common/Identified.h"
 
 #include <cassert>
 
 class BaseWorld;
 class Lobby;
 
-typedef std::map<long, OperationRouter *> RouterMap;
+typedef std::map<long, IdentifiedRouter *> RouterMap;
 
 /// \brief ServerRouting represents the core of the server.
 ///
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
-class ServerRouting : public OOGThing {
+class ServerRouting : public IdentifiedRouter {
   private:
     /// A mapping of ID to object of all the OOG objects in the server.
     RouterMap m_objects;
@@ -62,7 +62,7 @@ class ServerRouting : public OOGThing {
     ~ServerRouting();
 
     /// Add an OOG object to the server.
-    void addObject(BaseEntity * obj) {
+    void addObject(IdentifiedRouter * obj) {
         assert(!obj->getId().empty());
         assert(integerId(obj->getId()) == obj->getIntId());
         assert(obj->getIntId() > 0);
@@ -76,7 +76,7 @@ class ServerRouting : public OOGThing {
     }
 
     /// Remove an OOG object from the server.
-    void delObject(BaseEntity * obj) {
+    void delObject(IdentifiedRouter * obj) {
         m_objects.erase(obj->getIntId());
     }
 
@@ -89,7 +89,7 @@ class ServerRouting : public OOGThing {
     ///
     /// @return a pointer to the object with the given id, or
     /// zero if no object with this id is present.
-    OperationRouter * getObject(const std::string & id) const {
+    IdentifiedRouter * getObject(const std::string & id) const {
         RouterMap::const_iterator I = m_objects.find(integerId(id));
         if (I == m_objects.end()) {
             return 0;

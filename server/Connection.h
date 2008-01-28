@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.61 2008-01-23 18:03:50 alriddoch Exp $
+// $Id: Connection.h,v 1.62 2008-01-28 23:48:32 alriddoch Exp $
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -25,12 +25,11 @@
 #include <sigc++/trackable.h>
 
 class Account;
-class BaseEntity;
 class Character;
 class CommClient;
 class ServerRouting;
 
-typedef std::map<long, OperationRouter *> RouterMap;
+typedef std::map<long, IdentifiedRouter *> RouterMap;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///
@@ -53,7 +52,7 @@ class Connection : public IdentifiedRouter, virtual public sigc::trackable {
     bool m_obsolete;
 
     Account * addPlayer(const std::string &, const std::string &);
-    Account * removePlayer(OperationRouter *, const std::string & event);
+    Account * removePlayer(IdentifiedRouter *, const std::string & event);
   protected:
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
@@ -65,7 +64,8 @@ class Connection : public IdentifiedRouter, virtual public sigc::trackable {
                const std::string & addr, const std::string & id);
     virtual ~Connection();
 
-    void addObject(BaseEntity * obj);
+    void addEntity(Entity * ent);
+    void addObject(IdentifiedRouter * obj);
     void removeObject(long id);
     void objectDeleted(long id);
 

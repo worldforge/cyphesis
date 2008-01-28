@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Identified.cpp,v 1.2 2008-01-18 15:26:44 alriddoch Exp $
+// $Id: Identified.cpp,v 1.3 2008-01-28 23:48:31 alriddoch Exp $
 
 #include "Identified.h"
 
@@ -101,7 +101,33 @@ void Identified::clientError(const Operation & op,
     res.push_back(e);
 }
 
-IdentifiedRouter::IdentifiedRouter(const std::string & id,
-                                   long intId) : Identified(id, intId)
+/// \brief Dummy protected constructor without args.
+///
+/// Because Identified is virtually inherited, it's constructor is called
+/// directly by actual constructor, not from here. This is added as a
+/// convenience so that the ID arguments don't have to be explicitly passed
+/// to this constructor as well. We have to pass something to the Identified
+/// constructor here, but it has in fact already been called.
+IdentifiedRouter::IdentifiedRouter() : Identified("", -1)
 {
+     assert(!getId().empty());
+     assert(getIntId() != -1);
+}
+
+IdentifiedRouter::~IdentifiedRouter()
+{
+}
+
+/// \brief Copy the attribute values of this object to an Atlas Message
+void IdentifiedRouter::addToMessage(Atlas::Message::MapType & omap) const
+{
+    omap["objtype"] = "obj";
+    omap["id"] = getId();
+}
+
+/// \brief Copy the attribute values of this object to an Atlas Entity
+void IdentifiedRouter::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+    ent->setObjtype("obj");
+    ent->setId(getId());
 }

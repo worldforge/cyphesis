@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.12 2008-01-26 17:43:21 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.13 2008-01-28 23:48:32 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
@@ -55,7 +55,7 @@ const std::set<std::string> & LocatedEntity::immutables()
 /// \brief LocatedEntity constructor
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Identified(id, intId),
-               BaseEntity(id, intId), m_refCount(0), m_seq(0),
+               m_refCount(0), m_seq(0),
                m_script(&noScript), m_type(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());

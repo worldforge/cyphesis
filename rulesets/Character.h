@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.102 2008-01-06 21:17:20 alriddoch Exp $
+// $Id: Character.h,v 1.103 2008-01-28 23:48:31 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -84,7 +84,7 @@ class Character : public Character_parent {
     /// \brief Internal AI mind controlling this character
     BaseMind * m_mind;
     /// \brief External network connected agent controlling this character
-    BaseEntity * m_externalMind;
+    IdentifiedRouter * m_externalMind;
 
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
