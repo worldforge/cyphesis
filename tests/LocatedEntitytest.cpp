@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntitytest.cpp,v 1.2 2008-01-14 16:10:19 alriddoch Exp $
+// $Id: LocatedEntitytest.cpp,v 1.3 2008-01-29 01:48:52 alriddoch Exp $
 
 #include "rulesets/LocatedEntity.h"
 
@@ -26,7 +26,9 @@ using Atlas::Message::ListType;
 
 class LocatedEntityTest : public LocatedEntity {
   public:
-    LocatedEntityTest(const std::string & id, int iid) : LocatedEntity(id, iid) { }
+    LocatedEntityTest(const std::string & id, int iid) :
+        Identified(id, iid),
+        LocatedEntity(id, iid) { }
 
     virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
 };

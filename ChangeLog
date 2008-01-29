@@ -1,5 +1,16 @@
 2008-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/BaseEntity.cpp, common/BaseEntity.h,
+	  common/OOGThing.cpp, common/OOGThing.h: Make files as removed.
+
+	* tests/BaseEntitytest.cpp, tests/Makefile.am, tests/OOGThingtest.cpp:
+	  Remove the tests for the above removed files.
+
+	* tests/LocatedEntitytest.cpp, tests/ThingupdatePropertiestest.cpp:
+	  Update the tests to call the right base class constructors.
+
+2008-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* client/BaseClient.cpp, common/BaseEntity.cpp, common/BaseEntity.h,
 	  common/Identified.cpp, common/Identified.h, common/Makefile.am,
 	  common/OOGThing.cpp, common/OOGThing.h, common/OperationRouter.cpp,
@@ -18283,4 +18294,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2086 2008-01-28 23:48:30 alriddoch Exp $
+$Id: ChangeLog,v 1.2087 2008-01-29 01:48:51 alriddoch Exp $

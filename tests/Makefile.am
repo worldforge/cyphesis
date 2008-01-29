@@ -1,5 +1,5 @@
-COMMON_TESTS = logtest inheritancetest Propertytest BaseEntitytest \
-               OOGThingtest systemtest type_utilstest \
+COMMON_TESTS = logtest inheritancetest Propertytest \
+               systemtest type_utilstest \
                consttest randomtest Addtest Attacktest Burntest \
                Connecttest Droptest Eattest \
                Monitortest Nourishtest Pickuptest Setuptest \
@@ -53,35 +53,6 @@ inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
 
 Propertytest_SOURCES = Propertytest.cpp
 Propertytest_LDADD = $(top_builddir)/common/Property.o
-
-BaseEntitytest_SOURCES = BaseEntitytest.cpp EntityExerciser.h allOperations.h
-BaseEntitytest_LDADD = $(top_builddir)/modules/DateTime.o \
-                       $(top_builddir)/common/BaseEntity.o \
-                       $(top_builddir)/common/OperationRouter.o \
-                       $(top_builddir)/common/operations.o \
-                       $(top_builddir)/common/inheritance.o \
-                       $(top_builddir)/common/TypeNode.o \
-                       $(top_builddir)/common/custom.o \
-                       $(top_builddir)/common/log.o \
-                       $(top_builddir)/common/const.o \
-                       $(top_builddir)/common/prefix.o \
-                       $(top_builddir)/common/globals.o \
-                       $(top_builddir)/common/serialno.o
-
-OOGThingtest_SOURCES = OOGThingtest.cpp EntityExerciser.h allOperations.h
-OOGThingtest_LDADD = $(top_builddir)/modules/DateTime.o \
-                     $(top_builddir)/common/OOGThing.o \
-                     $(top_builddir)/common/BaseEntity.o \
-                     $(top_builddir)/common/OperationRouter.o \
-                     $(top_builddir)/common/inheritance.o \
-                     $(top_builddir)/common/TypeNode.o \
-                     $(top_builddir)/common/custom.o \
-                     $(top_builddir)/common/operations.o \
-                     $(top_builddir)/common/log.o \
-                     $(top_builddir)/common/const.o \
-                     $(top_builddir)/common/prefix.o \
-                     $(top_builddir)/common/globals.o \
-                     $(top_builddir)/common/serialno.o
 
 systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
