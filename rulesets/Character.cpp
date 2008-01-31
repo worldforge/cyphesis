@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.317 2008-01-26 17:43:21 alriddoch Exp $
+// $Id: Character.cpp,v 1.318 2008-01-31 07:02:32 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1428,6 +1428,7 @@ void Character::mindErrorOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
+    log(WARNING, String::compose("Passing %1 op from mind through to world.", op->getParents().front()));
     op->setTo(getId());
     res.push_back(op);
 }

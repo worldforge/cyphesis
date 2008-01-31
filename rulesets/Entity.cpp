@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.152 2008-01-26 17:43:21 alriddoch Exp $
+// $Id: Entity.cpp,v 1.153 2008-01-31 07:02:33 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -274,7 +274,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-/// \brief Process an operation from an external source.
+/// \brief Process an operation from an external source, from this Entity
 ///
 /// The ownership of the operation passed in at this point is handed
 /// over to the entity. The calling code must not modify the operation
