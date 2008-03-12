@@ -1,3 +1,7 @@
+2008-03-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* configure.ac, NEWS: Increment version number for release soon.
+
 2008-01-30  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Entity.cpp: Add more details to comments.
@@ -18301,4 +18305,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2088 2008-01-31 07:02:32 alriddoch Exp $
+$Id: ChangeLog,v 1.2089 2008-03-12 19:43:57 alriddoch Exp $
