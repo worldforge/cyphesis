@@ -12,7 +12,7 @@ import rulesets
 class Statistics(rulesets.Statistics):
     """A very simple Statistics example."""
     def __init__(self, entity):
-        rulesets.Statistics.__init__(self, entity)
+        super(Statistics, self).__init__(entity)
     def attribute(self, name):
         if name == "attack":
             return 1
