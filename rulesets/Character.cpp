@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.318 2008-01-31 07:02:32 alriddoch Exp $
+// $Id: Character.cpp,v 1.319 2008-03-20 16:39:14 alriddoch Exp $
 
 #include "Character.h"
 
@@ -662,6 +662,160 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         clearTask();
         return;
     }
+}
+
+/// \brief Filter an Actuate operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
+void Character::mindActuateOperation(const Operation & op, OpVector & res)
+{
+    debug(std::cout << "Got Acuate op from mind" << std::endl << std::flush;);
+
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        error(op, "Character::mindActuateOp No arg.", res, getId());
+        return;
+    }
+
+
+    RootEntity entity_arg(0);
+
+    assert(!entity_arg.isValid());
+
+    std::string op_type;
+
+    // Look at Actuate args. If arg is an entity, this is the target.
+    // If arg is an operation, this is the operation to be used, and the
+    // sub op arg may be an entity specifying target. If op to be used is
+    // specified, this is checked against the ops permitted by this tool.
+    const Root & arg = args.front();
+    const std::string & argtype = arg->getObjtype();
+    if (argtype == "op") {
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+            (arg->getParents().empty())) {
+            error(op, "Use arg op has malformed parents", res, getId());
+            return;
+        }
+        op_type = arg->getParents().front();
+        debug(std::cout << "Got op type " << op_type << " from arg"
+                        << std::endl << std::flush;);
+        // Check against valid ops
+        Operation arg_op = smart_dynamic_cast<Operation>(arg);
+        if (!arg_op.isValid()) {
+            error(op, "Use op arg is a malformed op", res, getId());
+            return;
+        }
+
+        const std::vector<Root> & arg_op_args = arg_op->getArgs();
+        if (!arg_op_args.empty()) {
+            entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
+            if (!entity_arg.isValid()) {
+                error(op, "Use op target is malformed", res, getId());
+                return;
+            }
+        }
+    } else if (argtype == "obj") {
+        entity_arg = smart_dynamic_cast<RootEntity>(arg);
+        if (!entity_arg.isValid()) {
+            error(op, "Use target is malformed", res, getId());
+            return;
+        }
+    } else {
+        error(op, "Use arg has unknown objtype", res, getId());
+        return;
+    }
+
+    if (!entity_arg.isValid()) {
+        error(op, "Character::mindActuateOperation No target specified", res, getId());
+        return;
+    }
+
+    if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        error(op, "Character::mindActuateOperation Target entity has no ID", res, getId());
+        return;
+    }
+
+    if (op_type.empty()) {
+        error(op, "Character::mindActuateOperation Unable to determine op type for tool", res, getId());
+        return;
+    }
+
+    Entity * device = BaseWorld::instance().getEntity(entity_arg->getId());
+
+    Element deviceOpAttr;
+    std::set<std::string> deviceOps;
+
+    // Determine the operations this device supports
+    if (!device->getAttr("operations", deviceOpAttr)) {
+        log(NOTICE, "Character::mindActuateOp Attempt to actuate something not a device");
+        return;
+    }
+
+    if (!deviceOpAttr.isList()) {
+        log(ERROR, "Character::mindActuateOp device has non list operations list");
+        return;
+    }
+    const ListType & deviceOpList = deviceOpAttr.asList();
+    if (deviceOpList.empty()) {
+        log(ERROR, "Character::mindActuateOp device operation list is empty");
+        return;
+    }
+    ListType::const_iterator J = deviceOpList.begin();
+    ListType::const_iterator Jend = deviceOpList.end();
+    assert(J != Jend);
+    if (!(*J).isString()) {
+        log(ERROR, "Character::mindActuateOp device operation list is malformed");
+        return;
+    }
+    // FIXME overriding the specified preference with the default. Need to
+    // re-order.
+    op_type = (*J).String();
+    debug(std::cout << "default device op is " << op_type << std::endl
+                                                        << std::flush;);
+    for (; J != Jend; ++J) {
+        if (!(*J).isString()) {
+            log(ERROR, "Character::mindActuateOp device has non string in operations list");
+        } else {
+            deviceOps.insert((*J).String());
+        }
+    }
+
+    if (deviceOps.find(op_type) == deviceOps.end()) {
+        error(op, "Actuate op is not permitted by device", res, getId());
+        return;
+    }
+
+    debug(std::cout << "Actuating device " << device->getType()
+                    << " with " << op_type << " action."
+                    << std::endl << std::flush;);
+
+    Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
+    if (!obj.isValid()) {
+        log(ERROR,
+            String::compose("Character::mindActuateOperation Unknown op type "
+                            "\"%1\" requested by \"%2\" device.",
+                            op_type, device->getType()));
+        return;
+    }
+    Operation rop = smart_dynamic_cast<Operation>(obj);
+    if (!rop.isValid()) {
+        log(ERROR, String::compose("Character::mindActuateOperation Op type "
+                                   "\"%1\" requested by %2 device, "
+                                   "but it is not an operation type",
+                                   op_type, device->getType()));
+        // FIXME Think hard about how this error is reported. Would the error
+        // make it back to the client if we made an error response?
+        return;
+    }
+
+    rop->setTo(device->getId());
+
+    res.push_back(rop);
+
+    // Sight sight;
+    // sight->setArgs1(rop);
+    // res.push_back(sight);
 }
 
 /// \brief Filter a Login operation coming from the mind

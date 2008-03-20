@@ -1,3 +1,11 @@
+2008-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* data/operations.xml: Add an op definition for "actuate" to be used
+	  for interacting with devices and machines.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Mock up the code for
+	  processing actuate operations from the client or mind.
+
 2008-03-12  Al Riddoch  <alriddoch@googlemail.com>
 
 	* configure.ac, NEWS: Increment version number for release soon.
@@ -18305,4 +18313,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2089 2008-03-12 19:43:57 alriddoch Exp $
+$Id: ChangeLog,v 1.2090 2008-03-20 16:39:14 alriddoch Exp $
