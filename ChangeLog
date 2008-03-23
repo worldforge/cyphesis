@@ -1,3 +1,9 @@
+2008-03-23  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp: Change the name of the attribute that stores
+	  operations to be used on devices, so devices can't accidentally
+	  be used as tools.
+
 2008-03-20  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/mason/world/statistics/Statistics.py: Use super() instead
@@ -18318,4 +18324,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2091 2008-03-20 16:40:09 alriddoch Exp $
+$Id: ChangeLog,v 1.2092 2008-03-23 21:48:53 alriddoch Exp $

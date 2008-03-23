@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.319 2008-03-20 16:39:14 alriddoch Exp $
+// $Id: Character.cpp,v 1.320 2008-03-23 21:48:54 alriddoch Exp $
 
 #include "Character.h"
 
@@ -746,8 +746,8 @@ void Character::mindActuateOperation(const Operation & op, OpVector & res)
     Element deviceOpAttr;
     std::set<std::string> deviceOps;
 
-    // Determine the operations this device supports
-    if (!device->getAttr("operations", deviceOpAttr)) {
+    // Determine the actions this device supports
+    if (!device->getAttr("actions", deviceOpAttr)) {
         log(NOTICE, "Character::mindActuateOp Attempt to actuate something not a device");
         return;
     }
