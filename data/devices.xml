@@ -1,0 +1,31 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>1</float>
+          <float>0.1</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">20</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="actions">
+        <list name="default">
+          <string>ignite</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">door</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+</atlas>

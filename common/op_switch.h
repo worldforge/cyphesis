@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: op_switch.h,v 1.38 2008-01-17 18:54:05 alriddoch Exp $
+// $Id: op_switch.h,v 1.39 2008-03-26 01:34:16 alriddoch Exp $
 
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
@@ -70,7 +70,9 @@
         case OP_INVALID: \
             break; \
         default: \
-            if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
+            if (_op_no == Atlas::Objects::Operation::ACTUATE_NO) { \
+                _prefix ## ActuateOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::ATTACK_NO) { \
                 _prefix ## AttackOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \
                 _prefix ## EatOperation(_op, _result); \

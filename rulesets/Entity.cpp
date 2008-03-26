@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.153 2008-01-31 07:02:33 alriddoch Exp $
+// $Id: Entity.cpp,v 1.154 2008-03-26 01:34:16 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -28,7 +28,7 @@
 #include "common/Property.h"
 #include "common/PropertyManager.h"
 
-#include "common/Add.h"
+#include "common/Actuate.h"
 #include "common/Attack.h"
 #include "common/Eat.h"
 #include "common/Nourish.h"
@@ -188,6 +188,10 @@ void Entity::destroy()
     }
     m_destroyed = true;
     destroyed.emit();
+}
+
+void Entity::ActuateOperation(const Operation &, OpVector &)
+{
 }
 
 void Entity::AppearanceOperation(const Operation &, OpVector &)

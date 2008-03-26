@@ -1,3 +1,18 @@
+2008-03-26  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Actuate.h, common/Makefile.am, common/custom.cpp,
+	  common/op_switch.h, common/operations.cpp: Add Actuate to the
+	  cyphesis core custom operations.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/Character.cpp:
+	  Add handlers for Actuate to the operation routing interface.
+
+	* data/devices.xml: Add example device.
+
+	* data/Makefile.am: Add new devices file.
+
+	* data/operations.xml: Remove temporary soft Actuate definition.
+
 2008-03-23  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp: Change the name of the attribute that stores
@@ -18324,4 +18339,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2092 2008-03-23 21:48:53 alriddoch Exp $
+$Id: ChangeLog,v 1.2093 2008-03-26 01:34:15 alriddoch Exp $

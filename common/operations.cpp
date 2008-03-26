@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: operations.cpp,v 1.28 2007-07-04 22:00:15 alriddoch Exp $
+// $Id: operations.cpp,v 1.29 2008-03-26 01:34:16 alriddoch Exp $
 
 #include "Add.h"
 #include "Attack.h"
@@ -40,6 +40,7 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
+int ACTUATE_NO = -1;
 int ADD_NO = -1;
 int ATTACK_NO = -1;
 int BURN_NO = -1;

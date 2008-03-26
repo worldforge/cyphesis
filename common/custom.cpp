@@ -15,10 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: custom.cpp,v 1.49 2008-01-12 22:41:11 alriddoch Exp $
+// $Id: custom.cpp,v 1.50 2008-03-26 01:34:16 alriddoch Exp $
 
 #include "inheritance.h"
 
+#include "Actuate.h"
 #include "Add.h"
 #include "Attack.h"
 #include "Burn.h"
@@ -87,6 +88,9 @@ void installCustomOperations()
     Atlas::Objects::Operation::UPDATE_NO = atlas_factories->addFactory("update", &Atlas::Objects::generic_factory);
     i.opInstall("update", Atlas::Objects::Operation::UPDATE_NO);
 
+    i.addChild(atlasOpDefinition("actuate", "action"));
+    Atlas::Objects::Operation::ACTUATE_NO = atlas_factories->addFactory("actuate", &Atlas::Objects::generic_factory);
+    i.opInstall("actuate", Atlas::Objects::Operation::ACTUATE_NO);
 }
 
 void installCustomEntities()

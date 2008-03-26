@@ -1,14 +1,6 @@
 <atlas>
 
   <map>
-    <string name="id">actuate</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
-  </map>
-
-  <map>
     <string name="id">chop</string>
     <string name="objtype">op_definition</string>
     <list name="parents">

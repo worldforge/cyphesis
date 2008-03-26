@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.320 2008-03-23 21:48:54 alriddoch Exp $
+// $Id: Character.cpp,v 1.321 2008-03-26 01:34:16 alriddoch Exp $
 
 #include "Character.h"
 
@@ -39,7 +39,7 @@
 #include "common/compose.hpp"
 #include "common/PropertyManager.h"
 
-#include "common/Add.h"
+#include "common/Actuate.h"
 #include "common/Attack.h"
 #include "common/Eat.h"
 #include "common/Nourish.h"

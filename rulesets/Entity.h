@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.101 2008-01-28 23:48:31 alriddoch Exp $
+// $Id: Entity.h,v 1.102 2008-03-26 01:34:16 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -104,6 +104,7 @@ class Entity : public LocatedEntity {
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
+    virtual void ActuateOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
     virtual void AttackOperation(const Operation &, OpVector &);
     virtual void CombineOperation(const Operation &, OpVector &);
