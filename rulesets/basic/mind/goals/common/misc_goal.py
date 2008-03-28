@@ -186,24 +186,19 @@ class spot_something(Goal):
                    return 1
     def do(self,me):
         for what in self.what:
-            print "Looking for ", what
             thing_all=me.map.find_by_type(what)
             nearest=None
             nearsqrdist=self.range*self.range
             for thing in thing_all:
                 sqr_dist = square_distance(me.location, thing.location)
-                print "Found ", thing.id, sqr_dist, me.location, thing.location
                 # FIXME We need a more sophisticated check for parent. Perhaps just
                 # check its not in a persons inventory? Requires the ability to
                 # do decent type checks
                 if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
-                    print "Near enough"
                     if self.condition(thing):
-                        print "Good enough"
                         nearest = thing
                         nearsqrdist = nearsqrdist
             if nearest:
-                print "Got one"
                 me.add_knowledge('focus', what, nearest.id)
                       
 ############################ FETCH SOMETHING GOAL ########################

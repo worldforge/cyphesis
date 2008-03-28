@@ -1,4 +1,13 @@
-2008-03-26  Al Riddoch  <alriddoch@googlemail.com>
+2008-03-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Make the checking
+	  for a list simpler. Add a test goal for exercising the device
+	  activation interface.
+
+	* rulesets/mason/define_world.py: Add client test method to try
+	  out the activation goal.
+
+2008-03-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Py_Location.cpp: Implement the repr() method of the
 	  Python object protocol for this wrapper, making debugging easier in
@@ -18345,4 +18354,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2094 2008-03-28 01:13:26 alriddoch Exp $
+$Id: ChangeLog,v 1.2095 2008-03-28 01:20:29 alriddoch Exp $
