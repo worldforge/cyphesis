@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.321 2008-03-26 01:34:16 alriddoch Exp $
+// $Id: Character.cpp,v 1.322 2008-03-28 02:03:10 alriddoch Exp $
 
 #include "Character.h"
 
@@ -764,15 +764,7 @@ void Character::mindActuateOperation(const Operation & op, OpVector & res)
     ListType::const_iterator J = deviceOpList.begin();
     ListType::const_iterator Jend = deviceOpList.end();
     assert(J != Jend);
-    if (!(*J).isString()) {
-        log(ERROR, "Character::mindActuateOp device operation list is malformed");
-        return;
-    }
-    // FIXME overriding the specified preference with the default. Need to
-    // re-order.
-    op_type = (*J).String();
-    debug(std::cout << "default device op is " << op_type << std::endl
-                                                        << std::flush;);
+
     for (; J != Jend; ++J) {
         if (!(*J).isString()) {
             log(ERROR, "Character::mindActuateOp device has non string in operations list");
@@ -781,7 +773,9 @@ void Character::mindActuateOperation(const Operation & op, OpVector & res)
         }
     }
 
-    if (deviceOps.find(op_type) == deviceOps.end()) {
+    if (op_type.empty()) {
+        op_type = deviceOpList.front().asString();
+    } else if (deviceOps.find(op_type) == deviceOps.end()) {
         error(op, "Actuate op is not permitted by device", res, getId());
         return;
     }

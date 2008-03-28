@@ -1,5 +1,16 @@
 2008-03-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/devices.xml: Add a second type of operation to the example
+	  device.
+
+	* rulesets/Character.cpp: Sort out the fixme so non-default actions
+	  can be specified when actuating devices.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Clean up the
+	  actuation testing goal.
+
+2008-03-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/basic/mind/goals/common/misc_goal.py: Make the checking
 	  for a list simpler. Add a test goal for exercising the device
 	  activation interface.
@@ -18354,4 +18365,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2095 2008-03-28 01:20:29 alriddoch Exp $
+$Id: ChangeLog,v 1.2096 2008-03-28 02:03:09 alriddoch Exp $

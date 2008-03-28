@@ -17,6 +17,7 @@
       <map name="actions">
         <list name="default">
           <string>ignite</string>
+          <string>chop</string>
         </list>
         <string name="visibility">public</string>
       </map>

@@ -701,16 +701,13 @@ class activate_device(Goal):
                       [spot_something(what), self.activate_focus])
         self.what=what
         self.vars=["what"]
-        print "initting goal"
     def activated(self, me):
-        print "checking", me.get_knowledge('focus', self.what)
         return False
     def activate_focus(self, me):
         print "Activating ", self.what
-        for what in self.what:
-            something=me.get_knowledge('focus', what)
-            if something:
-                if me.map.get(something) == None:
-                   me.remove_knowledge('focus', what)
-                else:
-                   print "One is focused"
+        something=me.get_knowledge('focus', self.what)
+        assert(something)
+        if me.map.get(something) == None:
+           me.remove_knowledge('focus', self.what)
+           return
+        return Operation('actuate', Operation('chop', Entity(something)))
