@@ -1052,3 +1052,11 @@ def test_decays(mapeditor):
 
     m.make('axe', decays='oak')
 
+def test_device(mapeditor):
+
+    m=editor(mapeditor)
+    settler=m.make('settler',pos=(1,1,0), sex='male')
+    axe=m.make('door',pos=(0,0,0))
+    m.learn(settler,(il.trade,"activate_device('door')"))
+
+    world=m.look()

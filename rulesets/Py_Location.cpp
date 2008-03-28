@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Location.cpp,v 1.46 2007-07-30 18:12:51 alriddoch Exp $
+// $Id: Py_Location.cpp,v 1.47 2008-03-28 01:13:27 alriddoch Exp $
 
 #include "Py_Location.h"
 #include "Py_Thing.h"
@@ -25,6 +25,8 @@
 #include "Py_BBox.h"
 
 #include "Entity.h"
+
+#include <sstream>
 
 static PyObject * Location_copy(PyLocation *self)
 {
@@ -180,6 +182,13 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
     return -1;
 }
 
+static PyObject * Location_repr(PyLocation *self)
+{
+    std::stringstream r;
+    r << *self->location;
+    return PyString_FromString(r.str().c_str());
+}
+
 PyTypeObject PyLocation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -192,7 +201,7 @@ PyTypeObject PyLocation_Type = {
         (getattrfunc)Location_getattr,  /*tp_getattr*/
         (setattrfunc)Location_setattr,  /*tp_setattr*/
         0,                              /*tp_compare*/
-        0,                              /*tp_repr*/
+        (reprfunc)Location_repr,        /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/

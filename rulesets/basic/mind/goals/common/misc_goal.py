@@ -169,7 +169,7 @@ class spot_something(Goal):
         Goal.__init__(self, "spot a thing",
                       self.do_I_have,
                       [self.do])
-        if type(what) == types.ListType:
+        if isinstance(what, list):
             self.what = what
         else:
             self.what = [ what ]
@@ -186,19 +186,24 @@ class spot_something(Goal):
                    return 1
     def do(self,me):
         for what in self.what:
+            print "Looking for ", what
             thing_all=me.map.find_by_type(what)
             nearest=None
             nearsqrdist=self.range*self.range
             for thing in thing_all:
                 sqr_dist = square_distance(me.location, thing.location)
+                print "Found ", thing.id, sqr_dist, me.location, thing.location
                 # FIXME We need a more sophisticated check for parent. Perhaps just
                 # check its not in a persons inventory? Requires the ability to
                 # do decent type checks
                 if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
+                    print "Near enough"
                     if self.condition(thing):
+                        print "Good enough"
                         nearest = thing
                         nearsqrdist = nearsqrdist
             if nearest:
+                print "Got one"
                 me.add_knowledge('focus', what, nearest.id)
                       
 ############################ FETCH SOMETHING GOAL ########################
@@ -691,3 +696,26 @@ class hireling_transaction(transaction):
         res.append(Operation("talk",Entity(say="I will help you out until sundown today.")))
         self.irrelevant=1
         return res
+
+######################## ACTUATION (Operate device) #######################
+
+class activate_device(Goal):
+    def __init__(self, what):
+        Goal.__init__(self, "activate a thing",
+                      self.activated,
+                      [spot_something(what), self.activate_focus])
+        self.what=what
+        self.vars=["what"]
+        print "initting goal"
+    def activated(self, me):
+        print "checking", me.get_knowledge('focus', self.what)
+        return False
+    def activate_focus(self, me):
+        print "Activating ", self.what
+        for what in self.what:
+            something=me.get_knowledge('focus', what)
+            if something:
+                if me.map.get(something) == None:
+                   me.remove_knowledge('focus', what)
+                else:
+                   print "One is focused"
