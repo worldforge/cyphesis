@@ -1,3 +1,8 @@
+2008-04-13  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/system.cpp: Add test code to generate unique cryptographic
+	  server identity.
+
 2008-03-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* data/devices.xml: Add a second type of operation to the example
@@ -18365,4 +18370,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2096 2008-03-28 02:03:09 alriddoch Exp $
+$Id: ChangeLog,v 1.2097 2008-04-13 02:22:21 alriddoch Exp $

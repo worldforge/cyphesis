@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.32 2008-01-05 01:33:55 alriddoch Exp $
+// $Id: system.cpp,v 1.33 2008-04-13 02:22:22 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -82,6 +82,43 @@ unsigned int security_check()
         return 0;
     }
 #endif // HAVE_GETUID
+#if 0
+    gcry_check_version(0);
+    gcry_control( GCRYCTL_INIT_SECMEM, 16384, 0 );
+
+    gcry_sexp_t key_parameters, key;
+
+    gcry_error_t ret = gcry_sexp_build(&key_parameters, 0,
+                                       "(genkey(dsa(nbits %d)))", 1024);
+
+    if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
+        std::cout << "SEXP FAIL" << std::endl << std::flush;
+    }
+
+    ret = gcry_pk_genkey(&key, key_parameters);
+
+    if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
+        std::cout << "GENKEY FAIL" << std::endl << std::flush;
+    }
+
+    gcry_sexp_release(key_parameters);
+
+    ret = gcry_pk_testkey(key);
+
+    if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
+        std::cout << "TESTKEY FAIL" << std::endl << std::flush;
+    }
+
+    size_t ktxtlen = gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, 0, 0);
+    char * key_text = new char[ktxtlen];
+    gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, key_text, ktxtlen);
+
+    std::cout << ktxtlen << "KEY:" << key_text << ":KEY" << std::endl << std::flush;
+
+    // gcry_sexp_dump(key);
+    gcry_sexp_release(key);
+
+#endif
     return SECURITY_OKAY;
 }
 
