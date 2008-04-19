@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.33 2008-04-13 02:22:22 alriddoch Exp $
+// $Id: system.cpp,v 1.34 2008-04-19 03:44:07 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -32,9 +32,11 @@
 
 #include <gcrypt.h>
 
-#include <cassert>
-
 #include <iostream>
+
+#include <sys/stat.h>
+
+#include <cassert>
 
 extern "C" {
 #ifdef HAVE_SYS_UTSNAME_H
@@ -82,7 +84,19 @@ unsigned int security_check()
         return 0;
     }
 #endif // HAVE_GETUID
-#if 0
+    return SECURITY_OKAY;
+}
+
+static int security_new_key(const std::string & key_filename)
+{
+    FILE * key_file = ::fopen(key_filename.c_str(), "wx");
+
+    if (key_file == 0) {
+        log(CRITICAL, String::compose("Unable to open file %1 to store server"
+                                      " identity", key_filename));
+        return -1;
+    }
+
     gcry_check_version(0);
     gcry_control( GCRYCTL_INIT_SECMEM, 16384, 0 );
 
@@ -99,6 +113,7 @@ unsigned int security_check()
 
     if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
         std::cout << "GENKEY FAIL" << std::endl << std::flush;
+        return -1;
     }
 
     gcry_sexp_release(key_parameters);
@@ -107,20 +122,92 @@ unsigned int security_check()
 
     if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
         std::cout << "TESTKEY FAIL" << std::endl << std::flush;
+        return -1;
     }
 
     size_t ktxtlen = gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, 0, 0);
     char * key_text = new char[ktxtlen];
     gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, key_text, ktxtlen);
 
-    std::cout << ktxtlen << "KEY:" << key_text << ":KEY" << std::endl << std::flush;
+    fwrite(key_text, ktxtlen, 1, key_file);
+
+    fclose(key_file);
 
     // gcry_sexp_dump(key);
     gcry_sexp_release(key);
 
-#endif
+    return 0;
+}
+
+static int security_load_key(const std::string & key_filename, size_t len)
+{
+    FILE * key_file = ::fopen(key_filename.c_str(), "r");
+
+    if (key_file == 0) {
+        log(CRITICAL, String::compose("Unable to open file %1 to read server"
+                                      " identity", key_filename));
+        perror("ARSE!");
+        return -1;
+    }
+
+    char * key_text = new char[len];
+
+    size_t records = fread(key_text, len, 1, key_file);
+    if (records != 1) {
+        log(CRITICAL, String::compose("Unable to load identity information"
+                                      " from file %1", key_filename));
+        return -1;
+    }
+
+    gcry_sexp_t key;
+
+    gcry_error_t ret = gcry_sexp_new(&key, key_text, len, 0);
+
+    if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
+        log(CRITICAL, String::compose("Malformed identity information"
+                                      " from file %1", key_filename));
+        return -1;
+    }
+
+    ret = gcry_pk_testkey(key);
+
+    if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
+        std::cout << "TESTKEY FAIL" << std::endl << std::flush;
+        return -1;
+    }
+
+    return 0;
+}
+
+unsigned int security_setup()
+{
+    std::string key_filename;
+    char * home = getenv("HOME");
+    if (home == 0) {
+        std::cout << "No home" << std::endl << std::flush;
+        key_filename = String::compose("%1/tmp/cyphesis_%2_id_dsa",
+                                       var_directory, instance);
+    } else {
+        std::cout << "home" << std::endl << std::flush;
+        key_filename = String::compose("%1/.cyphesis_%2_id_dsa",
+                                       home, instance);
+    }
+
+    std::cout << "KEY: " << key_filename << std::endl << std::flush;
+
+    struct stat key_stat;
+
+    if (::stat(key_filename.c_str(), &key_stat) != 0) {
+        std::cout << "not yet" << std::endl << std::flush;
+        security_new_key(key_filename);
+    } else {
+        std::cout << "loading" << std::endl << std::flush;
+        security_load_key(key_filename, key_stat.st_size);
+    }
+
     return SECURITY_OKAY;
 }
+
 
 void reduce_priority(int p)
 {
