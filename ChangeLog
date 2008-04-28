@@ -1,3 +1,12 @@
+2008-04-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp, common/globals.cpp, common/id.cpp,
+	  common/log.cpp, modules/DateTime.cpp, rulesets/Container.h,
+	  rulesets/Statistics.h, server/CommListener.cpp,
+	  server/CommServer.cpp, tools/cyconfig.cpp, tools/cyconvertrules.cpp:
+	  Add includes required for recent compilers which include less
+	  stuff implicitly in standard headers.
+
 2008-04-19  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/system.cpp, common/system.h: Add a security setup function
@@ -18375,4 +18384,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2098 2008-04-19 03:44:06 alriddoch Exp $
+$Id: ChangeLog,v 1.2099 2008-04-28 17:26:08 alriddoch Exp $

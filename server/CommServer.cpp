@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.cpp,v 1.61 2007-11-20 13:04:33 alriddoch Exp $
+// $Id: CommServer.cpp,v 1.62 2008-04-28 17:26:10 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -36,6 +36,8 @@
 #include <skstream/sksocket.h>
 
 #include <iostream>
+
+#include <cstring>
 
 extern "C" {
 #ifdef HAVE_EPOLL_CREATE

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Container.h,v 1.8 2006-12-22 02:14:44 alriddoch Exp $
+// $Id: Container.h,v 1.9 2008-04-28 17:26:09 alriddoch Exp $
 
 #ifndef RULESETS_CONTAINER_H
 #define RULESETS_CONTAINER_H
@@ -25,6 +25,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <string>
 
 class Entity;
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconvertrules.cpp,v 1.13 2007-11-20 02:40:37 alriddoch Exp $
+// $Id: cyconvertrules.cpp,v 1.14 2008-04-28 17:26:11 alriddoch Exp $
 
 /// \page cyconvertrules_index
 ///
@@ -35,6 +35,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+
+#include <cstring>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

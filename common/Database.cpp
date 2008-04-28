@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.100 2007-12-21 16:42:36 alriddoch Exp $
+// $Id: Database.cpp,v 1.101 2008-04-28 17:26:09 alriddoch Exp $
 
 #include "Database.h"
 
@@ -33,6 +33,9 @@
 
 #include <iostream>
 #include <sstream>
+
+#include <cstring>
+#include <cstdlib>
 
 #include <cassert>
 

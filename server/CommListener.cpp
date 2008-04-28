@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommListener.cpp,v 1.40 2007-07-29 03:33:35 alriddoch Exp $
+// $Id: CommListener.cpp,v 1.41 2008-04-28 17:26:10 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -35,6 +35,8 @@
 #include <skstream/skstream.h>
 
 #include <iostream>
+
+#include <cstring>
 
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>

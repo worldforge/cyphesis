@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.27 2007-12-07 00:27:14 alriddoch Exp $
+// $Id: log.cpp,v 1.28 2008-04-28 17:26:09 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -27,6 +27,8 @@
 
 #include <iostream>
 #include <fstream>
+
+#include <cstring>
 
 extern "C" {
 #ifdef HAVE_SYSLOG_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.61 2007-12-13 00:21:48 alriddoch Exp $
+// $Id: globals.cpp,v 1.62 2008-04-28 17:26:09 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -35,6 +35,8 @@
 #include <algorithm>
 
 #include <sys/stat.h>
+
+#include <cstring>
 
 #include <cassert>
 

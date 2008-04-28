@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyconfig.cpp,v 1.10 2007-11-20 02:40:37 alriddoch Exp $
+// $Id: cyconfig.cpp,v 1.11 2008-04-28 17:26:11 alriddoch Exp $
 
 /// \page cyconfig_index
 ///
@@ -32,6 +32,9 @@
 #include "common/globals.h"
 
 #include <varconf/config.h>
+
+#include <cstring>
+#include <cstdlib>
 
 #include <cassert>
 
