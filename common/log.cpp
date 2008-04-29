@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.28 2008-04-28 17:26:09 alriddoch Exp $
+// $Id: log.cpp,v 1.29 2008-04-29 15:33:59 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -148,7 +148,7 @@ void log(LogLevel lvl, const std::string & msg)
     {
 #endif // HAVE_SYSLOG
 
-        char * type;
+        const char * type;
         switch (lvl) {
             case INFO:
                 type = "INFO";
@@ -186,7 +186,7 @@ void logEvent(LogEvent lev, const std::string & msg)
         return;
     }
 
-    char * type;
+    const char * type;
     switch (lev) {
         case START:
             type = "START";
