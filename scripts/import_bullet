@@ -1,0 +1,54 @@
+#!/bin/bash
+
+EXCLUSIONS="--exclude=ibmsdk --exclude=Jamfile --exclude=Makefile.am --exclude=CMakeLists.txt --exclude=Doxyfile"
+
+pushd libraries/bullet
+
+if [ "$#" -ne "1" ]
+then
+	echo usage: $0 \<bullet_source_tarball\> >&2
+	exit 1
+fi
+tar xvzf "$1" ${EXCLUSIONS} bullet-2.??/src
+
+mv bullet-2.??/src/* .
+rm -rf bullet-2.??
+
+DIRS=`find . -type d`
+MAKEFILES=""
+
+for dir in ${DIRS}
+do
+	echo "DOING $dir"
+	SUBDIRS=""
+	SOURCES=""
+	MAKEFILE="${dir}/Makefile.am"
+	for entry in $dir/*
+	do
+		filename=`basename ${entry}`
+		if [ -d ${entry} ]
+		then
+			SUBDIRS="${SUBDIRS} ${filename}"
+		fi
+		if [ -f ${entry} ] && [ ${filename} != Makefile.am ]
+		then
+			SOURCES="${SOURCES} ${filename}"
+		fi
+	done
+	echo > ${MAKEFILE}
+	if [ -n "${SUBDIRS}" ]
+	then
+		echo -e "SUBDIRS = ${SUBDIRS}\n" >> ${MAKEFILE}
+	fi
+	if [ -n "${SOURCES}" ]
+	then
+		libname="lib`basename ${dir}`"
+		echo -e "noinst_LIBRARIES = ${libname}.a\n" >> ${MAKEFILE}
+		echo -e "${libname}_a_SOURCES = ${SOURCES}\n" >> ${MAKEFILE}
+	fi
+	MAKEFILES="${MAKEFILES}libraries/bullet/${MAKEFILE}\n"
+done
+
+SRCDIRS=`find . -type f -name \*.cpp | xargs -n 1 dirname | sort | uniq`
+
+echo -e ${MAKEFILES}

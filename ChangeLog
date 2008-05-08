@@ -1,3 +1,7 @@
+2008-05-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* scripts/import_bullet: An experimental script.
+
 2008-04-29  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/log.cpp: Don't assign strings to non-const char*.
@@ -18388,4 +18392,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2100 2008-04-29 15:33:58 alriddoch Exp $
+$Id: ChangeLog,v 1.2101 2008-05-08 22:26:51 alriddoch Exp $

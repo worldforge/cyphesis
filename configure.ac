@@ -438,6 +438,7 @@ dnl Generate files
 AC_CONFIG_FILES([
     cyphesis.spec
     Makefile
+    libraries/Makefile
     physics/Makefile
     common/Makefile
     modules/Makefile
