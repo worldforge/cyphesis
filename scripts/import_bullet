@@ -14,7 +14,7 @@ tar xvzf "$1" ${EXCLUSIONS} bullet-2.??/src
 mv bullet-2.??/src/* .
 rm -rf bullet-2.??
 
-DIRS=`find . -type d`
+DIRS=`find . -type d ! -name CVS`
 MAKEFILES=""
 
 for dir in ${DIRS}
@@ -26,7 +26,7 @@ do
 	for entry in $dir/*
 	do
 		filename=`basename ${entry}`
-		if [ -d ${entry} ]
+		if [ -d ${entry} ] && [ ${filename} != "CVS" ]
 		then
 			SUBDIRS="${SUBDIRS} ${filename}"
 		fi
@@ -42,9 +42,15 @@ do
 	fi
 	if [ -n "${SOURCES}" ]
 	then
-		libname="lib`basename ${dir}`"
-		echo -e "noinst_LIBRARIES = ${libname}.a\n" >> ${MAKEFILE}
-		echo -e "${libname}_a_SOURCES = ${SOURCES}\n" >> ${MAKEFILE}
+		if [ ${dir} = "." ]
+		then
+			echo -e "include_HEADERS = ${SOURCES}\n" >> ${MAKEFILE}
+		else
+			libname="lib`basename ${dir}`"
+			echo -e "noinst_LIBRARIES = ${libname}.a\n" >> ${MAKEFILE}
+			echo -e "INCLUDES = -I\$(top_srcdir)/libraries/bullet\n" >> ${MAKEFILE}
+			echo -e "${libname}_a_SOURCES = ${SOURCES}\n" >> ${MAKEFILE}
+		fi
 	fi
 	MAKEFILES="${MAKEFILES}libraries/bullet/${MAKEFILE}\n"
 done
