@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.322 2008-03-28 02:03:10 alriddoch Exp $
+// $Id: Character.cpp,v 1.323 2008-05-28 19:42:36 alriddoch Exp $
 
 #include "Character.h"
 
@@ -812,30 +812,6 @@ void Character::mindActuateOperation(const Operation & op, OpVector & res)
     // res.push_back(sight);
 }
 
-/// \brief Filter a Login operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindLoginOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Filter a Logout operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindLogoutOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Filter a Add operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindAddOperation(const Operation & op, OpVector & res)
-{
-}
-
 /// \brief Filter a Attack operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1333,22 +1309,6 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
-/// \brief Filter a Sight operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindSightOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Filter a Sound operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindSoundOperation(const Operation & op, OpVector & res)
-{
-}
-
 /// \brief Filter a Combine operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1429,14 +1389,6 @@ void Character::mindDivideOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
-/// \brief Filter a Get operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindGetOperation(const Operation & op, OpVector & res)
-{
-}
-
 /// \brief Filter a Imaginary operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1445,22 +1397,6 @@ void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
 {
     op->setTo(getId());
     res.push_back(op);
-}
-
-/// \brief Filter a Info operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindInfoOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Filter a Nourish operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindNourishOperation(const Operation & op, OpVector & res)
-{
 }
 
 /// \brief Filter a Talk operation coming from the mind
@@ -1543,31 +1479,6 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
-}
-
-/// \brief Filter a Appearance operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindAppearanceOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Filter a Disappearance operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindDisappearanceOperation(const Operation & op, OpVector & res)
-{
-}
-
-
-/// \brief Filter a Error operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindErrorOperation(const Operation & op, OpVector & res)
-{
 }
 
 /// \brief Filter any other operation coming from the mind
@@ -1727,8 +1638,62 @@ void Character::mind2body(const Operation & op, OpVector & res)
                                    "FUTURE_SECONDS set.",
                                    op->getParents().front()));
     }
-    OpNo otype = op->getClassNo();
-    OP_SWITCH(op, otype, res, mind)
+    OpNo op_no = op->getClassNo();
+    switch (op_no) {
+        case Atlas::Objects::Operation::COMBINE_NO:
+            mindCombineOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::CREATE_NO:
+            mindCreateOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::DELETE_NO:
+            mindDeleteOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::DIVIDE_NO:
+            mindDivideOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::IMAGINARY_NO:
+            mindImaginaryOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::LOOK_NO:
+            mindLookOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::MOVE_NO:
+            mindMoveOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::SET_NO:
+            mindSetOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::TALK_NO:
+            mindTalkOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::TOUCH_NO:
+            mindTouchOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::USE_NO:
+            mindUseOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::WIELD_NO:
+            mindWieldOperation(op, res);
+            break;
+        default:
+            if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
+                mindActuateOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::ATTACK_NO) {
+                mindAttackOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::EAT_NO) {
+                mindEatOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {
+                mindSetupOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
+                mindTickOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::UPDATE_NO) {
+                mindUpdateOperation(op, res);
+            } else {
+                mindOtherOperation(op, res);
+            }
+            break;
+    }
 }
 
 /// \brief Filter operations from the world to the mind

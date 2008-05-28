@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.h,v 1.104 2008-03-20 16:39:14 alriddoch Exp $
+// $Id: Character.h,v 1.105 2008-05-28 19:42:36 alriddoch Exp $
 
 #ifndef RULESETS_CHARACTER_H
 #define RULESETS_CHARACTER_H
@@ -113,27 +113,17 @@ class Character : public Character_parent {
     virtual void AttackOperation(const Operation & op, OpVector &);
 
     virtual void mindActuateOperation(const Operation &, OpVector &);
-    virtual void mindAddOperation(const Operation &, OpVector &);
-    virtual void mindAppearanceOperation(const Operation &, OpVector &);
     virtual void mindAttackOperation(const Operation &, OpVector &);
     virtual void mindCombineOperation(const Operation &, OpVector &);
     virtual void mindCreateOperation(const Operation &, OpVector &);
     virtual void mindDeleteOperation(const Operation &, OpVector &);
-    virtual void mindDisappearanceOperation(const Operation &, OpVector &);
     virtual void mindDivideOperation(const Operation &, OpVector &);
     virtual void mindEatOperation(const Operation &, OpVector &);
-    virtual void mindGetOperation(const Operation &, OpVector &);
     virtual void mindImaginaryOperation(const Operation &, OpVector &);
-    virtual void mindInfoOperation(const Operation &, OpVector &);
-    virtual void mindLoginOperation(const Operation &, OpVector &);
-    virtual void mindLogoutOperation(const Operation &, OpVector &);
     virtual void mindLookOperation(const Operation &, OpVector &);
     virtual void mindMoveOperation(const Operation &, OpVector &);
-    virtual void mindNourishOperation(const Operation &, OpVector &);
     virtual void mindSetOperation(const Operation &, OpVector &);
     virtual void mindSetupOperation(const Operation &, OpVector &);
-    virtual void mindSightOperation(const Operation &, OpVector &);
-    virtual void mindSoundOperation(const Operation &, OpVector &);
     virtual void mindTalkOperation(const Operation &, OpVector &);
     virtual void mindTickOperation(const Operation &, OpVector &);
     virtual void mindTouchOperation(const Operation &, OpVector &);
@@ -141,7 +131,6 @@ class Character : public Character_parent {
     virtual void mindUseOperation(const Operation &, OpVector &);
     virtual void mindWieldOperation(const Operation &, OpVector &);
 
-    virtual void mindErrorOperation(const Operation &, OpVector &);
     virtual void mindOtherOperation(const Operation &, OpVector &);
 
     bool w2mSightOperation(const Operation &);

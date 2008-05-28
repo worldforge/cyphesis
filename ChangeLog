@@ -1,5 +1,12 @@
 2008-05-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp, rulesets/Character.h: Remove some of the
+	  obsolete handlers in the filter on ops from the mind. Stop using
+	  the generic IG op switch, and write a custom one.
+	  Fix a bug where Use ops were getting filtered out unintentionally.
+
+2008-05-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* scripts/import_bullet: Check explicitly for source files suffixes
 	  before treating them as sources. Create temporary files to avoid
 	  updating Makefile.am if there is no change. Mark headers as not to
@@ -18399,4 +18406,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2102 2008-05-28 17:01:51 alriddoch Exp $
+$Id: ChangeLog,v 1.2103 2008-05-28 19:42:35 alriddoch Exp $
