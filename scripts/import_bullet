@@ -11,18 +11,18 @@ then
 fi
 tar xvzf "$1" ${EXCLUSIONS} bullet-2.??/src
 
-mv bullet-2.??/src/* .
+rsync -av bullet-2.??/src/* .
 rm -rf bullet-2.??
 
-DIRS=`find . -type d ! -name CVS`
+DIRS=`find . -type d ! -name CVS ! -name .deps`
 MAKEFILES=""
 
 for dir in ${DIRS}
 do
-	echo "DOING $dir"
 	SUBDIRS=""
 	SOURCES=""
 	MAKEFILE="${dir}/Makefile.am"
+	# Build a list of subdirectories and sources
 	for entry in $dir/*
 	do
 		filename=`basename ${entry}`
@@ -30,31 +30,48 @@ do
 		then
 			SUBDIRS="${SUBDIRS} ${filename}"
 		fi
-		if [ -f ${entry} ] && [ ${filename} != Makefile.am ]
+		if [ -f ${entry} ] && [ ${filename: -4:4} == ".cpp" -o ${filename: -2:2} == ".h" ]
 		then
 			SOURCES="${SOURCES} ${filename}"
 		fi
 	done
-	echo > ${MAKEFILE}
+	# Create a temporary file to contain the new Makefile.am
+	echo > ${MAKEFILE}_tmp
+	# Add the subdirectories to the new Makefile.am
 	if [ -n "${SUBDIRS}" ]
 	then
-		echo -e "SUBDIRS = ${SUBDIRS}\n" >> ${MAKEFILE}
+		echo -e "SUBDIRS = ${SUBDIRS}\n" >> ${MAKEFILE}_tmp
 	fi
+	# Add the sources to the new Makefile.am
 	if [ -n "${SOURCES}" ]
 	then
+		# The top level directory of bullet has only headers.
 		if [ ${dir} = "." ]
 		then
-			echo -e "include_HEADERS = ${SOURCES}\n" >> ${MAKEFILE}
+			echo -e "noinst_HEADERS = ${SOURCES}\n" >> ${MAKEFILE}_tmp
 		else
 			libname="lib`basename ${dir}`"
-			echo -e "noinst_LIBRARIES = ${libname}.a\n" >> ${MAKEFILE}
-			echo -e "INCLUDES = -I\$(top_srcdir)/libraries/bullet\n" >> ${MAKEFILE}
-			echo -e "${libname}_a_SOURCES = ${SOURCES}\n" >> ${MAKEFILE}
+			echo -e "noinst_LIBRARIES = ${libname}.a\n" >> ${MAKEFILE}_tmp
+			echo -e "INCLUDES = -I\$(top_srcdir)/libraries/bullet\n" >> ${MAKEFILE}_tmp
+			echo -e "${libname}_a_SOURCES = ${SOURCES}\n" >> ${MAKEFILE}_tmp
 		fi
 	fi
-	MAKEFILES="${MAKEFILES}libraries/bullet/${MAKEFILE}\n"
+	# If Makefile.am is new or changed, move it to the right name.
+	if [ ! -f ${MAKEFILE} ] || ! cmp ${MAKEFILE}_tmp ${MAKEFILE}
+	then
+		mv -f ${MAKEFILE}_tmp ${MAKEFILE}
+	else
+		echo ${MAKEFILE} unchanged.
+		rm -f ${MAKEFILE}_tmp
+	fi
+	# Strip off the leading ./ and add the filename to the list to
+	# be checked against the contents of configure.ac
+	if [ ${MAKEFILE:0:2} = "./" ]
+	then
+		MAKEFILE=${MAKEFILE:2}
+	fi
+	MAKEFILES="${MAKEFILES}\tlibraries/bullet/${MAKEFILE%%.*}\n"
 done
 
-SRCDIRS=`find . -type f -name \*.cpp | xargs -n 1 dirname | sort | uniq`
-
+echo Check the following files are in configure.ac:
 echo -e ${MAKEFILES}

@@ -1,3 +1,10 @@
+2008-05-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* scripts/import_bullet: Check explicitly for source files suffixes
+	  before treating them as sources. Create temporary files to avoid
+	  updating Makefile.am if there is no change. Mark headers as not to
+	  be installed.
+
 2008-05-08  Al Riddoch  <alriddoch@googlemail.com>
 
 	* scripts/import_bullet: An experimental script.
@@ -18392,4 +18399,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2101 2008-05-08 22:26:51 alriddoch Exp $
+$Id: ChangeLog,v 1.2102 2008-05-28 17:01:51 alriddoch Exp $
