@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.135 2007-12-27 03:19:52 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.136 2008-06-03 14:12:56 alriddoch Exp $
 
 #include <Python.h>
 
@@ -126,6 +126,20 @@ void EntityBuilder::initWorld()
     // FIXME Persist the new world.
 }
 
+/// \brief Build and populate a new entity object.
+///
+/// A factory is found for the type of entity, and invoked to create the object
+/// instance. If the type has a script factory, this is invoked to create the
+/// associates script object which is attached to the entity instance.
+/// The attribute values are then set on the instance, taking into account
+/// the defaults for the class, and those inherited from parent classes, and
+/// the values specified for this instance. The essential location data for
+/// this instance is then set up. The final block of code relating to
+/// persistence is legacy, and should never be invoked.
+/// @param id The string identifier of the new entity.
+/// @param intId The integer identifier of the new entity.
+/// @param type The string specifying the type of entity.
+/// @param attributes A mapping of attribute values to set on the entity.
 Entity * EntityBuilder::newEntity(const std::string & id, long intId,
                                   const std::string & type,
                                   const RootEntity & attributes) const
@@ -194,6 +208,10 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     return thing;
 }
 
+/// \brief Build and populate a new task object.
+///
+/// @param name The name of the task type.
+/// @param owner The character entity that owns the task.
 Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
@@ -203,6 +221,17 @@ Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
     return I->second->newTask(owner);
 }
 
+/// \brief Build a new task object activated by the described event.
+///
+/// An event is described in terms of the tool type used to cause it,
+/// the type of operation being performed using the tool and the type of
+/// the target object the tool is being used on. If a match is found for
+/// this event, a task object is instanced to track the progress of the
+/// result of the event.
+/// @param tool The type of tool activating the event.
+/// @param op The type of operation being performed with the tool.
+/// @param target The type of entity the operation is being performed on.
+/// @param owner The character entity activating the task.
 Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
                                    const std::string & target,
@@ -241,6 +270,7 @@ int EntityBuilder::addStatisticsScript(Character & character) const
     return 0;
 }
 
+/// \brief Clear out all the factory objects owned by the entity builder.
 void EntityBuilder::flushFactories()
 {
     FactoryDict::const_iterator Iend = m_entityFactories.end();

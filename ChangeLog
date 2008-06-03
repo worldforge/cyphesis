@@ -1,3 +1,7 @@
+2008-06-03  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityFactory.cpp: Add some doc strings.
+
 2008-05-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp, rulesets/Character.h: Remove some of the
@@ -18406,4 +18410,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2103 2008-05-28 19:42:35 alriddoch Exp $
+$Id: ChangeLog,v 1.2104 2008-06-03 14:12:56 alriddoch Exp $
