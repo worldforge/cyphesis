@@ -1,3 +1,8 @@
+2008-06-04  Al Riddoch  <alriddoch@googlemail.com>
+
+	* Makefile.am, libraries/Makefile.am: Fix the recursive rules
+	  so a complete distribution package is built.
+
 2008-06-03  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/EntityFactory.cpp: Add some doc strings.
@@ -18410,4 +18415,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2104 2008-06-03 14:12:56 alriddoch Exp $
+$Id: ChangeLog,v 1.2105 2008-06-04 18:02:37 alriddoch Exp $

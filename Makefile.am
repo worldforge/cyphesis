@@ -1,5 +1,6 @@
 
-SUBDIRS = physics common modules rulesets server client data tools tests man
+SUBDIRS = libraries physics common modules rulesets server client data \
+          tools tests man
 
 docdir = $(datadir)/doc/cyphesis-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS THANKS NEWS FIXME
