@@ -15,11 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Containertest.cpp,v 1.3 2006-10-26 00:48:15 alriddoch Exp $
+// $Id: Containertest.cpp,v 1.4 2008-06-04 23:29:11 alriddoch Exp $
 
 #include "rulesets/Container.h"
 
 #include <iostream>
+
+#include <cstdlib>
 
 #include <cassert>
 

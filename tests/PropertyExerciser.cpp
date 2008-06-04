@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.7 2007-11-26 02:57:06 alriddoch Exp $
+// $Id: PropertyExerciser.cpp,v 1.8 2008-06-04 23:29:11 alriddoch Exp $
 
 #include "PropertyExerciser.h"
 
@@ -44,11 +44,11 @@ PropertyExerciser::PropertyExerciser()
     integer_values.push_back(-1);
     integer_values.push_back(23);
     integer_values.push_back(42);
-    integer_values.push_back(INT_MAX);
-    integer_values.push_back(INT_MIN);
-    integer_values.push_back(UINT_MAX);
-    integer_values.push_back(LONG_MAX);
-    integer_values.push_back(LONG_MIN);
+    integer_values.push_back(std::numeric_limits<int>::max());
+    integer_values.push_back(std::numeric_limits<int>::min());
+    integer_values.push_back(std::numeric_limits<unsigned int>::max());
+    integer_values.push_back(std::numeric_limits<long>::max());
+    integer_values.push_back(std::numeric_limits<long>::min());
 
     float_values.push_back(0.f);
     float_values.push_back(-0.f);

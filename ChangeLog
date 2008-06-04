@@ -1,3 +1,11 @@
+2008-06-05  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/PropertyExerciser.cpp: Use the C++ limits API, rather than
+	  the C defines.
+
+	* tests/Containertest.cpp: Add missing C headers required by more
+	  recent compilers.
+
 2008-06-04  Al Riddoch  <alriddoch@googlemail.com>
 
 	* Makefile.am, libraries/Makefile.am: Fix the recursive rules
@@ -18415,4 +18423,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2105 2008-06-04 18:02:37 alriddoch Exp $
+$Id: ChangeLog,v 1.2106 2008-06-04 23:29:11 alriddoch Exp $
