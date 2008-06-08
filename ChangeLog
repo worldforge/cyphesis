@@ -1,3 +1,7 @@
+2008-06-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* scripts/cyphesis-setup.sh: Fix command line to su so it works.
+
 2008-06-07  Al Riddoch  <alriddoch@googlemail.com>
 
 	* Makefile.am, scripts/cyphesis-setup.sh: Add the setup script to the
@@ -18428,4 +18432,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2107 2008-06-07 13:54:43 alriddoch Exp $
+$Id: ChangeLog,v 1.2108 2008-06-08 22:59:05 alriddoch Exp $

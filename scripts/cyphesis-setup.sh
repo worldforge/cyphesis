@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# $Id: cyphesis-setup.sh,v 1.4 2007-09-18 17:06:04 alriddoch Exp $
+# $Id: cyphesis-setup.sh,v 1.5 2008-06-08 22:59:06 alriddoch Exp $
 
 # The main purpose of this script is to get round the issue of access to
 # to the database required by cyphesis.
@@ -59,7 +59,7 @@ while test x${USERNAME} == "x" || test ${USERNAME} == "root"; do
     echo or hit ctrl-c to abort.
     read -e -p "Your username:" REALUSERNAME
 
-    if sudo su ${REALUSERNAME} /bin/true; then
+    if sudo su ${REALUSERNAME} -c /bin/true; then
         USERNAME=${REALUSERNAME}
     else
         echo
