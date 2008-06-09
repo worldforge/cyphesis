@@ -1,6 +1,3 @@
-Move final remaining BaseEntity functionality out into IdentifiedRouter,
-then purge BaseEntity and OOGThing. Make them as removed from the build.
-
 Admin Creator avatatar gets destroyed once it is no longer connected, but
 it then calls Connection::removeObject() despite the Connection being
 long gone.
