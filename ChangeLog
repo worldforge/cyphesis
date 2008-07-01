@@ -1,3 +1,9 @@
+2008-07-01  Al Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.16
+
 2008-06-08  Al Riddoch  <alriddoch@googlemail.com>
 
 	* scripts/cyphesis-setup.sh: Fix command line to su so it works.
@@ -18432,4 +18438,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2108 2008-06-08 22:59:05 alriddoch Exp $
+$Id: ChangeLog,v 1.2109 2008-07-01 15:04:24 alriddoch Exp $
