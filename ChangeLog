@@ -1,5 +1,10 @@
 2008-07-01  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Makefile.am: Attempt to update the static libraries
+	  required for a portable binary.
+
+2008-07-01  Al Riddoch  <alriddoch@googlemail.com>
+
 	* NEWS: Update NEWS announcement for release.
 
 	* Release 0.5.16
@@ -18438,4 +18443,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2109 2008-07-01 15:04:24 alriddoch Exp $
+$Id: ChangeLog,v 1.2110 2008-07-01 15:05:40 alriddoch Exp $

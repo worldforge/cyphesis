@@ -28,6 +28,8 @@ SERVER_LIBS = \
     /usr/lib/libAtlas-0.6.a \
     /usr/lib/libsigc-2.0.a \
     /usr/lib/libpq.a \
+    /usr/lib/libldap.a \
+    /usr/lib/liblber.a \
     /usr/lib/libssl.a \
     /usr/lib/libkrb5.a \
     /usr/lib/libgssapi_krb5.a \
@@ -38,6 +40,8 @@ SERVER_LIBS = \
     /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
     /usr/lib/libcrypt.a \
+    /usr/lib/libselinux.a \
+    /usr/lib/libsepol.a \
     /usr/lib/libresolv.a \
     /usr/lib/libcom_err.a \
     $(PYTHON_LIBS) \
