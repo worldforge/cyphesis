@@ -1,3 +1,8 @@
+2008-07-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Makefile.am: Remove DESTDIR from moduledir directory, as
+	  it meant it was getting added twice.
+
 2008-07-01  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/Makefile.am: Attempt to update the static libraries
@@ -18443,4 +18448,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2110 2008-07-01 15:05:40 alriddoch Exp $
+$Id: ChangeLog,v 1.2111 2008-07-10 13:11:40 alriddoch Exp $

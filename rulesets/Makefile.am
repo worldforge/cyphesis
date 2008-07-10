@@ -4,7 +4,7 @@ INCLUDES = -I$(top_srcdir)
 
 RULESETS = basic/mind mason
 
-moduledir = $(DESTDIR)$(datadir)/cyphesis/scripts/cyphesis
+moduledir = $(datadir)/cyphesis/scripts/cyphesis
 dist_module_DATA = basic/__init__.py \
                    basic/world/objects/Thing.py \
                    basic/world/probability.py \
