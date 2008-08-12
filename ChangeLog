@@ -1,3 +1,7 @@
+2008-08-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Identified.h: Add missing class documentation.
+
 2008-07-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Makefile.am: Remove DESTDIR from moduledir directory, as
@@ -18448,4 +18452,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2111 2008-07-10 13:11:40 alriddoch Exp $
+$Id: ChangeLog,v 1.2112 2008-08-12 20:39:15 alriddoch Exp $
