@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.34 2008-04-19 03:44:07 alriddoch Exp $
+// $Id: system.cpp,v 1.35 2008-08-12 20:40:14 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -559,6 +559,20 @@ int check_password(const std::string & pwd, const std::string & hash)
     return hash == new_hash ? 0 : -1;
 }
 
+int getfiletime(const std::string & filename, time_t & t)
+{
+    struct stat sbuf;
+
+    int ret = ::stat(filename.c_str(), &sbuf);
+
+    if (ret != 0) {
+        return -1;
+    }
+
+    t = sbuf.st_mtime;
+
+    return 0;
+}
 #ifndef HAVE_GETTIMEOFDAY
 
 int gettimeofday(struct timeval * tv, struct timezone * tz)

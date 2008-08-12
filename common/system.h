@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.h,v 1.13 2008-04-19 03:44:07 alriddoch Exp $
+// $Id: system.h,v 1.14 2008-08-12 20:40:14 alriddoch Exp $
 
 #ifndef COMMON_SYSTEM_H
 #define COMMON_SYSTEM_H
@@ -53,6 +53,8 @@ void hash_password(const std::string & pwd, const std::string & salt,
 
 void encrypt_password(const std::string & pwd, std::string & hash);
 int check_password(const std::string & pwd, const std::string & hash);
+
+int getfiletime(const std::string & filename, time_t & t);
 
 #ifdef _WIN32
 

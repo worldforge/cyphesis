@@ -1,5 +1,10 @@
 2008-08-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/system.cpp, common/system.h: Add a function for getting
+	  the time stamp from a file.
+
+2008-08-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Identified.h: Add missing class documentation.
 
 2008-07-10  Al Riddoch  <alriddoch@googlemail.com>
@@ -18452,4 +18457,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2112 2008-08-12 20:39:15 alriddoch Exp $
+$Id: ChangeLog,v 1.2113 2008-08-12 20:40:14 alriddoch Exp $
