@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.13 2008-08-14 00:03:12 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.14 2008-08-14 11:20:12 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -190,8 +190,8 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     if (!segment->isValid()) {
         segment->populate();
     }
-    x = x - segment->getResolution() * segment->getXRef();
-    y = y - segment->getResolution() * segment->getYRef();
+    x = x - segment->getXRef();
+    y = y - segment->getYRef();
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;

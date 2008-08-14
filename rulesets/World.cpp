@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.115 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: World.cpp,v 1.116 2008-08-14 11:20:12 alriddoch Exp $
 
 #include "World.h"
 
@@ -116,8 +116,8 @@ int World::getSurface(const Point3D & pos, int & material)
     if (!segment->isValid()) {
         segment->populate();
     }
-    x = x - segment->getResolution() * segment->getXRef();
-    y = y - segment->getResolution() * segment->getYRef();
+    x = x - segment->getXRef();
+    y = y - segment->getYRef();
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;

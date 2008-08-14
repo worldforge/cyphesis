@@ -1,5 +1,14 @@
 2008-08-14  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/TerrainProperty.cpp, rulesets/World.cpp: Fix the code
+	  to take account of the modified semantics of Segment member
+	  variable xref and yref.
+
+	* configure.ac: Add a requirement for the latest version of
+	  Mercator.
+
+2008-08-14  Al Riddoch  <alriddoch@googlemail.com>
+
 	Changes by Tamas Bates  <rhymer@gmail.com>
 
 	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h: Add an
@@ -18475,4 +18484,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2114 2008-08-14 00:03:12 alriddoch Exp $
+$Id: ChangeLog,v 1.2115 2008-08-14 11:20:09 alriddoch Exp $
