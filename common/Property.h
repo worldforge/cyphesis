@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.18 2007-12-24 00:06:20 alriddoch Exp $
+// $Id: Property.h,v 1.19 2008-08-14 17:44:26 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -33,13 +33,15 @@
 class PropertyBase {
   protected:
     /// \brief Flags indicating how this Property should be handled
-    const unsigned int m_flags;
+    unsigned int m_flags;
     explicit PropertyBase(unsigned int);
   public:
     virtual ~PropertyBase();
 
     /// \brief Accessor for Property flags
     unsigned int flags() const { return m_flags; }
+    /// \brief Accessor for Property flags
+    unsigned int & flags() { return m_flags; }
 
     /// \brief Copy the value of the property into an Atlas Message
     virtual bool get(Atlas::Message::Element & val) const = 0;
@@ -50,6 +52,22 @@ class PropertyBase {
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
+
+/// \brief Flag indicating data has been written to permanent store
+static const unsigned int per_clean = 1 << 0;
+/// \brief Flag indicating data should never be persisted
+static const unsigned int per_ephem = 1 << 1;
+
+/// \brief Flag mask indicating data should not be written to store
+static const unsigned int per_mask = per_clean | per_ephem;
+
+/// \brief Flag indicating data is not visible
+static const unsigned int vis_hidden = 1 << 2;
+/// \brief Flag indicating data is server internal
+static const unsigned int vis_internal = 1 << 3;
+
+/// \brief Flag mask indicating data should be be perceptable
+static const unsigned int vis_mask = vis_hidden | vis_internal;
 
 /// \brief Entity property template for properties with single data values
 /// that cannot be modified directly.

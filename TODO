@@ -1,3 +1,6 @@
+Flags per property. Flags describe whether property should be persisted,
+whether it is public, and whether it is dirty.
+
 Admin Creator avatatar gets destroyed once it is no longer connected, but
 it then calls Connection::removeObject() despite the Connection being
 long gone.

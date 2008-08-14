@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Propertytest.cpp,v 1.3 2006-10-26 00:48:16 alriddoch Exp $
+// $Id: Propertytest.cpp,v 1.4 2008-08-14 17:44:26 alriddoch Exp $
 
 #include "common/Property.h"
 
@@ -25,6 +25,25 @@ using Atlas::Message::Element;
 
 int main()
 {
+    // Assertions to verify the flags have the desired properties.
+    assert((per_clean | per_mask) == per_mask);
+    assert((per_ephem | per_mask) == per_mask);
+    assert((per_ephem | per_clean) == per_mask);
+
+    assert((per_clean & per_mask) == per_clean);
+    assert((per_ephem & per_mask) == per_ephem);
+    assert((per_ephem & per_clean) == 0);
+
+    assert((vis_hidden | vis_mask) == vis_mask);
+    assert((vis_internal | vis_mask) == vis_mask);
+    assert((vis_internal | vis_hidden) == vis_mask);
+
+    assert((vis_hidden & vis_mask) == vis_hidden);
+    assert((vis_internal & vis_mask) == vis_internal);
+    assert((vis_internal & vis_hidden) == 0);
+
+    assert((vis_mask & per_mask) == 0);
+
     Element val;
 
     {
