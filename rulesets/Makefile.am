@@ -42,6 +42,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     LineProperty.cpp LineProperty.h \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
+			     TerrainModProperty.cpp TerrainModProperty.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \

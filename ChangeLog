@@ -1,3 +1,21 @@
+2008-08-14  Al Riddoch  <alriddoch@googlemail.com>
+
+	Changes by Tamas Bates  <rhymer@gmail.com>
+
+	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h: Add an
+	  API for controlling modifiers to the terrain.
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h:
+	  Implement a new property for entities which affect the height
+	  of the terrain.
+
+	* server/CorePropertyManager.cpp: Add handlers to deal with
+	  operations that manipulate the terrain when a terrain mod
+	  property changes.
+
+	* rulesets/mason/define_world.py: Add a test function for
+	  terrain modification properties.
+
 2008-08-12  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/system.cpp, common/system.h: Add a function for getting
@@ -18457,4 +18475,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2113 2008-08-12 20:40:14 alriddoch Exp $
+$Id: ChangeLog,v 1.2114 2008-08-14 00:03:12 alriddoch Exp $

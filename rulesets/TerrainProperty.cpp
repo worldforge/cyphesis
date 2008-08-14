@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.12 2007-09-11 14:47:40 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.13 2008-08-14 00:03:12 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -25,6 +25,7 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
+#include <Mercator/TerrainMod.h>
 
 #include <sstream>
 
@@ -139,6 +140,27 @@ void TerrainProperty::set(const Element & ent)
     if (I != t.end() && I->second.isList()) {
         m_surfaces = I->second.List();
     }
+
+}
+
+void TerrainProperty::setMod(Mercator::TerrainMod *mod, float x, float y)
+{
+    m_data.addMod(*mod);
+}
+
+void TerrainProperty::clearMods(float x, float y)
+{
+    Mercator::Segment *s = m_data.getSegment(x,y);
+    if(s != NULL) {
+        s->clearMods();
+        //log(INFO, "Mods cleared!");
+    } 
+/*    else {
+        std::stringstream ss;
+        ss << "Segment at " << x << "," << y << " was NULL!";
+        log(INFO, ss.str());
+    }
+*/
 }
 
 /// \brief Calculate the terrain height at the given x,y coordinates

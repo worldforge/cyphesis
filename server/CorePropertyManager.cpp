@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.27 2007-12-20 18:47:29 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.28 2008-08-14 00:03:12 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -27,6 +27,7 @@
 #include "rulesets/SolidProperty.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Entity.h"
+#include "rulesets/TerrainModProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -225,6 +226,55 @@ HandlerResult transient_handler(Entity * e,
     return OPERATION_IGNORED;
 }
 
+
+HandlerResult terrainmod_moveHandler(Entity * e,
+                                 const Operation & op,
+                                 OpVector & res)
+{
+    Element modifier;
+    if (!e->getAttr("terrainmod", modifier)) {
+        return OPERATION_IGNORED;
+    }
+
+        // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
+    if (e->hasAttr("terrainmod")) {
+        dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->move(e);
+    }
+    return OPERATION_IGNORED;
+}
+
+HandlerResult terrainmod_setupHandler(Entity *e,
+                                 const Operation & op,
+                                 OpVector & res)
+{
+    Element modifier;
+    if (!e->hasAttr("terrainmod")) {
+        return OPERATION_IGNORED;
+    }
+
+        // initialize the property with its entity's position
+    if (e->hasAttr("terrainmod")) {
+        dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->setup(e);
+    }
+    return OPERATION_IGNORED;
+}
+
+HandlerResult terrainmod_deleteHandler(Entity * e,
+                                 const Operation & op,
+                                 OpVector & res)
+{
+    Element modifier;
+    if (!e->getAttr("terrainmod", modifier)) {
+        return OPERATION_IGNORED;
+    }
+
+        // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
+    if (e->hasAttr("terrainmod")) {
+//         dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->move(e);
+    }
+    return OPERATION_IGNORED;
+}
+
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyFactory<DynamicProperty<double> >;
@@ -242,6 +292,14 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["transient"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);
     m_propertyFactories["food"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
+//     m_propertyFactories["terrainmod"] = new EntityPropertyFactory<TerrainModProperty>;
+//     m_propertyFactories["terrainmod"] = new ActivePropertyFactory<Dynamic<TerrainModProperty, Entity*> >(Atlas::Objects::Operation::MOVE_NO, terrainmod_handler);
+    
+    HandlerMap terrainModHandles;
+    terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
+    terrainModHandles[Atlas::Objects::Operation::DELETE_NO] = terrainmod_deleteHandler;
+    terrainModHandles[Atlas::Objects::Operation::SETUP_NO] = terrainmod_setupHandler;
+    m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
 }
 
 CorePropertyManager::~CorePropertyManager()

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.h,v 1.12 2007-09-11 14:47:40 alriddoch Exp $
+// $Id: TerrainProperty.h,v 1.13 2008-08-14 00:03:12 alriddoch Exp $
 
 #ifndef RULESETS_TERRAIN_PROPERTY_H
 #define RULESETS_TERRAIN_PROPERTY_H
@@ -23,6 +23,8 @@
 #include "physics/Vector3D.h"
 
 #include "common/Property.h"
+
+#include <Mercator/TerrainMod.h>
 
 #include <set>
 
@@ -54,6 +56,8 @@ class TerrainProperty : public PropertyBase {
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
+    void setMod(Mercator::TerrainMod *, float, float);
+    void clearMods(float, float);
 
     float getHeight(float x, float y);
     int getSurface(const Point3D &,  int &);
