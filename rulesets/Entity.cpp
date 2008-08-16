@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.154 2008-03-26 01:34:16 alriddoch Exp $
+// $Id: Entity.cpp,v 1.155 2008-08-16 23:21:07 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -184,7 +184,7 @@ void Entity::destroy()
     if (loc_contains.empty()) {
         Entity * loc = dynamic_cast<Entity *>(m_location.m_loc);
         loc->m_update_flags |= a_cont;
-        loc->updated.emit();
+        loc->onUpdated();
     }
     m_destroyed = true;
     destroyed.emit();
@@ -327,4 +327,9 @@ void Entity::onContainered()
     containered.emit();
 
     containered.clear();
+}
+
+void Entity::onUpdated()
+{
+    updated.emit();
 }

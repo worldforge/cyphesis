@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.102 2008-03-26 01:34:16 alriddoch Exp $
+// $Id: Entity.h,v 1.103 2008-08-16 23:21:07 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -133,6 +133,7 @@ class Entity : public LocatedEntity {
     void callOperation(const Operation &, OpVector &);
 
     virtual void onContainered();
+    virtual void onUpdated();
 
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;

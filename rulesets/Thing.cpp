@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.228 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: Thing.cpp,v 1.229 2008-08-16 23:21:07 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -310,7 +310,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         checkVisibility(old_pos, res);
     }
     m_seq++;
-    updated.emit();
+
+    onUpdated();
 }
 
 /// \brief Check changes in visibility of this entity
@@ -420,7 +421,7 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     res.push_back(s);
     m_seq++;
     if (m_update_flags != 0) {
-        updated.emit();
+        onUpdated();
     }
 }
 
@@ -644,7 +645,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     if (isPerceptive()) {
         checkVisibility(old_pos, res);
     }
-    updated.emit();
+    onUpdated();
 }
 
 void Thing::LookOperation(const Operation & op, OpVector & res)

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.14 2008-01-28 23:48:32 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.15 2008-08-16 23:21:07 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -115,6 +115,7 @@ class LocatedEntity : public IdentifiedRouter {
     virtual PropertyBase * getProperty(const std::string & name) const;
 
     virtual void onContainered();
+    virtual void onUpdated();
 
     void setScript(Script * scrpt);
     void makeContainer();

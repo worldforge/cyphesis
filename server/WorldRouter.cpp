@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.225 2008-01-05 14:05:06 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.226 2008-08-16 23:21:08 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -280,10 +280,8 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     ent->m_location.m_loc->m_contains->insert(ent);
     ent->m_location.m_loc->incRef();
     if (cont_change) {
-        Entity * loc = dynamic_cast<Entity *>(ent->m_location.m_loc);
-        assert(loc != 0);
-        loc->m_update_flags |= a_cont;
-        loc->updated.emit();
+        // FIXME Mark the entity as dirty?
+        ent->onUpdated();
     }
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);

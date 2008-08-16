@@ -1,3 +1,13 @@
+2008-08-17  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/LocatedEntity.h: Add onUpdated() virtual method to be
+	  called when the attributes of an Entity are changed.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h, rulesets/LocatedEntity.cpp,
+	  rulesets/Thing.cpp, server/WorldRouter.cpp: Implement onUpdated()
+	  to emit the updated signal on Entity, and change all code to
+	  call onUpdated instead of emiting the signal.
+
 2008-08-14  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Property.h: Make property flags writable so they can be
@@ -18493,4 +18503,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2116 2008-08-14 17:44:26 alriddoch Exp $
+$Id: ChangeLog,v 1.2117 2008-08-16 23:21:06 alriddoch Exp $

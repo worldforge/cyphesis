@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.13 2008-01-28 23:48:32 alriddoch Exp $
+// $Id: LocatedEntity.cpp,v 1.14 2008-08-16 23:21:07 alriddoch Exp $
 
 #include "LocatedEntity.h"
 
@@ -150,6 +150,12 @@ void LocatedEntity::onContainered()
 {
 }
 
+/// \brief Called when the properties of this entity change.
+///
+void LocatedEntity::onUpdated()
+{
+}
+
 /// \brief Associate a script with this entity
 ///
 /// The previously associated script is deleted.
@@ -182,21 +188,15 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
     assert(m_location.m_loc->m_contains != 0);
     m_location.m_loc->m_contains->erase(this);
-#if 0
     if (m_location.m_loc->m_contains->empty()) {
-        m_location.m_loc->m_update_flags |= a_cont;
-        m_location.m_loc->updated.emit();
+        m_location.m_loc->onUpdated();
     }
-#endif
     new_loc->makeContainer();
     bool was_empty = new_loc->m_contains->empty();
     new_loc->m_contains->insert(this);
-#if 0
     if (was_empty) {
-        new_loc->m_update_flags |= a_cont;
-        new_loc->updated.emit();
+        new_loc->onUpdated();
     }
-#endif
     assert(m_location.m_loc->checkRef() > 0);
     m_location.m_loc->decRef();
     m_location.m_loc = new_loc;
@@ -204,9 +204,6 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered();
-#if 0
-    m_update_flags |= a_loc;
-#endif
 }
 
 /// \brief Read attributes from an Atlas element
