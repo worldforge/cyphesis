@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.cpp,v 1.5 2008-08-17 21:48:23 alriddoch Exp $
+// $Id: TerrainModProperty.cpp,v 1.6 2008-08-17 22:57:20 alriddoch Exp $
 
 #include "TerrainModProperty.h"
 
@@ -89,16 +89,16 @@ void TerrainModProperty::set(const Element & ent)
 
         if (terr != NULL) {
 
-                // If we're updating an existing mod, remove it from the terrain first
+            // If we're updating an existing mod, remove it from the terrain first
             if (m_modptr != NULL) {
                 terr->removeMod(m_modptr);
             }
 
-                // Parse the Atlas data for our mod
+            // Parse the Atlas data for our mod
             Mercator::TerrainMod *newMod = parseModData(ent);
 
             if (newMod != NULL) {
-                    // Apply the new mod to the terrain; retain the returned pointer
+                // Apply the new mod to the terrain; retain the returned pointer
                 m_modptr = terr->setMod(newMod);
             } else {
                 m_modptr = NULL;
@@ -113,21 +113,21 @@ void TerrainModProperty::setPos(const Point3D & newPos)
     if (m_owner != NULL) {
 
         TerrainProperty * terr = NULL;
-            // Search for an entity with the terrain property
+        // Search for an entity with the terrain property
         terr = getTerrain();
 
         if (terr != NULL) {
 
-                // If we're updating an existing mod, remove it from the terrain first
+            // If we're updating an existing mod, remove it from the terrain first
             if (m_modptr != NULL) {
                 terr->removeMod(m_modptr);
             }
 
-                // Parse the Atlas data for our mod, using the new position
+            // Parse the Atlas data for our mod, using the new position
             Mercator::TerrainMod *newMod = parseModData(m_terrainmods, newPos);
 
             if (newMod != NULL) {
-                    // Apply the new mod to the terrain; retain the returned pointer
+                // Apply the new mod to the terrain; retain the returned pointer
                 m_modptr = terr->setMod(newMod);
             } else {
                 m_modptr = NULL;
@@ -159,15 +159,15 @@ void TerrainModProperty::add(const std::string & s, MapType & ent) const
 
 void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
 {
-        // Get terrain
+    // Get terrain
     TerrainProperty * terrain = NULL;
     terrain = getTerrain();
 
     if (terrain != NULL) {
-            // Clear the mod from the old position
+        // Clear the mod from the old position
         terrain->removeMod(m_modptr);
 
-            // Apply the mod at the new position
+        // Apply the mod at the new position
         setPos(newPos);
     }
 }
@@ -189,7 +189,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     // Get modifier type
     mod_I = modMap.find("type");
     if (mod_I != modMap.end()) {
-    const Atlas::Message::Element& modTypeElem(mod_I->second);
+        const Atlas::Message::Element& modTypeElem(mod_I->second);
         if (modTypeElem.isString()) {
             modType = modTypeElem.asString();
         }
@@ -208,60 +208,60 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
         } 
     }
 
-        // Build modifier from data
-        if (modType == "slopemod") {
-            float dx = 0, dy = 0, level = 0;
-            // Get slopes
-            mod_I = modMap.find("slopes");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modSlopeElem = mod_I->second;
-                if (modSlopeElem.isList()) {
-                    const Atlas::Message::ListType & slopes = modSlopeElem.asList();
-                    dx = (int)slopes[0].asNum();
-                    dy = (int)slopes[1].asNum();
-                }
+    // Build modifier from data
+    if (modType == "slopemod") {
+        float dx = 0, dy = 0, level = 0;
+        // Get slopes
+        mod_I = modMap.find("slopes");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modSlopeElem = mod_I->second;
+            if (modSlopeElem.isList()) {
+                const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+                dx = (int)slopes[0].asNum();
+                dy = (int)slopes[1].asNum();
             }
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
-
-            pos.z() = level;        // Note that the height of the mod is in pos.z()
-            return newSlopeMod(shapeMap, pos, dx, dy);
+        }
+        // Get level
+        mod_I = modMap.find("height");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            level = modHeightElem.asNum();
         }
 
-        if (modType == "levelmod") {
-            float level = 0;
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
+        pos.z() = level;        // Note that the height of the mod is in pos.z()
+        return newSlopeMod(shapeMap, pos, dx, dy);
+    }
 
-            pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
-            return newLevelMod(shapeMap, pos);
-
-        if (modType == "adjustmod") {
-            float level;
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
-    
-            pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
-            return newAdjustMod(shapeMap, pos);
+    if (modType == "levelmod") {
+        float level = 0;
+        // Get level
+        mod_I = modMap.find("height");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            level = modHeightElem.asNum();
         }
-//             log(INFO,"Successfully parsed an adjustmod");
 
-        if (modType == "cratermod") {
+        pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
+        return newLevelMod(shapeMap, pos);
+    }
 
-            return newCraterMod(shapeMap, pos);
+    if (modType == "adjustmod") {
+        float level;
+        // Get level
+        mod_I = modMap.find("height");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            level = modHeightElem.asNum();
         }
+
+        pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
+        return newAdjustMod(shapeMap, pos);
+    }
+    //log(INFO,"Successfully parsed an adjustmod");
+
+    if (modType == "cratermod") {
+
+        return newCraterMod(shapeMap, pos);
     }
 
     return NULL;
@@ -299,74 +299,74 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
         } 
     }
 
-        // Build modifier from data
-        if (modType == "slopemod") {
-            float dx = 0, dy = 0, level = 0;
-            // Get slopes
-            mod_I = modMap.find("slopes");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modSlopeElem = mod_I->second;
-                if (modSlopeElem.isList()) {
-                    const Atlas::Message::ListType & slopes = modSlopeElem.asList();
-                    dx = (int)slopes[0].asNum();
-                    dy = (int)slopes[1].asNum();
-                }
+    // Build modifier from data
+    if (modType == "slopemod") {
+        float dx = 0, dy = 0, level = 0;
+        // Get slopes
+        mod_I = modMap.find("slopes");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modSlopeElem = mod_I->second;
+            if (modSlopeElem.isList()) {
+                const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+                dx = (int)slopes[0].asNum();
+                dy = (int)slopes[1].asNum();
             }
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
-
-            Point3D pos = newPos;
-            pos.z() = level;        // Note that the height of the mod is in pos.z()
-            return newSlopeMod(shapeMap, pos, dx, dy);
+        }
+        // Get level
+        mod_I = modMap.find("height");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            level = modHeightElem.asNum();
         }
 
-        if (modType == "levelmod") {
-            float level = 0;
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
+        Point3D pos = newPos;
+        pos.z() = level;        // Note that the height of the mod is in pos.z()
+        return newSlopeMod(shapeMap, pos, dx, dy);
+    }
 
-            Point3D pos = newPos;
-            pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
-            return newLevelMod(shapeMap, pos);
+    if (modType == "levelmod") {
+        float level = 0;
+        // Get level
+        mod_I = modMap.find("height");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            level = modHeightElem.asNum();
+        }
 
-        if (modType == "adjustmod") {
-            float level;
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
+        Point3D pos = newPos;
+        pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
+        return newLevelMod(shapeMap, pos);
+    }
     
-            pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
-            return newAdjustMod(shapeMap, pos);
+    if (modType == "adjustmod") {
+        float level;
+        // Get level
+        mod_I = modMap.find("height");
+        if (mod_I != modMap.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            level = modHeightElem.asNum();
         }
-//             log(INFO,"Successfully parsed an adjustmod");
+        Point3D pos = newPos;
+        pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
+        return newAdjustMod(shapeMap, pos);
+    }
+    //log(INFO,"Successfully parsed an adjustmod");
 
-        if (modType == "cratermod") {
+    if (modType == "cratermod") {
 
-            return newCraterMod(shapeMap, pos);
-        }
+        return newCraterMod(shapeMap, newPos);
     }
 
     return NULL;
 }
 
-Mercator::TerrainMod* TerrainModProperty::newCraterMod(const Atlas::Message::MapType shapeMap, WFMath::Point<3> pos)
+Mercator::TerrainMod* TerrainModProperty::newCraterMod(const Atlas::Message::MapType shapeMap, const Point3D & pos)
 {
     std::string shapeType;
 
     // Get modifier's shape
     Atlas::Message::MapType::const_iterator shape_I;
-                // Get shape's type
+    // Get shape's type
     shape_I = shapeMap.find("type");
     if (shape_I != shapeMap.end()) {
         const Atlas::Message::Element& shapeTypeElem(shape_I->second);
@@ -388,7 +388,7 @@ Mercator::TerrainMod* TerrainModProperty::newCraterMod(const Atlas::Message::Map
         // Make sphere
         WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
 
-//                 log(INFO,"Successfully parsed a cratermod");
+        //log(INFO,"Successfully parsed a cratermod");
         // Make modifier
         Mercator::CraterTerrainMod *NewMod;
         NewMod = new Mercator::CraterTerrainMod(modShape);
@@ -400,12 +400,12 @@ Mercator::TerrainMod* TerrainModProperty::newCraterMod(const Atlas::Message::Map
     return NULL;
 }
 
-Mercator::TerrainMod* TerrainModProperty::newLevelMod(const Atlas::Message::MapType shapeMap, WFMath::Point<3> pos)
+Mercator::TerrainMod* TerrainModProperty::newLevelMod(const Atlas::Message::MapType shapeMap, const Point3D & pos)
 {
     std::string shapeType;
     Atlas::Message::MapType::const_iterator shape_I;
 
-        // Get shape's type
+    // Get shape's type
     shape_I = shapeMap.find("type");
     if (shape_I != shapeMap.end()) {
         const Atlas::Message::Element & shapeTypeElem(shape_I->second);
@@ -457,7 +457,7 @@ Mercator::TerrainMod* TerrainModProperty::newLevelMod(const Atlas::Message::MapT
         }
 
         // Make rotbox
-            ///FIXME: needs to use shapeDim instead of 2
+        ///FIXME: needs to use shapeDim instead of 2
         WFMath::RotBox<2> modShape = WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>()); 
 
         // Make modifier
@@ -472,13 +472,13 @@ Mercator::TerrainMod* TerrainModProperty::newLevelMod(const Atlas::Message::MapT
 }
 
 Mercator::TerrainMod * TerrainModProperty::newSlopeMod(const Atlas::Message::MapType shapeMap,
-                                                       WFMath::Point<3> pos, float dx, float dy)
+                                                       const Point3D & pos, float dx, float dy)
 {
     std::string shapeType;
 
     // Get modifier's shape
     Atlas::Message::MapType::const_iterator shape_I;
-                // Get shape's type
+    // Get shape's type
     shape_I = shapeMap.find("type");
     if (shape_I != shapeMap.end()) {
         const Atlas::Message::Element& shapeTypeElem(shape_I->second);
@@ -511,16 +511,17 @@ Mercator::TerrainMod * TerrainModProperty::newSlopeMod(const Atlas::Message::Map
     return NULL;
 }
 
-Mercator::TerrainMod * TerrainModProperty::newAdjustMod(const Atlas::Message::MapType shapeMap, WFMath::Point<3> pos)
+Mercator::TerrainMod * TerrainModProperty::newAdjustMod(const Atlas::Message::MapType shapeMap, const Point3D & pos)
 {
     std::string shapeType;
 
     // Get modifier's shape
     Atlas::Message::MapType::const_iterator shape_I;
-                // Get shape's type
+    // Get shape's type
     shape_I = shapeMap.find("type");
     if (shape_I != shapeMap.end()) {
         const Atlas::Message::Element& shapeTypeElem(shape_I->second);
+
         if (shapeTypeElem.isString()) {
         shapeType = shapeTypeElem.asString();
         }

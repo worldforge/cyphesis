@@ -1,5 +1,22 @@
 2008-08-17  Tamas Bates  <rhymer@gmail.com>
 
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Fixed
+	  an improperly named variable.
+
+2008-08-17  Tamas Bates  <rhymer@gmail.com>
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Fixed
+	  a logic issue which would have prevented some types of terrain mods 
+	  from ever being parsed.
+
+2008-08-17  Tamas Bates  <rhymer@gmail.com>
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Fixed
+	  a number of inconsistent indentations. Avoid passing Point3D objects
+	  by value in the terrain modifier parsing functions.
+
+2008-08-17  Tamas Bates  <rhymer@gmail.com>
+
 	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Fix a
 	  number of uninitialized variables that were causing warnings. Fix the
 	  way that the position of a modifier is retrieved when parsing to avoid
@@ -18563,4 +18580,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2124 2008-08-17 21:48:22 alriddoch Exp $
+$Id: ChangeLog,v 1.2125 2008-08-17 22:57:20 alriddoch Exp $

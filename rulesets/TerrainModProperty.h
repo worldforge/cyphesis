@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.h,v 1.5 2008-08-17 21:48:23 alriddoch Exp $
+// $Id: TerrainModProperty.h,v 1.6 2008-08-17 22:57:20 alriddoch Exp $
 
 #ifndef RULESETS_TERRAINMOD_PROPERTY_H
 #define RULESETS_TERRAINMOD_PROPERTY_H
@@ -55,7 +55,7 @@ class TerrainModProperty : public PropertyBase {
      * pos is used to generate the shape for the modifier, and can cause the mod to be
      * applied at a position other than the owning entity's position.
      */
-    Mercator::TerrainMod * newCraterMod(const Atlas::Message::MapType, Point3D);
+    Mercator::TerrainMod * newCraterMod(const Atlas::Message::MapType, const Point3D &);
 
     /**    @brief Creates a LevelTerrainMod based on a shape and position
      * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
@@ -64,7 +64,7 @@ class TerrainModProperty : public PropertyBase {
      * In this case the LevelMod only uses 2D coordinates for its position, so pos.z() actually
      * holds the height that the LevelMod will be raised to.
      */
-    Mercator::TerrainMod * newLevelMod(const Atlas::Message::MapType, Point3D);
+    Mercator::TerrainMod * newLevelMod(const Atlas::Message::MapType, const Point3D &);
 
     /**    @brief Creates a SlopeTerrainMod based on a shape and position
      * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
@@ -75,7 +75,7 @@ class TerrainModProperty : public PropertyBase {
      * In this case the SlopeMod only uses 2D coordinates for its position, so pos.z() actually
      * holds the height that the terrain will be raised to.
      */
-    Mercator::TerrainMod * newSlopeMod(const Atlas::Message::MapType, Point3D, float, float);
+    Mercator::TerrainMod * newSlopeMod(const Atlas::Message::MapType, const Point3D &, float, float);
 
     /**    @brief Creates a AdjustTerrainMod based on a shape and position
      * @param shapeMap An Atlas MapType containing all the information about the shape defining the mod
@@ -84,7 +84,7 @@ class TerrainModProperty : public PropertyBase {
      * In this case the LevelMod only uses 2D coordinates for its position, so pos.z() actually
      * holds the value of the height adjustment made to the terrain.
      */
-    Mercator::TerrainMod * newAdjustMod(const Atlas::Message::MapType, Point3D);
+    Mercator::TerrainMod * newAdjustMod(const Atlas::Message::MapType, const Point3D &);
 
   public:
 
