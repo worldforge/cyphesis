@@ -1,5 +1,9 @@
 2008-08-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/server.cpp: Try out the StorageManager.
+
+2008-08-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/BaseWorld.h: Modify the addEntity() function so we no longer
 	  need to specify whether it needs to be set up, as nowhere was ever
 	  specifying.
@@ -18550,4 +18554,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2122 2008-08-17 21:17:35 alriddoch Exp $
+$Id: ChangeLog,v 1.2123 2008-08-17 21:18:45 alriddoch Exp $

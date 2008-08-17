@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.159 2007-12-20 21:19:05 alriddoch Exp $
+// $Id: server.cpp,v 1.160 2008-08-17 21:18:45 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -32,6 +32,7 @@
 #include "EntityFactory.h"
 #include "Persistance.h"
 #include "WorldRouter.h"
+#include "StorageManager.h"
 #include "Admin.h"
 
 #include "rulesets/Python_API.h"
@@ -164,6 +165,8 @@ int main(int argc, char ** argv)
     Inheritance::instance();
 
     WorldRouter world;
+
+    StorageManager store(world);
 
     // This ID is currently generated every time, but should perhaps be
     // persistent in future.
