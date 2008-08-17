@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TestWorld.h,v 1.8 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: TestWorld.h,v 1.9 2008-08-17 21:17:35 alriddoch Exp $
 
 #ifndef TESTS_TEST_WORLD_H
 #define TESTS_TEST_WORLD_H
@@ -30,7 +30,7 @@ class TestWorld : public BaseWorld {
     explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
 
     virtual bool idle(int, int) { return false; }
-    virtual Entity * addEntity(Entity * ent, bool setup = true) { 
+    virtual Entity * addEntity(Entity * ent) { 
         m_eobjects[ent->getIntId()] = ent;
         return 0;
     }

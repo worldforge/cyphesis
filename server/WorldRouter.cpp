@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.226 2008-08-16 23:21:08 alriddoch Exp $
+// $Id: WorldRouter.cpp,v 1.227 2008-08-17 21:17:35 alriddoch Exp $
 
 #include "WorldRouter.h"
 
@@ -239,7 +239,7 @@ float WorldRouter::constrainHeight(LocatedEntity * parent,
 /// the default spawn area if necessary. Handle inserting the
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Send a Setup op to the entity.
-Entity * WorldRouter::addEntity(Entity * ent, bool setup)
+Entity * WorldRouter::addEntity(Entity * ent)
 {
     debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
                     << std::flush;);
@@ -285,19 +285,20 @@ Entity * WorldRouter::addEntity(Entity * ent, bool setup)
     }
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
-    if (setup) {
-        Setup s;
-        s->setTo(ent->getId());
-        s->setFutureSeconds(-0.1);
-        message(s, m_gameWorld);
+    Setup s;
+    s->setTo(ent->getId());
+    s->setFutureSeconds(-0.1);
+    message(s, m_gameWorld);
 
-        Anonymous arg;
-        Appearance app;
-        arg->setId(ent->getId());
-        arg->setStamp(ent->getSeq());
-        app->setArgs1(arg);
-        message(app, *ent);
-    }
+    Anonymous arg;
+    Appearance app;
+    arg->setId(ent->getId());
+    arg->setStamp(ent->getSeq());
+    app->setArgs1(arg);
+    message(app, *ent);
+
+    inserted.emit(ent);
+
     return ent;
 }
 

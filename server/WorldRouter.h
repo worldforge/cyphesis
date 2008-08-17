@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.h,v 1.81 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: WorldRouter.h,v 1.82 2008-08-17 21:17:35 alriddoch Exp $
 
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
@@ -83,7 +83,7 @@ class WorldRouter : public BaseWorld {
     virtual ~WorldRouter();
 
     bool idle(int, int);
-    Entity * addEntity(Entity * obj, bool setup = true);
+    Entity * addEntity(Entity * obj);
     Entity * addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
     Task * newTask(const std::string &, Character &);
     Task * activateTask(const std::string &, const std::string &,
@@ -98,6 +98,9 @@ class WorldRouter : public BaseWorld {
     virtual float constrainHeight(LocatedEntity * parent,
                                   const Point3D & pos,
                                   const std::string & mode);
+
+    /// \brief Signal that a new Entity has been inserted.
+    sigc::signal<void, Entity *> inserted;
 };
 
 #endif // SERVER_WORLD_ROUTER_H

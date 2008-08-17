@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseWorld.h,v 1.52 2008-01-13 01:32:54 alriddoch Exp $
+// $Id: BaseWorld.h,v 1.53 2008-08-17 21:17:35 alriddoch Exp $
 
 #ifndef COMMON_BASE_WORLD_H
 #define COMMON_BASE_WORLD_H
@@ -112,7 +112,7 @@ class BaseWorld {
     virtual bool idle(int, int) = 0;
 
     /// \brief Add a new entity to the world.
-    virtual Entity * addEntity(Entity * obj, bool setup = true) = 0;
+    virtual Entity * addEntity(Entity * obj) = 0;
 
     /// \brief Create a new entity and add to the world.
     virtual Entity * addNewEntity(const std::string &,
