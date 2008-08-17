@@ -80,6 +80,7 @@ cyphesis_SOURCES = \
 		PersistantThingFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
+		StorageManager.cpp StorageManager.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		ArithmeticFactory.cpp ArithmeticFactory.h \
