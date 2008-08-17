@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.cpp,v 1.14 2008-08-14 11:20:12 alriddoch Exp $
+// $Id: TerrainProperty.cpp,v 1.15 2008-08-17 18:12:10 alriddoch Exp $
 
 #include "TerrainProperty.h"
 
@@ -143,11 +143,15 @@ void TerrainProperty::set(const Element & ent)
 
 }
 
-void TerrainProperty::setMod(Mercator::TerrainMod *mod, float x, float y)
+Mercator::TerrainMod* TerrainProperty::setMod(Mercator::TerrainMod *mod)
 {
-    m_data.addMod(*mod);
+    return m_data.addMod(*mod);
 }
 
+void TerrainProperty::removeMod(Mercator::TerrainMod *mod)
+{
+    m_data.removeMod(mod);
+}
 void TerrainProperty::clearMods(float x, float y)
 {
     Mercator::Segment *s = m_data.getSegment(x,y);
@@ -155,12 +159,6 @@ void TerrainProperty::clearMods(float x, float y)
         s->clearMods();
         //log(INFO, "Mods cleared!");
     } 
-/*    else {
-        std::stringstream ss;
-        ss << "Segment at " << x << "," << y << " was NULL!";
-        log(INFO, ss.str());
-    }
-*/
 }
 
 /// \brief Calculate the terrain height at the given x,y coordinates
@@ -190,8 +188,8 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     if (!segment->isValid()) {
         segment->populate();
     }
-    x = x - segment->getXRef();
-    y = y - segment->getYRef();
+    x = x - segment->getResolution() * segment->getXRef();
+    y = y - segment->getResolution() * segment->getYRef();
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;

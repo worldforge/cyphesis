@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.28 2008-08-14 00:03:12 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.29 2008-08-17 18:12:10 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -236,9 +236,24 @@ HandlerResult terrainmod_moveHandler(Entity * e,
         return OPERATION_IGNORED;
     }
 
+    // Check the validity of the operation.
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return OPERATION_IGNORED;
+    }
+    Atlas::Objects::Entity::RootEntity ent = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(args.front());
+    if (!ent.isValid()) {
+        return OPERATION_IGNORED;
+    }
+    if (e->getId() != ent->getId()) {
+        return OPERATION_IGNORED;
+    }
+
+    Point3D newPos(ent->getPos()[0], ent->getPos()[1], ent->getPos()[2]);
+
         // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
     if (e->hasAttr("terrainmod")) {
-        dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->move(e);
+        dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->move(e, newPos);
     }
     return OPERATION_IGNORED;
 }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.h,v 1.13 2008-08-14 00:03:12 alriddoch Exp $
+// $Id: TerrainProperty.h,v 1.14 2008-08-17 18:12:10 alriddoch Exp $
 
 #ifndef RULESETS_TERRAIN_PROPERTY_H
 #define RULESETS_TERRAIN_PROPERTY_H
@@ -44,6 +44,7 @@ class TerrainProperty : public PropertyBase {
     /// even be stored in the mercator terrain entity.
     /// \brief Collection of surface data, cos I don't care!
     Atlas::Message::ListType m_surfaces;
+
     /// \brief Reference to variable storing the set of modified points
     PointSet & m_modifiedTerrain;
     /// \brief Reference to variable storing the set of newly created points
@@ -56,8 +57,13 @@ class TerrainProperty : public PropertyBase {
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
-    void setMod(Mercator::TerrainMod *, float, float);
+
+	// Applies a Mercator::TerrainMod to the terrain
+    Mercator::TerrainMod* setMod(Mercator::TerrainMod *);
+	// Removes all TerrainMods from a terrain segment
     void clearMods(float, float);
+	// Removes a single TerrainMod from the terrain
+    void removeMod(Mercator::TerrainMod *);
 
     float getHeight(float x, float y);
     int getSurface(const Point3D &,  int &);
