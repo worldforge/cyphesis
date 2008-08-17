@@ -1,6 +1,15 @@
 2008-08-17  Tamas Bates  <rhymer@gmail.com>
 
-	* rulesets/TerrainModProperty.cpp, rulesetes/TerrainModProperty.h: Add 
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Clean
+	  up some commented out code. Reorganize TerrainModProperty.h so that
+	  methods specific to terrain mods are more easily distinguished from 
+	  those used by all properties. Change the way the terrain is searched
+	  for to avoid iterating through the entire entity tree. Removed the 
+	  prototype for an unused function named set().
+
+2008-08-17  Tamas Bates  <rhymer@gmail.com>
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Add 
 	  a member to store the pointer returned from Terrain::addMod(). Revise
 	  set() to use this pointer. 
 
@@ -18516,4 +18525,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2118 2008-08-17 18:12:09 alriddoch Exp $
+$Id: ChangeLog,v 1.2119 2008-08-17 20:22:39 alriddoch Exp $

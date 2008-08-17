@@ -15,13 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.h,v 1.2 2008-08-17 18:12:10 alriddoch Exp $
+// $Id: TerrainModProperty.h,v 1.3 2008-08-17 20:22:40 alriddoch Exp $
 
 #ifndef RULESETS_TERRAINMOD_PROPERTY_H
 #define RULESETS_TERRAINMOD_PROPERTY_H
 
 #include "common/Property.h"
 #include "Entity.h"
+#include "TerrainProperty.h"
 
 #include <Mercator/TerrainMod.h>
 
@@ -44,27 +45,26 @@ class TerrainModProperty : public PropertyBase {
     /// \brief the entity owner of this property
     Entity * m_owner;
 
+    TerrainProperty* getTerrain();
+
   public:
 
     explicit TerrainModProperty();
 
-	    void setup(Entity *);
     virtual bool get(Atlas::Message::Element &) const;
-            Mercator::TerrainMod * getModifier(Entity*);
-	    Mercator::TerrainMod * getModifier();
     virtual void set(const Atlas::Message::Element &);
-    	    void setPos(Point3D);
-
-	    void set(const Entity*, const Atlas::Message::Element&);
-
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
 
-	/// \brief Constructs a Mercator::TerrainMod from Atlas data
+    Mercator::TerrainMod * getModifier();
+    void setPos(Point3D);
+    void setup(Entity *);
+
+    /// \brief Constructs a Mercator::TerrainMod from Atlas data
     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &);
-	/// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses the given position
+    /// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses the given position
     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &, Point3D);
 
-	/// \brief Changes a modifier's position
+    /// \brief Changes a modifier's position
     void move(Entity*, Point3D);
 };
 

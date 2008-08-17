@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.cpp,v 1.2 2008-08-17 18:12:10 alriddoch Exp $
+// $Id: TerrainModProperty.cpp,v 1.3 2008-08-17 20:22:40 alriddoch Exp $
 
 #include "TerrainModProperty.h"
 
@@ -48,19 +48,17 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
 /// \brief TerrainModProperty constructor
 ///
-TerrainModProperty::TerrainModProperty() : PropertyBase(0), m_owner(0), m_modptr(0)
+TerrainModProperty::TerrainModProperty() : PropertyBase(0), m_modptr(0), m_owner(0)
 {
 }
 
 void TerrainModProperty::setup(Entity* owner)
 {
-    log(INFO, "setting up terrain mods");
     m_owner = owner;
     Element ent;
     owner->getAttr("terrainmod", ent);
     m_terrainmods = ent.asMap();
 
-//     SetTerrainModifiers(m_owner, ent, m_owner->m_location.pos());
     set(ent);
 }
 
@@ -71,15 +69,8 @@ bool TerrainModProperty::get(Element & ent) const
     return true;
 }
 
-Mercator::TerrainMod * TerrainModProperty::getModifier(Entity* owner)
-{
-//     return parseModData(owner, m_terrainmods, owner->m_location.pos());
-    return m_modptr;
-}
-
 Mercator::TerrainMod * TerrainModProperty::getModifier()
 {
-//     return parseModData(m_owner, m_terrainmods, m_owner->m_location.pos());
     return m_modptr;
 }
 
@@ -91,33 +82,22 @@ void TerrainModProperty::set(const Element & ent)
     }
 
     if (m_owner != NULL) {
-//         SetTerrainModifiers(m_owner, ent, m_owner->m_location.pos());
+
         // Find the terrain
-        const EntityDict & ents = BaseWorld::instance().getEntities();
-        EntityDict::const_iterator eI = ents.begin();
-        PropertyBase * terr; // terrain property?
-        TerrainProperty * r_terr; // real terrain property
-            // Search for an entity with the terrain property
-        for (; eI != ents.end(); eI++)
-        {
-            terr = eI->second->getProperty("terrain");
-            if (terr != NULL) {
-                break;
-            }
-        }
+        TerrainProperty * terr = NULL;
+        terr = getTerrain();
 
         if (terr != NULL) {
-            r_terr = dynamic_cast<TerrainProperty*>(terr);
 
                 // If we're updating an existing mod, remove it from the terrain first
             if (m_modptr != NULL) {
-                r_terr->removeMod(m_modptr);
+                terr->removeMod(m_modptr);
             }
 
                 // Parse the Atlas data for our mod
             Mercator::TerrainMod *newMod = parseModData(ent);
                 // Apply the new mod to the terrain; retain the returned pointer
-            m_modptr = r_terr->setMod(newMod);
+            m_modptr = terr->setMod(newMod);
         }
     }
 }
@@ -125,34 +105,36 @@ void TerrainModProperty::set(const Element & ent)
 void TerrainModProperty::setPos(Point3D newPos)
 {
     if (m_owner != NULL) {
-        // Find the terrain
-        const EntityDict & ents = BaseWorld::instance().getEntities();
-        EntityDict::const_iterator eI = ents.begin();
-        PropertyBase * terr; // terrain property?
-        TerrainProperty * r_terr; // real terrain property
+
+        TerrainProperty * terr = NULL;
             // Search for an entity with the terrain property
-        for (; eI != ents.end(); eI++)
-        {
-            terr = eI->second->getProperty("terrain");
-            if (terr != NULL) {
-                break;
-            }
-        }
+        terr = getTerrain();
 
         if (terr != NULL) {
-            r_terr = dynamic_cast<TerrainProperty*>(terr);
 
                 // If we're updating an existing mod, remove it from the terrain first
             if (m_modptr != NULL) {
-                r_terr->removeMod(m_modptr);
+                terr->removeMod(m_modptr);
             }
 
                 // Parse the Atlas data for our mod, using the new position
             Mercator::TerrainMod *newMod = parseModData(m_terrainmods, newPos);
                 // Apply the new mod to the terrain; retain the returned pointer
-            m_modptr = r_terr->setMod(newMod);
+            m_modptr = terr->setMod(newMod);
         }
     }
+}
+
+TerrainProperty* TerrainModProperty::getTerrain()
+{
+    PropertyBase * terr;
+    Entity * ent = m_owner;
+
+    while ( (terr = ent->getProperty("terrain")) == NULL) {
+        ent = (Entity*)(ent->m_location.m_loc);
+    }
+
+    return dynamic_cast<TerrainProperty*>(terr);
 }
 
 void TerrainModProperty::add(const std::string & s, MapType & ent) const
@@ -163,25 +145,16 @@ void TerrainModProperty::add(const std::string & s, MapType & ent) const
 void TerrainModProperty::move(Entity* owner, Point3D newPos)
 {
         // Get terrain
-    const EntityDict & ents = BaseWorld::instance().getEntities();
-    EntityDict::const_iterator eI = ents.begin();
-    PropertyBase * prop;
-    TerrainProperty * terrain;
+    TerrainProperty * terrain = NULL;
+    terrain = getTerrain();
 
-    for (; eI != ents.end(); eI++)
-    {
-        prop = eI->second->getProperty("terrain");
-        if (prop != NULL) {
-            terrain = dynamic_cast<TerrainProperty*>(prop);
-            break; // Found the terrain!
-        }
+    if (terrain != NULL) {
+            // Clear the mod from the old position
+        terrain->removeMod(m_modptr);
+
+            // Apply the mod at the new position
+        setPos(newPos);
     }
-    
-        // Clear the mod from the old position
-    terrain->removeMod(m_modptr);
-
-        // Apply the mod at the new position
-    setPos(newPos);
 }
 
 Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier)
@@ -196,7 +169,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     std::string modType;
     std::string shapeType;
     int shapeDim;
-//     WFMath::Point<3> pos;
+
     Atlas::Message::MapType shapeMap;
 
     Atlas::Message::MapType::const_iterator mod_I;
