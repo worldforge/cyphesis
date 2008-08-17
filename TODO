@@ -1,3 +1,10 @@
+Refactor properties a bit so that they are never tied to an entity.
+Add an apply(Entity*) method so a single property instance (in class defaults)
+can be applied to entities as it is added to them. A property flag will
+indicate that a property is a class one, and will need to be cloned if it is
+modified. Implement modifying which will require a clone() method.
+This will push the cost of persistence way down.
+
 Flags per property. Flags describe whether property should be persisted,
 whether it is public, and whether it is dirty.
 
