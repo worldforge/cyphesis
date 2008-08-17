@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.cpp,v 1.3 2008-08-17 20:22:40 alriddoch Exp $
+// $Id: TerrainModProperty.cpp,v 1.4 2008-08-17 20:35:03 alriddoch Exp $
 
 #include "TerrainModProperty.h"
 
@@ -102,7 +102,7 @@ void TerrainModProperty::set(const Element & ent)
     }
 }
 
-void TerrainModProperty::setPos(Point3D newPos)
+void TerrainModProperty::setPos(const Point3D & newPos)
 {
     if (m_owner != NULL) {
 
@@ -132,6 +132,9 @@ TerrainProperty* TerrainModProperty::getTerrain()
 
     while ( (terr = ent->getProperty("terrain")) == NULL) {
         ent = (Entity*)(ent->m_location.m_loc);
+        if (ent == NULL) {
+            return NULL;
+        }
     }
 
     return dynamic_cast<TerrainProperty*>(terr);
@@ -142,7 +145,7 @@ void TerrainModProperty::add(const std::string & s, MapType & ent) const
     get(ent[s]);
 }
 
-void TerrainModProperty::move(Entity* owner, Point3D newPos)
+void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
 {
         // Get terrain
     TerrainProperty * terrain = NULL;
@@ -184,7 +187,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     }
 
     // Get modifier position
-    Point3D modPos = m_owner->m_location.pos();
+    const Point3D & modPos = m_owner->m_location.pos();
     WFMath::Point<3> pos = WFMath::Point<3>(modPos.x(), modPos.y(), modPos.z());
 
 
@@ -376,7 +379,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     }
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier, Point3D newPos)
+Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier, const Point3D & newPos)
 {
     if (!modifier.isMap()) {
         log(ERROR, "Invalid terrain mod data");
@@ -403,7 +406,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     }
 
     // Get modifier position
-    Point3D modPos = m_owner->m_location.pos();
+    const Point3D & modPos = m_owner->m_location.pos();
     WFMath::Point<3> pos = WFMath::Point<3>(newPos.x(), newPos.y(), newPos.z());
 
 

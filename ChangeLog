@@ -1,3 +1,10 @@
+2008-08-17  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h:
+	  Avoid passing Point3D objects by value, to make the code faster.
+	  Fix a crash in getTerrain(). Clean up for 80 columns, in the
+	  header.
+
 2008-08-17  Tamas Bates  <rhymer@gmail.com>
 
 	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Clean
@@ -18525,4 +18532,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2119 2008-08-17 20:22:39 alriddoch Exp $
+$Id: ChangeLog,v 1.2120 2008-08-17 20:35:03 alriddoch Exp $

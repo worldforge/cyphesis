@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.h,v 1.3 2008-08-17 20:22:40 alriddoch Exp $
+// $Id: TerrainModProperty.h,v 1.4 2008-08-17 20:35:03 alriddoch Exp $
 
 #ifndef RULESETS_TERRAINMOD_PROPERTY_H
 #define RULESETS_TERRAINMOD_PROPERTY_H
@@ -53,19 +53,22 @@ class TerrainModProperty : public PropertyBase {
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
+    virtual void add(const std::string & key,
+                     Atlas::Message::MapType & map) const;
 
     Mercator::TerrainMod * getModifier();
-    void setPos(Point3D);
+    void setPos(const Point3D &);
     void setup(Entity *);
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &);
-    /// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses the given position
-    Mercator::TerrainMod * parseModData(const Atlas::Message::Element &, Point3D);
+    /// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses
+    /// the given position
+    Mercator::TerrainMod * parseModData(const Atlas::Message::Element &,
+                                        const Point3D &);
 
     /// \brief Changes a modifier's position
-    void move(Entity*, Point3D);
+    void move(Entity*, const Point3D &);
 };
 
 
