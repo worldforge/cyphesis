@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.cpp,v 1.4 2008-08-17 20:35:03 alriddoch Exp $
+// $Id: TerrainModProperty.cpp,v 1.5 2008-08-17 21:48:23 alriddoch Exp $
 
 #include "TerrainModProperty.h"
 
@@ -96,8 +96,14 @@ void TerrainModProperty::set(const Element & ent)
 
                 // Parse the Atlas data for our mod
             Mercator::TerrainMod *newMod = parseModData(ent);
-                // Apply the new mod to the terrain; retain the returned pointer
-            m_modptr = terr->setMod(newMod);
+
+            if (newMod != NULL) {
+                    // Apply the new mod to the terrain; retain the returned pointer
+                m_modptr = terr->setMod(newMod);
+            } else {
+                m_modptr = NULL;
+                log(ERROR, "Terrain Modifier could not be parsed!");
+            }
         }
     }
 }
@@ -119,8 +125,14 @@ void TerrainModProperty::setPos(const Point3D & newPos)
 
                 // Parse the Atlas data for our mod, using the new position
             Mercator::TerrainMod *newMod = parseModData(m_terrainmods, newPos);
-                // Apply the new mod to the terrain; retain the returned pointer
-            m_modptr = terr->setMod(newMod);
+
+            if (newMod != NULL) {
+                    // Apply the new mod to the terrain; retain the returned pointer
+                m_modptr = terr->setMod(newMod);
+            } else {
+                m_modptr = NULL;
+                log(ERROR, "Terrain Modifier could not be parsed!");
+            }
         }
     }
 }
@@ -170,11 +182,8 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     const Atlas::Message::MapType & modMap = modifier.asMap();
     m_terrainmods = modMap;
     std::string modType;
-    std::string shapeType;
-    int shapeDim;
 
     Atlas::Message::MapType shapeMap;
-
     Atlas::Message::MapType::const_iterator mod_I;
 
     // Get modifier type
@@ -187,39 +196,21 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     }
 
     // Get modifier position
-    const Point3D & modPos = m_owner->m_location.pos();
-    WFMath::Point<3> pos = WFMath::Point<3>(modPos.x(), modPos.y(), modPos.z());
+    Point3D pos = m_owner->m_location.pos();
 
 
-    // Get modifier's shape
+    // Get modifier's shape data
     mod_I = modMap.find("shape");
     if (mod_I != modMap.end()) {
         const Atlas::Message::Element& shapeElem(mod_I->second);
         if (shapeElem.isMap()) {
             shapeMap = shapeElem.asMap();
-            Atlas::Message::MapType::const_iterator shape_I;
-                // Get shape's type
-            shape_I = shapeMap.find("type");
-            if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapeTypeElem(shape_I->second);
-                if (shapeTypeElem.isString()) {
-                shapeType = shapeTypeElem.asString();
-                }
-            }
+        } 
+    }
 
-            // Get shape's dimension
-            shape_I = shapeMap.find("dim");
-            if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapeDimElem(shape_I->second);
-                if (shapeDimElem.isInt()) {
-                    shapeDim = (int)shapeDimElem.asNum();
-                }
-            }
-        } // end shape data
-
-        // Check for additional modifier parameters
+        // Build modifier from data
         if (modType == "slopemod") {
-            float dx, dy, level;
+            float dx = 0, dy = 0, level = 0;
             // Get slopes
             mod_I = modMap.find("slopes");
             if (mod_I != modMap.end()) {
@@ -230,7 +221,6 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
                     dy = (int)slopes[1].asNum();
                 }
             }
-
             // Get level
             mod_I = modMap.find("height");
             if (mod_I != modMap.end()) {
@@ -238,28 +228,23 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
                 level = modHeightElem.asNum();
             }
 
-            if (shapeType == "ball") {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                shapeRadius = shapeRadiusElem.asNum();
-                }
+            pos.z() = level;        // Note that the height of the mod is in pos.z()
+            return newSlopeMod(shapeMap, pos, dx, dy);
+        }
 
-                // Make disc
-                WFMath::Point<2> pos_2d(pos.x(),pos.y());
-                WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
-
-//                  log(INFO, "Successfully parsed a slopemod");
-
-                // Make modifier
-
-                // Apply Modifier
-
+        if (modType == "levelmod") {
+            float level = 0;
+            // Get level
+            mod_I = modMap.find("height");
+            if (mod_I != modMap.end()) {
+                const Atlas::Message::Element& modHeightElem = mod_I->second;
+                level = modHeightElem.asNum();
             }
 
-        } else if (modType == "levelmod") {
+            pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
+            return newLevelMod(shapeMap, pos);
+
+        if (modType == "adjustmod") {
             float level;
             // Get level
             mod_I = modMap.find("height");
@@ -267,116 +252,19 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
                 const Atlas::Message::Element& modHeightElem = mod_I->second;
                 level = modHeightElem.asNum();
             }
-
-            if (shapeType == "ball") {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                    shapeRadius = shapeRadiusElem.asNum();
-                }
-
-                // Make disc
-                WFMath::Point<2> pos_2d(pos.x(),pos.y());
-                WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius); ///FIXME: assumes 2d ball...
-
-//                  log(INFO, "Successfully parsed a levelmod");
-
-                // Make Modifier
-                Mercator::LevelTerrainMod<WFMath::Ball<2> > *NewMod;
-                NewMod = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
-
-                return NewMod;
-
-            } else if (shapeType == "rotbox") {
-                WFMath::Point<2> shapePoint;
-                WFMath::Vector<2> shapeVector;
-                // Get rotbox's position
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("point");
-                if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapePointElem(shape_I->second);
-                    if (shapePointElem.isList()) {
-                        const Atlas::Message::ListType & pointList = shapePointElem.asList();
-                        shapePoint = WFMath::Point<2>((int)pointList[0].asNum(), (int)pointList[1].asNum());
-                    }
-                }
-                // Get rotbox's vector
-                shape_I = shapeMap.find("vector");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeVectorElem(shape_I->second);
-                    if (shapeVectorElem.isList()) {
-                        const Atlas::Message::ListType & vectorList = shapeVectorElem.asList(); 
-                        shapeVector = WFMath::Vector<2>((int)vectorList[0].asNum(), (int)vectorList[1].asNum());
-                    }
-                }
-                
-//                 log(INFO,"Successfully parsed a levelmod");
-
-                // Make rotbox
-                    ///FIXME: needs to use shapeDim instead of 2
-                WFMath::RotBox<2> modShape = WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>()); 
-
-                // Make modifier
-                Mercator::LevelTerrainMod<WFMath::RotBox<2> > *NewMod;
-                NewMod = new Mercator::LevelTerrainMod<WFMath::RotBox<2> >(level, modShape);
-
-                return NewMod;
-            }
-
-        } else if (modType == "adjustmod") {
-            float level;
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
-
-            if (shapeType == "ball") {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                    shapeRadius = shapeRadiusElem.asNum();
-                }
-
-                // Make sphere
-                WFMath::Point<2> pos_2d(pos.x(), pos.y());
-                WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
-
-                // Make modifier
-
-                // Apply Modifier
-
-            }
+    
+            pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
+            return newAdjustMod(shapeMap, pos);
+        }
 //             log(INFO,"Successfully parsed an adjustmod");
 
-        } else if (modType == "cratermod") {
+        if (modType == "cratermod") {
 
-            // Get other shape parameters
-            if (shapeType == "ball" ) {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                    shapeRadius = shapeRadiusElem.asNum();
-                }
-
-                // Make sphere
-                WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
-
-//                 log(INFO,"Successfully parsed a cratermod");
-                // Make modifier
-                Mercator::CraterTerrainMod *NewMod;
-                NewMod = new Mercator::CraterTerrainMod(modShape);
-
-                return NewMod;
-            }
+            return newCraterMod(shapeMap, pos);
         }
     }
+
+    return NULL;
 }
 
 Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier, const Point3D & newPos)
@@ -389,11 +277,8 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     const Atlas::Message::MapType & modMap = modifier.asMap();
     m_terrainmods = modMap;
     std::string modType;
-    std::string shapeType;
-    int shapeDim;
-//     WFMath::Point<3> pos;
-    Atlas::Message::MapType shapeMap;
 
+    Atlas::Message::MapType shapeMap;
     Atlas::Message::MapType::const_iterator mod_I;
 
     // Get modifier type
@@ -405,40 +290,18 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
         }
     }
 
-    // Get modifier position
-    const Point3D & modPos = m_owner->m_location.pos();
-    WFMath::Point<3> pos = WFMath::Point<3>(newPos.x(), newPos.y(), newPos.z());
-
-
-    // Get modifier's shape
+    // Get modifier's shape data
     mod_I = modMap.find("shape");
     if (mod_I != modMap.end()) {
         const Atlas::Message::Element& shapeElem(mod_I->second);
         if (shapeElem.isMap()) {
             shapeMap = shapeElem.asMap();
-            Atlas::Message::MapType::const_iterator shape_I;
-                // Get shape's type
-            shape_I = shapeMap.find("type");
-            if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapeTypeElem(shape_I->second);
-                if (shapeTypeElem.isString()) {
-                shapeType = shapeTypeElem.asString();
-                }
-            }
+        } 
+    }
 
-            // Get shape's dimension
-            shape_I = shapeMap.find("dim");
-            if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapeDimElem(shape_I->second);
-                if (shapeDimElem.isInt()) {
-                    shapeDim = (int)shapeDimElem.asNum();
-                }
-            }
-        } // end shape data
-
-        // Check for additional modifier parameters
+        // Build modifier from data
         if (modType == "slopemod") {
-            float dx, dy, level;
+            float dx = 0, dy = 0, level = 0;
             // Get slopes
             mod_I = modMap.find("slopes");
             if (mod_I != modMap.end()) {
@@ -449,7 +312,6 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
                     dy = (int)slopes[1].asNum();
                 }
             }
-
             // Get level
             mod_I = modMap.find("height");
             if (mod_I != modMap.end()) {
@@ -457,28 +319,25 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
                 level = modHeightElem.asNum();
             }
 
-            if (shapeType == "ball") {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                shapeRadius = shapeRadiusElem.asNum();
-                }
+            Point3D pos = newPos;
+            pos.z() = level;        // Note that the height of the mod is in pos.z()
+            return newSlopeMod(shapeMap, pos, dx, dy);
+        }
 
-                // Make disc
-                WFMath::Point<2> pos_2d(pos.x(),pos.y());
-                WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
-
-//                  log(INFO, "Successfully parsed a slopemod");
-
-                // Make modifier
-
-                // Apply Modifier
-
+        if (modType == "levelmod") {
+            float level = 0;
+            // Get level
+            mod_I = modMap.find("height");
+            if (mod_I != modMap.end()) {
+                const Atlas::Message::Element& modHeightElem = mod_I->second;
+                level = modHeightElem.asNum();
             }
 
-        } else if (modType == "levelmod") {
+            Point3D pos = newPos;
+            pos.z() = level;        // Note that the level the terrain will be raised to is in pos.z()
+            return newLevelMod(shapeMap, pos);
+
+        if (modType == "adjustmod") {
             float level;
             // Get level
             mod_I = modMap.find("height");
@@ -486,114 +345,207 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
                 const Atlas::Message::Element& modHeightElem = mod_I->second;
                 level = modHeightElem.asNum();
             }
-
-            if (shapeType == "ball") {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                    shapeRadius = shapeRadiusElem.asNum();
-                }
-
-                // Make disc
-                WFMath::Point<2> pos_2d(pos.x(),pos.y());
-                WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius); ///FIXME: assumes 2d ball...
-
-//                  log(INFO, "Successfully parsed a levelmod");
-
-                // Make Modifier
-                Mercator::LevelTerrainMod<WFMath::Ball<2> > *NewMod;
-                NewMod = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(level, modShape);
-
-                return NewMod;
-
-            } else if (shapeType == "rotbox") {
-                WFMath::Point<2> shapePoint;
-                WFMath::Vector<2> shapeVector;
-                // Get rotbox's position
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("point");
-                if (shape_I != shapeMap.end()) {
-                const Atlas::Message::Element& shapePointElem(shape_I->second);
-                    if (shapePointElem.isList()) {
-                        const Atlas::Message::ListType & pointList = shapePointElem.asList();
-                        shapePoint = WFMath::Point<2>((int)pointList[0].asNum(), (int)pointList[1].asNum());
-                    }
-                }
-                // Get rotbox's vector
-                shape_I = shapeMap.find("vector");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeVectorElem(shape_I->second);
-                    if (shapeVectorElem.isList()) {
-                        const Atlas::Message::ListType & vectorList = shapeVectorElem.asList(); 
-                        shapeVector = WFMath::Vector<2>((int)vectorList[0].asNum(), (int)vectorList[1].asNum());
-                    }
-                }
-                
-//                 log(INFO,"Successfully parsed a levelmod");
-
-                // Make rotbox
-                    ///FIXME: needs to use shapeDim instead of 2
-                WFMath::RotBox<2> modShape = WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>()); 
-
-                // Make modifier
-                Mercator::LevelTerrainMod<WFMath::RotBox<2> > *NewMod;
-                NewMod = new Mercator::LevelTerrainMod<WFMath::RotBox<2> >(level, modShape);
-
-                return NewMod;
-            }
-
-        } else if (modType == "adjustmod") {
-            float level;
-            // Get level
-            mod_I = modMap.find("height");
-            if (mod_I != modMap.end()) {
-                const Atlas::Message::Element& modHeightElem = mod_I->second;
-                level = modHeightElem.asNum();
-            }
-
-            if (shapeType == "ball") {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                    shapeRadius = shapeRadiusElem.asNum();
-                }
-
-                // Make sphere
-                WFMath::Point<2> pos_2d(pos.x(), pos.y());
-                WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
-
-                // Make modifier
-
-                // Apply Modifier
-
-            }
+    
+            pos.z() = level;        // Note that the level used in the adjustment is in pos.z()
+            return newAdjustMod(shapeMap, pos);
+        }
 //             log(INFO,"Successfully parsed an adjustmod");
 
-        } else if (modType == "cratermod") {
+        if (modType == "cratermod") {
 
-            // Get other shape parameters
-            if (shapeType == "ball" ) {
-                float shapeRadius;
-                // Get sphere's radius
-                Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
-                if (shape_I != shapeMap.end()) {
-                    const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
-                    shapeRadius = shapeRadiusElem.asNum();
-                }
-
-                // Make sphere
-                WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
-
-//                 log(INFO,"Successfully parsed a cratermod");
-                // Make modifier
-                Mercator::CraterTerrainMod *NewMod;
-                NewMod = new Mercator::CraterTerrainMod(modShape);
-
-                return NewMod;
-            }
+            return newCraterMod(shapeMap, pos);
         }
     }
+
+    return NULL;
+}
+
+Mercator::TerrainMod* TerrainModProperty::newCraterMod(const Atlas::Message::MapType shapeMap, WFMath::Point<3> pos)
+{
+    std::string shapeType;
+
+    // Get modifier's shape
+    Atlas::Message::MapType::const_iterator shape_I;
+                // Get shape's type
+    shape_I = shapeMap.find("type");
+    if (shape_I != shapeMap.end()) {
+        const Atlas::Message::Element& shapeTypeElem(shape_I->second);
+        if (shapeTypeElem.isString()) {
+        shapeType = shapeTypeElem.asString();
+        }
+    }
+    // end shape data
+
+    if (shapeType == "ball" ) {
+        float shapeRadius = 0;
+        // Get sphere's radius
+        Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
+        if (shape_I != shapeMap.end()) {
+            const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
+            shapeRadius = shapeRadiusElem.asNum();
+        }
+
+        // Make sphere
+        WFMath::Ball<3> modShape = WFMath::Ball<3>(pos, shapeRadius); ///FIXME: assumes 3d ball...
+
+//                 log(INFO,"Successfully parsed a cratermod");
+        // Make modifier
+        Mercator::CraterTerrainMod *NewMod;
+        NewMod = new Mercator::CraterTerrainMod(modShape);
+
+        return NewMod;
+    }
+
+    log(ERROR, "CraterTerrainMod defined with incorrect shape");
+    return NULL;
+}
+
+Mercator::TerrainMod* TerrainModProperty::newLevelMod(const Atlas::Message::MapType shapeMap, WFMath::Point<3> pos)
+{
+    std::string shapeType;
+    Atlas::Message::MapType::const_iterator shape_I;
+
+        // Get shape's type
+    shape_I = shapeMap.find("type");
+    if (shape_I != shapeMap.end()) {
+        const Atlas::Message::Element & shapeTypeElem(shape_I->second);
+        if (shapeTypeElem.isString()) {
+            shapeType = shapeTypeElem.asString();
+        }
+    }
+
+    if (shapeType == "ball") {
+        float shapeRadius = 0;
+        // Get sphere's radius
+        shape_I = shapeMap.find("radius");
+        if (shape_I != shapeMap.end()) {
+            const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
+            shapeRadius = shapeRadiusElem.asNum();
+        }
+
+        // Make disc
+        WFMath::Point<2> pos_2d(pos.x(),pos.y());
+        WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius); ///FIXME: assumes 2d ball...
+
+        // Make Modifier
+        Mercator::LevelTerrainMod<WFMath::Ball<2> > *NewMod;
+        NewMod = new Mercator::LevelTerrainMod<WFMath::Ball<2> >(pos.z(), modShape);
+
+        return NewMod;
+    }
+
+    if (shapeType == "rotbox") {
+        WFMath::Point<2> shapePoint;
+        WFMath::Vector<2> shapeVector;
+        // Get rotbox's position
+        shape_I = shapeMap.find("point");
+        if (shape_I != shapeMap.end()) {
+        const Atlas::Message::Element& shapePointElem(shape_I->second);
+            if (shapePointElem.isList()) {
+                const Atlas::Message::ListType & pointList = shapePointElem.asList();
+                shapePoint = WFMath::Point<2>((int)pointList[0].asNum(), (int)pointList[1].asNum());
+            }
+        }
+        // Get rotbox's vector
+        shape_I = shapeMap.find("vector");
+        if (shape_I != shapeMap.end()) {
+            const Atlas::Message::Element& shapeVectorElem(shape_I->second);
+            if (shapeVectorElem.isList()) {
+                const Atlas::Message::ListType & vectorList = shapeVectorElem.asList(); 
+                shapeVector = WFMath::Vector<2>((int)vectorList[0].asNum(), (int)vectorList[1].asNum());
+            }
+        }
+
+        // Make rotbox
+            ///FIXME: needs to use shapeDim instead of 2
+        WFMath::RotBox<2> modShape = WFMath::RotBox<2>(shapePoint, shapeVector, WFMath::RotMatrix<2>()); 
+
+        // Make modifier
+        Mercator::LevelTerrainMod<WFMath::RotBox<2> > *NewMod;
+        NewMod = new Mercator::LevelTerrainMod<WFMath::RotBox<2> >(pos.z(), modShape);
+
+        return NewMod;
+    }
+
+    log(ERROR, "LevelTerrainMod defined with incorrect shape data");
+    return NULL;
+}
+
+Mercator::TerrainMod * TerrainModProperty::newSlopeMod(const Atlas::Message::MapType shapeMap,
+                                                       WFMath::Point<3> pos, float dx, float dy)
+{
+    std::string shapeType;
+
+    // Get modifier's shape
+    Atlas::Message::MapType::const_iterator shape_I;
+                // Get shape's type
+    shape_I = shapeMap.find("type");
+    if (shape_I != shapeMap.end()) {
+        const Atlas::Message::Element& shapeTypeElem(shape_I->second);
+        if (shapeTypeElem.isString()) {
+        shapeType = shapeTypeElem.asString();
+        }
+    }
+    // end shape data
+
+    if (shapeType == "ball") {
+        float shapeRadius;
+        // Get sphere's radius
+        Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
+        if (shape_I != shapeMap.end()) {
+        const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
+        shapeRadius = shapeRadiusElem.asNum();
+        }
+
+        // Make disc
+        WFMath::Point<2> pos_2d(pos.x(),pos.y());
+        WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
+
+        // log(INFO, "Successfully parsed a slopemod");
+
+        // Make modifier
+
+    }
+
+    log(ERROR, "SlopeTerrainMod defined with incorrect shape data");
+    return NULL;
+}
+
+Mercator::TerrainMod * TerrainModProperty::newAdjustMod(const Atlas::Message::MapType shapeMap, WFMath::Point<3> pos)
+{
+    std::string shapeType;
+
+    // Get modifier's shape
+    Atlas::Message::MapType::const_iterator shape_I;
+                // Get shape's type
+    shape_I = shapeMap.find("type");
+    if (shape_I != shapeMap.end()) {
+        const Atlas::Message::Element& shapeTypeElem(shape_I->second);
+        if (shapeTypeElem.isString()) {
+        shapeType = shapeTypeElem.asString();
+        }
+    }
+    // end shape data
+
+    if (shapeType == "ball") {
+        float shapeRadius;
+        // Get sphere's radius
+        Atlas::Message::MapType::const_iterator shape_I = shapeMap.find("radius");
+        if (shape_I != shapeMap.end()) {
+            const Atlas::Message::Element& shapeRadiusElem(shape_I->second);
+            shapeRadius = shapeRadiusElem.asNum();
+        }
+
+        // Make sphere
+        WFMath::Point<2> pos_2d(pos.x(), pos.y());
+        WFMath::Ball<2> modShape = WFMath::Ball<2>(pos_2d, shapeRadius);
+
+        // Make modifier
+
+        // Apply Modifier
+
+    }
+
+    log(ERROR, "AdjustTerrainMod defined with incorrect shape data");
+    return NULL;
 }

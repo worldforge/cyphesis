@@ -1,3 +1,12 @@
+2008-08-17  Tamas Bates  <rhymer@gmail.com>
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Fix a
+	  number of uninitialized variables that were causing warnings. Fix the
+	  way that the position of a modifier is retrieved when parsing to avoid
+	  copying it to more locations than necessary. Moved the parsing code for
+	  specific modifiers into separate functions to make them easier to find
+	  and to shorten the main parsing function. 
+
 2008-08-17  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/server.cpp: Try out the StorageManager.
@@ -18554,4 +18563,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2123 2008-08-17 21:18:45 alriddoch Exp $
+$Id: ChangeLog,v 1.2124 2008-08-17 21:48:22 alriddoch Exp $
