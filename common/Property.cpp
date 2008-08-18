@@ -15,15 +15,23 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.cpp,v 1.14 2007-12-24 00:06:20 alriddoch Exp $
+// $Id: Property.cpp,v 1.15 2008-08-18 16:12:00 alriddoch Exp $
 
 #include "Property_impl.h"
 
 /// \brief Classes that define properties on in world entities
 ///
 /// Property classes handle the values of Atlas attributes on in
-/// game entitie, ensuring type safety, and encapsulating certain
+/// game entities, ensuring type safety, and encapsulating certain
 /// behavoirs related to the presence and value of the attribute.
+/// A property instance can be associated with an Entity instance
+/// or a class, so it should not store any data specific to any of
+/// the Entity instances it has been applied to. When it is taking effect
+/// on an Entity for the first time, PropertyBase::install() is called
+/// to allow the property to do any setup required, such as install one
+/// or more operation handlers. When the property value must be applied
+/// to an Entity, PropertyBase::apply() is called so that any side effect
+/// of the value can be taken care of.
 /// \defgroup PropertyClasses Entity Property Classes
 
 /// \brief Constructor called from classes which inherit from Property
@@ -33,6 +41,14 @@ PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 }
 
 PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
 {
 }
 

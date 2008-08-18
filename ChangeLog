@@ -1,3 +1,8 @@
+2008-08-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Property.h, common/Property.cpp: Add two new functions to the
+	  property API which facilitate using properties for default values.
+
 2008-08-17  Tamas Bates  <rhymer@gmail.com>
 
 	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Fixed
@@ -18580,4 +18585,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2125 2008-08-17 22:57:20 alriddoch Exp $
+$Id: ChangeLog,v 1.2126 2008-08-18 16:11:59 alriddoch Exp $

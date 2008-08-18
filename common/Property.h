@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.19 2008-08-14 17:44:26 alriddoch Exp $
+// $Id: Property.h,v 1.20 2008-08-18 16:12:00 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -26,6 +26,7 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
+class Entity;
 
 /// \brief Interface for Entity properties
 ///
@@ -42,6 +43,15 @@ class PropertyBase {
     unsigned int flags() const { return m_flags; }
     /// \brief Accessor for Property flags
     unsigned int & flags() { return m_flags; }
+
+    /// \brief Install this property on an entity
+    ///
+    /// Called whenever an Entity gains this property for the first time
+    virtual void install(Entity *);
+    /// \brief Apply whatever effect this property has on an Entity
+    ///
+    /// Called whenever the value of this property should affect an Entity
+    virtual void apply(Entity *);
 
     /// \brief Copy the value of the property into an Atlas Message
     virtual bool get(Atlas::Message::Element & val) const = 0;
