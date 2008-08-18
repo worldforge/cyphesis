@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.h,v 1.6 2008-08-17 22:57:20 alriddoch Exp $
+// $Id: TerrainModProperty.h,v 1.7 2008-08-18 18:59:48 alriddoch Exp $
 
 #ifndef RULESETS_TERRAINMOD_PROPERTY_H
 #define RULESETS_TERRAINMOD_PROPERTY_H
@@ -108,6 +108,9 @@ class TerrainModProperty : public PropertyBase {
 
     /// \brief Changes a modifier's position
     void move(Entity*, const Point3D &);
+
+    /// \brief Removes the modifier from the terrain
+    void remove();
 };
 
 

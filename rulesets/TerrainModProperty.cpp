@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.cpp,v 1.6 2008-08-17 22:57:20 alriddoch Exp $
+// $Id: TerrainModProperty.cpp,v 1.7 2008-08-18 18:59:48 alriddoch Exp $
 
 #include "TerrainModProperty.h"
 
@@ -172,6 +172,16 @@ void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
     }
 }
 
+void TerrainModProperty::remove()
+{
+    TerrainProperty * terrain = NULL;
+    terrain = getTerrain();
+
+    if (terrain != NULL) {
+        terrain->removeMod(m_modptr);
+    }
+}
+
 Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier)
 {
     if (!modifier.isMap()) {
@@ -246,7 +256,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     }
 
     if (modType == "adjustmod") {
-        float level;
+        float level = 0;
         // Get level
         mod_I = modMap.find("height");
         if (mod_I != modMap.end()) {
@@ -339,7 +349,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     }
     
     if (modType == "adjustmod") {
-        float level;
+        float level = 0;
         // Get level
         mod_I = modMap.find("height");
         if (mod_I != modMap.end()) {

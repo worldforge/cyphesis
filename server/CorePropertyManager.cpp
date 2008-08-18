@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.29 2008-08-17 18:12:10 alriddoch Exp $
+// $Id: CorePropertyManager.cpp,v 1.30 2008-08-18 18:59:48 alriddoch Exp $
 
 #include "CorePropertyManager.h"
 
@@ -285,7 +285,7 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
 
         // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
     if (e->hasAttr("terrainmod")) {
-//         dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->move(e);
+         dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->remove();
     }
     return OPERATION_IGNORED;
 }

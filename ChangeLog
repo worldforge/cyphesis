@@ -1,3 +1,12 @@
+2008-08-18  Tamas Bates  <rhymer@gmail.com>
+
+	* rulsets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Add a
+	  function to easily remove a terrain mod from the terrain.
+
+	* server/CorePropertyManager.cpp: Fix the delete handler for terrain
+	  mods to correctly clear them from the terrain when their owning entity
+	  is deleted.
+
 2008-08-18  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Property.h, common/Property.cpp: Add two new functions to the
@@ -18585,4 +18594,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2126 2008-08-18 16:11:59 alriddoch Exp $
+$Id: ChangeLog,v 1.2127 2008-08-18 18:59:48 alriddoch Exp $
