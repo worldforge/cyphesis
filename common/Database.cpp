@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.101 2008-04-28 17:26:09 alriddoch Exp $
+// $Id: Database.cpp,v 1.102 2008-08-19 21:43:15 alriddoch Exp $
 
 #include "Database.h"
 
@@ -891,7 +891,7 @@ bool Database::updateSimpleRow(const std::string & name,
     return scheduleCommand(query);
 }
 
-bool Database::registerEntityIdGenerator()
+int Database::registerEntityIdGenerator()
 {
     assert(m_connection != 0);
 
@@ -900,7 +900,7 @@ bool Database::registerEntityIdGenerator()
     if (!status) {
         log(ERROR, "registerEntityIdGenerator(): Database query error.");
         reportError();
-        return false;
+        return -1;
     }
     if (!tuplesOk()) {
         debug(reportError(););
@@ -908,9 +908,9 @@ bool Database::registerEntityIdGenerator()
                         << std::endl << std::flush;);
     } else {
         debug(std::cout << "Sequence exists" << std::endl << std::flush;);
-        return true;
+        return 0;
     }
-    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq");
+    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq") ? 0 : -1;
 }
 
 long Database::newId(std::string & id)
@@ -943,6 +943,36 @@ long Database::newId(std::string & id)
         return -1;
     }
     return forceIntegerId(id);
+}
+
+int Database::registerEntityTable(const std::map<std::string, int> & chunks)
+{
+    assert(m_connection != 0);
+
+    clearPendingQuery();
+    int status = PQsendQuery(m_connection, "SELECT * FROM entities");
+    if (!status) {
+        log(ERROR, "registerEntityIdGenerator(): Database query error.");
+        reportError();
+        return -1;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        return 0;
+    }
+    std::string query = "CREATE TABLE entities (id integer UNIQUE PRIMARY KEY, "
+                        "type text";
+    std::map<std::string, int>::const_iterator I = chunks.begin();
+    std::map<std::string, int>::const_iterator Iend = chunks.end();
+    for (; I != Iend; ++I) {
+        query += String::compose(", %1 bytea", I->first);
+    }
+    std::cout << query;
+    return runCommandQuery(query) ? 0 : -1;
 }
 
 #if 0

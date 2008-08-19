@@ -1,3 +1,9 @@
+2008-08-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp, common/Database.h: Change the return type
+	  of a method to fit the preferred convention. Add an experimental
+	  API for new Entity persistence.
+
 2008-08-18  Tamas Bates  <rhymer@gmail.com>
 
 	* rulsets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h: Add a
@@ -18594,4 +18600,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2127 2008-08-18 18:59:48 alriddoch Exp $
+$Id: ChangeLog,v 1.2128 2008-08-19 21:43:14 alriddoch Exp $

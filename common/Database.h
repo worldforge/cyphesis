@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.54 2007-12-21 19:51:25 alriddoch Exp $
+// $Id: Database.h,v 1.55 2008-08-19 21:43:15 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -198,8 +198,13 @@ class Database {
 
     // Interface for the ID generation sequence.
 
-    bool registerEntityIdGenerator();
+    int registerEntityIdGenerator();
     long newId(std::string & id);
+
+    // Interface for Entity and Property tables.
+
+    int registerEntityTable(const std::map<std::string, int> & chunks);
+    int registerPropertyTable();
 
     // Interface for CommPSQLSocket, so it can give us feedback
     
