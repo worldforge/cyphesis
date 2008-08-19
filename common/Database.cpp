@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.103 2008-08-19 22:07:17 alriddoch Exp $
+// $Id: Database.cpp,v 1.104 2008-08-19 23:46:13 alriddoch Exp $
 
 #include "Database.h"
 
@@ -972,6 +972,33 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         query += String::compose(", %1 bytea", I->first);
     }
     query += ")";
+    std::cout << query;
+    return runCommandQuery(query) ? 0 : -1;
+}
+
+int Database::registerPropertyTable()
+{
+    assert(m_connection != 0);
+
+    clearPendingQuery();
+    int status = PQsendQuery(m_connection, "SELECT * FROM properties");
+    if (!status) {
+        log(ERROR, "registerPropertyIdGenerator(): Database query error.");
+        reportError();
+        return -1;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        return 0;
+    }
+    std::string query = "CREATE TABLE properties ("
+                        "id integer REFERENCES entities (id), "
+                        "name varchar(32), "
+                        "value text)";
     std::cout << query;
     return runCommandQuery(query) ? 0 : -1;
 }

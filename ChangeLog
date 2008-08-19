@@ -1,6 +1,11 @@
 2008-08-18  Al Riddoch  <alriddoch@googlemail.com>
 
-	* common/Database.cpp, server/Persistance.cpp: Adject code to take
+	* common/Database.cpp, server/Persistance.cpp: Implement creating
+	  table for properties.
+
+2008-08-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp, server/Persistance.cpp: Adjust code to take
 	  into account changed return value. Add call to create Entity
 	  table, and fix the query string in the implementation.
 
@@ -18606,4 +18611,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2129 2008-08-19 22:07:16 alriddoch Exp $
+$Id: ChangeLog,v 1.2130 2008-08-19 23:45:43 alriddoch Exp $
