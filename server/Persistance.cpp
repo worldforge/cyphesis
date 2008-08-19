@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.53 2007-12-07 17:42:59 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.54 2008-08-19 22:07:17 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -70,7 +70,17 @@ int Persistance::init()
                                   "\"%1\".", ::instance));
     }
 
-    if (!m_connection.registerEntityIdGenerator()) {
+    if (m_connection.registerEntityIdGenerator() != 0) {
+        log(ERROR, "Faled to register Id generator in database.");
+        return DATABASE_TABERR;
+    }
+
+    std::map<std::string, int> chunks;
+    chunks["pos"] = 0;
+    chunks["bbox"] = 0;
+    chunks["orient"] = 0;
+
+    if (m_connection.registerEntityTable(chunks) != 0) {
         log(ERROR, "Faled to register Id generator in database.");
         return DATABASE_TABERR;
     }

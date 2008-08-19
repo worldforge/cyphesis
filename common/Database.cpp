@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.102 2008-08-19 21:43:15 alriddoch Exp $
+// $Id: Database.cpp,v 1.103 2008-08-19 22:07:17 alriddoch Exp $
 
 #include "Database.h"
 
@@ -971,6 +971,7 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
     for (; I != Iend; ++I) {
         query += String::compose(", %1 bytea", I->first);
     }
+    query += ")";
     std::cout << query;
     return runCommandQuery(query) ? 0 : -1;
 }
