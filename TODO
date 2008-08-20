@@ -1,3 +1,9 @@
+Strip down Entity update_flags to just flags, Define flag for general Entity
+cleanness. Re-write onUpdated to it only emits if the entity was previously
+clean. Hook up to storeagemanager and see what we get.
+
+Types should have integer IDs. Bootstrap type queries with well know IDs for basic types.
+
 Refactor properties a bit so that they are never tied to an entity.
 Add an apply(Entity*) method so a single property instance (in class defaults)
 can be applied to entities as it is added to them. A property flag will
