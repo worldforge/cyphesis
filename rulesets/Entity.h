@@ -15,12 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.103 2008-08-16 23:21:07 alriddoch Exp $
+// $Id: Entity.h,v 1.104 2008-08-21 17:10:39 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
 
-#include "attributes.h"
 #include "LocatedEntity.h"
 
 #include "modules/Location.h"
@@ -59,7 +58,7 @@ class Entity : public LocatedEntity {
     bool m_perceptive;
   public:
     /// Flags indicating changes to attributes
-    unsigned int m_update_flags;
+    unsigned int m_flags;
 
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
@@ -84,13 +83,13 @@ class Entity : public LocatedEntity {
     }
 
     /// \brief Accessor for update flags
-    const int getUpdateFlags() const { return m_update_flags; }
+    const int getUpdateFlags() const { return m_flags; }
 
     /// \brief Check if this entity is flagged as perceptive
     const bool isPerceptive() const { return m_perceptive; }
 
     /// \brief Reset the update flags
-    void clearUpdateFlags() { m_update_flags = 0; }
+    void clearFlags() { m_flags = 0; }
 
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
@@ -148,6 +147,11 @@ class Entity : public LocatedEntity {
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
 };
+
+/// \brief Flag indicating entiyt has been written to permanent store
+static const unsigned int entity_clean = 1 << 0;
+static const unsigned int entity_pos_clean = 1 << 1;
+static const unsigned int entity_orient_clean = 1 << 2;
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {

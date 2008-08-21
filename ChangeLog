@@ -1,3 +1,19 @@
+2008-08-21  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/attributes.h: Remove old attribute flags used for
+	  persistence from the build.
+
+	* rulesets/Entity.h: Replace obsolete update flags with a more
+	  general flags field, and define three needed to track the
+	  cleanness of basic location data.
+
+	* rulesets/Plant.cpp, rulesets/World.cpp: Remove now unused update
+	  flags from property initialisation.
+
+	* rulesets/Entity.cpp, rulesets/Thing.cpp, server/EntityFactory.cpp:
+	  Replace code which updated update flags with simpler changes to
+	  the new flags field.
+
 2008-08-18  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp, server/Persistance.cpp: Implement creating
@@ -18611,4 +18627,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2130 2008-08-19 23:45:43 alriddoch Exp $
+$Id: ChangeLog,v 1.2131 2008-08-21 17:10:38 alriddoch Exp $

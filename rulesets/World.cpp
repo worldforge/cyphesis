@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.116 2008-08-14 11:20:12 alriddoch Exp $
+// $Id: World.cpp,v 1.117 2008-08-21 17:10:39 alriddoch Exp $
 
 #include "World.h"
 
@@ -72,7 +72,7 @@ World::World(const std::string & id, long intId) :
            m_tileShader(*new Mercator::TileShader)
 {
     m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
-                                                  m_modifiedTerrain, a_terrain);
+                                                  m_modifiedTerrain, 0);
     m_properties["calendar"] = new CalendarProperty(0);
 
     m_tileShader.addShader(new Mercator::FillShader(), ROCK);

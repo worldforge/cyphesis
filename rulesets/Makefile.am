@@ -15,7 +15,6 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
 
 librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   Entity.cpp Entity.h \
-			   attributes.h \
 			   EntityProperties.cpp \
 			   AtlasProperties.cpp AtlasProperties.h \
 			   ActivePropertyFactory.cpp \

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.229 2008-08-16 23:21:07 alriddoch Exp $
+// $Id: Thing.cpp,v 1.230 2008-08-21 17:10:39 alriddoch Exp $
 
 #include "Thing.h"
 
@@ -231,7 +231,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
                                                     m_location.pos(),
                                                     mode);
     m_location.update(current_time);
-    m_update_flags |= a_pos;
+    m_flags &= ~(entity_pos_clean | entity_clean);
 
     if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
         // Update velocity
@@ -243,7 +243,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (ent->copyAttr("orientation", attr_orientation) == 0) {
         // Update orientation
         m_location.m_orientation.fromAtlas(attr_orientation.asList());
-        m_update_flags |= a_orient;
+        m_flags &= ~entity_orient_clean;
     }
 
     // At this point the Location data for this entity has been updated.
@@ -420,7 +420,7 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     s->setArgs1(op);
     res.push_back(s);
     m_seq++;
-    if (m_update_flags != 0) {
+    if (m_flags & entity_clean) {
         onUpdated();
     }
 }
@@ -585,7 +585,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
                                                     m_location.pos(),
                                                     mode);
     m_location.update(current_time);
-    m_update_flags |= a_pos;
+    m_flags &= ~(entity_pos_clean | entity_clean);
 
     float update_time = consts::move_tick;
 

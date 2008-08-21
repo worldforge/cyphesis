@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.155 2008-08-16 23:21:07 alriddoch Exp $
+// $Id: Entity.cpp,v 1.156 2008-08-21 17:10:38 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -61,9 +61,9 @@ static const bool debug_flag = false;
 Entity::Entity(const std::string & id, long intId) :
         Identified(id, intId),
         LocatedEntity(id, intId), m_destroyed(false), m_motion(0),
-        m_perceptive(false), m_update_flags(0)
+        m_perceptive(false), m_flags(0)
 {
-    SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, a_bbox);
+    SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, 0);
     sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));
     m_properties["bbox"] = sp;
 }
@@ -77,7 +77,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->set(attr);
-        m_update_flags |= I->second->flags();
+        m_flags |= entity_clean;
         return;
     }
     PropertyBase * prop = PropertyManager::instance()->addProperty(this, name);
@@ -87,7 +87,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         prop->set(attr);
     }
     m_properties[name] = prop;
-    m_update_flags |= prop->flags();
+    m_flags |= entity_clean;
     return;
 }
 
@@ -183,7 +183,7 @@ void Entity::destroy()
 
     if (loc_contains.empty()) {
         Entity * loc = dynamic_cast<Entity *>(m_location.m_loc);
-        loc->m_update_flags |= a_cont;
+        // FIXME Do we need to call onUpdated() on the parent entity?
         loc->onUpdated();
     }
     m_destroyed = true;

@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: attributes.h,v 1.11 2007-12-03 20:40:55 alriddoch Exp $
+// $Id: attributes.h,v 1.12 2008-08-21 17:10:39 alriddoch Exp $
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef RULESETS_ATTRIBUTES_H
 #define RULESETS_ATTRIBUTES_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.136 2008-06-03 14:12:56 alriddoch Exp $
+// $Id: EntityFactory.cpp,v 1.137 2008-08-21 17:10:39 alriddoch Exp $
 
 #include <Python.h>
 
@@ -202,7 +202,6 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     }
     if (pc != 0) {
         pc->persist();
-        thing->clearUpdateFlags();
         delete pc;
     }
     return thing;

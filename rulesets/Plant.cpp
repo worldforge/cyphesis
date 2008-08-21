@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.86 2008-01-26 17:43:22 alriddoch Exp $
+// $Id: Plant.cpp,v 1.87 2008-08-21 17:10:39 alriddoch Exp $
 
 #include "Plant.h"
 
@@ -60,11 +60,11 @@ Plant::Plant(const std::string & id, long intId) :
     m_location.setBBox(BBox(WFMath::Point<3>(-0.5, -0.5, 0),
                             WFMath::Point<3>(0.5, 0.5, 1)));
 
-    m_properties["fruits"] = new Property<int>(m_fruits, a_fruit);
-    m_properties["radius"] = new Property<int>(m_radius, a_fruit);
-    m_properties["fruitName"] = new Property<std::string>(m_fruitName, a_fruit);
-    m_properties["fruitChance"] = new Property<int>(m_fruitChance, a_fruit);
-    m_properties["sizeAdult"] = new Property<double>(m_sizeAdult, a_fruit);
+    m_properties["fruits"] = new Property<int>(m_fruits, 0);
+    m_properties["radius"] = new Property<int>(m_radius, 0);
+    m_properties["fruitName"] = new Property<std::string>(m_fruitName, 0);
+    m_properties["fruitChance"] = new Property<int>(m_fruitChance, 0);
+    m_properties["sizeAdult"] = new Property<double>(m_sizeAdult, 0);
 }
 
 Plant::~Plant()
