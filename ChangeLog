@@ -1,5 +1,10 @@
 2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Put in very basic code framework for
+	  scheduling update and insert queries to the database.
+
+2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/IdleConnector.cpp, server/IdleConnector.h: A generic sigc++
 	  based class for functions which need to be called regularly.
 
@@ -18658,4 +18663,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2134 2008-08-22 18:59:06 alriddoch Exp $
+$Id: ChangeLog,v 1.2135 2008-08-22 19:35:08 alriddoch Exp $

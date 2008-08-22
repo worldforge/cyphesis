@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StorageManager.cpp,v 1.3 2008-08-22 18:59:07 alriddoch Exp $
+// $Id: StorageManager.cpp,v 1.4 2008-08-22 19:35:09 alriddoch Exp $
 
 #include "StorageManager.h"
 
@@ -37,6 +37,7 @@ StorageManager:: StorageManager(WorldRouter & world)
 void StorageManager::entityInserted(Entity * ent)
 {
     m_unstoredEntities.push_back(EntityRef(ent));
+    ent->setFlags(entity_queued);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
 }
 
@@ -47,14 +48,38 @@ void StorageManager::entityUpdated(Entity * ent)
     // Perhaps we need to modify the semantics of the updated signal
     // so it is only emitted if the entity was not marked as dirty.
     if (ent->getFlags() & entity_queued) {
-        // std::cout << "Already queued" << std::endl << std::flush;
+        // std::cout << "Already queued " << ent->getId() << std::endl << std::flush;
         return;
     }
     m_dirtyEntities.push_back(EntityRef(ent));
-    // std::cout << "Updated fired" << std::endl << std::flush;
+    // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
     ent->setFlags(entity_queued);
 }
 
 void StorageManager::tick()
 {
+    while (!m_unstoredEntities.empty()) {
+        const EntityRef & ent = m_unstoredEntities.front();
+        if (ent.get() != 0) {
+            std::cout << "storing " << ent->getId() << std::endl << std::flush;
+            ent->resetFlags(entity_queued);
+            ent->setFlags(entity_clean);
+        } else {
+            std::cout << "deleted" << std::endl << std::flush;
+        }
+        m_unstoredEntities.pop_front();
+    }
+
+    while (!m_dirtyEntities.empty()) {
+        const EntityRef & ent = m_dirtyEntities.front();
+        if (ent.get() != 0) {
+            std::cout << "updating " << ent->getId() << std::endl << std::flush;
+            ent->resetFlags(entity_queued);
+            ent->setFlags(entity_clean);
+        } else {
+            std::cout << "deleted" << std::endl << std::flush;
+        }
+        m_dirtyEntities.pop_front();
+    }
+
 }

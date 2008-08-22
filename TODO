@@ -1,3 +1,7 @@
+Need a property flag to indicate that it is new, rather than just dirty.
+
+Make update interval has jitter on it, so we don't get spikey load.
+
 Strip down Entity update_flags to just flags, Define flag for general Entity
 cleanness. Re-write onUpdated to it only emits if the entity was previously
 clean. Hook up to storeagemanager and see what we get.
