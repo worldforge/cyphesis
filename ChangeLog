@@ -1,5 +1,15 @@
 2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/IdleConnector.cpp, server/IdleConnector.h: A generic sigc++
+	  based class for functions which need to be called regularly.
+
+	* server/StorageManager.cpp, server/StorageManager.h: Add a method
+	  to be called once a second from the idler.
+
+	* server/server.cpp: Hook the idler up to storage manager.
+
+2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.h: Make flags protected, and add convenient methods
 	  to set and clear flags. Add a flag for indicating that the entity
 	  is queued for a storage update.
@@ -18648,4 +18658,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2133 2008-08-22 15:44:55 alriddoch Exp $
+$Id: ChangeLog,v 1.2134 2008-08-22 18:59:06 alriddoch Exp $

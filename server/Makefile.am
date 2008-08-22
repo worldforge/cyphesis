@@ -92,6 +92,7 @@ cyphesis_SOURCES = \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
 		Idle.cpp Idle.h \
+		IdleConnector.cpp IdleConnector.h \
 		CommSocket.cpp CommSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \

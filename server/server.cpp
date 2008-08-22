@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.160 2008-08-17 21:18:45 alriddoch Exp $
+// $Id: server.cpp,v 1.161 2008-08-22 18:59:07 alriddoch Exp $
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -33,6 +33,7 @@
 #include "Persistance.h"
 #include "WorldRouter.h"
 #include "StorageManager.h"
+#include "IdleConnector.h"
 #include "Admin.h"
 
 #include "rulesets/Python_API.h"
@@ -50,6 +51,8 @@
 #include "common/nls.h"
 
 #include <varconf/config.h>
+
+#include <sigc++/functors/mem_fun.h>
 
 #include <sstream>
 
@@ -206,6 +209,10 @@ int main(int argc, char ** argv)
                                         Persistance::instance()->m_connection);
         commServer.addSocket(dbsocket);
         commServer.addIdle(dbsocket);
+
+        IdleConnector * storage_idle = new IdleConnector(commServer);
+        storage_idle->idling.connect(sigc::mem_fun(&store, &StorageManager::tick));
+        commServer.addIdle(storage_idle);
     } else {
         std::string adminId;
         long intId = newId(adminId);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StorageManager.cpp,v 1.2 2008-08-22 15:44:55 alriddoch Exp $
+// $Id: StorageManager.cpp,v 1.3 2008-08-22 18:59:07 alriddoch Exp $
 
 #include "StorageManager.h"
 
@@ -53,4 +53,8 @@ void StorageManager::entityUpdated(Entity * ent)
     m_dirtyEntities.push_back(EntityRef(ent));
     // std::cout << "Updated fired" << std::endl << std::flush;
     ent->setFlags(entity_queued);
+}
+
+void StorageManager::tick()
+{
 }
