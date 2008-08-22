@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.157 2008-08-22 03:00:38 alriddoch Exp $
+// $Id: Entity.cpp,v 1.158 2008-08-22 15:44:55 alriddoch Exp $
 
 #include "Entity.h"
 
@@ -76,7 +76,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->set(attr);
-        m_flags |= entity_clean;
+        resetFlags(entity_clean);
         return;
     }
     PropertyBase * prop = PropertyManager::instance()->addProperty(this, name);
@@ -86,7 +86,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         prop->set(attr);
     }
     m_properties[name] = prop;
-    m_flags |= entity_clean;
+    resetFlags(entity_clean);
     return;
 }
 

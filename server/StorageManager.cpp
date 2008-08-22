@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StorageManager.cpp,v 1.1 2008-08-17 21:12:50 alriddoch Exp $
+// $Id: StorageManager.cpp,v 1.2 2008-08-22 15:44:55 alriddoch Exp $
 
 #include "StorageManager.h"
 
@@ -23,6 +23,7 @@
 
 #include "rulesets/Entity.h"
 
+#include <sigc++/adaptors/bind.h>
 #include <sigc++/functors/mem_fun.h>
 
 #include <iostream>
@@ -36,6 +37,7 @@ StorageManager:: StorageManager(WorldRouter & world)
 void StorageManager::entityInserted(Entity * ent)
 {
     m_unstoredEntities.push_back(EntityRef(ent));
+    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
 }
 
 /// \brief Called when an Entity is modified
@@ -44,5 +46,11 @@ void StorageManager::entityUpdated(Entity * ent)
     // Is it already in the dirty Entities queue?
     // Perhaps we need to modify the semantics of the updated signal
     // so it is only emitted if the entity was not marked as dirty.
+    if (ent->getFlags() & entity_queued) {
+        // std::cout << "Already queued" << std::endl << std::flush;
+        return;
+    }
     m_dirtyEntities.push_back(EntityRef(ent));
+    // std::cout << "Updated fired" << std::endl << std::flush;
+    ent->setFlags(entity_queued);
 }

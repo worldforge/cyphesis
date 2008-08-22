@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.105 2008-08-22 03:00:38 alriddoch Exp $
+// $Id: Entity.h,v 1.106 2008-08-22 15:44:55 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -37,10 +37,16 @@ static const unsigned int entity_pos_clean = 1 << 1;
 /// \brief Flag indicating entity ORIENT has been written to permanent store
 static const unsigned int entity_orient_clean = 1 << 2;
 
+static const unsigned int entity_clean_mask = entity_clean |
+                                              entity_pos_clean |
+                                              entity_orient_clean;
+
 /// \brief Flag indicating entity is perceptive
 static const unsigned int entity_perceptive = 1 << 3;
 /// \brief Flag indicating entity has been destroyed
 static const unsigned int entity_destroyed = 1 << 4;
+/// \brief Flag indicating entity has been queued for update
+static const unsigned int entity_queued = 1 << 5;
 
 /// \brief Classes that model in world entities
 ///
@@ -62,11 +68,10 @@ class Entity : public LocatedEntity {
     Motion * m_motion;
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
-
-  public:
     /// Flags indicating changes to attributes
     unsigned int m_flags;
 
+  public:
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
 
@@ -84,17 +89,18 @@ class Entity : public LocatedEntity {
         BaseWorld::instance().message(op, *this);
     }
 
-    /// \brief Accessor for update flags
-    const int getUpdateFlags() const { return m_flags; }
-
     /// \brief Check if this entity is flagged as perceptive
     const bool isPerceptive() const { return m_flags & entity_perceptive; }
 
     /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const { return m_flags & entity_destroyed; }
 
-    /// \brief Reset the update flags
-    void clearFlags() { m_flags = 0; }
+    /// \brief Accessor for flags
+    const int getFlags() const { return m_flags; }
+
+    void setFlags(unsigned int flags) { m_flags |= flags; }
+
+    void resetFlags(unsigned int flags) { m_flags &= ~flags; }
 
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);

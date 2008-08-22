@@ -1,5 +1,17 @@
 2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.h: Make flags protected, and add convenient methods
+	  to set and clear flags. Add a flag for indicating that the entity
+	  is queued for a storage update.
+
+	* rulesets/Entity.cpp: Reset the clean flag correcly when the entity
+	  is made dirty.
+
+	* server/StorageManager.cpp: Hook up Entity::updated, and implement
+	  queueing things for update and making sure they only get added once.
+
+2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.h: Move entity flags to the top of the header.
 	  Replace destroyed and perceptive booleans with flag values,
 	  and re-work check methods accordingly.
@@ -18636,4 +18648,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2132 2008-08-22 03:00:38 alriddoch Exp $
+$Id: ChangeLog,v 1.2133 2008-08-22 15:44:55 alriddoch Exp $
