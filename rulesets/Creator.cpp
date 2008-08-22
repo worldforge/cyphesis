@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.82 2008-01-26 17:43:21 alriddoch Exp $
+// $Id: Creator.cpp,v 1.83 2008-08-22 03:00:38 alriddoch Exp $
 
 #include "Creator.h"
 
@@ -169,7 +169,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
     // entities by type or by name
     debug(std::cout << "Got look up from prived mind from [" << op->getFrom()
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
-    m_perceptive = true;
+    m_flags |= entity_perceptive;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         op->setTo(BaseWorld::instance().m_gameWorld.getId());

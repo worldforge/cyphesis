@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.104 2008-08-21 17:10:39 alriddoch Exp $
+// $Id: Entity.h,v 1.105 2008-08-22 03:00:38 alriddoch Exp $
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -29,6 +29,18 @@
 #include <iostream>
 
 class Motion;
+
+/// \brief Flag indicating entity has been written to permanent store
+static const unsigned int entity_clean = 1 << 0;
+/// \brief Flag indicating entity POS has been written to permanent store
+static const unsigned int entity_pos_clean = 1 << 1;
+/// \brief Flag indicating entity ORIENT has been written to permanent store
+static const unsigned int entity_orient_clean = 1 << 2;
+
+/// \brief Flag indicating entity is perceptive
+static const unsigned int entity_perceptive = 1 << 3;
+/// \brief Flag indicating entity has been destroyed
+static const unsigned int entity_destroyed = 1 << 4;
 
 /// \brief Classes that model in world entities
 ///
@@ -45,28 +57,18 @@ class Motion;
 /// It implements the basic types required for persistance.
 /// \ingroup EntityClasses
 class Entity : public LocatedEntity {
-  private:
-    /// Flag indicating that this entity has been destroyed
-    bool m_destroyed;
   protected:
     /// Motion behavoir of this entity
     Motion * m_motion;
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
 
-    /// Is this perceptive
-    bool m_perceptive;
   public:
     /// Flags indicating changes to attributes
     unsigned int m_flags;
 
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
-
-    /// \brief Check if this entity is flagged as destroyed
-    bool isDestroyed() const {
-        return m_destroyed;
-    }
 
     /// \brief Accessor for pointer to motion object
     Motion * motion() const {
@@ -86,7 +88,10 @@ class Entity : public LocatedEntity {
     const int getUpdateFlags() const { return m_flags; }
 
     /// \brief Check if this entity is flagged as perceptive
-    const bool isPerceptive() const { return m_perceptive; }
+    const bool isPerceptive() const { return m_flags & entity_perceptive; }
+
+    /// \brief Check if this entity is flagged as destroyed
+    bool isDestroyed() const { return m_flags & entity_destroyed; }
 
     /// \brief Reset the update flags
     void clearFlags() { m_flags = 0; }
@@ -147,11 +152,6 @@ class Entity : public LocatedEntity {
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
 };
-
-/// \brief Flag indicating entiyt has been written to permanent store
-static const unsigned int entity_clean = 1 << 0;
-static const unsigned int entity_pos_clean = 1 << 1;
-static const unsigned int entity_orient_clean = 1 << 2;
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {

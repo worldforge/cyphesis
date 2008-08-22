@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.323 2008-05-28 19:42:36 alriddoch Exp $
+// $Id: Character.cpp,v 1.324 2008-08-22 03:00:38 alriddoch Exp $
 
 #include "Character.h"
 
@@ -1419,7 +1419,7 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got look up from mind from [" << op->getFrom()
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
-    m_perceptive = true;
+    m_flags |= entity_perceptive;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         op->setTo(BaseWorld::instance().m_gameWorld.getId());

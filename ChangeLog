@@ -1,3 +1,12 @@
+2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Entity.h: Move entity flags to the top of the header.
+	  Replace destroyed and perceptive booleans with flag values,
+	  and re-work check methods accordingly.
+
+	* rulesets/Entity.cpp, rulesets/Creator.cpp, rulesets/Character.cpp:
+	  Ensure that destroyed and perceptive flags are used correctly.
+
 2008-08-21  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/attributes.h: Remove old attribute flags used for
@@ -18627,4 +18636,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2131 2008-08-21 17:10:38 alriddoch Exp $
+$Id: ChangeLog,v 1.2132 2008-08-22 03:00:38 alriddoch Exp $
