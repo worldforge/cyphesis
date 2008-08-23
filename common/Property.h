@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.20 2008-08-18 16:12:00 alriddoch Exp $
+// $Id: Property.h,v 1.21 2008-08-23 17:53:44 alriddoch Exp $
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -44,6 +44,10 @@ class PropertyBase {
     /// \brief Accessor for Property flags
     unsigned int & flags() { return m_flags; }
 
+    void setFlags(unsigned int flags) { m_flags |= flags; }
+
+    void resetFlags(unsigned int flags) { m_flags &= ~flags; }
+
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
@@ -67,14 +71,16 @@ class PropertyBase {
 static const unsigned int per_clean = 1 << 0;
 /// \brief Flag indicating data should never be persisted
 static const unsigned int per_ephem = 1 << 1;
+/// \brief Flag indicating data has been stored initially
+static const unsigned int per_seen = 1 << 2;
 
 /// \brief Flag mask indicating data should not be written to store
 static const unsigned int per_mask = per_clean | per_ephem;
 
 /// \brief Flag indicating data is not visible
-static const unsigned int vis_hidden = 1 << 2;
+static const unsigned int vis_hidden = 1 << 3;
 /// \brief Flag indicating data is server internal
-static const unsigned int vis_internal = 1 << 3;
+static const unsigned int vis_internal = 1 << 4;
 
 /// \brief Flag mask indicating data should be be perceptable
 static const unsigned int vis_mask = vis_hidden | vis_internal;

@@ -1,3 +1,22 @@
+2008-08-23  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Property.h: Add helper functions to make it easy and clear
+	  to manipulate flags.
+
+	* common/Database.cpp, common/Database.h: Expand the entity database
+	  table to include LOC and update sequence number. Implement new
+	  functions that insert test entity data into entity and property
+	  tables.
+
+	* rulesets/LocatedEntity.h: Add an accessor providing direct access to
+	  the properties dictionary for persistence.
+
+	* server/Persistance.cpp: Remove the bounding box chunk from the
+	  entity table schema.
+
+	* server/StorageManager.cpp: Implement inserting and updating rows
+	  into the Entity and Propertiy tables.
+
 2008-08-22  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp: Put in very basic code framework for
@@ -18663,4 +18682,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2135 2008-08-22 19:35:08 alriddoch Exp $
+$Id: ChangeLog,v 1.2136 2008-08-23 17:53:43 alriddoch Exp $

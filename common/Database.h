@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.55 2008-08-19 21:43:15 alriddoch Exp $
+// $Id: Database.h,v 1.56 2008-08-23 17:53:43 alriddoch Exp $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -119,6 +119,8 @@ class Database {
 
     typedef enum { OneToMany, ManyToMany, ManyToOne, OneToOne } RelationType;
 
+    typedef std::map<std::string, std::string> KeyValues;
+
     PGconn * getConnection() const { return m_connection; }
     const std::string & rule() const { return m_rule_db; }
     bool queryInProgress() const { return m_queryInProgress; }
@@ -204,7 +206,17 @@ class Database {
     // Interface for Entity and Property tables.
 
     int registerEntityTable(const std::map<std::string, int> & chunks);
+    int insertEntity(const std::string & id,
+                     const std::string & loc,
+                     const std::string & type,
+                     int seq);
+    int updateEntity(const std::string & id, int seq);
+
     int registerPropertyTable();
+    int insertProperties(const std::string & id,
+                         const KeyValues & tuples);
+    int updateProperties(const std::string & id,
+                         const KeyValues & tuples);
 
     // Interface for CommPSQLSocket, so it can give us feedback
     

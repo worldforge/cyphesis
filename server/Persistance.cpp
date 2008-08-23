@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.cpp,v 1.55 2008-08-19 23:46:13 alriddoch Exp $
+// $Id: Persistance.cpp,v 1.56 2008-08-23 17:53:44 alriddoch Exp $
 
 #include "Persistance.h"
 
@@ -77,7 +77,6 @@ int Persistance::init()
 
     std::map<std::string, int> chunks;
     chunks["pos"] = 0;
-    chunks["bbox"] = 0;
     chunks["orient"] = 0;
 
     if (m_connection.registerEntityTable(chunks) != 0) {

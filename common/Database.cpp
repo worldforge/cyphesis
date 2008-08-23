@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.104 2008-08-19 23:46:13 alriddoch Exp $
+// $Id: Database.cpp,v 1.105 2008-08-23 17:53:43 alriddoch Exp $
 
 #include "Database.h"
 
@@ -965,7 +965,8 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         return 0;
     }
     std::string query = "CREATE TABLE entities (id integer UNIQUE PRIMARY KEY, "
-                        "type text";
+                        "loc integer REFERENCES entities (id), "
+                        "type text, seq integer";
     std::map<std::string, int>::const_iterator I = chunks.begin();
     std::map<std::string, int>::const_iterator Iend = chunks.end();
     for (; I != Iend; ++I) {
@@ -974,6 +975,24 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
     query += ")";
     std::cout << query;
     return runCommandQuery(query) ? 0 : -1;
+}
+
+int Database::insertEntity(const std::string & id,
+                           const std::string & loc,
+                           const std::string & type,
+                           int seq)
+{
+    std::string query = String::compose("INSERT INTO entities VALUES "
+                                        "(%1, %2, '%3', %4)",
+                                        id, loc, type, seq);
+    return scheduleCommand(query);
+}
+
+int Database::updateEntity(const std::string & id, int seq)
+{
+    std::string query = String::compose("UPDATE entities SET seq = %1 "
+                                        "WHERE id = '%2'", seq, id);
+    return scheduleCommand(query);
 }
 
 int Database::registerPropertyTable()
@@ -1001,6 +1020,29 @@ int Database::registerPropertyTable()
                         "value text)";
     std::cout << query;
     return runCommandQuery(query) ? 0 : -1;
+}
+
+int Database::insertProperties(const std::string & id,
+                               const KeyValues & tuples)
+{
+    int first = 1;
+    std::string query("INSERT INTO properties VALUES ");
+    KeyValues::const_iterator I = tuples.begin();
+    KeyValues::const_iterator Iend = tuples.end();
+    for (; I != Iend; ++I) {
+        if (first) {
+            query += String::compose("(%1, '%2', '%3')", id, I->first, I->second);
+            first = 0;
+        } else {
+            query += String::compose(", (%1, '%2', '%3')", id, I->first, I->second);
+        }
+    }
+    return scheduleCommand(query);
+}
+
+int Database::updateProperties(const std::string & id,
+                               const KeyValues & tuples)
+{
 }
 
 #if 0

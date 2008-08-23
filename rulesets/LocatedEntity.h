@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.15 2008-08-16 23:21:07 alriddoch Exp $
+// $Id: LocatedEntity.h,v 1.16 2008-08-23 17:53:44 alriddoch Exp $
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -101,6 +101,8 @@ class LocatedEntity : public IdentifiedRouter {
     const int getSeq() const { return m_seq; }
     /// \brief Accessor for entity type property
     const TypeNode * getType() const { return m_type; }
+    /// \brief Accessor for properies
+    const PropertyDict & getProperties() const { return m_properties; }
 
     /// \brief Set the value of the entity type property
     void setType(const TypeNode * t) {
