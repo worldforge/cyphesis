@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonArithmeticScript.cpp,v 1.7 2006-12-24 17:18:55 alriddoch Exp $
+// $Id$
 
 #include <Python.h>
 
@@ -41,7 +41,9 @@ PythonArithmeticScript::~PythonArithmeticScript()
 int PythonArithmeticScript::attribute(const std::string & name, float & val)
 {
     PyObject * py_name = PyString_FromString(name.c_str());
-    PyObject * ret = PyObject_CallMethod(m_script, "attribute", "(O)", py_name);
+    PyObject * ret = PyObject_CallMethod(m_script,
+                                         (char *)"attribute",
+                                         (char *)"(O)", py_name);
     Py_DECREF(py_name);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {

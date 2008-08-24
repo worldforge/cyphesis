@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.cpp,v 1.41 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #include "PythonThingScript.h"
 
@@ -66,7 +66,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
     py_op->operation = op;
     PyObject * ret;
     ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
-                                         "(O)", py_op);
+                                            (char *)"(O)", py_op);
     Py_DECREF(py_op);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {
@@ -120,7 +120,7 @@ void PythonEntityScript::hook(const std::string & function,
 
     PyObject * ret = PyObject_CallMethod(scriptObject,
                                          (char *)(function.c_str()),
-                                         "(O)",
+                                         (char *)"(O)",
                                          wrapper);
     Py_DECREF(wrapper);
     if (ret == NULL) {
