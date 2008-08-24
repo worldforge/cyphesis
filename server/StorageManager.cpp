@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StorageManager.cpp,v 1.5 2008-08-23 17:53:44 alriddoch Exp $
+// $Id$
 
 #include "StorageManager.h"
 
@@ -35,7 +35,7 @@
 
 typedef Database::KeyValues KeyValues;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 StorageManager:: StorageManager(WorldRouter & world)
 {
@@ -110,7 +110,7 @@ void StorageManager::tick()
                 }
                 // FIXME check if this is new or just modded.
                 if (I->second->flags() & per_seen) {
-                    upd_property_tuples[I->first] = "test_value";
+                    upd_property_tuples[I->first] = "upd_value";
                 } else {
                     new_property_tuples[I->first] = "test_value";
                 }

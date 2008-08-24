@@ -1043,6 +1043,12 @@ int Database::insertProperties(const std::string & id,
 int Database::updateProperties(const std::string & id,
                                const KeyValues & tuples)
 {
+    KeyValues::const_iterator I = tuples.begin();
+    KeyValues::const_iterator Iend = tuples.end();
+    for (; I != Iend; ++I) {
+        std::string query = String::compose("UPATE properties value = '%3' where id=%1 and name='%2'", id, I->first, I->second);
+        scheduleCommand(query);
+    }
     return 0;
 }
 

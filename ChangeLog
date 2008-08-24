@@ -1,5 +1,12 @@
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Implement updating modified properties.
+
+	* server/StorageManager.cpp: Tweak test properties values
+	  so we can tell if one has been updated.
+
+2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tools/cycmd.cpp: Add a cast so the compiler does not warn about
 	  string constants.
 
