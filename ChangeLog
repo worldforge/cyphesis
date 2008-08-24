@@ -1,3 +1,8 @@
+2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
+
+	* acinclude.m4: Fix the postgresql check to run without generating
+	  warnings.
+
 2008-08-23  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Property.h: Add helper functions to make it easy and clear
@@ -18682,4 +18687,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: ChangeLog,v 1.2136 2008-08-23 17:53:43 alriddoch Exp $
+$Id$

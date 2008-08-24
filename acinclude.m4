@@ -71,7 +71,7 @@ dnl
 #include <string.h>
 
 char*
-my_strdup (char *str)
+my_strdup (const char *str)
 {
   char *new_str;
   
