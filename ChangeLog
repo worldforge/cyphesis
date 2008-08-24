@@ -1,5 +1,10 @@
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cycmd.cpp: Add a cast so the compiler does not warn about
+	  string constants.
+
+2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/ServerRouting.cpp: Remove an unused global variable.
 
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>

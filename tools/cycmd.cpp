@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cycmd.cpp,v 1.115 2008-01-13 01:32:56 alriddoch Exp $
+// $Id$
 
 /// \page cycmd_index
 ///
@@ -727,7 +727,7 @@ void Interactive<Stream>::runCommand(char * cmd)
         int len = strlen(arg);
         while (len > 0 && arg[--len] == ' ') { arg[len] = 0; }
     } else {
-        arg = "";
+        arg = (char *)"";
     }
 
     exec(cmd, arg);
