@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.cpp,v 1.105 2008-08-23 17:53:43 alriddoch Exp $
+// $Id$
 
 #include "Database.h"
 
@@ -1043,6 +1043,7 @@ int Database::insertProperties(const std::string & id,
 int Database::updateProperties(const std::string & id,
                                const KeyValues & tuples)
 {
+    return 0;
 }
 
 #if 0

@@ -1,5 +1,10 @@
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Return 0 from a function stub that should
+	  return something.
+
+2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
+
 	* acinclude.m4: Fix the postgresql check to run without generating
 	  warnings.
 
