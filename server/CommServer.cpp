@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommServer.cpp,v 1.62 2008-04-28 17:26:10 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -139,7 +139,7 @@ void CommServer::poll()
         return;
     }
 
-    m_congested = (rval != 0) || m_congested && busy;
+    m_congested = (rval != 0) || (m_congested && busy);
 
     if (rval == max_events) {
         // If we see this alot, we should increase the maximum

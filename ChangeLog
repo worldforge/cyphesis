@@ -1,5 +1,10 @@
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommServer.cpp: Add () to make some logic more readable,
+	  and get rid of a warning.
+
+2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/PythonArithmeticScript.cpp, rulesets/PythonThingScript.cpp:
 	  Add casts when passing string constants to Python calls which take
 	  char *. I am confident this is safe, and the functions have no
