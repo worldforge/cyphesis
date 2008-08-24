@@ -1,5 +1,9 @@
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/ServerRouting.cpp: Remove an unused global variable.
+
+2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommServer.cpp: Add () to make some logic more readable,
 	  and get rid of a warning.
 

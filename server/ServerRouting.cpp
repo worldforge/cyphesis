@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.cpp,v 1.68 2008-01-28 23:48:33 alriddoch Exp $
+// $Id$
 
 #include "ServerRouting.h"
 #include "Lobby.h"
@@ -33,8 +33,6 @@
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
-
-static bool debug_flag = false;
 
 /// \brief Constructor for server object.
 ///
