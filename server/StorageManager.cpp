@@ -133,3 +133,8 @@ void StorageManager::tick()
     }
 
 }
+
+int StorageManager::initWorld()
+{
+    return 0;
+}

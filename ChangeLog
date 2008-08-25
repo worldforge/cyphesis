@@ -1,5 +1,11 @@
 2008-08-25  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp, server/StorageManager.h,
+	  server/servery.cpp: Add a stub function to be used to bootstrap
+	  world persistence.
+
+2008-08-25  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Mark old functions relating to
 	  bootstrapping world persistence as deprecated.
 

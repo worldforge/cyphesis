@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: server.cpp,v 1.161 2008-08-22 18:59:07 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -198,10 +198,10 @@ int main(int argc, char ** argv)
         // log(INFO, _("Restoring world from database..."));
 
         // FIXME Do the following steps.
-        // Read the world entity if any from the database.
-        // If there was none, set it up by calling EntityBuilder::initWorld()
+        // Read the world entity if any from the database, or set it up.
         // If it was there, make sure it did not get any of the wrong
         // position or orientation data.
+        store.initWorld();
 
         // log(INFO, _("Restored world."));
 
