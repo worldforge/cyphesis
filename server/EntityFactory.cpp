@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.cpp,v 1.137 2008-08-21 17:10:39 alriddoch Exp $
+// $Id$
 
 #include <Python.h>
 
@@ -108,6 +108,9 @@ EntityBuilder::~EntityBuilder()
     delete PropertyManager::instance();
 }
 
+/// \brief Initialise the world entity in the persistence entity store
+///
+/// \deprecated This method no longer does anything useful.
 void EntityBuilder::initWorld()
 {
     if (!consts::enable_persistence) {

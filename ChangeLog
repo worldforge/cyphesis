@@ -1,3 +1,8 @@
+2008-08-25  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityFactory.cpp: Mark old functions relating to
+	  bootstrapping world persistence as deprecated.
+
 2008-08-24  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp: Implement updating modified properties.
