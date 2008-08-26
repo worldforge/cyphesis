@@ -44,6 +44,9 @@ class StorageManager {
     void entityInserted(Entity *);
     void entityUpdated(Entity *);
 
+    void insertEntity(Entity *);
+    void updateEntity(Entity *);
+
   public:
     StorageManager(WorldRouter &);
 

@@ -1,3 +1,9 @@
+2008-08-26  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/StorageManager.cpp, server/StorageManager.h: Move code
+	  that inserts and updates Entities in the database into their own
+	  functions.
+
 2008-08-25  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp, server/StorageManager.h,

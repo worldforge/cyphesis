@@ -65,28 +65,64 @@ void StorageManager::entityUpdated(Entity * ent)
     ent->setFlags(entity_queued);
 }
 
+void StorageManager::insertEntity(Entity * ent)
+{
+    Database::instance()->insertEntity(ent->getId(),
+                                       ent->m_location.m_loc->getId(),
+                                       ent->getType()->name(),
+                                       ent->getSeq());
+    KeyValues property_tuples;
+    const PropertyDict & properties = ent->getProperties();
+    PropertyDict::const_iterator I = properties.begin();
+    PropertyDict::const_iterator Iend = properties.end();
+    for (; I != Iend; ++I) {
+        property_tuples[I->first] = "test_value";
+        I->second->setFlags(per_clean | per_seen);
+    }
+    Database::instance()->insertProperties(ent->getId(), property_tuples);
+    ent->resetFlags(entity_queued);
+    ent->setFlags(entity_clean);
+}
+
+void StorageManager::updateEntity(Entity * ent)
+{
+    Database::instance()->updateEntity(ent->getId(), ent->getSeq());
+    KeyValues new_property_tuples;
+    KeyValues upd_property_tuples;
+    const PropertyDict & properties = ent->getProperties();
+    PropertyDict::const_iterator I = properties.begin();
+    PropertyDict::const_iterator Iend = properties.end();
+    for (; I != Iend; ++I) {
+        if (I->second->flags() & per_clean) {
+            continue;
+        }
+        // FIXME check if this is new or just modded.
+        if (I->second->flags() & per_seen) {
+            upd_property_tuples[I->first] = "upd_value";
+        } else {
+            new_property_tuples[I->first] = "test_value";
+        }
+        I->second->setFlags(per_clean | per_seen);
+    }
+    if (!new_property_tuples.empty()) {
+        Database::instance()->insertProperties(ent->getId(),
+                                               new_property_tuples);
+    }
+    if (!upd_property_tuples.empty()) {
+        Database::instance()->updateProperties(ent->getId(),
+                                               upd_property_tuples);
+    }
+    ent->resetFlags(entity_queued);
+    ent->setFlags(entity_clean);
+}
+
 void StorageManager::tick()
 {
     while (!m_unstoredEntities.empty()) {
         const EntityRef & ent = m_unstoredEntities.front();
         if (ent.get() != 0) {
             debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; );
-            Database::instance()->insertEntity(ent->getId(),
-                                               ent->m_location.m_loc->getId(),
-                                               ent->getType()->name(),
-                                               ent->getSeq());
-            KeyValues property_tuples;
-            const PropertyDict & properties = ent->getProperties();
-            PropertyDict::const_iterator I = properties.begin();
-            PropertyDict::const_iterator Iend = properties.end();
-            for (; I != Iend; ++I) {
-                property_tuples[I->first] = "test_value";
-                I->second->setFlags(per_clean | per_seen);
-            }
-            Database::instance()->insertProperties(ent->getId(),
-                                                   property_tuples);
-            ent->resetFlags(entity_queued);
-            ent->setFlags(entity_clean);
+            insertEntity(ent.get());
         } else {
             debug( std::cout << "deleted" << std::endl << std::flush; );
         }
@@ -97,35 +133,7 @@ void StorageManager::tick()
         const EntityRef & ent = m_dirtyEntities.front();
         if (ent.get() != 0) {
             debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
-            Database::instance()->updateEntity(ent->getId(),
-                                               ent->getSeq());
-            KeyValues new_property_tuples;
-            KeyValues upd_property_tuples;
-            const PropertyDict & properties = ent->getProperties();
-            PropertyDict::const_iterator I = properties.begin();
-            PropertyDict::const_iterator Iend = properties.end();
-            for (; I != Iend; ++I) {
-                if (I->second->flags() & per_clean) {
-                    continue;
-                }
-                // FIXME check if this is new or just modded.
-                if (I->second->flags() & per_seen) {
-                    upd_property_tuples[I->first] = "upd_value";
-                } else {
-                    new_property_tuples[I->first] = "test_value";
-                }
-                I->second->setFlags(per_clean | per_seen);
-            }
-            if (!new_property_tuples.empty()) {
-                Database::instance()->insertProperties(ent->getId(),
-                                                       new_property_tuples);
-            }
-            if (!upd_property_tuples.empty()) {
-                Database::instance()->updateProperties(ent->getId(),
-                                                       upd_property_tuples);
-            }
-            ent->resetFlags(entity_queued);
-            ent->setFlags(entity_clean);
+            updateEntity(ent.get());
         } else {
             debug( std::cout << "deleted" << std::endl << std::flush; );
         }
