@@ -1,3 +1,6 @@
+Make it so classes inherit python scripts, now that the factory is independant
+of atlas type name.
+
 Need a property flag to indicate that it is new, rather than just dirty.
 
 Make update interval has jitter on it, so we don't get spikey load.
