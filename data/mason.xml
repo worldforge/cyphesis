@@ -140,7 +140,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.outdoor.Campfire</string>
+      <string name="name">world.objects.outdoor.Campfire.Campfire</string>
     </map>
   </map>
 
@@ -177,7 +177,7 @@
     </list>
     <map name="script">
      <string name="language">python</string>
-     <string name="name">world.objects.outdoor.Gravestone</string>
+     <string name="name">world.objects.outdoor.Gravestone.Gravestone</string>
     </map>
     <map name="attributes">
       <map name="bbox">
@@ -359,7 +359,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.Weather</string>
+      <string name="name">world.objects.Weather.Weather</string>
     </map>
   </map>
 

@@ -332,7 +332,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.buildings.House3</string>
+      <string name="name">world.objects.buildings.House3.House3</string>
     </map>
   </map>
 

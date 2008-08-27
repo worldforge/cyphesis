@@ -89,7 +89,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.clothing.Garment</string>
+      <string name="name">world.objects.clothing.Garment.Garment</string>
     </map>
   </map>
 

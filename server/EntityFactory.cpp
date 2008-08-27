@@ -326,6 +326,15 @@ int EntityBuilder::populateEntityFactory(const std::string & class_name,
                                        class_name, script_language));
             return -1;
         }
+        std::string::size_type ptr = script_name.rfind(".");
+        if (ptr == std::string::npos) {
+            log(ERROR, String::compose("Entity \"%1\" python script has "
+                                       "a bad class name \"%2\".",
+                                       class_name, script_name));
+            return -1;
+        }
+        std::string script_package = script_name.substr(0, ptr);
+        std::string script_class = script_name.substr(ptr + 1);
         if (factory->m_scriptFactory != 0) {
             if (factory->m_scriptFactory->package() != script_name) {
                 delete factory->m_scriptFactory;
@@ -333,8 +342,8 @@ int EntityBuilder::populateEntityFactory(const std::string & class_name,
             }
         }
         if (factory->m_scriptFactory == 0) {
-            factory->m_scriptFactory = new PythonScriptFactory(script_name,
-                                                               class_name);
+            factory->m_scriptFactory = new PythonScriptFactory(script_package,
+                                                               script_class);
         }
     }
 

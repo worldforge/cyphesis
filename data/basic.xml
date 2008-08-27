@@ -92,7 +92,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.elements.Fire</string>
+      <string name="name">world.objects.elements.Fire.Fire</string>
     </map>
   </map>
 

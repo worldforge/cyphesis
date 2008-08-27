@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ScriptFactory.cpp,v 1.11 2007-12-04 00:04:00 alriddoch Exp $
+// $Id$
 
 #include "ScriptFactory.h"
 
@@ -46,18 +46,16 @@ ScriptFactory::~ScriptFactory()
 /// already been loaded.
 int PythonScriptFactory::getClass()
 {
-    std::string classname(m_type);
-    classname[0] = toupper(classname[0]);
-    m_class = PyObject_GetAttrString(m_module, (char *)classname.c_str());
+    m_class = PyObject_GetAttrString(m_module, (char *)m_type.c_str());
     if (m_class == NULL) {
         log(ERROR, String::compose("Could not find python class %1.%2",
-                                   m_package, classname));
+                                   m_package, m_type));
         PyErr_Print();
         return -1;
     }
     if (PyCallable_Check(m_class) == 0) {
         log(ERROR, String::compose("Could not instance python class %1.%2",
-                                   m_package, classname));
+                                   m_package, m_type));
         Py_DECREF(m_class);
         m_class = 0;
         return -1;

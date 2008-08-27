@@ -21,7 +21,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.tools.Gallows</string>
+      <string name="name">world.objects.tools.Gallows.Gallows</string>
     </map>
   </map>
 
@@ -35,7 +35,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.characters.Hangman</string>
+      <string name="name">world.objects.characters.Hangman.Hangman</string>
     </map>
   </map>
 
@@ -49,7 +49,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.characters.Mayor</string>
+      <string name="name">world.objects.characters.Mayor.Mayor</string>
     </map>
   </map>
 
@@ -67,7 +67,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.characters.Villager</string>
+      <string name="name">world.objects.characters.Villager.Villager</string>
     </map>
   </map>
 

@@ -1,5 +1,19 @@
 2008-08-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/ScriptFactory.cpp: Simplify way the name of a class
+	  is determined by removing the hack to upercase the type name.
+
+	* server/EntityFactory.cpp: Break python type name on the last
+	  . making the name of the class independant of the Atlas type.
+
+	* data/basic.xml, data/buildings.xml, data/characters.xml,
+	  data/clothing.xml, data/mason.xml, data/plants.xml,
+	  data/tools.xml, data/weapons.xml, data/werewolf.xml: Modify all
+	  python type names in the classes to include the name of the class
+	  explicitly.
+
+2008-08-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp, server/StorageManager.h: Encode
 	  properties as rather messy Atlas, and store them in the
 	  database.

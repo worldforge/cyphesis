@@ -223,7 +223,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.tools.Tinderbox</string>
+      <string name="name">world.objects.tools.Tinderbox.Tinderbox</string>
     </map>
   </map>
 
@@ -269,7 +269,7 @@
     </list>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.tools.Torch</string>
+      <string name="name">world.objects.tools.Torch.Torch</string>
     </map>
   </map>
 

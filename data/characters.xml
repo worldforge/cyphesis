@@ -187,7 +187,7 @@
     <int name="playable">1</int>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.objects.undead.Skeleton</string>
+      <string name="name">world.objects.undead.Skeleton.Skeleton</string>
     </map>
   </map>
 
