@@ -23,9 +23,11 @@
 #include <modules/EntityRef.h>
 
 #include <deque>
+#include <string>
 
 class Entity;
 class WorldRouter;
+class PropertyBase;
 
 /// \brief StorageManager represents the subsystem which stores world storage
 ///
@@ -43,6 +45,8 @@ class StorageManager {
 
     void entityInserted(Entity *);
     void entityUpdated(Entity *);
+
+    void encodeProperty(PropertyBase *, std::string &);
 
     void insertEntity(Entity *);
     void updateEntity(Entity *);

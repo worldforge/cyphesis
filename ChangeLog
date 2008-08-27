@@ -1,3 +1,9 @@
+2008-08-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/StorageManager.cpp, server/StorageManager.h: Encode
+	  properties as rather messy Atlas, and store them in the
+	  database.
+
 2008-08-26  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp, server/StorageManager.h: Move code

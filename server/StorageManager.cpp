@@ -65,6 +65,13 @@ void StorageManager::entityUpdated(Entity * ent)
     ent->setFlags(entity_queued);
 }
 
+void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
+{
+    Atlas::Message::MapType map;
+    prop->get(map["val"]);
+    Database::instance()->encodeObject(map, store);
+}
+
 void StorageManager::insertEntity(Entity * ent)
 {
     Database::instance()->insertEntity(ent->getId(),
@@ -76,8 +83,9 @@ void StorageManager::insertEntity(Entity * ent)
     PropertyDict::const_iterator I = properties.begin();
     PropertyDict::const_iterator Iend = properties.end();
     for (; I != Iend; ++I) {
-        property_tuples[I->first] = "test_value";
-        I->second->setFlags(per_clean | per_seen);
+        PropertyBase * prop = I->second;
+        encodeProperty(prop, property_tuples[I->first]);
+        prop->setFlags(per_clean | per_seen);
     }
     Database::instance()->insertProperties(ent->getId(), property_tuples);
     ent->resetFlags(entity_queued);
@@ -93,16 +101,17 @@ void StorageManager::updateEntity(Entity * ent)
     PropertyDict::const_iterator I = properties.begin();
     PropertyDict::const_iterator Iend = properties.end();
     for (; I != Iend; ++I) {
-        if (I->second->flags() & per_clean) {
+        PropertyBase * prop = I->second;
+        if (prop->flags() & per_clean) {
             continue;
         }
         // FIXME check if this is new or just modded.
-        if (I->second->flags() & per_seen) {
-            upd_property_tuples[I->first] = "upd_value";
+        if (prop->flags() & per_seen) {
+            encodeProperty(prop, upd_property_tuples[I->first]);
         } else {
-            new_property_tuples[I->first] = "test_value";
+            encodeProperty(prop, new_property_tuples[I->first]);
         }
-        I->second->setFlags(per_clean | per_seen);
+        prop->setFlags(per_clean | per_seen);
     }
     if (!new_property_tuples.empty()) {
         Database::instance()->insertProperties(ent->getId(),
