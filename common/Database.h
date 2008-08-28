@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Database.h,v 1.56 2008-08-23 17:53:43 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H
@@ -209,8 +209,11 @@ class Database {
     int insertEntity(const std::string & id,
                      const std::string & loc,
                      const std::string & type,
-                     int seq);
-    int updateEntity(const std::string & id, int seq);
+                     int seq,
+                     const std::string & value);
+    int updateEntity(const std::string & id,
+                     int seq,
+                     const std::string & value);
 
     int registerPropertyTable();
     int insertProperties(const std::string & id,

@@ -970,7 +970,7 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
     std::map<std::string, int>::const_iterator I = chunks.begin();
     std::map<std::string, int>::const_iterator Iend = chunks.end();
     for (; I != Iend; ++I) {
-        query += String::compose(", %1 bytea", I->first);
+        query += String::compose(", %1 text", I->first);
     }
     query += ")";
     std::cout << query;
@@ -980,7 +980,8 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
 int Database::insertEntity(const std::string & id,
                            const std::string & loc,
                            const std::string & type,
-                           int seq)
+                           int seq,
+                           const std::string & value)
 {
     std::string query = String::compose("INSERT INTO entities VALUES "
                                         "(%1, %2, '%3', %4)",
@@ -988,7 +989,9 @@ int Database::insertEntity(const std::string & id,
     return scheduleCommand(query);
 }
 
-int Database::updateEntity(const std::string & id, int seq)
+int Database::updateEntity(const std::string & id,
+                           int seq,
+                           const std::string & value)
 {
     std::string query = String::compose("UPDATE entities SET seq = %1 "
                                         "WHERE id = '%2'", seq, id);

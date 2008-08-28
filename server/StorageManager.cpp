@@ -28,6 +28,8 @@
 #include "common/Property.h"
 #include "common/debug.h"
 
+#include <wfmath/atlasconv.h>
+
 #include <sigc++/adaptors/bind.h>
 #include <sigc++/functors/mem_fun.h>
 
@@ -74,10 +76,17 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
 
 void StorageManager::insertEntity(Entity * ent)
 {
+    std::string location;
+    Atlas::Message::MapType map;
+    map["pos"] = ent->m_location.pos().toAtlas();
+    map["orientation"] = ent->m_location.orientation().toAtlas();
+    Database::instance()->encodeObject(map, location);
+
     Database::instance()->insertEntity(ent->getId(),
                                        ent->m_location.m_loc->getId(),
                                        ent->getType()->name(),
-                                       ent->getSeq());
+                                       ent->getSeq(),
+                                       location);
     KeyValues property_tuples;
     const PropertyDict & properties = ent->getProperties();
     PropertyDict::const_iterator I = properties.begin();
@@ -89,12 +98,20 @@ void StorageManager::insertEntity(Entity * ent)
     }
     Database::instance()->insertProperties(ent->getId(), property_tuples);
     ent->resetFlags(entity_queued);
-    ent->setFlags(entity_clean);
+    ent->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
 }
 
 void StorageManager::updateEntity(Entity * ent)
 {
-    Database::instance()->updateEntity(ent->getId(), ent->getSeq());
+    std::string location;
+    Atlas::Message::MapType map;
+    map["pos"] = ent->m_location.pos().toAtlas();
+    map["orientation"] = ent->m_location.orientation().toAtlas();
+    Database::instance()->encodeObject(map, location);
+
+    Database::instance()->updateEntity(ent->getId(),
+                                       ent->getSeq(),
+                                       location);
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
     const PropertyDict & properties = ent->getProperties();
