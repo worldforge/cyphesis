@@ -1,4 +1,15 @@
-2008-08-27  Al Riddoch  <alriddoch@googlemail.com>
+2008-08-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp: Add the location data to the database
+	  insert query.
+
+	* server/Persistance.cpp: Modify the entity database table so it
+	  has the right columns.
+
+	* server/StorageManager.cpp: Correctly check the orientation
+	  valid flag before using it.
+
+2008-08-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp, common/Database.h: Modify the Entity database
 	  functions to include a chunk of text for location data.

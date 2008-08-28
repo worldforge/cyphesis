@@ -984,8 +984,8 @@ int Database::insertEntity(const std::string & id,
                            const std::string & value)
 {
     std::string query = String::compose("INSERT INTO entities VALUES "
-                                        "(%1, %2, '%3', %4)",
-                                        id, loc, type, seq);
+                                        "(%1, %2, '%3', %4, '%5')",
+                                        id, loc, type, seq, value);
     return scheduleCommand(query);
 }
 

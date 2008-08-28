@@ -79,7 +79,9 @@ void StorageManager::insertEntity(Entity * ent)
     std::string location;
     Atlas::Message::MapType map;
     map["pos"] = ent->m_location.pos().toAtlas();
-    map["orientation"] = ent->m_location.orientation().toAtlas();
+    if (ent->m_location.orientation().isValid()) {
+        map["orientation"] = ent->m_location.orientation().toAtlas();
+    }
     Database::instance()->encodeObject(map, location);
 
     Database::instance()->insertEntity(ent->getId(),
@@ -106,7 +108,9 @@ void StorageManager::updateEntity(Entity * ent)
     std::string location;
     Atlas::Message::MapType map;
     map["pos"] = ent->m_location.pos().toAtlas();
-    map["orientation"] = ent->m_location.orientation().toAtlas();
+    if (ent->m_location.orientation().isValid()) {
+        map["orientation"] = ent->m_location.orientation().toAtlas();
+    }
     Database::instance()->encodeObject(map, location);
 
     Database::instance()->updateEntity(ent->getId(),
