@@ -1,3 +1,13 @@
+2008-08-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommHttpListener.cpp, server/CommHttpListener.h: New
+	  class to listen for http connections.
+
+	* server/CommHttpClient.cpp, server/CommHttpClient.h: New class to
+	  handle http requests.
+
+	* server/server.cpp: Hack in a http listen socket on 6780.
+
 2008-08-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp: Add the location data to the database

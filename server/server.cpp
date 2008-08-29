@@ -25,6 +25,7 @@
 #include "CommListener.h"
 #include "CommPeerListener.h"
 #include "CommUnixListener.h"
+#include "CommHttpListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
@@ -273,6 +274,14 @@ int main(int argc, char ** argv)
         commServer.addSocket(localListener);
     }
 #endif
+
+    CommHttpListener * httpListener = new CommHttpListener(commServer);
+    if (httpListener->setup(6780) != 0) {
+        log(ERROR, "Could not create http listen socket.");
+        delete httpListener;
+    } else {
+        commServer.addSocket(httpListener);
+    }
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);
