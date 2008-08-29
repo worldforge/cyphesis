@@ -19,13 +19,13 @@
 
 #include "CommHttpClient.h"
 #include "CommServer.h"
-
+#include "HttpCache.h"
 
 static const bool debug_flag = false;
 
 CommHttpClient::CommHttpClient(CommServer & svr, int fd) : CommSocket(svr),
                                                            m_clientIos(fd),
-                                                           m_respond(false)
+                                                           m_req_complete(false)
 {
     m_clientIos.setTimeout(0,1000); // FIXME?
 }
@@ -37,13 +37,14 @@ CommHttpClient::~CommHttpClient()
 
 void CommHttpClient::dispatch()
 {
-    if (!m_respond) {
+    if (!m_req_complete) {
         return;
     }
-    m_clientIos << "HTTP/1.1 200 OK" << std::endl << std::flush;
-    m_clientIos << "Content-Type: text/html" << std::endl;
-    m_clientIos << "Server: cyphesis" << std::endl << std::endl;
-    m_clientIos << "<html><head><title>Cyphesis</title></head><body>Cystast</body></html>" << std::endl << std::flush;
+    HttpCache::instance()->processQuery(m_clientIos, m_headers);
+    // m_clientIos << "HTTP/1.1 200 OK" << std::endl << std::flush;
+    // m_clientIos << "Content-Type: text/html" << std::endl;
+    // m_clientIos << "Server: cyphesis/" << consts::version << std::endl << std::endl;
+    // m_clientIos << "<html><head><title>Cyphesis</title></head><body>Cystast</body></html>" << std::endl << std::flush;
 
     m_clientIos.close();
 }
@@ -61,7 +62,7 @@ int CommHttpClient::read()
             int next = m_clientIos.rdbuf()->sbumpc();
             if (next == '\n') {
                 if (m_incoming.empty()) {
-                    m_respond = true;
+                    m_req_complete = true;
                 } else {
                     m_headers.push_back(m_incoming);
                     m_incoming.clear();

@@ -17,35 +17,40 @@
 
 // $Id$
 
-#ifndef SERVER_COMM_HTTP_CLIENT_H
-#define SERVER_COMM_HTTP_CLIENT_H
-
-#include "CommSocket.h"
-
-#include <skstream/skstream.h>
+#ifndef SERVER_HTTP_CACHE_H
+#define SERVER_HTTP_CACHE_H
 
 #include <list>
 #include <string>
 
-/// \brief Handle an internet socket connected to a remote peer server.
-/// \ingroup ServerSockets
-class CommHttpClient : public CommSocket {
+/// \brief A caching generator for the results of http requests.
+///
+class HttpCache {
+  private:
+    HttpCache();
+    static HttpCache * m_instance;
+
   protected:
-    /// \brief C++ iostream compatible socket object handling the socket IO.
-    tcp_socket_stream m_clientIos;
+    void sendHeaders(std::ostream &,
+                     int status = 200,
+                     const std::string & mesg = "OK");
 
-    std::string m_incoming;
-    std::list<std::string> m_headers;
-    bool m_req_complete;
+    void reportBadRequest(std::ostream &,
+                          int status = 400,
+                          const std::string & mesg = "Bad Request");
   public:
-    CommHttpClient(CommServer & svr, int fd);
-    virtual ~CommHttpClient();
-
-    virtual int getFd() const;
-    virtual bool isOpen() const;
-    virtual bool eof();
-    virtual int read();
-    virtual void dispatch();
+    static HttpCache * instance() {
+        if (m_instance == NULL) {
+            m_instance = new HttpCache();
+        }
+        return m_instance;
+    }
+    static void del() {
+        if (m_instance != NULL) {
+            delete m_instance;
+        }
+    }
+    void processQuery(std::ostream &, const std::list<std::string> &);
 };
 
-#endif // SERVER_COMM_HTTP_CLIENT_H
+#endif // SERVER_HTTP_CACHE_H

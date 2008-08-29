@@ -1,5 +1,13 @@
 2008-08-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/HttpCache.cpp, server/HttpCache.h: A caching file to handle
+	  http data requests.
+
+	* server/CommHttpClient.cpp, server/CommHttpClient.h: Move most of
+	  the functionality into HttpCache.
+
+2008-08-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommHttpListener.cpp, server/CommHttpListener.h: New
 	  class to listen for http connections.
 
