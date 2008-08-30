@@ -23,6 +23,8 @@
 #include "common/debug.h"
 #include "common/const.h"
 #include "common/BaseWorld.h"
+#include "common/Monitors.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -46,6 +48,16 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
         Identified(id, intId), m_svrRuleset(ruleset), m_svrName(name),
         m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
 {
+    Monitors * monitors = Monitors::instance();
+    monitors->insert("server", "cyphesis");
+    monitors->insert("instance", ::instance);
+    monitors->insert("name", m_svrName);
+    monitors->insert("ruleset", m_svrRuleset);
+    monitors->insert("version", consts::version);
+    monitors->insert("builddate", String::compose("%1, %2",
+                                                  consts::buildDate,
+                                                  consts::buildTime));
+    monitors->insert("buildid", consts::buildId);
 }
 
 /// Server destructor, implicitly destroys all OOG objects in the server.

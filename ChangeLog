@@ -1,4 +1,11 @@
-2008-08-29  Al Riddoch  <alriddoch@googlemail.com>
+2008-08-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Monitors.cpp: Remove the testing values for monitors.
+
+	* server/ServerRouting.cpp: Add a bunch of server constants to the
+	  monitors.
+
+2008-08-30  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Monitors.cpp, common/Monitors.h: Add a new class to handle
 	  storing key value pairs useful in monitoring the state of a server.

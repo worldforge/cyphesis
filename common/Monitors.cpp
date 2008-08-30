@@ -28,8 +28,6 @@ Monitors * Monitors::m_instance = NULL;
 
 Monitors::Monitors()
 {
-    m_pairs["foo"] = "bar";
-    m_pairs["bar"] = 24;
 }
 
 Monitors * Monitors::instance()
