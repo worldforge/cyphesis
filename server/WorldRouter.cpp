@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.cpp,v 1.227 2008-08-17 21:17:35 alriddoch Exp $
+// $Id$
 
 #include "WorldRouter.h"
 
@@ -34,6 +34,7 @@
 #include "common/serialno.h"
 #include "common/compose.hpp"
 #include "common/inheritance.h"
+#include "common/Monitors.h"
 
 #include "common/Setup.h"
 
@@ -298,6 +299,7 @@ Entity * WorldRouter::addEntity(Entity * ent)
     message(app, *ent);
 
     inserted.emit(ent);
+    Monitors::instance()->insert("entities", (int)m_eobjects.size());
 
     return ent;
 }

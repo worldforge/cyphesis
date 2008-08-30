@@ -33,6 +33,7 @@ class HttpCache {
   protected:
     void sendHeaders(std::ostream &,
                      int status = 200,
+                     const std::string & type = "text/plain",
                      const std::string & mesg = "OK");
 
     void reportBadRequest(std::ostream &,

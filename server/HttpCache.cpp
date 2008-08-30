@@ -21,6 +21,7 @@
 
 #include "common/const.h"
 #include "common/globals.h"
+#include "common/Monitors.h"
 
 #include <varconf/config.h>
 
@@ -34,10 +35,11 @@ HttpCache::HttpCache()
 
 void HttpCache::sendHeaders(std::ostream & io,
                             int status,
+                            const std::string & type,
                             const std::string & msg)
 {
     io << "HTTP/1.1 " << status << " " << msg << std::endl;
-    io << "Content-Type: text/html" << std::endl;
+    io << "Content-Type: " << type << std::endl;
     io << "Server: cyphesis/" << consts::version << std::endl << std::endl;
     io << std::flush;
 }
@@ -46,7 +48,7 @@ void HttpCache::reportBadRequest(std::ostream & io,
                                  int status,
                                  const std::string & msg)
 {
-    sendHeaders(io, status, msg);
+    sendHeaders(io, status, "text/html", msg);
     io << "<html><head><title>" << status << " " << msg
        << "</title></head><body><h1>" << status << " - " << msg
        << "</h1></body></html>" << std::endl << std::flush;
@@ -79,13 +81,20 @@ void HttpCache::processQuery(std::ostream & io,
         path = request.substr(i);
     }
 
-    sendHeaders(io);
-    const varconf::sec_map & conf = global_conf->getSection(::instance);
+    if (path == "/config") {
+        sendHeaders(io);
+        const varconf::sec_map & conf = global_conf->getSection(::instance);
 
-    varconf::sec_map::const_iterator I = conf.begin();
-    varconf::sec_map::const_iterator Iend = conf.end();
-    for (; I != Iend; ++I) {
-        io << I->first << " " << I->second << "<br/>" << std::endl;
+        varconf::sec_map::const_iterator I = conf.begin();
+        varconf::sec_map::const_iterator Iend = conf.end();
+        for (; I != Iend; ++I) {
+            io << I->first << " " << I->second << std::endl;
+        }
+    } else if (path == "/monitors") {
+        sendHeaders(io);
+        Monitors::instance()->send(io);
+    } else {
+        reportBadRequest(io, 404, "Not Found");
     }
     io << std::flush;
 }

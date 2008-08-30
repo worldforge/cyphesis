@@ -1,5 +1,14 @@
 2008-08-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Monitors.cpp, common/Monitors.h: Add a new class to handle
+	  storing key value pairs useful in monitoring the state of a server.
+
+	* server/HttpCache.cpp, server/HttpCache.h: Add a function argument
+	  to allow the content type to be controlled in the header.
+	  Expose the Monitors class under /monitors URL.
+
+2008-08-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/HttpCache.cpp, server/HttpCache.h: A caching file to handle
 	  http data requests.
 
