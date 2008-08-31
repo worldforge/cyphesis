@@ -1,3 +1,5 @@
+Make sure the select fallback code handles congested and busy ok.
+
 Sort out http connection with a configurable port.
 
 Make it so classes inherit python scripts, now that the factory is independant
