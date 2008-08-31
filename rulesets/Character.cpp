@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Character.cpp,v 1.324 2008-08-22 03:00:38 alriddoch Exp $
+// $Id$
 
 #include "Character.h"
 
@@ -341,7 +341,7 @@ void Character::clearTask()
     Set set;
     set->setArgs1(set_arg);
     set->setTo(getId());
-    
+
     sendWorld(set);
 }
 
@@ -559,7 +559,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     Element worn_attr;
     if (item->getAttr("worn", worn_attr)) {
         debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
-        
+
         if (worn_attr.isString()) {
             OutfitProperty * outfit = requireSpecificProperty<OutfitProperty>(OUTFIT);
             outfit->wear(this, worn_attr.String(), item);
