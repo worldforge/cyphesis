@@ -50,14 +50,15 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 {
     Monitors * monitors = Monitors::instance();
     monitors->insert("server", "cyphesis");
-    monitors->insert("instance", ::instance);
-    monitors->insert("name", m_svrName);
-    monitors->insert("ruleset", m_svrRuleset);
-    monitors->insert("version", consts::version);
     monitors->insert("builddate", String::compose("%1, %2",
                                                   consts::buildDate,
                                                   consts::buildTime));
-    monitors->insert("buildid", consts::buildId);
+    monitors->watch("instance", new Monitor<std::string>(::instance));
+    monitors->watch("name", new Monitor<std::string>(m_svrName));
+    monitors->watch("ruleset", new Monitor<std::string>(m_svrRuleset));
+    monitors->watch("version", new Monitor<const char *>(consts::version));
+    monitors->watch("buildid", new Monitor<int>(consts::buildId));
+    monitors->watch("clients", new Monitor<int>(m_numClients));
 }
 
 /// Server destructor, implicitly destroys all OOG objects in the server.

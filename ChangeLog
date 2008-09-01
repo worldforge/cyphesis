@@ -1,3 +1,15 @@
+2008-09-01  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Monitors.cpp, common/Monitors.h: Add dynamic variable
+	  monitor functionality, allowing arbitrary variables to appear
+	  in the monitors output.
+
+	* server/ServerRouting.cpp: Use the new monitor functionality for
+	  variables prebviously pushed to monitors once.
+
+	* server/WorldRouter.cpp, server/WorldRouter.h: Add a count of
+	  in-game entities. Expose it to the monitors.
+
 2008-08-30  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Monitors.cpp: Remove the testing values for monitors.

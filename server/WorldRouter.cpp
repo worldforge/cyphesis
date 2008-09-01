@@ -104,7 +104,9 @@ void WorldRouter::updateTime(int sec, int usec)
 /// Currently the world entity is included in the perceptives list,
 /// but I am not clear why. Need to look into why.
 WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
-                                                  consts::rootWorldIntId))
+                                                  consts::rootWorldIntId)),
+                             m_entityCount(1)
+          
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -116,6 +118,7 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
+    Monitors::instance()->watch("entities", new Monitor<int>(m_entityCount));
 }
 
 /// \brief Destructor for the world object.
@@ -246,6 +249,7 @@ Entity * WorldRouter::addEntity(Entity * ent)
                     << std::flush;);
     assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
+    ++m_entityCount;
     assert(ent->m_location.isValid());
 
     if (!ent->m_location.isValid()) {
@@ -299,7 +303,6 @@ Entity * WorldRouter::addEntity(Entity * ent)
     message(app, *ent);
 
     inserted.emit(ent);
-    Monitors::instance()->insert("entities", (int)m_eobjects.size());
 
     return ent;
 }
@@ -381,6 +384,7 @@ void WorldRouter::delEntity(Entity * ent)
     assert(ent->getIntId() != 0);
     m_perceptives.erase(ent);
     m_eobjects.erase(ent->getIntId());
+    --m_entityCount;
     ent->destroy();
     ent->decRef();
 }

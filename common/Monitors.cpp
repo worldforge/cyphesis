@@ -24,6 +24,30 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+MonitorBase::~MonitorBase()
+{
+}
+
+template <typename T>
+Monitor<T>::Monitor(const T & variable) : m_variable(variable)
+{
+}
+
+template <typename T>
+Monitor<T>::~Monitor()
+{
+}
+
+template <typename T>
+void Monitor<T>::send(std::ostream & o)
+{
+    o << m_variable;
+}
+
+template class Monitor<int>;
+template class Monitor<std::string>;
+template class Monitor<const char *>;
+
 Monitors * Monitors::m_instance = NULL;
 
 Monitors::Monitors()
@@ -52,6 +76,11 @@ void Monitors::insert(const std::string & key, const Element & val)
     m_pairs[key] = val;
 }
 
+void Monitors::watch(const::std::string & name, MonitorBase * monitor)
+{
+    m_variableMonitors[name] = monitor;
+}
+
 static std::ostream & operator<<(std::ostream & s, const Element & e)
 {
     switch (e.getType()) {
@@ -76,5 +105,13 @@ void Monitors::send(std::ostream & io)
     MapType::const_iterator Iend = m_pairs.end();
     for (; I != Iend; ++I) {
         io << I->first << " " << I->second << std::endl;
+    }
+
+    MonitorDict::const_iterator J = m_variableMonitors.begin();
+    MonitorDict::const_iterator Jend = m_variableMonitors.end();
+    for (; J != Jend; ++J) {
+        io << J->first << " ";
+        J->second->send(io);
+        io << std::endl;
     }
 }

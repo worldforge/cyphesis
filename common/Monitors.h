@@ -22,22 +22,47 @@
 
 #include <Atlas/Message/Element.h>
 
+/// \brief Base class for dynamic variable monitors
+///
+/// Variables which should be represented in the monitors output are
+/// referenced by subclasses this interface
+class MonitorBase {
+  public:
+    virtual ~MonitorBase() = 0;
+    virtual void send(std::ostream &) = 0;
+};
+
+template<typename T>
+class Monitor : public MonitorBase {
+  protected:
+    const T & m_variable;
+  public:
+    Monitor(const T & variable);
+
+    virtual ~Monitor();
+    virtual void send(std::ostream &);
+};
+
 /// \brief Storage for monitor values to be exported
 ///
 /// Any code can insert or update key value pairs here, and subsystems like
 /// the http interface can access it.
 class Monitors {
   protected:
+    typedef std::map<std::string, MonitorBase *> MonitorDict;
+
     static Monitors * m_instance;
 
     Monitors();
 
     Atlas::Message::MapType m_pairs;
+    MonitorDict m_variableMonitors;
   public:
     static Monitors * instance();
     static void cleanup();
 
     void insert(const std::string &, const Atlas::Message::Element &);
+    void watch(const std::string &, MonitorBase *);
     void send(std::ostream &);
 };
 

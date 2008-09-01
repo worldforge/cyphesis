@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: WorldRouter.h,v 1.82 2008-08-17 21:17:35 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
@@ -71,6 +71,8 @@ class WorldRouter : public BaseWorld {
     time_t m_initTime;
     /// List of perceptive entities.
     EntitySet m_perceptives;
+    /// Count of in world entities
+    int m_entityCount;
 
     void addOperationToQueue(const Operation &, Entity &);
     Operation getOperationFromQueue();
