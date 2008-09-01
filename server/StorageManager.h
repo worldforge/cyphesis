@@ -43,6 +43,12 @@ class StorageManager {
     /// \brief Queue of references to entities with modifications.
     Entitystore m_dirtyEntities;
 
+    int m_insertEntityCount;
+    int m_updateEntityCount;
+
+    int m_insertPropertyCount;
+    int m_updatePropertyCount;
+
     void entityInserted(Entity *);
     void entityUpdated(Entity *);
 

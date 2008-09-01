@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory_impl.h,v 1.14 2007-12-20 21:07:51 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
 #define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
@@ -42,6 +42,7 @@ T * ThingFactory<T>::newPersistantThing(const std::string & id,
                                         long intId,
                                         PersistorBase ** p)
 {
+    ++m_createdCount;
     return new T(id, intId);
 }
 
@@ -69,6 +70,7 @@ T * PersistantThingFactory<T>::newPersistantThing(const std::string & id,
                                                   long intId,
                                                   PersistorBase ** p)
 {
+    ++this->m_createdCount;
     T * t = new T(id, intId);
     // FIXME Return a PersistorConnection
     return t;

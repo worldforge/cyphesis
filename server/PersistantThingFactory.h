@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.h,v 1.29 2007-12-20 21:07:51 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H
@@ -64,6 +64,8 @@ class EntityKit {
     std::set<EntityKit *> m_children;
     /// Inheritance type of this class.
     TypeNode * m_type;
+    /// Number of times this factory has created an entity
+    int m_createdCount;
 
     virtual ~EntityKit();
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PersistantThingFactory.cpp,v 1.20 2007-12-20 21:07:51 alriddoch Exp $
+// $Id$
 
 #include <Python.h>
 
@@ -34,7 +34,7 @@
 
 #include "common/log.h"
 
-EntityKit::EntityKit() : m_scriptFactory(0)
+EntityKit::EntityKit() : m_scriptFactory(0), m_createdCount(0)
 {
 }
 

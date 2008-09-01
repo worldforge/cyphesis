@@ -49,6 +49,7 @@
 #include "common/AtlasFileLoader.h"
 #include "common/random.h"
 #include "common/compose.hpp"
+#include "common/Monitors.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>
@@ -913,6 +914,8 @@ void EntityBuilder::installFactory(const std::string & class_name,
     assert(factory != 0);
 
     m_entityFactories[class_name] = factory;
+    Monitors::instance()->watch(String::compose("created_count{type=%1}", class_name),
+                                new Monitor<int>(factory->m_createdCount));
 
     Inheritance & i = Inheritance::instance();
 

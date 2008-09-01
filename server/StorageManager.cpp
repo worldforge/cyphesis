@@ -27,6 +27,7 @@
 #include "common/TypeNode.h"
 #include "common/Property.h"
 #include "common/debug.h"
+#include "common/Monitors.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -39,9 +40,21 @@ typedef Database::KeyValues KeyValues;
 
 static const bool debug_flag = true;
 
-StorageManager:: StorageManager(WorldRouter & world)
+StorageManager:: StorageManager(WorldRouter & world) :
+      m_insertEntityCount(0), m_updateEntityCount(0),
+      m_insertPropertyCount(0), m_updatePropertyCount(0)
+
 {
     world.inserted.connect(sigc::mem_fun(this, &StorageManager::entityInserted));
+
+    Monitors::instance()->watch("database_entity_inserts",
+                                new Monitor<int>(m_insertEntityCount));
+    Monitors::instance()->watch("database_entity_updates",
+                                new Monitor<int>(m_updateEntityCount));
+    Monitors::instance()->watch("database_property_inserts",
+                                new Monitor<int>(m_insertPropertyCount));
+    Monitors::instance()->watch("database_property_updates",
+                                new Monitor<int>(m_updatePropertyCount));
 }
 
 /// \brief Called when a new Entity is inserted in the world
@@ -89,6 +102,7 @@ void StorageManager::insertEntity(Entity * ent)
                                        ent->getType()->name(),
                                        ent->getSeq(),
                                        location);
+    ++m_insertEntityCount;
     KeyValues property_tuples;
     const PropertyDict & properties = ent->getProperties();
     PropertyDict::const_iterator I = properties.begin();
@@ -99,6 +113,7 @@ void StorageManager::insertEntity(Entity * ent)
         prop->setFlags(per_clean | per_seen);
     }
     Database::instance()->insertProperties(ent->getId(), property_tuples);
+    ++m_insertPropertyCount;
     ent->resetFlags(entity_queued);
     ent->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
 }
@@ -116,6 +131,7 @@ void StorageManager::updateEntity(Entity * ent)
     Database::instance()->updateEntity(ent->getId(),
                                        ent->getSeq(),
                                        location);
+    ++m_updateEntityCount;
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
     const PropertyDict & properties = ent->getProperties();
@@ -129,8 +145,10 @@ void StorageManager::updateEntity(Entity * ent)
         // FIXME check if this is new or just modded.
         if (prop->flags() & per_seen) {
             encodeProperty(prop, upd_property_tuples[I->first]);
+            ++m_updatePropertyCount;
         } else {
             encodeProperty(prop, new_property_tuples[I->first]);
+            ++m_insertPropertyCount;
         }
         prop->setFlags(per_clean | per_seen);
     }

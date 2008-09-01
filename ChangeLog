@@ -1,5 +1,17 @@
 2008-09-01  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp, server/PersistantThingFactory.cpp,
+	  server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h:
+	  Add a count to each factory of the number of entities
+	  it has created, and add a monitor watch to each one.
+
+	* server/StorageManager.cpp, server/StorageManager.h: Add counters
+	  for the various types of database query, and add monitor watches
+	  for them.
+
+2008-09-01  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Monitors.cpp, common/Monitors.h: Add dynamic variable
 	  monitor functionality, allowing arbitrary variables to appear
 	  in the monitors output.
