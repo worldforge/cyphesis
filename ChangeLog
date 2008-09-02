@@ -1,5 +1,10 @@
 2008-09-02  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Escape strings before inserting them into
+	  the database.
+
+2008-09-02  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Disable debug output.
 
 2008-09-01  Al Riddoch  <alriddoch@googlemail.com>

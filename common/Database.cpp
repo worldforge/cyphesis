@@ -324,7 +324,15 @@ bool Database::encodeObject(const MapType & o,
     enc.streamMessageElement(o);
     codec.streamEnd();
 
-    data = str.str();
+    std::string raw = str.str();
+    char safe[raw.size() * 2 + 1];
+
+    size_t res = PQescapeStringConn(m_connection, safe, raw.c_str(), raw.size(), 0);
+
+    std::cout << "ENC: " << res << " " << raw.size() << std::endl << std::flush;
+
+    data = safe;
+
     return true;
 }
 
