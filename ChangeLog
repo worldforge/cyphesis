@@ -1,3 +1,7 @@
+2008-09-02  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/StorageManager.cpp: Disable debug output.
+
 2008-09-01  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/EntityFactory.cpp, server/PersistantThingFactory.cpp,

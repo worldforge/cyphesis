@@ -38,7 +38,7 @@
 
 typedef Database::KeyValues KeyValues;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 StorageManager:: StorageManager(WorldRouter & world) :
       m_insertEntityCount(0), m_updateEntityCount(0),
