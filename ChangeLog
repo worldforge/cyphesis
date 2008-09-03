@@ -1,5 +1,9 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.h: Add a new flag for ephemeral entities.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/AtlasProperties.cpp: Set the ephemeral flag on ID property.
 
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>

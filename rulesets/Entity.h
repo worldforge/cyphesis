@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.h,v 1.106 2008-08-22 15:44:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_ENTITY_H
 #define RULESETS_ENTITY_H
@@ -47,6 +47,8 @@ static const unsigned int entity_perceptive = 1 << 3;
 static const unsigned int entity_destroyed = 1 << 4;
 /// \brief Flag indicating entity has been queued for update
 static const unsigned int entity_queued = 1 << 5;
+/// \brief Flag indicaiting entity is ephemeral
+static const unsigned int entity_ephem = 1 << 6;
 
 /// \brief Classes that model in world entities
 ///
