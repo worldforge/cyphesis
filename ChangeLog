@@ -1,5 +1,10 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Bootstrap the world entry in the entity
+	  database table at creation time.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/Persistance.cpp: Correct seem seriously wrong error
 	  messages.
 

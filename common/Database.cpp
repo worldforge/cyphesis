@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "globals.h"
 #include "compose.hpp"
+#include "const.h"
 
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/Element.h>
@@ -980,7 +981,15 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
     }
     query += ")";
     std::cout << query;
-    return runCommandQuery(query) ? 0 : -1;
+    if (!runCommandQuery(query)) {
+        return -1;
+    }
+    query = String::compose("INSERT INTO entities VALUES (%1)",
+                            consts::rootWorldIntId);
+    if (!runCommandQuery(query)) {
+        return -1;
+    }
+    return 0;
 }
 
 int Database::insertEntity(const std::string & id,
