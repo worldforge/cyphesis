@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.cpp,v 1.14 2008-08-16 23:21:07 alriddoch Exp $
+// $Id$
 
 #include "LocatedEntity.h"
 
@@ -48,6 +48,7 @@ const std::set<std::string> & LocatedEntity::immutables()
         m_immutable.insert("velocity");
         m_immutable.insert("orientation");
         m_immutable.insert("contains");
+        m_immutable.insert("objtype");
     }
     return m_immutable;
 }

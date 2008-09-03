@@ -1,5 +1,10 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Persistance.cpp: Correct seem seriously wrong error
+	  messages.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Plant.cpp: Add a small random variation to plant simulation
 	  tick time, so updates don't coincide.
 

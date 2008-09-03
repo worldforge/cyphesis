@@ -173,11 +173,13 @@ void StorageManager::updateEntity(Entity * ent)
 
 void StorageManager::tick()
 {
+    int inserts = 0, updates = 0;
     while (!m_unstoredEntities.empty()) {
         const EntityRef & ent = m_unstoredEntities.front();
         if (ent.get() != 0) {
             debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; );
             insertEntity(ent.get());
+            ++inserts;
         } else {
             debug( std::cout << "deleted" << std::endl << std::flush; );
         }
@@ -189,12 +191,14 @@ void StorageManager::tick()
         if (ent.get() != 0) {
             debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
             updateEntity(ent.get());
+            ++updates;
         } else {
             debug( std::cout << "deleted" << std::endl << std::flush; );
         }
         m_dirtyEntities.pop_front();
     }
-
+    std::cout << "I: " << inserts << " U: " << updates
+              << std::endl << std::flush;
 }
 
 int StorageManager::initWorld()

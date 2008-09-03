@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.cpp,v 1.30 2008-08-18 18:59:48 alriddoch Exp $
+// $Id$
 
 #include "CorePropertyManager.h"
 
@@ -332,6 +332,7 @@ PropertyBase * CorePropertyManager::addProperty(Entity * entity,
 {
     assert(entity != 0);
     assert(!name.empty());
+    assert(name != "objtype");
     PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
         return 0;

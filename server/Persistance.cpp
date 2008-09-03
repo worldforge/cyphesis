@@ -71,7 +71,7 @@ int Persistance::init()
     }
 
     if (m_connection.registerEntityIdGenerator() != 0) {
-        log(ERROR, "Faled to register Id generator in database.");
+        log(ERROR, "Failed to register Id generator in database.");
         return DATABASE_TABERR;
     }
 
@@ -79,12 +79,12 @@ int Persistance::init()
     chunks["location"] = 0;
 
     if (m_connection.registerEntityTable(chunks) != 0) {
-        log(ERROR, "Faled to register Id generator in database.");
+        log(ERROR, "Failed to create Entity in database.");
         return DATABASE_TABERR;
     }
 
     if (m_connection.registerPropertyTable() != 0) {
-        log(ERROR, "Faled to register Id generator in database.");
+        log(ERROR, "Failed to create Property in database.");
         return DATABASE_TABERR;
     }
 
