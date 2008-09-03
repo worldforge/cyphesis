@@ -329,8 +329,6 @@ bool Database::encodeObject(const MapType & o,
 
     size_t res = PQescapeStringConn(m_connection, safe, raw.c_str(), raw.size(), 0);
 
-    std::cout << "ENC: " << res << " " << raw.size() << std::endl << std::flush;
-
     data = safe;
 
     return true;

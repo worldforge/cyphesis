@@ -1,3 +1,7 @@
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp: Remove debug output.
+
 2008-09-02  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp: Escape strings before inserting them into
