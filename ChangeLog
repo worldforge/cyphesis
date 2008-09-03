@@ -3,6 +3,15 @@
 	* server/Persistance.cpp: Correct seem seriously wrong error
 	  messages.
 
+	* server/StorageManager.cpp: Add debug output for the number of
+	  Database inserts and updates going on per tick.
+
+	* rulesets/LocatedEntity.cpp: Add OBJTYPE to the set of immutable
+	  entity properties.
+
+	* server/CorePropertyManager.cpp: Assert that a property with
+	  the name 'objtype' cannot be created.
+
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Plant.cpp: Add a small random variation to plant simulation
