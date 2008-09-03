@@ -327,7 +327,7 @@ bool Database::encodeObject(const MapType & o,
     std::string raw = str.str();
     char safe[raw.size() * 2 + 1];
 
-    size_t res = PQescapeStringConn(m_connection, safe, raw.c_str(), raw.size(), 0);
+    PQescapeStringConn(m_connection, safe, raw.c_str(), raw.size(), 0);
 
     data = safe;
 
@@ -1055,7 +1055,7 @@ int Database::updateProperties(const std::string & id,
     KeyValues::const_iterator I = tuples.begin();
     KeyValues::const_iterator Iend = tuples.end();
     for (; I != Iend; ++I) {
-        std::string query = String::compose("UPATE properties value = '%3' where id=%1 and name='%2'", id, I->first, I->second);
+        std::string query = String::compose("UPDATE properties SET value = '%3' WHERE id=%1 AND name='%2'", id, I->first, I->second);
         scheduleCommand(query);
     }
     return 0;
