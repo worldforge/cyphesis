@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Entity.cpp,v 1.158 2008-08-22 15:44:55 alriddoch Exp $
+// $Id$
 
 #include "Entity.h"
 
@@ -76,6 +76,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->set(attr);
+        I->second->resetFlags(per_clean);
         resetFlags(entity_clean);
         return;
     }

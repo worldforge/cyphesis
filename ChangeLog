@@ -1,5 +1,10 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.cpp: Mark properties as dirty when they are
+	  set.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Fix the SQL syntax when updating properties.
 
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
