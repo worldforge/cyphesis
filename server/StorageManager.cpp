@@ -60,9 +60,12 @@ StorageManager:: StorageManager(WorldRouter & world) :
 /// \brief Called when a new Entity is inserted in the world
 void StorageManager::entityInserted(Entity * ent)
 {
+    if (ent->getFlags() & entity_ephem) {
+        std::cout << "Ephemeral " << ent->getId() << std::endl << std::flush;
+        return;
+    }
     m_unstoredEntities.push_back(EntityRef(ent));
     ent->setFlags(entity_queued);
-    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
 }
 
 /// \brief Called when an Entity is modified
@@ -109,6 +112,9 @@ void StorageManager::insertEntity(Entity * ent)
     PropertyDict::const_iterator Iend = properties.end();
     for (; I != Iend; ++I) {
         PropertyBase * prop = I->second;
+        if (prop->flags() & per_ephem) {
+            continue;
+        }
         encodeProperty(prop, property_tuples[I->first]);
         prop->setFlags(per_clean | per_seen);
     }
@@ -116,6 +122,7 @@ void StorageManager::insertEntity(Entity * ent)
     ++m_insertPropertyCount;
     ent->resetFlags(entity_queued);
     ent->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
 }
 
 void StorageManager::updateEntity(Entity * ent)
@@ -139,7 +146,7 @@ void StorageManager::updateEntity(Entity * ent)
     PropertyDict::const_iterator Iend = properties.end();
     for (; I != Iend; ++I) {
         PropertyBase * prop = I->second;
-        if (prop->flags() & per_clean) {
+        if (prop->flags() & per_mask) {
             continue;
         }
         // FIXME check if this is new or just modded.

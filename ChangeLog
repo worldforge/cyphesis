@@ -1,5 +1,12 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Add checks so that ephemeral
+	  entities are not written to the database, and ephemeral properties
+	  are not inserted or updated. Postpone connecting the updated
+	  signal until after the initial insert.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.h: Add a new flag for ephemeral entities.
 
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
