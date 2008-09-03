@@ -1,5 +1,10 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Add hooks so that updates to the world
+	  get persisted.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Thing.cpp: Correct the logic when checking whether
 	  the entity has changed.
 

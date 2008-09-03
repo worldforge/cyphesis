@@ -192,5 +192,10 @@ void StorageManager::tick()
 
 int StorageManager::initWorld()
 {
+    Entity * ent = &BaseWorld::instance().m_gameWorld;
+
+    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
+    ent->setFlags(entity_clean);
+    // FIXME queue it so the initial state gets persisted.
     return 0;
 }
