@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasProperties.cpp,v 1.2 2007-12-02 23:49:06 alriddoch Exp $
+// $Id$
 
 #include "AtlasProperties.h"
 
@@ -34,7 +34,7 @@ static const bool debug_flag = false;
 using Atlas::Objects::Entity::RootEntity;
 
 IdProperty::IdProperty(const std::string & data) :
-                       ImmutableProperty<std::string>(data)
+                       ImmutableProperty<std::string>(data, per_ephem)
 {
 }
 
