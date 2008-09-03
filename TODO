@@ -1,3 +1,5 @@
+Implement transient to avoid Database traffic.
+
 Make sure the select fallback code handles congested and busy ok.
 
 Sort out http connection with a configurable port.
