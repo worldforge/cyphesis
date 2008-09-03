@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Thing.cpp,v 1.230 2008-08-21 17:10:39 alriddoch Exp $
+// $Id$
 
 #include "Thing.h"
 
@@ -420,7 +420,7 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     s->setArgs1(op);
     res.push_back(s);
     m_seq++;
-    if (m_flags & entity_clean) {
+    if (~m_flags & entity_clean) {
         onUpdated();
     }
 }

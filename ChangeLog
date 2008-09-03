@@ -1,5 +1,10 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Thing.cpp: Correct the logic when checking whether
+	  the entity has changed.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.cpp: Mark properties as dirty when they are
 	  set.
 
