@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.cpp,v 1.87 2008-08-21 17:10:39 alriddoch Exp $
+// $Id$
 
 #include "Plant.h"
 
@@ -32,6 +32,7 @@
 #include "common/Eat.h"
 
 #include <wfmath/atlasconv.h>
+#include <wfmath/MersenneTwister.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -128,9 +129,13 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Tick(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
+    // Use a value seeded from the ID, so it's always the same.
+    WFMath::MTRand::instance.seed(getIntId());
+    float jitter = WFMath::MTRand::instance.rand();
+
     Tick tick_op;
     tick_op->setTo(getId());
-    tick_op->setFutureSeconds(consts::basic_tick * m_speed);
+    tick_op->setFutureSeconds(consts::basic_tick * m_speed + jitter);
     res.push_back(tick_op);
 
     // FIXME I don't like having to do this test, as its only required

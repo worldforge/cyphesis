@@ -1,5 +1,10 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Plant.cpp: Add a small random variation to plant simulation
+	  tick time, so updates don't coincide.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Add checks so that ephemeral
 	  entities are not written to the database, and ephemeral properties
 	  are not inserted or updated. Postpone connecting the updated
