@@ -1,5 +1,10 @@
 2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.h: Add an accessor for the size of the queue of
+	  database queries yet to be launched.
+
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Expand the query for bootstrapping the world
 	  database entry, so it more completely populates the row.
 

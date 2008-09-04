@@ -125,6 +125,10 @@ class Database {
     const std::string & rule() const { return m_rule_db; }
     bool queryInProgress() const { return m_queryInProgress; }
 
+    size_t queryQueueSize() const {
+        return pendingQueries.size();
+    }
+
     bool decodeObject(const std::string & data,
                       Atlas::Objects::Root &);
 
