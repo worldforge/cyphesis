@@ -106,11 +106,23 @@ void Entity::setProperty(const std::string & name, PropertyBase * prop)
 void Entity::addToMessage(MapType & omap) const
 {
     // We need to have a list of keys to pull from attributes.
-    PropertyDict::const_iterator J = m_properties.begin();
-    PropertyDict::const_iterator Jend = m_properties.end();
+    PropertyDict::const_iterator J;
+    PropertyDict::const_iterator Jend;
+
+    if (m_type != 0) {
+        J = m_type->defaults().begin();
+        Jend = m_type->defaults().end();
+        for (; J != Jend; ++J) {
+            J->second->add(J->first, omap);
+        }
+    }
+
+    J = m_properties.begin();
+    Jend = m_properties.end();
     for (; J != Jend; ++J) {
         J->second->add(J->first, omap);
     }
+
     omap["stamp"] = (double)m_seq;
     omap["parents"] = ListType(1, m_type);
     m_location.addToMessage(omap);
@@ -123,11 +135,23 @@ void Entity::addToMessage(MapType & omap) const
 void Entity::addToEntity(const RootEntity & ent) const
 {
     // We need to have a list of keys to pull from attributes.
-    PropertyDict::const_iterator J = m_properties.begin();
-    PropertyDict::const_iterator Jend = m_properties.end();
+    PropertyDict::const_iterator J;
+    PropertyDict::const_iterator Jend;
+
+    if (m_type != 0) {
+        J = m_type->defaults().begin();
+        Jend = m_type->defaults().end();
+        for (; J != Jend; ++J) {
+            J->second->add(J->first, ent);
+        }
+    }
+
+    J = m_properties.begin();
+    Jend = m_properties.end();
     for (; J != Jend; ++J) {
         J->second->add(J->first, ent);
     }
+
     ent->setStamp(m_seq);
     ent->setParents(std::list<std::string>(1, m_type->name()));
     m_location.addToEntity(ent);

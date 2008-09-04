@@ -1,5 +1,10 @@
 2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.cpp: Include default properties from the
+	  type node when making an Atlas representation of an Entity.
+
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.h: Add an accessor for the size of the queue of
 	  database queries yet to be launched.
 
