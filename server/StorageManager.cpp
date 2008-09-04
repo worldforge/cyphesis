@@ -71,6 +71,9 @@ void StorageManager::entityInserted(Entity * ent)
 /// \brief Called when an Entity is modified
 void StorageManager::entityUpdated(Entity * ent)
 {
+    if (ent->isDestroyed()) {
+        m_destroyedEntities.push_back(ent->getIntId());
+    }
     // Is it already in the dirty Entities queue?
     // Perhaps we need to modify the semantics of the updated signal
     // so it is only emitted if the entity was not marked as dirty.
@@ -174,6 +177,13 @@ void StorageManager::updateEntity(Entity * ent)
 void StorageManager::tick()
 {
     int inserts = 0, updates = 0;
+
+    while (!m_destroyedEntities.empty()) {
+        long id = m_destroyedEntities.front();
+        Database::instance()->dropEntity(id);
+        m_destroyedEntities.pop_front();
+    }
+
     while (!m_unstoredEntities.empty()) {
         const EntityRef & ent = m_unstoredEntities.front();
         if (ent.get() != 0) {

@@ -36,12 +36,16 @@ class PropertyBase;
 class StorageManager {
   protected:
     typedef std::deque<EntityRef> Entitystore;
+    typedef std::deque<long> Idstore;
 
     /// \brief Queue of references to entities yet to be stored.
     Entitystore m_unstoredEntities;
 
     /// \brief Queue of references to entities with modifications.
     Entitystore m_dirtyEntities;
+
+    /// \brief Queue of IDs of entities that are destroyed
+    Idstore m_destroyedEntities;
 
     int m_insertEntityCount;
     int m_updateEntityCount;
