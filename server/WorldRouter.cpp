@@ -386,6 +386,7 @@ void WorldRouter::delEntity(Entity * ent)
     m_eobjects.erase(ent->getIntId());
     --m_entityCount;
     ent->destroy();
+    ent->updated.emit();
     ent->decRef();
 }
 
