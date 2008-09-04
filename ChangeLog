@@ -1,16 +1,21 @@
-2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Plant.cpp: Increase the range of jitter on plant ticks
+	  to ensure load is evenly spread.
+
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp, server/StorageManager.h: Add a queue
 	  of deleted entity IDs, and implement deleting entries from
 	  this queue from the database.
 
-2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/WorldRouter.cpp: Emit the updated signal when an entity
 	  is destroyed and removed from the world, so that the store
 	  can remove it.
 
-2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp, common/Database.h: Add method to remove
 	  entities from the database store. Remove the foreign key index

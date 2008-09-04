@@ -131,7 +131,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     // Use a value seeded from the ID, so it's always the same.
     WFMath::MTRand::instance.seed(getIntId());
-    float jitter = WFMath::MTRand::instance.rand();
+    float jitter = WFMath::MTRand::instance.rand() * 10;
 
     Tick tick_op;
     tick_op->setTo(getId());
