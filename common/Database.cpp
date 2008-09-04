@@ -972,8 +972,7 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         return 0;
     }
     std::string query = "CREATE TABLE entities (id integer UNIQUE PRIMARY KEY, "
-                        "loc integer REFERENCES entities (id), "
-                        "type text, seq integer";
+                        "loc integer, type text, seq integer";
     std::map<std::string, int>::const_iterator I = chunks.begin();
     std::map<std::string, int>::const_iterator Iend = chunks.end();
     for (; I != Iend; ++I) {
@@ -1011,6 +1010,20 @@ int Database::updateEntity(const std::string & id,
     std::string query = String::compose("UPDATE entities SET seq = %1 "
                                         "WHERE id = '%2'", seq, id);
     return scheduleCommand(query);
+}
+
+int Database::dropEntity(long id)
+{
+    std::string query = String::compose("DELETE FROM properties "
+                                        "WHERE id = '%1'", id);
+
+    scheduleCommand(query);
+
+    query = String::compose("DELETE FROM entities WHERE id = '%1'", id);
+
+    scheduleCommand(query);
+
+    return 0;
 }
 
 int Database::registerPropertyTable()

@@ -214,6 +214,7 @@ class Database {
     int updateEntity(const std::string & id,
                      int seq,
                      const std::string & value);
+    int dropEntity(long id);
 
     int registerPropertyTable();
     int insertProperties(const std::string & id,

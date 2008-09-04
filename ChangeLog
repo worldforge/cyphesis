@@ -1,5 +1,11 @@
 2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp, common/Database.h: Add method to remove
+	  entities from the database store. Remove the foreign key index
+	  constraint from the LOC column.
+
+2008-09-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Bootstrap the world entry in the entity
 	  database table at creation time.
 
