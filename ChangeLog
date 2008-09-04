@@ -1,5 +1,10 @@
 2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Expand the query for bootstrapping the world
+	  database entry, so it more completely populates the row.
+
+2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Plant.cpp: Increase the range of jitter on plant ticks
 	  to ensure load is evenly spread.
 

@@ -983,7 +983,7 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
     if (!runCommandQuery(query)) {
         return -1;
     }
-    query = String::compose("INSERT INTO entities VALUES (%1)",
+    query = String::compose("INSERT INTO entities VALUES (%1, null, 'world')",
                             consts::rootWorldIntId);
     if (!runCommandQuery(query)) {
         return -1;
