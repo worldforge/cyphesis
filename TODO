@@ -1,3 +1,6 @@
+insertEntity and updateEntity are returning the bool result of scheduleCommand
+incorrectly.
+
 Perhaps we can use property flags for Update ops, rather then the cludgy
 going through strings?
 
