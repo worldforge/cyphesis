@@ -73,20 +73,33 @@ Entity::~Entity()
 
 void Entity::setAttr(const std::string & name, const Element & attr)
 {
+    PropertyBase * prop;
+    // If it is an existing property, just update the value.
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
-        I->second->set(attr);
-        I->second->resetFlags(per_clean);
+        prop = I->second;
+        prop->set(attr);
+        // Allow the change to take effect.
+        prop->apply(this);
+        // Mark it as unclean and the Entity as unclean
+        prop->resetFlags(per_clean);
         resetFlags(entity_clean);
         return;
     }
-    PropertyBase * prop = PropertyManager::instance()->addProperty(this, name);
+    prop = PropertyManager::instance()->addProperty(this, name);
     if (prop == 0) {
         prop = new SoftProperty(attr);
     } else {
         prop->set(attr);
     }
     m_properties[name] = prop;
+    // If this is an entirely new property, not just a modifcation of
+    // one in defaults, then we need to install it to this Entity.
+    if (m_type == 0 || m_type->defaults().find(name) == m_type->defaults().end()) {
+        prop->install(this);
+    }
+    // Allow the value to take effect.
+    prop->apply(this);
     resetFlags(entity_clean);
     return;
 }

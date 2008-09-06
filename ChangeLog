@@ -1,5 +1,10 @@
 2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.cpp: Call the property install and apply methods
+	  where required when properties are set.
+
+2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py: Add a test function to create a
 	  simple oak entity.
 
