@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.h,v 1.21 2008-08-23 17:53:44 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
@@ -84,6 +84,12 @@ static const unsigned int vis_internal = 1 << 4;
 
 /// \brief Flag mask indicating data should be be perceptable
 static const unsigned int vis_mask = vis_hidden | vis_internal;
+
+/// \brief Flag set to indicate this is a class property, and has no instance
+static const unsigned int flag_class = 1 << 5;
+
+/// \brief Flag used for boolean properties
+static const unsigned int flag_bool = 1 << 6;
 
 /// \brief Entity property template for properties with single data values
 /// that cannot be modified directly.

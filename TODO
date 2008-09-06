@@ -1,3 +1,5 @@
+Implement flag_class in EntityBuilder.
+
 Once things are sorted for the new property mechanism, with install and apply
 implemented, 
 

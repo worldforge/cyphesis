@@ -1,5 +1,11 @@
 2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Property.h: Add two more flags, one to indicate a property
+	  is stored in the class, and one used to implement boolean
+	  properties very efficiently.
+
+2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.cpp: Call the property install and apply methods
 	  where required when properties are set.
 
