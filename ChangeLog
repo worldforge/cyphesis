@@ -1,5 +1,13 @@
 2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/HandlerProperty.h, rulesets/HandlerProperty_impl.h,
+	  rulesets/HandlerProperty.cpp: New property class which uses the
+	  install method it insert an operation handler function
+	  instead of using a messy active property factory as we have done
+	  so far.
+
+2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Makefile.am: Use PYTHON_LINKER_FLAGS rather than hard coding
 	  architecture dependant flags.
 
