@@ -1,5 +1,9 @@
 2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Makefile.am: Add HandlerProperty to the build.
+
+2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/HandlerProperty.h, rulesets/HandlerProperty_impl.h,
 	  rulesets/HandlerProperty.cpp: New property class which uses the
 	  install method it insert an operation handler function
