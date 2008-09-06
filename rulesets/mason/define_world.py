@@ -1033,6 +1033,12 @@ def kill_tree(mapeditor):
     tree=m.make('oak')
     m.set(tree.id, status=-1)
 
+def test_oak(mapeditor):
+
+    m=editor(mapeditor)
+
+    tree=m.make('oak')
+
 def test_attachment(mapeditor):
 
     m=editor(mapeditor)
