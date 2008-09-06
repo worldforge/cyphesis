@@ -340,7 +340,7 @@ Charactertest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                       $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
                       $(TERRAIN_LIBS)
-Charactertest_LDFLAGS = -export-dynamic
+Charactertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 Creatortest_SOURCES = Creatortest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
 Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
@@ -351,7 +351,7 @@ Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
                     $(top_builddir)/physics/libphysics.a \
                     $(top_builddir)/common/libcommon.a \
                     $(TERRAIN_LIBS)
-Creatortest_LDFLAGS = -export-dynamic
+Creatortest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
 ThingupdatePropertiestest_LDADD = $(top_builddir)/modules/Location.o \
@@ -380,7 +380,7 @@ Tasktest_LDADD = $(top_builddir)/rulesets/Python_API.o \
                  $(top_builddir)/physics/libphysics.a \
                  $(top_builddir)/common/libcommon.a \
                  $(TERRAIN_LIBS)
-Tasktest_LDFLAGS = -export-dynamic
+Tasktest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 EntityPropertytest_SOURCES = EntityPropertytest.cpp
 EntityPropertytest_LDADD = $(top_builddir)/rulesets/Python_API.o \
@@ -434,7 +434,7 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/physics/libphysics.a \
                           $(top_builddir)/common/libcommon.a \
                           $(TERRAIN_LIBS) $(NETWORK_LIBS)
-EntityFactorytest_LDFLAGS = -export-dynamic
+EntityFactorytest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 
 python_class_SOURCES = python_class.cpp

@@ -1,3 +1,8 @@
+2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/Makefile.am: Use PYTHON_LINKER_FLAGS rather than hard coding
+	  architecture dependant flags.
+
 2008-09-04  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Entity.cpp: Include default properties from the
