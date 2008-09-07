@@ -1,3 +1,9 @@
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/StorageManager.cpp: Only do property inserts if there are
+	  some to be inserted. Limit the number of queries per tick. Improve
+	  database debug output.
+
 2008-09-06  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Property.h: Add two more flags, one to indicate a property

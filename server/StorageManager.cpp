@@ -121,8 +121,10 @@ void StorageManager::insertEntity(Entity * ent)
         encodeProperty(prop, property_tuples[I->first]);
         prop->setFlags(per_clean | per_seen);
     }
-    Database::instance()->insertProperties(ent->getId(), property_tuples);
-    ++m_insertPropertyCount;
+    if (!property_tuples.empty()) {
+        Database::instance()->insertProperties(ent->getId(), property_tuples);
+        ++m_insertPropertyCount;
+    }
     ent->resetFlags(entity_queued);
     ent->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
@@ -197,6 +199,10 @@ void StorageManager::tick()
     }
 
     while (!m_dirtyEntities.empty()) {
+        if (Database::instance()->queryQueueSize() > 200) {
+            std::cout << "Too many" << std::endl << std::flush;
+            break;
+        }
         const EntityRef & ent = m_dirtyEntities.front();
         if (ent.get() != 0) {
             debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
@@ -207,8 +213,12 @@ void StorageManager::tick()
         }
         m_dirtyEntities.pop_front();
     }
-    std::cout << "I: " << inserts << " U: " << updates
-              << std::endl << std::flush;
+    if (inserts > 0 || updates >> 0) {
+        std::cout << "I: " << inserts << " U: " << updates
+                  << std::endl << std::flush;
+    } else {
+        std::cout << "." << std::flush;
+    }
 }
 
 int StorageManager::initWorld()
