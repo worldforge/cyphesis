@@ -1,5 +1,14 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/BBoxProperty.cpp, rulesets/BBoxProperty.h: A new property
+	  to make BBOX optional and more dynamic.
+
+	* rulesets/MultiHandlerProperty.cpp, rulesets/MultiHandlerProperty.h,
+	  rulesets/MultiHandlerProperty_impl.h: A new property for those
+	  generic properties that need many handlers.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Only do property inserts if there are
 	  some to be inserted. Limit the number of queries per tick. Improve
 	  database debug output.
