@@ -123,7 +123,8 @@ void Character::metabolise(OpVector & res, double ammount)
 
     PropertyBase * status_prop = getProperty("status");
     if (status_prop == 0) {
-        status_prop = PropertyManager::instance()->addProperty(this, "status");
+        // FIXME Probably don't do enough here to set up the property.
+        status_prop = PropertyManager::instance()->addProperty("status");
         if (status_prop == 0) {
             log(ERROR, "Unable to get a STATUS property.");
             return;
@@ -481,7 +482,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 
     PropertyBase * food_property = getProperty("food");
     if (food_property == 0) {
-        food_property = PropertyManager::instance()->addProperty(this, "food");
+        food_property = PropertyManager::instance()->addProperty("food");
         if (food_property == 0) {
             log(ERROR, "Unable to set a FOOD property.");
             return;

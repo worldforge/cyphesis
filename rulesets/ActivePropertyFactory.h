@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ActivePropertyFactory.h,v 1.7 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_ACTIVE_PROPERTY_FACTORY_H
 #define RULESETS_ACTIVE_PROPERTY_FACTORY_H
@@ -24,7 +24,7 @@
 #include "common/PropertyFactory.h"
 
 /// \brief Factory class template to create active Property objects.
-template <class T>
+template <typename T>
 class ActivePropertyFactory : public PropertyKit {
   protected:
     /// The class number of operations this property needs to handle
@@ -35,7 +35,7 @@ class ActivePropertyFactory : public PropertyKit {
   public:
     explicit ActivePropertyFactory(int, Handler);
 
-    virtual PropertyBase * newProperty(Entity *);
+    virtual PropertyBase * newProperty();
 };
 
 /// \brief Factory class template to create multi-operation active Property
@@ -49,7 +49,7 @@ class MultiActivePropertyFactory : public PropertyKit {
   public:
     explicit MultiActivePropertyFactory(const HandlerMap & handlers);
 
-    virtual PropertyBase * newProperty(Entity *);
+    virtual PropertyBase * newProperty();
 };
 
 #endif // RULESETS_ACTIVE_PROPERTY_FACTORY_H

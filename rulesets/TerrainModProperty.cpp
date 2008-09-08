@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.cpp,v 1.7 2008-08-18 18:59:48 alriddoch Exp $
+// $Id$
 
 #include "TerrainModProperty.h"
 
@@ -48,7 +48,9 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
 /// \brief TerrainModProperty constructor
 ///
-TerrainModProperty::TerrainModProperty() : PropertyBase(0), m_modptr(0), m_owner(0)
+TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
+                    PropertyBase(0),
+                    m_modptr(0), m_owner(0), m_handlers(handlers)
 {
 }
 
@@ -155,6 +157,15 @@ TerrainProperty* TerrainModProperty::getTerrain()
 void TerrainModProperty::add(const std::string & s, MapType & ent) const
 {
     get(ent[s]);
+}
+
+void TerrainModProperty::install(Entity * owner)
+{
+    HandlerMap::const_iterator I = m_handlers.begin();
+    HandlerMap::const_iterator Iend = m_handlers.end();
+    for (; I != Iend; ++I) {
+        owner->installHandler(I->first, I->second);
+    }
 }
 
 void TerrainModProperty::move(Entity* owner, const Point3D & newPos)

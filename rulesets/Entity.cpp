@@ -62,9 +62,6 @@ Entity::Entity(const std::string & id, long intId) :
         Identified(id, intId),
         LocatedEntity(id, intId), m_motion(0), m_flags(0)
 {
-    SignalProperty<BBox> * sp = new SignalProperty<BBox>(m_location.m_bBox, 0);
-    sp->modified.connect(sigc::mem_fun(&m_location, &Location::modifyBBox));
-    m_properties["bbox"] = sp;
 }
 
 Entity::~Entity()
@@ -86,7 +83,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         resetFlags(entity_clean);
         return;
     }
-    prop = PropertyManager::instance()->addProperty(this, name);
+    prop = PropertyManager::instance()->addProperty(name);
     if (prop == 0) {
         prop = new SoftProperty(attr);
     } else {

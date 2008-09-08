@@ -20,9 +20,6 @@ librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   ActivePropertyFactory.cpp \
 			   ActivePropertyFactory_impl.h \
 			   ActivePropertyFactory.h \
-			   EntityPropertyFactory.cpp \
-			   EntityPropertyFactory_impl.h \
-			   EntityPropertyFactory.h \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 
 
@@ -47,6 +44,9 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     StatusProperty.cpp StatusProperty.h \
 			     HandlerProperty.cpp HandlerProperty.h \
 			     HandlerProperty_impl.h \
+			     MultiHandlerProperty.cpp MultiHandlerProperty.h \
+			     MultiHandlerProperty_impl.h \
+			     BBoxProperty.cpp BBoxProperty.h \
 			     Statistics.cpp Statistics.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SolidProperty.cpp,v 1.1 2007-01-27 16:35:37 alriddoch Exp $
+// $Id$
 
 #include "SolidProperty.h"
 
@@ -32,19 +32,28 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-SolidProperty::SolidProperty(Entity * owner) : PropertyBase(0), m_owner(owner)
+SolidProperty::SolidProperty() : PropertyBase(0)
 {
 }
 
 bool SolidProperty::get(Element & ent) const
 {
-    ent = m_owner->m_location.isSolid() ? 1 : 0;
+    ent = (flags() & flag_bool) ? 1 : 0;
     return true;
 }
 
 void SolidProperty::set(const Element & ent)
 {
     if (ent.isInt()) {
-        m_owner->m_location.setSolid(ent.Int() != 0);
+        if (ent.Int() == 0) {
+            resetFlags(flag_bool);
+        } else {
+            setFlags(flag_bool);
+        }
     }
+}
+
+void SolidProperty::apply(Entity * owner)
+{
+    owner->m_location.setSolid(flags() & flag_bool);
 }

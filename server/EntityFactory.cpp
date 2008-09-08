@@ -50,6 +50,8 @@
 #include "common/random.h"
 #include "common/compose.hpp"
 #include "common/Monitors.h"
+#include "common/DynamicProperty.h"
+#include "common/TypeNode.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>
@@ -173,7 +175,14 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     factory->populate(*thing);
 
     // Read the defaults
-    thing->merge(factory->m_attributes);
+    // thing->merge(factory->m_attributes);
+    PropertyDict::const_iterator J = factory->m_type->defaults().begin();
+    PropertyDict::const_iterator Jend = factory->m_type->defaults().end();
+    for (; J != Jend; ++J) {
+        PropertyBase * prop = J->second;
+        prop->install(thing);
+        prop->apply(thing);
+    }
     // And then override with the values provided for this entity.
     thing->merge(attributes->asMessage());
     // Get location from entity, if it is present
@@ -300,7 +309,6 @@ int EntityBuilder::populateEntityFactory(const std::string & class_name,
                                          const MapType & class_desc)
 {
     // assert(class_name == class_desc->getId());
-
     // Establish whether this rule has an associated script, and
     // if so, use it.
     MapType::const_iterator J = class_desc.find("script");
@@ -624,6 +632,19 @@ int EntityBuilder::installEntityClass(const std::string & class_name,
 
     // Install the factory in place.
     installFactory(class_name, parent, factory, class_desc);
+
+    MapType::const_iterator J = factory->m_attributes.begin();
+    MapType::const_iterator Jend = factory->m_attributes.end();
+    PropertyBase * p;
+    for (; J != Jend; ++J) {
+        p = PropertyManager::instance()->addProperty(J->first);
+        if (p == 0) {
+            p = new SoftProperty(J->second);
+        } else {
+            p->set(J->second);
+        }
+        factory->m_type->defaults()[J->first] = p;
+    }
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factory);

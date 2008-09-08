@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StatusProperty.cpp,v 1.2 2007-12-03 20:40:55 alriddoch Exp $
+// $Id$
 
 #include "StatusProperty.h"
 
@@ -28,9 +28,7 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;
 
-StatusProperty::StatusProperty(Entity * owner) : PropertyBase(0),
-                                                 m_owner(owner),
-                                                 m_value(1.f)
+StatusProperty::StatusProperty() : PropertyBase(0), m_value(1.f)
 {
 }
 
@@ -44,13 +42,17 @@ void StatusProperty::set(const Element & ent)
 {
     if (ent.isNum()) {
         m_value = ent.asNum();
-        if (m_value < 0) {
-            Delete del;
-            Anonymous delete_arg;
-            delete_arg->setId(m_owner->getId());
-            del->setArgs1(delete_arg);
-            del->setTo(m_owner->getId());
-            m_owner->sendWorld(del);
-        }
+    }
+}
+
+void StatusProperty::apply(Entity * owner)
+{
+    if (m_value < 0) {
+        Delete del;
+        Anonymous delete_arg;
+        delete_arg->setId(owner->getId());
+        del->setArgs1(delete_arg);
+        del->setTo(owner->getId());
+        owner->sendWorld(del);
     }
 }

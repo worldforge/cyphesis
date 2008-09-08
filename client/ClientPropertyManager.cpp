@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientPropertyManager.cpp,v 1.3 2006-10-26 00:48:01 alriddoch Exp $
+// $Id$
 
 #include "ClientPropertyManager.h"
 
@@ -27,8 +27,7 @@ ClientPropertyManager::~ClientPropertyManager()
 {
 }
 
-PropertyBase * ClientPropertyManager::addProperty(Entity * entity,
-                                                  const std::string & name)
+PropertyBase * ClientPropertyManager::addProperty(const std::string & name)
 {
     return 0;
 }

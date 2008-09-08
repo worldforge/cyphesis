@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyFactory_impl.h,v 1.6 2007-12-20 18:47:28 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_PROPERTY_FACTORY_IMPL_H
 #define COMMON_PROPERTY_FACTORY_IMPL_H
@@ -23,7 +23,7 @@
 #include "PropertyFactory.h"
 
 template <class T>
-PropertyBase * PropertyFactory<T>::newProperty(Entity *)
+PropertyBase * PropertyFactory<T>::newProperty()
 {
     return new T();
 }

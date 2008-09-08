@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SolidProperty.h,v 1.2 2007-09-24 13:00:43 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_SOLID_PROPERTY_H
 #define RULESETS_SOLID_PROPERTY_H
@@ -31,17 +31,16 @@ class Entity;
 /// \brief Class to handle whether or not an entity is solid for collisions.
 /// \ingroup PropertyClasses
 class SolidProperty : public PropertyBase {
-  protected:
-    /// The owner of the property.
-    Entity * m_owner;
   public:
     /// \brief Constructor
     ///
     /// @param owner the owner of the property.
-    explicit SolidProperty(Entity * owner);
+    explicit SolidProperty();
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+
+    virtual void apply(Entity *);
 };
 
 #endif // RULESETS_LINE_PROPERTY_H

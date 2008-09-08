@@ -1,3 +1,18 @@
+isSimple() and isSolid() should be entity flags, once the collision
+stuff is sorted.
+
+Modify client code which inherits from Entity so it uses LocatedEntity
+or summink instead, removing the need for ClientPropertyManager.
+
+Fix the insert properry count. Incremented in the wrong place.
+
+getProperty has to become virtual and overriden to do class properties.
+
+Use return value of Property::get to ensure we are not storing
+worthless data in the properties table.
+
+Check use of the property manager in Character when adding status property.
+
 Implement flag_class in EntityBuilder.
 
 Once things are sorted for the new property mechanism, with install and apply

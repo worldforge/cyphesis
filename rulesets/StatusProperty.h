@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: StatusProperty.h,v 1.1 2007-11-29 01:13:27 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_STATUS_PROPERTY_H
 #define RULESETS_STATUS_PROPERTY_H
@@ -30,18 +30,17 @@ class Entity;
 /// \ingroup PropertyClasses
 class StatusProperty : public PropertyBase {
   protected:
-    /// The owner of the property.
-    Entity * m_owner;
     /// The value of the property.
     float m_value;
   public:
     /// \brief Constructor
     ///
     /// @param owner the owner of the property.
-    explicit StatusProperty(Entity * owner);
+    explicit StatusProperty();
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual void apply(Entity *);
 };
 
 #endif // RULESETS_STATUS_PROPERTY_H

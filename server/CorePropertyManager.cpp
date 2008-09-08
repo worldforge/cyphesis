@@ -20,7 +20,6 @@
 #include "CorePropertyManager.h"
 
 #include "rulesets/ActivePropertyFactory_impl.h"
-#include "rulesets/EntityPropertyFactory_impl.h"
 
 #include "rulesets/LineProperty.h"
 #include "rulesets/OutfitProperty.h"
@@ -28,6 +27,7 @@
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainModProperty.h"
+#include "rulesets/BBoxProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -297,16 +297,17 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["points"] = new PropertyFactory<Dynamic<LineProperty, CoordList> >;
     m_propertyFactories["start_intersections"] = new PropertyFactory<DynamicProperty<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyFactory<DynamicProperty<IdList> >;
-    m_propertyFactories["attachment"] = new ActivePropertyFactory<DynamicProperty<int> >(Atlas::Objects::Operation::MOVE_NO, test_handler);
-    m_propertyFactories["decays"] = new ActivePropertyFactory<DynamicProperty<std::string> >(Atlas::Objects::Operation::DELETE_NO, del_handler);
+    m_propertyFactories["attachment"] = new ActivePropertyFactory<int>(Atlas::Objects::Operation::MOVE_NO, test_handler);
+    m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
-    m_propertyFactories["solid"] = new EntityPropertyFactory<SolidProperty>;
-    m_propertyFactories["status"] = new EntityPropertyFactory<StatusProperty>;
-    m_propertyFactories["biomass"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::EAT_NO, eat_handler);
-    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::BURN_NO, burn_handler);
-    m_propertyFactories["transient"] = new ActivePropertyFactory<DynamicProperty<double> >(Atlas::Objects::Operation::SETUP_NO, transient_handler);
+    m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
+    m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
+    m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, eat_handler);
+    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
+    m_propertyFactories["transient"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::SETUP_NO, transient_handler);
     m_propertyFactories["food"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
+    m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;
 //     m_propertyFactories["terrainmod"] = new EntityPropertyFactory<TerrainModProperty>;
 //     m_propertyFactories["terrainmod"] = new ActivePropertyFactory<Dynamic<TerrainModProperty, Entity*> >(Atlas::Objects::Operation::MOVE_NO, terrainmod_handler);
     
@@ -327,17 +328,15 @@ CorePropertyManager::~CorePropertyManager()
     }
 }
 
-PropertyBase * CorePropertyManager::addProperty(Entity * entity,
-                                                const std::string & name)
+PropertyBase * CorePropertyManager::addProperty(const std::string & name)
 {
-    assert(entity != 0);
     assert(!name.empty());
     assert(name != "objtype");
     PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
         return 0;
     }
-    debug(std::cout << name << " property found. " << entity->getId() << std::endl << std::flush;);
-    PropertyBase * p = I->second->newProperty(entity);
+    debug(std::cout << name << " property found. " << std::endl << std::flush;);
+    PropertyBase * p = I->second->newProperty();
     return p;
 }

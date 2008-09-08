@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CorePropertyManager.h,v 1.5 2007-12-20 18:42:43 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_CORE_PROPERTY_MANAGER_H
 #define SERVER_CORE_PROPERTY_MANAGER_H
@@ -38,7 +38,7 @@ class CorePropertyManager : public PropertyManager {
     CorePropertyManager();
     virtual ~CorePropertyManager();
 
-    virtual PropertyBase * addProperty(Entity *, const std::string & name);
+    virtual PropertyBase * addProperty(const std::string & name);
 };
 
 #endif // SERVER_CORE_PROPERTY_MANAGER_H

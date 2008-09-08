@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainModProperty.h,v 1.7 2008-08-18 18:59:48 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_TERRAINMOD_PROPERTY_H
 #define RULESETS_TERRAINMOD_PROPERTY_H
@@ -44,6 +44,9 @@ class TerrainModProperty : public PropertyBase {
 
     /// \brief the entity owner of this property
     Entity * m_owner;
+
+    /// \brief the handlers this property should install
+    HandlerMap m_handlers;
 
     TerrainProperty* getTerrain();
 
@@ -88,12 +91,13 @@ class TerrainModProperty : public PropertyBase {
 
   public:
 
-    explicit TerrainModProperty();
+    explicit TerrainModProperty(const HandlerMap &);
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string & key,
                      Atlas::Message::MapType & map) const;
+    virtual void install(Entity *);
 
     Mercator::TerrainMod * getModifier();
     void setPos(const Point3D &);

@@ -1,5 +1,46 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/ActivePropertyFactory_impl.h: Re-work the active property
+	  factories so they just pass handler information to the property
+	  classes rather than installing it themselves, so the property
+	  can now handle installing the handlers each time they are installed
+	  on an entity, making class default properties work.
+
+	* client/ClientPropertyManager.cpp, client/ClientPropertyManager.h,
+	  common/PropertyFactory.h, common/PropertyFactory_impl.h,
+	  common/PropertyManager.h, rulesets/ActivePropertyFactory.h,
+	  server/CorePropertyManager.cpp, server/CorePropertyManager.h:
+	  Modify the property manager and property factory interfaces so they
+	  do not take a pointer to the owner, as this is never required any
+	  more.
+
+	* rulesets/Character.cpp, rulesets/Entity.cpp: Modify code that uses
+	  property managers to use the new interface.
+
+	* rulesets/SolidProperty.cpp, rulesets/SolidProperty.h: Make use of
+	  the bool flag to implement this, preventing it from being tied to
+	  having a pointer to the owner at creation time.
+
+	* rulesets/StatusProperty.cpp, rulesets/StatusProperty.h: Remove
+	  the need for an owner pointer at construction time by using the
+	  apply method.
+
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h:
+	  Use new MultiActivePropertyManager and install method to handle
+	  installing handlers rather than relying on the factory to do it.
+
+	* server/CorePropertyManager.cpp: Change many of the property
+	  factories now that none get get an owner pointer.
+
+	* server/EntityFactory.cpp: Set up default properties on all type
+	  nodes when a new class is installed, and don't apply instance
+	  properties based on class defaults, relying on class properties.
+
+	* rulesets/Entity.cpp: Remove hard coded BBox property now that the
+	  functionality is handled by a more special property.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Disable debug output.
 
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
