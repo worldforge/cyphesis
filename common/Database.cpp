@@ -968,6 +968,11 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         debug(std::cout << "Table does not yet exist"
                         << std::endl << std::flush;);
     } else {
+        // FIXME Flush out the whole state of the databases, to ensure they
+        // don't clog up while we are testing.
+        runCommandQuery("DELETE FROM properties");
+        runCommandQuery(String::compose("DELETE FROM entities WHERE id!=%1",
+                                        consts::rootWorldIntId));
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return 0;
     }
@@ -1019,7 +1024,7 @@ int Database::dropEntity(long id)
 
     scheduleCommand(query);
 
-    query = String::compose("DELETE FROM entities WHERE id = '%1'", id);
+    query = String::compose("DELETE FROM entities WHERE id = %1", id);
 
     scheduleCommand(query);
 

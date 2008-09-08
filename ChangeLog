@@ -1,5 +1,11 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Add queries which purge the world state on
+	  startup to prevent the tables from getting clogged up. Fix the
+	  syntax of the query which removes deleted entity rows.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* data/basic.xml, data/characters.xml, data/plants.xml: Remove some
 	  obsolete classes which have no role in the world, and no media
 	  to represent them.
