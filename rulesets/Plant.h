@@ -35,25 +35,17 @@ typedef Thing Plant_parent;
 /// \ingroup EntityClasses
 class Plant : public Plant_parent {
   protected:
-    int m_fruits; // Number of fruits on the plant
-    int m_fruitChance; // chance of growing fruit
-    double m_sizeAdult; // chance of growing fruit
-
     double m_nourishment;
 
     static const int m_speed = 20; // Number of basic_ticks per tick
     static const int m_minuDrop = 0; // min fruit dropped
     static const int m_maxuDrop = 2; // max fruit dropped
 
-    int dropFruit(OpVector & res);
+    int dropFruit(OpVector & res, int & fruits);
   public:
 
     explicit Plant(const std::string & id, long intId);
     virtual ~Plant();
-
-    const int getFruits() const { return m_fruits; }
-    const int getFruitChance() const { return m_fruitChance; }
-    const double getSizeAdult() const { return m_sizeAdult; }
 
     virtual void NourishOperation(const Operation &, OpVector &);
     virtual void SetupOperation(const Operation &, OpVector &);

@@ -1,5 +1,11 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/plants.xml, rulesets/Plant.cpp, rulesets/Plant.h: Remove the
+	  last of the hard coded properties from Plant. Replace with soft
+	  class properties in the data.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Plant.cpp, rulesets/Plant.h: Remove hard radius
 	  and fruitName properties, and get the values by reading via
 	  the standard mechanism. Add some debug output, and remove

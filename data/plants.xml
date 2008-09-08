@@ -81,6 +81,10 @@
         <string name="default">apple</string>
         <string name="visibility">public</string>
       </map>
+      <map name="fruitChance">
+        <int name="default">2</int>
+        <string name="visibility">public</string>
+      </map>
       <map name="fruits">
         <int name="default">3</int>
         <string name="visibility">public</string>
@@ -91,6 +95,10 @@
       </map>
       <map name="maxmass">
         <float name="default">5000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="sizeAdult">
+        <int name="default">4</int>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -413,6 +421,10 @@
         <string name="default">acorn</string>
         <string name="visibility">public</string>
       </map>
+      <map name="fruitChance">
+        <int name="default">2</int>
+        <string name="visibility">public</string>
+      </map>
       <map name="fruits">
         <int name="default">20</int>
         <string name="visibility">public</string>
@@ -423,6 +435,10 @@
       </map>
       <map name="maxmass">
         <float name="default">6000</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="sizeAdult">
+        <int name="default">4</int>
         <string name="visibility">public</string>
       </map>
     </map>

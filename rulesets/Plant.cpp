@@ -50,35 +50,37 @@ static const bool debug_flag = false;
 
 Plant::Plant(const std::string & id, long intId) :
        Identified(id, intId),
-       Plant_parent(id, intId),
-                                                   m_fruits(0),
-                                                   m_fruitChance(2),
-                                                   m_sizeAdult(4),
-                                                   m_nourishment(0)
+       Plant_parent(id, intId), m_nourishment(0)
 {
-    // Default to a 1m cube
-    m_location.setBBox(BBox(WFMath::Point<3>(-0.5, -0.5, 0),
-                            WFMath::Point<3>(0.5, 0.5, 1)));
-
-    m_properties["fruits"] = new Property<int>(m_fruits, 0);
-    m_properties["fruitChance"] = new Property<int>(m_fruitChance, 0);
-    m_properties["sizeAdult"] = new Property<double>(m_sizeAdult, 0);
 }
 
 Plant::~Plant()
 {
 }
 
-int Plant::dropFruit(OpVector & res)
+/// \brief Generate operations to drop a number of fruit
+///
+/// @return -1 if this plant does not fruit,
+/// 0 if number of fruit has not changes,
+/// 1 if number of fruit has changed.
+int Plant::dropFruit(OpVector & res, int & fruits)
 {
-    if (m_fruits < 1) { return 0; }
     Element fruitName;
-    PropertyBase * p = getProperty("fruitName");
-    if (p == 0) { return 0; }
-    p->get(fruitName);
-    if (!fruitName.isString()) { return 0; }
-    int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
-    m_fruits -= drop;
+    if (!getAttr("fruitName", fruitName) || !fruitName.isString()) {
+        return -1;
+    }
+    Element fruitsAttr;
+    if (!getAttr("fruits", fruitsAttr) || !fruitsAttr.isInt()) {
+        fruits = 0;
+        return 1;
+    }
+    fruits = fruitsAttr.Int();
+    if (fruits < 1) { return 0; }
+    int drop = std::min(fruits, randint(m_minuDrop, m_maxuDrop));
+    if (drop < 1) {
+        return 0;
+    }
+    fruits -= drop;
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
     float height = m_location.bBox().highCorner().z(); 
@@ -97,7 +99,7 @@ int Plant::dropFruit(OpVector & res)
         create->setArgs1(fruit_arg);
         res.push_back(create);
     }
-    return drop;
+    return 1;
 }
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)
@@ -209,16 +211,23 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
 
-    int dropped = dropFruit(res);
-    if (m_location.bBox().isValid() && 
-        (m_location.bBox().highCorner().z() > m_sizeAdult)) {
-        if (randint(1, m_fruitChance) == 1) {
-            m_fruits++;
-            dropped--;
+    int fruits;
+    int change = dropFruit(res, fruits);
+    if (change != -1) {
+        Element fruitChance;
+        Element sizeAdult;
+        if (getAttr("fruitChance", fruitChance) && fruitChance.isInt() &&
+            getAttr("sizeAdult", sizeAdult) && sizeAdult.isNum() &&
+            m_location.bBox().isValid() && 
+            (m_location.bBox().highCorner().z() > sizeAdult.asNum())) {
+            if (randint(1, fruitChance.Int()) == 1) {
+                change = 1;
+                fruits++;
+            }
         }
-    }
-    if (dropped != 0 || new_status.Float() < 1.) {
-        set_arg->setAttr("fruits", m_fruits);
+        if (change != 0) {
+            set_arg->setAttr("fruits", fruits);
+        }
     }
     set_op->setArgs1(set_arg);
 }
@@ -227,17 +236,17 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
                     << std::endl << std::flush;);
-    debug(std::cout << "Plant has " << m_fruits << " fruits right now"
-                    << std::endl << std::flush;);
     debug(std::cout << "Checking for drop"
                     << std::endl << std::flush;);
-
-    int dropped = dropFruit(res);
-    if (dropped != 0) {
+    int fruits;
+    int chg = dropFruit(res, fruits);
+    debug(std::cout << "Plant has " << fruits << " fruits right now"
+                    << std::endl << std::flush;);
+    if (chg > 0) {
         Set set;
         Anonymous set_arg;
         set_arg->setId(getId());
-        set_arg->setAttr("fruits", m_fruits);
+        set_arg->setAttr("fruits", fruits);
         set->setTo(getId());
         set->setArgs1(set_arg);
         res.push_back(set);
