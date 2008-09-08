@@ -54,7 +54,7 @@ void NameProperty::add(const std::string & s, const RootEntity & ent) const
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-                                   ImmutableProperty<LocatedEntitySet>(data)
+      ImmutableProperty<LocatedEntitySet>(data, per_ephem)
 {
 }
 
