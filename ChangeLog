@@ -3,6 +3,22 @@
 	* common/inheritance.cpp: Set the instance pointer to null on
 	  deletion, so it can be cleanly instanced again.
 
+	* rulesets/Entity.cpp, rulesets/Entity.h: Override getProperty()
+	  so it returns defaults.
+
+	* tests/TestPropertyManager.cpp, tests/TestPropertyManager.h:
+	  Amend the test property manager to match changes to the interface
+	  it implements.
+
+	* tests/Areatest.cpp, tests/Creatortest.cpp, tests/Entitytest.cpp,
+	  tests/Planttest.cpp, tests/Stackabletest.cpp,
+	  tests/Structuretest.cpp, tests/Thingtest.cpp, tests/Worldtest.cpp:
+	  Remove "bbox" from the set of properties tests expect all entities
+	  to have by default, as it is now much more optional.
+
+	* tests/EntityFactorytest.cpp: Flush inheritance tree after each
+	  test case, as it interferes with the EntityBuilder initialisation.
+
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/ActivePropertyFactory_impl.h: Re-work the active property
