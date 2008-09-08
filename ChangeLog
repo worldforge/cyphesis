@@ -1,5 +1,13 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Plant.cpp, rulesets/Plant.h: Remove hard radius
+	  and fruitName properties, and get the values by reading via
+	  the standard mechanism. Add some debug output, and remove
+	  needless complexity from the position calculation for dropped
+	  fruit.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Add queries which purge the world state on
 	  startup to prevent the tables from getting clogged up. Fix the
 	  syntax of the query which removes deleted entity rows.

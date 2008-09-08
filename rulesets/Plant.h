@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Plant.h,v 1.33 2007-06-19 22:17:43 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PLANT_H
 #define RULESETS_PLANT_H
@@ -36,10 +36,8 @@ typedef Thing Plant_parent;
 class Plant : public Plant_parent {
   protected:
     int m_fruits; // Number of fruits on the plant
-    int m_radius; // Proportion of height as radius
     int m_fruitChance; // chance of growing fruit
     double m_sizeAdult; // chance of growing fruit
-    std::string m_fruitName;
 
     double m_nourishment;
 
@@ -54,7 +52,6 @@ class Plant : public Plant_parent {
     virtual ~Plant();
 
     const int getFruits() const { return m_fruits; }
-    const std::string & getFruitName() const { return m_fruitName; }
     const int getFruitChance() const { return m_fruitChance; }
     const double getSizeAdult() const { return m_sizeAdult; }
 

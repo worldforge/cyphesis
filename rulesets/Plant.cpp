@@ -52,7 +52,6 @@ Plant::Plant(const std::string & id, long intId) :
        Identified(id, intId),
        Plant_parent(id, intId),
                                                    m_fruits(0),
-                                                   m_radius(1),
                                                    m_fruitChance(2),
                                                    m_sizeAdult(4),
                                                    m_nourishment(0)
@@ -62,8 +61,6 @@ Plant::Plant(const std::string & id, long intId) :
                             WFMath::Point<3>(0.5, 0.5, 1)));
 
     m_properties["fruits"] = new Property<int>(m_fruits, 0);
-    m_properties["radius"] = new Property<int>(m_radius, 0);
-    m_properties["fruitName"] = new Property<std::string>(m_fruitName, 0);
     m_properties["fruitChance"] = new Property<int>(m_fruitChance, 0);
     m_properties["sizeAdult"] = new Property<double>(m_sizeAdult, 0);
 }
@@ -75,20 +72,24 @@ Plant::~Plant()
 int Plant::dropFruit(OpVector & res)
 {
     if (m_fruits < 1) { return 0; }
-    if (m_fruitName.empty()) { return 0; }
+    Element fruitName;
+    PropertyBase * p = getProperty("fruitName");
+    if (p == 0) { return 0; }
+    p->get(fruitName);
+    if (!fruitName.isString()) { return 0; }
     int drop = std::min(m_fruits, randint(m_minuDrop, m_maxuDrop));
     m_fruits -= drop;
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
     float height = m_location.bBox().highCorner().z(); 
     for(int i = 0; i < drop; ++i) {
-        float rx = m_location.pos().x() + uniform( height * m_radius,
-                                                  -height * m_radius);
-        float ry = m_location.pos().y() + uniform( height * m_radius,
-                                                  -height * m_radius);
+        float rx = m_location.pos().x() + uniform( height,
+                                                  -height);
+        float ry = m_location.pos().y() + uniform( height,
+                                                  -height);
         Anonymous fruit_arg;
-        fruit_arg->setName(m_fruitName);
-        fruit_arg->setParents(std::list<std::string>(1,m_fruitName));
+        fruit_arg->setName(fruitName.String());
+        fruit_arg->setParents(std::list<std::string>(1, fruitName.String()));
         Location floc(m_location.m_loc, Point3D(rx, ry, 0));
         floc.addToEntity(fruit_arg);
         Create create;
@@ -119,6 +120,8 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
 
 void Plant::SetupOperation(const Operation & op, OpVector & res)
 {
+    debug(std::cout << "Plant::Setup(" << getId() << "," << m_type << ")"
+                    << std::endl << std::flush;);
     Tick tick;
     tick->setTo(getId());
 
