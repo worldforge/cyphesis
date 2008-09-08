@@ -2,36 +2,6 @@
 
   <map>
     <map name="attributes">
-    </map>
-    <string name="id">archer</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">druid</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">farmer</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="decays">
         <string name="default">skull</string>
         <string name="visibility">public</string>
@@ -47,16 +17,6 @@
       <string>character</string>
     </list>
     <int name="playable">1</int>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">guard</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
   </map>
 
   <map>
@@ -135,20 +95,6 @@
         <string name="default">skull</string>
         <string name="visibility">public</string>
       </map>
-    </map>
-    <string name="id">orc</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="decays">
-        <string name="default">skull</string>
-        <string name="visibility">public</string>
-      </map>
       <map name="guise">
         <map name="default">
           <map name="material">
@@ -189,26 +135,6 @@
       <string name="language">python</string>
       <string name="name">world.objects.undead.Skeleton.Skeleton</string>
     </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">swineherd</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">warrior</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
   </map>
 
 </atlas>
