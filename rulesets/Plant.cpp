@@ -90,7 +90,6 @@ int Plant::dropFruit(OpVector & res, int & fruits)
         float ry = m_location.pos().y() + uniform( height,
                                                   -height);
         Anonymous fruit_arg;
-        fruit_arg->setName(fruitName.String());
         fruit_arg->setParents(std::list<std::string>(1, fruitName.String()));
         Location floc(m_location.m_loc, Point3D(rx, ry, 0));
         floc.addToEntity(fruit_arg);

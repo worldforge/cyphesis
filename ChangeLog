@@ -1,5 +1,10 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Plant.cpp: Don't add a name to fruits/seeds as they
+	  should not need one.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* data/plants.xml, rulesets/Plant.cpp, rulesets/Plant.h: Remove the
 	  last of the hard coded properties from Plant. Replace with soft
 	  class properties in the data.
