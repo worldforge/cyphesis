@@ -1,3 +1,10 @@
+Make sure all the places properties are set use one single way to do
+it, ensuring the right calls get made to set it up.
+
+Some entities (Character) may end up updating a class property and
+then we get an error when the Update op arrives for an undiscovered
+property. This also corrupts the class.
+
 requireSpecificProperty installs new properties. Need to make sure it does
 it correctly.
 
