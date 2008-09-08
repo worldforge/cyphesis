@@ -1,5 +1,10 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/construction.xml, rulesets/mason/define_world.py: Remove
+	  instance attribute values in favor of class defaults for stake.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Plant.cpp: Don't add a name to fruits/seeds as they
 	  should not need one.
 
