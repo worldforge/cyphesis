@@ -1,3 +1,6 @@
+requireSpecificProperty installs new properties. Need to make sure it does
+it correctly.
+
 Think carefully about what happens when EntityBuilder::installFactory
 calls Inheritance::addChild. If add child returns NULL, there
 was something wrong with the factory installation and it should fail.
