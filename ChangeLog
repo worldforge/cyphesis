@@ -1,5 +1,11 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/characters.xml, data/mason.xml, data/terrain.xml,
+	  rulesets/mason/define_world.py: Remove instance attribute values
+	  in favor of class defaults for stake.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* data/construction.xml, rulesets/mason/define_world.py: Remove
 	  instance attribute values in favor of class defaults for stake.
 

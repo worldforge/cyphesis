@@ -35,6 +35,10 @@
         <string name="default">skull</string>
         <string name="visibility">public</string>
       </map>
+      <map name="sex">
+        <string name="default">male</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">marshall</string>
     <string name="objtype">class</string>
@@ -49,6 +53,10 @@
         <string name="default">skull</string>
         <string name="visibility">public</string>
       </map>
+      <map name="sex">
+        <string name="default">female</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">mercenary</string>
     <string name="objtype">class</string>
@@ -61,6 +69,10 @@
     <map name="attributes">
       <map name="decays">
         <string name="default">skull</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="sex">
+        <string name="default">male</string>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -111,6 +123,10 @@
       </map>
       <map name="mass">
         <float name="default">60</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="sex">
+        <string name="default">male</string>
         <string name="visibility">public</string>
       </map>
     </map>

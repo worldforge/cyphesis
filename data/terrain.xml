@@ -2,6 +2,10 @@
 
   <map>
     <map name="attributes">
+      <map name="mode">
+        <string name="default">fixed</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">boundary</string>
     <string name="objtype">class</string>

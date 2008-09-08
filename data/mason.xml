@@ -336,7 +336,7 @@
         <string name="visibility">public</string>
       </map>
       <map name="rain">
-        <float name="default">0.2</float>
+        <float name="default">0.0</float>
         <string name="visibility">public</string>
       </map>
       <map name="solid">

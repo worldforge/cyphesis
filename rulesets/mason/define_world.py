@@ -266,10 +266,10 @@ def default(mapeditor):
 
 # a wall around the world
 
-    m.make('boundary',pos=(-500,-321,-20),bbox=[2,642,300],mode="fixed")
-    m.make('boundary',pos=(-500,-321,-20),bbox=[821,2,300],mode="fixed")
-    m.make('boundary',pos=(-500, 320,-20),bbox=[821,2,300],mode="fixed")
-    m.make('boundary',pos=( 320,-321,-20),bbox=[2,642,300],mode="fixed")
+    m.make('boundary',pos=(-500,-321,-20),bbox=[2,642,300])
+    m.make('boundary',pos=(-500,-321,-20),bbox=[821,2,300])
+    m.make('boundary',pos=(-500, 320,-20),bbox=[821,2,300])
+    m.make('boundary',pos=( 320,-321,-20),bbox=[2,642,300])
 
     m.make('fir',pos=(-10,-0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
     m.make('fir',pos=(-0,-10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
@@ -305,7 +305,7 @@ def default(mapeditor):
     # m.make('forest', name='sherwood',pos=(-50, 10,settlement_height),bbox=[40,40,40])
 
     m.make('jetty',pos=(-22,-48,0))
-    m.make('boat',pos=(-22,-56,0),mode="floating")
+    m.make('boat',pos=(-22,-56,0))
 
 # a camp near the origin
 
@@ -335,8 +335,7 @@ def default(mapeditor):
         for j in range(0, i[1]):
             m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
 
-    m.make('weather',desc='object that describes the weather',
-           pos=(0,1,0), rain=0.0)
+    m.make('weather', pos=(0,1,0))
 
 #   bones all over the place
     for i in range(0, 10):
@@ -372,8 +371,7 @@ def default(mapeditor):
     skeleton = m.make('skeleton', pos=(-38,-25,settlement_height))
     m.learn(skeleton,skeleton_goals)
 
-    squirrel = m.make('squirrel', desc='test squirrel',
-                    pos=(-32,-15,settlement_height))
+    squirrel = m.make('squirrel', pos=(-32,-15,settlement_height))
     m.know(squirrel,sknowledge)
     m.learn(squirrel,squirrel_goals)
 
@@ -382,14 +380,14 @@ def default(mapeditor):
                   #[0.7,0.7,0],[0.7,-0.7,0],[-0.7,-0.7,0],[-0.7,0.7,0]]
 
     # An NPC settler
-    settler=m.make('settler',pos=(1,1,0), sex='male')
+    settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
     m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
 
     # An NPC forester
-    settler=m.make('settler', name='forester',pos=(0, 12, 0), sex='male')
+    settler=m.make('settler', name='forester',pos=(0, 12, 0))
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
     m.know(settler,[('forest','location',(30,30,0))])
@@ -397,13 +395,14 @@ def default(mapeditor):
 
     home1_pos=(90,-90,settlement_height)
     
-    stall=m.make('stall', name='Market Stall',pos=butcher_stall_pos, orientation=directions[5])
+    stall=m.make('stall', name='Market Stall',
+                 pos=butcher_stall_pos, orientation=directions[5])
     m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
     m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     # An NPC Butcher
     butcher=m.make('settler', name='Ulad Bargan',desc='the butcher',
-                   pos=butcher_pos,age=probability.fertility_age,sex='male')
+                   pos=butcher_pos,age=probability.fertility_age)
     m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'ham', 'market')"))
     m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
     m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se','open','dawn')"))
@@ -413,8 +412,7 @@ def default(mapeditor):
     m.know(butcher,bprices)
 
     
-    cleaver=m.make('cleaver', desc='cleaver for cutting meat',
-                   place='market', pos=(0, 0, 0), parent=butcher.id)
+    cleaver=m.make('cleaver', place='market', pos=(0, 0, 0), parent=butcher.id)
     m.own(butcher,cleaver)
     m.own(butcher, stall)
     
@@ -430,7 +428,7 @@ def default(mapeditor):
     m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     tailor=m.make('merchant', name='Bok Forgo',desc='the tailor',
-                  pos=tailor_pos,age=probability.fertility_age,sex='male')
+                  pos=tailor_pos,age=probability.fertility_age)
     m.learn(tailor,(il.help,"add_help(['Get your clothes here.','Everything to keep you looking your best is here.'])"))
     
     m.know(tailor, tailor_knowledge)
@@ -456,7 +454,7 @@ def default(mapeditor):
     m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     tmerchant=m.make('merchant', name='Blackun Decker',desc='the tool merchant',
-                 pos=tool_merchant_pos,age=probability.fertility_age,sex='male')
+                     pos=tool_merchant_pos,age=probability.fertility_age)
     m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.','Everything a settler needs is available at great prices.'])"))
 
     m.know(tmerchant, toolmerc_knowledge)
@@ -478,7 +476,7 @@ def default(mapeditor):
     home2_pos=(80,80,settlement_height)
     merchant=m.make('merchant', name='Dyfed Searae',desc='the pig merchant',
                     pos=pig_sty_pos,age=probability.fertility_age,
-                    sex='male',orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
+                    orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
     sty=m.make('sty',pos=pig_sty_pos)
     m.know(merchant,mknowledge)
     m.know(merchant,area)
@@ -498,7 +496,7 @@ def default(mapeditor):
     m.own(merchant,piglets)
 
     marshall=m.make('marshall', name='Gorun Iksa',desc='the duke\'s marshall',
-                    pos=(14,12,settlement_height), sex='male')
+                    pos=(14,12,settlement_height))
     m.know(marshall, [('deed','price','50')])
     m.know(marshall, area)
     m.know(marshall, about)
@@ -512,7 +510,7 @@ def default(mapeditor):
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('mercenary', name='Vonaa Barile',pos=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('mercenary', name='Vonaa Barile',pos=(uniform(-2,2),uniform(-2,2),settlement_height),orientation=directions[randint(0,7)])
     bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
@@ -520,7 +518,7 @@ def default(mapeditor):
         m.own(warrior,arrow)
     warriors.append(warrior)
 
-    warrior=m.make('mercenary', name='Lile Birloc',pos=(uniform(-2,2),uniform(-2,2),settlement_height),sex='female',orientation=directions[randint(0,7)])
+    warrior=m.make('mercenary', name='Lile Birloc',pos=(uniform(-2,2),uniform(-2,2),settlement_height),orientation=directions[randint(0,7)])
     bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
@@ -799,10 +797,9 @@ def test_butcher(mapeditor):
 
     m=editor(mapeditor)
 
-    butcher=m.make('butcher', name='Ulad Bargan',desc='the butcher',
-                 pos=(3,3,0),age=probability.fertility_age,sex='male')
-    cleaver=m.make('cleaver', desc='cleaver for cutting meat',
-                   place='market', pos=(3,2.5,settlement_height))
+    butcher=m.make('merchant', name='Ulad Bargan',desc='the butcher',
+                 pos=(3,3,0),age=probability.fertility_age)
+    cleaver=m.make('cleaver', place='market', pos=(3,2.5,settlement_height))
     m.own(butcher,cleaver)
     m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'cut', 'ham', 'market')"))
     piglet = m.make('pig', pos=(3,2,0))
@@ -817,7 +814,7 @@ def test_pig(mapeditor):
 def test_settler(mapeditor):
 
     m=editor(mapeditor)
-    settler=m.make('settler',pos=(1,1,0), sex='male')
+    settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
     m.know(settler,[('forest','location',(30,30,0))])
@@ -828,7 +825,7 @@ def test_forester(mapeditor):
 
     m=editor(mapeditor)
     # An NPC forester
-    settler=m.make('settler', name='forester',pos=(0, 12, 0), sex='male')
+    settler=m.make('settler', name='forester',pos=(0, 12, 0))
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
     m.own(settler, trowel)
     m.know(settler,[('forest','location',(30,30,0))])
@@ -839,7 +836,7 @@ def test_warrior(mapeditor):
 
     m=editor(mapeditor)
     # An NPC warrior
-    warrior=m.make('warrior',pos=(0, 12, 0), sex='male')
+    warrior=m.make('mercenary',pos=(0, 12, 0))
     m.learn(warrior,(il.trade,"gather(['loaf', 'axe'])"))
 
 def test_chicken(mapeditor):
@@ -900,7 +897,7 @@ def test_fire(mapeditor):
 def test_own(mapeditor):
 
     m=editor(mapeditor)
-    settler=m.make('settler',pos=(1,1,0), sex='male')
+    settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
 
@@ -1061,7 +1058,7 @@ def test_decays(mapeditor):
 def test_device(mapeditor):
 
     m=editor(mapeditor)
-    settler=m.make('settler',pos=(1,1,0), sex='male')
+    settler=m.make('settler',pos=(1,1,0))
     axe=m.make('door',pos=(0,0,0))
     m.learn(settler,(il.trade,"activate_device('door')"))
 
