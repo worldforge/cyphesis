@@ -1,5 +1,10 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Planttest.cpp: Fix the test now that the hard coded
+	  properties have removed from plant.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/AtlasProperties.cpp: Mark contains property as ephemeral
 	  so it doesn't get stored.
 
