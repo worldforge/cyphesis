@@ -106,6 +106,7 @@ class Entity : public LocatedEntity {
 
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
+    virtual PropertyBase * getProperty(const std::string & name) const;
 
     void setProperty(const std::string & name, PropertyBase * prop);
 

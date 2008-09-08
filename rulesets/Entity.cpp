@@ -101,6 +101,21 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     return;
 }
 
+PropertyBase * Entity::getProperty(const std::string & name) const
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
+    if (m_type != 0) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return I->second;
+        }
+    }
+    return 0;
+}
+
 /// \brief Set the property object for a given attribute
 ///
 /// @param name name of the attribute for which the property is given

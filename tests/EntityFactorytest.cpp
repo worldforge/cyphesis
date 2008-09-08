@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactorytest.cpp,v 1.13 2007-12-20 20:00:23 alriddoch Exp $
+// $Id$
 
 #include "TestWorld.h"
 
@@ -24,6 +24,8 @@
 
 #include "server/EntityFactory.h"
 #include "server/PersistantThingFactory.h"
+
+#include "common/inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -94,8 +96,10 @@ int main(int argc, char ** argv)
 
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
+        Inheritance::clear();
     }
 
+    std::cout << "FOOF" << std::endl << std::endl;
     {
         World e("1", 1);
         TestWorld test_world(e);
@@ -121,6 +125,7 @@ int main(int argc, char ** argv)
 
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
+        Inheritance::clear();
     }
 
     {

@@ -1,5 +1,10 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/inheritance.cpp: Set the instance pointer to null on
+	  deletion, so it can be cleanly instanced again.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/ActivePropertyFactory_impl.h: Re-work the active property
 	  factories so they just pass handler information to the property
 	  classes rather than installing it themselves, so the property

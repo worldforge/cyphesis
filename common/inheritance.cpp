@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.cpp,v 1.41 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #include "inheritance.h"
 
@@ -125,6 +125,7 @@ void Inheritance::clear()
     if (m_instance != NULL) {
         m_instance->flush();
         delete m_instance;
+        m_instance = NULL;
     }
 }
 

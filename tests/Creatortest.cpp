@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creatortest.cpp,v 1.28 2008-01-07 14:35:48 alriddoch Exp $
+// $Id$
 
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
@@ -56,7 +56,6 @@ int main(int argc, char ** argv)
 
     std::set<std::string> attrNames;
     attrNames.insert("id");
-    attrNames.insert("bbox");
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));

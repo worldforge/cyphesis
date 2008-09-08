@@ -1,3 +1,7 @@
+Think carefully about what happens when EntityBuilder::installFactory
+calls Inheritance::addChild. If add child returns NULL, there
+was something wrong with the factory installation and it should fail.
+
 isSimple() and isSolid() should be entity flags, once the collision
 stuff is sorted.
 

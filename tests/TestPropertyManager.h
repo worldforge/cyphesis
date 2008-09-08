@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TestPropertyManager.h,v 1.2 2006-10-26 00:48:16 alriddoch Exp $
+// $Id$
 
 #ifndef TEST_TEST_PROPERTY_MANAGER_H
 #define TEST_TEST_PROPERTY_MANAGER_H
@@ -27,7 +27,7 @@ class TestPropertyManager : public PropertyManager {
     TestPropertyManager();
     virtual ~TestPropertyManager();
 
-    virtual PropertyBase * addProperty(Entity *, const std::string & name);
+    virtual PropertyBase * addProperty(const std::string & name);
 };
 
 #endif // TEST_TEST_PROPERTY_MANAGER_H
