@@ -200,7 +200,7 @@ void StorageManager::tick()
 
     while (!m_dirtyEntities.empty()) {
         if (Database::instance()->queryQueueSize() > 200) {
-            std::cout << "Too many" << std::endl << std::flush;
+            debug(std::cout << "Too many" << std::endl << std::flush;);
             break;
         }
         const EntityRef & ent = m_dirtyEntities.front();
@@ -214,10 +214,8 @@ void StorageManager::tick()
         m_dirtyEntities.pop_front();
     }
     if (inserts > 0 || updates >> 0) {
-        std::cout << "I: " << inserts << " U: " << updates
-                  << std::endl << std::flush;
-    } else {
-        std::cout << "." << std::flush;
+        debug(std::cout << "I: " << inserts << " U: " << updates
+                        << std::endl << std::flush;);
     }
 }
 

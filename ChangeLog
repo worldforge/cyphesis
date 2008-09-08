@@ -1,5 +1,9 @@
 2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Disable debug output.
+
+2008-09-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/BBoxProperty.cpp, rulesets/BBoxProperty.h: A new property
 	  to make BBOX optional and more dynamic.
 
