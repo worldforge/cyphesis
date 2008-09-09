@@ -437,6 +437,59 @@ static void updateChildren(EntityKit * factory)
     }
 }
 
+static void updateChildrenProperties(EntityKit * factory)
+{
+    // Discover the default attributes which are no longer
+    // present after the update.
+    std::set<std::string> removed_properties;
+    PropertyDict & defaults = factory->m_type->defaults();
+    PropertyDict::const_iterator I = defaults.begin();
+    PropertyDict::const_iterator Iend = defaults.end();
+    MapType::const_iterator Jend = factory->m_attributes.end();
+    for (; I != Iend; ++I) {
+        if (factory->m_attributes.find(I->first) == Jend) {
+            debug( std::cout << I->first << " removed" << std::endl; );
+            removed_properties.insert(I->first);
+        }
+    }
+
+    // Remove the class properties for the default attributes that
+    // no longer exist
+    std::set<std::string>::const_iterator L = removed_properties.begin();
+    std::set<std::string>::const_iterator Lend = removed_properties.end();
+    for (; L != Lend; ++L) {
+        PropertyDict::iterator M = defaults.find(*L);
+        delete M->second;
+        defaults.erase(M);
+    }
+
+    // Update the values of existing class properties, and add new class
+    // properties for added default attributes.
+    MapType::const_iterator J = factory->m_attributes.begin();
+    PropertyBase * p;
+    for (; J != Jend; ++J) {
+        PropertyDict::const_iterator I = defaults.find(J->first);
+        if (I == Iend) {
+            p = PropertyManager::instance()->addProperty(J->first);
+            if (p == 0) {
+                p = new SoftProperty(J->second);
+            }
+            defaults[J->first] = p;
+        } else {
+            p = I->second;
+        }
+        p->set(J->second);
+    }
+
+    // Propagate the changes to all child factories
+    std::set<EntityKit *>::const_iterator K = factory->m_children.begin();
+    std::set<EntityKit *>::const_iterator Kend = factory->m_children.end();
+    for (; K != Kend; ++K) {
+        EntityKit * child_factory = *K;
+        updateChildrenProperties(child_factory);
+    }
+}
+
 int EntityBuilder::installTaskClass(const std::string & class_name,
                                     const std::string & parent,
                                     const Root & class_desc)
@@ -793,6 +846,7 @@ int EntityBuilder::modifyEntityClass(const std::string & class_name,
     }
 
     updateChildren(factory);
+    updateChildrenProperties(factory);
 
     return 0;
 }

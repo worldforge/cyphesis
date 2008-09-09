@@ -20,8 +20,6 @@ or summink instead, removing the need for ClientPropertyManager.
 
 Fix the insert properry count. Incremented in the wrong place.
 
-getProperty has to become virtual and overriden to do class properties.
-
 Use return value of Property::get to ensure we are not storing
 worthless data in the properties table.
 

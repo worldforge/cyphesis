@@ -1,5 +1,10 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Implement propagating changes in the
+	  default attributes of a class to the class's children.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Planttest.cpp: Fix the test now that the hard coded
 	  properties have removed from plant.
 
