@@ -1,3 +1,9 @@
+Location is stil adding bbox data to RootEntity or MapType representations.
+Stop, as this should be handled by the property.
+
+Add a class internal property which causes an entity to get setup,
+rather than sending setup to everyone.
+
 Make sure all the places properties are set use one single way to do
 it, ensuring the right calls get made to set it up.
 
