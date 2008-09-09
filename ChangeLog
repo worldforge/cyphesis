@@ -1,5 +1,10 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp: Make statistics ephemeral. Remove hard
+	  coded bbox.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Implement propagating changes in the
 	  default attributes of a class to the class's children.
 

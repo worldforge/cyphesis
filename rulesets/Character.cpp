@@ -267,10 +267,7 @@ Character::Character(const std::string & id, long intId) :
                m_maxMass(100),
                m_mind(0), m_externalMind(0)
 {
-    m_location.setBBox(BBox(WFMath::Point<3>(-0.25, -0.25, 0),
-                            WFMath::Point<3>(0.25, 0.25, 2)));
-
-    m_properties["stamina"] = new Property<double>(m_stamina, 0);
+    m_properties["stamina"] = new Property<double>(m_stamina, per_ephem);
     m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
     m_properties[RIGHT_HAND_WIELD] = new EntityProperty;
 }
