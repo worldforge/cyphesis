@@ -27,6 +27,7 @@
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainModProperty.h"
+#include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
 
 #include "common/Eat.h"
@@ -199,34 +200,6 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
     return OPERATION_IGNORED;
 }
 
-HandlerResult transient_handler(Entity * e,
-                                const Operation & op,
-                                OpVector & res)
-{
-    Element transient_time;
-    if (!e->getAttr("transient", transient_time)) {
-        return OPERATION_IGNORED;
-    }
-
-    if (!transient_time.isFloat()) {
-        return OPERATION_IGNORED;
-    }
-
-    Set s;
-    s->setTo(e->getId());
-    s->setFutureSeconds(transient_time.Float());
-
-    Anonymous set_arg;
-    set_arg->setId(e->getId());
-    set_arg->setAttr("status", -1);
-    s->setArgs1(set_arg);
-
-    res.push_back(s);
-
-    return OPERATION_IGNORED;
-}
-
-
 HandlerResult terrainmod_moveHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
@@ -304,7 +277,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
     m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, eat_handler);
     m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
-    m_propertyFactories["transient"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::SETUP_NO, transient_handler);
+    m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
     m_propertyFactories["food"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;

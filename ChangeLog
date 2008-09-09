@@ -1,5 +1,10 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CorePropertyManager.cpp: Replace the old transient property
+	  and handler with the new one.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Makefile.am, rulesets/TransientProperty.cpp,
 	  rulesets/TransientProperty.h: New more encapsulated way to handle
 	  transient.
