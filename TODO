@@ -1,3 +1,5 @@
+Use database to allow characters to go offline.
+
 Location is stil adding bbox data to RootEntity or MapType representations.
 Stop, as this should be handled by the property.
 
