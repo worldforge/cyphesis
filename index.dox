@@ -1,8 +1,12 @@
 /** \mainpage
 
-\section Introduction
-
 Welcome to the Cyphesis documentation.
+
+\section Contents
+
+- \ref architecture "Architecture"
+
+\section Introduction
 
 \section Tools
 

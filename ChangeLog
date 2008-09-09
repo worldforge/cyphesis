@@ -1,5 +1,10 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* Doxyfile, index.dox, data/architecture.dox: Start expanding the more
+	  hand written docs.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp: Make statistics ephemeral. Remove hard
 	  coded bbox.
 
