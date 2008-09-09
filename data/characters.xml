@@ -2,6 +2,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="decays">
         <string name="default">skull</string>
         <string name="visibility">public</string>
@@ -21,6 +32,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">lych</string>
     <string name="objtype">class</string>
@@ -31,6 +53,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="decays">
         <string name="default">skull</string>
         <string name="visibility">public</string>
@@ -49,6 +82,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="decays">
         <string name="default">skull</string>
         <string name="visibility">public</string>
@@ -67,6 +111,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="decays">
         <string name="default">skull</string>
         <string name="visibility">public</string>
@@ -85,6 +140,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="strength">
         <float name="default">0.3</float>
         <string name="visibility">private</string>
@@ -103,6 +169,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="decays">
         <string name="default">skull</string>
         <string name="visibility">public</string>
@@ -140,6 +217,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.25</float>
+          <float>-0.25</float>
+          <float>0</float>
+          <float>0.25</float>
+          <float>0.25</float>
+          <float>2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">skeleton</string>
     <string name="objtype">class</string>

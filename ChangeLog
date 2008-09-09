@@ -1,5 +1,10 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/characters.xml: Add bboxes as class properties to most
+	  character classes.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CorePropertyManager.cpp: Replace the old transient property
 	  and handler with the new one.
 
