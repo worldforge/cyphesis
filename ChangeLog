@@ -1,5 +1,11 @@
 2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Makefile.am, rulesets/TransientProperty.cpp,
+	  rulesets/TransientProperty.h: New more encapsulated way to handle
+	  transient.
+
+2008-09-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* Doxyfile, index.dox, data/architecture.dox: Start expanding the more
 	  hand written docs.
 

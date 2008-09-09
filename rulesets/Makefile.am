@@ -47,6 +47,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     MultiHandlerProperty.cpp MultiHandlerProperty.h \
 			     MultiHandlerProperty_impl.h \
 			     BBoxProperty.cpp BBoxProperty.h \
+			     TransientProperty.cpp TransientProperty.h \
 			     Statistics.cpp Statistics.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \
