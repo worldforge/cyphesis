@@ -32,33 +32,6 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Entity::Anonymous;
 
-HandlerResult transient_handler(Entity * e,
-                                const Operation & op,
-                                OpVector & res)
-{
-    Element transient_time;
-    if (!e->getAttr("transient", transient_time)) {
-        return OPERATION_IGNORED;
-    }
-
-    if (!transient_time.isFloat()) {
-        return OPERATION_IGNORED;
-    }
-
-    Set s;
-    s->setTo(e->getId());
-    s->setFutureSeconds(transient_time.Float());
-
-    Anonymous set_arg;
-    set_arg->setId(e->getId());
-    set_arg->setAttr("status", -1);
-    s->setArgs1(set_arg);
-
-    res.push_back(s);
-
-    return OPERATION_IGNORED;
-}
-
 TransientProperty::TransientProperty()
 {
 }
@@ -66,6 +39,18 @@ TransientProperty::TransientProperty()
 void TransientProperty::install(Entity * ent)
 {
     ent->setFlags(entity_ephem);
-    // Why handle setup, when we can just send the data straight off?
-    ent->installHandler(Atlas::Objects::Operation::SETUP_NO, transient_handler);
+}
+
+void TransientProperty::apply(Entity * ent)
+{
+    Set s;
+    s->setTo(ent->getId());
+    s->setFutureSeconds(m_data);
+
+    Anonymous set_arg;
+    set_arg->setId(ent->getId());
+    set_arg->setAttr("status", -1);
+    s->setArgs1(set_arg);
+
+    ent->sendWorld(s);
 }

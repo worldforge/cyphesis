@@ -29,6 +29,8 @@ class TransientProperty : public DynamicProperty<double> {
     TransientProperty();
 
     virtual void install(Entity *);
+
+    virtual void apply(Entity *);
 };
 
 #endif // RULESETS_TRANSIENT_PROPERTY_H
