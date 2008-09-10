@@ -61,7 +61,6 @@ StorageManager:: StorageManager(WorldRouter & world) :
 void StorageManager::entityInserted(Entity * ent)
 {
     if (ent->getFlags() & entity_ephem) {
-        std::cout << "Ephemeral " << ent->getId() << std::endl << std::flush;
         return;
     }
     m_unstoredEntities.push_back(EntityRef(ent));
