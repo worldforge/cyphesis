@@ -1,5 +1,9 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Makefile.am: Add MindProperty to the build.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h,
 	  server/CorePropertyManager.cpp: Re-work part of the way
 	  terrain mod properties are set up, removing the need for
