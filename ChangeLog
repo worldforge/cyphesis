@@ -1,5 +1,10 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/MindProperty.cpp, rulesets/MindProperty.h: A new
+	  property class which will add a mind to an entity.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* modules/Location.h, modules/Location.cpp: Remove unused
 	  acceleration and angular velocity variables.
 
