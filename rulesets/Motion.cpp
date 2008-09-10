@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.cpp,v 1.23 2008-01-07 14:29:42 alriddoch Exp $
+// $Id$
 
 #include "Motion.h"
 
@@ -78,6 +78,10 @@ float Motion::checkCollisions()
     // Check against everything within the current container
     assert(m_entity.m_location.m_loc != 0);
     assert(m_entity.m_location.m_loc->m_contains != 0);
+    // If this entity doesn't have a bbox, it can't collide currently.
+    if (!m_entity.m_location.bBox().isValid()) {
+        return coll_time;
+    }
     LocatedEntitySet::const_iterator I = m_entity.m_location.m_loc->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = m_entity.m_location.m_loc->m_contains->end();
     for (; I != Iend; ++I) {

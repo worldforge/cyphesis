@@ -1,5 +1,10 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Motion.cpp: Add a check which bypasses the collision
+	  code for entities without a bbox, and prevents a later crash.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/MindProperty.cpp, rulesets/MindProperty.h: A new
 	  property class which will add a mind to an entity.
 
