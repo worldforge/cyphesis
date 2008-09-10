@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Location.h,v 1.67 2007-12-02 23:49:05 alriddoch Exp $
+// $Id$
 
 #ifndef MODULES_LOCATION_H
 #define MODULES_LOCATION_H
@@ -32,7 +32,7 @@
 class LocatedEntity;
 
 class Location : virtual public sigc::trackable {
-  private:
+  protected:
     bool m_simple;
     bool m_solid;
 
@@ -47,9 +47,7 @@ class Location : virtual public sigc::trackable {
     LocatedEntity * m_loc;
     Point3D m_pos;   // Coords relative to m_loc entity
     Vector3D m_velocity; // Veclociy vector, relative to m_loc entity.
-    Vector3D m_acceleration; // Acceleration vector, relative to m_loc entity.
     Quaternion m_orientation;
-    Vector3D m_angular; // Angular velocity vector.
 
     BBox m_bBox;
 
@@ -69,9 +67,7 @@ class Location : virtual public sigc::trackable {
 
     const Point3D & pos() const { return m_pos; }
     const Vector3D & velocity() const { return m_velocity; }
-    const Vector3D & acceleration() const { return m_acceleration; }
     const Quaternion & orientation() const { return m_orientation; }
-    const Vector3D & angular() const { return m_angular; }
     const BBox & bBox() const { return m_bBox; }
 
     bool isValid() const {

@@ -1,5 +1,10 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* modules/Location.h, modules/Location.cpp: Remove unused
+	  acceleration and angular velocity variables.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/TransientProperty.cpp, rulesets/TransientProperty.h:
 	  Re-work so an explicit handler is no longer required, and
 	  the timed operation to delete the entity is scheduled directly
