@@ -29,6 +29,7 @@
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
+#include "rulesets/MindProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -231,22 +232,6 @@ HandlerResult terrainmod_moveHandler(Entity * e,
     return OPERATION_IGNORED;
 }
 
-HandlerResult terrainmod_setupHandler(Entity *e,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-    Element modifier;
-    if (!e->hasAttr("terrainmod")) {
-        return OPERATION_IGNORED;
-    }
-
-        // initialize the property with its entity's position
-    if (e->hasAttr("terrainmod")) {
-        dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->setup(e);
-    }
-    return OPERATION_IGNORED;
-}
-
 HandlerResult terrainmod_deleteHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
@@ -281,13 +266,11 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["food"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;
-//     m_propertyFactories["terrainmod"] = new EntityPropertyFactory<TerrainModProperty>;
-//     m_propertyFactories["terrainmod"] = new ActivePropertyFactory<Dynamic<TerrainModProperty, Entity*> >(Atlas::Objects::Operation::MOVE_NO, terrainmod_handler);
+    m_propertyFactories["mind"] = new PropertyFactory<MindProperty>;
     
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
     terrainModHandles[Atlas::Objects::Operation::DELETE_NO] = terrainmod_deleteHandler;
-    terrainModHandles[Atlas::Objects::Operation::SETUP_NO] = terrainmod_setupHandler;
     m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
 }
 

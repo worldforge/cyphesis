@@ -54,16 +54,6 @@ TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
 {
 }
 
-void TerrainModProperty::setup(Entity* owner)
-{
-    m_owner = owner;
-    Element ent;
-    owner->getAttr("terrainmod", ent);
-    m_terrainmods = ent.asMap();
-
-    set(ent);
-}
-
 bool TerrainModProperty::get(Element & ent) const
 {
     MapType & mod = (ent = MapType()).Map();
@@ -166,6 +156,9 @@ void TerrainModProperty::install(Entity * owner)
     for (; I != Iend; ++I) {
         owner->installHandler(I->first, I->second);
     }
+
+    // FIXME Don't do this!
+    m_owner = owner;
 }
 
 void TerrainModProperty::move(Entity* owner, const Point3D & newPos)

@@ -1,5 +1,12 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h,
+	  server/CorePropertyManager.cpp: Re-work part of the way
+	  terrain mod properties are set up, removing the need for
+	  a setup handler, and using install instead.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Motion.cpp: Add a check which bypasses the collision
 	  code for entities without a bbox, and prevents a later crash.
 

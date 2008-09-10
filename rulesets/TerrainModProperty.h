@@ -101,7 +101,6 @@ class TerrainModProperty : public PropertyBase {
 
     Mercator::TerrainMod * getModifier();
     void setPos(const Point3D &);
-    void setup(Entity *);
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &);
