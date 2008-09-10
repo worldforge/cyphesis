@@ -1,5 +1,9 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Set the class flag on class properties.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Makefile.am: Add MindProperty to the build.
 
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>

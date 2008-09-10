@@ -474,6 +474,7 @@ static void updateChildrenProperties(EntityKit * factory)
             if (p == 0) {
                 p = new SoftProperty(J->second);
             }
+            p->setFlags(flag_class);
             defaults[J->first] = p;
         } else {
             p = I->second;
@@ -696,6 +697,7 @@ int EntityBuilder::installEntityClass(const std::string & class_name,
         } else {
             p->set(J->second);
         }
+        p->setFlags(flag_class);
         factory->m_type->defaults()[J->first] = p;
     }
 

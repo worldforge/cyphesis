@@ -1,3 +1,10 @@
+TerrainModProperty needs state, so it must be an instance property.
+This can be handled in ::instal() once class properties are flagged.
+
+Make mind a property.
+Would remove the need for Setup on Character.
+Once that is done, there is almost no need for setup at all.
+
 Use database to allow characters to go offline.
 
 Location is stil adding bbox data to RootEntity or MapType representations.
