@@ -46,7 +46,7 @@ StorageManager:: StorageManager(WorldRouter & world) :
       m_insertPropertyCount(0), m_updatePropertyCount(0)
 
 {
-    if (consts::enable_persistence && database_flag) {
+    if (database_flag) {
         world.inserted.connect(sigc::mem_fun(this,
               &StorageManager::entityInserted));
 

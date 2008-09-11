@@ -1,3 +1,8 @@
+2008-09-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/StorageManager.cpp: Don't use the enable_persistence
+	  flag to see if persistence is enabled. It's always false.
+
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp: Add a check to see if database
