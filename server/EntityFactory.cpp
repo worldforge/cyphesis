@@ -76,29 +76,14 @@ EntityBuilder * EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
 {
-    if (consts::enable_persistence && database_flag) {
-        installFactory("world", "game_entity", new ForbiddenThingFactory<World>());
-        PersistantThingFactory<Thing> * tft = new PersistantThingFactory<Thing>();
-        installFactory("thing", "game_entity", tft);
-        installFactory("character", "thing",
-                       new PersistantThingFactory<Character>());
-        installFactory("creator", "character",
-                       new PersistantThingFactory<Creator>());
-        installFactory("plant", "thing", new PersistantThingFactory<Plant>());
-        installFactory("stackable","thing", 
-                       new PersistantThingFactory<Stackable>());
-        installFactory("structure", "thing",
-                       new PersistantThingFactory<Structure>());
-    } else {
-        installFactory("world", "game_entity", new ThingFactory<World>());
-        ThingFactory<Thing> * tft = new ThingFactory<Thing>();
-        installFactory("thing", "game_entity", tft);
-        installFactory("character", "thing", new ThingFactory<Character>());
-        installFactory("creator", "character", new ThingFactory<Creator>());
-        installFactory("plant", "thing", new ThingFactory<Plant>());
-        installFactory("stackable", "thing", new ThingFactory<Stackable>());
-        installFactory("structure", "thing", new ThingFactory<Structure>());
-    }
+    installFactory("world", "game_entity", new ThingFactory<World>());
+    ThingFactory<Thing> * tft = new ThingFactory<Thing>();
+    installFactory("thing", "game_entity", tft);
+    installFactory("character", "thing", new ThingFactory<Character>());
+    installFactory("creator", "character", new ThingFactory<Creator>());
+    installFactory("plant", "thing", new ThingFactory<Plant>());
+    installFactory("stackable", "thing", new ThingFactory<Stackable>());
+    installFactory("structure", "thing", new ThingFactory<Structure>());
 
     m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
 
@@ -109,27 +94,6 @@ EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
 EntityBuilder::~EntityBuilder()
 {
     delete PropertyManager::instance();
-}
-
-/// \brief Initialise the world entity in the persistence entity store
-///
-/// \deprecated This method no longer does anything useful.
-void EntityBuilder::initWorld()
-{
-    if (!consts::enable_persistence) {
-        return;
-    }
-    FactoryDict::const_iterator I = m_entityFactories.find("world");
-    if (I == m_entityFactories.end()) {
-        log(CRITICAL, "No world factory");
-        return;
-    }
-    ForbiddenThingFactory<World> * wft = dynamic_cast<ForbiddenThingFactory<World> *>(I->second);
-    if (wft == 0) {
-        log(CRITICAL, "Its not a world factory");
-        return;
-    }
-    // FIXME Persist the new world.
 }
 
 /// \brief Build and populate a new entity object.
@@ -153,12 +117,11 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
     FactoryDict::const_iterator I = m_entityFactories.find(type);
-    PersistorBase * pc = 0;
     if (I == m_entityFactories.end()) {
         return 0;
     }
     EntityKit * factory = I->second;
-    thing = factory->newPersistantThing(id, intId, &pc);
+    thing = factory->newThing(id, intId);
     if (thing == 0) {
         return 0;
     }
@@ -212,10 +175,6 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
                                        "unknown source", id, type));
         }
         thing->m_location.m_velocity.setValid(false);
-    }
-    if (pc != 0) {
-        pc->persist();
-        delete pc;
     }
     return thing;
 }

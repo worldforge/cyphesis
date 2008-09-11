@@ -1,5 +1,10 @@
 2008-09-11  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp, server/EntityFactory.h: Remove all code
+	  relating to the old persistence mechanism.
+
+2008-09-11  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Don't use the enable_persistence
 	  flag to see if persistence is enabled. It's always false.
 

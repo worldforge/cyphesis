@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityFactory.h,v 1.61 2007-12-20 19:33:38 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
@@ -125,7 +125,6 @@ class EntityBuilder {
             m_instance = 0;
         }
     }
-    void initWorld();
 
     Entity * newEntity(const std::string & id,
                        long intId,
