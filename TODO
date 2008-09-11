@@ -1,3 +1,12 @@
+Re-enable mapping of character to account.
+
+Design away to make only the starting POS and ORIENATION of an entity
+storable.
+
+Structure base class can go because its just setting a flag.
+
+Sort out enable_persitence. Purge the old code.
+
 TerrainModProperty needs state, so it must be an instance property.
 This can be handled in ::instal() once class properties are flagged.
 
