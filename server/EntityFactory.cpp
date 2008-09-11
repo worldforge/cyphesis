@@ -623,6 +623,7 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
         tool_factory->m_attributes["operations"] = ListType(1, activation_op);
         updateChildren(tool_factory);
+        updateChildrenProperties(tool_factory);
     } else {
         if (L->second.isList()) {
             ListType::const_iterator M = L->second.List().begin();
@@ -631,6 +632,7 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
                 L->second.List().push_back(activation_op);
                 tool_factory->m_attributes[L->first] = L->second.List();
                 updateChildren(tool_factory);
+                updateChildrenProperties(tool_factory);
             }
         }
     }
