@@ -46,7 +46,8 @@ EntityKit::~EntityKit()
 }
 
 template <>
-World * ThingFactory<World>::newPersistantThing(const std::string & id, long intId, PersistorBase ** p)
+World * ThingFactory<World>::newThing(const std::string & id,
+                                                long intId)
 {
     return 0;
 }
@@ -57,16 +58,6 @@ int ThingFactory<Character>::populate(Entity & e)
     EntityBuilder::instance()->addStatisticsScript((Character &)e);
     return 0;
 }
-
-template class PersistantThingFactory<Entity>;
-template class PersistantThingFactory<Thing>;
-template class PersistantThingFactory<Character>;
-template class PersistantThingFactory<Creator>;
-template class PersistantThingFactory<Plant>;
-template class PersistantThingFactory<Structure>;
-template class PersistantThingFactory<Stackable>;
-
-template class ForbiddenThingFactory<World>;
 
 template class ThingFactory<Thing>;
 template class ThingFactory<Character>;

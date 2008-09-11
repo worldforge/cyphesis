@@ -1,5 +1,12 @@
 2008-09-11  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/PersistantThingFactory.cpp, server/PersistantThingFactory.h,
+	  server/PersistantThingFactory_impl.h: Remove the factory classes
+	  now unused that were part of the old persistence mechanism. Rename
+	  the new entity function to make more sense.
+
+2008-09-11  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp, server/EntityFactory.h: Remove all code
 	  relating to the old persistence mechanism.
 

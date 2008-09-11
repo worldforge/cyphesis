@@ -38,9 +38,8 @@ ThingFactory<T>::~ThingFactory()
 }
 
 template <class T>
-T * ThingFactory<T>::newPersistantThing(const std::string & id,
-                                        long intId,
-                                        PersistorBase ** p)
+T * ThingFactory<T>::newThing(const std::string & id,
+                                        long intId)
 {
     ++m_createdCount;
     return new T(id, intId);
@@ -58,53 +57,6 @@ EntityKit * ThingFactory<T>::duplicateFactory()
     EntityKit * f = new ThingFactory<T>(*this);
     f->m_parent = this;
     return f;
-}
-
-template <class T>
-PersistantThingFactory<T>::~PersistantThingFactory()
-{
-}
-
-template <class T>
-T * PersistantThingFactory<T>::newPersistantThing(const std::string & id,
-                                                  long intId,
-                                                  PersistorBase ** p)
-{
-    ++this->m_createdCount;
-    T * t = new T(id, intId);
-    // FIXME Return a PersistorConnection
-    return t;
-}
-
-template <class T>
-EntityKit * PersistantThingFactory<T>::duplicateFactory()
-{
-    EntityKit * f = new PersistantThingFactory<T>(*this);
-    f->m_parent = this;
-    return f;
-}
-
-template <class T>
-ForbiddenThingFactory<T>::~ForbiddenThingFactory()
-{
-}
-
-template <class T>
-T * ForbiddenThingFactory<T>::newPersistantThing(const std::string &, long, PersistorBase **)
-{
-    return 0;
-}
-
-template <class T>
-int ForbiddenThingFactory<T>::populate(Entity &)
-{
-    return 0;
-}
-
-template <class T>
-EntityKit * ForbiddenThingFactory<T>::duplicateFactory()
-{
-    return 0;
 }
 
 #endif // SERVER_PERSISTANT_THING_FACTORY_IMPL_H

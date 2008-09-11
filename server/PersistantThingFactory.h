@@ -28,19 +28,6 @@ class Entity;
 class ScriptFactory;
 class TypeNode;
 
-/// \brief Interface class for connecting a newly created entity to its
-/// persistor
-///
-/// When an entity is newly created, it is necessary to write it to
-/// the persistent store after it has been fully initialised. This
-/// connector allows the call to be made to the persistor.
-class PersistorBase {
-  public:
-    virtual ~PersistorBase() { }
-
-    virtual void persist() = 0;
-};
-
 /// \brief Base class for for factories for creating entities
 ///
 /// An Entity consists of an instance of one of a number of C++ classes
@@ -74,9 +61,8 @@ class EntityKit {
     /// @param id a string giving the identifier of the Entity.
     /// @param intId an integer giving the identifier of the Entity.
     /// @param pb a pointer to the persistor object for the Entity.
-    virtual Entity * newPersistantThing(const std::string & id,
-                                        long intId,
-                                        PersistorBase ** pb) = 0;
+    virtual Entity * newThing(const std::string & id,
+                                        long intId) = 0;
     /// \brief Add anything required to the entity after it has been created.
     virtual int populate(Entity &) = 0;
     /// \brief Create a copy of this factory.
@@ -91,44 +77,8 @@ class ThingFactory : public EntityKit {
     ThingFactory();
     virtual ~ThingFactory();
 
-    virtual T * newPersistantThing(const std::string & id,
-                                   long intId,
-                                   PersistorBase ** p);
-    virtual int populate(Entity &);
-    virtual EntityKit * duplicateFactory();
-};
-
-// How do we make sure the peristance hooks are put in place in a typesafe way
-// but after all the initial attribute have been set.
-
-/// \brief Class template for factories for creating instances of the give
-/// entity class
-template <class T>
-class PersistantThingFactory : public ThingFactory<T> {
-  protected:
-    PersistantThingFactory(PersistantThingFactory<T> & p) { }
-  public:
-    PersistantThingFactory() { }
-    virtual ~PersistantThingFactory();
- 
-    virtual T * newPersistantThing(const std::string & id,
-                                   long intId,
-                                   PersistorBase ** p);
-    virtual EntityKit * duplicateFactory();
-};
-
-/// \brief Class template for factories for entity classes which cannot or
-/// should not be instanced
-template <class T>
-class ForbiddenThingFactory : public EntityKit {
-  public:
-    ForbiddenThingFactory() { }
-
-    virtual ~ForbiddenThingFactory();
- 
-    virtual T * newPersistantThing(const std::string & id,
-                                   long intId,
-                                   PersistorBase ** p);
+    virtual T * newThing(const std::string & id,
+                                   long intId);
     virtual int populate(Entity &);
     virtual EntityKit * duplicateFactory();
 };
