@@ -1,5 +1,11 @@
 2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Add a check to see if database
+	  is enabled before hooking into the Entity builder, and exporting
+	  monitors.
+
+2008-09-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: When tasks cause defaults to be changed,
 	  also propagate the changes to the class properties.
 	  Fixes https://bugs.launchpad.net/bugs/268725

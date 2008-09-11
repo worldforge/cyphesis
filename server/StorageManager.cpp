@@ -28,6 +28,7 @@
 #include "common/Property.h"
 #include "common/debug.h"
 #include "common/Monitors.h"
+#include "common/const.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -45,16 +46,19 @@ StorageManager:: StorageManager(WorldRouter & world) :
       m_insertPropertyCount(0), m_updatePropertyCount(0)
 
 {
-    world.inserted.connect(sigc::mem_fun(this, &StorageManager::entityInserted));
+    if (consts::enable_persistence && database_flag) {
+        world.inserted.connect(sigc::mem_fun(this,
+              &StorageManager::entityInserted));
 
-    Monitors::instance()->watch("database_entity_inserts",
-                                new Monitor<int>(m_insertEntityCount));
-    Monitors::instance()->watch("database_entity_updates",
-                                new Monitor<int>(m_updateEntityCount));
-    Monitors::instance()->watch("database_property_inserts",
-                                new Monitor<int>(m_insertPropertyCount));
-    Monitors::instance()->watch("database_property_updates",
-                                new Monitor<int>(m_updatePropertyCount));
+        Monitors::instance()->watch("database_entity_inserts",
+                                    new Monitor<int>(m_insertEntityCount));
+        Monitors::instance()->watch("database_entity_updates",
+                                    new Monitor<int>(m_updateEntityCount));
+        Monitors::instance()->watch("database_property_inserts",
+                                    new Monitor<int>(m_insertPropertyCount));
+        Monitors::instance()->watch("database_property_updates",
+                                    new Monitor<int>(m_updatePropertyCount));
+    }
 }
 
 /// \brief Called when a new Entity is inserted in the world
