@@ -1,3 +1,10 @@
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/InternalProperties.cpp, rulesets/InternalProperties.h,
+	  server/CorePropertyManager.cpp: Add a pair of new property classes,
+	  one to schedule an immediate setup operation, and one to schedule
+	  an immediate tick operation.
+
 2008-09-11  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/PersistantThingFactory.cpp, server/PersistantThingFactory.h,

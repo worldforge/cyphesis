@@ -30,6 +30,7 @@
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/MindProperty.h"
+#include "rulesets/InternalProperties.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -267,6 +268,8 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
     m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;
     m_propertyFactories["mind"] = new PropertyFactory<MindProperty>;
+    m_propertyFactories["setup"] = new PropertyFactory<SetupProperty>;
+    m_propertyFactories["tick"] = new PropertyFactory<TickProperty>;
     
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
