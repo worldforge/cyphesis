@@ -1,5 +1,12 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Plant.cpp, rulesets/Plant.h, data/plants.xml:
+	  Add a tick class property to the base class for trees, and
+	  remove the setup handler from the core base class as it is no
+	  longer needed.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/MindProperty.h: Correct the documentation
 	  string for the class.
 

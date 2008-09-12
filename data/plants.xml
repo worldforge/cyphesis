@@ -519,6 +519,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="tick">
+        <int name="default">1</int>
+        <string name="visibility">public</string>
+      </map>
       <map name="height">
         <float name="default">6</float>
         <string name="visibility">public</string>
