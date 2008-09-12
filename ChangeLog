@@ -1,5 +1,10 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Re-order the setup of class and instance
+	  properties on an Entity so they are installed and applied correctly.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/MindProperty.cpp, rulesets/MindProperty.h: Implement
 	  adding a mind to a character entity when the property
 	  is applied.

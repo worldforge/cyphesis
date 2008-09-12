@@ -137,17 +137,23 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     //
     factory->populate(*thing);
 
-    // Read the defaults
-    // thing->merge(factory->m_attributes);
+    MapType attrs = attributes->asMessage();
+    // Apply the attribute values
+    thing->merge(attrs);
+    // Then set up the default class properties
     PropertyDict::const_iterator J = factory->m_type->defaults().begin();
     PropertyDict::const_iterator Jend = factory->m_type->defaults().end();
     for (; J != Jend; ++J) {
         PropertyBase * prop = J->second;
+        // If a property is in the class it won't have been installed
+        // as setAttr() checks
         prop->install(thing);
-        prop->apply(thing);
+        // The property will have been applied if it has an overriden
+        // value, so we only apply it the value is still default.
+        if (attrs.find(J->first) == attrs.end()) {
+            prop->apply(thing);
+        }
     }
-    // And then override with the values provided for this entity.
-    thing->merge(attributes->asMessage());
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
