@@ -1,5 +1,10 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/MindProperty.h: Correct the documentation
+	  string for the class.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Makefile.am: Add InternaProperties to the build.
 
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>

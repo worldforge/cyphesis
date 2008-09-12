@@ -22,7 +22,7 @@
 
 #include "common/DynamicProperty.h"
 
-/// \brief Class to handle Entity which are ephemeral and get auto deleted
+/// \brief Class to handle assigning a mind object to an entity
 /// \ingroup PropertyClasses
 class MindProperty : public DynamicProperty<std::string> {
   public:
