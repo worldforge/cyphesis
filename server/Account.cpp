@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.cpp,v 1.159 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #include "Account.h"
 
@@ -94,7 +94,7 @@ void Account::characterDestroyed(long id)
 
 /// \brief Add a Character to those that belong to this Account
 ///
-/// @param chr Character object to be added
+/// @param chr Character object to be adddded
 void Account::addCharacter(Entity * chr)
 {
     Character * pchar = dynamic_cast<Character *>(chr);
@@ -337,6 +337,7 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     Anonymous new_character;
     new_character->setParents(std::list<std::string>(1, typestr));
     new_character->setAttr("status", 0.024);
+    new_character->setAttr("mind", "");
     if (!arg->isDefaultName()) {
         new_character->setName(arg->getName());
     }

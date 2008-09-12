@@ -1,5 +1,10 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Account.cpp: Set the mind property to empty on character
+	  entities controlled by remote clients.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Re-order the setup of class and instance
 	  properties on an Entity so they are installed and applied correctly.
 
