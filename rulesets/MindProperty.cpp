@@ -19,15 +19,57 @@
 
 #include "MindProperty.h"
 
-#include "Entity.h"
+#include "rulesets/Character.h"
+#include "rulesets/MindFactory.h"
+
+#include "common/log.h"
+#include "common/Setup.h"
+
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
+
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Setup;
+using Atlas::Objects::Operation::Look;
 
 MindProperty::MindProperty()
 {
 }
 
-void MindProperty::install(Entity * ent)
+void MindProperty::apply(Entity * ent)
 {
-    std::cout << "Install mind on " << ent->getId() << std::endl;
+    if (m_data.empty()) {
+        return;
+    }
+
+    Character * chr = dynamic_cast<Character *>(ent);
+
+    if (chr == 0) {
+        log(NOTICE, "Mind property applied to non-character");
+        return;
+    }
+
+    if (chr->m_mind != 0) {
+        log(NOTICE, "Mind property character already has a mind");
+        return;
+    }
+
+    chr->m_mind = MindFactory::instance()->newMind(ent->getId(),
+                                                   ent->getIntId(),
+                                                   ent->getType());
+
+    Setup s;
+    Anonymous setup_arg;
+    setup_arg->setName("mind");
+    s->setTo(ent->getId());
+    s->setArgs1(setup_arg);
+    ent->sendWorld(s);
+
+    Look l;
+    l->setTo(ent->getId());
+    ent->sendWorld(l);
+
 }

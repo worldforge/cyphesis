@@ -28,7 +28,7 @@ class MindProperty : public DynamicProperty<std::string> {
   public:
     MindProperty();
 
-    virtual void install(Entity *);
+    virtual void apply(Entity *);
 };
 
 #endif // RULESETS_MIND_PROPERTY_H

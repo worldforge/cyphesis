@@ -1,5 +1,11 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/MindProperty.cpp, rulesets/MindProperty.h: Implement
+	  adding a mind to a character entity when the property
+	  is applied.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* data/animals.xml, data/characters.xml: Make "mobile" the base class
 	  for everything that has mind. Add a default mind class property,
 	  and a tick class property.
