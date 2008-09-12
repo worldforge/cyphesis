@@ -1,5 +1,11 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp, rulesets/Character.h: Remove the setup
+	  handler which used to install minds and send tick, as this is
+	  all handled by properties now.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/Account.cpp: Set the mind property to empty on character
 	  entities controlled by remote clients.
 

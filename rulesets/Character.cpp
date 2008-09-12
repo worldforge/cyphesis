@@ -350,42 +350,6 @@ void Character::ImaginaryOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 }
 
-void Character::SetupOperation(const Operation & op, OpVector & res)
-{
-    debug( std::cout << "CHaracter::SetupOperation()" << std::endl
-                     << std::flush;);
-
-    if (!op->getArgs().empty()) {
-        debug( std::cout << __func__ << " Setup op is for subsystem" << std::endl << std::flush;);
-        return;
-    }
-
-    if (0 == m_externalMind) {
-        // This ensures that newly created player characters don't get
-        // bogged down with an NPC mind. In the short term this
-        // takes away PC programmability.
-        // FIXME Characters restored from the database will still get
-        // AI minds, so  we need to handle them somehow differently.
-        // Perhaps the Restore op (different from Setup op) is needed?
-
-        m_mind = MindFactory::instance()->newMind(getId(), getIntId(), m_type);
-
-        Operation s(op.copy());
-        Anonymous setup_arg;
-        setup_arg->setName("mind");
-        s->setArgs1(setup_arg);
-        res.push_back(s);
-
-        Look l;
-        l->setTo(getId());
-        res.push_back(l);
-    }
-
-    Tick tick;
-    tick->setTo(getId());
-    res.push_back(tick);
-}
-
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "================================" << std::endl
