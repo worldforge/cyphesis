@@ -1,3 +1,6 @@
+If properties are responsible for their own serialisation, the represations
+can be much more efficient.
+
 Re-enable mapping of character to account.
 
 Design away to make only the starting POS and ORIENATION of an entity
