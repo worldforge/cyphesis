@@ -25,7 +25,7 @@
     <string name="id">goblin</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
     <int name="playable">1</int>
   </map>
@@ -47,7 +47,7 @@
     <string name="id">lych</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -76,7 +76,7 @@
     <string name="id">marshall</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -105,7 +105,7 @@
     <string name="id">mercenary</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -134,7 +134,7 @@
     <string name="id">merchant</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -158,6 +158,14 @@
       <map name="agility">
         <float name="default">0.3</float>
         <string name="visibility">private</string>
+      </map>
+      <map name="mind">
+        <string name="default">NPC</string>
+        <string name="visibility">private</string>
+      </map>
+      <map name="tick">
+        <int name="default">1</int>
+        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">mobile</string>
@@ -232,7 +240,7 @@
     <string name="id">skeleton</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
     <int name="playable">1</int>
     <map name="script">

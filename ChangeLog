@@ -1,5 +1,11 @@
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/animals.xml, data/characters.xml: Make "mobile" the base class
+	  for everything that has mind. Add a default mind class property,
+	  and a tick class property.
+
+2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Plant.cpp, rulesets/Plant.h, data/plants.xml:
 	  Add a tick class property to the base class for trees, and
 	  remove the setup handler from the core base class as it is no

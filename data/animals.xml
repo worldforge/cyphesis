@@ -54,7 +54,7 @@
     <string name="id">chicken</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -87,7 +87,7 @@
     <string name="id">cow</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -109,7 +109,7 @@
     <string name="id">crab</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -134,7 +134,7 @@
     <string name="id">deer</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -167,7 +167,7 @@
     <string name="id">dog</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -229,7 +229,7 @@
     <string name="id">horse</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -267,7 +267,7 @@
     <string name="id">pig</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -300,7 +300,7 @@
     <string name="id">spider</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -333,7 +333,7 @@
     <string name="id">squirrel</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
@@ -366,7 +366,7 @@
     <string name="id">wolf</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
