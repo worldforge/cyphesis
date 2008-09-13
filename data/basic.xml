@@ -84,6 +84,10 @@
         <float name="default">1.0</float>
         <string name="visibility">public</string>
       </map>
+      <map name="tick">
+        <float name="default">0</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">fire</string>
     <string name="objtype">class</string>

@@ -33,11 +33,11 @@ class SetupProperty : public DynamicProperty<int> {
 
 /// \brief Class to handle Entity which requires a Tick operation
 /// \ingroup PropertyClasses
-class TickProperty : public DynamicProperty<int> {
+class TickProperty : public DynamicProperty<double> {
   public:
     TickProperty();
 
-    virtual void install(Entity *);
+    virtual void apply(Entity *);
 };
 
 

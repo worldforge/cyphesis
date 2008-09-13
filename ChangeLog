@@ -1,3 +1,30 @@
+2008-09-13  Al Riddoch  <alriddoch@googlemail.com>
+
+	* data/basic.xml, data/characters.xml, data/mason.xml: Add tick
+	  properties to a bunch of entity classes so they no longer need
+	  a setup operation to get them going.
+
+	* rulesets/mason/world/objects/Weather.py,
+	  rulesets/mason/world/objects/elements/Fire.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py: Remove setup
+	  handlers from a bunch of scripts as it is now handled by
+	  properties.
+
+	* data/buildings.xml: Add setup property to entity classes which
+	  really need a setup op at startup.
+
+	* client/BaseClient.cpp: Send a look when creating the avatar, so
+	  that notifications get back without the need for a special case.
+
+	* common/op_switch.h, rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/Entity.h, server/WorldRouter.cpp:
+	  Remove the setup operation sent to all entities on startup by
+	  default. Get rid of some special cases that depended on it.
+
+	* rulesets/InternalProperties.cpp, rulesets/InternalProperties.h:
+	  Make the tick property schedule the operation on apply(), and
+	  use the property value as the time to schedule it.
+
 2008-09-12  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp, rulesets/Character.h: Remove the setup

@@ -36,8 +36,6 @@
 #include "common/inheritance.h"
 #include "common/Monitors.h"
 
-#include "common/Setup.h"
-
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
@@ -45,7 +43,6 @@
 #include <algorithm>
 
 using Atlas::Message::Element;
-using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
@@ -290,10 +287,6 @@ Entity * WorldRouter::addEntity(Entity * ent)
     }
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
-    Setup s;
-    s->setTo(ent->getId());
-    s->setFutureSeconds(-0.1);
-    message(s, m_gameWorld);
 
     Anonymous arg;
     Appearance app;

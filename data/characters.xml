@@ -164,7 +164,7 @@
         <string name="visibility">private</string>
       </map>
       <map name="tick">
-        <int name="default">1</int>
+        <float name="default">0</float>
         <string name="visibility">public</string>
       </map>
     </map>

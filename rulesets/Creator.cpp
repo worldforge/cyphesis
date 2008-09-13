@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Creator.cpp,v 1.83 2008-08-22 03:00:38 alriddoch Exp $
+// $Id$
 
 #include "Creator.h"
 
@@ -57,7 +57,7 @@ void Creator::sendExternalMind(const Operation & op, OpVector & res)
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
         m_externalMind->operation(op, res);
-    } else {
+    } else if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
         // If we do not have an external mind, and therefor a connection,
         // there is no purpose to our existance, so we should die.
         debug( std::cout << "NOTICE: Creator self destruct"
@@ -96,14 +96,9 @@ void Creator::operation(const Operation & op, OpVector & res)
             break;
         case Atlas::Objects::Operation::DELETE_NO:
             DeleteOperation(op, res);
-            // Prevent Delete op from being sent to mind, so another delete
-            // is not created in response.
-            return;
             break;
         default:
-            if (op_no == Atlas::Objects::Operation::SETUP_NO) {
-                BaseWorld::instance().addPerceptive(this);
-            } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
+            if (op_no == Atlas::Objects::Operation::TICK_NO) {
                 TickOperation(op, res);
             }
             break;

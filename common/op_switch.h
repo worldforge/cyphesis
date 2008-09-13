@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: op_switch.h,v 1.39 2008-03-26 01:34:16 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
@@ -78,8 +78,6 @@
                 _prefix ## EatOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::NOURISH_NO) { \
                 _prefix ## NourishOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::SETUP_NO) { \
-                _prefix ## SetupOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
                 _prefix ## TickOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \

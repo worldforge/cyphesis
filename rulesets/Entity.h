@@ -131,7 +131,6 @@ class Entity : public LocatedEntity {
     virtual void MoveOperation(const Operation &, OpVector &);
     virtual void NourishOperation(const Operation &, OpVector &);
     virtual void SetOperation(const Operation &, OpVector &);
-    virtual void SetupOperation(const Operation &, OpVector &);
     virtual void SightOperation(const Operation &, OpVector &);
     virtual void SoundOperation(const Operation &, OpVector &);
     virtual void TalkOperation(const Operation &, OpVector &);

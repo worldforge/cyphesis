@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.cpp,v 1.46 2008-01-28 23:48:31 alriddoch Exp $
+// $Id$
 
 #include "BaseClient.h"
 
@@ -33,6 +33,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
+using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
@@ -128,6 +129,10 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     }
 
     const std::string & id = ent->getId();
+
+    Look l;
+    l->setFrom(id);
+    send(l);
 
     long intId = integerId(id);
 

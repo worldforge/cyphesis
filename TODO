@@ -1,3 +1,6 @@
+cyclient wants ops back in response to its creates. If we don't automatically
+make Creator perceptive, how can we make this happen?
+
 If properties are responsible for their own serialisation, the represations
 can be much more efficient.
 
@@ -13,17 +16,10 @@ Sort out enable_persitence. Purge the old code.
 TerrainModProperty needs state, so it must be an instance property.
 This can be handled in ::instal() once class properties are flagged.
 
-Make mind a property.
-Would remove the need for Setup on Character.
-Once that is done, there is almost no need for setup at all.
-
 Use database to allow characters to go offline.
 
 Location is stil adding bbox data to RootEntity or MapType representations.
 Stop, as this should be handled by the property.
-
-Add a class internal property which causes an entity to get setup,
-rather than sending setup to everyone.
 
 Make sure all the places properties are set use one single way to do
 it, ensuring the right calls get made to set it up.
@@ -79,10 +75,6 @@ Need a property flag to indicate that it is new, rather than just dirty.
 
 Make update interval has jitter on it, so we don't get spikey load.
 
-Strip down Entity update_flags to just flags, Define flag for general Entity
-cleanness. Re-write onUpdated to it only emits if the entity was previously
-clean. Hook up to storeagemanager and see what we get.
-
 Types should have integer IDs. Bootstrap type queries with well know IDs for basic types.
 
 Refactor properties a bit so that they are never tied to an entity.
@@ -91,9 +83,6 @@ can be applied to entities as it is added to them. A property flag will
 indicate that a property is a class one, and will need to be cloned if it is
 modified. Implement modifying which will require a clone() method.
 This will push the cost of persistence way down.
-
-Flags per property. Flags describe whether property should be persisted,
-whether it is public, and whether it is dirty.
 
 Admin Creator avatatar gets destroyed once it is no longer connected, but
 it then calls Connection::removeObject() despite the Connection being

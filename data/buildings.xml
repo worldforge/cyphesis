@@ -324,6 +324,10 @@
         <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
+      <map name="setup">
+        <int name="default">0</int>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">house3</string>
     <string name="objtype">class</string>

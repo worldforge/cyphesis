@@ -295,10 +295,6 @@ void Entity::SetOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::SetupOperation(const Operation &, OpVector &)
-{
-}
-
 void Entity::SightOperation(const Operation &, OpVector &)
 {
 }

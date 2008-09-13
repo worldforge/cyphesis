@@ -10,8 +10,6 @@ import server
 
 class Fire(Thing):
     """fire to burn things up"""
-    def setup_operation(self, op):
-        return Operation("tick",to=self)
     #CHEAT! make it more realistic (like spreading to things that burn near)
     def extinguish_operation(self, op):
         """If somebody tries to extinguish us, change status lower"""

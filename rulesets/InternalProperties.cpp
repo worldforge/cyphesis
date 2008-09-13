@@ -24,6 +24,8 @@
 #include "common/Setup.h"
 #include "common/Tick.h"
 
+#include <iostream>
+
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Tick;
 
@@ -42,9 +44,12 @@ TickProperty::TickProperty()
 {
 }
 
-void TickProperty::install(Entity * ent)
+void TickProperty::apply(Entity * ent)
 {
     Tick t;
     t->setTo(ent->getId());
+    if (m_data > 0) {
+        t->setFutureSeconds(m_data);
+    }
     ent->sendWorld(t);
 }
