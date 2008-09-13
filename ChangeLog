@@ -1,5 +1,9 @@
 2008-09-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/IGEntityExerciser.h: Remove Setup from the tests.
+
+2008-09-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* data/basic.xml, data/characters.xml, data/mason.xml: Add tick
 	  properties to a bunch of entity classes so they no longer need
 	  a setup operation to get them going.

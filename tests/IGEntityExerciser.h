@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IGEntityExerciser.h,v 1.26 2008-01-17 19:53:39 alriddoch Exp $
+// $Id$
 
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
@@ -421,18 +421,6 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
         }
-        this->flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Setup op;
-        this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent.SetupOperation(op, ov);
-        this->flushOperations(ov);
-
-        Atlas::Objects::Entity::Anonymous setup_arg;
-        op->setArgs1(setup_arg);
-        this->m_ent.SetupOperation(op, ov);
         this->flushOperations(ov);
     }
     {
