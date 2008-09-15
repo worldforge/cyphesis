@@ -108,6 +108,7 @@ struct command commands[] = {
     { "add_agent",      "Create an in-game agent", },
     { "connect",        "Connect server to a peer", },
     { "cancel",         "Cancel the current admin task", },
+    { "creator_create", "Use agent to create an entity", },
     { "delete",         "Delete an entity from the server", },
     { "get",            "Examine a class on the server", },
     { "find_by_name",   "Find an entity with the given name", },
@@ -1210,6 +1211,25 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         } else {
             AdminTask * task = new Flusher(agentId);
             runTask(task, arg);
+            reply_expected = false;
+        }
+    } else if (cmd == "creator_create") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Create c;
+
+            Anonymous thing;
+            thing->setParents(std::list<std::string>(1, arg));
+            c->setArgs1(thing);
+            c->setFrom(agentId);
+
+            encoder->streamObjectsMessage(c);
+
             reply_expected = false;
         }
     } else if (cmd == "cancel") {

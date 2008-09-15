@@ -1,5 +1,10 @@
 2008-09-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cycmd.cpp: Add a new command to allow the creation of
+	  more arbitrary in game entities.
+
+2008-09-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py: Add a flat_terrain function to
 	  create a large area of flat terrain.
 
