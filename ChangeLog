@@ -1,3 +1,8 @@
+2008-09-15  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/mason/define_world.py: Add a flat_terrain function to
+	  create a large area of flat terrain.
+
 2008-09-13  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tests/IGEntityExerciser.h: Remove Setup from the tests.

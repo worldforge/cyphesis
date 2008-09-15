@@ -720,6 +720,43 @@ def test_forest(mapeditor):
             m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
 
    
+def flat_terrain(mapeditor):
+
+    m=editor(mapeditor)
+
+    world=m.look()
+    points = { }
+    for i in range(-8, 7):
+        for j in range(-6, 7):
+            # Give all points a height of 5 above sea level
+            points['%ix%i'%(i,j)] = [i, j, 5]
+
+    # Work out the ranges for the bounding box of the world.
+    minx=0
+    miny=0
+    minz=0
+    maxx=0
+    maxy=0
+    maxz=0
+    for i in points.values():
+        x = i[0]
+        y = i[1]
+        z = i[2]
+        if not minx or x < minx:
+            minx = x
+        if not miny or y < miny:
+            miny = y
+        if not minz or z < minz:
+            minz = z
+        if not maxx or x > maxx:
+            maxx = x
+        if not maxy or y > maxy:
+            maxy = y
+        if not maxz or z > maxz:
+            maxz = z
+        
+    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+
 def modify_terrain(mapeditor):
 #   general things
 
