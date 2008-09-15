@@ -1,3 +1,6 @@
+Define an operatoin which went sent returns the count of entities which
+can see something, so we can suspend simulation.
+
 cyclient wants ops back in response to its creates. If we don't automatically
 make Creator perceptive, how can we make this happen?
 
