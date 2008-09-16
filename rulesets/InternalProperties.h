@@ -40,5 +40,19 @@ class TickProperty : public DynamicProperty<double> {
     virtual void apply(Entity *);
 };
 
+/// \brief Class to handle whether or not an entit is simple for collisions.
+/// \ingroup PropertyClasses
+class SimpleProperty : public PropertyBase {
+  public:
+    /// \brief Constructor
+    ///
+    /// @param owner the owner of the property.
+    explicit SimpleProperty();
+
+    virtual bool get(Atlas::Message::Element & val) const;
+    virtual void set(const Atlas::Message::Element & val);
+
+    virtual void apply(Entity *);
+};
 
 #endif // RULESETS_INTERNAL_PROPERTIES_H

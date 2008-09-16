@@ -26,6 +26,7 @@
 
 #include <iostream>
 
+using Atlas::Message::Element;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Tick;
 
@@ -52,4 +53,30 @@ void TickProperty::apply(Entity * ent)
         t->setFutureSeconds(m_data);
     }
     ent->sendWorld(t);
+}
+
+SimpleProperty::SimpleProperty() : PropertyBase(0)
+{
+}
+
+bool SimpleProperty::get(Element & ent) const
+{
+    ent = (flags() & flag_bool) ? 1 : 0;
+    return true;
+}
+
+void SimpleProperty::set(const Element & ent)
+{
+    if (ent.isInt()) {
+        if (ent.Int() == 0) {
+            resetFlags(flag_bool);
+        } else {
+            setFlags(flag_bool);
+        }
+    }
+}
+
+void SimpleProperty::apply(Entity * owner)
+{
+    owner->m_location.setSimple(flags() & flag_bool);
 }

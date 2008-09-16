@@ -1,4 +1,9 @@
-2008-09-15  Al Riddoch  <alriddoch@googlemail.com>
+2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/InternalProperties.cpp, rulesets/InternalProperties.h:
+	  Add a new property class to handle the simple flag on Location.
+
+2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/DynamicProperty.cpp: Add some explicit template
 	  instantiations as this was breaking the optimised build.
