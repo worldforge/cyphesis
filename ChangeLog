@@ -1,5 +1,12 @@
 2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
 
+	* Doxyfile, Makefile.am, configure.ac, index.dox,
+	  data/architecture.dox, dox/Makefile.am, dox/architecture.dox,
+	  dox/index.dox: Move the non-embedded documentation into its
+	  own directory to keep the root a bit cleaner.
+
+2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Makefile.am: Remove tests for the hard coded Structure
 	  class.
 

@@ -1,6 +1,6 @@
 
 SUBDIRS = libraries physics common modules rulesets server client data \
-          tools tests man
+          tools tests man dox
 
 docdir = $(datadir)/doc/cyphesis-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS THANKS NEWS FIXME

@@ -449,6 +449,7 @@ AC_CONFIG_FILES([
     data/Makefile
     tests/Makefile
     man/Makefile
+    dox/Makefile
     autopackage/default.apspec
 ])
 AC_OUTPUT
