@@ -260,6 +260,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
     m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
+    m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
     m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
     m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, eat_handler);
     m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
