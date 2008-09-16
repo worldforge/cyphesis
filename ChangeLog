@@ -1,5 +1,11 @@
 2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Makefile.am, rulesets/Structure.cpp, rulesets/Structure.h,
+	  server/PersistantThingFactory.cpp: Remove the hard coded Structure
+	  class from the build.
+
+2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Remove the hard coded Structure class.
 
 	* data/buildings.xml: Add a soft structure class which sets the simple

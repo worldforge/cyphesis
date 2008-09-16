@@ -29,7 +29,6 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Creator.cpp Creator.h \
 			     Plant.cpp Plant.h \
 			     Stackable.cpp Stackable.h \
-			     Structure.cpp Structure.h \
 			     Motion.cpp Motion.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \

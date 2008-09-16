@@ -28,7 +28,6 @@
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
-#include "rulesets/Structure.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
@@ -46,8 +45,7 @@ EntityKit::~EntityKit()
 }
 
 template <>
-World * ThingFactory<World>::newThing(const std::string & id,
-                                                long intId)
+World * ThingFactory<World>::newThing(const std::string & id, long intId)
 {
     return 0;
 }
@@ -64,5 +62,4 @@ template class ThingFactory<Character>;
 template class ThingFactory<Creator>;
 template class ThingFactory<Plant>;
 template class ThingFactory<Stackable>;
-template class ThingFactory<Structure>;
 template class ThingFactory<World>;

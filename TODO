@@ -1,3 +1,9 @@
+Make the overall movement model configurable. If a flat world is all that is
+needed, there is no need to add more. In a fantasy MMO there is probably very
+little need for more. There is a strong link here between this and the need
+for persistence. If we only need character persistence, we can't really deal
+with them having something other than the world as their LOC.
+
 Define an operatoin which went sent returns the count of entities which
 can see something, so we can suspend simulation.
 
@@ -11,8 +17,6 @@ Re-enable mapping of character to account.
 
 Design away to make only the starting POS and ORIENATION of an entity
 storable.
-
-Structure base class can go because its just setting a flag.
 
 Sort out enable_persitence. Purge the old code.
 
