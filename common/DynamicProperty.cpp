@@ -15,6 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: DynamicProperty.cpp,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+// $Id$
 
 #include "DynamicProperty_impl.h"
+
+template class DynamicProperty<int>;
+template class DynamicProperty<double>;
+template class DynamicProperty<std::string>;

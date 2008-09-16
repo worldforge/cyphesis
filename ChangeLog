@@ -1,5 +1,10 @@
 2008-09-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/DynamicProperty.cpp: Add some explicit template
+	  instantiations as this was breaking the optimised build.
+
+2008-09-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tools/cycmd.cpp: Add a new command to allow the creation of
 	  more arbitrary in game entities.
 
