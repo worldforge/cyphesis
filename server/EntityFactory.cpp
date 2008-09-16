@@ -35,7 +35,6 @@
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
-#include "rulesets/Structure.h"
 #include "rulesets/World.h"
 
 #include "rulesets/Python_Script_Utils.h"
@@ -83,7 +82,6 @@ EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
     installFactory("creator", "character", new ThingFactory<Creator>());
     installFactory("plant", "thing", new ThingFactory<Plant>());
     installFactory("stackable", "thing", new ThingFactory<Stackable>());
-    installFactory("structure", "thing", new ThingFactory<Structure>());
 
     m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
 

@@ -1,5 +1,12 @@
 2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Remove the hard coded Structure class.
+
+	* data/buildings.xml: Add a soft structure class which sets the simple
+	  flag to 0.
+
+2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CorePropertyManager.cpp: Add the simple property to the
 	  property manager.
 
