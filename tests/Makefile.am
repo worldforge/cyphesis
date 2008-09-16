@@ -12,7 +12,7 @@ PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 
 RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
-                 Stackabletest Structuretest Thingtest Worldtest \
+                 Stackabletest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
                  Containertest Tasktest EntityPropertytest \
                  AllPropertytest
@@ -274,21 +274,6 @@ Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp IGEntityExerci
 Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/rulesets/Stackable.o \
-                      $(top_builddir)/rulesets/LocatedEntity.o \
-                      $(top_builddir)/rulesets/Entity.o \
-                      $(top_builddir)/rulesets/EntityProperties.o \
-                      $(top_builddir)/rulesets/AtlasProperties.o \
-                      $(top_builddir)/rulesets/Thing.o \
-                      $(top_builddir)/rulesets/Motion.o \
-                      $(top_builddir)/rulesets/Script.o \
-                      $(top_builddir)/physics/libphysics.a \
-                      $(top_builddir)/common/libcommon.a \
-                      $(MATH_LIBS)
-
-Structuretest_SOURCES = Structuretest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Structuretest_LDADD = $(top_builddir)/modules/Location.o \
-                      $(top_builddir)/modules/DateTime.o \
-                      $(top_builddir)/rulesets/Structure.o \
                       $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \

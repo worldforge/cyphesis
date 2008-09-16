@@ -1,5 +1,10 @@
 2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Makefile.am: Remove tests for the hard coded Structure
+	  class.
+
+2008-09-16  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Makefile.am, rulesets/Structure.cpp, rulesets/Structure.h,
 	  server/PersistantThingFactory.cpp: Remove the hard coded Structure
 	  class from the build.
