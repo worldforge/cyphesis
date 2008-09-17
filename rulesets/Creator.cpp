@@ -121,12 +121,14 @@ void Creator::externalOperation(const Operation & op)
     } else if (op->getTo() == getId() && op->isDefaultFutureSeconds()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;
+        OpVector eres;
         callOperation(op, lres);
         OpVector::const_iterator Iend = lres.end();
         for (OpVector::const_iterator I = lres.begin(); I != Iend; ++I) {
             if (!op->isDefaultSerialno()) {
                 (*I)->setRefno(op->getSerialno());
             }
+            sendExternalMind(*I, eres);
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue
             // World will deal with it.

@@ -1,5 +1,12 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Creator.cpp: Add a short path for the results of an
+	  operation from an external mind to be returned to the external
+	  mind, removing the need for remote admin clients to become
+	  perceptive.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/basic/mind/NPCMind.py: Add a mechanism to detect when
 	  the mind is assigned ownership of something it has not yet seen,
 	  and postpone adding it to owned things until later.
