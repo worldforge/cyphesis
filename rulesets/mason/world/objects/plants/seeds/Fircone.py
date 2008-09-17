@@ -7,6 +7,7 @@ import atlas
 
 
 class Fircone(Seed):
+    """A fircone."""
     def eat_operation(self, op):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)

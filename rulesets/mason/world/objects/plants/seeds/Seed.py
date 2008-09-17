@@ -13,11 +13,8 @@ debug_seed = 0
 
 speed = 1
 
-"""
-Base class from which all fruit/seed entities are derived.
-"""
-
 class Seed(Thing):
+    """Base for kinds of seeds and fruit."""
     def tick_operation(self, op): pass
 #        opTick=Operation("tick",to=self)
 #        opTick.setFutureSeconds(const.basic_tick*speed)

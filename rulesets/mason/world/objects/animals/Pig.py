@@ -12,6 +12,7 @@ from Vector3D import Vector3D
 import atlas
 
 class Pig(Thing):
+    """ A pig """
     def chop_operation(self, op):
         if self.mass<1:
             return(Operation("set",Entity(self.id,status=-1),to=self))

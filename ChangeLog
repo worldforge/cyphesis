@@ -1,5 +1,14 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/world/objects/animals/Pig.py,
+	  rulesets/mason/world/objects/plants/seeds/Acorn.py,
+	  rulesets/mason/world/objects/plants/seeds/Apple.py,
+	  rulesets/mason/world/objects/plants/seeds/Fircone.py,
+	  rulesets/mason/world/objects/plants/seeds/Seed.py: Add nominal
+	  doc strings to some entity classes.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/basic/mind/goals/common/common.py,
 	  rulesets/basic/mind/goals/common/move.py,
 	  rulesets/basic/mind/goals/humanoid/build_home.py,
