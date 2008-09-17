@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemMap.cpp,v 1.105 2008-01-05 14:05:05 alriddoch Exp $
+// $Id$
 
 #include "MemMap.h"
 
@@ -140,7 +140,8 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
 MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
 {
     if (m_entity_type == 0) {
-        m_entity_type = Inheritance::instance().getType("game_entity");
+        // m_entity_type = Inheritance::instance().getType("game_entity");
+        m_entity_type = new TypeNode();
         assert(m_entity_type != 0);
     }
 }
