@@ -33,7 +33,6 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
@@ -129,10 +128,6 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     }
 
     const std::string & id = ent->getId();
-
-    Look l;
-    l->setFrom(id);
-    send(l);
 
     long intId = integerId(id);
 

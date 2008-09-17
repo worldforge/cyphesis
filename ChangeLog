@@ -1,5 +1,11 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/BaseClient.cpp: Remove the Look operation as Creator no
+	  longer needs to be perceptive to get responses back from the
+	  server.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Creator.cpp: Add a short path for the results of an
 	  operation from an external mind to be returned to the external
 	  mind, removing the need for remote admin clients to become
