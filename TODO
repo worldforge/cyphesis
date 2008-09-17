@@ -1,3 +1,9 @@
+Cutting down simulation cost when nothing is watching.
+Gorgious. Send out a ping, and get back an estimate. at the simplest level
+the simulation can continue, but decline to send out update ops. Kick off
+an update in response to any subsequent look ops. Seq is being incremented
+so Appearance will tell minds they need an update.
+
 Make the overall movement model configurable. If a flat world is all that is
 needed, there is no need to add more. In a fantasy MMO there is probably very
 little need for more. There is a strong link here between this and the need
