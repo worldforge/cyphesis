@@ -55,6 +55,7 @@ class NPCMind(Thing):
         self.knowledge=Knowledge()
         self.mem=Memory(map=self.map)
         self.things={}
+        self.pending_things=[]
         self._reverse_knowledge()
         self.goals=[]
         self.money_transfers=[]
@@ -112,6 +113,11 @@ class NPCMind(Thing):
         self.tick_count=self.tick_count+1
         opTick=Operation("tick")
         opTick.setFutureSeconds(const.basic_tick)
+        for t in self.pending_things:
+            thing = self.map.get(t)
+            if thing:
+                self.add_thing(thing)
+        self.pending_things=[]
         result=self.think()
         if self.message_queue:
             result = self.message_queue + result
@@ -439,6 +445,9 @@ class NPCMind(Thing):
         log.debug(3,str(self)+" "+str(thing)+" before add_thing: "+str(self.things))
         #thought about owing thing
         name = self.thing_name(thing)
+        if not name:
+            self.pending_things.append(thing.id)
+            return
         desc="I own %s." % name
         what=thing.as_entity()
         ent = Entity(description=desc, what=what)

@@ -1,5 +1,11 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/basic/mind/NPCMind.py: Add a mechanism to detect when
+	  the mind is assigned ownership of something it has not yet seen,
+	  and postpone adding it to owned things until later.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/MemMap.cpp: Use a type node with empty name for
 	  entities which don't yet have an assigned type.
 
