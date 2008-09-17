@@ -3,6 +3,7 @@
 
 import mind.goals
 import mind.goals.common
+from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import move_me
 from mind.goals.dynamic.DynamicGoal import DynamicGoal

@@ -1,7 +1,7 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-from mind.goals.common.common import *
+from mind.Goal import Goal
 
 try:
   from random import *

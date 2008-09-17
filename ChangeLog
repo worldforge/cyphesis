@@ -1,5 +1,24 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/basic/mind/goals/common/common.py,
+	  rulesets/basic/mind/goals/common/move.py,
+	  rulesets/basic/mind/goals/humanoid/build_home.py,
+	  rulesets/basic/mind/goals/humanoid/fire.py,
+	  rulesets/basic/mind/goals/humanoid/mason.py,
+	  rulesets/basic/mind/goals/humanoid/transaction.py:
+	  Clean up the way goals are imported so it makes more sense,
+	  and doxygen has an easier time with it.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
+	* dox/cyphesis/Thing.py, dox/cyphesis/__init__.py: Add a tree of
+	  stub python files used to document the API exposed by the C++ core.
+
+	* Doxyfile-python: Trim the directories down to the top level, and
+	  turn on recursion.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/basic/__init__.py, rulesets/mason/__init__.py,
 	  rulesets/Makefile.am: These are no longer module directories,
 	  so don't need __init__.py files.
