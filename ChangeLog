@@ -1,5 +1,10 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/basic/mind/goals/common/move.py: Add nominal doc strings
+	  to some goal classes.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/world/objects/animals/Pig.py,
 	  rulesets/mason/world/objects/plants/seeds/Acorn.py,
 	  rulesets/mason/world/objects/plants/seeds/Apple.py,

@@ -19,6 +19,7 @@ import types
 ############################ MOVE ME ####################################
 
 class move_me(Goal):
+    """Move me to a certain place."""
     def __init__(self, location, speed=1):
         Goal.__init__(self,"move me to certain place",
                       self.am_I_at_loc,
@@ -70,6 +71,7 @@ class move_me(Goal):
 ############################ MOVE ME AREA ####################################
 
 class move_me_area(Goal):
+    """Move me to a certain area."""
     def __init__(self, location, range=30):
         Goal.__init__(self, "move me to certain area",
                       self.am_I_in_area,
@@ -116,6 +118,7 @@ class move_me_area(Goal):
 ############################ MOVE ME PLACE ####################################
 
 class move_me_place(move_me):
+    """Move me to a place by name."""
     def __init__(self, what):
         Goal.__init__(self, "move me to a place where I can get something",
                       self.am_I_at_loc,
@@ -133,6 +136,7 @@ class move_me_place(move_me):
 ############################ MOVE THING ####################################
 
 class move_it(Goal):
+    """Move something to a place."""
     def __init__(self, what, location, speed=0):
         Goal.__init__(self,"move this to certain place",
                       self.is_it_at_loc,
@@ -183,6 +187,7 @@ class move_it(Goal):
 ############################ MOVE THING FROM ME ####################################
 
 class move_it_outof_me(Goal):
+    """Put something down."""
     def __init__(self, what):
         Goal.__init__(self, "move this thing from my inventory and disown",
                       self.is_it_not_with_me,
@@ -201,6 +206,7 @@ class move_it_outof_me(Goal):
 ############################ MOVE ME TO THING ##################################
 
 class move_me_to_possession(Goal):
+    """Move me to the same place as something I own."""
     def __init__(self, what):
         Goal.__init__(self,"move me to this thing",
                       self.am_i_at_it,
@@ -229,6 +235,7 @@ class move_me_to_possession(Goal):
             return Operation("move", Entity(me.id, location=target))
 
 class move_me_to_focus(Goal):
+    """Move me to something I am interested in."""
     def __init__(self, what):
         Goal.__init__(self,"move me to this thing",
                       self.am_i_at_it,
@@ -266,6 +273,7 @@ class move_me_to_focus(Goal):
 ############################ MOVE THING TO ME ####################################
 
 class pick_up_possession(Goal):
+    """Pick up something I own."""
     def __init__(self, what):
         Goal.__init__(self,"move this thing to my inventory (class)",
                       self.is_it_with_me,
@@ -292,6 +300,7 @@ class pick_up_possession(Goal):
         return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
 
 class pick_up_focus(Goal):
+    """Pick up something I am interested in."""
     def __init__(self, what):
         Goal.__init__(self,"move this thing to my inventory (class)",
                       self.is_it_with_me,
@@ -332,6 +341,7 @@ class pick_up_focus(Goal):
 ############################ WANDER ####################################
 
 class wander(Goal):
+    """Move in a non-specific way."""
     def __init__(self):
         Goal.__init__(self,"wander randomly",false,[self.do_wandering])
     def do_wandering(self, me):
@@ -346,6 +356,7 @@ class wander(Goal):
 ############################ WANDER & SEARCH ############################
 
 class search(Goal):
+    """Move in a non-specific way looking for something."""
     def __init__(self, what):
         Goal.__init__(self, "search for a thing",
                       self.do_I_have,
@@ -418,6 +429,7 @@ class hunt_for(pursuit):
 ################################ HUNT ################################
 
 class patrol(Goal):
+    """Move around an area defined by some waypoints."""
     def __init__(self, whlist):
         Goal.__init__(self, "patrol an area",
                       false,
@@ -436,6 +448,7 @@ class patrol(Goal):
 ############################## ACCOMPANY ##############################
 
 class accompany(Goal):
+    """Move around staying close to someone."""
     def __init__(self, who):
         Goal.__init__(self, "stay with someone",
                       self.am_i_with, 
