@@ -1,5 +1,11 @@
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/basic/__init__.py, rulesets/mason/__init__.py,
+	  rulesets/Makefile.am: These are no longer module directories,
+	  so don't need __init__.py files.
+
+2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* client/BaseClient.cpp: Remove the Look operation as Creator no
 	  longer needs to be perceptive to get responses back from the
 	  server.
