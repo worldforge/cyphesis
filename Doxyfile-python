@@ -459,32 +459,9 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = rulesets/basic/ \
+INPUT                  = dox/cyphesis \
                          rulesets/basic/mind \
-                         rulesets/basic/mind/goals \
-                         rulesets/basic/mind/goals/common \
-                         rulesets/basic/mind/goals/dynamic \
-                         rulesets/basic/mind/goals/animal \
-                         rulesets/basic/mind/goals/humanoid \
-                         rulesets/basic/mind/panlingua \
-                         rulesets/basic/hooks \
-                         rulesets/basic/world \
-                         rulesets/basic/world/objects \
-                         rulesets/basic/world/objects/plants \
-                         rulesets/basic/world/objects/animals \
-                         rulesets/mason \
-                         rulesets/mason/world \
-                         rulesets/mason/world/statistics \
-                         rulesets/mason/world/objects \
-                         rulesets/mason/world/objects/buildings \
-                         rulesets/mason/world/objects/plants \
-                         rulesets/mason/world/objects/plants/seeds \
-                         rulesets/mason/world/objects/undead \
-                         rulesets/mason/world/objects/animals \
-                         rulesets/mason/world/objects/clothing \
-                         rulesets/mason/world/objects/tools \
-                         rulesets/mason/world/objects/outdoor \
-                         rulesets/mason/world/tasks
+                         rulesets/mason/world
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -500,7 +477,7 @@ FILE_PATTERNS          = *.dox \
 # should be searched for input files as well. Possible values are YES and NO. 
 # If left blank NO is used.
 
-RECURSIVE              = NO
+RECURSIVE              = YES
 
 # The EXCLUDE tag can be used to specify files and/or directories that should 
 # excluded from the INPUT source files. This way you can easily exclude a 
