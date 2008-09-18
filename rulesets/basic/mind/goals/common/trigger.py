@@ -13,6 +13,7 @@ except ImportError:
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class chase(DynamicGoal):
+    """Chase after something that has moved."""
     def __init__(self, kinds, desc="Chase after things."):
         DynamicGoal.__init__(self, trigger="sight_move", desc=desc)
         self.kinds = kinds

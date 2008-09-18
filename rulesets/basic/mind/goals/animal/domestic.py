@@ -12,6 +12,7 @@ sowee_pattern = re.compile("[Ss]owee")
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class driven(DynamicGoal):
+    """Move away from a herder when touched."""
     def __init__(self, desc="Move away when touched, as by a swineherd"):
         DynamicGoal.__init__(self, trigger="touch", desc=desc)
     def event(self, me, original_op, op):
@@ -22,6 +23,7 @@ class driven(DynamicGoal):
 
 
 class summons(DynamicGoal):
+    """Stop moving when the herder gives a cry."""
     def __init__(self, verb, desc="Come to a stop when commanded to"):
         DynamicGoal.__init__(self, trigger="sound_talk", desc=desc)
     def event(self, me, original_op, op):

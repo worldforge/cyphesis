@@ -6,6 +6,7 @@ from mind.goals.common.move import move_me
 from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
 
 class extinguish_fire(Goal):
+    """Put out a specified fire."""
     def __init__(self, what):
         Goal.__init__(self,"extinguish fire",
                       self.fire_extinguished,
@@ -22,6 +23,7 @@ class extinguish_fire(Goal):
         return Operation("extinguish",Entity(self.what.id),to=self.what)
 
 class add_extinguish_fire(add_unique_goal_by_perception):
+    """Respond to spotting a fire by adding a goal to extinguish it."""
     def __init__(self, desc="add extinguish fire goal"):
         add_unique_goal_by_perception.__init__(self,
                                                extinguish_fire,

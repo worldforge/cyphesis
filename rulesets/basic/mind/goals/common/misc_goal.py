@@ -3,6 +3,7 @@
 #Al Riddoch - Added transport_something() goal
 
 from physics import *
+from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
 try:
@@ -15,6 +16,7 @@ import types
 ######################## MAKE LOTS OF SOMETHING ###############################
 
 class make_amount(Goal):
+    """Make a certain number of things."""
     def __init__(self, what, amount, what_desc="some thing", place=None):
         Goal.__init__(self,"make certain amount of things",
                       self.are_all_done,
@@ -39,6 +41,7 @@ class make_amount(Goal):
 ########################## NOT YET IMPLEMENTED ################################
 
 class nyi(Goal):
+    """Perform a task that is not yet implemented."""
     def __init__(self, desc):
         Goal.__init__(self,desc,
                       lambda self:0,
@@ -51,6 +54,7 @@ class nyi(Goal):
 ############################ IMAGINARY TASK ###################################
 
 class imaginary(Goal):
+    """Perform a task that should be broadcast without really doing it."""
     def __init__(self, desc, time, place):
         Goal.__init__(self,desc,false,[move_me(place),self.imaginary],time)
         self.vars=["desc"]
@@ -60,6 +64,7 @@ class imaginary(Goal):
 ####################### GET KNOWLEDEGE ABOUT THING ############################
 
 class get_knowledge(Goal):
+    """Find out what we remember about a thing."""
     def __init__(self, what):
         Goal.__init__(self,"get knowledge about thing by name",
                       self.do_I_know_about_this,
@@ -77,10 +82,12 @@ class get_knowledge(Goal):
 ############################ BUY KNOWN THING ##################################
 
 class get_thing(Goal):
+    """Base class for obtaining something."""
     def do_I_have_it(self, me):
         return me.things.has_key(self.what)
 
 class buy_thing(get_thing):
+    """Purchase something from a location."""
     def __init__(self, what):
         #CHEAT!: doesn't work for static goals ;-(
         #goal systems needs redesign
@@ -104,6 +111,7 @@ class buy_thing(get_thing):
 ############################ ACQUIRE THING: BASE ##############################
 
 class acquire(Goal):
+    """Base class for getting something into inventory."""
     def is_it_in_my_inventory(self, me):
         if me.things.has_key(self.what):
             return me.things[self.what][0].location.parent==me
@@ -112,6 +120,7 @@ class acquire(Goal):
 ############################ ACQUIRE KNOWN THING ##############################
 
 class acquire_known_thing(acquire):
+    """Buy something into inventory."""
     def __init__(self, what):
         Goal.__init__(self,"acquire known thing by name",
                       self.is_it_in_my_inventory,
@@ -123,6 +132,7 @@ class acquire_known_thing(acquire):
 ############################ ACQUIRE THING ####################################
 
 class acquire_thing(acquire):
+    """Buy semething from a known place into inventory."""
     def __init__(self, what):
         Goal.__init__(self,"acquire thing by name",
                       self.is_it_in_my_inventory,
@@ -134,6 +144,7 @@ class acquire_thing(acquire):
 ############################ TASK WITH PLACE AND TOOL #########################
 
 class task(Goal):
+    """Base class for performing a task with a tool."""
     def __init__(self, desc, time, place, what, tool):
         Goal.__init__(self,desc,
                       false,
@@ -152,6 +163,7 @@ class task(Goal):
 ############################ CUT TREES TASK #############################
 
 class cut_something(task):
+    """Use a tool to cut down a tree."""
     def do(self,me):
         if me.things.has_key(self.what)==0: return
         if me.things.has_key(self.tool)==0: return
@@ -165,6 +177,7 @@ class cut_something(task):
 ############################ SPOT SOMETHING GOAL ########################
 
 class spot_something(Goal):
+    """Pick out something and focus on it."""
     def __init__(self, what, range=30, condition=lambda a:1):
         Goal.__init__(self, "spot a thing",
                       self.do_I_have,
@@ -204,6 +217,7 @@ class spot_something(Goal):
 ############################ FETCH SOMETHING GOAL ########################
 
 class fetch_something(Goal):
+    """Get something that is freely available from a known location."""
     def __init__(self, what, where):
         Goal.__init__(self, "fetch a thing",
                       self.is_it_in_my_inventory,
@@ -222,6 +236,7 @@ class fetch_something(Goal):
 ############################ MOVE SOMETHING GOAL ########################
 
 class transport_something(Goal):
+    """Move things of a given type from one location to another."""
     def __init__(self, what, src, dest):
         Goal.__init__(self,"move thing to place",
                       false,
@@ -234,6 +249,7 @@ class transport_something(Goal):
 ############################### SIT DOWN ######################################
 
 class sit_down(Goal):
+    """Sit down and rest in a given location."""
     def __init__(self, where):
         Goal.__init__(self,"sit down",
                       self.am_i_sat,
@@ -248,6 +264,7 @@ class sit_down(Goal):
 ############################ FEED (FOR FOOD) ##################################
 
 class feed(Goal):
+    """Eat something."""
     def eat(self,me):
         me.remove_knowledge('focus',self.what)
         if me.things.has_key(self.what)==0: return
@@ -267,6 +284,7 @@ class feed(Goal):
 ########################## BUY AND EAT A MEAL #################################
 
 class meal(feed):
+    """Buy a meal from a given location and eat it."""
     def __init__(self, what, time, place, seat=None):
         if seat==None:
             Goal.__init__(self,"have a meal",
@@ -291,6 +309,7 @@ class meal(feed):
 ############################ FORAGE (FOR FOOD) ################################
 
 class forage(feed):
+    """Find food available in a given location and eat it."""
     def __init__(self, what):
         Goal.__init__(self, "forage for food by name",
                       self.am_i_full,
@@ -305,6 +324,7 @@ class forage(feed):
 ############################ PECK ###########################################
 
 class peck(feed):
+    """Peck at food in a given location."""
     def __init__(self) :
         Goal.__init__(self, "forage for food by name and eat randomly",
                       self.am_i_full,
@@ -328,6 +348,7 @@ class peck(feed):
 ############################ BROWSE (FIND FOOD, EAT SOME, MOVE ON) ###########
 
 class browse(feed):
+    """Browse for food in a given location."""
     def __init__(self, what, min_status):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
@@ -353,6 +374,7 @@ class browse(feed):
 ############################ PREDATOR (HUNT SOMETHING, THEN EAT IT) ###########
 
 class predate(feed):
+    """Hunt for a specified type of prey and eat it."""
     def __init__(self, what, range):
         Goal.__init__(self, "predate something",
                       self.am_i_full,
@@ -365,6 +387,7 @@ class predate(feed):
         self.vars=["what","range"]
 
 class predate_small(feed):
+    """Hunt for a specified type of prey with a small mass and eat it."""
     def __init__(self, what, range, max_mass):
         Goal.__init__(self, "predate something",
                       self.am_i_full,
@@ -380,6 +403,7 @@ class predate_small(feed):
 ################### HUNT (SEARCH FOR SOMETHING, THEN KILL IT) #################
 
 class hunt(Goal):
+    """Hunt for something, then kill it with a weapon."""
     def __init__(self, weapon, what, range):
         Goal.__init__(self, "hunt something",
                       self.none_in_range,
@@ -417,6 +441,7 @@ class hunt(Goal):
 ##################### DEFEND (SPOT SOMETHING, THEN KILL IT) ###################
 
 class defend(Goal):
+    """Kill something if we see it."""
     def __init__(self, what, range):
         Goal.__init__(self, "defend against something",
                       self.none_in_sight,
@@ -443,6 +468,7 @@ class defend(Goal):
 ############################ BUY SOMETHING (AS TRADER) ########################
 
 class buy_trade(get_thing):
+    """Go to a location and offer to buy a certain thing."""
     def __init__(self, what, where, when=None):
         Goal.__init__(self, "buy from the public",
                       self.do_I_have_it,
@@ -462,6 +488,7 @@ class buy_trade(get_thing):
 ############################ SELL SOMETHING (AS TRADER) ########################
 
 class sell_trade(Goal):
+    """Go to a location and off to sell a certain thing."""
     def __init__(self, what, where, when=None):
         Goal.__init__(self, "Sell to the public",
                       self.dont_I_have_it,
@@ -492,6 +519,7 @@ class sell_trade(Goal):
 ################ TRADE (BUY SOMETHING, USE TOOL, SELL PRODUCT) ################
 
 class trade(Goal):
+    """Offer to buy something, then use a tool on it, and sell the product."""
     def __init__(self, wbuy, tool, wsell, where, when=None):
         Goal.__init__(self, "trade at a market",
                       false,
@@ -517,6 +545,7 @@ class trade(Goal):
 ############################# RUN MARKET STALL ##############################
 
 class market(Goal):
+    """Base class to run a market stall."""
     def is_it(self,me):
         if me.things.has_key(self.shop)==0: return 0
         shop=me.find_thing(self.shop)[0]
@@ -527,6 +556,7 @@ class market(Goal):
         return Operation("set", Entity(shop.id, mode=self.state))
 
 class run_shop(market):
+    """Run a market stall."""
     def __init__(self, shop, updown, time):
         Goal.__init__(self, "run a shop",
                       self.is_it,
@@ -540,6 +570,7 @@ class run_shop(market):
 ######################### KEEP (Things that I own in place) #################
 
 class keep(Goal):
+    """Make sure everything we own of a given type is kept in a place."""
     def __init__(self, what, where):
         Goal.__init__(self, "Keep "+what+" in "+where+".",
                       self.are_they_there,
@@ -576,6 +607,7 @@ class keep(Goal):
 ################## KEEP ON ME (money kept on my person) ################
 
 class keep_on_me(Goal):
+    """Make sure everything we own of a given type is in inventory."""
     def __init__(self,what):
         Goal.__init__(self, "Keep "+what+" on me.",
                       self.are_they_on_me,
@@ -601,6 +633,7 @@ class keep_on_me(Goal):
 ################## ASSEMBLE (Thing from list of parts) #################
 
 class assemble(Goal):
+    """Assemble something from a list of parts."""
     def __init__(self, me, what, fromwhat):
         sgoals=[]
         for item in fromwhat:
@@ -626,6 +659,7 @@ class assemble(Goal):
 ######################## TRANSACTION (Sell thing) #######################
 
 class transaction(Goal):
+    """Conduct a transaction."""
     def __init__(self, what, who, cost):
         Goal.__init__(self,"conduct transaction",
                       self.transaction_inactive,
@@ -670,6 +704,7 @@ class transaction(Goal):
         return res
 
 class hireling_transaction(transaction):
+    """Conduct a transaction to hire our services."""
     def check_availability(self,me):
         return me.get_knowledge('employer', me) != None
     def transact(self, me):
@@ -695,6 +730,7 @@ class hireling_transaction(transaction):
 ######################## ACTUATION (Operate device) #######################
 
 class activate_device(Goal):
+    """Look for something and activate it."""
     def __init__(self, what):
         Goal.__init__(self, "activate a thing",
                       self.activated,

@@ -10,6 +10,7 @@ from Vector3D import Vector3D
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class flock(DynamicGoal):
+    """Move in a flock with other animals of the same type."""
     def __init__(self, members=[], desc="move in flocks with other animals like me"):
         DynamicGoal.__init__(self,
                              trigger="sight_move",
@@ -48,6 +49,7 @@ class flock(DynamicGoal):
         return Operation("move", Entity(me.id, location=new_loc))
 
 class herd(DynamicGoal):
+    """Move in a herd with other animals of the same type."""
     def __init__(self, members=[], desc="move in herds with other animals like me"):
         DynamicGoal.__init__(self,
                              trigger="sight_move",

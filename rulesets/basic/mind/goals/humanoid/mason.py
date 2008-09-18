@@ -8,6 +8,8 @@ from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal
 
 class keep_livestock(keep):
+    """Keep livestock that we own in a given location, calling them if 
+       required."""
     def __init__(self, what, where, call):
         keep.__init__(self, what, where)
         self.call=call
@@ -19,6 +21,7 @@ class keep_livestock(keep):
         return keep.keep_it(self,me)
 
 class welcome(DynamicGoal):
+    """Welcome entities of a given type that are created nearby."""
     def __init__(self, message, player, desc="welcome new players"):
         DynamicGoal.__init__(self,
                              trigger="sight_create",
@@ -33,6 +36,7 @@ class welcome(DynamicGoal):
             return Operation("talk", Entity(say=self.message))
 
 class help(Goal):
+    """Provide a sequence of help messages to a target."""
     def __init__(self, messages, responses, target):
         Goal.__init__(self,
                       "help",
@@ -59,6 +63,7 @@ class help(Goal):
         return Operation("talk", ent) + me.face(me.map.get(self.target))
 
 class add_help(add_unique_goal):
+    """Set off a help goal if we get a touch operation."""
     def __init__(self, messages, responses=[], desc="help people out"):
         add_unique_goal.__init__(self,
                                  help,

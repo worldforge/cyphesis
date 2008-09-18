@@ -1,3 +1,16 @@
+2008-09-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/basic/mind/goals/animal/domestic.py,
+	  rulesets/basic/mind/goals/animal/herd.py,
+	  rulesets/basic/mind/goals/common/misc_goal.py,
+	  rulesets/basic/mind/goals/common/trigger.py,
+	  rulesets/basic/mind/goals/dynamic/add_unique_goal.py,
+	  rulesets/basic/mind/goals/humanoid/construction.py,
+	  rulesets/basic/mind/goals/humanoid/fire.py,
+	  rulesets/basic/mind/goals/humanoid/mason.py,
+	  rulesets/basic/mind/goals/humanoid/transaction.py:
+	  Add nominal doc strings to some goal classes.
+
 2008-09-17  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/basic/mind/goals/common/move.py: Add nominal doc strings

@@ -11,6 +11,7 @@ import types
 # This is designed to be placed early in a complex goal, so it returns
 # as fulfilled when it has nothing to do
 class gather(Goal):
+    """Base class for getting a freely available resource."""
     def __init__(self, what):
         Goal.__init__(self, "gather a thing",
                       self.is_there_none_around,
@@ -37,6 +38,7 @@ class gather(Goal):
 
 # Harvest a resource from source at a place using a tool
 class harvest_resource(Goal):
+    """Gather something from a given location, by using a tool on something."""
     def __init__(self, what, source, place, tool):
         Goal.__init__(self, "Gather a resource using a tool",
                       false,
@@ -66,6 +68,7 @@ class harvest_resource(Goal):
         return Operation("use",Entity(target, objtype="obj"))
 
 class plant_seeds(Goal):
+    """Use a tool to plant a given kind of seend in a given location."""
     def __init__(self, what, source, place, tool):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,

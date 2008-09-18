@@ -8,6 +8,7 @@ from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
 class add_unique_goal(DynamicGoal):
+    """Base class for dynamic goals which add a regular goal."""
     def __init__(self, goal_to_add, desc="add_unique_goal", **kw):
         kw['desc'] = desc
         apply(DynamicGoal.__init__,(self,),kw)
@@ -42,6 +43,8 @@ class add_unique_goal(DynamicGoal):
         return 1
 
 class add_unique_goal_by_perception(add_unique_goal):
+    """Base class for dynamic goals which add a regular goal base on
+       a perception trigger."""
     def make_goal_instance(self, me, goal_class, original_op, op):
         object=me.map.get(op[0].id)
         if object:

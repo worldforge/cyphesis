@@ -18,6 +18,7 @@ from Point3D import Point3D
                                                #desc=desc)
 
 class hire_trade(DynamicGoal):
+    """Respond to a request for help."""
     def __init__(self, desc="be available for hire"):
         DynamicGoal.__init__(self,
                              trigger="interlinguish_desire_verb3_hire_verb1",
@@ -34,6 +35,7 @@ class hire_trade(DynamicGoal):
         return Operation("talk", Entity(say=me.map.get(op.to).name+" one day will be "+str(price)+" coins"))
 
 class buy_from(Goal):
+    """Respond to an offer to sell something."""
     def __init__(self, what, cost, who, desc="buy livestock from someone"):
         Goal.__init__(self, desc, false,
                       [self.check])
@@ -86,6 +88,7 @@ class buy_from(Goal):
             return Operation("talk", Entity(say=seller.name+" that "+self.what+" is worth "+str(price)+" coins."))
 
 class buy_livestock(DynamicGoal):
+    """Respond to an offer to sell livestock by the kg."""
     def __init__(self, what, cost, desc="buy livestock by the kg"):
         DynamicGoal.__init__(self,
                              trigger="interlinguish_desire_verb3_sell_verb1",
