@@ -137,9 +137,6 @@ void Character::metabolise(OpVector & res, double ammount)
     assert(value.isFloat());
     float status = value.asFloat();
 
-    Anonymous update_arg;
-    update_arg->setId(getId());
-
     PropertyBase * food_prop = getProperty("food");
     // DIGEST
     if (food_prop != 0 && food_prop->get(value) && value.isFloat()) {
@@ -151,12 +148,15 @@ void Character::metabolise(OpVector & res, double ammount)
             food -= foodConsumption;
             food_prop->set(food);
 
-            update_arg->setAttr("food", food);
+            food_prop->setFlags(flag_unsent);
         }
     }
 
     PropertyBase * mass_prop = getProperty("mass");
     float mass = 0.f;
+    if (mass_prop != 0 && mass_prop->flags() & flag_class) {
+        log(NOTICE, "Mass Class property");
+    }
     if (mass_prop != 0 && mass_prop->get(value) && value.isFloat()) {
         mass = value.Float();
     }
@@ -187,19 +187,22 @@ void Character::metabolise(OpVector & res, double ammount)
     }
 
     status_prop->set(status);
-    update_arg->setAttr("status", status);
+    status_prop->setFlags(flag_unsent);
 
     if (mass_changed && mass_prop != 0) {
         mass_prop->set(mass);
-        update_arg->setAttr("mass", mass);
+        mass_prop->setFlags(flag_unsent);
     }
     if (stamina_changed) {
-        update_arg->setAttr("stamina", m_stamina);
+        
+        PropertyBase * stamina_prop = getProperty("stamina");
+        if (stamina_prop != 0) {
+            stamina_prop->setFlags(flag_unsent);
+        }
     }
 
     Update update;
     update->setTo(getId());
-    update->setArgs1(update_arg);
 
     res.push_back(update);
 }
@@ -480,6 +483,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         }
 
         rhw->data() = EntityRef(0);
+        rhw->setFlags(flag_unsent);
         // FIXME Remove the property?
 
         // FIXME Make sure we stop wielding if the container changes,
@@ -490,10 +494,6 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
         Update update;
         update->setTo(getId());
-        Anonymous update_arg;
-        update_arg->setId(getId());
-        update_arg->setAttr(RIGHT_HAND_WIELD, "");
-        update->setArgs1(update_arg);
         res.push_back(update);
 
         return;
@@ -515,9 +515,6 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Anonymous update_arg;
-    update_arg->setId(getId());
-
     Element worn_attr;
     if (item->getAttr("worn", worn_attr)) {
         debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
@@ -527,9 +524,10 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
             outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
-            update_arg->setAttr(OUTFIT, MapType());
+            outfit->setFlags(flag_unsent);
         } else {
             log(WARNING, "Got clothing with non-string worn attribute.");
+            return;
         }
         // FIXME Implement adding stuff to the outfit propert, as efficiently
         // as possible
@@ -548,8 +546,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
         // The value is ignored by the update handler, but should be the
         // right type.
-        update_arg->setAttr(RIGHT_HAND_WIELD, item->getId());
         rhw->data() = EntityRef(item);
+        rhw->setFlags(flag_unsent);
 
         item->containered.connect(sigc::mem_fun(this, &Character::wieldDropped));
 
@@ -558,7 +556,6 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
     Update update;
     update->setTo(getId());
-    update->setArgs1(update_arg);
     res.push_back(update);
 }
 

@@ -1,3 +1,16 @@
+2008-09-23  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Property.h: Add a flag to indicate a properties value
+	  has been changed, but the new value has not been broadcast.
+
+	* rulesets/Thing.cpp: Re-write the Update handler to ignore the
+	  operation arguments, and broadcast an update for all properties
+	  marked as unsent.
+
+	* rulesets/Character.cpp: Update all code which sent an update
+	  operation so that it sets the flags rather than naming them
+	  in the argument.
+
 2008-09-18  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/basic/mind/goals/animal/domestic.py,

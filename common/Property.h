@@ -91,6 +91,9 @@ static const unsigned int flag_class = 1 << 5;
 /// \brief Flag used for boolean properties
 static const unsigned int flag_bool = 1 << 6;
 
+/// \brief Flag used to mark properties whose state has not been broadcast
+static const unsigned int flag_unsent = 1 << 7;
+
 /// \brief Entity property template for properties with single data values
 /// that cannot be modified directly.
 ///

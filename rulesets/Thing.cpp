@@ -440,55 +440,24 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Thing::updateProperties(const Operation & op, OpVector & res) const
 {
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-       return;
-    }
-
-    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-    if (!arg.isValid()) {
-        error(op, "Update op has malformed args", res, getId());
-        return;
-    }
-
     debug(std::cout << "Generating property update" << std::endl << std::flush;);
 
     Anonymous set_arg;
     set_arg->setId(getId());
 
-    // Check if any of the hard attributes on RootEntity of changed.
-    // All other hard attributes cannot be changed this way. Location related
-    // attrs can only be changed by a Move or move relate update.
-    // ID and PARENTS are immutable.
-    if (!arg->isDefaultName()) {
-        // Update the name
-        // FIXME How?
-    }
-    if (!arg->isDefaultContains()) {
-        // Update the contains
-        // FIXME Really?
-        // Surely better to go through the Property?
-    }
-
-    // FIXME SLOW!
-    MapType attrs = arg->asMessage();
-    MapType::const_iterator I = attrs.begin();
-    MapType::const_iterator Iend = attrs.end();
-
-    PropertyDict::const_iterator J;
+    PropertyDict::const_iterator J = m_properties.begin();
     PropertyDict::const_iterator Jend = m_properties.end();
 
-    for (; I != Iend; ++I) {
-        const std::string & attr = I->first;
-        debug(std::cout << "  " << attr << std::endl << std::flush;);
+    for (; J != Jend; ++J) {
+        PropertyBase * prop = J->second;
+        assert(prop != 0);
+        if (prop->flags() & flag_unsent) {
+            debug(std::cout << "UPDATE:  " << flag_unsent << " " << J->first
+                            << std::endl << std::flush;);
 
-        J = m_properties.find(attr);
-        if (J != Jend) {
-            // Dump the property value into the Sight(Set()) arg
-            J->second->add(attr, set_arg);
-        } else {
-            error(op, String::compose("Got update for non-existant property "
-                                      "\"%1\"", attr), res, getId());
+            prop->add(J->first, set_arg);
+            prop->resetFlags(flag_unsent);
+            // FIXME Mark this as dirty for the database.
         }
     }
 
