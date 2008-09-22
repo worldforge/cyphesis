@@ -1,3 +1,9 @@
+Fix up OutfitProperty to work with the modified API and conventions.
+It can't really be a class property as it has entity refs, so I guess
+it must be instance only. install() might like TerrainModPropery()
+detect the case of a class version, and ensure that it is added as
+an instance property.
+
 Cutting down simulation cost when nothing is watching.
 Gorgious. Send out a ping, and get back an estimate. at the simplest level
 the simulation can continue, but decline to send out update ops. Kick off
