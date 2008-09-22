@@ -1,3 +1,5 @@
+Use a property flag for removing properties.
+
 Fix up OutfitProperty to work with the modified API and conventions.
 It can't really be a class property as it has entity refs, so I guess
 it must be instance only. install() might like TerrainModPropery()
