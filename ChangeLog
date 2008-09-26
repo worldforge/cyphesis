@@ -1,5 +1,9 @@
 2008-09-26  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/StatusProperty.h: Add data accessor.
+
+2008-09-26  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/LocatedEntity.h: Only initialise a required property
 	  if a value is given.
 

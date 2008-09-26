@@ -38,6 +38,9 @@ class StatusProperty : public PropertyBase {
     /// @param owner the owner of the property.
     explicit StatusProperty();
 
+    const float data() const { return m_value; }
+    float & data() { return m_value; }
+
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void apply(Entity *);
