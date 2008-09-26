@@ -41,7 +41,7 @@ class Plant : public Plant_parent {
     static const int m_minuDrop = 0; // min fruit dropped
     static const int m_maxuDrop = 2; // max fruit dropped
 
-    int dropFruit(OpVector & res, int & fruits);
+    int dropFruit(OpVector & res, PropertyBase * fruits_prop);
   public:
 
     explicit Plant(const std::string & id, long intId);

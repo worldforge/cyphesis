@@ -1,5 +1,11 @@
 2008-09-26  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Plant.h, rulesets/Plant.cpp: Re-write plant metabolism
+	  to modify property values in place, and use Update operations
+	  to propagate.
+
+2008-09-26  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/StatusProperty.h: Add data accessor.
 
 2008-09-26  Al Riddoch  <alriddoch@googlemail.com>
