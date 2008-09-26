@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LocatedEntity.h,v 1.16 2008-08-23 17:53:44 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
@@ -148,7 +148,9 @@ class LocatedEntity : public IdentifiedRouter {
         }
         if (sp == 0) {
             m_properties[name] = sp = new PropertyT;
-            sp->set(def_val);
+            if (!def_val.isNone()) {
+                sp->set(def_val);
+            }
         }
         return sp;
     }
