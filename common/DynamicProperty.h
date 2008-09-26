@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: DynamicProperty.h,v 1.5 2006-12-12 19:52:38 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_DYNAMIC_PROPERTY_H
 #define COMMON_DYNAMIC_PROPERTY_H
@@ -33,6 +33,9 @@ class DynamicProperty : public Property<T> {
     // No flags for the time being, though once we work on persistence again
     // it may be required.
     explicit DynamicProperty();
+
+    const T & data() const { return m_store; }
+    T & data() { return m_store; }
 };
 
 /// \brief Adaptor class which can make any property class store its own

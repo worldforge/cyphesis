@@ -1,3 +1,7 @@
+2008-09-26  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/DynamicProperty.h: Add data accessor to all properties.
+
 2008-09-23  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Property.h: Add a flag to indicate a properties value
