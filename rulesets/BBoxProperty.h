@@ -32,6 +32,9 @@ class BBoxProperty : public PropertyBase {
   public:
     explicit BBoxProperty();
 
+    const BBox & data() const { return m_data; }
+    BBox & data() { return m_data; }
+
     virtual void apply(Entity *);
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
