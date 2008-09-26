@@ -1,3 +1,33 @@
+Clear set ops out of tasks (in Character) and combat.
+Can probably get rid of the hard Task pointer while at it.
+
+Clean up properties as follows:
+  Reference properties are a special case, and should not be generalised.
+  General property template should be the base class for almost all,
+  particularly int, double, string. We can then use *SpecificProperty
+  more. No longer needs to be DynamicProperty<> and we no longer
+  need the dodgey reference. Don't use SoftProperty on ingame data.
+
+In Plant.cpp a lot of properties are directly updated. Need to review
+whether apply() and install have to be called on them.
+
+Add an entity flag to indicate that the entity has been modified in
+the python API, and on returning to core context an update needs to
+be triggered.
+
+Move requireSpecificProperty() and have it check on the defaults for
+a default value.
+
+LineProperty doesn't need to be non-dynamic. Re-code it.
+
+Update Thing::updateProperties so it checks all properities to see whether
+they've been written to the database. May need to trigger a database update.
+
+Re-work the python wrappers to handle generating the necessary update flags
+when modifying an IG entity. Complete different from the wrapper behavior
+in the mind, which should probably no implement setattr at all.
+It may need to generate Update or perhaps even Set operations as necessary.
+
 Use a property flag for removing properties.
 
 Fix up OutfitProperty to work with the modified API and conventions.
