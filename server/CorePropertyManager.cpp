@@ -39,7 +39,6 @@
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
-#include "common/DynamicProperty_impl.h"
 
 #include "common/debug.h"
 
@@ -59,8 +58,6 @@ using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
-
-template class PropertyFactory<Dynamic<LineProperty, CoordList> >;
 
 HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 {
@@ -251,11 +248,11 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
 
 CorePropertyManager::CorePropertyManager()
 {
-    m_propertyFactories["stamina"] = new PropertyFactory<DynamicProperty<double> >;
-    m_propertyFactories["coords"] = new PropertyFactory<Dynamic<LineProperty, CoordList> >;
-    m_propertyFactories["points"] = new PropertyFactory<Dynamic<LineProperty, CoordList> >;
-    m_propertyFactories["start_intersections"] = new PropertyFactory<DynamicProperty<IdList> >;
-    m_propertyFactories["end_intersections"] = new PropertyFactory<DynamicProperty<IdList> >;
+    m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
+    m_propertyFactories["coords"] = new PropertyFactory<LineProperty>;
+    m_propertyFactories["points"] = new PropertyFactory<LineProperty>;
+    m_propertyFactories["start_intersections"] = new PropertyFactory<Property<IdList> >;
+    m_propertyFactories["end_intersections"] = new PropertyFactory<Property<IdList> >;
     m_propertyFactories["attachment"] = new ActivePropertyFactory<int>(Atlas::Objects::Operation::MOVE_NO, test_handler);
     m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, del_handler);
     m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
@@ -265,8 +262,8 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, eat_handler);
     m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
     m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
-    m_propertyFactories["food"] = new PropertyFactory<DynamicProperty<double> >;
-    m_propertyFactories["mass"] = new PropertyFactory<DynamicProperty<double> >;
+    m_propertyFactories["food"] = new PropertyFactory<Property<double> >;
+    m_propertyFactories["mass"] = new PropertyFactory<Property<double> >;
     m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;
     m_propertyFactories["mind"] = new PropertyFactory<MindProperty>;
     m_propertyFactories["setup"] = new PropertyFactory<SetupProperty>;
@@ -288,15 +285,31 @@ CorePropertyManager::~CorePropertyManager()
     }
 }
 
-PropertyBase * CorePropertyManager::addProperty(const std::string & name)
+PropertyBase * CorePropertyManager::addProperty(const std::string & name,
+                                                int type)
 {
     assert(!name.empty());
     assert(name != "objtype");
+    PropertyBase * p = 0;
     PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
-        return 0;
+        switch (type) {
+          case Element::TYPE_INT:
+            p = new Property<int>;
+            break;
+          case Element::TYPE_FLOAT:
+            p = new Property<double>;
+            break;
+          case Element::TYPE_STRING:
+            p = new Property<std::string>;
+            break;
+          default:
+            p = new SoftProperty;
+            break;
+        }
+    } else {
+        p = I->second->newProperty();
     }
     debug(std::cout << name << " property found. " << std::endl << std::flush;);
-    PropertyBase * p = I->second->newProperty();
     return p;
 }

@@ -1,5 +1,14 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CorePropertyManager.cpp, server/CorePropertyManager.h:
+	  Re-work the property manager to always create a property,
+	  using closest match specialisations of the template where
+	  possible. Replace all factories which did create DynamicProperty
+	  objects with Property objects instead, as they are now functionaly
+	  the same.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp, rulesets/Entity.cpp, rulesets/Plant.cpp,
 	  rulesets/Stackable.cpp: Fix up places that use the property
 	  manager interface. Fix explicit reference to DynamicProperty.
