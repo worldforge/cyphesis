@@ -1,79 +1,74 @@
 {
-   PythonObjectFreeC
+   PAININTHEHOLE
    Memcheck:Cond
-   fun:PyObject_Free
+   fun:__printf_fp
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   PythonObjectFreeV4
-   Memcheck:Value4
-   fun:PyObject_Free
-}
-{
-   PythonObjectFreeA4
-   Memcheck:Addr4
-   fun:PyObject_Free
-}
-{
-   PyObjectReallocA4
-   Memcheck:Addr4
-   fun:PyObject_Realloc
-}
-{
-   PyObjectReallocC
+   PAIN2
    Memcheck:Cond
-   fun:PyObject_Realloc
+   fun:__mpn_extract_double
+   fun:__printf_fp
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   PyObjectReallocV4
+   PAIN3
    Memcheck:Value4
-   fun:PyObject_Realloc
+   fun:__printf_fp
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   LibCResolveP
-   Memcheck:Param
-   socketcall.connect(serv_addr..sin6_scope_id)
-   fun:__connect_internal
-   fun:__libc_res_nsend
-   fun:__GI___libc_res_nquery
-   fun:__libc_res_nquerydomain
-}
-{
-   VectorRotate
+   PAIN4
    Memcheck:Value4
-   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
-   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
-   fun:_ZN11WorldRouter15constrainHeightEP6EntityRKN6WFMath5PointILi3EEE
-   fun:_ZN11WorldRouter9addObjectEP6Entityb
+   fun:__mpn_lshift
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   ScaleEpsilonRotate
+   PAIN5
    Memcheck:Value4
-   fun:_ZN6WFMath13_ScaleEpsilonEPKfS1_id
-   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
-   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
-   fun:_ZN11WorldRouter15constrainHeightEP6EntityRKN6WFMath5PointILi3EEE
+   fun:__mpn_mul_1
+   fun:__mpn_mul
+   fun:__printf_fp
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   ScaleEpsilonCross
+   PAIN6
    Memcheck:Value4
-   fun:_ZN6WFMath13_ScaleEpsilonEPKfS1_id
-   fun:_ZN6WFMath5CrossERKNS_6VectorILi3EEES3_
-   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
-   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
+   fun:__mpn_mul
+   fun:__printf_fp
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   CrossVector
+   PAIN7
    Memcheck:Value4
-   fun:_ZN6WFMath5CrossERKNS_6VectorILi3EEES3_
-   fun:_ZN6WFMath6VectorILi3EE6rotateERKNS_10QuaternionE
-   fun:_ZNK6WFMath5PointILi3EE14toParentCoordsERKS1_RKNS_10QuaternionE
-   fun:_ZN11WorldRouter15constrainHeightEP6EntityRKN6WFMath5PointILi3EEE
+   fun:__mpn_mul_1
+   fun:__printf_fp
+   fun:vfprintf
+   fun:vsnprintf
 }
+
 {
-   epoll_ctl_param
-   Memcheck:Param
-   epoll_ctl(event)
-   fun:epoll_ctl
-   fun:_ZN10CommServer4pollEv
-   fun:main
+   PAIN8
+   Memcheck:Value4
+   fun:__mpn_rshift
+   fun:vfprintf
+   fun:vsnprintf
+}
+
+{
+   LIBPQ
+   Memcheck:Cond
+   obj:/usr/lib/libpq.so.5.1
 }
