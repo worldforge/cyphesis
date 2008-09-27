@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasProperties.h,v 1.3 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_ATLAS_PROPERTIES_H
 #define RULESETS_ATLAS_PROPERTIES_H
@@ -26,10 +26,15 @@
 
 /// \brief Class to handle Entity id property
 /// \ingroup PropertyClasses
-class IdProperty : public ImmutableProperty<std::string> {
+class IdProperty : public PropertyBase {
+  protected:
+    const std::string & m_data;
   public:
     explicit IdProperty(const std::string & data);
 
+    virtual bool get(Atlas::Message::Element & val) const;
+    virtual void set(const Atlas::Message::Element & val);
+    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
@@ -37,8 +42,7 @@ class IdProperty : public ImmutableProperty<std::string> {
 /// \ingroup PropertyClasses
 class NameProperty : public Property<std::string> {
   public:
-    explicit NameProperty(std::string & data,
-                          unsigned int flags);
+    explicit NameProperty(unsigned int flags);
 
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
@@ -49,10 +53,14 @@ typedef std::set<LocatedEntity *> LocatedEntitySet;
 
 /// \brief Class to handle Entity contains property
 /// \ingroup PropertyClasses
-class ContainsProperty : public ImmutableProperty<LocatedEntitySet> {
+class ContainsProperty : public PropertyBase {
+  protected:
+    LocatedEntitySet & m_data;
   public:
     explicit ContainsProperty(LocatedEntitySet & data);
 
+    virtual bool get(Atlas::Message::Element & val) const;
+    virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 

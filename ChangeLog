@@ -1,5 +1,12 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/AtlasProperties.cpp, rulesets/AtlasProperties.h: Fix
+	  the few property classes that needed to use references and be
+	  immutable to implement it locally, as there are no longer
+	  templates for that.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/EntityProperties.cpp: Remove a huge bunch of property
 	  template specialisations that aren't used. Fix the ones left.
 

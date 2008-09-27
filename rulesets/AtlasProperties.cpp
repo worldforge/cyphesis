@@ -31,20 +31,38 @@
 
 static const bool debug_flag = false;
 
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-IdProperty::IdProperty(const std::string & data) :
-                       ImmutableProperty<std::string>(data, per_ephem)
+IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+                                                   m_data(data)
 {
 }
 
-void IdProperty::add(const std::string & s, const RootEntity & ent) const
+bool IdProperty::get(Atlas::Message::Element & e) const
+{
+    e = m_data;
+    return true;
+}
+
+void IdProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     Atlas::Message::MapType & ent) const
+{
+    ent[key] = m_data;
+}
+
+void IdProperty::add(const std::string & key, const RootEntity & ent) const
 {
     ent->setId(m_data);
 }
 
-NameProperty::NameProperty(std::string & data, unsigned int flags) :
-                           Property<std::string>(data, flags)
+NameProperty::NameProperty(unsigned int flags) : Property<std::string>(flags)
 {
 }
 
@@ -54,9 +72,28 @@ void NameProperty::add(const std::string & s, const RootEntity & ent) const
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      ImmutableProperty<LocatedEntitySet>(data, per_ephem)
+      PropertyBase(per_ephem), m_data(data)
 {
 }
+
+bool ContainsProperty::get(Element & e) const
+{
+    // FIXME Not sure if this is best. Why did we bother to virtualise
+    // addToMessage() if we have to do this here?
+    e = ListType();
+    ListType & contlist = e.List();
+    LocatedEntitySet::const_iterator Iend = m_data.end();
+    for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
+        contlist.push_back((*I)->getId());
+    }
+    return true;
+}
+
+void ContainsProperty::set(const Element & e)
+{
+}
+
+// We do not implement add, as it is probably not going to be used.
 
 void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
 {
