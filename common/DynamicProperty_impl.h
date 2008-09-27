@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: DynamicProperty_impl.h,v 1.3 2006-10-26 00:48:03 alriddoch Exp $
+// $Id$
+
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef COMMON_DYNAMIC_PROPERTY_IMPL_H
 #define COMMON_DYNAMIC_PROPERTY_IMPL_H
@@ -23,12 +26,12 @@
 #include "DynamicProperty.h"
 
 template <typename T>
-DynamicProperty<T>::DynamicProperty() : Property<T>(m_store, 0)
+DynamicProperty<T>::DynamicProperty() : Property<T>(0)
 {
 }
 
 template <class P, typename T>
-Dynamic<P, T>::Dynamic() : P(m_store, 0)
+Dynamic<P, T>::Dynamic() : P(0)
 {
 }
 

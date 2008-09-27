@@ -17,6 +17,9 @@
 
 // $Id$
 
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef COMMON_DYNAMIC_PROPERTY_H
 #define COMMON_DYNAMIC_PROPERTY_H
 
@@ -27,15 +30,10 @@
 /// \ingroup PropertyClasses
 template <typename T>
 class DynamicProperty : public Property<T> {
-  protected:
-    T m_store;
   public:
     // No flags for the time being, though once we work on persistence again
     // it may be required.
     explicit DynamicProperty();
-
-    const T & data() const { return m_store; }
-    T & data() { return m_store; }
 };
 
 /// \brief Adaptor class which can make any property class store its own

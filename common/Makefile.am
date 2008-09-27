@@ -29,8 +29,6 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      TypeNode.cpp TypeNode.h \
 		      inheritance.cpp custom.cpp inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
-		      DynamicProperty.cpp DynamicProperty.h \
-		      DynamicProperty_impl.h \
 		      PropertyFactory.cpp PropertyFactory.h \
 		      PropertyFactory_impl.h \
 		      PropertyManager.cpp PropertyManager.h \

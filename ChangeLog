@@ -1,5 +1,11 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/DynamicProperty.h, common/DynamicProperty_impl.h,
+	  common/Makefile.am: Remove obsolete DynamicProperty from the
+	  build.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Now that the property manager always
 	  creates something, there is no longer any need to deal with it
 	  returning 0.
