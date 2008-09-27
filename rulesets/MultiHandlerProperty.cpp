@@ -19,7 +19,7 @@
 
 #include "MultiHandlerProperty_impl.h"
 
-#include "common/DynamicProperty_impl.h"
+#include "common/Property_impl.h"
 
 template class MultiHandlerProperty<int>;
 template class MultiHandlerProperty<double>;

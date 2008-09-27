@@ -20,11 +20,11 @@
 #ifndef RULESETS_TRANSIENT_PROPERTY_H
 #define RULESETS_TRANSIENT_PROPERTY_H
 
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 
 /// \brief Class to handle Entity which are ephemeral and get auto deleted
 /// \ingroup PropertyClasses
-class TransientProperty : public DynamicProperty<double> {
+class TransientProperty : public Property<double> {
   public:
     TransientProperty();
 

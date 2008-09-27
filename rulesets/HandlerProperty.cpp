@@ -19,7 +19,7 @@
 
 #include "HandlerProperty_impl.h"
 
-#include "common/DynamicProperty_impl.h"
+#include "common/Property_impl.h"
 
 template class HandlerProperty<int>;
 template class HandlerProperty<double>;

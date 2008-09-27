@@ -1,5 +1,14 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/TransientProperty.h, rulesets/MultiHandlerProperty.h,
+	  rulesets/MultiHandlerProperty.cpp, rulesets/MindProperty.h,
+	  rulesets/InternalProperties.h, rulesets/HandlerProperty.h,
+	  rulesets/HandlerProperty.cpp: Switch a bunch of pretty simple
+	  property classes over to using Propery<> rather than
+	  DynamicProperty<>.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Property.h, common/Property_impl.h, common/Property.cpp:
 	  Re-write the core property classes to embed their own data,
 	  rather than refer to it. This makes DynamicProperty obsolete.

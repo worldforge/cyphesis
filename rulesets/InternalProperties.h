@@ -20,11 +20,11 @@
 #ifndef RULESETS_INTERNAL_PROPERTIES_H
 #define RULESETS_INTERNAL_PROPERTIES_H
 
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 
 /// \brief Class to handle Entity which requires a Setup operation
 /// \ingroup PropertyClasses
-class SetupProperty : public DynamicProperty<int> {
+class SetupProperty : public Property<int> {
   public:
     SetupProperty();
 
@@ -33,7 +33,7 @@ class SetupProperty : public DynamicProperty<int> {
 
 /// \brief Class to handle Entity which requires a Tick operation
 /// \ingroup PropertyClasses
-class TickProperty : public DynamicProperty<double> {
+class TickProperty : public Property<double> {
   public:
     TickProperty();
 

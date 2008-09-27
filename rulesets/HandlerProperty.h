@@ -20,14 +20,14 @@
 #ifndef RULESETS_HANDLER_PROPERTY_H
 #define RULESETS_HANDLER_PROPERTY_H
 
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 
 #include "common/OperationRouter.h"
 
 /// \brief Class to handle a property that triggers a handler.
 /// \ingroup PropertyClasses
 template <typename T>
-class HandlerProperty : public DynamicProperty<T> {
+class HandlerProperty : public Property<T> {
   protected:
     int m_operationClassNo;
     Handler m_handler;

@@ -20,11 +20,11 @@
 #ifndef RULESETS_MIND_PROPERTY_H
 #define RULESETS_MIND_PROPERTY_H
 
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 
 /// \brief Class to handle assigning a mind object to an entity
 /// \ingroup PropertyClasses
-class MindProperty : public DynamicProperty<std::string> {
+class MindProperty : public Property<std::string> {
   public:
     MindProperty();
 

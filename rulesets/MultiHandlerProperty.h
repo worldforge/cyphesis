@@ -20,14 +20,14 @@
 #ifndef RULESETS_MULTI_HANDLER_PROPERTY_H
 #define RULESETS_MULTI_HANDLER_PROPERTY_H
 
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 
 #include "common/OperationRouter.h"
 
 /// \brief Class to handle a property that triggers a many handlers.
 /// \ingroup PropertyClasses
 template <typename T>
-class MultiHandlerProperty : public DynamicProperty<T> {
+class MultiHandlerProperty : public Property<T> {
   protected:
     HandlerMap m_handlers;
   public:
