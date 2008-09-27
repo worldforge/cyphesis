@@ -38,7 +38,8 @@ class PropertyManager {
     /// \brief Add a new named property to an Entity
     ///
     /// @param name a string giving the name of the property.
-    virtual PropertyBase * addProperty(const std::string & name) = 0;
+    virtual PropertyBase * addProperty(const std::string & name,
+                                       int type) = 0;
 
     /// \brief Return the registered singleton instance of any subclass
     static PropertyManager * instance() {

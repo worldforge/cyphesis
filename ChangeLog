@@ -1,5 +1,12 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/PropertyManager.h: Modify the Property factory interface
+	  so the required basic data type can be specified, allowing the
+	  factory to create generic properties if something more specific
+	  is not available.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Add an error check when escaping strings for
 	  SQL queries.
 
