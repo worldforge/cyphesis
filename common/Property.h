@@ -95,55 +95,29 @@ static const unsigned int flag_bool = 1 << 6;
 static const unsigned int flag_unsent = 1 << 7;
 
 /// \brief Entity property template for properties with single data values
-/// that cannot be modified directly.
-///
-/// Properties like CONTAINS, LOC and POS are accessed this way, as they
-/// are only ever modified as a result of a move operation.
 /// \ingroup PropertyClasses
 template <typename T>
-class ImmutableProperty : public PropertyBase {
+class Property : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
-    const T & m_data;
+    T m_data;
   public:
-    explicit ImmutableProperty(const T & data, unsigned int flags = 0);
+    explicit Property(unsigned int flags = 0);
+
+    const T & data() const { return this->m_data; }
+    T & data() { return this->m_data; }
 
     virtual bool get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
+    virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
-};
-
-/// \brief Entity property template for properties with single data values
-/// \ingroup PropertyClasses
-template <typename T>
-class Property : public ImmutableProperty<T> {
-  protected:
-    /// \brief Reference to variable holding the value of this Property
-    T & m_modData;
-  public:
-    explicit Property(T & data, unsigned int flags);
-
-    virtual void set(const Atlas::Message::Element &);
-};
-
-/// \brief Entity property template for properties with single data values
-/// \ingroup PropertyClasses
-template <typename T>
-class SignalProperty : public Property<T>, virtual public sigc::trackable {
-  public:
-    explicit SignalProperty(T & data, unsigned int flags);
-
-    virtual void set(const Atlas::Message::Element & val);
-
-    /// \brief Signal that is emitted when this Property is modified.
-    sigc::signal<void> modified;
 };
 
 class SoftProperty : public PropertyBase {
   protected:
     Atlas::Message::Element m_data;
   public:
+    SoftProperty();
     explicit SoftProperty(const Atlas::Message::Element & data);
 
     /// \brief Copy the value of the property into an Atlas Message

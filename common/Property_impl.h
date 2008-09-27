@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property_impl.h,v 1.11 2006-12-12 15:54:22 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_PROPERTY_IMPL_H
 #define COMMON_PROPERTY_IMPL_H
@@ -26,68 +26,33 @@
 
 /// \brief Constructor for immutable Propertys
 template <typename T>
-ImmutableProperty<T>::ImmutableProperty(const T & data, unsigned int flags) :
-                      PropertyBase(flags), m_data(data)
+Property<T>::Property(unsigned int flags) :
+                      PropertyBase(flags)
 {
 }
 
 template <typename T>
-bool ImmutableProperty<T>::get(Atlas::Message::Element & e) const
+bool Property<T>::get(Atlas::Message::Element & e) const
 {
     e = m_data;
     return true;
 }
 
-template <typename T>
-void ImmutableProperty<T>::set(const Atlas::Message::Element & e)
-{
-}
-
 // The following two are obsolete.
 template <typename T>
-void ImmutableProperty<T>::add(const std::string & s,
+void Property<T>::add(const std::string & s,
                                Atlas::Message::MapType & ent) const
 {
     get(ent[s]);
 }
 
 template <typename T>
-void ImmutableProperty<T>::add(const std::string & s,
+void Property<T>::add(const std::string & s,
                                const Atlas::Objects::Entity::RootEntity & ent) const
 {
     Atlas::Message::Element val;
     get(val);
     ent->setAttr(s, val);
-}
-
-/// \brief Constructor for standard Propertys
-template <typename T>
-Property<T>::Property(T & data, unsigned int flags) :
-             ImmutableProperty<T>(data, flags), m_modData(data)
-{
-}
-
-template <typename T>
-void Property<T>::set(const Atlas::Message::Element & e)
-{
-    m_modData = e;
-}
-
-/// \brief SignalProperty constructor
-///
-/// @param data the variable that holds the value of this property
-/// @param flags used to indicate how this property is persisted
-template <typename T>
-SignalProperty<T>::SignalProperty(T & data, unsigned int flags) :
-                   Property<T>(data, flags)
-{
-}
-
-template <typename T>
-void SignalProperty<T>::set(const Atlas::Message::Element & e)
-{
-    this->m_modData = e;
-    modified.emit();
 }
 
 #endif // COMMON_PROPERTY_IMPL_H

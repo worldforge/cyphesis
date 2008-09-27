@@ -1,5 +1,11 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Property.h, common/Property_impl.h, common/Property.cpp:
+	  Re-write the core property classes to embed their own data,
+	  rather than refer to it. This makes DynamicProperty obsolete.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* client/ClientPropertyManager.cpp, client/ClientPropertyManager.h:
 	  Amend the client Property manager to implement the new interface.
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Property.cpp,v 1.15 2008-08-18 16:12:00 alriddoch Exp $
+// $Id$
 
 #include "Property_impl.h"
 
@@ -70,7 +70,7 @@ template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
-        m_modData = e.asInt();
+        this->m_data = e.asInt();
     }
 }
 
@@ -78,7 +78,7 @@ template<>
 void Property<long>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
-        m_modData = e.asInt();
+        this->m_data = e.asInt();
     }
 }
 
@@ -86,7 +86,7 @@ template<>
 void Property<float>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
-        m_modData = e.asNum();
+        this->m_data = e.asNum();
     }
 }
 
@@ -94,7 +94,7 @@ template<>
 void Property<double>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
-        m_modData = e.asNum();
+        this->m_data = e.asNum();
     }
 }
 
@@ -102,17 +102,21 @@ template<>
 void Property<std::string>::set(const Atlas::Message::Element & e)
 {
     if (e.isString()) {
-        m_modData = e.String();
+        this->m_data = e.String();
     }
 }
 
 template<>
-void ImmutableProperty<std::string>::add(const std::string & s,
-                                         Atlas::Message::MapType & ent) const
+void Property<std::string>::add(const std::string & s,
+                                Atlas::Message::MapType & ent) const
 {
     if (!m_data.empty()) {
         ent[s] = m_data;
     }
+}
+
+SoftProperty::SoftProperty() : PropertyBase(0)
+{
 }
 
 SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
@@ -136,9 +140,3 @@ template class Property<long>;
 template class Property<float>;
 template class Property<double>;
 template class Property<std::string>;
-
-template class ImmutableProperty<int>;
-template class ImmutableProperty<long>;
-template class ImmutableProperty<float>;
-template class ImmutableProperty<double>;
-template class ImmutableProperty<std::string>;
