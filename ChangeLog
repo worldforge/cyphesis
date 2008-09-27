@@ -1,5 +1,10 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/ClientPropertyManager.cpp, client/ClientPropertyManager.h:
+	  Amend the client Property manager to implement the new interface.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/PropertyManager.h: Modify the Property factory interface
 	  so the required basic data type can be specified, allowing the
 	  factory to create generic properties if something more specific

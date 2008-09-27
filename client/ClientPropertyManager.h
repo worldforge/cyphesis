@@ -28,7 +28,7 @@ class ClientPropertyManager : public PropertyManager {
     ClientPropertyManager();
     virtual ~ClientPropertyManager();
 
-    virtual PropertyBase * addProperty(const std::string & name);
+    virtual PropertyBase * addProperty(const std::string & name, int);
 };
 
 #endif // CLIENT_CLIENT_PROPERTY_MANAGER_H

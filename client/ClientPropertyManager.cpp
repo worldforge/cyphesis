@@ -27,7 +27,7 @@ ClientPropertyManager::~ClientPropertyManager()
 {
 }
 
-PropertyBase * ClientPropertyManager::addProperty(const std::string & name)
+PropertyBase * ClientPropertyManager::addProperty(const std::string &, int)
 {
     return 0;
 }
