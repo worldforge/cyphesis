@@ -28,7 +28,7 @@
 #include "common/random.h"
 #include "common/compose.hpp"
 #include "common/TypeNode.h"
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 #include "common/PropertyManager.h"
 
 #include "common/log.h"
@@ -159,7 +159,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     res.push_back(update);
 
     StatusProperty * status = requireSpecificProperty<StatusProperty>("status");
-    float & new_status = status->data();
+    double & new_status = status->data();
     status->setFlags(flag_unsent);
     if (m_nourishment <= 0) {
         new_status -= 0.1;
@@ -169,7 +169,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             new_status = 1.;
         }
 
-        DynamicProperty<double> * mass_prop = requireSpecificProperty<DynamicProperty<double> >("mass", 0.);
+        Property<double> * mass_prop = requireSpecificProperty<Property<double> >("mass", 0.);
         double & mass = mass_prop->data();
         double old_mass = mass;
         mass += m_nourishment;
@@ -184,7 +184,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         PropertyBase * biomass = getProperty("biomass");
         if (biomass != 0) {
             if (biomass->flags() & flag_class) {
-                m_properties["biomass"] = biomass = PropertyManager::instance()->addProperty("biomass");
+                m_properties["biomass"] = biomass = PropertyManager::instance()->addProperty("biomass", Element::TYPE_FLOAT);
             }
             biomass->set(mass);
             biomass->setFlags(flag_unsent);

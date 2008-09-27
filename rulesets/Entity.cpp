@@ -83,12 +83,9 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         resetFlags(entity_clean);
         return;
     }
-    prop = PropertyManager::instance()->addProperty(name);
-    if (prop == 0) {
-        prop = new SoftProperty(attr);
-    } else {
-        prop->set(attr);
-    }
+    prop = PropertyManager::instance()->addProperty(name, attr.getType());
+    assert(prop != 0);
+    prop->set(attr);
     m_properties[name] = prop;
     // If this is an entirely new property, not just a modifcation of
     // one in defaults, then we need to install it to this Entity.

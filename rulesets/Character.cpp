@@ -124,11 +124,9 @@ void Character::metabolise(OpVector & res, double ammount)
     PropertyBase * status_prop = getProperty("status");
     if (status_prop == 0) {
         // FIXME Probably don't do enough here to set up the property.
-        status_prop = PropertyManager::instance()->addProperty("status");
-        if (status_prop == 0) {
-            log(ERROR, "Unable to get a STATUS property.");
-            return;
-        }
+        status_prop = PropertyManager::instance()->addProperty("status",
+            Element::TYPE_FLOAT);
+        assert(status_prop != 0);
         m_properties["status"] = status_prop;
         status_prop->set(1.f);
     }
@@ -270,7 +268,7 @@ Character::Character(const std::string & id, long intId) :
                m_maxMass(100),
                m_mind(0), m_externalMind(0)
 {
-    m_properties["stamina"] = new Property<double>(m_stamina, per_ephem);
+    // m_properties["stamina"] = new Property<double>(m_stamina, per_ephem);
     m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
     m_properties[RIGHT_HAND_WIELD] = new EntityProperty;
 }
@@ -446,11 +444,9 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 
     PropertyBase * food_property = getProperty("food");
     if (food_property == 0) {
-        food_property = PropertyManager::instance()->addProperty("food");
-        if (food_property == 0) {
-            log(ERROR, "Unable to set a FOOD property.");
-            return;
-        }
+        food_property = PropertyManager::instance()->addProperty("food",
+              Element::TYPE_FLOAT);
+        assert(food_property != 0);
         m_properties["food"] = food_property;
     }
     Element value;
