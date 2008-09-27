@@ -1,5 +1,11 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Now that the property manager always
+	  creates something, there is no longer any need to deal with it
+	  returning 0.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CorePropertyManager.cpp, server/CorePropertyManager.h:
 	  Re-work the property manager to always create a property,
 	  using closest match specialisations of the template where

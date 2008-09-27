@@ -49,7 +49,7 @@
 #include "common/random.h"
 #include "common/compose.hpp"
 #include "common/Monitors.h"
-#include "common/DynamicProperty.h"
+#include "common/Property.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Message/Element.h>
@@ -433,10 +433,9 @@ static void updateChildrenProperties(EntityKit * factory)
     for (; J != Jend; ++J) {
         PropertyDict::const_iterator I = defaults.find(J->first);
         if (I == Iend) {
-            p = PropertyManager::instance()->addProperty(J->first);
-            if (p == 0) {
-                p = new SoftProperty(J->second);
-            }
+            p = PropertyManager::instance()->addProperty(J->first,
+                                                         J->second.getType());
+            assert(p != 0);
             p->setFlags(flag_class);
             defaults[J->first] = p;
         } else {
@@ -656,12 +655,10 @@ int EntityBuilder::installEntityClass(const std::string & class_name,
     MapType::const_iterator Jend = factory->m_attributes.end();
     PropertyBase * p;
     for (; J != Jend; ++J) {
-        p = PropertyManager::instance()->addProperty(J->first);
-        if (p == 0) {
-            p = new SoftProperty(J->second);
-        } else {
-            p->set(J->second);
-        }
+        p = PropertyManager::instance()->addProperty(J->first,
+                                                     J->second.getType());
+        assert(p != 0);
+        p->set(J->second);
         p->setFlags(flag_class);
         factory->m_type->defaults()[J->first] = p;
     }
