@@ -327,8 +327,13 @@ bool Database::encodeObject(const MapType & o,
 
     std::string raw = str.str();
     char safe[raw.size() * 2 + 1];
+    int errcode;
 
-    PQescapeStringConn(m_connection, safe, raw.c_str(), raw.size(), 0);
+    PQescapeStringConn(m_connection, safe, raw.c_str(), raw.size(), &errcode);
+
+    if (errcode != 0) {
+        std::cerr << "ERROR: " << errcode << std::endl << std::flush;
+    }
 
     data = safe;
 
