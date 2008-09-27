@@ -1,5 +1,9 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/PropertyFactory.cpp: Remove DynamicProperty include.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/TransientProperty.h, rulesets/MultiHandlerProperty.h,
 	  rulesets/MultiHandlerProperty.cpp, rulesets/MindProperty.h,
 	  rulesets/InternalProperties.h, rulesets/HandlerProperty.h,

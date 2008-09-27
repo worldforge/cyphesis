@@ -15,11 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyFactory.cpp,v 1.5 2007-12-20 18:42:43 alriddoch Exp $
+// $Id$
 
 #include "PropertyFactory_impl.h"
 
-#include "DynamicProperty.h"
+#include "Property.h"
 
 PropertyKit::~PropertyKit()
 {
