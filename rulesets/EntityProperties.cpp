@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperties.cpp,v 1.13 2007-12-02 23:49:06 alriddoch Exp $
+// $Id$
 
 #include "Entity.h"
 
@@ -34,38 +34,7 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
 template<>
-bool ImmutableProperty<BBox>::get(Element & e) const
-{
-    e = m_data.toAtlas();
-    return true;
-}
-
-template<>
-void Property<BBox>::set(const Element & e)
-{
-    if (e.isList() && (e.asList().size() > 2)) {
-        m_modData.fromAtlas(e.asList());
-    }
-}
-
-template<>
-void ImmutableProperty<BBox>::add(const std::string & s, MapType & ent) const
-{
-    if (m_data.isValid()) {
-        ent[s] = m_data.toAtlas();
-    }
-}
-
-template<>
-void ImmutableProperty<BBox>::add(const std::string & s, const RootEntity & ent) const
-{
-    if (m_data.isValid()) {
-        ent->setAttr(s, m_data.toAtlas());
-    }
-}
-
-template<>
-bool ImmutableProperty<IdList>::get(Element & e) const
+bool Property<IdList>::get(Element & e) const
 {
     e = Atlas::Message::ListType();
     idListasObject(m_data, e.asList());
@@ -76,12 +45,12 @@ template<>
 void Property<IdList>::set(const Element & e)
 {
     if (e.isList()) {
-        idListFromAtlas(e.asList(), m_modData);
+        idListFromAtlas(e.asList(), this->m_data);
     }
 }
 
 template<>
-void ImmutableProperty<IdList>::add(const std::string & s, MapType & ent) const
+void Property<IdList>::add(const std::string & s, MapType & ent) const
 {
     if (!m_data.empty()) {
         get(ent[s]);
@@ -89,7 +58,7 @@ void ImmutableProperty<IdList>::add(const std::string & s, MapType & ent) const
 }
 
 template<>
-void ImmutableProperty<IdList>::add(const std::string & s, const RootEntity & ent) const
+void Property<IdList>::add(const std::string & s, const RootEntity & ent) const
 {
     if (!m_data.empty()) {
         ListType list;
@@ -98,83 +67,4 @@ void ImmutableProperty<IdList>::add(const std::string & s, const RootEntity & en
     }
 }
 
-template<>
-bool ImmutableProperty<LocatedEntitySet>::get(Element & e) const
-{
-    e = ListType();
-    ListType & contlist = e.asList();
-    LocatedEntitySet::const_iterator Iend = m_data.end();
-    for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
-        contlist.push_back((*I)->getId());
-    }
-    return true;
-}
-
-template<>
-void ImmutableProperty<LocatedEntitySet>::add(const std::string & s,
-                                              MapType & ent) const
-{
-    if (!m_data.empty()) {
-        get(ent[s]);
-    }
-}
-
-template<>
-void ImmutableProperty<LocatedEntitySet>::add(const std::string & s,
-                                              const RootEntity & ent) const
-{
-    if (!m_data.empty()) {
-        Element v;
-        get(v);
-        ent->setAttr(s, v);
-    }
-}
-
-template<>
-bool ImmutableProperty<Container>::get(Element & e) const
-{
-    // FIXME Not sure if this is best. Why did we bother to virtualise
-    // addToMessage() if we have to do this here?
-    e = ListType();
-    ListType & contlist = e.asList();
-    Container::const_iterator Iend = m_data.end();
-    for (Container::const_iterator I = m_data.begin(); I != Iend; ++I) {
-        contlist.push_back((*I)->getId());
-    }
-    return true;
-}
-
-template<>
-void ImmutableProperty<Container>::add(const std::string & s,
-                                       MapType & ent) const
-{
-    if (!m_data.empty()) {
-        m_data.addToMessage(s, ent);
-    }
-}
-
-template<>
-void ImmutableProperty<Container>::add(const std::string & s,
-                                       const RootEntity & ent) const
-{
-    if (!m_data.empty()) {
-        m_data.addToEntity(s, ent);
-    }
-}
-
-template<>
-void SignalProperty<BBox>::set(const Element & e)
-{
-    if (e.isList() && (e.asList().size() > 2)) {
-        m_modData.fromAtlas(e.asList());
-        modified.emit();
-    }
-}
-
-template class Property<BBox>;
 template class Property<IdList>;
-
-template class ImmutableProperty<LocatedEntitySet>;
-template class ImmutableProperty<Container>;
-
-template class SignalProperty<BBox>;
