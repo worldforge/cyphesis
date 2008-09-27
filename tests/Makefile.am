@@ -259,10 +259,12 @@ Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h En
 Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/modules/DateTime.o \
                   $(top_builddir)/rulesets/Plant.o \
-                   $(top_builddir)/rulesets/LocatedEntity.o \
+                  $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
+                  $(top_builddir)/rulesets/StatusProperty.o \
+                  $(top_builddir)/rulesets/BBoxProperty.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \

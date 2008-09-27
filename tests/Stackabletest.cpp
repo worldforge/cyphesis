@@ -50,7 +50,6 @@ int main()
 
     std::set<std::string> attrNames;
     attrNames.insert("id");
-    attrNames.insert("num");
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));
@@ -91,7 +90,7 @@ int main()
     e.addToMessage(entityAsAtlas);
 
     // Make sure we got at least some of it
-    assert(entityAsAtlas.size() > 14);
+    assert(entityAsAtlas.size() > 13);
 
     // Read the contents of the Atlas Message back in
     e.merge(entityAsAtlas);

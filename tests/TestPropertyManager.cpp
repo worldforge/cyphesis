@@ -19,6 +19,12 @@
 
 #include "TestPropertyManager.h"
 
+#include "common/Property.h"
+
+#include <Atlas/Message/Element.h>
+
+using Atlas::Message::Element;
+
 TestPropertyManager::TestPropertyManager()
 {
 }
@@ -27,7 +33,24 @@ TestPropertyManager::~TestPropertyManager()
 {
 }
 
-PropertyBase * TestPropertyManager::addProperty(const std::string & name)
+PropertyBase * TestPropertyManager::addProperty(const std::string & name,
+                                                int type)
 {
-    return 0;
+    PropertyBase * p = 0;
+    switch (type) {
+      case Element::TYPE_INT:
+        p = new Property<int>;
+        break;
+      case Element::TYPE_FLOAT:
+        p = new Property<double>;
+        break;
+      case Element::TYPE_STRING:
+        p = new Property<std::string>;
+        break;
+      default:
+        p = new SoftProperty;
+        break;
+    }
+
+    return p;
 }

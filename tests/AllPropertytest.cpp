@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AllPropertytest.cpp,v 1.4 2007-12-03 00:00:50 alriddoch Exp $
+// $Id$
 
 #include "PropertyExerciser.h"
 
@@ -31,7 +31,7 @@
 #include "rulesets/Character.h"
 #include "rulesets/Statistics.h"
 
-#include "common/DynamicProperty_impl.h"
+#include "common/Property_impl.h"
 
 #include <Mercator/Terrain.h>
 
@@ -51,87 +51,27 @@ int main()
     PropertyExerciser exerciser;
 
     {
-        int test_integer_val;
-        Property<int> test_property(test_integer_val, 0);
+        Property<int> test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_INT) == 0);
     }
 
     {
-        int test_integer_val = 1;
-        ImmutableProperty<int> test_property(test_integer_val, 0);
+        Property<long> test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_INT) == 0);
     }
 
     {
-        DynamicProperty<int> test_property;
-        assert(exerciser.exerciseProperty(test_property, TYPE_INT) == 0);
-    }
-
-    {
-        long test_long_val;
-        Property<long> test_property(test_long_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_INT) == 0);
-    }
-
-    {
-        long test_long_val = 1;
-        ImmutableProperty<long> test_property(test_long_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_INT) == 0);
-    }
-
-    {
-        DynamicProperty<long> test_property;
-        assert(exerciser.exerciseProperty(test_property, TYPE_INT) == 0);
-    }
-
-    {
-        float test_float_val;
-        Property<float> test_property(test_float_val, 0);
+        Property<float> test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_FLOAT) == 0);
     }
 
     {
-        float test_float_val = 0.1f;
-        ImmutableProperty<float> test_property(test_float_val, 0);
+        Property<double> test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_FLOAT) == 0);
     }
 
     {
-        DynamicProperty<float> test_property;
-        assert(exerciser.exerciseProperty(test_property, TYPE_FLOAT) == 0);
-    }
-
-    {
-        double test_double_val;
-        Property<double> test_property(test_double_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_FLOAT) == 0);
-    }
-
-    {
-        double test_double_val = 0.1;
-        ImmutableProperty<double> test_property(test_double_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_FLOAT) == 0);
-    }
-
-    {
-        DynamicProperty<double> test_property;
-        assert(exerciser.exerciseProperty(test_property, TYPE_FLOAT) == 0);
-    }
-
-    {
-        std::string test_string_val;
-        Property<std::string> test_property(test_string_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
-    }
-
-    {
-        std::string test_string_val("bob");
-        ImmutableProperty<std::string> test_property(test_string_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
-    }
-
-    {
-        DynamicProperty<std::string> test_property;
+        Property<std::string> test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
     }
 
@@ -153,19 +93,12 @@ int main()
     }
 
     {
-        std::string test_string_val;
-        NameProperty test_property(test_string_val, 0);
+        NameProperty test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
     }
 
     {
-        std::string test_string_val("bob");
-        NameProperty test_property(test_string_val, 0);
-        assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
-    }
-
-    {
-        Dynamic<NameProperty, std::string> test_property;
+        NameProperty test_property(0);
         assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
     }
 
@@ -194,8 +127,7 @@ int main()
 
     // FIXME Yay this throws!!! I found a bug with my foolish tests
     {
-        CoordList test_coordlist_data;
-        LineProperty test_property(test_coordlist_data, 0);
+        LineProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_LIST) == 0);
     }
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Propertytest.cpp,v 1.4 2008-08-14 17:44:26 alriddoch Exp $
+// $Id$
 
 #include "common/Property.h"
 
@@ -48,8 +48,9 @@ int main()
 
     {
     long i = 23;
-    PropertyBase * pb = new Property<long>(i, 0);
+    PropertyBase * pb = new Property<long>(0);
     assert(pb->flags() == 0);
+    pb->set(i);
     pb->get(val);
     assert(val == i);
     delete pb;
@@ -57,8 +58,9 @@ int main()
 
     {
     float f = 17.2f;
-    PropertyBase * pb = new Property<float>(f, 1);
+    PropertyBase * pb = new Property<float>(1);
     assert(pb->flags() == 1);
+    pb->set(f);
     pb->get(val);
     assert(val == f);
     delete pb;
@@ -66,8 +68,9 @@ int main()
 
     {
     double d = 65.4;
-    PropertyBase * pb = new Property<double>(d, 2);
+    PropertyBase * pb = new Property<double>(2);
     assert(pb->flags() == 2);
+    pb->set(d);
     pb->get(val);
     assert(val == d);
     delete pb;
@@ -75,8 +78,9 @@ int main()
 
     {
     std::string s = "Test String";
-    PropertyBase * pb = new Property<std::string>(s, 3);
+    PropertyBase * pb = new Property<std::string>(3);
     assert(pb->flags() == 3);
+    pb->set(s);
     pb->get(val);
     assert(val == s);
     delete pb;
@@ -84,8 +88,9 @@ int main()
 
     {
     long i = 23;
-    PropertyBase * pb = new Property<long>(i, 4);
+    PropertyBase * pb = new Property<long>(4);
     assert(pb->flags() == 4);
+    pb->set(i);
     pb->get(val);
     assert(val == i);
     delete pb;

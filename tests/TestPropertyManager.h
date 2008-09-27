@@ -27,7 +27,7 @@ class TestPropertyManager : public PropertyManager {
     TestPropertyManager();
     virtual ~TestPropertyManager();
 
-    virtual PropertyBase * addProperty(const std::string & name);
+    virtual PropertyBase * addProperty(const std::string & name, int type);
 };
 
 #endif // TEST_TEST_PROPERTY_MANAGER_H
