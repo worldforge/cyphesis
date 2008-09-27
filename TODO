@@ -1,12 +1,20 @@
+Num property to implement stuff. Only works if it is installed as a class
+property, otherwise does nothing. (Resets to one).
+Value of one means nothing is sent.
+Installing class causes instance property to be placed, but install is
+not called on it.
+
+Purge stackable.
+
+Fix the stamina property, currently commented out.
+
 Clear set ops out of tasks (in Character) and combat.
 Can probably get rid of the hard Task pointer while at it.
 
 Clean up properties as follows:
-  Reference properties are a special case, and should not be generalised.
   General property template should be the base class for almost all,
   particularly int, double, string. We can then use *SpecificProperty
-  more. No longer needs to be DynamicProperty<> and we no longer
-  need the dodgey reference. Don't use SoftProperty on ingame data.
+  more.
 
 In Plant.cpp a lot of properties are directly updated. Need to review
 whether apply() and install have to be called on them.
@@ -17,8 +25,6 @@ be triggered.
 
 Move requireSpecificProperty() and have it check on the defaults for
 a default value.
-
-LineProperty doesn't need to be non-dynamic. Re-code it.
 
 Update Thing::updateProperties so it checks all properities to see whether
 they've been written to the database. May need to trigger a database update.
