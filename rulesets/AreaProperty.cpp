@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AreaProperty.cpp,v 1.6 2007-01-14 21:55:22 alriddoch Exp $
+// $Id$
 
 #include "AreaProperty.h"
 
@@ -36,8 +36,7 @@ using Atlas::Message::MapType;
 /// \brief AreaProperty constructor
 ///
 /// @param flags Flags used to persist this property
-AreaProperty::AreaProperty(unsigned int flags) : PropertyBase(flags),
-                                                 m_line(*new CoordList, flags)
+AreaProperty::AreaProperty(unsigned int flags) : PropertyBase(flags)
 {
 }
 

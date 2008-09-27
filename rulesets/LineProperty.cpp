@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LineProperty.cpp,v 1.7 2007-01-03 21:10:05 alriddoch Exp $
+// $Id$
 
 #include "LineProperty.h"
 
@@ -35,8 +35,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-LineProperty::LineProperty(CoordList & data, unsigned int flags) :
-                           PropertyBase(flags), m_data(data)
+LineProperty::LineProperty() : PropertyBase(0)
 {
 }
 

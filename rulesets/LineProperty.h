@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: LineProperty.h,v 1.10 2007-01-03 21:10:05 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_LINE_PROPERTY_H
 #define RULESETS_LINE_PROPERTY_H
@@ -30,10 +30,9 @@
 /// \ingroup PropertyClasses
 class LineProperty : public PropertyBase {
   protected:
-    CoordList & m_data;
+    CoordList m_data;
   public:
-    explicit LineProperty(CoordList & data,
-                          unsigned int flags);
+    explicit LineProperty();
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

@@ -1,5 +1,13 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LineProperty.h, rulesets/LineProperty.cpp: Make
+	  LineProperty store its own data.
+
+	* rulesets/AreaProperty.cpp: Adapt the way AreaProperty uses
+	  LineProperty to take account of it storing data.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/PropertyFactory.cpp: Remove DynamicProperty include.
 
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
