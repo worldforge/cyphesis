@@ -28,26 +28,13 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;
 
-StatusProperty::StatusProperty() : PropertyBase(0), m_value(1.f)
+StatusProperty::StatusProperty()
 {
-}
-
-bool StatusProperty::get(Element & ent) const
-{
-    ent = m_value;
-    return true;
-}
-
-void StatusProperty::set(const Element & ent)
-{
-    if (ent.isNum()) {
-        m_value = ent.asNum();
-    }
 }
 
 void StatusProperty::apply(Entity * owner)
 {
-    if (m_value < 0) {
+    if (m_data < 0) {
         Delete del;
         Anonymous delete_arg;
         delete_arg->setId(owner->getId());

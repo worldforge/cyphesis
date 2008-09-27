@@ -28,21 +28,11 @@ class Entity;
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
 /// \ingroup PropertyClasses
-class StatusProperty : public PropertyBase {
-  protected:
-    /// The value of the property.
-    float m_value;
+class StatusProperty : public Property<double> {
   public:
     /// \brief Constructor
-    ///
-    /// @param owner the owner of the property.
     explicit StatusProperty();
 
-    const float data() const { return m_value; }
-    float & data() { return m_value; }
-
-    virtual bool get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
     virtual void apply(Entity *);
 };
 

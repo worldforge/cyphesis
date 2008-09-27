@@ -1,5 +1,10 @@
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/StatusProperty.cpp, rulesets/StatusProperty.h:
+	  Use the template base class for properties.
+
+2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/AtlasProperties.cpp, rulesets/AtlasProperties.h: Fix
 	  the few property classes that needed to use references and be
 	  immutable to implement it locally, as there are no longer
