@@ -1,3 +1,7 @@
+2008-09-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/BaseMind.cpp: Remove some obsolete includes.
+
 2008-09-27  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tests/TestPropertyManager.h, tests/TestPropertyManager.cpp:

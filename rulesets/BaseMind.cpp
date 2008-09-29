@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseMind.cpp,v 1.113 2008-01-26 17:43:21 alriddoch Exp $
+// $Id$
 
 #include "BaseMind.h"
 
@@ -25,10 +25,6 @@
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/inheritance.h"
-
-#include "common/Attack.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
