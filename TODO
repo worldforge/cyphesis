@@ -1,3 +1,23 @@
+add_map really has no code in it
+update_map contains very little and is probably obsolete as it never gets
+called
+Review hooks and see if they really are needed.
+Note that:
+ in sight_create_operation all that is being checked for is if we created it
+ If we did create it, this is going to be a special interest to any mind
+ so we could look at supporting it in the core base class.
+
+ in sight_move_operation we are looking for changes to the inventory
+ and taking ownership. Could this again be supported in the base code?
+
+ Both sight_move and sight_create update the map via the Python API
+ when this could be more efficiently done in the C++ if the op
+ handler wasn't overriden. Why not assume the python handler does not
+ override?
+
+ The overall concept of overriding from scripts and also from handlers
+ probably needs to be looked at.
+
 Num property to implement stuff. Only works if it is installed as a class
 property, otherwise does nothing. (Resets to one).
 Value of one means nothing is sent.
