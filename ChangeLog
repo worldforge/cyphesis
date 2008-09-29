@@ -1,5 +1,11 @@
 2008-09-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp, rulesets/Plant.cpp, rulesets/Plant.h:
+	  Update the metabolism code to access properties in the cleanest
+	  most type safe way possible.
+
+2008-09-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/LocatedEntity.h, rulesets/LocatedEntity.cpp: Add two
 	  new methods which make it easier to retrieve property data
 	  in a type safe way.

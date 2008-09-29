@@ -22,6 +22,8 @@
 
 #include "Thing.h"
 
+#include "common/Property.h"
+
 typedef Thing Plant_parent;
 
 /// \brief This is the base class for flowering plants.
@@ -41,7 +43,7 @@ class Plant : public Plant_parent {
     static const int m_minuDrop = 0; // min fruit dropped
     static const int m_maxuDrop = 2; // max fruit dropped
 
-    int dropFruit(OpVector & res, PropertyBase * fruits_prop);
+    int dropFruit(OpVector & res, Property<int> * fruits_prop);
   public:
 
     explicit Plant(const std::string & id, long intId);

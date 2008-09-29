@@ -28,6 +28,7 @@
 #include "StatisticsProperty.h"
 #include "EntityProperty.h"
 #include "OutfitProperty.h"
+#include "StatusProperty.h"
 
 #include "common/op_switch.h"
 #include "common/const.h"
@@ -115,84 +116,66 @@ static const std::string OUTFIT = "outfit";
 /// @param ammount Time scale factor, currently not used.
 void Character::metabolise(OpVector & res, double ammount)
 {
-    bool stamina_changed = false,
-         mass_changed = false;
-
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
 
-    PropertyBase * status_prop = getProperty("status");
+    StatusProperty * status_prop = getSpecificProperty<StatusProperty>("status");
     if (status_prop == 0) {
         // FIXME Probably don't do enough here to set up the property.
-        status_prop = PropertyManager::instance()->addProperty("status",
-            Element::TYPE_FLOAT);
+        status_prop = new StatusProperty;
         assert(status_prop != 0);
         m_properties["status"] = status_prop;
         status_prop->set(1.f);
     }
-    Element value;
-    status_prop->get(value);
-    assert(value.isFloat());
-    float status = value.asFloat();
+    double & status = status_prop->data();
+    status_prop->setFlags(flag_unsent);
 
-    PropertyBase * food_prop = getProperty("food");
+    Property<double> * food_prop = getTypeProperty<double>("food");
     // DIGEST
-    if (food_prop != 0 && food_prop->get(value) && value.isFloat()) {
-        float food = value.Float();
+    if (food_prop != 0) {
+        double & food = food_prop->data();
         if (food >= foodConsumption && status < 2) {
             // It is important that the metabolise bit is done next, as this
             // handles the status change
             status += foodConsumption;
             food -= foodConsumption;
-            food_prop->set(food);
 
             food_prop->setFlags(flag_unsent);
         }
     }
 
-    PropertyBase * mass_prop = getProperty("mass");
-    float mass = 0.f;
+    Property<double> * mass_prop = getTypeProperty<double>("mass");
     if (mass_prop != 0 && mass_prop->flags() & flag_class) {
         log(NOTICE, "Mass Class property");
     }
-    if (mass_prop != 0 && mass_prop->get(value) && value.isFloat()) {
-        mass = value.Float();
-    }
     // If status is very high, we gain weight
-    if (status > (1.5 + energyLaidDown) && mass < m_maxMass) {
+    if (status > (1.5 + energyLaidDown)) {
         status -= energyLaidDown;
-        mass += weightGain;
-        mass_changed = true;
+        if (mass_prop != 0 && mass_prop->data() < m_maxMass) {
+            mass_prop->data() += weightGain;
+            mass_prop->setFlags(flag_unsent);
+        }
     } else {
         // If status is relatively is not very high, then energy is burned
         double energy_used = energyConsumption * ammount;
-        double weight_used = weightConsumption * mass * ammount;
-        if (status <= 0.5 && mass > weight_used) {
-            // Drain away a little energy and lose some weight
-            // This ensures there is a long term penalty to allowing something
-            // to starve
-            status -= (energy_used / 2);
-            mass -= weight_used;
-            mass_changed = true;
-        } else {
-            // Just drain away a little energy
-            status -= energy_used;
+        status -= energy_used;
+        if (mass_prop != 0) {
+            double & mass = mass_prop->data();
+            double weight_used = weightConsumption * mass * ammount;
+            if (status <= 0.5 && mass > weight_used) {
+                // Drain away a little less energy and lose some weight
+                // This ensures there is a long term penalty to allowing
+                // something to starve
+                status += (energy_used / 2);
+                mass -= weight_used;
+                mass_prop->setFlags(flag_unsent);
+            }
         }
     }
+    // FIXME Stamina property?
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
         m_stamina = 1.;
-        stamina_changed = true;
-    }
 
-    status_prop->set(status);
-    status_prop->setFlags(flag_unsent);
-
-    if (mass_changed && mass_prop != 0) {
-        mass_prop->set(mass);
-        mass_prop->setFlags(flag_unsent);
-    }
-    if (stamina_changed) {
-        
         PropertyBase * stamina_prop = getProperty("stamina");
         if (stamina_prop != 0) {
             stamina_prop->setFlags(flag_unsent);
@@ -442,20 +425,16 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    PropertyBase * food_property = getProperty("food");
-    if (food_property == 0) {
-        food_property = PropertyManager::instance()->addProperty("food",
-              Element::TYPE_FLOAT);
-        assert(food_property != 0);
-        m_properties["food"] = food_property;
+    Property<double> * food_prop = getTypeProperty<double>("food");
+    if (food_prop == 0) {
+        food_prop = new Property<double>;
+        m_properties["food"] = food_prop;
     }
-    Element value;
-    food_property->get(value);
-    assert(value.isFloat());
-    float food = value.Float();
-    food = food + mass_attr.asNum();
-    food_property->set(food);
+    double & food = food_prop->data();
+    food += mass_attr.asNum();
+    food_prop->setFlags(flag_unsent);
 
+    // FIXME This will become a Update once private properties are sorted
     Anonymous food_ent;
     food_ent->setId(getId());
     food_ent->setAttr("food", food);

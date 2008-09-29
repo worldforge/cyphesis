@@ -69,25 +69,19 @@ Plant::~Plant()
 ///
 /// @return -1 if this plant does not fruit,
 /// number of fruit dropped otherwise.
-int Plant::dropFruit(OpVector & res, PropertyBase * fruits_prop)
+int Plant::dropFruit(OpVector & res, Property<int> * fruits_prop)
 {
     Element fruitName;
-    if (!getAttr("fruitName", fruitName) || !fruitName.isString()) {
+    if (!getAttrType("fruitName", fruitName, Element::TYPE_STRING)) {
         return -1;
     }
-    Element fruitsVal;
-    fruits_prop->get(fruitsVal);
-    if (!fruitsVal.isInt()) {
-        return -1;
-    }
-    int fruits = fruitsVal.Int();
+    int & fruits = fruits_prop->data();
     if (fruits < 1) { return 0; }
     int drop = std::min(fruits, randint(m_minuDrop, m_maxuDrop));
     if (drop < 1) {
-        return fruits;
+        return 0;
     }
     fruits -= drop;
-    fruits_prop->set(fruits);
     // FIXME apply?
     fruits_prop->setFlags(flag_unsent);
 
@@ -108,7 +102,7 @@ int Plant::dropFruit(OpVector & res, PropertyBase * fruits_prop)
         create->setArgs1(fruit_arg);
         res.push_back(create);
     }
-    return fruits;
+    return drop;
 }
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)
@@ -176,10 +170,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
  
         m_nourishment = 0;
         Element maxmass_attr;
-        if (getAttr("maxmass", maxmass_attr)) {
-            if (maxmass_attr.isNum()) {
-                mass = std::min(mass, maxmass_attr.asNum());
-            }
+        if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT)) {
+            mass = std::min(mass, maxmass_attr.Float());
         }
         PropertyBase * biomass = getProperty("biomass");
         if (biomass != 0) {
@@ -216,16 +208,16 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
 
-    PropertyBase * fruits_prop = getProperty("fruits");
-    int fruits;
-    if (fruits_prop != 0 && (fruits = dropFruit(res, fruits_prop)) != -1) {
+    Property<int> * fruits_prop = getTypeProperty<int>("fruits");
+    if (fruits_prop != 0 && dropFruit(res, fruits_prop) != -1) {
+        int & fruits = fruits_prop->data();
         Element fruitChance;
         Element sizeAdult;
         int change = 0;
-        if (getAttr("fruitChance", fruitChance) && fruitChance.isInt() &&
-            getAttr("sizeAdult", sizeAdult) && sizeAdult.isNum() &&
+        if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) &&
+            getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) &&
             m_location.bBox().isValid() && 
-            (m_location.bBox().highCorner().z() > sizeAdult.asNum())) {
+            (m_location.bBox().highCorner().z() > sizeAdult.Float())) {
             if (randint(1, fruitChance.Int()) == 1) {
                 fruits++;
                 fruits_prop->set(fruits);
@@ -241,9 +233,8 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     debug(std::cout << "Checking for drop"
                     << std::endl << std::flush;);
-    PropertyBase * fruits_prop = getProperty("fruits");
-    if (fruits_prop != 0) {
-        dropFruit(res, fruits_prop);
+    Property<int> * fruits_prop = getTypeProperty<int>("fruits");
+    if (fruits_prop != 0 && dropFruit(res, fruits_prop) > 0) {
         Update update;
         update->setTo(getId());
         res.push_back(update);
