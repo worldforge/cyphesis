@@ -31,6 +31,9 @@ class PropertyBase;
 class Script;
 class TypeNode;
 
+template <typename T>
+class Property;
+
 typedef std::set<LocatedEntity *> LocatedEntitySet;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
@@ -112,6 +115,9 @@ class LocatedEntity : public IdentifiedRouter {
     virtual bool hasAttr(const std::string & name) const;
     virtual bool getAttr(const std::string & name,
                          Atlas::Message::Element &) const;
+    virtual bool getAttrType(const std::string & name,
+                             Atlas::Message::Element &,
+                             int type) const;
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
     virtual PropertyBase * getProperty(const std::string & name) const;
@@ -131,6 +137,17 @@ class LocatedEntity : public IdentifiedRouter {
         PropertyBase * p = getProperty(name);
         if (p != 0) {
             return dynamic_cast<PropertyT *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Get a property that is a generic property of a given type
+    template <typename T>
+    Property<T> * getTypeProperty(const std::string & name)
+    {
+        PropertyBase * p = getProperty(name);
+        if (p != 0) {
+            return dynamic_cast<Property<T> *>(p);
         }
         return 0;
     }

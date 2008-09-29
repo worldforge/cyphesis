@@ -116,6 +116,29 @@ bool LocatedEntity::getAttr(const std::string & name, Element & attr) const
     return false;
 }
 
+/// \brief Get the value of an attribute if it is the right type
+///
+/// @param name Name of attribute to be retrieved
+/// @param attr Reference used to store value
+/// @return trye if this entity has an attribute with the name given
+/// false otherwise
+bool LocatedEntity::getAttrType(const std::string & name,
+                                Element & attr,
+                                int type) const
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second->get(attr) && attr.getType() == type;
+    }
+    if (m_type != 0) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return I->second->get(attr) && attr.getType() == type;
+        }
+    }
+    return false;
+}
+
 /// \brief Set the value of an attribute
 ///
 /// @param name Name of attribute to be changed
