@@ -1,5 +1,10 @@
 2008-09-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CorePropertyManager.cpp: Update operation handlers to access
+	  properties in the cleanest most type safe way possible.
+
+2008-09-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp, rulesets/Plant.cpp, rulesets/Plant.h:
 	  Update the metabolism code to access properties in the cleanest
 	  most type safe way possible.

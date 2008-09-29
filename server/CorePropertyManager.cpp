@@ -35,7 +35,7 @@
 #include "common/Eat.h"
 #include "common/Burn.h"
 #include "common/Nourish.h"
-#include "common/Setup.h"
+#include "common/Update.h"
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
@@ -55,6 +55,8 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Burn;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Operation::Update;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
@@ -68,20 +70,13 @@ HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 {
     debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
-    PropertyBase * pb = e->getProperty("decays");
+    Property<std::string> * pb = e->getTypeProperty<std::string>("decays");
     if (pb == NULL) {
         debug(std::cout << "Delete HANDLER no decays" << std::endl 
                         << std::flush;);
         return OPERATION_IGNORED;
     }
-    Element val;
-    pb->get(val);
-    if (!val.isString()) {
-        debug(std::cout << "Delete HANDLER decays non-string" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    const std::string & type = val.String();
+    const std::string & type = pb->data();
 
     Anonymous create_arg;
     create_arg->setParents(std::list<std::string>(1, type));
@@ -99,21 +94,14 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 
 HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
 {
-    PropertyBase * pb = e->getProperty("biomass");
+    Property<double> * pb = e->getTypeProperty<double>("biomass");
     if (pb == NULL) {
         debug(std::cout << "Eat HANDLER no biomass" << std::endl 
                         << std::flush;);
         return OPERATION_IGNORED;
     }
     
-    Element val;
-    pb->get(val);
-    if (!val.isNum()) {
-        debug(std::cout << "Eat HANDLER biomass non-float" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    double biomass = val.asNum();
+    const double & biomass = pb->data();
 
     Anonymous self;
     self->setId(e->getId());
@@ -145,22 +133,14 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
         return OPERATION_IGNORED;
     }
 
-    PropertyBase * pb = e->getProperty("burn_speed");
+    Property<double> * pb = e->getTypeProperty<double>("burn_speed");
     if (pb == NULL) {
         debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
                         << std::flush;);
         return OPERATION_IGNORED;
     }
     
-    Element val;
-    pb->get(val);
-    if (!val.isNum()) {
-        debug(std::cout << "Burn HANDLER burn_speed non-float" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-
-    double burn_speed = val.asNum();
+    const double & burn_speed = pb->data();
     const Root & fire_ent = op->getArgs().front();
     double consumed = burn_speed * fire_ent->getAttr("status").asNum();
 
@@ -169,26 +149,20 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
     nour_ent->setId(to);
     nour_ent->setAttr("mass", consumed);
 
-    Set s;
-    s->setTo(e->getId());
+    StatusProperty * status_prop = e->requireSpecificProperty<StatusProperty>("status", 1.f);
+    assert(status_prop != 0);
+    status_prop->setFlags(flag_unsent);
+    double & status = status_prop->data();
 
-    Element new_status;
-    PropertyBase * status = e->getProperty("status");
-    if (status == 0 || !status->get(new_status) || new_status.isNum()) {
-        new_status = 1.f;
-    }
-    Element mass_attr(1.f);
-    e->getAttr("mass", mass_attr);
-    if (!mass_attr.isFloat()) {
+    Element mass_attr;
+    if (!e->getAttrType("mass", mass_attr, Element::TYPE_FLOAT)) {
         mass_attr = 1.f;
     }
-    new_status = new_status.asNum() - (consumed / mass_attr.Float());
-    Anonymous self_ent;
-    self_ent->setId(e->getId());
-    self_ent->setAttr("status", new_status);
-    s->setArgs1(self_ent);
-    
-    res.push_back(s);
+    status -= (consumed / mass_attr.Float());
+
+    Update update;
+    update->setTo(e->getId());
+    res.push_back(update);
 
     Nourish n;
     n->setTo(to);
@@ -203,8 +177,8 @@ HandlerResult terrainmod_moveHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
 {
-    Element modifier;
-    if (!e->getAttr("terrainmod", modifier)) {
+    TerrainModProperty * mod_property = e->getSpecificProperty<TerrainModProperty>("terrainmod");
+    if (mod_property == 0) {
         return OPERATION_IGNORED;
     }
 
@@ -213,7 +187,7 @@ HandlerResult terrainmod_moveHandler(Entity * e,
     if (args.empty()) {
         return OPERATION_IGNORED;
     }
-    Atlas::Objects::Entity::RootEntity ent = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(args.front());
+    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
     if (!ent.isValid()) {
         return OPERATION_IGNORED;
     }
@@ -223,10 +197,8 @@ HandlerResult terrainmod_moveHandler(Entity * e,
 
     Point3D newPos(ent->getPos()[0], ent->getPos()[1], ent->getPos()[2]);
 
-        // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
-    if (e->hasAttr("terrainmod")) {
-        dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->move(e, newPos);
-    }
+    // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
+    mod_property->move(e, newPos);
     return OPERATION_IGNORED;
 }
 
@@ -234,15 +206,13 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
 {
-    Element modifier;
-    if (!e->getAttr("terrainmod", modifier)) {
+    TerrainModProperty * mod_property = e->getSpecificProperty<TerrainModProperty>("terrainmod");
+    if (mod_property == 0) {
         return OPERATION_IGNORED;
     }
 
-        // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
-    if (e->hasAttr("terrainmod")) {
-         dynamic_cast<TerrainModProperty*>(e->getProperty("terrainmod"))->remove();
-    }
+    mod_property->remove();
+
     return OPERATION_IGNORED;
 }
 
