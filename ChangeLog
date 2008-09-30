@@ -1,3 +1,7 @@
+2008-09-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Entity.h: Update a doc comment.
+
 2008-09-29  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/CorePropertyManager.cpp: Update operation handlers to access

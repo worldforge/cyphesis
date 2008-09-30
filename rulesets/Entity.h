@@ -45,7 +45,7 @@ static const unsigned int entity_clean_mask = entity_clean |
 static const unsigned int entity_perceptive = 1 << 3;
 /// \brief Flag indicating entity has been destroyed
 static const unsigned int entity_destroyed = 1 << 4;
-/// \brief Flag indicating entity has been queued for update
+/// \brief Flag indicating entity has been queued for storage update
 static const unsigned int entity_queued = 1 << 5;
 /// \brief Flag indicaiting entity is ephemeral
 static const unsigned int entity_ephem = 1 << 6;
