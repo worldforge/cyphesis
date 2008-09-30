@@ -1,3 +1,10 @@
+Doxygen TODO lists!
+
+All the in-place property mods are not handling apply()
+Should this be done in Update()?
+updateOperation could handle setting clearing the per_clean flag, the
+entity_clean flag, and apply the properties.
+
 add_map really has no code in it
 update_map contains very little and is probably obsolete as it never gets
 called
