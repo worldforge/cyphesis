@@ -76,6 +76,7 @@ void StorageManager::entityUpdated(Entity * ent)
 {
     if (ent->isDestroyed()) {
         m_destroyedEntities.push_back(ent->getIntId());
+        return;
     }
     // Is it already in the dirty Entities queue?
     // Perhaps we need to modify the semantics of the updated signal
