@@ -122,7 +122,11 @@ class Entity : public LocatedEntity {
         return 0;
     }
 
-    /// \brief Get a property that is a generic property of a given type
+    /// \brief Get a modifiable property that is a generic property of a type
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type.
     template <typename T>
     Property<T> * modPropertyType(const std::string & name)
     {
@@ -134,6 +138,12 @@ class Entity : public LocatedEntity {
     }
 
     /// \brief Require that a property of a given type is set.
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type. If it does not
+    /// exist, or is not of the right type, a new property is created of
+    /// the right type, and installed on the Entity instance.
     template <class PropertyT>
     PropertyT * requirePropertyClass(const std::string & name,
                                      const Atlas::Message::Element & def_val
@@ -145,6 +155,8 @@ class Entity : public LocatedEntity {
             sp = dynamic_cast<PropertyT *>(p);
         }
         if (sp == 0) {
+            // FIXME We leak the property if one of the wrong type
+            // already existed.
             m_properties[name] = sp = new PropertyT;
             if (!def_val.isNone()) {
                 sp->set(def_val);
