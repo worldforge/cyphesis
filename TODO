@@ -1,3 +1,5 @@
+Add SIGINT handler to cycmd to cancel tasks.
+
 Doxygen TODO lists!
 
 All the in-place property mods are not handling apply()
