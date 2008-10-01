@@ -152,7 +152,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     update->setTo(getId());
     res.push_back(update);
 
-    StatusProperty * status = requireSpecificProperty<StatusProperty>("status");
+    StatusProperty * status = requirePropertyClass<StatusProperty>("status");
     double & new_status = status->data();
     status->setFlags(flag_unsent);
     if (m_nourishment <= 0) {
@@ -163,7 +163,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             new_status = 1.;
         }
 
-        Property<double> * mass_prop = requireSpecificProperty<Property<double> >("mass", 0.);
+        Property<double> * mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
         double & mass = mass_prop->data();
         double old_mass = mass;
         mass += m_nourishment;
@@ -197,7 +197,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                                 bbox.highCorner().y() * height_scale,
                                 bbox.highCorner().z() * height_scale));
             debug(std::cout << "New " << bbox << std::endl << std::flush;);
-            BBoxProperty * box_property = getSpecificProperty<BBoxProperty>("biomass");
+            BBoxProperty * box_property = getPropertyClass<BBoxProperty>("biomass");
             if (box_property != 0) {
                 box_property->data() = bbox;
             } else {
@@ -208,7 +208,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
 
-    Property<int> * fruits_prop = getTypeProperty<int>("fruits");
+    Property<int> * fruits_prop = getPropertyType<int>("fruits");
     if (fruits_prop != 0 && dropFruit(res, fruits_prop) != -1) {
         int & fruits = fruits_prop->data();
         Element fruitChance;
@@ -233,7 +233,7 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     debug(std::cout << "Checking for drop"
                     << std::endl << std::flush;);
-    Property<int> * fruits_prop = getTypeProperty<int>("fruits");
+    Property<int> * fruits_prop = getPropertyType<int>("fruits");
     if (fruits_prop != 0 && dropFruit(res, fruits_prop) > 0) {
         Update update;
         update->setTo(getId());

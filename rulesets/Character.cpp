@@ -119,7 +119,7 @@ void Character::metabolise(OpVector & res, double ammount)
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
 
-    StatusProperty * status_prop = getSpecificProperty<StatusProperty>("status");
+    StatusProperty * status_prop = getPropertyClass<StatusProperty>("status");
     if (status_prop == 0) {
         // FIXME Probably don't do enough here to set up the property.
         status_prop = new StatusProperty;
@@ -130,7 +130,7 @@ void Character::metabolise(OpVector & res, double ammount)
     double & status = status_prop->data();
     status_prop->setFlags(flag_unsent);
 
-    Property<double> * food_prop = getTypeProperty<double>("food");
+    Property<double> * food_prop = getPropertyType<double>("food");
     // DIGEST
     if (food_prop != 0) {
         double & food = food_prop->data();
@@ -144,7 +144,7 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
 
-    Property<double> * mass_prop = getTypeProperty<double>("mass");
+    Property<double> * mass_prop = getPropertyType<double>("mass");
     if (mass_prop != 0 && mass_prop->flags() & flag_class) {
         log(NOTICE, "Mass Class property");
     }
@@ -425,7 +425,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Property<double> * food_prop = getTypeProperty<double>("food");
+    Property<double> * food_prop = getPropertyType<double>("food");
     if (food_prop == 0) {
         food_prop = new Property<double>;
         m_properties["food"] = food_prop;
@@ -452,7 +452,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
-        EntityProperty * rhw = getSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
+        EntityProperty * rhw = getPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
         if (rhw == 0) {
             return;
         }
@@ -495,7 +495,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
 
         if (worn_attr.isString()) {
-            OutfitProperty * outfit = requireSpecificProperty<OutfitProperty>(OUTFIT);
+            OutfitProperty * outfit = requirePropertyClass<OutfitProperty>(OUTFIT);
             outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
@@ -512,7 +512,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     } else {
         debug(std::cout << "Got wield for a tool" << std::endl << std::flush;);
 
-        EntityProperty * rhw = requireSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
+        EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
         // FIXME Make sure we don't stay linked to the previous wielded
         // tool.
         // if (m_rightHandWieldConnection.connected()) {
@@ -801,7 +801,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    EntityProperty * rhw = getSpecificProperty<EntityProperty>(RIGHT_HAND_WIELD);
+    EntityProperty * rhw = getPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
     if (rhw == 0) {
         error(op, "Character::mindUseOp No tool wielded.", res, getId());
         return;

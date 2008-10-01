@@ -1,5 +1,13 @@
 2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.h: Rename some member functions and templates
+	  to make more sense and be consistent.
+
+	* rulesets/Character.cpp, rulesets/Plant.cpp,
+	  server/CorePropertyManager.cpp: Fix the code to use the new names.
+
+2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Thing.cpp, rulesets/Thing.h: Fix updateProperties() to be
 	  not const, so it now compiles.
 

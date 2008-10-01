@@ -70,7 +70,7 @@ HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 {
     debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
-    Property<std::string> * pb = e->getTypeProperty<std::string>("decays");
+    Property<std::string> * pb = e->getPropertyType<std::string>("decays");
     if (pb == NULL) {
         debug(std::cout << "Delete HANDLER no decays" << std::endl 
                         << std::flush;);
@@ -94,7 +94,7 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 
 HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
 {
-    Property<double> * pb = e->getTypeProperty<double>("biomass");
+    Property<double> * pb = e->getPropertyType<double>("biomass");
     if (pb == NULL) {
         debug(std::cout << "Eat HANDLER no biomass" << std::endl 
                         << std::flush;);
@@ -133,7 +133,7 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
         return OPERATION_IGNORED;
     }
 
-    Property<double> * pb = e->getTypeProperty<double>("burn_speed");
+    Property<double> * pb = e->getPropertyType<double>("burn_speed");
     if (pb == NULL) {
         debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
                         << std::flush;);
@@ -149,7 +149,7 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
     nour_ent->setId(to);
     nour_ent->setAttr("mass", consumed);
 
-    StatusProperty * status_prop = e->requireSpecificProperty<StatusProperty>("status", 1.f);
+    StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>("status", 1.f);
     assert(status_prop != 0);
     status_prop->setFlags(flag_unsent);
     double & status = status_prop->data();
@@ -177,7 +177,7 @@ HandlerResult terrainmod_moveHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
 {
-    TerrainModProperty * mod_property = e->getSpecificProperty<TerrainModProperty>("terrainmod");
+    TerrainModProperty * mod_property = e->getPropertyClass<TerrainModProperty>("terrainmod");
     if (mod_property == 0) {
         return OPERATION_IGNORED;
     }
@@ -206,7 +206,7 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
 {
-    TerrainModProperty * mod_property = e->getSpecificProperty<TerrainModProperty>("terrainmod");
+    TerrainModProperty * mod_property = e->getPropertyClass<TerrainModProperty>("terrainmod");
     if (mod_property == 0) {
         return OPERATION_IGNORED;
     }

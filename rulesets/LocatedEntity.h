@@ -132,7 +132,7 @@ class LocatedEntity : public IdentifiedRouter {
 
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>
-    PropertyT * getSpecificProperty(const std::string & name)
+    PropertyT * getPropertyClass(const std::string & name)
     {
         PropertyBase * p = getProperty(name);
         if (p != 0) {
@@ -143,7 +143,7 @@ class LocatedEntity : public IdentifiedRouter {
 
     /// \brief Get a property that is a generic property of a given type
     template <typename T>
-    Property<T> * getTypeProperty(const std::string & name)
+    Property<T> * getPropertyType(const std::string & name)
     {
         PropertyBase * p = getProperty(name);
         if (p != 0) {
@@ -154,9 +154,9 @@ class LocatedEntity : public IdentifiedRouter {
 
     /// \brief Require that a property of a given type is set.
     template <class PropertyT>
-    PropertyT * requireSpecificProperty(const std::string & name,
-                                        const Atlas::Message::Element & def_val
-                                        = Atlas::Message::Element())
+    PropertyT * requirePropertyClass(const std::string & name,
+                                     const Atlas::Message::Element & def_val
+                                     = Atlas::Message::Element())
     {
         PropertyBase * p = getProperty(name);
         PropertyT * sp = 0;
