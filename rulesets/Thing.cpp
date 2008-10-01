@@ -438,7 +438,7 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 /// place.
 /// @param op Update operation that notifies of the changes.
 /// @param res The result of the operation is returned here.
-void Thing::updateProperties(const Operation & op, OpVector & res) const
+void Thing::updateProperties(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Generating property update" << std::endl << std::flush;);
 

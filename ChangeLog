@@ -1,5 +1,10 @@
 2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Thing.cpp, rulesets/Thing.h: Fix updateProperties() to be
+	  not const, so it now compiles.
+
+2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Thing.cpp: When properties have been updated,
 	  mark them to be stored in the Database, and emit the necessary
 	  signal.
