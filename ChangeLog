@@ -1,5 +1,23 @@
 2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.cpp, rulesets/LocatedEntity.h: Make all the
+	  property access functions that should never be used to modify a
+	  property const. Remove requirePropertyClass() as it pretty much
+	  can't be const.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Make overriden
+	  getProperty() const as it is in the base class. Add new
+	  property access functions for code that needs to modify the
+	  properties which ensures class properties never get modified
+	  through the Entity interface.
+
+	* rulesets/Character.cpp, rulesets/Plant.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/TerrainModProperty.cpp, server/CorePropertyManager.cpp:
+	  Change all the code that accesses properties to use the right
+	  functions.
+
+2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/LocatedEntity.h: Rename some member functions and templates
 	  to make more sense and be consistent.
 

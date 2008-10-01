@@ -134,7 +134,7 @@ TerrainProperty* TerrainModProperty::getTerrain()
     PropertyBase * terr;
     Entity * ent = m_owner;
 
-    while ( (terr = ent->getProperty("terrain")) == NULL) {
+    while ( (terr = ent->modProperty("terrain")) == NULL) {
         ent = (Entity*)(ent->m_location.m_loc);
         if (ent == NULL) {
             return NULL;

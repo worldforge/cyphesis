@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Thing.cpp,v 1.70 2008-01-05 14:05:06 alriddoch Exp $
+// $Id$
 
 #include "Py_Thing.h"
 #include "Py_Object.h"
@@ -236,7 +236,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         }
     }
     Entity * entity = self->m_entity;
-    PropertyBase * prop = entity->getProperty(name);
+    PropertyBase * prop = entity->modProperty(name);
     if (prop != 0) {
         PyObject * ret = Property_asPyObject(prop, entity);
         if (ret != 0) {

@@ -106,9 +106,52 @@ class Entity : public LocatedEntity {
 
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
-    virtual PropertyBase * getProperty(const std::string & name) const;
+    virtual const PropertyBase * getProperty(const std::string & name) const;
 
+    PropertyBase * modProperty(const std::string & name);
     void setProperty(const std::string & name, PropertyBase * prop);
+
+    /// \brief Get a property that is required to of a given type.
+    template <class PropertyT>
+    PropertyT * modPropertyClass(const std::string & name)
+    {
+        PropertyBase * p = modProperty(name);
+        if (p != 0) {
+            return dynamic_cast<PropertyT *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Get a property that is a generic property of a given type
+    template <typename T>
+    Property<T> * modPropertyType(const std::string & name)
+    {
+        PropertyBase * p = modProperty(name);
+        if (p != 0) {
+            return dynamic_cast<Property<T> *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Require that a property of a given type is set.
+    template <class PropertyT>
+    PropertyT * requirePropertyClass(const std::string & name,
+                                     const Atlas::Message::Element & def_val
+                                     = Atlas::Message::Element())
+    {
+        PropertyBase * p = modProperty(name);
+        PropertyT * sp = 0;
+        if (p != 0) {
+            sp = dynamic_cast<PropertyT *>(p);
+        }
+        if (sp == 0) {
+            m_properties[name] = sp = new PropertyT;
+            if (!def_val.isNone()) {
+                sp->set(def_val);
+            }
+        }
+        return sp;
+    }
 
     void installHandler(int, Handler);
 

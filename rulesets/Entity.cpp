@@ -98,7 +98,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     return;
 }
 
-PropertyBase * Entity::getProperty(const std::string & name) const
+const PropertyBase * Entity::getProperty(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -108,6 +108,27 @@ PropertyBase * Entity::getProperty(const std::string & name) const
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             return I->second;
+        }
+    }
+    return 0;
+}
+
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
+    if (m_type != 0) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            // We have a default for this property. Create a new instance
+            // property with the same value.
+            Element val;
+            I->second->get(val);
+            PropertyBase * new_prop = PropertyManager::instance()->addProperty(name, val.getType());
+            new_prop->set(val);
+            return new_prop;
         }
     }
     return 0;

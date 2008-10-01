@@ -70,7 +70,7 @@ HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
 HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 {
     debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
-    Property<std::string> * pb = e->getPropertyType<std::string>("decays");
+    const Property<std::string> * pb = e->getPropertyType<std::string>("decays");
     if (pb == NULL) {
         debug(std::cout << "Delete HANDLER no decays" << std::endl 
                         << std::flush;);
@@ -94,7 +94,7 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
 
 HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
 {
-    Property<double> * pb = e->getPropertyType<double>("biomass");
+    const Property<double> * pb = e->getPropertyType<double>("biomass");
     if (pb == NULL) {
         debug(std::cout << "Eat HANDLER no biomass" << std::endl 
                         << std::flush;);
@@ -133,7 +133,7 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
         return OPERATION_IGNORED;
     }
 
-    Property<double> * pb = e->getPropertyType<double>("burn_speed");
+    const Property<double> * pb = e->getPropertyType<double>("burn_speed");
     if (pb == NULL) {
         debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
                         << std::flush;);
@@ -177,7 +177,7 @@ HandlerResult terrainmod_moveHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
 {
-    TerrainModProperty * mod_property = e->getPropertyClass<TerrainModProperty>("terrainmod");
+    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
     if (mod_property == 0) {
         return OPERATION_IGNORED;
     }
@@ -206,7 +206,7 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
                                  const Operation & op,
                                  OpVector & res)
 {
-    TerrainModProperty * mod_property = e->getPropertyClass<TerrainModProperty>("terrainmod");
+    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
     if (mod_property == 0) {
         return OPERATION_IGNORED;
     }

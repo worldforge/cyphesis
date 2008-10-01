@@ -120,7 +120,7 @@ class LocatedEntity : public IdentifiedRouter {
                              int type) const;
     virtual void setAttr(const std::string & name,
                          const Atlas::Message::Element &);
-    virtual PropertyBase * getProperty(const std::string & name) const;
+    virtual const PropertyBase * getProperty(const std::string & name) const;
 
     virtual void onContainered();
     virtual void onUpdated();
@@ -132,46 +132,25 @@ class LocatedEntity : public IdentifiedRouter {
 
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>
-    PropertyT * getPropertyClass(const std::string & name)
+    const PropertyT * getPropertyClass(const std::string & name) const
     {
-        PropertyBase * p = getProperty(name);
+        const PropertyBase * p = getProperty(name);
         if (p != 0) {
-            return dynamic_cast<PropertyT *>(p);
+            return dynamic_cast<const PropertyT *>(p);
         }
         return 0;
     }
 
     /// \brief Get a property that is a generic property of a given type
     template <typename T>
-    Property<T> * getPropertyType(const std::string & name)
+    const Property<T> * getPropertyType(const std::string & name) const
     {
-        PropertyBase * p = getProperty(name);
+        const PropertyBase * p = getProperty(name);
         if (p != 0) {
-            return dynamic_cast<Property<T> *>(p);
+            return dynamic_cast<const Property<T> *>(p);
         }
         return 0;
     }
-
-    /// \brief Require that a property of a given type is set.
-    template <class PropertyT>
-    PropertyT * requirePropertyClass(const std::string & name,
-                                     const Atlas::Message::Element & def_val
-                                     = Atlas::Message::Element())
-    {
-        PropertyBase * p = getProperty(name);
-        PropertyT * sp = 0;
-        if (p != 0) {
-            sp = dynamic_cast<PropertyT *>(p);
-        }
-        if (sp == 0) {
-            m_properties[name] = sp = new PropertyT;
-            if (!def_val.isNone()) {
-                sp->set(def_val);
-            }
-        }
-        return sp;
-    }
-
 };
 
 #endif // RULESETS_LOCATED_ENTITY_H

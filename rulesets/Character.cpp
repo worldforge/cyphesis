@@ -119,7 +119,7 @@ void Character::metabolise(OpVector & res, double ammount)
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
 
-    StatusProperty * status_prop = getPropertyClass<StatusProperty>("status");
+    StatusProperty * status_prop = modPropertyClass<StatusProperty>("status");
     if (status_prop == 0) {
         // FIXME Probably don't do enough here to set up the property.
         status_prop = new StatusProperty;
@@ -130,7 +130,7 @@ void Character::metabolise(OpVector & res, double ammount)
     double & status = status_prop->data();
     status_prop->setFlags(flag_unsent);
 
-    Property<double> * food_prop = getPropertyType<double>("food");
+    Property<double> * food_prop = modPropertyType<double>("food");
     // DIGEST
     if (food_prop != 0) {
         double & food = food_prop->data();
@@ -144,7 +144,7 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
 
-    Property<double> * mass_prop = getPropertyType<double>("mass");
+    Property<double> * mass_prop = modPropertyType<double>("mass");
     if (mass_prop != 0 && mass_prop->flags() & flag_class) {
         log(NOTICE, "Mass Class property");
     }
@@ -176,7 +176,7 @@ void Character::metabolise(OpVector & res, double ammount)
     if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
         m_stamina = 1.;
 
-        PropertyBase * stamina_prop = getProperty("stamina");
+        PropertyBase * stamina_prop = modProperty("stamina");
         if (stamina_prop != 0) {
             stamina_prop->setFlags(flag_unsent);
         }
@@ -425,11 +425,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Property<double> * food_prop = getPropertyType<double>("food");
-    if (food_prop == 0) {
-        food_prop = new Property<double>;
-        m_properties["food"] = food_prop;
-    }
+    Property<double> * food_prop = requirePropertyClass<Property<double> >("food", 0.f);
     double & food = food_prop->data();
     food += mass_attr.asNum();
     food_prop->setFlags(flag_unsent);
@@ -452,7 +448,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
-        EntityProperty * rhw = getPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+        EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
         if (rhw == 0) {
             return;
         }
@@ -801,7 +797,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    EntityProperty * rhw = getPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+    EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
     if (rhw == 0) {
         error(op, "Character::mindUseOp No tool wielded.", res, getId());
         return;

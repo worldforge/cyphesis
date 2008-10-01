@@ -173,11 +173,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT)) {
             mass = std::min(mass, maxmass_attr.Float());
         }
-        PropertyBase * biomass = getProperty("biomass");
+        PropertyBase * biomass = modPropertyType<double>("biomass");
         if (biomass != 0) {
-            if (biomass->flags() & flag_class) {
-                m_properties["biomass"] = biomass = PropertyManager::instance()->addProperty("biomass", Element::TYPE_FLOAT);
-            }
             biomass->set(mass);
             biomass->setFlags(flag_unsent);
         }
@@ -190,6 +187,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             debug(std::cout << "scale " << scale << ", " << height_scale
                             << std::endl << std::flush;);
             debug(std::cout << "Old " << bbox << std::endl << std::flush;);
+            // FIXME Rammming in a bbox without checking if its valid.
             bbox = BBox(Point3D(bbox.lowCorner().x() * height_scale,
                                 bbox.lowCorner().y() * height_scale,
                                 bbox.lowCorner().z() * height_scale),
@@ -197,7 +195,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                                 bbox.highCorner().y() * height_scale,
                                 bbox.highCorner().z() * height_scale));
             debug(std::cout << "New " << bbox << std::endl << std::flush;);
-            BBoxProperty * box_property = getPropertyClass<BBoxProperty>("biomass");
+            BBoxProperty * box_property = modPropertyClass<BBoxProperty>("biomass");
             if (box_property != 0) {
                 box_property->data() = bbox;
             } else {
@@ -208,12 +206,11 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
 
-    Property<int> * fruits_prop = getPropertyType<int>("fruits");
+    Property<int> * fruits_prop = modPropertyType<int>("fruits");
     if (fruits_prop != 0 && dropFruit(res, fruits_prop) != -1) {
         int & fruits = fruits_prop->data();
         Element fruitChance;
         Element sizeAdult;
-        int change = 0;
         if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) &&
             getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) &&
             m_location.bBox().isValid() && 
@@ -233,7 +230,7 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     debug(std::cout << "Checking for drop"
                     << std::endl << std::flush;);
-    Property<int> * fruits_prop = getPropertyType<int>("fruits");
+    Property<int> * fruits_prop = modPropertyType<int>("fruits");
     if (fruits_prop != 0 && dropFruit(res, fruits_prop) > 0) {
         Update update;
         update->setTo(getId());

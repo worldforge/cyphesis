@@ -159,7 +159,7 @@ void LocatedEntity::setAttr(const std::string & name, const Element & attr)
 /// @param name name of the attribute for which the property is required.
 /// @return a pointer to the property, or zero if the attributes does
 /// not exist, or is not stored using a property object.
-PropertyBase * LocatedEntity::getProperty(const std::string & name) const
+const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
