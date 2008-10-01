@@ -1,3 +1,9 @@
+2008-10-01  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Thing.cpp: When properties have been updated,
+	  mark them to be stored in the Database, and emit the necessary
+	  signal.
+
 2008-09-30  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp: Return early to avoid scheduling deleted

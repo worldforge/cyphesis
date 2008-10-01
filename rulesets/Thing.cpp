@@ -456,9 +456,15 @@ void Thing::updateProperties(const Operation & op, OpVector & res) const
                             << std::endl << std::flush;);
 
             prop->add(J->first, set_arg);
-            prop->resetFlags(flag_unsent);
-            // FIXME Mark this as dirty for the database.
+            prop->resetFlags(flag_unsent | per_clean);
+            resetFlags(entity_clean);
+            // FIXME Make sure we handle separately for private properties
         }
+    }
+
+    m_seq++;
+    if (~m_flags & entity_clean) {
+        onUpdated();
     }
 
     Set set;
