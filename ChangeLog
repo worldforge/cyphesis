@@ -1,5 +1,10 @@
 2008-10-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Makefile.am: Add an __init__.py to the scripts directory
+	  to make sure the directory is treated as a module.
+
+2008-10-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp: Remove a check used during refactoring
 	  and debugging.
 

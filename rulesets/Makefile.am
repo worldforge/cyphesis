@@ -7,6 +7,7 @@ RULESETS = basic/mind mason
 moduledir = $(datadir)/cyphesis/scripts/cyphesis
 dist_module_DATA = basic/world/objects/Thing.py \
                    basic/world/probability.py \
+                   basic/world/objects/__init__.py \
                    basic/editor.py
 
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
