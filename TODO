@@ -42,11 +42,6 @@ Fix the stamina property, currently commented out.
 Clear set ops out of tasks (in Character) and combat.
 Can probably get rid of the hard Task pointer while at it.
 
-Clean up properties as follows:
-  General property template should be the base class for almost all,
-  particularly int, double, string. We can then use *SpecificProperty
-  more.
-
 In Plant.cpp a lot of properties are directly updated. Need to review
 whether apply() and install have to be called on them.
 
