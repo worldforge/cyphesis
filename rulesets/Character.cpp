@@ -145,9 +145,6 @@ void Character::metabolise(OpVector & res, double ammount)
     }
 
     Property<double> * mass_prop = modPropertyType<double>("mass");
-    if (mass_prop != 0 && mass_prop->flags() & flag_class) {
-        log(NOTICE, "Mass Class property");
-    }
     // If status is very high, we gain weight
     if (status > (1.5 + energyLaidDown)) {
         status -= energyLaidDown;
