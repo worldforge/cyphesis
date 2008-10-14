@@ -1,3 +1,5 @@
+modProperty should handle setting the flag_unsent flag on properties.
+
 Central Knowledge, available to all NPCs without being taught.
 
 Add SIGINT handler to cycmd to cancel tasks.
