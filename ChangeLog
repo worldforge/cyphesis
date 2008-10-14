@@ -1,5 +1,9 @@
 2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/PropertyFlagtest.cpp: Test that property flags work correctly.
+
+2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.cpp, rulesets/Entity.h: Add a doc group for
 	  Entity flags, and document them all in it.
 
