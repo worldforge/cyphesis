@@ -1,5 +1,10 @@
 2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/PropertyFlagtest.cpp: Remove a check which tests for
+	  functionality that is not there yet.
+
+2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
+
 	* configure.ac, NEWS: Increment version to 0.5.17 for release soon.
 
 2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
