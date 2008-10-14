@@ -34,6 +34,13 @@
 /// of the value can be taken care of.
 /// \defgroup PropertyClasses Entity Property Classes
 
+/// \brief Flags used to control properties
+///
+/// The base class PropertyBase has a flag member which can be used to
+/// control or track the property in various ways. The constants in this
+/// group define the masks for these flags.
+/// \defgroup PropertyFlags Entity Property Flags
+
 /// \brief Constructor called from classes which inherit from Property
 /// @param flags default value for the Property flags
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)

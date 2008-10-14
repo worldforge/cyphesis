@@ -1,3 +1,8 @@
+2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Property.cpp, common/Property.h: Add a doc group for
+	  Property flags, and document them all in it.
+
 2008-10-09  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Makefile.am: Add an __init__.py to the scripts directory

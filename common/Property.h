@@ -68,30 +68,40 @@ class PropertyBase {
 };
 
 /// \brief Flag indicating data has been written to permanent store
+/// \ingroup PropertyFlags
 static const unsigned int per_clean = 1 << 0;
 /// \brief Flag indicating data should never be persisted
+/// \ingroup PropertyFlags
 static const unsigned int per_ephem = 1 << 1;
 /// \brief Flag indicating data has been stored initially
+/// \ingroup PropertyFlags
 static const unsigned int per_seen = 1 << 2;
 
 /// \brief Flag mask indicating data should not be written to store
+/// \ingroup PropertyFlags
 static const unsigned int per_mask = per_clean | per_ephem;
 
 /// \brief Flag indicating data is not visible
+/// \ingroup PropertyFlags
 static const unsigned int vis_hidden = 1 << 3;
 /// \brief Flag indicating data is server internal
+/// \ingroup PropertyFlags
 static const unsigned int vis_internal = 1 << 4;
 
 /// \brief Flag mask indicating data should be be perceptable
+/// \ingroup PropertyFlags
 static const unsigned int vis_mask = vis_hidden | vis_internal;
 
 /// \brief Flag set to indicate this is a class property, and has no instance
+/// \ingroup PropertyFlags
 static const unsigned int flag_class = 1 << 5;
 
 /// \brief Flag used for boolean properties
+/// \ingroup PropertyFlags
 static const unsigned int flag_bool = 1 << 6;
 
 /// \brief Flag used to mark properties whose state has not been broadcast
+/// \ingroup PropertyFlags
 static const unsigned int flag_unsent = 1 << 7;
 
 /// \brief Entity property template for properties with single data values
@@ -113,6 +123,8 @@ class Property : public PropertyBase {
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
+/// \brief Entity property that can store any Atlas value
+/// \ingroup PropertyClasses
 class SoftProperty : public PropertyBase {
   protected:
     Atlas::Message::Element m_data;
@@ -120,9 +132,7 @@ class SoftProperty : public PropertyBase {
     SoftProperty();
     explicit SoftProperty(const Atlas::Message::Element & data);
 
-    /// \brief Copy the value of the property into an Atlas Message
     virtual bool get(Atlas::Message::Element & val) const;
-    /// \brief Read the value of the property from an Atlas Message
     virtual void set(const Atlas::Message::Element & val);
 };
 
