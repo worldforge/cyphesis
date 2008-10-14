@@ -1,5 +1,10 @@
 2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Entity.cpp, rulesets/Entity.h: Add a doc group for
+	  Entity flags, and document them all in it.
+
+2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Property.cpp, common/Property.h: Add a doc group for
 	  Property flags, and document them all in it.
 

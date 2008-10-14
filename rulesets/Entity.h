@@ -31,10 +31,13 @@
 class Motion;
 
 /// \brief Flag indicating entity has been written to permanent store
+/// \ingroup EntityFlags
 static const unsigned int entity_clean = 1 << 0;
 /// \brief Flag indicating entity POS has been written to permanent store
+/// \ingroup EntityFlags
 static const unsigned int entity_pos_clean = 1 << 1;
 /// \brief Flag indicating entity ORIENT has been written to permanent store
+/// \ingroup EntityFlags
 static const unsigned int entity_orient_clean = 1 << 2;
 
 static const unsigned int entity_clean_mask = entity_clean |
@@ -42,18 +45,17 @@ static const unsigned int entity_clean_mask = entity_clean |
                                               entity_orient_clean;
 
 /// \brief Flag indicating entity is perceptive
+/// \ingroup EntityFlags
 static const unsigned int entity_perceptive = 1 << 3;
 /// \brief Flag indicating entity has been destroyed
+/// \ingroup EntityFlags
 static const unsigned int entity_destroyed = 1 << 4;
 /// \brief Flag indicating entity has been queued for storage update
+/// \ingroup EntityFlags
 static const unsigned int entity_queued = 1 << 5;
 /// \brief Flag indicaiting entity is ephemeral
+/// \ingroup EntityFlags
 static const unsigned int entity_ephem = 1 << 6;
-
-/// \brief Classes that model in world entities
-///
-/// These classes are used to model all in world entities or objects.
-/// \defgroup EntityClasses In World Entity Classes
 
 /// \brief This is the base class from which all in-game objects inherit.
 ///

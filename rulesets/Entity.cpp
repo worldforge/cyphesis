@@ -57,6 +57,16 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
+/// \brief Flags used to control entities
+///
+/// These flags are used to indicate various aspects of entities.
+/// \defgroup EntityFlags In World Entity Flags
+
+/// \brief Classes that model in world entities
+///
+/// These classes are used to model all in world entities or objects.
+/// \defgroup EntityClasses In World Entity Classes
+
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
         Identified(id, intId),
