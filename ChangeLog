@@ -1,3 +1,8 @@
+2008-10-17  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Entity.cpp: Fix a bug where new instance properties
+	  weren't added to the Entity instance.
+
 2008-10-14  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tests/PropertyFlagtest.cpp: Remove a check which tests for
