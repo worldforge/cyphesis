@@ -165,21 +165,12 @@ Make update interval has jitter on it, so we don't get spikey load.
 
 Types should have integer IDs. Bootstrap type queries with well know IDs for basic types.
 
-Refactor properties a bit so that they are never tied to an entity.
-Add an apply(Entity*) method so a single property instance (in class defaults)
-can be applied to entities as it is added to them. A property flag will
-indicate that a property is a class one, and will need to be cloned if it is
-modified. Implement modifying which will require a clone() method.
-This will push the cost of persistence way down.
-
 Admin Creator avatatar gets destroyed once it is no longer connected, but
 it then calls Connection::removeObject() despite the Connection being
 long gone.
 
 Use a broadcast cost heuristic to determine how often movement updates should
 done for an entity.
-
-Remove look from BaseMind::operation
 
 Migrate everything out of BaseEntity until nothing remains, at which point
 rename it to IdentifiedRouter or something like that, inheriting from
@@ -196,12 +187,6 @@ are added, but never disconnected.
 Fix the rest of defaults on the TypeNode.
 
 Use onFoo() methods to implement some of the signals we expect.
-
-Break down interface a bit more.
-Operation handling interface: just operation()
-Located interface, like LocatedEntity
-Identified interface.
-Which interfaces is the need for a destroyed signal included in?
 
 Quaternion and BBox need to be more like Vector3D and Point3D, and all 4 should
 really be in physics.
