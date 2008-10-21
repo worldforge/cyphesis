@@ -388,8 +388,6 @@ Add ability to create other types of avatar.
 Investigate -static-libgcc for partially static version of binaries for
 distribution.
 
-We really don't need m_name on Entity.
-
 autopackage should start server
 
 Set up python environment during test, so they import from the source tree.
@@ -457,16 +455,6 @@ How do we clear a Property if it is specified by Update arg, but is no
 longer set to anything? Need a way for force it.
 
 Make updateProperties read-only perhaps? Needs to clean out properties.
-
-Thing::updateProperties can be fixed to merge maps rather than just dump
-the whole contents. Not sure how this is done with the property interface
-but it should be possible for the Update argument to have map attributes, each
-containing a set of keys for the map values that actually need to be
-propagated.
-
-Anywhere where things send a Set to themselves, replace it with inline
-changes, and send an Update instead. Perhaps also places where contains
-is changed? I think contains changes are implied rather than express.
 
 In GuiseProperty, need to ensure that  Set operation is simply a trigger
 for an update, so we can do things efficiently. A signal triggered
