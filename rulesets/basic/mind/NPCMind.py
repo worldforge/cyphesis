@@ -115,7 +115,7 @@ class NPCMind(Thing):
         opTick.setFutureSeconds(const.basic_tick)
         for t in self.pending_things:
             thing = self.map.get(t)
-            if thing:
+            if thing and thing.type[0]:
                 self.add_thing(thing)
         self.pending_things=[]
         result=self.think()
