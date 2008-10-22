@@ -15,10 +15,21 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TypeNode.cpp,v 1.1 2007-12-27 03:31:48 alriddoch Exp $
+// $Id$
 
 #include "TypeNode.h"
 
+#include "Property.h"
+
 TypeNode::TypeNode() : m_parent(0)
 {
+}
+
+TypeNode::~TypeNode()
+{
+    PropertyDict::const_iterator I = m_defaults.begin();
+    PropertyDict::const_iterator Iend = m_defaults.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
 }

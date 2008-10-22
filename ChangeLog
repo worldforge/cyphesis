@@ -1,5 +1,10 @@
 2008-10-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/TypeNode.h, common/TypeNode.cpp: Add a destructor to clear
+	  out all the default property objects.
+
+2008-10-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/Makefile.am, tools/Makefile.am: Update the static libraries
 	  required for relocatable portable binaries.
 
