@@ -31,9 +31,13 @@ DBTOOL_LIBS = \
     /usr/lib/libAtlas-0.6.a \
     /usr/lib/libsigc-2.0.a \
     /usr/lib/libpq.a \
+    /usr/lib/libldap.a \
+    /usr/lib/liblber.a \
+    /usr/lib/libsasl2.a \
+    /usr/lib/libdb-4.6.a \
     /usr/lib/libssl.a \
-    /usr/lib/libkrb5.a \
     /usr/lib/libgssapi_krb5.a \
+    /usr/lib/libkrb5.a \
     /usr/lib/libk5crypto.a \
     /usr/lib/libkrb5support.a \
     /usr/lib/libkeyutils.a \
@@ -41,6 +45,8 @@ DBTOOL_LIBS = \
     /usr/lib/libgpg-error.a \
     /usr/lib/libcrypto.a \
     /usr/lib/libcrypt.a \
+    /usr/lib/libselinux.a \
+    /usr/lib/libsepol.a \
     /usr/lib/libresolv.a \
     /usr/lib/libcom_err.a \
     /usr/lib/libz.a \
@@ -50,7 +56,7 @@ DBTOOL_LIBS = \
 
 READLINETOOL_LIBS = \
     /usr/lib/libreadline.a \
-    /usr/lib/libtermcap.a
+    /usr/lib/libtinfo.a
 
 NETWORKTOOL_LIBS = \
     /usr/lib/libskstream-0.3.a

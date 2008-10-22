@@ -1,3 +1,8 @@
+2008-10-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/Makefile.am, tools/Makefile.am: Update the static libraries
+	  required for relocatable portable binaries.
+
 2008-10-21  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/basic/mind/NPCMind.py: Avoid a tight loop by more

@@ -30,9 +30,11 @@ SERVER_LIBS = \
     /usr/lib/libpq.a \
     /usr/lib/libldap.a \
     /usr/lib/liblber.a \
+    /usr/lib/libsasl2.a \
+    /usr/lib/libdb-4.6.a \
     /usr/lib/libssl.a \
-    /usr/lib/libkrb5.a \
     /usr/lib/libgssapi_krb5.a \
+    /usr/lib/libkrb5.a \
     /usr/lib/libk5crypto.a \
     /usr/lib/libkrb5support.a \
     /usr/lib/libkeyutils.a \
