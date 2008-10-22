@@ -473,15 +473,9 @@ have a pointer.
 Consider, can we pre-fetch and cache the python object involved in calling a
 hook?
 
-Can we avoid the slightly messy sub_op argumen that is always there on scripts
-calls?
-
 Plough field, grow veggies. Carrot turnip.
 
 Add code to EntityPropertytest to cover setting by ID.
-
-Make the world accessible via a singleton style interface on BaseWorld.
-Installed by BaseWorld constructor, and not checked when instance() is called.
 
 Can we make client connection code more generic, getting rid of the
 nasty merged TCP / UNIX stuff, and sharing code between tools and client.
@@ -535,25 +529,6 @@ Fix appear disappear for instantaneous edit move ops.
 
 map and list attributes on python objects are a problem, because the
 wrappers copy then in getattr, meaning that modifications are lost.
-
-Database model: database for each non sequence type, int, float, string,
-with indexes on ID of entity, and an integer representing the attribute
-name. Another table of names will be required as authoritative mapping
-for general use in the server, but attribute tables rows should contains
-non-indexed row for attribute name for efficiency on retrieval.
-
---------------------------------------
-| name_id | entity_id | value | name |
---------------------------------------
-| 23      | 42        | 15.0  | mass |
-| 23      | 17        | 5.0   | mass |
---------------------------------------
-
-------------------
-| name_id | name |
-------------------
-| 23      | mass |
-------------------
 
 Key player owned property, like houses and mounts should perhaps be listed
 in the account charlist, and thus in the connection objects list, allowing
