@@ -1,0 +1,16 @@
+STATIC_LIBS=`grep "^ \+/.*\.a .$" server/Makefile.am | sed "s/ .$//"`
+
+for lib in $STATIC_LIBS; do
+	#echo LIB $lib
+	dylib=`dirname $lib`/`basename $lib .a`.so
+	if [ -f $lib ] && [ -f $dylib ]; then
+		dylib=`readlink -f $dylib`
+		if [ ! $lib -nt $dylib ]; then
+			echo $lib is out of date.
+			ls -l $lib $dylib
+			true
+		fi
+	else
+		echo MISSING
+	fi
+done
