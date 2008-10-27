@@ -15,9 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMetaClient.cpp,v 1.19 2007-08-20 16:35:56 alriddoch Exp $
+// $Id$
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "CommMetaClient.h"
+
+#include "CommServer.h"
 
 #include "common/debug.h"
 #include "common/log.h"
@@ -26,6 +32,10 @@
 #include <cstring>
 
 #include <iostream>
+
+#ifdef HAVE_RES_INIT
+#include <resolv.h>
+#endif // HAVE_RES_INIT
 
 static const bool debug_flag = false;
 
@@ -62,7 +72,9 @@ static inline char *unpack_uint32(uint32_t *dest, char *buffer)
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommMetaClient::CommMetaClient(CommServer & svr) : Idle(svr), CommSocket(svr),
-                                                   m_lastTime(-1)
+                                                   m_resolveTime(-1),
+                                                   m_lastTime(-1),
+                                                   m_state(META_INIT)
 {
 }
 
@@ -83,7 +95,7 @@ bool CommMetaClient::eof()
 
 bool CommMetaClient::isOpen() const
 {
-    return true;
+    return m_clientIos.getSocket() > -1;
 }
 
 int CommMetaClient::read()
@@ -101,9 +113,8 @@ void CommMetaClient::dispatch()
 /// @param mserver String address of the metaserver,
 int CommMetaClient::setup(const std::string & mserver)
 {
-    // Establish socket for communication with the metaserver
-    bool success = m_clientIos.setTarget(mserver, m_metaserverPort);
-    return success ? 0 : -1;
+    m_server = mserver;
+    return 0;
 }
 
 static const int MAXLINE = 4096;
@@ -172,8 +183,26 @@ void CommMetaClient::metaserverTerminate()
 
 void CommMetaClient::idle(time_t t)
 {
-    if (t > (m_lastTime + 5 * 60)) {
-        m_lastTime = t;
-        metaserverKeepalive();
+    if (m_state == META_INIT) {
+        // Establish socket for communication with the metaserver
+        std::cout << "RESOLVING" << std::endl << std::flush;
+        bool success = m_clientIos.setTarget(m_server, m_metaserverPort);
+        if (success) {
+            std::cout << "RESOLVED" << std::endl << std::flush;
+            m_state = META_RESOLVED;
+            m_commServer.addSocket(this);
+        } else {
+#ifdef HAVE_RES_INIT
+#warning INIT
+            res_init();
+#endif // HAVE_RES_INIT
+        }
+    } else if (m_state == META_RESOLVED) {
+        if (t > (m_lastTime + 5 * 60)) {
+            m_lastTime = t;
+            metaserverKeepalive();
+        }
+    } else {
+        log(ERROR, "Unknown state in metaserver client.");
     }
 }

@@ -108,6 +108,27 @@ AC_CHECK_FUNCS([unlink usleep Sleep gettimeofday getnameinfo])
 
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
+AC_MSG_CHECKING([whether we have res_init() available])
+AC_COMPILE_IFELSE(
+    [
+      AC_LANG_PROGRAM(
+      [[
+        #include <resolv.h>
+      ]],
+      [[
+        res_init();
+      ]]
+     )
+    ],
+    [
+        AC_MSG_RESULT([yes])
+        AC_DEFINE(HAVE_RES_INIT, 1, [Define to 1 if you have res_init libs.])
+    ],
+    [
+        AC_MSG_RESULT([no])
+    ]
+)
+
 AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])
 AC_COMPILE_IFELSE(
     [

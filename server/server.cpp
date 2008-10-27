@@ -286,7 +286,6 @@ int main(int argc, char ** argv)
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(commServer);
         if (cmc->setup(mserver) == 0) {
-            commServer.addSocket(cmc);
             commServer.addIdle(cmc);
         } else {
             log(ERROR, "Error creating metaserver comm channel.");

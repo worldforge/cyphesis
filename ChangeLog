@@ -1,4 +1,19 @@
+2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* configure.ac: Add a check for res_init().
+
+	* server/CommMetaClient.cpp, server/CommMetaClient.h: Refactor
+	  the metaserver related code so it retries resolving the address
+	  of the metaserver, and then uses the address established later
+	  than init time. This provisionally fixes bug #283763 which was
+	  that cyphesis would never talk to the metaserver if the name
+	  resolution at startup failed.
+
+	* server/server.cpp: Modify the way MetaClient is set up as it
+	  is now not an open socket after initial setup.
+
 2008-10-22  Al Riddoch  <alriddoch@googlemail.com>
+
 
 	* common/TypeNode.h, common/TypeNode.cpp: Add a destructor to clear
 	  out all the default property objects.
