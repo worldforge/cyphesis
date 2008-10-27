@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# $Id: cyphesis-setup.sh,v 1.5 2008-06-08 22:59:06 alriddoch Exp $
+# $Id$
 
 # The main purpose of this script is to get round the issue of access to
 # to the database required by cyphesis.
@@ -49,6 +49,17 @@ if test ${RUNNINGAS} != "root"; then
         echo The best way to run it is using sudo or su.
         exit 1
     fi
+fi
+
+if test x${USERNAME} != "x" && test ${USERNAME} != "root"; then
+    true
+    # USERNAME=${USERNAME}
+elif test x${SUDO_USER} != "x" && test ${SUDO_USER} != "root"; then
+    USERNAME=${SUDO_USER}
+elif test x${USER} != "x" && test ${USER} != "root"; then
+    USERNAME=${USER}
+elif test x${LOGNAME} != "x" && test ${LOGNAME} != "root"; then
+    USERNAME=${LOGNAME}
 fi
 
 while test x${USERNAME} == "x" || test ${USERNAME} == "root"; do
@@ -100,7 +111,7 @@ echo
 # connect to it, this will fail. If the user already had a PostgeSQL
 # account, but did not have the right to create databases, this will fail.
 if sudo -u ${USERNAME} $POSTGRESQL_QUERY_CMD -c "" cyphesis 2> /dev/null ; then
-    echo PostgreSQL database cyphesis already exists.
+    echo PostgreSQL database cyphesis already exists. Good.
 else
     echo Creating PostgreSQL database cyphesis as user ${USERNAME}...
     sudo -u ${USERNAME} ${CREATE_DATABASE_CMD} -q cyphesis

@@ -1,5 +1,12 @@
 2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* scripts/cyphesis-setup.sh: Add checks for a whole bunch of
+	  environment variables which could contain the calling user's
+	  username after sudo or su have been run. Improve some of the
+	  messages.
+
+2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Plant.cpp: Fix the bbox property name.
 
 2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
