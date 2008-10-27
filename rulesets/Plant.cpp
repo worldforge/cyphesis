@@ -195,7 +195,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                                 bbox.highCorner().y() * height_scale,
                                 bbox.highCorner().z() * height_scale));
             debug(std::cout << "New " << bbox << std::endl << std::flush;);
-            BBoxProperty * box_property = modPropertyClass<BBoxProperty>("biomass");
+            BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
             if (box_property != 0) {
                 box_property->data() = bbox;
             } else {
