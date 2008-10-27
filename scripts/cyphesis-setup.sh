@@ -35,6 +35,10 @@ preserve any user accounts in the server.
 
 EOWELCOME
 
+SCRIPTDIR=`dirname $0`
+
+cd /
+
 # Check who is running this script. This should either be the user who is
 # going to run cyphesis, or root if extra privs are required to set up
 # database access
@@ -86,22 +90,24 @@ done
 
 CREATE_USER_CMD=`which createuser 2>/dev/null`
 CREATE_DATABASE_CMD=`which createdb 2>/dev/null`
-POSTGRESQL_SUSER=postgres
-POSTGRESQL_QUERY_CMD=`which psql 2>/dev/null`
-POSTGRESQL_TEMPLATE=template1
+DB_SUSER=postgres
+DB_QUERY_CMD=`which psql 2>/dev/null`
+DB_TEMPLATE=template1
 
 # Check whether the user already has an account. There is more than one
 # reason why this might fail, but we assume if it does that it
 # means the user does not have access. The database account we create
 # has the right to create databases.
-if sudo -u ${USERNAME} ${POSTGRESQL_QUERY_CMD} -c "" ${POSTGRESQL_TEMPLATE} 2> /dev/null ; then
+if sudo -u ${USERNAME} ${DB_QUERY_CMD} -c "" ${DB_TEMPLATE} 2> /dev/null ; then
     echo PostgreSQL user ${USERNAME} already exists. Good.
 else
     echo Creating PostgreSQL account for user ${USERNAME}...
-    sudo -u ${POSTGRESQL_SUSER} ${CREATE_USER_CMD} -A -d -q -R ${USERNAME} || \
-        (echo ERROR: $0: Unable to create database account ${USERNAME}. ; \
-         exit 1)
-    echo Created PostgreSQL user ${USERNAME}.
+    if sudo -u ${DB_SUSER} ${CREATE_USER_CMD} -A -d -q -R ${USERNAME} ; then
+      echo Created PostgreSQL user ${USERNAME}.
+    else
+      echo ERROR: $0: Unable to create database account ${USERNAME}.
+      exit 1
+    fi
 fi
 
 echo
@@ -110,7 +116,7 @@ echo
 # setting up can connect to it. If the database exists, but we cannot
 # connect to it, this will fail. If the user already had a PostgeSQL
 # account, but did not have the right to create databases, this will fail.
-if sudo -u ${USERNAME} $POSTGRESQL_QUERY_CMD -c "" cyphesis 2> /dev/null ; then
+if sudo -u ${USERNAME} $DB_QUERY_CMD -c "" cyphesis 2> /dev/null ; then
     echo PostgreSQL database cyphesis already exists. Good.
 else
     echo Creating PostgreSQL database cyphesis as user ${USERNAME}...
@@ -125,12 +131,10 @@ echo
 # in these tables, and no tools currently exist for the user to
 # modify them.
 echo Clearing rules data...
-sudo -u ${USERNAME} $POSTGRESQL_QUERY_CMD -c "DROP TABLE rules;" cyphesis > /dev/null 2>&1
+sudo -u ${USERNAME} $DB_QUERY_CMD -c "DROP TABLE rules;" cyphesis > /dev/null 2>&1
 echo Cleared.
 
 echo
-
-SCRIPTDIR=`dirname $0`
 
 # cyloadrules automatically picks up the right files for the ruleset
 # set in the main config.
