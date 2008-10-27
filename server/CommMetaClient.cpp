@@ -185,10 +185,8 @@ void CommMetaClient::idle(time_t t)
 {
     if (m_state == META_INIT) {
         // Establish socket for communication with the metaserver
-        std::cout << "RESOLVING" << std::endl << std::flush;
         bool success = m_clientIos.setTarget(m_server, m_metaserverPort);
         if (success) {
-            std::cout << "RESOLVED" << std::endl << std::flush;
             m_state = META_RESOLVED;
             m_commServer.addSocket(this);
         } else {

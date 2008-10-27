@@ -1,5 +1,9 @@
 2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommMetaClient.cpp: Remove some debug output.
+
+2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* configure.ac: Add a check for res_init().
 
 	* server/CommMetaClient.cpp, server/CommMetaClient.h: Refactor
