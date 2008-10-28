@@ -1,5 +1,11 @@
 2008-10-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.17
+
+2008-10-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* scripts/cyphesis-setup.sh: Fix a mistake in the calling of
 	  cyloadrules.
 
