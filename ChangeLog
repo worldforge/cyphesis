@@ -1,3 +1,8 @@
+2008-10-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* scripts/cyphesis-setup.sh: Fix a mistake in the calling of
+	  cyloadrules.
+
 2008-10-27  Al Riddoch  <alriddoch@googlemail.com>
 
 	* scripts/cyphesis-setup.sh: Ensure there are no errors because

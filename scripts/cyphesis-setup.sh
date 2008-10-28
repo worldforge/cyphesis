@@ -35,7 +35,7 @@ preserve any user accounts in the server.
 
 EOWELCOME
 
-SCRIPTDIR=`dirname $0`
+SCRIPTDIR=${PWD}/`dirname $0`
 
 cd /
 
