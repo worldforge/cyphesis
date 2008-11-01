@@ -1,3 +1,8 @@
+2008-11-01  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/system.cpp: Free a temporary buffer used to store
+	  intermediate data when hashing a password.
+
 2008-10-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* NEWS: Update NEWS announcement for release.

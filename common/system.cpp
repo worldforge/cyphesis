@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.cpp,v 1.35 2008-08-12 20:40:14 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -515,6 +515,7 @@ void hash_password(const std::string & pwd, const std::string & salt,
         hash.push_back(hex_table[buf[i] & 0xf]);
         hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);
     }
+    delete [] buf;
     return;
 }
 
