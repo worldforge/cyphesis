@@ -1,5 +1,10 @@
 2008-11-03  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/systemtest.cpp: Make security test functions are always
+	  run, even in a non-debug build.
+
+2008-11-03  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/system.cpp, common/system.h: Add security_init(), a
 	  function to initialise any security or crypto related libraries
 	  used. This is required by recent version of libgcrypt when

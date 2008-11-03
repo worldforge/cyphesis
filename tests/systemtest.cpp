@@ -40,9 +40,13 @@ int main()
     std::string hostname = get_hostname();
     assert(!hostname.empty());
 
-    assert(security_init() == 0);
+    int res;
 
-    assert(security_check() == SECURITY_OKAY);
+    res = security_init();
+    assert(res == 0);
+
+    res = security_check();
+    assert(res == SECURITY_OKAY);
 
     reduce_priority(1);
     
