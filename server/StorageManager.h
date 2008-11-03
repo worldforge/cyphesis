@@ -53,6 +53,21 @@ class StorageManager {
     int m_insertPropertyCount;
     int m_updatePropertyCount;
 
+    int m_insertQps;
+    int m_updateQps;
+
+    int m_insertQpsNow;
+    int m_updateQpsNow;
+
+    int m_insertQpsAvg;
+    int m_updateQpsAvg;
+
+    int m_insertQpsIndex;
+    int m_updateQpsIndex;
+
+    int m_insertQpsRing[32];
+    int m_updateQpsRing[32];
+
     void entityInserted(Entity *);
     void entityUpdated(Entity *);
 

@@ -43,21 +43,40 @@ static const bool debug_flag = false;
 
 StorageManager:: StorageManager(WorldRouter & world) :
       m_insertEntityCount(0), m_updateEntityCount(0),
-      m_insertPropertyCount(0), m_updatePropertyCount(0)
+      m_insertPropertyCount(0), m_updatePropertyCount(0),
+      m_insertQps(0), m_updateQps(0),
+      m_insertQpsNow(0), m_updateQpsNow(0),
+      m_insertQpsAvg(0), m_updateQpsAvg(0),
+      m_insertQpsIndex(0), m_updateQpsIndex(0)
 
 {
     if (database_flag) {
         world.inserted.connect(sigc::mem_fun(this,
               &StorageManager::entityInserted));
 
-        Monitors::instance()->watch("database_entity_inserts",
+        Monitors::instance()->watch("storage_entity_inserts",
                                     new Monitor<int>(m_insertEntityCount));
-        Monitors::instance()->watch("database_entity_updates",
+        Monitors::instance()->watch("storage_entity_updates",
                                     new Monitor<int>(m_updateEntityCount));
-        Monitors::instance()->watch("database_property_inserts",
+        Monitors::instance()->watch("storage_property_inserts",
                                     new Monitor<int>(m_insertPropertyCount));
-        Monitors::instance()->watch("database_property_updates",
+        Monitors::instance()->watch("storage_property_updates",
                                     new Monitor<int>(m_updatePropertyCount));
+
+        Monitors::instance()->watch("storage_qps{qtype=inserts,t=1}",
+                                    new Monitor<int>(m_insertQpsNow));
+        Monitors::instance()->watch("storage_qps{qtype=updates,t=1}",
+                                    new Monitor<int>(m_updateQpsNow));
+
+        Monitors::instance()->watch("storage_qps{qtype=inserts,t=32}",
+                                    new Monitor<int>(m_insertQpsAvg));
+        Monitors::instance()->watch("storage_qps{qtype=updates,t=32}",
+                                    new Monitor<int>(m_updateQpsAvg));
+
+        for (int i = 0; i < 32; ++i) {
+            m_insertQpsRing[i] = 0;
+            m_updateQpsRing[i] = 0;
+        }
     }
 }
 
@@ -183,6 +202,8 @@ void StorageManager::updateEntity(Entity * ent)
 void StorageManager::tick()
 {
     int inserts = 0, updates = 0;
+    int old_insert_queries = m_insertEntityCount + m_insertPropertyCount;
+    int old_update_queries = m_updateEntityCount + m_updatePropertyCount;
 
     while (!m_destroyedEntities.empty()) {
         long id = m_destroyedEntities.front();
@@ -217,10 +238,39 @@ void StorageManager::tick()
         }
         m_dirtyEntities.pop_front();
     }
-    if (inserts > 0 || updates >> 0) {
+    if (inserts > 0 || updates > 0) {
         debug(std::cout << "I: " << inserts << " U: " << updates
                         << std::endl << std::flush;);
     }
+    int insert_queries = m_insertEntityCount + m_insertPropertyCount 
+                         - old_insert_queries;
+
+    if (++m_insertQpsIndex >= 32) {
+        m_insertQpsIndex = 0;
+    }
+    m_insertQps -= m_insertQpsRing[m_insertQpsIndex];
+    m_insertQps += insert_queries;
+    m_insertQpsRing[m_insertQpsIndex] = insert_queries;
+    m_insertQpsAvg = m_insertQps / 32;
+    m_insertQpsNow = insert_queries;
+
+    debug(std::cout << "Ins: " << insert_queries << ", " << m_insertQps / 32
+                    << std::endl << std::flush;);
+
+    int update_queries = m_updateEntityCount + m_updatePropertyCount 
+                         - old_update_queries;
+
+    if (++m_updateQpsIndex >= 32) {
+        m_updateQpsIndex = 0;
+    }
+    m_updateQps -= m_updateQpsRing[m_updateQpsIndex];
+    m_updateQps += update_queries;
+    m_updateQpsRing[m_updateQpsIndex] = update_queries;
+    m_updateQpsAvg = m_updateQps / 32;
+    m_updateQpsNow = update_queries;
+
+    debug(std::cout << "Ups: " << update_queries << ", " << m_updateQps / 32
+                    << std::endl << std::flush;);
 }
 
 int StorageManager::initWorld()
