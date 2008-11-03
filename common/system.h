@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: system.h,v 1.14 2008-08-12 20:40:14 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_SYSTEM_H
 #define COMMON_SYSTEM_H
@@ -40,6 +40,7 @@
 #include <string>
 
 const std::string get_hostname();
+unsigned int security_init();
 unsigned int security_check();
 unsigned int security_setup();
 void reduce_priority(int);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: systemtest.cpp,v 1.7 2007-04-23 11:22:15 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -39,6 +39,8 @@ int main()
 {
     std::string hostname = get_hostname();
     assert(!hostname.empty());
+
+    assert(security_init() == 0);
 
     assert(security_check() == SECURITY_OKAY);
 

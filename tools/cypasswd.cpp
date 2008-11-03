@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cypasswd.cpp,v 1.38 2007-11-14 22:40:18 alriddoch Exp $
+// $Id$
 
 /// \page cypasswd_index
 ///
@@ -33,6 +33,7 @@
 #include "common/accountbase.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/system.h"
 
 #include <string>
 #include <iostream>
@@ -126,6 +127,11 @@ int main(int argc, char ** argv)
     } else {
         usage(std::cerr, argv[0]);
         return 1;
+    }
+
+    if (security_init() != 0) {
+        log(CRITICAL, "Security initialisation Error. Exiting.");
+        return EXIT_SECURITY_ERROR;
     }
 
     AccountBase db;

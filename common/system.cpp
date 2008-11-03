@@ -76,6 +76,13 @@ const std::string get_hostname()
 #endif // HAVE_UNAME
 }
 
+unsigned int security_init()
+{
+    gcry_check_version(0);
+
+    return 0;
+}
+
 unsigned int security_check()
 {
 #ifdef HAVE_GETUID
@@ -97,7 +104,6 @@ static int security_new_key(const std::string & key_filename)
         return -1;
     }
 
-    gcry_check_version(0);
     gcry_control( GCRYCTL_INIT_SECMEM, 16384, 0 );
 
     gcry_sexp_t key_parameters, key;

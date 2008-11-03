@@ -61,6 +61,11 @@ static const bool debug_flag = false;
 
 int main(int argc, char ** argv)
 {
+    if (security_init() != 0) {
+        log(CRITICAL, "Security initialisation Error. Exiting.");
+        return EXIT_SECURITY_ERROR;
+    }
+
     if (security_check() != SECURITY_OKAY) {
         log(CRITICAL, "Security Error. Exiting.");
         return EXIT_SECURITY_ERROR;
