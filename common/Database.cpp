@@ -993,6 +993,7 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
     if (!runCommandQuery(query)) {
         return -1;
     }
+    allTables.insert("entities");
     query = String::compose("INSERT INTO entities VALUES (%1, null, 'world')",
                             consts::rootWorldIntId);
     if (!runCommandQuery(query)) {
@@ -1055,12 +1056,22 @@ int Database::registerPropertyTable()
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return 0;
     }
+    allTables.insert("properties");
     std::string query = "CREATE TABLE properties ("
-                        "id integer REFERENCES entities (id), "
+                        "id integer REFERENCES entities ON DELETE CASCADE, "
                         "name varchar(32), "
                         "value text)";
     std::cout << query;
-    return runCommandQuery(query) ? 0 : -1;
+    if (!runCommandQuery(query)) {
+        reportError();
+        return -1;
+    }
+    query = "CREATE INDEX property_names on properties (name)";
+    if (!runCommandQuery(query)) {
+        reportError();
+        return -1;
+    }
+    return 0;
 }
 
 int Database::insertProperties(const std::string & id,
