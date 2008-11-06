@@ -1,3 +1,8 @@
+2008-11-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* configure.ac: Link the test program which checks for res_init() as
+	  on some platforms it's not in the default libraries.
+
 2008-11-04  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/Database.cpp: Add the new storage tables to those that

@@ -109,7 +109,7 @@ AC_CHECK_FUNCS([unlink usleep Sleep gettimeofday getnameinfo])
 AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
 
 AC_MSG_CHECKING([whether we have res_init() available])
-AC_COMPILE_IFELSE(
+AC_LINK_IFELSE(
     [
       AC_LANG_PROGRAM(
       [[
