@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: log.cpp,v 1.29 2008-04-29 15:33:59 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -142,7 +142,7 @@ void log(LogLevel lvl, const std::string & msg)
                 type = LOG_CRIT;
                 break;
         };
-        syslog(type, msg.c_str());
+        syslog(type, "%s", msg.c_str());
     } else {
 #else // HAVE_SYSLOG
     {

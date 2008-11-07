@@ -1,5 +1,10 @@
 2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/log.cpp: Use a format string rather than using the raw
+	  contents of the message and hoping there is no formatting in it.
+
+2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tools/cyaddrules.cpp: Switch varconf/Config.h to the lower
 	  case name.
 
