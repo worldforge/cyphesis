@@ -135,7 +135,9 @@ static int security_new_key(const std::string & key_filename)
     char * key_text = new char[ktxtlen];
     gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, key_text, ktxtlen);
 
-    fwrite(key_text, ktxtlen, 1, key_file);
+    if (fwrite(key_text, ktxtlen, 1, key_file) != ktxtlen) {
+        log(ERROR, String::compose("Unable to write key to %1.", key_filename));
+    }
 
     fclose(key_file);
 

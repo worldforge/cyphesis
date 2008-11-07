@@ -1,5 +1,10 @@
 2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/system.cpp: Check the result of fwrite() when writing a
+	  keyfile to disk.
+
+2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Comment out some half written code that
 	  was causing a warning.
 
