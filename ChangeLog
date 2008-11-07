@@ -1,5 +1,10 @@
 2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Comment out some half written code that
+	  was causing a warning.
+
+2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/globals.cpp: Modify the way socket paths are handled
 	  and allow them to be specified as absolute paths.
 

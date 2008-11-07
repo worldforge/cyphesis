@@ -827,8 +827,8 @@ int EntityBuilder::modifyTaskClass(const std::string & class_name,
         return -1;
     }
     // FIXME Actually update the task factory.
-    TaskFactory * factory = I->second;
-    assert(factory != 0);
+    // TaskFactory * factory = I->second;
+    // assert(factory != 0);
 
     return 0;
 }
