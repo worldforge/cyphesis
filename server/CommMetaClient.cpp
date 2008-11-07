@@ -191,7 +191,6 @@ void CommMetaClient::idle(time_t t)
             m_commServer.addSocket(this);
         } else {
 #ifdef HAVE_RES_INIT
-#warning INIT
             res_init();
 #endif // HAVE_RES_INIT
         }

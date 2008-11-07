@@ -1,3 +1,7 @@
+2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommMetaClient.cpp: Remove some compile time debug.
+
 2008-11-06  Al Riddoch  <alriddoch@googlemail.com>
 
 	* configure.ac: Link the test program which checks for res_init() as
