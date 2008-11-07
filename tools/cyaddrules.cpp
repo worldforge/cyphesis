@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: cyaddrules.cpp,v 1.16 2007-11-14 22:40:18 alriddoch Exp $
+// $Id$
 
 /// \page cyaddrules_index
 ///
@@ -166,11 +166,11 @@ int main(int argc, char ** argv)
     passwd.clear();
 
     if (server.empty()) {
-        std::string localSocket = var_directory + "/tmp/";
+        std::string localSocket;
         if (useslave != 0) {
-            localSocket += slave_socket_name;
+            localSocket = slave_socket_name;
         } else {
-            localSocket += client_socket_name;
+            localSocket = client_socket_name;
         }
 
         if (bridge.connect_unix(localSocket) != 0) {

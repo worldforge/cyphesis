@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.cpp,v 1.28 2007-05-29 00:39:18 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -91,7 +91,7 @@ void CommUnixListener::dispatch()
 /// will never be called in an instance of cyphesis already exists.
 int CommUnixListener::setup(const std::string & name)
 {
-    m_path = var_directory + "/tmp/" + name;
+    m_path = name;
 
     m_unixListener.open(m_path);
     m_bound = m_unixListener.is_open();

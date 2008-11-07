@@ -1299,11 +1299,11 @@ int main(int argc, char ** argv)
     }
 
     if (server.empty()) {
-        std::string localSocket = var_directory + "/tmp/";
+        std::string localSocket;
         if (useslave != 0) {
-            localSocket += slave_socket_name;
+            localSocket = slave_socket_name;
         } else {
-            localSocket += client_socket_name;
+            localSocket = client_socket_name;
         }
 
         std::cout << "Attempting local connection" << std::endl << std::flush;

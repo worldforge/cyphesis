@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.cpp,v 1.62 2008-04-28 17:26:09 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -339,9 +339,21 @@ void readInstanceConfiguration(const std::string & section)
         client_socket_name = String::compose("cyphesis_%1.sock", section);
     }
 
+    if (client_socket_name.find('/') != 0) {
+        client_socket_name = String::compose("%1/tmp/%2",
+                                             var_directory,
+                                             client_socket_name);
+    }
+
     readConfigItem("slave", "tcpport", slave_port_num);
 
     readConfigItem("slave", "unixport", slave_socket_name);
+
+    if (slave_socket_name.find('/') != 0) {
+        slave_socket_name = String::compose("%1/tmp/%2",
+                                            var_directory,
+                                            slave_socket_name);
+    }
 
     readConfigItem("game", "player_vs_player", pvp_flag);
 

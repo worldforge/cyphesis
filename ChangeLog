@@ -1,5 +1,14 @@
 2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/globals.cpp: Modify the way socket paths are handled
+	  and allow them to be specified as absolute paths.
+
+	* client/ClientConnection.cpp, server/CommUnixListener.cpp,
+	  tools/cyaddrules.cpp, tools/cycmd.cpp: Don't build the complete
+	  socket path here, as it is now determined in the config.
+
+2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommMetaClient.cpp: Remove some compile time debug.
 
 2008-11-06  Al Riddoch  <alriddoch@googlemail.com>

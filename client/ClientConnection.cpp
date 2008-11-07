@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.45 2008-01-13 01:32:54 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -142,7 +142,7 @@ int ClientConnection::connectLocal(const std::string & sockname)
     debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
     std::string socket;
     if (sockname == "") {
-        socket = var_directory + "/tmp/" + client_socket_name;
+        socket = client_socket_name;
     } else if (sockname[0] != '/') {
         socket = var_directory + "/tmp/" + sockname;
     } else {
