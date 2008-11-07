@@ -38,7 +38,7 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <varconf/Config.h>
+#include <varconf/config.h>
 
 #include <string>
 #include <fstream>

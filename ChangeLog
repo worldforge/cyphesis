@@ -1,5 +1,10 @@
 2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cyaddrules.cpp: Switch varconf/Config.h to the lower
+	  case name.
+
+2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/system.cpp: Check the result of fwrite() when writing a
 	  keyfile to disk.
 
