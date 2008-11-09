@@ -1,5 +1,9 @@
 2008-11-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp: Suppress a warning about unused members.
+
+2008-11-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/server.cpp: Improve error reporting, and add settings
 	  information to most of the socket failure errors.
 
