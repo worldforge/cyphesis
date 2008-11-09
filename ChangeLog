@@ -1,5 +1,10 @@
 2008-11-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/server.cpp: Improve error reporting, and add settings
+	  information to most of the socket failure errors.
+
+2008-11-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/globals.h, common/globals.cpp: Add a global for the http port
 	  setting. Move the dynamic port range where there is likely to be
 	  more space.

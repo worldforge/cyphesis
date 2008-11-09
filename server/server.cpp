@@ -237,8 +237,9 @@ int main(int argc, char ** argv)
             }
         }
         if (client_port_num > dynamic_port_end) {
-            log(ERROR, "Could not find free client listen socket. "
-                       "Init failed.");
+            log(ERROR, String::compose("Could not find free client listen "
+                                       "socket in range %1-%2. Init failed.",
+                                       dynamic_port_start, dynamic_port_end));
             log(INFO, String::compose("To allocate 8 more ports please run:"
                                       "\n\n    cyconfig "
                                       "--cyphesis:dynamic_port_end=%1\n\n",
@@ -254,7 +255,9 @@ int main(int argc, char ** argv)
                              client_port_num + 1, varconf::USER);
     } else {
         if (listener->setup(client_port_num) != 0) {
-            log(ERROR, "Could not create client listen socket. Init failed.");
+            log(ERROR, String::compose("Could not create client listen socket "
+                                       "on port %1. Init failed.",
+                                       client_port_num));
             return EXIT_SOCKET_ERROR;
         }
     }
@@ -262,7 +265,8 @@ int main(int argc, char ** argv)
 
     CommPeerListener * peerListener = new CommPeerListener(commServer);
     if (peerListener->setup(peer_port_num) != 0) {
-        log(ERROR, "Could not create peer listen socket.");
+        log(ERROR, String::compose("Could not create peer listen socket "
+                                   "on port %1.", peer_port_num));
         delete peerListener;
     } else {
         commServer.addSocket(peerListener);
@@ -281,8 +285,9 @@ int main(int argc, char ** argv)
 #endif
 
     CommHttpListener * httpListener = new CommHttpListener(commServer);
-    if (httpListener->setup(6780) != 0) {
-        log(ERROR, "Could not create http listen socket.");
+    if (httpListener->setup(http_port_num) != 0) {
+        log(ERROR, String::compose("Could not create http listen socket on "
+                                   "port %1.", http_port_num));
         delete httpListener;
     } else {
         commServer.addSocket(httpListener);
@@ -309,7 +314,7 @@ int main(int argc, char ** argv)
         delete cmdns;
     }
 
-#endif // defined(HAVE_LIBHOWL)
+#endif // defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
 
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
