@@ -1,3 +1,9 @@
+2008-11-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.h, common/globals.cpp: Add a global for the http port
+	  setting. Move the dynamic port range where there is likely to be
+	  more space.
+
 2008-11-07  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/log.cpp: Use a format string rather than using the raw

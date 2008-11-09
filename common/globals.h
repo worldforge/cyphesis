@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globals.h,v 1.33 2007-12-05 21:57:18 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
@@ -48,6 +48,7 @@ extern int timeoffset;
 extern int client_port_num;
 extern int slave_port_num;
 extern int peer_port_num;
+extern int http_port_num;
 extern int dynamic_port_start;
 extern int dynamic_port_end;
 

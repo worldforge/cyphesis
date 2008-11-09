@@ -67,8 +67,9 @@ int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
 int peer_port_num = 6769;
-int dynamic_port_start = 6780;
-int dynamic_port_end = 6799;
+int http_port_num = 6780;
+int dynamic_port_start = 6800;
+int dynamic_port_end = 6899;
 
 static const char * FALLBACK_LOCALSTATEDIR = "/var";
 
