@@ -175,12 +175,15 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
     // FIXME Stamina property?
-    if (m_stamina < 1. && m_task == 0 && !m_movement.updateNeeded(m_location)) {
-        m_stamina = 1.;
+    if (m_task == 0 && !m_movement.updateNeeded(m_location)) {
 
-        PropertyBase * stamina_prop = modProperty("stamina");
+        Property<double> * stamina_prop = modPropertyType<double>("stamina");
         if (stamina_prop != 0) {
-            stamina_prop->setFlags(flag_unsent);
+            double & stamina = stamina_prop->data();
+            if (stamina < 1.f) {
+                stamina = 1.f;
+                stamina_prop->setFlags(flag_unsent);
+            }
         }
     }
 
@@ -249,10 +252,8 @@ Character::Character(const std::string & id, long intId) :
                m_statistics(*this),
                m_movement(*new Pedestrian(*this)),
                m_task(0), m_isAlive(true),
-               m_stamina(1.),
                m_mind(0), m_externalMind(0)
 {
-    // m_properties["stamina"] = new Property<double>(m_stamina, per_ephem);
     m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
     m_properties[RIGHT_HAND_WIELD] = new EntityProperty;
 }
@@ -1039,9 +1040,12 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindMoveOperation: Arg has no ID");
         return;
     }
-    if (getStamina() <= 0.f) {
-        // Character is immobilised.
-        return;
+    Element stamina_attr;
+    if (getAttrType("stamina", stamina_attr, Element::TYPE_FLOAT)) {
+        if (stamina_attr.Float() <= 0.f) {
+            // Character is immobilised.
+            return;
+        }
     }
     const std::string & other_id = arg->getId();
     if (other_id != getId()) {

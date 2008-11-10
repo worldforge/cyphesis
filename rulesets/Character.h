@@ -57,10 +57,6 @@ class Character : public Character_parent {
     /// \brief Flag indicating if this entity is alive
     bool m_isAlive;
 
-    // Properties
-    /// \brief Level of stamina character has left
-    double m_stamina;
-
     /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
     /// \brief Food consumed by digestion per tick
@@ -91,9 +87,6 @@ class Character : public Character_parent {
     Statistics & statistics() { return m_statistics; }
     /// \brief Accessor for medium term task
     Task * task() { return m_task; }
-
-    /// \brief Accessor for raw stamina property
-    const double getStamina() const { return m_stamina; }
 
     void setTask(Task *);
     void updateTask();
