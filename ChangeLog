@@ -1,3 +1,9 @@
+2008-11-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp: Fix a problem where existing database tables
+	  weren't added to the set for maintenance cycles. This should fix a
+	  lot of major performance issues.
+
 2008-11-09  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp: Suppress a warning about unused members.

@@ -973,6 +973,7 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         debug(std::cout << "Table does not yet exist"
                         << std::endl << std::flush;);
     } else {
+        allTables.insert("entities");
         // FIXME Flush out the whole state of the databases, to ensure they
         // don't clog up while we are testing.
         runCommandQuery("DELETE FROM properties");
@@ -1053,6 +1054,7 @@ int Database::registerPropertyTable()
         debug(std::cout << "Table does not yet exist"
                         << std::endl << std::flush;);
     } else {
+        allTables.insert("properties");
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return 0;
     }
