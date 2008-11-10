@@ -1,5 +1,10 @@
 2008-11-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.h, rulesets/Character.cpp: Replace hard
+	  coded maximum mass with an attribute check.
+
+2008-11-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/globals.cpp: Fix usage information for dynamic port range
 	  options.
 

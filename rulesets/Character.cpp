@@ -148,9 +148,14 @@ void Character::metabolise(OpVector & res, double ammount)
     // If status is very high, we gain weight
     if (status > (1.5 + energyLaidDown)) {
         status -= energyLaidDown;
-        if (mass_prop != 0 && mass_prop->data() < m_maxMass) {
-            mass_prop->data() += weightGain;
+        if (mass_prop != 0) {
+            double & mass = mass_prop->data();
+            mass += weightGain;
             mass_prop->setFlags(flag_unsent);
+            Element maxmass_attr;
+            if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT)) {
+                mass = std::min(mass, maxmass_attr.Float());
+            }
         }
     } else {
         // If status is relatively is not very high, then energy is burned
@@ -245,7 +250,6 @@ Character::Character(const std::string & id, long intId) :
                m_movement(*new Pedestrian(*this)),
                m_task(0), m_isAlive(true),
                m_stamina(1.),
-               m_maxMass(100),
                m_mind(0), m_externalMind(0)
 {
     // m_properties["stamina"] = new Property<double>(m_stamina, per_ephem);

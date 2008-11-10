@@ -60,8 +60,6 @@ class Character : public Character_parent {
     // Properties
     /// \brief Level of stamina character has left
     double m_stamina;
-    /// \brief Maximum mass of this type of creature
-    double m_maxMass;
 
     /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
