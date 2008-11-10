@@ -1,5 +1,9 @@
 2008-11-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* data/characters.xml: Add default stamina to all mobile entities.
+
+2008-11-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.h, rulesets/Character.cpp: Replace hard coded
 	  stamina value with a property.
 
