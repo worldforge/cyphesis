@@ -1,3 +1,11 @@
+2008-11-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp: Clean up some unused declarations and
+	  headers.
+
+	* rulesets/Plant.cpp, rulesets/Thing.cpp: Remove some unused
+	  includes.
+
 2008-11-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* data/characters.xml: Add default stamina to all mobile entities.

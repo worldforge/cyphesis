@@ -20,9 +20,7 @@
 #include "Character.h"
 
 #include "Pedestrian.h"
-#include "MindFactory.h"
 #include "BaseMind.h"
-#include "Script.h"
 #include "World.h"
 #include "Task.h"
 #include "StatisticsProperty.h"
@@ -43,7 +41,6 @@
 #include "common/Actuate.h"
 #include "common/Attack.h"
 #include "common/Eat.h"
-#include "common/Nourish.h"
 #include "common/Setup.h"
 #include "common/Tick.h"
 #include "common/Unseen.h"
@@ -64,13 +61,9 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Tick;
-using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Unseen;
-using Atlas::Objects::Operation::Nourish;
-using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;

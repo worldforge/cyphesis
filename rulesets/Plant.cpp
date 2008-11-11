@@ -19,7 +19,6 @@
 
 #include "Plant.h"
 
-#include "Script.h"
 #include "StatusProperty.h"
 #include "BBoxProperty.h"
 

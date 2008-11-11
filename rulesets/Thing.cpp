@@ -19,7 +19,6 @@
 
 #include "Thing.h"
 
-#include "Script.h"
 #include "Motion.h"
 
 #include "common/log.h"
