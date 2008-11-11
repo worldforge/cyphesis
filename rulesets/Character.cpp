@@ -1187,11 +1187,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Velocity" << ret_location.velocity()
                         << std::endl << std::flush;);
     }
-    if (new_orientation.isValid()) {
-        ret_location.m_orientation = new_orientation;
-    } else {
-        ret_location.m_orientation = Quaternion();
-    }
+    ret_location.m_orientation = new_orientation;
     debug(std::cout << "Orientation" << ret_location.orientation()
                     << std::endl << std::flush;);
 

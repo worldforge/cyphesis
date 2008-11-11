@@ -1,5 +1,10 @@
 2008-11-11  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Character.cpp: Back off a change which was intended
+	  to suppress a warning, but did not work.
+
+2008-11-11  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp: Clean up some unused declarations and
 	  headers.
 
