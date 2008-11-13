@@ -1,5 +1,10 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Actually update the location information,
+	  rather than just pretending.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Handle things correctly if scheduling an update
 	  or insert query while the database is offline. Just ignore it and
 	  keep the query queued.

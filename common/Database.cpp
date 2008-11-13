@@ -1019,8 +1019,9 @@ int Database::updateEntity(const std::string & id,
                            int seq,
                            const std::string & value)
 {
-    std::string query = String::compose("UPDATE entities SET seq = %1 "
-                                        "WHERE id = '%2'", seq, id);
+    std::string query = String::compose("UPDATE entities SET seq = %1, "
+                                        "location = '%2' "
+                                        "WHERE id = %3", seq, value, id);
     return scheduleCommand(query);
 }
 
