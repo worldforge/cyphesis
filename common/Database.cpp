@@ -990,7 +990,6 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         query += String::compose(", %1 varchar(1024)", I->first);
     }
     query += ")";
-    std::cout << query;
     if (!runCommandQuery(query)) {
         return -1;
     }
@@ -1064,7 +1063,6 @@ int Database::registerPropertyTable()
                         "id integer REFERENCES entities ON DELETE CASCADE, "
                         "name varchar(32), "
                         "value text)";
-    std::cout << query;
     if (!runCommandQuery(query)) {
         reportError();
         return -1;

@@ -1,5 +1,13 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Remove some left over debug output.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp: Remove some debug output.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Change database column types to varchar to make
 	  them cheaper to update.
 
