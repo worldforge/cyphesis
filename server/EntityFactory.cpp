@@ -704,6 +704,13 @@ int EntityBuilder::installRule(const std::string & class_name,
 {
     assert(class_name == class_desc->getId());
 
+    if (class_name.size() > 32) {
+        log(ERROR, String::compose("Rule \"%1\" has name longer than 32 "
+                                   "characters. Skipping.",
+                                   class_name));
+        return -1;
+    }
+
     const std::string & objtype = class_desc->getObjtype();
     const std::list<std::string> & parents = class_desc->getParents();
     if (parents.empty()) {

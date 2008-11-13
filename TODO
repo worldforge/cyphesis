@@ -1,4 +1,5 @@
 Make sure property names are limited to 32, and also class names to the same
+length. Make this 32 limit a compile time constant. Also check ruleset name
 length.
 
 Fix abort() in newId() when Database connection is down. Probably best done

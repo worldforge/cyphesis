@@ -216,7 +216,7 @@ bool Database::initRule(bool createTables)
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(80) PRIMARY KEY, ruleset varchar(32), contents text ) WITHOUT OIDS");
+            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(32) PRIMARY KEY, ruleset varchar(32), contents text ) WITHOUT OIDS");
             if (!status) {
                 reportError();
                 return false;

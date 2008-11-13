@@ -1,5 +1,14 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Check class names do not violate a
+	  32 character limit before installing them, so they never get
+	  as far as the database limit.
+
+	* common/Database.cpp: Modify the rules table so it limits
+	  the ID to the right size.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/BaseMind.cpp, rulesets/Character.cpp,
 	  rulesets/EntityProperty.cpp, rulesets/Stackable.cpp:
 	  Remove a bunch of stray debug output.
