@@ -1,5 +1,10 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Change database column types to varchar to make
+	  them cheaper to update.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Actually update the location information,
 	  rather than just pretending.
 

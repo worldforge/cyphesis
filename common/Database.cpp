@@ -983,11 +983,11 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         return 0;
     }
     std::string query = "CREATE TABLE entities (id integer UNIQUE PRIMARY KEY, "
-                        "loc integer, type text, seq integer";
+                        "loc integer, type varchar(32), seq integer";
     std::map<std::string, int>::const_iterator I = chunks.begin();
     std::map<std::string, int>::const_iterator Iend = chunks.end();
     for (; I != Iend; ++I) {
-        query += String::compose(", %1 text", I->first);
+        query += String::compose(", %1 varchar(1024)", I->first);
     }
     query += ")";
     std::cout << query;
