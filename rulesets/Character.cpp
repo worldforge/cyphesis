@@ -1243,7 +1243,7 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindCombineOperation(const Operation & op, OpVector & res)
 {
-    std::cout << "mindCombineOperation" << std::endl << std::flush;
+    debug(std::cout << "mindCombineOperation" << std::endl << std::flush;);
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindCombineOperation: combine op has no argument");

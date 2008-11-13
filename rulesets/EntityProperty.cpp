@@ -15,13 +15,17 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.cpp,v 1.5 2008-01-06 21:17:20 alriddoch Exp $
+// $Id$
 
 #include "EntityProperty.h"
 
 #include "Entity.h"
 
+#include "common/debug.h"
+
 #include <Atlas/Objects/RootEntity.h>
+
+static const bool debug_flag = false;
 
 EntityProperty::EntityProperty() : PropertyBase(0)
 {
@@ -43,19 +47,19 @@ void EntityProperty::set(const Atlas::Message::Element & val)
     if (val.isString()) {
         const std::string & id = val.String();
         if (m_data.get() == 0 || m_data->getId() != id) {
-            std::cout << "Assigning it to " << id << std::endl << std::flush;
+            debug(std::cout << "Assigning " << id << std::endl << std::flush;);
             if (id.empty()) {
                 m_data = EntityRef(0);
             } else {
                 Entity * e = BaseWorld::instance().getEntity(id);
                 if (e != 0) {
-                    std::cout << "Got it" << std::endl << std::flush;
+                    debug(std::cout << "Assigned" << std::endl << std::flush;);
                     m_data = EntityRef(e);
                 }
             }
         }
     } else if (val.isPtr()) {
-        std::cout << "Assigning it to pointer" << std::endl << std::flush;
+        debug(std::cout << "Assigning pointer" << std::endl << std::flush;);
         Entity * e = (Entity*)val.Ptr();
         m_data = EntityRef(e);
     }

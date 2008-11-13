@@ -57,7 +57,6 @@ Stackable::~Stackable()
 
 void Stackable::CombineOperation(const Operation & op, OpVector & res)
 {
-    std::cout << "CombineOperation" << std::endl << std::flush;
     int old_num = m_num;
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();

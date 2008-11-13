@@ -293,9 +293,9 @@ void BaseMind::callSightOperation(const Operation & op,
     m_map.getAdd(op->getFrom());
     OpNo op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
-        std::cout << getId() << " could not deliver sight of "
-                  << op->getParents().front()
-                  << std::endl << std::flush;
+        debug(std::cout << getId() << " could not deliver sight of "
+                        << op->getParents().front()
+                        << std::endl << std::flush;);
     }
     SUB_OP_SWITCH(op, op_no, res, sight)
 }
@@ -308,9 +308,9 @@ void BaseMind::callSoundOperation(const Operation & op,
     m_map.getAdd(op->getFrom());
     OpNo op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
-        std::cout << getId() << " could not deliver sound of "
-                  << op->getParents().front()
-                  << std::endl << std::flush;
+        debug(std::cout << getId() << " could not deliver sound of "
+                        << op->getParents().front()
+                        << std::endl << std::flush;);
     }
 
 #if 0

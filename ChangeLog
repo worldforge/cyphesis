@@ -1,5 +1,12 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/EntityProperty.cpp, rulesets/Stackable.cpp:
+	  Remove a bunch of stray debug output.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
+
 	* common/Database.cpp: Remove some left over debug output.
 
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
