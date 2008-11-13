@@ -1,5 +1,10 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/const.h: I guess the name length limit for identifiers
+	  should be unsigned.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Use the name length constant in checks.
 
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>

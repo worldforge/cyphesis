@@ -38,7 +38,7 @@ namespace consts {
   static const int debug_level = 0;
 
   /// \brief Length limit of string length for class ids and attributes
-  static const int id_len = 32;
+  static const unsigned int id_len = 32;
 
   /// \brief Scale factor for time. The may become non-constant
   static const float time_multiplier = 1.0;
