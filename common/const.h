@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: const.h,v 1.55 2007-10-01 03:40:05 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_CONST_H
 #define COMMON_CONST_H
@@ -36,6 +36,9 @@ namespace consts {
   static const int debug_thinking = 0;
   /// \brief Debug level for python code
   static const int debug_level = 0;
+
+  /// \brief Length limit of string length for class ids and attributes
+  static const int id_len = 32;
 
   /// \brief Scale factor for time. The may become non-constant
   static const float time_multiplier = 1.0;

@@ -1,5 +1,13 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/const.h: Add a constant for the name length limit of
+	  rule IDs and property names.
+
+	* common/Database.cpp: Use the name length constant for database
+	  fields that will store the name.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.cpp: Check class names do not violate a
 	  32 character limit before installing them, so they never get
 	  as far as the database limit.

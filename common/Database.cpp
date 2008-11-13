@@ -216,7 +216,12 @@ bool Database::initRule(bool createTables)
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            status = PQsendQuery(m_connection, "CREATE TABLE rules ( id varchar(32) PRIMARY KEY, ruleset varchar(32), contents text ) WITHOUT OIDS");
+            std::string query = String::compose("CREATE TABLE rules ( "
+                                                "id varchar(%1) PRIMARY KEY, "
+                                                "ruleset varchar(%1), "
+                                                "contents text ) "
+                                                "WITHOUT OIDS", consts::id_len);
+            status = PQsendQuery(m_connection, query.c_str());
             if (!status) {
                 reportError();
                 return false;
@@ -982,8 +987,11 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return 0;
     }
-    std::string query = "CREATE TABLE entities (id integer UNIQUE PRIMARY KEY, "
-                        "loc integer, type varchar(32), seq integer";
+    std::string query = String::compose("CREATE TABLE entities ("
+                                        "id integer UNIQUE PRIMARY KEY, "
+                                        "loc integer, "
+                                        "type varchar(%1), "
+                                        "seq integer", consts::id_len);
     std::map<std::string, int>::const_iterator I = chunks.begin();
     std::map<std::string, int>::const_iterator Iend = chunks.end();
     for (; I != Iend; ++I) {
@@ -1059,10 +1067,11 @@ int Database::registerPropertyTable()
         return 0;
     }
     allTables.insert("properties");
-    std::string query = "CREATE TABLE properties ("
-                        "id integer REFERENCES entities ON DELETE CASCADE, "
-                        "name varchar(32), "
-                        "value text)";
+    std::string query = String::compose("CREATE TABLE properties ("
+                                        "id integer REFERENCES entities "
+                                        "ON DELETE CASCADE, "
+                                        "name varchar(%1), "
+                                        "value text)", consts::id_len);
     if (!runCommandQuery(query)) {
         reportError();
         return -1;
