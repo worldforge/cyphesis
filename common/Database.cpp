@@ -1647,8 +1647,10 @@ void Database::queryComplete()
 
 bool Database::launchNewQuery()
 {
-    assert(m_connection != 0);
-
+    if (m_connection == 0) {
+        log(ERROR, "Can't launch new query while database is offline.");
+        return false;
+    }
     if (m_queryInProgress) {
         log(ERROR, "Launching new query when query is in progress");
         return false;
