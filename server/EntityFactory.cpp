@@ -704,10 +704,10 @@ int EntityBuilder::installRule(const std::string & class_name,
 {
     assert(class_name == class_desc->getId());
 
-    if (class_name.size() > 32) {
-        log(ERROR, String::compose("Rule \"%1\" has name longer than 32 "
+    if (class_name.size() > consts::id_len) {
+        log(ERROR, String::compose("Rule \"%1\" has name longer than %2 "
                                    "characters. Skipping.",
-                                   class_name));
+                                   class_name, consts::id_len));
         return -1;
     }
 

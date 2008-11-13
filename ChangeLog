@@ -1,5 +1,9 @@
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Use the name length constant in checks.
+
+2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/const.h: Add a constant for the name length limit of
 	  rule IDs and property names.
 
