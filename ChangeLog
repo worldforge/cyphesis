@@ -1,3 +1,8 @@
+2008-11-16  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp: Remove the commented out code for handling
+	  tables for the obsolete removed persistence system.
+
 2008-11-13  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/const.h: I guess the name length limit for identifiers

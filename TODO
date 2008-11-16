@@ -1,3 +1,8 @@
+Fix the relations code, and use String::compose for those queries.
+
+Make operations that depend on newId generation failable, so that a
+database issue does not cause an assertion to fail.
+
 Make sure property names are limited to 32, and also class names to the same
 length. Make this 32 limit a compile time constant. Also check ruleset name
 length.
