@@ -106,8 +106,8 @@ int Database::createInstanceDatabase()
     std::string error_message;
 
     if (connect(CYPHESIS, error_message) != 0) {
-        log(ERROR, String::compose("Connection to master database failed: \n%1",
-                                   error_message));
+        log(ERROR, compose("Connection to master database failed: \n%1",
+                           error_message));
         return -1;
     }
 
@@ -115,11 +115,11 @@ int Database::createInstanceDatabase()
     if (::instance == CYPHESIS) {
         dbname = CYPHESIS;
     } else {
-        dbname = String::compose("%1_%2", CYPHESIS, ::instance);
+        dbname = compose("%1_%2", CYPHESIS, ::instance);
     }
     readConfigItem(::instance, "dbname", dbname);
 
-    if (!runCommandQuery(String::compose("CREATE DATABASE %1", dbname))) {
+    if (!runCommandQuery(compose("CREATE DATABASE %1", dbname))) {
         shutdownConnection();
         return -1;
     }
@@ -147,7 +147,7 @@ int Database::connect(const std::string & context, std::string & error_msg)
     if (context == CYPHESIS) {
         dbname = CYPHESIS;
     } else {
-        dbname = String::compose("%1_%2", CYPHESIS, ::instance);
+        dbname = compose("%1_%2", CYPHESIS, ::instance);
     }
     readConfigItem(context, "dbname", dbname);
     conninfos << "dbname=" << dbname << " ";
@@ -191,8 +191,8 @@ int Database::initConnection()
     std::string error_message;
 
     if (connect(::instance, error_message) != 0) {
-        log(ERROR, String::compose("Connection to database failed: \n%1",
-                                   error_message));
+        log(ERROR, compose("Connection to database failed: \n%1",
+                           error_message));
         return -1;
     }
 
@@ -207,7 +207,8 @@ bool Database::initRule(bool createTables)
 
     int status = 0;
     clearPendingQuery();
-    status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE id = 'test' AND contents = 'test'");
+    status = PQsendQuery(m_connection, "SELECT * FROM rules WHERE "
+                                       "id = 'test' AND contents = 'test'");
     if (!status) {
         reportError();
         return false;
@@ -217,11 +218,11 @@ bool Database::initRule(bool createTables)
         debug(std::cout << "Rule table does not exist"
                         << std::endl << std::flush;);
         if (createTables) {
-            std::string query = String::compose("CREATE TABLE rules ( "
-                                                "id varchar(%1) PRIMARY KEY, "
-                                                "ruleset varchar(%1), "
-                                                "contents text ) "
-                                                "WITHOUT OIDS", consts::id_len);
+            std::string query = compose("CREATE TABLE rules ( "
+                                        "id varchar(%1) PRIMARY KEY, "
+                                        "ruleset varchar(%1), "
+                                        "contents text ) "
+                                        "WITHOUT OIDS", consts::id_len);
             status = PQsendQuery(m_connection, query.c_str());
             if (!status) {
                 reportError();
@@ -973,28 +974,28 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         // FIXME Flush out the whole state of the databases, to ensure they
         // don't clog up while we are testing.
         runCommandQuery("DELETE FROM properties");
-        runCommandQuery(String::compose("DELETE FROM entities WHERE id!=%1",
-                                        consts::rootWorldIntId));
+        runCommandQuery(compose("DELETE FROM entities WHERE id!=%1",
+                                consts::rootWorldIntId));
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return 0;
     }
-    std::string query = String::compose("CREATE TABLE entities ("
-                                        "id integer UNIQUE PRIMARY KEY, "
-                                        "loc integer, "
-                                        "type varchar(%1), "
-                                        "seq integer", consts::id_len);
+    std::string query = compose("CREATE TABLE entities ("
+                                "id integer UNIQUE PRIMARY KEY, "
+                                "loc integer, "
+                                "type varchar(%1), "
+                                "seq integer", consts::id_len);
     std::map<std::string, int>::const_iterator I = chunks.begin();
     std::map<std::string, int>::const_iterator Iend = chunks.end();
     for (; I != Iend; ++I) {
-        query += String::compose(", %1 varchar(1024)", I->first);
+        query += compose(", %1 varchar(1024)", I->first);
     }
     query += ")";
     if (!runCommandQuery(query)) {
         return -1;
     }
     allTables.insert("entities");
-    query = String::compose("INSERT INTO entities VALUES (%1, null, 'world')",
-                            consts::rootWorldIntId);
+    query = compose("INSERT INTO entities VALUES (%1, null, 'world')",
+                    consts::rootWorldIntId);
     if (!runCommandQuery(query)) {
         return -1;
     }
@@ -1007,9 +1008,9 @@ int Database::insertEntity(const std::string & id,
                            int seq,
                            const std::string & value)
 {
-    std::string query = String::compose("INSERT INTO entities VALUES "
-                                        "(%1, %2, '%3', %4, '%5')",
-                                        id, loc, type, seq, value);
+    std::string query = compose("INSERT INTO entities VALUES "
+                                "(%1, %2, '%3', %4, '%5')",
+                                id, loc, type, seq, value);
     return scheduleCommand(query);
 }
 
@@ -1017,20 +1018,18 @@ int Database::updateEntity(const std::string & id,
                            int seq,
                            const std::string & value)
 {
-    std::string query = String::compose("UPDATE entities SET seq = %1, "
-                                        "location = '%2' "
-                                        "WHERE id = %3", seq, value, id);
+    std::string query = compose("UPDATE entities SET seq = %1, location = '%2'"
+                                " WHERE id = %3", seq, value, id);
     return scheduleCommand(query);
 }
 
 int Database::dropEntity(long id)
 {
-    std::string query = String::compose("DELETE FROM properties "
-                                        "WHERE id = '%1'", id);
+    std::string query = compose("DELETE FROM properties WHERE id = '%1'", id);
 
     scheduleCommand(query);
 
-    query = String::compose("DELETE FROM entities WHERE id = %1", id);
+    query = compose("DELETE FROM entities WHERE id = %1", id);
 
     scheduleCommand(query);
 
@@ -1058,11 +1057,11 @@ int Database::registerPropertyTable()
         return 0;
     }
     allTables.insert("properties");
-    std::string query = String::compose("CREATE TABLE properties ("
-                                        "id integer REFERENCES entities "
-                                        "ON DELETE CASCADE, "
-                                        "name varchar(%1), "
-                                        "value text)", consts::id_len);
+    std::string query = compose("CREATE TABLE properties ("
+                                "id integer REFERENCES entities "
+                                "ON DELETE CASCADE, "
+                                "name varchar(%1), "
+                                "value text)", consts::id_len);
     if (!runCommandQuery(query)) {
         reportError();
         return -1;
@@ -1084,10 +1083,10 @@ int Database::insertProperties(const std::string & id,
     KeyValues::const_iterator Iend = tuples.end();
     for (; I != Iend; ++I) {
         if (first) {
-            query += String::compose("(%1, '%2', '%3')", id, I->first, I->second);
+            query += compose("(%1, '%2', '%3')", id, I->first, I->second);
             first = 0;
         } else {
-            query += String::compose(", (%1, '%2', '%3')", id, I->first, I->second);
+            query += compose(", (%1, '%2', '%3')", id, I->first, I->second);
         }
     }
     return scheduleCommand(query);
@@ -1099,7 +1098,9 @@ int Database::updateProperties(const std::string & id,
     KeyValues::const_iterator I = tuples.begin();
     KeyValues::const_iterator Iend = tuples.end();
     for (; I != Iend; ++I) {
-        std::string query = String::compose("UPDATE properties SET value = '%3' WHERE id=%1 AND name='%2'", id, I->first, I->second);
+        std::string query = compose("UPDATE properties SET value = '%3' WHERE"
+                                    " id=%1 AND name='%2'",
+                                    id, I->first, I->second);
         scheduleCommand(query);
     }
     return 0;

@@ -1,5 +1,10 @@
 2008-11-16  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp: Clean up the formatting of a number of query
+	  strings.
+
+2008-11-16  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Database.cpp: Re-enable referential integrity on relational
 	  tables. Clean up the query generation code.
 
