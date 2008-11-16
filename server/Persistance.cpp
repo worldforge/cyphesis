@@ -96,8 +96,8 @@ int Persistance::init()
     tableDesc["type"] = "          ";
     bool j = m_connection.registerSimpleTable("accounts", tableDesc);
     bool k = m_connection.registerRelation(m_characterRelation,
-                                              "accounts",
-                                              "entity_ent");
+                                           "accounts",
+                                           "entities");
 
     if (!findAccount("admin")) {
         debug(std::cout << "Bootstraping admin account."

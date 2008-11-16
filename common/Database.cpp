@@ -43,6 +43,7 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
+using String::compose;
 
 typedef Atlas::Codecs::XML Serialiser;
 
@@ -646,34 +647,8 @@ bool Database::registerRelation(std::string & tablename,
 
     tablename = sourcetable + "_" + targettable;
 
-    std::string query = "SELECT * FROM ";
-    query += tablename;
-    query += " WHERE source = 0 AND target = 0";
-
-    std::string createquery = "CREATE TABLE ";
-    createquery += tablename;
-    if (kind == OneToOne || kind == ManyToOne) {
-        createquery += " (source integer UNIQUE REFERENCES ";
-    } else {
-        createquery += " (source integer REFERENCES ";
-    }
-    createquery += sourcetable;
-#if 0
-    // FIXME Referential integrity not supported on inherited tables.
-    if (kind == OneToOne || kind == OneToMany) {
-        createquery += " (id), target integer UNIQUE REFERENCES ";
-    } else {
-        createquery += " (id), target integer REFERENCES ";
-    }
-    createquery += targettable;
-    createquery += " (id))";
-#else
-    if (kind == OneToOne || kind == OneToMany) {
-        createquery += " (id), target integer UNIQUE) WITHOUT OIDS";
-    } else {
-        createquery += " (id), target integer) WITHOUT OIDS";
-    }
-#endif
+    std::string query = compose("SELECT * FROM %1 WHERE source = 0 "
+                                "AND target = 0", tablename);
 
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     clearPendingQuery();
@@ -693,9 +668,25 @@ bool Database::registerRelation(std::string & tablename,
         return true;
     }
 
-    debug(std::cout << "CREATE QUERY: " << createquery
+    query = "CREATE TABLE ";
+    query += tablename;
+    if (kind == OneToOne || kind == ManyToOne) {
+        query += " (source integer UNIQUE REFERENCES ";
+    } else {
+        query += " (source integer REFERENCES ";
+    }
+    query += sourcetable;
+    if (kind == OneToOne || kind == OneToMany) {
+        query += " (id), target integer UNIQUE REFERENCES ";
+    } else {
+        query += " (id), target integer REFERENCES ";
+    }
+    query += targettable;
+    query += " (id) ON DELETE CASCADE ) WITHOUT OIDS";
+
+    debug(std::cout << "CREATE QUERY: " << query
                     << std::endl << std::flush;);
-    if (!runCommandQuery(createquery)) {
+    if (!runCommandQuery(query)) {
         return false;
     }
     allTables.insert(tablename);
