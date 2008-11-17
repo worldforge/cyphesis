@@ -67,6 +67,8 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
+using String::compose;
+
 typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
 static const bool debug_flag = false;
@@ -169,14 +171,13 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     }
     if (thing->m_location.velocity().isValid()) {
         if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            log(ERROR, String::compose("EntityBuilder::newEntity(%1, %2): "
-                                       "Entity has velocity set from the "
-                                       "attributes given by the creator",
-                                       id, type));
+            log(ERROR, compose("EntityBuilder::newEntity(%1, %2): "
+                               "Entity has velocity set from the attributes "
+                               "given by the creator", id, type));
         } else {
-            log(ERROR, String::compose("EntityBuilder::newEntity(%1, %2): "
-                                       "Entity has velocity set from an "
-                                       "unknown source", id, type));
+            log(ERROR, compose("EntityBuilder::newEntity(%1, %2): Entity has "
+                               "velocity set from an unknown source",
+                               id, type));
         }
         thing->m_location.m_velocity.setValid(false);
     }
@@ -280,29 +281,27 @@ int EntityBuilder::populateEntityFactory(const std::string & class_name,
         const MapType & script = J->second.asMap();
         J = script.find("name");
         if (J == script.end() || !J->second.isString()) {
-            log(ERROR, String::compose("Entity \"%1\" script has no name.",
-                                       class_name));
+            log(ERROR, compose("Entity \"%1\" script has no name.",
+                               class_name));
             return -1;
         }
         const std::string & script_name = J->second.String();
         J = script.find("language");
         if (J == script.end() || !J->second.isString()) {
-            log(ERROR, String::compose("Entity \"%1\" script has no language.",
-                                       class_name));
+            log(ERROR, compose("Entity \"%1\" script has no language.",
+                               class_name));
             return -1;
         }
         const std::string & script_language = J->second.String();
         if (script_language != "python") {
-            log(ERROR, String::compose("Entity \"%1\" script has unknown "
-                                       "language \"%2\".",
-                                       class_name, script_language));
+            log(ERROR, compose("Entity \"%1\" script has unknown language "
+                               "\"%2\".", class_name, script_language));
             return -1;
         }
         std::string::size_type ptr = script_name.rfind(".");
         if (ptr == std::string::npos) {
-            log(ERROR, String::compose("Entity \"%1\" python script has "
-                                       "a bad class name \"%2\".",
-                                       class_name, script_name));
+            log(ERROR, compose("Entity \"%1\" python script has a bad class "
+                               "name \"%2\".", class_name, script_name));
             return -1;
         }
         std::string script_package = script_name.substr(0, ptr);
@@ -343,8 +342,8 @@ int EntityBuilder::populateEntityFactory(const std::string & class_name,
         MapType::const_iterator Kend = attrs.end();
         for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
-                log(ERROR, String::compose("Attribute description in rule %1 "
-                                           "is not a map.", class_name));
+                log(ERROR, compose("Attribute description in rule %1 is not a "
+                                   "map.", class_name));
                 continue;
             }
             const MapType & attr = K->second.asMap();
@@ -461,15 +460,15 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
 
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I != m_taskFactories.end()) {
-        log(ERROR, String::compose("Attempt to install task \"%1\" which is "
-                                   "already installed.", class_name));
+        log(ERROR, compose("Attempt to install task \"%1\" which is already "
+                           "installed.", class_name));
     }
     
     // Establish that this rule has an associated script.
     Element script_attr;
     if (class_desc->copyAttr("script", script_attr) != 0 ||
         !script_attr.isMap()) {
-        log(ERROR, String::compose("Task \"%1\" has no script.", class_name));
+        log(ERROR, compose("Task \"%1\" has no script.", class_name));
         return -1;
     }
     const MapType & script = script_attr.Map();
@@ -477,23 +476,21 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     MapType::const_iterator J = script.find("name");
     MapType::const_iterator script_end = script.end();
     if (J == script_end || !J->second.isString()) {
-        log(ERROR, String::compose("Task \"%1\" script has no name.",
-                                   class_name));
+        log(ERROR, compose("Task \"%1\" script has no name.", class_name));
         return -1;
     }
     const std::string & script_name = J->second.String();
 
     J = script.find("language");
     if (J == script_end || !J->second.isString()) {
-        log(ERROR, String::compose("Task \"%1\" script has no language.",
-                                   class_name));
+        log(ERROR, compose("Task \"%1\" script has no language.", class_name));
         return -1;
     }
     const std::string & script_language = J->second.String();
 
     if (script_language != "python") {
-        log(ERROR, String::compose("Task \"%1\" script has unknown language "
-                                   "\"%2\".", class_name, script_language));
+        log(ERROR, compose("Task \"%1\" script has unknown language \"%2\".",
+                           class_name, script_language));
         return -1;
     }
 
@@ -503,8 +500,7 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     if (class_desc->copyAttr("activation", activation_attr) != 0 ||
         !activation_attr.isMap()) {
         delete factory;
-        log(ERROR, String::compose("Task \"%1\" has no activation.",
-                                   class_name));
+        log(ERROR, compose("Task \"%1\" has no activation.", class_name));
         return -1;
     }
     const MapType & activation = activation_attr.Map();
@@ -513,8 +509,7 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     J = activation.find("tool");
     if (J == act_end || !J->second.isString()) {
         delete factory;
-        log(ERROR, String::compose("Task \"%1\" activation has no tool.",
-                                   class_name));
+        log(ERROR, compose("Task \"%1\" activation has no tool.", class_name));
         return -1;
     }
     const std::string & activation_tool = J->second.String();
@@ -524,18 +519,16 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     if (!i.hasClass(activation_tool)) {
         delete factory;
         waitForRule(class_name, class_desc, activation_tool,
-                    String::compose("Task \"%1\" is activated by tool "
-                                    "\"%2\" which does not exist.",
-                                    class_name, activation_tool));
+                    compose("Task \"%1\" is activated by tool \"%2\" which "
+                            "does not exist.", class_name, activation_tool));
         return 1;
     }
     FactoryDict::const_iterator K = m_entityFactories.find(activation_tool);
     if (K == m_entityFactories.end()) {
         delete factory;
-        log(ERROR, String::compose("Task class \"%1\" is activated "
-                                   "by tool \"%2\" which is not an "
-                                   "entity class.", class_name,
-                                   activation_tool));
+        log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
+                           "which is not an entity class.", class_name,
+                           activation_tool));
         return -1;
     }
     EntityKit * tool_factory = K->second;
@@ -543,8 +536,8 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     J = activation.find("operation");
     if (J == act_end || !J->second.isString()) {
         delete factory;
-        log(ERROR, String::compose("Task \"%1\" activation has no operation.",
-                                   class_name));
+        log(ERROR, compose("Task \"%1\" activation has no operation.",
+                           class_name));
         return -1;
     }
 
@@ -552,9 +545,9 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     if (!i.hasClass(activation_op)) {
         delete factory;
         waitForRule(class_name, class_desc, activation_op,
-                    String::compose("Task \"%1\" is activated by operation "
-                                    "\"%2\" which does not exist.",
-                                    class_name, activation_op));
+                    compose("Task \"%1\" is activated by operation \"%2\" "
+                            "which does not exist.", class_name, 
+                            activation_op));
         return 1;
     }
 
@@ -562,18 +555,18 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     if (J != act_end) {
         if (!J->second.isString()) {
             delete factory;
-            log(ERROR, String::compose("Task \"%1\" activation has \"%2\" "
-                                       " target.", class_name,
-                                       Element::typeName(J->second.getType())));
+            log(ERROR, compose("Task \"%1\" activation has \"%2\" target.",
+                               class_name,
+                               Element::typeName(J->second.getType())));
             return -1;
         }
         const std::string & target_base = J->second.String();
         if (!i.hasClass(target_base)) {
             delete factory;
             waitForRule(class_name, class_desc, target_base,
-                        String::compose("Task \"%1\" is activated on target "
-                                        "\"%2\" which does not exist.",
-                                        class_name, target_base));
+                        compose("Task \"%1\" is activated on target \"%2\" "
+                                "which does not exist.", class_name,
+                                target_base));
             return 1;
         }
         factory->m_target = target_base;
@@ -619,17 +612,16 @@ int EntityBuilder::installEntityClass(const std::string & class_name,
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         waitForRule(class_name, class_desc, parent,
-                    String::compose("Entity rule \"%1\" has parent \"%2\" which"
-                                    " does not exist.", class_name, parent));
+                    compose("Entity rule \"%1\" has parent \"%2\" which does "
+                            "not exist.", class_name, parent));
         return 1;
     }
     EntityKit * parent_factory = I->second;
     EntityKit * factory = parent_factory->duplicateFactory();
     if (factory == 0) {
         log(ERROR,
-            String::compose("Attempt to install rule \"%1\" which has parent "
-                            "\"%2\" which cannot be instantiated",
-                            class_name, parent));
+            compose("Attempt to install rule \"%1\" which has parent \"%2\" "
+                    "which cannot be instantiated", class_name, parent));
         return -1;
     }
 
@@ -682,8 +674,8 @@ int EntityBuilder::installOpDefinition(const std::string & class_name,
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         waitForRule(class_name, class_desc, parent,
-                    String::compose("Operation \"%1\" has parent \"%2\" which "
-                                    "does not exist.", class_name, parent));
+                    compose("Operation \"%1\" has parent \"%2\" which does "
+                            "not exist.", class_name, parent));
         return 1;
     }
 
@@ -705,23 +697,22 @@ int EntityBuilder::installRule(const std::string & class_name,
     assert(class_name == class_desc->getId());
 
     if (class_name.size() > consts::id_len) {
-        log(ERROR, String::compose("Rule \"%1\" has name longer than %2 "
-                                   "characters. Skipping.",
-                                   class_name, consts::id_len));
+        log(ERROR, compose("Rule \"%1\" has name longer than %2 characters. "
+                           "Skipping.", class_name, consts::id_len));
         return -1;
     }
 
     const std::string & objtype = class_desc->getObjtype();
     const std::list<std::string> & parents = class_desc->getParents();
     if (parents.empty()) {
-        log(ERROR, String::compose("Rule \"%1\" has empty parents. Skipping.",
-                                   class_name));
+        log(ERROR, compose("Rule \"%1\" has empty parents. Skipping.",
+                           class_name));
         return -1;
     }
     const std::string & parent = parents.front();
     if (parent.empty()) {
-        log(ERROR, String::compose("Rule \"%1\" has empty first parent."
-                                   " Skipping.", class_name));
+        log(ERROR, compose("Rule \"%1\" has empty first parent. Skipping.",
+                           class_name));
         return -1;
     }
     if (objtype == "class") {
@@ -742,8 +733,8 @@ int EntityBuilder::installRule(const std::string & class_name,
             return ret;
         }
     } else {
-        log(ERROR, String::compose("Rule \"%1\" has unknown objtype=\"%2\". "
-                                   "Skipping.", class_name, objtype));
+        log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",
+                           class_name, objtype));
         return -1;
     }
 
@@ -779,8 +770,8 @@ int EntityBuilder::modifyEntityClass(const std::string & class_name,
 
     FactoryDict::const_iterator I = m_entityFactories.find(class_name);
     if (I == m_entityFactories.end()) {
-        log(ERROR, String::compose("Could not find factory for existing "
-                                   "entity class \"%1\".", class_name));
+        log(ERROR, compose("Could not find factory for existing entity class "
+                           "\"%1\".", class_name));
         return -1;
     }
     EntityKit * factory = I->second;
@@ -802,9 +793,9 @@ int EntityBuilder::modifyEntityClass(const std::string & class_name,
         // This is non fatal, but nice to know it has happened.
         // This should only happen if the client attempted to modify the
         // type data for a core hard coded type.
-        log(ERROR, String::compose("EntityBuilder::modifyEntityClass: \"%1\" "
-                                   "modified by client, but has no parent "
-                                   "factory.", class_name));
+        log(ERROR, compose("EntityBuilder::modifyEntityClass: \"%1\" modified "
+                           "by client, but has no parent factory.",
+                           class_name));
         factory->m_attributes = MapType();
     }
     factory->m_classAttributes = MapType();
@@ -829,8 +820,8 @@ int EntityBuilder::modifyTaskClass(const std::string & class_name,
 
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
-        log(ERROR, String::compose("Could not find factory for existing task "
-                                   "class \"%1\"", class_name));
+        log(ERROR, compose("Could not find factory for existing task class "
+                           "\"%1\"", class_name));
         return -1;
     }
     // FIXME Actually update the task factory.
@@ -854,8 +845,8 @@ int EntityBuilder::modifyRule(const std::string & class_name,
 
     Root o = Inheritance::instance().getClass(class_name);
     if (!o.isValid()) {
-        log(ERROR, String::compose("Could not find existing type \"%1\" "
-                                   "in inheritance", class_name));
+        log(ERROR, compose("Could not find existing type \"%1\" in "
+                           "inheritance", class_name));
         return -1;
     }
     if (o->getParents().front() == "task") {
@@ -894,8 +885,8 @@ void EntityBuilder::getRulesFromFiles(std::map<std::string, Root> & rules)
         filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
         AtlasFileLoader f(filename, rules);
         if (f.isOpen()) {
-            log(WARNING, String::compose("Reading legacy rule data from \"%1\".",
-                                         filename));
+            log(WARNING, compose("Reading legacy rule data from \"%1\".",
+                                 filename));
             f.read();
         }
         return;
@@ -908,8 +899,7 @@ void EntityBuilder::getRulesFromFiles(std::map<std::string, Root> & rules)
         
         AtlasFileLoader f(filename, rules);
         if (!f.isOpen()) {
-            log(ERROR, String::compose("Unable to open rule file \"%1\".",
-                                       filename));
+            log(ERROR, compose("Unable to open rule file \"%1\".", filename));
         } else {
             f.read();
         }
@@ -960,7 +950,7 @@ void EntityBuilder::installFactory(const std::string & class_name,
     assert(factory != 0);
 
     m_entityFactories[class_name] = factory;
-    Monitors::instance()->watch(String::compose("created_count{type=%1}", class_name),
+    Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
                                 new Monitor<int>(factory->m_createdCount));
 
     Inheritance & i = Inheritance::instance();

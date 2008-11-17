@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/EntityFactory.cpp: Clean up error messages using more
+	  concise types.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* modules/Location.cpp: Clean up data types.
 
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
