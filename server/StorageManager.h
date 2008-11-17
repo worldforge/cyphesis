@@ -72,15 +72,18 @@ class StorageManager {
     void entityUpdated(Entity *);
 
     void encodeProperty(PropertyBase *, std::string &);
+    void restoreProperties(Entity *);
 
     void insertEntity(Entity *);
     void updateEntity(Entity *);
+    void restoreChildren(Entity *);
 
   public:
     StorageManager(WorldRouter &);
 
     void tick();
     int initWorld();
+    int restoreWorld();
 };
 
 #endif // SERVER_STORAGE_MANAGER_H

@@ -116,6 +116,14 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
     Database::instance()->encodeObject(map, store);
 }
 
+void StorageManager::restoreProperties(Entity * ent)
+{
+    DatabaseResult res = Database::instance()->selectProperties(ent->getId());
+
+    // Iterate over res and create the property values.
+}
+
+
 void StorageManager::insertEntity(Entity * ent)
 {
     std::string location;
@@ -199,6 +207,14 @@ void StorageManager::updateEntity(Entity * ent)
     ent->setFlags(entity_clean);
 }
 
+void StorageManager::restoreChildren(Entity * ent)
+{
+    DatabaseResult res = Database::instance()->selectEntities(ent->getId());
+
+    // Iterate over res creating entities, and sorting out position, location
+    // and orientation. Read properties. and restoreChildren
+}
+
 void StorageManager::tick()
 {
     int inserts = 0, updates = 0;
@@ -280,5 +296,15 @@ int StorageManager::initWorld()
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
     ent->setFlags(entity_clean);
     // FIXME queue it so the initial state gets persisted.
+    return 0;
+}
+
+int StorageManager::restoreWorld()
+{
+    Entity * ent = &BaseWorld::instance().m_gameWorld;
+
+    restoreProperties(ent);
+
+    restoreChildren(ent);
     return 0;
 }
