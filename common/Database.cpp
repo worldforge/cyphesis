@@ -1136,9 +1136,7 @@ bool Database::registerArrayTable(const std::string & name,
     query += " WHERE id = 0";
 
     createquery += name;
-    // FIXME This is a foreign key to an inherited table.
-    // Implement referential integrity once PostgreSQL works.
-    createquery += " (id integer NOT NULL";
+    createquery += " (id integer REFERENCES entities NOT NULL";
 
     indexquery += name;
     indexquery += "_point_idx on ";
@@ -1452,7 +1450,7 @@ bool Database::clearPendingQuery()
 
 bool Database::runMaintainance(int command)
 {
-    // FIXME VACUUM and REINDEX tables from a common store
+    // VACUUM and REINDEX tables from a common store
     if ((command & MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
         std::string query("REINDEX TABLE ");
         TableSet::const_iterator Iend = allTables.end();
