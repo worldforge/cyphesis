@@ -25,6 +25,7 @@
 #include "modules/Location.h"
 
 #include "common/BaseWorld.h"
+#include "common/Property.h"
 
 #include <iostream>
 
@@ -157,10 +158,16 @@ class Entity : public LocatedEntity {
             sp = dynamic_cast<PropertyT *>(p);
         }
         if (sp == 0) {
-            // FIXME We leak the property if one of the wrong type
-            // already existed.
             m_properties[name] = sp = new PropertyT;
-            if (!def_val.isNone()) {
+            if (p != 0) {
+                // If it is not of the right type, delete it and a new
+                // one of the right type will be inserted.
+                Atlas::Message::Element val;
+                if (p->get(val)) {
+                    sp->set(val);
+                }
+                delete p;
+            } else if (!def_val.isNone()) {
                 sp->set(def_val);
             }
         }

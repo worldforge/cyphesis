@@ -80,4 +80,7 @@ int main(int argc, char ** argv)
     // assert(int_prop->flags() & flag_unsent);
     // TODO(alriddoch) make sure flags behave fully correctly, and signals
     // are emitted as required.
+
+    // TODO(alriddoch) add coverage for calling requirePropertyClass() when
+    // a property of the wrong type already exists.
 }
