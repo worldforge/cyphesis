@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* modules/Location.h, modules/Location.cpp: Add a new function for
+	  reading location data from an Atlas message.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Dump more debug info about data from
 	  the database.
 

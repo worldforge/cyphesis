@@ -107,6 +107,7 @@ class Location : virtual public sigc::trackable {
     void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
     const Atlas::Objects::Root asEntity() const;
 
+    int readFromMessage(const Atlas::Message::MapType & ent);
     int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
     void modifyBBox();
 

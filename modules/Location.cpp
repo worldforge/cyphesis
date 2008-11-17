@@ -28,6 +28,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
@@ -66,7 +67,7 @@ Location::Location(LocatedEntity * rf,
 {
 }
 
-void Location::addToMessage(Atlas::Message::MapType & omap) const
+void Location::addToMessage(MapType & omap) const
 {
     if (m_loc!=NULL) {
         omap["loc"] = m_loc->getId();
@@ -104,6 +105,36 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
 }
 
+int Location::readFromMessage(const MapType & msg)
+{
+    try {
+        MapType::const_iterator I = msg.find("pos");
+        MapType::const_iterator Iend = msg.end();
+        if (I != Iend) {
+            const Element & pos = I->second;
+            if (pos.isList() && pos.List().size() == 3) {
+                m_pos.fromAtlas(pos);
+            } else {
+                log(ERROR, "Malformed POS data");
+            }
+        }
+        I = msg.find("orientation");
+        if (I != Iend) {
+            const Element & orientation = I->second;
+            if (orientation.isList() && orientation.List().size() == 4) {
+                m_orientation.fromAtlas(orientation);
+            } else {
+                log(ERROR, "Malformed ORIENTATION data");
+            }
+        }
+    }
+    catch (Atlas::Message::WrongTypeException&) {
+        log(ERROR, "Location::readFromMessage: Bad location data");
+        return -1;
+    }
+    return 0;
+}
+
 int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     debug( std::cout << "Location::readFromEntity" << std::endl << std::flush;);
@@ -116,7 +147,7 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
         }
         Atlas::Message::Element orientation;
         if (ent->copyAttr("orientation", orientation) == 0) {
-            if (orientation.isList()) {
+            if (orientation.isList() && orientation.List().size() == 4) {
                 m_orientation.fromAtlas(orientation);
             } else {
                 log(ERROR, "Malformed ORIENTATION data");
