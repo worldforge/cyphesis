@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Database.cpp, common/Database.h: Implement queries required
+	  to read entity and properties from the database.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/server.cpp: Use the variable for the default instance
 	  name.
 

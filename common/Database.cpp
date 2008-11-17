@@ -1023,6 +1023,16 @@ int Database::updateEntity(const std::string & id,
     return scheduleCommand(query);
 }
 
+const DatabaseResult Database::selectEntities(const std::string & loc)
+{
+    std::string query = compose("SELECT id, type, seq, location FROM entities"
+                                " WHERE loc = %1", loc);
+
+    std::cout << "Selecting on loc = " << loc << " ... " << std::flush;
+
+    return runSimpleSelectQuery(query);
+}
+
 int Database::dropEntity(long id)
 {
     std::string query = compose("DELETE FROM properties WHERE id = '%1'", id);
@@ -1090,6 +1100,16 @@ int Database::insertProperties(const std::string & id,
         }
     }
     return scheduleCommand(query);
+}
+
+const DatabaseResult Database::selectProperties(const std::string & id)
+{
+    std::string query = compose("SELECT name, value FROM properties"
+                                " WHERE id = %1", id);
+
+    std::cout << "Selecting on loc = " << id << " ... " << std::flush;
+
+    return runSimpleSelectQuery(query);
 }
 
 int Database::updateProperties(const std::string & id,

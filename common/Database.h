@@ -218,11 +218,13 @@ class Database {
     int updateEntity(const std::string & id,
                      int seq,
                      const std::string & value);
+    const DatabaseResult selectEntities(const std::string & loc);
     int dropEntity(long id);
 
     int registerPropertyTable();
     int insertProperties(const std::string & id,
                          const KeyValues & tuples);
+    const DatabaseResult selectProperties(const std::string & loc);
     int updateProperties(const std::string & id,
                          const KeyValues & tuples);
 
