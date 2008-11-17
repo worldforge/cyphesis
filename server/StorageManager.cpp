@@ -143,8 +143,14 @@ void StorageManager::restoreProperties(Entity * ent)
             std::cout << "Bad property data" << std::endl << std::flush;
         }
         Element & val = J->second;
+        if (ent->getProperty(name) != 0) {
+            std::cout << "Already got one" << std::endl << std::flush;
+        }
         PropertyBase * prop = pm->addProperty(name, val.getType());
+        prop->set(val);
         prop->setFlags(per_clean | per_seen);
+        std::cout << "Adding " << name << " property to " << ent->getId()
+                  << std::endl << std::flush;
         ent->setProperty(name, prop);
         // install(), apply()
     }
@@ -357,8 +363,9 @@ int StorageManager::restoreWorld()
 {
     Entity * ent = &BaseWorld::instance().m_gameWorld;
 
+    restoreChildren(ent);
+
     restoreProperties(ent);
 
-    restoreChildren(ent);
     return 0;
 }

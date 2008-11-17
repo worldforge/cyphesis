@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Add some improved debug messages, and
+	  set the value of restored properties.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/server.cpp: Add the call to the storage system restoring
 	  the world.
 
