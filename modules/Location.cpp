@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2005 Alistair Riddoch
+// Copyright (C) 2000-2008 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -145,7 +145,7 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             fromStdVector(m_velocity, ent->getVelocity());
         }
-        Atlas::Message::Element orientation;
+        Element orientation;
         if (ent->copyAttr("orientation", orientation) == 0) {
             if (orientation.isList() && orientation.List().size() == 4) {
                 m_orientation.fromAtlas(orientation);
