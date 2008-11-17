@@ -203,6 +203,7 @@ int main(int argc, char ** argv)
     if (database_flag) {
         // log(INFO, _("Restoring world from database..."));
 
+        store.restoreWorld();
         // FIXME Do the following steps.
         // Read the world entity if any from the database, or set it up.
         // If it was there, make sure it did not get any of the wrong
