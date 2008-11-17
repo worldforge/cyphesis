@@ -1,3 +1,7 @@
+Currently properties are being installed early before all Entity IDs have been
+restored. Need to delay. This will be a problem if there are Entity properties
+around linking things together by pointers.
+
 Make operations that depend on newId generation failable, so that a
 database issue does not cause an assertion to fail.
 
