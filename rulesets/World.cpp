@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: World.cpp,v 1.117 2008-08-21 17:10:39 alriddoch Exp $
+// $Id$
 
 #include "World.h"
 
@@ -26,6 +26,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/inheritance.h"
+#include "common/compose.hpp"
 
 #include "common/Eat.h"
 #include "common/Nourish.h"
@@ -143,7 +144,8 @@ void World::EatOperation(const Operation & op, OpVector & res)
     const std::string & from_id = op->getFrom();
     Entity * from = BaseWorld::instance().getEntity(from_id);
     if (from == 0) {
-        log(ERROR, "World got eat op from non-existant entity.");
+        log(ERROR, String::compose("World got eat op from non-existant "
+                                   "entity %1.", from_id));
         return;
     }
 

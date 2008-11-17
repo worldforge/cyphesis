@@ -1,5 +1,9 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/World.cpp: Improve error reporting.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Attempt to recontruct the entities
 	  and properties being restored.
 
