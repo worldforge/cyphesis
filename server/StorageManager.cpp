@@ -120,6 +120,11 @@ void StorageManager::restoreProperties(Entity * ent)
 {
     DatabaseResult res = Database::instance()->selectProperties(ent->getId());
 
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        std::cout << "Restoring: " << I.column("name") << std::endl;
+    }
     // Iterate over res and create the property values.
 }
 
@@ -213,6 +218,12 @@ void StorageManager::restoreChildren(Entity * ent)
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Read properties. and restoreChildren
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        std::cout << "Restoring: " << I.column("id") << ": "
+                  << I.column("type") << std::endl;
+    }
 }
 
 void StorageManager::tick()
