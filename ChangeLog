@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/server.cpp: Use the variable for the default instance
+	  name.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Entity.h: Correct a FIXME about leaking a property
 	  when requiring one of a given type.
 

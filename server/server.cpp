@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
 
     std::string server_name;
     if (readConfigItem(instance, "servername", server_name) != 0) {
-        if (instance == "cyphesis") {
+        if (instance == CYPHESIS) {
             server_name = get_hostname();
         } else {
             server_name = instance;
