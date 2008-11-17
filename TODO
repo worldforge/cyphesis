@@ -1,5 +1,3 @@
-Fix the relations code, and use String::compose for those queries.
-
 Make operations that depend on newId generation failable, so that a
 database issue does not cause an assertion to fail.
 
