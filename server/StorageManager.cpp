@@ -28,6 +28,7 @@
 #include "common/Property.h"
 #include "common/debug.h"
 #include "common/Monitors.h"
+#include "common/PropertyManager.h"
 #include "common/const.h"
 
 #include <wfmath/atlasconv.h>
@@ -36,6 +37,9 @@
 #include <sigc++/functors/mem_fun.h>
 
 #include <iostream>
+
+using Atlas::Message::MapType;
+using Atlas::Message::Element;
 
 typedef Database::KeyValues KeyValues;
 
@@ -118,12 +122,24 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
 
 void StorageManager::restoreProperties(Entity * ent)
 {
-    DatabaseResult res = Database::instance()->selectProperties(ent->getId());
+    Database * db = Database::instance();
+    PropertyManager * pm = PropertyManager::instance();
+    DatabaseResult res = db->selectProperties(ent->getId());
 
     DatabaseResult::const_iterator I = res.begin();
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
         std::cout << "Restoring: " << I.column("name") << std::endl;
+        const std::string name = I.column("name");
+        const std::string val_string = I.column("value");
+        MapType prop_data;
+        db->decodeMessage(val_string, prop_data);
+        MapType::iterator J = prop_data.find("val");
+        if (J == prop_data.end()) {
+            std::cout << "Bad property data" << std::endl << std::flush;
+        }
+        Element & val = J->second;
+        PropertyBase * prop = pm->addProperty(name, val.getType());
     }
     // Iterate over res and create the property values.
 }
@@ -214,7 +230,8 @@ void StorageManager::updateEntity(Entity * ent)
 
 void StorageManager::restoreChildren(Entity * ent)
 {
-    DatabaseResult res = Database::instance()->selectEntities(ent->getId());
+    Database * db = Database::instance();
+    DatabaseResult res = db->selectEntities(ent->getId());
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Read properties. and restoreChildren
@@ -223,6 +240,18 @@ void StorageManager::restoreChildren(Entity * ent)
     for (; I != Iend; ++I) {
         std::cout << "Restoring: " << I.column("id") << ": "
                   << I.column("type") << std::endl;
+        const std::string type = I.column("type");
+        const std::string location_string = I.column("location");
+        MapType loc_data;
+        db->decodeMessage(location_string, loc_data);
+        MapType::iterator J = loc_data.find("pos");
+        if (J == loc_data.end()) {
+            std::cout << "No pos data" << std::endl << std::flush;
+        }
+        J = loc_data.find("orientation");
+        if (J == loc_data.end()) {
+            std::cout << "No orientation data" << std::endl << std::flush;
+        }
     }
 }
 

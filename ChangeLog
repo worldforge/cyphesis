@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Dump more debug info about data from
+	  the database.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Dump database results to stdout.
 
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
