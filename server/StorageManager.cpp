@@ -20,6 +20,7 @@
 #include "StorageManager.h"
 
 #include "WorldRouter.h"
+#include "EntityFactory.h"
 
 #include "rulesets/Entity.h"
 
@@ -30,6 +31,9 @@
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
 #include "common/const.h"
+#include "common/id.h"
+
+#include <Atlas/Objects/Anonymous.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -140,6 +144,9 @@ void StorageManager::restoreProperties(Entity * ent)
         }
         Element & val = J->second;
         PropertyBase * prop = pm->addProperty(name, val.getType());
+        prop->setFlags(per_clean | per_seen);
+        ent->setProperty(name, prop);
+        // install(), apply()
     }
     // Iterate over res and create the property values.
 }
@@ -240,16 +247,23 @@ void StorageManager::restoreChildren(Entity * ent)
     for (; I != Iend; ++I) {
         std::cout << "Restoring: " << I.column("id") << ": "
                   << I.column("type") << std::endl;
+        const std::string id = I.column("id");
+        const int int_id = forceIntegerId(id);
         const std::string type = I.column("type");
+        Atlas::Objects::Entity::Anonymous attrs;
+        Entity * ent = EntityBuilder::instance()->newEntity(id,
+                                                            int_id,
+                                                            type,
+                                                            attrs);
+        
         const std::string location_string = I.column("location");
         MapType loc_data;
         db->decodeMessage(location_string, loc_data);
-        MapType::iterator J = loc_data.find("pos");
-        if (J == loc_data.end()) {
+        ent->m_location.readFromMessage(loc_data);
+        if (!ent->m_location.pos().isValid()) {
             std::cout << "No pos data" << std::endl << std::flush;
         }
-        J = loc_data.find("orientation");
-        if (J == loc_data.end()) {
+        if (!ent->m_location.orientation().isValid()) {
             std::cout << "No orientation data" << std::endl << std::flush;
         }
     }
