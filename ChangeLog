@@ -1,5 +1,10 @@
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/StorageManager.cpp: Fill gaps so world is now completely
+	  restored from database. Currently incredibly verbose and buggy.
+
+2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/StorageManager.cpp: Add some improved debug messages, and
 	  set the value of restored properties.
 

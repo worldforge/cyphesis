@@ -32,6 +32,8 @@
 #include "common/PropertyManager.h"
 #include "common/const.h"
 #include "common/id.h"
+#include "common/log.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -44,6 +46,8 @@
 
 using Atlas::Message::MapType;
 using Atlas::Message::Element;
+
+using String::compose;
 
 typedef Database::KeyValues KeyValues;
 
@@ -91,7 +95,7 @@ StorageManager:: StorageManager(WorldRouter & world) :
 /// \brief Called when a new Entity is inserted in the world
 void StorageManager::entityInserted(Entity * ent)
 {
-    if (ent->getFlags() & entity_ephem) {
+    if (ent->getFlags() & (entity_ephem | entity_clean)) {
         return;
     }
     m_unstoredEntities.push_back(EntityRef(ent));
@@ -143,16 +147,24 @@ void StorageManager::restoreProperties(Entity * ent)
             std::cout << "Bad property data" << std::endl << std::flush;
         }
         Element & val = J->second;
-        if (ent->getProperty(name) != 0) {
-            std::cout << "Already got one" << std::endl << std::flush;
+        PropertyBase * prop = ent->modProperty(name);
+        if (prop != 0) {
+            std::cout << "Setting " << name << " property on " << ent->getId()
+                      << std::endl << std::flush;
+        } else {
+            prop = pm->addProperty(name, val.getType());
+            ent->setProperty(name, prop);
+            std::cout << "Adding " << name << " property to " << ent->getId()
+                      << std::endl << std::flush;
         }
-        PropertyBase * prop = pm->addProperty(name, val.getType());
         prop->set(val);
         prop->setFlags(per_clean | per_seen);
-        std::cout << "Adding " << name << " property to " << ent->getId()
-                  << std::endl << std::flush;
-        ent->setProperty(name, prop);
-        // install(), apply()
+        const TypeNode * type = ent->getType();
+        assert(type != 0);
+        if (type->defaults().find(name) == type->defaults().end()) {
+            prop->install(ent);
+        }
+        prop->apply(ent);
     }
     // Iterate over res and create the property values.
 }
@@ -241,10 +253,10 @@ void StorageManager::updateEntity(Entity * ent)
     ent->setFlags(entity_clean);
 }
 
-void StorageManager::restoreChildren(Entity * ent)
+void StorageManager::restoreChildren(Entity * parent)
 {
     Database * db = Database::instance();
-    DatabaseResult res = db->selectEntities(ent->getId());
+    DatabaseResult res = db->selectEntities(parent->getId());
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Read properties. and restoreChildren
@@ -257,21 +269,27 @@ void StorageManager::restoreChildren(Entity * ent)
         const int int_id = forceIntegerId(id);
         const std::string type = I.column("type");
         Atlas::Objects::Entity::Anonymous attrs;
-        Entity * ent = EntityBuilder::instance()->newEntity(id,
-                                                            int_id,
-                                                            type,
-                                                            attrs);
+        Entity * child = EntityBuilder::instance()->newEntity(id,
+                                                              int_id,
+                                                              type,
+                                                              attrs);
         
         const std::string location_string = I.column("location");
         MapType loc_data;
         db->decodeMessage(location_string, loc_data);
-        ent->m_location.readFromMessage(loc_data);
-        if (!ent->m_location.pos().isValid()) {
+        child->m_location.readFromMessage(loc_data);
+        if (!child->m_location.pos().isValid()) {
             std::cout << "No pos data" << std::endl << std::flush;
+            log(ERROR, compose("Entity %1 restored from database has no "
+                               "POS data. Ignored.", child->getId()));
+            delete child;
+            continue;
         }
-        if (!ent->m_location.orientation().isValid()) {
-            std::cout << "No orientation data" << std::endl << std::flush;
-        }
+        child->m_location.m_loc = parent;
+        child->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+        BaseWorld::instance().addEntity(child);
+        restoreChildren(child);
+        restoreProperties(child);
     }
 }
 
