@@ -137,25 +137,31 @@ void StorageManager::restoreProperties(Entity * ent)
     DatabaseResult::const_iterator I = res.begin();
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
-        std::cout << "Restoring: " << I.column("name") << std::endl;
         const std::string name = I.column("name");
+        if (name.empty()) {
+            log(ERROR, compose("No name column in property row for %1",
+                               ent->getId()));
+            continue;
+        }
         const std::string val_string = I.column("value");
+        if (name.empty()) {
+            log(ERROR, compose("No value column in property row for %1,%2",
+                               ent->getId(), name));
+            continue;
+        }
         MapType prop_data;
         db->decodeMessage(val_string, prop_data);
         MapType::iterator J = prop_data.find("val");
         if (J == prop_data.end()) {
-            std::cout << "Bad property data" << std::endl << std::flush;
+            log(ERROR, compose("No property value data for %1:%2",
+                               ent->getId(), name));
+            continue;
         }
         Element & val = J->second;
         PropertyBase * prop = ent->modProperty(name);
-        if (prop != 0) {
-            std::cout << "Setting " << name << " property on " << ent->getId()
-                      << std::endl << std::flush;
-        } else {
+        if (prop == 0) {
             prop = pm->addProperty(name, val.getType());
             ent->setProperty(name, prop);
-            std::cout << "Adding " << name << " property to " << ent->getId()
-                      << std::endl << std::flush;
         }
         prop->set(val);
         prop->setFlags(per_clean | per_seen);
@@ -257,22 +263,18 @@ void StorageManager::restoreChildren(Entity * parent)
 {
     Database * db = Database::instance();
     DatabaseResult res = db->selectEntities(parent->getId());
+    EntityBuilder * eb = EntityBuilder::instance();
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Read properties. and restoreChildren
     DatabaseResult::const_iterator I = res.begin();
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
-        std::cout << "Restoring: " << I.column("id") << ": "
-                  << I.column("type") << std::endl;
         const std::string id = I.column("id");
         const int int_id = forceIntegerId(id);
         const std::string type = I.column("type");
         Atlas::Objects::Entity::Anonymous attrs;
-        Entity * child = EntityBuilder::instance()->newEntity(id,
-                                                              int_id,
-                                                              type,
-                                                              attrs);
+        Entity * child = eb->newEntity(id, int_id, type, attrs);
         
         const std::string location_string = I.column("location");
         MapType loc_data;
