@@ -1,3 +1,7 @@
+2008-11-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Database.cpp: Disable purging the database on startup.
+
 2008-11-17  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Plant.cpp: Ensure a useful default value is in place

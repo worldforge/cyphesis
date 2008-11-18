@@ -973,9 +973,9 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         allTables.insert("entities");
         // FIXME Flush out the whole state of the databases, to ensure they
         // don't clog up while we are testing.
-        runCommandQuery("DELETE FROM properties");
-        runCommandQuery(compose("DELETE FROM entities WHERE id!=%1",
-                                consts::rootWorldIntId));
+        // runCommandQuery("DELETE FROM properties");
+        // runCommandQuery(compose("DELETE FROM entities WHERE id!=%1",
+                                // consts::rootWorldIntId));
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         return 0;
     }
@@ -1028,7 +1028,7 @@ const DatabaseResult Database::selectEntities(const std::string & loc)
     std::string query = compose("SELECT id, type, seq, location FROM entities"
                                 " WHERE loc = %1", loc);
 
-    std::cout << "Selecting on loc = " << loc << " ... " << std::flush;
+    debug(std::cout << "Selecting on loc = " << loc << " ... " << std::flush;);
 
     return runSimpleSelectQuery(query);
 }
@@ -1107,7 +1107,8 @@ const DatabaseResult Database::selectProperties(const std::string & id)
     std::string query = compose("SELECT name, value FROM properties"
                                 " WHERE id = %1", id);
 
-    std::cout << "Selecting on loc = " << id << " ... " << std::flush;
+    debug(std::cout << "Selecting on id = " << id << " ... "
+                    << std::endl << std::flush;);
 
     return runSimpleSelectQuery(query);
 }
