@@ -151,7 +151,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     update->setTo(getId());
     res.push_back(update);
 
-    StatusProperty * status = requirePropertyClass<StatusProperty>("status");
+    StatusProperty * status = requirePropertyClass<StatusProperty>("status", 1);
     double & new_status = status->data();
     status->setFlags(flag_unsent);
     if (m_nourishment <= 0) {
