@@ -60,7 +60,6 @@ StorageManager:: StorageManager(WorldRouter & world) :
       m_insertQpsNow(0), m_updateQpsNow(0),
       m_insertQpsAvg(0), m_updateQpsAvg(0),
       m_insertQpsIndex(0), m_updateQpsIndex(0)
-
 {
     if (database_flag) {
         world.inserted.connect(sigc::mem_fun(this,
@@ -95,9 +94,20 @@ StorageManager:: StorageManager(WorldRouter & world) :
 /// \brief Called when a new Entity is inserted in the world
 void StorageManager::entityInserted(Entity * ent)
 {
-    if (ent->getFlags() & (entity_ephem | entity_clean)) {
+    if (ent->getFlags() & (entity_ephem)) {
+        // This entity is not persisted.
         return;
     }
+    if (ent->getFlags() & (entity_clean)) {
+        // This entity has just been restored from the database, so does
+        // not need to be inserted, but will need to be updated.
+        // For non-restored entities that have been newly created this
+        // signal will be connected later once the initial database insert
+        // has been done.
+        ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
+        return;
+    }
+    // Queue the entity to be inserted into the persistence tables.
     m_unstoredEntities.push_back(EntityRef(ent));
     ent->setFlags(entity_queued);
 }

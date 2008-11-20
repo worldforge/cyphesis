@@ -1,3 +1,8 @@
+2008-11-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/StorageManager.cpp: Hook restored entities to the update
+	  functions, or they never get subsequent updates.
+
 2008-11-18  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp: Remove some debug output, improve

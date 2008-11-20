@@ -1,3 +1,5 @@
+seq is not restored.
+
 Properties added by requirePropertyClass and perhaps related functions
 are not getting installed or applied.
 
