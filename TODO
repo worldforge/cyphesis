@@ -1,3 +1,9 @@
+Allow generic simulated entities which have a real ID, but are not yet in
+the world. The server will track them for you, and control varies depending
+on privs. e.g. admin can create arbitrary simulated entities, and then insert
+them for real. simulated is a bad term because in fact the difference is that 
+they are _NOT_ simulated.
+
 seq is not restored.
 
 Properties added by requirePropertyClass and perhaps related functions
