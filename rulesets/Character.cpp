@@ -93,8 +93,16 @@ const double Character::energyLaidDown = 0.1;
 // Ammount of weight gained as a result. High for Acorn.
 const double Character::weightGain = 0.5;
 
-static const std::string RIGHT_HAND_WIELD = "right_hand_wield";
+static const std::string FOOD = "food";
+static const std::string MASS = "mass";
+static const std::string MAXMASS = "maxmass";
 static const std::string OUTFIT = "outfit";
+static const std::string RIGHT_HAND_WIELD = "right_hand_wield";
+static const std::string SERIALNO = "serialno";
+static const std::string STAMINA = "stamina";
+static const std::string STATISTICS = "statistics";
+static const std::string STATUS = "status";
+static const std::string TASKS = "tasks";
 
 /// \brief Calculate how the Characters metabolism has affected it in the
 /// last tick
@@ -112,18 +120,18 @@ void Character::metabolise(OpVector & res, double ammount)
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
 
-    StatusProperty * status_prop = modPropertyClass<StatusProperty>("status");
+    StatusProperty * status_prop = modPropertyClass<StatusProperty>(STATUS);
     if (status_prop == 0) {
         // FIXME Probably don't do enough here to set up the property.
         status_prop = new StatusProperty;
         assert(status_prop != 0);
-        m_properties["status"] = status_prop;
+        m_properties[STATUS] = status_prop;
         status_prop->set(1.f);
     }
     double & status = status_prop->data();
     status_prop->setFlags(flag_unsent);
 
-    Property<double> * food_prop = modPropertyType<double>("food");
+    Property<double> * food_prop = modPropertyType<double>(FOOD);
     // DIGEST
     if (food_prop != 0) {
         double & food = food_prop->data();
@@ -137,7 +145,7 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
 
-    Property<double> * mass_prop = modPropertyType<double>("mass");
+    Property<double> * mass_prop = modPropertyType<double>(MASS);
     // If status is very high, we gain weight
     if (status > (1.5 + energyLaidDown)) {
         status -= energyLaidDown;
@@ -146,7 +154,7 @@ void Character::metabolise(OpVector & res, double ammount)
             mass += weightGain;
             mass_prop->setFlags(flag_unsent);
             Element maxmass_attr;
-            if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT)) {
+            if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT)) {
                 mass = std::min(mass, maxmass_attr.Float());
             }
         }
@@ -170,7 +178,7 @@ void Character::metabolise(OpVector & res, double ammount)
     // FIXME Stamina property?
     if (m_task == 0 && !m_movement.updateNeeded(m_location)) {
 
-        Property<double> * stamina_prop = modPropertyType<double>("stamina");
+        Property<double> * stamina_prop = modPropertyType<double>(STAMINA);
         if (stamina_prop != 0) {
             double & stamina = stamina_prop->data();
             if (stamina < 1.f) {
@@ -247,7 +255,7 @@ Character::Character(const std::string & id, long intId) :
                m_task(0), m_isAlive(true),
                m_mind(0), m_externalMind(0)
 {
-    m_properties["statistics"] = new StatisticsProperty(m_statistics, 0);
+    m_properties[STATISTICS] = new StatisticsProperty(m_statistics, 0);
     m_properties[RIGHT_HAND_WIELD] = new EntityProperty;
 }
 
@@ -312,7 +320,7 @@ void Character::clearTask()
     m_task = 0;
 
     Anonymous set_arg;
-    set_arg->setAttr("tasks", ListType());
+    set_arg->setAttr(TASKS, ListType());
     set_arg->setId(getId());
 
     Set set;
@@ -339,7 +347,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
         if (arg->getName() == "move") {
             // Deal with movement.
             Element serialno;
-            if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
+            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
                 if (serialno.asInt() < m_movement.serialno()) {
                     debug(std::cout << "Old tick" << std::endl << std::flush;);
                     return;
@@ -354,7 +362,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             res.push_back(m_movement.generateMove(return_location));
             Anonymous tick_arg;
             tick_arg->setName("move");
-            tick_arg->setAttr("serialno", m_movement.serialno());
+            tick_arg->setAttr(SERIALNO, m_movement.serialno());
             Tick tickOp;
             tickOp->setTo(getId());
             tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
@@ -366,7 +374,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                 return;
             }
             Element serialno;
-            if (arg->copyAttr("serialno", serialno) == 0 && (serialno.isInt())) {
+            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
                 if (serialno.asInt() != m_task->serialno()) {
                     debug(std::cout << "Old tick" << std::endl << std::flush;);
                     return;
@@ -416,11 +424,11 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = op->getArgs().front();
     Element mass_attr;
-    if (arg->copyAttr("mass", mass_attr) != 0 || !mass_attr.isNum()) {
+    if (arg->copyAttr(MASS, mass_attr) != 0 || !mass_attr.isNum()) {
         return;
     }
 
-    Property<double> * food_prop = requirePropertyClass<Property<double> >("food", 0.f);
+    Property<double> * food_prop = requirePropertyClass<Property<double> >(FOOD, 0.f);
     double & food = food_prop->data();
     food += mass_attr.asNum();
     food_prop->setFlags(flag_unsent);
@@ -428,7 +436,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     // FIXME This will become a Update once private properties are sorted
     Anonymous food_ent;
     food_ent->setId(getId());
-    food_ent->setAttr("food", food);
+    food_ent->setAttr(FOOD, food);
 
     Set s;
     s->setArgs1(food_ent);
@@ -1034,7 +1042,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
     Element stamina_attr;
-    if (getAttrType("stamina", stamina_attr, Element::TYPE_FLOAT)) {
+    if (getAttrType(STAMINA, stamina_attr, Element::TYPE_FLOAT)) {
         if (stamina_attr.Float() <= 0.f) {
             // Character is immobilised.
             return;
@@ -1056,7 +1064,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             return;
         }
         Element mass;
-        if (!other->getAttr("mass", mass) || !mass.isFloat() ||
+        if (!other->getAttr(MASS, mass) || !mass.isFloat() ||
             mass.Float() > m_statistics.get("strength")) {
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
@@ -1201,7 +1209,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
         Tick tickOp;
         Anonymous tick_arg;
-        tick_arg->setAttr("serialno", m_movement.serialno());
+        tick_arg->setAttr(SERIALNO, m_movement.serialno());
         tick_arg->setName("move");
         tickOp->setArgs1(tick_arg);
         tickOp->setTo(getId());

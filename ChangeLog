@@ -1,3 +1,8 @@
+2008-11-21  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp: Use std::strings rather the literals for
+	  property names.
+
 2008-11-20  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/StorageManager.cpp: Hook restored entities to the update
