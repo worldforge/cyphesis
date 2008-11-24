@@ -1,3 +1,8 @@
+2008-11-24  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp: Remove the hard coded property for wielding
+	  as it will always be handled dynamically as required.
+
 2008-11-21  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp: Use std::strings rather the literals for

@@ -256,7 +256,6 @@ Character::Character(const std::string & id, long intId) :
                m_mind(0), m_externalMind(0)
 {
     m_properties[STATISTICS] = new StatisticsProperty(m_statistics, 0);
-    m_properties[RIGHT_HAND_WIELD] = new EntityProperty;
 }
 
 Character::~Character()
