@@ -1,3 +1,8 @@
+Move the functionality from Statistics into StatisticsProperty, getting
+rid of the class completely. Make it the simplest possible interface for the
+python script, then see if this can be generalised for more broadly
+applicable stuff. Python properties?
+
 Allow generic simulated entities which have a real ID, but are not yet in
 the world. The server will track them for you, and control varies depending
 on privs. e.g. admin can create arbitrary simulated entities, and then insert
