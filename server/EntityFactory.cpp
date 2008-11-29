@@ -25,7 +25,6 @@
 #include "PersistantThingFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
-#include "ArithmeticFactory.h"
 #include "Persistance.h"
 #include "Player.h"
 
@@ -84,8 +83,6 @@ EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
     installFactory("creator", "character", new ThingFactory<Creator>());
     installFactory("plant", "thing", new ThingFactory<Plant>());
     installFactory("stackable", "thing", new ThingFactory<Stackable>());
-
-    m_statisticsFactories["settler"] = new PythonArithmeticFactory("world.statistics.Statistics", "Statistics");
 
     // The property manager instance installs itself at construction time.
     new CorePropertyManager();
@@ -236,16 +233,6 @@ Task * EntityBuilder::activateTask(const std::string & tool,
     return 0;
 }
 
-int EntityBuilder::addStatisticsScript(Character & character) const
-{
-    StatisticsFactoryDict::const_iterator I = m_statisticsFactories.begin();
-    if (I == m_statisticsFactories.end()) {
-        return -1;
-    }
-    I->second->newScript(character);
-    return 0;
-}
-
 /// \brief Clear out all the factory objects owned by the entity builder.
 void EntityBuilder::flushFactories()
 {
@@ -254,12 +241,6 @@ void EntityBuilder::flushFactories()
         delete I->second;
     }
     m_entityFactories.clear();
-    StatisticsFactoryDict::const_iterator J = m_statisticsFactories.begin();
-    StatisticsFactoryDict::const_iterator Jend = m_statisticsFactories.end();
-    for (; J != Jend; ++J) {
-        delete J->second;
-    }
-    m_statisticsFactories.clear();
     TaskFactoryDict::const_iterator K = m_taskFactories.begin();
     TaskFactoryDict::const_iterator Kend = m_taskFactories.end();
     for (; K != Kend; ++K) {

@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Statistics.cpp,v 1.11 2007-12-03 23:18:52 alriddoch Exp $
+// $Id$
+
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include "Statistics.h"
 

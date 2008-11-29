@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Python_API.cpp,v 1.175 2008-01-05 00:05:29 alriddoch Exp $
+// $Id$
 
 #include "Python.h"
 
@@ -36,7 +36,6 @@
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
 #include "Py_Oplist.h"
-#include "Py_Statistics.h"
 #include "Py_Property.h"
 
 #include "PythonThingScript.h"
@@ -1104,16 +1103,17 @@ void init_python_api()
     PyWorld * world = newPyWorld();
     PyModule_AddObject(server, "world", (PyObject *)world);
 
-    PyObject * rules = Py_InitModule("rulesets", no_methods);
-    if (rules == NULL) {
-        log(CRITICAL, "Python init failed to create rules module");
-        return;
-    }
-    if (PyType_Ready(&PyStatistics_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Statistics wrapper type");
-        return;
-    }
-    PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
+    // FIXME Remove once we are sure.
+    // PyObject * rules = Py_InitModule("rulesets", no_methods);
+    // if (rules == NULL) {
+        // log(CRITICAL, "Python init failed to create rules module");
+        // // return;
+    // }
+    // if (PyType_Ready(&PyStatistics_Type) < 0) {
+        // log(CRITICAL, "Python init failed to ready Statistics wrapper type");
+        // return;
+    // }
+    // PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
 
     PyObject * point3d = Py_InitModule("Point3D", no_methods);
     if (point3d == NULL) {

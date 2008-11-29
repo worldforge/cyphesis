@@ -23,7 +23,6 @@
 #include "BaseMind.h"
 #include "World.h"
 #include "Task.h"
-#include "StatisticsProperty.h"
 #include "EntityProperty.h"
 #include "OutfitProperty.h"
 #include "StatusProperty.h"
@@ -250,12 +249,10 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 Character::Character(const std::string & id, long intId) :
            Identified(id, intId),
            Character_parent(id, intId),
-               m_statistics(*this),
                m_movement(*new Pedestrian(*this)),
                m_task(0), m_isAlive(true),
                m_mind(0), m_externalMind(0)
 {
-    m_properties[STATISTICS] = new StatisticsProperty(m_statistics, 0);
 }
 
 Character::~Character()
@@ -1063,8 +1060,9 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             return;
         }
         Element mass;
-        if (!other->getAttr(MASS, mass) || !mass.isFloat() ||
-            mass.Float() > m_statistics.get("strength")) {
+        if (!other->getAttr(MASS, mass) || !mass.isFloat()) {
+            // FIXME Check against strength
+            // || mass.Float() > m_statistics.get("strength"));
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
             return;
         }

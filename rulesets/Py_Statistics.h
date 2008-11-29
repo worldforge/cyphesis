@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Statistics.h,v 1.4 2006-10-26 00:48:11 alriddoch Exp $
+// $Id$
+
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef RULESETS_PY_STATISTICS_H
 #define RULESETS_PY_STATISTICS_H

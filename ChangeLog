@@ -1,3 +1,29 @@
+2008-11-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp, rulesets/Character.h: Remove all traces
+	  of the hard coded statistics property from Character.
+
+	* rulesets/Py_Property.cpp: Don't use Py_StatisticsProperty as the
+	  default wrapper for a statistics property because it will no
+	  longer work this way.
+
+	* rulesets/Python_API.cpp: Remove the setup for the Statistics
+	  wrapper.
+
+	* rulesets/StatisticsProperty.cpp, rulesets/StatisticsProperty.h:
+	  Change the footprint of this class so it is no longer hooked
+	  into part of the Character class, and instead handles looking
+	  up values from the script directly, and owns the script itself.
+
+	* server/ArithmeticFactory.cpp, server/ArithmeticFactory.h,
+	  server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/PersistantThingFactory.cpp: Remove setup of hard coded
+	  statistics property.
+
+	* rulesets/Statistics.h, rulesets/Statistics.cpp,
+	  rulesets/Py_Statistics.h, rulesets/Py_Statistics.cpp,
+	  rulesets/Makefile.am: Remove clases that are no longer used.
+
 2008-11-24  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp: Remove the hard coded property for wielding

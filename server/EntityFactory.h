@@ -40,8 +40,6 @@ typedef std::map<std::string, EntityKit *> FactoryDict;
 typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
 typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
 typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
-typedef std::map<std::string, ArithmeticFactory *> StatisticsFactoryDict;
-
 
 /// \brief Class to handle rules that cannot yet be installed, and the reason
 class RuleWaiting {
@@ -69,7 +67,6 @@ class EntityBuilder {
     FactoryDict m_entityFactories;
     TaskFactoryDict m_taskFactories;
     TaskFactoryActivationDict m_taskActivations;
-    StatisticsFactoryDict m_statisticsFactories;
 
     BaseWorld & m_world;
     RuleWaitList m_waitingRules;
@@ -138,7 +135,6 @@ class EntityBuilder {
                         const std::string & op,
                         const std::string & target,
                         Character & owner) const;
-    int addStatisticsScript(Character & character) const;
 
     int installRule(const std::string & class_name,
                     const Atlas::Objects::Root & class_desc);

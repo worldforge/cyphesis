@@ -22,8 +22,6 @@
 
 #include "Thing.h"
 
-#include "Statistics.h"
-
 #include "modules/EntityRef.h"
 
 #include <sigc++/connection.h>
@@ -48,8 +46,6 @@ typedef Thing Character_parent;
 /// \ingroup EntityClasses
 class Character : public Character_parent {
   protected:
-    /// \brief Mathematical model that calculates characters stats and abilities
-    Statistics m_statistics;
     /// \brief Handler for simulating movement under direction from the mind
     Movement & m_movement;
     /// \brief Handler for a medium term task being undertaken
@@ -83,8 +79,6 @@ class Character : public Character_parent {
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
 
-    /// \brief Accessor for mathematical stats model
-    Statistics & statistics() { return m_statistics; }
     /// \brief Accessor for medium term task
     Task * task() { return m_task; }
 

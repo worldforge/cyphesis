@@ -15,13 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.cpp,v 1.7 2007-07-04 16:42:11 alriddoch Exp $
+// $Id$
 
 #include "Py_Property.h"
 
-#include "Py_Statistics.h"
 #include "StatisticsProperty.h"
-#include "Statistics.h"
 #include "TerrainProperty.h"
 #include "PythonArithmeticScript.h"
 
@@ -33,19 +31,22 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
 {
     StatisticsProperty * sp = dynamic_cast<StatisticsProperty *>(property);
     if (sp != 0) {
-        PythonArithmeticScript * script = dynamic_cast<PythonArithmeticScript *>(sp->data().m_script);
+        PythonArithmeticScript * script = dynamic_cast<PythonArithmeticScript *>(sp->script());
         if (script != 0) {
             PyObject * o = script->script();
             Py_INCREF(o);
             return o;
         } else {
-            log(WARNING, "Unexpected non-python Statistics script");
-            PyStatistics * ps = newPyStatistics();
-            if (ps == NULL) {
-                return NULL;
-            }
-            ps->m_entity = owner;
-            return (PyObject*)ps;
+            log(ERROR, "Unexpected non-python Statistics script");
+            // FIXME Do we need PyStatisticsProperty for this kind of thing?
+            // PyStatistics * ps = newPyStatistics();
+            // if (ps == NULL) {
+                // return NULL;
+            // }
+            // ps->m_entity = owner;
+            // return (PyObject*)ps;
+            Py_INCREF(Py_None);
+            return Py_None;
         }
     }
     TerrainProperty * tp = dynamic_cast<TerrainProperty *>(property);

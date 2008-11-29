@@ -50,13 +50,6 @@ World * ThingFactory<World>::newThing(const std::string & id, long intId)
     return 0;
 }
 
-template<>
-int ThingFactory<Character>::populate(Entity & e)
-{
-    EntityBuilder::instance()->addStatisticsScript((Character &)e);
-    return 0;
-}
-
 template class ThingFactory<Thing>;
 template class ThingFactory<Character>;
 template class ThingFactory<Creator>;

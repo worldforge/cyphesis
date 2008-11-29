@@ -1,3 +1,6 @@
+As noted before, ArithmeticFactory ScriptFactory and TaskFactory contain
+much common code. Use inheritance.
+
 Move the functionality from Statistics into StatisticsProperty, getting
 rid of the class completely. Make it the simplest possible interface for the
 python script, then see if this can be generalised for more broadly

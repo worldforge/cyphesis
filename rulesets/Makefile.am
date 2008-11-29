@@ -49,7 +49,6 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     TransientProperty.cpp TransientProperty.h \
 			     MindProperty.cpp MindProperty.h \
 			     InternalProperties.cpp InternalProperties.h \
-			     Statistics.cpp Statistics.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
@@ -76,7 +75,6 @@ libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
 			    Py_World.cpp Py_World.h \
 			    Py_Location.cpp Py_Location.h \
 			    Py_Task.cpp Py_Task.h \
-			    Py_Statistics.cpp Py_Statistics.h \
 			    Py_Property.cpp Py_Property.h \
 			    Py_TerrainProperty.cpp \
 			    Python_API.cpp Python_API.h \
