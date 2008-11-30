@@ -16,20 +16,20 @@ class House3(Thing):
         # West wall  with door
 	loc = Location(self, Point3D(0,0,-1))
         loc.bbox = Vector3D(0.1,2,4)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(parents=['wall'],location=loc),to=self))
 	loc = Location(self, Point3D(0,4,-1))
         loc.bbox = Vector3D(0.1,2,4)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(parents=['wall'],location=loc),to=self))
         # South wall
 	loc = Location(self, Point3D(0,0,-1))
         loc.bbox = Vector3D(9,0.1,4)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(parents=['wall'],location=loc),to=self))
         # North wall
 	loc = Location(self, Point3D(0,5.9,-1))
         loc.bbox = Vector3D(9,0.1,4)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(parents=['wall'],location=loc),to=self))
         # East wall
 	loc = Location(self, Point3D(8.9,0,-1))
         loc.bbox = Vector3D(0.1,6,4)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(parents=['wall'],location=loc),to=self))
         return ret

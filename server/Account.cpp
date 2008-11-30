@@ -141,7 +141,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         create_arg->setParents(std::list<std::string>(1,"coin"));
         ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
         create_arg->setLoc(chr->getId());
-        create_arg->setName("coin");
         // FIXME We can probably send the same op 10 times, rather than create 10
         // FIXME alternatively we can set 10 args on one op
         for(int i = 0; i < 10; i++) {
@@ -153,7 +152,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
         create_arg = create_arg.copy();
         create_arg->setParents(std::list<std::string>(1, "shirt"));
-        create_arg->setName("shirt");
         Create c;
         c->setTo(chr->getId());
         c->setArgs1(create_arg);
@@ -161,7 +159,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
         create_arg = create_arg.copy();
         create_arg->setParents(std::list<std::string>(1, "trousers"));
-        create_arg->setName("trousers");
         c = Create();
         c->setTo(chr->getId());
         c->setArgs1(create_arg);
@@ -169,7 +166,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
         create_arg = create_arg.copy();
         create_arg->setParents(std::list<std::string>(1, "cloak"));
-        create_arg->setName("cloak");
         c = Create();
         c->setTo(chr->getId());
         c->setArgs1(create_arg);
@@ -177,7 +173,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
         create_arg = create_arg.copy();
         create_arg->setParents(std::list<std::string>(1, "boots"));
-        create_arg->setName("boots");
         c = Create();
         c->setTo(chr->getId());
         c->setArgs1(create_arg);
@@ -185,7 +180,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
 
         create_arg = create_arg.copy();
         create_arg->setParents(std::list<std::string>(1, "hat"));
-        create_arg->setName("hat");
         c = Create();
         c->setTo(chr->getId());
         c->setArgs1(create_arg);

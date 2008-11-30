@@ -1,5 +1,13 @@
 2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Account.cpp: Don't give names to items in the default
+	  inventory.
+
+	* rulesets/mason/world/objects/buildings/House3.py: Don't give
+	  names to the invisible wall objects.
+
+2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/AllPropertytest.cpp: Statistics property no longer needs
 	  to be connected to a character.
 
