@@ -29,7 +29,6 @@
 #include "rulesets/TerrainProperty.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/Statistics.h"
 
 #include "common/Property_impl.h"
 
@@ -141,8 +140,7 @@ int main()
 #endif
 
     {
-        Character test_char("1", 1);
-        StatisticsProperty test_property(test_char.statistics(), 0);
+        StatisticsProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 
