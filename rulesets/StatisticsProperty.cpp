@@ -17,8 +17,11 @@
 
 // $Id$
 
+#include <Python.h>
+
 #include "StatisticsProperty.h"
 
+#include "rulesets/ArithmeticScript.h"
 #include "rulesets/ArithmeticFactory.h"
 
 #include "common/log.h"
@@ -42,27 +45,57 @@ StatisticsProperty::StatisticsProperty() : PropertyBase(0), m_script(0)
 
 void StatisticsProperty::install(Entity * ent)
 {
-    Entity * instance = 0;
-    if (flags() & flag_class) {
-        log(NOTICE, "Installing class statisticsp");
-    } else {
-        log(NOTICE, "Installing instance statisticsp");
-        Entity * instance = ent;
-    }
-
-    PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
-    m_script = paf.newScript(instance);
 }
 
 void StatisticsProperty::apply(Entity * ent)
 {
+    log(NOTICE, "Applying instance statisticsp");
+    if (m_script == 0) {
+        Entity * instance = 0;
+        if (flags() & flag_class) {
+            log(NOTICE, "Installing class statisticsp");
+        } else {
+            log(NOTICE, "Installing instance statisticsp");
+            instance = ent;
+        }
+
+        PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
+        m_script = paf.newScript(instance);
+    }
+    std::map<std::string, double>::const_iterator I = m_data.begin();
+    std::map<std::string, double>::const_iterator Iend = m_data.end();
+    for (; I != Iend; ++I) {
+        m_script->set(I->first, I->second);
+    }
 }
 
-bool StatisticsProperty::get(Element & ent) const
+bool StatisticsProperty::get(Element & val) const
 {
-    return false;
+    val = MapType();
+    MapType & val_map = val.Map();
+
+    std::map<std::string, double>::const_iterator I = m_data.begin();
+    std::map<std::string, double>::const_iterator Iend = m_data.end();
+    for (; I != Iend; ++I) {
+        val_map[I->first] = I->second;
+    }
+    return true;
 }
 
 void StatisticsProperty::set(const Element & ent)
 {
+    if (!ent.isMap()) {
+        log(WARNING, "Non map statistics");
+        return;
+    }
+    const MapType & smap = ent.Map();
+    MapType::const_iterator I = smap.begin();
+    MapType::const_iterator Iend = smap.end();
+    for (; I != Iend; ++I) {
+        if (!I->second.isNum()) {
+            log(WARNING, "Non numeric stat");
+            continue;
+        }
+        m_data[I->first] = I->second.asNum();
+    }
 }

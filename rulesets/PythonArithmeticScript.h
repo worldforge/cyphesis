@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonArithmeticScript.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PYTHON_ARITHMETIC_SCRIPT_H
 #define RULESETS_PYTHON_ARITHMETIC_SCRIPT_H
@@ -37,6 +37,7 @@ class PythonArithmeticScript : public ArithmeticScript {
     struct _object * script() const { return m_script; }
 
     virtual int attribute(const std::string & name, float & val);
+    virtual int set(const std::string & name, const float & val);
 };
 
 #endif // RULESETS_PYTHON_ARITHMETIC_SCRIPT_H

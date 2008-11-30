@@ -139,6 +139,7 @@ PropertyBase * Entity::modProperty(const std::string & name)
             PropertyBase * new_prop = PropertyManager::instance()->addProperty(name, val.getType());
             new_prop->set(val);
             m_properties[name] = new_prop;
+            new_prop->apply(this);
             return new_prop;
         }
     }

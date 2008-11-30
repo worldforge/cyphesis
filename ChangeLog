@@ -1,5 +1,26 @@
 2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/world/statistics/Statistics.py: Make this a new
+	  style class so properties work right, and implement it all
+	  as properties.
+
+
+	* rulesets/StatisticsProperty.cpp: Move the setup of the script
+	  instance into apply rather than install, otherwise it doesn't get
+	  called in the right place.
+
+	* rulesets/ArithmeticScript.h: Add a set method to the interface.
+
+	* rulesets/PythonArithmeticScript.cpp,
+	  rulesets/PythonArithmeticScript.h: Implement getting using
+	  PyObject_GenericGetAttr() as it works. Add a completely new set
+	  function.
+
+	* rulesets/Entity.cpp: When a new property is installed it needs
+	  to be applied.
+
+2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Makefile.am: Add ArithmeticFactory to the build in this
 	  directory.
 

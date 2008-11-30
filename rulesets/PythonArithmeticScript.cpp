@@ -40,11 +40,9 @@ PythonArithmeticScript::~PythonArithmeticScript()
 
 int PythonArithmeticScript::attribute(const std::string & name, float & val)
 {
-    PyObject * py_name = PyString_FromString(name.c_str());
-    PyObject * ret = PyObject_CallMethod(m_script,
-                                         (char *)"attribute",
-                                         (char *)"(O)", py_name);
-    Py_DECREF(py_name);
+    PyObject * pn = PyString_FromString(name.c_str());
+    PyObject * ret = PyObject_GenericGetAttr(m_script, pn);
+    Py_DECREF(pn);
     if (ret == NULL) {
         if (PyErr_Occurred() == NULL) {
             // std::cout << "No attribute method" << std::endl << std::flush;
@@ -65,4 +63,14 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
         return -1;
     }
     return 0;
+}
+
+int PythonArithmeticScript::set(const std::string & name, const float & val)
+{
+    std::cout << "Setting " << name << std::endl << std::flush;
+    PyObject * pn = PyString_FromString(name.c_str());
+    PyObject * py_val = PyFloat_FromDouble(val);
+    PyObject_GenericSetAttr(m_script, pn, py_val);
+    Py_DECREF(pn);
+    Py_DECREF(py_val);
 }

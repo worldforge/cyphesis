@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ArithmeticScript.h,v 1.6 2006-12-24 17:18:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_ARITHMETIC_SCRIPT_H
 #define RULESETS_ARITHMETIC_SCRIPT_H
@@ -34,6 +34,12 @@ class ArithmeticScript {
     /// @param name of the value to be retrieved
     /// @param val value returned by the model
     virtual int attribute(const std::string & name, float & val) = 0;
+
+    /// \brief Retrieve a named value from the arithmetic model
+    ///
+    /// @param name of the value to be retrieved
+    /// @param val value returned by the model
+    virtual int set(const std::string & name, const float & val) = 0;
 };
 
 #endif // RULESETS_ARITHMETIC_SCRIPT_H
