@@ -1,5 +1,13 @@
 2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* configure.ac: Increment version to 0.5.18 for release.
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.18
+
+2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/Account.cpp: Don't give names to items in the default
 	  inventory.
 
