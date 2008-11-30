@@ -7,19 +7,18 @@ try:
 except ImportError:
   from whrandom import *
 
-import rulesets
-
-class Statistics(rulesets.Statistics):
+class Statistics:
     """A very simple Statistics example."""
-    def __init__(self, entity):
-        super(Statistics, self).__init__(entity)
+    def __init__(self, entity=None): pass
+        # Set it up or sumink
     def attribute(self, name):
+        print "Request for %s" % name
         if name == "attack":
             return 1
         if name == "defence":
             return 1
         if name == "strength":
-            if hasattr(self.character, 'mass'):
+            if self.character and hasattr(self.character, 'mass'):
                 return self.character.mass
             else:
                 return 0

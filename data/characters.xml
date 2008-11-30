@@ -218,6 +218,13 @@
         <string name="default">male</string>
         <string name="visibility">public</string>
       </map>
+      <map name="statistics">
+        <map name="default">
+          <float name="strength">23</float>
+          <float name="attack">25</float>
+          <float name="defend">21</float>
+        </map>
+      </map>
     </map>
     <string name="id">settler</string>
     <string name="objtype">class</string>

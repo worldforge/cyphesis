@@ -1,5 +1,24 @@
 2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Makefile.am: Add ArithmeticFactory to the build in this
+	  directory.
+
+	* data/characters.xml: Add test statistics to the class.
+
+	* rulesets/StatisticsProperty.cpp, rulesets/StatisticsProperty.h:
+	  Add an install method which creates a script instance.
+
+	* rulesets/mason/world/statistics/Statistics.py: Make the reference
+	  to the owner optional.
+
+	* server/CorePropertyManager.cpp: Add "statistics" to the factory.
+
+	* server/Makefile.am, server/ArithmeticFactory.cpp,
+	  server/ArithmeticFactory.h: Remove unused ArithmeticFactory code
+	  from the build.
+
+2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityFactory.h: Remove obsolete forward declaration.
 
 2008-11-29  Al Riddoch  <alriddoch@googlemail.com>

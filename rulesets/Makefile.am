@@ -52,7 +52,9 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
-			     ArithmeticScript.cpp ArithmeticScript.h
+			     ArithmeticScript.cpp ArithmeticScript.h \
+			     ArithmeticFactory.cpp ArithmeticFactory.h
+
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \

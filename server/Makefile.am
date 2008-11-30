@@ -85,7 +85,6 @@ cyphesis_SOURCES = \
 		StorageManager.cpp StorageManager.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
-		ArithmeticFactory.cpp ArithmeticFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \
@@ -135,7 +134,6 @@ cyslave_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
-		ArithmeticFactory.cpp ArithmeticFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		EntityFactory.cpp EntityFactory.h \
 		Lobby.cpp Lobby.h \

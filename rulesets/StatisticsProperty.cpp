@@ -19,6 +19,10 @@
 
 #include "StatisticsProperty.h"
 
+#include "rulesets/ArithmeticFactory.h"
+
+#include "common/log.h"
+
 #include <cassert>
 
 static const bool debug_flag = false;
@@ -33,6 +37,24 @@ using Atlas::Message::FloatType;
 /// @param data variable that holds the Property value
 /// @param flags flags to indicate how this property is stored
 StatisticsProperty::StatisticsProperty() : PropertyBase(0), m_script(0)
+{
+}
+
+void StatisticsProperty::install(Entity * ent)
+{
+    Entity * instance = 0;
+    if (flags() & flag_class) {
+        log(NOTICE, "Installing class statisticsp");
+    } else {
+        log(NOTICE, "Installing instance statisticsp");
+        Entity * instance = ent;
+    }
+
+    PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
+    m_script = paf.newScript(instance);
+}
+
+void StatisticsProperty::apply(Entity * ent)
 {
 }
 

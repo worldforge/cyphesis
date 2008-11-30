@@ -26,6 +26,7 @@
 #include "rulesets/SolidProperty.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Entity.h"
+#include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
@@ -238,6 +239,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["mind"] = new PropertyFactory<MindProperty>;
     m_propertyFactories["setup"] = new PropertyFactory<SetupProperty>;
     m_propertyFactories["tick"] = new PropertyFactory<TickProperty>;
+    m_propertyFactories["statistics"] = new PropertyFactory<StatisticsProperty>;
     
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;

@@ -17,6 +17,9 @@
 
 // $Id$
 
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef SERVER_ARITHMETIC_FACTORY_H
 #define SERVER_ARITHMETIC_FACTORY_H
 
