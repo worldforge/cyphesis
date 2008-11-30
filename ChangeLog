@@ -1,5 +1,11 @@
 2008-11-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/ArithmeticFactory.h, rulesets/ArithmeticFactory.cpp:
+	  Fix up ArithmeticFactory code to be in rulesets, and allow
+	  for the case where there is no owner for the script.
+
+2008-11-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Character.cpp, rulesets/Character.h: Remove all traces
 	  of the hard coded statistics property from Character.
 
