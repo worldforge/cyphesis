@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_ARITHMETIC_FACTORY_H
-#define SERVER_ARITHMETIC_FACTORY_H
+#ifndef RULESETS_ARITHMETIC_FACTORY_H
+#define RULESETS_ARITHMETIC_FACTORY_H
 
 #include <Python.h>
 
@@ -61,4 +61,4 @@ class PythonArithmeticFactory : public ArithmeticFactory {
     virtual ArithmeticScript * newScript(Entity * owner);
 };
 
-#endif // SERVER_ARITHMETIC_FACTORY_H
+#endif // RULESETS_ARITHMETIC_FACTORY_H

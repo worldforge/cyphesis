@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "server/ArithmeticFactory.h"
+#include "rulesets/ArithmeticFactory.h"
 
 #include "rulesets/PythonArithmeticScript.h"
 #include "rulesets/Py_Thing.h"
@@ -106,11 +106,18 @@ ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
 
     // FIXME Pass in entity for initialisation of entity pointer in
     // EntityWrapper.
-    PyObject * entity = wrapEntity(owner);
-    if (entity == 0) {
-        log(ERROR, "Could not wrap character when installing statistics");
+    PyObject * py_object;
+
+    if (owner == 0) {
+        py_object = PyEval_CallFunction(m_class, "()");
+    } else {
+        PyObject * entity = wrapEntity(owner);
+        if (entity == 0) {
+            log(ERROR, "Could not wrap character when installing statistics");
+            return 0;
+        }
+        py_object = PyEval_CallFunction(m_class, "(O)", entity);
     }
-    PyObject * py_object = PyEval_CallFunction(m_class, "(O)", entity);
     
     if (py_object == 0) {
         if (PyErr_Occurred() == NULL) {
