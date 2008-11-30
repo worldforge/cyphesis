@@ -1,3 +1,7 @@
+2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityFactory.h: Remove obsolete forward declaration.
+
 2008-11-29  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/ArithmeticFactory.h, rulesets/ArithmeticFactory.cpp:

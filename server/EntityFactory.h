@@ -25,7 +25,6 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-class ArithmeticFactory;
 class BaseWorld;
 class Character;
 class Entity;
