@@ -12,26 +12,23 @@ class Statistics(object):
         # Set it up or sumink
 
     def calc_attack(self):
-        print "Request for attack"
+        # print "Request for attack"
         return 1
 
     def calc_defence(self):
-        print "Request for defence"
+        # print "Request for defence"
         return 1
 
     def calc_strength(self):
-        print "Request for strength"
+        # print "Request for strength"
         if hasattr(self, 'character') and hasattr(self.character, 'mass'):
             return self.character.mass
         else:
             return 0
 
-    def set_strength(self, val):
-        print "Setting strength to %d" % val
-
-    def del_strength(self):
-        print "del strength"
+    def set_strength(self, val): pass
+        # print "Setting strength to %d" % val
 
     attack = property(calc_attack)
     defence = property(calc_defence)
-    strength = property(calc_strength, set_strength, del_strength)
+    strength = property(calc_strength, set_strength)

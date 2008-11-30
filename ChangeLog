@@ -1,5 +1,13 @@
 2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/PythonArithmeticScript.cpp,
+	  rulesets/StatisticsProperty.cpp: Remove the debug output.
+
+	* rulesets/mason/world/statistics/Statistics.py: Get rid of the
+	  useless del property, and clean up debug output.
+
+2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/world/statistics/Statistics.py: Make this a new
 	  style class so properties work right, and implement it all
 	  as properties.

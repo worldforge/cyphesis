@@ -49,13 +49,10 @@ void StatisticsProperty::install(Entity * ent)
 
 void StatisticsProperty::apply(Entity * ent)
 {
-    log(NOTICE, "Applying instance statisticsp");
     if (m_script == 0) {
         Entity * instance = 0;
         if (flags() & flag_class) {
-            log(NOTICE, "Installing class statisticsp");
         } else {
-            log(NOTICE, "Installing instance statisticsp");
             instance = ent;
         }
 
