@@ -1,0 +1,477 @@
+// Cyphesis Online RPG Server and AI Engine
+// Copyright (C) 2001 Alistair Riddoch
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software Foundation,
+// Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+// $Id$
+
+/// \page cydb_index
+///
+/// \section Introduction
+///
+/// cydb is a commandline tool to administrate the server database. For
+/// information on the commands available, please see the unix manual page.
+/// The manual page is generated from docbook sources, so can
+/// also be converted into other formats.
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "common/log.h"
+#include "common/globals.h"
+
+#include <varconf/config.h>
+
+#include "common/compose.hpp"
+
+#ifndef READLINE_CXX_SANE   // defined in config.h
+extern "C" {
+#endif
+#define USE_VARARGS
+#define PREFER_STDARG
+#include <readline/readline.h>
+#include <readline/history.h>
+#ifndef READLINE_CXX_SANE
+}
+#endif
+
+static int dbs_rules(int argc, char ** argv)
+{
+    std::cout << "dbs_world" << std::endl << std::flush;
+    return 0;
+}
+
+static int dbs_user(int argc, char ** argv)
+{
+    std::cout << "dbs_user" << std::endl << std::flush;
+    return 0;
+}
+
+static int dbs_world(int argc, char ** argv)
+{
+    std::cout << "dbs_world" << std::endl << std::flush;
+    return 0;
+}
+
+int dbs_help(int argc, char ** argv);
+
+typedef int (*dbsys_function)(int argc, char ** argv);
+
+/// \brief Entry in the global command table for cycmd
+struct dbsys {
+    const char * sys_string;
+    const char * sys_description;
+    dbsys_function sys_function;
+};
+
+struct dbsys systems[] = {
+    { "help",  "Show command help", &dbs_help },
+    { "rules", "Modify the rule storage table", &dbs_rules },
+    { "user",  "Modify the user account table", &dbs_user },
+    { "world", "Modify the world storage tables", &dbs_world },
+    { NULL,    "Guard", }
+};
+
+int dbs_help(int argc, char ** argv)
+{
+    size_t max_length = 0;
+
+    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
+       max_length = std::max(max_length, strlen(I->sys_string));
+    }
+    max_length += 2;
+
+    std::cout << "Cyphesis database systems:" << std::endl << std::endl;
+
+    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
+        std::cout << "    " << I->sys_string
+                  << std::string(max_length - strlen(I->sys_string), ' ')
+                  << I->sys_description << std::endl;
+    }
+    std::cout << std::endl << std::flush;
+    return 0;
+}
+
+int completion_iterator = 0;
+
+char * completion_generator(const char * text, int state)
+{
+    if (state == 0) {
+        completion_iterator = 0;
+    }
+    for (int i = completion_iterator; systems[i].sys_string != 0; ++i) {
+        if (strncmp(text, systems[i].sys_string, strlen(text)) == 0) {
+            completion_iterator = i + 1;
+            return strdup(systems[i].sys_string);
+        }
+    }
+    return 0;
+}
+
+void gotCommand(char * cmd)
+{
+}
+
+// FIXME
+void setup_completion()
+{
+    std::string prompt="foobar>";
+    rl_callback_handler_install(prompt.c_str(), &gotCommand);
+    rl_completion_entry_function = &completion_generator;
+
+    std::cout << std::endl << std::flush;
+    rl_callback_handler_remove();
+}
+
+#if 0
+// FIXME
+void updatePrompt()
+{
+    std::string prompt;
+    std::string designation(">");
+    if (!username.empty()) {
+        prompt = username + "@";
+        if (accountType == "admin") {
+            designation = "#";
+        } else {
+            designation = "$";
+        }
+    } else {
+        prompt = "";
+    }
+    prompt += serverName;
+    prompt += " ";
+    prompt += systemType;
+    prompt += designation;
+    prompt += " ";
+    rl_set_prompt(prompt.c_str());
+}
+
+void exec(const std::string & cmd, const std::string & arg)
+{
+    bool reply_expected = true;
+    reply_flag = false;
+    error_flag = false;
+
+    if (cmd == "stat") {
+        Get g;
+        encoder->streamObjectsMessage(g);
+    } else if (cmd == "install") {
+        size_t space = arg.find(' ');
+        if (space == std::string::npos || space >= (arg.size() - 1)) {
+            std::cout << "usage: install <type id> <parent id>"
+                      << std::endl << std::flush;
+        } else {
+            Create c;
+            c->setFrom(accountId);
+            Anonymous ent;
+            ent->setId(std::string(arg, 0, space));
+            ent->setObjtype("class");
+            ent->setParents(std::list<std::string>(1, std::string(arg, space + 1)));
+            c->setArgs1(ent);
+            encoder->streamObjectsMessage(c);
+        }
+        reply_expected = false;
+    } else if (cmd == "look") {
+        Look l;
+        l->setFrom(accountId);
+        encoder->streamObjectsMessage(l);
+    } else if (cmd == "logout") {
+        Logout l;
+        l->setFrom(accountId);
+        if (!arg.empty()) {
+            Anonymous lmap;
+            lmap->setId(arg);
+            l->setArgs1(lmap);
+            reply_expected = false;
+        }
+        encoder->streamObjectsMessage(l);
+    } else if (cmd == "say") {
+        Talk t;
+        Anonymous ent;
+        ent->setAttr("say", arg);
+        t->setArgs1(ent);
+        t->setFrom(accountId);
+        encoder->streamObjectsMessage(t);
+    } else if (cmd == "help" || cmd == "?") {
+        reply_expected = false;
+        help();
+    } else if (cmd == "query") {
+        Get g;
+
+        Anonymous cmap;
+        cmap->setObjtype("obj");
+        if (!arg.empty()) {
+            cmap->setId(arg);
+        }
+        g->setArgs1(cmap);
+        g->setFrom(accountId);
+
+        encoder->streamObjectsMessage(g);
+    } else if (cmd == "reload") {
+        if (arg.empty()) {
+            reply_expected = false;
+            std::cout << "reload: Argument required" << std::endl << std::flush;
+        } else {
+            Set s;
+
+            Anonymous tmap;
+            tmap->setObjtype("class");
+            tmap->setId(arg);
+            s->setArgs1(tmap);
+            s->setFrom(accountId);
+
+            encoder->streamObjectsMessage(s);
+        }
+    } else if (cmd == "get") {
+        Get g;
+
+        Anonymous cmap;
+        cmap->setObjtype("class");
+        if (!arg.empty()) {
+            cmap->setId(arg);
+        }
+        g->setArgs1(cmap);
+        g->setFrom(accountId);
+
+        encoder->streamObjectsMessage(g);
+    } else if (cmd == "monitor") {
+        AdminTask * task = new OperationMonitor;
+        if (runTask(task, arg) == 0) {
+            Monitor m;
+
+            m->setArgs1(Anonymous());
+            m->setFrom(accountId);
+
+            encoder->streamObjectsMessage(m);
+        }
+
+        reply_expected = false;
+    } else if (cmd == "unmonitor") {
+        OperationMonitor * om = dynamic_cast<OperationMonitor *>(currentTask);
+
+        if (om != 0) {
+            Monitor m;
+
+            m->setFrom(accountId);
+
+            encoder->streamObjectsMessage(m);
+
+            reply_expected = false;
+
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            int monitor_time = tv.tv_sec - om->startTime();
+
+            std::cout << om->count() << " operations monitored in "
+                      << monitor_time << " seconds = "
+                      << om->count() / monitor_time
+                      << " operations per second"
+                      << std::endl << std::flush;
+
+            endTask();
+        }
+    } else if (cmd == "connect") {
+        reply_expected = false;
+        Connect m;
+
+        Anonymous cmap;
+        cmap->setAttr("hostname", arg);
+        m->setArgs1(cmap);
+        m->setFrom(accountId);
+
+        encoder->streamObjectsMessage(m);
+    } else if (cmd == "add_agent") {
+        std::string agent_type("creator");
+
+        if (!arg.empty()) {
+            agent_type = arg;
+        }
+        
+        Create c;
+
+        Anonymous cmap;
+        cmap->setParents(std::list<std::string>(1, agent_type));
+        cmap->setName("cycmd agent");
+        cmap->setObjtype("obj");
+        c->setArgs1(cmap);
+        c->setFrom(accountId);
+
+        avatar_flag = true;
+
+        encoder->streamObjectsMessage(c);
+    } else if (cmd == "delete") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the entity to delete" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Delete del;
+
+            Anonymous del_arg;
+            del_arg->setId(arg);
+            del->setArgs1(del_arg);
+            del->setFrom(agentId);
+            del->setTo(arg);
+
+            encoder->streamObjectsMessage(del);
+
+            reply_expected = false;
+        }
+    } else if (cmd == "find_by_name") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the name to search for" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Look l;
+
+            Anonymous lmap;
+            lmap->setName(arg);
+            l->setArgs1(lmap);
+            l->setFrom(agentId);
+
+            encoder->streamObjectsMessage(l);
+
+            reply_expected = false;
+        }
+    } else if (cmd == "find_by_type") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the type to search for" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Look l;
+
+            Anonymous lmap;
+            lmap->setParents(std::list<std::string>(1, arg));
+            l->setArgs1(lmap);
+            l->setFrom(agentId);
+
+            encoder->streamObjectsMessage(l);
+
+            reply_expected = false;
+        }
+    } else if (cmd == "flush") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Please specify the type to flush" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            AdminTask * task = new Flusher(agentId);
+            runTask(task, arg);
+            reply_expected = false;
+        }
+    } else if (cmd == "creator_create") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else if (arg.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Create c;
+
+            Anonymous thing;
+            thing->setParents(std::list<std::string>(1, arg));
+            c->setArgs1(thing);
+            c->setFrom(agentId);
+
+            encoder->streamObjectsMessage(c);
+
+            reply_expected = false;
+        }
+    } else if (cmd == "cancel") {
+        if (endTask() != 0) {
+            std::cout << "No task currently running" << std::endl << std::flush;
+        }
+    } else {
+        reply_expected = false;
+        std::cout << cmd << ": Command not known" << std::endl << std::flush;
+    }
+
+    ios << std::flush;
+
+    if (!reply_expected) { return; }
+    // Wait for reply
+    time_t wait_start_time = time(NULL);
+    while (!reply_flag) {
+       if (time(NULL) - wait_start_time > 5) {
+           std::cout << cmd << ": No reply from server" << std::endl << std::flush;
+           return;
+       }
+       poll(false);
+    }
+}
+#endif
+
+static int run_command(int argc, char ** argv)
+{
+    std::cout << "Running command " << argv[0] << " with " << argc << " args."
+              << std::endl << std::flush;
+    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
+        if (strcmp(argv[0], I->sys_string) == 0) {
+            return I->sys_function(argc, argv);
+        }
+    }
+    std::cout << "not found" << std::endl << std::flush;
+    return 1;
+}
+
+int main(int argc, char ** argv)
+{
+    int config_status = loadConfig(argc, argv, USAGE_DBASE); 
+    if (config_status < 0) {
+        if (config_status == CONFIG_VERSION) {
+            reportVersion(argv[0]);
+            return 0;
+        } else if (config_status == CONFIG_HELP) {
+            showUsage(argv[0], USAGE_DBASE, "[ cmd ]");
+            return 0;
+        } else if (config_status != CONFIG_ERROR) {
+            log(ERROR, "Unknown error reading configuration.");
+        }
+        // Fatal error loading config file
+        return 1;
+    }
+
+    int optind = config_status;
+
+    bool interactive = true;
+    int ret = 0;
+    std::string cmd;
+    if (optind < argc) {
+        cmd = argv[optind];
+        interactive = false;
+    }
+
+    if (!interactive) {
+        std::cout << "running one command" << std::endl << std::flush;
+        ret = run_command(argc - optind, &argv[optind]);
+    } else {
+    }
+
+    delete global_conf;
+    return ret;
+}

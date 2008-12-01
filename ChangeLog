@@ -1,3 +1,8 @@
+2008-12-01  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Add the ground work for a new tool to perform
+	  various admin tasks on the database.
+
 2008-11-30  Al Riddoch  <alriddoch@googlemail.com>
 
 	* configure.ac: Increment version to 0.5.18 for release.
