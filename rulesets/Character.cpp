@@ -250,8 +250,7 @@ Character::Character(const std::string & id, long intId) :
            Identified(id, intId),
            Character_parent(id, intId),
                m_movement(*new Pedestrian(*this)),
-               m_task(0), m_isAlive(true),
-               m_mind(0), m_externalMind(0)
+               m_task(0), m_mind(0), m_externalMind(0)
 {
 }
 
@@ -481,7 +480,10 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     }
 
     if (m_contains == 0 || m_contains->find(item) == m_contains->end()) {
-        error(op, "Wield arg is not in inventory", res, getId());
+        error(op, String::compose("Wield arg %1(%2) is not in inventory "
+                                  "of %3(%4)", 
+                                  item->getType()->name(), id,
+                                  getType()->name(), getId()), res, getId());
         return;
     }
 
@@ -1647,10 +1649,6 @@ void Character::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
     Entity::operation(op, res);
-    // set refno on result?
-    if (!m_isAlive) {
-        return;
-    }
     if (world2mind(op)) {
         debug( std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush;);
         OpVector mres;

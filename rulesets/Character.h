@@ -50,8 +50,6 @@ class Character : public Character_parent {
     Movement & m_movement;
     /// \brief Handler for a medium term task being undertaken
     Task * m_task;
-    /// \brief Flag indicating if this entity is alive
-    bool m_isAlive;
 
     /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
