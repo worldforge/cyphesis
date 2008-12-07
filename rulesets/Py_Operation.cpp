@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Operation.cpp,v 1.59 2007-07-30 18:12:51 alriddoch Exp $
+// $Id$
 
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
@@ -386,11 +386,16 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
     }
 #endif // NDEBUG
     if (other == Py_None) {
+#if 0
         PyOplist * res = newPyOplist();
         res->ops = new OpVector();
         res->ops->push_back(self->operation);
         fflush(stdout);
         return (PyObject*)res;
+#else
+        Py_INCREF(self);
+        return (PyObject*)self;
+#endif
     }
     if (PyOplist_Check(other)) {
         PyOplist * opl = (PyOplist*)other;

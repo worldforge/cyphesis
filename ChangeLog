@@ -1,3 +1,14 @@
+2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Py_Operation.cpp: Don't create a message list when
+	  adding an operation to none, just return the operation. This
+	  should result in a small performance improvement.
+
+2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp, rulesets/Character.h: Remove an unused flag
+	  used to signal a character is dead.
+
 2008-12-01  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cydb.cpp: Add the ground work for a new tool to perform
