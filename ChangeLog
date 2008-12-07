@@ -1,5 +1,9 @@
 2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cydb.cpp: Add code for handle db connection.
+
+2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/basic/mind/NPCMind.py: Remove a few chunks of unused code.
 	  Clean up and simplify the logic when dealing with converting plain
 	  talk ops into structured interlinguish. Add some doc strings and

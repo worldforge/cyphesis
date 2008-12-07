@@ -32,6 +32,7 @@
 
 #include "common/log.h"
 #include "common/globals.h"
+#include "common/accountbase.h"
 
 #include <varconf/config.h>
 
@@ -48,27 +49,27 @@ extern "C" {
 }
 #endif
 
-static int dbs_rules(int argc, char ** argv)
+static int dbs_rules(AccountBase & ab, int argc, char ** argv)
 {
     std::cout << "dbs_world" << std::endl << std::flush;
     return 0;
 }
 
-static int dbs_user(int argc, char ** argv)
+static int dbs_user(AccountBase & ab, int argc, char ** argv)
 {
     std::cout << "dbs_user" << std::endl << std::flush;
     return 0;
 }
 
-static int dbs_world(int argc, char ** argv)
+static int dbs_world(AccountBase & ab, int argc, char ** argv)
 {
     std::cout << "dbs_world" << std::endl << std::flush;
     return 0;
 }
 
-int dbs_help(int argc, char ** argv);
+int dbs_help(AccountBase & ab, int argc, char ** argv);
 
-typedef int (*dbsys_function)(int argc, char ** argv);
+typedef int (*dbsys_function)(AccountBase & ab, int argc, char ** argv);
 
 /// \brief Entry in the global command table for cycmd
 struct dbsys {
@@ -85,7 +86,7 @@ struct dbsys systems[] = {
     { NULL,    "Guard", }
 };
 
-int dbs_help(int argc, char ** argv)
+int dbs_help(AccountBase & ab, int argc, char ** argv)
 {
     size_t max_length = 0;
 
@@ -426,13 +427,13 @@ void exec(const std::string & cmd, const std::string & arg)
 }
 #endif
 
-static int run_command(int argc, char ** argv)
+static int run_command(AccountBase & ab, int argc, char ** argv)
 {
     std::cout << "Running command " << argv[0] << " with " << argc << " args."
               << std::endl << std::flush;
     for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
         if (strcmp(argv[0], I->sys_string) == 0) {
-            return I->sys_function(argc, argv);
+            return I->sys_function(ab, argc, argv);
         }
     }
     std::cout << "not found" << std::endl << std::flush;
@@ -466,9 +467,15 @@ int main(int argc, char ** argv)
         interactive = false;
     }
 
+    AccountBase ab;
+
+    if (ab.init() != 0) {
+        return 1;
+    }
+
     if (!interactive) {
         std::cout << "running one command" << std::endl << std::flush;
-        ret = run_command(argc - optind, &argv[optind]);
+        ret = run_command(ab, argc - optind, &argv[optind]);
     } else {
     }
 
