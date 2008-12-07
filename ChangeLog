@@ -1,5 +1,12 @@
 2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/basic/mind/NPCMind.py: Remove a few chunks of unused code.
+	  Clean up and simplify the logic when dealing with converting plain
+	  talk ops into structured interlinguish. Add some doc strings and
+	  comments.
+
+2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Py_Operation.cpp: Don't create a message list when
 	  adding an operation to none, just return the operation. This
 	  should result in a small performance improvement.

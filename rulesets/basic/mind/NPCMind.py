@@ -62,7 +62,6 @@ class NPCMind(Thing):
         self.transfers=[]
         self.trigger_goals={}
         #???self.debug=debug(self.name+".mind.log")
-        self.tick_count=0
         self.message_queue=None
         #This is going to be really tricky
         self.map.add_hooks_append("add_map")
@@ -78,6 +77,8 @@ class NPCMind(Thing):
     def get_op_name_and_sub(self, op):
         event_name = op.id
         sub_op = op
+        # I am not quite sure why this is while, as it's only over true
+        # for one iteration.
         while len(sub_op) and sub_op[0].get_name()=="op":
             sub_op = sub_op[0]
             event_name = event_name + "_" + sub_op.id
@@ -110,7 +111,6 @@ class NPCMind(Thing):
         return Operation("look")+Operation("tick")
     def tick_operation(self, op):
         """periodically reasses situation"""
-        self.tick_count=self.tick_count+1
         opTick=Operation("tick")
         opTick.setFutureSeconds(const.basic_tick)
         for t in self.pending_things:
@@ -126,18 +126,6 @@ class NPCMind(Thing):
     def unseen_operation(self, op):
         obsolete_id = op[0].id
         self.map.delete(obsolete_id)
-    ########## Persistance operations
-    def save_operation(self, op):
-        mind = Entity(self.id)
-        mind.place = self.knowledge.place
-        mind.location = self.knowledge.location
-        mind.goal = self.knowledge.goal
-        mind.importance = self.knowledge.importance
-        mind.price = self.knowledge.price
-        print "SAVE"
-        return Operation("info", mind)
-    def load_operation(self, op):
-        print "LOAD"
     ########## Sight operations
     def sight_create_operation(self, op):
         """Note our ownership of entities we created."""
@@ -155,19 +143,6 @@ class NPCMind(Thing):
             if obj.type[0]=="coin" and op.from_ != self.id:
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
-    #replaced with dynamically added add_extinguish_fire -goal
-    #ie: NPC is first teached that when it sees "sight_burn" it needs to
-    #execute above goal, which then adds extinguish_fire goal and executes it
-##     def sight_burn_operation(self, op):
-##         #CHEAT!:
-##         fire=self.map.get(op[0].id)
-##         if fire:
-##             log.debug(2,"sight_burn_operation: found fire obj")
-##             if not self.goals or self.goals[0].__class__.__name__!="extinguish_fire":
-##                 log.debug(2,"sight_burn_operation: added extinguish_fire goal")
-##                 goal=mind.goals.humanoid.fire.extinguish_fire(fire)
-##                 self.goals.insert(0,goal)
-##         log.debug(2,"sight_burn_operation: add goal updating")
     ########## Talk operations
     def admin_sound(self, op):
         assert(op.from_ == op.to)
@@ -203,6 +178,10 @@ class NPCMind(Thing):
         res = res + operation_method(op, object)
         return res
     def interlinguish_be_verb1_operation(self, op, say):
+        """Handle sentences of the form '... is more important that ...'
+
+        Accept instructions about the priority of goals relative to each
+        based on key verbs associated with those goals."""
         if not self.admin_sound(op):
             return self.interlinguish_warning(op,say,"You are not admin")
         res=interlinguish.match_importance(say)
@@ -318,9 +297,6 @@ class NPCMind(Thing):
         #CHEAT!: any way to handle these?
         log.debug(2,str(self.id)+" interlinguish_undefined_operation:",op)
         log.debug(2,str(say))
-    def talk_undefined_operation(self, op, say):
-        #CHEAT!: any way to handle these?
-        pass
     ########## Sound operations
     def sound_talk_operation(self, op):
         """Handle the sound of a talk operation from another character.
@@ -332,20 +308,18 @@ class NPCMind(Thing):
         dynamic goals."""
 
         talk_entity=op[0]
-        res = Message()
-        if interlinguish.convert_english_to_interlinguish(self,talk_entity):
+        if interlinguish.convert_english_to_interlinguish(self, talk_entity):
             say=talk_entity.interlinguish
             verb=interlinguish.get_verb(say)
             operation_method=self.find_op_method(verb,"interlinguish_",
                                   self.interlinguish_undefined_operation)
-            res = res + self.call_interlinguish_triggers(verb, "interlinguish_", op, say)
-        else:
-            operation_method=self.talk_undefined_operation
-            say=talk_entity
-            if hasattr(say,"say"): say=say.say
-        log.debug(3,"talk: "+str(operation_method))
-        res = res + operation_method(op,say)
-        return res
+            res = self.call_interlinguish_triggers(verb, "interlinguish_", op, say)
+            res2 = operation_method(op,say)
+            if res:
+                res += res2
+            else:
+                res = res2
+            return res
     ########## Other operations
     def call_interlinguish_triggers(self, verb, prefix, op, say):
         """Call trigger goals that have registered a trigger string that
@@ -360,13 +334,13 @@ class NPCMind(Thing):
         event_name = prefix+verb
         reply = Message()
         for goal in self.trigger_goals.get(event_name,[]):
-            reply = reply + goal.event(self, op, say)
+            reply += goal.event(self, op, say)
         return reply
     def call_triggers_operation(self, op):
         event_name, sub_op = self.get_op_name_and_sub(op)
         reply = Message()
         for goal in self.trigger_goals.get(event_name,[]):
-            reply = reply + goal.event(self, op, sub_op)
+            reply += goal.event(self, op, sub_op)
         return reply
     ########## Generic knowledge
     def _reverse_knowledge(self):
