@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalMind.h,v 1.15 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_EXTERNAL_MIND_H
 #define SERVER_EXTERNAL_MIND_H
@@ -23,6 +23,7 @@
 #include "common/Identified.h"
 
 class Connection;
+class Entity;
 
 /// \brief This class connects in-game entities to the Connection of the client
 /// controlling it.
@@ -31,9 +32,10 @@ class Connection;
 /// to the client.
 class ExternalMind : public IdentifiedRouter {
   public:
-    Connection & m_connection;
+    Connection * m_connection;
+    Entity & m_entity;
 
-    ExternalMind(Connection & connection, const std::string & id, long intId);
+    ExternalMind(Entity &);
     virtual ~ExternalMind();
 
     virtual void operation(const Operation &, OpVector &);

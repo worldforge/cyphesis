@@ -1,3 +1,19 @@
+2008-12-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Creator.cpp: Remove code for removing Creators once
+	  they've been disconnected, and simply mark them as ephemeral.
+
+	* server/ExternalMind.h, server/ExternalMind.cpp: Change
+	  the external mind so it stores a reference to the character it
+	  is the mind for, and stores a pointer to the connection rather
+	  than a reference so it can be nulled when the connection is
+	  removed on unsubscribed. Implement removing an ephemeral avatar
+	  character on disconnection.
+
+	* server/Connection.cpp: Re-work the connection code to deal with
+	  a character still having an external mind on connection, and not
+	  removing the external mind at disconnection.
+
 2008-12-07  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cydb.cpp: Add code for handle db connection.

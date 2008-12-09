@@ -15,11 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalMind.cpp,v 1.23 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #include "ExternalMind.h"
 
 #include "Connection_methods.h"
+
+#include "rulesets/Entity.h"
+
+#include "common/log.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -31,12 +36,11 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
-ExternalMind::ExternalMind(Connection & connection,
-                           const std::string & id,
-                           long intId) :
-              Identified(id, intId), m_connection(connection)
+ExternalMind::ExternalMind(Entity & e) : Identified(e.getId(), e.getIntId()),
+                                         m_connection(0), m_entity(e)
 {
 }
 
@@ -47,9 +51,24 @@ ExternalMind::~ExternalMind()
     // m_connection.removeObject(getIntId());
 }
 
-void ExternalMind::operation(const Operation & op, OpVector &)
+void ExternalMind::operation(const Operation & op, OpVector & res)
 {
-    m_connection.send(op);
+    if (m_connection == 0) {
+        if (m_entity.getFlags() & entity_ephem) {
+            // If this entity no longer has a connection, and is ephemeral
+            // we should delete it.
+            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+                Delete d;
+                Anonymous del_arg;
+                del_arg->setId(getId());
+                d->setArgs1(del_arg);
+                d->setTo(getId());
+                res.push_back(d);
+            }
+        }
+        return;
+    }
+    m_connection->send(op);
 
     // Here we see if there is anything we should be sending the user
     // extra info about. The initial demo implementation checks for
@@ -85,7 +104,7 @@ void ExternalMind::operation(const Operation & op, OpVector &)
                     sight->setFrom(getId());
                     sight->setArgs1(imaginary);
 
-                    m_connection.send(sight);
+                    m_connection->send(sight);
                 }
             }
         }

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.cpp,v 1.173 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #include "Connection.h"
 
@@ -38,6 +38,7 @@
 #include "common/serialno.h"
 #include "common/inheritance.h"
 #include "common/system.h"
+#include "common/TypeNode.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
@@ -130,32 +131,44 @@ Account * Connection::removePlayer(IdentifiedRouter * obj,
                                          ac->getId(), ac->m_username, event));
         return ac;
     }
-    Character * character = dynamic_cast<Character *>(obj);
-    if (character != 0) {
-        if (character->m_externalMind != 0) {
-            // Send a move op stopping the current movement
-            Anonymous move_arg;
-            move_arg->setId(character->getId());
-            // Include the EXTERNAL property which is changing to zero.
-            // It would be more correct at this point to send a separate
-            // update to have the property update itself, but this
-            // will be much less of an issue once Sight(Set) is created
-            // more correctly
-            move_arg->setAttr("external", 0);
-            ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
+    Character * chr = dynamic_cast<Character *>(obj);
+    if (chr != 0) {
+        if (chr->m_externalMind != 0) {
+            ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+            if (mind != 0 && mind->m_connection == this) {
+                // Send a move op stopping the current movement
+                Anonymous move_arg;
+                move_arg->setId(chr->getId());
+                // Include the EXTERNAL property which is changing to zero.
+                // It would be more correct at this point to send a separate
+                // update to have the property update itself, but this
+                // will be much less of an issue once Sight(Set) is created
+                // more correctly
+                move_arg->setAttr("external", 0);
+                ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
 
-            Move move;
-            move->setFrom(character->getId());
-            move->setArgs1(move_arg);
-            character->externalOperation(move);
+                Move move;
+                move->setFrom(chr->getId());
+                move->setArgs1(move_arg);
+                chr->externalOperation(move);
 
-            delete character->m_externalMind;
-            character->m_externalMind = 0;
-            logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
-                                                getId(),
-                                                character->getId(),
-                                                character->getType(),
-                                                event));
+                // We used to delete the external mind here, but now we
+                // leave it in place, as it takes care of the disconnected
+                // character.
+                mind->m_connection = 0;
+                logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
+                                                    getId(), chr->getId(),
+                                                    chr->getType()->name(),
+                                                    event));
+            } else if (mind != 0 && mind->m_connection != 0) {
+                log(ERROR, String::compose("Connection(%1) requested to "
+                                           "remove active character %2(%3) "
+                                           "which is subscribed to another "
+                                           "Connection(%4).", getId(),
+                                           chr->getType()->name(),
+                                           chr->getId(),
+                                           mind->m_connection->getId()));
+            }
         }
     }
     return 0;
@@ -193,11 +206,27 @@ void Connection::disconnect()
 
 void Connection::connectAvatar(Character * chr)
 {
-    chr->m_externalMind = new ExternalMind(*this, chr->getId(),
-                                                  chr->getIntId());
+    ExternalMind * mind = 0;
+    if (chr->m_externalMind != 0) {
+        mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+    }
+    if (mind == 0) {
+        log(NOTICE, "Character has no external mind.");
+        chr->m_externalMind = mind = new ExternalMind(*chr);
+    } else {
+        log(NOTICE, "Character has external mind.");
+    }
+
+    if (mind->m_connection != 0) {
+        log(ERROR, "Character is already connected.");
+        return;
+    }
+    mind->m_connection = this;
+    log(ERROR, "Character now connected.");
 
     if (chr->getProperty("external") == 0) {
         ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
+        // FIXME ensure this is install()ed and apply()ed
         chr->setProperty("external", ep);
     }
 
@@ -267,21 +296,32 @@ void Connection::operation(const Operation & op, OpVector & res)
         obj->operation(op, res);
         return;
     }
-    Character * character = dynamic_cast<Character *>(obj);
-    if (character != NULL && character->m_externalMind == NULL) {
-        debug(std::cout << "Subscribing existing character" << std::endl
-                        << std::flush;);
-        connectAvatar(character);
-        Info info;
-        Anonymous info_arg;
-        character->addToEntity(info_arg);
-        info->setArgs1(info_arg);
+    Character * chr = dynamic_cast<Character *>(obj);
+    if (chr != NULL) {
+        ExternalMind * mind = 0;
+        if (chr->m_externalMind != 0) {
+            mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+        }
+        if (mind == 0 || mind->m_connection == 0) {
+            if (mind == 0) {
+                log(NOTICE, "Subbing to mindless");
+            } else {
+                log(NOTICE, "Subbing to minded");
+            }
+            debug(std::cout << "Subscribing existing character" << std::endl
+                            << std::flush;);
+            connectAvatar(chr);
+            Info info;
+            Anonymous info_arg;
+            chr->addToEntity(info_arg);
+            info->setArgs1(info_arg);
 
-        res.push_back(info);
+            res.push_back(info);
 
-        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
-                                            getId(), ig_ent->getId(),
-                                            ig_ent->getType()));
+            logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
+                                                getId(), ig_ent->getId(),
+                                                ig_ent->getType()));
+        }
     }
     ig_ent->externalOperation(op);
 }
@@ -476,22 +516,29 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
                                                    chr->getType(),
                                                    chr->getId()));
                     } else {
-                        if (&em->m_connection != this) {
+                        if (em->m_connection == 0) {
+                            log(ERROR,
+                                String::compose("Connection(%1) has found a "
+                                                "character in its dictionery "
+                                                "which is not connected.",
+                                                getId()));
+                            removeObject(chr->getIntId());
+                        } else if (em->m_connection != this) {
                             log(ERROR,
                                 String::compose("Connection(%1) has found a "
                                                 "character in its dictionery "
                                                 "which is connected to another "
                                                 "Connection(%2)", getId(),
-                                                em->m_connection.getId()));
-                            removeObject(J->second->getIntId());
+                                                em->m_connection->getId()));
+                            removeObject(chr->getIntId());
                         }
                     }
                 } else {
-                    removeObject(J->second->getIntId());
+                    removeObject(chr->getIntId());
                 }
             } else {
                 // Non character entity
-                removeObject(J->second->getIntId());
+                removeObject(chr->getIntId());
             }
         }
     }

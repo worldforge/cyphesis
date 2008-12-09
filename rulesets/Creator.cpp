@@ -45,6 +45,7 @@ Creator::Creator(const std::string & id, long intId) :
          Creator_parent(id, intId)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
+    setFlags(entity_ephem);
 }
 
 void Creator::sendExternalMind(const Operation & op, OpVector & res)
@@ -57,17 +58,6 @@ void Creator::sendExternalMind(const Operation & op, OpVector & res)
         debug( std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
         m_externalMind->operation(op, res);
-    } else if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-        // If we do not have an external mind, and therefor a connection,
-        // there is no purpose to our existance, so we should die.
-        debug( std::cout << "NOTICE: Creator self destruct"
-                         << std::endl << std::flush;);
-        Delete d;
-        Anonymous del_arg;
-        del_arg->setId(getId());
-        d->setArgs1(del_arg);
-        d->setTo(getId());
-        res.push_back(d);
     }
 }
 
