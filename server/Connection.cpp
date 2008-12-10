@@ -134,7 +134,7 @@ Account * Connection::removePlayer(Router * obj, const std::string & event)
     if (chr != 0) {
         if (chr->m_externalMind != 0) {
             ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-            if (mind != 0 && mind->m_connection == this) {
+            if (mind != 0 && mind->isConnectedTo(this)) {
                 // Send a move op stopping the current movement
                 Anonymous move_arg;
                 move_arg->setId(chr->getId());
@@ -154,19 +154,19 @@ Account * Connection::removePlayer(Router * obj, const std::string & event)
                 // We used to delete the external mind here, but now we
                 // leave it in place, as it takes care of the disconnected
                 // character.
-                mind->m_connection = 0;
+                mind->connect(0);
                 logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
                                                     getId(), chr->getId(),
                                                     chr->getType()->name(),
                                                     event));
-            } else if (mind != 0 && mind->m_connection != 0) {
+            } else if (mind != 0 && mind->isConnected()) {
                 log(ERROR, String::compose("Connection(%1) requested to "
                                            "remove active character %2(%3) "
                                            "which is subscribed to another "
                                            "Connection(%4).", getId(),
                                            chr->getType()->name(),
                                            chr->getId(),
-                                           mind->m_connection->getId()));
+                                           mind->connection()->getId()));
             }
         }
     }
@@ -213,11 +213,11 @@ void Connection::connectAvatar(Character * chr)
         chr->m_externalMind = mind = new ExternalMind(*chr);
     }
 
-    if (mind->m_connection != 0) {
+    if (mind->isConnected()) {
         log(ERROR, "Character is already connected.");
         return;
     }
-    mind->m_connection = this;
+    mind->connect(this);
 
     if (chr->getProperty("external") == 0) {
         ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
@@ -297,12 +297,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         if (chr->m_externalMind != 0) {
             mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
         }
-        if (mind == 0 || mind->m_connection == 0) {
-            if (mind == 0) {
-                log(NOTICE, "Subbing to mindless");
-            } else {
-                log(NOTICE, "Subbing to minded");
-            }
+        if (mind == 0 || !mind->isConnected()) {
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
             connectAvatar(chr);
@@ -511,20 +506,20 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
                                                    chr->getType(),
                                                    chr->getId()));
                     } else {
-                        if (em->m_connection == 0) {
+                        if (!em->isConnected()) {
                             log(ERROR,
                                 String::compose("Connection(%1) has found a "
                                                 "character in its dictionery "
                                                 "which is not connected.",
                                                 getId()));
                             removeObject(chr->getIntId());
-                        } else if (em->m_connection != this) {
+                        } else if (!em->isConnectedTo(this)) {
                             log(ERROR,
                                 String::compose("Connection(%1) has found a "
                                                 "character in its dictionery "
                                                 "which is connected to another "
                                                 "Connection(%2)", getId(),
-                                                em->m_connection->getId()));
+                                                em->connection()->getId()));
                             removeObject(chr->getIntId());
                         }
                     }

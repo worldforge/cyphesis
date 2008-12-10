@@ -1,5 +1,13 @@
 2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/ExternalMind.h: Make all the member variables protected,
+	  and create an API to expose as needed.
+
+	* server/Connection.cpp: Update the code to use the interface to
+	  interact with ExternalMind.
+
+2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/Connection.cpp: Remove some of the debug output.
 
 2008-12-10  Al Riddoch  <alriddoch@googlemail.com>

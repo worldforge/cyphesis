@@ -31,14 +31,22 @@ class Entity;
 /// Essentially used to relay in-game operations that pass to the mind on
 /// to the client.
 class ExternalMind : public Router {
-  public:
+  protected:
     Connection * m_connection;
     Entity & m_entity;
+  public:
 
     ExternalMind(Entity &);
     virtual ~ExternalMind();
 
     virtual void operation(const Operation &, OpVector &);
+
+    Connection * connection() { return m_connection; }
+
+    bool isConnected() { return m_connection != 0; }
+    bool isConnectedTo(Connection * c) { return m_connection == c; }
+
+    void connect(Connection * c) { m_connection = c; }
 };
 
 #endif // SERVER_EXTERNAL_MIND_H
