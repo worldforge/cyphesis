@@ -1,5 +1,11 @@
 2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Creator.h, rulesets/Creator.cpp: Remove the special
+	  case for sending to the mind of Creator, as the difference
+	  is now handled by ExternalMind itself in a more general way.
+
+2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Identified.cpp, common/Identified.h, rulesets/Character.h,
 	  rulesets/LocatedEntity.h, server/Account.h, server/Admin.cpp,
 	  server/CommClient.cpp, server/CommClient.h, server/Connection.cpp,

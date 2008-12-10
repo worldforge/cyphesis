@@ -48,30 +48,11 @@ Creator::Creator(const std::string & id, long intId) :
     setFlags(entity_ephem);
 }
 
-void Creator::sendExternalMind(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Creator::sendExternalMind(" << op->getParents().front()
-                    << ")" << std::endl << std::flush;);
-    // Simpified version of Character method sendMind() because local
-    // mind of Creator is irrelevant
-    if (0 != m_externalMind) {
-        debug( std::cout << "Sending to external mind" << std::endl
-                         << std::flush;);
-        m_externalMind->operation(op, res);
-    }
-}
-
 void Creator::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);
-    // FIXME Why not just call callOperation() to handle the type switch?
-    // The only real reason is that we avoid passing the Delete op to the
-    // mind, so we return early here. Could check for the Delete op in
-    // sendExternalMind() when the mind is gone, thus getting rid of the
-    // problem.
-    // To switch to using callOperation(), some more op handlers would
-    // need to be implemented, in particular SetupOperation() would need
-    // need to be implemented as below. Some might need to be blocked
+    // FIXME: Switch to using callOperation(), some more op handlers would
+    // need to be implemented. Some might need to be blocked
     // to prevent anyone from messing with us, like SetOperation().
     OpNo op_no = op->getClassNo();
     switch(op_no) {
@@ -93,7 +74,7 @@ void Creator::operation(const Operation & op, OpVector & res)
             }
             break;
     }
-    sendExternalMind(op, res);
+    sendMind(op, res);
 }
 
 void Creator::externalOperation(const Operation & op)
@@ -118,7 +99,7 @@ void Creator::externalOperation(const Operation & op)
             if (!op->isDefaultSerialno()) {
                 (*I)->setRefno(op->getSerialno());
             }
-            sendExternalMind(*I, eres);
+            sendMind(*I, eres);
             sendWorld(*I);
             // Don't delete lres as it has gone into World's queue
             // World will deal with it.
@@ -144,7 +125,7 @@ void Creator::externalOperation(const Operation & op)
                 u->setRefno(op->getSerialno());
             }
             OpVector res;
-            sendExternalMind(u, res);
+            sendMind(u, res);
             // We are not interested in anything the external mind might return
         }
     }
@@ -176,7 +157,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                 if (!op->isDefaultSerialno()) {
                     u->setRefno(op->getSerialno());
                 }
-                sendExternalMind(u, res);
+                sendMind(u, res);
                 return;
             }
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
@@ -192,7 +173,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                     if (!op->isDefaultSerialno()) {
                         u->setRefno(op->getSerialno());
                     }
-                    sendExternalMind(u, res);
+                    sendMind(u, res);
                     return;
                 }
             }
