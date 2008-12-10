@@ -1,5 +1,9 @@
 2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Connection.cpp: Remove some of the debug output.
+
+2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Creator.h, rulesets/Creator.cpp: Remove the special
 	  case for sending to the mind of Creator, as the difference
 	  is now handled by ExternalMind itself in a more general way.

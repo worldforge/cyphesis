@@ -210,10 +210,7 @@ void Connection::connectAvatar(Character * chr)
         mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
     }
     if (mind == 0) {
-        log(NOTICE, "Character has no external mind.");
         chr->m_externalMind = mind = new ExternalMind(*chr);
-    } else {
-        log(NOTICE, "Character has external mind.");
     }
 
     if (mind->m_connection != 0) {
@@ -221,7 +218,6 @@ void Connection::connectAvatar(Character * chr)
         return;
     }
     mind->m_connection = this;
-    log(ERROR, "Character now connected.");
 
     if (chr->getProperty("external") == 0) {
         ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
