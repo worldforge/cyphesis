@@ -72,7 +72,7 @@ class Character : public Character_parent {
     /// \brief Internal AI mind controlling this character
     BaseMind * m_mind;
     /// \brief External network connected agent controlling this character
-    IdentifiedRouter * m_externalMind;
+    Router * m_externalMind;
 
     explicit Character(const std::string & id, long intId);
     virtual ~Character();

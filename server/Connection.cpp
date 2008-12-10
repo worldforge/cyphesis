@@ -120,8 +120,7 @@ Account * Connection::addPlayer(const std::string& username,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::removePlayer(IdentifiedRouter * obj,
-                                   const std::string & event)
+Account * Connection::removePlayer(Router * obj, const std::string & event)
 {
     Account * ac = dynamic_cast<Account *>(obj);
     if (ac != 0) {
@@ -182,7 +181,7 @@ void Connection::addEntity(Entity * ent)
                                       ent->getIntId()));
 }
 
-void Connection::addObject(IdentifiedRouter * obj)
+void Connection::addObject(Router * obj)
 {
     m_objects[obj->getIntId()] = obj;
 }
@@ -290,7 +289,7 @@ void Connection::operation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    IdentifiedRouter * obj = I->second;
+    Router * obj = I->second;
     Entity * ig_ent = dynamic_cast<Entity *>(obj);
     if (ig_ent == NULL) {
         obj->operation(op, res);

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Master.h,v 1.6 2008-01-28 23:48:33 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_MASTER_H
 #define SERVER_MASTER_H
@@ -29,7 +29,7 @@ class ServerRouting;
 /// program is a slave.
 ///
 /// This is designed to be used from a cyphesis process running as an AI slave.
-class Master : public IdentifiedRouter {
+class Master : public Router {
   protected:
     
   public:

@@ -30,7 +30,7 @@ class Entity;
 ///
 /// Essentially used to relay in-game operations that pass to the mind on
 /// to the client.
-class ExternalMind : public IdentifiedRouter {
+class ExternalMind : public Router {
   public:
     Connection * m_connection;
     Entity & m_entity;

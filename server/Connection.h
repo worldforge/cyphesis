@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Connection.h,v 1.62 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
@@ -29,7 +29,7 @@ class Character;
 class CommClient;
 class ServerRouting;
 
-typedef std::map<long, IdentifiedRouter *> RouterMap;
+typedef std::map<long, Router *> RouterMap;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///
@@ -39,7 +39,7 @@ typedef std::map<long, IdentifiedRouter *> RouterMap;
 /// and any other entities that that are associated with those accounts,
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
-class Connection : public IdentifiedRouter, virtual public sigc::trackable {
+class Connection : public Router, virtual public sigc::trackable {
     RouterMap m_objects;
 
     /// \brief Flag to indicate if this connection has already been
@@ -52,7 +52,7 @@ class Connection : public IdentifiedRouter, virtual public sigc::trackable {
     bool m_obsolete;
 
     Account * addPlayer(const std::string &, const std::string &);
-    Account * removePlayer(IdentifiedRouter *, const std::string & event);
+    Account * removePlayer(Router *, const std::string & event);
   protected:
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
@@ -65,7 +65,7 @@ class Connection : public IdentifiedRouter, virtual public sigc::trackable {
     virtual ~Connection();
 
     void addEntity(Entity * ent);
-    void addObject(IdentifiedRouter * obj);
+    void addObject(Router * obj);
     void removeObject(long id);
     void objectDeleted(long id);
 

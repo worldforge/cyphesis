@@ -1,3 +1,15 @@
+2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Identified.cpp, common/Identified.h, rulesets/Character.h,
+	  rulesets/LocatedEntity.h, server/Account.h, server/Admin.cpp,
+	  server/CommClient.cpp, server/CommClient.h, server/Connection.cpp,
+	  server/Connection.h, server/ExternalMind.h,
+	  server/ExternalProperty.cpp, server/ExternalProperty.h,
+	  server/Lobby.h, server/Master.h, server/Peer.h,
+	  server/ServerRouting.h, server/SlaveClientConnection.h:
+	  Rename IdentifiedRouter to Router as it's the base class
+	  for pretty much all routers.
+
 2008-12-09  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Creator.cpp: Remove code for removing Creators once

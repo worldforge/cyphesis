@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ExternalProperty.cpp,v 1.2 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #include "ExternalProperty.h"
 
@@ -23,7 +23,7 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
-ExternalProperty::ExternalProperty(IdentifiedRouter * & data) :
+ExternalProperty::ExternalProperty(Router * & data) :
                   PropertyBase(0), m_data(data)
 {
 }

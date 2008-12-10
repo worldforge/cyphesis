@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Identified.cpp,v 1.3 2008-01-28 23:48:31 alriddoch Exp $
+// $Id$
 
 #include "Identified.h"
 
@@ -108,25 +108,25 @@ void Identified::clientError(const Operation & op,
 /// convenience so that the ID arguments don't have to be explicitly passed
 /// to this constructor as well. We have to pass something to the Identified
 /// constructor here, but it has in fact already been called.
-IdentifiedRouter::IdentifiedRouter() : Identified("", -1)
+Router::Router() : Identified("", -1)
 {
      assert(!getId().empty());
      assert(getIntId() != -1);
 }
 
-IdentifiedRouter::~IdentifiedRouter()
+Router::~Router()
 {
 }
 
 /// \brief Copy the attribute values of this object to an Atlas Message
-void IdentifiedRouter::addToMessage(Atlas::Message::MapType & omap) const
+void Router::addToMessage(Atlas::Message::MapType & omap) const
 {
     omap["objtype"] = "obj";
     omap["id"] = getId();
 }
 
 /// \brief Copy the attribute values of this object to an Atlas Entity
-void IdentifiedRouter::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     ent->setObjtype("obj");
     ent->setId(getId());

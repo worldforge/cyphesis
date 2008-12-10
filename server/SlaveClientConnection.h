@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: SlaveClientConnection.h,v 1.5 2008-01-28 23:48:33 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_SLAVE_CLIENT_CONNECTION_H
 #define SERVER_SLAVE_CLIENT_CONNECTION_H
@@ -30,7 +30,7 @@ class ServerRouting;
 ///
 /// This behaves much like Connection, but handles the different behavoir
 /// required because cyphesis is not the authoritative point for logins.
-class SlaveClientConnection : public IdentifiedRouter {
+class SlaveClientConnection : public Router {
   public:
     /// \brief network object the client is connected to
     CommClient & m_commClient;

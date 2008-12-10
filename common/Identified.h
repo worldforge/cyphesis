@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Identified.h,v 1.4 2008-08-12 20:39:15 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_IDENTIFIED_H
 #define COMMON_IDENTIFIED_H
@@ -57,11 +57,11 @@ class Identified {
 
 /// \brief This is the base class for any entity which has an Atlas
 /// compatible identifier, and is the target for operations.
-class IdentifiedRouter : virtual public Identified {
+class Router : virtual public Identified {
   protected:
-    IdentifiedRouter();
+    Router();
   public:
-    virtual ~IdentifiedRouter() = 0;
+    virtual ~Router() = 0;
     virtual void operation(const Operation &, OpVector &) = 0;
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;

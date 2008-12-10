@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Account.h,v 1.58 2008-01-28 23:48:32 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
@@ -32,7 +32,7 @@ typedef std::map<long, Entity *> EntityDict;
 /// The majority of functionality relating to user accounts is encapsulated
 /// here. Sub-classes control privilege levels by implementing
 /// characterError().
-class Account : public IdentifiedRouter {
+class Account : public Router {
   protected:
     /// \brief A store of Character entities belonging to this account
     EntityDict m_charactersDict;

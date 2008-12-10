@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ServerRouting.h,v 1.55 2008-01-28 23:48:33 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
@@ -30,13 +30,13 @@
 class BaseWorld;
 class Lobby;
 
-typedef std::map<long, IdentifiedRouter *> RouterMap;
+typedef std::map<long, Router *> RouterMap;
 
 /// \brief ServerRouting represents the core of the server.
 ///
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
-class ServerRouting : public IdentifiedRouter {
+class ServerRouting : public Router {
   private:
     /// A mapping of ID to object of all the OOG objects in the server.
     RouterMap m_objects;
@@ -62,7 +62,7 @@ class ServerRouting : public IdentifiedRouter {
     ~ServerRouting();
 
     /// Add an OOG object to the server.
-    void addObject(IdentifiedRouter * obj) {
+    void addObject(Router * obj) {
         assert(!obj->getId().empty());
         assert(integerId(obj->getId()) == obj->getIntId());
         assert(obj->getIntId() > 0);
@@ -76,7 +76,7 @@ class ServerRouting : public IdentifiedRouter {
     }
 
     /// Remove an OOG object from the server.
-    void delObject(IdentifiedRouter * obj) {
+    void delObject(Router * obj) {
         m_objects.erase(obj->getIntId());
     }
 
@@ -89,7 +89,7 @@ class ServerRouting : public IdentifiedRouter {
     ///
     /// @return a pointer to the object with the given id, or
     /// zero if no object with this id is present.
-    IdentifiedRouter * getObject(const std::string & id) const {
+    Router * getObject(const std::string & id) const {
         RouterMap::const_iterator I = m_objects.find(integerId(id));
         if (I == m_objects.end()) {
             return 0;
