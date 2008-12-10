@@ -166,7 +166,7 @@ Account * Connection::removePlayer(Router * obj, const std::string & event)
                                            "Connection(%4).", getId(),
                                            chr->getType()->name(),
                                            chr->getId(),
-                                           mind->connection()->getId()));
+                                           mind->connectionId()));
             }
         }
     }
@@ -519,7 +519,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
                                                 "character in its dictionery "
                                                 "which is connected to another "
                                                 "Connection(%2)", getId(),
-                                                em->connection()->getId()));
+                                                em->connectionId()));
                             removeObject(chr->getIntId());
                         }
                     }

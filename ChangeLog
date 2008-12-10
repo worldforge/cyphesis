@@ -1,5 +1,14 @@
 2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/ExternalMind.h, server/ExternalMind.cpp: Improve the
+	  interface to make it cleaner, and add a way to track the time
+	  at which the character lost it's connection to the client.
+
+	* server/Connection.cpp: Change to use the cleaner ExternalMind
+	  interface.
+
+2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/ExternalMind.h: Make all the member variables protected,
 	  and create an API to expose as needed.
 

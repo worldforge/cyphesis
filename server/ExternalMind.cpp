@@ -66,6 +66,9 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
                 res.push_back(d);
             }
         }
+        // std::cout << "Time since disco "
+                  // << BaseWorld::instance().getTime() - m_lossTime
+                  // << std::endl << std::flush;
         return;
     }
     m_connection->send(op);
@@ -108,5 +111,19 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
                 }
             }
         }
+    }
+}
+
+const std::string & ExternalMind::connectionId()
+{
+    assert(m_connection != 0);
+    return m_connection->getId();
+}
+
+void ExternalMind::connect(Connection * c)
+{
+    m_connection = c;
+    if (c == 0) {
+        m_lossTime = BaseWorld::instance().getTime();
     }
 }

@@ -34,6 +34,7 @@ class ExternalMind : public Router {
   protected:
     Connection * m_connection;
     Entity & m_entity;
+    double m_lossTime;
   public:
 
     ExternalMind(Entity &);
@@ -41,12 +42,12 @@ class ExternalMind : public Router {
 
     virtual void operation(const Operation &, OpVector &);
 
-    Connection * connection() { return m_connection; }
-
     bool isConnected() { return m_connection != 0; }
     bool isConnectedTo(Connection * c) { return m_connection == c; }
 
-    void connect(Connection * c) { m_connection = c; }
+    const std::string & connectionId();
+
+    void connect(Connection * c);
 };
 
 #endif // SERVER_EXTERNAL_MIND_H
