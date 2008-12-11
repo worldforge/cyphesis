@@ -122,18 +122,15 @@ little need for more. There is a strong link here between this and the need
 for persistence. If we only need character persistence, we can't really deal
 with them having something other than the world as their LOC.
 
-Define an operatoin which went sent returns the count of entities which
+Define an operation which went sent returns the count of entities which
 can see something, so we can suspend simulation.
-
-cyclient wants ops back in response to its creates. If we don't automatically
-make Creator perceptive, how can we make this happen?
 
 If properties are responsible for their own serialisation, the represations
 can be much more efficient.
 
 Re-enable mapping of character to account.
 
-Design away to make only the starting POS and ORIENATION of an entity
+Design a way to make only the starting POS and ORIENATION of an entity
 storable.
 
 Sort out enable_persitence. Purge the old code.
@@ -1236,12 +1233,6 @@ Make the server easier to kill.
 
 Enforce well-formed args and parents on IG ops centrally.
 
-MemMap::add and MemMap::update are the same, identical. Eliminate this
-sameness
-
-Broadcast appearance on entity creation. Not that other Sight(Create())
-bullshit.
-
 Real sight ranges
 
 Do minds delete stuff from memory? Replace Entity with a special class
@@ -1252,8 +1243,6 @@ MemMap::lookId should probably not be exposed to the python API
 Add Restore op if required which does the same as Setup, but for restore.
 
 Make sure we don't schedule database maintenence if its already doing it.
-
-Add a search function to cycmd to search for entities by type or name.
 
 There is probably a problem with getLocation bailing if LOC is not of the
 data from the mind code's point of view.
@@ -1272,26 +1261,9 @@ Fix problem with vertical movement. (See BUGS)
 Debug collision with sty.
 
 Make cyphesis less reluctant to shutdown. Check for exit_flag in more
-places.
-
-Can we get a code size or performance improvement by passing in the result
-list as part of the operation method call. The answer is yes, but the
-further question is whether this will break anything. We can also stop
-calling the script post dispatch, and call it before op dispatch instead,
-giving a single call point, instead of loads of call points all the way
-through the code. Problems:
-  BaseMind: Blocks perception when it is asleep - this would be bipassed.
-            Process Appearance in the C++ code, even if script takes it.
-  Main script subscription process is bipassed, but this may well be ok
-  and mean that we can remove scripts from the subscription mechanism
-  completely.
-  Character: Tick - some types of tick need to be processed in the core,
-             even if others go to the script. Complicated processing.
-             Why no script in nourish?
-  Thing: Broadcasts a sight(create()) op in Setup, before calling script.
-
-Think about how to deal with things that probably don't need persistance.
-Seeds in particular. Flag in the rules?
+places. Add second flag set if other signals are used other than interrupt
+or term, or if those signals are used twice. This could bypass all the
+memory freeing to ensure clean fast stop.
 
 Need to profile why startup takes so long - we are chewing a lot of ops.
 
@@ -1347,13 +1319,8 @@ Look at using zipfiles to store entrie trees of python files for a ruleset.
 Still plenty of python object leaks. Need to carefully see if references are
 being handled right in the mind code.
 
-Sort persisting world so things like its orientation are initialised correctly.
-Either valid or invalid.
-
 Implement constraints on entities, which have to be checked before movement
 is allowed.
-
-Add propper type engine.
 
 Put in different high level exception catchers, to differentiate between
 exceptions caused by a client, which should result in a kick, and bugs in game
@@ -1361,12 +1328,6 @@ which need to be logged.
 
 Mind state is still utterly unpersisted, so creatures are waking up brain dead
 - mind does not even get kick started with a setup op.
-
-Putting an index on entity_ent.loc massively improves database loading
-performance. Need to assess impact on runtime performance. Should definitly
-consider putting this index in place permanently. Why is it that on some cases
-this does not help? Indexes are not good for lots of instances of a small set
-of values.
 
 When deleting an entity, need to deal with reparenting its children in the
 database.
@@ -1380,10 +1341,6 @@ return any tuples, and then the asyncronous recieve mechanism doesn't need
 to worry about who wants the tuples.
 
 General TODO
-
-  Come up with a way to persist general attributes.
-
-  Persist more complex things like geo stuff.
 
   Generalise and virtualise the collision code.
 
@@ -1423,13 +1380,6 @@ General TODO
 
   Looking at contains attribute currently only applies sight ranges in
   world entity. Need to apply sight ranges in all entities.
-
-  Once the subscription mechanism works, transfer its setup into the factories,
-  and use it to inform the clients what op types are meaningful for object
-  types.
-
-  Fix the database so it handles updating entities. Need to actually lookup
-  how this is done. Need to lock row if its being updated.
 
   Add services features, and test them in equator.
 
