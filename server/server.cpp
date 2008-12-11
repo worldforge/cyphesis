@@ -67,7 +67,7 @@ int main(int argc, char ** argv)
     }
 
     if (security_check() != SECURITY_OKAY) {
-        log(CRITICAL, "Security Error. Exiting.");
+        log(CRITICAL, "Security check error. Exiting.");
         return EXIT_SECURITY_ERROR;
     }
 

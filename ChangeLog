@@ -1,3 +1,7 @@
+2008-12-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/server.cpp: Improve the message on a security check failure.
+
 2008-12-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/ExternalMind.h, server/ExternalMind.cpp: Improve the
