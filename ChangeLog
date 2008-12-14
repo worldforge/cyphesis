@@ -1,3 +1,8 @@
+2008-12-14  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/ExternalMind.cpp, server/ExternalMind.h: Purge the inventory
+	  of deleted characters when they are deleted by disconnection.
+
 2008-12-11  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/server.cpp: Improve the message on a security check failure.

@@ -39,6 +39,30 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
+void ExternalMind::deleteEntity(const std::string & id, OpVector & res)
+{
+    Delete d;
+    Anonymous del_arg;
+    del_arg->setId(id);
+    d->setArgs1(del_arg);
+    d->setTo(id);
+    res.push_back(d);
+}
+
+void ExternalMind::purgeEntity(const LocatedEntity & ent, OpVector & res)
+{
+    if (ent.m_contains != 0) {
+        LocatedEntitySet::const_iterator I = ent.m_contains->begin();
+        LocatedEntitySet::const_iterator Iend = ent.m_contains->end();
+        for (; I != Iend; ++I) {
+            LocatedEntity * child = *I;
+            assert(child != 0);
+            purgeEntity(*child, res);
+        }
+    }
+    deleteEntity(ent.getId(), res);
+}
+
 ExternalMind::ExternalMind(Entity & e) : Identified(e.getId(), e.getIntId()),
                                          m_connection(0), m_entity(e)
 {
@@ -58,12 +82,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
             // If this entity no longer has a connection, and is ephemeral
             // we should delete it.
             if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-                Delete d;
-                Anonymous del_arg;
-                del_arg->setId(getId());
-                d->setArgs1(del_arg);
-                d->setTo(getId());
-                res.push_back(d);
+                purgeEntity(m_entity, res);
             }
         }
         // std::cout << "Time since disco "

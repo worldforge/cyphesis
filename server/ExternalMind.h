@@ -24,6 +24,7 @@
 
 class Connection;
 class Entity;
+class LocatedEntity;
 
 /// \brief This class connects in-game entities to the Connection of the client
 /// controlling it.
@@ -35,6 +36,9 @@ class ExternalMind : public Router {
     Connection * m_connection;
     Entity & m_entity;
     double m_lossTime;
+
+    void deleteEntity(const std::string & id, OpVector &);
+    void purgeEntity(const LocatedEntity & ent, OpVector &);
   public:
 
     ExternalMind(Entity &);
