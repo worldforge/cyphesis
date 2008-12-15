@@ -32,6 +32,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
@@ -191,6 +192,17 @@ LocatedEntity * CreatorClient::sendLook(const Operation & op)
     }
     LocatedEntity * obj = m_map.updateAdd(seen, res->getSeconds());
     return obj;
+}
+
+void CreatorClient::del(const std::string & id)
+{
+    Delete op;
+    Anonymous ent;
+    ent->setId(id);
+    op->setArgs1(ent);
+    op->setFrom(getId());
+    op->setTo(id);
+    return send(op);
 }
 
 int CreatorClient::runScript(const std::string & package,

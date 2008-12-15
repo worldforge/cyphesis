@@ -1,5 +1,11 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/Py_CreatorClient.cpp, client/CreatorClient.h,
+	  client/CreatorClient.cpp, rulesets/basic/editor.py: Make a delete
+	  method available to the client editor interface.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py: Add checks for NPCs and their
 	  owner structures before adding them. This script can now be run
 	  repeatedly without cluttering the world.

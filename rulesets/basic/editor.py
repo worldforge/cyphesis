@@ -51,6 +51,8 @@ class editor:
     def look_for(self, **kw):
         ent=apply(Entity,(),kw)
         return self.m.look_for(ent)
+    def delete(self, id):
+        return self.m.delete(id)
     def _say(self,target,verb,subject,object,predicate=None):
 ##         es=Entity(verb=verb,subject=subject,object=object)
 ##         self.m.send(Operation("talk",es,to=target))

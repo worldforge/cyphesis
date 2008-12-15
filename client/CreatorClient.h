@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CreatorClient.h,v 1.19 2007-12-02 23:49:05 alriddoch Exp $
+// $Id$
 
 #ifndef CLIENT_CREATOR_CLIENT_H
 #define CLIENT_CREATOR_CLIENT_H
@@ -35,6 +35,7 @@ class CreatorClient : public CharacterClient {
     void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);
     LocatedEntity * look(const std::string &);
     LocatedEntity * lookFor(const Atlas::Objects::Entity::RootEntity &);
+    void del(const std::string &);
     int runScript(const std::string & package, const std::string & function);
 };
 

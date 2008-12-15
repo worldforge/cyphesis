@@ -162,6 +162,24 @@ static PyObject * CreatorClient_send(PyCreatorClient * self, PyOperation * op)
     return Py_None;
 }
 
+static PyObject * CreatorClient_delete(PyCreatorClient * self, PyObject * py_id)
+{
+#ifndef NDEBUG
+    if (self->m_mind == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.send");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (!PyString_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "CreatorClient.delete must be a string");
+        return NULL;
+    }
+    char * id = PyString_AsString(py_id);
+    self->m_mind->del(id);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef CreatorClient_methods[] = {
 	{"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
 	{"make",           (PyCFunction)CreatorClient_make,      METH_O},
@@ -169,6 +187,7 @@ static PyMethodDef CreatorClient_methods[] = {
 	{"look",           (PyCFunction)CreatorClient_look,      METH_O},
 	{"look_for",       (PyCFunction)CreatorClient_look_for,  METH_O},
 	{"send",           (PyCFunction)CreatorClient_send,      METH_O},
+	{"delete",         (PyCFunction)CreatorClient_delete,    METH_O},
 	{NULL,          NULL}           /* sentinel */
 };
 
