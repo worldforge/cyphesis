@@ -180,7 +180,12 @@ LocatedEntity * CreatorClient::sendLook(const Operation & op)
         return NULL;
     }
     const std::string & created_id = seen->getId();
-    std::cout << "Seen: " << created_id << std::endl << std::flush;
+    if (seen->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+        std::cout << "Seen: " << seen->getParents().front()
+                  << "(" << created_id << ")" << std::endl << std::flush;
+    } else {
+        std::cout << "Seen: " << created_id << std::endl << std::flush;
+    }
     LocatedEntity * obj = m_map.updateAdd(seen, res->getSeconds());
     return obj;
 }

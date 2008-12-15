@@ -1,5 +1,11 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/CreatorClient.cpp: Include the type when reporting things
+	  the client has searched for on the server, making client output
+	  clearer.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py, rulesets/mason/tests.py: Move all
 	  the test client functions into their own file.
 
