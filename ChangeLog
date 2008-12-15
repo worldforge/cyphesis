@@ -1,5 +1,10 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/benchmarks.py: Add a client script which exercises
+	  entity creation, destruction and all connected subsystems.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* client/Py_CreatorClient.cpp, client/CreatorClient.h,
 	  client/CreatorClient.cpp, rulesets/basic/editor.py: Make a delete
 	  method available to the client editor interface.
