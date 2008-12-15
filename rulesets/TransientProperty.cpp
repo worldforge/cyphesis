@@ -23,6 +23,7 @@
 
 #include "common/OperationRouter.h"
 #include "common/Setup.h"
+#include "common/log.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -43,6 +44,10 @@ void TransientProperty::install(Entity * ent)
 
 void TransientProperty::apply(Entity * ent)
 {
+    if (m_data < 0) {
+        log(NOTICE, "transient indefinitely");
+        return;
+    }
     Set s;
     s->setTo(ent->getId());
     s->setFutureSeconds(m_data);

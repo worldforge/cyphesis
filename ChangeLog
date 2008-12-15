@@ -1,5 +1,11 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/TransientProperty.cpp: If the transient property has
+	  a negative value, don't expire the object, just leave it is
+	  ephemeral.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* client/CreatorClient.cpp: Avoid an error report when there
 	  is an Unseen response to a Look.
 
