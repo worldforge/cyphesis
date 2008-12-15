@@ -162,7 +162,10 @@ LocatedEntity * CreatorClient::sendLook(const Operation & op)
         return NULL;
     }
     const std::string & resparents = res->getParents().front();
-    if (resparents != "sight" && resparents != "unseen") {
+    if (resparents == "unseen") {
+        return NULL;
+    }
+    if (resparents != "sight") {
         std::cerr << "Reply to look is " << resparents << " not sight" << std::endl << std::flush;
         return NULL;
     }

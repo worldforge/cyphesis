@@ -1,5 +1,10 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/CreatorClient.cpp: Avoid an error report when there
+	  is an Unseen response to a Look.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py: Clean up and restructure more.
 	  Add checks to ensure fixed features only get added once.
 
