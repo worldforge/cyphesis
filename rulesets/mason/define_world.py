@@ -209,11 +209,11 @@ def default(mapeditor):
 
     #   animals
     if m.look_for(type='pig') is None:
-        piglet = m.make('pig', pos=(-3,-1,settlement_height))
+        piglet = m.make('pig', pos=(-3,-1,settlement_height), transient=-1)
         m.learn(piglet,pig_goals)
 
     if m.look_for(type='wolf') is None:
-        wolf = m.make('wolf', pos=(90,-90,settlement_height))
+        wolf = m.make('wolf', pos=(90,-90,settlement_height), transient=-1)
         m.learn(wolf,wolf_goals)
         m.know(wolf,wolf_knowledge)
         m.tell_importance(wolf,il.forage,'>',il.hunt)
@@ -221,15 +221,18 @@ def default(mapeditor):
         m.tell_importance(wolf,il.hunt,'>',il.patrol)
 
     if m.look_for(type='crab') is None:
-        crab = m.make('crab', pos=(-90,90,settlement_height))
+        crab = m.make('crab', pos=(-90,90,settlement_height),
+                      transient=-1)
         m.learn(crab,crab_goals)
 
     if m.look_for(type='skeleton') is None:
-        skeleton = m.make('skeleton', pos=(-38,-25,settlement_height))
+        skeleton = m.make('skeleton', pos=(-38,-25,settlement_height),
+                          transient=-1)
         m.learn(skeleton,skeleton_goals)
 
     if m.look_for(type='squirrel') is None:
-        squirrel = m.make('squirrel', pos=(-32,-15,settlement_height))
+        squirrel = m.make('squirrel', pos=(-32,-15,settlement_height),
+                          transient=-1)
         m.know(squirrel,sknowledge)
         m.learn(squirrel,squirrel_goals)
 
@@ -237,7 +240,8 @@ def default(mapeditor):
 
     # An NPC settler
     if m.look_for(name='Ranum Umado') is None:
-        settler=m.make('settler', name='Ranum Umado', pos=(1,1,0))
+        settler=m.make('settler', name='Ranum Umado', pos=(1,1,0),
+                       transient=-1)
         axe=m.make('axe',pos=(0,0,0),parent=settler.id)
         m.own(settler,axe)
         m.know(settler,[('forest','location',(30,30,0))])
@@ -245,7 +249,8 @@ def default(mapeditor):
 
     # An NPC forester
     if m.look_for(name='Ineos Adsam') is None:
-        settler=m.make('settler', name='Ineos Adsam',pos=(0, 12, 0))
+        settler=m.make('settler', name='Ineos Adsam',pos=(0, 12, 0),
+                       transient=-1)
         trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
         m.own(settler, trowel)
         m.know(settler,[('forest','location',(30,30,0))])
@@ -263,7 +268,8 @@ def default(mapeditor):
     # An NPC Butcher
     if m.look_for(name='Ulad Bargan') is None:
         butcher=m.make('settler', name='Ulad Bargan',desc='the butcher',
-                       pos=butcher_pos,age=probability.fertility_age)
+                       pos=butcher_pos,age=probability.fertility_age,
+                       transient=-1)
         m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'ham', 'market')"))
         m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
         m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se',"
@@ -301,7 +307,8 @@ def default(mapeditor):
 
     if m.look_for(name='Bok Forgo') is None:
         tailor=m.make('merchant', name='Bok Forgo',desc='the tailor',
-                      pos=tailor_pos,age=probability.fertility_age)
+                      pos=tailor_pos,age=probability.fertility_age,
+                      transient=-1)
         m.learn(tailor,(il.help,"add_help(['Get your clothes here.','Everything to keep you looking your best is here.'])"))
     
         m.know(tailor, tailor_knowledge)
@@ -334,7 +341,8 @@ def default(mapeditor):
     if m.look_for(name='Blackun Decker') is None:
         tmerchant=m.make('merchant', name='Blackun Decker',
                          desc='the tool merchant',
-                         pos=tool_merchant_pos,age=probability.fertility_age)
+                         pos=tool_merchant_pos,age=probability.fertility_age,
+                         transient=-1)
         m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.',"
                                    "'Everything a settler needs is available at "
                                    "great prices.'])"))
@@ -367,7 +375,8 @@ def default(mapeditor):
         merchant=m.make('merchant', name='Dyfed Searae',desc='the pig merchant',
                         pos=pig_sty_pos,age=probability.fertility_age,
                         orientation=Quaternion(Vector3D([1,0,0]),
-                                               Vector3D([0,-1,0])).as_list())
+                                               Vector3D([0,-1,0])).as_list(),
+                        transient=-1)
         m.know(merchant,mknowledge)
         m.know(merchant,area)
         m.know(merchant,mprices)
@@ -401,7 +410,8 @@ def default(mapeditor):
     if m.look_for(name='Gorun Iksa') is None:
         marshall=m.make('marshall', name='Gorun Iksa',
                         desc='the duke\'s marshall',
-                        pos=(14,12,settlement_height))
+                        pos=(14,12,settlement_height),
+                        transient=-1)
         m.know(marshall, [('deed','price','50')])
         m.know(marshall, area)
         m.know(marshall, about)
@@ -430,7 +440,8 @@ def default(mapeditor):
     if warrior is None:
         warrior=m.make('mercenary', name='Vonaa Barile',
                        pos=(uniform(-2,2),uniform(-2,2),settlement_height),
-                       orientation=directions[randint(0,7)])
+                       orientation=directions[randint(0,7)],
+                       transient=-1)
         bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
         m.own(warrior,bow)
         for i in range(0, 6):
@@ -442,7 +453,8 @@ def default(mapeditor):
     if warrior is None:
         warrior=m.make('mercenary', name='Lile Birloc',
                        pos=(uniform(-2,2), uniform(-2,2), settlement_height),
-                       orientation=directions[randint(0,7)])
+                       orientation=directions[randint(0,7)],
+                       transient=-1)
         bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
         m.own(warrior,bow)
         for i in range(0, 6):
@@ -477,9 +489,11 @@ def default(mapeditor):
 
     if m.look_for(type='goblin') is None:
         goblin_guards=[]
-        goblin=m.make('goblin', pos=(102, -33, settlement_height))
+        goblin=m.make('goblin', pos=(102, -33, settlement_height),
+                      transient=-1)
         goblin_guards.append(goblin)
-        goblin=m.make('goblin', pos=(98, -33, settlement_height))
+        goblin=m.make('goblin', pos=(98, -33, settlement_height),
+                      transient=-1)
         goblin_guards.append(goblin)
 
         m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
@@ -492,7 +506,7 @@ def _add_animals(m):
     for i in range(0, 10):
         xpos = xbase + uniform(-20,20)
         ypos = ybase + uniform(-20,20)
-        d=m.make('deer', pos=(xpos, ypos, settlement_height))
+        d=m.make('deer', pos=(xpos, ypos, settlement_height), transient=-1)
         deers.append(d)
     m.learn(deers,deer_goals)
     
@@ -502,7 +516,7 @@ def _add_animals(m):
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
-        d=m.make('chicken', pos=(xpos, ypos, settlement_height))
+        d=m.make('chicken', pos=(xpos, ypos, settlement_height), transient=-1)
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
@@ -513,7 +527,7 @@ def _add_animals(m):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
-        d=m.make('fish', pos=(xpos, ypos, zpos))
+        d=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(d)
     
 

@@ -1,5 +1,11 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/define_world.py: Make everything with goals
+	  transient for now, so it can be replaced by a run of cyclient
+	  after restore from database.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py, rulesets/mason/tests.py: Clean up
 	  the imports, and add the correct copyright notices.
 
