@@ -1,5 +1,10 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/define_world.py, rulesets/mason/tests.py: Move all
+	  the test client functions into their own file.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/define_world.py: Clean up and modularise the setup,
 	  moving the parts that are made less necessary by persistence
 	  dependent on the current world state.
