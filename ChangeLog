@@ -1,5 +1,10 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/define_world.py, rulesets/mason/tests.py: Clean up
+	  the imports, and add the correct copyright notices.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/mason/benchmarks.py: Add a client script which exercises
 	  entity creation, destruction and all connected subsystems.
 

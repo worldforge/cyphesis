@@ -1,5 +1,6 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
+#Copyright (C) 2000-2008 Alistair Riddoch
 
 from atlas import *
 from random import *
@@ -9,7 +10,6 @@ from cyphesis import probability
 from cyphesis.editor import editor
 from Quaternion import Quaternion
 from Vector3D import Vector3D
-import time
 from math import *
 
 #goal priority
