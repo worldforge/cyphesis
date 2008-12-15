@@ -194,6 +194,8 @@ def default(mapeditor):
 
     _add_resources(m)
 
+    _add_animals(m)
+
     # Example of Mercator forest.
     # m.make('forest', name='sherwood',pos=(-50, 10,settlement_height),bbox=[40,40,40])
 
@@ -244,10 +246,13 @@ def default(mapeditor):
 
     home1_pos=(90,-90,settlement_height)
     
-    stall=m.make('stall', name='Market Stall',
-                 pos=butcher_stall_pos, orientation=directions[5])
-    m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+
+    stall = m.look_for(name='Butcher Stall')
+    if stall is None:
+        stall=m.make('stall', name='Butcher Stall',
+                     pos=butcher_stall_pos, orientation=directions[5])
+        m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+        m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
 
     # An NPC Butcher
     butcher=m.make('settler', name='Ulad Bargan',desc='the butcher',
@@ -272,9 +277,14 @@ def default(mapeditor):
     m.own(butcher,coins)
     
 # 	clothing-merchant
-    stall = m.make('stall', name='Tailor Stall', pos=tailor_stall_pos, orientation=directions[7])
-    m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+    stall = m.look_for(name='Tailor Stall')
+    if stall is None:
+        stall = m.make('stall', name='Tailor Stall',
+                       pos=tailor_stall_pos, orientation=directions[7])
+        m.make('wall', parent=stall.id, pos=(0, 0, 0),
+               bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+        m.make('wall', parent=stall.id, pos=(2, 0, 0),
+               bbox=(0,-1.5,0,0.5,1.5,2))
 
     tailor=m.make('merchant', name='Bok Forgo',desc='the tailor',
                   pos=tailor_pos,age=probability.fertility_age)
@@ -298,13 +308,21 @@ def default(mapeditor):
     m.own(tailor, clothes)
 
 # 	tool-merchant
-    stall = m.make('stall', name='Tool Stall', pos=tool_stall_pos, orientation=directions[2])
-    m.make('wall',parent=stall.id,pos=(0,0,0),bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
-    m.make('wall',parent=stall.id,pos=(2,0,0),bbox=(0,-1.5,0,0.5,1.5,2))
+    stall = m.look_for(name='Tool Stall')
+    if stall is None:
+        stall = m.make('stall', name='Tool Stall',
+                       pos=tool_stall_pos, orientation=directions[2])
+        m.make('wall', parent=stall.id, pos=(0, 0, 0),
+               bbox=(-0.5,-1.5,0,0.5,1.5,0.8))
+        m.make('wall',parent=stall.id, pos=(2, 0, 0),
+               bbox=(0,-1.5,0,0.5,1.5,2))
 
-    tmerchant=m.make('merchant', name='Blackun Decker',desc='the tool merchant',
+    tmerchant=m.make('merchant', name='Blackun Decker',
+                     desc='the tool merchant',
                      pos=tool_merchant_pos,age=probability.fertility_age)
-    m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.','Everything a settler needs is available at great prices.'])"))
+    m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.',"
+                               "'Everything a settler needs is available at "
+                               "great prices.'])"))
 
     m.know(tmerchant, toolmerc_knowledge)
     m.know(tmerchant, toolprices)
@@ -318,15 +336,21 @@ def default(mapeditor):
     
     for i in range(0, 20):
         tty = tooltypes[randint(0,len(tooltypes)-1)]
-        tools.append(m.make(tty,pos=(uniform(-0.7, 0.7),uniform(-0.5,0.5),0.6),parent=stall.id,orientation=directions[randint(0,7)]))
+        tools.append(m.make(tty, pos=(uniform(-0.7, 0.7),
+                                      uniform(-0.5,0.5),0.6),
+                            parent=stall.id,
+                            orientation=directions[randint(0,7)]))
     
     m.own(tmerchant,tools)
 
     home2_pos=(80,80,settlement_height)
     merchant=m.make('merchant', name='Dyfed Searae',desc='the pig merchant',
                     pos=pig_sty_pos,age=probability.fertility_age,
-                    orientation=Quaternion(Vector3D([1,0,0]),Vector3D([0,-1,0])).as_list())
-    sty=m.make('sty',pos=pig_sty_pos)
+                    orientation=Quaternion(Vector3D([1,0,0]),
+                                           Vector3D([0,-1,0])).as_list())
+    sty = m.look_for(type='sty')
+    if sty is None:
+        sty=m.make('sty',pos=pig_sty_pos)
     m.know(merchant,mknowledge)
     m.know(merchant,area)
     m.know(merchant,mprices)
@@ -336,8 +360,18 @@ def default(mapeditor):
     m.learn(merchant,(il.sell,"sell_trade('pig', 'market', 'afternoon')"))
     m.learn(merchant,(il.lunch,"meal('ham','midday', 'inn')"))
     m.learn(merchant,(il.sup,"meal('beer', 'evening', 'inn')"))
-    m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement','settler')"))
-    m.learn(merchant,(il.help,"add_help(['Thankyou for joining our remote settlement.','Our first task is to build some shelter, but while we are doing that we still need food.','You can help us out by raising pigs for slaughter.','If you want to buy a piglet to raise, let me know by saying you would like to buy one.','Pigs love to eat acorns from under the oak trees that are abundant in this area.'],['I would like to buy a pig', 'Pehaps I will buy one later'])"))
+    m.learn(merchant,(il.welcome,"welcome('Welcome to this our settlement',"
+                                 "'settler')"))
+    m.learn(merchant,(il.help,"add_help(["
+          "'Thankyou for joining our remote settlement.',"
+          "'Our first task is to build some shelter, but while we are doing "
+          "that we still need food.',"
+          "'You can help us out by raising pigs for slaughter.',"
+          "'If you want to buy a piglet to raise, let me know by saying you "
+          "would like to buy one.',"
+          "'Pigs love to eat acorns from under the oak trees that are "
+          "abundant in this area.'],"
+          "['I would like to buy a pig', 'Pehaps I will buy one later'])"))
     piglets=[]
     for i in range(0, 6):
         piglets.append(m.make('pig',pos=(uniform(0,4),uniform(0,4),settlement_height),parent=sty.id,orientation=directions[randint(0,7)]))
@@ -349,17 +383,30 @@ def default(mapeditor):
     m.know(marshall, [('deed','price','50')])
     m.know(marshall, area)
     m.know(marshall, about)
-    m.learn(marshall,(il.help,"add_help(['On behalf of the Duke I would like to welcome you to moraf.','If you are new here I suggest talking to the pig seller.','He will tell you what you can do to help out.','If you have decide you would like to settle here I can assign you some land','but you will need to show that you are a useful citizen.','If you can raise 50 coins herding pigs, then a plot of land is yours.'],['I would like to buy a deed','I will come back when I have raised some pigs'])"))
+    m.learn(marshall,(il.help,"add_help(["
+          "'On behalf of the Duke I would like to welcome you to moraf.',"
+          "'If you are new here I suggest talking to the pig seller.',"
+          "'He will tell you what you can do to help out.',"
+          "'If you have decide you would like to settle here I can assign you "
+          "some land',"
+          "'but you will need to show that you are a useful citizen.',"
+          "'If you can raise 50 coins herding pigs, then a plot of land is "
+          "yours.'],"
+          "['I would like to buy a deed',"
+          "'I will come back when I have raised some pigs'])"))
     plots=[]
     for i in range(20, 200, 20):
         for j in range(-100, 100, 20):
-            plots.append(m.make('deed',pos=(0,0,0),parent=marshall.id,plot=(i,j)))
-    m.own(marshall,plots)
+            plots.append(m.make('deed', pos=(0,0,0), parent=marshall.id,
+                         plot=(i,j)))
+    m.own(marshall, plots)
 
     # Warriors - the more adventurous types
 
     warriors=[]
-    warrior=m.make('mercenary', name='Vonaa Barile',pos=(uniform(-2,2),uniform(-2,2),settlement_height),orientation=directions[randint(0,7)])
+    warrior=m.make('mercenary', name='Vonaa Barile',
+                   pos=(uniform(-2,2),uniform(-2,2),settlement_height),
+                   orientation=directions[randint(0,7)])
     bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
@@ -367,7 +414,9 @@ def default(mapeditor):
         m.own(warrior,arrow)
     warriors.append(warrior)
 
-    warrior=m.make('mercenary', name='Lile Birloc',pos=(uniform(-2,2),uniform(-2,2),settlement_height),orientation=directions[randint(0,7)])
+    warrior=m.make('mercenary', name='Lile Birloc',
+                   pos=(uniform(-2,2), uniform(-2,2), settlement_height),
+                   orientation=directions[randint(0,7)])
     bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
     m.own(warrior,bow)
     for i in range(0, 6):
@@ -380,9 +429,21 @@ def default(mapeditor):
 
     # Warriors enjoy their food and drink
     m.know(warriors, [('services','price','5')])
-    m.learn(warriors,(il.help,"add_help(['The forest is a dangerous place.','If you need some help protecting your pigs,','I can help you out for a day or so.','I will need some gold for food and equipment.','For 5 coins I can work for you until sundown.','After sundown you should make sure your pigs are safe,','and get indoors yourself.','If you want to hire my services,','let me know by saying you would like to hire me.'],['I would like to hire your services','I can take care of my pigs alone'])"))
+    m.learn(warriors,(il.help,"add_help(["
+          "'The forest is a dangerous place.',"
+          "'If you need some help protecting your pigs,',"
+          "'I can help you out for a day or so.',"
+          "'I will need some gold for food and equipment.',"
+          "'For 5 coins I can work for you until sundown.',"
+          "'After sundown you should make sure your pigs are safe,',"
+          "'and get indoors yourself.',"
+          "'If you want to hire my services,',"
+          "'let me know by saying you would like to hire me.'],"
+          "['I would like to hire your services',"
+          "'I can take care of my pigs alone'])"))
     m.learn(warriors,(il.hire,"hire_trade()"))
-    m.learn(warriors,(il.forage,"gather(['boots', 'cloak', 'shirt', 'trousers', 'hat', 'skull', 'coin'])"))
+    m.learn(warriors,(il.forage,"gather(['boots', 'cloak', 'shirt',"
+                                "'trousers', 'hat', 'skull', 'coin'])"))
     m.learn(warriors,(il.lunch,"meal('ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal('beer', 'evening', 'inn')"))
 
@@ -395,6 +456,8 @@ def default(mapeditor):
     goblin_guards.append(goblin)
 
     m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
+
+def _add_animals(m):
 
     deers=[]
     xbase = uniform(-180,180)
