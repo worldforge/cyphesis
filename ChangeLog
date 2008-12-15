@@ -1,5 +1,11 @@
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/mason/define_world.py: Add checks for NPCs and their
+	  owner structures before adding them. This script can now be run
+	  repeatedly without cluttering the world.
+
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/TransientProperty.cpp: If the transient property has
 	  a negative value, don't expire the object, just leave it is
 	  ephemeral.
