@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_CreatorClient.cpp,v 1.38 2007-12-27 03:31:48 alriddoch Exp $
+// $Id$
 
 #include "Py_CreatorClient.h"
 
@@ -137,8 +137,8 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
     }
     LocatedEntity * retval = self->m_mind->lookFor(ent->entity);
     if (retval == NULL) {
-        PyErr_SetString(PyExc_RuntimeError, "Entity look_for failed");
-        return NULL;
+        Py_INCREF(Py_None);
+        return Py_None;
     }
     PyLocatedEntity * ret = newPyLocatedEntity();
     ret->m_entity = retval;

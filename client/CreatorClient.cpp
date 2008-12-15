@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CreatorClient.cpp,v 1.35 2008-01-26 17:43:21 alriddoch Exp $
+// $Id$
 
 #include "Py_CreatorClient.h"
 
@@ -162,8 +162,8 @@ LocatedEntity * CreatorClient::sendLook(const Operation & op)
         return NULL;
     }
     const std::string & resparents = res->getParents().front();
-    if (resparents != "sight") {
-        std::cerr << "Reply to look isn't sight" << std::endl << std::flush;
+    if (resparents != "sight" && resparents != "unseen") {
+        std::cerr << "Reply to look is " << resparents << " not sight" << std::endl << std::flush;
         return NULL;
     }
     if (res->getArgs().empty()) {

@@ -1,5 +1,10 @@
 2008-12-14  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/CreatorClient.cpp, client/Py_CreatorClient.cpp: Fix
+	  look_for so that it can fail safely.
+
+2008-12-14  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/ExternalMind.cpp, server/ExternalMind.h: Operations have
 	  to be injected directly into the world, not returned, or it
 	  won't work on non-prived characters. Add a check that removes
