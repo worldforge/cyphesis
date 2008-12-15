@@ -186,167 +186,19 @@ def default(mapeditor):
 
     world=m.look()
 
-    points = { }
-    for i in range(-8, 7):
-        for j in range(-6, 7):
-            if i>=5 or j>=5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
-            elif i<=-5 or j <= -5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
-            elif (i==2 or i==3) and (j==2 or j==3):
-                points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
-            elif i==4 or j==4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
-            elif i==-4 or j==-4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-5, 5)]
-            else:
-                points['%ix%i'%(i,j)] = [i, j, 1+uniform(3, 11)*(abs(i)+abs(j))]
+    if not hasattr(world, 'name'):
+        _setup_landscape(m, world)
 
-    points['-4x-1'] = [-4, -1, 12.4]
-    points['-4x-2'] = [-4, -2, -8.3]
-    points['-3x-2'] = [-3, -2, -6.2]
-    points['-3x-1'] = [-3, -1, -5.3]
-    points['-2x-1'] = [-2, -1, -4.1]
-    points['-1x-1'] = [-1, -1, -16.8]
-    points['0x-1'] = [0, -1, -3.8]
-    points['-1x0'] = [-1, 0, -2.8]
-    points['-1x1'] = [-1, 1, -1.8]
-    points['-1x2'] = [-1, 2, -1.7]
-    points['0x2'] = [0, 2, -1.6]
-    points['1x2'] = [1, 2, -1.3]
-    points['1x3'] = [1, 3, -1.1]
-    points['1x4'] = [1, 4, -0.6]
-    points['1x-1'] = [1, -1, 15.8]
-    points['0x0'] = [0, 0, 12.8]
-    points['1x0'] = [1, 0, 23.1]
-    points['0x1'] = [0, 1, 14.2]
-    points['1x1'] = [1, 1, 19.7]
+        _setup_outpost(m)
 
-    minx=0
-    miny=0
-    minz=0
-    maxx=0
-    maxy=0
-    maxz=0
-    for i in points.values():
-        x = i[0]
-        y = i[1]
-        z = i[2]
-        if not minx or x < minx:
-            minx = x
-        if not miny or y < miny:
-            miny = y
-        if not minz or z < minz:
-            minz = z
-        if not maxx or x > maxx:
-            maxx = x
-        if not maxy or y > maxy:
-            maxy = y
-        if not maxz or z > maxz:
-            maxz = z
+        _setup_settlement(m)
 
-    surfaces = [
-        {'name': 'rock', 'pattern': 'fill' },
-        {'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold': -2.0,
-                                                       'highThreshold': 1.5 } },
-        {'name': 'grass', 'pattern': 'grass', 'params': {'lowThreshold': 1.0,
-                                                         'highThreshold': 80.0,
-                                                         'cutoff': 0.5,
-                                                         'intercept': 1.0 } },
-        {'name': 'silt', 'pattern': 'depth', 'params': {'waterLevel': 0.0,
-                                                        'murkyDepth': -10.0 } },
-        {'name': 'snow', 'pattern': 'high', 'params': {'threshold': 110.0 } },
-    ]
+        _setup_camp(m)
 
-    
-        
-    # print minx, ":", miny, ":", minz, ":", maxx, ":", maxy, ":", maxz
+    _add_resources(m)
 
-    m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
-
-# a wall around the world
-
-    m.make('boundary',pos=(-500,-321,-20),bbox=[2,642,300])
-    m.make('boundary',pos=(-500,-321,-20),bbox=[821,2,300])
-    m.make('boundary',pos=(-500, 320,-20),bbox=[821,2,300])
-    m.make('boundary',pos=( 320,-321,-20),bbox=[2,642,300])
-
-    m.make('fir',pos=(-10,-0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-    m.make('fir',pos=(-0,-10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-    m.make('fir',pos=(0,10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-    m.make('fir',pos=(10,0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
-
-    path_area={'points' : [ [-26,-62], [-36,-31], [-26,-14], [2,-1], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ], 'layer' : 7}
-    m.make('path', name='path to village',pos=(10, 20,settlement_height), area=path_area,bbox=[-38,-62,0,169,154,1])
-
-    m.make('tower',pos=(210,210,5))
-    m.make('gallows',pos=(185,175,5))
-
-    m.make('house3',pos=(158,150,22),orientation=directions[1])
-    m.make('house3',pos=(158,158,22),orientation=directions[4])
-    m.make('house3',pos=(150,158,22),orientation=directions[0])
-    m.make('house3',pos=(142,158,22),orientation=directions[7])
-    m.make('house3',pos=(142,150,22),orientation=directions[3])
-    m.make('house3',pos=(142,142,22),orientation=directions[6])
-    m.make('house3',pos=(150,125,22),orientation=directions[2])
-    m.make('house3',pos=(171,142,22),orientation=directions[5])
-
-    carrotfield_points = [ [0,0], [0,20], [20,20], [20,0] ] # this is so these values can be reused as an argument in plantfield as well as in 'points' in the m.make command
-    carrotfield = m.make('ploughed_field', name='field',pos=(120,170,30),status=1.0,area={'points' : carrotfield_points, 'layer' : 8}, bbox=[20,20,0]) # this makes a carrot field storing its identity in carrotfield
-    turnipfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
-    turnipfield = m.make('ploughed_field', name='field',pos=(142,170,30),status=1.0,area={'points' : turnipfield_points, 'layer' : 8}, bbox=[20,20,0])
-
-    plantfield(m,'carrot',carrotfield,carrotfield_points)# calls the plantfield funtion with (the entity to be planted, the identity of the field to be planted in, the distance between the furrows, the distance between the plants along the furrows, the points of the corners of the field)
-    plantfield(m,'turnip',turnipfield,turnipfield_points)
-
-    village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]], 'layer':7 }
-    m.make('path', name='village_square', pos=(150, 150, 22), area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
-
+    # Example of Mercator forest.
     # m.make('forest', name='sherwood',pos=(-50, 10,settlement_height),bbox=[40,40,40])
-
-    m.make('jetty',pos=(-22,-48,0))
-    m.make('boat',pos=(-22,-56,0))
-
-# a camp near the origin
-
-    #cfire=m.make('campfire',pos=(0,4,settlement_height))
-    #m.make('fire',pos=(0.7,0.7,0),parent=cfire.id)
-    #m.make('tent',pos=(-1,8,settlement_height),bbox=[2.5,2.5,3])
-    #m.make('lumber',pos=(-1,3,settlement_height))
-    #m.make('lumber',pos=(-1,2.5,settlement_height))
-
-    # hall=m.make('hall',pos=hall_pos)
-
-    # Fire in the centre of the hall
-    # cfire=m.make('campfire',pos=(6,6,settlement_height),
-                                            # parent=hall.id)
-    # m.make('fire',pos=(0.7,0.7,0),parent=cfire.id)
-
-    cfire=m.make('campfire',pos=(3,9,settlement_height))
-    m.make('fire',pos=(0,0,0),parent=cfire.id)
-
-    cfire=m.make('campfire',pos=(11,1,settlement_height))
-    m.make('fire',pos=(0,0,0),parent=cfire.id)
-
-    for i in range(0, 20):
-        m.make('lumber',pos=(uniform(-200,0),uniform(-200,0),settlement_height))
-
-    for i in forests:
-        for j in range(0, i[1]):
-            m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
-
-    m.make('weather', pos=(0,1,0))
-
-#   bones all over the place
-    for i in range(0, 10):
-        xpos = uniform(-200,200)
-        ypos = uniform(-200,200)
-        m.make('skull', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('pelvis', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('arm', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('thigh', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('shin', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
-        m.make('ribcage', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
 
 #   the lych, who makes bones into skeletons
     lych=m.make('lych', pos=(-21, -89, settlement_height))
@@ -539,23 +391,6 @@ def default(mapeditor):
 
     # Goblins
 
-    cfire=m.make('campfire',pos=(100,-50,settlement_height))
-    m.make('fire',pos=(0,0,0),parent=cfire.id)
-
-    cfire=m.make('campfire',pos=(90,-50,settlement_height))
-    m.make('fire',pos=(0,0,0),parent=cfire.id)
-
-    for i in range(10, 350, 5):
-        direction=Vector3D(sin(radians(i)) * uniform(0,2), cos(radians(i)) * uniform(0,2), 10).unit_vector()
-        orient=Quaternion(Vector3D(0,0,1), direction)
-        m.make('stake',pos=(100 + 14 * sin(radians(i)), -50 + 16 * cos(radians(i)), -1), bbox=[-0.5,-0.5,0,0.5,0.5,5 + uniform(0,2)], orientation=orient.as_list())
-        
-    camp_area_points=[]
-    for i in range(10, 350, 17):
-        camp_area_points.append([14 * sin(radians(i)), 16 * cos(radians(i))])
-    camp_area={'points': camp_area_points, 'layer':7 }
-    m.make('path', name='camp_area', pos=camp_pos, area=camp_area, bbox=[-14, -16, 0, 14, 16, 1])
-
     goblin_guards=[]
     goblin=m.make('goblin', pos=(102, -33, settlement_height))
     goblin_guards.append(goblin)
@@ -599,21 +434,232 @@ def default(mapeditor):
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     #m.tell_importance(guard,il.defend,'>',il.patrol)
 
+# This only needs to be called if there is no terrain yet.
+def _setup_landscape(m, world):
+    """Set up the landscape environment of terrain, trees and natural
+       features.
+    """
+
+    # Add the terrain surface to the world.
+    _setup_terrain(m, world)
+
+    # If there is no boundary, add that.
+    if m.look_for(type='boundary') is None:
+        m.make('boundary',pos=(-500,-321,-20),bbox=[2,642,300])
+        m.make('boundary',pos=(-500,-321,-20),bbox=[821,2,300])
+        m.make('boundary',pos=(-500, 320,-20),bbox=[821,2,300])
+        m.make('boundary',pos=( 320,-321,-20),bbox=[2,642,300])
+
+    m.make('fir',pos=(-10,-0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(-0,-10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(0,10,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+    m.make('fir',pos=(10,0,settlement_height), style = tree_styles['fir'][randint(0,len(tree_styles['fir']) - 1)])
+
+    for i in forests:
+        for j in range(0, i[1]):
+            m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
+
+    m.make('weather', pos=(0,1,0))
+
+
+def _setup_terrain(m, world):
+    """Set up the terrain property on the world object."""
+
+    points = { }
+    for i in range(-8, 7):
+        for j in range(-6, 7):
+            if i>=5 or j>=5:
+                points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
+            elif i<=-5 or j <= -5:
+                points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
+            elif (i==2 or i==3) and (j==2 or j==3):
+                points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
+            elif i==4 or j==4:
+                points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
+            elif i==-4 or j==-4:
+                points['%ix%i'%(i,j)] = [i, j, uniform(-5, 5)]
+            else:
+                points['%ix%i'%(i,j)] = [i, j, 1+uniform(3, 11)*(abs(i)+abs(j))]
+
+    points['-4x-1'] = [-4, -1, 12.4]
+    points['-4x-2'] = [-4, -2, -8.3]
+    points['-3x-2'] = [-3, -2, -6.2]
+    points['-3x-1'] = [-3, -1, -5.3]
+    points['-2x-1'] = [-2, -1, -4.1]
+    points['-1x-1'] = [-1, -1, -16.8]
+    points['0x-1'] = [0, -1, -3.8]
+    points['-1x0'] = [-1, 0, -2.8]
+    points['-1x1'] = [-1, 1, -1.8]
+    points['-1x2'] = [-1, 2, -1.7]
+    points['0x2'] = [0, 2, -1.6]
+    points['1x2'] = [1, 2, -1.3]
+    points['1x3'] = [1, 3, -1.1]
+    points['1x4'] = [1, 4, -0.6]
+    points['1x-1'] = [1, -1, 15.8]
+    points['0x0'] = [0, 0, 12.8]
+    points['1x0'] = [1, 0, 23.1]
+    points['0x1'] = [0, 1, 14.2]
+    points['1x1'] = [1, 1, 19.7]
+
+    minx=0
+    miny=0
+    minz=0
+    maxx=0
+    maxy=0
+    maxz=0
+    for i in points.values():
+        x = i[0]
+        y = i[1]
+        z = i[2]
+        if not minx or x < minx:
+            minx = x
+        if not miny or y < miny:
+            miny = y
+        if not minz or z < minz:
+            minz = z
+        if not maxx or x > maxx:
+            maxx = x
+        if not maxy or y > maxy:
+            maxy = y
+        if not maxz or z > maxz:
+            maxz = z
+
+    surfaces = [
+        {'name': 'rock', 'pattern': 'fill' },
+        {'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold': -2.0,
+                                                       'highThreshold': 1.5 } },
+        {'name': 'grass', 'pattern': 'grass', 'params': {'lowThreshold': 1.0,
+                                                         'highThreshold': 80.0,
+                                                         'cutoff': 0.5,
+                                                         'intercept': 1.0 } },
+        {'name': 'silt', 'pattern': 'depth', 'params': {'waterLevel': 0.0,
+                                                        'murkyDepth': -10.0 } },
+        {'name': 'snow', 'pattern': 'high', 'params': {'threshold': 110.0 } },
+    ]
+
+    
+        
+    # print minx, ":", miny, ":", minz, ":", maxx, ":", maxy, ":", maxz
+
+    m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+
+def _setup_outpost(m):
+
+    m.make('jetty',pos=(-22,-48,0))
+    m.make('boat',pos=(-22,-56,0))
+
+    # a camp near the origin
+
+    cfire=m.make('campfire',pos=(3,9,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
+
+    cfire=m.make('campfire',pos=(11,1,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
+
+
+def _setup_settlement(m):
+
+    path_area={'points' : [ [-26,-62], [-36,-31], [-26,-14], [2,-1], [22, 40],
+                            [132,122], [140,127], [144.5, 146.5], [169, 153],
+                            [169,155], [142.5,148.5], [138,129], [130,124],
+                            [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ],
+               'layer' : 7}
+    m.make('path', name='path to village', pos=(10, 20,settlement_height),
+           area=path_area, bbox=[-38,-62,0,169,154,1])
+
+    m.make('tower',pos=(210,210,5))
+    m.make('gallows',pos=(185,175,5))
+
+    m.make('house3',pos=(158,150,22),orientation=directions[1])
+    m.make('house3',pos=(158,158,22),orientation=directions[4])
+    m.make('house3',pos=(150,158,22),orientation=directions[0])
+    m.make('house3',pos=(142,158,22),orientation=directions[7])
+    m.make('house3',pos=(142,150,22),orientation=directions[3])
+    m.make('house3',pos=(142,142,22),orientation=directions[6])
+    m.make('house3',pos=(150,125,22),orientation=directions[2])
+    m.make('house3',pos=(171,142,22),orientation=directions[5])
+
+    # this is so these values can be reused as an argument in plantfield as
+    # well as in 'points' in the m.make command
+    carrotfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
+    # this makes a carrot field storing its identity in carrotfield
+    carrotfield = m.make('ploughed_field', name='field', pos=(120,170,30),
+                         status=1.0, area={'points' : carrotfield_points,
+                                           'layer' : 8},
+                         bbox=[20,20,0])
+    turnipfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
+    turnipfield = m.make('ploughed_field', name='field', pos=(142,170,30),
+                         status=1.0, area={'points' : turnipfield_points,
+                                           'layer' : 8},
+                         bbox=[20,20,0])
+
+    # plantfield(m, 'carrot', carrotfield, carrotfield_points)
+    # plantfield(m, 'turnip', turnipfield, turnipfield_points)
+
+    village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]],
+                    'layer':7 }
+    m.make('path', name='village_square', pos=(150, 150, 22),
+           area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
+
+def _setup_camp(m):
+
+    cfire=m.make('campfire',pos=(100,-50,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
+
+    cfire=m.make('campfire',pos=(90,-50,settlement_height))
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
+
+    for i in range(10, 350, 5):
+        direction=Vector3D(sin(radians(i)) * uniform(0,2),
+                           cos(radians(i)) * uniform(0,2), 10).unit_vector()
+        orient=Quaternion(Vector3D(0,0,1), direction)
+        m.make('stake', pos=(100 + 14 * sin(radians(i)),
+                             -50 + 16 * cos(radians(i)), -1),
+               bbox=[-0.5,-0.5,0,0.5,0.5,5 + uniform(0,2)],
+               orientation=orient.as_list())
+        
+    camp_area_points=[]
+    for i in range(10, 350, 17):
+        camp_area_points.append([14 * sin(radians(i)), 16 * cos(radians(i))])
+    camp_area={'points': camp_area_points, 'layer':7 }
+    m.make('path', name='camp_area', pos=camp_pos, area=camp_area,
+           bbox=[-14, -16, 0, 14, 16, 1])
+
+def _add_resources(m):
+
+    # lumber around the map
+    for i in range(0, 20):
+        m.make('lumber',pos=(uniform(-200,0),uniform(-200,0),settlement_height))
+
+#   bones all over the place
+    for i in range(0, 10):
+        xpos = uniform(-200,200)
+        ypos = uniform(-200,200)
+        m.make('skull', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('pelvis', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('arm', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('thigh', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('shin', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+        m.make('ribcage', pos=(xpos+uniform(-2,2),ypos+uniform(-2,2),settlement_height))
+
+
 ##TODO - plantfield function - by MaxRandor##
 # I am not sure about the flexibility of the code in terms of the field not being on a plane, dealing with bumpy ground, but I am not sure the creation of the field can deal with that either.
 # Z values for the corners of the field are a bit iffy.
 ##
 def plantfield(m,plant,field,field_points,furrowdist=1,plantspacing=1):
-    '''Plant a field.
+    """Plant a field.
     
     first argument is for the object to plant the field with string
-    second argument is the variable containing the identity of the field that is to be created (field = m.make(....))
+    second argument is the variable containing the identity of the field that
+    is to be created (field = m.make(....))
     third argument is the space between the furrows
     fourth argument is the space between the plants along the furrows.
-    4-3 this diagram shows which corners are which. 1 is the origin corner defiend in pos
+    4-3 this diagram shows which corners are which. 1 is the origin corner
+    defiend in pos
     | |
     1-2
-    '''
+    """
     # corner 1 is no longer needed as parent = field.id makes it obselete.
     # corner 2 obtained from the data in points in the m.make function
     corner2 = [field_points[3][0],field_points[3][1],0]
@@ -763,66 +809,8 @@ def modify_terrain(mapeditor):
     m=editor(mapeditor)
 
     world=m.look()
-    points = { }
-    for i in range(-8, 7):
-        for j in range(-6, 7):
-            if i>=5 or j>=5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
-            elif i<=-5 or j <= -5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
-            elif (i==2 or i==3) and (j==2 or j==3):
-                points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
-            elif i==4 or j==4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
-            elif i==-4 or j==-4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-5, 5)]
-            else:
-                points['%ix%i'%(i,j)] = [i, j, 1+uniform(3, 11)*(abs(i)+abs(j))]
 
-    points['-4x-1'] = [-4, -1, 12.4]
-    points['-4x-2'] = [-4, -2, -8.3]
-    points['-3x-2'] = [-3, -2, -6.2]
-    points['-3x-1'] = [-3, -1, -5.3]
-    points['-2x-1'] = [-2, -1, -4.1]
-    points['-1x-1'] = [-1, -1, -16.8]
-    points['0x-1'] = [0, -1, -3.8]
-    points['-1x0'] = [-1, 0, -2.8]
-    points['-1x1'] = [-1, 1, -1.8]
-    points['-1x2'] = [-1, 2, -1.7]
-    points['0x2'] = [0, 2, -1.6]
-    points['1x2'] = [1, 2, -1.3]
-    points['1x3'] = [1, 3, -1.1]
-    points['1x4'] = [1, 4, -0.6]
-    points['1x-1'] = [1, -1, 15.8]
-    points['0x0'] = [0, 0, 12.8]
-    points['1x0'] = [1, 0, 23.1]
-    points['0x1'] = [0, 1, 14.2]
-    points['1x1'] = [1, 1, 19.7]
-
-    minx=0
-    miny=0
-    minz=0
-    maxx=0
-    maxy=0
-    maxz=0
-    for i in points.values():
-        x = i[0]
-        y = i[1]
-        z = i[2]
-        if not minx or x < minx:
-            minx = x
-        if not miny or y < miny:
-            miny = y
-        if not minz or z < minz:
-            minz = z
-        if not maxx or x > maxx:
-            maxx = x
-        if not maxy or y > maxy:
-            maxy = y
-        if not maxz or z > maxz:
-            maxz = z
-        
-    m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+    _setup_terrain(m, world)
 
 def test_coll(mapeditor):
 

@@ -1,3 +1,9 @@
+2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/mason/define_world.py: Clean up and modularise the setup,
+	  moving the parts that are made less necessary by persistence
+	  dependent on the current world state.
+
 2008-12-14  Al Riddoch  <alriddoch@googlemail.com>
 
 	* client/CreatorClient.cpp, client/Py_CreatorClient.cpp: Fix
