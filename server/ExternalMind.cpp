@@ -39,17 +39,19 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
-void ExternalMind::deleteEntity(const std::string & id, OpVector & res)
+static const double character_expire_time = 20; // 1 hour
+
+void ExternalMind::deleteEntity(const std::string & id)
 {
     Delete d;
     Anonymous del_arg;
     del_arg->setId(id);
     d->setArgs1(del_arg);
     d->setTo(id);
-    res.push_back(d);
+    m_entity.sendWorld(d);
 }
 
-void ExternalMind::purgeEntity(const LocatedEntity & ent, OpVector & res)
+void ExternalMind::purgeEntity(const LocatedEntity & ent)
 {
     if (ent.m_contains != 0) {
         LocatedEntitySet::const_iterator I = ent.m_contains->begin();
@@ -57,10 +59,10 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent, OpVector & res)
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             assert(child != 0);
-            purgeEntity(*child, res);
+            purgeEntity(*child);
         }
     }
-    deleteEntity(ent.getId(), res);
+    deleteEntity(ent.getId());
 }
 
 ExternalMind::ExternalMind(Entity & e) : Identified(e.getId(), e.getIntId()),
@@ -82,12 +84,18 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
             // If this entity no longer has a connection, and is ephemeral
             // we should delete it.
             if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-                purgeEntity(m_entity, res);
+                purgeEntity(m_entity);
             }
         }
         // std::cout << "Time since disco "
                   // << BaseWorld::instance().getTime() - m_lossTime
                   // << std::endl << std::flush;
+        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
+            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+                std::cout << "PURGING PC" << std::endl << std::flush;
+                purgeEntity(m_entity);
+            }
+        }
         return;
     }
     m_connection->send(op);
