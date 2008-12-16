@@ -1,3 +1,7 @@
+2008-12-16  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/TransientProperty.cpp: Remove some debug output.
+
 2008-12-15  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/mason/define_world.py: Make everything with goals

@@ -44,8 +44,8 @@ void TransientProperty::install(Entity * ent)
 
 void TransientProperty::apply(Entity * ent)
 {
+    // If data is less than zero we don't ever delete it.
     if (m_data < 0) {
-        log(NOTICE, "transient indefinitely");
         return;
     }
     Set s;

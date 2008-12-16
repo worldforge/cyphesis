@@ -1,7 +1,3 @@
-Move functionality that deletes creator into external mind, and make
-it more general with the option to remove from the world. Use ephemeral
-flag to ensure creator gets purged.
-
 As noted before, ArithmeticFactory ScriptFactory and TaskFactory contain
 much common code. Use inheritance.
 
