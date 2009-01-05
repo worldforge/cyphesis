@@ -53,7 +53,8 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
-			     ArithmeticFactory.cpp ArithmeticFactory.h
+			     ArithmeticFactory.cpp ArithmeticFactory.h \
+			     TerraiMod_impl.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
