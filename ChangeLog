@@ -1,5 +1,10 @@
 2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Motion.cpp: Add assertions for consistency of the entity
+	  we are colliding with before resolving the collision.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Motion.cpp: Move the assertions before the debug output,
 	  as otherwise the asserts won't catch things that could make the
 	  debug code crash.

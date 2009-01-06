@@ -181,6 +181,9 @@ bool Motion::resolveCollision()
     Location & location(m_entity.m_location);
     bool moving = true;
 
+    assert(m_collEntity != 0);
+    assert(m_collEntity->m_location.m_loc != 0);
+
     if (m_collLocChange) {
         // We are changing container (LOC)
         static const Quaternion identity(Quaternion().identity());
