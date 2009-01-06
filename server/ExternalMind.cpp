@@ -39,7 +39,7 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
-static const double character_expire_time = 20; // 1 hour
+static const double character_expire_time = 60 * 60; // 1 hour
 
 void ExternalMind::deleteEntity(const std::string & id)
 {
