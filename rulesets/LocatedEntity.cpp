@@ -210,6 +210,7 @@ void LocatedEntity::makeContainer()
 /// container.
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
+    assert(m_location.m_loc != 0);
     assert(m_location.m_loc->m_contains != 0);
     m_location.m_loc->m_contains->erase(this);
     if (m_location.m_loc->m_contains->empty()) {

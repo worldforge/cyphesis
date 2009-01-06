@@ -1,5 +1,10 @@
 2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/LocatedEntity.cpp: Add an assert to make sure entity is
+	  part of an intact container tree.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/ExternalMind.cpp: Extend the time before nuking player
 	  characters to an hour.
 
