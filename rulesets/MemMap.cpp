@@ -92,6 +92,7 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
         // Has LOC been changed?
         if (old_loc == 0 || new_loc_id != old_loc->getId()) {
             entity->m_location.m_loc = getAdd(new_loc_id);
+            assert(0 != entity->m_location.m_loc);
             assert(old_loc != entity->m_location.m_loc);
             if (old_loc != 0) {
                 assert(old_loc->m_contains != 0);

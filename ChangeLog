@@ -1,5 +1,10 @@
 2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/MemMap.cpp: Add an assert as getAdd() is supposed to
+	  always return non-zero.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/LocatedEntity.cpp: Add an assert to make sure entity is
 	  part of an intact container tree.
 
