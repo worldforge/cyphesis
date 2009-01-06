@@ -295,7 +295,7 @@ Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
 libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(WFMATH, wfmath-0.3,
+PKG_CHECK_MODULES(WFMATH, wfmath-0.3 >= 0.3.9,
     [
         MATH_LIBS="$MATH_LIBS $WFMATH_LIBS"
     ],
