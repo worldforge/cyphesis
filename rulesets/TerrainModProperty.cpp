@@ -60,7 +60,31 @@ InnerTerrainMod::~InnerTerrainMod()
 
 const std::string& InnerTerrainMod::getTypename() const
 {
-	return mTypeName;
+    return mTypeName;
+}
+
+WFMath::Point<3> InnerTerrainMod::parsePosition(const Atlas::Message::MapType& modElement)
+{
+    ///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
+    WFMath::Point<3> pos = mTerrainMod.getEntity()->m_location.pos();
+    Atlas::Message::MapType::const_iterator mod_I = modElement.find("height");
+    if (mod_I != modElement.end()) {
+        const Atlas::Message::Element& modHeightElem = mod_I->second;
+        if (modHeightElem.isNum()) {
+            float height = modHeightElem.asNum();
+            pos.z() = height;
+        }
+    } else {
+        mod_I = modElement.find("heightoffset");
+        if (mod_I != modElement.end()) {
+            const Atlas::Message::Element& modHeightElem = mod_I->second;
+            if (modHeightElem.isNum()) {
+                float heightoffset = modHeightElem.asNum();
+                pos.z() += heightoffset;
+            }
+        }
+    }
+    return pos;
 }
 
 InnerTerrainModCrater::InnerTerrainModCrater(TerrainModProperty& terrainMod)
@@ -71,38 +95,37 @@ InnerTerrainModCrater::InnerTerrainModCrater(TerrainModProperty& terrainMod)
 
 InnerTerrainModCrater::~InnerTerrainModCrater()
 {
-	delete mModifier;
+    delete mModifier;
 }
 
 Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 {
-	return mModifier;
+    return mModifier;
 }
 
 
 bool InnerTerrainModCrater::parseAtlasData(const Atlas::Message::MapType& modElement)
 {
 
-	const Atlas::Message::Element* shapeMap(0);
-	const std::string& shapeType = parseShape(modElement, &shapeMap);
-	if (shapeMap) {
-		if (shapeType == "ball") {
-			WFMath::Point<3> pos = mTerrainMod.getEntity()->m_location.pos();
-			///HACK: This height adjustment shouldn't be necessary
-// 			pos.z() = EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(pos.x(), pos.y()));
-			WFMath::Ball<3> shape;
-			try {
-				shape.fromAtlas(*shapeMap);
-				shape.shift(WFMath::Vector<3>(pos.x(), pos.y(), pos.z()));
-				mModifier = new Mercator::CraterTerrainMod(shape);
-				return true;
-			} catch (const Atlas::Message::WrongTypeException& ex) {
-				///Just fall through
-			}
-		}
-	}
-	log(ERROR, "Crater terrain mod defined with incorrect shape");
-	return false;
+    const Atlas::Message::Element* shapeMap(0);
+    const std::string& shapeType = parseShape(modElement, &shapeMap);
+    if (shapeMap) {
+        if (shapeType == "ball") {
+            WFMath::Point<3> pos = parsePosition(modElement);
+
+            WFMath::Ball<3> shape;
+            try {
+                shape.fromAtlas(*shapeMap);
+                shape.shift(WFMath::Vector<3>(pos.x(), pos.y(), pos.z()));
+                mModifier = new Mercator::CraterTerrainMod(shape);
+                return true;
+            } catch (const Atlas::Message::WrongTypeException& ex) {
+                ///Just fall through
+            }
+        }
+    }
+    log(ERROR, "Crater terrain mod defined with incorrect shape");
+    return false;
 }
 
 
@@ -114,61 +137,52 @@ InnerTerrainModSlope::InnerTerrainModSlope(TerrainModProperty& terrainMod)
 
 InnerTerrainModSlope::~InnerTerrainModSlope()
 {
-	delete mModifier_impl;
+    delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
 {
-	return mModifier_impl->getModifier();
+    return mModifier_impl->getModifier();
 }
 
 
 bool InnerTerrainModSlope::parseAtlasData(const Atlas::Message::MapType& modElement)
 {
-	WFMath::Point<3> pos = mTerrainMod.getEntity()->m_location.pos();
-	float dx, dy, level;
-	// Get slopes
-	Atlas::Message::MapType::const_iterator mod_I = modElement.find("slopes");
-	if (mod_I != modElement.end()) {
-		const Atlas::Message::Element& modSlopeElem = mod_I->second;
-		if (modSlopeElem.isList()) {
-			const Atlas::Message::ListType & slopes = modSlopeElem.asList();
-			if (slopes.size() > 1) {
-				if (slopes[0].isNum() && slopes[1].isNum()) {
-					dx = slopes[0].asNum();
-					dy = slopes[1].asNum();
-					// Get level
-					mod_I = modElement.find("height");
-					if (mod_I != modElement.end()) {
-						const Atlas::Message::Element& modHeightElem = mod_I->second;
-						if (modHeightElem.isNum()) {
-							level = modHeightElem.asNum();
-							pos.z() = level;        // Note that the height of the mod is in pos.z()
-							const Atlas::Message::Element* shapeMap(0);
-							const std::string& shapeType = parseShape(modElement, &shapeMap);
-							if (shapeMap) {
-								if (shapeType == "ball") {
-									InnerTerrainModSlope_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Ball<2> >();
-									mModifier_impl = modifierImpl;
-									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
-								} else if (shapeType == "rotbox") {
-									InnerTerrainModSlope_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::RotBox<2> >();
-									mModifier_impl = modifierImpl;
-									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
-								} else if (shapeType == "polygon") {
-									InnerTerrainModSlope_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Polygon<2> >();
-									mModifier_impl = modifierImpl;
-									return modifierImpl->createInstance(*shapeMap, pos, level, dx, dy);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	log(ERROR, "SlopeTerrainMod defined with incorrect shape");
-	return false;
+    float dx, dy, level;
+    // Get slopes
+    Atlas::Message::MapType::const_iterator mod_I = modElement.find("slopes");
+    if (mod_I != modElement.end()) {
+        const Atlas::Message::Element& modSlopeElem = mod_I->second;
+        if (modSlopeElem.isList()) {
+            const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+            if (slopes.size() > 1) {
+                if (slopes[0].isNum() && slopes[1].isNum()) {
+                    dx = slopes[0].asNum();
+                    dy = slopes[1].asNum();
+                    WFMath::Point<3> pos = parsePosition(modElement);
+                    const Atlas::Message::Element* shapeMap(0);
+                    const std::string& shapeType = parseShape(modElement, &shapeMap);
+                    if (shapeMap) {
+                        if (shapeType == "ball") {
+                            InnerTerrainModSlope_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Ball<2> >();
+                            mModifier_impl = modifierImpl;
+                            return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), level, dx, dy);
+                        } else if (shapeType == "rotbox") {
+                            InnerTerrainModSlope_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::RotBox<2> >();
+                            mModifier_impl = modifierImpl;
+                            return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), level, dx, dy);
+                        } else if (shapeType == "polygon") {
+                            InnerTerrainModSlope_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Polygon<2> >();
+                            mModifier_impl = modifierImpl;
+                            return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), level, dx, dy);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    log(ERROR, "SlopeTerrainMod defined with incorrect shape");
+    return false;
 }
 
 
@@ -180,47 +194,38 @@ InnerTerrainModLevel::InnerTerrainModLevel(TerrainModProperty& terrainMod)
 
 InnerTerrainModLevel::~InnerTerrainModLevel()
 {
-	delete mModifier_impl;
+    delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
 {
-	return mModifier_impl->getModifier();
+    return mModifier_impl->getModifier();
 }
-
 
 bool InnerTerrainModLevel::parseAtlasData(const Atlas::Message::MapType& modElement)
 {
-
-	WFMath::Point<3> pos = mTerrainMod.getEntity()->m_location.pos();
-	// Get level
-	Atlas::Message::MapType::const_iterator mod_I = modElement.find("height");
-	if (mod_I != modElement.end()) {
-		const Atlas::Message::Element& modHeightElem = mod_I->second;
-		if (modHeightElem.isNum()) {
-			float height = modHeightElem.asNum();
-			pos.z() = height;        // Note that the height of the mod is in pos.z()
-			const Atlas::Message::Element* shapeMap(0);
-			const std::string& shapeType = parseShape(modElement, &shapeMap);
-			if (shapeMap) {
-				if (shapeType == "ball") {
-					InnerTerrainModLevel_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Ball<2> >();
-					mModifier_impl = modifierImpl;
-					return modifierImpl->createInstance(*shapeMap, pos, height);
-				} else if (shapeType == "rotbox") {
-					InnerTerrainModLevel_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::RotBox<2> >();
-					mModifier_impl = modifierImpl;
-					return modifierImpl->createInstance(*shapeMap, pos, height);
-				} else if (shapeType == "polygon") {
-					InnerTerrainModLevel_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Polygon<2> >();
-					mModifier_impl = modifierImpl;
-					return modifierImpl->createInstance(*shapeMap, pos, height);
-				}
-			}
-		}
-	}
-	log(ERROR, "Level terrain mod defined with incorrect shape");
-	return false;
+    WFMath::Point<3> pos = parsePosition(modElement);
+    // Get level
+    Atlas::Message::MapType::const_iterator mod_I = modElement.find("height");
+    const Atlas::Message::Element* shapeMap(0);
+    const std::string& shapeType = parseShape(modElement, &shapeMap);
+    if (shapeMap) {
+        if (shapeType == "ball") {
+            InnerTerrainModLevel_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Ball<2> >();
+            mModifier_impl = modifierImpl;
+            return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), pos.z());
+        } else if (shapeType == "rotbox") {
+            InnerTerrainModLevel_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::RotBox<2> >();
+            mModifier_impl = modifierImpl;
+            return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), pos.z());
+        } else if (shapeType == "polygon") {
+            InnerTerrainModLevel_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Polygon<2> >();
+            mModifier_impl = modifierImpl;
+            return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), pos.z());
+        }
+    }
+    log(ERROR, "Level terrain mod defined with incorrect shape");
+    return false;
 }
 
 InnerTerrainModAdjust::InnerTerrainModAdjust(TerrainModProperty& terrainMod)
@@ -231,88 +236,73 @@ InnerTerrainModAdjust::InnerTerrainModAdjust(TerrainModProperty& terrainMod)
 
 InnerTerrainModAdjust::~InnerTerrainModAdjust()
 {
-	delete mModifier_impl;
+    delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
 {
-	return mModifier_impl->getModifier();
+    return mModifier_impl->getModifier();
 }
 
 
 bool InnerTerrainModAdjust::parseAtlasData(const Atlas::Message::MapType& modElement)
 {
 
-	WFMath::Point<3> pos = mTerrainMod.getEntity()->m_location.pos();
-	// Get level
-	Atlas::Message::MapType::const_iterator mod_I = modElement.find("height");
-	if (mod_I != modElement.end()) {
-		const Atlas::Message::Element& modHeightElem = mod_I->second;
-		if (modHeightElem.isNum()) {
-			float height = modHeightElem.asNum();
-			pos.z() = height;        // Note that the height of the mod is in pos.z()
-			const Atlas::Message::Element* shapeMap(0);
-			const std::string& shapeType = parseShape(modElement, &shapeMap);
-			if (shapeMap) {
-				if (shapeType == "ball") {
-					InnerTerrainModAdjust_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Ball<2> >();
-					mModifier_impl = modifierImpl;
-					return modifierImpl->createInstance(*shapeMap, pos, height);
-				} else if (shapeType == "rotbox") {
-					InnerTerrainModAdjust_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::RotBox<2> >();
-					mModifier_impl = modifierImpl;
-					return modifierImpl->createInstance(*shapeMap, pos, height);
-				} else if (shapeType == "polygon") {
-					InnerTerrainModAdjust_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Polygon<2> >();
-					mModifier_impl = modifierImpl;
-					return modifierImpl->createInstance(*shapeMap, pos, height);
-				}
-			}
-		}
-	}
-	log(ERROR, "Adjust terrain mod defined with incorrect shape");
-	return false;
+    WFMath::Point<3> pos = mTerrainMod.getEntity()->m_location.pos();
+    // Get level
+    Atlas::Message::MapType::const_iterator mod_I = modElement.find("height");
+    if (mod_I != modElement.end()) {
+        const Atlas::Message::Element& modHeightElem = mod_I->second;
+        if (modHeightElem.isNum()) {
+            float height = modHeightElem.asNum();
+            pos.z() = height;        // Note that the height of the mod is in pos.z()
+            const Atlas::Message::Element* shapeMap(0);
+            const std::string& shapeType = parseShape(modElement, &shapeMap);
+            if (shapeMap) {
+                if (shapeType == "ball") {
+                    InnerTerrainModAdjust_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Ball<2> >();
+                    mModifier_impl = modifierImpl;
+                    return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), height);
+                } else if (shapeType == "rotbox") {
+                    InnerTerrainModAdjust_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::RotBox<2> >();
+                    mModifier_impl = modifierImpl;
+                    return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), height);
+                } else if (shapeType == "polygon") {
+                    InnerTerrainModAdjust_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Polygon<2> >();
+                    mModifier_impl = modifierImpl;
+                    return modifierImpl->createInstance(*shapeMap, pos, mTerrainMod.getEntity()->m_location.orientation(), height);
+                }
+            }
+        }
+    }
+    log(ERROR, "Adjust terrain mod defined with incorrect shape");
+    return false;
 }
 
 
 const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::Element** shapeMap)
 {
-	Atlas::Message::MapType::const_iterator shape_I = modElement.find("shape");
-	if (shape_I != modElement.end()) {
-		const Atlas::Message::Element& shapeElement = shape_I->second;
-		if (shapeElement.isMap()) {
-			const Atlas::Message::MapType& localShapeMap = shapeElement.asMap();
-			*shapeMap = &shapeElement;
-			
-			// Get shape's type
-			Atlas::Message::MapType::const_iterator type_I = localShapeMap.find("type");
-			if (type_I != localShapeMap.end()) {
-				const Atlas::Message::Element& shapeTypeElem(type_I->second);
-				if (shapeTypeElem.isString()) {
-					const std::string& shapeType = shapeTypeElem.asString();
-					return shapeType;
-				}
-			}
-		}
-	}
-	static std::string empty("");
-	return empty;
-}
+    Atlas::Message::MapType::const_iterator shape_I = modElement.find("shape");
+    if (shape_I != modElement.end()) {
+        const Atlas::Message::Element& shapeElement = shape_I->second;
+        if (shapeElement.isMap()) {
+            const Atlas::Message::MapType& localShapeMap = shapeElement.asMap();
+            *shapeMap = &shapeElement;
 
-// template <typename InnerTerrainMod_implType>
-// InnerTerrainMod_implType* InnerTerrainMod::createInnerTerrainMod_impInstance(const Atlas::Message::MapType& modElement)
-// {
-// 
-// 	const Atlas::Message::MapType* shapeMap(0);
-// 	const std::string& shapeType = parseShape(modElement, &shapeMap);
-// 	if (shapeMap) {
-// 		if (shapeType == "ball") {
-// 			typename InnerTerrainMod_implType::template foo<WFMath::Ball<2> >();
-//  			return new typename InnerTerrainMod_implType::template<WFMath::Ball<2> >();
-// 		}
-// 	}
-// }
-	
+            // Get shape's type
+            Atlas::Message::MapType::const_iterator type_I = localShapeMap.find("type");
+            if (type_I != localShapeMap.end()) {
+                const Atlas::Message::Element& shapeTypeElem(type_I->second);
+                if (shapeTypeElem.isString()) {
+                    const std::string& shapeType = shapeTypeElem.asString();
+                    return shapeType;
+                }
+            }
+        }
+    }
+    static std::string empty("");
+    return empty;
+}
 
 
 
@@ -444,29 +434,30 @@ void TerrainModProperty::install(Entity * owner)
 
 void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
 {
-	remove();
-	TerrainProperty* terrain = getTerrain();
-	if (terrain) {
-		Mercator::TerrainMod* modifier = parseModData(m_terrainmods);
-		if (modifier) {
-			terrain->setMod(modifier);
-		}
-	}
-	
+    remove();
+    TerrainProperty* terrain = getTerrain();
+    if (terrain) {
+        Mercator::TerrainMod* modifier = parseModData(m_terrainmods);
+        if (modifier) {
+            terrain->setMod(modifier);
+        }
+    }
+    
 }
 
 void TerrainModProperty::remove()
 {
-	if (m_modptr) {
-		TerrainProperty* terrain = getTerrain();
-		if (terrain) {
-			terrain->removeMod(m_modptr);
-		}
-	}
-	if (mInnerMod) {
-		delete mInnerMod;
-		mInnerMod = 0;
-	}
+    if (m_modptr) {
+        TerrainProperty* terrain = getTerrain();
+        if (terrain) {
+            terrain->removeMod(m_modptr);
+        }
+    }
+    m_modptr = 0;
+    if (mInnerMod) {
+        delete mInnerMod;
+        mInnerMod = 0;
+    }
 }
 
 Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier)
@@ -479,29 +470,29 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const Element & modifier
     const Atlas::Message::MapType & modMap = modifier.asMap();
     m_terrainmods = modMap;
 
-	// Get modifier type
-	Atlas::Message::MapType::const_iterator mod_I = modMap.find("type");
-	if (mod_I != modMap.end()) {
-		const Atlas::Message::Element& modTypeElem(mod_I->second);
-		if (modTypeElem.isString()) {
-			const std::string& modType = modTypeElem.asString();
-
-			if (modType == "slopemod") {
-				mInnerMod = new InnerTerrainModSlope(*this);
-			} else if (modType == "levelmod") {
-				mInnerMod = new InnerTerrainModLevel(*this);
-			} else if (modType == "adjustmod") {
-				mInnerMod = new InnerTerrainModAdjust(*this);
-			} else  if (modType == "cratermod") {
-				mInnerMod = new InnerTerrainModCrater(*this);
-			}
-		}
-	}
-	if (mInnerMod) {
-		if (mInnerMod->parseAtlasData(modMap)) {
-			return mInnerMod->getModifier();
-		}
-	}
+    // Get modifier type
+    Atlas::Message::MapType::const_iterator mod_I = modMap.find("type");
+    if (mod_I != modMap.end()) {
+        const Atlas::Message::Element& modTypeElem(mod_I->second);
+        if (modTypeElem.isString()) {
+            const std::string& modType = modTypeElem.asString();
+    
+            if (modType == "slopemod") {
+                mInnerMod = new InnerTerrainModSlope(*this);
+            } else if (modType == "levelmod") {
+                mInnerMod = new InnerTerrainModLevel(*this);
+            } else if (modType == "adjustmod") {
+                mInnerMod = new InnerTerrainModAdjust(*this);
+            } else  if (modType == "cratermod") {
+                mInnerMod = new InnerTerrainModCrater(*this);
+            }
+        }
+    }
+    if (mInnerMod) {
+        if (mInnerMod->parseAtlasData(modMap)) {
+            return mInnerMod->getModifier();
+        }
+    }
 
     return NULL;
 }
