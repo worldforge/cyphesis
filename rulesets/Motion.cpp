@@ -64,6 +64,8 @@ Operation * Motion::genMoveOperation()
 
 float Motion::checkCollisions()
 {
+    assert(m_entity.m_location.m_loc != 0);
+    assert(m_entity.m_location.m_loc->m_contains != 0);
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::move_tick seconds
     float coll_time = consts::move_tick;
@@ -76,8 +78,6 @@ float Motion::checkCollisions()
     m_collLocChange = false;
     m_collision = false;
     // Check against everything within the current container
-    assert(m_entity.m_location.m_loc != 0);
-    assert(m_entity.m_location.m_loc->m_contains != 0);
     // If this entity doesn't have a bbox, it can't collide currently.
     if (!m_entity.m_location.bBox().isValid()) {
         return coll_time;

@@ -1,5 +1,11 @@
 2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Motion.cpp: Move the assertions before the debug output,
+	  as otherwise the asserts won't catch things that could make the
+	  debug code crash.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/MemMap.cpp: Add an assert as getAdd() is supposed to
 	  always return non-zero.
 
