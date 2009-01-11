@@ -15,13 +15,15 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Movement.h,v 1.35 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_MOVEMENT_H
 #define RULESETS_MOVEMENT_H
 
 #include "physics/Vector3D.h"
 #include "physics/Quaternion.h"
+
+#include <wfmath/point.h>
 
 #include <Atlas/Objects/ObjectsFwd.h>
 

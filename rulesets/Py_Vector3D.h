@@ -15,12 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Vector3D.h,v 1.17 2007-07-03 01:22:47 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PY_VECTOR3D_H
 #define RULESETS_PY_VECTOR3D_H
 
 #include <Python.h>
+
+#include <wfmath/vector.h>
 
 #include "physics/Vector3D.h"
 

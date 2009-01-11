@@ -21,7 +21,6 @@
 
 #include "rulesets/Entity.h"
 
-#include "physics/Vector3D.h"
 #include "physics/Collision.h"
 
 #include "common/compose.hpp"

@@ -1,3 +1,14 @@
+2009-01-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/Vector3D.h, physics/Vector3D.cpp: Move a bunch of inline
+	  functions in the header to be non-inline in the body. Use
+	  the forward declaraions in wfmath/const.h instead of having to
+	  include the full headers.
+
+	* rulesets/Motion.cpp, rulesets/Motion.h, rulesets/Movement.h,
+	  rulesets/Py_Point3D.h, rulesets/Py_Vector3D.h: Include wfmath
+	  headers as required.
+
 2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Motion.cpp: Add assertions for consistency of the entity
