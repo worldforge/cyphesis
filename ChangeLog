@@ -1,5 +1,10 @@
 2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Makefile.am: Fix linking the tests to get functions which
+	  are no longer inlined.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* physics/Quaternion.h: Use forward declarations.
 
 	* physics/Quaternion.cpp, rulesets/Py_Quaternion.h: Include

@@ -125,6 +125,7 @@ BaseWorldtest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/AtlasProperties.o \
                       $(top_builddir)/rulesets/Script.o \
+                      $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
@@ -171,6 +172,7 @@ globalstest_LDADD = $(top_builddir)/modules/DateTime.o \
 collisiontest_SOURCES = collisiontest.cpp
 collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/physics/BBox.o \
+                      $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
@@ -182,6 +184,7 @@ collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
 emergencetest_SOURCES = emergencetest.cpp
 emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/physics/BBox.o \
+                      $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/modules/Location.o \
                       $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
@@ -201,6 +204,7 @@ distancetest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                      $(top_builddir)/rulesets/Script.o \
                      $(top_builddir)/modules/Location.o \
                      $(top_builddir)/modules/DateTime.o \
+                     $(top_builddir)/physics/libphysics.a \
                      $(top_builddir)/common/libcommon.a \
                      $(MATH_LIBS)
 
@@ -214,6 +218,7 @@ Locationtest_LDADD = $(top_builddir)/modules/Location.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/AtlasProperties.o \
                      $(top_builddir)/rulesets/Script.o \
+                     $(top_builddir)/physics/libphysics.a \
                      $(top_builddir)/common/libcommon.a \
                      $(MATH_LIBS)
 
@@ -230,6 +235,7 @@ EntityReftest_LDADD = $(top_builddir)/modules/EntityRef.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
                       $(top_builddir)/rulesets/AtlasProperties.o \
                       $(top_builddir)/rulesets/Script.o \
+                      $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
@@ -242,6 +248,7 @@ LocatedEntitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                           $(top_builddir)/rulesets/Script.o \
                           $(top_builddir)/modules/Location.o \
                           $(top_builddir)/modules/DateTime.o \
+                          $(top_builddir)/physics/libphysics.a \
                           $(top_builddir)/common/libcommon.a
 
 Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
@@ -252,6 +259,7 @@ Entitytest_LDADD = $(top_builddir)/modules/Location.o \
                    $(top_builddir)/rulesets/EntityProperties.o \
                    $(top_builddir)/rulesets/AtlasProperties.o \
                    $(top_builddir)/rulesets/Script.o \
+                   $(top_builddir)/physics/libphysics.a \
                    $(top_builddir)/common/libcommon.a \
                    $(MATH_LIBS)
 
