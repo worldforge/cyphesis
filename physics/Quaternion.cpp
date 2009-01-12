@@ -15,11 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Quaternion.cpp,v 1.8 2006-10-26 00:48:07 alriddoch Exp $
+// $Id$
 
 #include "Quaternion.h"
 
 #include "Vector3D.h"
+
+#include <wfmath/quaternion.h>
 
 // The arguments to this function have been swapped over because in
 // the form provided in the example code, the result appeared to be

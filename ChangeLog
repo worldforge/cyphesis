@@ -1,3 +1,10 @@
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/Quaternion.h: Use forward declarations.
+
+	* physics/Quaternion.cpp, rulesets/Py_Quaternion.h: Include
+	  quaternion definition where required.
+
 2009-01-11  Al Riddoch  <alriddoch@googlemail.com>
 
 	* physics/Vector3D.h, physics/Vector3D.cpp: Move a bunch of inline
