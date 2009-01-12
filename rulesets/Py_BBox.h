@@ -25,6 +25,7 @@
 #include "physics/BBox.h"
 
 #include <wfmath/axisbox.h>
+#include <wfmath/point.h>
 
 /// \brief Wrapper for BBox for Python
 ///

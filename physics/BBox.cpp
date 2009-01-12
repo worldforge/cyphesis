@@ -22,6 +22,7 @@
 #include "common/const.h"
 
 #include <wfmath/axisbox.h>
+#include <wfmath/point.h>
 
 WFMath::CoordType boxSquareSize(const BBox & box)
 {
