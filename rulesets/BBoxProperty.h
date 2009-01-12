@@ -24,6 +24,8 @@
 
 #include "physics/BBox.h"
 
+#include <wfmath/axisbox.h>
+
 /// \brief Class to handle Entity bbox property
 /// \ingroup PropertyClasses
 class BBoxProperty : public PropertyBase {
