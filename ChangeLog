@@ -1,5 +1,9 @@
 2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* physics/Vector3D.h: Use sqrtf to ensure efficient use of floats.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Makefile.am: Fix linking the tests to get functions which
 	  are no longer inlined.
 
