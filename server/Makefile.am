@@ -94,6 +94,7 @@ cyphesis_SOURCES = \
 		Peer.cpp Peer.h \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h \
+		UpdateTester.cpp UpdateTester.h \
 		CommSocket.cpp CommSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \

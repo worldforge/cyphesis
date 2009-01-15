@@ -1,5 +1,11 @@
 2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/Makefile.am, server/UpdateTester.cpp, server/UpdateTester.h:
+	  Add a generic class for injecting test operations, and set it up
+	  to test type updates.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
 	* physics/BBox.cpp, rulesets/BBoxProperty.h, rulesets/Py_BBox.h:
 	  Include more wfmath headers as it makes better use of forward
 	  declarations.
