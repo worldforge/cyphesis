@@ -1,3 +1,11 @@
+Python console will make everything so much more introspective.
+
+Remove the implicit bbox. Replace with coding the bbox property to set up
+the visibility metric when applied.
+
+OpQueEntry could be a conventional C style queue. Would be more efficient as
+we are searching by hand already.
+
 As noted before, ArithmeticFactory ScriptFactory and TaskFactory contain
 much common code. Use inheritance.
 
