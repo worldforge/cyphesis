@@ -1,3 +1,6 @@
+Fix out type updates in Eris. Need to be picked up in the special place
+where serverinfo updates are picked up no.
+
 Python console will make everything so much more introspective.
 
 Remove the implicit bbox. Replace with coding the bbox property to set up

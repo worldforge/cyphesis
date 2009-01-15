@@ -1,4 +1,9 @@
-2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+2009-01-15  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/server.cpp: Add commented out code to set up the
+	  UpdateTester.
+
+2009-01-15  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/Makefile.am, server/UpdateTester.cpp, server/UpdateTester.h:
 	  Add a generic class for injecting test operations, and set it up

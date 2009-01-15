@@ -35,6 +35,7 @@
 #include "WorldRouter.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"
+#include "UpdateTester.h"
 #include "Admin.h"
 
 #include "rulesets/Python_API.h"
@@ -228,6 +229,10 @@ int main(int argc, char ** argv)
         Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
         server.addAccount(admin);
     }
+
+    // Add the test object, and call it regularly so it can do what it does.
+    // UpdateTester * update_tester = new UpdateTester(commServer);
+    // commServer.addIdle(update_tester);
 
     CommListener * listener = new CommListener(commServer);
     if (client_port_num < 0) {
