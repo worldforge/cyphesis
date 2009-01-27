@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommPeerListener.h,v 1.6 2006-12-22 02:14:45 alriddoch Exp $
+// $Id$
+
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifndef SERVER_COMM_PEER_LISTENER_H
 #define SERVER_COMM_PEER_LISTENER_H

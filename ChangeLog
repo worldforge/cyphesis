@@ -1,5 +1,17 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommListener.h, server/CommListener.cpp: Make the
+	  Atlas listener a template for handling the various types
+	  of socket to use.
+
+	* server/server.cpp: Use the CommListener template correctly.
+
+	* server/CommPeerListener.cpp, server/CommPeerListener.h,
+	  server/Makefile.am: Remove the obsolete explicit peer listener
+	  from the build.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommTCPListener.h, server/CommTCPListener.cpp,
 	  server/CommListener.h, server/CommListener.cpp: Move the generic
 	  TCP accept code into the base class.

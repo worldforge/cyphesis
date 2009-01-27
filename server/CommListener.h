@@ -27,6 +27,7 @@
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote clients.
 /// \ingroup ServerSockets
+template <class ClientT>
 class CommListener : public CommTCPListener {
   protected:
     virtual int create(int fd, const char * address);

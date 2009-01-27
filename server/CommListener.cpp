@@ -24,6 +24,7 @@
 #include "CommListener.h"
 
 #include "CommRemoteClient.h"
+#include "CommPeer.h"
 #include "CommServer.h"
 
 #include "common/id.h"
@@ -33,15 +34,18 @@
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommListener::CommListener(CommServer & svr) : CommTCPListener(svr)
+template <class ClientT>
+CommListener<ClientT>::CommListener(CommServer & svr) : CommTCPListener(svr)
 {
 }
 
-CommListener::~CommListener()
+template <class ClientT>
+CommListener<ClientT>::~CommListener()
 {
 }
 
-int CommListener::create(int asockfd, const char * address)
+template <class ClientT>
+int CommListener<ClientT>::create(int asockfd, const char * address)
 {
     std::string connection_id;
     if (newId(connection_id) < 0) {
@@ -50,8 +54,8 @@ int CommListener::create(int asockfd, const char * address)
         return -1;
     }
 
-    CommRemoteClient * newcli = new CommRemoteClient(m_commServer, asockfd,
-                                                     address, connection_id);
+    CommClient * newcli = new ClientT(m_commServer, asockfd,
+                                      address, connection_id);
 
     newcli->setup();
 
@@ -61,3 +65,6 @@ int CommListener::create(int asockfd, const char * address)
 
     return 0;
 }
+
+template class CommListener<CommRemoteClient>;
+template class CommListener<CommPeer>;

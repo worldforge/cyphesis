@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommPeerListener.cpp,v 1.7 2006-11-02 05:14:55 alriddoch Exp $
+// $Id$
+
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -58,6 +61,7 @@ int CommPeerListener::create(int asockfd, const char * address)
 
     // Add this new peer to the list.
     m_commServer.addSocket(newpeer);
+    m_commServer.addIdle(newpeer);
 
     return 0;
 }
