@@ -6,6 +6,7 @@ from mind.Goal import Goal
 from mind.goals.common.misc_goal import keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal
+from atlas import *
 
 class keep_livestock(keep):
     """Keep livestock that we own in a given location, calling them if 

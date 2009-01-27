@@ -1,3 +1,8 @@
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/basic/mind/goals/humanoid/mason.py: Fix a potential issue
+	  with goals not having full dependencies imported.
+
 2009-01-15  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/server.cpp: Add commented out code to set up the
