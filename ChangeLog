@@ -1,5 +1,10 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommListener.cpp, server/CommListener.h: Adapt the Atlas
+	  client listener code to use the new base class for listeners.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommStreamListener.cpp, server/CommStreamListener.h:
 	  Add a new more abstract base class for listen sockets.
 

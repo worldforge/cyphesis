@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommListener.cpp,v 1.41 2008-04-28 17:26:10 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -51,61 +51,12 @@ static const bool debug_flag = false;
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommListener::CommListener(CommServer & svr) : CommSocket(svr)
+CommListener::CommListener(CommServer & svr) : CommStreamListener(svr)
 {
 }
 
 CommListener::~CommListener()
 {
-}
-
-int CommListener::getFd() const
-{
-    return m_listener.getSocket();
-}
-
-bool CommListener::eof()
-{
-    return false;
-}
-
-bool CommListener::isOpen() const
-{
-    return m_listener.is_open();
-}
-
-int CommListener::read()
-{
-    accept();
-    // Accept errors are not returned, as the listen socket should not
-    // be removed.
-    return 0;
-}
-
-void CommListener::dispatch()
-{
-}
-
-/// \brief Create and bind the listen socket.
-int CommListener::setup(int port)
-{
-    m_listener.open(port);
-    if (!m_listener.is_open()) {
-        return -1;
-    }
-    // Set a linger time of 0 seconds, so that the socket is got rid
-    // of quickly.
-    int socket = m_listener.getSocket();
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 0 };
-    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                sizeof(listenLinger));
-    // Ensure the address can be reused once we are done with it.
-    int flag = 1;
-    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
-    return 0;
 }
 
 /// \brief Accept a new connect to the listen socket.
