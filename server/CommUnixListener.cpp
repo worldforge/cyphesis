@@ -45,9 +45,10 @@ static const bool debug_flag = false;
 /// \brief Constructor unix listen socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommUnixListener::CommUnixListener(CommServer & svr) : CommSocket(svr),
+CommUnixListener::CommUnixListener(CommServer & svr) : CommStreamListener(svr),
                                                        m_bound(false)
 {
+    m_listener = &m_unixListener;
 }
 
 CommUnixListener::~CommUnixListener()
@@ -55,32 +56,6 @@ CommUnixListener::~CommUnixListener()
     if (m_bound) {
         ::unlink(m_path.c_str());
     }
-}
-
-
-int CommUnixListener::getFd() const
-{
-    return m_unixListener.getSocket();
-}
-
-bool CommUnixListener::eof()
-{
-    return false;
-}
-
-bool CommUnixListener::isOpen() const
-{
-    return m_unixListener.is_open();
-}
-
-int CommUnixListener::read()
-{
-    accept();
-    return 0;
-}
-
-void CommUnixListener::dispatch()
-{
 }
 
 /// \brief Create and bind the listen socket.

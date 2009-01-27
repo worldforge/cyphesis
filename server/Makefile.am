@@ -100,6 +100,7 @@ cyphesis_SOURCES = \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		HttpCache.cpp HttpCache.h \
 		CommStreamListener.cpp CommStreamListener.h \
+		CommTCPListener.cpp CommTCPListener.h \
 		CommListener.cpp CommListener.h \
 		CommPeerListener.cpp CommPeerListener.h \
 		CommUnixListener.cpp CommUnixListener.h \

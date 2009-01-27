@@ -15,19 +15,19 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.h,v 1.18 2006-12-22 02:14:45 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_COMM_UNIX_LISTENER_H
 #define SERVER_COMM_UNIX_LISTENER_H
 
-#include "CommSocket.h"
+#include "CommStreamListener.h"
 
 #include <skstream/skserver_unix.h>
 
 /// \brief Handle the listen socket used to listen for unix socket connections
 /// on the local machine.
 /// \ingroup ServerSockets
-class CommUnixListener : public CommSocket {
+class CommUnixListener : public CommStreamListener {
   private:
     /// skstream object which manages the low level unix listen socket.
     unix_socket_server m_unixListener;
@@ -48,12 +48,6 @@ class CommUnixListener : public CommSocket {
     const std::string & getPath() const { return m_path; }
 
     int setup(const std::string & name);
-
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
-    int read();
-    void dispatch();
 };
 
 #endif // SERVER_COMM_UNIX_LISTENER_H

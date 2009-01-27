@@ -1,5 +1,11 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommUnixListener.cpp, server/CommUnixListener.h,
+	  server/Makefile.am: Use the stream base class for this, to
+	  re-use common code.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommTCPListener.cpp, server/CommTCPListener.h: Add another
 	  new base class with the TCP specific listener code in.
 
