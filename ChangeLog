@@ -1,5 +1,9 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommUnixListener.h: accept() should be virtual.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommStreamListener.cpp, server/CommStreamListener.h:
 	  Remove tcp specific code forcing other classes to use
 	  the tcp specific class.

@@ -36,7 +36,7 @@ class CommUnixListener : public CommStreamListener {
     /// Filesystem path of the unix socket.
     std::string m_path;
 
-    int accept();
+    virtual int accept();
 
     virtual int create(int fd);
 
