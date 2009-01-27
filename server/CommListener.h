@@ -20,14 +20,14 @@
 #ifndef SERVER_COMM_LISTENER_H
 #define SERVER_COMM_LISTENER_H
 
-#include "CommStreamListener.h"
+#include "CommTCPListener.h"
 
 #include <skstream/skserver.h>
 
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote clients.
 /// \ingroup ServerSockets
-class CommListener : public CommStreamListener {
+class CommListener : public CommTCPListener {
   protected:
     virtual int accept();
 

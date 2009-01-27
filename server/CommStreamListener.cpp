@@ -19,6 +19,8 @@
 
 #include "CommStreamListener.h"
 
+#include <skstream/skserver.h>
+
 /// \brief Constructor for stream listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
@@ -32,7 +34,7 @@ CommStreamListener::~CommStreamListener()
 
 int CommStreamListener::getFd() const
 {
-    return m_listener.getSocket();
+    return m_listener->getSocket();
 }
 
 bool CommStreamListener::eof()
@@ -42,7 +44,7 @@ bool CommStreamListener::eof()
 
 bool CommStreamListener::isOpen() const
 {
-    return m_listener.is_open();
+    return m_listener->is_open();
 }
 
 int CommStreamListener::read()
@@ -55,26 +57,4 @@ int CommStreamListener::read()
 
 void CommStreamListener::dispatch()
 {
-}
-
-/// \brief Create and bind the listen socket.
-int CommStreamListener::setup(int port)
-{
-    m_listener.open(port);
-    if (!m_listener.is_open()) {
-        return -1;
-    }
-    // Set a linger time of 0 seconds, so that the socket is got rid
-    // of quickly.
-    int socket = m_listener.getSocket();
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 0 };
-    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                sizeof(listenLinger));
-    // Ensure the address can be reused once we are done with it.
-    int flag = 1;
-    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
-    return 0;
 }

@@ -51,7 +51,7 @@ static const bool debug_flag = false;
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommListener::CommListener(CommServer & svr) : CommStreamListener(svr)
+CommListener::CommListener(CommServer & svr) : CommTCPListener(svr)
 {
 }
 
@@ -68,7 +68,7 @@ int CommListener::accept()
     SOCKLEN addr_len = sizeof(sst);
 
     debug(std::cout << "Accepting.." << std::endl << std::flush;);
-    int asockfd = ::accept(m_listener.getSocket(),
+    int asockfd = ::accept(m_tcpListener.getSocket(),
                            (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {

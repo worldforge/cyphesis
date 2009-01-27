@@ -1,5 +1,14 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommStreamListener.cpp, server/CommStreamListener.h:
+	  Remove tcp specific code forcing other classes to use
+	  the tcp specific class.
+
+	* server/CommListener.cpp, server/CommListener.h: Inherit from the
+	  tcp base class.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommUnixListener.cpp, server/CommUnixListener.h,
 	  server/Makefile.am: Use the stream base class for this, to
 	  re-use common code.
