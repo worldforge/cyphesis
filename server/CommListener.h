@@ -29,8 +29,6 @@
 /// \ingroup ServerSockets
 class CommListener : public CommTCPListener {
   protected:
-    virtual int accept();
-
     virtual int create(int fd, const char * address);
 
   public:

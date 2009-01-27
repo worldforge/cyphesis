@@ -32,7 +32,9 @@ class CommTCPListener : public CommStreamListener {
     /// skstream object to manage the listen socket.
     tcp_socket_server m_tcpListener;
 
-    virtual int accept() = 0;
+    virtual int accept();
+
+    virtual int create(int fd, const char * address) = 0;
 
   public:
     explicit CommTCPListener(CommServer & svr);

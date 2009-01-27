@@ -20,12 +20,12 @@
 #ifndef SERVER_COMM_HTTP_LISTENER_H
 #define SERVER_COMM_HTTP_LISTENER_H
 
-#include "CommListener.h"
+#include "CommTCPListener.h"
 
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote http client.
 /// \ingroup ServerSockets
-class CommHttpListener : public CommListener {
+class CommHttpListener : public CommTCPListener {
   private:
     virtual int create(int fd, const char * address);
 

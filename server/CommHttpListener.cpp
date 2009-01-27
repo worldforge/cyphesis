@@ -32,7 +32,7 @@ static const bool debug_flag = false;
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommHttpListener::CommHttpListener(CommServer & svr) : CommListener(svr)
+CommHttpListener::CommHttpListener(CommServer & svr) : CommTCPListener(svr)
 {
 }
 

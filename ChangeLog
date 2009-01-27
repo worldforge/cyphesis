@@ -1,5 +1,15 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommTCPListener.h, server/CommTCPListener.cpp,
+	  server/CommListener.h, server/CommListener.cpp: Move the generic
+	  TCP accept code into the base class.
+
+	* server/CommHttpListener.h, server/CommHttpListener.cpp: Use the
+	  simpler generic TCP listener rather than overriding the class
+	  designed for listening to Atlas.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommUnixListener.h: accept() should be virtual.
 
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
