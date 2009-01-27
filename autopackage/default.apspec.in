@@ -3,7 +3,7 @@
 [Meta]
 RootName: @worldforge.org/cyphesis:$SOFTWAREVERSION
 PackageFileName: cyphesis-$SOFTWAREVERSION.package
-DisplayName: Cyphesis
+DisplayName: Cyphesis RPG Server
 ShortName: cyphesis
 Maintainer: Al Riddoch <alriddoch@googlemail.com>
 Packager: Al Riddoch <alriddoch@googlemail.com>

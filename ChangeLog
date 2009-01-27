@@ -1,5 +1,10 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* autopackage/default.apspec.in: Expand the full name used in the
+	  autopackage.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/basic/mind/goals/humanoid/mason.py: Fix a potential issue
 	  with goals not having full dependencies imported.
 
