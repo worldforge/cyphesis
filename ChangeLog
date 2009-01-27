@@ -1,5 +1,10 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/log.cpp: Modify the log time stamps to be a single column
+	  in ISO format.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* autopackage/default.apspec.in: Expand the full name used in the
 	  autopackage.
 
