@@ -1,5 +1,10 @@
 2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommTCPListener.cpp, server/CommTCPListener.h: Add another
+	  new base class with the TCP specific listener code in.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommListener.cpp, server/CommListener.h: Adapt the Atlas
 	  client listener code to use the new base class for listeners.
 
