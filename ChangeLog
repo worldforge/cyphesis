@@ -1,5 +1,12 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommLocalClient.cpp, server/CommLocalClient.h,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommSlaveClient.cpp, server/CommSlaveClient.h:
+	  Mark these files as removed form the build.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommPeer.h, server/CommPeer.cpp: Re-factor CommPeer to
 	  only be used for initiating peer connections.
 
