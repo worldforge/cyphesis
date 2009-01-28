@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommLocalClient.h,v 1.7 2006-12-22 02:14:44 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_COMM_LOCAL_CLIENT_H
 #define SERVER_COMM_LOCAL_CLIENT_H
@@ -26,7 +26,7 @@
 /// \ingroup ServerSockets
 class CommLocalClient : public CommClient {
   public:
-    CommLocalClient(CommServer & svr, int fd, const std::string & id);
+    CommLocalClient(CommServer & svr, int fd, const std::string & address, const std::string & id);
     virtual ~CommLocalClient();
 
 };

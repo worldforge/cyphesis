@@ -20,6 +20,7 @@
 #include "CommClientFactory.h"
 
 #include "CommServer.h"
+#include "CommLocalClient.h"
 #include "CommRemoteClient.h"
 #include "CommSlaveClient.h"
 #include "CommPeer.h"
@@ -55,6 +56,7 @@ int CommClientFactory<ClientT>::newCommClient(CommServer & svr,
     return 0;
 }
 
+template class CommClientFactory<CommLocalClient>;
 template class CommClientFactory<CommRemoteClient>;
 template class CommClientFactory<CommSlaveClient>;
 template class CommClientFactory<CommPeer>;

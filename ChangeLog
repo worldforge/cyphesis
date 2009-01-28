@@ -1,5 +1,19 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommLocalClient.cpp, server/CommLocalClient.h: Fix the
+	  constructor interface to match that used by the factory.
+
+	* server/CommClientFactory.cpp: Add support for CommLocalClient.
+
+	* server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Convert the unix listener to use the CommClientFactory to remove
+	  duplicated code.
+
+	* server/server.cpp: Use the new style of listener API on the unix
+	  socket.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommClientFactory.cpp: Add support for CommSlaveClient.
 
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>

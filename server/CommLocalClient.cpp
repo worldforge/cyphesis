@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommLocalClient.cpp,v 1.8 2006-10-26 00:48:13 alriddoch Exp $
+// $Id$
 
 #include "CommLocalClient.h"
 
@@ -27,6 +27,7 @@
 /// @param svr Reference to the object that manages all socket communication.
 /// @param fd Socket file descriptor
 CommLocalClient::CommLocalClient(CommServer & svr, int fd,
+                                 const std::string & address,
                                  const std::string & id) :
    CommClient(svr, fd, *new TrustedConnection(*this, svr.m_server,
                                               "local", id))

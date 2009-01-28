@@ -24,6 +24,8 @@
 
 #include <skstream/skserver_unix.h>
 
+class CommClientKit;
+
 /// \brief Handle the listen socket used to listen for unix socket connections
 /// on the local machine.
 /// \ingroup ServerSockets
@@ -31,17 +33,17 @@ class CommUnixListener : public CommStreamListener {
   private:
     /// skstream object which manages the low level unix listen socket.
     unix_socket_server m_unixListener;
-    /// Flag to indicate if the socket is bound.
-    bool m_bound;
     /// Filesystem path of the unix socket.
     std::string m_path;
 
+    CommClientKit & m_clientKit;
+
     virtual int accept();
 
-    virtual int create(int fd);
+    virtual int create(int asockfd, const char * address);
 
   public:
-    explicit CommUnixListener(CommServer & svr);
+    explicit CommUnixListener(CommServer & svr, CommClientKit & kit);
     virtual ~CommUnixListener();
 
     /// Accessor for the filesystem path of the socket.

@@ -58,6 +58,7 @@
 
 #include <sstream>
 
+class CommLocalClient;
 class CommRemoteClient;
 class CommPeer;
 
@@ -284,7 +285,8 @@ int main(int argc, char ** argv)
     }
 
 #ifdef HAVE_SYS_UN_H
-    CommUnixListener * localListener = new CommUnixListener(commServer);
+    CommUnixListener * localListener = new CommUnixListener(commServer,
+          *new CommClientFactory<CommLocalClient>());
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
                                    "with address \"%1\"",

@@ -23,7 +23,7 @@
 
 #include "CommUnixListener.h"
 
-#include "CommLocalClient.h"
+#include "CommClientFactory.h"
 #include "CommServer.h"
 
 #include "common/id.h"
@@ -45,17 +45,18 @@ static const bool debug_flag = false;
 /// \brief Constructor unix listen socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommUnixListener::CommUnixListener(CommServer & svr) : CommStreamListener(svr),
-                                                       m_bound(false)
+CommUnixListener::CommUnixListener(CommServer & svr, CommClientKit & kit) :
+                  CommStreamListener(svr), m_clientKit(kit)
 {
     m_listener = &m_unixListener;
 }
 
 CommUnixListener::~CommUnixListener()
 {
-    if (m_bound) {
+    if (m_unixListener.is_open()) {
         ::unlink(m_path.c_str());
     }
+    delete &m_clientKit;
 }
 
 /// \brief Create and bind the listen socket.
@@ -69,16 +70,16 @@ int CommUnixListener::setup(const std::string & name)
     m_path = name;
 
     m_unixListener.open(m_path);
-    m_bound = m_unixListener.is_open();
+    bool bound = m_unixListener.is_open();
 
-    if (!m_bound) {
+    if (!bound) {
         ::unlink(m_path.c_str());
 
         m_unixListener.open(m_path);
-        m_bound = m_unixListener.is_open();
+        bound = m_unixListener.is_open();
     }
 
-    return m_bound ? 0 : 1;
+    return bound ? 0 : 1;
 }
 
 /// \brief Accept a new connect to the listen socket.
@@ -92,28 +93,12 @@ int CommUnixListener::accept()
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
 
-    return create(asockfd);
+    return create(asockfd, "local");
 }
 
-int CommUnixListener::create(int asockfd)
+int CommUnixListener::create(int asockfd, const char * address)
 {
-    std::string connection_id;
-    if (newId(connection_id) < 0) {
-        log(ERROR, "Unable to accept connection as no ID available");
-        closesocket(asockfd);
-        return -1;
-    }
-
-    CommLocalClient * newcli = new CommLocalClient(m_commServer, asockfd,
-                                                   connection_id);
-
-    newcli->setup();
-
-    // Add this new client to the list.
-    m_commServer.addSocket(newcli);
-    m_commServer.addIdle(newcli);
-
-    return 0;
+    return m_clientKit.newCommClient(m_commServer, asockfd, address);
 }
 
 #endif // HAVE_SYS_UN_H
