@@ -38,6 +38,8 @@ class Master : public Router {
 
     Master(CommClient & client, ServerRouting & svr, const std::string & id);
     virtual ~Master();
+
+    virtual void operation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_MASTER_H

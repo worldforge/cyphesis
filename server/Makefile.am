@@ -145,14 +145,13 @@ cyslave_SOURCES = \
 		Master.cpp Master.h \
 		Idle.cpp Idle.h \
 		CommSocket.cpp CommSocket.h \
+		CommStreamListener.cpp CommStreamListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
-		CommSlaveListener.cpp CommSlaveListener.h \
 		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommMaster.cpp CommMaster.h \
-		CommLocalClient.cpp CommLocalClient.h \
-		CommSlaveClient.cpp CommSlaveClient.h \
 		CommServer.cpp CommServer.h \
+		CommClientFactory.cpp CommClientFactory.h \
 		slave.cpp
 
 nodist_cyslave_SOURCES = \
