@@ -24,16 +24,18 @@
 
 #include <skstream/skserver.h>
 
+class CommClientKit;
+
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote clients.
 /// \ingroup ServerSockets
-template <class ClientT>
 class CommListener : public CommTCPListener {
   protected:
     virtual int create(int fd, const char * address);
 
+    CommClientKit & m_clientKit;
   public:
-    explicit CommListener(CommServer & svr);
+    explicit CommListener(CommServer & svr, CommClientKit &);
     virtual ~CommListener();
 };
 

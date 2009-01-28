@@ -23,6 +23,7 @@
 
 #include "CommServer.h"
 #include "CommListener.h"
+#include "CommClientFactory.h"
 #include "CommUnixListener.h"
 #include "CommHttpListener.h"
 #include "CommPSQLSocket.h"
@@ -236,7 +237,8 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(commServer);
     // commServer.addIdle(update_tester);
 
-    CommListener<CommRemoteClient> * listener = new CommListener<CommRemoteClient>(commServer);
+    CommListener * listener = new CommListener(commServer,
+          *new CommClientFactory<CommRemoteClient>());
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
@@ -271,7 +273,8 @@ int main(int argc, char ** argv)
     }
     commServer.addSocket(listener);
 
-    CommListener<CommPeer> * peerListener = new CommListener<CommPeer>(commServer);
+    CommListener * peerListener = new CommListener(commServer,
+          *new CommClientFactory<CommPeer>());
     if (peerListener->setup(peer_port_num) != 0) {
         log(ERROR, String::compose("Could not create peer listen socket "
                                    "on port %1.", peer_port_num));

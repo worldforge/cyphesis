@@ -23,9 +23,7 @@
 
 #include "CommListener.h"
 
-#include "CommRemoteClient.h"
-#include "CommPeer.h"
-#include "CommServer.h"
+#include "CommClientFactory.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -34,37 +32,17 @@
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-template <class ClientT>
-CommListener<ClientT>::CommListener(CommServer & svr) : CommTCPListener(svr)
+CommListener::CommListener(CommServer & svr, CommClientKit & kit) :
+              CommTCPListener(svr), m_clientKit(kit)
 {
 }
 
-template <class ClientT>
-CommListener<ClientT>::~CommListener()
+CommListener::~CommListener()
 {
+    delete &m_clientKit;
 }
 
-template <class ClientT>
-int CommListener<ClientT>::create(int asockfd, const char * address)
+int CommListener::create(int asockfd, const char * address)
 {
-    std::string connection_id;
-    if (newId(connection_id) < 0) {
-        log(ERROR, "Unable to accept connection as no ID available");
-        closesocket(asockfd);
-        return -1;
-    }
-
-    CommClient * newcli = new ClientT(m_commServer, asockfd,
-                                      address, connection_id);
-
-    newcli->setup();
-
-    // Add this new client to the list.
-    m_commServer.addSocket(newcli);
-    m_commServer.addIdle(newcli);
-
-    return 0;
+    return m_clientKit.newCommClient(m_commServer, asockfd, address);
 }
-
-template class CommListener<CommRemoteClient>;
-template class CommListener<CommPeer>;
