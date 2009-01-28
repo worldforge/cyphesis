@@ -1,5 +1,11 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommLocalClient.h, server/CommRemoteClient.h,
+	  server/CommSlaveClient.h: Clean up the interface formatting so
+	  these class look the same.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommLocalClient.cpp, server/CommLocalClient.h: Fix the
 	  constructor interface to match that used by the factory.
 

@@ -27,7 +27,10 @@
 /// \ingroup ServerSockets
 class CommSlaveClient : public CommClient {
   public:
-    CommSlaveClient(CommServer & svr, int fd, const std::string & address, const std::string & id);
+    CommSlaveClient(CommServer & svr,
+                    int fd,
+                    const std::string & address,
+                    const std::string & id);
     virtual ~CommSlaveClient();
 
 };
