@@ -1,5 +1,11 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommSlaveClient.cpp, server/SlaveClientConnection.cpp,
+	  server/SlaveClientConnection.h: Re-factor the constructor interface
+	  to be consistent.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommLocalClient.h, server/CommRemoteClient.h,
 	  server/CommSlaveClient.h: Clean up the interface formatting so
 	  these class look the same.

@@ -29,8 +29,8 @@
 CommSlaveClient::CommSlaveClient(CommServer & svr, int fd,
                                  const std::string & address,
                                  const std::string & id) :
-                 CommClient(svr, fd, *new SlaveClientConnection(id, *this,
-                                                                svr.m_server))
+    CommClient(svr, fd, *new SlaveClientConnection(*this, svr.m_server,
+                                                   address, id))
 {
 }
 

@@ -37,7 +37,7 @@ class SlaveClientConnection : public Router {
     /// \brief core server object
     ServerRouting & m_server;
 
-    SlaveClientConnection(const std::string &, CommClient &, ServerRouting &);
+    SlaveClientConnection(CommClient &, ServerRouting &, const std::string & address, const std::string & id);
     virtual ~SlaveClientConnection();
 
     virtual void operation(const Operation &, OpVector &);

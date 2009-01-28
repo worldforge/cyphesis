@@ -24,9 +24,10 @@
 /// @param id identifier of the connection
 /// @param client network object the client is connected to
 /// @param svr core server object
-SlaveClientConnection::SlaveClientConnection(const std::string & id,
-                                             CommClient & client,
-                                             ServerRouting & svr) :
+SlaveClientConnection::SlaveClientConnection(CommClient & client,
+                                             ServerRouting & svr,
+                                             const std::string & address,
+                                             const std::string & id) :
                        Identified(id, -1), m_commClient(client), m_server(svr)
 {
 }
