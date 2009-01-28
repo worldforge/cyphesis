@@ -37,6 +37,7 @@
 #include "IdleConnector.h"
 #include "UpdateTester.h"
 #include "Admin.h"
+#include "Admin.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
@@ -58,9 +59,8 @@
 
 #include <sstream>
 
-class CommLocalClient;
-class CommRemoteClient;
-class CommPeer;
+class TrustedConnection;
+class Peer;
 
 static const bool debug_flag = false;
 
@@ -239,7 +239,7 @@ int main(int argc, char ** argv)
     // commServer.addIdle(update_tester);
 
     CommListener * listener = new CommListener(commServer,
-          *new CommClientFactory<CommRemoteClient>());
+          *new CommClientFactory<Connection>());
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
@@ -275,7 +275,7 @@ int main(int argc, char ** argv)
     commServer.addSocket(listener);
 
     CommListener * peerListener = new CommListener(commServer,
-          *new CommClientFactory<CommPeer>());
+          *new CommClientFactory<Peer>());
     if (peerListener->setup(peer_port_num) != 0) {
         log(ERROR, String::compose("Could not create peer listen socket "
                                    "on port %1.", peer_port_num));
@@ -286,7 +286,7 @@ int main(int argc, char ** argv)
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(commServer,
-          *new CommClientFactory<CommLocalClient>());
+          *new CommClientFactory<TrustedConnection>());
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
                                    "with address \"%1\"",

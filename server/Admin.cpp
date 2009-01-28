@@ -24,6 +24,7 @@
 #include "EntityFactory.h"
 #include "CommPeer.h"
 #include "CommServer.h"
+#include "Peer.h"
 
 #include "rulesets/Entity.h"
 
@@ -404,15 +405,15 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
-                                 hostname, peerId);
+    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer);
     std::cout << "Connecting to " << hostname << std::endl << std::flush;
     if (cp->connect(hostname) != 0) {
         error(op, "Connection failed", res, getId());
         return;
     }
     log(INFO, "Connection succeeded");
-    cp->setup();
+    cp->setup(new Peer(*cp, m_connection->m_server,
+                       hostname, peerId));
     m_connection->m_commClient.m_commServer.addSocket(cp);
     // Fix it up
 }

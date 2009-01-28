@@ -20,10 +20,10 @@
 #include "CommClientFactory.h"
 
 #include "CommServer.h"
-#include "CommLocalClient.h"
-#include "CommRemoteClient.h"
-#include "CommSlaveClient.h"
-#include "CommPeer.h"
+#include "CommClient.h"
+#include "TrustedConnection.h"
+#include "SlaveClientConnection.h"
+#include "Peer.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -33,10 +33,10 @@ CommClientKit::~CommClientKit()
 {
 }
 
-template <class ClientT>
-int CommClientFactory<ClientT>::newCommClient(CommServer & svr,
-                                              int asockfd,
-                                              const std::string & address)
+template <class ConnectionT>
+int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
+                                                  int asockfd,
+                                                  const std::string & address)
 {
     std::string connection_id;
     if (newId(connection_id) < 0) {
@@ -45,9 +45,9 @@ int CommClientFactory<ClientT>::newCommClient(CommServer & svr,
         return -1;
     }
 
-    CommClient * newcli = new ClientT(svr, asockfd, address, connection_id);
+    CommClient * newcli = new CommClient(svr, asockfd);
 
-    newcli->setup();
+    newcli->setup(new ConnectionT(*newcli, svr.m_server, address, connection_id));
 
     // Add this new client to the list.
     svr.addSocket(newcli);
@@ -56,7 +56,7 @@ int CommClientFactory<ClientT>::newCommClient(CommServer & svr,
     return 0;
 }
 
-template class CommClientFactory<CommLocalClient>;
-template class CommClientFactory<CommRemoteClient>;
-template class CommClientFactory<CommSlaveClient>;
-template class CommClientFactory<CommPeer>;
+template class CommClientFactory<Connection>;
+template class CommClientFactory<SlaveClientConnection>;
+template class CommClientFactory<TrustedConnection>;
+template class CommClientFactory<Peer>;

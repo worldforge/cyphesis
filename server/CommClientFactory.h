@@ -30,7 +30,7 @@ class CommClientKit {
     virtual int newCommClient(CommServer &, int, const std::string &) = 0;
 };
 
-template <class ClientT>
+template <class ConnectionT>
 class CommClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);

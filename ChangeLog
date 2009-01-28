@@ -1,5 +1,24 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommPeer.h, server/CommPeer.cpp: Re-factor CommPeer to
+	  only be used for initiating peer connections.
+
+	* server/Admin.cpp: Use the modified CommPeer constructor.
+
+	* server/CommClient.h, server/CommClient.cpp: Make the connection
+	  a pointer rather than a reference, and pass it in during setup.
+
+	* server/CommClientFactory.h, server/CommClientFactory.cpp: Re-factor
+	  the commclient factory to take connection type as a template param,
+	  and create the client and connection objects separately.
+
+	* server/server.cpp: Use the modified CommClientFactory parameter.
+
+	* server/Makefile.am: Remove the different kinds of client class
+	  from the build.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommSlaveClient.cpp, server/SlaveClientConnection.cpp,
 	  server/SlaveClientConnection.h: Re-factor the constructor interface
 	  to be consistent.
