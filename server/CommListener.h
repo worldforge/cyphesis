@@ -29,14 +29,14 @@ class CommClientKit;
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote clients.
 /// \ingroup ServerSockets
-class CommListener : public CommTCPListener {
+class CommAtlasListener : public CommTCPListener {
   protected:
     virtual int create(int fd, const char * address);
 
     CommClientKit & m_clientKit;
   public:
-    explicit CommListener(CommServer & svr, CommClientKit &);
-    virtual ~CommListener();
+    explicit CommAtlasListener(CommServer & svr, CommClientKit &);
+    virtual ~CommAtlasListener();
 };
 
 #endif // SERVER_COMM_LISTENER_H

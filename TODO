@@ -1,3 +1,7 @@
+Rename files where classes have been renamed.
+CommAtlasListener
+EntityBuilder
+
 Fix out type updates in Eris. Need to be picked up in the special place
 where serverinfo updates are picked up no.
 

@@ -238,7 +238,7 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(commServer);
     // commServer.addIdle(update_tester);
 
-    CommListener * listener = new CommListener(commServer,
+    CommAtlasListener * listener = new CommAtlasListener(commServer,
           *new CommClientFactory<Connection>());
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
@@ -274,7 +274,7 @@ int main(int argc, char ** argv)
     }
     commServer.addSocket(listener);
 
-    CommListener * peerListener = new CommListener(commServer,
+    CommAtlasListener * peerListener = new CommAtlasListener(commServer,
           *new CommClientFactory<Peer>());
     if (peerListener->setup(peer_port_num) != 0) {
         log(ERROR, String::compose("Could not create peer listen socket "

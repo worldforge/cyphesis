@@ -32,17 +32,17 @@
 /// \brief Constructor for listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommListener::CommListener(CommServer & svr, CommClientKit & kit) :
+CommAtlasListener::CommAtlasListener(CommServer & svr, CommClientKit & kit) :
               CommTCPListener(svr), m_clientKit(kit)
 {
 }
 
-CommListener::~CommListener()
+CommAtlasListener::~CommAtlasListener()
 {
     delete &m_clientKit;
 }
 
-int CommListener::create(int asockfd, const char * address)
+int CommAtlasListener::create(int asockfd, const char * address)
 {
     return m_clientKit.newCommClient(m_commServer, asockfd, address);
 }

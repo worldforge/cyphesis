@@ -1,5 +1,10 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommListener.cpp, server/CommListener.h,
+	  server/server.cpp: Rename class to CommAtlasListener.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommLocalClient.cpp, server/CommLocalClient.h,
 	  server/CommPeerListener.cpp, server/CommPeerListener.h,
 	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
