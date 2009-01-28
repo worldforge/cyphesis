@@ -1,5 +1,13 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommLocalClient.cpp, server/CommLocalClient.h,
+	  server/CommPeerListener.cpp, server/CommPeerListener.h,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommSlaveClient.cpp, server/CommSlaveClient.h:
+	  Delete obsolete removed code.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommMaster.cpp, server/CommMaster.h,
 	  server/Makefile.am, server/Master.cpp, server/Master.h,
 	  server/slave.cpp: Clean up the bitrot in the optional cyslave
