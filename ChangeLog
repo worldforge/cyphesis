@@ -1,5 +1,9 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommClientFactory.cpp: Add support for CommSlaveClient.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommListener.cpp, server/CommListener.h: Refactor from
 	  a template to a regular class that uses the factories.
 
