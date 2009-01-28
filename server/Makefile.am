@@ -112,6 +112,7 @@ cyphesis_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
+		CommClientFactory.cpp CommClientFactory.h \
 		server.cpp server.h
 
 nodist_cyphesis_SOURCES = \
