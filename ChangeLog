@@ -1,5 +1,11 @@
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommSlaveClient.h, server/CommSlaveClient.cpp,
+	  server/Makefile.am: Fix the constructor interface to match
+	  that of other client socket classes.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/SlaveClientConnection.cpp, server/SlaveClientConnection.h:
 	  Fix to build with changes to the parent classes.
 
