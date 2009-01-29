@@ -143,11 +143,14 @@ cyslave_SOURCES = \
 		Peer.cpp Peer.h \
 		Master.cpp Master.h \
 		Idle.cpp Idle.h \
+		HttpCache.cpp HttpCache.h \
 		CommSocket.cpp CommSocket.h \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
+		CommStreamClient.cpp CommStreamClient.h \
 		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
+		CommHttpClient.cpp CommHttpClient.h \
 		CommMaster.cpp CommMaster.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
