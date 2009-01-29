@@ -37,8 +37,7 @@
 static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd) :
-            CommSocket(svr), Idle(svr),
-            m_clientIos(fd),
+            CommStreamClient(svr, fd), Idle(svr),
             m_codec(NULL), m_encoder(NULL),
             m_connectTime(svr.time())
 {
@@ -48,7 +47,7 @@ CommClient::CommClient(CommServer & svr, int fd) :
 }
 
 CommClient::CommClient(CommServer & svr) :
-            CommSocket(svr), Idle(svr),
+            CommStreamClient(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL),
             m_connectTime(svr.time())
 {
@@ -190,21 +189,6 @@ int CommClient::read()
     } else {
         return negotiate();
     }
-}
-
-int CommClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommClient::eof()
-{
-    return (m_clientIos.fail() || m_clientIos.peek() == EOF);
 }
 
 int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)

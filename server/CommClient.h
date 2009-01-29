@@ -20,7 +20,7 @@
 #ifndef SERVER_COMM_CLIENT_H
 #define SERVER_COMM_CLIENT_H
 
-#include "CommSocket.h"
+#include "CommStreamClient.h"
 #include "Idle.h"
 
 #include <Atlas/Objects/Decoder.h>
@@ -44,13 +44,13 @@ class Router;
 ///
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
 /// \ingroup ServerSockets
-class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, public Idle {
+class CommClient : public Atlas::Objects::ObjectsDecoder,
+                   public CommStreamClient,
+                   public Idle {
   public:
     /// \brief STL deque of pointers to operation objects.
     typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
   protected:
-    /// \brief C++ iostream compatible socket object handling the socket IO.
-    tcp_socket_stream m_clientIos;
     /// \brief Queue of operations that have been decoded by not dispatched.
     DispatchQueue m_opQueue;
     /// \brief Atlas codec that handles encoding and decoding traffic.
@@ -88,9 +88,6 @@ class CommClient : public Atlas::Objects::ObjectsDecoder, public CommSocket, pub
     void setup(Router * connection);
     int send(const Atlas::Objects::Operation::RootOperation &);
 
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
     int read();
     void dispatch();
 };

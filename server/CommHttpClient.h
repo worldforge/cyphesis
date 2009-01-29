@@ -20,7 +20,7 @@
 #ifndef SERVER_COMM_HTTP_CLIENT_H
 #define SERVER_COMM_HTTP_CLIENT_H
 
-#include "CommSocket.h"
+#include "CommStreamClient.h"
 
 #include <skstream/skstream.h>
 
@@ -29,11 +29,8 @@
 
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
-class CommHttpClient : public CommSocket {
+class CommHttpClient : public CommStreamClient {
   protected:
-    /// \brief C++ iostream compatible socket object handling the socket IO.
-    tcp_socket_stream m_clientIos;
-
     std::string m_incoming;
     std::list<std::string> m_headers;
     bool m_req_complete;
@@ -41,9 +38,6 @@ class CommHttpClient : public CommSocket {
     CommHttpClient(CommServer & svr, int fd);
     virtual ~CommHttpClient();
 
-    virtual int getFd() const;
-    virtual bool isOpen() const;
-    virtual bool eof();
     virtual int read();
     virtual void dispatch();
 };

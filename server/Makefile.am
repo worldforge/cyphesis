@@ -102,6 +102,7 @@ cyphesis_SOURCES = \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommTCPListener.cpp CommTCPListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
+		CommStreamClient.cpp CommStreamClient.h \
 		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommHttpClient.cpp CommHttpClient.h \

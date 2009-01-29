@@ -23,16 +23,15 @@
 
 static const bool debug_flag = false;
 
-CommHttpClient::CommHttpClient(CommServer & svr, int fd) : CommSocket(svr),
-                                                           m_clientIos(fd),
-                                                           m_req_complete(false)
+CommHttpClient::CommHttpClient(CommServer & svr, int fd) :
+                CommStreamClient(svr, fd),
+                m_req_complete(false)
 {
     m_clientIos.setTimeout(0,1000); // FIXME?
 }
 
 CommHttpClient::~CommHttpClient()
 {
-    m_clientIos.close();
 }
 
 void CommHttpClient::dispatch()
@@ -77,19 +76,4 @@ int CommHttpClient::read()
     // Read from the sockets.
 
     return 0;
-}
-
-int CommHttpClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommHttpClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommHttpClient::eof()
-{
-    return (m_clientIos.fail() || m_clientIos.peek() == EOF);
 }

@@ -1,5 +1,11 @@
 2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommClient.cpp, server/CommClient.h,
+	  server/CommHttpClient.cpp, server/CommHttpClient.h:
+	  Convert two stream classes to use the stream base class.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommStreamClient.cpp, server/CommStreamClient.h:
 	  New base class for client socket objects using skstream tcp
 	  streams.
