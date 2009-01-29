@@ -1,5 +1,13 @@
 2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommHttpListener.cpp, server/CommHttpListener.h,
+	  server/CommListener.cpp, server/CommListener.h,
+	  server/CommSlaveListener.cpp, server/CommSlaveListener.h:
+	  Remove a bunch of unused listener classes made obsolete by
+	  moving their functionality into the base class.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommClientFactory.cpp, server/CommClientFactory.h: Add a
 	  new factory for http client objects.
 
