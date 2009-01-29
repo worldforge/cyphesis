@@ -1,5 +1,11 @@
 2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommStreamClient.cpp, server/CommStreamClient.h:
+	  New base class for client socket objects using skstream tcp
+	  streams.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommHttpListener.cpp, server/CommHttpListener.h,
 	  server/CommListener.cpp, server/CommListener.h,
 	  server/CommSlaveListener.cpp, server/CommSlaveListener.h:
