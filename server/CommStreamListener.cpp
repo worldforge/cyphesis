@@ -19,17 +19,26 @@
 
 #include "CommStreamListener.h"
 
+#include "CommClientFactory.h"
+
 #include <skstream/skserver.h>
 
 /// \brief Constructor for stream listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommStreamListener::CommStreamListener(CommServer & svr) : CommSocket(svr)
+CommStreamListener::CommStreamListener(CommServer & svr, CommClientKit & kit) :
+                    CommSocket(svr), m_clientKit(kit)
 {
 }
 
 CommStreamListener::~CommStreamListener()
 {
+    delete &m_clientKit;
+}
+
+int CommStreamListener::create(int asockfd, const char * address)
+{
+    return m_clientKit.newCommClient(m_commServer, asockfd, address);
 }
 
 int CommStreamListener::getFd() const

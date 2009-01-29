@@ -23,6 +23,7 @@
 #include "CommSocket.h"
 
 class basic_socket_server;
+class CommClientKit;
 
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote hosts.
@@ -32,10 +33,14 @@ class CommStreamListener : public CommSocket {
     /// skstream object to manage the listen socket.
     basic_socket_server * m_listener;
 
+    CommClientKit & m_clientKit;
+
     virtual int accept() = 0;
 
+    virtual int create(int fd, const char * address);
+
   public:
-    explicit CommStreamListener(CommServer & svr);
+    explicit CommStreamListener(CommServer & svr, CommClientKit & kit);
     virtual ~CommStreamListener();
 
     int getFd() const;

@@ -21,6 +21,7 @@
 
 #include "CommServer.h"
 #include "CommClient.h"
+#include "CommHttpClient.h"
 #include "TrustedConnection.h"
 #include "SlaveClientConnection.h"
 #include "Peer.h"
@@ -52,6 +53,18 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
     // Add this new client to the list.
     svr.addSocket(newcli);
     svr.addIdle(newcli);
+
+    return 0;
+}
+
+int CommHttpClientFactory::newCommClient(CommServer & svr,
+                                         int asockfd,
+                                         const std::string & address)
+{
+    CommHttpClient * newcli = new CommHttpClient(svr, asockfd);
+
+    // Add this new client to the list.
+    svr.addSocket(newcli);
 
     return 0;
 }

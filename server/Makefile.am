@@ -101,9 +101,7 @@ cyphesis_SOURCES = \
 		HttpCache.cpp HttpCache.h \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommTCPListener.cpp CommTCPListener.h \
-		CommListener.cpp CommListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
-		CommHttpListener.cpp CommHttpListener.h \
 		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommHttpClient.cpp CommHttpClient.h \

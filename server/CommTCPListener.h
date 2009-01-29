@@ -34,10 +34,8 @@ class CommTCPListener : public CommStreamListener {
 
     virtual int accept();
 
-    virtual int create(int fd, const char * address) = 0;
-
   public:
-    explicit CommTCPListener(CommServer & svr);
+    explicit CommTCPListener(CommServer & svr, CommClientKit &);
     virtual ~CommTCPListener();
 
     int setup(int port);

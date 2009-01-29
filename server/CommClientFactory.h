@@ -35,3 +35,8 @@ class CommClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
+
+class CommHttpClientFactory : public CommClientKit {
+  public:
+    virtual int newCommClient(CommServer &, int, const std::string &);
+};

@@ -46,7 +46,7 @@ static const bool debug_flag = false;
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommUnixListener::CommUnixListener(CommServer & svr, CommClientKit & kit) :
-                  CommStreamListener(svr), m_clientKit(kit)
+                  CommStreamListener(svr, kit)
 {
     m_listener = &m_unixListener;
 }
@@ -56,7 +56,6 @@ CommUnixListener::~CommUnixListener()
     if (m_unixListener.is_open()) {
         ::unlink(m_path.c_str());
     }
-    delete &m_clientKit;
 }
 
 /// \brief Create and bind the listen socket.
@@ -94,11 +93,6 @@ int CommUnixListener::accept()
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
 
     return create(asockfd, "local");
-}
-
-int CommUnixListener::create(int asockfd, const char * address)
-{
-    return m_clientKit.newCommClient(m_commServer, asockfd, address);
 }
 
 #endif // HAVE_SYS_UN_H

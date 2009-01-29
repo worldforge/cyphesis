@@ -36,11 +36,7 @@ class CommUnixListener : public CommStreamListener {
     /// Filesystem path of the unix socket.
     std::string m_path;
 
-    CommClientKit & m_clientKit;
-
     virtual int accept();
-
-    virtual int create(int asockfd, const char * address);
 
   public:
     explicit CommUnixListener(CommServer & svr, CommClientKit & kit);

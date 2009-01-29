@@ -42,7 +42,8 @@ static const bool debug_flag = false;
 /// \brief Constructor for stream listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommTCPListener::CommTCPListener(CommServer & svr) : CommStreamListener(svr)
+CommTCPListener::CommTCPListener(CommServer & svr, CommClientKit & kit) :
+                 CommStreamListener(svr, kit)
 {
     m_listener = &m_tcpListener;
 }

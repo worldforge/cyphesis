@@ -1,3 +1,22 @@
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommClientFactory.cpp, server/CommClientFactory.h: Add a
+	  new factory for http client objects.
+
+	* server/CommStreamListener.cpp, server/CommStreamListener.h:
+	  Move the client factory behavior into this base class
+	  as all listners will now be using it.
+
+	* server/CommTCPListener.cpp, server/CommTCPListener.h,
+	  server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Require a client factory reference and pass to the base class
+	  which uses it.
+
+	* server/Makefile.am: Remove obsolete special purpose listeners.
+
+	* server/server.cpp: Use straight TCP listeners for everything
+	  as no special purpose listener functionality is required any more.
+
 2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/CommListener.cpp, server/CommListener.h,
