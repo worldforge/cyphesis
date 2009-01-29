@@ -1,5 +1,10 @@
 2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommHttpClient.h: Correct the description in the doc
+	  comments.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/Makefile.am: Update the optional cyslave build.
 
 2009-01-29  Al Riddoch  <alriddoch@googlemail.com>

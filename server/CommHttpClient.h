@@ -27,7 +27,7 @@
 #include <list>
 #include <string>
 
-/// \brief Handle an internet socket connected to a remote peer server.
+/// \brief Handle an internet socket connected to a remote web browser.
 /// \ingroup ServerSockets
 class CommHttpClient : public CommStreamClient {
   protected:
