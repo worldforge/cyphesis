@@ -1,3 +1,8 @@
+2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommPythonClient.cpp, server/CommPythonClient.h:
+	  Stub class to handle python commands over a socket connection.
+
 2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/CommHttpClient.h: Correct the description in the doc
