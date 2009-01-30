@@ -296,6 +296,16 @@ int main(int argc, char ** argv)
     }
 #endif
 
+    CommTCPListener * pythonListener = new CommTCPListener(commServer,
+          *new CommPythonClientFactory());
+    if (pythonListener->setup(6781) != 0) {
+        log(ERROR, String::compose("Could not create python listen socket on "
+                                   "port %1.", http_port_num));
+        delete pythonListener;
+    } else {
+        commServer.addSocket(pythonListener);
+    }
+
     CommTCPListener * httpListener = new CommTCPListener(commServer,
           *new CommHttpClientFactory());
     if (httpListener->setup(http_port_num) != 0) {

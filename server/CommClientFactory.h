@@ -40,3 +40,8 @@ class CommHttpClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
+
+class CommPythonClientFactory : public CommClientKit {
+  public:
+    virtual int newCommClient(CommServer &, int, const std::string &);
+};

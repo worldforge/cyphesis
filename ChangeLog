@@ -1,5 +1,10 @@
 2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommClientFactory.cpp, server/CommClientFactory.h,
+	  server/server.cpp: Add in test support for the python client.
+
+2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommPythonClient.cpp, server/CommPythonClient.h:
 	  Stub class to handle python commands over a socket connection.
 

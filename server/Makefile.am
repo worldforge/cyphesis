@@ -106,6 +106,7 @@ cyphesis_SOURCES = \
 		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommHttpClient.cpp CommHttpClient.h \
+		CommPythonClient.cpp CommPythonClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
