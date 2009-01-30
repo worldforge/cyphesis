@@ -1,5 +1,13 @@
 2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Python_API.cpp, rulesets/Python_API.h: Hack in a quick
+	  function for executing python commands.
+
+	* server/CommPythonClient.cpp: Pass input from the client straight
+	  into the python interpretter and see what happens.
+
+2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommClientFactory.cpp, server/CommClientFactory.h,
 	  server/server.cpp: Add in test support for the python client.
 

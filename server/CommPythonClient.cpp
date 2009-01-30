@@ -21,6 +21,8 @@
 #include "CommServer.h"
 #include "HttpCache.h"
 
+#include "rulesets/Python_API.h"
+
 static const bool debug_flag = false;
 
 CommPythonClient::CommPythonClient(CommServer & svr, int fd) :
@@ -53,6 +55,7 @@ int CommPythonClient::read()
                     std::cout << "[NOT]" << std::endl << std::flush;
                 } else {
                     std::cout << m_incoming << std::endl << std::flush;
+                    run_python_command(m_incoming.c_str());
                     m_incoming.clear();
                 }
             } else if (next == '\r') {

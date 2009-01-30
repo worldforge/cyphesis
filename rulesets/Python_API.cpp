@@ -1153,3 +1153,16 @@ void shutdown_python_api()
     
     Py_Finalize();
 }
+
+void run_python_command(const char * s)
+{
+    static PyObject * context = 0;
+
+    if (context == 0) {
+        context = PyDict_New();
+        PyDict_SetItemString(context, "__builtins__", PyEval_GetBuiltins() );
+    }
+
+    PyRun_String(s, Py_single_input, context, context);
+
+}
