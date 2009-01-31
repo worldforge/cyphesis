@@ -27,10 +27,13 @@
 #include <list>
 #include <string>
 
+class PythonContext;
+
 /// \brief Handle an internet socket connected to a remote python commandline.
 /// \ingroup ServerSockets
 class CommPythonClient : public CommStreamClient {
   protected:
+    PythonContext * const m_pyContext;
     std::string m_incoming;
   public:
     CommPythonClient(CommServer & svr, int fd);

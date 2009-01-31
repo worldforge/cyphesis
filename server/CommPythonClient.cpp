@@ -21,18 +21,19 @@
 #include "CommServer.h"
 #include "HttpCache.h"
 
-#include "rulesets/Python_API.h"
+#include "rulesets/PythonContext.h"
 
 static const bool debug_flag = false;
 
 CommPythonClient::CommPythonClient(CommServer & svr, int fd) :
-                CommStreamClient(svr, fd)
+                CommStreamClient(svr, fd), m_pyContext(new PythonContext)
 {
     m_clientIos.setTimeout(0,1000); // FIXME?
 }
 
 CommPythonClient::~CommPythonClient()
 {
+    delete m_pyContext;
 }
 
 void CommPythonClient::dispatch()
@@ -54,8 +55,9 @@ int CommPythonClient::read()
                 if (m_incoming.empty()) {
                     std::cout << "[NOT]" << std::endl << std::flush;
                 } else {
-                    std::cout << m_incoming << std::endl << std::flush;
-                    run_python_command(m_incoming.c_str());
+                    // std::cout << m_incoming << std::endl << std::flush;
+                    std::cout << "[" << m_pyContext->runCommand(m_incoming)
+                              << "]" << std::endl << std::flush;
                     m_incoming.clear();
                 }
             } else if (next == '\r') {

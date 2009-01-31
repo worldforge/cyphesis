@@ -1,5 +1,10 @@
 2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
 
+	* server/CommPythonClient.cpp, server/CommPythonClient.h:
+	  Modify the client connection to use the new Python context class.
+
+2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/PythonContext.cpp, rulesets/PythonContext.h,
 	  rulesets/Makefile.am: Add new class to encapsulate a command
 	  line context for Python.
