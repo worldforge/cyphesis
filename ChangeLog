@@ -1,3 +1,9 @@
+2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/PythonContext.cpp, rulesets/PythonContext.h,
+	  rulesets/Makefile.am: Add new class to encapsulate a command
+	  line context for Python.
+
 2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Python_API.cpp, rulesets/Python_API.h: Hack in a quick
