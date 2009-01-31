@@ -1,5 +1,11 @@
 2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Python_API.cpp, rulesets/Python_API.h: Remove the
+	  now obsolete unused function for running trivial Python
+	  command line.
+
+2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommPythonClient.cpp, server/CommPythonClient.h:
 	  Modify the client connection to use the new Python context class.
 

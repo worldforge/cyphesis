@@ -23,6 +23,4 @@
 void init_python_api();
 void shutdown_python_api();
 
-void run_python_command(const char * s);
-
 #endif // RULESETS_PYTHON_API_H
