@@ -412,6 +412,7 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/ExternalMind.o \
                           $(top_builddir)/server/ExternalProperty.o \
                           $(top_builddir)/server/Lobby.o \
+                          $(top_builddir)/server/CommStreamClient.o \
                           $(top_builddir)/server/CommClient.o \
                           $(top_builddir)/server/Idle.o \
                           $(top_builddir)/server/CommSocket.o \
@@ -442,6 +443,7 @@ PropertyFlagtest_LDADD = $(top_builddir)/server/EntityFactory.o \
                          $(top_builddir)/server/ExternalMind.o \
                          $(top_builddir)/server/ExternalProperty.o \
                          $(top_builddir)/server/Lobby.o \
+                         $(top_builddir)/server/CommStreamClient.o \
                          $(top_builddir)/server/CommClient.o \
                          $(top_builddir)/server/Idle.o \
                          $(top_builddir)/server/CommSocket.o \

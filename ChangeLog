@@ -1,5 +1,10 @@
 2009-02-02  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/Makefile.am: Fix the linkage of tests affected new
+	  classes added to the tree recently.
+
+2009-02-02  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Identified.cpp, common/Identified.h:
 	  Flatten down the base classes into one called Router.
 
