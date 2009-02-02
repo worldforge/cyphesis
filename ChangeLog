@@ -1,3 +1,23 @@
+2009-02-02  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Identified.cpp, common/Identified.h:
+	  Flatten down the base classes into one called Router.
+
+	* client/CharacterClient.cpp, client/CreatorClient.cpp,
+	  rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/LocatedEntity.cpp, rulesets/MemEntity.cpp,
+	  rulesets/Plant.cpp, rulesets/Stackable.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp,
+	  server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/ExternalMind.cpp,
+	  server/Lobby.cpp, server/Master.cpp,
+	  server/Peer.cpp, server/Player.cpp,
+	  server/ServerRouting.cpp, server/SlaveClientConnection.cpp,
+	  server/TrustedConnection.cpp, tests/LocatedEntitytest.cpp,
+	  tests/ThingupdatePropertiestest.cpp: Update all the operation
+	  routing classes to use the modified base class correctly.
+
 2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Python_API.cpp, rulesets/Python_API.h: Remove the

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ThingupdatePropertiestest.cpp,v 1.3 2008-01-29 01:48:52 alriddoch Exp $
+// $Id$
 
 #include "allOperations.h"
 
@@ -35,7 +35,6 @@ using Atlas::Objects::Operation::Update;
 class testThing : public Thing {
   public:
     testThing(const std::string & id, long intId) :
-        Identified(id, intId),
         Thing(id, intId) { }
     using Thing::updateProperties;
 };

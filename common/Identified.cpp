@@ -26,8 +26,12 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
-Identified::Identified(const std::string & id, long intId) : m_id(id),
+Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
+{
+}
+
+Router::~Router()
 {
 }
 
@@ -39,10 +43,10 @@ Identified::Identified(const std::string & id, long intId) : m_id(id),
 /// @param errstring A message describing the error.
 /// @param res The resulting error operation is returned here.
 /// @param to The error operation should be directed to this ID.
-void Identified::error(const Operation & op,
-                       const std::string & errstring,
-                       OpVector & res,
-                       const std::string & to) const
+void Router::error(const Operation & op,
+                   const std::string & errstring,
+                   OpVector & res,
+                   const std::string & to) const
 {
     Atlas::Objects::Operation::Error e;
 
@@ -77,10 +81,10 @@ void Identified::error(const Operation & op,
 /// @param errstring A message describing the error.
 /// @param res The resulting error operation is returned here.
 /// @param to The error operation should be directed to this ID.
-void Identified::clientError(const Operation & op,
-                             const std::string & errstring,
-                             OpVector & res,
-                             const std::string & to) const
+void Router::clientError(const Operation & op,
+                         const std::string & errstring,
+                         OpVector & res,
+                         const std::string & to) const
 {
     Atlas::Objects::Operation::Error e;
 
@@ -99,23 +103,6 @@ void Identified::clientError(const Operation & op,
     }
 
     res.push_back(e);
-}
-
-/// \brief Dummy protected constructor without args.
-///
-/// Because Identified is virtually inherited, it's constructor is called
-/// directly by actual constructor, not from here. This is added as a
-/// convenience so that the ID arguments don't have to be explicitly passed
-/// to this constructor as well. We have to pass something to the Identified
-/// constructor here, but it has in fact already been called.
-Router::Router() : Identified("", -1)
-{
-     assert(!getId().empty());
-     assert(getIntId() != -1);
-}
-
-Router::~Router()
-{
 }
 
 /// \brief Copy the attribute values of this object to an Atlas Message

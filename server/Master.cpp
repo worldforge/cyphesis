@@ -22,7 +22,7 @@
 #include "common/id.h"
 
 Master::Master(CommClient & cli, ServerRouting & svr, const std::string & id) :
-        Identified(id, forceIntegerId(id)), m_commClient(cli), m_server(svr)
+        m_commClient(cli), m_server(svr)
 {
 }
 

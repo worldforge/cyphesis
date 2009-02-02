@@ -247,7 +247,6 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 /// @param id String identifier
 /// @param intId Integer identifier
 Character::Character(const std::string & id, long intId) :
-           Identified(id, intId),
            Character_parent(id, intId),
                m_movement(*new Pedestrian(*this)),
                m_task(0), m_mind(0), m_externalMind(0)

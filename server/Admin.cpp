@@ -61,7 +61,6 @@ Admin::Admin(Connection * conn,
              const std::string & passwd,
              const std::string & id,
              long intId) :
-       Identified(id, intId),
        Account(conn, username, passwd, id, intId)
 {
 }

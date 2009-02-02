@@ -61,7 +61,6 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangiable entities.
 Thing::Thing(const std::string & id, long intId) :
-       Identified(id, intId),
        Thing_parent(id, intId)
 {
     m_motion = new Motion(*this);

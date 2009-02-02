@@ -45,7 +45,8 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & name,
                              const std::string & id, long intId,
                              const std::string & lId, long lIntId) :
-        Identified(id, intId), m_svrRuleset(ruleset), m_svrName(name),
+        Router(id, intId),
+        m_svrRuleset(ruleset), m_svrName(name),
         m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
 {
     Monitors * monitors = Monitors::instance();

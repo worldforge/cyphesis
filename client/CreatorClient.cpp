@@ -41,7 +41,6 @@ using Atlas::Objects::smart_dynamic_cast;
 
 CreatorClient::CreatorClient(const std::string & id, long intId,
                              ClientConnection &c) :
-               Identified(id, intId),
                CharacterClient(id, intId, c)
 {
 }
