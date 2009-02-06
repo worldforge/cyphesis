@@ -1,3 +1,8 @@
+2009-02-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cycmd.cpp: Get rid of crazy template code and replace with
+	  straightforward generic client code with two connect methods.
+
 2009-02-02  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tests/Makefile.am: Fix the linkage of tests affected new
