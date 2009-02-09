@@ -1,3 +1,10 @@
+Areas of world with an associated in-game chat channel.
+
+Connection, Master and Peer (and implicitly TrustedConnection) have members
+in common, and could probably stand to inherit from a common parent.
+Connection would make sense as the parent, moving stuff related to being
+connected to a client to a child class UserConnection.
+
 Add a way to extend the terrain base on where someone is walking.
 Probably should sit on top of a general mechanism for modifying the
 world based on player activity.
