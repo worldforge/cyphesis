@@ -82,6 +82,7 @@ int main(int argc, char ** argv)
             exit_flag = true;
             std::cout << std::endl << std::flush;
         } else {
+            add_history(line);
             sk << line << std::endl << std::flush;
         }
     }

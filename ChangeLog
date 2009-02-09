@@ -1,5 +1,9 @@
 2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cypython.cpp: Add history to the readline functionality.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tools/cypython.cpp: Ensure varconf types are fully defined when
 	  the object gets deleted.
 

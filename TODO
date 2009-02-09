@@ -1,3 +1,5 @@
+Strip out the hierarchical movements domains. Flat!
+
 Areas of world with an associated in-game chat channel.
 
 Connection, Master and Peer (and implicitly TrustedConnection) have members
