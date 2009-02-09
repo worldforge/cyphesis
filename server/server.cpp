@@ -294,17 +294,18 @@ int main(int argc, char ** argv)
     } else {
         commServer.addSocket(localListener);
     }
-#endif
 
-    CommTCPListener * pythonListener = new CommTCPListener(commServer,
+    CommUnixListener * pythonListener = new CommUnixListener(commServer,
           *new CommPythonClientFactory());
-    if (pythonListener->setup(6781) != 0) {
-        log(ERROR, String::compose("Could not create python listen socket on "
-                                   "port %1.", http_port_num));
+    if (pythonListener->setup(python_socket_name) != 0) {
+        log(ERROR, String::compose("Could not create python listen socket "
+                                   "with address %1.",
+                                   pythonListener->getPath()));
         delete pythonListener;
     } else {
         commServer.addSocket(pythonListener);
     }
+#endif
 
     CommTCPListener * httpListener = new CommTCPListener(commServer,
           *new CommHttpClientFactory());
