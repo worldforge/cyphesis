@@ -1,5 +1,10 @@
 2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/PythonContext.cpp: Improve error reporting of the
+	  python interpreter return status.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/globals.h, common/globals.cpp: Add config settings for the
 	  python socket.
 

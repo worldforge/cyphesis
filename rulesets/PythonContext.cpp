@@ -31,7 +31,12 @@ std::string PythonContext::runCommand(const std::string & s)
 {
     PyObject * res = PyRun_String(s.c_str(), Py_single_input, m_context, m_context);
     if (res == 0) {
-        return "ERROR";
+        if (PyErr_Occurred() == 0) {
+            return "WHAT";
+        } else {
+            PyErr_Print();
+            return "ERROR";
+        }
     }
     PyObject * repr = PyObject_Repr(res);
     if (repr == 0) {
