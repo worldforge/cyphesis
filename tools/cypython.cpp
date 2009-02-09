@@ -29,6 +29,8 @@
 
 #include <skstream/skstream_unix.h>
 
+#include <varconf/config.h>
+
 #ifndef READLINE_CXX_SANE   // defined in config.h
 extern "C" {
 #endif
