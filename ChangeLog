@@ -1,5 +1,10 @@
 2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cypython.cpp: Add a tool to inject python lines into the
+	  server.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/server.cpp: Switch the python listener over to using a
 	  unix socket using the configuration setting.
 
