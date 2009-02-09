@@ -36,6 +36,7 @@ extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
 extern std::string client_socket_name;
+extern std::string python_socket_name;
 extern std::string slave_socket_name;
 extern std::string ruleset;
 extern bool exit_flag;
@@ -61,6 +62,7 @@ static const int USAGE_SERVER = 1 << 0;
 static const int USAGE_CLIENT = 1 << 1;
 static const int USAGE_CYCMD = 1 << 2;
 static const int USAGE_DBASE = 1 << 3;
+static const int USAGE_CYPYTHON = 1 << 4;
 
 /// Database setup all ok
 static const int DATABASE_OKAY = 0;

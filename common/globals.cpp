@@ -46,6 +46,7 @@ const char * SLAVE = "slave";
 
 static const char * DEFAULT_RULESET = "mason";
 static const char * DEFAULT_CLIENT_SOCKET = "cyphesis.sock";
+static const char * DEFAULT_PYTHON_SOCKET = "cypython.sock";
 static const char * DEFAULT_SLAVE_SOCKET = "cyslave.sock";
 static const char * DEFAULT_INSTANCE = "cyphesis";
 
@@ -55,6 +56,7 @@ std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
 std::string client_socket_name(DEFAULT_CLIENT_SOCKET);
+std::string python_socket_name(DEFAULT_PYTHON_SOCKET);
 std::string slave_socket_name(DEFAULT_SLAVE_SOCKET);
 std::string ruleset(DEFAULT_RULESET);
 bool exit_flag = false;
@@ -77,6 +79,7 @@ static const int S = USAGE_SERVER;
 static const int C = USAGE_CLIENT;
 static const int M = USAGE_CYCMD;
 static const int D = USAGE_DBASE;
+static const int P = USAGE_CYPYTHON;
 
 typedef struct {
     const char * section;
@@ -100,6 +103,7 @@ static const usage_data usage[] = {
     { CYPHESIS, "dynamic_port_start", "<portnumber>", "6800", "Lowest port to try and used for dyanmic ports", S },
     { CYPHESIS, "dynamic_port_end", "<portnumber>", "6899", "Highest port to try and used for dyanmic ports", S },
     { CYPHESIS, "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
+    { CYPHESIS, "pythonport", "<filename>", DEFAULT_PYTHON_SOCKET, "Local listen socket for python connections", S|P },
     { CYPHESIS, "restricted", "true|false", "false", "Flag to control restricted mode", S },
     { CYPHESIS, "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
     { CYPHESIS, "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
@@ -344,6 +348,16 @@ void readInstanceConfiguration(const std::string & section)
         client_socket_name = String::compose("%1/tmp/%2",
                                              var_directory,
                                              client_socket_name);
+    }
+
+    if (readConfigItem(section, "pythonport", python_socket_name) != 0) {
+        python_socket_name = String::compose("cypython_%1.sock", section);
+    }
+
+    if (python_socket_name.find('/') != 0) {
+        python_socket_name = String::compose("%1/tmp/%2",
+                                             var_directory,
+                                             python_socket_name);
     }
 
     readConfigItem("slave", "tcpport", slave_port_num);

@@ -1,3 +1,8 @@
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.h, common/globals.cpp: Add config settings for the
+	  python socket.
+
 2009-02-06  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cycmd.cpp: Get rid of crazy template code and replace with
