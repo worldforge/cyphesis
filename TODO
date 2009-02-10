@@ -1,4 +1,6 @@
 Strip out the hierarchical movements domains. Flat!
+The movement domain then handles collisions and line of sight
+checking.
 
 Areas of world with an associated in-game chat channel.
 
