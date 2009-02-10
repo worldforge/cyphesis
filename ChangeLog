@@ -1,5 +1,11 @@
 2009-02-10  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Motion.cpp, rulesets/Motion.h: Remove the support for
+	  hierarchical location model from the collision system. From
+	  now on there will be a flat movement space.
+
+2009-02-10  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/Movement.h: Remove commented out obsolete code. Add
 	  documentation comments.
 

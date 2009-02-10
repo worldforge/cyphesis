@@ -54,8 +54,6 @@ class Motion {
     bool m_collision;
     /// Entity with which collision will occur
     LocatedEntity * m_collEntity;
-    /// Collision will cause passing in or out of container
-    bool m_collLocChange;
     /// Normal to the collision surface
     Vector3D m_collNormal;
 
