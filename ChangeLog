@@ -1,3 +1,8 @@
+2009-02-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Movement.h: Remove commented out obsolete code. Add
+	  documentation comments.
+
 2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cypython.cpp: Add history to the readline functionality.

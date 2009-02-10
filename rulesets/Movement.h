@@ -38,10 +38,10 @@ class Movement {
   protected:
     /// The Entity this Movement is tracking.
     Entity & m_body;
+    /// The destination position.
     Point3D m_targetPos;
     int m_serialno;
 
-    // float checkCollisions(const Location & loc);
   public:
     explicit Movement(Entity & body);
     virtual ~Movement();
