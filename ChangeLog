@@ -1,3 +1,10 @@
+2009-02-21  Al Riddoch  <alriddoch@googlemail.com>
+
+	* client/BaseClient.h, client/ClientConnection.cpp,
+	  client/ClientConnection.h, client/ObserverClient.cpp,
+	  client/client.cpp: Clean up the way sockets are handled and errors
+	  are reported.
+
 2009-02-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Motion.cpp, rulesets/Motion.h: Remove the support for

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: BaseClient.h,v 1.22 2007-09-04 10:51:27 alriddoch Exp $
+// $Id$
 
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
@@ -53,13 +53,13 @@ class BaseClient {
     virtual void idle() = 0;
 
     /// \brief Connect to a local server via a unix socket
-    int connectLocal(const std::string & socket = "") {
+    int connectLocal(const std::string & socket) {
         return m_connection.connectLocal(socket);
     }
 
     /// \brief Connect to a remote server using a network socket
-    int connect(const std::string & server = "localhost") {
-        return m_connection.connect(server);
+    int connect(const std::string & server, int port) {
+        return m_connection.connect(server, port);
     }
 
     /// \brief Send an operation to the server

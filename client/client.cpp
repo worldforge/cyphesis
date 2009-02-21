@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.cpp,v 1.31 2007-11-14 22:40:18 alriddoch Exp $
+// $Id$
 
 #include "ObserverClient.h"
 #include "ClientPropertyManager.h"
@@ -96,6 +96,8 @@ int main(int argc, char ** argv)
         ObserverClient & observer = *new ObserverClient();
         observer.setServer(server);
         if (observer.setup(account, password) != 0) {
+            std::cerr << "ERROR: Connection failed."
+                      << std::endl << std::flush;
             return 1;
         }
         observer.load(package, function);
