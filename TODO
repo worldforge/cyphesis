@@ -1,3 +1,5 @@
+How to support phasing?
+
 Paxos algorithm for consensus (master election) in an unreliable distributed
 system.
 
