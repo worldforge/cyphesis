@@ -1,5 +1,11 @@
 2009-02-25  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/ArithmeticScript.h, rulesets/PythonArithmeticScript.cpp,
+	  rulesets/PythonArithmeticScript.h: Change set() method to return
+	  void as there is nothing to report.
+
+2009-02-25  Al Riddoch  <alriddoch@googlemail.com>
+
 	* cyphesis.spec.in: Fix the included docs to be consistent with other
 	  packages.
 

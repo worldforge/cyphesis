@@ -37,7 +37,7 @@ class PythonArithmeticScript : public ArithmeticScript {
     struct _object * script() const { return m_script; }
 
     virtual int attribute(const std::string & name, float & val);
-    virtual int set(const std::string & name, const float & val);
+    virtual void set(const std::string & name, const float & val);
 };
 
 #endif // RULESETS_PYTHON_ARITHMETIC_SCRIPT_H
