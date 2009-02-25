@@ -1,3 +1,5 @@
+Look up Proactor pattern, Bloom filter.
+
 How to support phasing?
 
 Paxos algorithm for consensus (master election) in an unreliable distributed
