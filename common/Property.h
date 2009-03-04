@@ -104,6 +104,12 @@ static const unsigned int flag_bool = 1 << 6;
 /// \ingroup PropertyFlags
 static const unsigned int flag_unsent = 1 << 7;
 
+/// \brief Flag used to mark properties which must be instance properties
+/// \ingroup PropertyFlags
+/// Typically this will be because they have per-entity state which cannot
+/// be handled on a class property.
+static const unsigned int flag_instance = 1 << 8;
+
 /// \brief Entity property template for properties with single data values
 /// \ingroup PropertyClasses
 template <typename T>

@@ -1,3 +1,9 @@
+2009-03-04  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Property.h: Add flag for class properties which must be
+	  converted to instance properties on installation as they require
+	  per-entity state.
+
 2009-02-25  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/ArithmeticScript.h, rulesets/PythonArithmeticScript.cpp,
