@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ObserverClient.cpp,v 1.23 2006-11-03 18:55:41 alriddoch Exp $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -24,6 +24,8 @@
 #include "ObserverClient.h"
 
 #include "CreatorClient.h"
+
+#include "common/globals.h"
 
 #include <iostream>
 
@@ -42,10 +44,16 @@ int ObserverClient::setup(const std::string & account,
 {
     bool localConnection = false;;
 
-    if (connectLocal() == 0) {
+    if (connectLocal(client_socket_name) == 0) {
         localConnection = true;
     } else {
-        if (connect(m_server) != 0) {
+        std::cerr << "WARNING: Could not make secure connection to:"
+                  << std::endl << client_socket_name << "."
+                  << std::endl;
+        if (connect(m_server, client_port_num) != 0) {
+            std::cerr << "WARNING: Could not make non-secure connection to: "
+                      << m_server << " port " << client_port_num
+                      << "." << std::endl;
             return -1;
         }
 

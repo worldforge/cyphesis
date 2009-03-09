@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_BBox.h,v 1.10 2007-07-03 01:22:47 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PY_BBOX_H
 #define RULESETS_PY_BBOX_H
@@ -23,6 +23,9 @@
 #include <Python.h>
 
 #include "physics/BBox.h"
+
+#include <wfmath/axisbox.h>
+#include <wfmath/point.h>
 
 /// \brief Wrapper for BBox for Python
 ///

@@ -124,7 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/cyphesis/rulesets/basic
 %{_datadir}/cyphesis/rulesets/mason
 %{_mandir}/man1/*.1.gz
-%doc README COPYING AUTHORS THANKS NEWS
+%doc AUTHORS COPYING NEWS README
 
 #%files acorn
 #%defattr(-,root,root)

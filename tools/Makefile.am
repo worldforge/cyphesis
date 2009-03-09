@@ -1,7 +1,7 @@
 INCLUDES = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cycmd cyconfig cyaddrules cyconvertrules cyloadrules \
-               cydumprules cypasswd cydb
+               cydumprules cypasswd cydb cypython
 noinst_SCRIPTS = cyphesis.sh
 
 EXTRA_DIST = cyphesis.sh copy_python.sh
@@ -166,3 +166,15 @@ cydb_LDADD = $(top_builddir)/modules/DateTime.o \
              $(READLINETOOL_LIBS) \
              $(MATHTOOL_LIBS) \
              $(DBTOOL_LIBS)
+
+cypython_SOURCES = cypython.cpp
+
+cypython_LDADD = $(top_builddir)/modules/DateTime.o \
+                 $(top_builddir)/common/globals.o \
+                 $(top_builddir)/common/prefix.o \
+                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/log.o \
+                 $(READLINETOOL_LIBS) \
+                 $(MATHTOOL_LIBS) \
+                 $(NETWORKTOOL_LIBS) \
+                 $(DBTOOL_LIBS)

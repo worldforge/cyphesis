@@ -21,7 +21,6 @@
 
 #include "rulesets/Entity.h"
 
-#include "physics/Vector3D.h"
 #include "physics/Collision.h"
 
 #include "common/compose.hpp"
@@ -64,6 +63,8 @@ Operation * Motion::genMoveOperation()
 
 float Motion::checkCollisions()
 {
+    assert(m_entity.m_location.m_loc != 0);
+    assert(m_entity.m_location.m_loc->m_contains != 0);
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::move_tick seconds
     float coll_time = consts::move_tick;
@@ -73,11 +74,8 @@ float Motion::checkCollisions()
                      << m_entity.m_location.m_loc->getId()
                      << " against"; );
     m_collEntity = NULL;
-    m_collLocChange = false;
     m_collision = false;
     // Check against everything within the current container
-    assert(m_entity.m_location.m_loc != 0);
-    assert(m_entity.m_location.m_loc->m_contains != 0);
     // If this entity doesn't have a bbox, it can't collide currently.
     if (!m_entity.m_location.bBox().isValid()) {
         return coll_time;
@@ -105,27 +103,12 @@ float Motion::checkCollisions()
             coll_time = t;
         }
     }
-    debug( std::cout << std::endl << std::flush; );
     if (m_collEntity == NULL) {
-        // Check whethe we are moving out of parents bounding box
-        // If ref has no bounding box, or itself has no ref, then we can't
-        // Move out of it.
-        const Location & parent_location = m_entity.m_location.m_loc->m_location;
-        if (!parent_location.bBox().isValid() || (parent_location.m_loc == 0)) {
-            return consts::move_tick;
-        }
-        // float t = m_entity.m_location.timeToExit(parent_location);
-        float t = 0;
-        predictEmergence(m_entity.m_location, parent_location, t);
-        // if (t == 0) { return; }
-        // if (t < 0) { t = 0; }
-        if (t > consts::move_tick) { return consts::move_tick; }
-        coll_time = t;
-        debug(std::cout << "Collision with parent bounding box in "
-                        << coll_time << std::endl << std::flush;);
-        m_collEntity = m_entity.m_location.m_loc;
-        m_collLocChange = true;
-    } else if (!m_collEntity->m_location.isSimple()) {
+        return consts::move_tick;
+    }
+    debug( std::cout << std::endl << std::flush; );
+    m_collision = true;
+    if (!m_collEntity->m_location.isSimple()) {
         debug(std::cout << "Collision with complex object" << std::endl
                         << std::flush;);
         // Non solid container - check for collision with its contents.
@@ -145,8 +128,10 @@ float Motion::checkCollisions()
             Iend = m_collEntity->m_contains->end();
             for (; I != Iend; ++I) {
                 const Location & other_location = (*I)->m_location;
-                if (!other_location.bBox().isValid()) { continue; }
-                    Vector3D normal;
+                if (!other_location.bBox().isValid()) {
+                    continue;
+                }
+                Vector3D normal;
                 float t = consts::move_tick + 1;
                 if (!predictCollision(rloc, other_location, t, normal) ||
                     t < 0) {
@@ -164,11 +149,12 @@ float Motion::checkCollisions()
             debug( std::cout << "passing into it " << coll_time << ":"
                              << coll_time_2 << std::endl << std::flush;);
             // We are entering collEntity.
-            m_collLocChange = true;
+            // Once we have entered, subsequent collision detection won't
+            // really work.
+            // FIXME Modifiy the predicted collision time.
         }
     }
     assert(m_collEntity != NULL);
-    m_collision = true;
     debug( std::cout << "COLLISION" << std::endl << std::flush; );
     debug( std::cout << "Setting target loc to "
                      << m_entity.m_location.pos() << "+"
@@ -181,82 +167,36 @@ bool Motion::resolveCollision()
     Location & location(m_entity.m_location);
     bool moving = true;
 
-    if (m_collLocChange) {
-        // We are changing container (LOC)
-        static const Quaternion identity(Quaternion().identity());
-        debug(std::cout << "CONTACT " << m_collEntity->getId()
-                        << std::endl << std::flush;);
-        if (m_collEntity == location.m_loc) {
-            // Passing out of current container
-            debug(std::cout << "OUT"
-                            << m_collEntity->m_location.pos()
-                            << std::endl << std::flush;);
-            const Quaternion & coll_orientation = m_collEntity->m_location.orientation().isValid() ?
-                                                 m_collEntity->m_location.orientation() :
-                                                 identity;
-            location.m_pos = location.m_pos.toParentCoords(m_collEntity->m_location.pos(), coll_orientation);
-            location.m_orientation *= coll_orientation;
-            location.m_velocity.rotate(coll_orientation);
+    assert(m_collEntity != 0);
+    assert(m_collEntity->m_location.m_loc != 0);
 
-            m_entity.changeContainer(m_collEntity->m_location.m_loc);
-        } else if (m_collEntity->m_location.m_loc == location.m_loc) {
-            // Passing into new container
-            debug(std::cout << "IN" << std::endl << std::flush;);
-            const Quaternion & coll_orientation = m_collEntity->m_location.orientation().isValid() ?
-                                                 m_collEntity->m_location.orientation() :
-                                                 identity;
-            location.m_pos = location.m_pos.toLocalCoords(m_collEntity->m_location.pos(), coll_orientation);
-            assert(location.m_orientation.isValid());
-            assert(coll_orientation.isValid());
-            location.m_orientation /= coll_orientation;
-            location.m_velocity.rotate(coll_orientation.inverse());
+    // We have arrived at our target position and must
+    // stop, or be deflected
 
-            m_entity.changeContainer(m_collEntity);
+    // FIXME This should become an assertion.
+    if (location.m_loc != m_collEntity->m_location.m_loc) {
+        // Race condition
+        // This occurs if we get asked for a new update before
+        // the last move has taken effect, so we make the new
+        // pos exactly as it was when the last collision was
+        // predicted.
+        log(ERROR, "NON COLLISION - target does not have common parent");
+    } else {
+        // FIXME Generate touch ops
+        // This code relies on m_collNormal being a unit vector
+        float vel_square_mag = location.velocity().sqrMag();
+        location.m_velocity -= m_collNormal * Dot(m_collNormal, location.m_velocity);
+        if (location.m_velocity.mag() / consts::base_velocity > 0.05) {
+            m_collEntity = NULL;
+            location.m_velocity.normalize();
+            location.m_velocity *= sqrt(vel_square_mag);
         } else {
-            // Container we are supposed to changing to is wrong.
-            // Just stop where we currently are. Debugging is required to work out
-            // why this happens
-            log(ERROR, String::compose("BAD COLLISION: %1(%2) with "
-                                       "%3(%4)%5 when LOC is currently "
-                                       "%6(%7)%8.",
-                                       m_entity.getId(),
-                                       m_entity.getType(),
-                                       m_collEntity->getId(),
-                                       m_collEntity->getType(),
-                                       location.m_pos,
-                                       location.m_loc->getId(),
-                                       location.m_loc->getType(),
-                                       location.m_pos));
             // reset();
             location.m_velocity = Vector3D(0,0,0);
             moving = false;
         }
-    } else {
-        // We have arrived at our target position and must
-        // stop, or be deflected
-        if (location.m_loc != m_collEntity->m_location.m_loc) {
-            // Race condition
-            // This occurs if we get asked for a new update before
-            // the last move has taken effect, so we make the new
-            // pos exactly as it was when the last collision was
-            // predicted.
-            log(ERROR, "NON COLLISION - target does not have common parent");
-        } else {
-            // FIXME Generate touch ops
-            // This code relies on m_collNormal being a unit vector
-            float vel_square_mag = location.velocity().sqrMag();
-            location.m_velocity -= m_collNormal * Dot(m_collNormal, location.m_velocity);
-            if (location.m_velocity.mag() / consts::base_velocity > 0.05) {
-                m_collEntity = NULL;
-                location.m_velocity.normalize();
-                location.m_velocity *= sqrt(vel_square_mag);
-            } else {
-                // reset();
-                location.m_velocity = Vector3D(0,0,0);
-                moving = false;
-            }
-        }
     }
+
     clearCollision();
     return moving;
 }

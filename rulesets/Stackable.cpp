@@ -44,7 +44,6 @@ using Atlas::Objects::Entity::Anonymous;
 /// @param id identifier of this Entity
 /// @param intId identifier of this Entity
 Stackable::Stackable(const std::string & id, long intId) :
-           Identified(id, intId),
            Stackable_parent(id, intId),
                                              m_num(1)
 {

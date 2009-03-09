@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CharacterClient.cpp,v 1.31 2008-01-26 17:43:21 alriddoch Exp $
+// $Id$
 
 #include "CharacterClient.h"
 
@@ -35,7 +35,6 @@ static const bool debug_flag = false;
 /// @param c The network connection to the server used for communication
 CharacterClient::CharacterClient(const std::string & id, long intId,
                                  ClientConnection & c) :
-                 Identified(id, intId),
                  BaseMind(id, intId), m_connection(c)
 {
 }

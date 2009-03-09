@@ -1,3 +1,42 @@
+Look up Proactor pattern, Bloom filter.
+
+How to support phasing?
+
+Paxos algorithm for consensus (master election) in an unreliable distributed
+system.
+
+Modify metaserver to allow DNS queries.
+
+Strip out the hierarchical movements domains. Flat!
+The movement domain then handles collisions and line of sight
+checking.
+
+Areas of world with an associated in-game chat channel.
+
+Connection, Master and Peer (and implicitly TrustedConnection) have members
+in common, and could probably stand to inherit from a common parent.
+Connection would make sense as the parent, moving stuff related to being
+connected to a client to a child class UserConnection.
+
+Add a way to extend the terrain base on where someone is walking.
+Probably should sit on top of a general mechanism for modifying the
+world based on player activity.
+
+Rename files where classes have been renamed.
+CommAtlasListener
+EntityBuilder
+
+Fix out type updates in Eris. Need to be picked up in the special place
+where serverinfo updates are picked up no.
+
+Python console will make everything so much more introspective.
+
+Remove the implicit bbox. Replace with coding the bbox property to set up
+the visibility metric when applied.
+
+OpQueEntry could be a conventional C style queue. Would be more efficient as
+we are searching by hand already.
+
 As noted before, ArithmeticFactory ScriptFactory and TaskFactory contain
 much common code. Use inheritance.
 

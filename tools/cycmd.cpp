@@ -308,7 +308,6 @@ class OperationMonitor : public AdminTask {
 
 /// \brief Class template for clients used to connect to and administrate
 /// a cyphesis server.
-template <class Stream>
 class Interactive : public Atlas::Objects::ObjectsDecoder,
                     virtual public sigc::trackable
 {
@@ -317,7 +316,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     int cli_fd;
     Atlas::Objects::ObjectsEncoder * encoder;
     Atlas::Codec * codec;
-    Stream ios;
+    basic_socket_stream * ios;
     std::string password;
     std::string username;
     std::string accountType;
@@ -347,7 +346,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
                     avatar_flag(false), server_flag(false), encoder(0),
-                    codec(0), serverName("cyphesis"), prompt("cyphesis> "),
+                    codec(0), ios(0), serverName("cyphesis"), prompt("cyphesis> "),
                     exit(false), currentTask(0)
                     { }
     ~Interactive() {
@@ -360,7 +359,8 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     }
 
     void send(const Operation &);
-    int connect(const std::string & host);
+    int connect_tcp(const std::string & host);
+    int connect_unix(const std::string & host);
     int login();
     int setup();
     void exec(const std::string & cmd, const std::string & arg);
@@ -382,8 +382,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     static void gotCommand(char *);
 };
 
-template <class Stream>
-void Interactive<Stream>::output(const Element & item, int depth)
+void Interactive::output(const Element & item, int depth)
 {
     switch (item.getType()) {
         case Element::TYPE_INT:
@@ -426,8 +425,7 @@ void Interactive<Stream>::output(const Element & item, int depth)
     }
 }
 
-template <class Stream>
-void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
+void Interactive::objectArrived(const Atlas::Objects::Root & obj)
 {
     Operation op = Atlas::Objects::smart_dynamic_cast<Operation>(obj);
     if (!op.isValid()) {
@@ -454,7 +452,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
             encoder->streamObjectsMessage(*I);
         }
 
-        ios << std::flush;
+        (*ios) << std::flush;
 
         if (currentTask->isComplete()) {
             delete currentTask;
@@ -486,8 +484,7 @@ void Interactive<Stream>::objectArrived(const Atlas::Objects::Root & obj)
     }
 }
 
-template <class Stream>
-void Interactive<Stream>::appearanceArrived(const Operation & op)
+void Interactive::appearanceArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -522,8 +519,7 @@ void Interactive<Stream>::appearanceArrived(const Operation & op)
     std::cout << std::flush;
 }
 
-template <class Stream>
-void Interactive<Stream>::disappearanceArrived(const Operation & op)
+void Interactive::disappearanceArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -558,8 +554,7 @@ void Interactive<Stream>::disappearanceArrived(const Operation & op)
     std::cout << std::flush;
 }
 
-template <class Stream>
-void Interactive<Stream>::infoArrived(const Operation & op)
+void Interactive::infoArrived(const Operation & op)
 {
     reply_flag = true;
     if (op->getArgs().empty()) {
@@ -624,8 +619,7 @@ void Interactive<Stream>::infoArrived(const Operation & op)
     }
 }
 
-template <class Stream>
-void Interactive<Stream>::errorArrived(const Operation & op)
+void Interactive::errorArrived(const Operation & op)
 {
     reply_flag = true;
     error_flag = true;
@@ -639,8 +633,7 @@ void Interactive<Stream>::errorArrived(const Operation & op)
     std::cout << ")" << std::endl << std::flush;
 }
 
-template <class Stream>
-void Interactive<Stream>::sightArrived(const Operation & op)
+void Interactive::sightArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -662,8 +655,7 @@ void Interactive<Stream>::sightArrived(const Operation & op)
     std::cout << ")" << std::endl << std::flush;
 }
 
-template <class Stream>
-void Interactive<Stream>::soundArrived(const Operation & op)
+void Interactive::soundArrived(const Operation & op)
 {
     if (accountId.empty()) {
         return;
@@ -700,14 +692,12 @@ void Interactive<Stream>::soundArrived(const Operation & op)
 
 sigc::signal<void, char *> CmdLine;
 
-template <class Stream>
-void Interactive<Stream>::gotCommand(char * cmd)
+void Interactive::gotCommand(char * cmd)
 {
     CmdLine.emit(cmd);
 }
 
-template <class Stream>
-void Interactive<Stream>::runCommand(char * cmd)
+void Interactive::runCommand(char * cmd)
 {
     if (cmd == NULL) {
         exit = true;
@@ -734,8 +724,7 @@ void Interactive<Stream>::runCommand(char * cmd)
     exec(cmd, arg);
 }
 
-template <class Stream>
-int Interactive<Stream>::runTask(AdminTask * task, const std::string & arg)
+int Interactive::runTask(AdminTask * task, const std::string & arg)
 {
     assert(task != 0);
 
@@ -757,8 +746,7 @@ int Interactive<Stream>::runTask(AdminTask * task, const std::string & arg)
     return 0;
 }
 
-template <class Stream>
-int Interactive<Stream>::endTask()
+int Interactive::endTask()
 {
     if (currentTask == 0) {
         return -1;
@@ -784,13 +772,12 @@ char * completion_generator(const char * text, int state)
     return 0;
 }
 
-template <class Stream>
-void Interactive<Stream>::loop()
+void Interactive::loop()
 {
     rl_callback_handler_install(prompt.c_str(),
-                                &Interactive<Stream>::gotCommand);
+                                &Interactive::gotCommand);
     rl_completion_entry_function = &completion_generator;
-    CmdLine.connect(sigc::mem_fun(this, &Interactive<Stream>::runCommand));
+    CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
     while (!exit) {
         poll();
     };
@@ -798,8 +785,7 @@ void Interactive<Stream>::loop()
     rl_callback_handler_remove();
 }
 
-template <class Stream>
-void Interactive<Stream>::poll(bool rewrite_prompt)
+void Interactive::poll(bool rewrite_prompt)
 // poll the codec if select says there is something there.
 {
     fd_set infds;
@@ -822,7 +808,7 @@ void Interactive<Stream>::poll(bool rewrite_prompt)
 
     if (retval > 0) {
         if (FD_ISSET(cli_fd, &infds)) {
-            if (ios.peek() == -1) {
+            if (ios->peek() == -1) {
                 std::cout << "Server disconnected" << std::endl << std::flush;
                 exit = true;
             } else {
@@ -841,8 +827,7 @@ void Interactive<Stream>::poll(bool rewrite_prompt)
     }
 }
 
-template <class Stream>
-void Interactive<Stream>::getLogin()
+void Interactive::getLogin()
 {
     // This needs to be re-written to hide input, so the password can be
     // secret
@@ -852,41 +837,38 @@ void Interactive<Stream>::getLogin()
     std::cin >> password;
 }
 
-template<>
-int Interactive<tcp_socket_stream>::connect(const std::string & host)
+int Interactive::connect_tcp(const std::string & host)
 {
     std::cout << "Connecting... " << std::flush;
-    ios.open(host, client_port_num);
-    if (!ios.is_open()) {
+    ios = new tcp_socket_stream(host, client_port_num);
+    if (!ios->is_open()) {
         std::cout << "failed." << std::endl << std::flush;
         return -1;
     }
     std::cout << "done." << std::endl << std::flush;
-    cli_fd = ios.getSocket();
+    cli_fd = ios->getSocket();
 
     return negotiate();
 }
 
-template<>
-int Interactive<unix_socket_stream>::connect(const std::string & filename)
+int Interactive::connect_unix(const std::string & filename)
 {
     std::cout << "Connecting... " << std::flush;
-    ios.open(filename);
-    if (!ios.is_open()) {
+    ios = new unix_socket_stream(filename);
+    if (!ios->is_open()) {
         std::cout << "failed." << std::endl << std::flush;
         return -1;
     }
     std::cout << "done." << std::endl << std::flush;
-    cli_fd = ios.getSocket();
+    cli_fd = ios->getSocket();
 
     return negotiate();
 }
 
-template <class Stream>
-int Interactive<Stream>::negotiate()
+int Interactive::negotiate()
 {
     // Do client negotiation with the server
-    Atlas::Net::StreamConnect conn("cycmd", ios);
+    Atlas::Net::StreamConnect conn("cycmd", *ios);
 
     std::cout << "Negotiating... " << std::flush;
     while (conn.getState() == Atlas::Negotiate::IN_PROGRESS) {
@@ -915,8 +897,7 @@ int Interactive<Stream>::negotiate()
 
 }
 
-template <class Stream>
-void Interactive<Stream>::updatePrompt()
+void Interactive::updatePrompt()
 {
     std::string designation(">");
     if (!username.empty()) {
@@ -937,8 +918,7 @@ void Interactive<Stream>::updatePrompt()
     rl_set_prompt(prompt.c_str());
 }
 
-template <class Stream>
-int Interactive<Stream>::login()
+int Interactive::login()
 {
     Atlas::Objects::Entity::Account account;
     Login l;
@@ -953,7 +933,7 @@ int Interactive<Stream>::login()
  
     encoder->streamObjectsMessage(l);
 
-    ios << std::flush;
+    (*ios) << std::flush;
  
     while (!reply_flag) {
        codec->poll();
@@ -968,13 +948,12 @@ int Interactive<Stream>::login()
     return -1;
 }
 
-template <class Stream>
-int Interactive<Stream>::setup()
+int Interactive::setup()
 {
     Get get;
 
     encoder->streamObjectsMessage(get);
-    ios << std::flush;
+    (*ios) << std::flush;
     server_flag = true;
 
     reply_flag = true;
@@ -989,8 +968,7 @@ int Interactive<Stream>::setup()
     return -1;
 }
 
-template <class Stream>
-void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
+void Interactive::exec(const std::string & cmd, const std::string & arg)
 {
     bool reply_expected = true;
     reply_flag = false;
@@ -1241,7 +1219,7 @@ void Interactive<Stream>::exec(const std::string & cmd, const std::string & arg)
         std::cout << cmd << ": Command not known" << std::endl << std::flush;
     }
 
-    ios << std::flush;
+    (*ios) << std::flush;
 
     if (!reply_expected) { return; }
     // Wait for reply
@@ -1298,6 +1276,8 @@ int main(int argc, char ** argv)
         interactive = false;
     }
 
+    Interactive bridge;
+
     if (server.empty()) {
         std::string localSocket;
         if (useslave != 0) {
@@ -1307,8 +1287,7 @@ int main(int argc, char ** argv)
         }
 
         std::cout << "Attempting local connection" << std::endl << std::flush;
-        Interactive<unix_socket_stream> bridge;
-        if (bridge.connect(localSocket) == 0) {
+        if (bridge.connect_unix(localSocket) == 0) {
             bridge.setUsername("admin");
 
             bridge.setup();
@@ -1337,9 +1316,7 @@ int main(int argc, char ** argv)
     
     std::cerr << "Attempting tcp connection" << std::endl << std::flush;
 
-    Interactive<tcp_socket_stream> bridge;
-
-    if (bridge.connect(server) != 0) {
+    if (bridge.connect_tcp(server) != 0) {
         return 1;
     }
     bridge.setup();

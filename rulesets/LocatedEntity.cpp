@@ -55,7 +55,7 @@ const std::set<std::string> & LocatedEntity::immutables()
 
 /// \brief LocatedEntity constructor
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Identified(id, intId),
+               Router(id, intId),
                m_refCount(0), m_seq(0),
                m_script(&noScript), m_type(0), m_contains(0)
 {
@@ -210,6 +210,7 @@ void LocatedEntity::makeContainer()
 /// container.
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
+    assert(m_location.m_loc != 0);
     assert(m_location.m_loc->m_contains != 0);
     m_location.m_loc->m_contains->erase(this);
     if (m_location.m_loc->m_contains->empty()) {

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.h,v 1.23 2007-09-03 23:27:45 alriddoch Exp $
+// $Id$
 
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
@@ -77,7 +77,7 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
 
     int read();
     int connectLocal(const std::string &);
-    int connect(const std::string &);
+    int connect(const std::string &, int port);
     void login(const std::string &, const std::string &);
     void create(const std::string &, const std::string &);
     int wait();

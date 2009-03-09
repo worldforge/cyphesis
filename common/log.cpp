@@ -38,9 +38,9 @@ extern "C" {
 }
 
 #ifndef _WIN32
-static const char * TIME_FORMAT = "%F %T";
+static const char * TIME_FORMAT = "%FT%T";
 #else
-static const char * TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
+static const char * TIME_FORMAT = "%Y-%m-%dT%H:%M:%S";
 #endif
 
 static void logDate(std::ostream & log_stream)

@@ -29,6 +29,10 @@
 
 #include <sigc++/trackable.h>
 
+#include <wfmath/axisbox.h>
+#include <wfmath/point.h>
+#include <wfmath/quaternion.h>
+
 class LocatedEntity;
 
 class Location : virtual public sigc::trackable {

@@ -15,15 +15,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: slave.cpp,v 1.14 2007-11-05 19:24:50 alriddoch Exp $
+// $Id$
 
 #include "CommServer.h"
-#include "CommSlaveListener.h"
 #include "CommMaster.h"
+#include "CommUnixListener.h"
+#include "CommClientFactory.h"
+#include "Master.h"
 #include "ServerRouting.h"
 #include "EntityFactory.h"
 #include "Persistance.h"
-#include "Restoration.h"
 #include "WorldRouter.h"
 
 #include "rulesets/Python_API.h"
@@ -34,8 +35,11 @@
 #include "common/globals.h"
 #include "common/inheritance.h"
 #include "common/system.h"
+#include "common/compose.hpp"
 
 #include <varconf/config.h>
+
+class SlaveClientConnection;
 
 static const bool debug_flag = false;
 
@@ -63,11 +67,28 @@ int main(int argc, char ** argv)
     // Initialise the persistance subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
-    int dbstatus = Persistance::init();
-    if (dbstatus < 0) {
-        log(CRITICAL, "Critical error opening databases. Init failed.");
-        log(INFO, "Please ensure that the database tables can be created or accessed by cyphesis.");
-        return EXIT_DATABASE_ERROR;
+    if (database_flag) {
+        Persistance * p = Persistance::instance();
+        int dbstatus = p->init();
+        if (dbstatus < 0) {
+            database_flag = false;
+            log(ERROR, "Error opening database. Database disabled.");
+            if (dbstatus == DATABASE_TABERR) {
+                log(INFO, "Database connection established, "
+                          "but unable to create required tables.");
+                log(INFO, "Please ensure that any obsolete database "
+                          "tables have been removed.");
+            } else {
+                log(INFO, "Unable to connect to the RDBMS.");
+                log(INFO, "Please ensure that the RDBMS is running, "
+                          "the cyphesis database exists and is accessible "
+                          "to the user running cyphesis.");
+            }
+            log(INFO, String::compose("To disable this message please run:\n\n"
+                                      "    cyconfig --%1:usedatabase=false\n\n"
+                                      "to permanently disable database usage.",
+                                      instance));
+        }
     }
 
     // If the restricted flag is set in the config file, then we
@@ -127,14 +148,8 @@ int main(int argc, char ** argv)
     // not creating a new world using the contents of the database as a
     // template
 
-    log(INFO, "Restoring world from database...");
-
-    Restoration restore(server);
-    restore.read();
-
-    log(INFO, " world restored");
-
-    CommSlaveListener * listener = new CommSlaveListener(commServer);
+    CommUnixListener * listener = new CommUnixListener(commServer,
+          *new CommClientFactory<SlaveClientConnection>());
     if (listener->setup(slave_socket_name) != 0) {
         log(ERROR, "Could not create listen socket. Init failed.");
         return EXIT_SOCKET_ERROR;
@@ -147,11 +162,12 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
-    CommMaster * master = new CommMaster(commServer, serverHostname, master_id);
+    CommMaster * master = new CommMaster(commServer);
     if (master->connect(serverHostname) != 0) {
         log(ERROR, "Could not connect to master. Init failed.");
         return EXIT_SOCKET_ERROR;
     }
+    master->setup(new Master(*master, commServer.m_server, master_id));
     commServer.addSocket(master);
 
     log(INFO, "Running");
@@ -182,10 +198,10 @@ int main(int argc, char ** argv)
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents
 
-    Persistance::shutdown();
+    Persistance::instance()->shutdown();
 
-    EntityFactory::instance()->flushFactories();
-    EntityFactory::del();
+    EntityBuilder::instance()->flushFactories();
+    EntityBuilder::del();
     MindFactory::del();
 
     Inheritance::clear();

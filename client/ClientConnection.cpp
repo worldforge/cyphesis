@@ -25,7 +25,6 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/globals.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Codecs/XML.h>
@@ -140,18 +139,10 @@ int ClientConnection::connectLocal(const std::string & sockname)
 {
 #ifdef HAVE_SYS_UN_H
     debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
-    std::string socket;
-    if (sockname == "") {
-        socket = client_socket_name;
-    } else if (sockname[0] != '/') {
-        socket = var_directory + "/tmp/" + sockname;
-    } else {
-        socket = sockname;
-    }
 
     struct sockaddr_un sun;
     sun.sun_family = AF_UNIX;
-    strncpy(sun.sun_path, socket.c_str(), sizeof(sun.sun_path));
+    strncpy(sun.sun_path, sockname.c_str(), sizeof(sun.sun_path));
 
     int fd = ::socket(PF_UNIX, SOCK_STREAM, 0);
 
@@ -181,14 +172,14 @@ int ClientConnection::connectLocal(const std::string & sockname)
 #endif // HAVE_SYS_UN_H
 }
 
-int ClientConnection::connect(const std::string & server)
+int ClientConnection::connect(const std::string & server, int port)
 {
     debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
 
-    ios.open(server, client_port_num);
+    ios.open(server, port);
     if (!ios.is_open()) {
-        std::cerr << "ERROR: Could not connect to " << server << "."
-                  << std::endl << std::flush;
+        debug(std::cerr << "ERROR: Could not connect to " << server << "."
+                        << std::endl << std::flush;);
         return -1;
     }
 

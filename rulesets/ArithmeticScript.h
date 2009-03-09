@@ -39,7 +39,7 @@ class ArithmeticScript {
     ///
     /// @param name of the value to be retrieved
     /// @param val value returned by the model
-    virtual int set(const std::string & name, const float & val) = 0;
+    virtual void set(const std::string & name, const float & val) = 0;
 };
 
 #endif // RULESETS_ARITHMETIC_SCRIPT_H

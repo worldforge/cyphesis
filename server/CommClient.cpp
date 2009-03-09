@@ -36,21 +36,20 @@
 
 static const bool debug_flag = false;
 
-CommClient::CommClient(CommServer & svr, int fd, Router & c) :
-            CommSocket(svr), Idle(svr),
-            m_clientIos(fd),
+CommClient::CommClient(CommServer & svr, int fd) :
+            CommStreamClient(svr, fd), Idle(svr),
             m_codec(NULL), m_encoder(NULL),
-            m_connection(c), m_connectTime(svr.time())
+            m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
 
     m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos);
 }
 
-CommClient::CommClient(CommServer & svr, Router & c) :
-            CommSocket(svr), Idle(svr),
+CommClient::CommClient(CommServer & svr) :
+            CommStreamClient(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL),
-            m_connection(c), m_connectTime(svr.time())
+            m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
 
@@ -59,7 +58,7 @@ CommClient::CommClient(CommServer & svr, Router & c) :
 
 CommClient::~CommClient()
 {
-    delete &m_connection;
+    delete m_connection;
     if (m_negotiate != NULL) {
         delete m_negotiate;
     }
@@ -72,10 +71,12 @@ CommClient::~CommClient()
     m_clientIos.close();
 }
 
-void CommClient::setup()
+void CommClient::setup(Router * connection)
 {
     debug( std::cout << "Negotiating started" << std::endl << std::flush; );
     // Create the server side negotiator
+
+    m_connection = connection;
 
     m_negotiate->poll(false);
 
@@ -120,7 +121,7 @@ int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     OpVector reply;
     long serialno = op->getSerialno();
-    m_connection.operation(op, reply);
+    m_connection->operation(op, reply);
     OpVector::const_iterator Iend = reply.end();
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         debug(std::cout << "sending reply" << std::endl << std::flush;);
@@ -188,21 +189,6 @@ int CommClient::read()
     } else {
         return negotiate();
     }
-}
-
-int CommClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommClient::eof()
-{
-    return (m_clientIos.fail() || m_clientIos.peek() == EOF);
 }
 
 int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)

@@ -15,45 +15,37 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommUnixListener.h,v 1.18 2006-12-22 02:14:45 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_COMM_UNIX_LISTENER_H
 #define SERVER_COMM_UNIX_LISTENER_H
 
-#include "CommSocket.h"
+#include "CommStreamListener.h"
 
 #include <skstream/skserver_unix.h>
+
+class CommClientKit;
 
 /// \brief Handle the listen socket used to listen for unix socket connections
 /// on the local machine.
 /// \ingroup ServerSockets
-class CommUnixListener : public CommSocket {
+class CommUnixListener : public CommStreamListener {
   private:
     /// skstream object which manages the low level unix listen socket.
     unix_socket_server m_unixListener;
-    /// Flag to indicate if the socket is bound.
-    bool m_bound;
     /// Filesystem path of the unix socket.
     std::string m_path;
 
-    int accept();
-
-    virtual int create(int fd);
+    virtual int accept();
 
   public:
-    explicit CommUnixListener(CommServer & svr);
+    explicit CommUnixListener(CommServer & svr, CommClientKit & kit);
     virtual ~CommUnixListener();
 
     /// Accessor for the filesystem path of the socket.
     const std::string & getPath() const { return m_path; }
 
     int setup(const std::string & name);
-
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
-    int read();
-    void dispatch();
 };
 
 #endif // SERVER_COMM_UNIX_LISTENER_H

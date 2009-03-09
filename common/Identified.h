@@ -29,15 +29,16 @@
 /// \brief This is the base class for any entity which has an Atlas
 /// compatible indentifier.
 ///
-class Identified {
+class Router {
   private:
     /// \brief String identifier
     const std::string m_id;
     /// \brief Integer identifier
     const long m_intId;
   protected:
-    explicit Identified(const std::string & id, long intId);
+    explicit Router(const std::string & id, long intId);
   public:
+    virtual ~Router();
 
     /// \brief Read only accessor for string identity
     const std::string & getId() const {
@@ -53,15 +54,7 @@ class Identified {
                const std::string & to = "") const;
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;
-};
 
-/// \brief This is the base class for any entity which has an Atlas
-/// compatible identifier, and is the target for operations.
-class Router : virtual public Identified {
-  protected:
-    Router();
-  public:
-    virtual ~Router() = 0;
     virtual void operation(const Operation &, OpVector &) = 0;
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;

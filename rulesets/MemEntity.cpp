@@ -15,14 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MemEntity.cpp,v 1.9 2008-01-26 17:43:21 alriddoch Exp $
+// $Id$
 
 #include "MemEntity.h"
 
 static const bool debug_flag = false;
 
 MemEntity::MemEntity(const std::string & id, long intId) :
-           Identified(id, intId),
            LocatedEntity(id, intId), m_visible(false), m_lastSeen(0.)
 {
 }

@@ -94,22 +94,23 @@ cyphesis_SOURCES = \
 		Peer.cpp Peer.h \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h \
+		UpdateTester.cpp UpdateTester.h \
 		CommSocket.cpp CommSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		HttpCache.cpp HttpCache.h \
-		CommListener.cpp CommListener.h \
-		CommPeerListener.cpp CommPeerListener.h \
+		CommStreamListener.cpp CommStreamListener.h \
+		CommTCPListener.cpp CommTCPListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
-		CommHttpListener.cpp CommHttpListener.h \
+		CommStreamClient.cpp CommStreamClient.h \
 		CommClient.cpp CommClient.h \
-		CommLocalClient.cpp CommLocalClient.h \
-		CommRemoteClient.cpp CommRemoteClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommHttpClient.cpp CommHttpClient.h \
+		CommPythonClient.cpp CommPythonClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
+		CommClientFactory.cpp CommClientFactory.h \
 		server.cpp server.h
 
 nodist_cyphesis_SOURCES = \
@@ -143,15 +144,17 @@ cyslave_SOURCES = \
 		Peer.cpp Peer.h \
 		Master.cpp Master.h \
 		Idle.cpp Idle.h \
+		HttpCache.cpp HttpCache.h \
 		CommSocket.cpp CommSocket.h \
+		CommStreamListener.cpp CommStreamListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
-		CommSlaveListener.cpp CommSlaveListener.h \
+		CommStreamClient.cpp CommStreamClient.h \
 		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
+		CommHttpClient.cpp CommHttpClient.h \
 		CommMaster.cpp CommMaster.h \
-		CommLocalClient.cpp CommLocalClient.h \
-		CommSlaveClient.cpp CommSlaveClient.h \
 		CommServer.cpp CommServer.h \
+		CommClientFactory.cpp CommClientFactory.h \
 		slave.cpp
 
 nodist_cyslave_SOURCES = \

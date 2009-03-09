@@ -65,7 +65,7 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
     return 0;
 }
 
-int PythonArithmeticScript::set(const std::string & name, const float & val)
+void PythonArithmeticScript::set(const std::string & name, const float & val)
 {
     PyObject * pn = PyString_FromString(name.c_str());
     PyObject * py_val = PyFloat_FromDouble(val);

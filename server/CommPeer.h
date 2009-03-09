@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommPeer.h,v 1.5 2006-12-22 02:14:44 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_COMM_PEER_H
 #define SERVER_COMM_PEER_H
@@ -26,9 +26,7 @@
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {
   public:
-    CommPeer(CommServer & svr, const std::string & adr, const std::string & id);
-    CommPeer(CommServer & svr, int fd, const std::string & adr,
-                                       const std::string & id);
+    CommPeer(CommServer & svr);
     virtual ~CommPeer();
 
     int connect(const std::string &);

@@ -1,3 +1,421 @@
+2009-02-25  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/ArithmeticScript.h, rulesets/PythonArithmeticScript.cpp,
+	  rulesets/PythonArithmeticScript.h: Change set() method to return
+	  void as there is nothing to report.
+
+2009-02-25  Al Riddoch  <alriddoch@googlemail.com>
+
+	* cyphesis.spec.in: Fix the included docs to be consistent with other
+	  packages.
+
+2009-02-21  Al Riddoch  <alriddoch@googlemail.com>
+
+	* client/BaseClient.h, client/ClientConnection.cpp,
+	  client/ClientConnection.h, client/ObserverClient.cpp,
+	  client/client.cpp: Clean up the way sockets are handled and errors
+	  are reported.
+
+2009-02-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Motion.cpp, rulesets/Motion.h: Remove the support for
+	  hierarchical location model from the collision system. From
+	  now on there will be a flat movement space.
+
+2009-02-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Movement.h: Remove commented out obsolete code. Add
+	  documentation comments.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cypython.cpp: Add history to the readline functionality.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cypython.cpp: Ensure varconf types are fully defined when
+	  the object gets deleted.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cypython.cpp: Add a tool to inject python lines into the
+	  server.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/server.cpp: Switch the python listener over to using a
+	  unix socket using the configuration setting.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/PythonContext.cpp: Improve error reporting of the
+	  python interpreter return status.
+
+2009-02-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.h, common/globals.cpp: Add config settings for the
+	  python socket.
+
+2009-02-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cycmd.cpp: Get rid of crazy template code and replace with
+	  straightforward generic client code with two connect methods.
+
+2009-02-02  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/Makefile.am: Fix the linkage of tests affected new
+	  classes added to the tree recently.
+
+2009-02-02  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Identified.cpp, common/Identified.h:
+	  Flatten down the base classes into one called Router.
+
+	* client/CharacterClient.cpp, client/CreatorClient.cpp,
+	  rulesets/BaseMind.cpp, rulesets/Character.cpp,
+	  rulesets/Creator.cpp, rulesets/Entity.cpp,
+	  rulesets/LocatedEntity.cpp, rulesets/MemEntity.cpp,
+	  rulesets/Plant.cpp, rulesets/Stackable.cpp,
+	  rulesets/Thing.cpp, rulesets/World.cpp,
+	  server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/ExternalMind.cpp,
+	  server/Lobby.cpp, server/Master.cpp,
+	  server/Peer.cpp, server/Player.cpp,
+	  server/ServerRouting.cpp, server/SlaveClientConnection.cpp,
+	  server/TrustedConnection.cpp, tests/LocatedEntitytest.cpp,
+	  tests/ThingupdatePropertiestest.cpp: Update all the operation
+	  routing classes to use the modified base class correctly.
+
+2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Python_API.cpp, rulesets/Python_API.h: Remove the
+	  now obsolete unused function for running trivial Python
+	  command line.
+
+2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommPythonClient.cpp, server/CommPythonClient.h:
+	  Modify the client connection to use the new Python context class.
+
+2009-01-31  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/PythonContext.cpp, rulesets/PythonContext.h,
+	  rulesets/Makefile.am: Add new class to encapsulate a command
+	  line context for Python.
+
+2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Python_API.cpp, rulesets/Python_API.h: Hack in a quick
+	  function for executing python commands.
+
+	* server/CommPythonClient.cpp: Pass input from the client straight
+	  into the python interpretter and see what happens.
+
+2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommClientFactory.cpp, server/CommClientFactory.h,
+	  server/server.cpp: Add in test support for the python client.
+
+2009-01-30  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommPythonClient.cpp, server/CommPythonClient.h:
+	  Stub class to handle python commands over a socket connection.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommHttpClient.h: Correct the description in the doc
+	  comments.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/Makefile.am: Update the optional cyslave build.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommClient.cpp, server/CommClient.h,
+	  server/CommHttpClient.cpp, server/CommHttpClient.h:
+	  Convert two stream classes to use the stream base class.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommStreamClient.cpp, server/CommStreamClient.h:
+	  New base class for client socket objects using skstream tcp
+	  streams.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommHttpListener.cpp, server/CommHttpListener.h,
+	  server/CommListener.cpp, server/CommListener.h,
+	  server/CommSlaveListener.cpp, server/CommSlaveListener.h:
+	  Remove a bunch of unused listener classes made obsolete by
+	  moving their functionality into the base class.
+
+2009-01-29  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommClientFactory.cpp, server/CommClientFactory.h: Add a
+	  new factory for http client objects.
+
+	* server/CommStreamListener.cpp, server/CommStreamListener.h:
+	  Move the client factory behavior into this base class
+	  as all listners will now be using it.
+
+	* server/CommTCPListener.cpp, server/CommTCPListener.h,
+	  server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Require a client factory reference and pass to the base class
+	  which uses it.
+
+	* server/Makefile.am: Remove obsolete special purpose listeners.
+
+	* server/server.cpp: Use straight TCP listeners for everything
+	  as no special purpose listener functionality is required any more.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommListener.cpp, server/CommListener.h,
+	  server/server.cpp: Rename class to CommAtlasListener.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommLocalClient.cpp, server/CommLocalClient.h,
+	  server/CommPeerListener.cpp, server/CommPeerListener.h,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommSlaveClient.cpp, server/CommSlaveClient.h:
+	  Delete obsolete removed code.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommMaster.cpp, server/CommMaster.h,
+	  server/Makefile.am, server/Master.cpp, server/Master.h,
+	  server/slave.cpp: Clean up the bitrot in the optional cyslave
+	  target.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommLocalClient.cpp, server/CommLocalClient.h,
+	  server/CommRemoteClient.cpp, server/CommRemoteClient.h,
+	  server/CommSlaveClient.cpp, server/CommSlaveClient.h:
+	  Mark these files as removed form the build.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommPeer.h, server/CommPeer.cpp: Re-factor CommPeer to
+	  only be used for initiating peer connections.
+
+	* server/Admin.cpp: Use the modified CommPeer constructor.
+
+	* server/CommClient.h, server/CommClient.cpp: Make the connection
+	  a pointer rather than a reference, and pass it in during setup.
+
+	* server/CommClientFactory.h, server/CommClientFactory.cpp: Re-factor
+	  the commclient factory to take connection type as a template param,
+	  and create the client and connection objects separately.
+
+	* server/server.cpp: Use the modified CommClientFactory parameter.
+
+	* server/Makefile.am: Remove the different kinds of client class
+	  from the build.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommSlaveClient.cpp, server/SlaveClientConnection.cpp,
+	  server/SlaveClientConnection.h: Re-factor the constructor interface
+	  to be consistent.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommLocalClient.h, server/CommRemoteClient.h,
+	  server/CommSlaveClient.h: Clean up the interface formatting so
+	  these class look the same.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommLocalClient.cpp, server/CommLocalClient.h: Fix the
+	  constructor interface to match that used by the factory.
+
+	* server/CommClientFactory.cpp: Add support for CommLocalClient.
+
+	* server/CommUnixListener.cpp, server/CommUnixListener.h:
+	  Convert the unix listener to use the CommClientFactory to remove
+	  duplicated code.
+
+	* server/server.cpp: Use the new style of listener API on the unix
+	  socket.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommClientFactory.cpp: Add support for CommSlaveClient.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommListener.cpp, server/CommListener.h: Refactor from
+	  a template to a regular class that uses the factories.
+
+	* server/server.cpp: Fix usage of CommListener.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommSlaveClient.h, server/CommSlaveClient.cpp,
+	  server/Makefile.am: Fix the constructor interface to match
+	  that of other client socket classes.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/SlaveClientConnection.cpp, server/SlaveClientConnection.h:
+	  Fix to build with changes to the parent classes.
+
+2009-01-28  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommClientFactory.cpp, server/CommClientFactory.h,
+	  server/Makefile.am: A new experimental way to create socket objects.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommListener.h, server/CommListener.cpp: Make the
+	  Atlas listener a template for handling the various types
+	  of socket to use.
+
+	* server/server.cpp: Use the CommListener template correctly.
+
+	* server/CommPeerListener.cpp, server/CommPeerListener.h,
+	  server/Makefile.am: Remove the obsolete explicit peer listener
+	  from the build.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommTCPListener.h, server/CommTCPListener.cpp,
+	  server/CommListener.h, server/CommListener.cpp: Move the generic
+	  TCP accept code into the base class.
+
+	* server/CommHttpListener.h, server/CommHttpListener.cpp: Use the
+	  simpler generic TCP listener rather than overriding the class
+	  designed for listening to Atlas.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommUnixListener.h: accept() should be virtual.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommStreamListener.cpp, server/CommStreamListener.h:
+	  Remove tcp specific code forcing other classes to use
+	  the tcp specific class.
+
+	* server/CommListener.cpp, server/CommListener.h: Inherit from the
+	  tcp base class.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommUnixListener.cpp, server/CommUnixListener.h,
+	  server/Makefile.am: Use the stream base class for this, to
+	  re-use common code.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommTCPListener.cpp, server/CommTCPListener.h: Add another
+	  new base class with the TCP specific listener code in.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommListener.cpp, server/CommListener.h: Adapt the Atlas
+	  client listener code to use the new base class for listeners.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommStreamListener.cpp, server/CommStreamListener.h:
+	  Add a new more abstract base class for listen sockets.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/log.cpp: Modify the log time stamps to be a single column
+	  in ISO format.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* autopackage/default.apspec.in: Expand the full name used in the
+	  autopackage.
+
+2009-01-27  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/basic/mind/goals/humanoid/mason.py: Fix a potential issue
+	  with goals not having full dependencies imported.
+
+2009-01-15  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/server.cpp: Add commented out code to set up the
+	  UpdateTester.
+
+2009-01-15  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/Makefile.am, server/UpdateTester.cpp, server/UpdateTester.h:
+	  Add a generic class for injecting test operations, and set it up
+	  to test type updates.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/BBox.cpp, rulesets/BBoxProperty.h, rulesets/Py_BBox.h:
+	  Include more wfmath headers as it makes better use of forward
+	  declarations.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/BBox.h: Use wfmath forward declarations.
+
+	* modules/Location.h, physics/BBox.cpp, rulesets/BBoxProperty.h,
+	  rulesets/Py_BBox.h: Include axisbox.h definition where required.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/Vector3D.h: Use sqrtf to ensure efficient use of floats.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/Makefile.am: Fix linking the tests to get functions which
+	  are no longer inlined.
+
+2009-01-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/Quaternion.h: Use forward declarations.
+
+	* physics/Quaternion.cpp, rulesets/Py_Quaternion.h: Include
+	  quaternion definition where required.
+
+2009-01-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* physics/Vector3D.h, physics/Vector3D.cpp: Move a bunch of inline
+	  functions in the header to be non-inline in the body. Use
+	  the forward declaraions in wfmath/const.h instead of having to
+	  include the full headers.
+
+	* rulesets/Motion.cpp, rulesets/Motion.h, rulesets/Movement.h,
+	  rulesets/Py_Point3D.h, rulesets/Py_Vector3D.h: Include wfmath
+	  headers as required.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Motion.cpp: Add assertions for consistency of the entity
+	  we are colliding with before resolving the collision.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Motion.cpp: Move the assertions before the debug output,
+	  as otherwise the asserts won't catch things that could make the
+	  debug code crash.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/MemMap.cpp: Add an assert as getAdd() is supposed to
+	  always return non-zero.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/LocatedEntity.cpp: Add an assert to make sure entity is
+	  part of an intact container tree.
+
+2009-01-06  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/ExternalMind.cpp: Extend the time before nuking player
+	  characters to an hour.
+
 2008-12-16  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/TransientProperty.cpp: Remove some debug output.

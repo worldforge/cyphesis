@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Motion.h,v 1.13 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_MOTION_H
 #define RULESETS_MOTION_H
@@ -23,6 +23,8 @@
 #include "physics/Vector3D.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
+
+#include <wfmath/vector.h>
 
 #include <string>
 
@@ -52,8 +54,6 @@ class Motion {
     bool m_collision;
     /// Entity with which collision will occur
     LocatedEntity * m_collEntity;
-    /// Collision will cause passing in or out of container
-    bool m_collLocChange;
     /// Normal to the collision surface
     Vector3D m_collNormal;
 

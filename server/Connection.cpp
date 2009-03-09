@@ -62,7 +62,7 @@ Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id) :
-            Identified(id, forceIntegerId(id)), m_obsolete(false),
+            Router(id, forceIntegerId(id)), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {

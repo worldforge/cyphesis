@@ -67,7 +67,6 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief Constructor for the World entity
 World::World(const std::string & id, long intId) :
-       Identified(id, intId),
        World_parent(id, intId),
            m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
            m_tileShader(*new Mercator::TileShader)

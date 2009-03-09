@@ -22,10 +22,9 @@
 #endif
 
 #include "CommServer.h"
-#include "CommListener.h"
-#include "CommPeerListener.h"
+#include "CommTCPListener.h"
+#include "CommClientFactory.h"
 #include "CommUnixListener.h"
-#include "CommHttpListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
@@ -35,6 +34,8 @@
 #include "WorldRouter.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"
+#include "UpdateTester.h"
+#include "Admin.h"
 #include "Admin.h"
 
 #include "rulesets/Python_API.h"
@@ -56,6 +57,9 @@
 #include <sigc++/functors/mem_fun.h>
 
 #include <sstream>
+
+class TrustedConnection;
+class Peer;
 
 static const bool debug_flag = false;
 
@@ -229,7 +233,12 @@ int main(int argc, char ** argv)
         server.addAccount(admin);
     }
 
-    CommListener * listener = new CommListener(commServer);
+    // Add the test object, and call it regularly so it can do what it does.
+    // UpdateTester * update_tester = new UpdateTester(commServer);
+    // commServer.addIdle(update_tester);
+
+    CommTCPListener * listener = new CommTCPListener(commServer,
+          *new CommClientFactory<Connection>());
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
@@ -264,7 +273,8 @@ int main(int argc, char ** argv)
     }
     commServer.addSocket(listener);
 
-    CommPeerListener * peerListener = new CommPeerListener(commServer);
+    CommTCPListener * peerListener = new CommTCPListener(commServer,
+          *new CommClientFactory<Peer>());
     if (peerListener->setup(peer_port_num) != 0) {
         log(ERROR, String::compose("Could not create peer listen socket "
                                    "on port %1.", peer_port_num));
@@ -274,7 +284,8 @@ int main(int argc, char ** argv)
     }
 
 #ifdef HAVE_SYS_UN_H
-    CommUnixListener * localListener = new CommUnixListener(commServer);
+    CommUnixListener * localListener = new CommUnixListener(commServer,
+          *new CommClientFactory<TrustedConnection>());
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
                                    "with address \"%1\"",
@@ -283,9 +294,21 @@ int main(int argc, char ** argv)
     } else {
         commServer.addSocket(localListener);
     }
+
+    CommUnixListener * pythonListener = new CommUnixListener(commServer,
+          *new CommPythonClientFactory());
+    if (pythonListener->setup(python_socket_name) != 0) {
+        log(ERROR, String::compose("Could not create python listen socket "
+                                   "with address %1.",
+                                   pythonListener->getPath()));
+        delete pythonListener;
+    } else {
+        commServer.addSocket(pythonListener);
+    }
 #endif
 
-    CommHttpListener * httpListener = new CommHttpListener(commServer);
+    CommTCPListener * httpListener = new CommTCPListener(commServer,
+          *new CommHttpClientFactory());
     if (httpListener->setup(http_port_num) != 0) {
         log(ERROR, String::compose("Could not create http listen socket on "
                                    "port %1.", http_port_num));

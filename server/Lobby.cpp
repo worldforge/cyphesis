@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Lobby.cpp,v 1.40 2008-01-28 23:48:33 alriddoch Exp $
+// $Id$
 
 #include "Lobby.h"
 
@@ -39,7 +39,8 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Identified(id, intId), m_server(s)
+       Router(id, intId),
+       m_server(s)
 {
 }
 

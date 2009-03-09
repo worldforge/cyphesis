@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CommMaster.cpp,v 1.4 2006-10-26 00:48:13 alriddoch Exp $
+// $Id$
 
 #include "CommMaster.h"
 
@@ -28,9 +28,7 @@
 ///
 /// @param svr Reference to the object that manages all socket communication.
 /// @param addr Address of the remote master server.
-CommMaster::CommMaster(CommServer & svr, const std::string & addr,
-                       const std::string & id) :
-            CommClient(svr, *new Master(*this, svr.m_server, id))
+CommMaster::CommMaster(CommServer & svr) : CommClient(svr)
 {
     std::cout << "Outgoing master connection." << std::endl << std::flush;
 }
