@@ -25,7 +25,8 @@ install-data-hook:
 EXTRA_DIST = cyphesis.spec Doxyfile autogen.sh \
              cyphesis.init cyclient.init cyphesis.sysconfig \
              scripts/compile_python.py scripts/gen_op.py \
-             scripts/gen_buildid.py scripts/cyphesis-setup.sh
+             scripts/gen_buildid.py scripts/cyphesis-setup.sh \
+             scripts/extract_revision.sh
 
 docs:
 	@echo "running doxygen..."

@@ -1,3 +1,20 @@
+2009-03-10  Al Riddoch  <alriddoch@googlemail.com>
+
+	* scripts/extract_revision.sh: A new script to extract a build ID
+	  revision number differently depending on what source control
+	  is being used.
+
+	* Makefile.am: Add the new script to dist.
+
+	* server/Makefile.am: Use the new script, and add the generated
+	  buildid.cpp to the distributed sources.
+
+2009-03-04  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Property.h: Add flag for class properties which must be
+	  converted to instance properties on installation as they require
+	  per-entity state.
+
 2009-02-25  Al Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/ArithmeticScript.h, rulesets/PythonArithmeticScript.cpp,

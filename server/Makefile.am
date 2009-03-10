@@ -111,16 +111,14 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
-		server.cpp server.h
-
-nodist_cyphesis_SOURCES = \
+		server.cpp server.h \
 		buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
 buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
              $(top_srcdir)/scripts/gen_buildid.py $(top_srcdir)/ChangeLog
-	$(top_srcdir)/scripts/gen_buildid.py `tail -n 1 $(top_srcdir)/ChangeLog | sed "s/^.* 1\.\([0-9]*\).*$$/\1/"` > buildid.cpp
+	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` > buildid.cpp
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
