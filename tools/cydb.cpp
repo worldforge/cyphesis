@@ -49,44 +49,72 @@ extern "C" {
 }
 #endif
 
-static int dbs_rules(AccountBase & ab, int argc, char ** argv)
+struct dbsys;
+
+static int dbs_rules(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     std::cout << "dbs_world" << std::endl << std::flush;
     return 0;
 }
 
-static int dbs_user(AccountBase & ab, int argc, char ** argv)
+static int dbs_user(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     std::cout << "dbs_user" << std::endl << std::flush;
     return 0;
 }
 
-static int dbs_world(AccountBase & ab, int argc, char ** argv)
+static int dbs_world(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     std::cout << "dbs_world" << std::endl << std::flush;
     return 0;
 }
 
-int dbs_help(AccountBase & ab, int argc, char ** argv);
+static int rules_help(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::cout << "rules help" << std::endl << std::flush;
+    return 0;
+}
 
-typedef int (*dbsys_function)(AccountBase & ab, int argc, char ** argv);
+int dbs_generic(AccountBase & ab, struct dbsys * system,
+                int argc, char ** argv)
+{
+    return 0;
+}
+
+int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv);
+
+typedef int (*dbcmd_function)(AccountBase & ab, struct dbsys * system,
+                              int argc, char ** argv);
+
+struct dbcmd {
+    const char * cmd_string;
+    const char * cmd_description;
+    dbcmd_function cmd_function;
+};
+
+struct dbcmd rules_cmds[] = {
+    { "help",  "Show rules help", &rules_help },
+    { NULL,    "Guard", }
+};
 
 /// \brief Entry in the global command table for cycmd
 struct dbsys {
     const char * sys_string;
     const char * sys_description;
-    dbsys_function sys_function;
+    dbcmd_function sys_function;
+    struct dbcmd * sys_cmds;
 };
 
 struct dbsys systems[] = {
-    { "help",  "Show command help", &dbs_help },
-    { "rules", "Modify the rule storage table", &dbs_rules },
-    { "user",  "Modify the user account table", &dbs_user },
-    { "world", "Modify the world storage tables", &dbs_world },
+    { "help",  "Show command help", &dbs_help, 0 },
+    { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
+    { "user",  "Modify the user account table", &dbs_generic, 0 },
+    { "world", "Modify the world storage tables", &dbs_generic, 0 },
     { NULL,    "Guard", }
 };
 
-int dbs_help(AccountBase & ab, int argc, char ** argv)
+int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     size_t max_length = 0;
 
@@ -433,7 +461,7 @@ static int run_command(AccountBase & ab, int argc, char ** argv)
               << std::endl << std::flush;
     for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
         if (strcmp(argv[0], I->sys_string) == 0) {
-            return I->sys_function(ab, argc, argv);
+            return I->sys_function(ab, I, argc, argv);
         }
     }
     std::cout << "not found" << std::endl << std::flush;

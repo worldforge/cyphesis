@@ -1,3 +1,7 @@
+2009-03-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Fill out the subsystem mechanism.
+
 2009-03-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* scripts/extract_revision.sh: A new script to extract a build ID
