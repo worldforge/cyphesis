@@ -1,3 +1,15 @@
+2009-03-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityBuilder.h, server/EntityBuilder.cpp: Rename the
+	  files to match the class rename that happened some time ago.
+
+	* server/Admin.cpp, server/PersistantThingFactory.cpp,
+	  server/server.cpp, server/slave.cpp, server/StorageManager.cpp,
+	  server/WorldRouter.cpp: Correct includes of EntityBuilder.h.
+
+	* scripts/check_class_names.sh: Add a script which checks that class
+	  names match the names of the header file they are in.
+
 2009-03-11  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cydb.cpp: Fill out the subsystem mechanism.
