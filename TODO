@@ -1,3 +1,6 @@
+Look up using ares for asynch DNS. Possibly is skstream once that
+does other stuff.
+
 Look up Proactor pattern, Bloom filter.
 
 How to support phasing?
