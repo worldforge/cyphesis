@@ -19,7 +19,7 @@
 
 #include "WorldRouter.h"
 
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 
 #include "rulesets/World.h"
 

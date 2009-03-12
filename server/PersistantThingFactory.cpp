@@ -21,7 +21,7 @@
 
 #include "PersistantThingFactory_impl.h"
 #include "ScriptFactory.h"
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Thing.h"

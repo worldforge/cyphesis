@@ -86,7 +86,7 @@ cyphesis_SOURCES = \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
-		EntityFactory.cpp EntityFactory.h \
+		EntityBuilder.cpp EntityBuilder.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
@@ -134,7 +134,7 @@ cyslave_SOURCES = \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
-		EntityFactory.cpp EntityFactory.h \
+		EntityBuilder.cpp EntityBuilder.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \

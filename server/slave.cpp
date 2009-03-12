@@ -23,7 +23,7 @@
 #include "CommClientFactory.h"
 #include "Master.h"
 #include "ServerRouting.h"
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 #include "Persistance.h"
 #include "WorldRouter.h"
 

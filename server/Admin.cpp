@@ -21,7 +21,7 @@
 
 #include "ServerRouting.h"
 #include "Connection.h"
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 #include "CommPeer.h"
 #include "CommServer.h"
 #include "Peer.h"
