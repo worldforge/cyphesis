@@ -1,0 +1,8 @@
+Makefile
+Makefile.in
+config.*
+.deps
+*.o
+*.a
+tests/*test
+tools/cy[a-z]+
