@@ -22,7 +22,7 @@
 #include "rulesets/World.h"
 #include "rulesets/Python_API.h"
 
-#include "server/EntityFactory.h"
+#include "server/EntityBuilder.h"
 #include "server/PersistantThingFactory.h"
 
 #include "common/inheritance.h"
