@@ -1,3 +1,8 @@
+2009-03-14  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/EntityBuildertest.cpp, tests/PropertyFlagtest.cpp,
+	  tests/Makefile.am: Update tests for renamed EntityBuilder filenames.
+
 2009-03-12  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/EntityBuilder.h, server/EntityBuilder.cpp: Rename the
