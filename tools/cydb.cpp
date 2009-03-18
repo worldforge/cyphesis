@@ -49,90 +49,103 @@ extern "C" {
 }
 #endif
 
-struct dbsys;
-
-static int dbs_rules(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
-{
-    std::cout << "dbs_world" << std::endl << std::flush;
-    return 0;
-}
-
-static int dbs_user(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
-{
-    std::cout << "dbs_user" << std::endl << std::flush;
-    return 0;
-}
-
-static int dbs_world(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
-{
-    std::cout << "dbs_world" << std::endl << std::flush;
-    return 0;
-}
-
-static int rules_help(AccountBase & ab, struct dbsys * system,
-                      int argc, char ** argv)
-{
-    std::cout << "rules help" << std::endl << std::flush;
-    return 0;
-}
-
-int dbs_generic(AccountBase & ab, struct dbsys * system,
-                int argc, char ** argv)
-{
-    return 0;
-}
-
-int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv);
-
 typedef int (*dbcmd_function)(AccountBase & ab, struct dbsys * system,
                               int argc, char ** argv);
 
-struct dbcmd {
-    const char * cmd_string;
-    const char * cmd_description;
-    dbcmd_function cmd_function;
-};
-
-struct dbcmd rules_cmds[] = {
-    { "help",  "Show rules help", &rules_help },
-    { NULL,    "Guard", }
-};
-
 /// \brief Entry in the global command table for cycmd
 struct dbsys {
-    const char * sys_string;
+    const char * sys_name;
     const char * sys_description;
     dbcmd_function sys_function;
-    struct dbcmd * sys_cmds;
-};
-
-struct dbsys systems[] = {
-    { "help",  "Show command help", &dbs_help, 0 },
-    { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
-    { "user",  "Modify the user account table", &dbs_generic, 0 },
-    { "world", "Modify the world storage tables", &dbs_generic, 0 },
-    { NULL,    "Guard", }
+    struct dbsys * sys_subsys;
 };
 
 int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     size_t max_length = 0;
 
-    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
-       max_length = std::max(max_length, strlen(I->sys_string));
+    for (struct dbsys * I = system; I->sys_name != NULL; ++I) {
+       max_length = std::max(max_length, strlen(I->sys_name));
     }
     max_length += 2;
 
     std::cout << "Cyphesis database systems:" << std::endl << std::endl;
 
-    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
-        std::cout << "    " << I->sys_string
-                  << std::string(max_length - strlen(I->sys_string), ' ')
+    for (struct dbsys * I = system; I->sys_name != NULL; ++I) {
+        std::cout << "    " << I->sys_name
+                  << std::string(max_length - strlen(I->sys_name), ' ')
                   << I->sys_description << std::endl;
     }
     std::cout << std::endl << std::flush;
     return 0;
 }
+
+
+static int world_purge(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "DELETE FROM entities WHERE loc IS NOT null";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "Entity purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    cmd = "DELETE FROM properties";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "Property purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    return 0;
+}
+
+int dbs_generic(AccountBase & ab, struct dbsys * system,
+                int argc, char ** argv)
+{
+    struct dbsys * subsyss = system->sys_subsys;
+    if (subsyss == 0) {
+        std::cout << "INTERNAL ERROR" << std::endl << std::flush;
+        return 1;
+    }
+    int nargc = argc - 1;
+    if (nargc < 1) {
+        dbs_help(ab, subsyss, argc, argv);
+        return 1;
+    }
+    char ** nargv = &argv[1];
+    for (struct dbsys * I = subsyss; I->sys_name != NULL; ++I) {
+        if (strcmp(nargv[0], I->sys_name) == 0) {
+            return I->sys_function(ab, I, argc, argv);
+        }
+    }
+    std::cout << "ERROR: No such command: "
+              << system->sys_name << " " << nargv[0]
+              << std::endl << std::endl << std::flush;
+    dbs_help(ab, subsyss, argc, argv);
+    return 0;
+}
+
+struct dbsys world_cmds[] = {
+    { "help",  "Show world help", &dbs_help, 0 },
+    { "purge", "Purge world data", &world_purge, 0 },
+    { NULL,    "Guard", }
+};
+
+struct dbsys users_cmds[] = {
+    { "help",  "Show users help", &dbs_help, 0 },
+    { NULL,    "Guard", }
+};
+
+struct dbsys rules_cmds[] = {
+    { "help",  "Show rules help", &dbs_help, 0 },
+    { NULL,    "Guard", }
+};
+
+struct dbsys systems[] = {
+    { "help",  "Show command help", &dbs_help, 0 },
+    { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
+    { "users", "Modify the user account table", &dbs_generic, &users_cmds[0] },
+    { "world", "Modify the world storage tables", &dbs_generic, &world_cmds[0] },
+    { NULL,    "Guard", }
+};
 
 int completion_iterator = 0;
 
@@ -141,10 +154,10 @@ char * completion_generator(const char * text, int state)
     if (state == 0) {
         completion_iterator = 0;
     }
-    for (int i = completion_iterator; systems[i].sys_string != 0; ++i) {
-        if (strncmp(text, systems[i].sys_string, strlen(text)) == 0) {
+    for (int i = completion_iterator; systems[i].sys_name != 0; ++i) {
+        if (strncmp(text, systems[i].sys_name, strlen(text)) == 0) {
             completion_iterator = i + 1;
-            return strdup(systems[i].sys_string);
+            return strdup(systems[i].sys_name);
         }
     }
     return 0;
@@ -457,14 +470,14 @@ void exec(const std::string & cmd, const std::string & arg)
 
 static int run_command(AccountBase & ab, int argc, char ** argv)
 {
-    std::cout << "Running command " << argv[0] << " with " << argc << " args."
-              << std::endl << std::flush;
-    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
-        if (strcmp(argv[0], I->sys_string) == 0) {
+    for (struct dbsys * I = &systems[0]; I->sys_name != NULL; ++I) {
+        if (strcmp(argv[0], I->sys_name) == 0) {
             return I->sys_function(ab, I, argc, argv);
         }
     }
-    std::cout << "not found" << std::endl << std::flush;
+    std::cout << "ERROR: No such command: " << argv[0]
+              << std::endl << std::endl << std::flush;
+    dbs_help(ab, &systems[0], argc, argv);
     return 1;
 }
 
@@ -502,7 +515,6 @@ int main(int argc, char ** argv)
     }
 
     if (!interactive) {
-        std::cout << "running one command" << std::endl << std::flush;
         ret = run_command(ab, argc - optind, &argv[optind]);
     } else {
     }

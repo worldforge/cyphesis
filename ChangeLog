@@ -1,3 +1,9 @@
+2009-03-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Clean up the command system mechanism to be
+	  fully flexible and generic. Implement the command to purge
+	  world data.
+
 2009-03-14  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tests/EntityBuildertest.cpp, tests/PropertyFlagtest.cpp,
