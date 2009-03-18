@@ -97,6 +97,128 @@ static int world_purge(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
+static int users_purge(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "DELETE FROM accounts WHERE username != 'admin'";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "User purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    return 0;
+}
+
+static int users_list(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "SELECT username, type FROM accounts";
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        std::string name = I.column("username");
+        std::string type = I.column("type");
+        std::cout << (type == "admin" ? "*" : " ") << name
+                  << std::endl << std::flush;
+    }
+
+    return 0;
+}
+
+static int users_del(AccountBase & ab, struct dbsys * system,
+                     int argc, char ** argv)
+{
+    if (argc != 2) {
+        std::cout << "usage: " << system->sys_name
+                  << " <username>" << std::endl << std::flush;
+        return 1;
+    }
+    std::string id = argv[1];
+    std::string cmd = String::compose("SELECT username FROM accounts "
+                                      "WHERE username='%1'", id);
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    if (res.size() == 0) {
+        std::cout << "User account " << id << " not found"
+                  << std::endl << std::flush;
+        return 1;
+    }
+    if (res.size() != 1) {
+        std::cout << "ERROR: Multiple accounts match " << id
+                  << std::endl << std::flush;
+        return 1;
+    }
+    cmd = String::compose("DELETE FROM accounts WHERE "
+                          "username = '%1'", id);
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "User delete fail" << std::endl << std::flush;
+        return 1;
+    }
+
+    return 0;
+}
+
+static int users_mod(AccountBase & ab, struct dbsys * system,
+                     int argc, char ** argv)
+{
+    if (argc != 2) {
+        std::cout << "usage: " << system->sys_name
+                  << " <username>" << std::endl << std::flush;
+        return 1;
+    }
+    std::string id = argv[1];
+    std::string cmd = String::compose("SELECT username, type FROM accounts "
+                                      "WHERE username='%1'", id);
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    if (res.size() == 0) {
+        std::cout << "User account " << id << " not found"
+                  << std::endl << std::flush;
+        return 1;
+    }
+    if (res.size() != 1) {
+        std::cout << "ERROR: Multiple accounts match " << id
+                  << std::endl << std::flush;
+        return 1;
+    }
+    DatabaseResult::const_iterator I = res.begin();
+    std::string type = I.column("type");
+    std::string new_type = (type == "player" ? "admin" : "player");
+    // FIXME Verify the account exists.
+    cmd = String::compose("UPDATE accounts SET type = '%1' WHERE "
+                          "username = '%2'", new_type, id);
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "User mod fail" << std::endl << std::flush;
+        return 1;
+    }
+
+    return 0;
+}
+
+static int rules_purge(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "DELETE FROM rules";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "Rule purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    return 0;
+}
+
+static int rules_list(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "SELECT id FROM rules";
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        std::string name = I.column("id");
+        std::cout << name << std::endl << std::flush;
+    }
+
+    return 0;
+}
+
 int dbs_generic(AccountBase & ab, struct dbsys * system,
                 int argc, char ** argv)
 {
@@ -113,7 +235,7 @@ int dbs_generic(AccountBase & ab, struct dbsys * system,
     char ** nargv = &argv[1];
     for (struct dbsys * I = subsyss; I->sys_name != NULL; ++I) {
         if (strcmp(nargv[0], I->sys_name) == 0) {
-            return I->sys_function(ab, I, argc, argv);
+            return I->sys_function(ab, I, nargc, nargv);
         }
     }
     std::cout << "ERROR: No such command: "
@@ -124,26 +246,32 @@ int dbs_generic(AccountBase & ab, struct dbsys * system,
 }
 
 struct dbsys world_cmds[] = {
-    { "help",  "Show world help", &dbs_help, 0 },
     { "purge", "Purge world data", &world_purge, 0 },
+    { "help",  "Show world help", &dbs_help, 0 },
     { NULL,    "Guard", }
 };
 
 struct dbsys users_cmds[] = {
+    { "purge", "Purge users data", &users_purge, 0 },
+    { "list",  "List user accounts", &users_list, 0 },
+    { "del",   "Delete a user account", &users_del, 0 },
+    { "mod",   "Modify a user account", &users_mod, 0 },
     { "help",  "Show users help", &dbs_help, 0 },
     { NULL,    "Guard", }
 };
 
 struct dbsys rules_cmds[] = {
+    { "purge", "Purge rules data", &rules_purge, 0 },
+    { "list",  "List rules", &rules_list, 0 },
     { "help",  "Show rules help", &dbs_help, 0 },
     { NULL,    "Guard", }
 };
 
 struct dbsys systems[] = {
-    { "help",  "Show command help", &dbs_help, 0 },
     { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
-    { "users", "Modify the user account table", &dbs_generic, &users_cmds[0] },
+    { "user", "Modify the user account table", &dbs_generic, &users_cmds[0] },
     { "world", "Modify the world storage tables", &dbs_generic, &world_cmds[0] },
+    { "help",  "Show command help", &dbs_help, 0 },
     { NULL,    "Guard", }
 };
 
