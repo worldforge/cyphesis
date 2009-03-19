@@ -160,12 +160,32 @@ static int users_del(AccountBase & ab, struct dbsys * system,
 static int users_mod(AccountBase & ab, struct dbsys * system,
                      int argc, char ** argv)
 {
-    if (argc != 2) {
+    int opt;
+    char * type = 0, * password = 0;
+
+    while ((opt = getopt(argc, argv, "t:p:")) != -1) {
+        switch (opt) {
+          case 't':
+            type = optarg;
+            break;
+          case 'p':
+            password = optarg;
+            break;
+          default:
+            std::cout << "usage: " << system->sys_name
+                      << " [-t TYPE|-p PASSWORD] USERNAME"
+                      << std::endl << std::flush;
+            return 1;
+        }
+    }
+
+    if (argc - optind != 1 || (type == 0 && password == 0)) {
         std::cout << "usage: " << system->sys_name
-                  << " <username>" << std::endl << std::flush;
+                  << " [-t TYPE] [-p PASSWORD] USERNAME"
+                  << std::endl << std::flush;
         return 1;
     }
-    std::string id = argv[1];
+    std::string id = argv[optind];
     std::string cmd = String::compose("SELECT username, type FROM accounts "
                                       "WHERE username='%1'", id);
     DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
@@ -179,15 +199,25 @@ static int users_mod(AccountBase & ab, struct dbsys * system,
                   << std::endl << std::flush;
         return 1;
     }
-    DatabaseResult::const_iterator I = res.begin();
-    std::string type = I.column("type");
-    std::string new_type = (type == "player" ? "admin" : "player");
-    // FIXME Verify the account exists.
-    cmd = String::compose("UPDATE accounts SET type = '%1' WHERE "
-                          "username = '%2'", new_type, id);
-    if (!Database::instance()->runCommandQuery(cmd)) {
-        std::cout << "User mod fail" << std::endl << std::flush;
-        return 1;
+    if (type != 0) {
+        std::string new_type = type;
+        if (new_type != "admin" && new_type != "player" &&
+            new_type != "disabled") {
+            std::cout << "ERROR: Account type must be one of "
+                         "\"player\", \"admin\" or \"disabled\""
+                      << std::endl << std::flush;
+        }
+        // FIXME Verify the account exists.
+        cmd = String::compose("UPDATE accounts SET type = '%1' WHERE "
+                              "username = '%2'", new_type, id);
+        if (!Database::instance()->runCommandQuery(cmd)) {
+            std::cout << "User mod fail" << std::endl << std::flush;
+            return 1;
+        }
+    }
+    if (password != 0) {
+        std::cout << "Password change not yet implemented"
+                  << std::endl << std::flush;
     }
 
     return 0;
