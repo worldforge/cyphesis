@@ -147,7 +147,7 @@ idtest_LDADD = $(top_builddir)/modules/DateTime.o \
                $(top_builddir)/common/id.o
 
 accountbasetest_SOURCES = accountbasetest.cpp
-accountbasetest_LDADD = $(top_builddir)/common/accountbase.o \
+accountbasetest_LDADD = $(top_builddir)/common/AccountBase.o \
                         $(top_builddir)/common/Database.o \
                         $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/system.o \

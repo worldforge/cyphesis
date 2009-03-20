@@ -1,5 +1,10 @@
 2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tests/accountbasetest.cpp: Update includes of AccountBase.h to the
+	  correct case.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/AccountBase.h, common/AccountBase.cpp: Rename these files
 	  to match the class name.
 
