@@ -1,3 +1,6 @@
+Move account update functionality into AccountBase. Keep cypasswd as the
+user facing tool.
+
 Look up using ares for asynch DNS. Possibly is skstream once that
 does other stuff.
 

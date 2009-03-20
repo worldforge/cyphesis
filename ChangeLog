@@ -1,5 +1,9 @@
 2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
 
+	* tools/cydb.cpp: Add support for changing account passwords.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Inheritance.cpp, common/Inheritance.h: Rename these files
 	  to match the class name.
 

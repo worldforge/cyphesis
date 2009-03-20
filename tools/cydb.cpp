@@ -32,6 +32,7 @@
 
 #include "common/log.h"
 #include "common/globals.h"
+#include "common/system.h"
 #include "common/AccountBase.h"
 
 #include <varconf/config.h>
@@ -211,12 +212,22 @@ static int users_mod(AccountBase & ab, struct dbsys * system,
         cmd = String::compose("UPDATE accounts SET type = '%1' WHERE "
                               "username = '%2'", new_type, id);
         if (!Database::instance()->runCommandQuery(cmd)) {
-            std::cout << "User mod fail" << std::endl << std::flush;
+            std::cout << "User mod type fail" << std::endl << std::flush;
             return 1;
         }
+        std::cout << "Account type updated."
+                  << std::endl << std::flush;
     }
     if (password != 0) {
-        std::cout << "Password change not yet implemented"
+        std::string new_pass;
+        encrypt_password(password, new_pass);
+        cmd = String::compose("UPDATE accounts SET password = '%1' WHERE "
+                              "username = '%2'", new_pass, id);
+        if (!Database::instance()->runCommandQuery(cmd)) {
+            std::cout << "User mod password fail" << std::endl << std::flush;
+            return 1;
+        }
+        std::cout << "Account password updated."
                   << std::endl << std::flush;
     }
 
