@@ -41,5 +41,5 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h
 
-libtools_a_SOURCES = accountbase.cpp accountbase.h \
+libtools_a_SOURCES = AccountBase.cpp AccountBase.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h

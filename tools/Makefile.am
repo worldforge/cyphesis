@@ -141,7 +141,7 @@ cypasswd_SOURCES = cypasswd.cpp
 
 cypasswd_LDADD = $(top_builddir)/modules/DateTime.o \
                  $(top_builddir)/common/Database.o \
-                 $(top_builddir)/common/accountbase.o \
+                 $(top_builddir)/common/AccountBase.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/const.o \
@@ -156,7 +156,7 @@ cydb_SOURCES = cydb.cpp
 
 cydb_LDADD = $(top_builddir)/modules/DateTime.o \
              $(top_builddir)/common/Database.o \
-             $(top_builddir)/common/accountbase.o \
+             $(top_builddir)/common/AccountBase.o \
              $(top_builddir)/common/globals.o \
              $(top_builddir)/common/prefix.o \
              $(top_builddir)/common/const.o \

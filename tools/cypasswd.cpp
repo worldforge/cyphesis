@@ -30,7 +30,7 @@
 #include "config.h"
 #endif
 
-#include "common/accountbase.h"
+#include "common/AccountBase.h"
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/system.h"

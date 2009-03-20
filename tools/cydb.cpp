@@ -32,7 +32,7 @@
 
 #include "common/log.h"
 #include "common/globals.h"
-#include "common/accountbase.h"
+#include "common/AccountBase.h"
 
 #include <varconf/config.h>
 

@@ -17,7 +17,7 @@
 
 // $Id: accountbase.cpp,v 1.17 2007-12-05 22:43:47 alriddoch Exp $
 
-#include "accountbase.h"
+#include "AccountBase.h"
 
 #include "system.h"
 

@@ -1,3 +1,16 @@
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/AccountBase.h, common/AccountBase.cpp: Rename these files
+	  to match the class name.
+
+	* tools/cydb.cpp, tools/cypasswd.cpp: Use the new name for the
+	  AccountBase header.
+
+2009-03-19  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Add tools to delete accounts and rules, and to list
+	  and modify user accounts.
+
 2009-03-18  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cydb.cpp: Clean up the command system mechanism to be
