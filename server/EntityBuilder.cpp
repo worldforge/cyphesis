@@ -43,7 +43,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/const.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/AtlasFileLoader.h"
 #include "common/random.h"
 #include "common/compose.hpp"

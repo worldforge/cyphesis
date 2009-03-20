@@ -36,7 +36,7 @@
 #include "common/Update.h"
 #include "common/globals.h"
 #include "common/serialno.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
 #include "common/compose.hpp"

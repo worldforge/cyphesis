@@ -42,7 +42,7 @@
 #include "World.h"
 #include "BaseMind.h"
 
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/globals.h"
 #include "common/const.h"

@@ -47,7 +47,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/globals.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/system.h"
 #include "common/nls.h"

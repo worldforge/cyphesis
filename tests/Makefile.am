@@ -42,7 +42,7 @@ logtest_LDADD = $(top_builddir)/modules/DateTime.o \
 
 inheritancetest_SOURCES = inheritancetest.cpp
 inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
-                        $(top_builddir)/common/inheritance.o \
+                        $(top_builddir)/common/Inheritance.o \
                         $(top_builddir)/common/TypeNode.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \

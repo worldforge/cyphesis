@@ -25,7 +25,7 @@
 #include "server/EntityBuilder.h"
 #include "server/PersistantThingFactory.h"
 
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
 

@@ -1,5 +1,22 @@
 2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Inheritance.cpp, common/Inheritance.h: Rename these files
+	  to match the class name.
+
+	* common/AccountBase.cpp, common/AccountBase.h,
+	  common/Inheritance.cpp, common/custom.cpp,
+	  rulesets/BaseMind.cpp, rulesets/MemMap.cpp,
+	  rulesets/Python_API.cpp, rulesets/World.cpp,
+	  server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/EntityBuilder.cpp,
+	  server/UpdateTester.cpp, server/WorldRouter.cpp,
+	  server/server.cpp, server/slave.cpp,
+	  tests/EntityBuildertest.cpp, tests/PropertyExerciser.cpp,
+	  tests/inheritancetest.cpp: Use the new name for the Inheritance
+	  header.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/accountbasetest.cpp: Update includes of AccountBase.h to the
 	  correct case.
 

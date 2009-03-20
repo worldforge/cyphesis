@@ -32,7 +32,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/serialno.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 
 #include "common/Connect.h"

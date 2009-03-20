@@ -33,7 +33,7 @@
 #include "common/TypeNode.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/Monitors.h"
 
 #include <Atlas/Objects/Operation.h>

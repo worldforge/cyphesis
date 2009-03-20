@@ -24,7 +24,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>

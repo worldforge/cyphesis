@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "inheritance.h"
+#include "Inheritance.h"
 
 #include "log.h"
 #include "TypeNode.h"

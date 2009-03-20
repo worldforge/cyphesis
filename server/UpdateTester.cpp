@@ -24,7 +24,7 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/OperationRouter.h"
 

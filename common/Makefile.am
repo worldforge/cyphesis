@@ -27,7 +27,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      system.cpp system.h \
 		      serialno.cpp serialno.h \
 		      TypeNode.cpp TypeNode.h \
-		      inheritance.cpp custom.cpp inheritance.h \
+		      Inheritance.cpp custom.cpp Inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
 		      PropertyFactory.cpp PropertyFactory.h \
 		      PropertyFactory_impl.h \

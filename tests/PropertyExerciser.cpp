@@ -15,13 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.cpp,v 1.8 2008-06-04 23:29:11 alriddoch Exp $
+// $Id$
 
 #include "PropertyExerciser.h"
 
 #include "common/random.h"
 #include "common/Property.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
