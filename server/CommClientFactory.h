@@ -17,6 +17,9 @@
 
 // $Id$
 
+#ifndef SERVER_COMM_CLIENT_FACTORY_H
+#define SERVER_COMM_CLIENT_FACTORY_H
+
 #include <string>
 
 class CommServer;
@@ -45,3 +48,5 @@ class CommPythonClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
+
+#endif // SERVER_COMM_CLIENT_FACTORY_H

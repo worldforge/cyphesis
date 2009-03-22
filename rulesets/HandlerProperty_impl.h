@@ -17,6 +17,9 @@
 
 // $Id$
 
+#ifndef RULESETS_HANDLER_PROPERTY_IMPL_H
+#define RULESETS_HANDLER_PROPERTY_IMPL_H
+
 #include "HandlerProperty.h"
 
 #include "Entity.h"
@@ -33,3 +36,5 @@ void HandlerProperty<T>::install(Entity * ent)
 {
     ent->installHandler(m_operationClassNo, m_handler);
 }
+
+#endif // RULESETS_HANDLER_PROPERTY_IMPL_H

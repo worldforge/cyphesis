@@ -17,6 +17,9 @@
 
 // $Id$
 
+#ifndef RULESETS_MULTI_HANDLER_PROPERTY_IMPL_H
+#define RULESETS_MULTI_HANDLER_PROPERTY_IMPL_H
+
 #include "MultiHandlerProperty.h"
 
 #include "Entity.h"
@@ -36,3 +39,5 @@ void MultiHandlerProperty<T>::install(Entity * ent)
         ent->installHandler(I->first, I->second);
     }
 }
+
+#endif // RULESETS_MULTI_HANDLER_PROPERTY_IMPL_H
