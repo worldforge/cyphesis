@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.h,v 1.7 2006-10-26 00:48:01 alriddoch Exp $
+// $Id$
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef AICLIENT_CLIENT_H
+#define AICLIENT_CLIENT_H
 
 extern std::string install_directory;
 extern int exit_flag;
 extern std::list<std::string> rulesets;
 
 
-#endif // CLIENT_H
+#endif // AICLIENT_CLIENT_H

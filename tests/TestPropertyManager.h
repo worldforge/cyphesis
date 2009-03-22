@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef TEST_TEST_PROPERTY_MANAGER_H
-#define TEST_TEST_PROPERTY_MANAGER_H
+#ifndef TESTS_TEST_PROPERTY_MANAGER_H
+#define TESTS_TEST_PROPERTY_MANAGER_H
 
 #include "common/PropertyManager.h"
 
@@ -30,4 +30,4 @@ class TestPropertyManager : public PropertyManager {
     virtual PropertyBase * addProperty(const std::string & name, int type);
 };
 
-#endif // TEST_TEST_PROPERTY_MANAGER_H
+#endif // TESTS_TEST_PROPERTY_MANAGER_H

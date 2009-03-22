@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef COMMON_DATABSE_H
-#define COMMON_DATABSE_H
+#ifndef COMMON_DATABASE_H
+#define COMMON_DATABASE_H
 
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Message/Element.h>
@@ -331,4 +331,4 @@ class DatabaseResult {
     const char * field(const char * column, int row = 0) const;
 };
 
-#endif // COMMON_DATABSE_H
+#endif // COMMON_DATABASE_H

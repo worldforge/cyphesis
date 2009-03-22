@@ -1,5 +1,18 @@
 2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* aiclient/ClientAccount.h, aiclient/ClientConnection.h,
+	  aiclient/client.h, client/ClientConnection.h,
+	  client/Py_CreatorClient.h, common/Database.h, modules/DateTime.h,
+	  physics/BBox.h, rulesets/BBoxProperty.h, rulesets/Py_BBox.h,
+	  rulesets/Py_Point3D.h, rulesets/Py_RootEntity.h,
+	  rulesets/Py_Vector3D.h, rulesets/Py_WorldTime.h,
+	  rulesets/PythonEntityScript.h, rulesets/TerrainModProperty.h,
+	  server/server.h, tests/Fell.h, tests/TestPropertyManager.h:
+	  Use scripts/check_header_guards.sh to correct the header guards
+	  on many files.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/PythonEntityScript.cpp, rulesets/PythonEntityScript.h:
 	  Rename PythingThingScript files to match the class.
 

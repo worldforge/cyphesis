@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef PHYSICS_BBOX_H
-#define PHYSICS_BBOX_H
+#ifndef PHYSICS_B_BOX_H
+#define PHYSICS_B_BOX_H
 
 #include <wfmath/const.h>
 
@@ -44,4 +44,4 @@ inline WFMath::CoordType boxBoundingRadius(const BBox & box)
     return sqrtf(boxSquareBoundingRadius(box));
 }
 
-#endif // PHYSICS_BBOX_H
+#endif // PHYSICS_B_BOX_H

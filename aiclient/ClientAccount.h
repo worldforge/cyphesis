@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientAccount.h,v 1.9 2006-10-26 00:48:00 alriddoch Exp $
+// $Id$
 
-#ifndef CLIENT_ACCOUNT_H
-#define CLIENT_ACCOUNT_H
+#ifndef AICLIENT_CLIENT_ACCOUNT_H
+#define AICLIENT_CLIENT_ACCOUNT_H
 
 #include "common/BaseEntity.h"
 
@@ -35,4 +35,4 @@ class ClientAccount : public BaseEntity {
     virtual oplist InfoOperation(const Info & op);
 };
 
-#endif // CLIENT_ACCOUNT_H
+#endif // AICLIENT_CLIENT_ACCOUNT_H

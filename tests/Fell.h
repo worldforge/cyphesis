@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Fell.h,v 1.2 2006-10-26 00:48:16 alriddoch Exp $
+// $Id$
 
-#ifndef RULESETS_FELL_H
-#define RULESETS_FELL_H
+#ifndef TESTS_FELL_H
+#define TESTS_FELL_H
 
 #include "rulesets/Task.h"
 
@@ -32,4 +32,4 @@ class Fell : public Task {
     virtual void TickOperation(const Operation & op, OpVector & res);
 };
 
-#endif // RULESETS_FELL_H
+#endif // TESTS_FELL_H

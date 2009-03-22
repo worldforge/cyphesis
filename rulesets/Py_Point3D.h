@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef RULESETS_PY_POINT3D_H
-#define RULESETS_PY_POINT3D_H
+#ifndef RULESETS_PY_POINT_3D_H
+#define RULESETS_PY_POINT_3D_H
 
 #include <Python.h>
 
@@ -43,4 +43,4 @@ extern PyTypeObject PyPoint3D_Type;
 
 PyPoint3D * newPyPoint3D();
 
-#endif // RULESETS_PY_POINT3D_H
+#endif // RULESETS_PY_POINT_3D_H

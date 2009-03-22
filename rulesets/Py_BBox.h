@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef RULESETS_PY_BBOX_H
-#define RULESETS_PY_BBOX_H
+#ifndef RULESETS_PY_B_BOX_H
+#define RULESETS_PY_B_BOX_H
 
 #include <Python.h>
 
@@ -44,4 +44,4 @@ extern PyTypeObject PyBBox_Type;
 
 PyBBox * newPyBBox();
 
-#endif // RULESETS_PY_BBOX_H
+#endif // RULESETS_PY_B_BOX_H

@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef RULESETS_BBOX_PROPERTY_H
-#define RULESETS_BBOX_PROPERTY_H
+#ifndef RULESETS_B_BOX_PROPERTY_H
+#define RULESETS_B_BOX_PROPERTY_H
 
 #include "common/Property.h"
 
@@ -47,4 +47,4 @@ class BBoxProperty : public PropertyBase {
                      const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
-#endif // RULESETS_BBOX_PROPERTY_H
+#endif // RULESETS_B_BOX_PROPERTY_H

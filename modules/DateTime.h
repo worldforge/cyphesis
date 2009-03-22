@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: DateTime.h,v 1.16 2006-10-26 00:48:06 alriddoch Exp $
+// $Id$
 
-#ifndef COMMON_DATE_TIME_H
-#define COMMON_DATE_TIME_H
+#ifndef MODULES_DATE_TIME_H
+#define MODULES_DATE_TIME_H
 
 #include <string>
 #include <iostream>
@@ -77,4 +77,4 @@ inline std::ostream & operator<<(std::ostream& s, const DateTime& d) {
 }
 
 
-#endif // COMMON_DATE_TIME_H
+#endif // MODULES_DATE_TIME_H
