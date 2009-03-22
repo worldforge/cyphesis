@@ -38,7 +38,7 @@
 #include "Py_Oplist.h"
 #include "Py_Property.h"
 
-#include "PythonThingScript.h"
+#include "PythonEntityScript.h"
 #include "World.h"
 #include "BaseMind.h"
 

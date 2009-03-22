@@ -21,7 +21,7 @@
 
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Python_Script_Utils.h"
-#include "rulesets/PythonThingScript.h"
+#include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/Entity.h"
 

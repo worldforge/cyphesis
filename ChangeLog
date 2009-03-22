@@ -1,5 +1,14 @@
 2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/PythonEntityScript.cpp, rulesets/PythonEntityScript.h:
+	  Rename PythingThingScript files to match the class.
+
+	* rulesets/Python_API.cpp, server/ScriptFactory.cpp,
+	  server/TaskFactory.cpp: Update everything to take account of the
+	  file rename.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/Router.cpp, common/Router.h: Rename files from Identified
 	  to Router to match the class name.
 

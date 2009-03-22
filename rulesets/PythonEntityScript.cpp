@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "PythonThingScript.h"
+#include "PythonEntityScript.h"
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
