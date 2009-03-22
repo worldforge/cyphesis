@@ -23,38 +23,37 @@
 #include "PersistantThingFactory.h"
 
 template <class T>
-ThingFactory<T>::ThingFactory(ThingFactory<T> & o)
+EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
 {
 }
 
 template <class T>
-ThingFactory<T>::ThingFactory()
+EntityFactory<T>::EntityFactory()
 {
 }
 
 template <class T>
-ThingFactory<T>::~ThingFactory()
+EntityFactory<T>::~EntityFactory()
 {
 }
 
 template <class T>
-T * ThingFactory<T>::newThing(const std::string & id,
-                                        long intId)
+T * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     ++m_createdCount;
     return new T(id, intId);
 }
 
 template <class T>
-int ThingFactory<T>::populate(Entity &)
+int EntityFactory<T>::populate(Entity &)
 {
     return 0;
 }
 
 template <class T>
-EntityKit * ThingFactory<T>::duplicateFactory()
+EntityKit * EntityFactory<T>::duplicateFactory()
 {
-    EntityKit * f = new ThingFactory<T>(*this);
+    EntityKit * f = new EntityFactory<T>(*this);
     f->m_parent = this;
     return f;
 }

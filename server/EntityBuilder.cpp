@@ -76,13 +76,13 @@ EntityBuilder * EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
 {
-    installFactory("world", "game_entity", new ThingFactory<World>());
-    ThingFactory<Thing> * tft = new ThingFactory<Thing>();
+    installFactory("world", "game_entity", new EntityFactory<World>());
+    EntityFactory<Thing> * tft = new EntityFactory<Thing>();
     installFactory("thing", "game_entity", tft);
-    installFactory("character", "thing", new ThingFactory<Character>());
-    installFactory("creator", "character", new ThingFactory<Creator>());
-    installFactory("plant", "thing", new ThingFactory<Plant>());
-    installFactory("stackable", "thing", new ThingFactory<Stackable>());
+    installFactory("character", "thing", new EntityFactory<Character>());
+    installFactory("creator", "character", new EntityFactory<Creator>());
+    installFactory("plant", "thing", new EntityFactory<Plant>());
+    installFactory("stackable", "thing", new EntityFactory<Stackable>());
 
     // The property manager instance installs itself at construction time.
     new CorePropertyManager();
@@ -118,7 +118,7 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
         return 0;
     }
     EntityKit * factory = I->second;
-    thing = factory->newThing(id, intId);
+    thing = factory->newEntity(id, intId);
     if (thing == 0) {
         return 0;
     }

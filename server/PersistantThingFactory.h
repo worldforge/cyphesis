@@ -61,7 +61,7 @@ class EntityKit {
     /// @param id a string giving the identifier of the Entity.
     /// @param intId an integer giving the identifier of the Entity.
     /// @param pb a pointer to the persistor object for the Entity.
-    virtual Entity * newThing(const std::string & id,
+    virtual Entity * newEntity(const std::string & id,
                                         long intId) = 0;
     /// \brief Add anything required to the entity after it has been created.
     virtual int populate(Entity &) = 0;
@@ -70,15 +70,14 @@ class EntityKit {
 };
 
 template <class T>
-class ThingFactory : public EntityKit {
+class EntityFactory : public EntityKit {
   protected:
-    ThingFactory(ThingFactory<T> & o);
+    EntityFactory(EntityFactory<T> & o);
   public:
-    ThingFactory();
-    virtual ~ThingFactory();
+    EntityFactory();
+    virtual ~EntityFactory();
 
-    virtual T * newThing(const std::string & id,
-                                   long intId);
+    virtual T * newEntity(const std::string & id, long intId);
     virtual int populate(Entity &);
     virtual EntityKit * duplicateFactory();
 };

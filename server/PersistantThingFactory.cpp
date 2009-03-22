@@ -45,14 +45,14 @@ EntityKit::~EntityKit()
 }
 
 template <>
-World * ThingFactory<World>::newThing(const std::string & id, long intId)
+World * EntityFactory<World>::newEntity(const std::string & id, long intId)
 {
     return 0;
 }
 
-template class ThingFactory<Thing>;
-template class ThingFactory<Character>;
-template class ThingFactory<Creator>;
-template class ThingFactory<Plant>;
-template class ThingFactory<Stackable>;
-template class ThingFactory<World>;
+template class EntityFactory<Thing>;
+template class EntityFactory<Character>;
+template class EntityFactory<Creator>;
+template class EntityFactory<Plant>;
+template class EntityFactory<Stackable>;
+template class EntityFactory<World>;
