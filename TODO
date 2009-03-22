@@ -1,3 +1,5 @@
+Fix up cycmd to work more like cydb.
+
 Move account update functionality into AccountBase. Keep cypasswd as the
 user facing tool.
 
