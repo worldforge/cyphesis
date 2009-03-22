@@ -66,4 +66,4 @@ class Monitors {
     void send(std::ostream &);
 };
 
-#endif // COMMON_DATABSE_H
+#endif // COMMON_MONITORS_H

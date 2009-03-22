@@ -43,4 +43,4 @@ class SolidProperty : public PropertyBase {
     virtual void apply(Entity *);
 };
 
-#endif // RULESETS_LINE_PROPERTY_H
+#endif // RULESETS_SOLID_PROPERTY_H

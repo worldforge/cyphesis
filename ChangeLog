@@ -1,5 +1,10 @@
 2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Monitors.h, common/types.h, rulesets/SolidProperty.h:
+	  Manually fix up header guards which don't match fully.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* aiclient/ClientAccount.h, aiclient/ClientConnection.h,
 	  aiclient/client.h, client/ClientConnection.h,
 	  client/Py_CreatorClient.h, common/Database.h, modules/DateTime.h,
