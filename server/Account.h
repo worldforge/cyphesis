@@ -20,7 +20,7 @@
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class Connection;
 

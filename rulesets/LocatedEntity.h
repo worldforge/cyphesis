@@ -22,7 +22,7 @@
 
 #include "modules/Location.h"
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 #include <set>
 

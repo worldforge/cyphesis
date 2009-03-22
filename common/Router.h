@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef COMMON_IDENTIFIED_H
-#define COMMON_IDENTIFIED_H
+#ifndef COMMON_ROUTER_H
+#define COMMON_ROUTER_H
 
 #include "OperationRouter.h"
 
@@ -60,4 +60,4 @@ class Router {
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };
 
-#endif // COMMON_IDENTIFIED_H
+#endif // COMMON_ROUTER_H

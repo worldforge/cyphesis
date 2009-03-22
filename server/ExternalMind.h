@@ -20,7 +20,7 @@
 #ifndef SERVER_EXTERNAL_MIND_H
 #define SERVER_EXTERNAL_MIND_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class Connection;
 class Entity;

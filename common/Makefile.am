@@ -33,7 +33,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      PropertyFactory_impl.h \
 		      PropertyManager.cpp PropertyManager.h \
 		      OperationRouter.cpp OperationRouter.h \
-		      Identified.cpp Identified.h \
+		      Router.cpp Router.h \
 		      BaseWorld.cpp BaseWorld.h \
 		      AtlasFileLoader.cpp AtlasFileLoader.h \
 		      Monitors.cpp Monitors.h \

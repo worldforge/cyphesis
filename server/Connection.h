@@ -20,7 +20,7 @@
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 #include <sigc++/trackable.h>
 

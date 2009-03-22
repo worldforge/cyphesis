@@ -19,7 +19,7 @@
 
 #include "ExternalProperty.h"
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 #include <Atlas/Objects/RootEntity.h>
 

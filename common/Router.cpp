@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "Identified.h"
+#include "Router.h"
 
 #include "compose.hpp"
 #include "log.h"

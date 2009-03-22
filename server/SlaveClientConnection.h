@@ -20,7 +20,7 @@
 #ifndef SERVER_SLAVE_CLIENT_CONNECTION_H
 #define SERVER_SLAVE_CLIENT_CONNECTION_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class CommClient;
 class ServerRouting;

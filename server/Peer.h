@@ -20,7 +20,7 @@
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class CommClient;
 class ServerRouting;

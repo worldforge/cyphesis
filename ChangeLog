@@ -1,5 +1,16 @@
 2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/Router.cpp, common/Router.h: Rename files from Identified
+	  to Router to match the class name.
+
+	* rulesets/LocatedEntity.h, server/Account.h, server/Connection.h,
+	  server/ExternalMind.h, server/ExternalProperty.cpp,
+	  server/Master.h, server/Peer.h, server/ServerRouting.h,
+	  server/SlaveClientConnection.h: Update everything to take account
+	  of the file rename.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/EntityBuilder.cpp, server/EntityBuilder.h,
 	  server/EntityFactory.cpp, server/EntityFactory.h,
 	  server/EntityFactory_impl.h: Rename ThingFactory to EntityFactory

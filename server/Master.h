@@ -20,7 +20,7 @@
 #ifndef SERVER_MASTER_H
 #define SERVER_MASTER_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class CommClient;
 class ServerRouting;
