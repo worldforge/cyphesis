@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_ENTITY_FACTORY_H
-#define SERVER_ENTITY_FACTORY_H
+#ifndef SERVER_ENTITY_BUILDER_H
+#define SERVER_ENTITY_BUILDER_H
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
@@ -141,4 +141,4 @@ class EntityBuilder {
                    const Atlas::Objects::Root & class_desc);
 };
 
-#endif // SERVER_ENTITY_FACTORY_H
+#endif // SERVER_ENTITY_BUILDER_H

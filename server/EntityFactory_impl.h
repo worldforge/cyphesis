@@ -17,10 +17,10 @@
 
 // $Id$
 
-#ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
-#define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
+#ifndef SERVER_ENTITY_FACTORY_IMPL_H
+#define SERVER_ENTITY_FACTORY_IMPL_H
 
-#include "PersistantThingFactory.h"
+#include "EntityFactory.h"
 
 template <class T>
 EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
@@ -58,4 +58,4 @@ EntityKit * EntityFactory<T>::duplicateFactory()
     return f;
 }
 
-#endif // SERVER_PERSISTANT_THING_FACTORY_IMPL_H
+#endif // SERVER_ENTITY_FACTORY_IMPL_H

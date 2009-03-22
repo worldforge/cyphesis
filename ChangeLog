@@ -1,3 +1,12 @@
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityBuilder.cpp, server/EntityBuilder.h,
+	  server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/EntityFactory_impl.h: Rename ThingFactory to EntityFactory
+	  and rename the file from the archaic PersistantThingFactory.
+
+	* tests/EntityBuildertest.cpp: Update the tests.
+
 2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
 
 	* tools/cydb.cpp: Add support for changing account passwords.

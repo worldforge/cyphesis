@@ -23,7 +23,7 @@
 #include "rulesets/Python_API.h"
 
 #include "server/EntityBuilder.h"
-#include "server/PersistantThingFactory.h"
+#include "server/EntityFactory.h"
 
 #include "common/Inheritance.h"
 

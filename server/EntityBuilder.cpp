@@ -22,7 +22,7 @@
 #include "EntityBuilder.h"
 
 #include "CorePropertyManager.h"
-#include "PersistantThingFactory.h"
+#include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
 #include "Persistance.h"

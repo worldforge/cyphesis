@@ -19,7 +19,7 @@
 
 #include <Python.h>
 
-#include "PersistantThingFactory_impl.h"
+#include "EntityFactory_impl.h"
 #include "ScriptFactory.h"
 #include "EntityBuilder.h"
 

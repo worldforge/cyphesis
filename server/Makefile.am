@@ -78,8 +78,8 @@ cyphesis_SOURCES = \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
 		Persistance.cpp Persistance.h \
-		PersistantThingFactory.cpp PersistantThingFactory.h \
-		PersistantThingFactory_impl.h \
+		EntityFactory.cpp EntityFactory.h \
+		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		StorageManager.cpp StorageManager.h \

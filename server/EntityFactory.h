@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_THING_FACTORY_H
-#define SERVER_THING_FACTORY_H
+#ifndef SERVER_ENTITY_FACTORY_H
+#define SERVER_ENTITY_FACTORY_H
 
 #include <Atlas/Message/Element.h>
 
@@ -82,4 +82,4 @@ class EntityFactory : public EntityKit {
     virtual EntityKit * duplicateFactory();
 };
 
-#endif // SERVER_THING_FACTORY_H
+#endif // SERVER_ENTITY_FACTORY_H
