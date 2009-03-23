@@ -9,7 +9,7 @@ Release: %{release}
 License: GPL
 Group: Amusements/Games
 URL: http://www.worldforge.org/dev/eng/servers/cyphesis
-Packager: Al Riddoch <alriddoch@zepler.org>
+Packager: Al Riddoch <alriddoch@googlemail.com>
 Vendor: WorldForge
 Distribution: Mason
 Source0: %{name}-%{version}.tar.bz2
