@@ -1,3 +1,11 @@
+2009-03-23  Al Riddoch  <alriddoch@googlemail.com>
+
+	* configure.ac: Increment version to 0.5.19 for release.
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.19
+
 2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/FormattedXMLWriter.h, rulesets/HandlerProperty_impl.h,
