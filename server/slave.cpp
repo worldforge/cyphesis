@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 28f35ab9471bbe75b3484c0988b99e22d5798cb8 $
 
 #include "CommServer.h"
 #include "CommMaster.h"

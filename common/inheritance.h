@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: inheritance.h,v 1.39 2008-01-13 01:32:55 alriddoch Exp $
+// $Id: 09921881fb05d676ca97fcc843d15dae88577e31 $
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H

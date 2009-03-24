@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 47f5d93a1ca942768fc60402115fb5d9e451167d $
 
 #ifndef RULESETS_BBOX_PROPERTY_H
 #define RULESETS_BBOX_PROPERTY_H

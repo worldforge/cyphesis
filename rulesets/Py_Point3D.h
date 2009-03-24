@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: da7c960b2ff1fedf72e4ba27195d3f0d90f4be00 $
 
 #ifndef RULESETS_PY_POINT3D_H
 #define RULESETS_PY_POINT3D_H

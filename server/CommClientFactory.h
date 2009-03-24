@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 17bdaf1cd59b6cf3e3a881f4d2823f8168bf6bbe $
 
 #include <string>
 

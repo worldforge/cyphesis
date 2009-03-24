@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: custom.cpp,v 1.50 2008-03-26 01:34:16 alriddoch Exp $
+// $Id: f814ff9f01c4eaa9f5d8fc666f333ebd427ad85f $
 
 #include "inheritance.h"
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 7131c9c21c029bf5865f21d7a1efcffdbaa62ab1 $
 
 #ifndef PHYSICS_BBOX_H
 #define PHYSICS_BBOX_H

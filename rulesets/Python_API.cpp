@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 97cf9ca2b9fc472a173c8a25537b2f2735e31b61 $
 
 #include "Python.h"
 

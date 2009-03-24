@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_WorldTime.h,v 1.14 2006-12-24 14:42:06 alriddoch Exp $
+// $Id: 07ff3587a7e63b00e60eec61dfed0c59f9eb04ab $
 
 #ifndef RULESETS_PY_WORLDTIME_H
 #define RULESETS_PY_WORLDTIME_H

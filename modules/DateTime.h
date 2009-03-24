@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: DateTime.h,v 1.16 2006-10-26 00:48:06 alriddoch Exp $
+// $Id: f56df16cccab504c46d0afe566a14709e3067b96 $
 
 #ifndef COMMON_DATE_TIME_H
 #define COMMON_DATE_TIME_H

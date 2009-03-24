@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: a12bbb24627c141608accbc0cecc9af19ab33752 $
 
 #include "BaseMind.h"
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 0815e8a31730a0949f842c4bf422a593574618e4 $
 
 /// \page cydb_index
 ///

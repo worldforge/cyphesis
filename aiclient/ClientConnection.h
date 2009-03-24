@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.h,v 1.10 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: ff4d3992f83a58e09ec9a972e5eb63b77ae25b68 $
 
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H

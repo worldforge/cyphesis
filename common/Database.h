@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 1c80a2af70622b49664b79a93016a89541e79196 $
 
 #ifndef COMMON_DATABSE_H
 #define COMMON_DATABSE_H

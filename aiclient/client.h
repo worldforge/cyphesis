@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: client.h,v 1.7 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: 576c323abc093521bc172660771c01f99be08c49 $
 
 #ifndef CLIENT_H
 #define CLIENT_H

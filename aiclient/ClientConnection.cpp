@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientConnection.cpp,v 1.17 2006-10-26 00:48:01 alriddoch Exp $
+// $Id: c547bfcc473d26ba8c07050a7f86599729c9067e $
 
 #include "ClientConnection.h"
 

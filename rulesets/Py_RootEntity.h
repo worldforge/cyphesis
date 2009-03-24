@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_RootEntity.h,v 1.6 2006-12-24 17:18:55 alriddoch Exp $
+// $Id: e02b5edcdfc567ac4db4965bcd5e3dd4d5aad418 $
 
 #ifndef RULESETS_PY_ENTITY_H
 #define RULESETS_PY_ENTITY_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 948dce410cbc93367280e89b772f1386546ab1cd $
 
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H

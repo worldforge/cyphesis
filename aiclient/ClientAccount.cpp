@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ClientAccount.cpp,v 1.12 2006-10-26 00:48:00 alriddoch Exp $
+// $Id: 5bfd250ce1cd9158cade21346d5a4482b58ee7a3 $
 
 #include "ClientAccount.h"
 

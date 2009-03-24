@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: c63444b9562faa63add3e5e1e76393df85d421d4 $
 
 #ifndef COMMON_IDENTIFIED_H
 #define COMMON_IDENTIFIED_H

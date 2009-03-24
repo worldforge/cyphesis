@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: a6ca1fe83705d6f4d145b1a78419f99f5b9af0b0 $
 
 /// \page cypasswd_index
 ///

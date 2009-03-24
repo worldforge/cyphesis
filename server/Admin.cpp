@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: d749a2f9144fcea9eca71fac051f0af8fb7b72e1 $
 
 #include "Admin.h"
 

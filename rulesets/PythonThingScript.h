@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonThingScript.h,v 1.23 2007-12-02 23:49:07 alriddoch Exp $
+// $Id: 9e7fff0afd7e768da43de99699fa1ba11404c36b $
 
 #ifndef RULESETS_PYTHON_THING_SCRIPT_H
 #define RULESETS_PYTHON_THING_SCRIPT_H

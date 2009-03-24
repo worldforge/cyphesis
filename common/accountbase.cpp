@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: accountbase.cpp,v 1.17 2007-12-05 22:43:47 alriddoch Exp $
+// $Id: 9bcbb12fe8e3e02413456601408b21bc9fdee7b2 $
 
 #include "accountbase.h"
 

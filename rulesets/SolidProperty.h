@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: e69c1197da5baed077819aea5567a076e6e6e85c $
 
 #ifndef RULESETS_SOLID_PROPERTY_H
 #define RULESETS_SOLID_PROPERTY_H

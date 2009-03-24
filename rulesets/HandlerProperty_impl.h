@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: b8fee49a137c183a18394ae95a5eab943b8452ee $
 
 #include "HandlerProperty.h"
 

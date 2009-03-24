@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
+// $Id: 1eb3191894a727f7b0df1990d0486be38f29bc53 $
 
 #include "PythonThingScript.h"
 
