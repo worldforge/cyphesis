@@ -23,7 +23,7 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "ExternalMind.h"
-#include "Persistance.h"
+#include "Persistence.h"
 
 #include "rulesets/Character.h"
 
@@ -87,7 +87,7 @@ void Account::characterDestroyed(long id)
 {
     m_charactersDict.erase(id);
     if (consts::enable_persistence) {
-        Persistance::instance()->delCharacter(String::compose("%1", id));
+        Persistence::instance()->delCharacter(String::compose("%1", id));
     }
 }
 
@@ -131,7 +131,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
         m_connection->addEntity(chr);
         if (consts::enable_persistence) {
-            Persistance::instance()->addCharacter(*this, *chr);
+            Persistence::instance()->addCharacter(*this, *chr);
         }
 
         // Hack in default objects

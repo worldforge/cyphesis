@@ -1,3 +1,10 @@
+2009-03-24  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/Account.cpp, server/Admin.h, server/Connection.cpp,
+	  server/EntityBuilder.cpp, server/Persistence.cpp,
+	  server/Persistence.h, server/server.cpp, server/slave.cpp:
+	  Correct the spelling of persistence.
+
 2009-03-23  Al Riddoch  <alriddoch@googlemail.com>
 
 	* configure.ac: Increment version to 0.5.19 for release.

@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "Persistance.h"
+#include "Persistence.h"
 
 #include "Admin.h"
 #include "Player.h"
@@ -36,21 +36,21 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-Persistance * Persistance::m_instance = NULL;
+Persistence * Persistence::m_instance = NULL;
 
-Persistance::Persistance() : m_connection(*Database::instance())
+Persistence::Persistence() : m_connection(*Database::instance())
 {
 }
 
-Persistance * Persistance::instance()
+Persistence * Persistence::instance()
 {
     if (m_instance == NULL) {
-        m_instance = new Persistance();
+        m_instance = new Persistence();
     }
     return m_instance;
 }
 
-int Persistance::init()
+int Persistence::init()
 {
     assert(this != 0);
 
@@ -118,7 +118,7 @@ int Persistance::init()
     return (i && j && k) ? 0 : -2;
 }
 
-void Persistance::shutdown()
+void Persistence::shutdown()
 {
     m_connection.shutdownConnection();
     delete &m_connection;
@@ -127,7 +127,7 @@ void Persistance::shutdown()
     m_instance = NULL;
 }
 
-bool Persistance::findAccount(const std::string & name)
+bool Persistence::findAccount(const std::string & name)
 {
     std::string namestr = "'" + name + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
@@ -146,7 +146,7 @@ bool Persistance::findAccount(const std::string & name)
     return true;
 }
 
-Account * Persistance::getAccount(const std::string & name)
+Account * Persistence::getAccount(const std::string & name)
 {
     std::string namestr = "'" + name + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
@@ -196,7 +196,7 @@ Account * Persistance::getAccount(const std::string & name)
     }
 }
 
-void Persistance::putAccount(const Account & ac)
+void Persistence::putAccount(const Account & ac)
 {
     std::string columns = "username, type, password";
     std::string values = "'";
@@ -209,7 +209,7 @@ void Persistance::putAccount(const Account & ac)
     m_connection.createSimpleRow("accounts", ac.getId(), columns, values);
 }
 
-void Persistance::registerCharacters(Account & ac,
+void Persistence::registerCharacters(Account & ac,
                                      const EntityDict & worldObjects)
 {
     DatabaseResult dr = m_connection.selectRelation(m_characterRelation,
@@ -229,7 +229,7 @@ void Persistance::registerCharacters(Account & ac,
 
         EntityDict::const_iterator J = worldObjects.find(intId);
         if (J == worldObjects.end()) {
-            log(WARNING, String::compose("Persistance: Got character id \"%1\" "
+            log(WARNING, String::compose("Persistence: Got character id \"%1\" "
                                          "from database which does not exist "
                                          "in world.", id));
             continue;
@@ -239,22 +239,22 @@ void Persistance::registerCharacters(Account & ac,
     dr.clear();
 }
 
-void Persistance::addCharacter(const Account & ac, const Entity & e)
+void Persistence::addCharacter(const Account & ac, const Entity & e)
 {
     m_connection.createRelationRow(m_characterRelation, ac.getId(), e.getId());
 }
 
-void Persistance::delCharacter(const std::string & id)
+void Persistence::delCharacter(const std::string & id)
 {
     m_connection.removeRelationRowByOther(m_characterRelation, id);
 }
 
-bool Persistance::getRules(std::map<std::string, Root> & t)
+bool Persistence::getRules(std::map<std::string, Root> & t)
 {
     return m_connection.getTable(m_connection.rule(), t);
 }
 
-bool Persistance::clearRules()
+bool Persistence::clearRules()
 {
     return m_connection.clearTable(m_connection.rule());
 }

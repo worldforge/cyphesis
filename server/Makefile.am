@@ -77,7 +77,7 @@ cyphesis_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
-		Persistance.cpp Persistance.h \
+		Persistence.cpp Persistence.h \
 		EntityFactory.cpp EntityFactory.h \
 		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
@@ -126,7 +126,7 @@ cyslave_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
-		Persistance.cpp Persistance.h \
+		Persistence.cpp Persistence.h \
 		EntityFactory.cpp EntityFactory.h \
 		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \

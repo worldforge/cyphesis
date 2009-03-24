@@ -25,7 +25,7 @@
 #include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
-#include "Persistance.h"
+#include "Persistence.h"
 #include "Player.h"
 
 #include "rulesets/Thing.h"
@@ -893,7 +893,7 @@ void EntityBuilder::installRules()
     std::map<std::string, Root> ruleTable;
 
     if (database_flag) {
-        Persistance * p = Persistance::instance();
+        Persistence * p = Persistence::instance();
         p->getRules(ruleTable);
     } else {
         getRulesFromFiles(ruleTable);

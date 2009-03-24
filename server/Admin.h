@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Admin.h,v 1.41 2006-12-26 14:30:44 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_ADMIN_H
 #define SERVER_ADMIN_H
@@ -23,8 +23,6 @@
 #include "Account.h"
 
 #include <sigc++/connection.h>
-
-class Persistance;
 
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {

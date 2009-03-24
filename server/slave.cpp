@@ -24,7 +24,7 @@
 #include "Master.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
-#include "Persistance.h"
+#include "Persistence.h"
 #include "WorldRouter.h"
 
 #include "rulesets/Python_API.h"
@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
     // database support, this will open the various databases used to
     // store server data.
     if (database_flag) {
-        Persistance * p = Persistance::instance();
+        Persistence * p = Persistence::instance();
         int dbstatus = p->init();
         if (dbstatus < 0) {
             database_flag = false;
@@ -198,7 +198,7 @@ int main(int argc, char ** argv)
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents
 
-    Persistance::instance()->shutdown();
+    Persistence::instance()->shutdown();
 
     EntityBuilder::instance()->flushFactories();
     EntityBuilder::del();
