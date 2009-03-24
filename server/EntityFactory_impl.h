@@ -15,48 +15,47 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 79bfae2c3acb198ac948184b42268a27aeda99cb $
+// $Id$
 
-#ifndef SERVER_PERSISTANT_THING_FACTORY_IMPL_H
-#define SERVER_PERSISTANT_THING_FACTORY_IMPL_H
+#ifndef SERVER_ENTITY_FACTORY_IMPL_H
+#define SERVER_ENTITY_FACTORY_IMPL_H
 
-#include "PersistantThingFactory.h"
+#include "EntityFactory.h"
 
 template <class T>
-ThingFactory<T>::ThingFactory(ThingFactory<T> & o)
+EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
 {
 }
 
 template <class T>
-ThingFactory<T>::ThingFactory()
+EntityFactory<T>::EntityFactory()
 {
 }
 
 template <class T>
-ThingFactory<T>::~ThingFactory()
+EntityFactory<T>::~EntityFactory()
 {
 }
 
 template <class T>
-T * ThingFactory<T>::newThing(const std::string & id,
-                                        long intId)
+T * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     ++m_createdCount;
     return new T(id, intId);
 }
 
 template <class T>
-int ThingFactory<T>::populate(Entity &)
+int EntityFactory<T>::populate(Entity &)
 {
     return 0;
 }
 
 template <class T>
-EntityKit * ThingFactory<T>::duplicateFactory()
+EntityKit * EntityFactory<T>::duplicateFactory()
 {
-    EntityKit * f = new ThingFactory<T>(*this);
+    EntityKit * f = new EntityFactory<T>(*this);
     f->m_parent = this;
     return f;
 }
 
-#endif // SERVER_PERSISTANT_THING_FACTORY_IMPL_H
+#endif // SERVER_ENTITY_FACTORY_IMPL_H

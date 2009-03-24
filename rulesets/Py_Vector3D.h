@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 36f71d9a5b152d5266bbacf9a99c19bb0a9bd756 $
+// $Id$
 
-#ifndef RULESETS_PY_VECTOR3D_H
-#define RULESETS_PY_VECTOR3D_H
+#ifndef RULESETS_PY_VECTOR_3D_H
+#define RULESETS_PY_VECTOR_3D_H
 
 #include <Python.h>
 
@@ -43,4 +43,4 @@ extern PyTypeObject PyVector3D_Type;
 
 PyVector3D * newPyVector3D();
 
-#endif // RULESETS_PY_VECTOR3D_H
+#endif // RULESETS_PY_VECTOR_3D_H

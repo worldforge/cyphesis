@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 09921881fb05d676ca97fcc843d15dae88577e31 $
+// $Id$
 
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H

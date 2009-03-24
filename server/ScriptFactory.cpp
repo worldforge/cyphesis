@@ -15,13 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 8f79b674bd625db07ffabeda1fde0243aa42e575 $
+// $Id$
 
 #include "ScriptFactory.h"
 
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Python_Script_Utils.h"
-#include "rulesets/PythonThingScript.h"
+#include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/Entity.h"
 

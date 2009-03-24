@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: aca3180084faf0e1ac4280e3bde7a905b3ea2612 $
+// $Id$
 
 #include "Connection.h"
 
@@ -36,7 +36,7 @@
 #include "common/Update.h"
 #include "common/globals.h"
 #include "common/serialno.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
 #include "common/compose.hpp"

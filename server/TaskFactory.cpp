@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 230e87cacfc71e7594787787a131243ba98260dc $
+// $Id$
 
 #include "server/TaskFactory.h"
 
@@ -23,7 +23,7 @@
 
 #include "rulesets/Py_Task.h"
 #include "rulesets/Python_Script_Utils.h"
-#include "rulesets/PythonThingScript.h"
+#include "rulesets/PythonEntityScript.h"
 #include "rulesets/TaskScript.h"
 #include "rulesets/Character.h"
 

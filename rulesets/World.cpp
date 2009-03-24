@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 9bcf4709d536f87904e04bb6e38c8fc88de196d5 $
+// $Id$
 
 #include "World.h"
 
@@ -25,7 +25,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 
 #include "common/Eat.h"

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 97cf9ca2b9fc472a173c8a25537b2f2735e31b61 $
+// $Id$
 
 #include "Python.h"
 
@@ -38,11 +38,11 @@
 #include "Py_Oplist.h"
 #include "Py_Property.h"
 
-#include "PythonThingScript.h"
+#include "PythonEntityScript.h"
 #include "World.h"
 #include "BaseMind.h"
 
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/globals.h"
 #include "common/const.h"

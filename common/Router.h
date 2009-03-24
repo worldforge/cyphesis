@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: c63444b9562faa63add3e5e1e76393df85d421d4 $
+// $Id$
 
-#ifndef COMMON_IDENTIFIED_H
-#define COMMON_IDENTIFIED_H
+#ifndef COMMON_ROUTER_H
+#define COMMON_ROUTER_H
 
 #include "OperationRouter.h"
 
@@ -60,4 +60,4 @@ class Router {
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };
 
-#endif // COMMON_IDENTIFIED_H
+#endif // COMMON_ROUTER_H

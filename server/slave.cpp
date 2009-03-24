@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 28f35ab9471bbe75b3484c0988b99e22d5798cb8 $
+// $Id$
 
 #include "CommServer.h"
 #include "CommMaster.h"
@@ -23,7 +23,7 @@
 #include "CommClientFactory.h"
 #include "Master.h"
 #include "ServerRouting.h"
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 #include "Persistance.h"
 #include "WorldRouter.h"
 
@@ -33,7 +33,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/compose.hpp"
 

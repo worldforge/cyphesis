@@ -15,9 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 1eb3191894a727f7b0df1990d0486be38f29bc53 $
+// $Id$
 
-#include "PythonThingScript.h"
+#include "PythonEntityScript.h"
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"

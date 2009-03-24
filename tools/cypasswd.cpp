@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: a6ca1fe83705d6f4d145b1a78419f99f5b9af0b0 $
+// $Id$
 
 /// \page cypasswd_index
 ///
@@ -30,7 +30,7 @@
 #include "config.h"
 #endif
 
-#include "common/accountbase.h"
+#include "common/AccountBase.h"
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/system.h"

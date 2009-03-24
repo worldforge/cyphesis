@@ -15,9 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 9bcbb12fe8e3e02413456601408b21bc9fdee7b2 $
+// $Id$
 
-#include "accountbase.h"
+#include "AccountBase.h"
 
 #include "system.h"
 

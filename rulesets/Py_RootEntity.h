@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: e02b5edcdfc567ac4db4965bcd5e3dd4d5aad418 $
+// $Id$
 
-#ifndef RULESETS_PY_ENTITY_H
-#define RULESETS_PY_ENTITY_H
+#ifndef RULESETS_PY_ROOT_ENTITY_H
+#define RULESETS_PY_ROOT_ENTITY_H
 
 #include <Python.h>
 
@@ -50,4 +50,4 @@ extern PyTypeObject PyConstRootEntity_Type;
 PyRootEntity * newPyRootEntity();
 PyConstRootEntity * newPyConstRootEntity();
 
-#endif // RULESETS_PY_ENTITY_H
+#endif // RULESETS_PY_ROOT_ENTITY_H

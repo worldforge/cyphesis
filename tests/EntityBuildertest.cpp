@@ -15,17 +15,17 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 598847cf2dea472bce3cd1f8095c1455aa6bf128 $
+// $Id$
 
 #include "TestWorld.h"
 
 #include "rulesets/World.h"
 #include "rulesets/Python_API.h"
 
+#include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
-#include "server/PersistantThingFactory.h"
 
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
 

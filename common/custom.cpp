@@ -15,9 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: f814ff9f01c4eaa9f5d8fc666f333ebd427ad85f $
+// $Id$
 
-#include "inheritance.h"
+#include "Inheritance.h"
 
 #include "Actuate.h"
 #include "Add.h"

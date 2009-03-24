@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 96bf2668635e4260bfc80826d73cc53662ee53ac $
+// $Id$
 
 #include "TestWorld.h"
 
@@ -24,7 +24,7 @@
 #include "rulesets/World.h"
 #include "rulesets/Python_API.h"
 
-#include "server/EntityFactory.h"
+#include "server/EntityBuilder.h"
 
 int main(int argc, char ** argv)
 {

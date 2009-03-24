@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 47f5d93a1ca942768fc60402115fb5d9e451167d $
+// $Id$
 
-#ifndef RULESETS_BBOX_PROPERTY_H
-#define RULESETS_BBOX_PROPERTY_H
+#ifndef RULESETS_B_BOX_PROPERTY_H
+#define RULESETS_B_BOX_PROPERTY_H
 
 #include "common/Property.h"
 
@@ -47,4 +47,4 @@ class BBoxProperty : public PropertyBase {
                      const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
-#endif // RULESETS_BBOX_PROPERTY_H
+#endif // RULESETS_B_BOX_PROPERTY_H

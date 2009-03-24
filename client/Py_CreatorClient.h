@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ab15244cafbcc2520209cd2d57131be02aee708b $
+// $Id$
 
-#ifndef CLIENT_PY_CREATORCLIENT_H
-#define CLIENT_PY_CREATORCLIENT_H
+#ifndef CLIENT_PY_CREATOR_CLIENT_H
+#define CLIENT_PY_CREATOR_CLIENT_H
 
 #include <Python.h>
 
@@ -42,4 +42,4 @@ typedef struct {
 PyCreatorClient * newPyCreatorClient();
 int runClientScript(CreatorClient *, const std::string &, const std::string &);
 
-#endif // CLIENT_PY_CREATORCLIENT_H
+#endif // CLIENT_PY_CREATOR_CLIENT_H

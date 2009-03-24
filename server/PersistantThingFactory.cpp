@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 6f0cb0874f112bbfcdf70388434d883371c42e1d $
+// $Id$
 
 #include <Python.h>
 

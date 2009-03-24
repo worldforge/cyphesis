@@ -78,15 +78,15 @@ cyphesis_SOURCES = \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
 		Persistance.cpp Persistance.h \
-		PersistantThingFactory.cpp PersistantThingFactory.h \
-		PersistantThingFactory_impl.h \
+		EntityFactory.cpp EntityFactory.h \
+		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		StorageManager.cpp StorageManager.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
-		EntityFactory.cpp EntityFactory.h \
+		EntityBuilder.cpp EntityBuilder.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
@@ -127,14 +127,14 @@ cyslave_SOURCES = \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
 		Persistance.cpp Persistance.h \
-		PersistantThingFactory.cpp PersistantThingFactory.h \
-		PersistantThingFactory_impl.h \
+		EntityFactory.cpp EntityFactory.h \
+		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
-		EntityFactory.cpp EntityFactory.h \
+		EntityBuilder.cpp EntityBuilder.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \

@@ -15,13 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: d749a2f9144fcea9eca71fac051f0af8fb7b72e1 $
+// $Id$
 
 #include "Admin.h"
 
 #include "ServerRouting.h"
 #include "Connection.h"
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 #include "CommPeer.h"
 #include "CommServer.h"
 #include "Peer.h"
@@ -32,7 +32,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/serialno.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 
 #include "common/Connect.h"

@@ -1,3 +1,11 @@
+Fix up cycmd to work more like cydb.
+
+Move account update functionality into AccountBase. Keep cypasswd as the
+user facing tool.
+
+Look up using ares for asynch DNS. Possibly is skstream once that
+does other stuff.
+
 Look up Proactor pattern, Bloom filter.
 
 How to support phasing?

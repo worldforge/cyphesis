@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 0815e8a31730a0949f842c4bf422a593574618e4 $
+// $Id$
 
 /// \page cydb_index
 ///
@@ -32,7 +32,8 @@
 
 #include "common/log.h"
 #include "common/globals.h"
-#include "common/accountbase.h"
+#include "common/system.h"
+#include "common/AccountBase.h"
 
 #include <varconf/config.h>
 
@@ -49,62 +50,271 @@ extern "C" {
 }
 #endif
 
-static int dbs_rules(AccountBase & ab, int argc, char ** argv)
-{
-    std::cout << "dbs_world" << std::endl << std::flush;
-    return 0;
-}
-
-static int dbs_user(AccountBase & ab, int argc, char ** argv)
-{
-    std::cout << "dbs_user" << std::endl << std::flush;
-    return 0;
-}
-
-static int dbs_world(AccountBase & ab, int argc, char ** argv)
-{
-    std::cout << "dbs_world" << std::endl << std::flush;
-    return 0;
-}
-
-int dbs_help(AccountBase & ab, int argc, char ** argv);
-
-typedef int (*dbsys_function)(AccountBase & ab, int argc, char ** argv);
+typedef int (*dbcmd_function)(AccountBase & ab, struct dbsys * system,
+                              int argc, char ** argv);
 
 /// \brief Entry in the global command table for cycmd
 struct dbsys {
-    const char * sys_string;
+    const char * sys_name;
     const char * sys_description;
-    dbsys_function sys_function;
+    dbcmd_function sys_function;
+    struct dbsys * sys_subsys;
 };
 
-struct dbsys systems[] = {
-    { "help",  "Show command help", &dbs_help },
-    { "rules", "Modify the rule storage table", &dbs_rules },
-    { "user",  "Modify the user account table", &dbs_user },
-    { "world", "Modify the world storage tables", &dbs_world },
-    { NULL,    "Guard", }
-};
-
-int dbs_help(AccountBase & ab, int argc, char ** argv)
+int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     size_t max_length = 0;
 
-    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
-       max_length = std::max(max_length, strlen(I->sys_string));
+    for (struct dbsys * I = system; I->sys_name != NULL; ++I) {
+       max_length = std::max(max_length, strlen(I->sys_name));
     }
     max_length += 2;
 
     std::cout << "Cyphesis database systems:" << std::endl << std::endl;
 
-    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
-        std::cout << "    " << I->sys_string
-                  << std::string(max_length - strlen(I->sys_string), ' ')
+    for (struct dbsys * I = system; I->sys_name != NULL; ++I) {
+        std::cout << "    " << I->sys_name
+                  << std::string(max_length - strlen(I->sys_name), ' ')
                   << I->sys_description << std::endl;
     }
     std::cout << std::endl << std::flush;
     return 0;
 }
+
+
+static int world_purge(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "DELETE FROM entities WHERE loc IS NOT null";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "Entity purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    cmd = "DELETE FROM properties";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "Property purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    return 0;
+}
+
+static int users_purge(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "DELETE FROM accounts WHERE username != 'admin'";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "User purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    return 0;
+}
+
+static int users_list(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "SELECT username, type FROM accounts";
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        std::string name = I.column("username");
+        std::string type = I.column("type");
+        std::cout << (type == "admin" ? "*" : " ") << name
+                  << std::endl << std::flush;
+    }
+
+    return 0;
+}
+
+static int users_del(AccountBase & ab, struct dbsys * system,
+                     int argc, char ** argv)
+{
+    if (argc != 2) {
+        std::cout << "usage: " << system->sys_name
+                  << " <username>" << std::endl << std::flush;
+        return 1;
+    }
+    std::string id = argv[1];
+    std::string cmd = String::compose("SELECT username FROM accounts "
+                                      "WHERE username='%1'", id);
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    if (res.size() == 0) {
+        std::cout << "User account " << id << " not found"
+                  << std::endl << std::flush;
+        return 1;
+    }
+    if (res.size() != 1) {
+        std::cout << "ERROR: Multiple accounts match " << id
+                  << std::endl << std::flush;
+        return 1;
+    }
+    cmd = String::compose("DELETE FROM accounts WHERE "
+                          "username = '%1'", id);
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "User delete fail" << std::endl << std::flush;
+        return 1;
+    }
+
+    return 0;
+}
+
+static int users_mod(AccountBase & ab, struct dbsys * system,
+                     int argc, char ** argv)
+{
+    int opt;
+    char * type = 0, * password = 0;
+
+    while ((opt = getopt(argc, argv, "t:p:")) != -1) {
+        switch (opt) {
+          case 't':
+            type = optarg;
+            break;
+          case 'p':
+            password = optarg;
+            break;
+          default:
+            std::cout << "usage: " << system->sys_name
+                      << " [-t TYPE|-p PASSWORD] USERNAME"
+                      << std::endl << std::flush;
+            return 1;
+        }
+    }
+
+    if (argc - optind != 1 || (type == 0 && password == 0)) {
+        std::cout << "usage: " << system->sys_name
+                  << " [-t TYPE] [-p PASSWORD] USERNAME"
+                  << std::endl << std::flush;
+        return 1;
+    }
+    std::string id = argv[optind];
+    std::string cmd = String::compose("SELECT username, type FROM accounts "
+                                      "WHERE username='%1'", id);
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    if (res.size() == 0) {
+        std::cout << "User account " << id << " not found"
+                  << std::endl << std::flush;
+        return 1;
+    }
+    if (res.size() != 1) {
+        std::cout << "ERROR: Multiple accounts match " << id
+                  << std::endl << std::flush;
+        return 1;
+    }
+    if (type != 0) {
+        std::string new_type = type;
+        if (new_type != "admin" && new_type != "player" &&
+            new_type != "disabled") {
+            std::cout << "ERROR: Account type must be one of "
+                         "\"player\", \"admin\" or \"disabled\""
+                      << std::endl << std::flush;
+        }
+        // FIXME Verify the account exists.
+        cmd = String::compose("UPDATE accounts SET type = '%1' WHERE "
+                              "username = '%2'", new_type, id);
+        if (!Database::instance()->runCommandQuery(cmd)) {
+            std::cout << "User mod type fail" << std::endl << std::flush;
+            return 1;
+        }
+        std::cout << "Account type updated."
+                  << std::endl << std::flush;
+    }
+    if (password != 0) {
+        std::string new_pass;
+        encrypt_password(password, new_pass);
+        cmd = String::compose("UPDATE accounts SET password = '%1' WHERE "
+                              "username = '%2'", new_pass, id);
+        if (!Database::instance()->runCommandQuery(cmd)) {
+            std::cout << "User mod password fail" << std::endl << std::flush;
+            return 1;
+        }
+        std::cout << "Account password updated."
+                  << std::endl << std::flush;
+    }
+
+    return 0;
+}
+
+static int rules_purge(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "DELETE FROM rules";
+    if (!Database::instance()->runCommandQuery(cmd)) {
+        std::cout << "Rule purge fail" << std::endl << std::flush;
+        return 1;
+    }
+    return 0;
+}
+
+static int rules_list(AccountBase & ab, struct dbsys * system,
+                      int argc, char ** argv)
+{
+    std::string cmd = "SELECT id FROM rules";
+    DatabaseResult res = Database::instance()->runSimpleSelectQuery(cmd);
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        std::string name = I.column("id");
+        std::cout << name << std::endl << std::flush;
+    }
+
+    return 0;
+}
+
+int dbs_generic(AccountBase & ab, struct dbsys * system,
+                int argc, char ** argv)
+{
+    struct dbsys * subsyss = system->sys_subsys;
+    if (subsyss == 0) {
+        std::cout << "INTERNAL ERROR" << std::endl << std::flush;
+        return 1;
+    }
+    int nargc = argc - 1;
+    if (nargc < 1) {
+        dbs_help(ab, subsyss, argc, argv);
+        return 1;
+    }
+    char ** nargv = &argv[1];
+    for (struct dbsys * I = subsyss; I->sys_name != NULL; ++I) {
+        if (strcmp(nargv[0], I->sys_name) == 0) {
+            return I->sys_function(ab, I, nargc, nargv);
+        }
+    }
+    std::cout << "ERROR: No such command: "
+              << system->sys_name << " " << nargv[0]
+              << std::endl << std::endl << std::flush;
+    dbs_help(ab, subsyss, argc, argv);
+    return 0;
+}
+
+struct dbsys world_cmds[] = {
+    { "purge", "Purge world data", &world_purge, 0 },
+    { "help",  "Show world help", &dbs_help, 0 },
+    { NULL,    "Guard", }
+};
+
+struct dbsys users_cmds[] = {
+    { "purge", "Purge users data", &users_purge, 0 },
+    { "list",  "List user accounts", &users_list, 0 },
+    { "del",   "Delete a user account", &users_del, 0 },
+    { "mod",   "Modify a user account", &users_mod, 0 },
+    { "help",  "Show users help", &dbs_help, 0 },
+    { NULL,    "Guard", }
+};
+
+struct dbsys rules_cmds[] = {
+    { "purge", "Purge rules data", &rules_purge, 0 },
+    { "list",  "List rules", &rules_list, 0 },
+    { "help",  "Show rules help", &dbs_help, 0 },
+    { NULL,    "Guard", }
+};
+
+struct dbsys systems[] = {
+    { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
+    { "user", "Modify the user account table", &dbs_generic, &users_cmds[0] },
+    { "world", "Modify the world storage tables", &dbs_generic, &world_cmds[0] },
+    { "help",  "Show command help", &dbs_help, 0 },
+    { NULL,    "Guard", }
+};
 
 int completion_iterator = 0;
 
@@ -113,10 +323,10 @@ char * completion_generator(const char * text, int state)
     if (state == 0) {
         completion_iterator = 0;
     }
-    for (int i = completion_iterator; systems[i].sys_string != 0; ++i) {
-        if (strncmp(text, systems[i].sys_string, strlen(text)) == 0) {
+    for (int i = completion_iterator; systems[i].sys_name != 0; ++i) {
+        if (strncmp(text, systems[i].sys_name, strlen(text)) == 0) {
             completion_iterator = i + 1;
-            return strdup(systems[i].sys_string);
+            return strdup(systems[i].sys_name);
         }
     }
     return 0;
@@ -429,14 +639,14 @@ void exec(const std::string & cmd, const std::string & arg)
 
 static int run_command(AccountBase & ab, int argc, char ** argv)
 {
-    std::cout << "Running command " << argv[0] << " with " << argc << " args."
-              << std::endl << std::flush;
-    for (struct dbsys * I = &systems[0]; I->sys_string != NULL; ++I) {
-        if (strcmp(argv[0], I->sys_string) == 0) {
-            return I->sys_function(ab, argc, argv);
+    for (struct dbsys * I = &systems[0]; I->sys_name != NULL; ++I) {
+        if (strcmp(argv[0], I->sys_name) == 0) {
+            return I->sys_function(ab, I, argc, argv);
         }
     }
-    std::cout << "not found" << std::endl << std::flush;
+    std::cout << "ERROR: No such command: " << argv[0]
+              << std::endl << std::endl << std::flush;
+    dbs_help(ab, &systems[0], argc, argv);
     return 1;
 }
 
@@ -474,7 +684,6 @@ int main(int argc, char ** argv)
     }
 
     if (!interactive) {
-        std::cout << "running one command" << std::endl << std::flush;
         ret = run_command(ab, argc - optind, &argv[optind]);
     } else {
     }

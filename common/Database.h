@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 1c80a2af70622b49664b79a93016a89541e79196 $
+// $Id$
 
-#ifndef COMMON_DATABSE_H
-#define COMMON_DATABSE_H
+#ifndef COMMON_DATABASE_H
+#define COMMON_DATABASE_H
 
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Message/Element.h>
@@ -331,4 +331,4 @@ class DatabaseResult {
     const char * field(const char * column, int row = 0) const;
 };
 
-#endif // COMMON_DATABSE_H
+#endif // COMMON_DATABASE_H

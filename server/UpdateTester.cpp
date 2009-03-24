@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 28c91f9e24a42b9966cadab2b34bc8582fcfd2e4 $
+// $Id$
 
 #include "UpdateTester.h"
 
@@ -24,7 +24,7 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/OperationRouter.h"
 

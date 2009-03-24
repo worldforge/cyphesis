@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 04fe51e66634b1f3b6e850d4e1925d9d1d2f5a3f $
+// $Id$
 
 #ifndef SERVER_MASTER_H
 #define SERVER_MASTER_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class CommClient;
 class ServerRouting;

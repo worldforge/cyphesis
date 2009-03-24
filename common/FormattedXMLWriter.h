@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: f6af996320795de2ede610aca4c2fdc31234405e $
+// $Id$
+
+#ifndef COMMON_FORMATTED_XML_WRITER_H
+#define COMMON_FORMATTED_XML_WRITER_H
 
 #include <Atlas/Message/Element.h>
 
@@ -55,3 +58,5 @@ class FormattedXMLWriter {
     /// Write the contents of this top level object to the stream
     void outputObject(const Atlas::Message::MapType & o);
 };
+
+#endif // COMMON_FORMATTED_XML_WRITER_H

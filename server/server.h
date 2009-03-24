@@ -15,9 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: a3b6cd4583cf4495332dfcaf1efb12b4f7182466 $
+// $Id$
 
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef SERVER_SERVER_H
+#define SERVER_SERVER_H
 
-#endif // SERVER_H
+#endif // SERVER_SERVER_H

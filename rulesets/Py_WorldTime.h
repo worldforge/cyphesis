@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 07ff3587a7e63b00e60eec61dfed0c59f9eb04ab $
+// $Id$
 
-#ifndef RULESETS_PY_WORLDTIME_H
-#define RULESETS_PY_WORLDTIME_H
+#ifndef RULESETS_PY_WORLD_TIME_H
+#define RULESETS_PY_WORLD_TIME_H
 
 #include <Python.h>
 
@@ -40,4 +40,4 @@ extern PyTypeObject PyWorldTime_Type;
 
 PyWorldTime * newPyWorldTime();
 
-#endif // RULESETS_PY_WORLDTIME_H
+#endif // RULESETS_PY_WORLD_TIME_H

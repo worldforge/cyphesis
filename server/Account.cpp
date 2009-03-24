@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: def9f6087b5fa6fef07bef05290ed74a5b72d6ad $
+// $Id$
 
 #include "Account.h"
 
@@ -32,7 +32,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/serialno.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>

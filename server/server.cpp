@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 768b416821f413cde1f5d00af3b4ccb42eb4d3ec $
+// $Id$
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -29,7 +29,7 @@
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
 #include "ServerRouting.h"
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 #include "Persistance.h"
 #include "WorldRouter.h"
 #include "StorageManager.h"
@@ -47,7 +47,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/globals.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/system.h"
 #include "common/nls.h"

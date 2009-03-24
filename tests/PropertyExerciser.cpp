@@ -15,13 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 7596e01a5658f909e11415b5515a7e003c144f33 $
+// $Id$
 
 #include "PropertyExerciser.h"
 
 #include "common/random.h"
 #include "common/Property.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
 

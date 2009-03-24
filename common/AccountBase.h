@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: f674feab4b5c8e47fbca93e54741164c018c8569 $
+// $Id$
 
 #ifndef COMMON_ACCOUNT_BASE_H
 #define COMMON_ACCOUNT_BASE_H

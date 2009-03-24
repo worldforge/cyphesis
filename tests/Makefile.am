@@ -17,7 +17,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Containertest Tasktest EntityPropertytest \
                  AllPropertytest
 
-SERVER_TESTS = EntityFactorytest PropertyFlagtest
+SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
 PYTHON_TESTS = python_class
 
@@ -42,7 +42,7 @@ logtest_LDADD = $(top_builddir)/modules/DateTime.o \
 
 inheritancetest_SOURCES = inheritancetest.cpp
 inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
-                        $(top_builddir)/common/inheritance.o \
+                        $(top_builddir)/common/Inheritance.o \
                         $(top_builddir)/common/TypeNode.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \
@@ -147,7 +147,7 @@ idtest_LDADD = $(top_builddir)/modules/DateTime.o \
                $(top_builddir)/common/id.o
 
 accountbasetest_SOURCES = accountbasetest.cpp
-accountbasetest_LDADD = $(top_builddir)/common/accountbase.o \
+accountbasetest_LDADD = $(top_builddir)/common/AccountBase.o \
                         $(top_builddir)/common/Database.o \
                         $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/system.o \
@@ -400,10 +400,10 @@ AllPropertytest_LDADD = $(top_builddir)/rulesets/Python_API.o \
                         $(top_builddir)/common/libcommon.a \
                         $(TERRAIN_LIBS)
 
-EntityFactorytest_SOURCES = EntityFactorytest.cpp
-EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
+EntityBuildertest_SOURCES = EntityBuildertest.cpp
+EntityBuildertest_LDADD = $(top_builddir)/server/EntityBuilder.o \
                           $(top_builddir)/server/CorePropertyManager.o \
-                          $(top_builddir)/server/PersistantThingFactory.o \
+                          $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/server/Persistance.o \
                           $(top_builddir)/server/Account.o \
                           $(top_builddir)/server/Admin.o \
@@ -429,12 +429,12 @@ EntityFactorytest_LDADD = $(top_builddir)/server/EntityFactory.o \
                           $(top_builddir)/physics/libphysics.a \
                           $(top_builddir)/common/libcommon.a \
                           $(TERRAIN_LIBS) $(NETWORK_LIBS)
-EntityFactorytest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+EntityBuildertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 PropertyFlagtest_SOURCES = PropertyFlagtest.cpp
-PropertyFlagtest_LDADD = $(top_builddir)/server/EntityFactory.o \
+PropertyFlagtest_LDADD = $(top_builddir)/server/EntityBuilder.o \
                          $(top_builddir)/server/CorePropertyManager.o \
-                         $(top_builddir)/server/PersistantThingFactory.o \
+                         $(top_builddir)/server/EntityFactory.o \
                          $(top_builddir)/server/Persistance.o \
                          $(top_builddir)/server/Account.o \
                          $(top_builddir)/server/Admin.o \

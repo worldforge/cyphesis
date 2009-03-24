@@ -1,3 +1,130 @@
+2009-03-23  Al Riddoch  <alriddoch@googlemail.com>
+
+	* configure.ac: Increment version to 0.5.19 for release.
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.19
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/FormattedXMLWriter.h, rulesets/HandlerProperty_impl.h,
+	  rulesets/MultiHandlerProperty_impl.h, server/CommClientFactory.h:
+	  Add missing header guards.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Monitors.h, common/types.h, rulesets/SolidProperty.h:
+	  Manually fix up header guards which don't match fully.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* aiclient/ClientAccount.h, aiclient/ClientConnection.h,
+	  aiclient/client.h, client/ClientConnection.h,
+	  client/Py_CreatorClient.h, common/Database.h, modules/DateTime.h,
+	  physics/BBox.h, rulesets/BBoxProperty.h, rulesets/Py_BBox.h,
+	  rulesets/Py_Point3D.h, rulesets/Py_RootEntity.h,
+	  rulesets/Py_Vector3D.h, rulesets/Py_WorldTime.h,
+	  rulesets/PythonEntityScript.h, rulesets/TerrainModProperty.h,
+	  server/server.h, tests/Fell.h, tests/TestPropertyManager.h:
+	  Use scripts/check_header_guards.sh to correct the header guards
+	  on many files.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/PythonEntityScript.cpp, rulesets/PythonEntityScript.h:
+	  Rename PythingThingScript files to match the class.
+
+	* rulesets/Python_API.cpp, server/ScriptFactory.cpp,
+	  server/TaskFactory.cpp: Update everything to take account of the
+	  file rename.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Router.cpp, common/Router.h: Rename files from Identified
+	  to Router to match the class name.
+
+	* rulesets/LocatedEntity.h, server/Account.h, server/Connection.h,
+	  server/ExternalMind.h, server/ExternalProperty.cpp,
+	  server/Master.h, server/Peer.h, server/ServerRouting.h,
+	  server/SlaveClientConnection.h: Update everything to take account
+	  of the file rename.
+
+2009-03-22  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityBuilder.cpp, server/EntityBuilder.h,
+	  server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/EntityFactory_impl.h: Rename ThingFactory to EntityFactory
+	  and rename the file from the archaic PersistantThingFactory.
+
+	* tests/EntityBuildertest.cpp: Update the tests.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Add support for changing account passwords.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/Inheritance.cpp, common/Inheritance.h: Rename these files
+	  to match the class name.
+
+	* common/AccountBase.cpp, common/AccountBase.h,
+	  common/Inheritance.cpp, common/custom.cpp,
+	  rulesets/BaseMind.cpp, rulesets/MemMap.cpp,
+	  rulesets/Python_API.cpp, rulesets/World.cpp,
+	  server/Account.cpp, server/Admin.cpp,
+	  server/Connection.cpp, server/EntityBuilder.cpp,
+	  server/UpdateTester.cpp, server/WorldRouter.cpp,
+	  server/server.cpp, server/slave.cpp,
+	  tests/EntityBuildertest.cpp, tests/PropertyExerciser.cpp,
+	  tests/inheritancetest.cpp: Use the new name for the Inheritance
+	  header.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/accountbasetest.cpp: Update includes of AccountBase.h to the
+	  correct case.
+
+2009-03-20  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/AccountBase.h, common/AccountBase.cpp: Rename these files
+	  to match the class name.
+
+	* tools/cydb.cpp, tools/cypasswd.cpp: Use the new name for the
+	  AccountBase header.
+
+2009-03-19  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Add tools to delete accounts and rules, and to list
+	  and modify user accounts.
+
+2009-03-18  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Clean up the command system mechanism to be
+	  fully flexible and generic. Implement the command to purge
+	  world data.
+
+2009-03-14  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/EntityBuildertest.cpp, tests/PropertyFlagtest.cpp,
+	  tests/Makefile.am: Update tests for renamed EntityBuilder filenames.
+
+2009-03-12  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/EntityBuilder.h, server/EntityBuilder.cpp: Rename the
+	  files to match the class rename that happened some time ago.
+
+	* server/Admin.cpp, server/PersistantThingFactory.cpp,
+	  server/server.cpp, server/slave.cpp, server/StorageManager.cpp,
+	  server/WorldRouter.cpp: Correct includes of EntityBuilder.h.
+
+	* scripts/check_class_names.sh: Add a script which checks that class
+	  names match the names of the header file they are in.
+
+2009-03-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tools/cydb.cpp: Fill out the subsystem mechanism.
+
 2009-03-10  Al Riddoch  <alriddoch@googlemail.com>
 
 	* scripts/extract_revision.sh: A new script to extract a build ID
@@ -20745,4 +20872,4 @@ Sunday, October 28 2001, James Turner <jmtn@blueyonder.co.uk>
 
 	* Starting changelog from initial attempt to port cyphesis into C++.
 
-$Id: 813f2f1964c99ef35e5a6336c9004f6293784f7e $
+$Id$

@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: da7c960b2ff1fedf72e4ba27195d3f0d90f4be00 $
+// $Id$
 
-#ifndef RULESETS_PY_POINT3D_H
-#define RULESETS_PY_POINT3D_H
+#ifndef RULESETS_PY_POINT_3D_H
+#define RULESETS_PY_POINT_3D_H
 
 #include <Python.h>
 
@@ -43,4 +43,4 @@ extern PyTypeObject PyPoint3D_Type;
 
 PyPoint3D * newPyPoint3D();
 
-#endif // RULESETS_PY_POINT3D_H
+#endif // RULESETS_PY_POINT_3D_H

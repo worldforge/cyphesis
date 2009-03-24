@@ -27,13 +27,13 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      system.cpp system.h \
 		      serialno.cpp serialno.h \
 		      TypeNode.cpp TypeNode.h \
-		      inheritance.cpp custom.cpp inheritance.h \
+		      Inheritance.cpp custom.cpp Inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
 		      PropertyFactory.cpp PropertyFactory.h \
 		      PropertyFactory_impl.h \
 		      PropertyManager.cpp PropertyManager.h \
 		      OperationRouter.cpp OperationRouter.h \
-		      Identified.cpp Identified.h \
+		      Router.cpp Router.h \
 		      BaseWorld.cpp BaseWorld.h \
 		      AtlasFileLoader.cpp AtlasFileLoader.h \
 		      Monitors.cpp Monitors.h \
@@ -41,5 +41,5 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h
 
-libtools_a_SOURCES = accountbase.cpp accountbase.h \
+libtools_a_SOURCES = AccountBase.cpp AccountBase.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h

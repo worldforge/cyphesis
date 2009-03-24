@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: d155765137955269655ffc8ed68ec593f037d825 $
+// $Id$
 
-#ifndef RULESETS_TERRAINMOD_PROPERTY_H
-#define RULESETS_TERRAINMOD_PROPERTY_H
+#ifndef RULESETS_TERRAIN_MOD_PROPERTY_H
+#define RULESETS_TERRAIN_MOD_PROPERTY_H
 
 #include "common/Property.h"
 #include "Entity.h"
@@ -377,4 +377,4 @@ class TerrainModProperty : public PropertyBase {
 };
 
 
-#endif // RULESETS_TERRAINMOD_PROPERTY_H
+#endif // RULESETS_TERRAIN_MOD_PROPERTY_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: be69a59d6ee805e62f00ed11adb56cbb7ceb2ba4 $
+// $Id$
 
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
@@ -24,4 +24,4 @@
 
 typedef std::vector<std::string> IdList;
 
-#endif // TYPES_H
+#endif // COMMON_TYPES_H

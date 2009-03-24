@@ -15,9 +15,9 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 0a39417a09ddf941d2f50794a445b61564acbeb3 $
+// $Id$
 
-#include "inheritance.h"
+#include "Inheritance.h"
 
 #include "log.h"
 #include "TypeNode.h"

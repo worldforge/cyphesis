@@ -15,14 +15,14 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 7e7386a3242cecbdbdfa0c12bb4b17649d8398c0 $
+// $Id$
 
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
 
 #include "modules/Location.h"
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 #include <set>
 

@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: b9aee825c25de32ba6e0469c88875b49d309cb0b $
+// $Id$
 
-#ifndef RULESETS_PY_BBOX_H
-#define RULESETS_PY_BBOX_H
+#ifndef RULESETS_PY_B_BOX_H
+#define RULESETS_PY_B_BOX_H
 
 #include <Python.h>
 
@@ -44,4 +44,4 @@ extern PyTypeObject PyBBox_Type;
 
 PyBBox * newPyBBox();
 
-#endif // RULESETS_PY_BBOX_H
+#endif // RULESETS_PY_B_BOX_H

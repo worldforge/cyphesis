@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 9e7fff0afd7e768da43de99699fa1ba11404c36b $
+// $Id$
 
-#ifndef RULESETS_PYTHON_THING_SCRIPT_H
-#define RULESETS_PYTHON_THING_SCRIPT_H
+#ifndef RULESETS_PYTHON_ENTITY_SCRIPT_H
+#define RULESETS_PYTHON_ENTITY_SCRIPT_H
 
 #include "PythonScript.h"
 
@@ -34,4 +34,4 @@ class PythonEntityScript : public PythonScript {
     virtual void hook(const std::string & function, LocatedEntity * entity);
 };
 
-#endif // RULESETS_PYTHON_THING_SCRIPT_H
+#endif // RULESETS_PYTHON_ENTITY_SCRIPT_H

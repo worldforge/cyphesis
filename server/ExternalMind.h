@@ -15,12 +15,12 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 8c1a8928b595bfd952f68230678f41a99d543b14 $
+// $Id$
 
 #ifndef SERVER_EXTERNAL_MIND_H
 #define SERVER_EXTERNAL_MIND_H
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 class Connection;
 class Entity;

@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 14c2a3e92f4d72e927639643a1bf671596c3e385 $
+// $Id$
 
-#ifndef TEST_TEST_PROPERTY_MANAGER_H
-#define TEST_TEST_PROPERTY_MANAGER_H
+#ifndef TESTS_TEST_PROPERTY_MANAGER_H
+#define TESTS_TEST_PROPERTY_MANAGER_H
 
 #include "common/PropertyManager.h"
 
@@ -30,4 +30,4 @@ class TestPropertyManager : public PropertyManager {
     virtual PropertyBase * addProperty(const std::string & name, int type);
 };
 
-#endif // TEST_TEST_PROPERTY_MANAGER_H
+#endif // TESTS_TEST_PROPERTY_MANAGER_H

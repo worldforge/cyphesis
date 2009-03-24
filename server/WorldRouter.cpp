@@ -15,11 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 81a3d0e8ccf66c0034fdba2e07af0040e3b546c5 $
+// $Id$
 
 #include "WorldRouter.h"
 
-#include "EntityFactory.h"
+#include "EntityBuilder.h"
 
 #include "rulesets/World.h"
 
@@ -33,7 +33,7 @@
 #include "common/TypeNode.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 #include "common/Monitors.h"
 
 #include <Atlas/Objects/Operation.h>

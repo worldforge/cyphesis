@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 17bdaf1cd59b6cf3e3a881f4d2823f8168bf6bbe $
+// $Id$
+
+#ifndef SERVER_COMM_CLIENT_FACTORY_H
+#define SERVER_COMM_CLIENT_FACTORY_H
 
 #include <string>
 
@@ -45,3 +48,5 @@ class CommPythonClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
+
+#endif // SERVER_COMM_CLIENT_FACTORY_H

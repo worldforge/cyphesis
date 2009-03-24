@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: a12bbb24627c141608accbc0cecc9af19ab33752 $
+// $Id$
 
 #include "BaseMind.h"
 
@@ -24,7 +24,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>

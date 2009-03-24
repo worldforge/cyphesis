@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 4bd674fb553aba9d0da448157bc3f7b9d1677427 $
+// $Id$
+
+#ifndef RULESETS_MULTI_HANDLER_PROPERTY_IMPL_H
+#define RULESETS_MULTI_HANDLER_PROPERTY_IMPL_H
 
 #include "MultiHandlerProperty.h"
 
@@ -36,3 +39,5 @@ void MultiHandlerProperty<T>::install(Entity * ent)
         ent->installHandler(I->first, I->second);
     }
 }
+
+#endif // RULESETS_MULTI_HANDLER_PROPERTY_IMPL_H

@@ -15,7 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: b8fee49a137c183a18394ae95a5eab943b8452ee $
+// $Id$
+
+#ifndef RULESETS_HANDLER_PROPERTY_IMPL_H
+#define RULESETS_HANDLER_PROPERTY_IMPL_H
 
 #include "HandlerProperty.h"
 
@@ -33,3 +36,5 @@ void HandlerProperty<T>::install(Entity * ent)
 {
     ent->installHandler(m_operationClassNo, m_handler);
 }
+
+#endif // RULESETS_HANDLER_PROPERTY_IMPL_H

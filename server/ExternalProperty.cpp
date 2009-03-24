@@ -15,11 +15,11 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: baadec58bb32331fb9f1978b0b99c06204061c00 $
+// $Id$
 
 #include "ExternalProperty.h"
 
-#include "common/Identified.h"
+#include "common/Router.h"
 
 #include <Atlas/Objects/RootEntity.h>
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 40e6d5dd3bbd85dc591e034a2da9f6f63522e267 $
+// $Id$
 
 #ifndef COMMON_MONITORS_H
 #define COMMON_MONITORS_H
@@ -66,4 +66,4 @@ class Monitors {
     void send(std::ostream &);
 };
 
-#endif // COMMON_DATABSE_H
+#endif // COMMON_MONITORS_H

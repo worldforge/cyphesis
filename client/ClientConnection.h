@@ -15,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 408d3538848ffc9190bcdf243d512d6a1be2fd14 $
+// $Id$
 
-#ifndef CLIENT_CONNECTION_H
-#define CLIENT_CONNECTION_H
+#ifndef CLIENT_CLIENT_CONNECTION_H
+#define CLIENT_CLIENT_CONNECTION_H
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
@@ -108,4 +108,4 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
     bool pending();
 };
 
-#endif // CLIENT_CONNECTION_H
+#endif // CLIENT_CLIENT_CONNECTION_H

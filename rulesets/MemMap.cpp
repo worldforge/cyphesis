@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 6401263eb91bcae2b2687fcd82fbe5e34fce283d $
+// $Id$
 
 #include "MemMap.h"
 
@@ -27,7 +27,7 @@
 #include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/compose.hpp"
-#include "common/inheritance.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

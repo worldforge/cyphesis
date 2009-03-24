@@ -15,130 +15,71 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 7bedc4f3ce9bbb3f11c8148c01fb283c934a3b7b $
+// $Id$
 
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Objects/ObjectsFwd.h>
 
-class BaseWorld;
-class Character;
+#include <set>
+
 class Entity;
-class EntityKit;
-class Task;
-class TaskFactory;
+class ScriptFactory;
+class TypeNode;
 
-template <class T>
-class PersistantThingFactory;
-
-typedef std::map<std::string, EntityKit *> FactoryDict;
-typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
-typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
-typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
-
-/// \brief Class to handle rules that cannot yet be installed, and the reason
-class RuleWaiting {
+/// \brief Base class for for factories for creating entities
+///
+/// An Entity consists of an instance of one of a number of C++ classes
+/// optionally with a script. Stores information about default attributes,
+/// script language and class name.
+class EntityKit {
+  protected:
+    EntityKit();
   public:
-    /// Name of the rule.
-    std::string name;
-    /// Complete description of the rule.
-    Atlas::Objects::Root desc;
-    /// Message giving a description of why this rule has not been installed.
-    std::string reason;
+    ScriptFactory * m_scriptFactory;
+    /// Default attribute values for this class
+    Atlas::Message::MapType m_classAttributes;
+    /// Default attribute values for instances of this class, including
+    /// defaults inherited from parent classes.
+    Atlas::Message::MapType m_attributes;
+    /// Factory for class from which the class handled by this factory
+    /// inherits.
+    EntityKit * m_parent;
+    /// Set of factories for classes which inherit from the class handled
+    /// by this factory.
+    std::set<EntityKit *> m_children;
+    /// Inheritance type of this class.
+    TypeNode * m_type;
+    /// Number of times this factory has created an entity
+    int m_createdCount;
+
+    virtual ~EntityKit();
+
+    /// \brief Create a new Entity and make it persistent.
+    ///
+    /// @param id a string giving the identifier of the Entity.
+    /// @param intId an integer giving the identifier of the Entity.
+    /// @param pb a pointer to the persistor object for the Entity.
+    virtual Entity * newEntity(const std::string & id,
+                                        long intId) = 0;
+    /// \brief Add anything required to the entity after it has been created.
+    virtual int populate(Entity &) = 0;
+    /// \brief Create a copy of this factory.
+    virtual EntityKit * duplicateFactory() = 0;
 };
 
-typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
-
-/// \brief Builder to handle the creation of all entities for the world.
-///
-/// Uses PersistantThingFactory to store information about entity types, and
-/// create them. Handles connecting entities to their persistor as required.
-class EntityBuilder {
+template <class T>
+class EntityFactory : public EntityKit {
   protected:
-    explicit EntityBuilder(BaseWorld & w);
-    ~EntityBuilder();
-    static EntityBuilder * m_instance;
-
-    FactoryDict m_entityFactories;
-    TaskFactoryDict m_taskFactories;
-    TaskFactoryActivationDict m_taskActivations;
-
-    BaseWorld & m_world;
-    RuleWaitList m_waitingRules;
-
-    void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
-    void installRules();
-    void installFactory(const std::string & class_name,
-                        const std::string & parent,
-                        EntityKit * factory,
-                        Atlas::Objects::Root classDesc = 0);
-    EntityKit * getNewFactory(const std::string & parent);
-    bool isTask(const std::string & class_name);
-
-    int populateEntityFactory(const std::string & class_name,
-                              EntityKit * factory,
-                              const Atlas::Message::MapType & class_desc);
-    int populateTaskFactory(const std::string & class_name,
-                            TaskFactory * factory,
-                            const Atlas::Message::MapType & class_desc);
-
-    int installTaskClass(const std::string & class_name,
-                         const std::string & parent,
-                         const Atlas::Objects::Root & class_desc);
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root&);
-    int installOpDefinition(const std::string & class_name,
-                            const std::string & parent,
-                            const Atlas::Objects::Root & class_desc);
-
-    int modifyTaskClass(const std::string & class_name,
-                        const Atlas::Objects::Root & class_desc);
-    int modifyEntityClass(const std::string & class_name,
-                          const Atlas::Objects::Root & class_desc);
-    int modifyOpDefinition(const std::string & class_name,
-                           const Atlas::Objects::Root & class_desc);
-
-    void waitForRule(const std::string & class_name,
-                     const Atlas::Objects::Root & class_desc,
-                     const std::string & dependent,
-                     const std::string & reason);
+    EntityFactory(EntityFactory<T> & o);
   public:
-    static void init(BaseWorld & w) {
-        m_instance = new EntityBuilder(w);
-        m_instance->installRules();
-    }
-    static EntityBuilder * instance() {
-        return m_instance;
-    }
-    static void del() {
-        if (m_instance != 0) {
-            delete m_instance;
-            m_instance = 0;
-        }
-    }
+    EntityFactory();
+    virtual ~EntityFactory();
 
-    Entity * newEntity(const std::string & id,
-                       long intId,
-                       const std::string & type,
-                       const Atlas::Objects::Entity::RootEntity & attrs) const;
-    void flushFactories();
-
-    Task * newTask(const std::string & name,
-                   Character & owner) const;
-    Task * activateTask(const std::string & tool,
-                        const std::string & op,
-                        const std::string & target,
-                        Character & owner) const;
-
-    int installRule(const std::string & class_name,
-                    const Atlas::Objects::Root & class_desc);
-    int modifyRule(const std::string & class_name,
-                   const Atlas::Objects::Root & class_desc);
+    virtual T * newEntity(const std::string & id, long intId);
+    virtual int populate(Entity &);
+    virtual EntityKit * duplicateFactory();
 };
 
 #endif // SERVER_ENTITY_FACTORY_H

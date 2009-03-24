@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: a45d6be11535db30b713e394528fcb412142a7fc $
+// $Id$
 
 #ifndef SERVER_THING_FACTORY_H
 #define SERVER_THING_FACTORY_H

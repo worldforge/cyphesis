@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 576c323abc093521bc172660771c01f99be08c49 $
+// $Id$
 
 #ifndef CLIENT_H
 #define CLIENT_H
