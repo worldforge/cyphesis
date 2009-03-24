@@ -5,9 +5,19 @@ check_header_file() {
     FILE=$(basename $@ .h)
     for name in ${NAMES}
     do
-        if [ "$FILE" != "$name" ]
+        if [ "$FILE" == "$name" ]
         then
-            echo $FILE: $name
+            true
+        elif [ "Python${FILE}" == "$name" ]
+        then
+            # PythonFoo is the standard python version derived from Foo
+            true
+        elif [ "$(echo ${FILE}| sed s/Factory/Kit/)" == "$name" ]
+        then
+            # FooKit is the standard base class for FooFactory
+            true
+        else
+            echo $1: $name
         fi
     done
 }
