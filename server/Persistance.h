@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Persistance.h,v 1.28 2007-12-07 17:42:59 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_PERSISTANCE_H
 #define SERVER_PERSISTANCE_H

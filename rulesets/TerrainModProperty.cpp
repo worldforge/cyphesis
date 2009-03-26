@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ffbc648334025b50d80e6a8afb7dbf3dcad221d2 $
+// $Id$
 
 #include "TerrainModProperty.h"
 
