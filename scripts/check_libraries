@@ -11,6 +11,6 @@ for lib in $STATIC_LIBS; do
 			true
 		fi
 	else
-		echo MISSING
+		echo Missing: $lib
 	fi
 done
