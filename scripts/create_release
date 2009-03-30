@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -u
+
+GIT_USERNAME=$(git-config --get user.name)
+if [ $? -ne 0 ]
+then
+    echo Git username not available
+    exit 1
+fi
+
+GIT_EMAIL=$(git-config --get user.email)
+if [ $? -ne 0 ]
+then
+    echo Git email not available
+    exit 1
+fi
+
+echo Creating release as ${GIT_USERNAME}  ${GIT_EMAIL}
+
+CY_VERSION=$(grep ^AC_INIT configure.ac | head -n 1 | sed "s/^AC_INIT(\[cyphesis\],\[\([0-9.]\+\)\].*$/\1/")
+
+if [ -z "${CY_VERSION}" ]
+then
+    echo No version data found.
+fi
+
+echo Creating release for version ${CY_VERSION}
+
+grep "^	\* Release ${CY_VERSION}" ChangeLog > /dev/null
+if [ $? -ne 0 ]
+then
+    echo Not found in ChangeLog.
+    exit 1
+else
+    echo Release change found
+fi
+
+
+# Get username from git. (me)
+# Get version from configure.ac
+# Check version doesn't exist in Changelog or NEWS yet.
+# Add to Changelog and NEWS.
+# submit to git.
+# make distcheck
+# makepackage
+# make rpms
+
