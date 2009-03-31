@@ -1,40 +1,210 @@
 #!/bin/bash
 
+get_release_user() {
+    GIT_USERNAME=$(git-config --get user.name)
+    if [ $? -ne 0 ]
+    then
+        echo Git username not available
+        exit 1
+    fi
+
+    GIT_EMAIL=$(git-config --get user.email)
+    if [ $? -ne 0 ]
+    then
+        echo Git email not available
+        exit 1
+    fi
+}
+
+get_version() {
+    CY_VERSION=$(grep ^AC_INIT configure.ac | head -n 1 | sed "s/^AC_INIT(\[cyphesis\],\[\([0-9.]\+\)\].*$/\1/")
+
+    if [ -z "${CY_VERSION}" ]
+    then
+        echo No version data found.
+    fi
+}
+
+check_version_recorded() {
+    grep "^	\* Release ${CY_VERSION}" ChangeLog > /dev/null
+    CHANGE_FOUND=$?
+
+    grep "^	\* Version ${CY_VERSION} released" NEWS > /dev/null
+    NEWS_FOUND=$?
+
+    if [ ${CHANGE_FOUND} -eq 0 -a ${NEWS_FOUND} -eq 0 ]
+    then
+        echo Found everywhere
+    else
+        if [ ${NEWS_FOUND} -eq 1 ]
+        then
+            echo Release news NOT found
+            (echo -e "${DATE}  ${GIT_USERNAME}  <${GIT_EMAIL}>\n\n	* Version ${CY_VERSION} released.\n" ; cat NEWS) > NEWS_tmp
+            mv -f NEWS_tmp NEWS
+            # git-commit -m "Add news item for ${CY_VERSION} release" NEWS
+        fi
+        if [ ${CHANGE_FOUND} -eq 1 ]
+        then
+            echo Release change NOT found
+            echo -e "${DATE}  ${GIT_USERNAME}  <${GIT_EMAIL}>\n" > ChangeLog_tmp
+            if [ ${NEWS_FOUND} -eq 1 ]
+            then
+                echo -e "	* NEWS: Update NEWS announcement for release.\n" >> ChangeLog_tmp
+            fi
+            echo -e "	* Release ${CY_VERSION}\n" >> ChangeLog_tmp
+            cat ChangeLog >> ChangeLog_tmp 
+            mv -f ChangeLog_tmp ChangeLog
+            # git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
+        fi
+    fi
+    if ! git-tag -v ${CY_VERSION}
+    then
+        if ! git-tag -s -m "${CY_VERSION} release" ${CY_VERSION}
+        then
+            echo Failed to tag release.
+            # exit 1
+        fi
+    fi
+}
+
+usage() {
+   echo Automate the otherwise manual steps require to spin a release.
+   echo Usage: create_release [-n]
+   echo Options:
+   echo "  -n Just check builds, don't change anything"
+   echo
+   echo Steps:
+   echo Get username and email from git.
+   echo Get the version from the AC_INIT call in configure.ac
+   echo Add entries if required to NEWS, and ChangeLog.
+   echo Commit change to git.
+   echo Create git release tag.
+}
+
 set -u
 
-GIT_USERNAME=$(git-config --get user.name)
-if [ $? -ne 0 ]
-then
-    echo Git username not available
-    exit 1
-fi
+safe=0
 
-GIT_EMAIL=$(git-config --get user.email)
-if [ $? -ne 0 ]
-then
-    echo Git email not available
-    exit 1
-fi
+while getopts "n" options; do
+  case $options in
+    n ) safe=1;;
+    h ) usage
+         exit 1;;
+    \? ) usage
+         exit 1;;
+    * ) usage
+        exit 1;;
+  esac
+done
 
-echo Creating release as ${GIT_USERNAME}  ${GIT_EMAIL}
+DATE=$(date -u +%G-%m-%d)
 
-CY_VERSION=$(grep ^AC_INIT configure.ac | head -n 1 | sed "s/^AC_INIT(\[cyphesis\],\[\([0-9.]\+\)\].*$/\1/")
+echo Today is ${DATE}
 
-if [ -z "${CY_VERSION}" ]
-then
-    echo No version data found.
-fi
+get_release_user
+
+echo Creating release as ${GIT_USERNAME} \<${GIT_EMAIL}\>
+
+get_version
 
 echo Creating release for version ${CY_VERSION}
 
-grep "^	\* Release ${CY_VERSION}" ChangeLog > /dev/null
+if [ $safe -eq 0 ]
+then
+    check_version_recorded
+fi
+
+# Use the library check script
+
+if ! make dist # check
+then
+    echo distcheck failed. Exiting.
+    exit 1
+fi
+
+TGZ=cyphesis-${CY_VERSION}.tar.gz
+TBZ=cyphesis-${CY_VERSION}.tar.bz2
+
+if [ ! -f ${TGZ} -o ! -f ${TBZ} ]
+then
+    echo distcheck did not create release tarballs ${TGZ} and ${TBZ}.
+    echo Exiting.
+    exit 1
+fi
+
+RELEASE_DIR=${HOME}/rel
+
+if [ ! -d ${RELEASE_DIR} ]
+then
+    if ! mkdir ${RELEASE_DIR}
+    then
+        echo Unable to create release directory ${RELEASE_DIR}
+        echo Exiting.
+        exit 1
+    fi
+fi
+
+RPM_DIR=${HOME}/RPM
+
+if [ ! -d ${RPM_DIR} ]
+then
+    if ! mkdir -p ${RPM_DIR}/SOURCES
+    then
+        echo Unable to create rpm directory ${RPM_DIR}
+        echo Exiting.
+        exit 1
+    fi
+fi
+
+RPM_SOURCES="${TGZ} ${TBZ} cyphesis.init cyclient.init cyphesis.sysconfig scripts/compile_python.py"
+
+if ! cp ${RPM_SOURCES} ${RPM_DIR}/SOURCES
+then
+    echo Unable to copy source files to rpm source directory.
+    echo Exiting.
+    exit 1
+fi
+
+if ! mv -f ${TGZ} ${TBZ} ${RELEASE_DIR}
+then
+    echo Unable to move source release files to release directory.
+    echo Exiting.
+    exit 1
+fi
+
+SPEC=cyphesis.spec
+SRPM=$(rpmbuild -bs ${SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
 if [ $? -ne 0 ]
 then
-    echo Not found in ChangeLog.
+    echo rpmbuild of source rpm failed
+    echo Exiting.
     exit 1
-else
-    echo Release change found
 fi
+
+if ! mv -f ${SRPM} ${RELEASE_DIR}
+then
+    echo Unable to move source release files to release directory.
+    echo Exiting.
+    exit 1
+fi
+
+VER=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
+
+if [ ! ${VER} -gt 0 ]
+then
+    echo Unable to get sane fedora version from OS.
+    echo Exiting.
+    exit 1
+fi
+
+# FIXME CHeck the spec file does not already have the fedora version set.
+# Or find a way to override release on the commandline.
+
+sed -i "s/\(^%define release 1\)/\1.fc${VER}/" ${SPEC}
+    
+echo Built $SRPM
+
+echo NATURAL END
 
 
 # Get username from git. (me)
