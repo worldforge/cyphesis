@@ -173,6 +173,9 @@ then
 fi
 
 SPEC=cyphesis.spec
+
+sed -i "s/\(^%define release 1\).*$/\1/" ${SPEC}
+
 SRPM=$(rpmbuild -bs ${SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
 if [ $? -ne 0 ]
 then
@@ -197,12 +200,39 @@ then
     exit 1
 fi
 
-# FIXME CHeck the spec file does not already have the fedora version set.
-# Or find a way to override release on the commandline.
-
 sed -i "s/\(^%define release 1\)/\1.fc${VER}/" ${SPEC}
     
-echo Built $SRPM
+echo Built ${SRPM}
+
+RPMS=$(rpmbuild -bb ${SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+if [ $? -ne 0 ]
+then
+    echo rpmbuild of binary rpm failed
+    echo Exiting.
+    exit 1
+fi
+
+for rpm in ${RPMS}
+do
+    if ! mv -f ${rpm} ${RELEASE_DIR}
+    then
+        echo Unable to move binary rpm files to release directory.
+        echo Exiting.
+        exit 1
+    fi
+done
+
+if ! make clean
+then
+    echo make clean failed. Exiting.
+    exit 1
+fi
+
+if ! makepackage
+then
+    echo makepackage failed. Exiting.
+    exit 1
+fi
 
 echo NATURAL END
 
