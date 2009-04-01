@@ -12,6 +12,7 @@ verify_environment() {
 
     echo Today is ${DATE}
 
+    PLATFORM=$(uname -i)
     FC_VERSION=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
 
     if [ ! ${FC_VERSION} -gt 0 ]
@@ -21,7 +22,9 @@ verify_environment() {
         exit 1
     fi
 
-    echo Creating release on a Fedora ${FC_VERSION} system.
+    echo Creating release on a Fedora ${FC_VERSION} ${PLATFORM} system.
+
+    RPM_REL="fc${FC_VERSION}.wf"
 
     if [ ! -d ${RELEASE_DIR} ]
     then
@@ -76,6 +79,9 @@ get_version() {
 
     TGZ=cyphesis-${CY_VERSION}.tar.gz
     TBZ=cyphesis-${CY_VERSION}.tar.bz2
+    SRC_RPM=cyphesis-${CY_VERSION}-1.src.rpm
+    BIN_RPM=cyphesis-${CY_VERSION}-1.${RPM_REL}.${PLATFORM}.rpm
+    AUTO_PKG=cyphesis-${CY_VERSION}.package
 }
 
 check_version_recorded() {
@@ -156,6 +162,12 @@ package_sources() {
 }
 
 package_rpms() {
+    if [ -f ${RELEASE_DIR}/${SRC_RPM} -a -f ${RELEASE_DIR}/${BIN_RPM} ]
+    then
+        echo RPMs already built
+        return
+    fi
+    
     sed -i "s/\(^%define release 1\).*$/\1/" ${RPM_SPEC}
 
     SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
@@ -175,7 +187,7 @@ package_rpms() {
 
     echo Built ${SRPM}
 
-    sed -i "s/\(^%define release 1\)/\1.fc${FC_VERSION}/" ${RPM_SPEC}
+    sed -i "s/\(^%define release 1\)/\1.${RPM_REL}/" ${RPM_SPEC}
     
     RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
     if [ $? -ne 0 ]
@@ -194,6 +206,40 @@ package_rpms() {
             exit 1
         fi
     done
+}
+
+package_autopackage() {
+    if [ -f ${RELEASE_DIR}/${AUTO_PKG} ]
+    then
+        echo Autopackage already built
+        return
+    fi
+    
+    if ! make clean
+    then
+        echo make clean failed. Exiting.
+        exit 1
+    fi
+
+    if ! makepackage
+    then
+            echo makepackage failed. Exiting.
+        exit 1
+    fi
+
+    if [ ! -f ${AUTO_PKG} ]
+    then
+        echo Autopackage ${AUTO_PKG} file not create by makepackage.
+        echo Exiting.
+        exit 1
+    fi
+    
+    if ! mv -f ${AUTO_PKG} ${RELEASE_DIR}
+    then
+        echo Unable to move autopackage files to release directory.
+        echo Exiting.
+        exit 1
+    fi
 }
 
 usage() {
@@ -241,17 +287,7 @@ package_sources
 
 package_rpms
 
-if ! make clean
-then
-    echo make clean failed. Exiting.
-    exit 1
-fi
-
-if ! makepackage
-then
-    echo makepackage failed. Exiting.
-    exit 1
-fi
+package_autopackage
 
 echo NATURAL END
 
