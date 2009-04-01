@@ -12,7 +12,7 @@ verify_environment() {
 
     echo Today is ${DATE}
 
-    declare -ir FC_VERSION=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
+    FC_VERSION=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
 
     if [ ! ${FC_VERSION} -gt 0 ]
     then
@@ -155,6 +155,47 @@ package_sources() {
     fi
 }
 
+package_rpms() {
+    sed -i "s/\(^%define release 1\).*$/\1/" ${RPM_SPEC}
+
+    SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+    if [ $? -ne 0 ]
+    then
+        echo rpmbuild of source rpm failed
+        echo Exiting.
+        exit 1
+    fi
+
+    if ! mv -f ${SRPM} ${RELEASE_DIR}
+    then
+        echo Unable to move source release files to release directory.
+        echo Exiting.
+        exit 1
+    fi
+
+    echo Built ${SRPM}
+
+    sed -i "s/\(^%define release 1\)/\1.fc${FC_VERSION}/" ${RPM_SPEC}
+    
+    RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+    if [ $? -ne 0 ]
+    then
+        echo rpmbuild of binary rpm failed
+        echo Exiting.
+        exit 1
+    fi
+
+    for rpm in ${RPMS}
+    do
+        if ! mv -f ${rpm} ${RELEASE_DIR}
+        then
+            echo Unable to move binary rpm files to release directory.
+            echo Exiting.
+            exit 1
+        fi
+    done
+}
+
 usage() {
    echo Automate the otherwise manual steps require to spin a release.
    echo Usage: create_release [-n]
@@ -198,44 +239,7 @@ fi
 
 package_sources
 
-sed -i "s/\(^%define release 1\).*$/\1/" ${RPM_SPEC}
-
-SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
-if [ $? -ne 0 ]
-then
-    echo rpmbuild of source rpm failed
-    echo Exiting.
-    exit 1
-fi
-
-if ! mv -f ${SRPM} ${RELEASE_DIR}
-then
-    echo Unable to move source release files to release directory.
-    echo Exiting.
-    exit 1
-fi
-
-echo Built ${SRPM}
-
-sed -i "s/\(^%define release 1\)/\1.fc${FC_VERSION}/" ${RPM_SPEC}
-    
-RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
-if [ $? -ne 0 ]
-then
-    echo rpmbuild of binary rpm failed
-    echo Exiting.
-    exit 1
-fi
-
-for rpm in ${RPMS}
-do
-    if ! mv -f ${rpm} ${RELEASE_DIR}
-    then
-        echo Unable to move binary rpm files to release directory.
-        echo Exiting.
-        exit 1
-    fi
-done
+package_rpms
 
 if ! make clean
 then
