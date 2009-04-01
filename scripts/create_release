@@ -85,6 +85,11 @@ get_version() {
 }
 
 check_version_recorded() {
+    if [ $safe -ne 0 ]
+    then
+        return
+    fi
+    
     grep "^	\* Release ${CY_VERSION}" ChangeLog > /dev/null
     CHANGE_FOUND=$?
 
@@ -256,7 +261,7 @@ usage() {
    echo Create git release tag.
 }
 
-safe=0
+declare -i safe=0
 
 while getopts "n" options; do
   case $options in
@@ -276,10 +281,7 @@ get_release_user
 
 get_version
 
-if [ $safe -eq 0 ]
-then
-    check_version_recorded
-fi
+check_version_recorded
 
 # Use the library check script
 
