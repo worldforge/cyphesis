@@ -1,5 +1,53 @@
 #!/bin/bash
 
+set -u
+
+declare -r RELEASE_DIR=${HOME}/rel
+declare -r RPM_DIR=${HOME}/RPM
+declare -r RPM_SOURCES="cyphesis.init cyclient.init cyphesis.sysconfig scripts/compile_python.py"
+declare -r RPM_SPEC=cyphesis.spec
+
+verify_environment() {
+    DATE=$(date -u +%G-%m-%d)
+
+    echo Today is ${DATE}
+
+    declare -ir FC_VERSION=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
+
+    if [ ! ${FC_VERSION} -gt 0 ]
+    then
+        echo Unable to get sane fedora version from OS.
+        echo Exiting.
+        exit 1
+    fi
+
+    echo Creating release on a Fedora ${FC_VERSION} system.
+
+    if [ ! -d ${RELEASE_DIR} ]
+    then
+        if ! mkdir ${RELEASE_DIR}
+        then
+            echo Unable to create release directory ${RELEASE_DIR}
+            echo Exiting.
+            exit 1
+        fi
+    fi
+
+    echo Release files will be copied to ${RELEASE_DIR}
+
+    if [ ! -d ${RPM_DIR} ]
+    then
+        if ! mkdir -p ${RPM_DIR}/SOURCES
+        then
+            echo Unable to create rpm directory ${RPM_DIR}
+            echo Exiting.
+            exit 1
+        fi
+    fi
+
+    echo RPM files will be built in ${RPM_DIR}
+}
+
 get_release_user() {
     GIT_USERNAME=$(git-config --get user.name)
     if [ $? -ne 0 ]
@@ -14,6 +62,7 @@ get_release_user() {
         echo Git email not available
         exit 1
     fi
+    echo Creating release as ${GIT_USERNAME} \<${GIT_EMAIL}\>
 }
 
 get_version() {
@@ -23,6 +72,10 @@ get_version() {
     then
         echo No version data found.
     fi
+    echo Creating release for version ${CY_VERSION}
+
+    TGZ=cyphesis-${CY_VERSION}.tar.gz
+    TBZ=cyphesis-${CY_VERSION}.tar.bz2
 }
 
 check_version_recorded() {
@@ -67,6 +120,41 @@ check_version_recorded() {
     fi
 }
 
+package_sources() {
+    if [ -f ${RELEASE_DIR}/${TGZ} -a -f ${RELEASE_DIR}/${TGZ} ]
+    then
+        echo Source files already built
+        return
+    fi
+
+    if ! make dist # check
+    then
+        echo distcheck failed. Exiting.
+        exit 1
+    fi
+
+    if [ ! -f ${TGZ} -o ! -f ${TBZ} ]
+    then
+        echo distcheck did not create release tarballs ${TGZ} and ${TBZ}.
+        echo Exiting.
+        exit 1
+    fi
+
+    if ! mv -f ${TGZ} ${TBZ} ${RELEASE_DIR}
+    then
+        echo Unable to move source release files to release directory.
+        echo Exiting.
+        exit 1
+    fi
+
+    if ! cp ${RELEASE_DIR}/${TBZ} ${RPM_SOURCES} ${RPM_DIR}/SOURCES
+    then
+        echo Unable to copy source files to rpm source directory.
+        echo Exiting.
+        exit 1
+    fi
+}
+
 usage() {
    echo Automate the otherwise manual steps require to spin a release.
    echo Usage: create_release [-n]
@@ -80,8 +168,6 @@ usage() {
    echo Commit change to git.
    echo Create git release tag.
 }
-
-set -u
 
 safe=0
 
@@ -97,17 +183,11 @@ while getopts "n" options; do
   esac
 done
 
-DATE=$(date -u +%G-%m-%d)
-
-echo Today is ${DATE}
+verify_environment
 
 get_release_user
 
-echo Creating release as ${GIT_USERNAME} \<${GIT_EMAIL}\>
-
 get_version
-
-echo Creating release for version ${CY_VERSION}
 
 if [ $safe -eq 0 ]
 then
@@ -116,67 +196,11 @@ fi
 
 # Use the library check script
 
-if ! make dist # check
-then
-    echo distcheck failed. Exiting.
-    exit 1
-fi
+package_sources
 
-TGZ=cyphesis-${CY_VERSION}.tar.gz
-TBZ=cyphesis-${CY_VERSION}.tar.bz2
+sed -i "s/\(^%define release 1\).*$/\1/" ${RPM_SPEC}
 
-if [ ! -f ${TGZ} -o ! -f ${TBZ} ]
-then
-    echo distcheck did not create release tarballs ${TGZ} and ${TBZ}.
-    echo Exiting.
-    exit 1
-fi
-
-RELEASE_DIR=${HOME}/rel
-
-if [ ! -d ${RELEASE_DIR} ]
-then
-    if ! mkdir ${RELEASE_DIR}
-    then
-        echo Unable to create release directory ${RELEASE_DIR}
-        echo Exiting.
-        exit 1
-    fi
-fi
-
-RPM_DIR=${HOME}/RPM
-
-if [ ! -d ${RPM_DIR} ]
-then
-    if ! mkdir -p ${RPM_DIR}/SOURCES
-    then
-        echo Unable to create rpm directory ${RPM_DIR}
-        echo Exiting.
-        exit 1
-    fi
-fi
-
-RPM_SOURCES="${TGZ} ${TBZ} cyphesis.init cyclient.init cyphesis.sysconfig scripts/compile_python.py"
-
-if ! cp ${RPM_SOURCES} ${RPM_DIR}/SOURCES
-then
-    echo Unable to copy source files to rpm source directory.
-    echo Exiting.
-    exit 1
-fi
-
-if ! mv -f ${TGZ} ${TBZ} ${RELEASE_DIR}
-then
-    echo Unable to move source release files to release directory.
-    echo Exiting.
-    exit 1
-fi
-
-SPEC=cyphesis.spec
-
-sed -i "s/\(^%define release 1\).*$/\1/" ${SPEC}
-
-SRPM=$(rpmbuild -bs ${SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
 if [ $? -ne 0 ]
 then
     echo rpmbuild of source rpm failed
@@ -191,20 +215,11 @@ then
     exit 1
 fi
 
-VER=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
-
-if [ ! ${VER} -gt 0 ]
-then
-    echo Unable to get sane fedora version from OS.
-    echo Exiting.
-    exit 1
-fi
-
-sed -i "s/\(^%define release 1\)/\1.fc${VER}/" ${SPEC}
-    
 echo Built ${SRPM}
 
-RPMS=$(rpmbuild -bb ${SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+sed -i "s/\(^%define release 1\)/\1.fc${FC_VERSION}/" ${RPM_SPEC}
+    
+RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
 if [ $? -ne 0 ]
 then
     echo rpmbuild of binary rpm failed
