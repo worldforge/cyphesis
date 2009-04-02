@@ -42,6 +42,17 @@ line. In the case of if or for statements, the clause should always be
 enclosed by { } and the opening { should be on the same line as the if or for
 statement.
 
+DATA FORMATS
+
+Data in the form of rules, and persistent stores conforms to the Atlas
+protocol. Atlas uses strings in a variety of scenarios, the most common
+being type names and property names. These names should be single English
+words using British English spelling and should contain only lower case
+alphabetic characters. Multiple words may be combined where they can
+reasonably be considered as a single word together. A suitable example
+would be "online" which has a distinct meaning alone, but is technically
+correctly spelt as "on line".
+
 PROFILING
 
 2006-07-10
