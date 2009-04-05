@@ -15,13 +15,17 @@ import urllib2
 
 # username=wef&password=wef&autologin=on&redirect=&login=Log+in
 
-_USERNAME='bar'
+_USERNAME='alriddoch'
 
 def get_using_urllib(password):
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     body = "username=%s&password=%s&autologin=on&redirect=&login=Log+in" % (_USERNAME, password)
-    res = opener.open('http://happypenguin.org/forums/login.php', body)
+    try:
+        res = opener.open('http://happypenguin.org/forums/login.php', body)
+    except urllib2.URLError, e:
+        print "Unable to open"
+        return
     content = res.read()
 
     if re.search('incorrect or inactive username', content):
