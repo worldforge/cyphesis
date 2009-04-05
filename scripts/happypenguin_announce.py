@@ -32,12 +32,16 @@ def get_using_urllib(password):
         print 'login failed'
     elif re.search('You are not allowed to login', content):
         print 'login banned'
+    elif re.search('Log out \[ %s \]' % _USERNAME, content):
+        print 'logged in'
     else:
         print 'dunno'
         print content
+        return
 
     res = opener.open('http://happypenguin.org/')
     content = res.read()
+    print content
 
 def get_using_httplib(password):
     con = httplib.HTTPConnection('happypenguin.org')
