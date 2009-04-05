@@ -4,6 +4,7 @@ import cookielib
 import httplib
 import re
 import sys
+import urllib
 import urllib2
 
 # <form action="login.php" method="post" target="_top">
@@ -15,12 +16,51 @@ import urllib2
 
 # username=wef&password=wef&autologin=on&redirect=&login=Log+in
 
+_LOGIN_FORM={
+    'autologin': 'on',
+    'redirect': '',
+    'login': 'Log in'
+}
+
+_UPDATE_FORM={
+'title': 'WorldForge::Cyphesis',
+'author': 'Al Riddoch',
+'summary': '',
+'authoremail': 'alriddoch@googlemail.com',
+'company': '',
+'homepage': 'http://www.worldforge.org/dev/eng/servers/cyphesis',
+'download': 'http://downloads.sourceforge.net/worldforge/cyphesis-0.5.18.tar.bz2',
+'url1': 'http://downloads.sourceforge.net/worldforge/cyphesis-0.5.18.package',
+'url1description': 'Linux autopackage',
+'url2': 'http://worldforge.org/dev/eng/clients/sear',
+'url2description': 'WorldForge Sear Client',
+'url3': 'http://worldforge.org/dev/eng/clients/ember',
+'url3description': 'WorldForge Ember Client',
+'version': '0.5.19',
+'short_description': 'MMORPG server for the WorldForge project with embedded AI.',
+'long_description': '<p>Cyphesis is a fantasy MMORPG server, and NPC engine for servers, using AI/A-Life techniques which doesn\'t have a predefined story. It is the Artificial Intelligence and Artificial Life server/client used by the WorldForge project.</p>',
+'category': 'rpg',
+'license': 'free',
+'cost': '',
+'source': 'on',
+'x11': 'on',
+'console': 'on',
+'multiplayer': 'on',
+'network': 'on',
+'other_requirements': '<ul>%0D%0A<li>WorldForge::Atlas-C++</li>%0D%0A<li>WorldForge::skstream</li>%0D%0A<li>WorldForge::wfmath</li>%0D%0A<li>WorldForge::Mercator</li>%0D%0A<li>WorldForge::varconf</li>%0D%0A<li>PostgreSQL</li>%0D%0A<li>Python</li>%0D%0A<li>readline</li>%0D%0A<li>HOWL or Avahi</li>%0D%0A<li>GCrypt</li>%0D%0A</ul>',
+'submit': 'Submit',
+}
+
 _USERNAME='alriddoch'
 
 def get_using_urllib(password):
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    body = "username=%s&password=%s&autologin=on&redirect=&login=Log+in" % (_USERNAME, password)
+    login_form = _LOGIN_FORM.copy()
+    login_form['username'] = _USERNAME
+    login_form['password'] = password
+    # body = "username=%s&password=%s&autologin=on&redirect=&login=Log+in" % (_USERNAME, password)
+    body = urllib.urlencode(login_form)
     try:
         res = opener.open('http://happypenguin.org/forums/login.php', body)
     except urllib2.URLError, e:
@@ -41,7 +81,7 @@ def get_using_urllib(password):
 
     res = opener.open('http://happypenguin.org/')
     content = res.read()
-    print content
+    print len(content)
 
 def get_using_httplib(password):
     con = httplib.HTTPConnection('happypenguin.org')
