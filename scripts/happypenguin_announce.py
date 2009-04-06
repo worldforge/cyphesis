@@ -47,7 +47,7 @@ _UPDATE_FORM={
 'console': 'on',
 'multiplayer': 'on',
 'network': 'on',
-'other_requirements': '<ul>%0D%0A<li>WorldForge::Atlas-C++</li>%0D%0A<li>WorldForge::skstream</li>%0D%0A<li>WorldForge::wfmath</li>%0D%0A<li>WorldForge::Mercator</li>%0D%0A<li>WorldForge::varconf</li>%0D%0A<li>PostgreSQL</li>%0D%0A<li>Python</li>%0D%0A<li>readline</li>%0D%0A<li>HOWL or Avahi</li>%0D%0A<li>GCrypt</li>%0D%0A</ul>',
+'other_requirements': '<ul>\r\n<li>WorldForge::Atlas-C++</li>\r\n<li>WorldForge::skstream</li>\r\n<li>WorldForge::wfmath</li>\r\n<li>WorldForge::Mercator</li>\r\n<li>WorldForge::varconf</li>\r\n<li>PostgreSQL</li>\r\n<li>Python</li>\r\n<li>readline</li>\r\n<li>HOWL or Avahi</li>\r\n<li>GCrypt</li>\r\n</ul>',
 'submit': 'Submit',
 }
 
