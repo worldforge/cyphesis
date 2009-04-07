@@ -185,12 +185,69 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
     return -1;
 }
 
-typedef std::map<std::string, std::string> OptionHelp;
-typedef std::map<std::string, OptionHelp> UsageHelp;
+class Option {
+  protected:
+    std::string m_value;
+    std::string m_description;
+
+    Option(const std::string & val, const std::string & descr);
+  public:
+    virtual ~Option() = 0;
+
+    const std::string & value() { return m_value; }
+    const std::string & description() { return m_description; }
+
+    virtual const std::string & repr() const = 0;
+
+    virtual size_t size() const = 0;
+};
+
+class DumbOption : public Option {
+  protected:
+    std::string m_default;
+  public:
+    DumbOption(const std::string & val, const std::string & descr,
+               const std::string & deflt);
+
+    virtual ~DumbOption() { }
+  
+    virtual const std::string & repr() const;
+
+    virtual size_t size() const;
+};
+
+Option::Option(const std::string & val, const std::string & descr) :
+        m_value(val), m_description(descr)
+{
+}
+
+DumbOption::DumbOption(const std::string & val,
+                       const std::string & descr,
+                       const std::string & deflt) :
+            Option(val, descr), m_default(deflt)
+{
+}
+
+const std::string & DumbOption::repr() const
+{
+    return m_default;
+}
+
+size_t DumbOption::size() const
+{
+    return m_default.size();
+}
+
+Option::~Option()
+{
+}
+
+typedef std::map<std::string, Option *> OptionMap;
+typedef std::map<std::string, OptionMap> SectionMap;
 
 class Options {
   protected:
-    UsageHelp m_usageHelp;
+    SectionMap m_sectionMap;
 
     static Options * m_instance;
 
@@ -203,8 +260,8 @@ class Options {
         return m_instance;
     }
 
-    const UsageHelp & usageHelp() const {
-        return m_usageHelp;
+    const SectionMap & sectionMap() const {
+        return m_sectionMap;
     }
 
     int check_config(varconf::Config &, int usage_groups = USAGE_SERVER|
@@ -223,7 +280,8 @@ Options::Options()
 {
     const usage_data * ud = &usage[0];
     for (; ud->section != 0; ++ud) {
-        m_usageHelp[ud->section].insert(std::make_pair(ud->option, ud->description));
+        m_sectionMap[ud->section].insert(std::make_pair(ud->option,
+              new DumbOption(ud->value, ud->description, ud->dflt)));
     }
     
 }
@@ -231,11 +289,11 @@ Options::Options()
 int Options::check_config(varconf::Config & config,
                           int usage_groups) const
 {
-    UsageHelp::const_iterator I = m_usageHelp.begin();
-    UsageHelp::const_iterator Iend = m_usageHelp.end();
+    SectionMap::const_iterator I = m_sectionMap.begin();
+    SectionMap::const_iterator Iend = m_sectionMap.end();
     for (; I != Iend; ++I) {
         const std::string & section_name = I->first;
-        const OptionHelp & section_help = I->second;
+        const OptionMap & section_help = I->second;
         const varconf::sec_map & section = config.getSection(section_name);
 
         varconf::sec_map::const_iterator J = section.begin();
@@ -256,7 +314,7 @@ void Options::addUsage(const std::string & section,
                        const std::string & help)
 {
     std::cout << 2 << section << ":" << setting << ":" << help << std::endl << std::flush;
-    m_usageHelp[section].insert(std::make_pair(setting, help));
+    m_sectionMap[section].insert(std::make_pair(setting, new DumbOption("<val>", help, "<dflt>")));
 }
 
 int_config_register::int_config_register(int & var,
@@ -473,9 +531,18 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
     
     size_t column_width = 0;
 
-    const usage_data * ud = &usage[0];
-    for (; ud->section != 0; ++ud) {
-        column_width = std::max(column_width, strlen(ud->section) + strlen(ud->option) + strlen(ud->value) + 2);
+    Options * options = Options::instance();
+
+    SectionMap::const_iterator I = options->sectionMap().begin();
+    SectionMap::const_iterator Iend = options->sectionMap().end();
+    OptionMap::const_iterator J;
+    OptionMap::const_iterator Jend;
+    for (; I != Iend; ++I) {
+        J = I->second.begin();
+        Jend = I->second.end();
+        for (; J != Jend; ++J) {
+            column_width = std::max(column_width, I->first.size() + J->first.size() + J->second->value().size() + 2);
+        }
     }
 
     std::cout << "  --help, -h        Display usage information and exit"
@@ -484,29 +551,31 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
     std::cout << "  --version, -v     Display the version information and exit"
               << std::endl << std::endl;
 
-    ud = &usage[0];
-    for (; ud->section != 0; ++ud) {
-        if ((ud->flags & usage_flags) == 0) {
-            continue;
-        }
-        if (strlen(ud->section) != 0) {
-            std::cout << "  --" << ud->section << ":" << ud->option;
-        } else {
-            std::cout << "  --" << ud->option;
-        }
-        if (ud->value != 0 && strlen(ud->value) != 0) {
-            std::cout << "=" << ud->value;
-        }
-        if (ud->dflt != 0 && strlen(ud->dflt) != 0) {
-            size_t len = strlen(ud->section) + 1 + strlen(ud->option);
-            if (ud->value != 0 && strlen(ud->value) != 0) {
-                len += (strlen(ud->value) + 1);
+    I = options->sectionMap().begin();
+    for (; I != Iend; ++I) {
+        J = I->second.begin();
+        Jend = I->second.end();
+        for (; J != Jend; ++J) {
+            if (I->first.size() != 0) {
+                std::cout << "  --" << I->first << ":" << J->first;
+            } else {
+                std::cout << "  --" << J->first;
             }
-            std::cout << std::string(column_width - len + 2, ' ')
-                      << "= " << ud->dflt;
+            Option * opt = J->second;
+            if (opt->value().size() != 0) {
+                std::cout << "=" << opt->value();
+            }
+            if (opt->size() != 0) {
+                size_t len = I->first.size() + 1 + J->first.size();
+                if (opt->value().size() != 0) {
+                    len += (opt->value().size() + 1);
+                }
+                std::cout << std::string(column_width - len + 2, ' ')
+                          << "= " << opt->repr();
+            }
+            std::cout << std::endl;
+            std::cout << "      " << opt->description() << std::endl;
         }
-        std::cout << std::endl;
-        std::cout << "      " << ud->description << std::endl;
     }
     std::cout << std::flush;
 }
