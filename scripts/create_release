@@ -228,7 +228,7 @@ package_autopackage() {
 
     if ! makepackage
     then
-            echo makepackage failed. Exiting.
+        echo makepackage failed. Exiting.
         exit 1
     fi
 
