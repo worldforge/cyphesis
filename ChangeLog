@@ -1,5 +1,13 @@
 2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/globals.cpp, common/globals.h: Add infrastructure for
+	  embedding config options in the code rather than having a
+	  central place for them.
+
+	* server/server.cpp: Use the new option system for the http port.
+
+2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
+
 	* tests/Makefile.am: Update the test link objects to match name
 	  changes.
 

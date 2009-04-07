@@ -69,7 +69,6 @@ int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
 int peer_port_num = 6769;
-int http_port_num = 6780;
 int dynamic_port_start = 6800;
 int dynamic_port_end = 6899;
 
@@ -189,24 +188,51 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
 typedef std::map<std::string, std::string> OptionHelp;
 typedef std::map<std::string, OptionHelp> UsageHelp;
 
-static int check_config(varconf::Config & config,
-                        int usage_groups = USAGE_SERVER|
-                                           USAGE_CLIENT|
-                                           USAGE_CYCMD|
-                                           USAGE_DBASE)
-{
-    UsageHelp usage_help;
+class Options {
+  protected:
+    UsageHelp m_usageHelp;
 
+    static Options * m_instance;
+
+    explicit Options();
+  public:
+    static Options * instance() {
+        if (m_instance == 0) {
+            m_instance = new Options;
+        }
+        return m_instance;
+    }
+
+    const UsageHelp & usageHelp() const {
+        return m_usageHelp;
+    }
+
+    int check_config(varconf::Config &, int usage_groups = USAGE_SERVER|
+                                                           USAGE_CLIENT|
+                                                           USAGE_CYCMD|
+                                                           USAGE_DBASE) const;
+
+    void addUsage(const std::string & section,
+                  const std::string & setting,
+                  const std::string & help);
+};
+
+Options * Options::m_instance = 0;
+
+Options::Options()
+{
     const usage_data * ud = &usage[0];
     for (; ud->section != 0; ++ud) {
-        if ((ud->flags & usage_groups) == 0) {
-            continue;
-        }
-        usage_help[ud->section].insert(std::make_pair(ud->option, ud->description));
+        m_usageHelp[ud->section].insert(std::make_pair(ud->option, ud->description));
     }
     
-    UsageHelp::const_iterator I = usage_help.begin();
-    UsageHelp::const_iterator Iend = usage_help.end();
+}
+
+int Options::check_config(varconf::Config & config,
+                          int usage_groups) const
+{
+    UsageHelp::const_iterator I = m_usageHelp.begin();
+    UsageHelp::const_iterator Iend = m_usageHelp.end();
     for (; I != Iend; ++I) {
         const std::string & section_name = I->first;
         const OptionHelp & section_help = I->second;
@@ -225,6 +251,23 @@ static int check_config(varconf::Config & config,
     return 0;
 }
 
+void Options::addUsage(const std::string & section,
+                       const std::string & setting,
+                       const std::string & help)
+{
+    std::cout << 2 << section << ":" << setting << ":" << help << std::endl << std::flush;
+    m_usageHelp[section].insert(std::make_pair(setting, help));
+}
+
+int_config_register::int_config_register(int & var,
+                                         const char * section,
+                                         const char * setting,
+                                         const char * help)
+{
+    std::cout << 1 << section << ":" << setting << ":" << help << std::endl << std::flush;
+    Options::instance()->addUsage(section, setting, help);
+}
+
 void readInstanceConfiguration(const std::string & section);
 
 int loadConfig(int argc, char ** argv, int usage)
@@ -240,7 +283,7 @@ int loadConfig(int argc, char ** argv, int usage)
     // inappropriate options.
     varconf::Config test_cmdline;
     test_cmdline.getCmdline(argc, argv);
-    check_config(test_cmdline, usage);
+    Options::instance()->check_config(test_cmdline, usage);
 
     // See if the user has set the install directory on the command line
     bool home_dir_config = false;
@@ -286,7 +329,7 @@ int loadConfig(int argc, char ** argv, int usage)
 
     int optind = global_conf->getCmdline(argc, argv);
 
-    check_config(*global_conf);
+    Options::instance()->check_config(*global_conf);
 
     assert(optind > 0);
 

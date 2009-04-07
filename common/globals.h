@@ -49,7 +49,6 @@ extern int timeoffset;
 extern int client_port_num;
 extern int slave_port_num;
 extern int peer_port_num;
-extern int http_port_num;
 extern int dynamic_port_start;
 extern int dynamic_port_end;
 
@@ -70,6 +69,15 @@ static const int DATABASE_OKAY = 0;
 static const int DATABASE_CONERR = -1;
 /// Database table creation error
 static const int DATABASE_TABERR = -2;
+
+#define INT_OPTION(_var, _val, _section, _setting, _help) \
+int _var = _val; \
+int_config_register _var ## _register(_var, _section, _setting, _help);
+
+class int_config_register {
+  public:
+    int_config_register(int &, const char *, const char *, const char *);
+};
 
 template <typename T>
 int readConfigItem(const std::string & section, const std::string & key,
