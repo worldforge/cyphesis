@@ -404,7 +404,7 @@ EntityBuildertest_SOURCES = EntityBuildertest.cpp
 EntityBuildertest_LDADD = $(top_builddir)/server/EntityBuilder.o \
                           $(top_builddir)/server/CorePropertyManager.o \
                           $(top_builddir)/server/EntityFactory.o \
-                          $(top_builddir)/server/Persistance.o \
+                          $(top_builddir)/server/Persistence.o \
                           $(top_builddir)/server/Account.o \
                           $(top_builddir)/server/Admin.o \
                           $(top_builddir)/server/Player.o \
@@ -435,7 +435,7 @@ PropertyFlagtest_SOURCES = PropertyFlagtest.cpp
 PropertyFlagtest_LDADD = $(top_builddir)/server/EntityBuilder.o \
                          $(top_builddir)/server/CorePropertyManager.o \
                          $(top_builddir)/server/EntityFactory.o \
-                         $(top_builddir)/server/Persistance.o \
+                         $(top_builddir)/server/Persistence.o \
                          $(top_builddir)/server/Account.o \
                          $(top_builddir)/server/Admin.o \
                          $(top_builddir)/server/Player.o \

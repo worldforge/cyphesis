@@ -1,3 +1,8 @@
+2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/Makefile.am: Update the test link objects to match name
+	  changes.
+
 2009-03-24  Al Riddoch  <alriddoch@googlemail.com>
 
 	* server/Account.cpp, server/Admin.h, server/Connection.cpp,
