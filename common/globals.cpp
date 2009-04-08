@@ -60,8 +60,6 @@ bool exit_flag = false;
 bool daemon_flag = false;
 bool restricted_flag = false;
 bool database_flag = true;
-bool pvp_flag = false;
-bool pvp_offl_flag = false;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
@@ -563,10 +561,6 @@ void readInstanceConfiguration(const std::string & section)
     }
 
     readConfigItem("slave", "tcpport", slave_port_num);
-
-    readConfigItem("game", "player_vs_player", pvp_flag);
-
-    readConfigItem("game", "player_vs_player_offline", pvp_offl_flag);
 
     // Load up the ruleset.
     if (readConfigItem(section, "ruleset", ruleset)) {
