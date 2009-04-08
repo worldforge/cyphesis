@@ -75,7 +75,7 @@ int_config_register _var ## _register(_var, _section, _setting, _help);
 
 #define STRING_OPTION(_var, _val, _section, _setting, _help) \
 std::string _var = _val; \
-int_config_register _var ## _register(_var, _section, _setting, _help);
+string_config_register _var ## _register(_var, _section, _setting, _help);
 
 class int_config_register {
   public:
