@@ -73,9 +73,18 @@ static const int DATABASE_TABERR = -2;
 int _var = _val; \
 int_config_register _var ## _register(_var, _section, _setting, _help);
 
+#define STRING_OPTION(_var, _val, _section, _setting, _help) \
+std::string _var = _val; \
+int_config_register _var ## _register(_var, _section, _setting, _help);
+
 class int_config_register {
   public:
     int_config_register(int &, const char *, const char *, const char *);
+};
+
+class string_config_register {
+  public:
+    string_config_register(std::string &, const char *, const char &, const char *);
 };
 
 template <typename T>
