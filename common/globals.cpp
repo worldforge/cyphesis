@@ -201,6 +201,10 @@ class Option {
     virtual const std::string repr() const = 0;
 
     virtual size_t size() const = 0;
+
+    virtual void missing() { }
+
+    virtual void postProcess() { }
 };
 
 class DumbOption : public Option {
@@ -462,6 +466,8 @@ int loadConfig(int argc, char ** argv, int usage)
                 std::cout << "FOUND " << I->first << J->first
                           << std::endl << std::flush;
                 J->second->read(global_conf->getItem(I->first, J->first));
+            } else {
+                J->second->missing();
             }
         }
     }
