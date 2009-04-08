@@ -27,7 +27,6 @@ namespace varconf {
 }
 
 extern const char * CYPHESIS;
-extern const char * CLIENT;
 extern const char * SLAVE;
 
 extern varconf::Config * global_conf;
@@ -38,7 +37,6 @@ extern std::string var_directory;
 extern std::string ruleset;
 extern bool exit_flag;
 extern bool daemon_flag;
-extern bool restricted_flag;
 extern bool database_flag;
 extern int timeoffset;
 extern int dynamic_port_start;

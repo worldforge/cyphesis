@@ -151,10 +151,8 @@ int main(int argc, char ** argv)
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.
-    if (readConfigItem(instance, "restricted", restricted_flag) == 0) {
-        if (restricted_flag) {
-            log(INFO, "Setting restricted mode.");
-        }
+    if (restricted_flag) {
+        log(INFO, "Setting restricted mode.");
     }
 
     readConfigItem(instance, "inittime", timeoffset);

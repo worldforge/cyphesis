@@ -1,8 +1,9 @@
 2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
 
-	* client/client.cpp, common/globals.cpp, server/server.cpp,
-	  tools/cyaddrules.cpp: Move a bunch more options to the new
-	  mechanism.
+	* common/globals.cpp, common/globals.h, client/client.cpp,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/server.cpp, tools/cyaddrules.cpp:
+	  Move a bunch more options to the new mechanism.
 
 2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
 

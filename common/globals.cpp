@@ -41,7 +41,6 @@
 #include <cassert>
 
 const char * CYPHESIS = "cyphesis";
-const char * CLIENT = "client";
 const char * SLAVE = "slave";
 
 static const char * DEFAULT_RULESET = "mason";
@@ -55,7 +54,6 @@ std::string var_directory(LOCALSTATEDIR);
 std::string ruleset(DEFAULT_RULESET);
 bool exit_flag = false;
 bool daemon_flag = false;
-bool restricted_flag = false;
 bool database_flag = true;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
@@ -92,7 +90,6 @@ static const usage_data usage[] = {
     { CYPHESIS, "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
     { CYPHESIS, "dynamic_port_start", "<portnumber>", "6800", "Lowest port to try and used for dyanmic ports", S },
     { CYPHESIS, "dynamic_port_end", "<portnumber>", "6899", "Highest port to try and used for dyanmic ports", S },
-    { CYPHESIS, "restricted", "true|false", "false", "Flag to control restricted mode", S },
     { CYPHESIS, "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
     { CYPHESIS, "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
     { CYPHESIS, "nice", "<level>", "1", "Reduce the priority level of the server", S },
