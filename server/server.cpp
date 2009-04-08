@@ -63,7 +63,7 @@ class Peer;
 
 static const bool debug_flag = false;
 
-INT_OPTION(http_port_num, 6780, "server", "httpport",
+INT_OPTION(http_port_num, 6780, CYPHESIS, "httpport",
            "Network listen port for http connection to the server");
 
 int main(int argc, char ** argv)
