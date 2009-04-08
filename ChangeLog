@@ -1,5 +1,11 @@
 2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* client/client.cpp, common/globals.cpp, server/server.cpp,
+	  tools/cyaddrules.cpp: Move a bunch more options to the new
+	  mechanism.
+
+2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* common/globals.cpp, common/globals.h: Add necessary support for
 	  special socket address config options, by adding support
 	  for code to be called when an option is missing, and postprocessing

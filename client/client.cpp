@@ -37,6 +37,21 @@ static void usage(const char * prgname)
               << std::endl << std::flush;
 }
 
+STRING_OPTION(server, "localhost", "client", "serverhost",
+              "Hostname of the server to connect to");
+
+STRING_OPTION(account, "admin", "client", "account",
+              "Account name to use to authenticate to the server");
+
+STRING_OPTION(password, "", "client", "password",
+              "Password to use to authenticate to the server");
+
+STRING_OPTION(package, "", "client", "package",
+              "Python package which contains the world initialisation code");
+
+STRING_OPTION(function, "", "client", "function",
+              "Python function to initialise the world");
+
 int main(int argc, char ** argv)
 {
     int config_status = loadConfig(argc, argv, USAGE_CLIENT); 
@@ -57,21 +72,6 @@ int main(int argc, char ** argv)
     int optind = config_status;
 
     assert(optind <= argc);
-
-    std::string server = "localhost";
-    readConfigItem("client", "serverhost", server);
-
-    std::string account = "admin";
-    readConfigItem("client", "account", account);
-
-    std::string password;
-    readConfigItem("client", "password", password);
-
-    std::string package;
-    readConfigItem("client", "package", package);
-
-    std::string function;
-    readConfigItem("client", "function", function);
 
     if (optind == (argc - 1)) {
         std::string arg(argv[optind]);

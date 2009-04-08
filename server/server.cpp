@@ -71,6 +71,9 @@ INT_OPTION(http_port_num, 6780, CYPHESIS, "httpport",
 BOOL_OPTION(useMetaserver, true, CYPHESIS, "usemetaserver",
             "Flag to control registration with the metaserver");
 
+STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
+              "Hostname to use as the metaserver");
+
 
 int main(int argc, char ** argv)
 {
@@ -155,11 +158,6 @@ int main(int argc, char ** argv)
     }
 
     readConfigItem(instance, "inittime", timeoffset);
-
-    readConfigItem(instance, "usemetaserver", useMetaserver);
-
-    std::string mserver("metaserver.worldforge.org");
-    readConfigItem(instance, "metaserver", mserver);
 
     std::string server_name;
     if (readConfigItem(instance, "servername", server_name) != 0) {
