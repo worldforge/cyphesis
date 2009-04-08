@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-// $Id: World.h,v 1.3 2006-10-26 00:48:12 alriddoch Exp $
+// $Id$
 
 #ifndef ASTRONOMY_WORLD_H
 #define ASTRONOMY_WORLD_H

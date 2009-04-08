@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Tasktest.cpp,v 1.10 2007-07-04 22:00:15 alriddoch Exp $
+// $Id$
 
 #include "Fell.h"
 

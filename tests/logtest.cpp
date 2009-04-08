@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: logtest.cpp,v 1.6 2007-04-22 23:07:19 alriddoch Exp $
+// $Id$
 
 #include "common/log.h"
 #include "common/globals.h"

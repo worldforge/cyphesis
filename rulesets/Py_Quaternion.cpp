@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Quaternion.cpp,v 1.15 2007-06-04 08:30:27 alriddoch Exp $
+// $Id$
 
 #include "Py_Quaternion.h"
 

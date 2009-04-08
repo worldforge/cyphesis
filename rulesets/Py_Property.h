@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Property.h,v 1.7 2007-07-04 16:42:11 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PY_PROPERTY_H
 #define RULESETS_PY_PROPERTY_H

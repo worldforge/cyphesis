@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MindFactory.cpp,v 1.16 2007-12-27 03:31:48 alriddoch Exp $
+// $Id$
 
 #include <Python.h>
 

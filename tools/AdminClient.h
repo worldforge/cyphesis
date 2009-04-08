@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AdminClient.h,v 1.13 2006-12-26 14:30:44 alriddoch Exp $
+// $Id$
 
 #ifndef TOOLS_ADMIN_CLIENT_H
 #define TOOLS_ADMIN_CLIENT_H

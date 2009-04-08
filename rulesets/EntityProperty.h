@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityProperty.h,v 1.5 2008-01-06 21:17:20 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_ENTITY_PROPERTY_H
 #define RULESETS_ENTITY_PROPERTY_H

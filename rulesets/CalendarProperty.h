@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CalendarProperty.h,v 1.5 2006-12-12 19:52:39 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_CALENDAR_PROPERTY_H
 #define RULESETS_CALENDAR_PROPERTY_H

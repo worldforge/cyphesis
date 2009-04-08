@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_World.cpp,v 1.36 2008-01-05 00:05:29 alriddoch Exp $
+// $Id$
 
 #include "Py_World.h"
 #include "Py_WorldTime.h"

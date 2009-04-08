@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Location.cpp,v 1.47 2008-03-28 01:13:27 alriddoch Exp $
+// $Id$
 
 #include "Py_Location.h"
 #include "Py_Thing.h"

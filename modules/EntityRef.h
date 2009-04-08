@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityRef.h,v 1.2 2007-10-09 14:44:51 alriddoch Exp $
+// $Id$
 
 #ifndef MODULES_ENTITY_REF_H
 #define MODULES_ENTITY_REF_H

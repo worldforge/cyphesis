@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Add.h,v 1.7 2007-09-24 13:00:43 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_ADD_H
 #define COMMON_ADD_H

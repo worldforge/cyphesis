@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Unseen.h,v 1.8 2006-12-12 15:54:22 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_UNSEEN_H
 #define COMMON_UNSEEN_H

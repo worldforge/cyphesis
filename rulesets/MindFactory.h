@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: MindFactory.h,v 1.11 2007-11-28 20:22:43 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_MIND_FACTORY_H
 #define RULESETS_MIND_FACTORY_H

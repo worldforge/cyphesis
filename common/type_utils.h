@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: type_utils.h,v 1.14 2007-01-16 01:07:49 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_TYPE_UTILS_H
 #define COMMON_TYPE_UTILS_H

@@ -15,6 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationRouter.cpp,v 1.2 2008-01-28 23:48:31 alriddoch Exp $
+// $Id$
 
 #include "OperationRouter.h"

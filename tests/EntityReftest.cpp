@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityReftest.cpp,v 1.3 2008-01-07 01:35:33 alriddoch Exp $
+// $Id$
 
 #include "modules/EntityRef.h"
 

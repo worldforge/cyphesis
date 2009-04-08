@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityPropertytest.cpp,v 1.3 2008-01-07 01:18:26 alriddoch Exp $
+// $Id$
 
 #include "rulesets/EntityProperty.h"
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Pedestrian.h,v 1.21 2008-01-13 01:32:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PEDESTRIAN_H
 #define RULESETS_PEDESTRIAN_H

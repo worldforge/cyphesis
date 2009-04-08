@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PropertyExerciser.h,v 1.3 2007-01-14 21:55:23 alriddoch Exp $
+// $Id$
 
 #ifndef TESTS_PROPERTY_EXERCISER_H
 #define TESTS_PROPERTY_EXERCISER_H

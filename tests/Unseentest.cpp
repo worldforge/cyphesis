@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Unseentest.cpp,v 1.1 2006-12-05 09:40:03 alriddoch Exp $
+// $Id$
 
 #include "OperationExerciser.h"
 

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: globalstest.cpp,v 1.1 2007-04-29 14:17:12 alriddoch Exp $
+// $Id$
 
 #include "common/globals.h"
 
