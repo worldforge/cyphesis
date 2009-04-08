@@ -93,7 +93,6 @@ static const usage_data usage[] = {
     { CYPHESIS, "dynamic_port_start", "<portnumber>", "6800", "Lowest port to try and used for dyanmic ports", S },
     { CYPHESIS, "dynamic_port_end", "<portnumber>", "6899", "Highest port to try and used for dyanmic ports", S },
     { CYPHESIS, "restricted", "true|false", "false", "Flag to control restricted mode", S },
-    { CYPHESIS, "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
     { CYPHESIS, "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
     { CYPHESIS, "metaserver", "<hostname>", "metaserver.worldforge.org", "Hostname to use as the metaserver", S },
     { CYPHESIS, "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },

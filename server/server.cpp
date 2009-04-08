@@ -68,6 +68,10 @@ static const bool debug_flag = false;
 INT_OPTION(http_port_num, 6780, CYPHESIS, "httpport",
            "Network listen port for http connection to the server");
 
+BOOL_OPTION(useMetaserver, true, CYPHESIS, "usemetaserver",
+            "Flag to control registration with the metaserver");
+
+
 int main(int argc, char ** argv)
 {
     if (security_init() != 0) {
@@ -152,7 +156,6 @@ int main(int argc, char ** argv)
 
     readConfigItem(instance, "inittime", timeoffset);
 
-    bool useMetaserver = false;
     readConfigItem(instance, "usemetaserver", useMetaserver);
 
     std::string mserver("metaserver.worldforge.org");
