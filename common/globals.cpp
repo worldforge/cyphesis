@@ -68,7 +68,6 @@ bool pvp_offl_flag = false;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
 int slave_port_num = 6768;
-int peer_port_num = 6769;
 int dynamic_port_start = 6800;
 int dynamic_port_end = 6899;
 

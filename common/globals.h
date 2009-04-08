@@ -48,7 +48,6 @@ extern bool pvp_offl_flag;
 extern int timeoffset;
 extern int client_port_num;
 extern int slave_port_num;
-extern int peer_port_num;
 extern int dynamic_port_start;
 extern int dynamic_port_end;
 

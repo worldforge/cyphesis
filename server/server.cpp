@@ -28,6 +28,7 @@
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
+#include "CommPeer.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
 #include "Persistence.h"
