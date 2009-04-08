@@ -197,7 +197,9 @@ class Option {
     const std::string & value() { return m_value; }
     const std::string & description() { return m_description; }
 
-    virtual const std::string & repr() const = 0;
+    virtual void read(varconf::Variable var) = 0;
+
+    virtual const std::string repr() const = 0;
 
     virtual size_t size() const = 0;
 };
@@ -210,14 +212,40 @@ class DumbOption : public Option {
                const std::string & deflt);
 
     virtual ~DumbOption() { }
+
+    virtual void read(varconf::Variable var) { }
   
-    virtual const std::string & repr() const;
+    virtual const std::string repr() const;
 
     virtual size_t size() const;
 };
 
+template<typename ValueT>
+class StaticOption : public Option {
+  protected:
+    ValueT & m_data;
+    const ValueT m_default;
+
+  public:
+    StaticOption(const std::string & val,
+                 const std::string & descr,
+                 ValueT & data) :
+        Option(val, descr), m_data(data), m_default(data) { }
+
+    virtual void read(varconf::Variable var);
+
+    virtual const std::string repr() const;
+
+    virtual size_t size() const;
+    
+};
+
 Option::Option(const std::string & val, const std::string & descr) :
         m_value(val), m_description(descr)
+{
+}
+
+Option::~Option()
 {
 }
 
@@ -228,7 +256,7 @@ DumbOption::DumbOption(const std::string & val,
 {
 }
 
-const std::string & DumbOption::repr() const
+const std::string DumbOption::repr() const
 {
     return m_default;
 }
@@ -238,9 +266,25 @@ size_t DumbOption::size() const
     return m_default.size();
 }
 
-Option::~Option()
+template<typename ValueT>
+void StaticOption<ValueT>::read(varconf::Variable var)
 {
+    m_data = var;
 }
+
+template<typename ValueT>
+const std::string StaticOption<ValueT>::repr() const
+{
+    return String::compose("%1", m_default);
+}
+
+template<typename ValueT>
+size_t StaticOption<ValueT>::size() const
+{
+    return String::compose("%1", m_default).size();
+}
+
+template class StaticOption<int>;
 
 typedef std::map<std::string, Option *> OptionMap;
 typedef std::map<std::string, OptionMap> SectionMap;
@@ -269,9 +313,9 @@ class Options {
                                                            USAGE_CYCMD|
                                                            USAGE_DBASE) const;
 
-    void addUsage(const std::string & section,
-                  const std::string & setting,
-                  const std::string & help);
+    void addOption(const std::string & section,
+                   const std::string & setting,
+                   Option *);
 };
 
 Options * Options::m_instance = 0;
@@ -309,12 +353,11 @@ int Options::check_config(varconf::Config & config,
     return 0;
 }
 
-void Options::addUsage(const std::string & section,
-                       const std::string & setting,
-                       const std::string & help)
+void Options::addOption(const std::string & section,
+                        const std::string & setting,
+                        Option * option)
 {
-    std::cout << 2 << section << ":" << setting << ":" << help << std::endl << std::flush;
-    m_sectionMap[section].insert(std::make_pair(setting, new DumbOption("<val>", help, "<dflt>")));
+    m_sectionMap[section].insert(std::make_pair(setting, option));
 }
 
 int_config_register::int_config_register(int & var,
@@ -322,8 +365,8 @@ int_config_register::int_config_register(int & var,
                                          const char * setting,
                                          const char * help)
 {
-    std::cout << 1 << section << ":" << setting << ":" << help << std::endl << std::flush;
-    Options::instance()->addUsage(section, setting, help);
+    Options::instance()->addOption(section, setting,
+                                   new StaticOption<int>("<foo>", help, var));
 }
 
 void readInstanceConfiguration(const std::string & section);
@@ -405,6 +448,24 @@ int loadConfig(int argc, char ** argv, int usage)
 
     readConfigItem("cyphesis", "dynamic_port_start", dynamic_port_start);
     readConfigItem("cyphesis", "dynamic_port_end", dynamic_port_end);
+
+    Options * options = Options::instance();
+
+    SectionMap::const_iterator I = options->sectionMap().begin();
+    SectionMap::const_iterator Iend = options->sectionMap().end();
+    OptionMap::const_iterator J;
+    OptionMap::const_iterator Jend;
+    for (; I != Iend; ++I) {
+        J = I->second.begin();
+        Jend = I->second.end();
+        for (; J != Jend; ++J) {
+            if (global_conf->findItem(I->first, J->first)) {
+                std::cout << "FOUND " << I->first << J->first
+                          << std::endl << std::flush;
+                J->second->read(global_conf->getItem(I->first, J->first));
+            }
+        }
+    }
 
     readInstanceConfiguration(instance);
 
