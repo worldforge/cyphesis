@@ -45,9 +45,6 @@ const char * CLIENT = "client";
 const char * SLAVE = "slave";
 
 static const char * DEFAULT_RULESET = "mason";
-static const char * DEFAULT_CLIENT_SOCKET = "cyphesis.sock";
-static const char * DEFAULT_PYTHON_SOCKET = "cypython.sock";
-static const char * DEFAULT_SLAVE_SOCKET = "cyslave.sock";
 static const char * DEFAULT_INSTANCE = "cyphesis";
 
 varconf::Config * global_conf = NULL;
