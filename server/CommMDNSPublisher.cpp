@@ -37,9 +37,9 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/globals.h"
 #include "common/BaseWorld.h"
 #include "common/compose.hpp"
+#include "common/sockets.h"
 
 #include <iostream>
 

@@ -52,6 +52,7 @@
 #include "common/compose.hpp"
 #include "common/system.h"
 #include "common/nls.h"
+#include "common/sockets.h"
 
 #include <varconf/config.h>
 

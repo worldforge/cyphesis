@@ -80,6 +80,7 @@ cycmd_SOURCES = cycmd.cpp
 
 cycmd_LDADD = $(top_builddir)/modules/DateTime.o \
               $(top_builddir)/common/operations.o \
+              $(top_builddir)/common/client_socket.o \
               $(top_builddir)/common/globals.o \
               $(top_builddir)/common/prefix.o \
               $(top_builddir)/common/log.o \
@@ -108,6 +109,7 @@ cyaddrules_SOURCES = cyaddrules.cpp AdminClient.cpp AdminClient.h
 
 cyaddrules_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/operations.o \
+                   $(top_builddir)/common/client_socket.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/const.o \
@@ -170,6 +172,7 @@ cydb_LDADD = $(top_builddir)/modules/DateTime.o \
 cypython_SOURCES = cypython.cpp
 
 cypython_LDADD = $(top_builddir)/modules/DateTime.o \
+                 $(top_builddir)/common/client_socket.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/prefix.o \
                  $(top_builddir)/common/const.o \

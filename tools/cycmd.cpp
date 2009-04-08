@@ -36,6 +36,7 @@
 #include "common/log.h"
 #include "common/OperationRouter.h"
 #include "common/globals.h"
+#include "common/sockets.h"
 
 #include "common/Tick.h"
 

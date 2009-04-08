@@ -26,6 +26,7 @@
 
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/sockets.h"
 
 #include <skstream/skstream_unix.h>
 

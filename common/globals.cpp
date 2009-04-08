@@ -55,9 +55,6 @@ std::string instance(DEFAULT_INSTANCE);
 std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
-std::string client_socket_name(DEFAULT_CLIENT_SOCKET);
-std::string python_socket_name(DEFAULT_PYTHON_SOCKET);
-std::string slave_socket_name(DEFAULT_SLAVE_SOCKET);
 std::string ruleset(DEFAULT_RULESET);
 bool exit_flag = false;
 bool daemon_flag = false;
@@ -100,8 +97,6 @@ static const usage_data usage[] = {
     { CYPHESIS, "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
     { CYPHESIS, "dynamic_port_start", "<portnumber>", "6800", "Lowest port to try and used for dyanmic ports", S },
     { CYPHESIS, "dynamic_port_end", "<portnumber>", "6899", "Highest port to try and used for dyanmic ports", S },
-    { CYPHESIS, "unixport", "<filename>", DEFAULT_CLIENT_SOCKET, "Local listen socket for admin connections", S|C|M },
-    { CYPHESIS, "pythonport", "<filename>", DEFAULT_PYTHON_SOCKET, "Local listen socket for python connections", S|P },
     { CYPHESIS, "restricted", "true|false", "false", "Flag to control restricted mode", S },
     { CYPHESIS, "usemetaserver", "true|false", "true", "Flag to control registration with the metaserver", S },
     { CYPHESIS, "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
@@ -120,7 +115,6 @@ static const usage_data usage[] = {
     { CLIENT, "password", "<password>", "", "Password to use to authenticate to the server", S|C },
     { CLIENT, "useslave", "true|false", "false", "Flag to control connecting to an AI slave server, not master world server" , S|M },
     { SLAVE, "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
-    { SLAVE, "unixport", "<filename>", DEFAULT_SLAVE_SOCKET, "Local listen socket for admin connections to the AI slave server", M },
     { SLAVE, "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
     { 0, 0, 0, 0 }
 };
@@ -269,6 +263,12 @@ size_t DumbOption::size() const
     return m_default.size();
 }
 
+template<>
+void StaticOption<std::string>::read(varconf::Variable var)
+{
+    m_data = var.as_string();
+}
+
 template<typename ValueT>
 void StaticOption<ValueT>::read(varconf::Variable var)
 {
@@ -288,6 +288,36 @@ size_t StaticOption<ValueT>::size() const
 }
 
 template class StaticOption<int>;
+
+class UnixSockOption : public StaticOption<std::string>
+{
+  protected:
+    const char * const m_format;
+  public:
+    UnixSockOption(const std::string & val,
+                   const std::string & descr,
+                   std::string & data,
+                   const char * format) :
+        StaticOption<std::string>(val, descr, data), m_format(format) { }
+
+    virtual void missing();
+
+    virtual void postProcess();
+};
+
+void UnixSockOption::missing()
+{
+    m_data = String::compose(m_format, instance);
+}
+
+void UnixSockOption::postProcess()
+{
+    if (m_data.find('/') != 0) {
+        m_data = String::compose("%1/tmp/%2",
+                                 var_directory,
+                                 m_data);
+    }
+}
 
 typedef std::map<std::string, Option *> OptionMap;
 typedef std::map<std::string, OptionMap> SectionMap;
@@ -330,7 +360,6 @@ Options::Options()
         m_sectionMap[ud->section].insert(std::make_pair(ud->option,
               new DumbOption(ud->value, ud->description, ud->dflt)));
     }
-    
 }
 
 int Options::check_config(varconf::Config & config,
@@ -360,6 +389,12 @@ void Options::addOption(const std::string & section,
                         const std::string & setting,
                         Option * option)
 {
+    OptionMap & config_section = m_sectionMap[section];
+    if (config_section.find(setting) != config_section.end()) {
+        log(ERROR, String::compose("Config option %1:%2 already defined",
+                                   section, setting));
+        return;
+    }
     m_sectionMap[section].insert(std::make_pair(setting, option));
 }
 
@@ -370,6 +405,25 @@ int_config_register::int_config_register(int & var,
 {
     Options::instance()->addOption(section, setting,
                                    new StaticOption<int>("<foo>", help, var));
+}
+
+string_config_register::string_config_register(std::string & var,
+                                               const char * section,
+                                               const char * setting,
+                                               const char * help)
+{
+    Options::instance()->addOption(section, setting,
+                                   new StaticOption<std::string>("<foo>", help, var));
+}
+
+unixsock_config_register::unixsock_config_register(std::string & var,
+                                                   const char * section,
+                                                   const char * setting,
+                                                   const char * help,
+                                                   const char * format)
+{
+    Options::instance()->addOption(section, setting,
+                                   new UnixSockOption("<foo>", help, var, format));
 }
 
 void readInstanceConfiguration(const std::string & section);
@@ -463,12 +517,13 @@ int loadConfig(int argc, char ** argv, int usage)
         Jend = I->second.end();
         for (; J != Jend; ++J) {
             if (global_conf->findItem(I->first, J->first)) {
-                std::cout << "FOUND " << I->first << J->first
+                std::cout << "FOUND " << I->first << ":" << J->first
                           << std::endl << std::flush;
                 J->second->read(global_conf->getItem(I->first, J->first));
             } else {
                 J->second->missing();
             }
+            J->second->postProcess();
         }
     }
 
@@ -507,35 +562,7 @@ void readInstanceConfiguration(const std::string & section)
         }
     }
 
-    if (readConfigItem(section, "unixport", client_socket_name) != 0) {
-        client_socket_name = String::compose("cyphesis_%1.sock", section);
-    }
-
-    if (client_socket_name.find('/') != 0) {
-        client_socket_name = String::compose("%1/tmp/%2",
-                                             var_directory,
-                                             client_socket_name);
-    }
-
-    if (readConfigItem(section, "pythonport", python_socket_name) != 0) {
-        python_socket_name = String::compose("cypython_%1.sock", section);
-    }
-
-    if (python_socket_name.find('/') != 0) {
-        python_socket_name = String::compose("%1/tmp/%2",
-                                             var_directory,
-                                             python_socket_name);
-    }
-
     readConfigItem("slave", "tcpport", slave_port_num);
-
-    readConfigItem("slave", "unixport", slave_socket_name);
-
-    if (slave_socket_name.find('/') != 0) {
-        slave_socket_name = String::compose("%1/tmp/%2",
-                                            var_directory,
-                                            slave_socket_name);
-    }
 
     readConfigItem("game", "player_vs_player", pvp_flag);
 

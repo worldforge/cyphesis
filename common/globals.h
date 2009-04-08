@@ -35,19 +35,12 @@ extern std::string instance;
 extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
-extern std::string client_socket_name;
-extern std::string python_socket_name;
-extern std::string slave_socket_name;
 extern std::string ruleset;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern bool restricted_flag;
 extern bool database_flag;
-extern bool pvp_flag;
-extern bool pvp_offl_flag;
 extern int timeoffset;
-extern int client_port_num;
-extern int slave_port_num;
 extern int dynamic_port_start;
 extern int dynamic_port_end;
 
@@ -77,6 +70,10 @@ int_config_register _var ## _register(_var, _section, _setting, _help);
 std::string _var = _val; \
 string_config_register _var ## _register(_var, _section, _setting, _help);
 
+#define UNIXSOCK_OPTION(_var, _val, _section, _setting, _help, _format) \
+std::string _var = _val; \
+unixsock_config_register _var ## _register(_var, _section, _setting, _help, _format);
+
 class int_config_register {
   public:
     int_config_register(int &, const char *, const char *, const char *);
@@ -84,7 +81,12 @@ class int_config_register {
 
 class string_config_register {
   public:
-    string_config_register(std::string &, const char *, const char &, const char *);
+    string_config_register(std::string &, const char *, const char *, const char *);
+};
+
+class unixsock_config_register {
+  public:
+    unixsock_config_register(std::string &, const char *, const char *, const char *, const char *);
 };
 
 template <typename T>

@@ -1,5 +1,20 @@
 2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
 
+	* common/globals.cpp, common/globals.h: Add necessary support for
+	  special socket address config options, by adding support
+	  for code to be called when an option is missing, and postprocessing
+	  on the option data.
+
+	* common/sockets.h, common/client_socket.cpp: Add new files for
+	  socket config data moved from globals.
+
+	* client/ObserverClient.cpp, server/CommMDNSPublisher.cpp,
+	  server/server.cpp, tools/AdminClient.cpp, tools/AdminClient.h,
+	  tools/cyaddrules.cpp, tools/cycmd.cpp, tools/cypython.cpp:
+	  Update the rest of the code to use the new header.
+
+2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
+
 	* server/CommServer.cpp, server/CommServer.h: Create a setup
 	  function and move initialisation that can fail into there from
 	  the constructor.

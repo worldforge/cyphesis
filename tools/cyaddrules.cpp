@@ -34,6 +34,7 @@
 #include "common/Database.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/sockets.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>

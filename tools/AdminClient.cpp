@@ -20,6 +20,7 @@
 #include "AdminClient.h"
 
 #include "common/debug.h"
+#include "common/sockets.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Net/Stream.h>
