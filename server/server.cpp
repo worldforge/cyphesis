@@ -202,6 +202,11 @@ int main(int argc, char ** argv)
 
     CommServer commServer(server);
 
+    if (commServer.setup() != 0) {
+        log(CRITICAL, "Internal error setting up server infrastructure");
+        return EXIT_SOCKET_ERROR;
+    }
+
     // This is where we should restore the database, before
     // the listen sockets are open. Unlike earlier code, we are
     // attempting to construct the internal state from the database,

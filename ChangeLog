@@ -1,3 +1,12 @@
+2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommServer.cpp, server/CommServer.h: Create a setup
+	  function and move initialisation that can fail into there from
+	  the constructor.
+
+	* server/server.cpp: Use the CommServer setup function, and fail
+	  earlier if it doesn't work.
+
 2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/globals.cpp, common/globals.h, server/CommPeer.cpp,
