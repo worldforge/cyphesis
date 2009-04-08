@@ -66,6 +66,10 @@ static const int DATABASE_TABERR = -2;
 int _var = _val; \
 int_config_register _var ## _register(_var, _section, _setting, _help);
 
+#define BOOL_OPTION(_var, _val, _section, _setting, _help) \
+bool _var = _val; \
+bool_config_register _var ## _register(_var, _section, _setting, _help);
+
 #define STRING_OPTION(_var, _val, _section, _setting, _help) \
 std::string _var = _val; \
 string_config_register _var ## _register(_var, _section, _setting, _help);
@@ -77,6 +81,11 @@ unixsock_config_register _var ## _register(_var, _section, _setting, _help, _for
 class int_config_register {
   public:
     int_config_register(int &, const char *, const char *, const char *);
+};
+
+class bool_config_register {
+  public:
+    bool_config_register(bool &, const char *, const char *, const char *);
 };
 
 class string_config_register {

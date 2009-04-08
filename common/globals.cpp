@@ -402,6 +402,15 @@ int_config_register::int_config_register(int & var,
                                    new StaticOption<int>("<foo>", help, var));
 }
 
+bool_config_register::bool_config_register(bool & var,
+                                           const char * section,
+                                           const char * setting,
+                                           const char * help)
+{
+    Options::instance()->addOption(section, setting,
+                                   new StaticOption<bool>("<foo>", help, var));
+}
+
 string_config_register::string_config_register(std::string & var,
                                                const char * section,
                                                const char * setting,
