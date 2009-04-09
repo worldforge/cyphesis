@@ -32,6 +32,8 @@ class Lobby;
 
 typedef std::map<long, Router *> RouterMap;
 
+extern bool restricted_flag;
+
 /// \brief ServerRouting represents the core of the server.
 ///
 /// This class has one instance which is the core object in the server.

@@ -25,7 +25,7 @@
 #include "CommServer.h"
 #include "Player.h"
 #include "ExternalMind.h"
-#include "Persistance.h"
+#include "Persistence.h"
 #include "ExternalProperty.h"
 
 #include "rulesets/Character.h"
@@ -353,9 +353,9 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         debug(std::cout << "No account called " << username
                         << " in server. Checking in database."
                         << std::endl << std::flush;);
-        player = Persistance::instance()->getAccount(username);
+        player = Persistence::instance()->getAccount(username);
         if (player != 0) {
-            Persistance::instance()->registerCharacters(*player,
+            Persistence::instance()->registerCharacters(*player,
                                                m_server.m_world.getEntities());
             m_server.addAccount(player);
         }
@@ -432,7 +432,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
 
     if (username.empty() || password.empty() ||
         (0 != m_server.getAccountByName(username)) ||
-        (database_flag && Persistance::instance()->findAccount(username))) {
+        (database_flag && Persistence::instance()->findAccount(username))) {
         // Account exists, or creation data is duff
         clientError(op, "Account creation is invalid", res);
         return;
@@ -443,7 +443,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     if (database_flag) {
-        Persistance::instance()->putAccount(*player);
+        Persistence::instance()->putAccount(*player);
     }
     Info info;
     Anonymous info_arg;

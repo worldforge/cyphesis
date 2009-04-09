@@ -5,12 +5,12 @@ for lib in $STATIC_LIBS; do
 	dylib=`dirname $lib`/`basename $lib .a`.so
 	if [ -f $lib ] && [ -f $dylib ]; then
 		dylib=`readlink -f $dylib`
-		if [ ! $lib -nt $dylib ]; then
+		if [ $lib -ot $dylib ]; then
 			echo $lib is out of date.
 			ls -l $lib $dylib
 			true
 		fi
 	else
-		echo MISSING
+		echo Missing: $lib
 	fi
 done

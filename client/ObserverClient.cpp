@@ -25,7 +25,7 @@
 
 #include "CreatorClient.h"
 
-#include "common/globals.h"
+#include "common/sockets.h"
 
 #include <iostream>
 

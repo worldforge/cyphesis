@@ -52,18 +52,6 @@ static const bool debug_flag = false;
 /// server object.
 CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
 {
-#ifdef HAVE_EPOLL_CREATE
-    // 64 seems like a suitable value for initial number of sockets to be
-    // handled, though there is very little documentation on what would be
-    // a good choice here.
-    m_epollFd = epoll_create(64);
-    if (m_epollFd < 0) {
-        log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)));
-        exit_flag = true;
-    }
-#endif // HAVE_EPOLL_CREATE
-    // Initialise the time
-    gettimeofday(&m_timeVal, NULL);
 }
 
 CommServer::~CommServer()
@@ -75,6 +63,23 @@ CommServer::~CommServer()
     for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
         delete *I;
     }
+}
+
+int CommServer::setup()
+{
+#ifdef HAVE_EPOLL_CREATE
+    // 64 seems like a suitable value for initial number of sockets to be
+    // handled, though there is very little documentation on what would be
+    // a good choice here.
+    m_epollFd = epoll_create(64);
+    if (m_epollFd < 0) {
+        log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)));
+        return -1;
+    }
+#endif // HAVE_EPOLL_CREATE
+    // Initialise the time
+    gettimeofday(&m_timeVal, NULL);
+    return 0;
 }
 
 /// \brief Idle function called from the main loop.

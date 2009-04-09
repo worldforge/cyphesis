@@ -27,7 +27,6 @@ namespace varconf {
 }
 
 extern const char * CYPHESIS;
-extern const char * CLIENT;
 extern const char * SLAVE;
 
 extern varconf::Config * global_conf;
@@ -35,21 +34,11 @@ extern std::string instance;
 extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
-extern std::string client_socket_name;
-extern std::string python_socket_name;
-extern std::string slave_socket_name;
 extern std::string ruleset;
 extern bool exit_flag;
 extern bool daemon_flag;
-extern bool restricted_flag;
 extern bool database_flag;
-extern bool pvp_flag;
-extern bool pvp_offl_flag;
 extern int timeoffset;
-extern int client_port_num;
-extern int slave_port_num;
-extern int peer_port_num;
-extern int http_port_num;
 extern int dynamic_port_start;
 extern int dynamic_port_end;
 
@@ -70,6 +59,42 @@ static const int DATABASE_OKAY = 0;
 static const int DATABASE_CONERR = -1;
 /// Database table creation error
 static const int DATABASE_TABERR = -2;
+
+#define INT_OPTION(_var, _val, _section, _setting, _help) \
+int _var = _val; \
+int_config_register _var ## _register(_var, _section, _setting, _help);
+
+#define BOOL_OPTION(_var, _val, _section, _setting, _help) \
+bool _var = _val; \
+bool_config_register _var ## _register(_var, _section, _setting, _help);
+
+#define STRING_OPTION(_var, _val, _section, _setting, _help) \
+std::string _var = _val; \
+string_config_register _var ## _register(_var, _section, _setting, _help);
+
+#define UNIXSOCK_OPTION(_var, _val, _section, _setting, _help, _format) \
+std::string _var = _val; \
+unixsock_config_register _var ## _register(_var, _section, _setting, _help, _format);
+
+class int_config_register {
+  public:
+    int_config_register(int &, const char *, const char *, const char *);
+};
+
+class bool_config_register {
+  public:
+    bool_config_register(bool &, const char *, const char *, const char *);
+};
+
+class string_config_register {
+  public:
+    string_config_register(std::string &, const char *, const char *, const char *);
+};
+
+class unixsock_config_register {
+  public:
+    unixsock_config_register(std::string &, const char *, const char *, const char *, const char *);
+};
 
 template <typename T>
 int readConfigItem(const std::string & section, const std::string & key,

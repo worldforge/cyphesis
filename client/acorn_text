@@ -1,2 +1,0 @@
-#!/bin/sh
-cd PREFIX/client && ./ObserverClient.py --ruleset=acorn   --nodisplay

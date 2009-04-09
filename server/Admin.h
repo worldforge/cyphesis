@@ -24,8 +24,6 @@
 
 #include <sigc++/connection.h>
 
-class Persistance;
-
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:

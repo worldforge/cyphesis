@@ -1,0 +1,305 @@
+#!/bin/bash
+
+set -u
+
+declare -r RELEASE_DIR=${HOME}/rel
+declare -r RPM_DIR=${HOME}/RPM
+declare -r RPM_SOURCES="cyphesis.init cyclient.init cyphesis.sysconfig scripts/compile_python.py"
+declare -r RPM_SPEC=cyphesis.spec
+
+verify_environment() {
+    DATE=$(date -u +%G-%m-%d)
+
+    echo Today is ${DATE}
+
+    PLATFORM=$(uname -i)
+    FC_VERSION=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
+
+    if [ ! ${FC_VERSION} -gt 0 ]
+    then
+        echo Unable to get sane fedora version from OS.
+        echo Exiting.
+        exit 1
+    fi
+
+    echo Creating release on a Fedora ${FC_VERSION} ${PLATFORM} system.
+
+    RPM_REL="fc${FC_VERSION}.wf"
+
+    if [ ! -d ${RELEASE_DIR} ]
+    then
+        if ! mkdir ${RELEASE_DIR}
+        then
+            echo Unable to create release directory ${RELEASE_DIR}
+            echo Exiting.
+            exit 1
+        fi
+    fi
+
+    echo Release files will be copied to ${RELEASE_DIR}
+
+    if [ ! -d ${RPM_DIR} ]
+    then
+        if ! mkdir -p ${RPM_DIR}/SOURCES
+        then
+            echo Unable to create rpm directory ${RPM_DIR}
+            echo Exiting.
+            exit 1
+        fi
+    fi
+
+    echo RPM files will be built in ${RPM_DIR}
+}
+
+get_release_user() {
+    GIT_USERNAME=$(git-config --get user.name)
+    if [ $? -ne 0 ]
+    then
+        echo Git username not available
+        exit 1
+    fi
+
+    GIT_EMAIL=$(git-config --get user.email)
+    if [ $? -ne 0 ]
+    then
+        echo Git email not available
+        exit 1
+    fi
+    echo Creating release as ${GIT_USERNAME} \<${GIT_EMAIL}\>
+}
+
+get_version() {
+    CY_VERSION=$(grep ^AC_INIT configure.ac | head -n 1 | sed "s/^AC_INIT(\[cyphesis\],\[\([0-9.]\+\)\].*$/\1/")
+
+    if [ -z "${CY_VERSION}" ]
+    then
+        echo No version data found.
+    fi
+    echo Creating release for version ${CY_VERSION}
+
+    TGZ=cyphesis-${CY_VERSION}.tar.gz
+    TBZ=cyphesis-${CY_VERSION}.tar.bz2
+    SRC_RPM=cyphesis-${CY_VERSION}-1.src.rpm
+    BIN_RPM=cyphesis-${CY_VERSION}-1.${RPM_REL}.${PLATFORM}.rpm
+    AUTO_PKG=cyphesis-${CY_VERSION}.package
+}
+
+check_version_recorded() {
+    if [ $safe -ne 0 ]
+    then
+        return
+    fi
+    
+    grep "^	\* Release ${CY_VERSION}" ChangeLog > /dev/null
+    CHANGE_FOUND=$?
+
+    grep "^	\* Version ${CY_VERSION} released" NEWS > /dev/null
+    NEWS_FOUND=$?
+
+    if [ ${CHANGE_FOUND} -eq 0 -a ${NEWS_FOUND} -eq 0 ]
+    then
+        echo Found everywhere
+    else
+        if [ ${NEWS_FOUND} -eq 1 ]
+        then
+            echo Release news NOT found
+            (echo -e "${DATE}  ${GIT_USERNAME}  <${GIT_EMAIL}>\n\n	* Version ${CY_VERSION} released.\n" ; cat NEWS) > NEWS_tmp
+            mv -f NEWS_tmp NEWS
+            # git-commit -m "Add news item for ${CY_VERSION} release" NEWS
+        fi
+        if [ ${CHANGE_FOUND} -eq 1 ]
+        then
+            echo Release change NOT found
+            echo -e "${DATE}  ${GIT_USERNAME}  <${GIT_EMAIL}>\n" > ChangeLog_tmp
+            if [ ${NEWS_FOUND} -eq 1 ]
+            then
+                echo -e "	* NEWS: Update NEWS announcement for release.\n" >> ChangeLog_tmp
+            fi
+            echo -e "	* Release ${CY_VERSION}\n" >> ChangeLog_tmp
+            cat ChangeLog >> ChangeLog_tmp 
+            mv -f ChangeLog_tmp ChangeLog
+            # git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
+        fi
+    fi
+    if ! git-tag -v ${CY_VERSION}
+    then
+        if ! git-tag -s -m "${CY_VERSION} release" ${CY_VERSION}
+        then
+            echo Failed to tag release.
+            # exit 1
+        fi
+    fi
+}
+
+package_sources() {
+    if [ -f ${RELEASE_DIR}/${TGZ} -a -f ${RELEASE_DIR}/${TGZ} ]
+    then
+        echo Source files already built
+        return
+    fi
+
+    if ! make dist # check
+    then
+        echo distcheck failed. Exiting.
+        exit 1
+    fi
+
+    if [ ! -f ${TGZ} -o ! -f ${TBZ} ]
+    then
+        echo distcheck did not create release tarballs ${TGZ} and ${TBZ}.
+        echo Exiting.
+        exit 1
+    fi
+
+    if ! mv -f ${TGZ} ${TBZ} ${RELEASE_DIR}
+    then
+        echo Unable to move source release files to release directory.
+        echo Exiting.
+        exit 1
+    fi
+
+    if ! cp ${RELEASE_DIR}/${TBZ} ${RPM_SOURCES} ${RPM_DIR}/SOURCES
+    then
+        echo Unable to copy source files to rpm source directory.
+        echo Exiting.
+        exit 1
+    fi
+}
+
+package_rpms() {
+    if [ -f ${RELEASE_DIR}/${SRC_RPM} -a -f ${RELEASE_DIR}/${BIN_RPM} ]
+    then
+        echo RPMs already built
+        return
+    fi
+    
+    sed -i "s/\(^%define release 1\).*$/\1/" ${RPM_SPEC}
+
+    SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+    if [ $? -ne 0 ]
+    then
+        echo rpmbuild of source rpm failed
+        echo Exiting.
+        exit 1
+    fi
+
+    if ! mv -f ${SRPM} ${RELEASE_DIR}
+    then
+        echo Unable to move source release files to release directory.
+        echo Exiting.
+        exit 1
+    fi
+
+    echo Built ${SRPM}
+
+    sed -i "s/\(^%define release 1\)/\1.${RPM_REL}/" ${RPM_SPEC}
+    
+    RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+    if [ $? -ne 0 ]
+    then
+        echo rpmbuild of binary rpm failed
+        echo Exiting.
+        exit 1
+    fi
+
+    for rpm in ${RPMS}
+    do
+        if ! mv -f ${rpm} ${RELEASE_DIR}
+        then
+            echo Unable to move binary rpm files to release directory.
+            echo Exiting.
+            exit 1
+        fi
+    done
+}
+
+package_autopackage() {
+    if [ -f ${RELEASE_DIR}/${AUTO_PKG} ]
+    then
+        echo Autopackage already built
+        return
+    fi
+    
+    if ! make clean
+    then
+        echo make clean failed. Exiting.
+        exit 1
+    fi
+
+    if ! makepackage
+    then
+        echo makepackage failed. Exiting.
+        exit 1
+    fi
+
+    if [ ! -f ${AUTO_PKG} ]
+    then
+        echo Autopackage ${AUTO_PKG} file not create by makepackage.
+        echo Exiting.
+        exit 1
+    fi
+    
+    if ! mv -f ${AUTO_PKG} ${RELEASE_DIR}
+    then
+        echo Unable to move autopackage files to release directory.
+        echo Exiting.
+        exit 1
+    fi
+}
+
+usage() {
+   echo Automate the otherwise manual steps require to spin a release.
+   echo Usage: create_release [-n]
+   echo Options:
+   echo "  -n Just check builds, don't change anything"
+   echo
+   echo Steps:
+   echo Get username and email from git.
+   echo Get the version from the AC_INIT call in configure.ac
+   echo Add entries if required to NEWS, and ChangeLog.
+   echo Commit change to git.
+   echo Create git release tag.
+}
+
+declare -i safe=0
+
+while getopts "n" options; do
+  case $options in
+    n ) safe=1;;
+    h ) usage
+         exit 1;;
+    \? ) usage
+         exit 1;;
+    * ) usage
+        exit 1;;
+  esac
+done
+
+verify_environment
+
+get_release_user
+
+get_version
+
+check_version_recorded
+
+# Use the library check script
+
+package_sources
+
+package_rpms
+
+package_autopackage
+
+echo NATURAL END
+
+
+# Get username from git. (me)
+# Get version from configure.ac
+# Check version doesn't exist in Changelog or NEWS yet.
+# Add to Changelog and NEWS.
+# submit to git.
+# make distcheck
+# makepackage
+# make rpms
+

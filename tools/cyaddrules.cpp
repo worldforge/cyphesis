@@ -34,6 +34,7 @@
 #include "common/Database.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/sockets.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -128,6 +129,18 @@ static void usage(char * prgname)
     std::cerr << "usage: " << prgname << " [<rulesetname> <atlas-xml-file>]" << std::endl << std::flush;
 }
 
+STRING_OPTION(server, "", "client", "serverhost",
+              "Hostname of the server to connect to");
+
+STRING_OPTION(username, "admin", "client", "account",
+              "Account name to use to authenticate to the server");
+
+STRING_OPTION(password, "", "client", "password",
+              "Password to use to authenticate to the server");
+
+INT_OPTION(useslave, 0, "client", "useslave",
+           "Flag to control connecting to an AI slave server, not master world server");
+
 int main(int argc, char ** argv)
 {
     int config_status = loadConfig(argc, argv, USAGE_CYCMD);
@@ -149,21 +162,9 @@ int main(int argc, char ** argv)
 
     AdminClient bridge;
 
-    std::string server;
-    readConfigItem("client", "serverhost", server);
-
-    int useslave = 0;
-    readConfigItem("client", "useslave", useslave);
-
-    std::string username("admin");
-    readConfigItem("client", "account", username);
     bridge.setUsername(username);
 
-    std::string passwd;
-    if (readConfigItem("client", "password", passwd) == 0) {
-        bridge.setPassword(passwd);
-    }
-    passwd.clear();
+    bridge.setPassword(password);
 
     if (server.empty()) {
         std::string localSocket;

@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2009 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,33 +17,17 @@
 
 // $Id$
 
-#include "CommPeer.h"
+#ifndef COMMON_SOCKETS_H
+#define COMMON_SOCKETS_H
 
-#include "Peer.h"
-#include "CommServer.h"
+#include <string>
 
-#include "common/globals.h"
+extern std::string client_socket_name;
+extern std::string python_socket_name;
+extern std::string slave_socket_name;
 
-INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
-           "Network listen port for peer server connections");
+extern int client_port_num;
+// extern int dynamic_port_start;
+// extern int dynamic_port_end;
 
-/// \brief Constructor remote peer socket object.
-///
-/// @param svr Reference to the object that manages all socket communication.
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
-{
-    std::cout << "Outgoing peer connection." << std::endl << std::flush;
-}
-
-CommPeer::~CommPeer()
-{
-}
-
-int CommPeer::connect(const std::string & host)
-{
-    m_clientIos.open(host, peer_port_num);
-    if (m_clientIos.is_open()) {
-        return 0;
-    }
-    return -1;
-}
+#endif // COMMON_SOCKETS_H

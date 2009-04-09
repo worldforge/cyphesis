@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_PERSISTANCE_H
-#define SERVER_PERSISTANCE_H
+#ifndef SERVER_PERSISTENCE_H
+#define SERVER_PERSISTENCE_H
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
@@ -33,17 +33,17 @@ typedef std::map<long, Entity *> EntityDict;
 
 /// \brief Class for managing the required database tables for persisting
 /// in-game entities and server accounts
-class Persistance {
+class Persistence {
   private:
-    Persistance();
+    Persistence();
 
     std::string m_characterRelation;
 
-    static Persistance * m_instance;
+    static Persistence * m_instance;
   public:
     Database & m_connection;
 
-    static Persistance * instance();
+    static Persistence * instance();
     int init();
     void shutdown();
 
@@ -58,4 +58,4 @@ class Persistance {
     bool clearRules();
 };
 
-#endif // SERVER_PERSISTANCE_H
+#endif // SERVER_PERSISTENCE_H

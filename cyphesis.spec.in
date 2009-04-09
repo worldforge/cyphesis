@@ -20,7 +20,7 @@ Source4: compile_python.py
 PreReq: initscripts /usr/sbin/useradd /sbin/chkconfig /usr/bin/find /bin/rm
 Requires: postgresql-server
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: atlascpp-devel mercator-devel >= 0.2.0 varconf-devel >= 0.6.2 skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 openssl-devel python-devel >= 2.0.0
+BuildRequires: atlascpp-devel mercator-devel >= 0.2.0 varconf-devel >= 0.6.2 skstream-devel >= 0.3.2 readline-devel postgresql-devel >= 7.1 python-devel >= 2.0.0
 Obsoletes: cyphesis-service cyphesis-mason
 
 %description
@@ -57,7 +57,7 @@ Mason game. Use this package if you intend to run an Mason server.
 %setup -q
 
 %build
-CXXFLAGS=$RPM_OPT_FLAGS %configure --enable-static --disable-dependency-tracking
+CXXFLAGS=$RPM_OPT_FLAGS %configure --disable-dependency-tracking
 make -j 3
 
 %install

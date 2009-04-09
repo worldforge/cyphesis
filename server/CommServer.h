@@ -63,6 +63,7 @@ class CommServer {
     explicit CommServer(ServerRouting & srv);
     ~CommServer();
 
+    int setup();
     void poll();
     void addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);

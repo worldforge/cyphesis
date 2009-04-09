@@ -28,9 +28,10 @@
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
+#include "CommPeer.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
-#include "Persistance.h"
+#include "Persistence.h"
 #include "WorldRouter.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"
@@ -51,6 +52,7 @@
 #include "common/compose.hpp"
 #include "common/system.h"
 #include "common/nls.h"
+#include "common/sockets.h"
 
 #include <varconf/config.h>
 
@@ -62,6 +64,16 @@ class TrustedConnection;
 class Peer;
 
 static const bool debug_flag = false;
+
+INT_OPTION(http_port_num, 6780, CYPHESIS, "httpport",
+           "Network listen port for http connection to the server");
+
+BOOL_OPTION(useMetaserver, true, CYPHESIS, "usemetaserver",
+            "Flag to control registration with the metaserver");
+
+STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
+              "Hostname to use as the metaserver");
+
 
 int main(int argc, char ** argv)
 {
@@ -113,7 +125,7 @@ int main(int argc, char ** argv)
     // database support, this will open the various databases used to
     // store server data.
     if (database_flag) {
-        Persistance * p = Persistance::instance();
+        Persistence * p = Persistence::instance();
         int dbstatus = p->init();
         if (dbstatus < 0) {
             database_flag = false;
@@ -139,19 +151,11 @@ int main(int argc, char ** argv)
     // If the restricted flag is set in the config file, then we
     // don't allow connecting users to create accounts. Accounts must
     // be created manually by the server administrator.
-    if (readConfigItem(instance, "restricted", restricted_flag) == 0) {
-        if (restricted_flag) {
-            log(INFO, "Setting restricted mode.");
-        }
+    if (restricted_flag) {
+        log(INFO, "Setting restricted mode.");
     }
 
     readConfigItem(instance, "inittime", timeoffset);
-
-    bool useMetaserver = false;
-    readConfigItem(instance, "usemetaserver", useMetaserver);
-
-    std::string mserver("metaserver.worldforge.org");
-    readConfigItem(instance, "metaserver", mserver);
 
     std::string server_name;
     if (readConfigItem(instance, "servername", server_name) != 0) {
@@ -198,6 +202,11 @@ int main(int argc, char ** argv)
 
     CommServer commServer(server);
 
+    if (commServer.setup() != 0) {
+        log(CRITICAL, "Internal error setting up server infrastructure");
+        return EXIT_SOCKET_ERROR;
+    }
+
     // This is where we should restore the database, before
     // the listen sockets are open. Unlike earlier code, we are
     // attempting to construct the internal state from the database,
@@ -217,7 +226,7 @@ int main(int argc, char ** argv)
         // log(INFO, _("Restored world."));
 
         CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
-                                        Persistance::instance()->m_connection);
+                                        Persistence::instance()->m_connection);
         commServer.addSocket(dbsocket);
         commServer.addIdle(dbsocket);
 
@@ -381,7 +390,7 @@ int main(int argc, char ** argv)
       // cause the destruction of the server and world objects, and the entire
       // world contents
 
-    Persistance::instance()->shutdown();
+    Persistence::instance()->shutdown();
 
     EntityBuilder::instance()->flushFactories();
     EntityBuilder::del();

@@ -1,3 +1,66 @@
+2009-04-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.cpp: Explicitly instantiate a template to work
+	  around compiler weirdness. Only give an error about invalid
+	  options if they are on the command line.
+
+2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.cpp, common/globals.h, client/client.cpp,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/server.cpp, tools/cyaddrules.cpp:
+	  Move a bunch more options to the new mechanism.
+
+2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.cpp, common/globals.h: Add necessary support for
+	  special socket address config options, by adding support
+	  for code to be called when an option is missing, and postprocessing
+	  on the option data.
+
+	* common/sockets.h, common/client_socket.cpp: Add new files for
+	  socket config data moved from globals.
+
+	* client/ObserverClient.cpp, server/CommMDNSPublisher.cpp,
+	  server/server.cpp, tools/AdminClient.cpp, tools/AdminClient.h,
+	  tools/cyaddrules.cpp, tools/cycmd.cpp, tools/cypython.cpp:
+	  Update the rest of the code to use the new header.
+
+2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/CommServer.cpp, server/CommServer.h: Create a setup
+	  function and move initialisation that can fail into there from
+	  the constructor.
+
+	* server/server.cpp: Use the CommServer setup function, and fail
+	  earlier if it doesn't work.
+
+2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.cpp, common/globals.h, server/CommPeer.cpp,
+	  server/CommPeer.h, server/server.cpp: Remove the old peer port
+	  setting, and handle it via the new mechanism.
+
+2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.cpp, common/globals.h: Add infrastructure for
+	  embedding config options in the code rather than having a
+	  central place for them.
+
+	* server/server.cpp: Use the new option system for the http port.
+
+2009-04-07  Al Riddoch  <alriddoch@googlemail.com>
+
+	* tests/Makefile.am: Update the test link objects to match name
+	  changes.
+
+2009-03-24  Al Riddoch  <alriddoch@googlemail.com>
+
+	* server/Account.cpp, server/Admin.h, server/Connection.cpp,
+	  server/EntityBuilder.cpp, server/Persistence.cpp,
+	  server/Persistence.h, server/server.cpp, server/slave.cpp:
+	  Correct the spelling of persistence.
+
 2009-03-23  Al Riddoch  <alriddoch@googlemail.com>
 
 	* configure.ac: Increment version to 0.5.19 for release.
