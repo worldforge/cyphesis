@@ -27,7 +27,6 @@ extern std::string python_socket_name;
 extern std::string slave_socket_name;
 
 extern int client_port_num;
-extern int slave_port_num;
 // extern int dynamic_port_start;
 // extern int dynamic_port_end;
 

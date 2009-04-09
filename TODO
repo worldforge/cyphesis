@@ -1,3 +1,5 @@
+--conf=<file> for specifying config. Simple.
+
 Add a class for the movement domain which is a property of the movement
 parent. Point to it from the Motion object. (safe reference).
 Encapsulate most data related to movement in Motion rather than leaving

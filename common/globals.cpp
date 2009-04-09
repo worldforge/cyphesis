@@ -57,7 +57,6 @@ bool daemon_flag = false;
 bool database_flag = true;
 int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
 int client_port_num = 6767;
-int slave_port_num = 6768;
 int dynamic_port_start = 6800;
 int dynamic_port_end = 6899;
 
@@ -557,8 +556,6 @@ void readInstanceConfiguration(const std::string & section)
             client_port_num = -1;
         }
     }
-
-    readConfigItem("slave", "tcpport", slave_port_num);
 
     // Load up the ruleset.
     if (readConfigItem(section, "ruleset", ruleset)) {
