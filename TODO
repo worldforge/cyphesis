@@ -1,3 +1,6 @@
+Add daily option to the create_release file, and work out where the hell to
+put them.
+
 --conf=<file> for specifying config. Simple.
 
 Add a class for the movement domain which is a property of the movement
