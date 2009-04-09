@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_TERRAINTERRAINMOD_IMPL_H
-#define EMBEROGRE_TERRAINTERRAINMOD_IMPL_H
+#ifndef RULESETS_TERRAIN_MOD_IMPL_H
+#define RULESETS_TERRAIN_MOD_IMPL_H
 
 #include <Mercator/TerrainMod.h>
 #include <Mercator/TerrainMod_impl.h>
