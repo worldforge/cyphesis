@@ -162,6 +162,8 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
     return -1;
 }
 
+template int readConfigItem<bool>(const std::string & section, const std::string & key, bool & storage);
+
 class Option {
   protected:
     std::string m_value;
@@ -360,7 +362,8 @@ int Options::check_config(varconf::Config & config,
         varconf::sec_map::const_iterator Jend = section.end();
         for (; J != Jend; ++J) {
             const std::string & option_name = J->first;
-            if (section_help.find(J->first) == section_help.end()) {
+            if (section_help.find(J->first) == section_help.end() &&
+                J->second->scope() == varconf::INSTANCE) {
                 log(WARNING, String::compose("Invalid option -- %1:%2",
                                              section_name, option_name));
             }

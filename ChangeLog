@@ -1,3 +1,9 @@
+2009-04-09  Al Riddoch  <alriddoch@googlemail.com>
+
+	* common/globals.cpp: Explicitly instantiate a template to work
+	  around compiler weirdness. Only give an error about invalid
+	  options if they are on the command line.
+
 2009-04-08  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/globals.cpp, common/globals.h, client/client.cpp,
