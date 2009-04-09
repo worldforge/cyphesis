@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoader.h,v 1.8 2007-11-15 02:07:04 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_ATLAS_FILE_LOADER_H
 #define COMMON_ATLAS_FILE_LOADER_H

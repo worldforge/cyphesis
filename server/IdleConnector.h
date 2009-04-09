@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: IdleConnector.h,v 1.1 2008-08-22 18:59:07 alriddoch Exp $
+// $Id$
 
 #ifndef SERVER_IDLE_CONNECTOR_H
 #define SERVER_IDLE_CONNECTOR_H

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: AtlasFileLoadertest.cpp,v 1.4 2007-11-20 00:38:05 alriddoch Exp $
+// $Id$
 
 #include "common/AtlasFileLoader.h"
 

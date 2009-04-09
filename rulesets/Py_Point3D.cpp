@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Point3D.cpp,v 1.13 2007-07-30 18:12:51 alriddoch Exp $
+// $Id$
 
 #include "Py_Point3D.h"
 

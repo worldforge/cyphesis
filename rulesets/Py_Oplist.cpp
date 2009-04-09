@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Oplist.cpp,v 1.31 2007-04-01 20:55:27 alriddoch Exp $
+// $Id$
 
 #include "Py_Operation.h"
 #include "Py_Oplist.h"

@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_Location.h,v 1.17 2007-12-07 01:19:16 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PY_LOCATION_H
 #define RULESETS_PY_LOCATION_H

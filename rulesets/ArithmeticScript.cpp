@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: ArithmeticScript.cpp,v 1.3 2006-10-26 00:48:08 alriddoch Exp $
+// $Id$
 
 #include "rulesets/ArithmeticScript.h"
 

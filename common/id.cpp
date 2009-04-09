@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: id.cpp,v 1.9 2008-04-28 17:26:09 alriddoch Exp $
+// $Id$
 
 #include "common/id.h"
 #include "common/log.h"

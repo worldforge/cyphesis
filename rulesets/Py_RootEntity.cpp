@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_RootEntity.cpp,v 1.12 2007-07-29 03:33:34 alriddoch Exp $
+// $Id$
 
 #include "Py_RootEntity.h"
 #include "Py_Object.h"

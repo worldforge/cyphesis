@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: PythonWrapper.h,v 1.4 2006-12-24 14:42:06 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PYTHON_WRAPPER_H
 #define RULESETS_PYTHON_WRAPPER_H

@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-// $Id: Astronomy.h,v 1.5 2006-10-26 00:48:12 alriddoch Exp $
+// $Id$
 
 #ifndef ELEVATION_H
 #define ELEVATION_H

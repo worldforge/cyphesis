@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_World.h,v 1.15 2008-01-05 00:05:29 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PY_WORLD_H
 #define RULESETS_PY_WORLD_H

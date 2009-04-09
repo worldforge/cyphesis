@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: TerrainProperty.h,v 1.14 2008-08-17 18:12:10 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_TERRAIN_PROPERTY_H
 #define RULESETS_TERRAIN_PROPERTY_H

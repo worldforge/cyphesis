@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: debug.cpp,v 1.4 2007-07-17 02:26:43 alriddoch Exp $
+// $Id$
 
 #include "debug.h"
 

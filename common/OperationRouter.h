@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OperationRouter.h,v 1.3 2008-01-28 23:48:31 alriddoch Exp $
+// $Id$
 
 #ifndef COMMON_OPERATION_ROUTER_H
 #define COMMON_OPERATION_ROUTER_H

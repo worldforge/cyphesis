@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: OutfitProperty.cpp,v 1.12 2008-01-07 00:06:19 alriddoch Exp $
+// $Id$
 
 #include "OutfitProperty.h"
 

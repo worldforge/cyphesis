@@ -2,7 +2,7 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000,2001 Alistair Riddoch
 
-// $Id: DumbSkill.h,v 1.2 2006-10-26 00:48:13 alriddoch Exp $
+// $Id$
 
 #ifndef SKILLS_DUMB_SKILL_H
 #define SKILLS_DUMB_SKILL_H

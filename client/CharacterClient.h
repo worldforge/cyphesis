@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: CharacterClient.h,v 1.18 2007-11-28 20:22:42 alriddoch Exp $
+// $Id$
 
 #ifndef CLIENT_CHARACTER_CLIENT_H
 #define CLIENT_CHARACTER_CLIENT_H

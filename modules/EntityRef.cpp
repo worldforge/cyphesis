@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: EntityRef.cpp,v 1.1 2006-12-04 00:50:38 alriddoch Exp $
+// $Id$
 
 #include "EntityRef.h"
 

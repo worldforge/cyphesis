@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: Py_EntityWrapper.h,v 1.5 2006-12-24 17:18:55 alriddoch Exp $
+// $Id$
 
 #ifndef RULESETS_PY_ENTITY_WRAPPER_H
 #define RULESETS_PY_ENTITY_WRAPPER_H
