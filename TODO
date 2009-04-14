@@ -1,3 +1,7 @@
+Look up launchd.plist man page for details of how to manage a unix daemon
+under OS-X.
+http://developer.apple.com/technotes/tn2005/tn2083.html
+
 Add daily option to the create_release file, and work out where the hell to
 put them.
 
