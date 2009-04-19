@@ -512,8 +512,6 @@ int loadConfig(int argc, char ** argv, int usage)
         Jend = I->second.end();
         for (; J != Jend; ++J) {
             if (global_conf->findItem(I->first, J->first)) {
-                std::cout << "FOUND " << I->first << ":" << J->first
-                          << std::endl << std::flush;
                 J->second->read(global_conf->getItem(I->first, J->first));
             } else {
                 J->second->missing();
