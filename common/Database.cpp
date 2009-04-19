@@ -1476,7 +1476,6 @@ bool Database::runMaintainance(int command)
         std::string query("REINDEX TABLE ");
         TableSet::const_iterator Iend = allTables.end();
         for (TableSet::const_iterator I = allTables.begin(); I != Iend; ++I) {
-            std::cout << (query + *I) << std::endl << std::flush;
             scheduleCommand(query + *I);
         }
     }
@@ -1490,7 +1489,6 @@ bool Database::runMaintainance(int command)
         }
         TableSet::const_iterator Iend = allTables.end();
         for(TableSet::const_iterator I = allTables.begin(); I != Iend; ++I) {
-            std::cout << (query + *I) << std::endl << std::flush;
             scheduleCommand(query + *I);
         }
     }
