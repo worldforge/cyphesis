@@ -92,7 +92,6 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
                   // << std::endl << std::flush;
         if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
             if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-                std::cout << "PURGING PC" << std::endl << std::flush;
                 purgeEntity(m_entity);
             }
         }
