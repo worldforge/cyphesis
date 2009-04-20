@@ -409,6 +409,8 @@ EntityBuildertest_LDADD = $(top_builddir)/server/EntityBuilder.o \
                           $(top_builddir)/server/Admin.o \
                           $(top_builddir)/server/Player.o \
                           $(top_builddir)/server/Connection.o \
+                          $(top_builddir)/server/ServerRouting.o \
+                          $(top_builddir)/server/buildid.o \
                           $(top_builddir)/server/ExternalMind.o \
                           $(top_builddir)/server/ExternalProperty.o \
                           $(top_builddir)/server/Lobby.o \
@@ -440,6 +442,8 @@ PropertyFlagtest_LDADD = $(top_builddir)/server/EntityBuilder.o \
                          $(top_builddir)/server/Admin.o \
                          $(top_builddir)/server/Player.o \
                          $(top_builddir)/server/Connection.o \
+                         $(top_builddir)/server/ServerRouting.o \
+                         $(top_builddir)/server/buildid.o \
                          $(top_builddir)/server/ExternalMind.o \
                          $(top_builddir)/server/ExternalProperty.o \
                          $(top_builddir)/server/Lobby.o \
