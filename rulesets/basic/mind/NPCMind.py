@@ -1,6 +1,8 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
+import random
+
 from atlas import *
 from physics import *
 from Quaternion import Quaternion
@@ -61,6 +63,7 @@ class NPCMind(Thing):
         self.money_transfers=[]
         self.transfers=[]
         self.trigger_goals={}
+        self.jitter=random.uniform(-0.1, 0.1)
         #???self.debug=debug(self.name+".mind.log")
         self.message_queue=None
         #This is going to be really tricky
@@ -112,7 +115,7 @@ class NPCMind(Thing):
     def tick_operation(self, op):
         """periodically reasses situation"""
         opTick=Operation("tick")
-        opTick.setFutureSeconds(const.basic_tick)
+        opTick.setFutureSeconds(const.basic_tick + self.jitter)
         for t in self.pending_things:
             thing = self.map.get(t)
             if thing and thing.type[0]:
