@@ -1,3 +1,7 @@
+Ways to hold territory:
+ NPC manned towner foritifications. No door or ladder at ground level.
+ Must be frequently re-supplied.
+
 Define class properties that generate a random instance value per entity.
 This is another type which must be added to every instance, and can never
 be used as a default.
