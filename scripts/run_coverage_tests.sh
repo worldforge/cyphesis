@@ -24,6 +24,18 @@ check_coverage() {
         exit 1
     fi
 
+    if [ -f ${coverage_data} ]
+    then
+        rm -f ${coverage_data}
+    fi
+
+    ${test_program} > /dev/null 2>&1
+    if [ $? -ne 0 ]
+    then
+        echo FAIL
+        exit 1
+    fi
+
     if [ ! -f ${coverage_data} ]
     then
         if [ ! -f ${source_dir}/${base_file}.gcno ]
@@ -36,7 +48,7 @@ check_coverage() {
 
     if [ ${test_program} -nt ${coverage_data} ]
     then
-        echo Coverage is out of date.
+        echo Coverage is out of date for ${source_file}
         exit 1
     fi
 
