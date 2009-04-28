@@ -6,12 +6,17 @@ check_coverage() {
     base_file=$(basename ${source_file} .cpp)
     test_program=tests/${base_file}test
     coverage_data=${source_dir}/${base_file}.gcda
-    if [ ! -x ${test_program} ]
+
+    if [ ! -f ${test_program}.cpp ]
     then
         return
     fi
-
-    echo ${source_file} ${base_file} ${test_program}
+    
+    if [ ! -x ${test_program} ]
+    then
+        echo Test programs have not been built.
+        exit 1
+    fi
 
     if [ ${source_file} -nt ${test_program} ]
     then
@@ -21,6 +26,10 @@ check_coverage() {
 
     if [ ! -f ${coverage_data} ]
     then
+        if [ ! -f ${source_dir}/${base_file}.gcno ]
+        then
+            return
+        fi
         echo No coverage data
         exit 1
     fi
@@ -31,10 +40,13 @@ check_coverage() {
         exit 1
     fi
 
-    (cd ${source_dir} && gcov ${source_file}) | grep -A 1 "^File '$(basename ${source_file})" | grep ^Lines
+
+    coverage_percent=$( (cd ${source_dir} && gcov ${source_file}) | grep -A 1 "^File '$(basename ${source_file})" | grep ^Lines | head -n 1 | sed "s/^Lines executed:\([0-9]\+\)\.[0-9]\+% of .*$/\1/")
+
+    echo ${source_file} ${coverage_percent}
 }
 
-DIRS="rulesets"
+DIRS="physics common modules rulesets"
 
 for dir in ${DIRS}
 do
