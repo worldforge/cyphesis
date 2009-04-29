@@ -7,7 +7,7 @@ COMMON_TESTS = logtest inheritancetest Propertytest \
                BaseWorldtest Databasetest idtest accountbasetest \
                debugtest globalstest
 
-PHYSICS_TESTS = transformtest collisiontest emergencetest distancetest
+PHYSICS_TESTS = BBoxtest transformtest collisiontest emergencetest distancetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest
 
@@ -168,6 +168,10 @@ globalstest_LDADD = $(top_builddir)/modules/DateTime.o \
                     $(top_builddir)/common/globals.o
 
 # PHYSICS_TESTS
+
+BBoxtest_SOURCES = BBoxtest.cpp
+BBoxtest_LDADD = $(top_builddir)/physics/BBox.o \
+                 $(top_builddir)/common/const.o
 
 collisiontest_SOURCES = collisiontest.cpp
 collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
