@@ -7,7 +7,7 @@ COMMON_TESTS = logtest inheritancetest Propertytest \
                BaseWorldtest Databasetest idtest accountbasetest \
                debugtest globalstest
 
-PHYSICS_TESTS = BBoxtest Vector3Dtest \
+PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest
@@ -176,6 +176,9 @@ BBoxtest_LDADD = $(top_builddir)/physics/BBox.o \
 
 Vector3Dtest_SOURCES = Vector3Dtest.cpp
 Vector3Dtest_LDADD = $(top_builddir)/physics/Vector3D.o
+
+Quaterniontest_SOURCES = Quaterniontest.cpp
+Quaterniontest_LDADD = $(top_builddir)/physics/Quaternion.o
 
 Collisiontest_SOURCES = Collisiontest.cpp
 Collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
