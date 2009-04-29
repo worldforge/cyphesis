@@ -9,6 +9,15 @@ check_coverage() {
 
     if [ ! -f ${test_program}.cpp ]
     then
+        if [ ${report} -eq 1 ]
+        then
+            echo No test for ${source_file}
+        fi
+        return
+    fi
+
+    if [ ${report} -eq 1 ]
+    then
         return
     fi
     
@@ -62,7 +71,27 @@ check_coverage() {
     echo ${source_file} ${coverage_percent}
 }
 
+usage() {
+    echo Automate running coverage tools, and generate concise report.
+    echo usage: run_coverage_tests.sh [ -r ]
+    echo Options:
+    echo "  -r Just report source files with a coverage test"
+}
+
 DIRS="physics common modules rulesets"
+
+declare -i report=0
+
+while getopts "hr" options
+do
+  case $options in
+    r ) report=1;;
+    h ) usage
+         exit 0;;
+    * ) usage
+         exit 1;;
+  esac
+done
 
 for dir in ${DIRS}
 do
@@ -71,4 +100,4 @@ do
         check_coverage ${source_file}
     done
 done
-    
+
