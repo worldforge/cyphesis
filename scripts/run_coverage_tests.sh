@@ -73,7 +73,7 @@ check_coverage() {
 
 usage() {
     echo Automate running coverage tools, and generate concise report.
-    echo usage: run_coverage_tests.sh [ -r ]
+    echo usage: run_coverage_tests.sh [ -r ] [SOURCEFILE]
     echo Options:
     echo "  -r Just report source files with a coverage test"
 }
@@ -92,6 +92,20 @@ do
          exit 1;;
   esac
 done
+
+shift $((OPTIND-1))
+
+if [ -n "$1" ]
+then
+    if [ -f "$1" ]
+    then
+        check_coverage $1
+        exit 0
+    else
+        usage
+        exit 1
+    fi
+fi
 
 for dir in ${DIRS}
 do
