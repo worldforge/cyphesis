@@ -4,8 +4,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                Connecttest Droptest Eattest \
                Monitortest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
-               BaseWorldtest Databasetest idtest accountbasetest \
-               debugtest globalstest
+               BaseWorldtest Databasetest idtest AccountBasetest \
+               debugtest globalstest OperationRoutertest Routertest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -147,8 +147,8 @@ idtest_LDADD = $(top_builddir)/modules/DateTime.o \
                $(top_builddir)/common/globals.o \
                $(top_builddir)/common/id.o
 
-accountbasetest_SOURCES = accountbasetest.cpp
-accountbasetest_LDADD = $(top_builddir)/common/AccountBase.o \
+AccountBasetest_SOURCES = AccountBasetest.cpp
+AccountBasetest_LDADD = $(top_builddir)/common/AccountBase.o \
                         $(top_builddir)/common/Database.o \
                         $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/system.o \
@@ -167,6 +167,17 @@ globalstest_LDADD = $(top_builddir)/modules/DateTime.o \
                     $(top_builddir)/common/const.o \
                     $(top_builddir)/common/prefix.o \
                     $(top_builddir)/common/globals.o
+
+OperationRoutertest_SOURCES = OperationRoutertest.cpp
+OperationRoutertest_LDADD = $(top_builddir)/common/OperationRouter.o
+
+Routertest_SOURCES = Routertest.cpp
+Routertest_LDADD = $(top_builddir)/modules/DateTime.o \
+                   $(top_builddir)/common/Router.o \
+                   $(top_builddir)/common/log.o \
+                   $(top_builddir)/common/const.o \
+                   $(top_builddir)/common/prefix.o \
+                   $(top_builddir)/common/globals.o
 
 # PHYSICS_TESTS
 
