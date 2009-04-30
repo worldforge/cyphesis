@@ -120,6 +120,8 @@ int main()
     assert(i.hasClass("root_operation"));
     assert(i.hasClass("login"));
     
+    const TypeNode * rt_node = i.getType("root");
+
     const Root & rt = i.getClass("root");
 
     // Make sure the type tree is coherent, and contains a decent
@@ -142,6 +144,13 @@ int main()
 
     assert(i.hasClass("squigglymuff"));
 
+    // Make sure adding a duplicate fails. 
+    r = Root();
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "root_operation"));
+    assert(i.addChild(r) == 0);
+
+    assert(!i.isTypeOf("ludricous_test_parent", "root_operation"));
     assert(i.isTypeOf("disappearance", "root_operation"));
     assert(i.isTypeOf("root_operation", "root_operation"));
     assert(!i.isTypeOf("root_operation", "talk"));
@@ -155,6 +164,8 @@ int main()
     assert(i.opEnumerate(squigglymuff_op) == SQUIGGLYMUFF_NO);
 
     // Make sure the type for root can no longer be retrieved
+    const TypeNode * no_root_node = i.getType("root");
+    assert(no_root_node == 0);
     const Root & non_root = i.getClass("root");
     assert(i.getAllObjects().empty());
     assert(!non_root.isValid());
@@ -170,4 +181,6 @@ int main()
     assert(!i.hasClass("login"));
     assert(!i.hasClass("squigglymuff"));
     
+    // Clean up and delete it
+    Inheritance::clear();
 }
