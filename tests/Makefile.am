@@ -16,7 +16,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
                  Containertest Tasktest EntityPropertytest \
-                 AllPropertytest
+                 AllPropertytest Scripttest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -410,6 +410,11 @@ AllPropertytest_LDADD = $(top_builddir)/rulesets/Python_API.o \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
                         $(TERRAIN_LIBS)
+
+Scripttest_SOURCES = Scripttest.cpp
+Scripttest_LDADD = $(top_builddir)/rulesets/Script.o
+
+# SERVER_TESTS
 
 EntityBuildertest_SOURCES = EntityBuildertest.cpp
 EntityBuildertest_LDADD = $(top_builddir)/server/EntityBuilder.o \
