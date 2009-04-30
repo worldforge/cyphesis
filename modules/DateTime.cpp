@@ -106,7 +106,7 @@ std::string DateTime::asString()
 {
     //Convert date into string
     char buffer[ 100 ];
-    snprintf( buffer, 100, "%4d-%2d-%2d %2d:%2d:%2d", m_year, m_month, m_day, m_hour, m_minute, m_second );
+    snprintf( buffer, 100, "%04d-%02d-%02d %02d:%02d:%02d", m_year, m_month, m_day, m_hour, m_minute, m_second );
     return std::string( buffer );
 }
 
