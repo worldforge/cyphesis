@@ -19,6 +19,11 @@
 
 #include "modules/Location.h"
 
+#include "rulesets/Entity.h"
+
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 #include <cassert>
 
 int main()
@@ -30,6 +35,8 @@ int main()
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
+
+        testloc.modifyBBox();
     }
 
     {
@@ -118,6 +125,118 @@ int main()
         assert(testloc.radius() == sqrtf(12.f));
 
         // Check cached values have been changed
+    }
+
+    // Coverage for addToFoo()
+    {
+        Location testLoc;
+
+        Atlas::Message::MapType msg;
+        Atlas::Objects::Entity::Anonymous ent;
+
+        testLoc.addToMessage(msg);
+        testLoc.addToEntity(ent);
+
+        Entity le1("1", 1);
+
+        testLoc.m_loc = &le1;
+        testLoc.m_pos = Point3D(0,0,0);
+        testLoc.m_velocity = Vector3D(1,0,0);
+        testLoc.m_orientation = Quaternion(1, 0, 0, 0);
+        testLoc.m_bBox = BBox(Point3D(-1,-1,-1), Point3D(1,1,1));
+
+        testLoc.addToMessage(msg);
+        testLoc.addToEntity(ent);
+
+        (void)testLoc.asEntity();
+
+        {
+            Location readLocFromMessage;
+
+            readLocFromMessage.readFromMessage(msg);
+
+            assert(msg["pos"].isList());
+            assert(msg["pos"].asList().size() == 3);
+
+            // Make the list too long
+            msg["pos"].asList().push_back(1);
+            assert(msg["pos"].asList().size() == 4);
+            readLocFromMessage.readFromMessage(msg);
+            msg["pos"].asList().pop_back();
+            assert(msg["pos"].asList().size() == 3);
+            // Now it is back to the right size
+
+            // Make the first item in the list a string
+            msg["pos"].asList().front() = "string";
+            assert(msg["pos"].asList().front().isString());
+            readLocFromMessage.readFromMessage(msg);
+            msg["pos"].asList().front() = 0.f;
+            assert(msg["pos"].asList().front().isNum());
+            // Now it is back to the right type
+
+            // Make the list too long
+            msg["orientation"].asList().push_back(1);
+            assert(msg["orientation"].asList().size() == 5);
+            readLocFromMessage.readFromMessage(msg);
+            msg["orientation"].asList().pop_back();
+            assert(msg["orientation"].asList().size() == 4);
+            // Now it is back to the right size
+
+            // Make the first item in the list a string
+            msg["orientation"].asList().front() = "string";
+            assert(msg["orientation"].asList().front().isString());
+            readLocFromMessage.readFromMessage(msg);
+            msg["orientation"].asList().front() = 1.f;
+            assert(msg["orientation"].asList().front().isNum());
+            // Now it is back to the right type
+
+            // Make it not a list
+            msg["pos"] = "string";
+            assert(msg["pos"].isString());
+            msg["orientation"] = "string";
+            assert(msg["orientation"].isString());
+            readLocFromMessage.readFromMessage(msg);
+        }
+
+        {
+            Location readLocFromEntity;
+
+            readLocFromEntity.readFromEntity(ent);
+
+            assert(!ent->isDefaultPos());
+            assert(ent->getPos().size() == 3);
+            assert(!ent->isDefaultVelocity());
+            assert(ent->getVelocity().size() == 3);
+
+            readLocFromEntity.readFromEntity(ent);
+
+            Atlas::Message::Element orientation;
+            assert(ent->copyAttr("orientation", orientation) == 0);
+
+            // Make the list too long
+            orientation.asList().push_back(1);
+            assert(orientation.asList().size() == 5);
+            ent->setAttr("orientation", orientation);
+            readLocFromEntity.readFromEntity(ent);
+            orientation.asList().pop_back();
+            assert(orientation.asList().size() == 4);
+            // Now it is back to the right size
+
+            // Make the first item in the list a string
+            orientation.asList().front() = "string";
+            assert(orientation.asList().front().isString());
+            ent->setAttr("orientation", orientation);
+            readLocFromEntity.readFromEntity(ent);
+            orientation.asList().front() = 1.f;
+            assert(orientation.asList().front().isNum());
+            // Now it is back to the right type
+
+            // Make it not a list
+            orientation = "string";
+            assert(orientation.isString());
+            ent->setAttr("orientation", orientation);
+            readLocFromEntity.readFromEntity(ent);
+        }
     }
 
     return 0;
