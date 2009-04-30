@@ -1,4 +1,4 @@
-COMMON_TESTS = logtest inheritancetest Propertytest \
+COMMON_TESTS = logtest Inheritancetest Propertytest \
                systemtest type_utilstest \
                consttest randomtest Addtest Attacktest Burntest \
                Connecttest Droptest Eattest \
@@ -41,8 +41,8 @@ logtest_LDADD = $(top_builddir)/modules/DateTime.o \
                 $(top_builddir)/common/prefix.o \
                 $(top_builddir)/common/globals.o
 
-inheritancetest_SOURCES = inheritancetest.cpp
-inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
+Inheritancetest_SOURCES = Inheritancetest.cpp
+Inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/Inheritance.o \
                         $(top_builddir)/common/TypeNode.o \
                         $(top_builddir)/common/custom.o \
