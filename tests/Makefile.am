@@ -5,7 +5,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                Monitortest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
                BaseWorldtest Databasetest idtest AccountBasetest \
-               debugtest globalstest OperationRoutertest Routertest
+               debugtest globalstest OperationRoutertest Routertest \
+               client_sockettest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -178,6 +179,13 @@ Routertest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/globals.o
+
+client_sockettest_SOURCES = client_sockettest.cpp
+client_sockettest_LDADD = $(top_builddir)/modules/DateTime.o \
+                          $(top_builddir)/common/client_socket.o \
+                          $(top_builddir)/common/log.o \
+                          $(top_builddir)/common/const.o \
+                          $(top_builddir)/common/globals.o
 
 # PHYSICS_TESTS
 
