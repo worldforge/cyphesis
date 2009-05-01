@@ -1,3 +1,6 @@
+Ensure that distance functions mark results as invalid if there
+is a broken entity hierarchy.
+
 Ways to hold territory:
  NPC manned towner foritifications. No door or ladder at ground level.
  Must be frequently re-supplied.
