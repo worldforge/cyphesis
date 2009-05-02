@@ -6,7 +6,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
                BaseWorldtest Databasetest idtest AccountBasetest \
                debugtest globalstest OperationRoutertest Routertest \
-               client_sockettest DateTimetest customtest
+               client_sockettest DateTimetest customtest Monitorstest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -199,6 +199,9 @@ customtest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/globals.o
+
+Monitorstest_SOURCES = Monitorstest.cpp
+Monitorstest_LDADD = $(top_builddir)/common/Monitors.o
 
 # PHYSICS_TESTS
 
