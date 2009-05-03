@@ -7,7 +7,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                BaseWorldtest Databasetest idtest AccountBasetest \
                debugtest globalstest OperationRoutertest Routertest \
                client_sockettest DateTimetest customtest Monitorstest \
-               operationstest serialnotest newidtest
+               operationstest serialnotest newidtest TypeNodetest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -216,6 +216,9 @@ newidtest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/globals.o
+
+TypeNodetest_SOURCES = TypeNodetest.cpp
+TypeNodetest_LDADD = $(top_builddir)/common/TypeNode.o
 
 # PHYSICS_TESTS
 
