@@ -7,7 +7,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                BaseWorldtest Databasetest idtest AccountBasetest \
                debugtest globalstest OperationRoutertest Routertest \
                client_sockettest DateTimetest customtest Monitorstest \
-               operationstest serialnotest newidtest TypeNodetest
+               operationstest serialnotest newidtest TypeNodetest \
+               FormattedXMLWritertest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -219,6 +220,9 @@ newidtest_LDADD = $(top_builddir)/modules/DateTime.o \
 
 TypeNodetest_SOURCES = TypeNodetest.cpp
 TypeNodetest_LDADD = $(top_builddir)/common/TypeNode.o
+
+FormattedXMLWritertest_SOURCES = FormattedXMLWritertest.cpp
+FormattedXMLWritertest_LDADD = $(top_builddir)/common/FormattedXMLWriter.o
 
 # PHYSICS_TESTS
 
