@@ -100,7 +100,7 @@ void FormattedXMLWriter::outputValue(const Element & e)
             break;
         case Element::TYPE_NONE:
         default:
-            m_stream << e.asInt();
+            m_stream << e.Int();
             break;
     };
 }
