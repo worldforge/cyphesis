@@ -206,6 +206,8 @@ Monitorstest_LDADD = $(top_builddir)/common/Monitors.o
 
 operationstest_SOURCES = operationstest.cpp
 
+serialnotest_SOURCES = operationstest.cpp
+
 # PHYSICS_TESTS
 
 BBoxtest_SOURCES = BBoxtest.cpp
