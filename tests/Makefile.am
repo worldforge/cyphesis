@@ -8,7 +8,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                debugtest globalstest OperationRoutertest Routertest \
                client_sockettest DateTimetest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
-               FormattedXMLWritertest PropertyFactorytest
+               FormattedXMLWritertest PropertyFactorytest \
+               PropertyManagertest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -227,6 +228,9 @@ FormattedXMLWritertest_LDADD = $(top_builddir)/common/FormattedXMLWriter.o
 PropertyFactorytest_SOURCES = PropertyFactorytest.cpp
 PropertyFactorytest_LDADD = $(top_builddir)/common/PropertyFactory.o \
                             $(top_builddir)/common/Property.o
+
+PropertyManagertest_SOURCES = PropertyManagertest.cpp
+PropertyManagertest_LDADD = $(top_builddir)/common/PropertyManager.o
 
 # PHYSICS_TESTS
 
