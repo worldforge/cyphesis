@@ -81,17 +81,25 @@ usage() {
 DIRS="physics common modules rulesets"
 
 declare -i report=0
+declare -i configure=0
 
-while getopts "hr" options
+while getopts "hrc" options
 do
   case $options in
     r ) report=1;;
+    c ) configure=1;;
     h ) usage
          exit 0;;
     * ) usage
          exit 1;;
   esac
 done
+
+if [ ${configure} -eq 1 ]
+then
+    CXXFLAGS="-g --coverage" ./configure --prefix=/opt/worldforge --enable-debug=yes --enable-binreloc=no
+    exit 0
+fi
 
 shift $((OPTIND-1))
 
