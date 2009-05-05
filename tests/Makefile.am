@@ -20,7 +20,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
                  Containertest Tasktest EntityPropertytest \
-                 AllPropertytest Scripttest
+                 AllPropertytest Scripttest Motiontest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -327,15 +327,14 @@ LocatedEntitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                           $(top_builddir)/common/libcommon.a
 
 Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
-Entitytest_LDADD = $(top_builddir)/modules/Location.o \
-                   $(top_builddir)/modules/DateTime.o \
-                   $(top_builddir)/rulesets/LocatedEntity.o \
+Entitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                    $(top_builddir)/rulesets/Entity.o \
                    $(top_builddir)/rulesets/EntityProperties.o \
                    $(top_builddir)/rulesets/AtlasProperties.o \
                    $(top_builddir)/rulesets/Script.o \
                    $(top_builddir)/physics/libphysics.a \
                    $(top_builddir)/common/libcommon.a \
+                   $(top_builddir)/modules/libmodules.a \
                    $(MATH_LIBS)
 
 Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
@@ -477,6 +476,18 @@ AllPropertytest_LDADD = $(top_builddir)/rulesets/Python_API.o \
 
 Scripttest_SOURCES = Scripttest.cpp
 Scripttest_LDADD = $(top_builddir)/rulesets/Script.o
+
+Motiontest_SOURCES = Motiontest.cpp
+Motiontest_LDADD = $(top_builddir)/rulesets/Motion.o \
+                   $(top_builddir)/rulesets/LocatedEntity.o \
+                   $(top_builddir)/rulesets/Entity.o \
+                   $(top_builddir)/rulesets/EntityProperties.o \
+                   $(top_builddir)/rulesets/AtlasProperties.o \
+                   $(top_builddir)/rulesets/Script.o \
+                   $(top_builddir)/physics/libphysics.a \
+                   $(top_builddir)/common/libcommon.a \
+                   $(top_builddir)/modules/libmodules.a \
+                   $(top_builddir)/physics/libphysics.a
 
 # SERVER_TESTS
 
