@@ -167,6 +167,7 @@ bool Motion::resolveCollision()
     Location & location(m_entity.m_location);
     bool moving = true;
 
+    assert(m_collision);
     assert(m_collEntity != 0);
     assert(m_collEntity->m_location.m_loc != 0);
 
