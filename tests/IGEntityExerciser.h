@@ -473,6 +473,7 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->m_ent.UpdateOperation(op, ov);
         this->flushOperations(ov);
 
+        this->m_ent.m_location.m_pos = Point3D(0,0,0);
         this->m_ent.m_location.m_velocity = Vector3D(1,0,0);
         this->m_ent.UpdateOperation(op, ov);
         this->flushOperations(ov);
