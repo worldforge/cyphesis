@@ -65,6 +65,8 @@ float Motion::checkCollisions()
 {
     assert(m_entity.m_location.m_loc != 0);
     assert(m_entity.m_location.m_loc->m_contains != 0);
+    assert(m_entity.m_location.m_pos.isValid());
+    assert(m_entity.m_location.m_velocity.isValid());
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::move_tick seconds
     float coll_time = consts::move_tick;
