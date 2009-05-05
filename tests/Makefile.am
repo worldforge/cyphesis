@@ -220,7 +220,8 @@ newidtest_LDADD = $(top_builddir)/modules/DateTime.o \
                    $(top_builddir)/common/globals.o
 
 TypeNodetest_SOURCES = TypeNodetest.cpp
-TypeNodetest_LDADD = $(top_builddir)/common/TypeNode.o
+TypeNodetest_LDADD = $(top_builddir)/common/TypeNode.o \
+                     $(top_builddir)/common/Property.o
 
 FormattedXMLWritertest_SOURCES = FormattedXMLWritertest.cpp
 FormattedXMLWritertest_LDADD = $(top_builddir)/common/FormattedXMLWriter.o

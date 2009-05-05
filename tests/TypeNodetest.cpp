@@ -18,9 +18,13 @@
 // $Id$
 
 #include "common/TypeNode.h"
+#include "common/Property.h"
 
 int main()
 {
     TypeNode foo;
+    PropertyBase * bar = new Property<int>(0);
+
+    foo.defaults().insert(std::make_pair("test_name", bar));
     return 0;
 }
