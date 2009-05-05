@@ -76,6 +76,34 @@ int main()
     // Now it can collide
     motion->checkCollisions();
     assert(motion->collision());
+    motion->resolveCollision();
+
+    // Put the velocity back, as it was affected by the collision
+    ent.m_location.m_velocity = Vector3D(1,0,0);
+
+    // Set up the collision again
+    motion->checkCollisions();
+    assert(motion->collision());
+    // But this time break the hierarchy to hit the error message
+    other.m_location.m_loc = &ent;
+
+    motion->resolveCollision();
+
+    // Repair the hierarchy, and restore the velocity
+    other.m_location.m_loc = &tlve;
+    ent.m_location.m_velocity = Vector3D(1,0,0);
+
+    // Set up the collision again
+    motion->checkCollisions();
+    assert(motion->collision());
+
+    // Re-align the velocity so some is preserved by the collision normal
+    ent.m_location.m_velocity = Vector3D(1,1,0);
+
+    motion->resolveCollision();
+
+    // Put the velocity back, as it was affected by the collision
+    ent.m_location.m_velocity = Vector3D(1,0,0);
 
     // Add another entity inside other
     Entity inner("3", 3);
