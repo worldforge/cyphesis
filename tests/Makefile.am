@@ -586,11 +586,10 @@ SolidPropertytest_LDADD = \
 StatisticsPropertytest_SOURCES = StatisticsPropertytest.cpp \
                        PropertyCoverage.cpp PropertyCoverge.h
 StatisticsPropertytest_LDADD = \
+                        $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
                         $(top_builddir)/rulesets/librulesetbase.a \
-                        $(top_builddir)/rulesets/libscriptpython.a \
-                        $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \

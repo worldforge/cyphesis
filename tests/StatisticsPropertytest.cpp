@@ -19,10 +19,18 @@
 
 #include "PropertyCoverage.h"
 
+#include "rulesets/Python_API.h"
 #include "rulesets/StatisticsProperty.h"
 
-int main()
+#include "common/globals.h"
+
+int main(int argc, char ** argv)
 {
+    loadConfig(argc, argv);
+    database_flag = false;
+
+    init_python_api();
+
     StatisticsProperty * ap = new StatisticsProperty;
 
     PropertyCoverage pc(ap);
