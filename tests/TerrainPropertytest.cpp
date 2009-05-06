@@ -21,15 +21,21 @@
 
 #include "rulesets/TerrainProperty.h"
 
+#include <Mercator/Terrain.h>
+
 int main()
 {
-    // TerrainProperty * ap = new TerrainProperty(0);
+    Mercator::Terrain terrain;
+    PointSet modifiedTerrain;
+    PointSet createdTerrain;
 
-    // PropertyCoverage pc(ap);
+    TerrainProperty * ap = new TerrainProperty(terrain, modifiedTerrain, createdTerrain, 0);
+
+    PropertyCoverage pc(ap);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
-    // pc.basicCoverage();
+    pc.basicCoverage();
 
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
