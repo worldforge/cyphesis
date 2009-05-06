@@ -24,6 +24,8 @@
 
 #include "physics/Vector3D.h"
 
+#include <wfmath/point.h>
+
 #include <set>
 
 /// \brief Class to handle Entity terrain property
