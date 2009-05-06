@@ -51,7 +51,7 @@ check_coverage() {
         then
             return
         fi
-        echo No coverage data
+        echo No coverage data ${coverage_data} for ${source_file}
         exit 1
     fi
 
