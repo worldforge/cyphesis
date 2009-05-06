@@ -39,19 +39,11 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
         new TestPropertyManager;
         if (e.getIntId() == 0) {
             new TestWorld(e);
-            e.m_contains = new LocatedEntitySet;
         } else {
-            e.m_location.m_loc = new Entity("0", 0);
-            e.m_location.m_loc->m_contains = new LocatedEntitySet;
-            e.m_location.m_loc->m_contains->insert(&e);
+            assert(e.m_location.m_loc != 0);
             new TestWorld(*dynamic_cast<Entity*>(e.m_location.m_loc));
         }
         BaseWorld::instance().addEntity(&e);
-        if (e.getType() == 0) {
-            TypeNode * test_type = new TypeNode;
-            test_type->name() = "test_type";
-            e.setType(test_type);
-        }
     }
 
     bool checkAttributes(const std::set<std::string> & attr_names);
