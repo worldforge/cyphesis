@@ -21,11 +21,16 @@
 
 #include "rulesets/BBoxProperty.h"
 
+using Atlas::Message::ListType;
+
 int main()
 {
     BBoxProperty * ap = new BBoxProperty;
 
     PropertyCoverage pc(ap);
+
+    pc.testDataAppend(ListType(3, 1.f));
+    pc.testDataAppend(ListType(6, 1.f));
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
