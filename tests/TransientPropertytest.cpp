@@ -27,6 +27,8 @@ int main()
 
     PropertyCoverage pc(ap);
 
+    pc.testDataAppend(-1.);
+
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
     pc.basicCoverage();
