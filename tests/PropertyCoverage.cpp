@@ -18,6 +18,7 @@
 // $Id$
 
 #include "PropertyCoverage.h"
+#include "TestWorld.h"
 
 #include "rulesets/Entity.h"
 
@@ -32,6 +33,7 @@ using Atlas::Objects::Entity::Anonymous;
 PropertyCoverage::PropertyCoverage(PropertyBase * pb) :
     prop(pb),
     tlve(new Entity("0", 0)),
+    wrld(new TestWorld(*tlve)),
     ent(new Entity("1", 1))
 {
     ent->m_location.m_loc = tlve;

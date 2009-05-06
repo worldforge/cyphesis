@@ -24,11 +24,13 @@
 
 class PropertyBase;
 class Entity;
+class BaseWorld;
 
 class PropertyCoverage {
   protected:
     PropertyBase * const prop;
     Entity * const tlve;
+    BaseWorld * const wrld;
     Entity * const ent;
 
     Atlas::Message::ListType m_testData;
