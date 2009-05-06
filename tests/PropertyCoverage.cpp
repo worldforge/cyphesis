@@ -74,6 +74,8 @@ void PropertyCoverage::basicCoverage()
 
     // assert(pb->flags() == 4);
 
+    prop->get(val);
+
     // FIXME cover all types inc. map
     ListType::const_iterator I = m_testData.begin();
     ListType::const_iterator Iend = m_testData.end();
