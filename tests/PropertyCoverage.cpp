@@ -86,7 +86,13 @@ void PropertyCoverage::basicCoverage()
     prop->get(val);
 
     prop->install(ent);
-    prop->apply(ent);
+
+    I = m_testData.begin();
+    for (; I != Iend; ++I) {
+        prop->set(*I);
+        prop->apply(ent);
+    }
+
     MapType map;
     prop->add("test_name", map);
     Anonymous ent;
