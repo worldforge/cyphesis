@@ -21,12 +21,16 @@
 
 #include "rulesets/LineProperty.h"
 
+using Atlas::Message::ListType;
+
 int main()
 {
     LineProperty * ap = new LineProperty;
 
     PropertyCoverage pc(ap);
 
+    pc.testDataAppend(ListType(1, ListType(3, 1.f)));
+    pc.testDataAppend(ListType(3, ListType(3, 1.f)));
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
     pc.basicCoverage();
