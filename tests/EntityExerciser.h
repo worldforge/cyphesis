@@ -47,13 +47,16 @@ template <class EntityType>
 class EntityExerciser {
   protected:
     EntityType & m_ent;
+    std::set<int> attr_types;
   public:
     explicit EntityExerciser(EntityType & e) : m_ent(e) {
         if (e.getIntId() == 0) {
-            e.m_contains = new LocatedEntitySet;
+            e.makeContainer();
+            assert(e.m_contains != 0);
         } else {
             e.m_location.m_loc = new EntityType("0", 0);
-            e.m_location.m_loc->m_contains = new LocatedEntitySet;
+            e.m_location.m_loc->makeContainer();
+            assert(e.m_location.m_loc->m_contains != 0);
             e.m_location.m_loc->m_contains->insert(&e);
         }
         if (e.getType() == 0) {
@@ -61,11 +64,18 @@ class EntityExerciser {
             test_type->name() = "test_type";
             e.setType(test_type);
         }
+        attr_types.insert(Atlas::Message::Element::TYPE_INT);
+        attr_types.insert(Atlas::Message::Element::TYPE_FLOAT);
+        attr_types.insert(Atlas::Message::Element::TYPE_STRING);
+        attr_types.insert(Atlas::Message::Element::TYPE_MAP);
+        attr_types.insert(Atlas::Message::Element::TYPE_LIST);
     }
     virtual ~EntityExerciser() { }
 
     bool checkAttributes(const std::set<std::string> & attr_names);
     bool checkProperties(const std::set<std::string> & prop_names);
+
+    bool fullAttributeTest(const Atlas::Message::MapType & attr_data);
 
     virtual void dispatchOp(const Atlas::Objects::Operation::RootOperation&op) {
         OpVector ov1;
@@ -84,16 +94,27 @@ template <class EntityType>
 inline bool EntityExerciser<EntityType>::checkAttributes(const std::set<std::string> & attr_names)
 {
     Atlas::Message::Element null;
+    bool res = true;
     std::set<std::string>::const_iterator I = attr_names.begin();
     std::set<std::string>::const_iterator Iend = attr_names.end();
     for (; I != Iend; ++I) {
         if (!this->m_ent.getAttr(*I, null)) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
                       << std::endl << std::flush;
-            return false;
+            res = false;
+        }
+        if (this->m_ent.getProperty(*I) == NULL) {
+            std::cerr << "Entity does not have \"" << *I << "\" property."
+                      << std::endl << std::flush;
+            res = false;
+        }
+        std::set<int>::const_iterator J = attr_types.begin();
+        std::set<int>::const_iterator Jend = attr_types.end();
+        for (; J != Jend; ++J) {
+            this->m_ent.getAttrType(*I, null, *J);
         }
     }
-    return true;
+    return res;
 }
 
 template <class EntityType>
@@ -102,11 +123,6 @@ inline bool EntityExerciser<EntityType>::checkProperties(const std::set<std::str
     std::set<std::string>::const_iterator I = prop_names.begin();
     std::set<std::string>::const_iterator Iend = prop_names.end();
     for (; I != Iend; ++I) {
-        if (this->m_ent.getProperty(*I) == NULL) {
-            std::cerr << "Entity does not have \"" << *I << "\" property."
-                      << std::endl << std::flush;
-            return false;
-        }
     }
     return true;
 }
