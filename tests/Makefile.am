@@ -20,7 +20,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
                  Charactertest Creatortest ThingupdatePropertiestest \
                  Containertest Tasktest EntityPropertytest \
-                 AllPropertytest Scripttest Motiontest
+                 AllPropertytest Scripttest Motiontest AreaPropertytest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -489,6 +489,18 @@ Motiontest_LDADD = $(top_builddir)/rulesets/Motion.o \
                    $(top_builddir)/common/libcommon.a \
                    $(top_builddir)/modules/libmodules.a \
                    $(top_builddir)/physics/libphysics.a
+
+AreaPropertytest_SOURCES = AreaPropertytest.cpp \
+                           PropertyCoverage.cpp PropertyCoverage.h
+AreaPropertytest_LDADD = \
+                        $(top_builddir)/rulesets/librulesetentity.a \
+                        $(top_builddir)/rulesets/librulesetmind.a \
+                        $(top_builddir)/rulesets/librulesetbase.a \
+                        $(top_builddir)/modules/libmodules.a \
+                        $(top_builddir)/physics/libphysics.a \
+                        $(top_builddir)/common/libcommon.a \
+                        $(top_builddir)/modules/libmodules.a \
+                        $(TERRAIN_LIBS)
 
 # SERVER_TESTS
 
