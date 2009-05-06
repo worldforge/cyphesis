@@ -20,6 +20,7 @@
 #include "EntityExerciser.h"
 
 #include "rulesets/LocatedEntity.h"
+#include "rulesets/Script.h"
 
 #include <cassert>
 
@@ -39,6 +40,13 @@ void runCoverageTest()
 {
     LocatedEntityTest * le = new LocatedEntityTest("1", 1);
 
+    le->setScript(new Script());
+    // Installing a second one should delete the first.
+    le->setScript(new Script());
+
+    le->onContainered();
+    le->onUpdated();
+
     EntityExerciser<LocatedEntityTest> ee(*le);
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -52,7 +60,6 @@ void runCoverageTest()
 
     // Make sure we have all the default attributes
     assert(ee.checkAttributes(attrNames));
-    assert(ee.checkProperties(attrNames));
 
     attrNames.insert("test_int");
     attrNames.insert("test_float");
@@ -65,7 +72,6 @@ void runCoverageTest()
 
     // Make sure we don't have the test attributes yet
     assert(!ee.checkAttributes(attrNames));
-    assert(!ee.checkProperties(attrNames));
 
     // Add the test attributes
     le->setAttr("test_int", 1);
@@ -84,7 +90,6 @@ void runCoverageTest()
     
     // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
-    assert(ee.checkProperties(attrNames));
 
     MapType entityAsAtlas;
 
@@ -100,6 +105,8 @@ void runCoverageTest()
     // Throw an op of every type at the entity again now it is subscribed,
     // and full of data.
     ee.runOperations();
+
+    delete le;
 }
 
 int main()
