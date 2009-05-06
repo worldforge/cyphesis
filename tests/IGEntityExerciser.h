@@ -46,27 +46,10 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
         BaseWorld::instance().addEntity(&e);
     }
 
-    bool checkAttributes(const std::set<std::string> & attr_names);
     bool checkProperties(const std::set<std::string> & prop_names);
 
     void runOperations();
 };
-
-template <class EntityType>
-inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::string> & attr_names)
-{
-    Atlas::Message::Element null;
-    std::set<std::string>::const_iterator I = attr_names.begin();
-    std::set<std::string>::const_iterator Iend = attr_names.end();
-    for (; I != Iend; ++I) {
-        if (!this->m_ent.getAttr(*I, null)) {
-            std::cerr << "Entity does not have \"" << *I << "\" attribute."
-                      << std::endl << std::flush;
-            return false;
-        }
-    }
-    return true;
-}
 
 template <class EntityType>
 inline bool IGEntityExerciser<EntityType>::checkProperties(const std::set<std::string> & prop_names)
