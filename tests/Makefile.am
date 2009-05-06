@@ -509,7 +509,7 @@ AreaPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 BBoxPropertytest_SOURCES = BBoxPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 BBoxPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -521,7 +521,7 @@ BBoxPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 CalendarPropertytest_SOURCES = CalendarPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 CalendarPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -533,7 +533,7 @@ CalendarPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 LinePropertytest_SOURCES = LinePropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 LinePropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -545,7 +545,7 @@ LinePropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 MindPropertytest_SOURCES = MindPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 MindPropertytest_LDADD = \
                         $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/rulesets/librulesetentity.a \
@@ -560,7 +560,7 @@ MindPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 OutfitPropertytest_SOURCES = OutfitPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 OutfitPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -572,7 +572,7 @@ OutfitPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 SolidPropertytest_SOURCES = SolidPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 SolidPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -584,7 +584,7 @@ SolidPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 StatisticsPropertytest_SOURCES = StatisticsPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 StatisticsPropertytest_LDADD = \
                         $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/rulesets/librulesetentity.a \
@@ -597,7 +597,7 @@ StatisticsPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 StatusPropertytest_SOURCES = StatusPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 StatusPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -609,7 +609,7 @@ StatusPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 TerrainModPropertytest_SOURCES = TerrainModPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 TerrainModPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -621,7 +621,7 @@ TerrainModPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 TerrainPropertytest_SOURCES = TerrainPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 TerrainPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
@@ -633,7 +633,7 @@ TerrainPropertytest_LDADD = \
                         $(TERRAIN_LIBS)
 
 TransientPropertytest_SOURCES = TransientPropertytest.cpp \
-                       PropertyCoverage.cpp PropertyCoverge.h
+                       PropertyCoverage.cpp PropertyCoverage.h
 TransientPropertytest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \

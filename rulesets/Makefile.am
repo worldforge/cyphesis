@@ -38,6 +38,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     TerrainModProperty.cpp TerrainModProperty.h \
+			     TerrainMod_impl.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \
@@ -53,8 +54,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
-			     ArithmeticFactory.cpp ArithmeticFactory.h \
-			     TerraiMod_impl.h
+			     ArithmeticFactory.cpp ArithmeticFactory.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
