@@ -266,8 +266,7 @@ distancetest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                      $(top_builddir)/rulesets/EntityProperties.o \
                      $(top_builddir)/rulesets/AtlasProperties.o \
                      $(top_builddir)/rulesets/Script.o \
-                     $(top_builddir)/modules/Location.o \
-                     $(top_builddir)/modules/DateTime.o \
+                     $(top_builddir)/modules/libmodules.a \
                      $(top_builddir)/physics/libphysics.a \
                      $(top_builddir)/common/libcommon.a \
                      $(MATH_LIBS)
@@ -313,8 +312,7 @@ LocatedEntitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                           $(top_builddir)/rulesets/EntityProperties.o \
                           $(top_builddir)/rulesets/AtlasProperties.o \
                           $(top_builddir)/rulesets/Script.o \
-                          $(top_builddir)/modules/Location.o \
-                          $(top_builddir)/modules/DateTime.o \
+                          $(top_builddir)/modules/libmodules.a \
                           $(top_builddir)/physics/libphysics.a \
                           $(top_builddir)/common/libcommon.a
 
@@ -325,14 +323,12 @@ Entitytest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                    $(top_builddir)/rulesets/AtlasProperties.o \
                    $(top_builddir)/rulesets/Script.o \
                    $(top_builddir)/physics/libphysics.a \
-                   $(top_builddir)/common/libcommon.a \
                    $(top_builddir)/modules/libmodules.a \
+                   $(top_builddir)/common/libcommon.a \
                    $(MATH_LIBS)
 
 Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Planttest_LDADD = $(top_builddir)/modules/Location.o \
-                  $(top_builddir)/modules/DateTime.o \
-                  $(top_builddir)/rulesets/Plant.o \
+Planttest_LDADD = $(top_builddir)/rulesets/Plant.o \
                   $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
@@ -342,14 +338,13 @@ Planttest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
+                  $(top_builddir)/modules/libmodules.a \
                   $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/common/libcommon.a \
                   $(MATH_LIBS)
 
 Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
-                      $(top_builddir)/modules/DateTime.o \
-                      $(top_builddir)/rulesets/Stackable.o \
+Stackabletest_LDADD = $(top_builddir)/rulesets/Stackable.o \
                       $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
@@ -357,28 +352,26 @@ Stackabletest_LDADD = $(top_builddir)/modules/Location.o \
                       $(top_builddir)/rulesets/Thing.o \
                       $(top_builddir)/rulesets/Motion.o \
                       $(top_builddir)/rulesets/Script.o \
+                      $(top_builddir)/modules/libmodules.a \
                       $(top_builddir)/physics/libphysics.a \
                       $(top_builddir)/common/libcommon.a \
                       $(MATH_LIBS)
 
 Thingtest_SOURCES = Thingtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
-Thingtest_LDADD = $(top_builddir)/modules/Location.o \
-                  $(top_builddir)/modules/DateTime.o \
-                  $(top_builddir)/rulesets/LocatedEntity.o \
+Thingtest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
+                  $(top_builddir)/modules/libmodules.a \
                   $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/common/libcommon.a \
                   $(MATH_LIBS)
 
 Worldtest_SOURCES = Worldtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
-Worldtest_LDADD = $(top_builddir)/modules/Location.o \
-                  $(top_builddir)/modules/DateTime.o \
-                  $(top_builddir)/rulesets/LocatedEntity.o \
+Worldtest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                   $(top_builddir)/rulesets/Entity.o \
                   $(top_builddir)/rulesets/EntityProperties.o \
                   $(top_builddir)/rulesets/AtlasProperties.o \
@@ -388,6 +381,7 @@ Worldtest_LDADD = $(top_builddir)/modules/Location.o \
                   $(top_builddir)/rulesets/Thing.o \
                   $(top_builddir)/rulesets/Motion.o \
                   $(top_builddir)/rulesets/Script.o \
+                  $(top_builddir)/modules/libmodules.a \
                   $(top_builddir)/physics/libphysics.a \
                   $(top_builddir)/common/libcommon.a \
                   $(TERRAIN_LIBS)
@@ -415,15 +409,14 @@ Creatortest_LDADD = $(top_builddir)/rulesets/libscriptpython.a \
 Creatortest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
-ThingupdatePropertiestest_LDADD = $(top_builddir)/modules/Location.o \
-                                  $(top_builddir)/modules/DateTime.o \
-                                  $(top_builddir)/rulesets/LocatedEntity.o \
+ThingupdatePropertiestest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                                   $(top_builddir)/rulesets/Entity.o \
                                   $(top_builddir)/rulesets/EntityProperties.o \
                                   $(top_builddir)/rulesets/AtlasProperties.o \
                                   $(top_builddir)/rulesets/Thing.o \
                                   $(top_builddir)/rulesets/Motion.o \
                                   $(top_builddir)/rulesets/Script.o \
+                                  $(top_builddir)/modules/libmodules.a \
                                   $(top_builddir)/physics/libphysics.a \
                                   $(top_builddir)/common/libcommon.a \
                                   $(MATH_LIBS)
@@ -476,10 +469,9 @@ Motiontest_LDADD = $(top_builddir)/rulesets/Motion.o \
                    $(top_builddir)/rulesets/EntityProperties.o \
                    $(top_builddir)/rulesets/AtlasProperties.o \
                    $(top_builddir)/rulesets/Script.o \
-                   $(top_builddir)/physics/libphysics.a \
-                   $(top_builddir)/common/libcommon.a \
                    $(top_builddir)/modules/libmodules.a \
-                   $(top_builddir)/physics/libphysics.a
+                   $(top_builddir)/physics/libphysics.a \
+                   $(top_builddir)/common/libcommon.a
 
 AreaPropertytest_SOURCES = AreaPropertytest.cpp \
                            PropertyCoverage.cpp PropertyCoverage.h
@@ -490,7 +482,6 @@ AreaPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 BBoxPropertytest_SOURCES = BBoxPropertytest.cpp \
@@ -502,7 +493,6 @@ BBoxPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 CalendarPropertytest_SOURCES = CalendarPropertytest.cpp \
@@ -514,7 +504,6 @@ CalendarPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 LinePropertytest_SOURCES = LinePropertytest.cpp \
@@ -526,7 +515,6 @@ LinePropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 MindPropertytest_SOURCES = MindPropertytest.cpp \
@@ -541,7 +529,6 @@ MindPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 OutfitPropertytest_SOURCES = OutfitPropertytest.cpp \
@@ -553,7 +540,6 @@ OutfitPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 SolidPropertytest_SOURCES = SolidPropertytest.cpp \
@@ -565,7 +551,6 @@ SolidPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 StatisticsPropertytest_SOURCES = StatisticsPropertytest.cpp \
@@ -578,7 +563,6 @@ StatisticsPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 StatusPropertytest_SOURCES = StatusPropertytest.cpp \
@@ -590,7 +574,6 @@ StatusPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 TerrainModPropertytest_SOURCES = TerrainModPropertytest.cpp \
@@ -602,7 +585,6 @@ TerrainModPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 TerrainPropertytest_SOURCES = TerrainPropertytest.cpp \
@@ -614,7 +596,6 @@ TerrainPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 TransientPropertytest_SOURCES = TransientPropertytest.cpp \
@@ -626,7 +607,6 @@ TransientPropertytest_LDADD = \
                         $(top_builddir)/modules/libmodules.a \
                         $(top_builddir)/physics/libphysics.a \
                         $(top_builddir)/common/libcommon.a \
-                        $(top_builddir)/modules/libmodules.a \
                         $(TERRAIN_LIBS)
 
 
