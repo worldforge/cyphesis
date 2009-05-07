@@ -47,6 +47,7 @@ int main()
     assert(worldTime["season"] == "winter");
     assert(worldTime == "winter");
     assert(worldTime == "night");
+    assert(!(worldTime == "summer"));
 
     worldTime.update(1 * DateTime::dpm() * DateTime::hpd() *
                          DateTime::mph() * DateTime::spm());
