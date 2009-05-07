@@ -505,7 +505,8 @@ int main()
             readLocFromEntity.readFromEntity(ent);
 
             Atlas::Message::Element orientation;
-            assert(ent->copyAttr("orientation", orientation) == 0);
+            bool res = ent->copyAttr("orientation", orientation);
+            assert(res == 0);
 
             // Make the list too long
             orientation.asList().push_back(1);
