@@ -19,6 +19,8 @@
 
 #include "DateTime.h"
 
+#include "common/globals.h"
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -29,11 +31,11 @@
 // Acorn 1/3 time hardcoded for now. This means we keep 24 hours per
 // day, and seconds are still the same length. Clocks would still look
 // same too.
-unsigned int DateTime::m_spm = 20; // seconds per minute
-unsigned int DateTime::m_mph = 60; // minutes per hour
-unsigned int DateTime::m_hpd = 24; // hours per day
-unsigned int DateTime::m_dpm = 28; // days per month
-unsigned int DateTime::m_mpy = 12; // months per year
+unsigned int DateTime::m_spm = SPM; // seconds per minute
+unsigned int DateTime::m_mph = MPH; // minutes per hour
+unsigned int DateTime::m_hpd = HPD; // hours per day
+unsigned int DateTime::m_dpm = DPM; // days per month
+unsigned int DateTime::m_mpy = MPY; // months per year
 
 inline void DateTime::set(int t)
 {
