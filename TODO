@@ -1,3 +1,5 @@
+WorldTime and DateTime need to be purely data driven
+
 Implement connection limits.
 
 Fix misspelling in Motion::getPostion()
