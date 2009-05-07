@@ -45,15 +45,13 @@ check_PROGRAMS = $(TESTS)
 # COMMON_TESTS
 
 logtest_SOURCES = logtest.cpp
-logtest_LDADD = $(top_builddir)/modules/DateTime.o \
-                $(top_builddir)/common/log.o \
+logtest_LDADD = $(top_builddir)/common/log.o \
                 $(top_builddir)/common/const.o \
                 $(top_builddir)/common/prefix.o \
                 $(top_builddir)/common/globals.o
 
 Inheritancetest_SOURCES = Inheritancetest.cpp
-Inheritancetest_LDADD = $(top_builddir)/modules/DateTime.o \
-                        $(top_builddir)/common/Inheritance.o \
+Inheritancetest_LDADD = $(top_builddir)/common/Inheritance.o \
                         $(top_builddir)/common/TypeNode.o \
                         $(top_builddir)/common/custom.o \
                         $(top_builddir)/common/operations.o \
@@ -66,8 +64,7 @@ Propertytest_SOURCES = Propertytest.cpp
 Propertytest_LDADD = $(top_builddir)/common/Property.o
 
 systemtest_SOURCES = systemtest.cpp
-systemtest_LDADD = $(top_builddir)/modules/DateTime.o \
-                   $(top_builddir)/common/system.o \
+systemtest_LDADD = $(top_builddir)/common/system.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/prefix.o \
@@ -122,7 +119,6 @@ Updatetest_LDADD = $(top_builddir)/common/operations.o
 
 AtlasFileLoadertest_SOURCES = AtlasFileLoadertest.cpp
 AtlasFileLoadertest_LDADD = $(top_builddir)/common/AtlasFileLoader.o \
-                            $(top_builddir)/modules/DateTime.o \
                             $(top_builddir)/common/log.o \
                             $(top_builddir)/common/const.o \
                             $(top_builddir)/common/prefix.o \
@@ -130,7 +126,6 @@ AtlasFileLoadertest_LDADD = $(top_builddir)/common/AtlasFileLoader.o \
 
 BaseWorldtest_SOURCES = BaseWorldtest.cpp
 BaseWorldtest_LDADD = $(top_builddir)/modules/Location.o \
-                      $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/rulesets/LocatedEntity.o \
                       $(top_builddir)/rulesets/Entity.o \
                       $(top_builddir)/rulesets/EntityProperties.o \
@@ -142,7 +137,6 @@ BaseWorldtest_LDADD = $(top_builddir)/modules/Location.o \
 
 Databasetest_SOURCES = Databasetest.cpp
 Databasetest_LDADD = $(top_builddir)/common/Database.o \
-                     $(top_builddir)/modules/DateTime.o \
                      $(top_builddir)/common/log.o \
                      $(top_builddir)/common/id.o \
                      $(top_builddir)/common/const.o \
@@ -150,8 +144,7 @@ Databasetest_LDADD = $(top_builddir)/common/Database.o \
                      $(top_builddir)/common/globals.o
 
 idtest_SOURCES = idtest.cpp
-idtest_LDADD = $(top_builddir)/modules/DateTime.o \
-               $(top_builddir)/common/log.o \
+idtest_LDADD = $(top_builddir)/common/log.o \
                $(top_builddir)/common/const.o \
                $(top_builddir)/common/prefix.o \
                $(top_builddir)/common/globals.o \
@@ -160,7 +153,6 @@ idtest_LDADD = $(top_builddir)/modules/DateTime.o \
 AccountBasetest_SOURCES = AccountBasetest.cpp
 AccountBasetest_LDADD = $(top_builddir)/common/AccountBase.o \
                         $(top_builddir)/common/Database.o \
-                        $(top_builddir)/modules/DateTime.o \
                         $(top_builddir)/common/system.o \
                         $(top_builddir)/common/log.o \
                         $(top_builddir)/common/id.o \
@@ -172,8 +164,7 @@ debugtest_SOURCES = debugtest.cpp
 debugtest_LDADD = $(top_builddir)/common/debug.o
 
 globalstest_SOURCES = globalstest.cpp
-globalstest_LDADD = $(top_builddir)/modules/DateTime.o \
-                    $(top_builddir)/common/log.o \
+globalstest_LDADD = $(top_builddir)/common/log.o \
                     $(top_builddir)/common/const.o \
                     $(top_builddir)/common/prefix.o \
                     $(top_builddir)/common/globals.o
@@ -182,16 +173,14 @@ OperationRoutertest_SOURCES = OperationRoutertest.cpp
 OperationRoutertest_LDADD = $(top_builddir)/common/OperationRouter.o
 
 Routertest_SOURCES = Routertest.cpp
-Routertest_LDADD = $(top_builddir)/modules/DateTime.o \
-                   $(top_builddir)/common/Router.o \
+Routertest_LDADD = $(top_builddir)/common/Router.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/globals.o
 
 client_sockettest_SOURCES = client_sockettest.cpp
-client_sockettest_LDADD = $(top_builddir)/modules/DateTime.o \
-                          $(top_builddir)/common/client_socket.o \
+client_sockettest_LDADD = $(top_builddir)/common/client_socket.o \
                           $(top_builddir)/common/log.o \
                           $(top_builddir)/common/const.o \
                           $(top_builddir)/common/globals.o
@@ -200,8 +189,7 @@ DateTimetest_SOURCES = DateTimetest.cpp
 DateTimetest_LDADD = $(top_builddir)/modules/DateTime.o
 
 customtest_SOURCES = customtest.cpp
-customtest_LDADD = $(top_builddir)/modules/DateTime.o \
-                   $(top_builddir)/common/custom.o \
+customtest_LDADD = $(top_builddir)/common/custom.o \
                    $(top_builddir)/common/Inheritance.o \
                    $(top_builddir)/common/TypeNode.o \
                    $(top_builddir)/common/operations.o \
@@ -217,13 +205,12 @@ operationstest_SOURCES = operationstest.cpp
 serialnotest_SOURCES = serialnotest.cpp
 
 newidtest_SOURCES = newidtest.cpp
-newidtest_LDADD = $(top_builddir)/modules/DateTime.o \
-                   $(top_builddir)/common/newid.o \
-                   $(top_builddir)/common/Database.o \
-                   $(top_builddir)/common/id.o \
-                   $(top_builddir)/common/log.o \
-                   $(top_builddir)/common/const.o \
-                   $(top_builddir)/common/globals.o
+newidtest_LDADD = $(top_builddir)/common/newid.o \
+                  $(top_builddir)/common/Database.o \
+                  $(top_builddir)/common/id.o \
+                  $(top_builddir)/common/log.o \
+                  $(top_builddir)/common/const.o \
+                  $(top_builddir)/common/globals.o
 
 TypeNodetest_SOURCES = TypeNodetest.cpp
 TypeNodetest_LDADD = $(top_builddir)/common/TypeNode.o \
@@ -256,7 +243,6 @@ Collisiontest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/modules/Location.o \
-                      $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/const.o \
                       $(top_builddir)/common/prefix.o \
@@ -268,7 +254,6 @@ emergencetest_LDADD = $(top_builddir)/physics/Collision.o \
                       $(top_builddir)/physics/BBox.o \
                       $(top_builddir)/physics/Vector3D.o \
                       $(top_builddir)/modules/Location.o \
-                      $(top_builddir)/modules/DateTime.o \
                       $(top_builddir)/common/log.o \
                       $(top_builddir)/common/const.o \
                       $(top_builddir)/common/prefix.o \
