@@ -6,7 +6,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
                BaseWorldtest Databasetest idtest AccountBasetest \
                debugtest globalstest OperationRoutertest Routertest \
-               client_sockettest DateTimetest customtest Monitorstest \
+               client_sockettest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
                FormattedXMLWritertest PropertyFactorytest \
                PropertyManagertest
@@ -14,7 +14,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
 
-MODULE_TESTS = Locationtest WorldTimetest EntityReftest
+MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest
 
 RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
@@ -185,9 +185,6 @@ client_sockettest_LDADD = $(top_builddir)/common/client_socket.o \
                           $(top_builddir)/common/const.o \
                           $(top_builddir)/common/globals.o
 
-DateTimetest_SOURCES = DateTimetest.cpp
-DateTimetest_LDADD = $(top_builddir)/modules/DateTime.o
-
 customtest_SOURCES = customtest.cpp
 customtest_LDADD = $(top_builddir)/common/custom.o \
                    $(top_builddir)/common/Inheritance.o \
@@ -276,6 +273,9 @@ distancetest_LDADD = $(top_builddir)/rulesets/LocatedEntity.o \
                      $(MATH_LIBS)
 
 # MODULE_TESTS
+
+DateTimetest_SOURCES = DateTimetest.cpp
+DateTimetest_LDADD = $(top_builddir)/modules/DateTime.o
 
 Locationtest_SOURCES = Locationtest.cpp
 Locationtest_LDADD = $(top_builddir)/modules/Location.o \
