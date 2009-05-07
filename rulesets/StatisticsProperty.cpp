@@ -58,6 +58,9 @@ void StatisticsProperty::apply(Entity * ent)
 
         PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
         m_script = paf.newScript(instance);
+        if (m_script == 0) {
+            return;
+        }
     }
     std::map<std::string, double>::const_iterator I = m_data.begin();
     std::map<std::string, double>::const_iterator Iend = m_data.end();
