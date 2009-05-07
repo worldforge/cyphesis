@@ -28,8 +28,6 @@
 #include "log.h"
 #include "compose.hpp"
 
-#include "modules/DateTime.h"
-
 #include <varconf/config.h>
 
 #include <algorithm>
@@ -55,7 +53,7 @@ std::string ruleset(DEFAULT_RULESET);
 bool exit_flag = false;
 bool daemon_flag = false;
 bool database_flag = true;
-int timeoffset = DateTime::spm() * DateTime::mph() * 9; // Morning
+int timeoffset = SPM * MPH * 9; // Morning
 int client_port_num = 6767;
 int dynamic_port_start = 6800;
 int dynamic_port_end = 6899;
