@@ -30,6 +30,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Plant.cpp Plant.h \
 			     Stackable.cpp Stackable.h \
 			     Motion.cpp Motion.h \
+			     Domain.cpp Domain.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     EntityProperty.cpp EntityProperty.h \
