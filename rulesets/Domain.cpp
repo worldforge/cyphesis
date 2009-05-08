@@ -17,35 +17,12 @@
 
 // $Id$
 
-#ifndef RULESETS_DOMAIN_H
-#define RULESETS_DOMAIN_H
+#include "rulesets/Domain.h"
 
-/// \brief Base class for movement domains
-///
-/// The movement domain implements movement in the game world, including
-/// visibility calculations, collision detection and physics.
-/// Motion objects interact with the movement domain.
-class Domain {
-  private:
-    /// Count of references held by other objects to this domain
-    int m_refCount;
-  protected:
-  public:
-    Domain();
+Domain::Domain() : m_refCount(0)
+{
+}
 
-    virtual ~Domain() = 0;
-
-    /// \brief Increment the reference count on this domain
-    void incRef() {
-        ++m_refCount;
-    }
-
-    /// \brief Decrement the reference count on this domain
-    void decRef() {
-        if (--m_refCount <= 0) {
-            delete this;
-        }
-    }
-};
-
-#endif // RULESETS_DOMAIN_H
+Domain::~Domain()
+{
+}
