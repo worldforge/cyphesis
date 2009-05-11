@@ -114,15 +114,15 @@ check_version_recorded() {
     fi
     if [ $safe -eq 0 ]
     then
-        if git-status ChangeLog > /dev/null
-        then
-            echo MMMMM ChangeLog change commited
-            git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
-        fi
         if git-status NEWS > /dev/null
         then
             echo MMMMM NEWS change commited
             git-commit -m "Add news item for ${CY_VERSION} release" NEWS
+        fi
+        if git-status ChangeLog > /dev/null
+        then
+            echo MMMMM ChangeLog change commited
+            git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
         fi
     fi
     if ! git-tag -v ${CY_VERSION}
