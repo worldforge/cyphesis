@@ -125,7 +125,6 @@ check_version_recorded() {
             git-commit -m "Add news item for ${CY_VERSION} release" NEWS
         fi
     fi
-    exit 0
     if ! git-tag -v ${CY_VERSION}
     then
         if [ $safe -eq 0 ]
