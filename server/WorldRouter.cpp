@@ -185,55 +185,6 @@ Operation WorldRouter::getOperationFromQueue()
     return op;
 }
 
-/// \brief Provide an adjusted height for the given entity.
-///
-/// If the position has a parent which has an associated geometry
-/// which define its childrens position, e.g terrain or a floor,
-/// calculate what the Z coord, being the height of the entity.
-/// This function recurses through the parents until it finds
-/// A parent which defines the height.
-/// @return the modified Z coord of the position.
-float WorldRouter::constrainHeight(LocatedEntity * parent,
-                                   const Point3D & pos,
-                                   const std::string & mode)
-{
-    assert(parent != 0);
-    World * wrld = dynamic_cast<World*>(parent);
-    if (wrld != 0) {
-        float h;
-        h = wrld->getHeight(pos.x(), pos.y());
-        if (mode == "fixed") {
-            h = pos.z();
-        } else if (mode == "floating") {
-            h = 0;
-        } else if (mode == "swimming") {
-            h = std::max(h, std::min(0.f, pos.z()));
-        } else if (mode == "relative") {
-            h = h + pos.z();
-        }
-        debug(std::cout << "Fix height " << pos.z() << " to " << h
-                        << std::endl << std::flush;);
-        return h;
-    } else {
-        static const Quaternion identity(Quaternion().identity());
-        assert(parent->m_location.m_loc != 0);
-        const Point3D & ppos = parent->m_location.pos();
-        debug(std::cout << "parent " << parent->getId() << " of type "
-                        << parent->getType() << " pos " << ppos.z()
-                        << " my pos " << pos.z()
-                        << std::endl << std::flush;);
-        float h;
-        const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
-        h =  constrainHeight(parent->m_location.m_loc,
-                             pos.toParentCoords(parent->m_location.pos(),
-                                                parent_orientation),
-                             mode) - ppos.z();
-        debug(std::cout << "Correcting height from " << pos.z() << " to " << h
-                        << std::endl << std::flush;);
-        return h;
-    }
-}
-
 /// \brief Add a new entity to the world.
 ///
 /// Adds a new entity to the lists maintained by the WorldRouter.
