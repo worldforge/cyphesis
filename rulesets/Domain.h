@@ -20,6 +20,12 @@
 #ifndef RULESETS_DOMAIN_H
 #define RULESETS_DOMAIN_H
 
+#include "physics/Vector3D.h"
+
+#include <string>
+
+class LocatedEntity;
+
 /// \brief Base class for movement domains
 ///
 /// The movement domain implements movement in the game world, including
@@ -30,10 +36,15 @@ class Domain {
     /// Count of references held by other objects to this domain
     int m_refCount;
   protected:
+    static Domain * m_instance;
   public:
     Domain();
 
-    virtual ~Domain() = 0;
+    virtual ~Domain();
+
+    static Domain * instance() {
+        return m_instance;
+    }
 
     /// \brief Increment the reference count on this domain
     void incRef() {
@@ -46,6 +57,9 @@ class Domain {
             delete this;
         }
     }
+
+    virtual float constrainHeight(LocatedEntity *, const Point3D &,
+                                  const std::string &);
 };
 
 #endif // RULESETS_DOMAIN_H
