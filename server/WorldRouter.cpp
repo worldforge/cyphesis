@@ -22,6 +22,7 @@
 #include "EntityBuilder.h"
 
 #include "rulesets/World.h"
+#include "rulesets/Domain.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -275,8 +276,10 @@ Entity * WorldRouter::addEntity(Entity * ent)
                                        Element::typeName(mode_attr.getType())));
         }
     }
-    ent->m_location.m_pos.z() = constrainHeight(ent->m_location.m_loc,
-                                                ent->m_location.pos(), mode);
+    ent->m_location.m_pos.z() = ent->getMovementDomain()->
+          constrainHeight(ent->m_location.m_loc,
+                          ent->m_location.pos(),
+                          mode);
     ent->m_location.m_loc->makeContainer();
     bool cont_change = ent->m_location.m_loc->m_contains->empty();
     ent->m_location.m_loc->m_contains->insert(ent);

@@ -20,6 +20,7 @@
 #include "Pedestrian.h"
 
 #include "Entity.h"
+#include "Domain.h"
 
 #include "common/const.h"
 #include "common/debug.h"
@@ -136,8 +137,9 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
         }
     }
 
-    float z = BaseWorld::instance().constrainHeight(new_location.m_loc, new_location.m_pos,
-                                              mode);
+    float z = m_body.getMovementDomain()->constrainHeight(new_location.m_loc,
+                                                          new_location.m_pos,
+                                                          mode);
     debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()
                     << std::endl << std::flush;);
 
