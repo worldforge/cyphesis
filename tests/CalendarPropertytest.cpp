@@ -23,7 +23,7 @@
 
 int main()
 {
-    CalendarProperty * ap = new CalendarProperty(0);
+    CalendarProperty * ap = new CalendarProperty;
 
     PropertyCoverage pc(ap);
 

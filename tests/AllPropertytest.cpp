@@ -108,7 +108,7 @@ int main()
     }
 
     {
-        CalendarProperty test_property(0);
+        CalendarProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 
@@ -145,8 +145,7 @@ int main()
     }
 
     {
-        Mercator::Terrain test_terrain_data;
-        TerrainProperty test_property(test_terrain_data, 0);
+        TerrainProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 

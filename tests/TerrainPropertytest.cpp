@@ -27,7 +27,7 @@ int main()
 {
     Mercator::Terrain terrain;
 
-    TerrainProperty * ap = new TerrainProperty(terrain, 0);
+    TerrainProperty * ap = new TerrainProperty;
 
     PropertyCoverage pc(ap);
 
