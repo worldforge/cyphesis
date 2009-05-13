@@ -18,7 +18,8 @@
 // $Id$
 
 #include "Domain.h"
-#include "World.h"
+#include "TerrainProperty.h"
+#include "LocatedEntity.h"
 
 #include "common/debug.h"
 
@@ -43,10 +44,10 @@ float Domain::constrainHeight(LocatedEntity * parent,
                               const std::string & mode)
 {
     assert(parent != 0);
-    World * wrld = dynamic_cast<World*>(parent);
-    if (wrld != 0) {
+    const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
+    if (tp != 0) {
         float h;
-        h = wrld->getHeight(pos.x(), pos.y());
+        h = tp->getHeight(pos.x(), pos.y());
         // FIXME Use a virtual movement_domain function to get the constraints
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
