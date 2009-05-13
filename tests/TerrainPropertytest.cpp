@@ -26,10 +26,8 @@
 int main()
 {
     Mercator::Terrain terrain;
-    PointSet modifiedTerrain;
-    PointSet createdTerrain;
 
-    TerrainProperty * ap = new TerrainProperty(terrain, modifiedTerrain, createdTerrain, 0);
+    TerrainProperty * ap = new TerrainProperty(terrain, 0);
 
     PropertyCoverage pc(ap);
 

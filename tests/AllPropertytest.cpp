@@ -146,10 +146,7 @@ int main()
 
     {
         Mercator::Terrain test_terrain_data;
-        PointSet test_pointset_data1, test_pointset_data2;
-        TerrainProperty test_property(test_terrain_data,
-                                      test_pointset_data1,
-                                      test_pointset_data2, 0);
+        TerrainProperty test_property(test_terrain_data, 0);
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 
