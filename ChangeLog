@@ -1,3 +1,47 @@
+2009-05-11  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.20
+
+2009-05-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/TerrainMod_impl.h: Fix header guards.
+
+	* common/Database.cpp: Remove debug output for maintenence queries.
+
+	* common/globals.cpp: Remove debug output when looking for settings
+	  in the config.
+
+	* server/ExternalMind.cpp: Remove debug output when removing an
+	  unused PC from the world.
+
+	* rulesets/basic/mind/NPCMind.py: Jitter AI ticks so things look more
+	  natural.
+
+	* tests/*: Do a major update to coverage of the tests.
+
+	* modules/DateTime.cpp: Fix the format of date string output.
+
+	* common/Monitors.cpp, common/Monitors.h: Add dustructor to clean up
+	  monitors.
+
+	* common/FormattedXMLWriter.cpp: Fix an exception thrown when the
+	  Atlas data is odd.
+
+	* rulesets/Motion.cpp: Add an assert to check for the collision flag.
+	  Assert that position and velocity are valid when resolving
+	  collisions.
+
+	* rulesets/LineProperty.h: Fix a missing header dependency.
+
+	* rulesets/StatisticsProperty.cpp: Return so there is no crash if
+	  finding the script fails.
+
+	* common/globals.h, common/globals.cpp, modules/DateTime.cpp:
+	  Add constants for default calender, and remove the depency
+	  on DateTime from globals.
+
 2009-04-09  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/globals.cpp: Explicitly instantiate a template to work

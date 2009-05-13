@@ -10,19 +10,18 @@ declare -r RPM_SPEC=cyphesis.spec
 verify_environment() {
     DATE=$(date -u +%G-%m-%d)
 
-    echo Today is ${DATE}
+    echo ..... Today is ${DATE}
 
     PLATFORM=$(uname -i)
     FC_VERSION=$(sed "s/^Fedora release \([0-9]\+\).*$/\1/" /etc/fedora-release | head -n1)
 
     if [ ! ${FC_VERSION} -gt 0 ]
     then
-        echo Unable to get sane fedora version from OS.
-        echo Exiting.
+        echo EEEEE Unable to get sane fedora version from OS.
         exit 1
     fi
 
-    echo Creating release on a Fedora ${FC_VERSION} ${PLATFORM} system.
+    echo ..... Creating release on a Fedora ${FC_VERSION} ${PLATFORM} system.
 
     RPM_REL="fc${FC_VERSION}.wf"
 
@@ -30,42 +29,40 @@ verify_environment() {
     then
         if ! mkdir ${RELEASE_DIR}
         then
-            echo Unable to create release directory ${RELEASE_DIR}
-            echo Exiting.
+            echo EEEEE Unable to create release directory ${RELEASE_DIR}
             exit 1
         fi
     fi
 
-    echo Release files will be copied to ${RELEASE_DIR}
+    echo ..... Release files will be copied to ${RELEASE_DIR}
 
     if [ ! -d ${RPM_DIR} ]
     then
         if ! mkdir -p ${RPM_DIR}/SOURCES
         then
-            echo Unable to create rpm directory ${RPM_DIR}
-            echo Exiting.
+            echo EEEEE Unable to create rpm directory ${RPM_DIR}
             exit 1
         fi
     fi
 
-    echo RPM files will be built in ${RPM_DIR}
+    echo ..... RPM files will be built in ${RPM_DIR}
 }
 
 get_release_user() {
     GIT_USERNAME=$(git-config --get user.name)
     if [ $? -ne 0 ]
     then
-        echo Git username not available
+        echo EEEEE Git username not available
         exit 1
     fi
 
     GIT_EMAIL=$(git-config --get user.email)
     if [ $? -ne 0 ]
     then
-        echo Git email not available
+        echo EEEEE Git email not available
         exit 1
     fi
-    echo Creating release as ${GIT_USERNAME} \<${GIT_EMAIL}\>
+    echo ..... Creating release as ${GIT_USERNAME} \<${GIT_EMAIL}\>
 }
 
 get_version() {
@@ -73,9 +70,9 @@ get_version() {
 
     if [ -z "${CY_VERSION}" ]
     then
-        echo No version data found.
+        echo EEEEE No version data found.
     fi
-    echo Creating release for version ${CY_VERSION}
+    echo ..... Creating release for version ${CY_VERSION}
 
     TGZ=cyphesis-${CY_VERSION}.tar.gz
     TBZ=cyphesis-${CY_VERSION}.tar.bz2
@@ -85,10 +82,6 @@ get_version() {
 }
 
 check_version_recorded() {
-    if [ $safe -ne 0 ]
-    then
-        return
-    fi
     
     grep "^	\* Release ${CY_VERSION}" ChangeLog > /dev/null
     CHANGE_FOUND=$?
@@ -98,18 +91,17 @@ check_version_recorded() {
 
     if [ ${CHANGE_FOUND} -eq 0 -a ${NEWS_FOUND} -eq 0 ]
     then
-        echo Found everywhere
+        echo ..... Found everywhere
     else
         if [ ${NEWS_FOUND} -eq 1 ]
         then
-            echo Release news NOT found
+            echo MMMMM Release news NOT found
             (echo -e "${DATE}  ${GIT_USERNAME}  <${GIT_EMAIL}>\n\n	* Version ${CY_VERSION} released.\n" ; cat NEWS) > NEWS_tmp
             mv -f NEWS_tmp NEWS
-            # git-commit -m "Add news item for ${CY_VERSION} release" NEWS
         fi
         if [ ${CHANGE_FOUND} -eq 1 ]
         then
-            echo Release change NOT found
+            echo MMMMM Release change NOT found
             echo -e "${DATE}  ${GIT_USERNAME}  <${GIT_EMAIL}>\n" > ChangeLog_tmp
             if [ ${NEWS_FOUND} -eq 1 ]
             then
@@ -118,50 +110,69 @@ check_version_recorded() {
             echo -e "	* Release ${CY_VERSION}\n" >> ChangeLog_tmp
             cat ChangeLog >> ChangeLog_tmp 
             mv -f ChangeLog_tmp ChangeLog
-            # git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
+        fi
+    fi
+    if [ $safe -eq 0 ]
+    then
+        if git-status NEWS > /dev/null
+        then
+            echo MMMMM NEWS change commited
+            git-commit -m "Add news item for ${CY_VERSION} release" NEWS
+        fi
+        if git-status ChangeLog > /dev/null
+        then
+            echo MMMMM ChangeLog change commited
+            git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
         fi
     fi
     if ! git-tag -v ${CY_VERSION}
     then
-        if ! git-tag -s -m "${CY_VERSION} release" ${CY_VERSION}
+        if [ $safe -eq 0 ]
         then
-            echo Failed to tag release.
-            # exit 1
+            if ! git-tag -s -m "${CY_VERSION} release" ${CY_VERSION}
+            then
+                echo EEEEE Failed to tag release.
+                # exit 1
+            else
+                echo MMMMM Tagged source tree.
+            fi
         fi
+    else
+        echo ..... Source tree already tagged.
     fi
 }
 
 package_sources() {
     if [ -f ${RELEASE_DIR}/${TGZ} -a -f ${RELEASE_DIR}/${TGZ} ]
     then
-        echo Source files already built
+        echo ..... Source files already built
         return
     fi
 
     if ! make dist # check
     then
-        echo distcheck failed. Exiting.
+        echo EEEEE distcheck failed. Exiting.
         exit 1
     fi
 
     if [ ! -f ${TGZ} -o ! -f ${TBZ} ]
     then
-        echo distcheck did not create release tarballs ${TGZ} and ${TBZ}.
-        echo Exiting.
+        echo EEEEE distcheck did not create release tarballs ${TGZ} and ${TBZ}.
         exit 1
     fi
 
     if ! mv -f ${TGZ} ${TBZ} ${RELEASE_DIR}
     then
-        echo Unable to move source release files to release directory.
-        echo Exiting.
+        echo EEEEE Unable to move source release files to release directory.
         exit 1
     fi
 
+    echo MMMMM Built ${TGZ}
+    echo MMMMM Built ${TBZ}
+
     if ! cp ${RELEASE_DIR}/${TBZ} ${RPM_SOURCES} ${RPM_DIR}/SOURCES
     then
-        echo Unable to copy source files to rpm source directory.
-        echo Exiting.
+        echo EEEEE Unable to copy source files to rpm source directory.
         exit 1
     fi
 }
@@ -169,7 +180,7 @@ package_sources() {
 package_rpms() {
     if [ -f ${RELEASE_DIR}/${SRC_RPM} -a -f ${RELEASE_DIR}/${BIN_RPM} ]
     then
-        echo RPMs already built
+        echo ..... RPMs already built
         return
     fi
     
@@ -178,26 +189,24 @@ package_rpms() {
     SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
     if [ $? -ne 0 ]
     then
-        echo rpmbuild of source rpm failed
-        echo Exiting.
+        echo EEEEE rpmbuild of source rpm failed
         exit 1
     fi
 
     if ! mv -f ${SRPM} ${RELEASE_DIR}
     then
-        echo Unable to move source release files to release directory.
-        echo Exiting.
+        echo EEEEE Unable to move source release files to release directory.
         exit 1
     fi
 
-    echo Built ${SRPM}
+    echo MMMMM Built ${SRPM}
 
     sed -i "s/\(^%define release 1\)/\1.${RPM_REL}/" ${RPM_SPEC}
     
     RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
     if [ $? -ne 0 ]
     then
-        echo rpmbuild of binary rpm failed
+        echo EEEEE rpmbuild of binary rpm failed
         echo Exiting.
         exit 1
     fi
@@ -206,43 +215,42 @@ package_rpms() {
     do
         if ! mv -f ${rpm} ${RELEASE_DIR}
         then
-            echo Unable to move binary rpm files to release directory.
+            echo EEEEE Unable to move binary rpm files to release directory.
             echo Exiting.
             exit 1
         fi
+        echo MMMMM Built ${rpm}
     done
 }
 
 package_autopackage() {
     if [ -f ${RELEASE_DIR}/${AUTO_PKG} ]
     then
-        echo Autopackage already built
+        echo ..... Autopackage already built
         return
     fi
     
     if ! make clean
     then
-        echo make clean failed. Exiting.
+        echo EEEEE make clean failed. Exiting.
         exit 1
     fi
 
     if ! makepackage
     then
-        echo makepackage failed. Exiting.
+        echo EEEEE makepackage failed. Exiting.
         exit 1
     fi
 
     if [ ! -f ${AUTO_PKG} ]
     then
-        echo Autopackage ${AUTO_PKG} file not create by makepackage.
-        echo Exiting.
+        echo EEEEE Autopackage ${AUTO_PKG} file not create by makepackage.
         exit 1
     fi
     
     if ! mv -f ${AUTO_PKG} ${RELEASE_DIR}
     then
-        echo Unable to move autopackage files to release directory.
-        echo Exiting.
+        echo EEEEE Unable to move autopackage files to release directory.
         exit 1
     fi
 }
