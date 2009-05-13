@@ -22,8 +22,6 @@
 
 #include "globals.h"
 
-#include "physics/Vector3D.h"
-
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
@@ -33,7 +31,6 @@
 
 class Character;
 class Entity;
-class LocatedEntity;
 class Task;
 
 typedef std::map<long, Entity *> EntityDict;
