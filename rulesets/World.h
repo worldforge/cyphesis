@@ -37,12 +37,6 @@ typedef Thing World_parent;
 /// used an out of game object of type WorldRouter to represent the world.
 /// \ingroup EntityClasses
 class World : public World_parent {
-  protected:
-    /// Terrain manager for the world.
-    Mercator::Terrain & m_terrain;
-    /// Terrain shader tracking surface type.
-    Mercator::TileShader & m_tileShader;
-
   public:
     explicit World(const std::string & id, long intId);
     virtual ~World();

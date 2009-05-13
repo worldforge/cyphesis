@@ -26,6 +26,11 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
 #include <Mercator/TerrainMod.h>
+#include <Mercator/TileShader.h>
+#include <Mercator/FillShader.h>
+#include <Mercator/ThresholdShader.h>
+#include <Mercator/DepthShader.h>
+#include <Mercator/GrassShader.h>
 
 #include <sstream>
 
@@ -41,6 +46,8 @@ using Atlas::Message::FloatType;
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
+typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
+
 /// \brief TerrainProperty constructor
 ///
 /// @param data Reference to varaible holding the value of this Property
@@ -49,11 +56,23 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 /// @param createdTerrain Reference to a variable storing the set of
 /// created points
 /// @param flags Flags indicating how this Property should be handled
-TerrainProperty::TerrainProperty(Mercator::Terrain & data,
-                                 unsigned int flags) :
-                                 PropertyBase(flags),
-                                 m_data(data)
+TerrainProperty::TerrainProperty() : PropertyBase(0),
+      m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
+      m_tileShader(*new Mercator::TileShader)
+
 {
+    m_tileShader.addShader(new Mercator::FillShader(), ROCK);
+    m_tileShader.addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
+    m_tileShader.addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f), GRASS);
+    m_tileShader.addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
+    m_tileShader.addShader(new Mercator::HighShader(110.f), SNOW);
+    m_data.addShader(&m_tileShader, 0);
+}
+
+TerrainProperty::~TerrainProperty()
+{
+    delete &m_data;
+    delete &m_tileShader;
 }
 
 bool TerrainProperty::get(Element & ent) const

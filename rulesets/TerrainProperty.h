@@ -30,6 +30,7 @@
 
 namespace Mercator {
     class Terrain;
+    class TileShader;
 }
 
 typedef std::map<int, std::set<int> > PointSet;
@@ -40,6 +41,8 @@ class TerrainProperty : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     Mercator::Terrain & m_data;
+    /// \brief Reference to a variable holding the tile shader
+    Mercator::TileShader & m_tileShader;
     /// FIXME This should be a reference for consistency. Or could it
     /// even be stored in the mercator terrain entity.
     /// \brief Collection of surface data, cos I don't care!
@@ -50,7 +53,8 @@ class TerrainProperty : public PropertyBase {
     /// \brief Reference to variable storing the set of newly created points
     PointSet m_createdTerrain;
   public:
-    explicit TerrainProperty(Mercator::Terrain & data, unsigned int flags);
+    TerrainProperty();
+    virtual ~TerrainProperty();
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
