@@ -22,11 +22,6 @@
 
 #include "Thing.h"
 
-namespace Mercator {
-    class Terrain;
-    class TileShader;
-}
-
 class TerrainProperty;
 
 typedef Thing World_parent;

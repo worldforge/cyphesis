@@ -31,13 +31,6 @@
 #include "common/Eat.h"
 #include "common/Nourish.h"
 
-#include <Mercator/Terrain.h>
-#include <Mercator/TileShader.h>
-#include <Mercator/FillShader.h>
-#include <Mercator/ThresholdShader.h>
-#include <Mercator/DepthShader.h>
-#include <Mercator/GrassShader.h>
-
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation.h>
