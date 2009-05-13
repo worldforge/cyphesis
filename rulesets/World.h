@@ -32,14 +32,13 @@ typedef Thing World_parent;
 /// used an out of game object of type WorldRouter to represent the world.
 /// \ingroup EntityClasses
 class World : public World_parent {
+  protected:
+    TerrainProperty * terrain();
+    int getSurface(const Point3D &,  int &);
+    float getHeight(float x, float y);
   public:
     explicit World(const std::string & id, long intId);
     virtual ~World();
-
-    /// \brief Accessor for terrain manager
-    TerrainProperty * terrain();
-    float getHeight(float x, float y);
-    int getSurface(const Point3D &,  int &);
 
     virtual void EatOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
