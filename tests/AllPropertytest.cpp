@@ -75,7 +75,7 @@ int main()
     }
 
     {
-        AreaProperty test_property(0);
+        AreaProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 

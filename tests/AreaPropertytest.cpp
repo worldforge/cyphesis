@@ -26,7 +26,7 @@ using Atlas::Message::MapType;
 
 int main()
 {
-    AreaProperty * ap = new AreaProperty(0);
+    AreaProperty * ap = new AreaProperty();
 
     PropertyCoverage pc(ap);
 
