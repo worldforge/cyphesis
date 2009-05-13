@@ -32,7 +32,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-SolidProperty::SolidProperty() : PropertyBase(0)
+SolidProperty::SolidProperty()
 {
 }
 

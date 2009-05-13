@@ -39,7 +39,7 @@ using Atlas::Message::FloatType;
 ///
 /// @param data variable that holds the Property value
 /// @param flags flags to indicate how this property is stored
-StatisticsProperty::StatisticsProperty() : PropertyBase(0), m_script(0)
+StatisticsProperty::StatisticsProperty() : m_script(0)
 {
 }
 

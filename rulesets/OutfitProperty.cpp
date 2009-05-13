@@ -38,7 +38,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 /// \brief OutfitProperty constructor
-OutfitProperty::OutfitProperty() : PropertyBase(0)
+OutfitProperty::OutfitProperty()
 {
 }
 

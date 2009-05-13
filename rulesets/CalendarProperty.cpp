@@ -32,7 +32,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-CalendarProperty::CalendarProperty() : PropertyBase(0)
+CalendarProperty::CalendarProperty()
 {
 }
 

@@ -56,7 +56,7 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 /// @param createdTerrain Reference to a variable storing the set of
 /// created points
 /// @param flags Flags indicating how this Property should be handled
-TerrainProperty::TerrainProperty() : PropertyBase(0),
+TerrainProperty::TerrainProperty() :
       m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
       m_tileShader(*new Mercator::TileShader)
 

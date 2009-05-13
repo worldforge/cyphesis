@@ -30,7 +30,7 @@ using Atlas::Objects::Entity::Anonymous;
 
 class MinimalProperty : public PropertyBase {
   public:
-    MinimalProperty() : PropertyBase(0) { }
+    MinimalProperty() { }
     virtual bool get(Atlas::Message::Element & val) const { return true; }
     virtual void set(const Atlas::Message::Element & val) { }
 

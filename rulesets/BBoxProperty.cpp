@@ -32,7 +32,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-BBoxProperty::BBoxProperty() : PropertyBase(0)
+BBoxProperty::BBoxProperty()
 {
 }
 

@@ -23,8 +23,7 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
-ExternalProperty::ExternalProperty(Router * & data) :
-                  PropertyBase(0), m_data(data)
+ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
 {
 }
 
