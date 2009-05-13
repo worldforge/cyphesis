@@ -50,13 +50,9 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 /// created points
 /// @param flags Flags indicating how this Property should be handled
 TerrainProperty::TerrainProperty(Mercator::Terrain & data,
-                                 PointSet & modifiedTerrain,
-                                 PointSet & createdTerrain,
                                  unsigned int flags) :
                                  PropertyBase(flags),
-                                 m_data(data),
-                                 m_modifiedTerrain(modifiedTerrain),
-                                 m_createdTerrain(createdTerrain)
+                                 m_data(data)
 {
 }
 

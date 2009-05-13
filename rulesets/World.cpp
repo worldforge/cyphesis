@@ -71,8 +71,7 @@ World::World(const std::string & id, long intId) :
            m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
            m_tileShader(*new Mercator::TileShader)
 {
-    m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
-                                                  m_modifiedTerrain, 0);
+    m_properties["terrain"] = new TerrainProperty(m_terrain, 0);
     m_properties["calendar"] = new CalendarProperty(0);
 
     m_tileShader.addShader(new Mercator::FillShader(), ROCK);

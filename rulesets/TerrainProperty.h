@@ -46,14 +46,11 @@ class TerrainProperty : public PropertyBase {
     Atlas::Message::ListType m_surfaces;
 
     /// \brief Reference to variable storing the set of modified points
-    PointSet & m_modifiedTerrain;
+    PointSet m_modifiedTerrain;
     /// \brief Reference to variable storing the set of newly created points
-    PointSet & m_createdTerrain;
+    PointSet m_createdTerrain;
   public:
-    explicit TerrainProperty(Mercator::Terrain & data,
-                             PointSet & modifiedTerrain,
-                             PointSet & createdTerrain,
-                             unsigned int flags);
+    explicit TerrainProperty(Mercator::Terrain & data, unsigned int flags);
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
