@@ -27,6 +27,8 @@ namespace Mercator {
     class TileShader;
 }
 
+class TerrainProperty;
+
 typedef Thing World_parent;
 
 /// \brief This is the in-game entity class used to represent the world.
@@ -46,10 +48,7 @@ class World : public World_parent {
     virtual ~World();
 
     /// \brief Accessor for terrain manager
-    const Mercator::Terrain & terrain() {
-        return m_terrain;
-    }
-
+    TerrainProperty * terrain();
     float getHeight(float x, float y);
     int getSurface(const Point3D &,  int &);
 

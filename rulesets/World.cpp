@@ -32,13 +32,11 @@
 #include "common/Nourish.h"
 
 #include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
 #include <Mercator/TileShader.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
-#include <Mercator/Surface.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -88,14 +86,20 @@ World::~World()
     delete &m_tileShader;
 }
 
+TerrainProperty * World::terrain()
+{
+    return modPropertyClass<TerrainProperty>("terrain");
+}
+
 /// \brief Calculate the terrain height at the given x,y coordinates
 float World::getHeight(float x, float y)
 {
-    Mercator::Segment * s = m_terrain.getSegment(x, y);
-    if (s != 0 && !s->isValid()) {
-        s->populate();
+    TerrainProperty * tp = terrain();
+    if (tp != 0) {
+        return tp->getHeight(x, y);
     }
-    return m_terrain.get(x, y);
+    log(ERROR, "No terrain in getHeight");
+    return 0.f;
 }
 
 /// \brief Get a number encoding the surface type at the given x,y coordinates
@@ -105,36 +109,12 @@ float World::getHeight(float x, float y)
 /// material identifier at this location.
 int World::getSurface(const Point3D & pos, int & material)
 {
-    float x = pos.x(),
-          y = pos.y();
-    Mercator::Segment * segment = m_terrain.getSegment(x, y);
-    if (segment == 0) {
-        debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
-        return -1;
+    TerrainProperty * tp = terrain();
+    if (tp != 0) {
+        return tp->getSurface(pos, material);
     }
-    if (!segment->isValid()) {
-        segment->populate();
-    }
-    x = x - segment->getXRef();
-    y = y - segment->getYRef();
-    const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
-    WFMath::Vector<3> normal;
-    float height = -23;
-    segment->getHeightAndNormal(x, y, height, normal);
-    debug(std::cout << "At the point " << x << "," << y
-                    << " of the segment the height is " << height << std::endl;
-          std::cout << "The segment has " << surfaces.size()
-                    << std::endl << std::flush;);
-    if (surfaces.size() == 0) {
-        log(ERROR, "The terrain has no surface data");
-        return -1;
-    }
-    Mercator::Surface & tile_surface = *surfaces.begin()->second;
-    if (!tile_surface.isValid()) {
-        tile_surface.populate();
-    }
-    material = tile_surface((int)x, (int)y, 0);
-    return 0;
+    log(ERROR, "No terrain in getSurface");
+    return -1;
 }
 
 void World::EatOperation(const Operation & op, OpVector & res)
