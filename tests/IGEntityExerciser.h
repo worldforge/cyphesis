@@ -26,6 +26,7 @@
 #include "TestWorld.h"
 
 #include "rulesets/Motion.h"
+#include "rulesets/World.h"
 
 #include "common/TypeNode.h"
 
@@ -41,6 +42,11 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
             new TestWorld(e);
         } else {
             assert(e.m_location.m_loc != 0);
+            delete e.m_location.m_loc;
+            e.m_location.m_loc = new World("0", 0);
+            e.m_location.m_loc->makeContainer();
+            assert(e.m_location.m_loc->m_contains != 0);
+            e.m_location.m_loc->m_contains->insert(&e);
             new TestWorld(*dynamic_cast<Entity*>(e.m_location.m_loc));
         }
         BaseWorld::instance().addEntity(&e);
