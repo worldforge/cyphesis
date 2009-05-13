@@ -30,6 +30,7 @@
 #include <iostream>
 
 class Motion;
+class Domain;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
@@ -177,6 +178,8 @@ class Entity : public LocatedEntity {
     void installHandler(int, Handler);
 
     void destroy();
+
+    Domain * getMovementDomain();
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;

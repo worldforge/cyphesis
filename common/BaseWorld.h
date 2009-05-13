@@ -135,10 +135,6 @@ class BaseWorld {
     /// \brief Find an entity of the given type.
     virtual Entity * findByType(const std::string & type) = 0;
 
-    /// \brief Provide an adjusted height for the given entity.
-    virtual float constrainHeight(LocatedEntity *, const Point3D &,
-                                  const std::string &) = 0;
-
     /// \brief Add an entity provided to the list of perceptive entities.
     virtual void addPerceptive(Entity *) = 0;
 

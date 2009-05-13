@@ -14,7 +14,6 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 
 librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
-			   Entity.cpp Entity.h \
 			   EntityProperties.cpp \
 			   AtlasProperties.cpp AtlasProperties.h \
 			   ActivePropertyFactory.cpp \
@@ -23,7 +22,9 @@ librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 
 
-librulesetentity_a_SOURCES = Thing.cpp Thing.h \
+librulesetentity_a_SOURCES = \
+			     Entity.cpp Entity.h \
+			     Thing.cpp Thing.h \
 			     World.cpp World.h \
 			     Character.cpp Character.h \
 			     Creator.cpp Creator.h \
