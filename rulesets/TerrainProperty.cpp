@@ -177,7 +177,7 @@ void TerrainProperty::clearMods(float x, float y)
 }
 
 /// \brief Calculate the terrain height at the given x,y coordinates
-float TerrainProperty::getHeight(float x, float y)
+float TerrainProperty::getHeight(float x, float y) const
 {
     Mercator::Segment * s = m_data.getSegment(x, y);
     if (s != 0 && !s->isValid()) {
