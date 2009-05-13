@@ -22,10 +22,6 @@
 
 #include "common/Property.h"
 
-#include <set>
-
-typedef std::map<int, std::set<int> > PointSet;
-
 /// \brief Class to handle World calendar property
 /// \ingroup PropertyClasses
 class CalendarProperty : public PropertyBase {
