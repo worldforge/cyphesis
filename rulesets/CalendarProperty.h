@@ -26,7 +26,7 @@
 /// \ingroup PropertyClasses
 class CalendarProperty : public PropertyBase {
   public:
-    explicit CalendarProperty(unsigned int flags);
+    CalendarProperty();
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);

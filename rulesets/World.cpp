@@ -67,7 +67,7 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 World::World(const std::string & id, long intId) : World_parent(id, intId)
 {
     m_properties["terrain"] = new TerrainProperty();
-    m_properties["calendar"] = new CalendarProperty(0);
+    m_properties["calendar"] = new CalendarProperty();
 }
 
 World::~World()
