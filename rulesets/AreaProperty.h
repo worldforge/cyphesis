@@ -33,7 +33,7 @@ class AreaProperty : public PropertyBase {
     /// \brief Property data for the line that defines the outline of the area
     LineProperty m_line;
   public:
-    explicit AreaProperty(unsigned int flags);
+    explicit AreaProperty();
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
