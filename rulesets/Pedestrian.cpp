@@ -121,20 +121,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     } else {
         new_location.m_pos = new_coords;
     }
-
-    std::string mode("standing");
-
-    if (m_body.hasAttr("mode")) {
-        Element mode_attr;
-        m_body.getAttr("mode", mode_attr);
-        if (mode_attr.isString()) {
-            mode = mode_attr.String();
-        } else {
-            log(ERROR, String::compose("MODE on entity is a \"%1\" "
-                                       "in Pedestrain::getUpdatedLocation.",
-                                       Element::typeName(mode_attr.getType())));
-        }
-    }
+    // FIXME Use the movement_domain to apply the constraints.
 
     float z = BaseWorld::instance().constrainHeight(new_location.m_loc, new_location.m_pos,
                                               mode);
@@ -158,32 +145,8 @@ Operation Pedestrian::generateMove(const Location & new_location)
     Anonymous move_arg;
     move_arg->setId(m_body.getId());
 
-    // Walk out what the mode of the character should be.
-    // Performed in squares to save on that critical sqrt() call
-    double vel_square_mag = 0;
-    if (new_location.velocity().isValid()) {
-        vel_square_mag = new_location.velocity().sqrMag();
-    }
-    double square_speed_ratio = vel_square_mag / consts::square_base_velocity;
-
-    float height = 0;
-    if (m_body.m_location.bBox().isValid()) {
-        height = m_body.m_location.bBox().highCorner().z() - 
-                 m_body.m_location.bBox().lowCorner().z();
-    }
-
-    if (new_location.pos().z() < (0 - height * 0.75)) {
-        move_arg->setAttr("mode", "swimming");
-    } else {
-        if (square_speed_ratio > 0.25) { // 0.5 ^ 2
-            move_arg->setAttr("mode", "running");
-        } else if (square_speed_ratio > 0.0025) { // 0.05 ^ 2
-            move_arg->setAttr("mode", "walking");
-        } else {
-            move_arg->setAttr("mode", "standing");
-        }
-    }
-    debug(std::cout << move_arg->getAttr("mode").asString() << std::endl << std::flush;);
+    // FIXME Query from the movement_domain what the constraints are.
+    // On water, on land or falling?
 
     new_location.addToEntity(move_arg);
     moveOp->setArgs1(move_arg);
