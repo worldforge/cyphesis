@@ -1,3 +1,34 @@
+2009-05-14  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/BaseWorld.h: Remove height constraint functionality.
+
+	* common/Property.h, common/Property.cpp, rulesets/AreaProperty.h,
+	  rulesets/BBoxProperty.cpp, rulsets/CalendarProperty.cpp,
+	  rulesets/CalendarProperty.h, rulesets/EntityProperty.cpp,
+	  rulesets/InternalProperties.cpp, rulesets/LineProperty.cpp,
+	  rulesets/OutfitProperty.cpp, SolidProperty.cpp,
+	  rulesets/StatisticsProperty.cpp, rulesets/TerrainModProperty.cpp,
+	  server/ExternalProperty.cpp: Simplify the base class constructor
+	  as default values flags are almost never specified.
+
+	* rulesets/Domain.cpp, rulesets/Domain.h: Add a new singleton class
+	  to handle computation relating to movement in a coordinate space.
+
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add a member function to
+	  get the movement domain for an Entity.
+
+	* rulesets/Pedestrian.cpp, rulesets/Thing.cpp, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Call the Domain to handle height constraint.
+
+	* TerrainProperty.cpp, TerrainProperty.h: Move storing the terrain
+	  into this property so the World code can be cleaner.
+
+	* rulesets/World.cpp rulesets/World.h: Clear out all the terrain code
+	  and forward calls relating to it to the TerrainProperty.
+
+	* tests: Update tests to handle Property API changes. Use World for
+	  the tlve when exercising entities.
+
 2009-05-11  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* NEWS: Update NEWS announcement for release.
