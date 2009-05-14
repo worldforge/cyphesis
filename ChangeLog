@@ -1,5 +1,10 @@
 2009-05-14  Alistair Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/TerrainProperty.cpp: Clean up segment calculation and
+	  add assertion checks.
+
+2009-05-14  Alistair Riddoch  <alriddoch@googlemail.com>
+
 	* common/BaseWorld.h: Remove height constraint functionality.
 
 	* common/Property.h, common/Property.cpp, rulesets/AreaProperty.h,

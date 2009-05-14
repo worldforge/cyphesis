@@ -203,8 +203,10 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     if (!segment->isValid()) {
         segment->populate();
     }
-    x = x - segment->getXRef();
-    y = y - segment->getYRef();
+    x -= segment->getXRef();
+    y -= segment->getYRef();
+    assert(x <= segment->getSize());
+    assert(y <= segment->getSize());
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;
