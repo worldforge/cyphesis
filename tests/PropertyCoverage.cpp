@@ -66,6 +66,7 @@ PropertyCoverage::~PropertyCoverage()
     delete ent;
     delete tlve;
     delete prop;
+    delete wrld;
 }
 
 void PropertyCoverage::basicCoverage()
