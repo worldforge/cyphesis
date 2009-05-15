@@ -19,6 +19,8 @@
 
 #include "rulesets/AtlasProperties.h"
 
+#include "rulesets/Entity.h"
+
 #include "PropertyCoverage.h"
 
 int main()
@@ -49,6 +51,9 @@ int main()
         ContainsProperty * cp = new ContainsProperty(les);
 
         PropertyCoverage pc(cp);
+
+        // Now the world context has been set up, add some entities.
+        les.insert(new Entity("2", 2));
 
         // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
