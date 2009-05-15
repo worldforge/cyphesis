@@ -23,6 +23,8 @@
 
 #include <cassert>
 
+#include <cstdio>
+
 int main()
 {
     DateTime datum(0);
