@@ -26,7 +26,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  OutfitPropertytest SolidPropertytest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
-                 TransientPropertytest
+                 TransientPropertytest Domaintest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -561,6 +561,17 @@ TerrainPropertytest_LDADD = \
 TransientPropertytest_SOURCES = TransientPropertytest.cpp \
                        PropertyCoverage.cpp PropertyCoverage.h
 TransientPropertytest_LDADD = \
+                        $(top_builddir)/rulesets/librulesetentity.a \
+                        $(top_builddir)/rulesets/librulesetmind.a \
+                        $(top_builddir)/rulesets/librulesetbase.a \
+                        $(top_builddir)/modules/libmodules.a \
+                        $(top_builddir)/physics/libphysics.a \
+                        $(top_builddir)/common/libcommon.a \
+                        $(TERRAIN_LIBS)
+
+
+Domaintest_SOURCES = Domaintest.cpp
+Domaintest_LDADD = \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
                         $(top_builddir)/rulesets/librulesetbase.a \
