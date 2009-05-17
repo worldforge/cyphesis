@@ -555,7 +555,7 @@ static PyObject * bbox_new(PyObject * self, PyObject * args)
     if (val.size() == 3) {
         o->box = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),
                       WFMath::Point<3>(val[0], val[1], val[2]));
-    } else {
+    } else if (val.size() == 6) {
         o->box = BBox(WFMath::Point<3>(val[0], val[1], val[2]),
                       WFMath::Point<3>(val[3], val[4], val[5]));
     }
