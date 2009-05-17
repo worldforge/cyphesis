@@ -27,7 +27,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
                  TransientPropertytest Domaintest AtlasPropertiestest \
-                 Py_Quaterniontest Py_Vector3Dtest Py_Point3Dtest
+                 Python_APItest Py_Quaterniontest Py_Vector3Dtest \
+                 Py_Point3Dtest Py_BBoxtest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -592,6 +593,17 @@ Domaintest_LDADD = \
                         $(top_builddir)/common/libcommon.a \
                         $(TERRAIN_LIBS)
 
+Python_APItest_SOURCES = Python_APItest.cpp
+Python_APItest_LDADD = \
+                        $(top_builddir)/rulesets/libscriptpython.a \
+                        $(top_builddir)/rulesets/librulesetentity.a \
+                        $(top_builddir)/rulesets/librulesetmind.a \
+                        $(top_builddir)/rulesets/librulesetbase.a \
+                        $(top_builddir)/modules/libmodules.a \
+                        $(top_builddir)/physics/libphysics.a \
+                        $(top_builddir)/common/libcommon.a \
+                        $(TERRAIN_LIBS)
+
 Py_Quaterniontest_SOURCES = Py_Quaterniontest.cpp
 Py_Quaterniontest_LDADD = \
                         $(top_builddir)/rulesets/libscriptpython.a \
@@ -616,6 +628,17 @@ Py_Vector3Dtest_LDADD = \
 
 Py_Point3Dtest_SOURCES = Py_Point3Dtest.cpp
 Py_Point3Dtest_LDADD = \
+                        $(top_builddir)/rulesets/libscriptpython.a \
+                        $(top_builddir)/rulesets/librulesetentity.a \
+                        $(top_builddir)/rulesets/librulesetmind.a \
+                        $(top_builddir)/rulesets/librulesetbase.a \
+                        $(top_builddir)/modules/libmodules.a \
+                        $(top_builddir)/physics/libphysics.a \
+                        $(top_builddir)/common/libcommon.a \
+                        $(TERRAIN_LIBS)
+
+Py_BBoxtest_SOURCES = Py_BBoxtest.cpp
+Py_BBoxtest_LDADD = \
                         $(top_builddir)/rulesets/libscriptpython.a \
                         $(top_builddir)/rulesets/librulesetentity.a \
                         $(top_builddir)/rulesets/librulesetmind.a \
