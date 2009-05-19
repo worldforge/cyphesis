@@ -22,15 +22,11 @@
 
 #include "common/Property.h"
 
-#include <set>
-
-typedef std::map<int, std::set<int> > PointSet;
-
 /// \brief Class to handle World calendar property
 /// \ingroup PropertyClasses
 class CalendarProperty : public PropertyBase {
   public:
-    explicit CalendarProperty(unsigned int flags);
+    CalendarProperty();
 
     virtual bool get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);

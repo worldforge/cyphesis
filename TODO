@@ -10,6 +10,19 @@ collectivism to their movement decisions.
 Touched on before, but why not break down clustering by the kind of computation,
 so the physics layer is separated, and can only be talked to by RPC?
 
+WorldTime and DateTime need to be purely data driven
+
+Implement connection limits.
+
+Fix misspelling in Motion::getPostion()
+
+Ensure that distance functions mark results as invalid if there
+is a broken entity hierarchy.
+
+Ways to hold territory:
+ NPC manned towner foritifications. No door or ladder at ground level.
+ Must be frequently re-supplied.
+
 Define class properties that generate a random instance value per entity.
 This is another type which must be added to every instance, and can never
 be used as a default.

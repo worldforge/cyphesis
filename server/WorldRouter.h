@@ -97,9 +97,6 @@ class WorldRouter : public BaseWorld {
     virtual void message(const Operation &, Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
-    virtual float constrainHeight(LocatedEntity * parent,
-                                  const Point3D & pos,
-                                  const std::string & mode);
 
     /// \brief Signal that a new Entity has been inserted.
     sigc::signal<void, Entity *> inserted;

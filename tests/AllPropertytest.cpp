@@ -75,7 +75,7 @@ int main()
     }
 
     {
-        AreaProperty test_property(0);
+        AreaProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 
@@ -108,7 +108,7 @@ int main()
     }
 
     {
-        CalendarProperty test_property(0);
+        CalendarProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 
@@ -145,11 +145,7 @@ int main()
     }
 
     {
-        Mercator::Terrain test_terrain_data;
-        PointSet test_pointset_data1, test_pointset_data2;
-        TerrainProperty test_property(test_terrain_data,
-                                      test_pointset_data1,
-                                      test_pointset_data2, 0);
+        TerrainProperty test_property;
         assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
     }
 

@@ -305,7 +305,6 @@ const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& mo
 /// \brief TerrainModProperty constructor
 ///
 TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
-                    PropertyBase(0),
                     m_modptr(0), m_owner(0), m_handlers(handlers), mInnerMod(0)
 {
 }

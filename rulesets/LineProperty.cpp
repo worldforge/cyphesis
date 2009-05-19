@@ -35,7 +35,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-LineProperty::LineProperty() : PropertyBase(0)
+LineProperty::LineProperty()
 {
 }
 

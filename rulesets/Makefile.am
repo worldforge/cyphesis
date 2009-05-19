@@ -14,7 +14,6 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
                    libscriptpython.a
 
 librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
-			   Entity.cpp Entity.h \
 			   EntityProperties.cpp \
 			   AtlasProperties.cpp AtlasProperties.h \
 			   ActivePropertyFactory.cpp \
@@ -23,13 +22,16 @@ librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 
 
-librulesetentity_a_SOURCES = Thing.cpp Thing.h \
+librulesetentity_a_SOURCES = \
+			     Entity.cpp Entity.h \
+			     Thing.cpp Thing.h \
 			     World.cpp World.h \
 			     Character.cpp Character.h \
 			     Creator.cpp Creator.h \
 			     Plant.cpp Plant.h \
 			     Stackable.cpp Stackable.h \
 			     Motion.cpp Motion.h \
+			     Domain.cpp Domain.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     EntityProperty.cpp EntityProperty.h \
@@ -38,6 +40,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     TerrainModProperty.cpp TerrainModProperty.h \
+			     TerrainMod_impl.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \
@@ -53,8 +56,7 @@ librulesetentity_a_SOURCES = Thing.cpp Thing.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
-			     ArithmeticFactory.cpp ArithmeticFactory.h \
-			     TerraiMod_impl.h
+			     ArithmeticFactory.cpp ArithmeticFactory.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

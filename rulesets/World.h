@@ -22,14 +22,9 @@
 
 #include "Thing.h"
 
-namespace Mercator {
-    class Terrain;
-    class TileShader;
-}
+class TerrainProperty;
 
 typedef Thing World_parent;
-
-typedef std::map<int, std::set<int> > PointSet;
 
 /// \brief This is the in-game entity class used to represent the world.
 ///
@@ -38,42 +33,12 @@ typedef std::map<int, std::set<int> > PointSet;
 /// \ingroup EntityClasses
 class World : public World_parent {
   protected:
-    /// Terrain manager for the world.
-    Mercator::Terrain & m_terrain;
-    /// Terrain shader tracking surface type.
-    Mercator::TileShader & m_tileShader;
-    /// Set of terrain points which have been changed.
-    PointSet m_modifiedTerrain;
-    /// Set of terrain points which have been added.
-    PointSet m_createdTerrain;
-
+    TerrainProperty * terrain();
+    int getSurface(const Point3D &,  int &);
+    float getHeight(float x, float y);
   public:
     explicit World(const std::string & id, long intId);
     virtual ~World();
-
-    /// \brief Accessor for terrain manager
-    const Mercator::Terrain & terrain() {
-        return m_terrain;
-    }
-
-    /// \brief Accessor for set of terrain points which have been changed
-    const PointSet & modifiedTerrain() {
-        return m_modifiedTerrain;
-    }
-
-    /// \brief Accessor for set of terrain points which have been added
-    const PointSet & createdTerrain() {
-        return m_createdTerrain;
-    }
-
-    /// \brief Clear the sets used to track terrain modifications
-    void clearTerrainFlags() {
-        m_modifiedTerrain.clear();
-        m_createdTerrain.clear();
-    }
-
-    float getHeight(float x, float y);
-    int getSurface(const Point3D &,  int &);
 
     virtual void EatOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);

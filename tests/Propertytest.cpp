@@ -19,9 +19,32 @@
 
 #include "common/Property.h"
 
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Anonymous.h>
+
 #include <cassert>
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
+using Atlas::Objects::Entity::Anonymous;
+
+class MinimalProperty : public PropertyBase {
+  public:
+    MinimalProperty() { }
+    virtual bool get(Atlas::Message::Element & val) const { return true; }
+    virtual void set(const Atlas::Message::Element & val) { }
+
+};
+
+static void exerciseProperty(PropertyBase * pb)
+{
+    pb->install(0);
+    pb->apply(0);
+    MapType map;
+    pb->add("test_name", map);
+    Anonymous ent;
+    pb->add("test_name", ent);
+}
 
 int main()
 {
@@ -47,12 +70,51 @@ int main()
     Element val;
 
     {
+    PropertyBase * pb = new MinimalProperty;
+    exerciseProperty(pb);
+    delete pb;
+    }
+
+    {
+    long i = 23;
+    PropertyBase * pb = new SoftProperty;
+    assert(pb->flags() == 0);
+    pb->set(i);
+    pb->get(val);
+    assert(val == i);
+    exerciseProperty(pb);
+    delete pb;
+    }
+
+    {
+    long i = 23;
+    PropertyBase * pb = new SoftProperty(i);
+    assert(pb->flags() == 0);
+    pb->get(val);
+    assert(val == i);
+    exerciseProperty(pb);
+    delete pb;
+    }
+
+    {
+    long i = 23;
+    PropertyBase * pb = new Property<int>(0);
+    assert(pb->flags() == 0);
+    pb->set(i);
+    pb->get(val);
+    assert(val == i);
+    exerciseProperty(pb);
+    delete pb;
+    }
+
+    {
     long i = 23;
     PropertyBase * pb = new Property<long>(0);
     assert(pb->flags() == 0);
     pb->set(i);
     pb->get(val);
     assert(val == i);
+    exerciseProperty(pb);
     delete pb;
     }
 
@@ -63,6 +125,7 @@ int main()
     pb->set(f);
     pb->get(val);
     assert(val == f);
+    exerciseProperty(pb);
     delete pb;
     }
 
@@ -73,6 +136,7 @@ int main()
     pb->set(d);
     pb->get(val);
     assert(val == d);
+    exerciseProperty(pb);
     delete pb;
     }
 
@@ -83,6 +147,7 @@ int main()
     pb->set(s);
     pb->get(val);
     assert(val == s);
+    exerciseProperty(pb);
     delete pb;
     }
 
@@ -93,6 +158,7 @@ int main()
     pb->set(i);
     pb->get(val);
     assert(val == i);
+    exerciseProperty(pb);
     delete pb;
     }
 }

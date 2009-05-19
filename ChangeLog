@@ -1,3 +1,83 @@
+2009-05-14  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/TerrainProperty.cpp: Clean up segment calculation and
+	  add assertion checks.
+
+2009-05-14  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/BaseWorld.h: Remove height constraint functionality.
+
+	* common/Property.h, common/Property.cpp, rulesets/AreaProperty.h,
+	  rulesets/BBoxProperty.cpp, rulsets/CalendarProperty.cpp,
+	  rulesets/CalendarProperty.h, rulesets/EntityProperty.cpp,
+	  rulesets/InternalProperties.cpp, rulesets/LineProperty.cpp,
+	  rulesets/OutfitProperty.cpp, SolidProperty.cpp,
+	  rulesets/StatisticsProperty.cpp, rulesets/TerrainModProperty.cpp,
+	  server/ExternalProperty.cpp: Simplify the base class constructor
+	  as default values flags are almost never specified.
+
+	* rulesets/Domain.cpp, rulesets/Domain.h: Add a new singleton class
+	  to handle computation relating to movement in a coordinate space.
+
+	* rulesets/Entity.h, rulesets/Entity.cpp: Add a member function to
+	  get the movement domain for an Entity.
+
+	* rulesets/Pedestrian.cpp, rulesets/Thing.cpp, server/WorldRouter.cpp,
+	  server/WorldRouter.h: Call the Domain to handle height constraint.
+
+	* TerrainProperty.cpp, TerrainProperty.h: Move storing the terrain
+	  into this property so the World code can be cleaner.
+
+	* rulesets/World.cpp rulesets/World.h: Clear out all the terrain code
+	  and forward calls relating to it to the TerrainProperty.
+
+	* tests: Update tests to handle Property API changes. Use World for
+	  the tlve when exercising entities.
+
+2009-05-11  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.20
+
+2009-05-11  Al Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/TerrainMod_impl.h: Fix header guards.
+
+	* common/Database.cpp: Remove debug output for maintenence queries.
+
+	* common/globals.cpp: Remove debug output when looking for settings
+	  in the config.
+
+	* server/ExternalMind.cpp: Remove debug output when removing an
+	  unused PC from the world.
+
+	* rulesets/basic/mind/NPCMind.py: Jitter AI ticks so things look more
+	  natural.
+
+	* tests/*: Do a major update to coverage of the tests.
+
+	* modules/DateTime.cpp: Fix the format of date string output.
+
+	* common/Monitors.cpp, common/Monitors.h: Add dustructor to clean up
+	  monitors.
+
+	* common/FormattedXMLWriter.cpp: Fix an exception thrown when the
+	  Atlas data is odd.
+
+	* rulesets/Motion.cpp: Add an assert to check for the collision flag.
+	  Assert that position and velocity are valid when resolving
+	  collisions.
+
+	* rulesets/LineProperty.h: Fix a missing header dependency.
+
+	* rulesets/StatisticsProperty.cpp: Return so there is no crash if
+	  finding the script fails.
+
+	* common/globals.h, common/globals.cpp, modules/DateTime.cpp:
+	  Add constants for default calender, and remove the depency
+	  on DateTime from globals.
+
 2009-04-09  Al Riddoch  <alriddoch@googlemail.com>
 
 	* common/globals.cpp: Explicitly instantiate a template to work

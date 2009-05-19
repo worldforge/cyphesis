@@ -30,6 +30,7 @@
 #include <iostream>
 
 class Motion;
+class Domain;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
@@ -178,6 +179,8 @@ class Entity : public LocatedEntity {
 
     void destroy();
 
+    Domain * getMovementDomain();
+
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
@@ -227,8 +230,13 @@ class Entity : public LocatedEntity {
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {
-    return s << "{" << v.m_loc->getId() << "," << v.pos() << ","
-             << v.m_velocity << "}";
+    if (v.isValid()) {
+        return s << "{" << v.m_loc->getId() << "," << v.pos() << ","
+                 << v.m_velocity << "}";
+    } else {
+        return s << "{null," << v.pos() << ","
+                 << v.m_velocity << "}";
+    }
 }
 
 #endif // RULESETS_ENTITY_H

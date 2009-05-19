@@ -17,7 +17,10 @@
 
 // $Id$
 
+#include "EntityExerciser.h"
+
 #include "rulesets/LocatedEntity.h"
+#include "rulesets/Script.h"
 
 #include <cassert>
 
@@ -31,6 +34,80 @@ class LocatedEntityTest : public LocatedEntity {
 
     virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
 };
+
+
+void runCoverageTest()
+{
+    LocatedEntityTest * le = new LocatedEntityTest("1", 1);
+
+    le->setScript(new Script());
+    // Installing a second one should delete the first.
+    le->setScript(new Script());
+
+    le->onContainered();
+    le->onUpdated();
+
+    EntityExerciser<LocatedEntityTest> ee(*le);
+    // Throw an op of every type at the entity
+    ee.runOperations();
+
+    // Subscribe the entity to every class of op
+    std::set<std::string> opNames;
+    ee.addAllOperations(opNames);
+
+    std::set<std::string> attrNames;
+    attrNames.insert("id");
+
+    // Make sure we have all the default attributes
+    assert(ee.checkAttributes(attrNames));
+
+    attrNames.insert("test_int");
+    attrNames.insert("test_float");
+    attrNames.insert("test_list_string");
+    attrNames.insert("test_list_int");
+    attrNames.insert("test_list_float");
+    attrNames.insert("test_map_string");
+    attrNames.insert("test_map_int");
+    attrNames.insert("test_map_float");
+
+    // Make sure we don't have the test attributes yet
+    assert(!ee.checkAttributes(attrNames));
+
+    // Add the test attributes
+    le->setAttr("test_int", 1);
+    le->setAttr("test_float", 1.f);
+    le->setAttr("test_list_string", "test_value");
+    le->setAttr("test_list_int", ListType(1, 1));
+    le->setAttr("test_list_float", ListType(1, 1.f));
+    le->setAttr("test_map_string", ListType(1, "test_value"));
+    MapType test_map;
+    test_map["test_key"] = 1;
+    le->setAttr("test_map_int", test_map);
+    test_map["test_key"] = 1.f;
+    le->setAttr("test_map_float", test_map);
+    test_map["test_key"] = "test_value";
+    le->setAttr("test_map_string", test_map);
+    
+    // Make sure we have the test attributes now
+    assert(ee.checkAttributes(attrNames));
+
+    MapType entityAsAtlas;
+
+    // Dump a representation of the entity into an Atlas Message
+    le->addToMessage(entityAsAtlas);
+
+    // Make sure we got at least some of it
+    assert(entityAsAtlas.size() >= 2);
+
+    // Read the contents of the Atlas Message back in
+    le->merge(entityAsAtlas);
+
+    // Throw an op of every type at the entity again now it is subscribed,
+    // and full of data.
+    ee.runOperations();
+
+    delete le;
+}
 
 int main()
 {
@@ -141,6 +218,7 @@ int main()
         e->decRef();
     }
 
+    runCoverageTest();
 
     return 0;
 }

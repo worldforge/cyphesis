@@ -53,6 +53,12 @@ static const int USAGE_CYCMD = 1 << 2;
 static const int USAGE_DBASE = 1 << 3;
 static const int USAGE_CYPYTHON = 1 << 4;
 
+static const unsigned int SPM = 20; // seconds per minute
+static const unsigned int MPH = 60; // minutes per hour
+static const unsigned int HPD = 24; // hours per day
+static const unsigned int DPM = 28; // days per month
+static const unsigned int MPY = 12; // months per year
+
 /// Database setup all ok
 static const int DATABASE_OKAY = 0;
 /// Database connection error

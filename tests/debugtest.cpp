@@ -134,5 +134,19 @@ int main()
         debug_dump(one);
     }
 
+    {
+        // Test debug dumping some data
+        ListType member(6);
+        assert((member[0] = 1).isInt());
+        assert((member[1] = 1.1).isFloat());
+        assert((member[2] = (void*)0).isPtr());
+        assert((member[3] = "string").isString());
+        assert((member[4] = ListType()).isList());
+        assert((member[5] = MapType()).isMap());
+        assert(member.size() == 6);
+
+        debug_dump(member);
+    }
+
     return 0;
 }

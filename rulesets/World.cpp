@@ -31,15 +31,6 @@
 #include "common/Eat.h"
 #include "common/Nourish.h"
 
-#include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
-#include <Mercator/TileShader.h>
-#include <Mercator/FillShader.h>
-#include <Mercator/ThresholdShader.h>
-#include <Mercator/DepthShader.h>
-#include <Mercator/GrassShader.h>
-#include <Mercator/Surface.h>
-
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation.h>
@@ -66,37 +57,30 @@ using Atlas::Objects::smart_dynamic_cast;
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief Constructor for the World entity
-World::World(const std::string & id, long intId) :
-       World_parent(id, intId),
-           m_terrain(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
-           m_tileShader(*new Mercator::TileShader)
+World::World(const std::string & id, long intId) : World_parent(id, intId)
 {
-    m_properties["terrain"] = new TerrainProperty(m_terrain, m_modifiedTerrain,
-                                                  m_modifiedTerrain, 0);
-    m_properties["calendar"] = new CalendarProperty(0);
-
-    m_tileShader.addShader(new Mercator::FillShader(), ROCK);
-    m_tileShader.addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
-    m_tileShader.addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f), GRASS);
-    m_tileShader.addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
-    m_tileShader.addShader(new Mercator::HighShader(110.f), SNOW);
-    m_terrain.addShader(&m_tileShader, 0);
+    m_properties["terrain"] = new TerrainProperty();
+    m_properties["calendar"] = new CalendarProperty();
 }
 
 World::~World()
 {
-    delete &m_terrain;
-    delete &m_tileShader;
+}
+
+TerrainProperty * World::terrain()
+{
+    return modPropertyClass<TerrainProperty>("terrain");
 }
 
 /// \brief Calculate the terrain height at the given x,y coordinates
 float World::getHeight(float x, float y)
 {
-    Mercator::Segment * s = m_terrain.getSegment(x, y);
-    if (s != 0 && !s->isValid()) {
-        s->populate();
+    TerrainProperty * tp = terrain();
+    if (tp != 0) {
+        return tp->getHeight(x, y);
     }
-    return m_terrain.get(x, y);
+    log(ERROR, "No terrain in getHeight");
+    return 0.f;
 }
 
 /// \brief Get a number encoding the surface type at the given x,y coordinates
@@ -106,36 +90,12 @@ float World::getHeight(float x, float y)
 /// material identifier at this location.
 int World::getSurface(const Point3D & pos, int & material)
 {
-    float x = pos.x(),
-          y = pos.y();
-    Mercator::Segment * segment = m_terrain.getSegment(x, y);
-    if (segment == 0) {
-        debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
-        return -1;
+    TerrainProperty * tp = terrain();
+    if (tp != 0) {
+        return tp->getSurface(pos, material);
     }
-    if (!segment->isValid()) {
-        segment->populate();
-    }
-    x = x - segment->getXRef();
-    y = y - segment->getYRef();
-    const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
-    WFMath::Vector<3> normal;
-    float height = -23;
-    segment->getHeightAndNormal(x, y, height, normal);
-    debug(std::cout << "At the point " << x << "," << y
-                    << " of the segment the height is " << height << std::endl;
-          std::cout << "The segment has " << surfaces.size()
-                    << std::endl << std::flush;);
-    if (surfaces.size() == 0) {
-        log(ERROR, "The terrain has no surface data");
-        return -1;
-    }
-    Mercator::Surface & tile_surface = *surfaces.begin()->second;
-    if (!tile_surface.isValid()) {
-        tile_surface.populate();
-    }
-    material = tile_surface((int)x, (int)y, 0);
-    return 0;
+    log(ERROR, "No terrain in getSurface");
+    return -1;
 }
 
 void World::EatOperation(const Operation & op, OpVector & res)

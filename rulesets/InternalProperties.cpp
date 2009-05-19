@@ -55,7 +55,7 @@ void TickProperty::apply(Entity * ent)
     ent->sendWorld(t);
 }
 
-SimpleProperty::SimpleProperty() : PropertyBase(0)
+SimpleProperty::SimpleProperty()
 {
 }
 

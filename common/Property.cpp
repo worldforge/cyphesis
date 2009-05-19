@@ -122,7 +122,7 @@ void Property<std::string>::add(const std::string & s,
     }
 }
 
-SoftProperty::SoftProperty() : PropertyBase(0)
+SoftProperty::SoftProperty()
 {
 }
 

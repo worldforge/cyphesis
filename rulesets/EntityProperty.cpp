@@ -27,7 +27,7 @@
 
 static const bool debug_flag = false;
 
-EntityProperty::EntityProperty() : PropertyBase(0)
+EntityProperty::EntityProperty()
 {
 }
 

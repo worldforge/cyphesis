@@ -54,6 +54,7 @@ class Monitors {
     static Monitors * m_instance;
 
     Monitors();
+    ~Monitors();
 
     Atlas::Message::MapType m_pairs;
     MonitorDict m_variableMonitors;

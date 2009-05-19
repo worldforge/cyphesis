@@ -75,6 +75,18 @@ int main()
     }
 
     {
+        // Test retrieving non existant entity by string ID is ok
+        Entity wrld("1", 1);
+        TestWorld tw(wrld);
+
+        Entity * tc = new Entity("2", 2);
+
+        tw.addEntity(tc);
+
+        assert(tw.getEntity("2") == tc);
+    }
+
+    {
         // Test retrieving non existant entity by integer ID is ok
         Entity wrld("1", 1);
         TestWorld tw(wrld);

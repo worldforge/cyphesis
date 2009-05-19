@@ -29,10 +29,25 @@ int main()
 
     WorldTime worldTime;
 
+    assert(!(worldTime == "never"));
+    assert(!(worldTime == "nonexist"));
+    assert(worldTime == "always");
+
+    assert(worldTime["nonexist"] == "");
+
+    {
+        WorldTime other;
+
+        worldTime == other;
+    }
+
     worldTime.update(0 * DateTime::dpm() * DateTime::hpd() *
                          DateTime::mph() * DateTime::spm());
 
     assert(worldTime["season"] == "winter");
+    assert(worldTime == "winter");
+    assert(worldTime == "night");
+    assert(!(worldTime == "summer"));
 
     worldTime.update(1 * DateTime::dpm() * DateTime::hpd() *
                          DateTime::mph() * DateTime::spm());

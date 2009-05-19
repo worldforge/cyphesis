@@ -54,6 +54,15 @@ Monitors::Monitors()
 {
 }
 
+Monitors::~Monitors()
+{
+    MonitorDict::const_iterator I = m_variableMonitors.begin();
+    MonitorDict::const_iterator Iend = m_variableMonitors.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
+}
+
 Monitors * Monitors::instance()
 {
     if (m_instance == NULL) {

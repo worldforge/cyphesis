@@ -26,6 +26,9 @@
 #include "TestWorld.h"
 
 #include "rulesets/Motion.h"
+#include "rulesets/World.h"
+
+#include "common/TypeNode.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -37,37 +40,22 @@ class IGEntityExerciser : public EntityExerciser<EntityType> {
         new TestPropertyManager;
         if (e.getIntId() == 0) {
             new TestWorld(e);
-            e.m_contains = new LocatedEntitySet;
         } else {
-            e.m_location.m_loc = new Entity("0", 0);
-            e.m_location.m_loc->m_contains = new LocatedEntitySet;
+            assert(e.m_location.m_loc != 0);
+            delete e.m_location.m_loc;
+            e.m_location.m_loc = new World("0", 0);
+            e.m_location.m_loc->makeContainer();
+            assert(e.m_location.m_loc->m_contains != 0);
             e.m_location.m_loc->m_contains->insert(&e);
             new TestWorld(*dynamic_cast<Entity*>(e.m_location.m_loc));
         }
         BaseWorld::instance().addEntity(&e);
     }
 
-    bool checkAttributes(const std::set<std::string> & attr_names);
     bool checkProperties(const std::set<std::string> & prop_names);
 
     void runOperations();
 };
-
-template <class EntityType>
-inline bool IGEntityExerciser<EntityType>::checkAttributes(const std::set<std::string> & attr_names)
-{
-    Atlas::Message::Element null;
-    std::set<std::string>::const_iterator I = attr_names.begin();
-    std::set<std::string>::const_iterator Iend = attr_names.end();
-    for (; I != Iend; ++I) {
-        if (!this->m_ent.getAttr(*I, null)) {
-            std::cerr << "Entity does not have \"" << *I << "\" attribute."
-                      << std::endl << std::flush;
-            return false;
-        }
-    }
-    return true;
-}
 
 template <class EntityType>
 inline bool IGEntityExerciser<EntityType>::checkProperties(const std::set<std::string> & prop_names)
@@ -473,6 +461,7 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         this->m_ent.UpdateOperation(op, ov);
         this->flushOperations(ov);
 
+        this->m_ent.m_location.m_pos = Point3D(0,0,0);
         this->m_ent.m_location.m_velocity = Vector3D(1,0,0);
         this->m_ent.UpdateOperation(op, ov);
         this->flushOperations(ov);

@@ -26,6 +26,11 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
 #include <Mercator/TerrainMod.h>
+#include <Mercator/TileShader.h>
+#include <Mercator/FillShader.h>
+#include <Mercator/ThresholdShader.h>
+#include <Mercator/DepthShader.h>
+#include <Mercator/GrassShader.h>
 
 #include <sstream>
 
@@ -41,6 +46,8 @@ using Atlas::Message::FloatType;
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
+typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
+
 /// \brief TerrainProperty constructor
 ///
 /// @param data Reference to varaible holding the value of this Property
@@ -49,15 +56,23 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 /// @param createdTerrain Reference to a variable storing the set of
 /// created points
 /// @param flags Flags indicating how this Property should be handled
-TerrainProperty::TerrainProperty(Mercator::Terrain & data,
-                                 PointSet & modifiedTerrain,
-                                 PointSet & createdTerrain,
-                                 unsigned int flags) :
-                                 PropertyBase(flags),
-                                 m_data(data),
-                                 m_modifiedTerrain(modifiedTerrain),
-                                 m_createdTerrain(createdTerrain)
+TerrainProperty::TerrainProperty() :
+      m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
+      m_tileShader(*new Mercator::TileShader)
+
 {
+    m_tileShader.addShader(new Mercator::FillShader(), ROCK);
+    m_tileShader.addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
+    m_tileShader.addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f), GRASS);
+    m_tileShader.addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
+    m_tileShader.addShader(new Mercator::HighShader(110.f), SNOW);
+    m_data.addShader(&m_tileShader, 0);
+}
+
+TerrainProperty::~TerrainProperty()
+{
+    delete &m_data;
+    delete &m_tileShader;
 }
 
 bool TerrainProperty::get(Element & ent) const
@@ -162,7 +177,7 @@ void TerrainProperty::clearMods(float x, float y)
 }
 
 /// \brief Calculate the terrain height at the given x,y coordinates
-float TerrainProperty::getHeight(float x, float y)
+float TerrainProperty::getHeight(float x, float y) const
 {
     Mercator::Segment * s = m_data.getSegment(x, y);
     if (s != 0 && !s->isValid()) {
@@ -188,8 +203,10 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     if (!segment->isValid()) {
         segment->populate();
     }
-    x = x - segment->getResolution() * segment->getXRef();
-    y = y - segment->getResolution() * segment->getYRef();
+    x -= segment->getXRef();
+    y -= segment->getYRef();
+    assert(x <= segment->getSize());
+    assert(y <= segment->getSize());
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;

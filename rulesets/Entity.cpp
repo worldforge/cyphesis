@@ -20,6 +20,7 @@
 #include "Entity.h"
 
 #include "Script.h"
+#include "Domain.h"
 
 #include "common/log.h"
 #include "common/debug.h"
@@ -266,6 +267,11 @@ void Entity::destroy()
     }
     m_flags |= entity_destroyed;
     destroyed.emit();
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return Domain::instance();
 }
 
 void Entity::ActuateOperation(const Operation &, OpVector &)

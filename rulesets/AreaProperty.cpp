@@ -36,7 +36,7 @@ using Atlas::Message::MapType;
 /// \brief AreaProperty constructor
 ///
 /// @param flags Flags used to persist this property
-AreaProperty::AreaProperty(unsigned int flags) : PropertyBase(flags)
+AreaProperty::AreaProperty()
 {
 }
 

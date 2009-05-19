@@ -35,7 +35,7 @@ class PropertyBase {
   protected:
     /// \brief Flags indicating how this Property should be handled
     unsigned int m_flags;
-    explicit PropertyBase(unsigned int);
+    explicit PropertyBase(unsigned int flags = 0);
   public:
     virtual ~PropertyBase();
 
