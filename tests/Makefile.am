@@ -29,7 +29,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TransientPropertytest Domaintest AtlasPropertiestest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
-                 Py_RootEntitytest Py_Operationtest
+                 Py_RootEntitytest Py_Operationtest Py_Oplisttest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -695,6 +695,17 @@ Py_RootEntitytest_LDADD = \
 
 Py_Operationtest_SOURCES = Py_Operationtest.cpp
 Py_Operationtest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+Py_Oplisttest_SOURCES = Py_Oplisttest.cpp
+Py_Oplisttest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
