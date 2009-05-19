@@ -132,11 +132,15 @@ static PyObject * Operation_setSeconds(PyOperation * self, PyObject * py_secs)
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyFloat_CheckExact(py_secs)) {
-        PyErr_SetString(PyExc_TypeError, "seconds not a float");
+    double seconds;
+    if (PyFloat_CheckExact(py_secs)) {
+        seconds = PyFloat_AsDouble(py_secs);
+    } else if (PyInt_CheckExact(py_secs)) {
+        seconds = PyInt_AsLong(py_secs);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "seconds not a number");
         return NULL;
     }
-    double seconds = PyFloat_AsDouble(py_secs);
     self->operation->setSeconds(seconds);
 
     Py_INCREF(Py_None);
@@ -153,7 +157,7 @@ static PyObject * Operation_setFutureSeconds(PyOperation * self,
         return NULL;
     }
 #endif // NDEBUG
-    double futureseconds = PyFloat_AsDouble(py_fsecs);
+    double futureseconds;
     if (PyFloat_CheckExact(py_fsecs)) {
         futureseconds = PyFloat_AsDouble(py_fsecs);
     } else if (PyInt_CheckExact(py_fsecs)) {
