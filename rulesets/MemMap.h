@@ -38,7 +38,7 @@ typedef std::map<long, MemEntity *> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
 class MemMap {
-  private:
+  protected:
     friend class BaseMind;
 
     static const TypeNode * m_entity_type;
