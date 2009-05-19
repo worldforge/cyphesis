@@ -97,6 +97,10 @@ void BaseMind::sightDeleteOperation(const Operation & op, OpVector & res)
         return;
     }
     const Root & obj = args.front();
+    if (!obj.isValid()) {
+        log(ERROR, "Sight Delete with invalid entity");
+        return;
+    }
     const std::string & id = obj->getId();
     if (!id.empty()) {
         m_map.del(obj->getId());
