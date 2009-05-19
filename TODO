@@ -1,3 +1,15 @@
+Mind interface is pretty simple, so it should be possible to have a hive or
+herd mind at either core or python layer. One significant goal will be to
+eliminate the copy of the world per individual, but this is being done
+already. It will probably e a major bonus to have a single view of the
+world from all the entities, so that if one entity has seen something, they
+are all considered to have seen it implicitly. In order for many things to
+work these still need to make their own decissions though there is
+collectivism to their movement decisions.
+
+Touched on before, but why not break down clustering by the kind of computation,
+so the physics layer is separated, and can only be talked to by RPC?
+
 Fix Operation_seq_item to use index rather than search, as we can now index
 it. setArgs() also needs fixing.
 
