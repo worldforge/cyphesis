@@ -1,3 +1,5 @@
+Sort out Py_Object as modern style type that can actually be instanced.
+
 WorldTime and DateTime need to be purely data driven
 
 Implement connection limits.
