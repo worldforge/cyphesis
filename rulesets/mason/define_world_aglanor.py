@@ -23,7 +23,7 @@ from mind.panlingua import interlinguish
 il=interlinguish
 from world import probability
 from editor import editor
-from Quaternion import Quaternion
+from physics import Quaternion
 from physics import Vector3D
 import time
 

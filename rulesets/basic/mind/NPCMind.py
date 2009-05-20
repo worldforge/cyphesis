@@ -5,7 +5,7 @@ import random
 
 from atlas import *
 from physics import *
-from Quaternion import Quaternion
+from physics import Quaternion
 from common import const
 from types import *
 

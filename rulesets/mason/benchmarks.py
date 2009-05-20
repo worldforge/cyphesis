@@ -4,7 +4,7 @@
 from atlas import *
 from random import *
 from cyphesis.editor import editor
-from Quaternion import Quaternion
+from physics import Quaternion
 from physics import Vector3D
 from math import *
 

@@ -3,7 +3,7 @@
 
 from atlas import *
 from physics import *
-from Quaternion import Quaternion
+from physics import Quaternion
 from physics import Vector3D
 
 try:
