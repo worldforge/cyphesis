@@ -39,8 +39,8 @@ int main()
     assert(PyRun_SimpleString("print q.as_list()") == 0);
     assert(PyRun_SimpleString("print q.rotation()") == -1);
     assert(PyRun_SimpleString("print q.rotation('foo',1.0)") == -1);
-    assert(PyRun_SimpleString("import Vector3D") == 0);
-    assert(PyRun_SimpleString("v=Vector3D.Vector3D(0,0,0)") == 0);
+    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
+    assert(PyRun_SimpleString("v=Vector3D(0,0,0)") == 0);
     assert(PyRun_SimpleString("print q == v") == 0);
     assert(PyRun_SimpleString("print v == q") == 0);
     assert(PyRun_SimpleString("print q.rotation(v,1.0)") == 0);

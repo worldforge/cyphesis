@@ -27,18 +27,18 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("import Vector3D") == 0);
-    assert(PyRun_SimpleString("v=Vector3D.Vector3D(1,0,0)") == 0);
-    assert(PyRun_SimpleString("v1=Vector3D.Vector3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("v2=Vector3D.Vector3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D()") == 0);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D([1])") == -1);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D([1,0,0])") == 0);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D([1.1,0.0,0.0])") == 0);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D(1.1)") == -1);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D(1.1,0.0,0.0)") == 0);
-    assert(PyRun_SimpleString("print Vector3D.Vector3D(1.1,0.0,0.0,1.1)") == -1);
+    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
+    assert(PyRun_SimpleString("v=Vector3D(1,0,0)") == 0);
+    assert(PyRun_SimpleString("v1=Vector3D(0,1,0)") == 0);
+    assert(PyRun_SimpleString("v2=Vector3D(0,1,0)") == 0);
+    assert(PyRun_SimpleString("print Vector3D()") == 0);
+    assert(PyRun_SimpleString("print Vector3D([1])") == -1);
+    assert(PyRun_SimpleString("print Vector3D([1,0,0])") == 0);
+    assert(PyRun_SimpleString("print Vector3D([1.1,0.0,0.0])") == 0);
+    assert(PyRun_SimpleString("print Vector3D(['1','1','1'])") == -1);
+    assert(PyRun_SimpleString("print Vector3D(1.1)") == -1);
+    assert(PyRun_SimpleString("print Vector3D(1.1,0.0,0.0)") == 0);
+    assert(PyRun_SimpleString("print Vector3D(1.1,0.0,0.0,1.1)") == -1);
     assert(PyRun_SimpleString("print repr(v)") == 0);
     assert(PyRun_SimpleString("print v.dot(1.0)") == -1);
     assert(PyRun_SimpleString("print v.dot(v1)") == 0);

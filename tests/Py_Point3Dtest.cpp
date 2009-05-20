@@ -27,19 +27,19 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("import Point3D") == 0);
-    assert(PyRun_SimpleString("p=Point3D.Point3D(1,0,0)") == 0);
-    assert(PyRun_SimpleString("p1=Point3D.Point3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("p2=Point3D.Point3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("print Point3D.Point3D()") == 0);
-    assert(PyRun_SimpleString("print Point3D.Point3D([1])") == -1);
-    assert(PyRun_SimpleString("print Point3D.Point3D([1,0,0])") == 0);
-    assert(PyRun_SimpleString("print Point3D.Point3D([1.1,0.0,0.0])") == 0);
-    assert(PyRun_SimpleString("print Point3D.Point3D(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("print Point3D.Point3D(1.1)") == -1);
-    assert(PyRun_SimpleString("print Point3D.Point3D(1.1,0.0,0.0)") == 0);
-    assert(PyRun_SimpleString("print Point3D.Point3D('1','1','1')") == -1);
-    assert(PyRun_SimpleString("print Point3D.Point3D(1.1,0.0,0.0,1.1)") == -1);
+    assert(PyRun_SimpleString("from physics import Point3D") == 0);
+    assert(PyRun_SimpleString("p=Point3D(1,0,0)") == 0);
+    assert(PyRun_SimpleString("p1=Point3D(0,1,0)") == 0);
+    assert(PyRun_SimpleString("p2=Point3D(0,1,0)") == 0);
+    assert(PyRun_SimpleString("print Point3D()") == 0);
+    assert(PyRun_SimpleString("print Point3D([1])") == -1);
+    assert(PyRun_SimpleString("print Point3D([1,0,0])") == 0);
+    assert(PyRun_SimpleString("print Point3D([1.1,0.0,0.0])") == 0);
+    assert(PyRun_SimpleString("print Point3D(['1','1','1'])") == -1);
+    assert(PyRun_SimpleString("print Point3D(1.1)") == -1);
+    assert(PyRun_SimpleString("print Point3D(1.1,0.0,0.0)") == 0);
+    assert(PyRun_SimpleString("print Point3D('1','1','1')") == -1);
+    assert(PyRun_SimpleString("print Point3D(1.1,0.0,0.0,1.1)") == -1);
     assert(PyRun_SimpleString("print repr(p)") == 0);
     assert(PyRun_SimpleString("print p.mag()") == 0);
     assert(PyRun_SimpleString("print p.unit_vector_to(p1)") == 0);
@@ -50,8 +50,8 @@ int main()
     assert(PyRun_SimpleString("print p") == 0);
     assert(PyRun_SimpleString("print p == p1") == 0);
     assert(PyRun_SimpleString("print p1 == p2") == 0);
-    assert(PyRun_SimpleString("import Vector3D") == 0);
-    assert(PyRun_SimpleString("v=Vector3D.Vector3D(1,0,0)") == 0);
+    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
+    assert(PyRun_SimpleString("v=Vector3D(1,0,0)") == 0);
     assert(PyRun_SimpleString("print p + v") == 0);
     assert(PyRun_SimpleString("print p + p1") == -1);
     assert(PyRun_SimpleString("print p - v") == 0);

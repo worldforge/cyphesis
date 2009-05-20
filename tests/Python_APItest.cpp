@@ -86,18 +86,18 @@ int main()
 
     assert(PyRun_SimpleString("atlas.Message(atlas.Operation('get'))") == 0);
 
-    assert(PyRun_SimpleString("import BBox") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox()") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox([1])") == -1);
-    assert(PyRun_SimpleString("b=BBox.BBox([1,1,1])") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox([1.0,1.0,1.0])") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("b=BBox.BBox(1)") == -1);
-    assert(PyRun_SimpleString("b=BBox.BBox(1,1)") == -1);
-    assert(PyRun_SimpleString("b=BBox.BBox(1,1,1)") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox(1.0,1.0,1.0)") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox(1.0,1.0,1.0,1.0,1.0,1.0)") == 0);
-    assert(PyRun_SimpleString("b=BBox.BBox('1','1','1')") == -1);
+    assert(PyRun_SimpleString("from physics import BBox") == 0);
+    assert(PyRun_SimpleString("b=BBox()") == 0);
+    assert(PyRun_SimpleString("b=BBox([1])") == -1);
+    assert(PyRun_SimpleString("b=BBox([1,1,1])") == 0);
+    assert(PyRun_SimpleString("b=BBox([1.0,1.0,1.0])") == 0);
+    assert(PyRun_SimpleString("b=BBox(['1','1','1'])") == -1);
+    assert(PyRun_SimpleString("b=BBox(1)") == -1);
+    assert(PyRun_SimpleString("b=BBox(1,1)") == -1);
+    assert(PyRun_SimpleString("b=BBox(1,1,1)") == 0);
+    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0)") == 0);
+    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0,1.0,1.0,1.0)") == 0);
+    assert(PyRun_SimpleString("b=BBox('1','1','1')") == -1);
 
     assert(PyRun_SimpleString("import Quaternion") == 0);
     assert(PyRun_SimpleString("q=Quaternion.Quaternion()") == 0);
@@ -106,10 +106,10 @@ int main()
     assert(PyRun_SimpleString("q=Quaternion.Quaternion([0.0,0.0,0.0,1.0])") == 0);
     assert(PyRun_SimpleString("q=Quaternion.Quaternion(['0.0',0.0,0.0,1.0])") == -1);
     assert(PyRun_SimpleString("q=Quaternion.Quaternion(1,0)") == -1);
-    assert(PyRun_SimpleString("import Vector3D") == 0);
-    assert(PyRun_SimpleString("q=Quaternion.Quaternion(Vector3D.Vector3D(1,0,0),0)") == -1);
-    assert(PyRun_SimpleString("q=Quaternion.Quaternion(Vector3D.Vector3D(1,0,0),0.0)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion.Quaternion(Vector3D.Vector3D(1,0,0),Vector3D.Vector3D(0,1,0))") == 0);
+    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
+    assert(PyRun_SimpleString("q=Quaternion.Quaternion(Vector3D(1,0,0),0)") == -1);
+    assert(PyRun_SimpleString("q=Quaternion.Quaternion(Vector3D(1,0,0),0.0)") == 0);
+    assert(PyRun_SimpleString("q=Quaternion.Quaternion(Vector3D(1,0,0),Vector3D(0,1,0))") == 0);
     assert(PyRun_SimpleString("q=Quaternion.Quaternion(1,0,0)") == -1);
     assert(PyRun_SimpleString("q=Quaternion.Quaternion(0,0,0,1)") == 0);
     assert(PyRun_SimpleString("q=Quaternion.Quaternion(0.0,0.0,0.0,1.0)") == 0);
