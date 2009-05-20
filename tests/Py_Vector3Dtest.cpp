@@ -47,8 +47,8 @@ int main()
     assert(PyRun_SimpleString("v.rotatex(1.0)") == 0);
     assert(PyRun_SimpleString("v.rotatey(1.0)") == 0);
     assert(PyRun_SimpleString("v.rotatez(1.0)") == 0);
-    assert(PyRun_SimpleString("import Quaternion") == 0);
-    assert(PyRun_SimpleString("q=Quaternion.Quaternion(1,0,0,0)") == 0);
+    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
+    assert(PyRun_SimpleString("q=Quaternion(1,0,0,0)") == 0);
     assert(PyRun_SimpleString("v.rotate(q)") == 0);
     assert(PyRun_SimpleString("print v.angle(1.0)") == -1);
     assert(PyRun_SimpleString("print v.angle(v1)") == 0);

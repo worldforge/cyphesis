@@ -27,10 +27,10 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("import Quaternion") == 0);
-    assert(PyRun_SimpleString("q=Quaternion.Quaternion()") == 0);
-    assert(PyRun_SimpleString("q2=Quaternion.Quaternion()") == 0);
-    assert(PyRun_SimpleString("q3=Quaternion.Quaternion(1,0,0,0)") == 0);
+    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
+    assert(PyRun_SimpleString("q=Quaternion()") == 0);
+    assert(PyRun_SimpleString("q2=Quaternion()") == 0);
+    assert(PyRun_SimpleString("q3=Quaternion(1,0,0,0)") == 0);
     assert(PyRun_SimpleString("print q == q2") == 0);
     assert(PyRun_SimpleString("print q == q3") == 0);
     assert(PyRun_SimpleString("print q * q2") == 0);

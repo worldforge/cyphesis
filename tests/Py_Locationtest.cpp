@@ -37,7 +37,7 @@ int main()
     assert(PyRun_SimpleString("l.bbox") == 0);
     assert(PyRun_SimpleString("from physics import Point3D") == 0);
     assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("from Quaternion import Quaternion") == 0);
+    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
     assert(PyRun_SimpleString("from physics import BBox") == 0);
     assert(PyRun_SimpleString("l.coordinates=Point3D()") == 0);
     assert(PyRun_SimpleString("l.coordinates=Point3D(0,0,0)") == 0);
