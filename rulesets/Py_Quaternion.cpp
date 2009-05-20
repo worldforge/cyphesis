@@ -145,11 +145,99 @@ static PyNumberMethods Quaternion_as_number = {
         0,                                           // nb_hex;
 };
 
+static int Quaternion_init(PyQuaternion * self,
+                                  PyObject * args, PyObject * kwds)
+{
+    PyObject * clist;
+    switch (PyTuple_Size(args)) {
+        case 0:
+            break;
+        case 1:
+            clist = PyTuple_GetItem(args, 0);
+            if (!PyList_Check(clist) || PyList_Size(clist) != 4) {
+                PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list 4 long");
+                return -1;
+            }
+            {
+            float quaternion[4];
+            for(int i = 0; i < 4; i++) {
+                PyObject * item = PyList_GetItem(clist, i);
+                if (PyInt_Check(item)) {
+                    quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    quaternion[i] = PyFloat_AsDouble(item);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            self->rotation = Quaternion(quaternion[3], quaternion[0],
+                             quaternion[1], quaternion[2]);
+            }
+            break;
+        case 2:
+            {
+            PyObject * v1 = PyTuple_GetItem(args, 0);
+            PyObject * v2 = PyTuple_GetItem(args, 1);
+            if (!PyVector3D_Check(v1)) {
+                PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector");
+                return -1;
+            }
+            PyVector3D * arg1 = (PyVector3D *)v1;
+            if (PyVector3D_Check(v2)) {
+                PyVector3D * to = (PyVector3D *)v2;
+                self->rotation = quaternionFromTo(arg1->coords, to->coords);
+            } else if (PyFloat_Check(v2)) {
+                float angle = PyFloat_AsDouble(v2);
+                self->rotation.rotation(arg1->coords, angle);
+            } else {
+                PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector");
+                return -1;
+            }
+            }
+            break;
+        case 4:
+            {
+            float quaternion[4];
+            for(int i = 0; i < 4; i++) {
+                PyObject * item = PyTuple_GetItem(args, i);
+                if (PyInt_Check(item)) {
+                    quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    quaternion[i] = PyFloat_AsDouble(item);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            self->rotation = Quaternion(quaternion[3], quaternion[0],
+                             quaternion[1], quaternion[2]);
+            }
+            break;
+        default:
+            PyErr_SetString(PyExc_TypeError, "Quaternion must take list of floats, or ints, 4 ints or 4 floats");
+            return -1;
+            break;
+    }
+
+    return 0;
+}
+
+static PyObject * Quaternion_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyQuaternion * self = (PyQuaternion *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        new (&(self->rotation)) Quaternion();
+    }
+    return (PyObject *)self;
+}
 
 PyTypeObject PyQuaternion_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "Quaternion",                   /*tp_name*/
+        "physics.Quaternion",           /*tp_name*/
         sizeof(PyQuaternion),           /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
@@ -163,10 +251,35 @@ PyTypeObject PyQuaternion_Type = {
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Quaternion objects",           // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Quaternion_init,      // tp_init
+        0,                              // tp_alloc
+        Quaternion_new,                 // tp_new
 };
 
 PyQuaternion * newPyQuaternion()
 {
+#if 0
         PyQuaternion * self;
         self = PyObject_NEW(PyQuaternion, &PyQuaternion_Type);
         if (self == NULL) {
@@ -174,4 +287,7 @@ PyQuaternion * newPyQuaternion()
         }
         new(&(self->rotation)) Quaternion();
         return self;
+#else
+    return (PyQuaternion *)PyQuaternion_Type.tp_new(&PyQuaternion_Type, 0, 0);
+#endif
 }

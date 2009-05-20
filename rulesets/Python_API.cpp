@@ -489,91 +489,6 @@ static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
     return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
 }
 
-static PyObject * quaternion_new(PyObject * self, PyObject * args)
-{
-        PyQuaternion *o;
-        Quaternion val;
-
-        PyObject * clist;
-        switch (PyTuple_Size(args)) {
-            case 0:
-                break;
-            case 1:
-                clist = PyTuple_GetItem(args, 0);
-                if (!PyList_Check(clist) || PyList_Size(clist) != 4) {
-                    PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list 4 long");
-                    return NULL;
-                }
-                {
-                float quaternion[4];
-                for(int i = 0; i < 4; i++) {
-                    PyObject * item = PyList_GetItem(clist, i);
-                    if (PyInt_Check(item)) {
-                        quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
-                    } else if (PyFloat_Check(item)) {
-                        quaternion[i] = PyFloat_AsDouble(item);
-                    } else {
-                        PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
-                        return NULL;
-                    }
-                }
-                val = Quaternion(quaternion[3], quaternion[0],
-                                 quaternion[1], quaternion[2]);
-                }
-                break;
-            case 2:
-                {
-                PyObject * v1 = PyTuple_GetItem(args, 0);
-                PyObject * v2 = PyTuple_GetItem(args, 1);
-                if (!PyVector3D_Check(v1)) {
-                    PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector");
-                    return NULL;
-                }
-                PyVector3D * arg1 = (PyVector3D *)v1;
-                if (PyVector3D_Check(v2)) {
-                    PyVector3D * to = (PyVector3D *)v2;
-                    val = quaternionFromTo(arg1->coords, to->coords);
-                } else if (PyFloat_Check(v2)) {
-                    float angle = PyFloat_AsDouble(v2);
-                    val.rotation(arg1->coords, angle);
-                } else {
-                    PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector");
-                    return NULL;
-                }
-                }
-                break;
-            case 4:
-                {
-                float quaternion[4];
-                for(int i = 0; i < 4; i++) {
-                    PyObject * item = PyTuple_GetItem(args, i);
-                    if (PyInt_Check(item)) {
-                        quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
-                    } else if (PyFloat_Check(item)) {
-                        quaternion[i] = PyFloat_AsDouble(item);
-                    } else {
-                        PyErr_SetString(PyExc_TypeError, "Quaternion() must take list of floats, or ints");
-                        return NULL;
-                    }
-                }
-                val = Quaternion(quaternion[3], quaternion[0],
-                                 quaternion[1], quaternion[2]);
-                }
-                break;
-            default:
-                PyErr_SetString(PyExc_TypeError, "Quaternion must take list of floats, or ints, 4 ints or 4 floats");
-                return NULL;
-                break;
-        }
-
-        o = newPyQuaternion();
-        if ( o == NULL ) {
-                return NULL;
-        }
-        o->rotation = val;
-        return (PyObject *)o;
-}
-
 static inline void addToOplist(PyOperation * op, PyOplist * o)
 {
     if (op != NULL) {
@@ -864,11 +779,6 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-static PyMethodDef quaternion_methods[] = {
-    {"Quaternion",  quaternion_new,             METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
-};
-
 static PyMethodDef common_methods[] = {
     //{"null",      null_new,                   METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
@@ -947,11 +857,11 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(physics, "BBox", (PyObject *)&PyBBox_Type);
-
-    if (Py_InitModule("Quaternion", quaternion_methods) == NULL) {
-        log(CRITICAL, "Python init failed to create Quaternion module\n");
+    if (PyType_Ready(&PyQuaternion_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Quaternion wrapper type");
         return;
     }
+    PyModule_AddObject(physics, "Quaternion", (PyObject *)&PyQuaternion_Type);
 
     PyObject * common = Py_InitModule("common", common_methods);
     if (common == NULL) {
