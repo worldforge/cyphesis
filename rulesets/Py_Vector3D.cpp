@@ -404,7 +404,7 @@ static PyNumberMethods Vector3D_num = {
 PyTypeObject PyVector3D_Type = {
         PyObject_HEAD_INIT(0)
         0,                              // ob_size
-        "Vector3D.Vector3D",            // tp_name
+        "physics.Vector3D",             // tp_name
         sizeof(PyVector3D),             // tp_basicsize
         0,                              // tp_itemsize
         // methods 

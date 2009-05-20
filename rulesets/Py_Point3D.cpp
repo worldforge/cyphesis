@@ -252,7 +252,7 @@ static PyNumberMethods Point3D_num = {
 PyTypeObject PyPoint3D_Type = {
         PyObject_HEAD_INIT(0)
         0,                              // ob_size
-        "Point3D.Point3D",              // tp_name
+        "physics.Point3D",              // tp_name
         sizeof(PyPoint3D),              // tp_basicsize
         0,                              // tp_itemsize
         //  methods 
