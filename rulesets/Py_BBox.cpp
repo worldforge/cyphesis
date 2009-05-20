@@ -18,7 +18,9 @@
 // $Id$
 
 #include "Py_BBox.h"
+
 #include "Py_Vector3D.h"
+#include "Py_Object.h"
 
 static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
 {
@@ -97,6 +99,85 @@ static int BBox_compare(PyBBox * self, PyBBox * other)
     return 1;
 }
 
+static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
+{
+    std::vector<float> val;
+
+    PyObject * clist;
+    int tuple_size = PyTuple_Size(args);
+    int clist_size;
+    switch(tuple_size) {
+        case 0:
+            break;
+        case 1:
+            clist = PyTuple_GetItem(args, 0);
+            clist_size = PyList_Size(clist);
+            if (!PyList_Check(clist) || (clist_size != 3 && clist_size != 6)) {
+                PyErr_SetString(PyExc_TypeError, "BBox() from single value must a list 3 or 6 long");
+                return -1;
+            }
+            
+            val.resize(clist_size);
+            for(int i = 0; i < clist_size; i++) {
+                PyObject * item = PyList_GetItem(clist, i);
+                if (PyInt_Check(item)) {
+                    val[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    val[i] = PyFloat_AsDouble(item);
+                } else if (PyMessageElement_Check(item)) {
+                    PyMessageElement * mitem = (PyMessageElement*)item;
+                    if (!mitem->m_obj->isNum()) {
+                        PyErr_SetString(PyExc_TypeError, "BBox() must take list of floats, or ints");
+                        return -1;
+                    }
+                    val[i] = mitem->m_obj->asNum();
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "BBox() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            break;
+        case 3:
+        case 6:
+            val.resize(tuple_size);
+            for(int i = 0; i < tuple_size; i++) {
+                PyObject * item = PyTuple_GetItem(args, i);
+                if (PyInt_Check(item)) {
+                    val[i] = (float)PyInt_AsLong(item);
+                } else if (PyFloat_Check(item)) {
+                    val[i] = PyFloat_AsDouble(item);
+                } else {
+                    PyErr_SetString(PyExc_TypeError, "BBox() must take list of floats, or ints");
+                    return -1;
+                }
+            }
+            break;
+        default:
+            PyErr_SetString(PyExc_TypeError, "Point3D must take list of floats, or ints, 3 ints or 3 floats");
+            return -1;
+            break;
+    }
+    if (val.size() == 3) {
+        self->box = BBox(WFMath::Point<3>(0.f, 0.f, 0.f),
+                         WFMath::Point<3>(val[0], val[1], val[2]));
+    } else if (val.size() == 6) {
+        self->box = BBox(WFMath::Point<3>(val[0], val[1], val[2]),
+                         WFMath::Point<3>(val[3], val[4], val[5]));
+    }
+    return 0;
+}
+
+static PyObject * BBox_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyBBox * self = (PyBBox *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        new (&(self->box)) BBox();
+    }
+    return (PyObject *)self;
+}
+
 PyTypeObject PyBBox_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -114,10 +195,35 @@ PyTypeObject PyBBox_Type = {
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "BBox objects",                 // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)BBox_init,            // tp_init
+        0,                              // tp_alloc
+        BBox_new,                       // tp_new
 };
 
 PyBBox * newPyBBox()
 {
+#if 0
         PyBBox * self;
         self = PyObject_NEW(PyBBox, &PyBBox_Type);
         if (self == NULL) {
@@ -125,4 +231,7 @@ PyBBox * newPyBBox()
         }
         new (&(self->box)) BBox();
         return self;
+#else
+    return (PyBBox *)PyBBox_Type.tp_new(&PyBBox_Type, 0, 0);
+#endif
 }
