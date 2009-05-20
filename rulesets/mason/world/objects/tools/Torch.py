@@ -5,7 +5,7 @@ from atlas import *
 
 from cyphesis.Thing import Thing
 from physics import Point3D
-from BBox import BBox
+from physics import BBox
 
 import server
 
