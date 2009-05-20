@@ -4,8 +4,8 @@
 from common import const
 from physics import *
 
-from Vector3D import Vector3D
-from Point3D import Point3D
+from physics import Vector3D
+from physics import Point3D
 
 from mind.Goal import Goal
 from mind.goals.common.common import *

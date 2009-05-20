@@ -3,7 +3,7 @@
 
 from atlas import *
 from physics import *
-from Vector3D import Vector3D
+from physics import Vector3D
 
 try:
   from random import *

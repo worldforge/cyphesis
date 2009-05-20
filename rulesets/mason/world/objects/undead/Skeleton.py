@@ -4,7 +4,7 @@
 from atlas import *
 from cyphesis.Thing import Thing
 from common import log,const
-from Vector3D import Vector3D
+from physics import Vector3D
 try:
   from random import *
 except ImportError:

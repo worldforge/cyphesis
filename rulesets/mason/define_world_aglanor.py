@@ -24,7 +24,7 @@ il=interlinguish
 from world import probability
 from editor import editor
 from Quaternion import Quaternion
-from Vector3D import Vector3D
+from physics import Vector3D
 import time
 
 # N, E, S, W, NE, SE, SW, NW in order

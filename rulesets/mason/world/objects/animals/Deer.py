@@ -7,7 +7,7 @@ try:
   from random import *
 except ImportError:
   from whrandom import *
-from Vector3D import Vector3D
+from physics import Vector3D
 
 import atlas
 

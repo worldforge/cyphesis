@@ -7,8 +7,8 @@ from cyphesis.Thing import Thing
 from cyphesis import probability
 from common import log,const
 
-from Vector3D import Vector3D
-from Point3D import Point3D
+from physics import Vector3D
+from physics import Point3D
 
 class House(Thing):
     """This base class for houses, building material is wood"""

@@ -2,7 +2,7 @@
 # the GNU General Public License (See COPYING for details).
 # Copyright (C) 2005 Alistair Riddoch
 
-from Vector3D import Vector3D
+from physics import Vector3D
 
 compass_points=[(Vector3D(1,0,0), "east"),
                 (Vector3D(0,1,0), "north"),

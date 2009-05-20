@@ -9,7 +9,7 @@ from Quaternion import Quaternion
 from common import const
 from types import *
 
-from Vector3D import Vector3D
+from physics import Vector3D
 from cyphesis.Thing import Thing
 
 from mind.Memory import Memory

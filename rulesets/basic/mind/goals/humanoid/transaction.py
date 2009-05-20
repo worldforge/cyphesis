@@ -8,7 +8,7 @@ from mind.goals.common.common import *
 from mind.goals.common.move import move_me
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
-from Point3D import Point3D
+from physics import Point3D
 
 #class sell_things(add_unique_goal_by_perception):
     #def __init__(self, desc="add transaction goal"):

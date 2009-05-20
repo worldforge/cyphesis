@@ -4,8 +4,8 @@
 from atlas import *
 from physics import *
 from Quaternion import Quaternion
-from Point3D import Point3D
-from Vector3D import Vector3D
+from physics import Point3D
+from physics import Vector3D
 
 from cyphesis.Thing import Thing
 

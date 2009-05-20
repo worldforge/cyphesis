@@ -4,7 +4,7 @@
 from atlas import *
 
 from cyphesis.Thing import Thing
-from Point3D import Point3D
+from physics import Point3D
 
 import server
 

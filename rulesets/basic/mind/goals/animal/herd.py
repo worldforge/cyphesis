@@ -5,7 +5,7 @@ from atlas import *
 from types import *
 from common import const
 
-from Vector3D import Vector3D
+from physics import Vector3D
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 

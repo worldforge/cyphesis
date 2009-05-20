@@ -5,7 +5,7 @@
 from atlas import *
 
 from cyphesis.Thing import Thing
-from Vector3D import Vector3D
+from physics import Vector3D
 
 import server
 
