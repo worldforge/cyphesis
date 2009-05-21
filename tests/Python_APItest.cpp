@@ -75,7 +75,6 @@ int main()
 
     assert(PyRun_SimpleString("o=atlas.Operation()") == -1);
     assert(PyRun_SimpleString("o=atlas.Operation('get')") == 0);
-    assert(PyRun_SimpleString("o=atlas.Operation('thought')") == 0);
     assert(PyRun_SimpleString("o=atlas.Operation('not valid')") == -1);
     assert(PyRun_SimpleString("o=atlas.Operation('get', to='1', from_='1')") == 0);
     assert(PyRun_SimpleString("o=atlas.Operation('get', to=e, from_=e)") == 0);
