@@ -683,7 +683,7 @@ static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
     PyObject * arg3 = NULL;
 
     if (!PyArg_ParseTuple(args, "s|OOO", &type, &arg1, &arg2, &arg3)) {
-        return NULL;
+        return -1;
     }
     Root r = Atlas::Objects::Factories::instance()->createObject(type);
     self->operation = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
@@ -700,12 +700,12 @@ static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
                 Py_INCREF(from_id);
             } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
                 PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
-                return NULL;
+                return -1;
             }
             if (!PyString_Check(from_id)) {
                 Py_DECREF(from_id);
                 PyErr_SetString(PyExc_TypeError, "id of from is not a string");
-                return NULL;
+                return -1;
             }
             self->operation->setFrom(PyString_AsString(from_id));
             Py_DECREF(from_id);
@@ -718,12 +718,12 @@ static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
                 Py_INCREF(to_id);
             } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
                 PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
-                return NULL;
+                return -1;
             }
             if (!PyString_Check(to_id)) {
                 Py_DECREF(to_id);
                 PyErr_SetString(PyExc_TypeError, "id of to is not a string");
-                return NULL;
+                return -1;
             }
             self->operation->setTo(PyString_AsString(to_id));
             Py_DECREF(to_id);
