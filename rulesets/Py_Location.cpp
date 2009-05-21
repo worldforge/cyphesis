@@ -23,8 +23,11 @@
 #include "Py_Point3D.h"
 #include "Py_Quaternion.h"
 #include "Py_BBox.h"
+#include "Py_World.h"
+#include "Py_Mind.h"
 
 #include "Entity.h"
+#include "BaseMind.h"
 
 #include <sstream>
 
@@ -189,10 +192,83 @@ static PyObject * Location_repr(PyLocation *self)
     return PyString_FromString(r.str().c_str());
 }
 
+static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
+{
+    // We need to deal with actual args here
+    PyObject * refO = NULL, * coordsO = NULL;
+    LocatedEntity * ref_ent = NULL;
+    bool decrefO = false;
+    if (!PyArg_ParseTuple(args, "|OO", &refO, &coordsO)) {
+        return -1;
+    }
+    if (refO != NULL) {
+        if (!PyEntity_Check(refO) && !PyWorld_Check(refO) && !PyMind_Check(refO)) {
+            if (PyObject_HasAttrString(refO, "cppthing")) {
+                refO = PyObject_GetAttrString(refO, "cppthing");
+                decrefO = true;
+            }
+            if (!PyEntity_Check(refO) && !PyMind_Check(refO)) {
+                PyErr_SetString(PyExc_TypeError, "Arg ref required");
+                if (decrefO) { Py_DECREF(refO); }
+                return -1;
+            }
+        }
+        if (coordsO != NULL && !PyPoint3D_Check(coordsO)) {
+            PyErr_SetString(PyExc_TypeError, "Arg coords required");
+            if (decrefO) { Py_DECREF(refO); }
+            return -1;
+        }
+    
+        if (PyWorld_Check(refO)) {
+            ref_ent = &BaseWorld::instance().m_gameWorld;
+        } else if (PyMind_Check(refO)) {
+            PyMind * ref = (PyMind*)refO;
+#ifndef NDEBUG
+            if (ref->m_mind == NULL) {
+                PyErr_SetString(PyExc_AssertionError, "Parent mind is invalid");
+                if (decrefO) { Py_DECREF(refO); }
+                return -1;
+            }
+#endif // NDEBUG
+            ref_ent = ref->m_mind;
+        } else {
+            PyEntity * ref = (PyEntity*)refO;
+#ifndef NDEBUG
+            if (ref->m_entity == NULL) {
+                PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
+                if (decrefO) { Py_DECREF(refO); }
+                return -1;
+            }
+#endif // NDEBUG
+            ref_ent = ref->m_entity;
+        }
+    }
+    if (decrefO) { Py_DECREF(refO); }
+    PyPoint3D * coords = (PyPoint3D*)coordsO;
+    if (coords == NULL) {
+        self->location = new Location(ref_ent);
+    } else {
+        self->location = new Location(ref_ent, coords->coords);
+    }
+    return 0;
+}
+
+static PyObject * Location_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyLocation * self = (PyLocation *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        self->location = NULL;
+        self->owner = 0;
+    }
+    return (PyObject *)self;
+}
+
 PyTypeObject PyLocation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "Location",                     /*tp_name*/
+        "atlas.Location",               /*tp_name*/
         sizeof(PyLocation),             /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
@@ -206,10 +282,35 @@ PyTypeObject PyLocation_Type = {
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Location objects",             // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Location_init,        // tp_init
+        0,                              // tp_alloc
+        Location_new,                   // tp_new
 };
 
 PyLocation * newPyLocation()
 {
+#if 0
         PyLocation * self;
         self = PyObject_NEW(PyLocation, &PyLocation_Type);
         if (self == NULL) {
@@ -218,4 +319,7 @@ PyLocation * newPyLocation()
         self->location = NULL;
         self->owner = 0;
         return self;
+#else
+    return (PyLocation *)PyLocation_Type.tp_new(&PyLocation_Type, 0, 0);
+#endif
 }

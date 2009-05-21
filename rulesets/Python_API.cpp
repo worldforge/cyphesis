@@ -39,7 +39,6 @@
 #include "Py_Property.h"
 
 #include "PythonEntityScript.h"
-#include "World.h"
 #include "BaseMind.h"
 
 #include "common/Inheritance.h"
@@ -355,72 +354,6 @@ static PyObject * is_location(PyObject * self, PyObject * loc)
     return Py_False;
 }
 
-static PyObject * location_new(PyObject * self, PyObject * args)
-{
-    PyLocation *o;
-    // We need to deal with actual args here
-    PyObject * refO = NULL, * coordsO = NULL;
-    LocatedEntity * ref_ent = NULL;
-    bool decrefO = false;
-    if (!PyArg_ParseTuple(args, "|OO", &refO, &coordsO)) {
-        return NULL;
-    }
-    if (refO != NULL) {
-        if (!PyEntity_Check(refO) && !PyWorld_Check(refO) && !PyMind_Check(refO)) {
-            if (PyObject_HasAttrString(refO, "cppthing")) {
-                refO = PyObject_GetAttrString(refO, "cppthing");
-                decrefO = true;
-            }
-            if (!PyEntity_Check(refO) && !PyMind_Check(refO)) {
-                PyErr_SetString(PyExc_TypeError, "Arg ref required");
-                if (decrefO) { Py_DECREF(refO); }
-                return NULL;
-            }
-        }
-        if (coordsO != NULL && !PyPoint3D_Check(coordsO)) {
-            PyErr_SetString(PyExc_TypeError, "Arg coords required");
-            if (decrefO) { Py_DECREF(refO); }
-            return NULL;
-        }
-    
-        if (PyWorld_Check(refO)) {
-            ref_ent = &BaseWorld::instance().m_gameWorld;
-        } else if (PyMind_Check(refO)) {
-            PyMind * ref = (PyMind*)refO;
-#ifndef NDEBUG
-            if (ref->m_mind == NULL) {
-                PyErr_SetString(PyExc_AssertionError, "Parent mind is invalid");
-                if (decrefO) { Py_DECREF(refO); }
-                return NULL;
-            }
-#endif // NDEBUG
-            ref_ent = ref->m_mind;
-        } else {
-            PyEntity * ref = (PyEntity*)refO;
-#ifndef NDEBUG
-            if (ref->m_entity == NULL) {
-                PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
-                if (decrefO) { Py_DECREF(refO); }
-                return NULL;
-            }
-#endif // NDEBUG
-            ref_ent = ref->m_entity;
-        }
-    }
-    if (decrefO) { Py_DECREF(refO); }
-    PyPoint3D * coords = (PyPoint3D*)coordsO;
-    o = newPyLocation();
-    if ( o == NULL ) {
-        return NULL;
-    }
-    if (coords == NULL) {
-        o->location = new Location(ref_ent);
-    } else {
-        o->location = new Location(ref_ent, coords->coords);
-    }
-    return (PyObject *)o;
-}
-
 static PyObject * distance_to(PyObject * self, PyObject * args)
 {
     PyObject * near, * other;
@@ -605,7 +538,6 @@ static PyMethodDef no_methods[] = {
 
 static PyMethodDef atlas_methods[] = {
     {"isLocation", is_location,                 METH_O},
-    {"Location",   location_new,                METH_VARARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
     {NULL,          NULL}                       /* Sentinel */
 };
@@ -686,6 +618,11 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(atlas, "Oplist", (PyObject *)&PyOplist_Type);
+    if (PyType_Ready(&PyLocation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Location wrapper type");
+        return;
+    }
+    PyModule_AddObject(atlas, "Location", (PyObject *)&PyLocation_Type);
 
     PyObject * physics = Py_InitModule("physics", physics_methods);
     if (physics == NULL) {
