@@ -11,4 +11,4 @@ class Scythe(Thing):
     def cut_operation(self, op):
         ent=Entity(self.id,status=self.status-0.01)
         to_ = op[0].id
-        return Message(Operation("set",ent,to=self),Operation("mow",op[0],to=to_))
+        return Oplist(Operation("set",ent,to=self),Operation("mow",op[0],to=to_))

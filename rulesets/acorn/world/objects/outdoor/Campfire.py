@@ -11,7 +11,7 @@ class Campfire(Thing):
         self.base_init(kw)
         set_kw(self,kw,"mass",5)
     def burn_operation(self, op):
-        ret=Message()
+        ret=Oplist()
         for fuel in self.contains:
             if hasattr(fuel,"burn_speed"):
                 ret.append(Operation("burn",op[0],to=fuel))

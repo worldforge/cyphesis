@@ -28,7 +28,7 @@ class Ram(Thing):
         self.tool = op.to
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        res = Message()
+        res = Oplist()
 
         target=server.world.get_object(self.target)
         if not target:

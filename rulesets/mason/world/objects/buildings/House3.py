@@ -12,7 +12,7 @@ from physics import Point3D
 
 class House3(Thing):
     def setup_operation(self, op):
-        ret = Message()
+        ret = Oplist()
         # West wall  with door
 	loc = Location(self, Point3D(0,0,-1))
         loc.bbox = Vector3D(0.1,2,4)

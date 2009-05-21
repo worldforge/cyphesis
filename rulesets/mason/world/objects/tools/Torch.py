@@ -25,7 +25,7 @@ class Torch(Thing):
     def burn_operation(self, op):
         fire_status = op[0].status
         to_ = op[0].id
-        ret = Message()
+        ret = Oplist()
         if fire_status < 0.5:
             ret = ret + Operation("nourish", Entity(op[0].id, mass=(0.5 - fire_status)), to=to_)
         fire_loc = Location(self, Point3D(0,0,0.75))

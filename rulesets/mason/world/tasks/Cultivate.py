@@ -31,7 +31,7 @@ class Cultivate(Thing):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Cultivate.tick"
-        res=Message()
+        res=Oplist()
 
         target=server.world.get_object(self.target)
         if not target:

@@ -13,7 +13,7 @@ class Weather(Thing):
         set_kw(self,kw,"rain",1.0)
         set_kw(self,kw,"snow",0.0)
     def tick_operation(self, op):
-        res = Message()
+        res = Oplist()
         optick = Operation("tick", to=self)
         res = res + optick
         if self.rain<0.5:

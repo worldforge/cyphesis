@@ -27,4 +27,4 @@ class Bow(Thing):
         m2.setFutureSeconds(time)
         t = Operation("set",Entity(to_,status=-1),to=to_)
         t.setFutureSeconds(time)
-        return Message(m1,m2,t)
+        return Oplist(m1,m2,t)

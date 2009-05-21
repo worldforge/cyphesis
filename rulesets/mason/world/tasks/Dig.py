@@ -63,7 +63,7 @@ class Dig(Thing):
             self.irrelevant()
             return
 
-        res=Message()
+        res=Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()

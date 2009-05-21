@@ -18,7 +18,7 @@ When digging at a grave, skeleton parts will be created. We might want to add so
 """
 
 def create_skeletonpart(self, op):
-    retops = Message()
+    retops = Oplist()
     newloc=self.location.copy()
     newloc.velocity=Vector3D()
     items = ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']

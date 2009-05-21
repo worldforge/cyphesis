@@ -10,7 +10,7 @@ from whrandom import *
 
 class Skeleton(Undead):
     def touch_operation(self, op):
-        retops = Message()
+        retops = Oplist()
         if self.status<0: return
         self.status=-1
         newloc=self.location.copy()

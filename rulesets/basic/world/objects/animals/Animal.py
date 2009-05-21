@@ -33,7 +33,7 @@ class Animal(Thing):
         #use tick_list in worldrouter where it's stored next tick for each
         #object
         #print self, self.status, self.mass
-        res = Message()
+        res = Oplist()
         self.tickcount=self.tickcount+1
         if self.tickcount<30:
             return res

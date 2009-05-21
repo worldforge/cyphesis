@@ -139,7 +139,7 @@ class Tree(Thing):
         opTick=Operation("tick",to=self)
         opTick.setFutureSeconds(const.basic_tick*speed)
 
-        result = Message(opTick)
+        result = Oplist(opTick)
 
         #CHEAT!: handle these cases correctly
         #see another "self.healt<0" -test
@@ -403,7 +403,7 @@ class Tree(Thing):
         ent=Entity(self.id,status=new_status)
         if new_status>=0:
             return Operation("set",ent,to=self)
-        return Message(Operation("set",ent,to=self),Operation("create",Entity(name='lumber',type=['lumber'],location=self.location.parent.location.copy()),to=self))
+        return Oplist(Operation("set",ent,to=self),Operation("create",Entity(name='lumber',type=['lumber'],location=self.location.parent.location.copy()),to=self))
 
     def rain_operation(self, op):
         pass

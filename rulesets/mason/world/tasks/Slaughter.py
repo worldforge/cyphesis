@@ -47,7 +47,7 @@ class Slaughter(Thing):
         self.progress = (self.count - target.mass) / self.count
         self.rate = (1.0 / self.count) / 1.75
 
-        res=Message()
+        res=Oplist()
 
         if target.mass <= 1:
             set = Operation("set", Entity(target.id, status = -1), to = target)

@@ -11,7 +11,7 @@ class Gallows(Thing):
     """This is the gallows, which hangs villagers"""
     def hang_operation(self, op):
         to_ = op[0].id
-        reply = Message()
+        reply = Oplist()
         loc_ = Location(self.id, Point3D(2.5,2.5,3))
         reply.append(Operation("move",Entity(to_,location=loc_,mode="hanging"),to=to_))
         reply.append(Operation("reveal",Entity(to_),to=to_))

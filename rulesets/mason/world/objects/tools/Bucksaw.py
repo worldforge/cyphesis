@@ -12,4 +12,4 @@ class Bucksaw(Thing):
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")
-        return Message(Operation("saw",op[0],Entity(op.from_),to=to_))
+        return Oplist(Operation("saw",op[0],Entity(op.from_),to=to_))

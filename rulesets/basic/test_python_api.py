@@ -76,11 +76,11 @@ def default(mapeditor):
     # FIXME other methods
 
     print "Test message"
-    message=atlas.Message()
+    message=atlas.Oplist()
     assert(len(message)==0)
     message.append(atlas.Operation("move"))
     assert(len(message)==1)
-    message=atlas.Message(atlas.Operation("move"))
+    message=atlas.Oplist(atlas.Operation("move"))
     assert(len(message)==1)
     # FIXME other methods
 

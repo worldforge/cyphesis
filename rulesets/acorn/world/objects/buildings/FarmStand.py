@@ -11,7 +11,7 @@ from Vector3D import Vector3D
 
 class Shop_farmstand_deco_agril_1_sesw(Thing):
     def setup_operation(self, op):
-        ret = Message()
+        ret = Oplist()
         # South wall
 	loc = Location(self, Vector3D(1.5,-1.5,0))
         loc.bbox = Vector3D(10,0.5,5)

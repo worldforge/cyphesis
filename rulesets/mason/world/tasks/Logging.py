@@ -47,7 +47,7 @@ class Logging(Thing):
             self.rate = 0
             return self.next_tick(1.75)
 
-        res=Message()
+        res=Oplist()
         if current_status > 0.5:
             set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
             res.append(set)

@@ -72,7 +72,7 @@ class Raise(Thing):
         target_location=Location(target.location.parent, target.location.coordinates)
         target_location.orientation=rotation
         move=Operation("move", Entity(self.target, location=target_location), to=self.target)
-        res=Message()
+        res=Oplist()
         res.append(move)
 
         res.append(self.next_tick(1))

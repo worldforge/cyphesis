@@ -19,7 +19,7 @@ class Seed(Thing):
 #        opTick=Operation("tick",to=self)
 #        opTick.setFutureSeconds(const.basic_tick*speed)
 #
-#        result = atlas.Message(opTick)
+#        result = atlas.Oplist(opTick)
 #
 #        new_status=self.status-0.1
 #        ent=Entity(self.id,status=new_status)

@@ -17,7 +17,7 @@ class Pig(Thing):
     def chop_operation(self, op):
         if self.mass<1:
             return(Operation("set",Entity(self.id,status=-1),to=self))
-        res = Message()
+        res = Oplist()
         ent=Entity(self.id,mode="dead",mass=self.mass-1)
         res.append(Operation("set",ent,to=self))
         ham_ent=Entity(name='ham',parents=['ham'],location=self.location.copy())

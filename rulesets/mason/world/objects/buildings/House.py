@@ -24,5 +24,5 @@ class House(Thing):
             opCreate=Operation("create",fireEntity,to=self)
             if const.debug_level>=2:
                 print "Fire! "*30
-            return Message(opCreate,opTick)
+            return Oplist(opCreate,opTick)
         return opTick

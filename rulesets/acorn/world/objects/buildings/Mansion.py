@@ -11,7 +11,7 @@ from Vector3D import Vector3D
 
 class Mansion_grey_deco_1_sw(Thing):
     def setup_operation(self, op):
-        ret = Message()
+        ret = Oplist()
         # South wall with door
 	loc = Location(self, Vector3D(2,-2,0))
         loc.bbox = Vector3D(2,0.5,5)

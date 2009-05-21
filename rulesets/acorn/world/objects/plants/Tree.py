@@ -94,7 +94,7 @@ class Tree(Thing):
         opTick=Operation("tick",to=self)
         opTick.setFutureSeconds(const.basic_tick*speed)
 
-        result = atlas.Message(opTick)
+        result = atlas.Oplist(opTick)
 
         fcount = self.fruits
         result = result + self.drop_fruit()
@@ -118,7 +118,7 @@ class Tree(Thing):
 
 
     def drop_fruit(self):
-        result = atlas.Message()
+        result = atlas.Oplist()
         if self.fruits > 0:
             rand = randint(minudrop, maxudrop)
             rand = min(rand,self.fruits)

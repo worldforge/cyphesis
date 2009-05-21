@@ -11,7 +11,7 @@ from Vector3D import Vector3D
 
 class Shop_metalshop_deco_agril_1_sesw(Thing):
     def setup_operation(self, op):
-        ret = Message()
+        ret = Oplist()
         # South wall with door
 	loc = Location(self, Vector3D(1.5,-0.5,0))
         loc.bbox = Vector3D(4,0.5,5)

@@ -54,7 +54,7 @@ class Bisect(Thing):
             self.irrelevant()
             return
 
-        res=Message()
+        res=Oplist()
 
         new_bbox = [target.location.bbox.near_point.x,
                     target.location.bbox.near_point.y,

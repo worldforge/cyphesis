@@ -505,7 +505,7 @@ class sell_trade(Goal):
             return 1
     def announce_trade(self,me):
         self.ticks=self.ticks+1
-        ret = Message()
+        ret = Oplist()
         if self.ticks==5:
             self.ticks=0
             es=Entity(say="Get your " + self.what + " here!")
@@ -588,7 +588,7 @@ class keep(Goal):
                 return 0
         return 1
     def keep_it(self,me):
-        result=Message()
+        result=Oplist()
         if me.things.has_key(self.where)==0: return
         if me.things.has_key(self.what)==0: return
         thing_all=me.find_thing(self.what)
@@ -621,7 +621,7 @@ class keep_on_me(Goal):
                 return 0
         return 1
     def keep_it(self,me):
-        result=Message()
+        result=Oplist()
         if me.things.has_key(self.what)==0: return
         thing_all=me.find_thing(self.what)
         to_loc=Location(me,Point3D(0,0,0))
@@ -646,7 +646,7 @@ class assemble(Goal):
         self.fromwhat=fromwhat
         self.vars=["what","fromwhat"]
     def build(self, me):
-        retops=Message()
+        retops=Oplist()
         for item in self.fromwhat:
             if me.things.has_key(item)==0: return
         for item in self.fromwhat:
@@ -696,7 +696,7 @@ class transaction(Goal):
         if self.payed < self.cost:
             return Operation("talk",Entity(say=who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
         thing=me.find_thing(self.what)[0]
-        res=Message()
+        res=Oplist()
         me.remove_thing(thing)
         res.append(Operation("move",Entity(thing.id, location=Location(who,Point3D(0,0,0)))))
         res.append(Operation("talk",Entity(say="Thankyou for your custom.")))
@@ -718,7 +718,7 @@ class hireling_transaction(transaction):
             return
         if self.payed < self.cost:
             return Operation("talk",Entity(say=who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
-        res=Message()
+        res=Oplist()
         me.add_knowledge('employer', me.id, who.id)
         # FIXME add the new goal
         goal = accompany(who.id)

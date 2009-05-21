@@ -7,7 +7,7 @@ from cyphesis.Thing import Thing
 
 class Campfire(Thing):
     def burn_operation(self, op):
-        ret=Message()
+        ret=Oplist()
         for fuel in self.contains:
             if hasattr(fuel,"burn_speed"):
                 ret.append(Operation("burn",op[0],to=fuel))

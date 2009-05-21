@@ -43,7 +43,7 @@ class Fire(Thing):
         #and call this method later
         opTick=Operation("tick",to=self)
         opTick.setFutureSeconds(const.basic_tick*4)
-        return Message(opBurn,Operation("sight",opBurn),opTick,opSet)
+        return Oplist(opBurn,Operation("sight",opBurn),opTick,opSet)
     def nourish_operation(self, op):
         #Increase fire
         inc=op[0].mass

@@ -11,7 +11,7 @@ except ImportError:
 
 class Weather(Thing):
     def tick_operation(self, op):
-        res = Message()
+        res = Oplist()
         optick = Operation("tick", to=self)
         res = res + optick
         if self.rain<0.1:

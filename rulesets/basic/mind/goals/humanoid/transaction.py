@@ -64,7 +64,7 @@ class buy_from(Goal):
                 if len(coins) < price:
                     me.remove_thing(item)
                     return Operation("talk", Entity(say="I can't afford to buy that "+self.what+" at the moment.")) + Operation("move", Entity(item.id, location=Location(seller.id, Point3D(0,0,0))))
-                res=Message()
+                res=Oplist()
                 for i in range(0, price):
                     coin=coins[0]
                     me.remove_thing(coin)
@@ -108,7 +108,7 @@ class buy_livestock(DynamicGoal):
         if thing in me.find_thing(self.what): return
         #price=me.get_knowledge("price", thing.type[0])
         price=self.cost*int(thing.mass)
-        res=Message()
+        res=Oplist()
         coins = me.find_thing("coin")
         if len(coins) < int(price):
             print "Coins: " + len(coins) + " Cost: " + self.cost

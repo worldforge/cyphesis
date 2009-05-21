@@ -60,7 +60,7 @@ class Reap(Thing):
             # print "Not grass"
             return self.next_tick(1.75)
 
-        res=Message()
+        res=Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()

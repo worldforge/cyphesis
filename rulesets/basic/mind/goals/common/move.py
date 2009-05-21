@@ -182,7 +182,7 @@ class move_it(Goal):
         time=((self.location.coordinates-what.location.coordinates).mag() / self.speed)
         self.wait=(time/const.basic_tick)+1
         mOp2.setFutureSeconds(time)
-        return Message(mOp1,mOp2)
+        return Oplist(mOp1,mOp2)
 
 ############################ MOVE THING FROM ME ####################################
 

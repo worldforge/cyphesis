@@ -11,7 +11,7 @@ from Vector3D import Vector3D
 
 class Stall_se(Thing):
     def setup_operation(self, op):
-        ret = Message()
+        ret = Oplist()
         # South counter
 	loc = Location(self, Vector3D(-0.5,-0.5,0))
         loc.bbox = Vector3D(3,0.5,1)
@@ -24,7 +24,7 @@ class Stall_se(Thing):
 
 class Stall_sw(Thing):
     def setup_operation(self, op):
-        ret = Message()
+        ret = Oplist()
         # West counter
 	loc = Location(self, Vector3D(-0.5,-0.5,0))
         loc.bbox = Vector3D(0.5,3,1)

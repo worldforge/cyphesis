@@ -117,7 +117,7 @@ class Combat(Thing):
             attacker.send_world(Operation("imaginary", Entity(description="is victorious"), to=attacker))
             self.irrelevant()
 
-        res=Message()
+        res=Oplist()
         # This set op makes the change to defenders stamina, and a small health
         # change if they have been defeated
         res.append(Operation("set", set_arg, to=defender))

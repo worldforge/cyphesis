@@ -176,7 +176,7 @@ class NPCMind(Thing):
         verb=interlinguish.get_verb(object)
         operation_method=self.find_op_method(verb,"interlinguish_desire_verb3_",
                                              self.interlinguish_undefined_operation)
-        res = Message()
+        res = Oplist()
         res = res + self.call_interlinguish_triggers(verb, "interlinguish_desire_verb3_", op, object)
         res = res + operation_method(op, object)
         return res
@@ -257,7 +257,7 @@ class NPCMind(Thing):
         if not hasattr(self.knowledge, predicate):
             return None
         d=getattr(self.knowledge, predicate)
-        res = Message()
+        res = Oplist()
         res = res + self.face(self.map.get(op.to))
         for key in d:
             res = res + Operation('talk',
@@ -335,13 +335,13 @@ class NPCMind(Thing):
         # the result.
         null_name, sub_op = self.get_op_name_and_sub(op)
         event_name = prefix+verb
-        reply = Message()
+        reply = Oplist()
         for goal in self.trigger_goals.get(event_name,[]):
             reply += goal.event(self, op, say)
         return reply
     def call_triggers_operation(self, op):
         event_name, sub_op = self.get_op_name_and_sub(op)
-        reply = Message()
+        reply = Oplist()
         for goal in self.trigger_goals.get(event_name,[]):
             reply += goal.event(self, op, sub_op)
         return reply
@@ -471,7 +471,7 @@ class NPCMind(Thing):
             if res: return res
             # if res!=None: return res
     def teach_children(self, child):
-        res=Message()
+        res=Oplist()
         for k in self.knowledge.location.keys():
             es=Entity(verb='know',subject=k,object=self.knowledge.location[k])
             res.append(Operation('say',es,to=child))
@@ -499,7 +499,7 @@ class NPCMind(Thing):
     ########## communication: here send it locally
     def send(self, op):
         if not self.message_queue:
-            self.message_queue=Message(op)
+            self.message_queue=Oplist(op)
         else:
             self.message_queue.append(op)
     ########## turn to face other entity
