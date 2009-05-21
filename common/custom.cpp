@@ -35,6 +35,13 @@
 
 #include <Atlas/Objects/Entity.h>
 
+namespace Atlas { namespace Objects { namespace Operation {
+
+extern int THOUGHT_NO;
+extern int GOAL_INFO_NO;
+
+} } }
+
 void installCustomOperations()
 {
     Inheritance & i = Inheritance::instance();
@@ -91,6 +98,14 @@ void installCustomOperations()
     i.addChild(atlasOpDefinition("actuate", "action"));
     Atlas::Objects::Operation::ACTUATE_NO = atlas_factories->addFactory("actuate", &Atlas::Objects::generic_factory);
     i.opInstall("actuate", Atlas::Objects::Operation::ACTUATE_NO);
+
+    i.addChild(atlasOpDefinition("thought", "communicate"));
+    Atlas::Objects::Operation::THOUGHT_NO = atlas_factories->addFactory("thought", &Atlas::Objects::generic_factory);
+    i.opInstall("thought", Atlas::Objects::Operation::THOUGHT_NO);
+
+    i.addChild(atlasOpDefinition("goal_info", "communicate"));
+    Atlas::Objects::Operation::GOAL_INFO_NO = atlas_factories->addFactory("goal_info", &Atlas::Objects::generic_factory);
+    i.opInstall("goal_info", Atlas::Objects::Operation::GOAL_INFO_NO);
 }
 
 void installCustomEntities()
