@@ -29,6 +29,16 @@ int main()
 
     assert(PyRun_SimpleString("from physics import BBox") == 0);
     assert(PyRun_SimpleString("b=BBox()") == 0);
+    assert(PyRun_SimpleString("b=BBox([1])") == -1);
+    assert(PyRun_SimpleString("b=BBox([1,1,1])") == 0);
+    assert(PyRun_SimpleString("b=BBox([1.0,1.0,1.0])") == 0);
+    assert(PyRun_SimpleString("b=BBox(['1','1','1'])") == -1);
+    assert(PyRun_SimpleString("b=BBox(1)") == -1);
+    assert(PyRun_SimpleString("b=BBox(1,1)") == -1);
+    assert(PyRun_SimpleString("b=BBox(1,1,1)") == 0);
+    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0)") == 0);
+    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0,1.0,1.0,1.0)") == 0);
+    assert(PyRun_SimpleString("b=BBox('1','1','1')") == -1);
     assert(PyRun_SimpleString("print b.near_point") == 0);
     assert(PyRun_SimpleString("print b.far_point") == 0);
     assert(PyRun_SimpleString("print b.square_bounding_radius()") == 0);

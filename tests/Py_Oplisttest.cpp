@@ -27,19 +27,19 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from atlas import Message") == 0);
+    assert(PyRun_SimpleString("from atlas import Oplist") == 0);
     assert(PyRun_SimpleString("from atlas import Operation") == 0);
-    assert(PyRun_SimpleString("m=Message()") == 0);
+    assert(PyRun_SimpleString("m=Oplist()") == 0);
     assert(PyRun_SimpleString("m.append(None)") == 0);
     assert(PyRun_SimpleString("m.append(1)") == -1);
     assert(PyRun_SimpleString("m.append(Operation('get'))") == 0);
-    assert(PyRun_SimpleString("m.append(Message())") == 0);
-    assert(PyRun_SimpleString("m.append(Message(Operation('get')))") == 0);
+    assert(PyRun_SimpleString("m.append(Oplist())") == 0);
+    assert(PyRun_SimpleString("m.append(Oplist(Operation('get')))") == 0);
     assert(PyRun_SimpleString("m += None") == 0);
     assert(PyRun_SimpleString("m += 1") == -1);
     assert(PyRun_SimpleString("m += Operation('get')") == 0);
-    assert(PyRun_SimpleString("m += Message()") == 0);
-    assert(PyRun_SimpleString("m += Message(Operation('get'))") == 0);
+    assert(PyRun_SimpleString("m += Oplist()") == 0);
+    assert(PyRun_SimpleString("m += Oplist(Operation('get'))") == 0);
     assert(PyRun_SimpleString("len(m)") == 0);
     
 

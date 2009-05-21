@@ -63,8 +63,8 @@ int main()
     assert(PyRun_SimpleString("o[1]") == -1);
     assert(PyRun_SimpleString("o + None") == 0);
     assert(PyRun_SimpleString("o + 1") == -1);
-    assert(PyRun_SimpleString("from atlas import Message") == 0);
-    assert(PyRun_SimpleString("o + Message()") == 0);
+    assert(PyRun_SimpleString("from atlas import Oplist") == 0);
+    assert(PyRun_SimpleString("o + Oplist()") == 0);
     assert(PyRun_SimpleString("o + Operation('get')") == 0);
     assert(PyRun_SimpleString("print o.from_") == 0);
     assert(PyRun_SimpleString("print o.to") == 0);

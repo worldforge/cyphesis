@@ -84,37 +84,6 @@ int main()
     assert(PyRun_SimpleString("o=atlas.Operation('get', atlas.Location(), to='1', from_='1')") == -1);
     assert(PyRun_SimpleString("o=atlas.Operation('get', atlas.Entity(), atlas.Entity(), atlas.Entity(), to='1', from_='1')") == 0);
 
-    assert(PyRun_SimpleString("atlas.Message(atlas.Operation('get'))") == 0);
-
-    assert(PyRun_SimpleString("from physics import BBox") == 0);
-    assert(PyRun_SimpleString("b=BBox()") == 0);
-    assert(PyRun_SimpleString("b=BBox([1])") == -1);
-    assert(PyRun_SimpleString("b=BBox([1,1,1])") == 0);
-    assert(PyRun_SimpleString("b=BBox([1.0,1.0,1.0])") == 0);
-    assert(PyRun_SimpleString("b=BBox(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("b=BBox(1)") == -1);
-    assert(PyRun_SimpleString("b=BBox(1,1)") == -1);
-    assert(PyRun_SimpleString("b=BBox(1,1,1)") == 0);
-    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0)") == 0);
-    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0,1.0,1.0,1.0)") == 0);
-    assert(PyRun_SimpleString("b=BBox('1','1','1')") == -1);
-
-    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
-    assert(PyRun_SimpleString("q=Quaternion()") == 0);
-    assert(PyRun_SimpleString("q=Quaternion([1])") == -1);
-    assert(PyRun_SimpleString("q=Quaternion([0,0,0,1])") == 0);
-    assert(PyRun_SimpleString("q=Quaternion([0.0,0.0,0.0,1.0])") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(['0.0',0.0,0.0,1.0])") == -1);
-    assert(PyRun_SimpleString("q=Quaternion(1,0)") == -1);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(Vector3D(1,0,0),0)") == -1);
-    assert(PyRun_SimpleString("q=Quaternion(Vector3D(1,0,0),0.0)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(Vector3D(1,0,0),Vector3D(0,1,0))") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(1,0,0)") == -1);
-    assert(PyRun_SimpleString("q=Quaternion(0,0,0,1)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(0.0,0.0,0.0,1.0)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion('0.0',0.0,0.0,1.0)") == -1);
-
     shutdown_python_api();
     return 0;
 }
