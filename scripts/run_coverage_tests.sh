@@ -29,7 +29,7 @@ check_coverage() {
 
     if [ ${source_file} -nt ${test_program} ]
     then
-        echo Test build is out of date.
+        echo Test build is out of date for ${source_file}
         exit 1
     fi
 
