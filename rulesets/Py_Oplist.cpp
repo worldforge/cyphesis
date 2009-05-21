@@ -220,7 +220,7 @@ static PyNumberMethods Oplist_as_number = {
 PyTypeObject PyOplist_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "Oplist",                       /*tp_name*/
+        "atlas.Oplist",                       /*tp_name*/
         sizeof(PyOplist),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */

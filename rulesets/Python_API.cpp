@@ -840,7 +840,7 @@ void init_python_api()
         log(CRITICAL, "Python init failed to ready Oplist wrapper type");
         return;
     }
-    PyModule_AddObject(atlas, "Message", (PyObject *)&PyOplist_Type);
+    PyModule_AddObject(atlas, "Oplist", (PyObject *)&PyOplist_Type);
 
     PyObject * physics = Py_InitModule("physics", physics_methods);
     if (physics == NULL) {
