@@ -767,7 +767,6 @@ static PyMethodDef atlas_methods[] = {
     {"isLocation", is_location,                 METH_O},
     {"Location",   location_new,                METH_VARARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
-    {"Message",    oplist_new,                  METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -832,10 +831,16 @@ void init_python_api()
     }
     Py_DECREF(sys_module);
 
-    if (Py_InitModule("atlas", atlas_methods) == NULL) {
+    PyObject * atlas = Py_InitModule("atlas", atlas_methods);
+    if (atlas == NULL) {
         log(CRITICAL, "Python init failed to create atlas module\n");
         return;
     }
+    if (PyType_Ready(&PyOplist_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Oplist wrapper type");
+        return;
+    }
+    PyModule_AddObject(atlas, "Message", (PyObject *)&PyOplist_Type);
 
     PyObject * physics = Py_InitModule("physics", physics_methods);
     if (physics == NULL) {

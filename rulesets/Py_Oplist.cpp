@@ -157,8 +157,39 @@ static PySequenceMethods Oplist_as_sequence = {
     NULL                             /* sq_ass_slice */
 };
 
+static inline void addToOplist(PyOperation * op, PyOplist * o)
+{
+    if (op != NULL) {
+       if (PyOperation_Check(op)) {
+           o->ops->push_back(op->operation);
+       } else if ((PyObject*)op != Py_None) {
+           PyErr_SetString(PyExc_TypeError, "Argument must be an op");
+           return;
+       }
+    }
+}
 
+static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
+{
+    PyOperation *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
+    if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
+        return -1;
+    }
+    self->ops = new OpVector();
+    addToOplist(op1, self);
+    addToOplist(op2, self);
+    addToOplist(op3, self);
+    addToOplist(op4, self);
+    return 0;
+}
 
+static PyObject * Oplist_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyOplist * self = (PyOplist *)type->tp_alloc(type, 0);
+    return (PyObject *)self;
+}
 
 static PyNumberMethods Oplist_as_number = {
         (binaryfunc)Oplist_num_add,
@@ -203,14 +234,42 @@ PyTypeObject PyOplist_Type = {
         &Oplist_as_sequence,            /*tp_as_sequence*/
         &Oplist_as_mapping,             /*tp_as_mapping*/
         0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Oplist objects",               // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Oplist_init,          // tp_init
+        0,                              // tp_alloc
+        Oplist_new,                     // tp_new
 };
 
 PyOplist * newPyOplist()
 {
+#if 0
         PyOplist * self;
         self = PyObject_NEW(PyOplist, &PyOplist_Type);
         if (self == NULL) {
                 return NULL;
         }
         return self;
+#else
+    return (PyOplist *)PyOplist_Type.tp_new(&PyOplist_Type, 0, 0);
+#endif
 }
