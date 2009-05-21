@@ -597,132 +597,6 @@ static PyObject * entity_new(PyObject * self, PyObject * args, PyObject * kwds)
     return (PyObject *)o;
 }
 
-static int addToArgs(std::vector<Root> & args, PyObject * arg)
-{
-    if (PyMessageElement_Check(arg)) {
-        PyMessageElement * obj = (PyMessageElement*)arg;
-#ifndef NDEBUG
-        if (obj->m_obj == NULL) {
-            PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in Operation constructor argument");
-            return -1;
-        }
-#endif // NDEBUG
-        const Element & o = *obj->m_obj;
-        if (o.isMap()) {
-            args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));
-        } else {
-            PyErr_SetString(PyExc_TypeError, "Operation arg is not a map");
-            return -1;
-        }
-    } else if (PyOperation_Check(arg)) {
-        PyOperation * op = (PyOperation*)arg;
-#ifndef NDEBUG
-        if (!op->operation.isValid()) {
-            PyErr_SetString(PyExc_AssertionError,"Invalid operation in Operation constructor argument");
-            return -1;
-        }
-#endif // NDEBUG
-        args.push_back(op->operation);
-    } else if (PyRootEntity_Check(arg)) {
-        PyRootEntity * ent = (PyRootEntity*)arg;
-#ifndef NDEBUG
-        if (!ent->entity.isValid()) {
-            PyErr_SetString(PyExc_AssertionError,"Invalid rootentity in Operation constructor argument");
-            return -1;
-        }
-#endif // NDEBUG
-        args.push_back(ent->entity);
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Operation arg is of unknown type");
-        return -1;
-    }
-    return 0;
-}
-
-static PyObject * operation_new(PyObject * self, PyObject * args, PyObject * kwds)
-{
-    PyOperation * op;
-
-    char * type;
-    PyObject * arg1 = NULL;
-    PyObject * arg2 = NULL;
-    PyObject * arg3 = NULL;
-
-    if (!PyArg_ParseTuple(args, "s|OOO", &type, &arg1, &arg2, &arg3)) {
-        return NULL;
-    }
-    op = newPyOperation();
-    if (op == NULL) {
-        return NULL;
-    }
-    if (strcmp(type, "thought") == 0 || strcmp(type, "goal_info") == 0) {
-        Py_DECREF(op);
-        Py_INCREF(Py_None);
-        return Py_None;
-    } else {
-        Root r = Atlas::Objects::Factories::instance()->createObject(type);
-        op->operation = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
-        if (!op->operation.isValid()) {
-            Py_DECREF(op);
-            PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
-            return NULL;
-        }
-    }
-    if (kwds != NULL) {
-        PyObject * from = PyDict_GetItemString(kwds, "from_");
-        if (from != NULL) {
-            PyObject * from_id = 0;
-            if (PyString_Check(from)) {
-                from_id = from;
-                Py_INCREF(from_id);
-            } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
-                PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
-                return NULL;
-            }
-            if (!PyString_Check(from_id)) {
-                Py_DECREF(from_id);
-                PyErr_SetString(PyExc_TypeError, "id of from is not a string");
-                return NULL;
-            }
-            op->operation->setFrom(PyString_AsString(from_id));
-            Py_DECREF(from_id);
-        }
-        PyObject * to = PyDict_GetItemString(kwds, "to");
-        if (to != NULL) {
-            PyObject * to_id = 0;
-            if (PyString_Check(to)) {
-                to_id = to;
-                Py_INCREF(to_id);
-            } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
-                PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
-                return NULL;
-            }
-            if (!PyString_Check(to_id)) {
-                Py_DECREF(to_id);
-                PyErr_SetString(PyExc_TypeError, "id of to is not a string");
-                return NULL;
-            }
-            op->operation->setTo(PyString_AsString(to_id));
-            Py_DECREF(to_id);
-        }
-    }
-    std::vector<Root> & args_list = op->operation->modifyArgs();
-    assert(args_list.empty());
-    if (arg1 != 0 && addToArgs(args_list, arg1) != 0) {
-        Py_DECREF(op);
-        op = NULL;
-    }
-    if (arg2 != 0 && addToArgs(args_list, arg2) != 0) {
-        Py_DECREF(op);
-        op = NULL;
-    }
-    if (arg3 != 0 && addToArgs(args_list, arg3) != 0) {
-        Py_DECREF(op);
-        op = NULL;
-    }
-    return (PyObject *)op;
-}
-
 // In Python 2.3 or later this it is okay to pass in null for the methods
 // of a module, making this obsolete.
 static PyMethodDef no_methods[] = {
@@ -730,7 +604,6 @@ static PyMethodDef no_methods[] = {
 };
 
 static PyMethodDef atlas_methods[] = {
-    {"Operation",  (PyCFunction)operation_new,  METH_VARARGS|METH_KEYWORDS},
     {"isLocation", is_location,                 METH_O},
     {"Location",   location_new,                METH_VARARGS},
     {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
@@ -803,6 +676,11 @@ void init_python_api()
         log(CRITICAL, "Python init failed to create atlas module\n");
         return;
     }
+    if (PyType_Ready(&PyOperation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Operation wrapper type");
+        return;
+    }
+    PyModule_AddObject(atlas, "Operation", (PyObject *)&PyOperation_Type);
     if (PyType_Ready(&PyOplist_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Oplist wrapper type");
         return;

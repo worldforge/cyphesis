@@ -633,10 +633,132 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
     return -1;
 }
 
+static int addToArgs(std::vector<Root> & args, PyObject * arg)
+{
+    if (PyMessageElement_Check(arg)) {
+        PyMessageElement * obj = (PyMessageElement*)arg;
+#ifndef NDEBUG
+        if (obj->m_obj == NULL) {
+            PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in Operation constructor argument");
+            return -1;
+        }
+#endif // NDEBUG
+        const Element & o = *obj->m_obj;
+        if (o.isMap()) {
+            args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));
+        } else {
+            PyErr_SetString(PyExc_TypeError, "Operation arg is not a map");
+            return -1;
+        }
+    } else if (PyOperation_Check(arg)) {
+        PyOperation * op = (PyOperation*)arg;
+#ifndef NDEBUG
+        if (!op->operation.isValid()) {
+            PyErr_SetString(PyExc_AssertionError,"Invalid operation in Operation constructor argument");
+            return -1;
+        }
+#endif // NDEBUG
+        args.push_back(op->operation);
+    } else if (PyRootEntity_Check(arg)) {
+        PyRootEntity * ent = (PyRootEntity*)arg;
+#ifndef NDEBUG
+        if (!ent->entity.isValid()) {
+            PyErr_SetString(PyExc_AssertionError,"Invalid rootentity in Operation constructor argument");
+            return -1;
+        }
+#endif // NDEBUG
+        args.push_back(ent->entity);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Operation arg is of unknown type");
+        return -1;
+    }
+    return 0;
+}
+
+static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
+{
+    char * type;
+    PyObject * arg1 = NULL;
+    PyObject * arg2 = NULL;
+    PyObject * arg3 = NULL;
+
+    if (!PyArg_ParseTuple(args, "s|OOO", &type, &arg1, &arg2, &arg3)) {
+        return NULL;
+    }
+    Root r = Atlas::Objects::Factories::instance()->createObject(type);
+    self->operation = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
+    if (!self->operation.isValid()) {
+        PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
+        return -1;
+    }
+    if (kwds != NULL) {
+        PyObject * from = PyDict_GetItemString(kwds, "from_");
+        if (from != NULL) {
+            PyObject * from_id = 0;
+            if (PyString_Check(from)) {
+                from_id = from;
+                Py_INCREF(from_id);
+            } else if ((from_id = PyObject_GetAttrString(from, "id")) == NULL) {
+                PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
+                return NULL;
+            }
+            if (!PyString_Check(from_id)) {
+                Py_DECREF(from_id);
+                PyErr_SetString(PyExc_TypeError, "id of from is not a string");
+                return NULL;
+            }
+            self->operation->setFrom(PyString_AsString(from_id));
+            Py_DECREF(from_id);
+        }
+        PyObject * to = PyDict_GetItemString(kwds, "to");
+        if (to != NULL) {
+            PyObject * to_id = 0;
+            if (PyString_Check(to)) {
+                to_id = to;
+                Py_INCREF(to_id);
+            } else if ((to_id = PyObject_GetAttrString(to, "id")) == NULL) {
+                PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
+                return NULL;
+            }
+            if (!PyString_Check(to_id)) {
+                Py_DECREF(to_id);
+                PyErr_SetString(PyExc_TypeError, "id of to is not a string");
+                return NULL;
+            }
+            self->operation->setTo(PyString_AsString(to_id));
+            Py_DECREF(to_id);
+        }
+    }
+    std::vector<Root> & args_list = self->operation->modifyArgs();
+    assert(args_list.empty());
+    if (arg1 != 0 && addToArgs(args_list, arg1) != 0) {
+        return -1;
+    }
+    if (arg2 != 0 && addToArgs(args_list, arg2) != 0) {
+        return -1;
+    }
+    if (arg3 != 0 && addToArgs(args_list, arg3) != 0) {
+        return -1;
+    }
+    return 0;
+}
+
+static PyObject * Operation_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    // This looks allot like the default implementation, except we call the
+    // in-place constructor.
+    PyOperation * self = (PyOperation *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        new (&(self->operation)) RootOperation(0);
+    }
+    return (PyObject *)self;
+}
+
+
 PyTypeObject PyOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
-        "Operation",                            // tp_name
+        "atlas.Operation",                      // tp_name
         sizeof(PyOperation),                    // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
@@ -650,12 +772,36 @@ PyTypeObject PyOperation_Type = {
         &Operation_seq,                         // tp_as_sequence
         0,                                      // tp_as_mapping
         0,                                      // tp_hash
+        0,                                      // tp_call
+        0,                                      // tp_str
+        0,                                      // tp_getattro
+        0,                                      // tp_setattro
+        0,                                      // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,                     // tp_flags
+        "Operation objects",                    // tp_doc
+        0,                                      // tp_travers
+        0,                                      // tp_clear
+        0,                                      // tp_richcompare
+        0,                                      // tp_weaklistoffset
+        0,                                      // tp_iter
+        0,                                      // tp_iternext
+        0,                                      // tp_methods
+        0,                                      // tp_members
+        0,                                      // tp_getset
+        0,                                      // tp_base
+        0,                                      // tp_dict
+        0,                                      // tp_descr_get
+        0,                                      // tp_descr_set
+        0,                                      // tp_dictoffset
+        (initproc)Operation_init,               // tp_init
+        0,                                      // tp_alloc
+        Operation_new,                          // tp_new
 };
 
 PyTypeObject PyConstOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
-        "Operation",                            // tp_name
+        "atlas.Operation",                      // tp_name
         sizeof(PyConstOperation),               // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
@@ -669,6 +815,30 @@ PyTypeObject PyConstOperation_Type = {
         &Operation_seq,                         // tp_as_sequence
         0,                                      // tp_as_mapping
         0,                                      // tp_hash
+        0,                                      // tp_call
+        0,                                      // tp_str
+        0,                                      // tp_getattro
+        0,                                      // tp_setattro
+        0,                                      // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,                     // tp_flags
+        "Operation objects",                    // tp_doc
+        0,                                      // tp_travers
+        0,                                      // tp_clear
+        0,                                      // tp_richcompare
+        0,                                      // tp_weaklistoffset
+        0,                                      // tp_iter
+        0,                                      // tp_iternext
+        0,                                      // tp_methods
+        0,                                      // tp_members
+        0,                                      // tp_getset
+        0,                                      // tp_base
+        0,                                      // tp_dict
+        0,                                      // tp_descr_get
+        0,                                      // tp_descr_set
+        0,                                      // tp_dictoffset
+        (initproc)Operation_init,               // tp_init
+        0,                                      // tp_alloc
+        Operation_new,                          // tp_new
 };
 
 /*
@@ -677,6 +847,7 @@ PyTypeObject PyConstOperation_Type = {
 
 PyOperation * newPyOperation()
 {
+#if 0
     PyOperation * self;
     self = PyObject_NEW(PyOperation, &PyOperation_Type);
     if (self == NULL) {
@@ -684,6 +855,9 @@ PyOperation * newPyOperation()
     }
     new (&(self->operation)) RootOperation(NULL);
     return self;
+#else
+    return (PyOperation *)PyOperation_Type.tp_new(&PyOperation_Type, 0, 0);
+#endif
 }
 
 PyConstOperation * newPyConstOperation()
