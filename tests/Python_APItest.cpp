@@ -73,16 +73,6 @@ int main()
     assert(PyRun_SimpleString("e=atlas.Entity('1', type='pig')") == 0);
     assert(PyRun_SimpleString("e=atlas.Entity('1', other=1)") == 0);
 
-    assert(PyRun_SimpleString("o=atlas.Operation()") == -1);
-    assert(PyRun_SimpleString("o=atlas.Operation('get')") == 0);
-    assert(PyRun_SimpleString("o=atlas.Operation('not valid')") == -1);
-    assert(PyRun_SimpleString("o=atlas.Operation('get', to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("o=atlas.Operation('get', to=e, from_=e)") == 0);
-    assert(PyRun_SimpleString("o=atlas.Operation('get', atlas.Entity(), to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("o=atlas.Operation('get', atlas.Operation('set'), to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("o=atlas.Operation('get', atlas.Location(), to='1', from_='1')") == -1);
-    assert(PyRun_SimpleString("o=atlas.Operation('get', atlas.Entity(), atlas.Entity(), atlas.Entity(), to='1', from_='1')") == 0);
-
     shutdown_python_api();
     return 0;
 }

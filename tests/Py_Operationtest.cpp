@@ -27,7 +27,16 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from atlas import Operation") == 0);
+    assert(PyRun_SimpleString("from atlas import *") == 0);
+    assert(PyRun_SimpleString("o=Operation('get')") == 0);
+    assert(PyRun_SimpleString("o=Operation('not valid')") == -1);
+    assert(PyRun_SimpleString("o=Operation('get', to='1', from_='1')") == 0);
+    assert(PyRun_SimpleString("e=Entity('1')") == 0);
+    assert(PyRun_SimpleString("o=Operation('get', to=e, from_=e)") == 0);
+    assert(PyRun_SimpleString("o=Operation('get', Entity(), to='1', from_='1')") == 0);
+    assert(PyRun_SimpleString("o=Operation('get', Operation('set'), to='1', from_='1')") == 0);
+    assert(PyRun_SimpleString("o=Operation('get', Location(), to='1', from_='1')") == -1);
+    assert(PyRun_SimpleString("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')") == 0);
     assert(PyRun_SimpleString("o=Operation()") == -1);
     assert(PyRun_SimpleString("o=Operation(1)") == -1);
     assert(PyRun_SimpleString("o=Operation('get')") == 0);
@@ -63,7 +72,6 @@ int main()
     assert(PyRun_SimpleString("o[1]") == -1);
     assert(PyRun_SimpleString("o + None") == 0);
     assert(PyRun_SimpleString("o + 1") == -1);
-    assert(PyRun_SimpleString("from atlas import Oplist") == 0);
     assert(PyRun_SimpleString("o + Oplist()") == 0);
     assert(PyRun_SimpleString("o + Operation('get')") == 0);
     assert(PyRun_SimpleString("print o.from_") == 0);
