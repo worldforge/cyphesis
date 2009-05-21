@@ -489,39 +489,6 @@ static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
     return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
 }
 
-static inline void addToOplist(PyOperation * op, PyOplist * o)
-{
-    if (op != NULL) {
-       if (PyOperation_Check(op)) {
-           o->ops->push_back(op->operation);
-       } else if ((PyObject*)op != Py_None) {
-           PyErr_SetString(PyExc_TypeError, "Argument must be an op");
-           return;
-       }
-    }
-}
-
-
-static PyObject * oplist_new(PyObject * self, PyObject * args)
-{
-        PyOplist *o;
-        
-        PyOperation *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
-        if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
-                return NULL;
-        }
-        o = newPyOplist();
-        if ( o == NULL ) {
-                return NULL;
-        }
-        o->ops = new OpVector();
-        addToOplist(op1, o);
-        addToOplist(op2, o);
-        addToOplist(op3, o);
-        addToOplist(op4, o);
-        return (PyObject *)o;
-}
-
 static int PySequence_asVector(PyObject * o, std::vector<double> & ret)
 {
     int len;
