@@ -115,11 +115,47 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
     return -1;
 }
 
+static int Object_init(PyMessageElement * self, PyObject * args, PyObject * kwds)
+{
+    self->m_obj = new Element();
+    size_t len = PyTuple_Size(args);
+    PyObject * item;
+    switch (len) {
+        case 0:
+            break;
+        case 1:
+            item = PyTuple_GetItem(args, 0);
+            if (PyInt_Check(item)) {
+                *self->m_obj = (float)PyInt_AsLong(item);
+            } else if (PyFloat_Check(item)) {
+                *self->m_obj = PyFloat_AsDouble(item);
+            } else if (PyMessageElement_Check(item)) {
+                PyMessageElement * mitem = (PyMessageElement*)item;
+                *self->m_obj = *mitem->m_obj;
+            } else {
+                PyErr_SetString(PyExc_TypeError, "Message must take a number");
+                return -1;
+            }
+            break;
+        default:
+            PyErr_SetString(PyExc_TypeError, "Message must take one number");
+            return -1;
+            break;
+    }
+    return 0;
+}
+
+static PyObject * Object_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    PyMessageElement * self = (PyMessageElement *)type->tp_alloc(type, 0);
+    return (PyObject *)self;
+}
+
 PyTypeObject PyMessageElement_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "MessageElement",                     /*tp_name*/
-        sizeof(PyMessageElement),               /*tp_basicsize*/
+        "atlas.Message",                /*tp_name*/
+        sizeof(PyMessageElement),       /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Object_dealloc,     /*tp_dealloc*/
@@ -132,6 +168,30 @@ PyTypeObject PyMessageElement_Type = {
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Message objects",             // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Object_init,          // tp_init
+        0,                              // tp_alloc
+        Object_new,                     // tp_new
 };
 
 /*
@@ -140,12 +200,16 @@ PyTypeObject PyMessageElement_Type = {
 
 PyMessageElement * newPyMessageElement()
 {
+#if 0
     PyMessageElement * self;
     self = PyObject_NEW(PyMessageElement, &PyMessageElement_Type);
     if (self == NULL) {
         return NULL;
     }
     return self;
+#else
+    return (PyMessageElement *)PyMessageElement_Type.tp_new(&PyMessageElement_Type, 0, 0);
+#endif
 }
 
 /*
