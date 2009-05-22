@@ -74,18 +74,7 @@ static void RootEntity_dealloc(PyRootEntity *self)
     PyObject_Free(self);
 }
 
-static inline PyObject * findMethod(PyRootEntity * self, char * name)
-{
-    return Py_FindMethod(RootEntity_methods, (PyObject *)self, name);
-}
-
-static inline PyObject * findMethod(PyConstRootEntity * self, char * name)
-{
-    return Py_FindMethod(ConstRootEntity_methods, (PyObject *)self, name);
-}
-
-template <typename T>
-static PyObject * getattr(T * self, char * name)
+static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
@@ -109,20 +98,8 @@ static PyObject * getattr(T * self, char * name)
             return MessageElement_asPyObject(attr);
         }
     }
-    PyObject * ret = findMethod(self, name);
-    return ret;
+    return Py_FindMethod(RootEntity_methods, (PyObject *)self, name);
 }
-
-static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)
-{
-    return getattr(self, name);
-}
-
-static PyObject * ConstRootEntity_getattr(PyConstRootEntity * self, char * name)
-{
-    return getattr(self, name);
-}
-
 
 static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
 {
@@ -182,25 +159,6 @@ PyTypeObject PyRootEntity_Type = {
         0,                                      // tp_hash
 };
 
-PyTypeObject PyConstRootEntity_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      // ob_size
-        "Entity",                               // tp_name
-        sizeof(PyConstRootEntity),              // tp_basicsize
-        0,                                      // tp_itemsize
-        //  methods 
-        (destructor)RootEntity_dealloc,         // tp_dealloc
-        0,                                      // tp_print
-        (getattrfunc)ConstRootEntity_getattr,   // tp_getattr
-        0,                                      // tp_setattr
-        0,                                      // tp_compare
-        0,                                      // tp_repr
-        0,                                      // tp_as_number
-        0,                                      // tp_as_sequence
-        0,                                      // tp_as_mapping
-        0,                                      // tp_hash
-};
-
 /*
  * Beginning of RootEntity creation functions section.
  */
@@ -209,17 +167,6 @@ PyRootEntity * newPyRootEntity()
 {
     PyRootEntity * self;
     self = PyObject_NEW(PyRootEntity, &PyRootEntity_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    new (&(self->entity)) RootEntity(NULL);
-    return self;
-}
-
-PyConstRootEntity * newPyConstRootEntity()
-{
-    PyConstRootEntity * self;
-    self = PyObject_NEW(PyConstRootEntity, &PyConstRootEntity_Type);
     if (self == NULL) {
         return NULL;
     }
