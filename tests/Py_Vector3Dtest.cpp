@@ -28,6 +28,7 @@ int main()
     init_python_api();
 
     assert(PyRun_SimpleString("from physics import Vector3D") == 0);
+    assert(PyRun_SimpleString("from atlas import Message") == 0);
     assert(PyRun_SimpleString("v=Vector3D(1,0,0)") == 0);
     assert(PyRun_SimpleString("v1=Vector3D(0,1,0)") == 0);
     assert(PyRun_SimpleString("v2=Vector3D(0,1,0)") == 0);
@@ -35,6 +36,8 @@ int main()
     assert(PyRun_SimpleString("print Vector3D([1])") == -1);
     assert(PyRun_SimpleString("print Vector3D([1,0,0])") == 0);
     assert(PyRun_SimpleString("print Vector3D([1.1,0.0,0.0])") == 0);
+    assert(PyRun_SimpleString("print Vector3D([Message(1.0),0,0])") == 0);
+    assert(PyRun_SimpleString("print Vector3D([Message(1),0,0])") == 0);
     assert(PyRun_SimpleString("print Vector3D(['1','1','1'])") == -1);
     assert(PyRun_SimpleString("print Vector3D(1.1)") == -1);
     assert(PyRun_SimpleString("print Vector3D(1.1,0.0,0.0)") == 0);
