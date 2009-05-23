@@ -57,22 +57,6 @@ int main()
     assert(PyRun_SimpleString("physics.square_distance('1', l2)") == -1);
     assert(PyRun_SimpleString("physics.square_horizontal_distance('1', l2)") == -1);
 
-    assert(PyRun_SimpleString("atlas.Entity()") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity('1')") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity(1)") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', location='loc')") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', location=l)") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', pos=())") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', pos=[])") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', pos=(1,1.0,'1'))") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', pos=[1,1.0,'1'])") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', pos=1)") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', parent=1)") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', parent='0')") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', type=1)") == -1);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', type='pig')") == 0);
-    assert(PyRun_SimpleString("e=atlas.Entity('1', other=1)") == 0);
-
     shutdown_python_api();
     return 0;
 }

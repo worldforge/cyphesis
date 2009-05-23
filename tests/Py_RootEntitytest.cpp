@@ -28,6 +28,22 @@ int main()
     init_python_api();
 
     assert(PyRun_SimpleString("from atlas import Entity") == 0);
+    assert(PyRun_SimpleString("from atlas import Location") == 0);
+    assert(PyRun_SimpleString("Entity('1')") == 0);
+    assert(PyRun_SimpleString("Entity(1)") == -1);
+    assert(PyRun_SimpleString("Entity('1', location='loc')") == -1);
+    assert(PyRun_SimpleString("l=Location()") == 0);
+    assert(PyRun_SimpleString("Entity('1', location=l)") == 0);
+    assert(PyRun_SimpleString("Entity('1', pos=())") == 0);
+    assert(PyRun_SimpleString("Entity('1', pos=[])") == 0);
+    assert(PyRun_SimpleString("Entity('1', pos=(1,1.0,'1'))") == -1);
+    assert(PyRun_SimpleString("Entity('1', pos=[1,1.0,'1'])") == -1);
+    assert(PyRun_SimpleString("Entity('1', pos=1)") == -1);
+    assert(PyRun_SimpleString("Entity('1', parent=1)") == -1);
+    assert(PyRun_SimpleString("Entity('1', parent='0')") == 0);
+    assert(PyRun_SimpleString("Entity('1', type=1)") == -1);
+    assert(PyRun_SimpleString("Entity('1', type='pig')") == 0);
+    assert(PyRun_SimpleString("Entity('1', other=1)") == 0);
     assert(PyRun_SimpleString("e=Entity()") == 0);
     assert(PyRun_SimpleString("e.get_name()") == 0);
     assert(PyRun_SimpleString("e.name") == 0);
