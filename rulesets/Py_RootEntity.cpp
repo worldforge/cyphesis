@@ -19,13 +19,19 @@
 
 #include "Py_RootEntity.h"
 #include "Py_Object.h"
+#include "Py_Location.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"
 
+#include "modules/Location.h"
+
+#include <Atlas/Objects/Anonymous.h>
+
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
 
 /*
  * Beginning of RootEntity section.
@@ -140,10 +146,123 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
     }
 }
 
+static int PySequence_asVector(PyObject * o, std::vector<double> & ret)
+{
+    int len;
+    PyObject * item;
+    if (PyList_Check(o)) {
+        len = PyList_Size(o);
+        ret.resize(len);
+        for(int i = 0; i < len; i++) {
+            item = PyList_GetItem(o, i);
+            if (PyFloat_Check(item)) {
+                ret[i] = PyFloat_AsDouble(item);
+            } else if (PyInt_Check(item)) {
+                ret[i] = PyInt_AsLong(item);
+            } else {
+                return -1;
+            }
+        }
+    } else if (PyTuple_Check(o)) {
+        len = PyTuple_Size(o);
+        ret.resize(len);
+        for(int i = 0; i < len; i++) {
+            item = PyTuple_GetItem(o, i);
+            if (PyFloat_Check(item)) {
+                ret[i] = PyFloat_AsDouble(item);
+            } else if (PyInt_Check(item)) {
+                ret[i] = PyInt_AsLong(item);
+            } else {
+                return -1;
+            }
+        }
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds)
+{
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "|s", &id)) {
+        return -1;
+    }
+    if (id != NULL) {
+        self->entity->setId(id);
+    }
+    if (kwds != NULL && PyDict_Check(kwds)) {
+        PyObject * keys = PyDict_Keys(kwds);
+        PyObject * vals = PyDict_Values(kwds);
+        if (keys == NULL || vals == NULL) {
+            PyErr_SetString(PyExc_RuntimeError, "Error in keywords");
+            return -1;
+        }
+        int i, size = PyList_Size(keys);
+        for(i = 0; i < size; i++) {
+            char * key = PyString_AsString(PyList_GetItem(keys, i));
+            PyObject * val = PyList_GetItem(vals, i);
+            if (strcmp(key, "location") == 0) {
+                if (!PyLocation_Check(val)) {
+                    PyErr_SetString(PyExc_TypeError, "location must be a Location object");
+                    return -1;
+                }
+                PyLocation * loc = (PyLocation*)val;
+                loc->location->addToEntity(self->entity);
+            } else if (strcmp(key, "pos") == 0) {
+                std::vector<double> vector_val;
+                if (PySequence_asVector(val, vector_val) != 0) {
+                    PyErr_SetString(PyExc_TypeError, "pos must be a number sequence.");
+                    return -1;
+                }
+                self->entity->setPos(vector_val);
+            } else if (strcmp(key, "parent") == 0) {
+                if (!PyString_Check(val)) {
+                    PyErr_SetString(PyExc_TypeError, "parent must be a string.");
+                    return -1;
+                }
+                self->entity->setLoc(PyString_AsString(val));
+            } else if (strcmp(key, "type") == 0) {
+                if (!PyString_Check(val)) {
+                    PyErr_SetString(PyExc_TypeError, "type must be a string.");
+                    return -1;
+                }
+                self->entity->setParents(std::list<std::string>(1, PyString_AsString(val)));
+                self->entity->setObjtype("obj");
+            } else {
+                Element val_obj = PyObject_asMessageElement(val);
+                if (val_obj.getType() == Element::TYPE_NONE) {
+                    Py_DECREF(keys);
+                    Py_DECREF(vals);
+                    PyErr_SetString(PyExc_TypeError, "Arg has no type.");
+                    return -1;
+                }
+                self->entity->setAttr(key, val_obj);
+            }
+        }
+        Py_DECREF(keys);
+        Py_DECREF(vals);
+    }
+
+    return 0;
+}
+
+static PyObject * RootEntity_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+   PyRootEntity * self = (PyRootEntity *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        new (&(self->entity)) RootEntity(NULL);
+        self->entity = Anonymous();
+    }
+    return (PyObject *)self;
+}
+
+
 PyTypeObject PyRootEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
-        "Entity",                               // tp_name
+        "atlas.Entity",                         // tp_name
         sizeof(PyRootEntity),                   // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
@@ -157,6 +276,30 @@ PyTypeObject PyRootEntity_Type = {
         0,                                      // tp_as_sequence
         0,                                      // tp_as_mapping
         0,                                      // tp_hash
+        0,                                      // tp_call
+        0,                                      // tp_str
+        0,                                      // tp_getattro
+        0,                                      // tp_setattro
+        0,                                      // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,                     // tp_flags
+        "RootEntity objects",                   // tp_doc
+        0,                                      // tp_travers
+        0,                                      // tp_clear
+        0,                                      // tp_richcompare
+        0,                                      // tp_weaklistoffset
+        0,                                      // tp_iter
+        0,                                      // tp_iternext
+        0,                                      // tp_methods
+        0,                                      // tp_members
+        0,                                      // tp_getset
+        0,                                      // tp_base
+        0,                                      // tp_dict
+        0,                                      // tp_descr_get
+        0,                                      // tp_descr_set
+        0,                                      // tp_dictoffset
+        (initproc)RootEntity_init,              // tp_init
+        0,                                      // tp_alloc
+        RootEntity_new,                         // tp_new
 };
 
 /*
@@ -165,6 +308,7 @@ PyTypeObject PyRootEntity_Type = {
 
 PyRootEntity * newPyRootEntity()
 {
+#if 0
     PyRootEntity * self;
     self = PyObject_NEW(PyRootEntity, &PyRootEntity_Type);
     if (self == NULL) {
@@ -172,4 +316,7 @@ PyRootEntity * newPyRootEntity()
     }
     new (&(self->entity)) RootEntity(NULL);
     return self;
+#else
+    return (PyRootEntity *)PyRootEntity_Type.tp_new(&PyRootEntity_Type, 0, 0);
+#endif
 }

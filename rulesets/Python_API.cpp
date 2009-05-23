@@ -538,7 +538,6 @@ static PyMethodDef no_methods[] = {
 
 static PyMethodDef atlas_methods[] = {
     {"isLocation", is_location,                 METH_O},
-    {"Entity",     (PyCFunction)entity_new,     METH_VARARGS|METH_KEYWORDS},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -613,6 +612,11 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(atlas, "Operation", (PyObject *)&PyOperation_Type);
+    if (PyType_Ready(&PyRootEntity_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready RootEntity wrapper type");
+        return;
+    }
+    PyModule_AddObject(atlas, "Entity", (PyObject *)&PyRootEntity_Type);
     if (PyType_Ready(&PyOplist_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Oplist wrapper type");
         return;
