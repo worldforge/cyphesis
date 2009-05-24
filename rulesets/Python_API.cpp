@@ -37,6 +37,7 @@
 #include "Py_RootEntity.h"
 #include "Py_Oplist.h"
 #include "Py_Property.h"
+#include "Py_Task.h"
 
 #include "PythonEntityScript.h"
 #include "BaseMind.h"
@@ -624,6 +625,26 @@ void init_python_api()
     }
     
     // New module code
+    if (PyType_Ready(&PyMap_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Map wrapper type");
+        return;
+    }
+    if (PyType_Ready(&PyMind_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Mind wrapper type");
+        return;
+    }
+    if (PyType_Ready(&PyTask_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Task wrapper type");
+        return;
+    }
+    if (PyType_Ready(&PyEntity_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Entity wrapper type");
+        return;
+    }
+    if (PyType_Ready(&PyWorld_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready World wrapper type");
+        return;
+    }
     // PyWorldTime_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyWorldTime_Type) < 0) {
         log(CRITICAL, "Python init failed to ready WorldTime wrapper type");
