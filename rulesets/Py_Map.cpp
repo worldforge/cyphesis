@@ -289,31 +289,70 @@ static PyObject * Map_getattr(PyMap *self, char *name)
     return Py_FindMethod(Map_methods, (PyObject *)self, name);
 }
 
-PyTypeObject Map_Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,                              // ob_size
-    "Map",                          // tp_name
-    sizeof(PyMap),                  // tp_basicsize
-    0,                              // tp_itemsize
-    // methods
-    (destructor)Map_dealloc,        // tp_dealloc
-    0,                              // tp_print
-    (getattrfunc)Map_getattr,       // tp_getattr
-    0,                              // tp_setattr
-    0,                              // tp_compare
-    0,                              // tp_repr
-    0,                              // tp_as_number
-    0,                              // tp_as_sequence
-    0,                              // tp_as_mapping
-    0,                              // tp_hash
+static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
+{
+    return 0;
+}
+
+static PyObject * Map_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    PyMap * self = (PyMap *)type->tp_alloc(type, 0);
+    return (PyObject *)self;
+}
+
+PyTypeObject PyMap_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              // ob_size
+        "Map",                          // tp_name
+        sizeof(PyMap),                  // tp_basicsize
+        0,                              // tp_itemsize
+        // methods
+        (destructor)Map_dealloc,        // tp_dealloc
+        0,                              // tp_print
+        (getattrfunc)Map_getattr,       // tp_getattr
+        0,                              // tp_setattr
+        0,                              // tp_compare
+        0,                              // tp_repr
+        0,                              // tp_as_number
+        0,                              // tp_as_sequence
+        0,                              // tp_as_mapping
+        0,                              // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Map objects",                  // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Map_init,             // tp_init
+        0,                              // tp_alloc
+        Map_new,                        // tp_new
 };
 
 PyMap * newPyMap()
 {
+#if 0
     PyMap * self;
-    self = PyObject_NEW(PyMap, &Map_Type);
+    self = PyObject_NEW(PyMap, &PyMap_Type);
     if (self == NULL) {
         return NULL;
     }
     return self;
+#else
+    return (PyMap *)PyMap_Type.tp_new(&PyMap_Type, 0, 0);
+#endif
 }

@@ -197,27 +197,63 @@ static int Mind_compare(PyMind *self, PyMind *other)
     return (self->m_mind == other->m_mind) ? 0 : 1;
 }
 
+static int Mind_init(PyMind * self, PyObject * args, PyObject * kwds)
+{
+    return 0;
+}
+
+static PyObject * Mind_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    PyMind * self = (PyMind *)type->tp_alloc(type, 0);
+    return (PyObject *)self;
+}
+
 PyTypeObject PyMind_Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,                              // ob_size
-    "Mind",                         // tp_name
-    sizeof(PyMind),                 // tp_basicsize
-    0,                              // tp_itemsize
-    // methods 
-    (destructor)Mind_dealloc,       // tp_dealloc
-    0,                              // tp_print
-    (getattrfunc)Mind_getattr,      // tp_getattr
-    (setattrfunc)Mind_setattr,      // tp_setattr
-    (cmpfunc)Mind_compare,          // tp_compare
-    0,                              // tp_repr
-    0,                              // tp_as_number
-    0,                              // tp_as_sequence
-    0,                              // tp_as_mapping
-    0,                              // tp_hash
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              // ob_size
+        "Mind",                         // tp_name
+        sizeof(PyMind),                 // tp_basicsize
+        0,                              // tp_itemsize
+        // methods 
+        (destructor)Mind_dealloc,       // tp_dealloc
+        0,                              // tp_print
+        (getattrfunc)Mind_getattr,      // tp_getattr
+        (setattrfunc)Mind_setattr,      // tp_setattr
+        (cmpfunc)Mind_compare,          // tp_compare
+        0,                              // tp_repr
+        0,                              // tp_as_number
+        0,                              // tp_as_sequence
+        0,                              // tp_as_mapping
+        0,                              // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Mind objects",                 // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Mind_init,            // tp_init
+        0,                              // tp_alloc
+        Mind_new,                       // tp_new
 };
 
 PyMind * newPyMind()
 {
+#if 0
     PyMind * self;
     self = PyObject_NEW(PyMind, &PyMind_Type);
     if (self == NULL) {
@@ -225,4 +261,7 @@ PyMind * newPyMind()
     }
     self->Mind_attr = NULL;
     return self;
+#else
+    return (PyMind *)PyMind_Type.tp_new(&PyMind_Type, 0, 0);
+#endif
 }

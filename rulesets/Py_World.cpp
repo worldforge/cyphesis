@@ -78,6 +78,17 @@ static int World_compare(PyWorld * self, PyObject * other)
     return -1;
 }
 
+static int World_init(PyWorld * self, PyObject * args, PyObject * kwds)
+{
+    return 0;
+}
+
+static PyObject * World_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    PyWorld * self = (PyWorld *)type->tp_alloc(type, 0);
+    return (PyObject *)self;
+}
+
 PyTypeObject PyWorld_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              // ob_size
@@ -95,14 +106,42 @@ PyTypeObject PyWorld_Type = {
         0,                              // tp_as_sequence
         0,                              // tp_as_mapping
         0,                              // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "World objects",                // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)World_init,           // tp_init
+        0,                              // tp_alloc
+        World_new,                      // tp_new
 };
 
 PyWorld * newPyWorld()
 {
+#if 0
     PyWorld * self;
     self = PyObject_NEW(PyWorld, &PyWorld_Type);
     if (self == NULL) {
         return NULL;
     }
     return self;
+#else
+    return (PyWorld *)PyWorld_Type.tp_new(&PyWorld_Type, 0, 0);
+#endif
 }

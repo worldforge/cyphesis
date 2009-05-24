@@ -192,6 +192,17 @@ static int Task_compare(PyTask *self, PyTask *other)
     return (self->m_task == other->m_task) ? 0 : 1;
 }
 
+static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
+{
+    return 0;
+}
+
+static PyObject * Task_new(PyTypeObject * type, PyObject *, PyObject *)
+{
+    PyTask * self = (PyTask *)type->tp_alloc(type, 0);
+    return (PyObject *)self;
+}
+
 PyTypeObject PyTask_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -209,6 +220,30 @@ PyTypeObject PyTask_Type = {
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Task objects",                 // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Task_init,            // tp_init
+        0,                              // tp_alloc
+        Task_new,                       // tp_new
 };
 
 PyObject * wrapTask(Task * task)
@@ -232,6 +267,7 @@ PyObject * wrapTask(Task * task)
 
 PyTask * newPyTask()
 {
+#if 0
     PyTask * self;
     self = PyObject_NEW(PyTask, &PyTask_Type);
     if (self == NULL) {
@@ -239,4 +275,7 @@ PyTask * newPyTask()
     }
     self->Task_attr = NULL;
     return self;
+#else
+    return (PyTask *)PyTask_Type.tp_new(&PyTask_Type, 0, 0);
+#endif
 }
