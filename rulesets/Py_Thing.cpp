@@ -191,6 +191,10 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         return NULL;
     }
     if (strcmp(name, "type") == 0) {
+        if (self->m_entity->getType() == NULL) {
+            PyErr_SetString(PyExc_AttributeError, name);
+            return NULL;
+        }
         PyObject * list = PyList_New(0);
         if (list == NULL) {
             return NULL;
