@@ -256,7 +256,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
             return Py_None;
         }
     }
-    return Py_FindMethod(self->m_methods, (PyObject *)self, name);
+    return Py_FindMethod(self->ob_type->tp_methods, (PyObject *)self, name);
 }
 
 static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
@@ -310,6 +310,22 @@ static int Entity_compare(PyEntity *self, PyEntity *other)
     return (self->m_entity == other->m_entity) ? 0 : 1;
 }
 
+static int LocatedEntity_init(PyEntity * self, PyObject * args, PyObject * kwds)
+{
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return -1;
+    }
+    long intId = integerId(id);
+    if (intId == -1L) {
+        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+        return -1;
+    }
+    self->m_entity = new Entity(id, intId);
+    return 0;
+}
+
 static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
     char * id = NULL;
@@ -323,7 +339,22 @@ static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
         return -1;
     }
     self->m_entity = new Entity(id, intId);
-    self->m_methods = Entity_methods;
+    return 0;
+}
+
+static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
+{
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return -1;
+    }
+    long intId = integerId(id);
+    if (intId == -1L) {
+        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+        return -1;
+    }
+    self->m_entity = new Character(id, intId);
     return 0;
 }
 
@@ -332,6 +363,49 @@ static PyObject * Entity_new(PyTypeObject * type, PyObject *, PyObject *)
     PyEntity * self = (PyEntity *)type->tp_alloc(type, 0);
     return (PyObject *)self;
 }
+
+PyTypeObject PyLocatedEntity_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "server.Entity",                /*tp_name*/
+        sizeof(PyLocatedEntity),        /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Entity_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Entity_getattr,    /*tp_getattr*/
+        (setattrfunc)Entity_setattr,    /*tp_setattr*/
+        (cmpfunc)Entity_compare,        /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Entity objects",               // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        LocatedEntity_methods,          // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)LocatedEntity_init,   // tp_init
+        0,                              // tp_alloc
+        Entity_new,                     // tp_new
+};
 
 PyTypeObject PyEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
@@ -363,7 +437,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Entity_methods,                 // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
@@ -372,6 +446,49 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Entity_init,          // tp_init
+        0,                              // tp_alloc
+        Entity_new,                     // tp_new
+};
+
+PyTypeObject PyCharacter_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "server.Entity",                /*tp_name*/
+        sizeof(PyCharacter),            /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        (destructor)Entity_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_print*/
+        (getattrfunc)Entity_getattr,    /*tp_getattr*/
+        (setattrfunc)Entity_setattr,    /*tp_setattr*/
+        (cmpfunc)Entity_compare,        /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Entity objects",               // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        Character_methods,              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Character_init,       // tp_init
         0,                              // tp_alloc
         Entity_new,                     // tp_new
 };
@@ -437,8 +554,7 @@ PyLocatedEntity * newPyLocatedEntity()
     self->m_methods = LocatedEntity_methods;
     return self;
 #else
-    PyLocatedEntity * self = (PyLocatedEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    self->m_methods = LocatedEntity_methods;
+    PyLocatedEntity * self = (PyLocatedEntity *)PyLocatedEntity_Type.tp_new(&PyLocatedEntity_Type, 0, 0);
     return self;
 #endif
 }
@@ -456,7 +572,6 @@ PyEntity * newPyEntity()
     return self;
 #else
     PyEntity * self = (PyEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    self->m_methods = Entity_methods;
     return self;
 #endif
 }
@@ -473,8 +588,7 @@ PyCharacter * newPyCharacter()
     self->m_methods = Character_methods;
     return self;
 #else
-    PyCharacter * self = (PyCharacter *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    self->m_methods = Character_methods;
+    PyCharacter * self = (PyCharacter *)PyCharacter_Type.tp_new(&PyCharacter_Type, 0, 0);
     return self;
 #endif
 }

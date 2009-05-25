@@ -62,7 +62,9 @@ typedef struct {
     struct PyMethodDef * m_methods;
 } PyCharacter;
 
+extern PyTypeObject PyLocatedEntity_Type;
 extern PyTypeObject PyEntity_Type;
+extern PyTypeObject PyCharacter_Type;
 
 #define PyEntity_Check(_o) ((_o)->ob_type == &PyEntity_Type)
 
