@@ -637,11 +637,21 @@ void init_python_api()
         log(CRITICAL, "Python init failed to ready Task wrapper type");
         return;
     }
-    if (PyType_Ready(&PyEntity_Type) < 0) {
+    if (PyType_Ready(&PyLocatedEntity_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Entity wrapper type");
         return;
     }
-    PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyEntity_Type);
+    PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyLocatedEntity_Type);
+    if (PyType_Ready(&PyEntity_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Thing wrapper type");
+        return;
+    }
+    PyModule_AddObject(server, "Thing", (PyObject *)&PyEntity_Type);
+    if (PyType_Ready(&PyCharacter_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Character wrapper type");
+        return;
+    }
+    PyModule_AddObject(server, "Character", (PyObject *)&PyCharacter_Type);
     if (PyType_Ready(&PyWorld_Type) < 0) {
         log(CRITICAL, "Python init failed to ready World wrapper type");
         return;
