@@ -30,6 +30,7 @@
 #include "PythonWrapper.h"
 #include "Character.h"
 
+#include "common/id.h"
 #include "common/log.h"
 #include "common/Property.h"
 #include "common/TypeNode.h"
@@ -307,6 +308,18 @@ static int Entity_compare(PyEntity *self, PyEntity *other)
 
 static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return -1;
+    }
+    long intId = integerId(id);
+    if (intId == -1L) {
+        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+        return -1;
+    }
+    self->m_entity = new Entity(id, intId);
+    self->m_methods = Entity_methods;
     return 0;
 }
 
@@ -319,7 +332,7 @@ static PyObject * Entity_new(PyTypeObject * type, PyObject *, PyObject *)
 PyTypeObject PyEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "Entity",                       /*tp_name*/
+        "server.Entity",                /*tp_name*/
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
@@ -339,7 +352,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Entity objects",             // tp_doc
+        "Entity objects",               // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
@@ -354,9 +367,9 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_descr_get
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
-        (initproc)Entity_init,        // tp_init
+        (initproc)Entity_init,          // tp_init
         0,                              // tp_alloc
-        Entity_new,                   // tp_new
+        Entity_new,                     // tp_new
 };
 
 PyObject * wrapEntity(LocatedEntity * le)
@@ -404,6 +417,10 @@ PyObject * wrapEntity(LocatedEntity * le)
     return wrapper;
 }
 
+// FIXME if this is cleaner to use the methods field of the type for methods,
+// one PyTypeObject for each, and just share the members. That way we lose
+// the need for a members entry on the object.
+
 PyLocatedEntity * newPyLocatedEntity()
 {
 #if 0
@@ -416,8 +433,9 @@ PyLocatedEntity * newPyLocatedEntity()
     self->m_methods = LocatedEntity_methods;
     return self;
 #else
-    return (PyLocatedEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    // FIXME Sort methods
+    PyLocatedEntity * self = (PyLocatedEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
+    self->m_methods = LocatedEntity_methods;
+    return self;
 #endif
 }
 
@@ -433,8 +451,9 @@ PyEntity * newPyEntity()
     self->m_methods = Entity_methods;
     return self;
 #else
-    return (PyEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    // FIXME Sort methods
+    PyEntity * self = (PyEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
+    self->m_methods = Entity_methods;
+    return self;
 #endif
 }
 
@@ -450,7 +469,8 @@ PyCharacter * newPyCharacter()
     self->m_methods = Character_methods;
     return self;
 #else
-    return (PyCharacter *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    // FIXME Sort methods
+    PyCharacter * self = (PyCharacter *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
+    self->m_methods = Character_methods;
+    return self;
 #endif
 }
