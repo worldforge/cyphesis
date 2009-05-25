@@ -35,6 +35,7 @@ int main()
     assert(PyRun_SimpleString("m.find_by_location(l)") == -1);
     assert(PyRun_SimpleString("m.find_by_location(l, 5.0, 'foo')") == -1);
     assert(PyRun_SimpleString("m.find_by_type()") == -1);
+    assert(PyRun_SimpleString("m.find_by_type(1)") == -1);
     assert(PyRun_SimpleString("m.find_by_type('foo')") == 0);
     assert(PyRun_SimpleString("m.add()") == -1);
     assert(PyRun_SimpleString("m.delete()") == -1);
@@ -42,8 +43,14 @@ int main()
     assert(PyRun_SimpleString("m.get_add()") == -1);
     assert(PyRun_SimpleString("m.update()") == -1);
     assert(PyRun_SimpleString("m.add_hooks_append()") == -1);
+    assert(PyRun_SimpleString("m.add_hooks_append(1)") == -1);
+    assert(PyRun_SimpleString("m.add_hooks_append('add_map')") == 0);
     assert(PyRun_SimpleString("m.update_hooks_append()") == -1);
+    assert(PyRun_SimpleString("m.update_hooks_append(1)") == -1);
+    assert(PyRun_SimpleString("m.update_hooks_append('update_map')") == 0);
     assert(PyRun_SimpleString("m.delete_hooks_append()") == -1);
+    assert(PyRun_SimpleString("m.delete_hooks_append(1)") == -1);
+    assert(PyRun_SimpleString("m.delete_hooks_append('delete_map')") == 0);
 
     shutdown_python_api();
     return 0;
