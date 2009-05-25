@@ -641,6 +641,7 @@ void init_python_api()
         log(CRITICAL, "Python init failed to ready Entity wrapper type");
         return;
     }
+    PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyEntity_Type);
     if (PyType_Ready(&PyWorld_Type) < 0) {
         log(CRITICAL, "Python init failed to ready World wrapper type");
         return;
