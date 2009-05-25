@@ -34,8 +34,6 @@ typedef struct {
     PyObject * Entity_attr;  // Attributes dictionary
     /// \brief Entity object handled by this wrapper
     LocatedEntity * m_entity;
-    /// \brief Pointer to the method table
-    struct PyMethodDef * m_methods;
 } PyLocatedEntity;
 
 /// \brief Wrapper for Entity in Python
@@ -46,8 +44,6 @@ typedef struct {
     PyObject * Entity_attr;  // Attributes dictionary
     /// \brief Entity object handled by this wrapper
     Entity * m_entity;
-    /// \brief Pointer to the method table
-    struct PyMethodDef * m_methods;
 } PyEntity;
 
 /// \brief Wrapper for Character in Python
@@ -58,8 +54,6 @@ typedef struct {
     PyObject * Entity_attr;  // Attributes dictionary
     /// \brief Character entity object handled by this wrapper
     Character * m_entity;
-    /// \brief Pointer to the method table
-    struct PyMethodDef * m_methods;
 } PyCharacter;
 
 extern PyTypeObject PyLocatedEntity_Type;
