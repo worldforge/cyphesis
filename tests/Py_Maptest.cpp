@@ -29,6 +29,8 @@ int main()
 
     assert(PyRun_SimpleString("from server import Map") == 0);
     assert(PyRun_SimpleString("from atlas import Location") == 0);
+    assert(PyRun_SimpleString("from atlas import Entity") == 0);
+    assert(PyRun_SimpleString("from atlas import Message") == 0);
     assert(PyRun_SimpleString("m=Map()") == 0);
     assert(PyRun_SimpleString("m.find_by_location()") == -1);
     assert(PyRun_SimpleString("l=Location()") == 0);
@@ -38,10 +40,17 @@ int main()
     assert(PyRun_SimpleString("m.find_by_type(1)") == -1);
     assert(PyRun_SimpleString("m.find_by_type('foo')") == 0);
     assert(PyRun_SimpleString("m.add()") == -1);
-    assert(PyRun_SimpleString("m.delete()") == -1);
+    assert(PyRun_SimpleString("m.add(Message())") == -1);
+    assert(PyRun_SimpleString("m.add(Message(), 1.2)") == -1);
+    assert(PyRun_SimpleString("m.add(Entity())") == -1);
+    assert(PyRun_SimpleString("m.add(Entity('1', type='oak'))") == -1);
+    assert(PyRun_SimpleString("print m.add(Entity('1', type='thing'), 1.1)") == 0);
+    assert(PyRun_SimpleString("print m.find_by_type('thing')") == 0);
     assert(PyRun_SimpleString("m.get()") == -1);
     assert(PyRun_SimpleString("m.get_add()") == -1);
     assert(PyRun_SimpleString("m.update()") == -1);
+    assert(PyRun_SimpleString("m.delete()") == -1);
+    assert(PyRun_SimpleString("m.delete('1')") == 0);
     assert(PyRun_SimpleString("m.add_hooks_append()") == -1);
     assert(PyRun_SimpleString("m.add_hooks_append(1)") == -1);
     assert(PyRun_SimpleString("m.add_hooks_append('add_map')") == 0);
