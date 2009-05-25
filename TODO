@@ -1,3 +1,7 @@
+Go through Python types sorting out where tp_methods can be used.
+Sort out weak references for Entity and related wrappers,
+Move Location into server, and isLocation somwhere else.
+
 Mind interface is pretty simple, so it should be possible to have a hive or
 herd mind at either core or python layer. One significant goal will be to
 eliminate the copy of the world per individual, but this is being done
