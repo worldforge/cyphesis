@@ -26,6 +26,7 @@
 
 #include "MemEntity.h"
 #include "MemMap.h"
+#include "Script.h"
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/objectFactory.h>
@@ -51,6 +52,10 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
         return NULL;
     }
     PyLocation * where = (PyLocation *)where_obj;
+    if (!where->location->isValid()) {
+        PyErr_SetString(PyExc_RuntimeError, "Location is incomplete");
+        return NULL;
+    }
     MemEntityVector res = self->m_map->findByLocation(*where->location,
                                                       radius, type);
     PyObject * list = PyList_New(res.size());
@@ -291,6 +296,9 @@ static PyObject * Map_getattr(PyMap *self, char *name)
 
 static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
 {
+    Script ** s = new Script*;
+    *s = &noScript;
+    self->m_map = new MemMap(*s);
     return 0;
 }
 
@@ -309,7 +317,7 @@ PyTypeObject PyMap_Type = {
         // methods
         (destructor)Map_dealloc,        // tp_dealloc
         0,                              // tp_print
-        (getattrfunc)Map_getattr,       // tp_getattr
+        0,                              // tp_getattr
         0,                              // tp_setattr
         0,                              // tp_compare
         0,                              // tp_repr
@@ -330,7 +338,7 @@ PyTypeObject PyMap_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Map_methods,                    // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
