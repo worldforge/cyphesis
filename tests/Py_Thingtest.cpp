@@ -19,7 +19,10 @@
 
 #include <Python.h>
 
+#include "TestWorld.h"
+
 #include "rulesets/Python_API.h"
+#include "rulesets/Entity.h"
 
 #include <cassert>
 
@@ -27,13 +30,43 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from server import LocatedEntity") == 0);
+    Entity * e = new Entity("1", 1);
+    Entity * wrld = new Entity("0", 0);
+    e->m_location.m_loc = wrld;
+    e->m_location.m_loc->makeContainer();
+    assert(e->m_location.m_loc->m_contains != 0);
+    e->m_location.m_loc->m_contains->insert(e);
+    TestWorld test_world(*wrld);
+
+    assert(PyRun_SimpleString("from server import *") == 0);
+    assert(PyRun_SimpleString("from atlas import Operation") == 0);
+
     assert(PyRun_SimpleString("LocatedEntity()") == -1);
     assert(PyRun_SimpleString("le=LocatedEntity('1')") == 0);
     assert(PyRun_SimpleString("le.as_entity()") == 0);
+    assert(PyRun_SimpleString("le.send_world(Operation('get'))") == -1);
+    assert(PyRun_SimpleString("print le.get_task()") == -1);
     assert(PyRun_SimpleString("print le.type") == -1);
     assert(PyRun_SimpleString("print le.location") == 0);
     assert(PyRun_SimpleString("print le.contains") == 0);
+
+    assert(PyRun_SimpleString("Thing()") == -1);
+    assert(PyRun_SimpleString("t=Thing('1')") == 0);
+    assert(PyRun_SimpleString("t.as_entity()") == 0);
+    assert(PyRun_SimpleString("t.send_world(Operation('get'))") == 0);
+    assert(PyRun_SimpleString("print t.get_task()") == -1);
+    assert(PyRun_SimpleString("print t.type") == -1);
+    assert(PyRun_SimpleString("print t.location") == 0);
+    assert(PyRun_SimpleString("print t.contains") == 0);
+
+    assert(PyRun_SimpleString("Character()") == -1);
+    assert(PyRun_SimpleString("c=Character('1')") == 0);
+    assert(PyRun_SimpleString("c.as_entity()") == 0);
+    assert(PyRun_SimpleString("c.send_world(Operation('get'))") == 0);
+    assert(PyRun_SimpleString("print c.get_task()") == 0);
+    assert(PyRun_SimpleString("print c.type") == -1);
+    assert(PyRun_SimpleString("print c.location") == 0);
+    assert(PyRun_SimpleString("print c.contains") == 0);
 
     shutdown_python_api();
     return 0;
