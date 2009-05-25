@@ -121,6 +121,10 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
     }
     if (PyMessageElement_Check(arg)) {
         PyMessageElement * me = (PyMessageElement*)arg;
+        if (!me->m_obj->isMap()) {
+            PyErr_SetString(PyExc_TypeError, "arg is a Message that is not a map");
+            return NULL;
+        }
         Atlas::Objects::Root obj = Atlas::Objects::Factories::instance()->createObject(me->m_obj->asMap());
         RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
         if (!ent.isValid()) {
