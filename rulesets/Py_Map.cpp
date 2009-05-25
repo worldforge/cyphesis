@@ -289,11 +289,6 @@ static void Map_dealloc(PyMap *self)
     PyObject_Free(self);
 }
 
-static PyObject * Map_getattr(PyMap *self, char *name)
-{
-    return Py_FindMethod(Map_methods, (PyObject *)self, name);
-}
-
 static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
 {
     Script ** s = new Script*;
