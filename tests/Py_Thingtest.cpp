@@ -31,9 +31,9 @@ int main()
     assert(PyRun_SimpleString("LocatedEntity()") == -1);
     assert(PyRun_SimpleString("le=LocatedEntity('1')") == 0);
     assert(PyRun_SimpleString("le.as_entity()") == 0);
-    // assert(PyRun_SimpleString("print le.type") == 0);
+    assert(PyRun_SimpleString("print le.type") == -1);
     assert(PyRun_SimpleString("print le.location") == 0);
-    // assert(PyRun_SimpleString("print le.contains") == 0);
+    assert(PyRun_SimpleString("print le.contains") == 0);
 
     shutdown_python_api();
     return 0;
