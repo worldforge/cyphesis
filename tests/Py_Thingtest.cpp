@@ -47,15 +47,23 @@ int main()
     assert(PyRun_SimpleString("le.send_world(Operation('get'))") == -1);
     assert(PyRun_SimpleString("print le.get_task()") == -1);
     assert(PyRun_SimpleString("print le.type") == -1);
+    assert(PyRun_SimpleString("print le.foo_operation") == -1);
     assert(PyRun_SimpleString("print le.location") == 0);
     assert(PyRun_SimpleString("print le.contains") == 0);
+    // assert(PyRun_SimpleString("le.foo=1") == 0);
+    // assert(PyRun_SimpleString("le.foo='1'") == 0);
+    // assert(PyRun_SimpleString("le.foo=[1]") == 0);
+    // assert(PyRun_SimpleString("le.foo=['1']") == 0);
+    // assert(PyRun_SimpleString("le.foo={'foo': 1, 'bar': '1'}") == 0);
 
     assert(PyRun_SimpleString("Thing()") == -1);
     assert(PyRun_SimpleString("t=Thing('1')") == 0);
     assert(PyRun_SimpleString("t.as_entity()") == 0);
     assert(PyRun_SimpleString("t.send_world(Operation('get'))") == 0);
+    assert(PyRun_SimpleString("t.send_world('get')") == -1);
     assert(PyRun_SimpleString("print t.get_task()") == -1);
     assert(PyRun_SimpleString("print t.type") == -1);
+    assert(PyRun_SimpleString("print t.foo_operation") == -1);
     assert(PyRun_SimpleString("print t.location") == 0);
     assert(PyRun_SimpleString("print t.contains") == 0);
 
@@ -64,7 +72,10 @@ int main()
     assert(PyRun_SimpleString("c.as_entity()") == 0);
     assert(PyRun_SimpleString("c.send_world(Operation('get'))") == 0);
     assert(PyRun_SimpleString("print c.get_task()") == 0);
+    assert(PyRun_SimpleString("print c.set_task()") == -1);
+    assert(PyRun_SimpleString("print c.clear_task()") == 0);
     assert(PyRun_SimpleString("print c.type") == -1);
+    assert(PyRun_SimpleString("print c.foo_operation") == -1);
     assert(PyRun_SimpleString("print c.location") == 0);
     assert(PyRun_SimpleString("print c.contains") == 0);
 
