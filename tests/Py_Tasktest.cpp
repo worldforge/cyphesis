@@ -28,6 +28,34 @@ int main()
     init_python_api();
 
     assert(PyRun_SimpleString("from server import Task") == 0);
+    assert(PyRun_SimpleString("Task()") == -1);
+    assert(PyRun_SimpleString("Task(1)") == -1);
+    assert(PyRun_SimpleString("Task('1')") == -1);
+    assert(PyRun_SimpleString("from server import Character") == 0);
+    assert(PyRun_SimpleString("c=Character('1')") == 0);
+    assert(PyRun_SimpleString("t=Task(c)") == 0);
+    assert(PyRun_SimpleString("print t.character") == 0);
+    assert(PyRun_SimpleString("print t.progress") == 0);
+    assert(PyRun_SimpleString("print t.rate") == 0);
+    assert(PyRun_SimpleString("print t.foo") == -1);
+    assert(PyRun_SimpleString("t.progress = 0") == 0);
+    assert(PyRun_SimpleString("t.progress = 0.5") == 0);
+    assert(PyRun_SimpleString("t.progress = '1'") == -1);
+    assert(PyRun_SimpleString("t.rate = 0") == 0);
+    assert(PyRun_SimpleString("t.rate = 0.5") == 0);
+    assert(PyRun_SimpleString("t.rate = '1'") == -1);
+    assert(PyRun_SimpleString("t.foo = 1") == 0);
+    assert(PyRun_SimpleString("t.foo = 1.1") == 0);
+    assert(PyRun_SimpleString("t.foo = '1'") == 0);
+    assert(PyRun_SimpleString("print t.foo") == 0);
+    assert(PyRun_SimpleString("print t.obsolete()") == 0);
+    assert(PyRun_SimpleString("print t.count()") == 0);
+    assert(PyRun_SimpleString("print t.new_tick()") == 0);
+    assert(PyRun_SimpleString("print t.next_tick(1)") == 0);
+    assert(PyRun_SimpleString("print t.next_tick(1.1)") == 0);
+    assert(PyRun_SimpleString("print t.next_tick('1')") == -1);
+    assert(PyRun_SimpleString("t.irrelevant()") == 0);
+    assert(PyRun_SimpleString("print t.obsolete()") == 0);
 
     shutdown_python_api();
     return 0;
