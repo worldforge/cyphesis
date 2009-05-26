@@ -28,6 +28,26 @@ int main()
     init_python_api();
 
     assert(PyRun_SimpleString("from server import Mind") == 0);
+    assert(PyRun_SimpleString("Mind()") == -1);
+    assert(PyRun_SimpleString("Mind(1)") == -1);
+    assert(PyRun_SimpleString("Mind('s')") == -1);
+    assert(PyRun_SimpleString("m=Mind('1')") == 0);
+    assert(PyRun_SimpleString("print m.as_entity()") == 0);
+    assert(PyRun_SimpleString("print m.foo_operation()") == -1);
+    assert(PyRun_SimpleString("print m.id") == 0);
+    assert(PyRun_SimpleString("print m.type") == -1);
+    assert(PyRun_SimpleString("print m.map") == 0);
+    assert(PyRun_SimpleString("print m.location") == 0);
+    assert(PyRun_SimpleString("print m.time") == 0);
+    assert(PyRun_SimpleString("print m.contains") == 0);
+    assert(PyRun_SimpleString("print m.foo") == -1);
+    assert(PyRun_SimpleString("m.map=1") == -1);
+    assert(PyRun_SimpleString("m.foo=1") == 0);
+    assert(PyRun_SimpleString("m.foo=1.1") == 0);
+    assert(PyRun_SimpleString("m.foo='1'") == 0);
+    assert(PyRun_SimpleString("print m.foo") == 0);
+    assert(PyRun_SimpleString("m.bar=[1]") == 0);
+    assert(PyRun_SimpleString("m.baz={'foo': 1}") == 0);
 
     shutdown_python_api();
     return 0;
