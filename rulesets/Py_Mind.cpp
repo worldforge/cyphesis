@@ -29,6 +29,7 @@
 #include "PythonWrapper.h"
 #include "BaseMind.h"
 
+#include "common/id.h"
 #include "common/TypeNode.h"
 
 using Atlas::Message::Element;
@@ -83,6 +84,10 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
         return (PyObject *)PyString_FromString(self->m_mind->getId().c_str());
     }
     if (strcmp(name, "type") == 0) {
+        if (self->m_mind->getType() == NULL) {
+            PyErr_SetString(PyExc_AttributeError, name);
+            return NULL;
+        }
         PyObject * list = PyList_New(0);
         if (list == NULL) {
             return NULL;
@@ -155,6 +160,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
     }
 #endif // NDEBUG
     if (strcmp(name, "map") == 0) {
+        PyErr_SetString(PyExc_RuntimeError, "Setting map on mind is forbidden");
         return -1;
     }
     LocatedEntity * entity = self->m_mind;
@@ -199,6 +205,17 @@ static int Mind_compare(PyMind *self, PyMind *other)
 
 static int Mind_init(PyMind * self, PyObject * args, PyObject * kwds)
 {
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return -1;
+    }
+    long intId = integerId(id);
+    if (intId == -1L) {
+        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+        return -1;
+    }
+    self->m_mind = new BaseMind(id, intId);
     return 0;
 }
 
