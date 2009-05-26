@@ -194,6 +194,22 @@ static int Task_compare(PyTask *self, PyTask *other)
 
 static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
 {
+    PyObject * arg;
+    if (!PyArg_ParseTuple(args, "O", &arg)) {
+        return -1;
+    }
+    if (!PyCharacter_Check(arg)) {
+            PyErr_SetString(PyExc_TypeError, "Task requires a character");
+            return -1;
+    }
+    PyCharacter * character = (PyCharacter *)arg;
+#ifndef NDEBUG
+    if (character->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+        return NULL;
+    }
+#endif // NDEBUG
+    self->m_task = new TaskScript(*character->m_entity);
     return 0;
 }
 
