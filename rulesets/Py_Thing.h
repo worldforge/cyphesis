@@ -60,7 +60,9 @@ extern PyTypeObject PyLocatedEntity_Type;
 extern PyTypeObject PyEntity_Type;
 extern PyTypeObject PyCharacter_Type;
 
+#define PyLocatedEntity_Check(_o) ((_o)->ob_type == &PyLocatedEntity_Type)
 #define PyEntity_Check(_o) ((_o)->ob_type == &PyEntity_Type)
+#define PyCharacter_Check(_o) ((_o)->ob_type == &PyCharacter_Type)
 
 PyObject * wrapEntity(LocatedEntity * entity);
 PyLocatedEntity * newPyLocatedEntity();
