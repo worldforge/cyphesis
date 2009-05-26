@@ -1,3 +1,6 @@
+Look through dynamic casts and consider when it would be cleaner to
+extend the interface in the base class.
+
 Go through Python types sorting out where tp_methods can be used.
 Sort out weak references for Entity and related wrappers,
 Move Location into server, and isLocation somwhere else.
