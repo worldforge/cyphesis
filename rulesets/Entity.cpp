@@ -261,9 +261,8 @@ void Entity::destroy()
     // are broadcast ops left that we have not yet sent.
 
     if (loc_contains.empty()) {
-        Entity * loc = dynamic_cast<Entity *>(m_location.m_loc);
         // FIXME Do we need to call onUpdated() on the parent entity?
-        loc->onUpdated();
+        m_location.m_loc->onUpdated();
     }
     m_flags |= entity_destroyed;
     destroyed.emit();
