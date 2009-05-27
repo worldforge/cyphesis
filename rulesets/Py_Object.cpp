@@ -40,7 +40,7 @@ static const bool debug_flag = false;
  * Beginning of Object methods section.
  */
 
-static PyObject* Object_get_name(PyMessageElement * self)
+static PyObject* Message_get_name(PyMessageElement * self)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -55,8 +55,8 @@ static PyObject* Object_get_name(PyMessageElement * self)
  * Object methods structure.
  */
 
-static PyMethodDef Object_methods[] = {
-        {"get_name",    (PyCFunction)Object_get_name,  METH_NOARGS},
+static PyMethodDef Message_methods[] = {
+        {"get_name",    (PyCFunction)Message_get_name,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 
@@ -64,7 +64,7 @@ static PyMethodDef Object_methods[] = {
  * Beginning of Object standard methods section.
  */
 
-static void Object_dealloc(PyMessageElement *self)
+static void Message_dealloc(PyMessageElement *self)
 {
     if (self->m_obj != NULL) {
         delete self->m_obj;
@@ -72,7 +72,7 @@ static void Object_dealloc(PyMessageElement *self)
     PyObject_Free(self);
 }
 
-static PyObject * Object_getattr(PyMessageElement *self, char *name)
+static PyObject * Message_getattr(PyMessageElement *self, char *name)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -87,10 +87,10 @@ static PyObject * Object_getattr(PyMessageElement *self, char *name)
             return MessageElement_asPyObject(I->second);
         }
     }
-    return Py_FindMethod(Object_methods, (PyObject *)self, name);
+    return Py_FindMethod(Message_methods, (PyObject *)self, name);
 }
 
-static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
+static int Message_setattr( PyMessageElement *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -115,7 +115,7 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
     return -1;
 }
 
-static int Object_init(PyMessageElement * self, PyObject * args, PyObject * kwds)
+static int Message_init(PyMessageElement * self, PyObject * args, PyObject * kwds)
 {
     PyObject * arg = 0;
     if (!PyArg_ParseTuple(args, "|O", &arg)) {
@@ -132,7 +132,7 @@ static int Object_init(PyMessageElement * self, PyObject * args, PyObject * kwds
     return 0;
 }
 
-static PyObject * Object_new(PyTypeObject * type, PyObject *, PyObject *)
+static PyObject * Message_new(PyTypeObject * type, PyObject *, PyObject *)
 {
     PyMessageElement * self = (PyMessageElement *)type->tp_alloc(type, 0);
     return (PyObject *)self;
@@ -145,10 +145,10 @@ PyTypeObject PyMessageElement_Type = {
         sizeof(PyMessageElement),       /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
-        (destructor)Object_dealloc,     /*tp_dealloc*/
+        (destructor)Message_dealloc,    /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Object_getattr,    /*tp_getattr*/
-        (setattrfunc)Object_setattr,    /*tp_setattr*/
+        (getattrfunc)Message_getattr,   /*tp_getattr*/
+        (setattrfunc)Message_setattr,   /*tp_setattr*/
         0,                              /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -161,7 +161,7 @@ PyTypeObject PyMessageElement_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Message objects",             // tp_doc
+        "Message objects",              // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
@@ -176,9 +176,9 @@ PyTypeObject PyMessageElement_Type = {
         0,                              // tp_descr_get
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
-        (initproc)Object_init,          // tp_init
+        (initproc)Message_init,         // tp_init
         0,                              // tp_alloc
-        Object_new,                     // tp_new
+        Message_new,                    // tp_new
 };
 
 /*
