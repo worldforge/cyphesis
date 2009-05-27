@@ -40,7 +40,7 @@ static const bool debug_flag = false;
  * Beginning of Object methods section.
  */
 
-static PyObject* Message_get_name(PyMessageElement * self)
+static PyObject* Message_get_name(PyMessage * self)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -64,7 +64,7 @@ static PyMethodDef Message_methods[] = {
  * Beginning of Object standard methods section.
  */
 
-static void Message_dealloc(PyMessageElement *self)
+static void Message_dealloc(PyMessage *self)
 {
     if (self->m_obj != NULL) {
         delete self->m_obj;
@@ -72,7 +72,7 @@ static void Message_dealloc(PyMessageElement *self)
     PyObject_Free(self);
 }
 
-static PyObject * Message_getattr(PyMessageElement *self, char *name)
+static PyObject * Message_getattr(PyMessage *self, char *name)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -90,7 +90,7 @@ static PyObject * Message_getattr(PyMessageElement *self, char *name)
     return Py_FindMethod(Message_methods, (PyObject *)self, name);
 }
 
-static int Message_setattr( PyMessageElement *self, char *name, PyObject *v)
+static int Message_setattr( PyMessage *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -115,7 +115,7 @@ static int Message_setattr( PyMessageElement *self, char *name, PyObject *v)
     return -1;
 }
 
-static int Message_init(PyMessageElement * self, PyObject * args, PyObject * kwds)
+static int Message_init(PyMessage * self, PyObject * args, PyObject * kwds)
 {
     PyObject * arg = 0;
     if (!PyArg_ParseTuple(args, "|O", &arg)) {
@@ -134,15 +134,15 @@ static int Message_init(PyMessageElement * self, PyObject * args, PyObject * kwd
 
 static PyObject * Message_new(PyTypeObject * type, PyObject *, PyObject *)
 {
-    PyMessageElement * self = (PyMessageElement *)type->tp_alloc(type, 0);
+    PyMessage * self = (PyMessage *)type->tp_alloc(type, 0);
     return (PyObject *)self;
 }
 
-PyTypeObject PyMessageElement_Type = {
+PyTypeObject PyMessage_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "atlas.Message",                /*tp_name*/
-        sizeof(PyMessageElement),       /*tp_basicsize*/
+        sizeof(PyMessage),       /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Message_dealloc,    /*tp_dealloc*/
@@ -185,17 +185,17 @@ PyTypeObject PyMessageElement_Type = {
  * Beginning of Object creation functions section.
  */
 
-PyMessageElement * newPyMessageElement()
+PyMessage * newPyMessage()
 {
 #if 0
-    PyMessageElement * self;
-    self = PyObject_NEW(PyMessageElement, &PyMessageElement_Type);
+    PyMessage * self;
+    self = PyObject_NEW(PyMessage, &PyMessage_Type);
     if (self == NULL) {
         return NULL;
     }
     return self;
 #else
-    return (PyMessageElement *)PyMessageElement_Type.tp_new(&PyMessageElement_Type, 0, 0);
+    return (PyMessage *)PyMessage_Type.tp_new(&PyMessage_Type, 0, 0);
 #endif
 }
 
@@ -206,11 +206,11 @@ PyMessageElement * newPyMessageElement()
 static PyObject * MapType_asPyObject(const MapType & map)
 {
     PyObject * args_pydict = PyDict_New();
-    PyMessageElement * item;
+    PyMessage * item;
     MapType::const_iterator Iend = map.end();
     for (MapType::const_iterator I = map.begin(); I != Iend; ++I) {
         const std::string & key = I->first;
-        item = newPyMessageElement();
+        item = newPyMessage();
         if (item == NULL) {
             PyErr_SetString(PyExc_MemoryError,"error creating map");
             return NULL;
@@ -227,10 +227,10 @@ static PyObject * ListType_asPyObject(const ListType & list)
 {
     PyObject * args_pylist = PyList_New(list.size());
     int j = 0;
-    PyMessageElement * item;
+    PyMessage * item;
     ListType::const_iterator Iend = list.end();
     for (ListType::const_iterator I = list.begin(); I != Iend; ++I, ++j) {
-        item = newPyMessageElement();
+        item = newPyMessage();
         if (item == NULL) {
             PyErr_SetString(PyExc_MemoryError,"error creating list");
             return NULL;
@@ -272,11 +272,11 @@ PyObject * MessageElement_asPyObject(const Element & obj)
 static Element PyListObject_asElement(PyObject * list)
 {
     ListType argslist;
-    PyMessageElement * item;
+    PyMessage * item;
     int len = PyList_Size(list);
     for(int i = 0; i < len; i++) {
-        item = (PyMessageElement *)PyList_GetItem(list, i);
-        if (PyMessageElement_Check(item)) {
+        item = (PyMessage *)PyList_GetItem(list, i);
+        if (PyMessage_Check(item)) {
             argslist.push_back(*(item->m_obj));
         } else {
             Element o;
@@ -294,13 +294,13 @@ static Element PyListObject_asElement(PyObject * list)
 static Element PyDictObject_asElement(PyObject * dict)
 {
     MapType argsmap;
-    PyMessageElement * item;
+    PyMessage * item;
     PyObject * keys = PyDict_Keys(dict);
     PyObject * vals = PyDict_Values(dict);
     for(int i = 0; i < PyDict_Size(dict); i++) {
         PyObject * key = PyList_GetItem(keys, i);
-        item = (PyMessageElement *)PyList_GetItem(vals, i);
-        if (PyMessageElement_Check(item)) {
+        item = (PyMessage *)PyList_GetItem(vals, i);
+        if (PyMessage_Check(item)) {
             argsmap[PyString_AsString(key)] = *(item->m_obj);
         } else {
             if (PyObject_asMessageElement((PyObject*)item, argsmap[PyString_AsString(key)]) != 0) {
@@ -356,8 +356,8 @@ int PyObject_asMessageElement(PyObject * o, Element & res, bool simple)
         res = list;
         return 0;
     }
-    if (PyMessageElement_Check(o)) {
-        PyMessageElement * obj = (PyMessageElement *)o;
+    if (PyMessage_Check(o)) {
+        PyMessage * obj = (PyMessage *)o;
         res = *(obj->m_obj);
         return 0;
     }

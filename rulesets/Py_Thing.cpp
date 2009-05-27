@@ -46,7 +46,7 @@ static PyObject * Entity_as_entity(PyLocatedEntity * self)
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * ret = newPyMessageElement();
+    PyMessage * ret = newPyMessage();
     if (ret == NULL) {
         return NULL;
     }

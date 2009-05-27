@@ -520,11 +520,11 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(atlas, "Location", (PyObject *)&PyLocation_Type);
-    if (PyType_Ready(&PyMessageElement_Type) < 0) {
+    if (PyType_Ready(&PyMessage_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Message wrapper type");
         return;
     }
-    PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessageElement_Type);
+    PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessage_Type);
 
     PyObject * physics = Py_InitModule("physics", physics_methods);
     if (physics == NULL) {

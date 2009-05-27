@@ -175,8 +175,8 @@ static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
                     self->coords[i] = (float)PyInt_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     self->coords[i] = PyFloat_AsDouble(item);
-                } else if (PyMessageElement_Check(item)) {
-                    PyMessageElement * mitem = (PyMessageElement*)item;
+                } else if (PyMessage_Check(item)) {
+                    PyMessage * mitem = (PyMessage*)item;
                     if (!mitem->m_obj->isNum()) {
                         PyErr_SetString(PyExc_TypeError, "Point3D() must take list of floats, or ints");
                         return -1;

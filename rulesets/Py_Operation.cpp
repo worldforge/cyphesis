@@ -191,8 +191,8 @@ static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
     ListType argslist;
     for(int i = 0; i < PyList_Size(args); i++) {
         PyObject * item = PyList_GetItem(args, i);
-        if (PyMessageElement_Check(item)) {
-            argslist.push_back(*((PyMessageElement*)item)->m_obj);
+        if (PyMessage_Check(item)) {
+            argslist.push_back(*((PyMessage*)item)->m_obj);
         } else if (PyOperation_Check(item)) {
             argslist.push_back(((PyOperation*)item)->operation->asMessage());
         } else {
@@ -298,11 +298,11 @@ static PyObject * Operation_getArgs(PyOperation * self)
     const std::vector<Root> & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
     int j = 0;
-    PyMessageElement * item;
+    PyMessage * item;
     std::vector<Root>::const_iterator Iend = args_list.end();
     std::vector<Root>::const_iterator I = args_list.begin();
     for (; I != Iend; ++I, ++j) {
-        item = newPyMessageElement();
+        item = newPyMessage();
         if (item == NULL) {
             PyErr_SetString(PyExc_TypeError,"error creating list");
             Py_DECREF(args_pylist);
@@ -374,7 +374,7 @@ static PyObject * Operation_seq_item(PyOperation * self, Py_ssize_t item)
         return (PyObject *)ret_ent;
     }
     log(WARNING, "Non operation or entity being returned as arg of operation");
-    PyMessageElement * ret = newPyMessageElement();
+    PyMessage * ret = newPyMessage();
     ret->m_obj = new Element(arg->asMessage());
     return (PyObject *)ret;
 }
@@ -635,8 +635,8 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
 
 static int addToArgs(std::vector<Root> & args, PyObject * arg)
 {
-    if (PyMessageElement_Check(arg)) {
-        PyMessageElement * obj = (PyMessageElement*)arg;
+    if (PyMessage_Check(arg)) {
+        PyMessage * obj = (PyMessage*)arg;
 #ifndef NDEBUG
         if (obj->m_obj == NULL) {
             PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in Operation constructor argument");

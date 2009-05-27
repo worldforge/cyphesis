@@ -119,8 +119,8 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "Od", &arg, &time)) {
         return NULL;
     }
-    if (PyMessageElement_Check(arg)) {
-        PyMessageElement * me = (PyMessageElement*)arg;
+    if (PyMessage_Check(arg)) {
+        PyMessage * me = (PyMessage*)arg;
         if (!me->m_obj->isMap()) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that is not a map");
             return NULL;

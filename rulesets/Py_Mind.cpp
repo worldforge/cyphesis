@@ -46,7 +46,7 @@ static PyObject * Mind_as_entity(PyMind * self)
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * ret = newPyMessageElement();
+    PyMessage * ret = newPyMessage();
     if (ret == NULL) {
         PyErr_SetString(PyExc_MemoryError, "error creating MessageElement");
         return NULL;

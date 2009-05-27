@@ -46,7 +46,7 @@ static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject *)
         return NULL;
     }
 #endif // NDEBUG
-    PyMessageElement * ret = newPyMessageElement();
+    PyMessage * ret = newPyMessage();
     if (ret == NULL) {
         return NULL;
     }

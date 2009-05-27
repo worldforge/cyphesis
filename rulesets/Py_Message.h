@@ -30,17 +30,17 @@ typedef struct {
     PyObject_HEAD
     /// \brief Atlas::Message::Element object handled by this wrapper
     Atlas::Message::Element * m_obj;
-} PyMessageElement;
+} PyMessage;
 
-extern PyTypeObject PyMessageElement_Type;
+extern PyTypeObject PyMessage_Type;
 
-#define PyMessageElement_Check(_o) ((_o)->ob_type == &PyMessageElement_Type)
+#define PyMessage_Check(_o) ((_o)->ob_type == &PyMessage_Type)
 
 //
 // Object creation function.
 //
 
-PyMessageElement * newPyMessageElement();
+PyMessage * newPyMessage();
 
 //
 // Utility functions to munge between Object related types and python types
