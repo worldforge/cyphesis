@@ -659,6 +659,8 @@ void init_python_api()
         log(CRITICAL, "Python init failed to ready World wrapper type");
         return;
     }
+    PyModule_AddObject(server, "World", (PyObject *)&PyWorld_Type);
+
     // PyWorldTime_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyWorldTime_Type) < 0) {
         log(CRITICAL, "Python init failed to ready WorldTime wrapper type");
