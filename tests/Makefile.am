@@ -33,7 +33,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
                  Py_Thingtest Py_Maptest Py_Mindtest Py_Tasktest \
-                 Py_Worldtest
+                 Py_Worldtest Py_Messagetest
 
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
@@ -814,6 +814,17 @@ Py_Tasktest_LDADD = \
 
 Py_Worldtest_SOURCES = Py_Worldtest.cpp
 Py_Worldtest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+Py_Messagetest_SOURCES = Py_Messagetest.cpp
+Py_Messagetest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
