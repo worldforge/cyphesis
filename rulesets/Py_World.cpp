@@ -62,11 +62,6 @@ static void World_dealloc(PyWorld *self)
     PyObject_Free(self);
 }
 
-static PyObject * World_getattr(PyWorld *self, char *name)
-{
-    return Py_FindMethod(World_methods, (PyObject *)self, name);
-}
-
 static int World_compare(PyWorld * self, PyObject * other)
 {
     if (PyWorld_Check(other)) {
@@ -98,7 +93,7 @@ PyTypeObject PyWorld_Type = {
         // methods
         (destructor)World_dealloc,      // tp_dealloc
         0,                              // tp_print
-        (getattrfunc)World_getattr,     // tp_getattr
+        0,                              // tp_getattr
         0,                              // tp_setattr
         (cmpfunc)World_compare,         // tp_compare
         0,                              // tp_repr
@@ -119,7 +114,7 @@ PyTypeObject PyWorld_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        World_methods,                  // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
