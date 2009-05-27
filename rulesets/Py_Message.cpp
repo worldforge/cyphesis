@@ -269,7 +269,7 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     return ret;
 }
 
-static Element PyListObject_asElement(PyObject * list)
+static int PyListObject_asElement(PyObject * list, Element & res)
 {
     ListType argslist;
     PyMessage * item;
@@ -284,14 +284,15 @@ static Element PyListObject_asElement(PyObject * list)
                 argslist.push_back(o);
             } else {
                 debug( std::cout << "Python to atlas conversion failed on element " << i << " of list" << std::endl << std::flush; );
-                return Element();
+                return -1;
             }
         }
     }
-    return argslist;
+    res = argslist;
+    return 0;
 }
 
-static Element PyDictObject_asElement(PyObject * dict)
+static int PyDictObject_asElement(PyObject * dict, Element & res)
 {
     MapType argsmap;
     PyMessage * item;
@@ -305,13 +306,14 @@ static Element PyDictObject_asElement(PyObject * dict)
         } else {
             if (PyObject_asMessageElement((PyObject*)item, argsmap[PyString_AsString(key)]) != 0) {
                 debug( std::cout << "Python to atlas conversion failed on element " << PyString_AsString(key) << " of map" << std::endl << std::flush; );
-                return Element();
+                return -1;
             }
         }
     }
     Py_DECREF(keys);
     Py_DECREF(vals);
-    return argsmap;
+    res = argsmap;
+    return 0;
 }
 
 int PyObject_asMessageElement(PyObject * o, Element & res, bool simple)
@@ -334,12 +336,10 @@ int PyObject_asMessageElement(PyObject * o, Element & res, bool simple)
         return -1;
     }
     if (PyList_Check(o)) {
-        res = PyListObject_asElement(o);
-        return 0;
+        return PyListObject_asElement(o, res);
     }
     if (PyDict_Check(o)) {
-        res = PyDictObject_asElement(o);
-        return 0;
+        return PyDictObject_asElement(o, res);
     }
     if (PyTuple_Check(o)) {
         ListType list;
