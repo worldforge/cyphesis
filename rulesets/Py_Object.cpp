@@ -117,30 +117,17 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
 
 static int Object_init(PyMessageElement * self, PyObject * args, PyObject * kwds)
 {
+    PyObject * arg = 0;
+    if (!PyArg_ParseTuple(args, "|O", &arg)) {
+        return -1;
+    }
     self->m_obj = new Element();
-    size_t len = PyTuple_Size(args);
-    PyObject * item;
-    switch (len) {
-        case 0:
-            break;
-        case 1:
-            item = PyTuple_GetItem(args, 0);
-            if (PyInt_Check(item)) {
-                *self->m_obj = (float)PyInt_AsLong(item);
-            } else if (PyFloat_Check(item)) {
-                *self->m_obj = PyFloat_AsDouble(item);
-            } else if (PyMessageElement_Check(item)) {
-                PyMessageElement * mitem = (PyMessageElement*)item;
-                *self->m_obj = *mitem->m_obj;
-            } else {
-                PyErr_SetString(PyExc_TypeError, "Message must take a number");
-                return -1;
-            }
-            break;
-        default:
-            PyErr_SetString(PyExc_TypeError, "Message must take one number");
-            return -1;
-            break;
+    if (arg == 0) {
+        return 0;
+    }
+    if (PyObject_asMessageElement(arg, *self->m_obj) != 0) {
+        PyErr_SetString(PyExc_TypeError, "Message must take Atlas data");
+        return -1;
     }
     return 0;
 }
