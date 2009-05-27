@@ -56,8 +56,16 @@ int main()
     assert(PyRun_SimpleString("m.foo = 1") == -1);
     assert(PyRun_SimpleString("m=Message({})") == 0);
     assert(PyRun_SimpleString("print m.foo") == -1);
-    assert(PyRun_SimpleString("m.foo = 1") == 0);
     assert(PyRun_SimpleString("m.foo = Vector3D()") == -1);
+    assert(PyRun_SimpleString("m.foo = 1") == 0);
+    assert(PyRun_SimpleString("print m.foo") == 0);
+    assert(PyRun_SimpleString("m.foo = 1.1") == 0);
+    assert(PyRun_SimpleString("print m.foo") == 0);
+    assert(PyRun_SimpleString("m.foo = '1'") == 0);
+    assert(PyRun_SimpleString("print m.foo") == 0);
+    assert(PyRun_SimpleString("m.foo = ['1']") == 0);
+    assert(PyRun_SimpleString("print m.foo") == 0);
+    assert(PyRun_SimpleString("m.foo = {'foo': 1}") == 0);
     assert(PyRun_SimpleString("print m.foo") == 0);
 
     shutdown_python_api();
