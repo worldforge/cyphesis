@@ -45,9 +45,9 @@ int main()
     assert(PyRun_SimpleString("Message(Location())") == 0);
     assert(PyRun_SimpleString("Message(Vector3D())") == -1);
     assert(PyRun_SimpleString("Message([Message(1)])") == 0);
-    assert(PyRun_SimpleString("Message([Vector3D()])") == 0); // FIXME
+    assert(PyRun_SimpleString("Message([Vector3D()])") == -1);
     assert(PyRun_SimpleString("Message({'foo': Message(1)})") == 0);
-    assert(PyRun_SimpleString("Message({'foo': Vector3D()})") == 0); // FIXME
+    assert(PyRun_SimpleString("Message({'foo': Vector3D()})") == -1);
     assert(PyRun_SimpleString("Message(1, 1)") == -1);
 
     assert(PyRun_SimpleString("m=Message(1)") == 0);
