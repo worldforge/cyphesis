@@ -1,3 +1,6 @@
+Update Py_Message functions to remove return by value, and properly propagate
+failure. See test for FIXMEs.
+
 Look through dynamic casts and consider when it would be cleaner to
 extend the interface in the base class.
 
