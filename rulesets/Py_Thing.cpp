@@ -18,7 +18,7 @@
 // $Id$
 
 #include "Py_Thing.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 #include "Py_Vector3D.h"
 #include "Py_Point3D.h"
 #include "Py_Location.h"

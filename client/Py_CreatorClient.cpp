@@ -26,7 +26,7 @@
 #include "rulesets/Py_WorldTime.h"
 #include "rulesets/Py_Point3D.h"
 #include "rulesets/Py_Location.h"
-#include "rulesets/Py_Object.h"
+#include "rulesets/Py_Message.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Py_Map.h"
 

@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef RULESETS_PY_OBJECT_H
-#define RULESETS_PY_OBJECT_H
+#ifndef RULESETS_PY_MESSAGE_H
+#define RULESETS_PY_MESSAGE_H
 
 #include <Python.h>
 
@@ -49,4 +49,4 @@ PyMessageElement * newPyMessageElement();
 PyObject * MessageElement_asPyObject(const Atlas::Message::Element & obj);
 int PyObject_asMessageElement(PyObject * o, Atlas::Message::Element & res, bool simple = false);
 
-#endif // RULESETS_PY_OBJECT_H
+#endif // RULESETS_PY_MESSAGE_H

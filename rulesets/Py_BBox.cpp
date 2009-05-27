@@ -20,7 +20,7 @@
 #include "Py_BBox.h"
 
 #include "Py_Vector3D.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 
 static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
 {

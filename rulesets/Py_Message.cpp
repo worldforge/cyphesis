@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "Py_Object.h"
+#include "Py_Message.h"
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 #include "Py_Location.h"

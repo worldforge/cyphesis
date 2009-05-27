@@ -23,7 +23,7 @@
 #include "Python_Script_Utils.h"
 
 #include "Py_BBox.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 #include "Py_Thing.h"
 #include "Py_Mind.h"
 #include "Py_Map.h"

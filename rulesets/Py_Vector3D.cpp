@@ -20,7 +20,7 @@
 #include "Py_Vector3D.h"
 
 #include "Py_Quaternion.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 
 static PyObject * Vector3D_dot(PyVector3D * self, PyVector3D * other)
 {

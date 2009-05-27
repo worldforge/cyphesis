@@ -18,7 +18,7 @@
 // $Id$
 
 #include "Py_RootEntity.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 #include "Py_Location.h"
 
 #include "common/log.h"

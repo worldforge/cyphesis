@@ -64,7 +64,7 @@ librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MemEntity.cpp MemEntity.h \
 			   MemMap.cpp MemMap.h
 
-libscriptpython_a_SOURCES = Py_Object.cpp Py_Object.h \
+libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_Operation.cpp Py_Operation.h \
 			    Py_RootEntity.cpp Py_RootEntity.h \
 			    Py_Oplist.cpp Py_Oplist.h \

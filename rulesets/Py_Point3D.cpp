@@ -20,7 +20,7 @@
 #include "Py_Point3D.h"
 
 #include "Py_Vector3D.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 
 static PyObject * Point3D_mag(PyPoint3D * self)
 {

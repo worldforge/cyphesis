@@ -22,7 +22,7 @@
 #include "Py_Thing.h"
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
-#include "Py_Object.h"
+#include "Py_Message.h"
 
 #include "MemEntity.h"
 #include "MemMap.h"
