@@ -1,6 +1,3 @@
-Update Py_Message functions to remove return by value, and properly propagate
-failure. See test for FIXMEs.
-
 Look through dynamic casts and consider when it would be cleaner to
 extend the interface in the base class.
 
@@ -24,8 +21,6 @@ so the physics layer is separated, and can only be talked to by RPC?
 
 Fix Operation_seq_item to use index rather than search, as we can now index
 it. setArgs() also needs fixing.
-
-Sort out Py_Object as modern style type that can actually be instanced.
 
 WorldTime and DateTime need to be purely data driven
 
