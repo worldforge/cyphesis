@@ -170,8 +170,8 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
         //entity->attributes.erase(attr);
         //return 0;
     //}
-    Element obj = PyObject_asMessageElement(v, true);
-    if (!obj.isNone()) {
+    Element obj;
+    if (PyObject_asMessageElement(v, obj, true) == 0) {
         assert(!obj.isMap() && !obj.isList());
         // In the Python wrapper for Entity in Py_Thing.cpp notices are issued
         // for some types.

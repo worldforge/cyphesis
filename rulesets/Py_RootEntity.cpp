@@ -123,8 +123,8 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
         self->entity->setName(PyString_AsString(v));
         return 0;
     }
-    Element atlas_val = PyObject_asMessageElement(v);
-    if (!atlas_val.isNone()) {
+    Element atlas_val;
+    if (PyObject_asMessageElement(v, atlas_val) == 0) {
         if (atlas_val.isMap()) {
             log(NOTICE, String::compose("Setting \"%1\" as map attribute "
                                         "on RootEntity.", name));
@@ -231,8 +231,8 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
                 self->entity->setParents(std::list<std::string>(1, PyString_AsString(val)));
                 self->entity->setObjtype("obj");
             } else {
-                Element val_obj = PyObject_asMessageElement(val);
-                if (val_obj.getType() == Element::TYPE_NONE) {
+                Element val_obj;
+                if (PyObject_asMessageElement(val, val_obj) != 0) {
                     Py_DECREF(keys);
                     Py_DECREF(vals);
                     PyErr_SetString(PyExc_TypeError, "Arg has no type.");

@@ -102,8 +102,8 @@ static int Object_setattr( PyMessageElement *self, char *name, PyObject *v)
                                  name));
     if (self->m_obj->isMap()) {
         MapType & omap = self->m_obj->asMap();
-        Element v_obj = PyObject_asMessageElement(v);
-        if (v_obj.getType() != Element::TYPE_NONE) {
+        Element v_obj;
+        if (PyObject_asMessageElement(v, v_obj) == 0) {
             omap[name] = v_obj;
             return 0;
         } else {
@@ -292,8 +292,8 @@ static Element PyListObject_asElement(PyObject * list)
         if (PyMessageElement_Check(item)) {
             argslist.push_back(*(item->m_obj));
         } else {
-            Element o = PyObject_asMessageElement((PyObject*)item);
-            if (o.getType() != Element::TYPE_NONE) {
+            Element o;
+            if (PyObject_asMessageElement((PyObject*)item, o) == 0) {
                 argslist.push_back(o);
             } else {
                 debug( std::cout << "Python to atlas conversion failed on element " << i << " of list" << std::endl << std::flush; );
@@ -316,10 +316,7 @@ static Element PyDictObject_asElement(PyObject * dict)
         if (PyMessageElement_Check(item)) {
             argsmap[PyString_AsString(key)] = *(item->m_obj);
         } else {
-            Element o = PyObject_asMessageElement((PyObject*)item);
-            if (o.getType() != Element::TYPE_NONE) {
-                argsmap[PyString_AsString(key)] = o;
-            } else {
+            if (PyObject_asMessageElement((PyObject*)item, argsmap[PyString_AsString(key)]) != 0) {
                 debug( std::cout << "Python to atlas conversion failed on element " << PyString_AsString(key) << " of map" << std::endl << std::flush; );
                 return Element();
             }
@@ -330,66 +327,75 @@ static Element PyDictObject_asElement(PyObject * dict)
     return argsmap;
 }
 
-Element PyObject_asMessageElement(PyObject * o, bool simple)
+int PyObject_asMessageElement(PyObject * o, Element & res, bool simple)
 {
     if (PyInt_Check(o)) {
-        return Element((int)PyInt_AsLong(o));
+        res = (int)PyInt_AsLong(o);
+        return 0;
     }
     if (PyFloat_Check(o)) {
-        return Element(PyFloat_AsDouble(o));
+        res = PyFloat_AsDouble(o);
+        return 0;
     }
     if (PyString_Check(o)) {
-        return Element(PyString_AsString(o));
+        res = PyString_AsString(o);
+        return 0;
     }
     // If the caller has specified that it is not interested in
     // map or list results, we should just return now.
     if (simple) {
-        return Element();
+        return -1;
     }
     if (PyList_Check(o)) {
-        return PyListObject_asElement(o);
+        res = PyListObject_asElement(o);
+        return 0;
     }
     if (PyDict_Check(o)) {
-        return PyDictObject_asElement(o);
+        res = PyDictObject_asElement(o);
+        return 0;
     }
     if (PyTuple_Check(o)) {
         ListType list;
         int i, size = PyTuple_Size(o);
         for(i = 0; i < size; i++) {
-            Element item = PyObject_asMessageElement(PyTuple_GetItem(o, i));
-            if (item.getType() != Element::TYPE_NONE) {
+            Element item;
+            if (PyObject_asMessageElement(PyTuple_GetItem(o, i), item) == 0) {
                 list.push_back(item);
             } else {
                 debug( std::cout << "Python to atlas conversion failed on element " << i << " of tuple" << std::endl << std::flush; );
-                return Element();
+                return -1;
             }
         }
-        return Element(list);
+        res = list;
+        return 0;
     }
     if (PyMessageElement_Check(o)) {
         PyMessageElement * obj = (PyMessageElement *)o;
-        return *(obj->m_obj);
+        res = *(obj->m_obj);
+        return 0;
     }
     if (PyOperation_Check(o)) {
         PyOperation * op = (PyOperation *)o;
-        return op->operation->asMessage();
+        res = op->operation->asMessage();
+        return 0;
     }
     if (PyOplist_Check(o)) {
         PyOplist * opl = (PyOplist *)o;
-        Element msg = ListType();
-        ListType & entlist = msg.asList();
+        res = ListType();
+        ListType & entlist = res.asList();
         const OpVector & ops = *opl->ops;
         OpVector::const_iterator Iend = ops.end();
         for (OpVector::const_iterator I = ops.begin(); I != Iend; ++I) {
             entlist.push_back((*I)->asMessage());
         }
-        return msg;
+        return 0;
     }
     if (PyLocation_Check(o)) {
         PyLocation * loc = (PyLocation *)o;
         MapType _map;
         loc->location->addToMessage(_map);
-        return Element(_map);
+        res = _map;
+        return 0;
     }
-    return Element();
+    return -1;
 }

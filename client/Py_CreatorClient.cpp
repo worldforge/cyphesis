@@ -277,8 +277,8 @@ static int CreatorClient_setattr(PyCreatorClient *self, char *name, PyObject *v)
         //thing->attributes.erase(attr);
         //return 0;
     //}
-    Element obj = PyObject_asMessageElement(v);
-    if (!obj.isNone() && !obj.isMap() && !obj.isList()) {
+    Element obj;
+    if (PyObject_asMessageElement(v, obj) == 0 && !obj.isMap() && !obj.isList()) {
         thing->setAttr(name, obj);
         return 0;
     }

@@ -277,8 +277,8 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         //entity->attributes.erase(attr);
         //return 0;
     //}
-    Element obj = PyObject_asMessageElement(v);
-    if (!obj.isNone()) {
+    Element obj;
+    if (PyObject_asMessageElement(v, obj) == 0) {
         if (obj.isMap()) {
             log(NOTICE, "Setting a map attribute on an entity from a script");
         }

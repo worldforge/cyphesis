@@ -47,6 +47,6 @@ PyMessageElement * newPyMessageElement();
 //
 
 PyObject * MessageElement_asPyObject(const Atlas::Message::Element & obj);
-Atlas::Message::Element PyObject_asMessageElement(PyObject * o, bool simple = false);
+int PyObject_asMessageElement(PyObject * o, Atlas::Message::Element & res, bool simple = false);
 
 #endif // RULESETS_PY_OBJECT_H
