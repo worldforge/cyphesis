@@ -29,10 +29,15 @@ typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 
 class LocatedEntity;
 
+/// \defgroup Scripts Script types.
+///
+/// Classes which handle scripts called by the server.
+
 /// \brief Base class for script objects attached to entities.
 ///
 /// This base class allows scripts to override operation handlers, and
 /// handlers for hooks.
+/// \ingroup Scripts
 class Script {
   public:
     Script();

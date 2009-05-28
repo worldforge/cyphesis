@@ -25,6 +25,7 @@
 #include "Script.h"
 
 /// \brief Wrapper class for entities without scripts but with wrappers
+/// \ingroup Scripts
 class PythonWrapper : public Script {
   protected:
     /// \brief Python object that wraps the entity.

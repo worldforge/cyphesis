@@ -25,6 +25,7 @@
 #include "PythonWrapper.h"
 
 /// \brief Base Script class for Python scripts
+/// \ingroup Scripts
 class PythonScript : public PythonWrapper {
   protected:
     /// \brief Python instance object which implements the script for an entity

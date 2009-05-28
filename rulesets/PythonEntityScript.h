@@ -23,6 +23,7 @@
 #include "PythonScript.h"
 
 /// \brief Script class for Python scripts attached to an Entity
+/// \ingroup Scripts
 class PythonEntityScript : public PythonScript {
   public:
     explicit PythonEntityScript(PyObject *, PyObject *);
