@@ -69,7 +69,7 @@ static void Message_dealloc(PyMessage *self)
     if (self->m_obj != NULL) {
         delete self->m_obj;
     }
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Message_getattr(PyMessage *self, char *name)
