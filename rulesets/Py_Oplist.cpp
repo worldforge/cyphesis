@@ -58,12 +58,6 @@ static void Oplist_dealloc(PyOplist *self)
     PyObject_Free(self);
 }
 
-static PyObject * Oplist_getattr(PyOplist *self, char *name)
-{
-    return Py_FindMethod(Oplist_methods, (PyObject *)self, name);
-}
-
-
 static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
 {
 #ifndef NDEBUG
@@ -226,7 +220,7 @@ PyTypeObject PyOplist_Type = {
         /* methods */
         (destructor)Oplist_dealloc,     /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Oplist_getattr,    /*tp_getattr*/
+        0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
         0,                              /*tp_compare*/
         0,                              /*tp_repr*/
@@ -247,7 +241,7 @@ PyTypeObject PyOplist_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Oplist_methods,                 // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
