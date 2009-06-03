@@ -221,21 +221,6 @@ static PyMethodDef PyErrLogger_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-static void PyLogger_dealloc(PyObject * self)
-{
-    PyObject_Free(self);
-}
-
-static PyObject * PyOutLogger_getattr(PyObject * self, char *name)
-{
-    return Py_FindMethod(PyOutLogger_methods, self, name);
-}
-
-static PyObject * PyErrLogger_getattr(PyObject * self, char *name)
-{
-    return Py_FindMethod(PyErrLogger_methods, self, name);
-}
-
 PyTypeObject PyOutLogger_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                   // ob_size
@@ -243,9 +228,9 @@ PyTypeObject PyOutLogger_Type = {
         sizeof(PyLogger),    // tp_basicsize
         0,                   // tp_itemsize
         //  methods 
-        PyLogger_dealloc,    // tp_dealloc
+        0,                   // tp_dealloc
         0,                   // tp_print
-        PyOutLogger_getattr, // tp_getattr
+        0,                   // tp_getattr
         0,                   // tp_setattr
         0,                   // tp_compare
         0,                   // tp_repr
@@ -253,6 +238,30 @@ PyTypeObject PyOutLogger_Type = {
         0,                   // tp_as_sequence
         0,                   // tp_as_mapping
         0,                   // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "OutLogger objects",            // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        PyOutLogger_methods,            // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        0,                              // tp_init
+        0,                              // tp_alloc
+        0,                              // tp_new
 };
 
 PyTypeObject PyErrLogger_Type = {
@@ -262,9 +271,9 @@ PyTypeObject PyErrLogger_Type = {
         sizeof(PyLogger),    // tp_basicsize
         0,                   // tp_itemsize
         //  methods 
-        PyLogger_dealloc,    // tp_dealloc
+        0,                   // tp_dealloc
         0,                   // tp_print
-        PyErrLogger_getattr, // tp_getattr
+        0,                   // tp_getattr
         0,                   // tp_setattr
         0,                   // tp_compare
         0,                   // tp_repr
@@ -272,6 +281,30 @@ PyTypeObject PyErrLogger_Type = {
         0,                   // tp_as_sequence
         0,                   // tp_as_mapping
         0,                   // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "ErrLogger objects",            // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        PyErrLogger_methods,            // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        0,                              // tp_init
+        0,                              // tp_alloc
+        0,                              // tp_new
 };
 
 static PyObject * Get_PyClass(const std::string & package,
@@ -451,6 +484,17 @@ void init_python_api()
 {
     Py_Initialize();
 
+    PyOutLogger_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyOutLogger_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready OutLogger wrapper type");
+        return;
+    }
+    PyErrLogger_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyErrLogger_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready ErrLogger wrapper type");
+        return;
+    }
+
     PyObject * sys_name = PyString_FromString("sys");
     PyObject * sys_module = PyImport_Import(sys_name);
     Py_DECREF(sys_name);
@@ -460,11 +504,11 @@ void init_python_api()
         return;
     }
 
-    PyObject * out_logger = (PyObject*)PyObject_NEW(PyLogger, &PyOutLogger_Type);
+    PyObject * out_logger = PyOutLogger_Type.tp_new(&PyOutLogger_Type, 0, 0);
     PyObject_SetAttrString(sys_module, "stdout", out_logger);
     Py_DECREF(out_logger);
 
-    PyObject * err_logger = (PyObject*)PyObject_NEW(PyLogger, &PyErrLogger_Type);
+    PyObject * err_logger = PyErrLogger_Type.tp_new(&PyErrLogger_Type, 0, 0);
     PyObject_SetAttrString(sys_module, "stderr", err_logger);
     Py_DECREF(err_logger);
 
