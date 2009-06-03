@@ -547,7 +547,7 @@ PyMethodDef ConstRootOperation_methods[] = {
 static void Operation_dealloc(PyOperation *self)
 {
     self->operation.~RootOperation();
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static inline PyObject * findMethod(PyOperation * self, char * name)

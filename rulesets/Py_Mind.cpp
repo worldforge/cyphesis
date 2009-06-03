@@ -64,7 +64,7 @@ static PyMethodDef Mind_methods[] = {
 static void Mind_dealloc(PyMind *self)
 {
     Py_XDECREF(self->Mind_attr);
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Mind_getattr(PyMind *self, char *name)

@@ -54,7 +54,7 @@ static void Location_dealloc(PyLocation *self)
     if (self->owner == 0 && self->location != NULL) {
         delete self->location;
     }
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Location_getattr(PyLocation *self, char *name)

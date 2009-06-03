@@ -77,7 +77,7 @@ PyMethodDef ConstRootEntity_methods[] = {
 static void RootEntity_dealloc(PyRootEntity *self)
 {
     self->entity.~RootEntity();
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)

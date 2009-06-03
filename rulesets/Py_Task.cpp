@@ -110,7 +110,7 @@ static PyMethodDef Task_methods[] = {
 static void Task_dealloc(PyTask *self)
 {
     Py_XDECREF(self->Task_attr);
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Task_getattr(PyTask *self, char *name)

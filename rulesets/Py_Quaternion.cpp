@@ -75,7 +75,7 @@ static PyMethodDef Quaternion_methods[] = {
 static void Quaternion_dealloc(PyQuaternion *self)
 {
     self->rotation.~Quaternion();
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Quaternion_getattr(PyQuaternion *self, char *name)

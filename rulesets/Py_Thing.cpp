@@ -174,7 +174,7 @@ static PyMethodDef Character_methods[] = {
 static void Entity_dealloc(PyEntity *self)
 {
     Py_XDECREF(self->Entity_attr);
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Entity_getattr(PyEntity *self, char *name)

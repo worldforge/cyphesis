@@ -55,7 +55,7 @@ static void Oplist_dealloc(PyOplist *self)
     if (self->ops != NULL) {
         delete self->ops;
     }
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)

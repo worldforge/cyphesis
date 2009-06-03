@@ -39,7 +39,7 @@ static PyMethodDef BBox_methods[] = {
 static void BBox_dealloc(PyBBox * self)
 {
     self->box.~BBox();
-    PyObject_Free(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * BBox_getattr(PyBBox *self, char *name)
