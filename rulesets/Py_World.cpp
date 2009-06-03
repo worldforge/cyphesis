@@ -57,17 +57,6 @@ static PyMethodDef World_methods[] = {
     {NULL,              NULL}           // sentinel
 };
 
-static int World_compare(PyWorld * self, PyObject * other)
-{
-    if (PyWorld_Check(other)) {
-        return 0;
-    } else if (PyEntity_Check(other)) {
-        PyEntity * other_entity = (PyEntity *)other;
-        return (&BaseWorld::instance().m_gameWorld == other_entity->m_entity) ? 0 : 1;
-    }
-    return -1;
-}
-
 static int World_init(PyWorld * self, PyObject * args, PyObject * kwds)
 {
     return 0;
@@ -90,7 +79,7 @@ PyTypeObject PyWorld_Type = {
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
-        (cmpfunc)World_compare,         // tp_compare
+        0,                              // tp_compare
         0,                              // tp_repr
         0,                              // tp_as_number
         0,                              // tp_as_sequence

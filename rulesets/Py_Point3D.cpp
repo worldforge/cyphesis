@@ -102,9 +102,6 @@ static PyObject * Point3D_getattr(PyPoint3D *self, char *name)
 
 static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
 {
-    if (!PyPoint3D_Check(other)) {
-        return -1;
-    }
     if (self->coords == other->coords) {
         return 0;
     }

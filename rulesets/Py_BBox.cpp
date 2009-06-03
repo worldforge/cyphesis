@@ -90,9 +90,6 @@ static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
 
 static int BBox_compare(PyBBox * self, PyBBox * other)
 {
-    if (!PyBBox_Check(other)) {
-        return -1;
-    }
     if (self->box == other->box) {
         return 0;
     }

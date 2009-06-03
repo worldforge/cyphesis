@@ -227,9 +227,6 @@ static int Vector3D_setattr(PyVector3D *self, char *name, PyObject *v)
 
 static int Vector3D_compare(PyVector3D * self, PyVector3D * other)
 {
-    if (!PyVector3D_Check(other)) {
-        return -1;
-    }
     if (self->coords == other->coords) {
         return 0;
     }

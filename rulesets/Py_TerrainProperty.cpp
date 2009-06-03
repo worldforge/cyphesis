@@ -101,15 +101,6 @@ static int TerrainProperty_setattr(PyTerrainProperty * self,
     return -1;
 }
 
-static int TerrainProperty_compare(PyTerrainProperty *self, PyTerrainProperty *other)
-{
-    if (self->m_entity == NULL || other->m_entity == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.compare");
-        return -1;
-    }
-    return (self->m_entity == other->m_entity) ? 0 : 1;
-}
-
 static PyObject * TerrainProperty_new(PyTypeObject * type,
                                       PyObject *,
                                       PyObject *)
@@ -142,7 +133,7 @@ PyTypeObject PyTerrainProperty_Type = {
         0,                                                // tp_print
         (getattrfunc)TerrainProperty_getattr,             // tp_getattr
         (setattrfunc)TerrainProperty_setattr,             // tp_setattr
-        (cmpfunc)TerrainProperty_compare,                 // tp_compare
+        0,                                                // tp_compare
         0,                                                // tp_repr
         0,                                                // tp_as_number
         0,                                                // tp_as_sequence
