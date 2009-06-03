@@ -4,8 +4,6 @@ extend the interface in the base class.
 Go through Python types sorting out where tp_methods can be used.
 Sort out weak references for Entity and related wrappers,
 Move Location into server, and isLocation somwhere else.
-Look at compare functions, as they are only called on objects of the
-same type, so type checks are wasted.
 
 Mind interface is pretty simple, so it should be possible to have a hive or
 herd mind at either core or python layer. One significant goal will be to
@@ -18,6 +16,11 @@ collectivism to their movement decisions.
 
 Touched on before, but why not break down clustering by the kind of computation,
 so the physics layer is separated, and can only be talked to by RPC?
+Another idea - separate the frontend with it's checks and socket handling
+from the worldprocessing code. Connection, Account, Lobby etc would all be
+handled in a frontend server with multiple processes. They share one listen
+socket, and use herd of elephents prevention to listen to sockets. The then
+send operations to a backend server which has the world processing.
 
 Fix Operation_seq_item to use index rather than search, as we can now index
 it. setArgs() also needs fixing.
