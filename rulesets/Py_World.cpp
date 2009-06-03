@@ -57,11 +57,6 @@ static PyMethodDef World_methods[] = {
     {NULL,              NULL}           // sentinel
 };
 
-static void World_dealloc(PyWorld *self)
-{
-    PyObject_Free(self);
-}
-
 static int World_compare(PyWorld * self, PyObject * other)
 {
     if (PyWorld_Check(other)) {
@@ -91,7 +86,7 @@ PyTypeObject PyWorld_Type = {
         sizeof(PyWorld),                // tp_basicsize
         0,                              // tp_itemsize
         // methods
-        (destructor)World_dealloc,      // tp_dealloc
+        0,                              // tp_dealloc
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr

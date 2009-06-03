@@ -288,11 +288,6 @@ static PyMethodDef Map_methods[] = {
     {NULL,                  NULL}           // sentinel
 };
 
-static void Map_dealloc(PyMap *self)
-{
-    PyObject_Free(self);
-}
-
 static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
 {
     Script ** s = new Script*;
@@ -314,7 +309,7 @@ PyTypeObject PyMap_Type = {
         sizeof(PyMap),                  // tp_basicsize
         0,                              // tp_itemsize
         // methods
-        (destructor)Map_dealloc,        // tp_dealloc
+        0,                              // tp_dealloc
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
