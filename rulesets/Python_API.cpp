@@ -64,16 +64,6 @@ static const bool debug_flag = false;
 /// Structure types based on the PyObject header used to wrap C++ objects
 /// in Python.
 
-/// \brief Python wrapper for C++ functions to be exposed to Python
-typedef struct {
-    PyObject_HEAD
-} FunctionObject;
-
-static void Function_dealloc(FunctionObject * self)
-{
-    PyObject_Free(self);
-}
-
 static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
 {
     if (consts::debug_level != 0) {
@@ -114,10 +104,10 @@ PyTypeObject log_debug_type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,
         "Function",
-        sizeof(FunctionObject),
+        sizeof(PyObject),
         0,
         /* methods */
-        (destructor)Function_dealloc,
+        0,
         0,              /* tp_print */
         0,              /* tp_getattr */
         0,              /* tp_setattr */
@@ -128,16 +118,39 @@ PyTypeObject log_debug_type = {
         0,              /* tp_as_mapping */
         0,              /* tp_hash */
         log_debug,      /* tp_call */
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Function objects",             // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        0,                              // tp_init
+        0,                              // tp_alloc
+        0,                              // tp_new
 };
 
 PyTypeObject log_think_type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,
         "Function",
-        sizeof(FunctionObject),
+        sizeof(PyObject),
         0,
         /* methods */
-        (destructor)Function_dealloc,
+        0,
         0,              /* tp_print */
         0,              /* tp_getattr */
         0,              /* tp_setattr */
@@ -148,20 +161,40 @@ PyTypeObject log_think_type = {
         0,              /* tp_as_mapping */
         0,              /* tp_hash */
         log_think,      /* tp_call */
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Function objects",             // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        0,                              // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        0,                              // tp_init
+        0,                              // tp_alloc
+        0,                              // tp_new
 };
 
 //////////////////////////////////////////////////////////////////////////
 // Logger replaces sys.stdout and sys.stderr so the nothing goes to output
 //////////////////////////////////////////////////////////////////////////
 
-/// \brief Python struct to handle output from python scripts
+/// \brief Python type to handle output from python scripts
 ///
-/// In instance of this struct is used to replace sys.stdout and sys.stderr
+/// In instance of this type is used to replace sys.stdout and sys.stderr
 /// in the Python interpreter so that all script output goes to the cyphesis
 /// log subsystem
-typedef struct {
-    PyObject_HEAD
-} PyLogger;
 
 static void python_log(LogLevel lvl, const char * msg)
 {
@@ -225,7 +258,7 @@ PyTypeObject PyOutLogger_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                   // ob_size
         "OutLogger",         // tp_name
-        sizeof(PyLogger),    // tp_basicsize
+        sizeof(PyObject),    // tp_basicsize
         0,                   // tp_itemsize
         //  methods 
         0,                   // tp_dealloc
@@ -268,7 +301,7 @@ PyTypeObject PyErrLogger_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                   // ob_size
         "ErrLogger",         // tp_name
-        sizeof(PyLogger),    // tp_basicsize
+        sizeof(PyObject),    // tp_basicsize
         0,                   // tp_itemsize
         //  methods 
         0,                   // tp_dealloc
@@ -475,11 +508,6 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-static PyMethodDef common_methods[] = {
-    //{"null",      null_new,                   METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
-};
-
 void init_python_api()
 {
     Py_Initialize();
@@ -598,9 +626,16 @@ void init_python_api()
     }
     PyModule_AddObject(physics, "Quaternion", (PyObject *)&PyQuaternion_Type);
 
-    PyObject * common = Py_InitModule("common", common_methods);
+    PyObject * common = Py_InitModule("common", no_methods);
     if (common == NULL) {
         log(CRITICAL, "Python init failed to create common module\n");
+        return;
+    }
+
+    log_debug_type.tp_new = PyType_GenericNew;
+    log_think_type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&log_debug_type) < 0 || PyType_Ready(&log_think_type) < 0) {
+        log(CRITICAL, "Python init failed to ready log wrapper type");
         return;
     }
 
@@ -608,10 +643,10 @@ void init_python_api()
     PyObject * log_mod = PyModule_New("log");
     PyModule_AddObject(common, "log", log_mod);
 
-    PyObject * debug = (PyObject*)PyObject_NEW(FunctionObject, &log_debug_type);
+    PyObject * debug = log_debug_type.tp_new(&log_debug_type, 0, 0);
     PyModule_AddObject(log_mod, "debug", debug);
 
-    PyObject * think = (PyObject*)PyObject_NEW(FunctionObject, &log_think_type);
+    PyObject * think = log_think_type.tp_new(&log_think_type, 0, 0);
     PyModule_AddObject(log_mod, "thinking", think);
 
     PyObject * o;
