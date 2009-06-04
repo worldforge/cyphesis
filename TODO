@@ -4,6 +4,7 @@ extend the interface in the base class.
 Go through Python types sorting out where tp_methods can be used.
 Sort out weak references for Entity and related wrappers,
 Move Location into server, and isLocation somwhere else.
+Many types have their own tp_new, but could be using _GenericNew.
 
 Mind interface is pretty simple, so it should be possible to have a hive or
 herd mind at either core or python layer. One significant goal will be to
