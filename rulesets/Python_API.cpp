@@ -544,6 +544,10 @@ void init_python_api()
         log(CRITICAL, "Python init failed to create atlas module\n");
         return;
     }
+    if (PyType_Ready(&PyConstOperation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready const Operation wrapper type");
+        return;
+    }
     if (PyType_Ready(&PyOperation_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Operation wrapper type");
         return;
@@ -606,7 +610,7 @@ void init_python_api()
 
     /// Create the common.log module
     PyObject * log_mod = PyModule_New("log");
-    PyDict_SetItemString(common_dict, "log", log_mod);
+    PyModule_AddObject(common, "log", log_mod);
 
     PyObject * debug = (PyObject*)PyObject_NEW(FunctionObject, &log_debug_type);
     PyObject_SetAttrString(log_mod, "debug", debug);
@@ -616,13 +620,11 @@ void init_python_api()
     PyObject_SetAttrString(log_mod, "thinking", think);
     Py_DECREF(think);
 
-    Py_DECREF(log_mod);
-
     PyObject * o;
 
     /// Create the common.const module
     PyObject * _const = PyModule_New("const");
-    PyDict_SetItemString(common_dict, "const", _const);
+    PyModule_AddObject(common, "const", _const);
 
     o = PyInt_FromLong(consts::debug_level);
     PyObject_SetAttrString(_const, "debug_level", o);
@@ -652,15 +654,12 @@ void init_python_api()
     PyObject_SetAttrString(_const, "epsilon", o);
     Py_DECREF(o);
 
-    Py_DECREF(_const);
-
     /// Create the common.globals module
     PyObject * globals = PyModule_New("globals");
-    PyDict_SetItemString(common_dict, "globals", globals);
+    PyModule_AddObject(common, "globals", globals);
     o = PyString_FromString(share_directory.c_str());
     PyObject_SetAttrString(globals, "share_directory", o);
     Py_DECREF(o);
-    Py_DECREF(globals);
 
     PyObject * server = Py_InitModule("server", no_methods);
     if (server == NULL) {
