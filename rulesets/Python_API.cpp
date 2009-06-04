@@ -505,12 +505,10 @@ void init_python_api()
     }
 
     PyObject * out_logger = PyOutLogger_Type.tp_new(&PyOutLogger_Type, 0, 0);
-    PyObject_SetAttrString(sys_module, "stdout", out_logger);
-    Py_DECREF(out_logger);
+    PyModule_AddObject(sys_module, "stdout", out_logger);
 
     PyObject * err_logger = PyErrLogger_Type.tp_new(&PyErrLogger_Type, 0, 0);
-    PyObject_SetAttrString(sys_module, "stderr", err_logger);
-    Py_DECREF(err_logger);
+    PyModule_AddObject(sys_module, "stderr", err_logger);
 
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
     if (sys_path != 0) {
@@ -542,6 +540,10 @@ void init_python_api()
     PyObject * atlas = Py_InitModule("atlas", atlas_methods);
     if (atlas == NULL) {
         log(CRITICAL, "Python init failed to create atlas module\n");
+        return;
+    }
+    if (PyType_Ready(&PyConstOperation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready const Operation wrapper type");
         return;
     }
     if (PyType_Ready(&PyOperation_Type) < 0) {
@@ -602,65 +604,49 @@ void init_python_api()
         return;
     }
 
-    PyObject * common_dict = PyModule_GetDict(common);
-
     /// Create the common.log module
     PyObject * log_mod = PyModule_New("log");
-    PyDict_SetItemString(common_dict, "log", log_mod);
+    PyModule_AddObject(common, "log", log_mod);
 
     PyObject * debug = (PyObject*)PyObject_NEW(FunctionObject, &log_debug_type);
-    PyObject_SetAttrString(log_mod, "debug", debug);
-    Py_DECREF(debug);
+    PyModule_AddObject(log_mod, "debug", debug);
 
     PyObject * think = (PyObject*)PyObject_NEW(FunctionObject, &log_think_type);
-    PyObject_SetAttrString(log_mod, "thinking", think);
-    Py_DECREF(think);
-
-    Py_DECREF(log_mod);
+    PyModule_AddObject(log_mod, "thinking", think);
 
     PyObject * o;
 
     /// Create the common.const module
     PyObject * _const = PyModule_New("const");
-    PyDict_SetItemString(common_dict, "const", _const);
+    PyModule_AddObject(common, "const", _const);
 
     o = PyInt_FromLong(consts::debug_level);
-    PyObject_SetAttrString(_const, "debug_level", o);
-    Py_DECREF(o);
+    PyModule_AddObject(_const, "debug_level", o);
 
     o = PyInt_FromLong(consts::debug_thinking);
-    PyObject_SetAttrString(_const, "debug_thinking", o);
-    Py_DECREF(o);
+    PyModule_AddObject(_const, "debug_thinking", o);
 
     o = PyFloat_FromDouble(consts::time_multiplier);
-    PyObject_SetAttrString(_const, "time_multiplier", o);
-    Py_DECREF(o);
+    PyModule_AddObject(_const, "time_multiplier", o);
 
     o = PyFloat_FromDouble(consts::base_velocity_coefficient);
-    PyObject_SetAttrString(_const, "base_velocity_coefficient", o);
-    Py_DECREF(o);
+    PyModule_AddObject(_const, "base_velocity_coefficient", o);
 
     o = PyFloat_FromDouble(consts::base_velocity);
-    PyObject_SetAttrString(_const, "base_velocity", o);
-    Py_DECREF(o);
+    PyModule_AddObject(_const, "base_velocity", o);
 
     o = PyFloat_FromDouble(consts::basic_tick);
-    PyObject_SetAttrString(_const, "basic_tick", o);
-    Py_DECREF(o);
+    PyModule_AddObject(_const, "basic_tick", o);
 
     o = PyFloat_FromDouble(WFMATH_EPSILON);
-    PyObject_SetAttrString(_const, "epsilon", o);
-    Py_DECREF(o);
-
-    Py_DECREF(_const);
+    PyModule_AddObject(_const, "epsilon", o);
 
     /// Create the common.globals module
     PyObject * globals = PyModule_New("globals");
-    PyDict_SetItemString(common_dict, "globals", globals);
+    PyModule_AddObject(common, "globals", globals);
+
     o = PyString_FromString(share_directory.c_str());
-    PyObject_SetAttrString(globals, "share_directory", o);
-    Py_DECREF(o);
-    Py_DECREF(globals);
+    PyModule_AddObject(globals, "share_directory", o);
 
     PyObject * server = Py_InitModule("server", no_methods);
     if (server == NULL) {
