@@ -62,12 +62,6 @@ static int World_init(PyWorld * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * World_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    PyWorld * self = (PyWorld *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 PyTypeObject PyWorld_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              // ob_size
@@ -108,7 +102,7 @@ PyTypeObject PyWorld_Type = {
         0,                              // tp_dictoffset
         (initproc)World_init,           // tp_init
         0,                              // tp_alloc
-        World_new,                      // tp_new
+        0,                              // tp_new
 };
 
 PyWorld * newPyWorld()

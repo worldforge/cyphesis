@@ -720,6 +720,7 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(server, "Character", (PyObject *)&PyCharacter_Type);
+    PyWorld_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyWorld_Type) < 0) {
         log(CRITICAL, "Python init failed to ready World wrapper type");
         return;
