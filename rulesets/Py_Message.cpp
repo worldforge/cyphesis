@@ -132,12 +132,6 @@ static int Message_init(PyMessage * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * Message_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    PyMessage * self = (PyMessage *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 PyTypeObject PyMessage_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -178,7 +172,7 @@ PyTypeObject PyMessage_Type = {
         0,                              // tp_dictoffset
         (initproc)Message_init,         // tp_init
         0,                              // tp_alloc
-        Message_new,                    // tp_new
+        0,                              // tp_new
 };
 
 /*

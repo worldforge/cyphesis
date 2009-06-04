@@ -177,14 +177,6 @@ static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * Oplist_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    // This looks allot like the default implementation, except we call the
-    // in-place constructor.
-    PyOplist * self = (PyOplist *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 static PyNumberMethods Oplist_as_number = {
         (binaryfunc)Oplist_num_add,
         0,
@@ -251,7 +243,7 @@ PyTypeObject PyOplist_Type = {
         0,                              // tp_dictoffset
         (initproc)Oplist_init,          // tp_init
         0,                              // tp_alloc
-        Oplist_new,                     // tp_new
+        0,                              // tp_new
 };
 
 PyOplist * newPyOplist()

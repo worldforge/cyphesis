@@ -358,12 +358,6 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * Entity_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    PyEntity * self = (PyEntity *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 PyTypeObject PyLocatedEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -404,7 +398,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              // tp_dictoffset
         (initproc)LocatedEntity_init,   // tp_init
         0,                              // tp_alloc
-        Entity_new,                     // tp_new
+        0,                              // tp_new
 };
 
 PyTypeObject PyEntity_Type = {
@@ -447,7 +441,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_dictoffset
         (initproc)Entity_init,          // tp_init
         0,                              // tp_alloc
-        Entity_new,                     // tp_new
+        0,                              // tp_new
 };
 
 PyTypeObject PyCharacter_Type = {
@@ -490,7 +484,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              // tp_dictoffset
         (initproc)Character_init,       // tp_init
         0,                              // tp_alloc
-        Entity_new,                     // tp_new
+        0,                              // tp_new
 };
 
 PyObject * wrapEntity(LocatedEntity * le)

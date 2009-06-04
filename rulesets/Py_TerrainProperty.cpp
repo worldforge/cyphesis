@@ -101,16 +101,6 @@ static int TerrainProperty_setattr(PyTerrainProperty * self,
     return -1;
 }
 
-static PyObject * TerrainProperty_new(PyTypeObject * type,
-                                      PyObject *,
-                                      PyObject *)
-{
-    // This looks allot like the default implementation, except we set some
-    // stuff to null.
-    PyTerrainProperty * self = (PyTerrainProperty *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 static int TerrainProperty_init(PyTerrainProperty * self,
                                 PyObject * args,
                                 PyObject * kwd)
@@ -162,7 +152,7 @@ PyTypeObject PyTerrainProperty_Type = {
         0,                                                // tp_dictoffset
         (initproc)TerrainProperty_init,                   // tp_init
         0,                                                // tp_alloc
-        TerrainProperty_new,                              // tp_new
+        0,                                                // tp_new
 };
 
 PyTerrainProperty * newPyTerrainProperty()

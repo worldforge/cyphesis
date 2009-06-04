@@ -584,6 +584,7 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(atlas, "Entity", (PyObject *)&PyRootEntity_Type);
+    PyOplist_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyOplist_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Oplist wrapper type");
         return;
@@ -594,6 +595,7 @@ void init_python_api()
         return;
     }
     PyModule_AddObject(atlas, "Location", (PyObject *)&PyLocation_Type);
+    PyMessage_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyMessage_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Message wrapper type");
         return;
@@ -690,31 +692,37 @@ void init_python_api()
     }
     
     // New module code
+    PyMap_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyMap_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Map wrapper type");
         return;
     }
     PyModule_AddObject(server, "Map", (PyObject *)&PyMap_Type);
+    PyMind_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyMind_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Mind wrapper type");
         return;
     }
     PyModule_AddObject(server, "Mind", (PyObject *)&PyMind_Type);
+    PyTask_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyTask_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Task wrapper type");
         return;
     }
     PyModule_AddObject(server, "Task", (PyObject *)&PyTask_Type);
+    PyLocatedEntity_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyLocatedEntity_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Entity wrapper type");
         return;
     }
     PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyLocatedEntity_Type);
+    PyEntity_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyEntity_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Thing wrapper type");
         return;
     }
     PyModule_AddObject(server, "Thing", (PyObject *)&PyEntity_Type);
+    PyCharacter_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyCharacter_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Character wrapper type");
         return;
@@ -749,6 +757,7 @@ void init_python_api()
     // }
     // PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
 
+    PyTerrainProperty_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyTerrainProperty_Type) < 0) {
         log(CRITICAL, "Python init failed to ready TerrainProperty wrapper type");
         return;

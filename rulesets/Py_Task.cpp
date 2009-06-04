@@ -215,12 +215,6 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * Task_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    PyTask * self = (PyTask *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 PyTypeObject PyTask_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -261,7 +255,7 @@ PyTypeObject PyTask_Type = {
         0,                              // tp_dictoffset
         (initproc)Task_init,            // tp_init
         0,                              // tp_alloc
-        Task_new,                       // tp_new
+        0,                              // tp_new
 };
 
 PyObject * wrapTask(Task * task)

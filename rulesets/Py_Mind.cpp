@@ -219,12 +219,6 @@ static int Mind_init(PyMind * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * Mind_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    PyMind * self = (PyMind *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 PyTypeObject PyMind_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              // ob_size
@@ -265,7 +259,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_dictoffset
         (initproc)Mind_init,            // tp_init
         0,                              // tp_alloc
-        Mind_new,                       // tp_new
+        0,                              // tp_new
 };
 
 PyMind * newPyMind()

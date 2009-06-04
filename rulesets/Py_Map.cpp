@@ -296,12 +296,6 @@ static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-static PyObject * Map_new(PyTypeObject * type, PyObject *, PyObject *)
-{
-    PyMap * self = (PyMap *)type->tp_alloc(type, 0);
-    return (PyObject *)self;
-}
-
 PyTypeObject PyMap_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              // ob_size
@@ -342,7 +336,7 @@ PyTypeObject PyMap_Type = {
         0,                              // tp_dictoffset
         (initproc)Map_init,             // tp_init
         0,                              // tp_alloc
-        Map_new,                        // tp_new
+        0,                              // tp_new
 };
 
 PyMap * newPyMap()
