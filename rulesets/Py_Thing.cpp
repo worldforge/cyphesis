@@ -361,7 +361,7 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
 PyTypeObject PyLocatedEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "server.Entity",                /*tp_name*/
+        "server.LocatedEntity",         /*tp_name*/
         sizeof(PyLocatedEntity),        /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
@@ -381,7 +381,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Entity objects",               // tp_doc
+        "LocatedEntity objects",        // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
@@ -447,7 +447,7 @@ PyTypeObject PyEntity_Type = {
 PyTypeObject PyCharacter_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "server.Entity",                /*tp_name*/
+        "server.Character",             /*tp_name*/
         sizeof(PyCharacter),            /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
@@ -467,7 +467,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Entity objects",               // tp_doc
+        "Character objects",            // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
