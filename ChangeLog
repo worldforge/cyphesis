@@ -1,3 +1,58 @@
+2009-06-09  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/custom.cpp, common/operations.cpp: Add new operations
+	  for thought and goal_info used heavily by the AI code.
+
+	* rulesets/BaseMind.cpp: Add a check to avoid a crash caused by
+	  an invalid smart pointer.
+
+	* rulesets/Entity.cpp: Remove an unnecessary dynamic cast.
+
+	* rulesets/Entity.h: Add a check to the ostream output operator
+	  for Location so an invalid location does not crash.
+
+	* rulesets/MemMap.h: Make all private members protected so they
+	  can be exposed for testing.
+
+	* rulesets/PythonEntityScript.h, rulesets/PythonScript.h,
+	  rulesets/PythonWrapper.h, rulesets/Script.h: Add a doxygen group
+	  for these related classes.
+
+	* rulesets/Py_BBox.cpp, rulesets/Py_Location.cpp, rulesets/Py_Map.cpp,
+	  rulesets/Py_Message.cpp, rulesets/Py_Message.h,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Object.cpp, rulesets/Py_Object.h,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Oplist.cpp,
+	  rulesets/Py_Point3D.cpp, rulesets/Py_Quaternion.cpp,
+	  rulesets/Py_RootEntity.cpp, rulesets/Py_Task.cpp,
+	  rulesets/Py_TerrainProperty.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Py_Thing.h, rulesets/Py_Vector3D.cpp, rulesets/Py_World.cpp,
+	  rulesets/Py_WorldTime.cpp, client/Py_CreatorClient.cpp:
+	  Rework all the python bindings to conform with the modern ABI
+	  since Python 2.2. Rationalise type and file names.
+
+	* Update all python scripts to use modified API exposed by the
+	  server core.
+
+	* tests/DateTimetest.cpp: Fix a cstdio include missing from this
+	  test.
+
+	* tests/AtlasPropertiestest.cpp, tests/BaseMindtest.cpp,
+	  tests/Domaintest.cpp, tests/MemEntitytest.cpp,
+	  tests/MemMaptest.cpp, tests/Movementtest.cpp,
+	  tests/Pedestriantest.cpp, tests/PropertyCoverage.cpp:
+	  Add coverage tests for a number of classes.
+
+	* tests/Py_BBoxtest.cpp, tests/Py_Locationtest.cpp,
+	  tests/Py_Maptest.cpp, tests/Py_Messagetest.cpp,
+	  tests/Py_Mindtest.cpp, tests/Py_Operationtest.cpp,
+	  tests/Py_Oplisttest.cpp, tests/Py_Point3Dtest.cpp,
+	  tests/Py_Quaterniontest.cpp, tests/Py_RootEntitytest.cpp,
+	  tests/Py_Tasktest.cpp, tests/Py_Thingtest.cpp,
+	  tests/Py_Vector3Dtest.cpp, tests/Py_Worldtest.cpp,
+	  tests/Py_WorldTimetest.cpp, tests/Python_APItest.cpp:
+	  Add coverage tests to as much of the python bindings as possible,
+	  to verify while refactoring as documented above.
+
 2009-05-14  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/TerrainProperty.cpp: Clean up segment calculation and
