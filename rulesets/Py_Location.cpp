@@ -202,7 +202,11 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
         return -1;
     }
     if (refO != NULL) {
-        if (!PyEntity_Check(refO) && !PyWorld_Check(refO) && !PyMind_Check(refO)) {
+        if (!PyLocatedEntity_Check(refO) &&
+            !PyEntity_Check(refO) &&
+            !PyCharacter_Check(refO) &&
+            !PyWorld_Check(refO) &&
+            !PyMind_Check(refO)) {
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
                 decrefO = true;
@@ -232,7 +236,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
 #endif // NDEBUG
             ref_ent = ref->m_mind;
         } else {
-            PyEntity * ref = (PyEntity*)refO;
+            PyLocatedEntity * ref = (PyLocatedEntity*)refO;
 #ifndef NDEBUG
             if (ref->m_entity == NULL) {
                 PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
