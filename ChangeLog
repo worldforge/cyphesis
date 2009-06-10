@@ -1,3 +1,8 @@
+2009-06-10  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Py_Location.cpp: Allow argument passed to Location
+	  binding constructor to be any kind of Entity.
+
 2009-06-09  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/custom.cpp, common/operations.cpp: Add new operations
