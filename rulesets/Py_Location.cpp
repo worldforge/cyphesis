@@ -110,12 +110,12 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
         }
         PyEntity * thing = (PyEntity *)v;
 #ifndef NDEBUG
-        if (thing->m_entity == NULL) {
+        if (thing->m_entity.l == NULL) {
             PyErr_SetString(PyExc_AssertionError, "invalid thing");
             return -1;
         }
 #endif // NDEBUG
-        self->location->m_loc = thing->m_entity;
+        self->location->m_loc = thing->m_entity.l;
         return 0;
     }
     if (strcmp(name, "bbox") == 0 && PyBBox_Check(v)) {
@@ -236,15 +236,15 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
 #endif // NDEBUG
             ref_ent = ref->m_mind;
         } else {
-            PyLocatedEntity * ref = (PyLocatedEntity*)refO;
+            PyEntity * ref = (PyEntity*)refO;
 #ifndef NDEBUG
-            if (ref->m_entity == NULL) {
+            if (ref->m_entity.l == NULL) {
                 PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
                 if (decrefO) { Py_DECREF(refO); }
                 return -1;
             }
 #endif // NDEBUG
-            ref_ent = ref->m_entity;
+            ref_ent = ref->m_entity.l;
         }
     }
     if (decrefO) { Py_DECREF(refO); }

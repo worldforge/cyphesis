@@ -43,7 +43,11 @@ typedef struct {
     /// \brief Storage for additional attributes
     PyObject * Entity_attr;  // Attributes dictionary
     /// \brief Entity object handled by this wrapper
-    Entity * m_entity;
+    union {
+        LocatedEntity * l;
+        Entity * e;
+        Character * c;
+    } m_entity;
 } PyEntity;
 
 /// \brief Wrapper for Character in Python

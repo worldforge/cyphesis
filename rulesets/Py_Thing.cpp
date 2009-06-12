@@ -63,13 +63,13 @@ static PyMethodDef LocatedEntity_methods[] = {
 static PyObject * Entity_send_world(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.e == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
         return NULL;
     }
 #endif // NDEBUG
     if (PyOperation_Check(op)) {
-        self->m_entity->sendWorld(op->operation);
+        self->m_entity.e->sendWorld(op->operation);
     } else {
         PyErr_SetString(PyExc_TypeError, "Entity.send_world must be an op");
         return NULL;
@@ -180,7 +180,7 @@ static void Entity_dealloc(PyEntity *self)
 static PyObject * Entity_getattr(PyEntity *self, char *name)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.e == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
         return NULL;
     }
@@ -191,7 +191,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         return NULL;
     }
     if (strcmp(name, "type") == 0) {
-        if (self->m_entity->getType() == NULL) {
+        if (self->m_entity.e->getType() == NULL) {
             PyErr_SetString(PyExc_AttributeError, name);
             return NULL;
         }
@@ -199,19 +199,19 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        PyObject * ent = PyString_FromString(self->m_entity->getType()->name().c_str());
+        PyObject * ent = PyString_FromString(self->m_entity.e->getType()->name().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        loc->location = &self->m_entity->m_location;
-        loc->owner = self->m_entity;
+        loc->location = &self->m_entity.e->m_location;
+        loc->owner = self->m_entity.e;
         return (PyObject *)loc;
     }
     if (strcmp(name, "contains") == 0) {
-        if (self->m_entity->m_contains == 0) {
+        if (self->m_entity.e->m_contains == 0) {
             Py_INCREF(Py_None);
             return Py_None;
         }
@@ -219,8 +219,8 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         if (list == NULL) {
             return NULL;
         }
-        LocatedEntitySet::const_iterator I = self->m_entity->m_contains->begin();
-        LocatedEntitySet::const_iterator Iend = self->m_entity->m_contains->end();
+        LocatedEntitySet::const_iterator I = self->m_entity.e->m_contains->begin();
+        LocatedEntitySet::const_iterator Iend = self->m_entity.e->m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
@@ -240,7 +240,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
             return v;
         }
     }
-    Entity * entity = self->m_entity;
+    Entity * entity = self->m_entity.e;
     PropertyBase * prop = entity->modProperty(name);
     if (prop != 0) {
         PyObject * ret = Property_asPyObject(prop, entity);
@@ -262,7 +262,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
 static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.e == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
         return -1;
     }
@@ -271,7 +271,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         PyErr_SetString(PyExc_AttributeError, "map attribute forbidden");
         return -1;
     }
-    Entity * entity = self->m_entity;
+    Entity * entity = self->m_entity.e;
     //std::string attr(name);
     //if (v == NULL) {
         //entity->attributes.erase(attr);
@@ -303,11 +303,11 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
 
 static int Entity_compare(PyEntity *self, PyEntity *other)
 {
-    if (self->m_entity == NULL || other->m_entity == NULL) {
+    if (self->m_entity.e == NULL || other->m_entity.e == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL Entity in Entity.compare");
         return -1;
     }
-    return (self->m_entity == other->m_entity) ? 0 : 1;
+    return (self->m_entity.e == other->m_entity.e) ? 0 : 1;
 }
 
 static int LocatedEntity_init(PyEntity * self, PyObject * args, PyObject * kwds)
@@ -322,7 +322,7 @@ static int LocatedEntity_init(PyEntity * self, PyObject * args, PyObject * kwds)
         PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
         return -1;
     }
-    self->m_entity = new Entity(id, intId);
+    self->m_entity.l = new Entity(id, intId);
     return 0;
 }
 
@@ -338,7 +338,7 @@ static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
         PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
         return -1;
     }
-    self->m_entity = new Entity(id, intId);
+    self->m_entity.e = new Entity(id, intId);
     return 0;
 }
 
@@ -354,7 +354,7 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
         PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
         return -1;
     }
-    self->m_entity = new Character(id, intId);
+    self->m_entity.c = new Character(id, intId);
     return 0;
 }
 
@@ -507,7 +507,7 @@ PyObject * wrapEntity(LocatedEntity * le)
               if (pe == NULL) {
                   return NULL;
               }
-              pe->m_entity = entity;
+              pe->m_entity.e = entity;
               wrapper = (PyObject *)pe;
           }
         } else {

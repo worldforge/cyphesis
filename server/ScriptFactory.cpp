@@ -100,7 +100,7 @@ int PythonScriptFactory::addScript(Entity * entity)
         return -1;
     }
     PyEntity * wrapper = newPyEntity();
-    wrapper->m_entity = entity;
+    wrapper->m_entity.e = entity;
     PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
 
     if (script == NULL) {
