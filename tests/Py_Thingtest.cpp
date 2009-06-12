@@ -22,12 +22,50 @@
 #include "TestWorld.h"
 
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include <cassert>
 
+void check_union()
+{
+    PyEntity ent;
+
+    Entity * e;
+    LocatedEntity * le;
+    Character * c;
+
+    e = new Entity("1", 1);
+    ent.m_entity.e = e;
+
+    le = ent.m_entity.e;
+    assert(le == ent.m_entity.l);
+    assert(le == ent.m_entity.e);
+
+    e = new Entity("1", 1);
+    ent.m_entity.l = e;
+
+    le = ent.m_entity.e;
+    assert(le == ent.m_entity.l);
+    assert(le == ent.m_entity.e);
+
+    c = new Character("1", 1);
+    ent.m_entity.c = c;
+
+    le = ent.m_entity.e;
+    assert(le == ent.m_entity.l);
+    assert(le == ent.m_entity.e);
+    assert(c == ent.m_entity.e);
+    assert(c == ent.m_entity.l);
+
+    ent.m_entity.e = new Entity("1", 1);
+}
+
 int main()
 {
+    check_union();
+
     init_python_api();
 
     Entity * e = new Entity("1", 1);
