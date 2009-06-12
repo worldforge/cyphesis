@@ -73,8 +73,8 @@ static PyObject * CreatorClient_make(PyCreatorClient * self,
         PyErr_SetString(PyExc_RuntimeError, "Entity creation failed");
         return NULL;
     }
-    PyLocatedEntity * ret = newPyLocatedEntity();
-    ret->m_entity = retval;
+    PyEntity * ret = newPyLocatedEntity();
+    ret->m_entity.l = retval;
     return (PyObject *)ret;
 }
 
@@ -118,8 +118,8 @@ static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * py_id)
         PyErr_SetString(PyExc_RuntimeError, "Entity look failed");
         return NULL;
     }
-    PyLocatedEntity * ret = newPyLocatedEntity();
-    ret->m_entity = retval;
+    PyEntity * ret = newPyLocatedEntity();
+    ret->m_entity.l = retval;
     return (PyObject *)ret;
 }
 static PyObject * CreatorClient_look_for(PyCreatorClient * self,
@@ -140,8 +140,8 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
         Py_INCREF(Py_None);
         return Py_None;
     }
-    PyLocatedEntity * ret = newPyLocatedEntity();
-    ret->m_entity = retval;
+    PyEntity * ret = newPyLocatedEntity();
+    ret->m_entity.l = retval;
     return (PyObject *)ret;
 }
 

@@ -38,10 +38,10 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-static PyObject * Entity_as_entity(PyLocatedEntity * self)
+static PyObject * Entity_as_entity(PyEntity * self)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.l == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.as_entity");
         return NULL;
     }
@@ -51,7 +51,7 @@ static PyObject * Entity_as_entity(PyLocatedEntity * self)
         return NULL;
     }
     ret->m_obj = new Element(MapType());
-    self->m_entity->addToMessage(ret->m_obj->asMap());
+    self->m_entity.l->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
@@ -84,29 +84,29 @@ static PyMethodDef Entity_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
-static PyObject * Character_get_task(PyCharacter * self)
+static PyObject * Character_get_task(PyEntity * self)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.l == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
         return NULL;
     }
 #endif // NDEBUG
-    if (self->m_entity->task() == 0) {
+    if (self->m_entity.c->task() == 0) {
         Py_INCREF(Py_None);
         return Py_None;
     }
     // FIXME Err, probably actually want to return the real Task.
     PyTask * ret = newPyTask();
-    ret->m_task = self->m_entity->task();
+    ret->m_task = self->m_entity.c->task();
     return (PyObject*)ret;
     
 }
 
-static PyObject * Character_set_task(PyCharacter * self, PyTask * task)
+static PyObject * Character_set_task(PyEntity * self, PyTask * task)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.l == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
         return NULL;
     }
@@ -115,28 +115,28 @@ static PyObject * Character_set_task(PyCharacter * self, PyTask * task)
         PyErr_SetString(PyExc_TypeError, "Entity.set_task must be a task");
         return NULL;
     }
-    self->m_entity->setTask(task->m_task);
+    self->m_entity.c->setTask(task->m_task);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Character_clear_task(PyCharacter * self)
+static PyObject * Character_clear_task(PyEntity * self)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.l == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
         return NULL;
     }
 #endif // NDEBUG
-    self->m_entity->clearTask();
+    self->m_entity.c->clearTask();
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Character_mind2body(PyCharacter * self, PyOperation * op)
+static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity.l == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
         return NULL;
     }
@@ -146,7 +146,7 @@ static PyObject * Character_mind2body(PyCharacter * self, PyOperation * op)
          return NULL;
     }
     OpVector res;
-    self->m_entity->mind2body(op->operation, res);
+    self->m_entity.c->mind2body(op->operation, res);
     if (res.empty()) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -362,7 +362,7 @@ PyTypeObject PyLocatedEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "server.LocatedEntity",         /*tp_name*/
-        sizeof(PyLocatedEntity),        /*tp_basicsize*/
+        sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Entity_dealloc,     /*tp_dealloc*/
@@ -448,7 +448,7 @@ PyTypeObject PyCharacter_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
         "server.Character",             /*tp_name*/
-        sizeof(PyCharacter),            /*tp_basicsize*/
+        sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
         (destructor)Entity_dealloc,     /*tp_dealloc*/
@@ -496,11 +496,11 @@ PyObject * wrapEntity(LocatedEntity * le)
         if (entity != 0) {
           Character * ch_entity = dynamic_cast<Character *>(entity);
           if (ch_entity != 0) {
-              PyCharacter * pc = newPyCharacter();
+              PyEntity * pc = newPyCharacter();
               if (pc == NULL) {
                   return NULL;
               }
-              pc->m_entity = ch_entity;
+              pc->m_entity.c = ch_entity;
               wrapper = (PyObject *)pc;
           } else {
               PyEntity * pe = newPyEntity();
@@ -511,11 +511,11 @@ PyObject * wrapEntity(LocatedEntity * le)
               wrapper = (PyObject *)pe;
           }
         } else {
-          PyLocatedEntity * pe = newPyLocatedEntity();
+          PyEntity * pe = newPyLocatedEntity();
           if (pe == NULL) {
               return NULL;
           }
-          pe->m_entity = le;
+          pe->m_entity.l = le;
           wrapper = (PyObject *)pe;
         }
         if (le->script() == &noScript) {
@@ -536,7 +536,7 @@ PyObject * wrapEntity(LocatedEntity * le)
 // one PyTypeObject for each, and just share the members. That way we lose
 // the need for a members entry on the object.
 
-PyLocatedEntity * newPyLocatedEntity()
+PyEntity * newPyLocatedEntity()
 {
 #if 0
     PyLocatedEntity * self;
@@ -548,7 +548,7 @@ PyLocatedEntity * newPyLocatedEntity()
     self->m_methods = LocatedEntity_methods;
     return self;
 #else
-    PyLocatedEntity * self = (PyLocatedEntity *)PyLocatedEntity_Type.tp_new(&PyLocatedEntity_Type, 0, 0);
+    PyEntity * self = (PyEntity *)PyLocatedEntity_Type.tp_new(&PyLocatedEntity_Type, 0, 0);
     return self;
 #endif
 }
@@ -570,7 +570,7 @@ PyEntity * newPyEntity()
 #endif
 }
 
-PyCharacter * newPyCharacter()
+PyEntity * newPyCharacter()
 {
 #if 0
     PyCharacter * self;
@@ -582,7 +582,7 @@ PyCharacter * newPyCharacter()
     self->m_methods = Character_methods;
     return self;
 #else
-    PyCharacter * self = (PyCharacter *)PyCharacter_Type.tp_new(&PyCharacter_Type, 0, 0);
+    PyEntity * self = (PyEntity *)PyCharacter_Type.tp_new(&PyCharacter_Type, 0, 0);
     return self;
 #endif
 }

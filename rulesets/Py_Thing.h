@@ -26,16 +26,6 @@ class Character;
 class Entity;
 class LocatedEntity;
 
-/// \brief Wrapper for LocatedEntity in Python
-/// \ingroup PythonWrappers
-typedef struct {
-    PyObject_HEAD
-    /// \brief Storage for additional attributes
-    PyObject * Entity_attr;  // Attributes dictionary
-    /// \brief Entity object handled by this wrapper
-    LocatedEntity * m_entity;
-} PyLocatedEntity;
-
 /// \brief Wrapper for Entity in Python
 /// \ingroup PythonWrappers
 typedef struct {
@@ -50,16 +40,6 @@ typedef struct {
     } m_entity;
 } PyEntity;
 
-/// \brief Wrapper for Character in Python
-/// \ingroup PythonWrappers
-typedef struct {
-    PyObject_HEAD
-    /// \brief Storage for additional attributes
-    PyObject * Entity_attr;  // Attributes dictionary
-    /// \brief Character entity object handled by this wrapper
-    Character * m_entity;
-} PyCharacter;
-
 extern PyTypeObject PyLocatedEntity_Type;
 extern PyTypeObject PyEntity_Type;
 extern PyTypeObject PyCharacter_Type;
@@ -69,8 +49,8 @@ extern PyTypeObject PyCharacter_Type;
 #define PyCharacter_Check(_o) ((_o)->ob_type == &PyCharacter_Type)
 
 PyObject * wrapEntity(LocatedEntity * entity);
-PyLocatedEntity * newPyLocatedEntity();
+PyEntity * newPyLocatedEntity();
 PyEntity * newPyEntity();
-PyCharacter * newPyCharacter();
+PyEntity * newPyCharacter();
 
 #endif // RULESETS_PY_THING_H
