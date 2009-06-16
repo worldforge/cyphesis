@@ -416,6 +416,10 @@ void Account::SetOperation(const Operation & op, OpVector & res)
             argument_valid = true;
         }
     }
+    Element tasks;
+    if (arg->copyAttr("tasks", tasks) == 0 && (tasks.isMap())) {
+        log(NOTICE, "Got as yet unsupported task modification from client");
+    }
 
     if (argument_valid) {
         debug(std::cout << "Passing character mods in-game"
