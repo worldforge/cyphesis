@@ -51,6 +51,9 @@ class Account : public Router {
                                const Atlas::Objects::Entity::RootEntity & ent,
                                OpVector & res) const = 0;
 
+    int filterTasks(const Atlas::Message::ListType & tasks,
+                    const Atlas::Objects::Entity::RootEntity &) const;
+
   public:
     /// \brief The network connection currently subscribed to this account
     Connection * m_connection;
