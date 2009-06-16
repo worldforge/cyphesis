@@ -46,7 +46,7 @@ int main()
     assert(PyRun_SimpleString("t.rate = '1'") == -1);
     assert(PyRun_SimpleString("t.foo = 1") == 0);
     assert(PyRun_SimpleString("t.foo = 1.1") == 0);
-    assert(PyRun_SimpleString("t.foo = '1'") == 0);
+    assert(PyRun_SimpleString("t.foo = 'foois1'") == 0);
     assert(PyRun_SimpleString("print t.foo") == 0);
     assert(PyRun_SimpleString("print t.obsolete()") == 0);
     assert(PyRun_SimpleString("print t.count()") == 0);
