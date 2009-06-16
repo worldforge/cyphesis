@@ -113,7 +113,7 @@ static void Task_dealloc(PyTask *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Task_getattr(PyTask *self, char *name)
+static PyObject * Task_getattro(PyTask *self, PyObject *oname)
 {
     // Fairly major re-write of this to use operator[] of Task base class
 #ifndef NDEBUG
@@ -122,6 +122,7 @@ static PyObject * Task_getattr(PyTask *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "character") == 0) {
         return wrapEntity(&self->m_task->character());
     }
@@ -141,7 +142,7 @@ static PyObject * Task_getattr(PyTask *self, char *name)
     return Py_FindMethod(Task_methods, (PyObject *)self, name);
 }
 
-static int Task_setattr(PyTask *self, char *name, PyObject *v)
+static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_task == NULL) {
@@ -149,6 +150,7 @@ static int Task_setattr(PyTask *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "progress") == 0) {
         if (PyFloat_Check(v)) {
             self->m_task->progress() = PyFloat_AsDouble(v);
@@ -224,8 +226,8 @@ PyTypeObject PyTask_Type = {
         /* methods */
         (destructor)Task_dealloc,       /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Task_getattr,      /*tp_getattr*/
-        (setattrfunc)Task_setattr,      /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)Task_compare,          /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -234,8 +236,8 @@ PyTypeObject PyTask_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Task_getattro,    // tp_getattro
+        (setattrofunc)Task_setattro,    // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Task objects",                 // tp_doc
