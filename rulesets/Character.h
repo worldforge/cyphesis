@@ -79,6 +79,7 @@ class Character : public Character_parent {
 
     /// \brief Accessor for medium term task
     Task * task() { return m_task; }
+    Task ** monitorTask() { return &m_task; }
 
     void setTask(Task *);
     void updateTask();
