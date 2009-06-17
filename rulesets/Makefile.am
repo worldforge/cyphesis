@@ -53,6 +53,7 @@ librulesetentity_a_SOURCES = \
 			     MindProperty.cpp MindProperty.h \
 			     InternalProperties.cpp InternalProperties.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
+			     TasksProperty.cpp TasksProperty.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
