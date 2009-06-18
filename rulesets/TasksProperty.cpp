@@ -20,21 +20,41 @@
 #include "TasksProperty.h"
 
 #include "Character.h"
+#include "Task.h"
 
 #include "common/compose.hpp"
 #include "common/log.h"
 #include "common/TypeNode.h"
 
-TasksProperty::TasksProperty() : m_task(0)
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
+TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
 }
 
 bool TasksProperty::get(Atlas::Message::Element & val) const
 {
+    if (m_task == 0) {
+        return false;
+    }
+    MapType task;
+    task["name"] = (*m_task)->name();
+    float progress = (*m_task)->progress();
+    if (progress > 0) {
+        task["progress"] = progress;
+    }
+    float rate = (*m_task)->rate();
+    if (rate > 0) {
+        task["rate"] = rate;
+    }
+    val = ListType(1, task);
+    return true;
 }
 
 void TasksProperty::set(const Atlas::Message::Element & val)
 {
+    log(NOTICE, "Task property got set");
 }
 
 void TasksProperty::install(Entity * owner)
