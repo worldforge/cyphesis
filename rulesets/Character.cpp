@@ -292,6 +292,8 @@ void Character::updateTask()
 
     TasksProperty * tp = requirePropertyClass<TasksProperty>("tasks");
 
+    // Check if this flag is already set. If so, there may be no need
+    // to send the update op.
     tp->setFlags(flag_unsent);
 
     Update update;
