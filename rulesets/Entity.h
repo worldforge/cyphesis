@@ -159,10 +159,11 @@ class Entity : public LocatedEntity {
             sp = dynamic_cast<PropertyT *>(p);
         }
         if (sp == 0) {
+            // If it is not of the right type, delete it and a new
+            // one of the right type will be inserted.
             m_properties[name] = sp = new PropertyT;
+            sp->install(this);
             if (p != 0) {
-                // If it is not of the right type, delete it and a new
-                // one of the right type will be inserted.
                 Atlas::Message::Element val;
                 if (p->get(val)) {
                     sp->set(val);
@@ -171,6 +172,7 @@ class Entity : public LocatedEntity {
             } else if (!def_val.isNone()) {
                 sp->set(def_val);
             }
+            sp->apply(this);
         }
         return sp;
     }
