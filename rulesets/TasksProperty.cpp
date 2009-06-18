@@ -35,9 +35,11 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 
 bool TasksProperty::get(Atlas::Message::Element & val) const
 {
-    if (m_task == 0) {
+    if (m_task == 0 || *m_task == 0) {
+        log(ERROR, "No task");
         return false;
     }
+    log(NOTICE, "Task property setting.");
     MapType task;
     task["name"] = (*m_task)->name();
     float progress = (*m_task)->progress();
