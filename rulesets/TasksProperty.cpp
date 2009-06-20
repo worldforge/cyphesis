@@ -23,8 +23,11 @@
 #include "Task.h"
 
 #include "common/compose.hpp"
+#include "common/debug.h"
 #include "common/log.h"
 #include "common/TypeNode.h"
+
+#include <iostream>
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -57,6 +60,28 @@ bool TasksProperty::get(Atlas::Message::Element & val) const
 void TasksProperty::set(const Atlas::Message::Element & val)
 {
     log(NOTICE, "Task property got set");
+
+    if (!val.isList())
+    {
+        log(ERROR, "Task property must be a list.");
+    }
+
+    debug_dump(val.asList());
+
+    ListType tasks = val.asList();
+    ListType::const_iterator I = tasks.begin();
+    ListType::const_iterator Iend = tasks.end();
+    for (; I != Iend; ++I) {
+        if (!I->isMap()) {
+            return;
+        }
+        const MapType & task = I->asMap();
+        MapType::const_iterator J = task.begin();
+        MapType::const_iterator Jend = task.end();
+        for (J = task.begin(); J != Jend; ++J) {
+            (*m_task)->setAttr(J->first, J->second);
+        }
+    }
 }
 
 void TasksProperty::install(Entity * owner)
