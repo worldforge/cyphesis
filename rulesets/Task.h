@@ -145,10 +145,10 @@ class Task {
     float & rate() { return m_rate; }
 
     /// \brief Accessor for additional attributes
-    const Atlas::Message::Element & getAttr(std::string attr) { return m_attr[attr]; }
+    const Atlas::Message::Element & getAttr(const std::string & attr) { return m_attr[attr]; }
 
     /// \brief Sets additional attribute
-    void setAttr(std::string attr, const Atlas::Message::Element & val) { m_attr[attr] = val; }
+    void setAttr(const std::string & attr, const Atlas::Message::Element & val) { m_attr[attr] = val; }
 };
 
 #endif // RULESETS_TASK_H
