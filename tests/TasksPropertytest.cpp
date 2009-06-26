@@ -31,7 +31,7 @@ int main()
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
-    pc.basicCoverage();
+//    pc.basicCoverage();
 
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
