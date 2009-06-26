@@ -64,6 +64,12 @@ void TasksProperty::set(const Atlas::Message::Element & val)
     if (!val.isList())
     {
         log(ERROR, "Task property must be a list.");
+        return;
+    }
+
+    if (m_task == 0 || *m_task == 0) {
+        log(ERROR, "No task");
+        return;
     }
 
     debug_dump(val.asList());
@@ -73,6 +79,7 @@ void TasksProperty::set(const Atlas::Message::Element & val)
     ListType::const_iterator Iend = tasks.end();
     for (; I != Iend; ++I) {
         if (!I->isMap()) {
+            log(ERROR, "Task must be a map.");
             return;
         }
         const MapType & task = I->asMap();
