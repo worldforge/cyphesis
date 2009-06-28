@@ -38,6 +38,7 @@ int main()
     assert(PyRun_SimpleString("Entity('1', pos=[])") == 0);
     assert(PyRun_SimpleString("Entity('1', pos=(1,1.0,'1'))") == -1);
     assert(PyRun_SimpleString("Entity('1', pos=[1,1.0,'1'])") == -1);
+    assert(PyRun_SimpleString("Entity('1', tasks=[{'name': 'twist', 'param': 'value'}])") == 0);
     assert(PyRun_SimpleString("Entity('1', pos=1)") == -1);
     assert(PyRun_SimpleString("Entity('1', parent=1)") == -1);
     assert(PyRun_SimpleString("Entity('1', parent='0')") == 0);

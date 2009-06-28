@@ -361,6 +361,39 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     res.push_back(sight);
 }
 
+int Account::filterTasks(const ListType & tasks,
+                         const RootEntity & filtered_arg) const
+{
+    ListType filtered_tasks;
+    ListType::const_iterator I = tasks.begin();
+    ListType::const_iterator Iend = tasks.end();
+    for (; I != Iend; ++I) {
+        if (!I->isMap()) {
+            return -1;
+        }
+        const MapType & task = I->asMap();
+        MapType filtered_task;
+        MapType::const_iterator J = task.find("name");
+        MapType::const_iterator Jend = task.end();
+        if (J == Jend || !J->second.isString()) {
+            log(ERROR, "Task has no name");
+            return -1;
+        }
+        const std::string & task_name = J->second.asString();
+        filtered_task["name"] = task_name;
+        // FIXME Use the typeinfo to check which attributes can be changed.
+        for (J = task.begin(); J != Jend; ++J) {
+            if (J->first == "name") {
+                continue;
+            }
+            filtered_task[J->first] = J->second;
+        }
+        filtered_tasks.push_back(filtered_task);
+    }
+    filtered_arg->setAttr("tasks", filtered_tasks);
+    return 0;
+}
+
 void Account::SetOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
@@ -413,6 +446,13 @@ void Account::SetOperation(const Operation & op, OpVector & res)
                                          bbox.highCorner().y() * scale,
                                          bbox.highCorner().z() * scale));
             new_arg->setAttr("bbox", newBox.toAtlas());
+            argument_valid = true;
+        }
+    }
+    Element tasks;
+    if (arg->copyAttr("tasks", tasks) == 0 && (tasks.isList())) {
+        log(NOTICE, "Got as yet unsupported task modification from client");
+        if (filterTasks(tasks.asList(), new_arg) == 0) {
             argument_valid = true;
         }
     }

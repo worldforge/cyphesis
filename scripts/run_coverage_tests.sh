@@ -72,10 +72,38 @@ check_coverage() {
 }
 
 usage() {
-    echo Automate running coverage tools, and generate concise report.
-    echo usage: run_coverage_tests.sh [ -r ] [SOURCEFILE]
-    echo Options:
-    echo "  -r Just report source files with a coverage test"
+    echo "Automate running coverage tools, and generate concise report."
+    echo "usage: run_coverage_tests.sh [OPTION]"
+    echo "       run_coverage_tests.sh [SOURCEFILE]"
+    echo "Options:"
+    echo "  -r Report source files with a coverage test"
+    echo "  -c Re-configure the build to include coverage data"
+    echo "  -h Display this usage data"
+    cat <<EOF
+
+To pruduce results run this build requires an in-tree build with gcc
+configured to include coverage data. Use the -c option to run configure
+with the right options, and run "make clean all check" to fully prepare
+the build. Running without arguments shows results for all source files
+in the configured directories.
+
+Each file is covered by a test derived from it's name. For example the
+following file:
+
+rulesets/Character.cpp
+
+should be covered by;
+
+tests/Charactertest.cpp
+
+To see line by line data, run this script on Character.cpp only:
+
+./scripts/run_coverage_tests.sh rulesets/Character.cpp
+
+and the line by line report will be in this file:
+
+rulesets/Character.cpp.gcov
+EOF
 }
 
 DIRS="physics common modules rulesets"

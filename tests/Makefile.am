@@ -26,7 +26,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  OutfitPropertytest SolidPropertytest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
-                 TransientPropertytest Domaintest AtlasPropertiestest \
+                 TransientPropertytest TasksPropertytest \
+                 Domaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
@@ -590,6 +591,17 @@ TerrainPropertytest_LDADD = \
 TransientPropertytest_SOURCES = TransientPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TransientPropertytest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+TasksPropertytest_SOURCES = TasksPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+TasksPropertytest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
         $(top_builddir)/rulesets/librulesetbase.a \

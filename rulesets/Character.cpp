@@ -26,6 +26,7 @@
 #include "EntityProperty.h"
 #include "OutfitProperty.h"
 #include "StatusProperty.h"
+#include "TasksProperty.h"
 
 #include "common/op_switch.h"
 #include "common/const.h"
@@ -289,15 +290,16 @@ void Character::updateTask()
         log(ERROR, "Character::updateTask called when no task running");
     }
 
-    Anonymous set_arg;
-    m_task->addToEntity(set_arg);
-    set_arg->setId(getId());
+    TasksProperty * tp = requirePropertyClass<TasksProperty>("tasks");
 
-    Set set;
-    set->setArgs1(set_arg);
-    set->setTo(getId());
-    
-    sendWorld(set);
+    // Check if this flag is already set. If so, there may be no need
+    // to send the update op.
+    tp->setFlags(flag_unsent);
+
+    Update update;
+    update->setTo(getId());
+
+    sendWorld(update);
 }
 
 /// \brief Clean up and remove the task currently being executed

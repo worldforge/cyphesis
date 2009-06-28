@@ -92,7 +92,7 @@ class NPCMind(Thing):
         #print "Map add",obj
         pass
     def update_map(self, obj):
-        """Hook called by underlying map code when an entity is added.
+        """Hook called by underlying map code when an entity is updated.
 
         Fix ownership category for objects owned temporary under 'Foo' type."""
         #print "Map update",obj
@@ -103,7 +103,7 @@ class NPCMind(Thing):
                 self.remove_thing(foo)
                 self.add_thing(obj)
     def delete_map(self, obj):
-        """Hook called by underlying map code when an entity is added."""
+        """Hook called by underlying map code when an entity is deleted."""
         #print "Map delete",obj
         self.remove_thing(obj)
     ########## Operations
@@ -137,7 +137,7 @@ class NPCMind(Thing):
         if op.to==self.id:
             self.add_thing(obj)
     def sight_move_operation(self, op):
-        """change position in out local map"""
+        """change position in our local map"""
         obj=self.map.update(op[0], op.getSeconds())
         if obj.location.parent.id==self.id:
             self.add_thing(obj)
