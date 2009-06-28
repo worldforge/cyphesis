@@ -1,3 +1,22 @@
+2009-06-28  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/BaseMind.h: Add a missing word to doc comments.
+
+	* rulesets/Character.h: Add an accessor exposing the task pointer
+	  so a property can track it.
+
+	* rulesets/TasksProperty.cpp, rulesets/TasksProperty.h: Add a new
+	  property to handle exposing and updating task data.
+
+	* rulesets/Character.cpp: Update task handling to use the task
+	  property.
+
+	* rulesets/Entity.h: Update property access templates so that
+	  when a new property is added it is installed and applied
+	  correctly.
+
+	* rulesets/basic/mind/NPCMind.py: Correct some doc strings.
+
 2009-06-16  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* server/Account.cpp: Add detection and filtering of client
