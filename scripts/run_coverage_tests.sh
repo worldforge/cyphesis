@@ -62,7 +62,7 @@ check_coverage() {
     fi
 
 
-    coverage_percent=$( (cd ${source_dir} && gcov ${source_file}) | \
+    coverage_percent=$( (cd ${source_dir} && LC_ALL=C gcov ${source_file}) | \
           grep -A 1 "^File '$(basename ${source_file})" | \
           grep ^Lines | \
           head -n 1 | \
