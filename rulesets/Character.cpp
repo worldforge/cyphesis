@@ -406,7 +406,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 
 void Character::TalkOperation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::OPeration(Talk)" << std::endl<<std::flush;);
+    debug( std::cout << "Character::Operation(Talk)" << std::endl<<std::flush;);
     Sound s;
     s->setArgs1(op);
     res.push_back(s);

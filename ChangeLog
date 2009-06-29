@@ -1,3 +1,7 @@
+2009-06-29  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Character.cpp: Fix a typo in the debug output.
+
 2009-06-28  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/BaseMind.h: Add a missing word to doc comments.
