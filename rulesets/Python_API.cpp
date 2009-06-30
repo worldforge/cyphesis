@@ -343,9 +343,6 @@ PyTypeObject PyErrLogger_Type = {
 static PyObject * Get_PyClass(const std::string & package,
                               const std::string & type)
 {
-    // FIXME We dropped the need for the case conversion elsewhere.
-    std::string classname(type);
-    classname[0] = toupper(classname[0]);
     PyObject * package_name = PyString_FromString((char *)package.c_str());
     PyObject * module = PyImport_Import(package_name);
     Py_DECREF(package_name);
@@ -354,17 +351,17 @@ static PyObject * Get_PyClass(const std::string & package,
         PyErr_Print();
         return NULL;
     }
-    PyObject * py_class = PyObject_GetAttrString(module, (char *)classname.c_str());
+    PyObject * py_class = PyObject_GetAttrString(module, (char *)type.c_str());
     Py_DECREF(module);
     if (py_class == NULL) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
-                                   package, classname));
+                                   package, type));
         PyErr_Print();
         return NULL;
     }
     if (PyCallable_Check(py_class) == 0) {
         log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
-                                   package, classname));
+                                   package, type));
         Py_DECREF(py_class);
         return NULL;
     }
@@ -374,7 +371,7 @@ static PyObject * Get_PyClass(const std::string & package,
     if (PyType_Check(py_class) == 0) {
         log(ERROR, String::compose("PyCallable_Check returned true, "
                                    "but PyType_Check returned false \"%1.%2\"",
-                                   package, classname));
+                                   package, type));
     }
     return py_class;
 }
