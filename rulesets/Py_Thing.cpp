@@ -382,7 +382,7 @@ PyTypeObject PyLocatedEntity_Type = {
         (getattrofunc)Entity_getattro,  // tp_getattro
         (setattrofunc)Entity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "LocatedEntity objects",        // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
@@ -425,7 +425,7 @@ PyTypeObject PyEntity_Type = {
         (getattrofunc)Entity_getattro,  // tp_getattro
         (setattrofunc)Entity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "Entity objects",               // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
@@ -468,7 +468,7 @@ PyTypeObject PyCharacter_Type = {
         (getattrofunc)Entity_getattro,  // tp_getattro
         (setattrofunc)Entity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "Character objects",            // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
