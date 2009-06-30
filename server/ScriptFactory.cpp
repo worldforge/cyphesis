@@ -60,6 +60,11 @@ int PythonScriptFactory::getClass()
         m_class = 0;
         return -1;
     }
+    if (PyType_Check(m_class) == 0) {
+        log(ERROR, String::compose("PyCallable_Check returned true, "
+                                   "but PyType_Check returned false \"%1.%2\"",
+                                   m_package, m_type));
+    }
     return 0;
 }
 

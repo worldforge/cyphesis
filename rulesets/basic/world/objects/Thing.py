@@ -1,7 +1,7 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999-2005 Al Riddoch (See the file COPYING for details).
 
-class Thing:
+class Thing(object):
     """This is the interface class for all entity and mind scripts. It
        provides the interface to the object in the server core."""
     def __init__(self, cppthing):

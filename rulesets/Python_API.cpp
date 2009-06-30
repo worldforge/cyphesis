@@ -343,6 +343,7 @@ PyTypeObject PyErrLogger_Type = {
 static PyObject * Get_PyClass(const std::string & package,
                               const std::string & type)
 {
+    // FIXME We dropped the need for the case conversion elsewhere.
     std::string classname(type);
     classname[0] = toupper(classname[0]);
     PyObject * package_name = PyString_FromString((char *)package.c_str());
@@ -367,16 +368,14 @@ static PyObject * Get_PyClass(const std::string & package,
         Py_DECREF(py_class);
         return NULL;
     }
-#if 0
     // In later versions of python using PyType_* will become the right thing
     // to do. This might become true when things have been done right with
     // installing types.
     if (PyType_Check(py_class) == 0) {
-        std::cerr << "PyCallable_Check returned true, but PyType_Check returned false " << package << "." << type << std::endl << std::flush;
-    } else {
-        std::cerr << "PyType_Check returned true" << std::endl << std::flush;
+        log(ERROR, String::compose("PyCallable_Check returned true, "
+                                   "but PyType_Check returned false \"%1.%2\"",
+                                   package, classname));
     }
-#endif
     return py_class;
 }
 
