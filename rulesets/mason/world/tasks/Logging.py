@@ -17,7 +17,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Logging(Thing):
+class Logging(server.Task):
     """ A proof of concept task for logging."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """

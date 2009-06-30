@@ -15,7 +15,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Cultivate(Thing):
+class Cultivate(server.Task):
     """ A proof of concept task for sharpening a log into a stake."""
     def sow_operation(self, op):
         """ Op handler for sow op which activates this task """

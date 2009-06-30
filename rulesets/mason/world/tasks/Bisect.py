@@ -10,7 +10,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Bisect(Thing):
+class Bisect(server.Task):
     """ A task for cutting a section of material in two."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """

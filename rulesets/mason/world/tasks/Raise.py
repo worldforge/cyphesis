@@ -17,7 +17,7 @@ except ImportError:
 
 from cyphesis.Thing import Thing
 
-class Raise(Thing):
+class Raise(server.Task):
     """ A proof of concept task for raiseing a heavy item from the ground."""
     def lever_operation(self, op):
         """ Op handler for lever op which activates this task """

@@ -15,7 +15,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Trailblaze(Thing):
+class Trailblaze(server.Task):
     """ A proof of concept task for making new paths and roads."""
     def strike_operation(self, op):
         """ Op handler for strike op which activates this task """

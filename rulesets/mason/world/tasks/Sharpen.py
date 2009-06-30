@@ -15,7 +15,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Sharpen(Thing):
+class Sharpen(server.Task):
     """ A proof of concept task for sharpening a log into a stake."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """

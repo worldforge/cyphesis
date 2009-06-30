@@ -7,11 +7,9 @@ from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
 
-from cyphesis.Thing import Thing
-
 import server
 
-class Dig(Thing):
+class Dig(server.Task):
     """ A task for cutting a log into boards."""
 
     materials = { 1: 'sand', 2: 'earth', 3: 'silt' }

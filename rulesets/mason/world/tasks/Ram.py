@@ -16,7 +16,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Ram(Thing):
+class Ram(server.Task):
     """ A proof of concept task for drivinf object into the ground."""
     def strike_operation(self, op):
         """ Op handler for strike op which activates this task """

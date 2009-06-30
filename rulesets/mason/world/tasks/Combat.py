@@ -15,7 +15,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Combat(Thing):
+class Combat(server.Task):
     """A very simple combat system example."""
     def attack_operation(self, op):
         """ The attack op is FROM the the character that initiated combat which

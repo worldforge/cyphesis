@@ -11,7 +11,7 @@ from cyphesis.Thing import Thing
 
 import server
 
-class Delve(Thing):
+class Delve(server.Task):
     """ A task for cutting a log into boards."""
 
     materials = { 0: 'boulder', 4: 'ice' }
