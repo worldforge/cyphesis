@@ -108,13 +108,13 @@ int PythonScriptFactory::addScript(Entity * entity)
     wrapper->m_entity.e = entity;
     PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
 
-    if (script == NULL) {
-        return -1;
+    if (script != NULL) {
+        entity->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
     }
 
-    entity->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
+    Py_DECREF(wrapper);
 
-    return 0;
+    return (script == NULL) ? -1 : 0;
 }
 
 int PythonScriptFactory::refreshClass()

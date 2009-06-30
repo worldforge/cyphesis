@@ -91,6 +91,18 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
         std::cout << "No class" << std::endl << std::flush;
         return 0;
     }
+
+    if (!PyType_Check(m_class)) {
+        std::cout << "Non type" << std::endl << std::flush;
+    } else {
+        std::cout << "Real type!" << std::endl << std::flush;
+        if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
+            std::cout << "but not a task type :(" << std::endl << std::flush;
+        } else {
+            std::cout << "Real task type!" << std::endl << std::flush;
+        }
+    }
+
     TaskScript * task = new TaskScript(chr);
     task->name() = m_name;
     assert(task != 0);
@@ -100,9 +112,12 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
     wrapper->m_task = task;
     assert(wrapper->m_task != 0);
     PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
-    assert(script != 0);
 
-    task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
+    if (script != NULL) {
+        task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
+    }
+
+    Py_DECREF(wrapper);
     
     return task;
 }

@@ -388,7 +388,6 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
             PyErr_Print();
         }
     }
-    Py_DECREF(wrapper);
     return pyob;
 }
 
@@ -405,6 +404,8 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     if (o != NULL) {
         mind->setScript(new PythonEntityScript(o, (PyObject *)wrapper));
     }
+
+    Py_DECREF(wrapper);
 }
 
 static PyObject * is_location(PyObject * self, PyObject * loc)
