@@ -207,19 +207,30 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    if (!PyTask_Check(arg)) {
-        PyErr_SetString(PyExc_TypeError, "Task requires a core task");
-        return -1;
-    }
-    PyTask * wrap_task = (PyTask *)arg;
+    if (PyTask_Check(arg)) {
+        PyTask * wrap_task = (PyTask *)arg;
 #ifndef NDEBUG
-    if (wrap_task->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task Task.__init__");
-        return NULL;
-    }
+        if (wrap_task->m_task == NULL) {
+            PyErr_SetString(PyExc_AssertionError, "NULL task Task.__init__");
+            return -1;
+        }
 #endif // NDEBUG
-    self->m_task = wrap_task->m_task;
-    return 0;
+        self->m_task = wrap_task->m_task;
+        return 0;
+    }
+    if (PyCharacter_Check(arg)) {
+        PyEntity * character = (PyEntity *)arg;
+#ifndef NDEBUG
+        if (character->m_entity.c == NULL) {
+            PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+            return -1;
+        }
+#endif // NDEBUG
+        self->m_task = new TaskScript(*character->m_entity.c);
+        return 0;
+    }
+    PyErr_SetString(PyExc_TypeError, "Task requires a Task, or Character");
+    return -1;
 }
 
 PyTypeObject PyTask_Type = {
