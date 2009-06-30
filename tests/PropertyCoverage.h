@@ -25,13 +25,14 @@
 class PropertyBase;
 class Entity;
 class BaseWorld;
+class Character;
 
 class PropertyCoverage {
   protected:
     PropertyBase * const prop;
     Entity * const tlve;
     BaseWorld * const wrld;
-    Entity * const ent;
+    Entity * ent;
 
     Atlas::Message::ListType m_testData;
   public:
@@ -41,6 +42,8 @@ class PropertyCoverage {
     ~PropertyCoverage();
 
     void basicCoverage();
+
+    Character * createCharacterEntity();
 
     void testDataAppend(const Atlas::Message::Element &);
 };
