@@ -139,7 +139,12 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
             return v;
         }
     }
-    return Py_FindMethod(Task_methods, (PyObject *)self, name);
+    PyObject * ret = PyObject_GenericGetAttr((PyObject *)self, oname);
+    if (ret != 0) {
+        return ret;
+    }
+    ret = Py_FindMethod(Task_methods, (PyObject *)self, name);
+    return ret;
 }
 
 static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
@@ -202,18 +207,18 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    if (!PyCharacter_Check(arg)) {
-            PyErr_SetString(PyExc_TypeError, "Task requires a character");
-            return -1;
+    if (!PyTask_Check(arg)) {
+        PyErr_SetString(PyExc_TypeError, "Task requires a core task");
+        return -1;
     }
-    PyEntity * character = (PyEntity *)arg;
+    PyTask * wrap_task = (PyTask *)arg;
 #ifndef NDEBUG
-    if (character->m_entity.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+    if (wrap_task->m_task == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL task Task.__init__");
         return NULL;
     }
 #endif // NDEBUG
-    self->m_task = new TaskScript(*character->m_entity.c);
+    self->m_task = wrap_task->m_task;
     return 0;
 }
 
@@ -239,7 +244,7 @@ PyTypeObject PyTask_Type = {
         (getattrofunc)Task_getattro,    // tp_getattro
         (setattrofunc)Task_setattro,    // tp_setattro
         0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "Task objects",                 // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
