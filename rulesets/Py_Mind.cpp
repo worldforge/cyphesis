@@ -67,7 +67,7 @@ static void Mind_dealloc(PyMind *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Mind_getattr(PyMind *self, char *name)
+static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -76,6 +76,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
     }
 #endif // NDEBUG
     // If operation search gets to here, it goes no further
+    char * name = PyString_AsString(oname);
     if (strstr(name, "_operation") != NULL) {
         PyErr_SetString(PyExc_AttributeError, name);
         return NULL;
@@ -151,7 +152,7 @@ static PyObject * Mind_getattr(PyMind *self, char *name)
     return Py_FindMethod(Mind_methods, (PyObject *)self, name);
 }
 
-static int Mind_setattr(PyMind *self, char *name, PyObject *v)
+static int Mind_setattro(PyMind *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
@@ -159,6 +160,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "map") == 0) {
         PyErr_SetString(PyExc_RuntimeError, "Setting map on mind is forbidden");
         return -1;
@@ -228,8 +230,8 @@ PyTypeObject PyMind_Type = {
         // methods 
         (destructor)Mind_dealloc,       // tp_dealloc
         0,                              // tp_print
-        (getattrfunc)Mind_getattr,      // tp_getattr
-        (setattrfunc)Mind_setattr,      // tp_setattr
+        0,                              // tp_getattr
+        0,                              // tp_setattr
         (cmpfunc)Mind_compare,          // tp_compare
         0,                              // tp_repr
         0,                              // tp_as_number
@@ -238,8 +240,8 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_hash
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Mind_getattro,    // tp_getattro
+        (setattrofunc)Mind_setattro,    // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Mind objects",                 // tp_doc
