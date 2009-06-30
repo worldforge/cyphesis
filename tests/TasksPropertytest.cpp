@@ -17,7 +17,7 @@
 
 // $Id$
 
-//#include "PropertyCoverage.h"
+#include "PropertyCoverage.h"
 #include "TestWorld.h"
 
 #include "rulesets/Entity.h"
@@ -35,25 +35,13 @@ int main()
 {
     TasksProperty * ap = new TasksProperty;
 
-//    PropertyCoverage pc(ap);
-//    pc.basicCoverage();
+    PropertyCoverage pc(ap);
 
-    Entity * const tlve = new Entity("0", 0);
-    BaseWorld * const wrld = new TestWorld(*tlve);
-    Character * const ent = new Character("1", 1);
-    Task * const task = new TaskScript(*ent);
-
-    ent->m_location.m_loc = tlve;
-    ent->m_location.m_pos = Point3D(1,0,0);
-
-    tlve->m_contains = new LocatedEntitySet;
-    tlve->m_contains->insert(ent);
-
+    Character * chr = pc.createCharacterEntity();
+    Task * task = new TaskScript(*chr);
     task->progress() = .1;
     task->rate() = .1;
-    ent->setTask(task);
-
-    Element val;
+    chr->setTask(task);
 
     MapType map;
     map["one"] = 23;
@@ -62,19 +50,9 @@ int main()
     map["four"] = ListType(1, 23);
     map["five"] = ListType(1, 23.);
     map["six"] = ListType(1, "twenty_three");
+    pc.testDataAppend(ListType(1, map));
 
-    ap->get(val);
-
-    ap->set(ListType(1, map));
-
-    ap->install(ent);
-
-    ap->get(val);
-
-    ap->set(ListType(1, map));
-
-    ap->set(23);
-    ap->set(ListType(1, 23));
+    pc.basicCoverage();
 
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
