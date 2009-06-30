@@ -177,7 +177,7 @@ static void Entity_dealloc(PyEntity *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Entity_getattr(PyEntity *self, char *name)
+static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
 {
 #ifndef NDEBUG
     if (self->m_entity.e == NULL) {
@@ -185,6 +185,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     // If operation search gets to here, it goes no further
     if (strstr(name, "_operation") != NULL) {
         PyErr_SetString(PyExc_AttributeError, name);
@@ -259,7 +260,7 @@ static PyObject * Entity_getattr(PyEntity *self, char *name)
     return Py_FindMethod(self->ob_type->tp_methods, (PyObject *)self, name);
 }
 
-static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
+static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_entity.e == NULL) {
@@ -267,6 +268,7 @@ static int Entity_setattr(PyEntity *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "map") == 0) {
         PyErr_SetString(PyExc_AttributeError, "map attribute forbidden");
         return -1;
@@ -367,8 +369,8 @@ PyTypeObject PyLocatedEntity_Type = {
         /* methods */
         (destructor)Entity_dealloc,     /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Entity_getattr,    /*tp_getattr*/
-        (setattrfunc)Entity_setattr,    /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)Entity_compare,        /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -377,8 +379,8 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Entity_getattro,  // tp_getattro
+        (setattrofunc)Entity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "LocatedEntity objects",        // tp_doc
@@ -410,8 +412,8 @@ PyTypeObject PyEntity_Type = {
         /* methods */
         (destructor)Entity_dealloc,     /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Entity_getattr,    /*tp_getattr*/
-        (setattrfunc)Entity_setattr,    /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)Entity_compare,        /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -420,8 +422,8 @@ PyTypeObject PyEntity_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Entity_getattro,  // tp_getattro
+        (setattrofunc)Entity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Entity objects",               // tp_doc
@@ -453,8 +455,8 @@ PyTypeObject PyCharacter_Type = {
         /* methods */
         (destructor)Entity_dealloc,     /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Entity_getattr,    /*tp_getattr*/
-        (setattrfunc)Entity_setattr,    /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)Entity_compare,        /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -463,8 +465,8 @@ PyTypeObject PyCharacter_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Entity_getattro,  // tp_getattro
+        (setattrofunc)Entity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Character objects",            // tp_doc
