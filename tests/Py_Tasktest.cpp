@@ -33,6 +33,7 @@ int main()
     assert(PyRun_SimpleString("Task('1')") == -1);
     assert(PyRun_SimpleString("from server import Character") == 0);
     assert(PyRun_SimpleString("c=Character('1')") == 0);
+#if 0
     assert(PyRun_SimpleString("t=Task(c)") == 0);
     assert(PyRun_SimpleString("print t.character") == 0);
     assert(PyRun_SimpleString("print t.progress") == 0);
@@ -56,6 +57,7 @@ int main()
     assert(PyRun_SimpleString("print t.next_tick('1')") == -1);
     assert(PyRun_SimpleString("t.irrelevant()") == 0);
     assert(PyRun_SimpleString("print t.obsolete()") == 0);
+#endif
 
     shutdown_python_api();
     return 0;
