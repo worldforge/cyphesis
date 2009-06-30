@@ -155,7 +155,7 @@ static int Mind_setattr(PyMind *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.setattr");
         return -1;
     }
 #endif // NDEBUG
