@@ -64,16 +64,18 @@ int PythonScriptFactory::getClass()
         log(ERROR, String::compose("PyCallable_Check returned true, "
                                    "but PyType_Check returned false \"%1.%2\"",
                                    m_package, m_type));
+        Py_DECREF(m_class);
+        m_class = 0;
+        return -1;
     }
-    std::cout << m_type << ": ";
-    if (PyType_IsSubtype((PyTypeObject*)m_class, &PyLocatedEntity_Type)) {
-        std::cout << "Real LocatedEntity type!" << std::endl << std::flush;
-    } else if (PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type)) {
-        std::cout << "Real Entity type!" << std::endl << std::flush;
-    } else if (PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
-        std::cout << "Real Character type!" << std::endl << std::flush;
-    } else {
-        std::cout << "Not an entity type!" << std::endl << std::flush;
+    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
+        !PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
+        log(ERROR, String::compose("Python class does not inherit from "
+                                   "a core server type. \"%1.%2\"",
+                                   m_package, m_type));
+        Py_DECREF(m_class);
+        m_class = 0;
+        return -1;
     }
 
     return 0;
