@@ -10,7 +10,8 @@ from common import const
 from types import *
 
 from physics import Vector3D
-from cyphesis.Thing import Thing
+
+import server
 
 from mind.Memory import Memory
 from mind.Knowledge import Knowledge
@@ -31,7 +32,7 @@ def get_dict_func(self, func_str, func_undefined):
         func=func_undefined
     return func
 
-class NPCMind(Thing):
+class NPCMind(server.Mind):
     """Mind class for most mobile entities in the game.
 
     An NPCMind object is associated with all NPC and similar entities on a
@@ -52,7 +53,7 @@ class NPCMind(Thing):
     are activated by an event."""
     ########## Initialization
     def __init__(self, cppthing):
-        self.cinit(cppthing)
+        self.mind = cppthing
 
         self.knowledge=Knowledge()
         self.mem=Memory(map=self.map)
