@@ -71,6 +71,24 @@ PythonTaskScriptFactory::PythonTaskScriptFactory(const std::string & package,
         m_class = 0;
         return;
     }
+    if (!PyType_Check(m_class)) {
+        log(ERROR, String::compose("PyCallable_Check returned true, "
+                                   "but PyType_Check returned false \"%1.%2\"",
+                                   m_package, classname));
+        Py_DECREF(m_class);
+        m_class = 0;
+        return;
+    }
+
+    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
+        log(ERROR, String::compose("Python class does not inherit from "
+                                   "a core server type. \"%1.%2\"",
+                                   m_package, classname));
+        Py_DECREF(m_class);
+        m_class = 0;
+        return;
+    }
+
     return;
 }
 
@@ -90,17 +108,6 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
     if (m_class == 0) {
         std::cout << "No class" << std::endl << std::flush;
         return 0;
-    }
-
-    if (!PyType_Check(m_class)) {
-        std::cout << "Non type" << std::endl << std::flush;
-    } else {
-        std::cout << "Real type!" << std::endl << std::flush;
-        if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
-            std::cout << "but not a task type :(" << std::endl << std::flush;
-        } else {
-            std::cout << "Real task type!" << std::endl << std::flush;
-        }
     }
 
     TaskScript * task = new TaskScript(chr);
