@@ -75,12 +75,7 @@ static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
         return NULL;
     }
 #endif // NDEBUG
-    // If operation search gets to here, it goes no further
     char * name = PyString_AsString(oname);
-    if (strstr(name, "_operation") != NULL) {
-        PyErr_SetString(PyExc_AttributeError, name);
-        return NULL;
-    }
     if (strcmp(name, "id") == 0) {
         return (PyObject *)PyString_FromString(self->m_mind->getId().c_str());
     }
@@ -149,18 +144,30 @@ static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
     if (mind->getAttr(name, attr)) {
         return MessageElement_asPyObject(attr);
     }
+    PyObject * ret = PyObject_GenericGetAttr((PyObject *)self, oname);
+    if (ret != 0) {
+        return ret;
+    }
     return Py_FindMethod(Mind_methods, (PyObject *)self, name);
 }
 
 static int Mind_setattro(PyMind *self, PyObject *oname, PyObject *v)
 {
+    char * name = PyString_AsString(oname);
+    if (strcmp(name, "mind") == 0) {
+        if (!PyMind_Check(v)) {
+            PyErr_SetString(PyExc_TypeError, "Mind.mind requires Mind");
+            return -1;
+        }
+        self->m_mind = ((PyMind*)v)->m_mind;
+        return 0;
+    }
 #ifndef NDEBUG
     if (self->m_mind == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.setattr");
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
     if (strcmp(name, "map") == 0) {
         PyErr_SetString(PyExc_RuntimeError, "Setting map on mind is forbidden");
         return -1;
@@ -214,7 +221,7 @@ static int Mind_init(PyMind * self, PyObject * args, PyObject * kwds)
     }
     long intId = integerId(id);
     if (intId == -1L) {
-        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+        PyErr_SetString(PyExc_TypeError, "Mind() requires string/int ID");
         return -1;
     }
     self->m_mind = new BaseMind(id, intId);
