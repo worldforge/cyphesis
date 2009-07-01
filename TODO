@@ -1,3 +1,7 @@
+Note that in Py_Thing.cpp we use PyObject_GenericGetattr to look in the
+overloaded method table, which includes the methods in python and in the
+wrapper. See if this works elsewhere.
+
 Look through dynamic casts and consider when it would be cleaner to
 extend the interface in the base class.
 
