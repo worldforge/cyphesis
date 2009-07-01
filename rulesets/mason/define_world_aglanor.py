@@ -15,10 +15,7 @@
 # 2005-12-06 Created basic map and town
 
 from atlas import *
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 from mind.panlingua import interlinguish
 il=interlinguish
 from world import probability

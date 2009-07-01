@@ -9,10 +9,7 @@ from physics import Point3D
 
 from mind.Goal import Goal
 from mind.goals.common.common import *
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 import types
 

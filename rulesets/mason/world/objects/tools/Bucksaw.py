@@ -3,9 +3,7 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
-
-class Bucksaw(Thing):
+class Bucksaw(server.Thing):
     """This is a large saw for cutting logs"""
     def cut_operation(self, op):
         print "Bucksaw.cur_operation() Don't call this."

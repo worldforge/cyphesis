@@ -2,8 +2,9 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
-from cyphesis.Thing import Thing
 from common import log,const
+
+import server
 
 # Rate at which energy is used per tick
 energyConsumption = 0.01
@@ -18,7 +19,7 @@ energyLoss = 0.1
 # Weight gained from the excess energy
 massGain = 0.5
 
-class Animal(Thing):
+class Animal(server.Thing):
     """This is base class for all kind of animals"""
     def __init__(self, cppthing, **kw):
         self.base_init(cppthing, kw)

@@ -4,9 +4,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Scythe(Thing):
+class Scythe(server.Thing):
     """This is a scythe for light cutting vegetation"""
     def cut_operation(self, op):
         ent=Entity(self.id,status=self.status-0.01)

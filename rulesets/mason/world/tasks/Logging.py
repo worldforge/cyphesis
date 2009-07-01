@@ -8,12 +8,7 @@ from physics import Vector3D
 
 import math
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
-
-from cyphesis.Thing import Thing
+from random import *
 
 import server
 

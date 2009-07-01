@@ -4,9 +4,7 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
-
-class Axe(Thing):
+class Axe(server.Thing):
     """This is base class for axes, this one just ordinary axe"""
     def cut_operation(self, op):
         print "Axe.cut_operation() Don't call this."

@@ -3,7 +3,6 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from common import const
 from world.objects.buildings.House import House
 

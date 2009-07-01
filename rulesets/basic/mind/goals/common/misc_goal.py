@@ -6,10 +6,7 @@ from physics import *
 from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 import types
 

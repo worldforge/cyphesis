@@ -6,8 +6,6 @@ from physics import *
 from physics import Quaternion
 from physics import Vector3D
 
-from cyphesis.Thing import Thing
-
 import server
 
 class Slice(server.Task):

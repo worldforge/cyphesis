@@ -1,10 +1,7 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 class Statistics(object):
     """A very simple Statistics example."""

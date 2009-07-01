@@ -3,9 +3,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Cleaver(Thing):
+class Cleaver(server.Thing):
     """This is base class for axes, this one just ordinary axe"""
     def cut_operation(self, op):
         to_ = op[0].id

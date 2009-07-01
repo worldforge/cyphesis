@@ -3,9 +3,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Pile(Thing):
+class Pile(server.Thing):
     """Using a pile to extinguish the fire"""
     def disperse_operation(self, op):
         to_ = op[0].id

@@ -7,12 +7,7 @@ from physics import Quaternion
 from physics import Vector3D
 from physics import Point3D
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
-
-from cyphesis.Thing import Thing
+from random import *
 
 import server
 

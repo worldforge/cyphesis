@@ -2,14 +2,10 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 from atlas import *
 
-from cyphesis.Thing import Thing
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
-from physics import Vector3D
+from random import *
 
 import atlas
+import server
 
 class Deer(Thing):
     def chop_operation(self, op):

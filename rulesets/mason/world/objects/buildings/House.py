@@ -3,14 +3,15 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from cyphesis import probability
 from common import log,const
 
 from physics import Vector3D
 from physics import Point3D
 
-class House(Thing):
+import server
+
+class House(server.Thing):
     """This base class for houses, building material is wood"""
     def tick_operation(self, op):
         """check if we should self-combust

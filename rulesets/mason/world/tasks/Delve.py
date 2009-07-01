@@ -7,8 +7,6 @@ from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
 
-from cyphesis.Thing import Thing
-
 import server
 
 class Delve(server.Task):

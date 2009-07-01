@@ -2,13 +2,9 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from cyphesis.Thing import Thing
 from common import log,const
 from physics import Vector3D
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 import server
 

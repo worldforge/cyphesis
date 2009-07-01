@@ -4,9 +4,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Pickaxe(Thing):
+class Pickaxe(server.Thing):
     """This is a pickaxe for heavy digging and quarrying """
     def cut_operation(self, op):
         ent=Entity(self.id,status=self.status-0.01)

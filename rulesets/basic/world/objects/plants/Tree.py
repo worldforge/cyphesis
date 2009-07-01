@@ -1,12 +1,8 @@
 from atlas import *
 
-from cyphesis.Thing import Thing
 from common import log,const
 #from world.objects.plants import prob
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 from Vector3D import Vector3D
 
 import server
@@ -127,7 +123,7 @@ def cs(a, b, max):
     else:
        return max
 
-class Tree(Thing):
+class Tree(server.Thing):
     #This base class for houses, building material is wood#
     def tick_operation(self, op):
         if debug_tree:

@@ -3,10 +3,7 @@
 
 from mind.Goal import Goal
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 ############################ FIND HOME ####################################
 

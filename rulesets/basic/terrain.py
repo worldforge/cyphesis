@@ -2,10 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 from mind.panlingua import interlinguish
 il=interlinguish
 from world import probability

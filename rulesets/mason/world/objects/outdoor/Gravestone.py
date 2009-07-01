@@ -4,10 +4,7 @@
 from atlas import *
 from common import log,const
 from physics import Vector3D
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 import server
 

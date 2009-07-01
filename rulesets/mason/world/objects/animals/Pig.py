@@ -2,16 +2,13 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 from atlas import *
 
-from cyphesis.Thing import Thing
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 from physics import Vector3D
 
 import atlas
+import server
 
-class Pig(Thing):
+class Pig(server.Thing):
     """ A pig """
     def chop_operation(self, op):
         if self.mass<1:

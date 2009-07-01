@@ -1,6 +1,5 @@
 from atlas import *
 
-from cyphesis.Thing import Thing
 from world.objects.plants.seeds.Seed import Seed
 
 class Acorn(Seed):

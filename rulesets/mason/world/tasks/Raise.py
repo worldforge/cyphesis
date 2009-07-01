@@ -10,12 +10,7 @@ from common import const
 
 import server
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
-
-from cyphesis.Thing import Thing
+from random import *
 
 class Raise(server.Task):
     """ A proof of concept task for raiseing a heavy item from the ground."""

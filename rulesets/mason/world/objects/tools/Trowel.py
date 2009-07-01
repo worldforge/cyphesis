@@ -3,9 +3,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Trowel(Thing):
+class Trowel(server.Thing):
     """This is tool for planting seeds"""
     def sow_operation(self, op):
         to_ = op[0].id

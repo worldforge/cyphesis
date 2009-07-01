@@ -5,10 +5,7 @@ from atlas import *
 from physics import *
 from physics import Vector3D
 
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 

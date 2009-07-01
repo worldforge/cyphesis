@@ -4,9 +4,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Sword(Thing):
+class Sword(server.Thing):
     """This is base class for swords, this one just ordinary sword"""
     def cut_operation(self, op):
         to_ = op[1].id

@@ -3,10 +3,7 @@
 
 from atlas import *
 from common import log,const
-try:
-  from random import *
-except ImportError:
-  from whrandom import *
+from random import *
 
 import server
 

@@ -4,9 +4,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Shovel(Thing):
+class Shovel(server.Thing):
     """This is a shovel for light digging"""
     def cut_operation(self, op):
         ent=Entity(self.id,status=self.status-0.01)
