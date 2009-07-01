@@ -65,6 +65,17 @@ int PythonScriptFactory::getClass()
                                    "but PyType_Check returned false \"%1.%2\"",
                                    m_package, m_type));
     }
+    std::cout << m_type << ": ";
+    if (PyType_IsSubtype((PyTypeObject*)m_class, &PyLocatedEntity_Type)) {
+        std::cout << "Real LocatedEntity type!" << std::endl << std::flush;
+    } else if (PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type)) {
+        std::cout << "Real Entity type!" << std::endl << std::flush;
+    } else if (PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
+        std::cout << "Real Character type!" << std::endl << std::flush;
+    } else {
+        std::cout << "Not an entity type!" << std::endl << std::flush;
+    }
+
     return 0;
 }
 
