@@ -31,7 +31,7 @@ class PythonScript : public PythonWrapper {
     /// \brief Python instance object which implements the script for an entity
     PyObject * scriptObject;
   public:
-    PythonScript(PyObject * object, PyObject * wrapper);
+    PythonScript(PyObject * object);
     virtual ~PythonScript();
 };
 

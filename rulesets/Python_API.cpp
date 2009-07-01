@@ -398,14 +398,15 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     if (py_class == NULL) { return; }
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
+
     PyObject * o = Create_PyScript((PyObject *)wrapper, py_class);
+
+    Py_DECREF(wrapper);
     Py_DECREF(py_class);
 
     if (o != NULL) {
-        mind->setScript(new PythonEntityScript(o, (PyObject *)wrapper));
+        mind->setScript(new PythonEntityScript(o));
     }
-
-    Py_DECREF(wrapper);
 }
 
 static PyObject * is_location(PyObject * self, PyObject * loc)

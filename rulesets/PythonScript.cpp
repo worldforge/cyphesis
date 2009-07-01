@@ -22,9 +22,8 @@
 /// \brief PythonScript constructor
 ///
 /// @param o the python object instantiated from the script class.
-/// @param wrapper the python object used to wrap the C++ object for the script
-PythonScript::PythonScript(PyObject * o, PyObject * wrapper) :
-              PythonWrapper(wrapper), scriptObject(o)
+PythonScript::PythonScript(PyObject * o) :
+              PythonWrapper(o), scriptObject(o)
 {
 }
 

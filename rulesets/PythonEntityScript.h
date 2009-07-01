@@ -26,7 +26,7 @@
 /// \ingroup Scripts
 class PythonEntityScript : public PythonScript {
   public:
-    explicit PythonEntityScript(PyObject *, PyObject *);
+    explicit PythonEntityScript(PyObject *);
     virtual ~PythonEntityScript();
 
     virtual bool operation(const std::string & opname,

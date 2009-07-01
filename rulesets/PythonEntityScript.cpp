@@ -37,8 +37,8 @@
 static const bool debug_flag = false;
 
 /// \brief PythonEntityScript constructor
-PythonEntityScript::PythonEntityScript(PyObject * o, PyObject * wrapper) :
-                    PythonScript(o, wrapper)
+PythonEntityScript::PythonEntityScript(PyObject * o) :
+                    PythonScript(o)
 {
 }
 

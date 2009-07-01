@@ -118,13 +118,14 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
     assert(wrapper != 0);
     wrapper->m_task = task;
     assert(wrapper->m_task != 0);
-    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
 
-    if (script != NULL) {
-        task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
-    }
+    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
 
     Py_DECREF(wrapper);
     
+    if (script != NULL) {
+        task->setScript(new PythonEntityScript(script));
+    }
+
     return task;
 }
