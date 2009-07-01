@@ -20,11 +20,11 @@
 #ifndef RULESETS_PYTHON_ENTITY_SCRIPT_H
 #define RULESETS_PYTHON_ENTITY_SCRIPT_H
 
-#include "PythonScript.h"
+#include "PythonWrapper.h"
 
 /// \brief Script class for Python scripts attached to an Entity
 /// \ingroup Scripts
-class PythonEntityScript : public PythonScript {
+class PythonEntityScript : public PythonWrapper {
   public:
     explicit PythonEntityScript(PyObject *);
     virtual ~PythonEntityScript();

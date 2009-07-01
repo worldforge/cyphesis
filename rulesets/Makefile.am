@@ -87,7 +87,6 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Python_Script_Utils.h \
 			    PythonContext.cpp PythonContext.h \
 			    PythonWrapper.cpp PythonWrapper.h \
-			    PythonScript.cpp PythonScript.h \
 			    PythonEntityScript.cpp PythonEntityScript.h \
 			    PythonArithmeticScript.cpp PythonArithmeticScript.h
 
