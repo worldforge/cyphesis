@@ -399,13 +399,15 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
 
-    PyObject * o = Create_PyScript((PyObject *)wrapper, py_class);
+    PyObject * script = Create_PyScript((PyObject *)wrapper, py_class);
 
     Py_DECREF(wrapper);
     Py_DECREF(py_class);
 
-    if (o != NULL) {
-        mind->setScript(new PythonEntityScript(o));
+    if (script != NULL) {
+        mind->setScript(new PythonEntityScript(script));
+
+        Py_DECREF(script);
     }
 }
 

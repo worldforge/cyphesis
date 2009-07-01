@@ -125,6 +125,8 @@ Task * PythonTaskScriptFactory::newTask(Character & chr)
     
     if (script != NULL) {
         task->setScript(new PythonEntityScript(script));
+
+        Py_DECREF(script);
     }
 
     return task;

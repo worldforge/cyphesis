@@ -23,11 +23,10 @@
 ///
 /// @param o the python object instantiated from the script class.
 PythonScript::PythonScript(PyObject * o) :
-              PythonWrapper(o), scriptObject(o)
+              PythonWrapper(o)
 {
 }
 
 PythonScript::~PythonScript()
 {
-    Py_DECREF(scriptObject);
 }

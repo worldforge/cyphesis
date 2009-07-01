@@ -50,13 +50,13 @@ bool PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
 {
-    assert(scriptObject != NULL);
+    assert(m_wrapper != NULL);
     std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
                                                             << std::flush;);
     // This check isn't really necessary, except it saves the conversion
     // time.
-    if (!PyObject_HasAttrString(scriptObject, (char *)(op_name.c_str()))) {
+    if (!PyObject_HasAttrString(m_wrapper, (char *)(op_name.c_str()))) {
         debug( std::cout << "No method to be found for " << op_name
                          << std::endl << std::flush;);
         return false;
@@ -65,7 +65,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
     PyConstOperation * py_op = newPyConstOperation();
     py_op->operation = op;
     PyObject * ret;
-    ret = PyObject_CallMethod(scriptObject, (char *)(op_name.c_str()),
+    ret = PyObject_CallMethod(m_wrapper, (char *)(op_name.c_str()),
                                             (char *)"(O)", py_op);
     Py_DECREF(py_op);
     if (ret == NULL) {
@@ -118,7 +118,7 @@ void PythonEntityScript::hook(const std::string & function,
         return;
     }
 
-    PyObject * ret = PyObject_CallMethod(scriptObject,
+    PyObject * ret = PyObject_CallMethod(m_wrapper,
                                          (char *)(function.c_str()),
                                          (char *)"(O)",
                                          wrapper);

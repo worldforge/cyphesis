@@ -126,6 +126,8 @@ int PythonScriptFactory::addScript(Entity * entity)
 
     if (script != NULL) {
         entity->setScript(new PythonEntityScript(script));
+
+        Py_DECREF(script);
     }
 
     return (script == NULL) ? -1 : 0;
