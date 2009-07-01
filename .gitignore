@@ -30,3 +30,5 @@ cyloadrules
 cypasswd
 cypython
 tests/*test
+doc
+python_doc
