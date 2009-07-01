@@ -3,12 +3,11 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from physics import Point3D
 
 import server
 
-class Tinderbox(Thing):
+class Tinderbox(server.Thing):
     """This is base class for axes, this one just ordinary axe"""
     def ignite_operation(self, op):
         to_ = op[0].id

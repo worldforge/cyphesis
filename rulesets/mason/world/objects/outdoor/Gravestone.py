@@ -2,7 +2,6 @@
 #Copyright (C) 2005 Erik Hjortsberg (See the file COPYING for details).
 
 from atlas import *
-from cyphesis.Thing import Thing
 from common import log,const
 from physics import Vector3D
 try:
@@ -10,6 +9,7 @@ try:
 except ImportError:
   from whrandom import *
 
+import server
 
 """
 When digging at a grave, skeleton parts will be created. We might want to add some waiting period or some kind of capacity though.
@@ -27,6 +27,6 @@ def create_skeletonpart(self, op):
     retops = retops + Operation("create", Entity(name=item,parents=[item],location=newloc.copy()), to=self)
     return retops
 
-class Gravestone(Thing):
+class Gravestone(server.Thing):
     def dig_operation(self, op):
         return create_skeletonpart(self, op)

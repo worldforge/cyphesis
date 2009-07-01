@@ -3,9 +3,6 @@ from atlas import *
 from cyphesis.Thing import Thing
 from world.objects.plants.seeds.Seed import Seed
 
-import atlas
-
-
 class Acorn(Seed):
     """An acorn which germinates."""
     def germinate_operation(self, op):

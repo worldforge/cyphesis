@@ -3,12 +3,11 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from common import const
 
 import server
 
-class Fire(Thing):
+class Fire(server.Thing):
     """fire to burn things up"""
     #CHEAT! make it more realistic (like spreading to things that burn near)
     def extinguish_operation(self, op):

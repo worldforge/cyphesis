@@ -3,11 +3,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
-
 import server
 
-class Garment(Thing):
+class Garment(server.Thing):
     """This is base class for clothing. This mechanism is just a quick hacky
        way to modify the guise attribute."""
     def wear_operation(self, op):

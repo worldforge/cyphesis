@@ -2,14 +2,15 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from cyphesis.Thing import Thing
 from common import log,const
 try:
   from random import *
 except ImportError:
   from whrandom import *
 
-class Weather(Thing):
+import server
+
+class Weather(server.Thing):
     def tick_operation(self, op):
         res = Oplist()
         optick = Operation("tick", to=self)

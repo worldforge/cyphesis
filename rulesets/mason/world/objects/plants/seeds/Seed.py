@@ -1,6 +1,5 @@
 from atlas import *
 
-from cyphesis.Thing import Thing
 from common import log,const
 try:
   from random import *
@@ -8,12 +7,13 @@ except ImportError:
   from whrandom import *
 
 import atlas
+import server
 
 debug_seed = 0
 
 speed = 1
 
-class Seed(Thing):
+class Seed(server.Thing):
     """Base for kinds of seeds and fruit."""
     def tick_operation(self, op): pass
 #        opTick=Operation("tick",to=self)

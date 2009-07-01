@@ -3,9 +3,9 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
+import server
 
-class Campfire(Thing):
+class Campfire(server.Thing):
     def burn_operation(self, op):
         ret=Oplist()
         for fuel in self.contains:

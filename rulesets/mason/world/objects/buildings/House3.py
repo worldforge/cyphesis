@@ -1,16 +1,17 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2001 Al Riddoch (See the file COPYING for details).
 
-from cyphesis.Thing import Thing
 from atlas import *
 from physics import Vector3D
 from physics import Point3D
+
+import server
 
 # bbox = 4,4,2.5
 # bmedian = 3.5,3.5,2.5
 # offset = SW corner = -0.5,-0.5
 
-class House3(Thing):
+class House3(server.Thing):
     def setup_operation(self, op):
         ret = Oplist()
         # West wall  with door

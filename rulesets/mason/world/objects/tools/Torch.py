@@ -3,13 +3,12 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from physics import Point3D
 from physics import BBox
 
 import server
 
-class Torch(Thing):
+class Torch(server.Thing):
     """This is base class for axes, this one just ordinary axe"""
     def ignite_operation(self, op):
         fire_child=None

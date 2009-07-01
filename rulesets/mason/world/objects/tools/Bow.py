@@ -4,12 +4,11 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from physics import Vector3D
 
 import server
 
-class Bow(Thing):
+class Bow(server.Thing):
     """This is base class for bows, this one just ordinary bow"""
     def shoot_operation(self, op):
         ammo = op[0].id

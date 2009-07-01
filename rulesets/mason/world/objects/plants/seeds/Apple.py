@@ -3,11 +3,7 @@
 
 from atlas import *
 
-from cyphesis.Thing import Thing
 from world.objects.plants.seeds.Seed import Seed
-
-import atlas
-
 
 class Apple(Seed):
     """An apple which can be eaten, and ferment as it ages."""

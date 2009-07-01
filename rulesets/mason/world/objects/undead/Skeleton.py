@@ -10,7 +10,9 @@ try:
 except ImportError:
   from whrandom import *
 
-class Skeleton(Thing):
+import server
+
+class Skeleton(server.Character):
     def touch_operation(self, op):
         retops = Oplist()
         if self.status<0: return

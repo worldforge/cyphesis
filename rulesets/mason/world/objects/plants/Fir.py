@@ -1,9 +1,8 @@
 from atlas import *
-from cyphesis.Thing import Thing
 
-import atlas
+import server
 
-class Fir(Thing):
+class Fir(server.Thing):
     def eat_operation(self, op):
         ent = Entity(self.id, status = self.status - 0.001)
         res = Operation("set", ent, to=self)
