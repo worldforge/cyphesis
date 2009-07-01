@@ -187,10 +187,6 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     // If operation search gets to here, it goes no further
-    if (strstr(name, "_operation") != NULL) {
-        PyErr_SetString(PyExc_AttributeError, name);
-        return NULL;
-    }
     if (strcmp(name, "type") == 0) {
         if (self->m_entity.e->getType() == NULL) {
             PyErr_SetString(PyExc_AttributeError, name);
@@ -257,7 +253,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
             return Py_None;
         }
     }
-    return Py_FindMethod(self->ob_type->tp_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
@@ -330,34 +326,66 @@ static int LocatedEntity_init(PyEntity * self, PyObject * args, PyObject * kwds)
 
 static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
-    char * id = NULL;
-
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    PyObject * arg;
+    if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    long intId = integerId(id);
-    if (intId == -1L) {
-        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
-        return -1;
+    if (PyString_Check(arg)) {
+        char * id = PyString_AsString(arg);
+        long intId = integerId(id);
+        if (intId == -1L) {
+            PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+            return -1;
+        }
+        self->m_entity.e = new Entity(id, intId);
+        return 0;
     }
-    self->m_entity.e = new Entity(id, intId);
-    return 0;
+    if (PyEntity_Check(arg) || PyCharacter_Check(arg)) {
+        PyEntity * character = (PyEntity *)arg;
+#ifndef NDEBUG
+        if (character->m_entity.c == NULL) {
+            PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+            return -1;
+        }
+#endif // NDEBUG
+        self->m_entity.c = character->m_entity.c;
+        return 0;
+    }
+    PyErr_SetString(PyExc_TypeError, "Entity() requires string ID or Entity");
+    return -1;
+    
 }
 
 static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
-    char * id = NULL;
-
-    if (!PyArg_ParseTuple(args, "s", &id)) {
+    PyObject * arg;
+    if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    long intId = integerId(id);
-    if (intId == -1L) {
-        PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
-        return -1;
+    if (PyString_Check(arg)) {
+        char * id = PyString_AsString(arg);
+        long intId = integerId(id);
+        if (intId == -1L) {
+            PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
+            return -1;
+        }
+        self->m_entity.c = new Character(id, intId);
+        return 0;
     }
-    self->m_entity.c = new Character(id, intId);
-    return 0;
+    if (PyEntity_Check(arg) || PyCharacter_Check(arg)) {
+        PyEntity * character = (PyEntity *)arg;
+#ifndef NDEBUG
+        if (character->m_entity.c == NULL) {
+            PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+            return -1;
+        }
+#endif // NDEBUG
+        self->m_entity.c = character->m_entity.c;
+        return 0;
+    }
+    PyErr_SetString(PyExc_TypeError, "Character() requires string ID or Character");
+    return -1;
+    
 }
 
 PyTypeObject PyLocatedEntity_Type = {
