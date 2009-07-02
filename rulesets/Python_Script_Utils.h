@@ -27,8 +27,6 @@
 class BaseMind;
 class Entity;
 
-void Create_PyEntity(Entity * entity, const std::string & package,
-                                    const std::string & type);
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type);
 PyObject * Create_PyScript(PyObject *, PyObject *);
