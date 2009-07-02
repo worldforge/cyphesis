@@ -367,6 +367,18 @@ PyObject * Get_PyClass(PyObject * module,
     return py_class;
 }
 
+PyObject * Get_PyModule(const std::string & package)
+{
+    PyObject * package_name = PyString_FromString((char *)package.c_str());
+    PyObject * module = PyImport_Import(package_name);
+    Py_DECREF(package_name);
+    if (module == NULL) {
+        log(ERROR, String::compose("Missing python module \"%1\"", package));
+        PyErr_Print();
+    }
+    return module;
+}
+
 PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
 {
     PyObject * pyob = PyEval_CallFunction(py_class,"(O)", wrapper);
@@ -385,17 +397,15 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type)
 {
-    PyObject * package_name = PyString_FromString((char *)package.c_str());
-    PyObject * module = PyImport_Import(package_name);
-    Py_DECREF(package_name);
+    PyObject * module = Get_PyModule(package);
     if (module == NULL) {
-        log(ERROR, String::compose("Missing python module \"%1\"", package));
-        PyErr_Print();
         return;
     }
     PyObject * py_class = Get_PyClass(module, package, type);
     Py_DECREF(module);
-    if (py_class == NULL) { return; }
+    if (py_class == NULL) {
+        return;
+    }
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
 
