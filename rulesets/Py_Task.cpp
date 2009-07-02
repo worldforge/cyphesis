@@ -143,6 +143,8 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
     if (ret != 0) {
         return ret;
     }
+    // PyObject_GenericGetAttr sets and error if nothing was found
+    PyErr_Clear();
     ret = Py_FindMethod(Task_methods, (PyObject *)self, name);
     return ret;
 }

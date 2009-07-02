@@ -69,7 +69,10 @@ void PythonArithmeticScript::set(const std::string & name, const float & val)
 {
     PyObject * pn = PyString_FromString(name.c_str());
     PyObject * py_val = PyFloat_FromDouble(val);
-    PyObject_GenericSetAttr(m_script, pn, py_val);
+    if (PyObject_GenericSetAttr(m_script, pn, py_val) == 0) {
+        // PyObject_GenericSetAttr sets and error if nothing was found
+        PyErr_Clear();
+    }
     Py_DECREF(pn);
     Py_DECREF(py_val);
 }

@@ -148,6 +148,8 @@ static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
     if (ret != 0) {
         return ret;
     }
+    // PyObject_GenericGetAttr sets and error if nothing was found
+    PyErr_Clear();
     return Py_FindMethod(Mind_methods, (PyObject *)self, name);
 }
 
