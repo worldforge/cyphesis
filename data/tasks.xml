@@ -14,7 +14,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Combat</string>
+      <string name="name">world.tasks.Combat.Combat</string>
     </map>
   </map>
 
@@ -33,7 +33,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Cultivate</string>
+      <string name="name">world.tasks.Cultivate.Cultivate</string>
     </map>
   </map>
 
@@ -52,7 +52,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Delve</string>
+      <string name="name">world.tasks.Delve.Delve</string>
     </map>
   </map>
 
@@ -71,7 +71,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Dig</string>
+      <string name="name">world.tasks.Dig.Dig</string>
     </map>
   </map>
 
@@ -90,7 +90,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Logging</string>
+      <string name="name">world.tasks.Logging.Logging</string>
     </map>
   </map>
 
@@ -109,7 +109,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Raise</string>
+      <string name="name">world.tasks.Raise.Raise</string>
     </map>
   </map>
 
@@ -128,7 +128,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Reap</string>
+      <string name="name">world.tasks.Reap.Reap</string>
     </map>
   </map>
 
@@ -147,7 +147,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Ram</string>
+      <string name="name">world.tasks.Ram.Ram</string>
     </map>
   </map>
 
@@ -166,7 +166,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Slaughter</string>
+      <string name="name">world.tasks.Slaughter.Slaughter</string>
     </map>
   </map>
 
@@ -185,7 +185,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Slice</string>
+      <string name="name">world.tasks.Slice.Slice</string>
     </map>
   </map>
 
@@ -204,7 +204,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Sharpen</string>
+      <string name="name">world.tasks.Sharpen.Sharpen</string>
     </map>
   </map>
 
@@ -222,7 +222,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Trailblaze</string>
+      <string name="name">world.tasks.Trailblaze.Trailblaze</string>
     </map>
   </map>
 
