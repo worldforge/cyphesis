@@ -483,7 +483,8 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     std::string script_package = script_name.substr(0, ptr);
     std::string script_class = script_name.substr(ptr + 1);
 
-    TaskFactory * factory = new PythonTaskScriptFactory(script_package,
+    TaskFactory * factory = new PythonTaskScriptFactory(class_name,
+                                                        script_package,
                                                         script_class);
 
     Element activation_attr;

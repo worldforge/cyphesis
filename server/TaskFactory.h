@@ -56,7 +56,10 @@ class PythonTaskScriptFactory : public TaskFactory {
 
     /// \brief Name of the package containing the script
     std::string m_package;
-    /// \brief Name of the type within the package for the script
+    /// \brief Name of the class within the package for the script
+    std::string m_type;
+
+    /// \brief Name of the class within the package for the script
     std::string m_name;
 
     // FIXME #3 Work out what was intended by these methods, currently
@@ -64,8 +67,9 @@ class PythonTaskScriptFactory : public TaskFactory {
     int getClass();
     int addScript();
   public:
-    PythonTaskScriptFactory(const std::string & package,
-                            const std::string & name);
+    PythonTaskScriptFactory(const std::string & name,
+                            const std::string & package,
+                            const std::string & type);
     virtual ~PythonTaskScriptFactory();
 
     virtual Task * newTask(Character & chr);
