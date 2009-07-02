@@ -21,6 +21,7 @@
 
 #include "CreatorClient.h"
 
+#include "rulesets/Python_Script_Utils.h"
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_RootEntity.h"
 #include "rulesets/Py_WorldTime.h"
@@ -328,18 +329,13 @@ PyCreatorClient * newPyCreatorClient()
 int runClientScript(CreatorClient * c, const std::string & package,
                                        const std::string & func)
 {
-    PyObject * package_name = PyString_FromString(package.c_str());
-    PyObject * mod_dict = PyImport_Import(package_name);
-    Py_DECREF(package_name);
-    if (mod_dict == NULL) {
-        std::cerr << "Cld not find python module " << package
-                  << std::endl << std::flush;
-        PyErr_Print();
+    PyObject * module = Get_PyModule(package);
+    if (module == NULL) {
         return -1;
     }
-    PyObject * function = PyObject_GetAttrString(mod_dict,
+    PyObject * function = PyObject_GetAttrString(module,
                                                  (char *)func.c_str());
-    Py_DECREF(mod_dict);
+    Py_DECREF(module);
     if (function == NULL) {
         std::cerr << "Could not find " << func << " function" << std::endl
                   << std::flush;
