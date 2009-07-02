@@ -474,8 +474,17 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
                            class_name, script_language));
         return -1;
     }
+    std::string::size_type ptr = script_name.rfind(".");
+    if (ptr == std::string::npos) {
+        log(ERROR, compose("Task \"%1\" python script has a bad class "
+                           "name \"%2\".", class_name, script_name));
+        return -1;
+    }
+    std::string script_package = script_name.substr(0, ptr);
+    std::string script_class = script_name.substr(ptr + 1);
 
-    TaskFactory * factory = new PythonTaskScriptFactory(script_name, class_name);
+    TaskFactory * factory = new PythonTaskScriptFactory(script_package,
+                                                        script_class);
 
     Element activation_attr;
     if (class_desc->copyAttr("activation", activation_attr) != 0 ||
