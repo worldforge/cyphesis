@@ -19,6 +19,7 @@
 
 #include "rulesets/ArithmeticFactory.h"
 
+#include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonArithmeticScript.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Character.h"
@@ -53,21 +54,7 @@ PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
     }
 
     // Get a reference to the class
-    m_class = PyObject_GetAttrString(m_module, (char *)m_type.c_str());
-    if (m_class == NULL) {
-        log(ERROR, String::compose("Could not find python class \"%1.%2\"",
-                                   m_package, m_type));
-        PyErr_Print();
-        return;
-    }
-    if (PyCallable_Check(m_class) == 0) {
-        log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
-                                   m_package, m_type));
-        Py_DECREF(m_class);
-        m_class = 0;
-        return;
-    }
-    return;
+    m_class = Get_PyClass(m_module, m_package, m_type);
 }
 
 PythonArithmeticFactory::~PythonArithmeticFactory()
