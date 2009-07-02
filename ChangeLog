@@ -1,3 +1,24 @@
+2009-07-02  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/TaskFactory.cpp: Convert an assert that could cause a crash
+	  into a runtime check.
+
+	* client/Py_CreatorClient.cpp, rulesets/Py_Location.cpp,
+	  rulesets/Py_Mind.cpp, rulesets/Py_Task.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Py_Thing.h, rulesets/PythonArithmeticScript.cpp,
+	  rulesets/PythonEntityScript.cpp, rulesets/PythonEntityScript.h,
+	  rulesets/PythonScript.cpp, rulesets/PythonScript.h,
+	  rulesets/Python_API.cpp: Modify all types used as wrappers for
+	  core objects which are also extended by scripts into base classes
+	  so both functions can be handled by a single Python object
+	  inheriting from a class implemented in the core.
+
+	* server/TaskFactory.cpp, server/ScriptFactory.cpp: Modify the
+	  reference counting when setting up wrappers and extension scripts
+	  so they work more consistently and simply.
+
+	* Convert all Python scripts over to the new extension model.
+
 2009-06-29  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Character.cpp: Fix a typo in the debug output.
