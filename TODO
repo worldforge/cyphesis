@@ -1,3 +1,6 @@
+Fix Arithmetic and Mind code so the factory is not created every time,
+nor the type looked up every time.
+
 Make task scripts in the XML file confirm to the same scheme as entity
 scripts, and get rid of the toupper call.
 
