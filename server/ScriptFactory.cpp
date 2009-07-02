@@ -73,12 +73,8 @@ PythonScriptFactory::PythonScriptFactory(const std::string & package,
                                          m_module(0), m_class(0)
 {
     // FIXME #4 This sort of code should not be in the constructor
-    PyObject * package_name = PyString_FromString((char *)m_package.c_str());
-    m_module = PyImport_Import(package_name);
-    Py_DECREF(package_name);
+    m_module = Get_PyModule(m_package);
     if (m_module == NULL) {
-        log(ERROR, String::compose("Missing python module \"%1\"", m_package));
-        PyErr_Print();
         return;
     }
     getClass();
