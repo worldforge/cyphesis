@@ -30,6 +30,7 @@ class Entity;
 PyObject * Get_PyClass(PyObject * module,
                        const std::string & package,
                        const std::string & type);
+PyObject * Get_PyModule(const std::string & package);
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type);
 PyObject * Create_PyScript(PyObject *, PyObject *);
