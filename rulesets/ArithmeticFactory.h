@@ -49,7 +49,7 @@ class PythonArithmeticFactory : public ArithmeticFactory {
     /// \brief Name of the package containing the script
     std::string m_package;
     /// \brief Name of the type within the package for the script
-    std::string m_name;
+    std::string m_type;
 
     int getClass();
     int addScript();
