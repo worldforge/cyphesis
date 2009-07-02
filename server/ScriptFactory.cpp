@@ -46,26 +46,8 @@ ScriptFactory::~ScriptFactory()
 /// already been loaded.
 int PythonScriptFactory::getClass()
 {
-    m_class = PyObject_GetAttrString(m_module, (char *)m_type.c_str());
-    if (m_class == NULL) {
-        log(ERROR, String::compose("Could not find python class %1.%2",
-                                   m_package, m_type));
-        PyErr_Print();
-        return -1;
-    }
-    if (PyCallable_Check(m_class) == 0) {
-        log(ERROR, String::compose("Could not instance python class %1.%2",
-                                   m_package, m_type));
-        Py_DECREF(m_class);
-        m_class = 0;
-        return -1;
-    }
-    if (PyType_Check(m_class) == 0) {
-        log(ERROR, String::compose("PyCallable_Check returned true, "
-                                   "but PyType_Check returned false \"%1.%2\"",
-                                   m_package, m_type));
-        Py_DECREF(m_class);
-        m_class = 0;
+    m_class = Get_PyClass(m_module, m_package, m_type);
+    if (m_class == 0) {
         return -1;
     }
     if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
