@@ -211,7 +211,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
                 refO = PyObject_GetAttrString(refO, "cppthing");
                 decrefO = true;
             }
-            if (!PyEntity_Check(refO) && !PyMind_Check(refO) &&
+            if (!PyObject_IsInstance(refO, (PyObject *)&PyMind_Type) &&
                 !PyObject_IsInstance(refO, (PyObject *)&PyEntity_Type)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
                 if (decrefO) { Py_DECREF(refO); }
