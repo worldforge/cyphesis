@@ -340,19 +340,11 @@ PyTypeObject PyErrLogger_Type = {
         0,                              // tp_new
 };
 
-static PyObject * Get_PyClass(const std::string & package,
-                              const std::string & type)
+PyObject * Get_PyClass(PyObject * module,
+                       const std::string & package,
+                       const std::string & type)
 {
-    PyObject * package_name = PyString_FromString((char *)package.c_str());
-    PyObject * module = PyImport_Import(package_name);
-    Py_DECREF(package_name);
-    if (module == NULL) {
-        log(ERROR, String::compose("Missing python module \"%1\"", package));
-        PyErr_Print();
-        return NULL;
-    }
     PyObject * py_class = PyObject_GetAttrString(module, (char *)type.c_str());
-    Py_DECREF(module);
     if (py_class == NULL) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
                                    package, type));
@@ -365,13 +357,12 @@ static PyObject * Get_PyClass(const std::string & package,
         Py_DECREF(py_class);
         return NULL;
     }
-    // In later versions of python using PyType_* will become the right thing
-    // to do. This might become true when things have been done right with
-    // installing types.
     if (PyType_Check(py_class) == 0) {
         log(ERROR, String::compose("PyCallable_Check returned true, "
                                    "but PyType_Check returned false \"%1.%2\"",
                                    package, type));
+        Py_DECREF(py_class);
+        return NULL;
     }
     return py_class;
 }
@@ -394,7 +385,16 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type)
 {
-    PyObject * py_class = Get_PyClass(package, type);
+    PyObject * package_name = PyString_FromString((char *)package.c_str());
+    PyObject * module = PyImport_Import(package_name);
+    Py_DECREF(package_name);
+    if (module == NULL) {
+        log(ERROR, String::compose("Missing python module \"%1\"", package));
+        PyErr_Print();
+        return;
+    }
+    PyObject * py_class = Get_PyClass(module, package, type);
+    Py_DECREF(module);
     if (py_class == NULL) { return; }
     PyMind * wrapper = newPyMind();
     wrapper->m_mind = mind;
