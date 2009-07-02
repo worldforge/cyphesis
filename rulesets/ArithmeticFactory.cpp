@@ -53,18 +53,16 @@ PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
     }
 
     // Get a reference to the class
-    std::string classname(m_name);
-    classname[0] = toupper(classname[0]);
-    m_class = PyObject_GetAttrString(m_module, (char *)classname.c_str());
+    m_class = PyObject_GetAttrString(m_module, (char *)m_name.c_str());
     if (m_class == NULL) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
-                                   m_package, classname));
+                                   m_package, m_name));
         PyErr_Print();
         return;
     }
     if (PyCallable_Check(m_class) == 0) {
         log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
-                                   m_package, classname));
+                                   m_package, m_name));
         Py_DECREF(m_class);
         m_class = 0;
         return;
