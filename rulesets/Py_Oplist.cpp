@@ -73,13 +73,12 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
     if (PyOplist_Check(other)) {
         PyOplist * opl = (PyOplist*)other;
         PyOplist * res = newPyOplist();
-        if (res == NULL) {
-            return NULL;
-        }
-        res->ops = new OpVector(*self->ops);
-        OpVector::const_iterator Iend = opl->ops->end();
-        for (OpVector::const_iterator I = opl->ops->begin(); I != Iend; ++I) {
-            res->ops->push_back(*I);
+        if (res != NULL) {
+            res->ops = new OpVector(*self->ops);
+            OpVector::const_iterator Iend = opl->ops->end();
+            for (OpVector::const_iterator I = opl->ops->begin(); I != Iend; ++I) {
+                res->ops->push_back(*I);
+            }
         }
         return (PyObject*)res;
     }
@@ -91,12 +90,10 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
         }
 #endif // NDEBUG
         PyOplist * res = newPyOplist();
-        if (res == NULL) {
-            return NULL;
+        if (res != NULL) {
+            res->ops = new OpVector(*self->ops);
+            res->ops->push_back(op->operation);
         }
-        res->ops = new OpVector(*self->ops);
-        // res->ops->merge(*self->ops);
-        res->ops->push_back(op->operation);
         return (PyObject*)res;
     }
     return NULL;
