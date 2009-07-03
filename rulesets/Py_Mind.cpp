@@ -144,13 +144,7 @@ static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
     if (mind->getAttr(name, attr)) {
         return MessageElement_asPyObject(attr);
     }
-    PyObject * ret = PyObject_GenericGetAttr((PyObject *)self, oname);
-    if (ret != 0) {
-        return ret;
-    }
-    // PyObject_GenericGetAttr sets and error if nothing was found
-    PyErr_Clear();
-    return Py_FindMethod(Mind_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int Mind_setattro(PyMind *self, PyObject *oname, PyObject *v)
@@ -260,7 +254,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Mind_methods,                   // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base

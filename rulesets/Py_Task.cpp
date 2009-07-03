@@ -139,14 +139,7 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
             return v;
         }
     }
-    PyObject * ret = PyObject_GenericGetAttr((PyObject *)self, oname);
-    if (ret != 0) {
-        return ret;
-    }
-    // PyObject_GenericGetAttr sets and error if nothing was found
-    PyErr_Clear();
-    ret = Py_FindMethod(Task_methods, (PyObject *)self, name);
-    return ret;
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
@@ -265,7 +258,7 @@ PyTypeObject PyTask_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Task_methods,                   // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
