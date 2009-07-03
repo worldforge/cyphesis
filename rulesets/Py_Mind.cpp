@@ -93,18 +93,24 @@ static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
     }
     if (strcmp(name, "map") == 0) {
         PyMap * map = newPyMap();
-        map->m_map = self->m_mind->getMap();
+        if (map != NULL) {
+            map->m_map = self->m_mind->getMap();
+        }
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        loc->location = &self->m_mind->m_location;
-        loc->owner = self->m_mind;
+        if (loc != NULL) {
+            loc->location = &self->m_mind->m_location;
+            loc->owner = self->m_mind;
+        }
         return (PyObject *)loc;
     }
     if (strcmp(name, "time") == 0) {
         PyWorldTime * worldtime = newPyWorldTime();
-        worldtime->time = self->m_mind->getTime();
+        if (worldtime != NULL) {
+            worldtime->time = self->m_mind->getTime();
+        }
         return (PyObject *)worldtime;
     }
     if (strcmp(name, "contains") == 0) {
