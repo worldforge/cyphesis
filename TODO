@@ -1,9 +1,6 @@
 Fix Arithmetic and Mind code so the factory is not created every time,
 nor the type looked up every time.
 
-Make task scripts in the XML file confirm to the same scheme as entity
-scripts, and get rid of the toupper call.
-
 Note that in Py_Thing.cpp we use PyObject_GenericGetattr to look in the
 overloaded method table, which includes the methods in python and in the
 wrapper. See if this works elsewhere.
