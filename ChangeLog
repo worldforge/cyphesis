@@ -1,5 +1,28 @@
 2009-07-02  Alistair Riddoch  <alriddoch@googlemail.com>
 
+	* rulesets/Python_API.cpp, rulesets/Python_Script_Utils.h:
+	  Add generic functions for loading python modules and classes.
+
+	* server/TaskFactory.cpp, server/TaskFactory.h,
+	  server/EntityBuilder.cpp: Amend the convention for task script
+	  module names to match that for entity scripts.
+
+	* data/tasks.xml: Update all the tasks to the new convention.
+
+	* rulesets/ArithmeticFactory.cpp, rulesets/ArithmeticFactory.h,
+	  server/ScriptFactory.cpp, server/TaskFactory.cpp:
+	  Use the new generic functions for loading Python modules and
+	  classes.
+
+	* rulesets/Py_Operation.cpp: Re-implement accessing arguments as
+	  a sequence so the index is used directly, being much more efficient.
+
+	* rulesets/Py_Mind.cpp, rulesets/Py_Task.cpp: Simplify method and
+	  attribute lookup by using the method table entry of the type
+	  structure.
+
+2009-07-02  Alistair Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/TaskFactory.cpp: Convert an assert that could cause a crash
 	  into a runtime check.
 
