@@ -352,15 +352,12 @@ static PyObject * Operation_seq_item(PyOperation * self, Py_ssize_t item)
         return 0;
     }
 #endif // NDEBUG
-    const std::vector<Root> & args_list = self->operation->getArgs();
-    std::vector<Root>::const_iterator I = args_list.begin();
-    std::vector<Root>::const_iterator Iend = args_list.end();
-    for(int i = 0; i < item && I != Iend; ++i, ++I);
-    if (I == args_list.end()) {
+    const std::vector<Root> & args= self->operation->getArgs();
+    if (item < 0 || item >= (Py_ssize_t)args.size()) {
         PyErr_SetString(PyExc_TypeError,"Operation.[]: Not enought op arguments");
         return 0;
     }
-    const Root & arg = *I;
+    const Root & arg = args[item];
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(arg);
     if (op.isValid()) {
         PyOperation * ret_op = newPyOperation();
