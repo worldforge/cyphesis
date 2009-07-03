@@ -297,6 +297,9 @@ static PyObject * Operation_getArgs(PyOperation * self)
 
     const std::vector<Root> & args_list = self->operation->getArgs();
     PyObject * args_pylist = PyList_New(args_list.size());
+    if (args_pylist == NULL) {
+        return NULL;
+    }
     int j = 0;
     PyMessage * item;
     std::vector<Root>::const_iterator Iend = args_list.end();
@@ -304,7 +307,6 @@ static PyObject * Operation_getArgs(PyOperation * self)
     for (; I != Iend; ++I, ++j) {
         item = newPyMessage();
         if (item == NULL) {
-            PyErr_SetString(PyExc_TypeError,"error creating list");
             Py_DECREF(args_pylist);
             return NULL;
         }
@@ -361,28 +363,32 @@ static PyObject * Operation_seq_item(PyOperation * self, Py_ssize_t item)
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(arg);
     if (op.isValid()) {
         PyOperation * ret_op = newPyOperation();
-        ret_op->operation = op;
+        if (ret_op != NULL) {
+            ret_op->operation = op;
+        }
         return (PyObject *)ret_op;
     }
     RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(arg);
     if (ent.isValid()) {
         PyRootEntity * ret_ent = newPyRootEntity();
-        ret_ent->entity = ent;
+        if (ret_ent != NULL) {
+            ret_ent->entity = ent;
+        }
         return (PyObject *)ret_ent;
     }
     log(WARNING, "Non operation or entity being returned as arg of operation");
     PyMessage * ret = newPyMessage();
-    ret->m_obj = new Element(arg->asMessage());
+    if (ret != NULL) {
+        ret->m_obj = new Element(arg->asMessage());
+    }
     return (PyObject *)ret;
 }
 
 static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
 {
-    fflush(stdout);
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError, "NULL Operation in Operation.num_add");
-        fflush(stdout);
         return NULL;
     }
 #endif // NDEBUG
@@ -391,7 +397,6 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
         PyOplist * res = newPyOplist();
         res->ops = new OpVector();
         res->ops->push_back(self->operation);
-        fflush(stdout);
         return (PyObject*)res;
 #else
         Py_INCREF(self);
@@ -400,17 +405,17 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
     }
     if (PyOplist_Check(other)) {
         PyOplist * opl = (PyOplist*)other;
+#ifndef NDEBUG
         if (opl->ops == NULL) {
             PyErr_SetString(PyExc_AssertionError, "invalid OpVector");
             return NULL;
         }
+#endif // NDEBUG
         PyOplist * res = newPyOplist();
-        if (res == NULL) {
-            return NULL;
+        if (res != NULL) {
+            res->ops = new OpVector(*opl->ops);
+            res->ops->push_back(self->operation);
         }
-        res->ops = new OpVector(*opl->ops);
-        res->ops->push_back(self->operation);
-        fflush(stdout);
         return (PyObject*)res;
     }
     if (PyOperation_Check(other)) {
@@ -421,16 +426,13 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
         }
 #endif // NDEBUG
         PyOplist * res = newPyOplist();
-        if (res == NULL) {
-            return NULL;
+        if (res != NULL) {
+            res->ops = new OpVector();
+            res->ops->push_back(op->operation);
+            res->ops->push_back(self->operation);
         }
-        res->ops = new OpVector();
-        res->ops->push_back(op->operation);
-        res->ops->push_back(self->operation);
-        fflush(stdout);
         return (PyObject*)res;
     }
-    fflush(stdout);
     return NULL;
 }
 
