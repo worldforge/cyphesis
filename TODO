@@ -1,3 +1,6 @@
+Check where newPy*() is being used in wrappers, and ensure if NULL is returned
+it is not used. No need to set error, just return the null.
+
 Fix Arithmetic and Mind code so the factory is not created every time,
 nor the type looked up every time.
 
