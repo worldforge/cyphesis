@@ -55,6 +55,10 @@ PythonTaskScriptFactory::PythonTaskScriptFactory(const std::string & name,
     // Get a reference to the class
     m_class = Get_PyClass(m_module, m_package, m_type);
 
+    if (m_class == 0) {
+        return;
+    }
+
     if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
         log(ERROR, String::compose("Python class does not inherit from "
                                    "a core server type. \"%1.%2\"",
