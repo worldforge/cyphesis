@@ -1,3 +1,6 @@
+Would it be better to expose Point3D more directly to Python, rather than
+avoid it by converting to Vector3D as in BBox_getattr?
+
 Check where newPy*() is being used in wrappers, and ensure if NULL is returned
 it is not used. No need to set error, just return the null.
 

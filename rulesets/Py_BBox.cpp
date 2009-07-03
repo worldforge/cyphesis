@@ -46,14 +46,18 @@ static PyObject * BBox_getattr(PyBBox *self, char *name)
 {
     if (strcmp(name, "near_point") == 0) {
         PyVector3D * v = newPyVector3D();
-        const WFMath::Point<3> & lc = self->box.lowCorner();
-        v->coords = Vector3D(lc.x(), lc.y(), lc.z());
+        if (v != NULL) {
+            const WFMath::Point<3> & lc = self->box.lowCorner();
+            v->coords = Vector3D(lc.x(), lc.y(), lc.z());
+        }
         return (PyObject *)v;
     }
     if (strcmp(name, "far_point") == 0) {
         PyVector3D * v = newPyVector3D();
-        const WFMath::Point<3> & hc = self->box.highCorner();
-        v->coords = Vector3D(hc.x(), hc.y(), hc.z());
+        if (v != NULL) {
+            const WFMath::Point<3> & hc = self->box.highCorner();
+            v->coords = Vector3D(hc.x(), hc.y(), hc.z());
+        }
         return (PyObject *)v;
     }
 
