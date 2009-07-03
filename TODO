@@ -26,9 +26,6 @@ handled in a frontend server with multiple processes. They share one listen
 socket, and use herd of elephents prevention to listen to sockets. The then
 send operations to a backend server which has the world processing.
 
-Fix Operation_seq_item to use index rather than search, as we can now index
-it. setArgs() also needs fixing.
-
 WorldTime and DateTime need to be purely data driven
 
 Implement connection limits.
