@@ -47,12 +47,10 @@ static PyObject * Mind_as_entity(PyMind * self)
     }
 #endif // NDEBUG
     PyMessage * ret = newPyMessage();
-    if (ret == NULL) {
-        PyErr_SetString(PyExc_MemoryError, "error creating MessageElement");
-        return NULL;
+    if (ret != NULL) {
+        ret->m_obj = new Element(MapType());
+        self->m_mind->addToMessage(ret->m_obj->asMap());
     }
-    ret->m_obj = new Element(MapType());
-    self->m_mind->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
