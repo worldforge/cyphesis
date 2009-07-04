@@ -1,3 +1,6 @@
+Client bindings don't belong in server module, and server module should
+not be available at all in the client bindings.
+
 Look into loudmouth for XMPP stuff.
 
 tp_alloc can return null.
