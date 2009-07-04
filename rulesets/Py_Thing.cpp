@@ -575,18 +575,15 @@ PyObject * wrapEntity(LocatedEntity * le)
 
 PyEntity * newPyLocatedEntity()
 {
-    PyEntity * self = (PyEntity *)PyLocatedEntity_Type.tp_new(&PyLocatedEntity_Type, 0, 0);
-    return self;
+    return (PyEntity *)PyLocatedEntity_Type.tp_new(&PyLocatedEntity_Type, 0, 0);
 }
 
 PyEntity * newPyEntity()
 {
-    PyEntity * self = (PyEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
-    return self;
+    return (PyEntity *)PyEntity_Type.tp_new(&PyEntity_Type, 0, 0);
 }
 
 PyEntity * newPyCharacter()
 {
-    PyEntity * self = (PyEntity *)PyCharacter_Type.tp_new(&PyCharacter_Type, 0, 0);
-    return self;
+    return (PyEntity *)PyCharacter_Type.tp_new(&PyCharacter_Type, 0, 0);
 }
