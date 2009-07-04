@@ -36,6 +36,9 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Thingtest Py_Maptest Py_Mindtest Py_Tasktest \
                  Py_Worldtest Py_Messagetest Py_WorldTimetest
 
+
+CLIENT_TESTS = Py_CreatorClienttest
+
 SERVER_TESTS = EntityBuildertest PropertyFlagtest
 
 PYTHON_TESTS = python_class
@@ -44,7 +47,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_builddir)
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
-TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS)
+TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS) $(CLIENT_TESTS)
 
 EXTRA_PROGRAMS = $(PYTHON_TESTS)
 
@@ -856,6 +859,23 @@ Py_WorldTimetest_LDADD = \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
+
+# CLIENT_TESTS
+
+Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp
+Py_CreatorClienttest_LDADD = \
+        $(top_builddir)/client/Py_CreatorClient.o \
+        $(top_builddir)/client/CreatorClient.o \
+        $(top_builddir)/client/CharacterClient.o \
+        $(top_builddir)/client/ClientConnection.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
 
 
 # SERVER_TESTS
