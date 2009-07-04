@@ -308,15 +308,5 @@ PyTypeObject PyRootEntity_Type = {
 
 PyRootEntity * newPyRootEntity()
 {
-#if 0
-    PyRootEntity * self;
-    self = PyObject_NEW(PyRootEntity, &PyRootEntity_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    new (&(self->entity)) RootEntity(NULL);
-    return self;
-#else
     return (PyRootEntity *)PyRootEntity_Type.tp_new(&PyRootEntity_Type, 0, 0);
-#endif
 }

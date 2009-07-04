@@ -287,15 +287,5 @@ PyTypeObject PyPoint3D_Type = {
 
 PyPoint3D * newPyPoint3D()
 {
-#if 0
-    PyPoint3D * self;
-    self = PyObject_NEW(PyPoint3D, &PyPoint3D_Type);
-    if (self == NULL) {
-            return NULL;
-    }
-    new (&(self->coords)) Point3D();
-    return self;
-#else
     return (PyPoint3D *)PyPoint3D_Type.tp_new(&PyPoint3D_Type, 0, 0);
-#endif
 }

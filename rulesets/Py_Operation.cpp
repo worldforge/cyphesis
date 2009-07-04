@@ -846,17 +846,7 @@ PyTypeObject PyConstOperation_Type = {
 
 PyOperation * newPyOperation()
 {
-#if 0
-    PyOperation * self;
-    self = PyObject_NEW(PyOperation, &PyOperation_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    new (&(self->operation)) RootOperation(NULL);
-    return self;
-#else
     return (PyOperation *)PyOperation_Type.tp_new(&PyOperation_Type, 0, 0);
-#endif
 }
 
 PyConstOperation * newPyConstOperation()

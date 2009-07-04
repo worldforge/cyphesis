@@ -224,15 +224,5 @@ PyTypeObject PyBBox_Type = {
 
 PyBBox * newPyBBox()
 {
-#if 0
-        PyBBox * self;
-        self = PyObject_NEW(PyBBox, &PyBBox_Type);
-        if (self == NULL) {
-                return NULL;
-        }
-        new (&(self->box)) BBox();
-        return self;
-#else
     return (PyBBox *)PyBBox_Type.tp_new(&PyBBox_Type, 0, 0);
-#endif
 }

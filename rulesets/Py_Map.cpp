@@ -341,14 +341,5 @@ PyTypeObject PyMap_Type = {
 
 PyMap * newPyMap()
 {
-#if 0
-    PyMap * self;
-    self = PyObject_NEW(PyMap, &PyMap_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    return self;
-#else
     return (PyMap *)PyMap_Type.tp_new(&PyMap_Type, 0, 0);
-#endif
 }

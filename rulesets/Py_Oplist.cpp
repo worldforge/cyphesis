@@ -245,14 +245,5 @@ PyTypeObject PyOplist_Type = {
 
 PyOplist * newPyOplist()
 {
-#if 0
-        PyOplist * self;
-        self = PyObject_NEW(PyOplist, &PyOplist_Type);
-        if (self == NULL) {
-                return NULL;
-        }
-        return self;
-#else
     return (PyOplist *)PyOplist_Type.tp_new(&PyOplist_Type, 0, 0);
-#endif
 }

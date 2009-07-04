@@ -281,15 +281,5 @@ PyTypeObject PyQuaternion_Type = {
 
 PyQuaternion * newPyQuaternion()
 {
-#if 0
-        PyQuaternion * self;
-        self = PyObject_NEW(PyQuaternion, &PyQuaternion_Type);
-        if (self == NULL) {
-                return NULL;
-        }
-        new(&(self->rotation)) Quaternion();
-        return self;
-#else
     return (PyQuaternion *)PyQuaternion_Type.tp_new(&PyQuaternion_Type, 0, 0);
-#endif
 }

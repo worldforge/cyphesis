@@ -273,15 +273,5 @@ PyTypeObject PyMind_Type = {
 
 PyMind * newPyMind()
 {
-#if 0
-    PyMind * self;
-    self = PyObject_NEW(PyMind, &PyMind_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    self->Mind_attr = NULL;
-    return self;
-#else
     return (PyMind *)PyMind_Type.tp_new(&PyMind_Type, 0, 0);
-#endif
 }

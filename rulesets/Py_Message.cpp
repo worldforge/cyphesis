@@ -181,16 +181,7 @@ PyTypeObject PyMessage_Type = {
 
 PyMessage * newPyMessage()
 {
-#if 0
-    PyMessage * self;
-    self = PyObject_NEW(PyMessage, &PyMessage_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    return self;
-#else
     return (PyMessage *)PyMessage_Type.tp_new(&PyMessage_Type, 0, 0);
-#endif
 }
 
 /*

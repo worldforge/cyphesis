@@ -144,15 +144,5 @@ PyTypeObject PyWorldTime_Type = {
 
 PyWorldTime * newPyWorldTime()
 {
-#if 0
-    PyWorldTime * self;
-    self = PyObject_NEW(PyWorldTime, &PyWorldTime_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    self->own = false;
-    return self;
-#else
     return (PyWorldTime *)PyWorldTime_Type.tp_new(&PyWorldTime_Type, 0, 0);
-#endif
 }

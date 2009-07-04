@@ -327,16 +327,5 @@ PyTypeObject PyLocation_Type = {
 
 PyLocation * newPyLocation()
 {
-#if 0
-        PyLocation * self;
-        self = PyObject_NEW(PyLocation, &PyLocation_Type);
-        if (self == NULL) {
-                return NULL;
-        }
-        self->location = NULL;
-        self->owner = 0;
-        return self;
-#else
     return (PyLocation *)PyLocation_Type.tp_new(&PyLocation_Type, 0, 0);
-#endif
 }

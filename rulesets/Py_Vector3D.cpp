@@ -438,15 +438,5 @@ PyTypeObject PyVector3D_Type = {
 
 PyVector3D * newPyVector3D()
 {
-#if 0
-    PyVector3D * self;
-    self = PyObject_NEW(PyVector3D, &PyVector3D_Type);
-    if (self == NULL) {
-            return NULL;
-    }
-    new (&(self->coords)) Vector3D();
-    return self;
-#else
     return (PyVector3D *)PyVector3D_Type.tp_new(&PyVector3D_Type, 0, 0);
-#endif
 }

@@ -106,14 +106,5 @@ PyTypeObject PyWorld_Type = {
 
 PyWorld * newPyWorld()
 {
-#if 0
-    PyWorld * self;
-    self = PyObject_NEW(PyWorld, &PyWorld_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    return self;
-#else
     return (PyWorld *)PyWorld_Type.tp_new(&PyWorld_Type, 0, 0);
-#endif
 }

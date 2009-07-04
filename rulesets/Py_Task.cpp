@@ -294,15 +294,5 @@ PyObject * wrapTask(Task * task)
 
 PyTask * newPyTask()
 {
-#if 0
-    PyTask * self;
-    self = PyObject_NEW(PyTask, &PyTask_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    self->Task_attr = NULL;
-    return self;
-#else
     return (PyTask *)PyTask_Type.tp_new(&PyTask_Type, 0, 0);
-#endif
 }
