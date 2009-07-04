@@ -34,11 +34,10 @@ static PyObject *Point3D_unit_vector_to(PyPoint3D * self, PyPoint3D * other)
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = (other->coords - self->coords);
+        ret->coords.normalize();
     }
-    ret->coords = (other->coords - self->coords);
-    ret->coords.normalize();
     return (PyObject *)ret;
 }
 
@@ -115,10 +114,9 @@ static PyPoint3D * Point3D_num_add(PyPoint3D * self, PyVector3D*other)
         return NULL;
     }
     PyPoint3D * ret = newPyPoint3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = (self->coords + other->coords);
     }
-    ret->coords = (self->coords + other->coords);
     return ret;
 }
 
@@ -127,18 +125,16 @@ static PyObject * Point3D_num_sub(PyPoint3D * self, PyObject * other)
     if (PyVector3D_Check(other)) {
         PyVector3D * ovec = (PyVector3D *)other;
         PyPoint3D * ret = newPyPoint3D();
-        if (ret == NULL) {
-            return NULL;
+        if (ret != NULL) {
+            ret->coords = (self->coords - ovec->coords);
         }
-        ret->coords = (self->coords - ovec->coords);
         return (PyObject *)ret;
     } else if (PyPoint3D_Check(other)) {
         PyPoint3D * opoint = (PyPoint3D *)other;
         PyVector3D * ret = newPyVector3D();
-        if (ret == NULL) {
-            return NULL;
+        if (ret != NULL) {
+            ret->coords = (self->coords - opoint->coords);
         }
-        ret->coords = (self->coords - opoint->coords);
         return (PyObject *)ret;
     } else {
         PyErr_SetString(PyExc_TypeError, "Can only subtract Vector3D or Point3D from Point3D");
