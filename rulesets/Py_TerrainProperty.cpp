@@ -157,10 +157,5 @@ PyTypeObject PyTerrainProperty_Type = {
 
 PyTerrainProperty * newPyTerrainProperty()
 {
-    PyTerrainProperty * self;
-    self = PyObject_NEW(PyTerrainProperty, &PyTerrainProperty_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    return self;
+    return (PyTerrainProperty *)PyTerrainProperty_Type.tp_new(&PyTerrainProperty_Type, 0, 0);
 }
