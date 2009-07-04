@@ -32,6 +32,8 @@
 #include "rulesets/Py_Map.h"
 
 #include "common/debug.h"
+#include "common/id.h"
+#include "common/log.h"
 #include "common/TypeNode.h"
 
 using Atlas::Message::Element;
@@ -187,14 +189,14 @@ static PyObject * CreatorClient_delete(PyCreatorClient * self, PyObject * py_id)
 }
 
 static PyMethodDef CreatorClient_methods[] = {
-	{"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
-	{"make",           (PyCFunction)CreatorClient_make,      METH_O},
-	{"set",            (PyCFunction)CreatorClient_set,       METH_VARARGS},
-	{"look",           (PyCFunction)CreatorClient_look,      METH_O},
-	{"look_for",       (PyCFunction)CreatorClient_look_for,  METH_O},
-	{"send",           (PyCFunction)CreatorClient_send,      METH_O},
-	{"delete",         (PyCFunction)CreatorClient_delete,    METH_O},
-	{NULL,          NULL}           /* sentinel */
+        {"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
+        {"make",           (PyCFunction)CreatorClient_make,      METH_O},
+        {"set",            (PyCFunction)CreatorClient_set,       METH_VARARGS},
+        {"look",           (PyCFunction)CreatorClient_look,      METH_O},
+        {"look_for",       (PyCFunction)CreatorClient_look_for,  METH_O},
+        {"send",           (PyCFunction)CreatorClient_send,      METH_O},
+        {"delete",         (PyCFunction)CreatorClient_delete,    METH_O},
+        {NULL,          NULL}           /* sentinel */
 };
 
 static void CreatorClient_dealloc(PyCreatorClient *self)
@@ -307,34 +309,69 @@ static int CreatorClient_compare(PyCreatorClient *self, PyCreatorClient *other)
     return (self->m_mind == other->m_mind) ? 0 : 1;
 }
 
+static int CreatorClient_init(PyCreatorClient * self,
+                              PyObject * args, PyObject * kwds)
+{
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return -1;
+    }
+    long intId = integerId(id);
+    if (intId == -1L) {
+        PyErr_SetString(PyExc_TypeError, "CreatorClient() requires string/int ID");
+        return -1;
+    }
+    // self->m_mind = new CreatorClient(id, intId);
+    return 0;
+}
+
 PyTypeObject PyCreatorClient_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,					/*ob_size*/
-	"cppCreatorClient",			/*tp_name*/
-	sizeof(PyCreatorClient),		/*tp_basicsize*/
-	0,					/*tp_itemsize*/
-	/* methods */
-	(destructor)CreatorClient_dealloc,	/*tp_dealloc*/
-	0,					/*tp_print*/
-	(getattrfunc)CreatorClient_getattr,	/*tp_getattr*/
-	(setattrfunc)CreatorClient_setattr,	/*tp_setattr*/
-	(cmpfunc)CreatorClient_compare,		/*tp_compare*/
-	0,					/*tp_repr*/
-	0,					/*tp_as_number*/
-	0,					/*tp_as_sequence*/
-	0,					/*tp_as_mapping*/
-	0,					/*tp_hash*/
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                                      /*ob_size*/
+        "CreatorClient",                     /*tp_name*/
+        sizeof(PyCreatorClient),                /*tp_basicsize*/
+        0,                                      /*tp_itemsize*/
+        /* methods */
+        (destructor)CreatorClient_dealloc,      /*tp_dealloc*/
+        0,                                      /*tp_print*/
+        (getattrfunc)CreatorClient_getattr,     /*tp_getattr*/
+        (setattrfunc)CreatorClient_setattr,     /*tp_setattr*/
+        (cmpfunc)CreatorClient_compare,         /*tp_compare*/
+        0,                                      /*tp_repr*/
+        0,                                      /*tp_as_number*/
+        0,                                      /*tp_as_sequence*/
+        0,                                      /*tp_as_mapping*/
+        0,                                      /*tp_hash*/
+        0,                                      // tp_call
+        0,                                      // tp_str
+        0,                                      // tp_getattro
+        0,                                      // tp_setattro
+        0,                                      // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,                     // tp_flags
+        "CreatorClient objects",                // tp_doc
+        0,                                      // tp_travers
+        0,                                      // tp_clear
+        0,                                      // tp_richcompare
+        0,                                      // tp_weaklistoffset
+        0,                                      // tp_iter
+        0,                                      // tp_iternext
+        0,                                      // tp_methods
+        0,                                      // tp_members
+        0,                                      // tp_getset
+        0,                                      // tp_base
+        0,                                      // tp_dict
+        0,                                      // tp_descr_get
+        0,                                      // tp_descr_set
+        0,                                      // tp_dictoffset
+        (initproc)CreatorClient_init,           // tp_init
+        0,                                      // tp_alloc
+        0,                                      // tp_new
 };
 
 PyCreatorClient * newPyCreatorClient()
 {
-    PyCreatorClient * self;
-    self = PyObject_NEW(PyCreatorClient, &PyCreatorClient_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    self->CreatorClient_attr = NULL;
-    return self;
+    return (PyCreatorClient *)PyCreatorClient_Type.tp_new(&PyCreatorClient_Type, 0, 0);
 }
 
 int runClientScript(CreatorClient * c, const std::string & package,
@@ -378,4 +415,19 @@ int runClientScript(CreatorClient * c, const std::string & package,
     Py_DECREF(function);
     return 0;
 
+}
+
+void extend_client_python_api()
+{
+    PyObject * server = Get_PyModule("server");
+    if (server == 0) {
+        return;
+    }
+
+    PyCreatorClient_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyCreatorClient_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready CreatorClient wrapper type");
+        return;
+    }
+    PyModule_AddObject(server, "CreatorClient", (PyObject *)&PyMap_Type);
 }

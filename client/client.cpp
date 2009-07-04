@@ -90,6 +90,7 @@ int main(int argc, char ** argv)
     }
 
     init_python_api();
+    extend_client_python_api();
 
     try {
         new ClientPropertyManager();

@@ -22,5 +22,6 @@
 
 void init_python_api();
 void shutdown_python_api();
+void extend_client_python_api();
 
 #endif // RULESETS_PYTHON_API_H
