@@ -62,7 +62,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
         return false;
     }
     // Construct apropriate python object thingies from op
-    PyConstOperation * py_op = newPyConstOperation();
+    PyOperation * py_op = newPyConstOperation();
     py_op->operation = op;
     PyObject * ret;
     ret = PyObject_CallMethod(m_wrapper, (char *)(op_name.c_str()),

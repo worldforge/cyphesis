@@ -549,7 +549,7 @@ static void Operation_dealloc(PyOperation *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Operation_getattr(PyConstOperation * self, char * name)
+static PyObject * Operation_getattro(PyOperation * self, PyObject * oname)
 {
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
@@ -557,6 +557,7 @@ static PyObject * Operation_getattr(PyConstOperation * self, char * name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "from_") == 0) {
         return PyString_FromString(self->operation->getFrom().c_str());
     } else if (strcmp(name, "to") == 0) {
@@ -569,10 +570,10 @@ static PyObject * Operation_getattr(PyConstOperation * self, char * name)
         }
         return PyString_FromString(parents.front().c_str());
     }
-    return Py_FindMethod(self->ob_type->tp_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
+static int Operation_setattro(PyOperation *self, PyObject * oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
@@ -580,6 +581,7 @@ static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "from_") == 0) {
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
         if (thing_id == NULL || !PyString_Check(thing_id)) {
@@ -741,8 +743,8 @@ PyTypeObject PyOperation_Type = {
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)Operation_getattr,         // tp_getattr
-        (setattrfunc)Operation_setattr,         // tp_setattr
+        0,                                      // tp_getattr
+        0,                                      // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
         &Operation_num,                         // tp_as_number
@@ -751,8 +753,8 @@ PyTypeObject PyOperation_Type = {
         0,                                      // tp_hash
         0,                                      // tp_call
         0,                                      // tp_str
-        0,                                      // tp_getattro
-        0,                                      // tp_setattro
+        (getattrofunc)Operation_getattro,       // tp_getattro
+        (setattrofunc)Operation_setattro,       // tp_setattro
         0,                                      // tp_as_buffer
         Py_TPFLAGS_DEFAULT,                     // tp_flags
         "Operation objects",                    // tp_doc
@@ -779,12 +781,12 @@ PyTypeObject PyConstOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
         "atlas.Operation",                      // tp_name
-        sizeof(PyConstOperation),               // tp_basicsize
+        sizeof(PyOperation),               // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)Operation_getattr,         // tp_getattr
+        0,                                      // tp_getattr
         0,                                      // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
@@ -794,7 +796,7 @@ PyTypeObject PyConstOperation_Type = {
         0,                                      // tp_hash
         0,                                      // tp_call
         0,                                      // tp_str
-        0,                                      // tp_getattro
+        (getattrofunc)Operation_getattro,       // tp_getattro
         0,                                      // tp_setattro
         0,                                      // tp_as_buffer
         Py_TPFLAGS_DEFAULT,                     // tp_flags
@@ -827,7 +829,7 @@ PyOperation * newPyOperation()
     return (PyOperation *)PyOperation_Type.tp_new(&PyOperation_Type, 0, 0);
 }
 
-PyConstOperation * newPyConstOperation()
+PyOperation * newPyConstOperation()
 {
-    return (PyConstOperation *)PyConstOperation_Type.tp_new(&PyConstOperation_Type, 0, 0);
+    return (PyOperation *)PyConstOperation_Type.tp_new(&PyConstOperation_Type, 0, 0);
 }

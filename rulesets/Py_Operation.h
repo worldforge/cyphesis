@@ -35,14 +35,6 @@ typedef struct {
     Atlas::Objects::Operation::RootOperation operation;
 } PyOperation;
 
-/// \brief Wrapper for read only Atlas operations in Python
-/// \ingroup PythonWrappers
-typedef struct {
-    PyObject_HEAD
-    /// \brief RootOperation object handled by this wrapper
-    Atlas::Objects::Operation::RootOperation operation;
-} PyConstOperation;
-
 extern PyTypeObject PyOperation_Type;
 extern PyTypeObject PyConstOperation_Type;
 
@@ -50,6 +42,6 @@ extern PyTypeObject PyConstOperation_Type;
 #define PyConstOperation_Check(_o) ((_o)->ob_type == &PyConstOperation_Type)
 
 PyOperation * newPyOperation();
-PyConstOperation * newPyConstOperation();
+PyOperation * newPyConstOperation();
 
 #endif // RULESETS_PY_OPERATION_H
