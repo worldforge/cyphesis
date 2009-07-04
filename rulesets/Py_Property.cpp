@@ -53,8 +53,10 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
     if (tp != 0) {
         // Create a new python wrapper for this property.
         PyTerrainProperty * prop = newPyTerrainProperty();
-        prop->m_entity = owner;
-        prop->m_property = tp;
+        if (prop != NULL) {
+            prop->m_entity = owner;
+            prop->m_property = tp;
+        }
         return (PyObject*)prop;
     }
     return 0;
