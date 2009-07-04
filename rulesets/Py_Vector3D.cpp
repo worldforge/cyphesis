@@ -38,10 +38,9 @@ static PyObject * Vector3D_cross(PyVector3D * self, PyVector3D * other)
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = Cross(self->coords, other->coords);
     }
-    ret->coords = Cross(self->coords, other->coords);
     return (PyObject *)ret;
 }
 
@@ -240,10 +239,9 @@ static PyVector3D*Vector3D_num_add(PyVector3D*self,PyVector3D*other)
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = (self->coords + other->coords);
     }
-    ret->coords = (self->coords + other->coords);
     return ret;
 }
 
@@ -254,10 +252,9 @@ static PyVector3D*Vector3D_num_sub(PyVector3D*self,PyVector3D*other)
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = (self->coords - other->coords);
     }
-    ret->coords = (self->coords - other->coords);
     return ret;
 }
 
@@ -273,10 +270,9 @@ static PyVector3D * Vector3D_num_mul(PyVector3D * self, PyObject * _other)
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = (self->coords * other);
     }
-    ret->coords = (self->coords * other);
     return ret;
 }
 
@@ -292,10 +288,9 @@ static PyVector3D * Vector3D_num_div(PyVector3D * self, PyObject * _other)
         return NULL;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = (self->coords / other);
     }
-    ret->coords = (self->coords / other);
     return ret;
 }
 
