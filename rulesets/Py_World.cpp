@@ -28,11 +28,10 @@
 static PyObject * World_get_time(PyWorld *self)
 {
     PyWorldTime * wtime = newPyWorldTime();
-    if (wtime == NULL) {
-        return NULL;
+    if (wtime != NULL) {
+        wtime->time = new WorldTime((int)BaseWorld::instance().getTime());
+        wtime->own = true;
     }
-    wtime->time = new WorldTime((int)BaseWorld::instance().getTime());
-    wtime->own = true;
     return (PyObject *)wtime;
 }
 
