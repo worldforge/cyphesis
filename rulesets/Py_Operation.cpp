@@ -549,18 +549,7 @@ static void Operation_dealloc(PyOperation *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static inline PyObject * findMethod(PyOperation * self, char * name)
-{
-    return Py_FindMethod(Operation_methods, (PyObject *)self, name);
-}
-
-static inline PyObject * findMethod(PyConstOperation * self, char * name)
-{
-    return Py_FindMethod(ConstOperation_methods, (PyObject *)self, name);
-}
-
-template <typename T>
-static PyObject * getattr(T * self, char * name)
+static PyObject * Operation_getattr(PyConstOperation * self, char * name)
 {
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
@@ -580,19 +569,8 @@ static PyObject * getattr(T * self, char * name)
         }
         return PyString_FromString(parents.front().c_str());
     }
-    return findMethod(self, name);
+    return Py_FindMethod(self->ob_type->tp_methods, (PyObject *)self, name);
 }
-
-static PyObject * Operation_getattr(PyOperation * self, char * name)
-{
-    return getattr(self, name);
-}
-
-static PyObject * ConstOperation_getattr(PyConstOperation * self, char * name)
-{
-    return getattr(self, name);
-}
-
 
 static int Operation_setattr(PyOperation *self, char *name, PyObject *v)
 {
@@ -784,7 +762,7 @@ PyTypeObject PyOperation_Type = {
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext
-        0,                                      // tp_methods
+        Operation_methods,                      // tp_methods
         0,                                      // tp_members
         0,                                      // tp_getset
         0,                                      // tp_base
@@ -806,7 +784,7 @@ PyTypeObject PyConstOperation_Type = {
         //  methods 
         (destructor)Operation_dealloc,          // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)ConstOperation_getattr,    // tp_getattr
+        (getattrfunc)Operation_getattr,         // tp_getattr
         0,                                      // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
@@ -827,7 +805,7 @@ PyTypeObject PyConstOperation_Type = {
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext
-        0,                                      // tp_methods
+        ConstOperation_methods,                 // tp_methods
         0,                                      // tp_members
         0,                                      // tp_getset
         0,                                      // tp_base
