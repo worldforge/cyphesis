@@ -47,11 +47,10 @@ static PyObject * Entity_as_entity(PyEntity * self)
     }
 #endif // NDEBUG
     PyMessage * ret = newPyMessage();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->m_obj = new Element(MapType());
+        self->m_entity.l->addToMessage(ret->m_obj->asMap());
     }
-    ret->m_obj = new Element(MapType());
-    self->m_entity.l->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
@@ -98,7 +97,9 @@ static PyObject * Character_get_task(PyEntity * self)
     }
     // FIXME Err, probably actually want to return the real Task.
     PyTask * ret = newPyTask();
-    ret->m_task = self->m_entity.c->task();
+    if (ret != NULL) {
+        ret->m_task = self->m_entity.c->task();
+    }
     return (PyObject*)ret;
     
 }
@@ -152,11 +153,15 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
         return Py_None;
     } else if (res.size() == 1) {
         PyOperation * ret = newPyOperation();
-        ret->operation = res[0];
+        if (ret != NULL) {
+            ret->operation = res[0];
+        }
         return (PyObject*)ret;
     } else {
         PyOplist * ret = newPyOplist();
-        ret->ops = new OpVector(res);
+        if (ret != NULL) {
+            ret->ops = new OpVector(res);
+        }
         return (PyObject*)ret;
     }
 }
@@ -203,8 +208,10 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        loc->location = &self->m_entity.e->m_location;
-        loc->owner = self->m_entity.e;
+        if (loc != NULL) {
+            loc->location = &self->m_entity.e->m_location;
+            loc->owner = self->m_entity.e;
+        }
         return (PyObject *)loc;
     }
     if (strcmp(name, "contains") == 0) {
