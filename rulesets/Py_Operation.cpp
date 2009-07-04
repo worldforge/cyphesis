@@ -507,7 +507,7 @@ static PySequenceMethods Operation_seq = {
  *
  */
 
-PyMethodDef RootOperation_methods[] = {
+PyMethodDef Operation_methods[] = {
     {"setSerialno",     (PyCFunction)Operation_setSerialno,     METH_O},
     {"setRefno",        (PyCFunction)Operation_setRefno,        METH_O},
     {"setFrom",         (PyCFunction)Operation_setFrom,         METH_O},
@@ -526,7 +526,7 @@ PyMethodDef RootOperation_methods[] = {
     {NULL,          NULL}
 };
 
-PyMethodDef ConstRootOperation_methods[] = {
+PyMethodDef ConstOperation_methods[] = {
     {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
     {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
     {"getFrom",         (PyCFunction)Operation_getFrom,         METH_NOARGS},
@@ -551,12 +551,12 @@ static void Operation_dealloc(PyOperation *self)
 
 static inline PyObject * findMethod(PyOperation * self, char * name)
 {
-    return Py_FindMethod(RootOperation_methods, (PyObject *)self, name);
+    return Py_FindMethod(Operation_methods, (PyObject *)self, name);
 }
 
 static inline PyObject * findMethod(PyConstOperation * self, char * name)
 {
-    return Py_FindMethod(ConstRootOperation_methods, (PyObject *)self, name);
+    return Py_FindMethod(ConstOperation_methods, (PyObject *)self, name);
 }
 
 template <typename T>
@@ -851,11 +851,5 @@ PyOperation * newPyOperation()
 
 PyConstOperation * newPyConstOperation()
 {
-    PyConstOperation * self;
-    self = PyObject_NEW(PyConstOperation, &PyConstOperation_Type);
-    if (self == NULL) {
-        return NULL;
-    }
-    new (&(self->operation)) RootOperation(NULL);
-    return self;
+    return (PyConstOperation *)PyConstOperation_Type.tp_new(&PyConstOperation_Type, 0, 0);
 }
