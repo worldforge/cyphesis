@@ -278,7 +278,9 @@ PyObject * wrapTask(Task * task)
     PythonWrapper * pw;
     if (ts == 0 || ((pw = dynamic_cast<PythonWrapper *>(ts->script())) == 0)) {
         PyTask * pt = newPyTask();
-        pt->m_task = task;
+        if (pt != NULL) {
+            pt->m_task = task;
+        }
         wrapper = (PyObject *)pt;
         // This wrapper cannot be stashed back int the task yet so
         // we don't have to do this next time.
