@@ -115,7 +115,9 @@ PyObject * Quaternium_num_mult(PyQuaternion * self, PyQuaternion * other)
         return NULL;
     }
     PyQuaternion * ret = newPyQuaternion();
-    ret->rotation = self->rotation * other->rotation;
+    if (ret != NULL) {
+        ret->rotation = self->rotation * other->rotation;
+    }
     return (PyObject *)ret;
 }
 
