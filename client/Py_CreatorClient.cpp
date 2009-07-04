@@ -48,11 +48,10 @@ static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject *)
     }
 #endif // NDEBUG
     PyMessage * ret = newPyMessage();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->m_obj = new Element(MapType());
+        self->m_mind->addToMessage(ret->m_obj->asMap());
     }
-    ret->m_obj = new Element(MapType());
-    self->m_mind->addToMessage(ret->m_obj->asMap());
     return (PyObject *)ret;
 }
 
@@ -75,7 +74,9 @@ static PyObject * CreatorClient_make(PyCreatorClient * self,
         return NULL;
     }
     PyEntity * ret = newPyLocatedEntity();
-    ret->m_entity.l = retval;
+    if (ret != NULL) {
+        ret->m_entity.l = retval;
+    }
     return (PyObject *)ret;
 }
 
@@ -120,7 +121,9 @@ static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * py_id)
         return NULL;
     }
     PyEntity * ret = newPyLocatedEntity();
-    ret->m_entity.l = retval;
+    if (ret != NULL) {
+        ret->m_entity.l = retval;
+    }
     return (PyObject *)ret;
 }
 static PyObject * CreatorClient_look_for(PyCreatorClient * self,
@@ -142,7 +145,9 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
         return Py_None;
     }
     PyEntity * ret = newPyLocatedEntity();
-    ret->m_entity.l = retval;
+    if (ret != NULL) {
+        ret->m_entity.l = retval;
+    }
     return (PyObject *)ret;
 }
 
@@ -225,18 +230,24 @@ static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
     }
     if (strcmp(name, "map") == 0) {
         PyMap * map = newPyMap();
-        map->m_map = self->m_mind->getMap();
+        if (map != NULL) {
+            map->m_map = self->m_mind->getMap();
+        }
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        loc->location = &self->m_mind->m_location;
-        loc->owner = self->m_mind;
+        if (loc != NULL) {
+            loc->location = &self->m_mind->m_location;
+            loc->owner = self->m_mind;
+        }
         return (PyObject *)loc;
     }
     if (strcmp(name, "time") == 0) {
         PyWorldTime * worldtime = newPyWorldTime();
-        worldtime->time = self->m_mind->getTime();
+        if (worldtime != NULL) {
+            worldtime->time = self->m_mind->getTime();
+        }
         return (PyObject *)worldtime;
     }
     if (self->CreatorClient_attr != NULL) {
@@ -349,6 +360,10 @@ int runClientScript(CreatorClient * c, const std::string & package,
         return -1;
     }
     PyCreatorClient * editor = newPyCreatorClient();
+    if (editor == NULL) {
+        Py_DECREF(function);
+        return -1;
+    }
     editor->m_mind = c;
     PyObject * pyob = PyEval_CallFunction(function, "(O)", editor);
 
