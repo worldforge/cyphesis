@@ -1,3 +1,5 @@
+tp_alloc can return null.
+
 Clean out old commented out new Python object creation.
 
 Would it be better to expose Point3D more directly to Python, rather than
