@@ -19,28 +19,10 @@
 
 #include "Inheritance.h"
 
-#include "Actuate.h"
-#include "Add.h"
-#include "Attack.h"
-#include "Burn.h"
-#include "Drop.h"
-#include "Eat.h"
-#include "Monitor.h"
-#include "Nourish.h"
-#include "Pickup.h"
-#include "Setup.h"
-#include "Tick.h"
-#include "Unseen.h"
-#include "Update.h"
+#include "custom.h"
 
 #include <Atlas/Objects/Entity.h>
-
-namespace Atlas { namespace Objects { namespace Operation {
-
-extern int THOUGHT_NO;
-extern int GOAL_INFO_NO;
-
-} } }
+#include <Atlas/Objects/Generic.h>
 
 void installCustomOperations()
 {
