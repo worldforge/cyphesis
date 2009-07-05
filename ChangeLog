@@ -1,3 +1,21 @@
+2009-07-05  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* client/Py_CreatorClient.cpp, client/client.cpp,
+	  rulesets/Py_BBox.cpp, rulesets/Py_Location.cpp, rulesets/Py_Map.cpp,
+	  rulesets/My_Message.cpp, rulesets/My_Mind.cpp,
+	  rulesets/Py_Operation.cpp, rulesets/Py_Operation.h,
+	  rulesets/Py_Oplist.cpp, rulesets/Py_Point3D.cpp,
+	  rulesets/Py_Property.cpp, rulesets/Py_Quaternion.cpp,
+	  rulesets/Py_RootEntity.cpp, rulesets/Py_Task.cpp,
+	  rulesets/Py_TerrainProperty.cpp, rulesets/Py_Thing.cpp,
+	  rulesets/Py_Vector3D.cpp, rulesets/Py_World.cpp,
+	  rulesets/Py_WorldTime.cpp, rulesets/PythonEntityScript.cpp,
+	  rulesets/Python_API.h, tests/Py_CreatorClienttest.cpp:
+	  Always check for NULL when creating new Python objects.
+	  Clean up bindings to make sure all conform to modern Python
+	  API conventions, and remove obsolete commented out allocation
+	  code all round.
+
 2009-07-02  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Python_API.cpp, rulesets/Python_Script_Utils.h:
