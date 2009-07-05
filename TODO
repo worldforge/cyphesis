@@ -3,8 +3,6 @@ not be available at all in the client bindings.
 
 Look into loudmouth for XMPP stuff.
 
-tp_alloc can return null.
-
 Clean out old commented out new Python object creation.
 
 Would it be better to expose Point3D more directly to Python, rather than

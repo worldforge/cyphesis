@@ -80,8 +80,10 @@ static PyObject * WorldTime_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we set some
     // stuff to null.
     PyWorldTime * self = (PyWorldTime *)type->tp_alloc(type, 0);
-    self->time = 0;
-    self->own = false;
+    if (self != NULL) {
+        self->time = 0;
+        self->own = false;
+    }
     return (PyObject *)self;
 }
 
