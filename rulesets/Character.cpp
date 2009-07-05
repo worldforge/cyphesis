@@ -30,6 +30,7 @@
 
 #include "common/op_switch.h"
 #include "common/const.h"
+#include "common/custom.h"
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/log.h"
@@ -1391,6 +1392,16 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a GoalInfo operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
+void Character::mindGoalInfoOperation(const Operation & op, OpVector & res)
+{
+    op->setTo(getId());
+    res.push_back(op);
+}
+
 /// \brief Filter a Touch operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1467,6 +1478,16 @@ bool Character::w2mSetupOperation(const Operation & op)
         }
     }
     return false;
+}
+
+/// \brief Filter a Thought operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
+void Character::mindThoughtOperation(const Operation & op, OpVector & res)
+{
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 /// \brief Filter a Tick operation coming from the world to the mind
@@ -1625,6 +1646,10 @@ void Character::mind2body(const Operation & op, OpVector & res)
                 mindTickOperation(op, res);
             } else if (op_no == Atlas::Objects::Operation::UPDATE_NO) {
                 mindUpdateOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
+                mindThoughtOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
+                mindGoalInfoOperation(op, res);
             } else {
                 mindOtherOperation(op, res);
             }

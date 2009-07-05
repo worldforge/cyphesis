@@ -102,12 +102,14 @@ class Character : public Character_parent {
     virtual void mindDeleteOperation(const Operation &, OpVector &);
     virtual void mindDivideOperation(const Operation &, OpVector &);
     virtual void mindEatOperation(const Operation &, OpVector &);
+    virtual void mindGoalInfoOperation(const Operation &, OpVector &);
     virtual void mindImaginaryOperation(const Operation &, OpVector &);
     virtual void mindLookOperation(const Operation &, OpVector &);
     virtual void mindMoveOperation(const Operation &, OpVector &);
     virtual void mindSetOperation(const Operation &, OpVector &);
     virtual void mindSetupOperation(const Operation &, OpVector &);
     virtual void mindTalkOperation(const Operation &, OpVector &);
+    virtual void mindThoughtOperation(const Operation &, OpVector &);
     virtual void mindTickOperation(const Operation &, OpVector &);
     virtual void mindTouchOperation(const Operation &, OpVector &);
     virtual void mindUpdateOperation(const Operation &, OpVector &);
