@@ -22,13 +22,14 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      compose.hpp \
 		      types.h type_utils.h op_switch.h \
 		      operations.cpp \
+		      custom.cpp custom.h \
 		      client_socket.cpp sockets.h \
 		      globals.cpp globals.h \
 		      Database.cpp Database.h \
 		      system.cpp system.h \
 		      serialno.cpp serialno.h \
 		      TypeNode.cpp TypeNode.h \
-		      Inheritance.cpp custom.cpp Inheritance.h \
+		      Inheritance.cpp Inheritance.h \
 		      Property.cpp Property_impl.h Property.h \
 		      PropertyFactory.cpp PropertyFactory.h \
 		      PropertyFactory_impl.h \
