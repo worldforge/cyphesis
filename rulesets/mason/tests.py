@@ -156,7 +156,8 @@ def test_fire(mapeditor):
     m = editor(mapeditor)
 
     cfire=m.make('campfire',pos=(3,9,settlement_height))
-    # m.make('fire',pos=(0,0,0),parent=cfire.id)
+    m.make('fire',pos=(0,0,0),parent=cfire.id)
+    m.make('lumber',pos=(0,0,0),parent=cfire.id)
 
 def test_own(mapeditor):
 
