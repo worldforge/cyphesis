@@ -312,3 +312,21 @@ def test_tmods(mapeditor):
     
     m.make('tower',pos=(60,60,5),terrainmod=terrainMod1)
     m.make('tower',pos=(20,20,5), terrainmod=terrainMod2)
+
+chicken_goals=[(il.avoid,"avoid(['orc','wolf'],10.0)"),
+               (il.avoid,"avoid(['settler'],1.0)"),
+               (il.flock,"flock()"),
+               (il.peck,"peck()")]
+
+def test_chickens(mapeditor):
+
+    m=editor(mapeditor)
+
+    chickens=[]
+    for i in range(0, 10):
+        xpos = uniform(-5,5)
+        ypos = uniform(-5,5)
+        d=m.make('chicken', pos=(xpos, ypos, settlement_height), transient=-1)
+        chickens.append(d)
+    m.learn(chickens,chicken_goals)
+
