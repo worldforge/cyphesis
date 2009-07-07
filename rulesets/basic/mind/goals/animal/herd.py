@@ -93,7 +93,7 @@ class herd(DynamicGoal):
             val = self.herd_members[ent.id]
         except KeyError:
             val=0
-        if type(ent.location.coordinates)!=InstanceType:
+        if type(ent.location.coordinates)!=Point3D:
             return
         if me.location.coordinates.distance(ent.location.coordinates)<6:
             val = val+1
