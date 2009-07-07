@@ -6,6 +6,7 @@ from types import *
 from common import const
 
 from physics import Vector3D
+from physics import Point3D
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
@@ -17,28 +18,51 @@ class flock(DynamicGoal):
                              desc=desc)
     def event(self, me, original_op, op):
         ent=op[0]
-        if ent.id==me.id: return
+        # This goal currently causes mayhem. Effectively disable it.
+        if 1:
+            return
+        if ent.id==me.id:
+            return
         ent=me.map.get(ent.id)
-        if ent==None: return
-        if ent.type[0]!=me.type[0]: return
+        if ent==None:
+            print "not convering on Nothing"
+            return
+        if ent.type[0]!=me.type[0]:
+            print "not convering on something not me"
+            return
         if type(ent.location.parent) == type(None):
             print "flock.event, ent.location.parent is None"
             return
         if type(me.location.parent) == type(None):
             print "flock.event, me.location.parent is None"
             return
-        if me.location.parent.id!=ent.location.parent.id: return
-        if type(ent.location.coordinates)!=InstanceType:
+        if me.location.parent.id!=ent.location.parent.id:
+            print "not convering on something elsewhere"
             return
-        if ent.location.velocity:
-            myvel=me.location.velocity.unit_vector()
-            evel=ent.location.velocity.unit_vector()
-            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
-            #If I am moving towards them, or in the same direction, then do nothing
-            if myvel and (evel.dot(myvel) > 0.5 or edir.dot(myvel) > 0.5):
-                return
+        if type(ent.location.coordinates)!=Point3D:
+            print "coordinates not an Point", type(ent.location.coordinates)
+            return
+        edist=(ent.location.coordinates-me.location.coordinates)
+        if edist.square_mag() < 50:
+            print "not convering on close enough"
+            return
+        evel=ent.location.velocity
+        if evel and evel.square_mag() > 0.1:
+            myvel=me.location.velocity
+            edir=edist.unit_vector()
+            if myvel and myvel.square_mag() > 0.1:
+                myvel = myvel.unit_vector()
+                #If I move in the same direction, then do nothing
+                if evel.dot(myvel) > 0.5:
+                    print "not convering on moving with"
+                    return
+                #If I am moving towards them, then do nothing
+                if edir.dot(myvel) > 0.5:
+                    print "not convering on moving towards them"
+                    return
             #If they are coming towards me, then do nothing
             if edir.dot(evel) < - 0.5:
+                print "not convering on moving towards me"
                 return
             new_loc=Location(me.location.parent)
             new_loc.velocity=ent.location.velocity
@@ -46,6 +70,7 @@ class flock(DynamicGoal):
             new_loc=ent.location.copy()
             edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
             new_loc.coordinates=new_loc.coordinates-edir
+        print "converging"
         return Operation("move", Entity(me.id, location=new_loc))
 
 class herd(DynamicGoal):
