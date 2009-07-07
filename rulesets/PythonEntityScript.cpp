@@ -73,7 +73,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
             debug( std::cout << "No method to be found for " << std::endl
                              << std::flush;);
         } else {
-            log(ERROR, "Reporting python error");
+            log(ERROR, String::compose("Python error calling \"%1\"", op_name));
             PyErr_Print();
             if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
                 log(ERROR,
