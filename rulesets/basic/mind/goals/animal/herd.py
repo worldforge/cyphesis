@@ -10,6 +10,67 @@ from physics import Point3D
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
+class school(DynamicGoal):
+    """Move in a shoal with other animals of the same type"""
+    def __init__(self, members=[], desc="mirror the movement of other animals like me"):
+        DynamicGoal.__init__(self,
+                            trigger="sight_move", #replace with something more appropriate
+                            desc=desc)
+    def event(self, me, original_op, op):
+        #print "school called"
+        ent=op[0]
+        if ent.id==me.id:
+            #print "detecting myself"
+            return
+        ent=me.map.get(ent.id)
+        if ent==None: 
+            #print "type is none"
+            return
+        if ent.type[0]!=me.type[0]:
+            #print "ent.type!=me.type"
+            return
+        if type(ent.location.parent) == type(None):
+            #print "school.event, ent.location.parent is None"
+            return
+        if type(me.location.parent) == type(None):
+            #print "school.event, me.location.parent is None"
+            return
+        if me.location.parent.id!=ent.location.parent.id:
+            #print "me.location.parent.id!=ent.location.parent.id"
+            return
+        if type(ent.location.coordinates)!=InstanceType:
+            #print ent.location.coordinates
+            #print type(ent.location.coordinates)
+            #print "type(ent.location.coordinates)!=InstanceType"
+            return
+        distance=(ent.location.coordinates-me.location.coordinates).mag()
+        #ensures that the entity will check only other entities really close to it,
+        #thereby reducing the possibility of infinite loops
+        if distance < 0.4 and ent.location.velocity:
+            print "changing only velocity"
+            new_loc=Location(me.location.parent)
+            new_loc.velocity=ent.location.velocity
+        if distance > 0.4 and ent.location.velocity:
+            print "changing both location and velocity"
+            myvel=me.location.velocity.unit_vector()
+            evel=ent.location.velocity.unit_vector()
+            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
+            if myvel and (evel.dot(myvel) > 0.9 or edir.dot(myvel) > 0.9):
+                return
+            if edir.dot(evel) < 0:
+                new_loc=Location(me.location.parent)
+                #replace by rotatez?
+                new_loc.velocity=-ent.location.velocity
+            else:
+                new_loc=Location(me.location.parent)
+                new_loc.velocity=ent.location.velocity
+        else:
+            print "everything perfect, not doing anything"
+            new_loc=ent.location.copy()
+            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
+            new_loc.coordinates=new_loc.coordinates-edir
+        return Operation("move", Entity(me.id, location=new_loc))
+
 class flock(DynamicGoal):
     """Move in a flock with other animals of the same type."""
     def __init__(self, members=[], desc="move in flocks with other animals like me"):

@@ -78,6 +78,25 @@
   <map>
     <map name="attributes">
     </map>
+    <string name="id">fishing</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">sow</string>
+      <string name="tool">fishingrod</string>
+      <string name="target">ocean</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Fish.Fish</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
     <string name="id">logging</string>
     <string name="objtype">class</string>
     <list name="parents">
@@ -148,6 +167,25 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Ram.Ram</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="attributes">
+    </map>
+    <string name="id">sift</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="tool">sieve</string>
+      <string name="target">pile</string>
+    </map>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Sift.Sift</string>
     </map>
   </map>
 
