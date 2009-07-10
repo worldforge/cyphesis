@@ -1,3 +1,6 @@
+mindUseOperation() is touching all kinds of things it should. The mind
+interface should just be a filter.
+
 Check all Python for InstanceType, as that is what C++ objects used to be,
 but not any more.
 
