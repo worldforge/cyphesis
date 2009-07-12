@@ -9,6 +9,10 @@ import server
 
 class Weather(server.Thing):
     def tick_operation(self, op):
+        self.target = op[0].id
+        target = server.world.get_object(self.target)
+        surface = target.terrain.get_surface(self.pos)
+        print "Working?!?: ", surface
         res = Oplist()
         optick = Operation("tick", to=self)
         res = res + optick
