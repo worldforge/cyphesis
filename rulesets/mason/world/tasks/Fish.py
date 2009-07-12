@@ -9,7 +9,7 @@ from physics import Vector3D
 
 import server
 
-class Fishing(server.Task):
+class Fish(server.Task):
     """A task for fishing in the ocean"""
     
     baitlist = ["earthworm"]
@@ -93,5 +93,6 @@ class Fishing(server.Task):
                 self.progress = 0
             else:
                 self.progress += 0.01
+        #a fish has eaten the bait
         self.progress = 1
         return
