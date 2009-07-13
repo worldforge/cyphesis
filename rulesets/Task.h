@@ -22,6 +22,8 @@
 
 #include "common/OperationRouter.h"
 
+#include <Atlas/Message/Element.h>
+
 #include <string>
 
 #include <cassert>
@@ -54,6 +56,9 @@ class Task {
     /// This doesn't handle the idea that there might be multiple actors
     /// involved.
     Character & m_character;
+
+    /// \brief Additional task attributes
+    Atlas::Message::MapType m_attr;
 
     /// \brief Name of task presented to client
     std::string m_name;
@@ -138,6 +143,12 @@ class Task {
 
     /// \brief Accessor for rate of progress towards completion
     float & rate() { return m_rate; }
+
+    /// \brief Accessor for additional attributes
+    const Atlas::Message::Element & getAttr(const std::string & attr) { return m_attr[attr]; }
+
+    /// \brief Sets additional attribute
+    void setAttr(const std::string & attr, const Atlas::Message::Element & val) { m_attr[attr] = val; }
 };
 
 #endif // RULESETS_TASK_H
