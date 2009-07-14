@@ -125,7 +125,8 @@ tailor_prices = [('shirt', 'price', '5'),
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 
 
-fish_goals=[(il.forage,"forage('earthworm')"),
+fish_goals=[(il.forage,"forage('juicy earthworm')"),
+            (il.forage,"forage('scrawny earthworm')"),
             (il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()")]
