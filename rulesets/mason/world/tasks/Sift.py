@@ -15,7 +15,6 @@ class Sift(server.Task):
     materials = ['earth']
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        # print "Dig.cut"
 
         if len(op) < 1:
             sys.stderr.write("Sift task has no target in cut op")
@@ -29,8 +28,8 @@ class Sift(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dig.tick"
-
-        target=server.world.get_object(self.target)
+        world = self.location.parent
+        target = server.world.get_object(self.target)
         if not target:
             print "Target is no more"
             self.irrelevant()
@@ -66,7 +65,7 @@ class Sift(server.Task):
 
         self_loc = Location(self.character)
         self_loc.velocity = Vector3D()
-        moisture = 10
+        moisture = 10 * world.moisture
         self_loc.coordinates = self.pos
         for i in range(moisture/2, moisture):
             res = res + Operation("create", Entity(name = "earthworm", parents = ["earthworm"], location = self_loc), to=self.character)
