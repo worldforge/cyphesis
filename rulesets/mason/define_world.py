@@ -110,6 +110,10 @@ toolprices = [('bowl', 'price', '3'),
               ('pickaxe', 'price', '6'),
               ('scythe', 'price', '7'),
               ('tinderbox', 'price', '8'),
+              ('sieve', 'price', '3'),
+              ('float', 'price', '1'),
+              ('hook', 'price', '1'),
+              ('fishingrod', 'price', '4'),
               ('bucksaw', 'price', '10')]
 
 toolmerc_knowledge=[('market', 'location', tool_stall_pos)]
@@ -119,6 +123,12 @@ tailor_prices = [('shirt', 'price', '5'),
                  ('cloak', 'price', '5')]
 
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
+
+
+fish_goals=[(il.forage,"forage('earthworm')"),
+            (il.school,"school()"),
+            (il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.amble,"amble()")]
 
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage('acorn')"),
@@ -354,8 +364,8 @@ def default(mapeditor):
 
         tools=[]
         # the different tools must be stated here \|/
-        tooltypes=['shovel', 'axe', 'tinderbox', 'bowl', 'pole', 'bottle',
-                   'cleaver', 'pickaxe', 'scythe', 'bucksaw','trowel','hammer'] 
+        tooltypes=['shovel', 'axe', 'fishingrod', 'tinderbox', 'bowl', 'pole', 'bottle', 'hook',
+                   'cleaver', 'pickaxe', 'scythe', 'bucksaw', 'trowel', 'sieve', 'float', 'hammer'] 
     
         for i in range(0, 20):
             tty = tooltypes[randint(0,len(tooltypes)-1)]
@@ -521,14 +531,17 @@ def _add_animals(m):
     m.learn(chickens,chicken_goals)
 
     fish=[]
-    xbase = lake_pos[0]
-    ybase = lake_pos[1]
+    #xbase = lake_pos[0]
+    #ybase = lake_pos[1]
+    xbase = 0
+    ybase = 0
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
         d=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(d)
+    m.learn(fish,fish_goals)
     
 
     # I am not sure if we need a guard
@@ -559,7 +572,7 @@ def _setup_landscape(m, world):
     for i in forests:
         for j in range(0, i[1]):
             m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
-
+    m.make('ocean',pos=(0,0,0),bbox=[-500,-321,-20,320,321,0])
     m.make('weather', pos=(0,1,0))
 
 
@@ -970,5 +983,4 @@ def add_castle(mapeditor):
     castle_path_area = {'points': [[-400, -34], [-372, -34], [-350, -42], [-300, -56], [-215, -42], [-180, -5], [-125, -6], [-86, -4],
         [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
     m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
- 
 
