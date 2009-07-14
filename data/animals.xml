@@ -193,7 +193,7 @@
         <string name="visibility">public</string>
       </map>
     </map>
-    <string name="id">earthworm</string>
+    <string name="id">annelid</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>mobile</string>
