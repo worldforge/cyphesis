@@ -7,12 +7,22 @@ from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
 
+import math
 import server
 
 class Sift(server.Task):
     """A task for sifting through a pile of earth for earthworms"""
     
     materials = ['earth']
+    def get_quality(self, location, moisture):
+        x = location.x
+        y = location.y
+        z = location.z
+        xval = math.exp(-x*x/2)
+        yval = math.exp(-y*y/2)
+        zval = math.exp(-z*z/2)
+        return xval * yval * zval + moisture
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
 
@@ -67,8 +77,12 @@ class Sift(server.Task):
         self_loc.velocity = Vector3D()
         moisture = 10 * world.moisture
         self_loc.coordinates = self.pos
-        for i in range(moisture/2, moisture):
-            res = res + Operation("create", Entity(name = "earthworm", parents = ["earthworm"], location = self_loc), to=self.character)
+
+        quality = 10 * self.get_quality(self_loc.coordinates, moisture)
+        for i in range(quality/2, quality):
+            res = res + Operation("create", Entity(name = "scrawny earthworm", parents = ["annelid"], location = self_loc), to=self.character)
+        for i in range((10-quality)/2, quality):
+            res = res + Operation("create", Entity(name = "juicy earthworm", parents = ["annelid"], location = self_loc), to=self.character)
 
         #res.append(self.next_tick(1.75))
 
