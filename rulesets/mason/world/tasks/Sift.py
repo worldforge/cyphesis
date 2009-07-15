@@ -15,13 +15,9 @@ class Sift(server.Task):
     
     materials = ['earth']
     def get_quality(self, location, moisture):
-        x = location.x
-        y = location.y
         z = location.z
-        xval = math.exp(-x*x/2)
-        yval = math.exp(-y*y/2)
         zval = math.exp(-z*z/2)
-        return xval * yval * zval + moisture
+        return zval + moisture
 
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
