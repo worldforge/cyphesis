@@ -79,8 +79,6 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
 		return NULL;
 	}
 	Vector3D normal;
-	//Mercator::Segment * segment = self->m_data.getSegment(x, y);
-	//segment->getHeightAndNormal(x, y, height, normal);
 	normal = self->m_property->getNormal(x, y);
 	return (PyObject)normal;
 }
