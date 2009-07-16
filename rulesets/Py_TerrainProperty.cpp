@@ -65,9 +65,30 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
     return PyInt_FromLong(surface);
 }
 
+static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
+											 PyObject * args)
+{
+#ifndef NDEBUG
+	if (self->m_entity == NULL) {
+		PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+		return NULL;
+	}
+#endif
+	float x,y;
+	if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
+		return NULL;
+	}
+	Vector3D normal;
+	//Mercator::Segment * segment = self->m_data.getSegment(x, y);
+	//segment->getHeightAndNormal(x, y, height, normal);
+	normal = self->m_property->getNormal(x, y);
+	return (PyObject)normal;
+}
+
 static PyMethodDef TerrainProperty_methods[] = {
     {"get_height",   (PyCFunction)TerrainProperty_getHeight,     METH_VARARGS},
     {"get_surface",  (PyCFunction)TerrainProperty_getSurface,    METH_VARARGS},
+    {"get_normal",   (PyCFunction)TerrainProperty_getNormal,	 METH_VARARGS},
     {NULL,           NULL}           /* sentinel */
 };
 
