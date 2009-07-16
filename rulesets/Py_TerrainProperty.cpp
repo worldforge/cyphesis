@@ -20,6 +20,7 @@
 #include "Py_Property.h"
 
 #include "Py_Point3D.h"
+#include "Py_Vector3D.h"
 
 #include "TerrainProperty.h"
 
@@ -80,7 +81,11 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
 	}
 	Vector3D normal;
 	normal = self->m_property->getNormal(x, y);
-	return (PyObject)normal;
+	PyVector3D * ret = new PyVector3D();
+	if (ret != NULL) {
+		ret->coords = normal;
+	}
+	return (PyObject *)ret;
 }
 
 static PyMethodDef TerrainProperty_methods[] = {
