@@ -9,7 +9,7 @@ check_coverage() {
 
     if [ ! -f ${test_program}.cpp ]
     then
-        if [ ${report} -eq 1 ]
+        if [ ${report} -eq 1 -o ${single} -eq 1 ]
         then
             echo No test for ${source_file}
         fi
@@ -49,6 +49,10 @@ check_coverage() {
     then
         if [ ! -f ${source_dir}/${base_file}.gcno ]
         then
+            if [ ${single} -eq 1 ]
+            then
+                echo No code to be covered in ${source_file}
+            fi
             return
         fi
         echo No coverage data ${coverage_data} for ${source_file}
@@ -110,6 +114,7 @@ DIRS="physics common modules rulesets"
 
 declare -i report=0
 declare -i configure=0
+declare -i single=0
 
 while getopts "hrc" options
 do
@@ -135,6 +140,7 @@ if [ -n "$1" ]
 then
     if [ -f "$1" ]
     then
+        single=1
         check_coverage $1
         exit 0
     else
