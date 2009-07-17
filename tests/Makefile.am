@@ -27,6 +27,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
                  TransientPropertytest TasksPropertytest \
+                 InternalPropertiestest \
                  Domaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest ActivePropertyFactorytest \
@@ -605,6 +606,17 @@ TransientPropertytest_LDADD = \
 TasksPropertytest_SOURCES = TasksPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TasksPropertytest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+InternalPropertiestest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
         $(top_builddir)/rulesets/librulesetbase.a \
