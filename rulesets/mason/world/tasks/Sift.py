@@ -17,7 +17,11 @@ class Sift(server.Task):
     def get_quality(self, location, moisture):
         z = location.z
         zval = math.exp(-z*z/2)
-        return zval + moisture
+        target = self.world.get_object(self.target)
+        normal = target.terrain.get_normal(location.x, location.y);
+        i = Vector3D(1, 0, 0)
+        slope = normal.dot(i) / normal.mag
+        return zval + moisture + (1 - slope)
 
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
