@@ -32,6 +32,7 @@ static void testFactory(PropertyKit & pk)
 
 static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
 {
+    return OPERATION_IGNORED;
 }
 
 int main()
