@@ -29,7 +29,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TransientPropertytest TasksPropertytest \
                  Domaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
-                 Pedestriantest \
+                 Pedestriantest ActivePropertyFactorytest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
@@ -676,6 +676,16 @@ Movementtest_LDADD = \
 
 Pedestriantest_SOURCES = Pedestriantest.cpp
 Pedestriantest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+ActivePropertyFactorytest_SOURCES = ActivePropertyFactorytest.cpp
+ActivePropertyFactorytest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
         $(top_builddir)/rulesets/librulesetbase.a \
