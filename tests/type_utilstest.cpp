@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "common/type_utils.h"
+#include "common/type_utils_impl.h"
 
 #include "physics/Vector3D.h"
 #include "physics/Quaternion.h"
