@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2004 Alistair Riddoch
+// Copyright (C) 2009 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,23 +17,22 @@
 
 // $Id$
 
-#ifndef COMMON_TYPE_UTILS_H
-#define COMMON_TYPE_UTILS_H
+#include "common/type_utils_impl.h"
 
-#include <Atlas/Message/Element.h>
+void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
+{
+    ol.clear();
+    IdList::const_iterator Iend = l.end();
+    for (IdList::const_iterator I = l.begin(); I != Iend; ++I) {
+        ol.push_back(*I);
+    }
+}
 
-typedef std::vector<std::string> IdList;
-
-void idListasObject(const IdList & l, Atlas::Message::ListType & ol);
-
-void idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol);
-
-// This could probably be made into a template, as it will work
-// on any type which implements asMessage()
-template<typename List_T>
-void objectListAsMessage(const List_T & l, Atlas::Message::ListType & ol);
-
-template<typename T, typename List_T>
-int objectListFromMessage(const Atlas::Message::ListType & l, List_T & ol);
-
-#endif // COMMON_TYPE_UTILS_H
+void idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
+{
+    ol.clear();
+    Atlas::Message::ListType::const_iterator Iend = l.end();
+    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
+        ol.push_back(I->asString());
+    }
+}

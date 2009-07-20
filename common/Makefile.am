@@ -20,7 +20,9 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      debug.cpp debug.h \
 		      random.h nls.h \
 		      compose.hpp \
-		      types.h type_utils.h op_switch.h \
+		      types.h op_switch.h \
+		      type_utils.cpp type_utils.h \
+		      type_utils_impl.h \
 		      operations.cpp \
 		      custom.cpp custom.h \
 		      client_socket.cpp sockets.h \
