@@ -26,7 +26,7 @@ typedef std::vector<std::string> IdList;
 
 void idListasObject(const IdList & l, Atlas::Message::ListType & ol);
 
-void idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol);
+int idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol);
 
 // This could probably be made into a template, as it will work
 // on any type which implements asMessage()

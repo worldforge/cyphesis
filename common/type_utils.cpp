@@ -28,11 +28,16 @@ void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
     }
 }
 
-void idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
+int idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
 {
     ol.clear();
     Atlas::Message::ListType::const_iterator Iend = l.end();
-    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
+    Atlas::Message::ListType::const_iterator I = l.begin();
+    for (; I != Iend; ++I) {
+        if (!I->isString()) {
+            return -1;
+        }
         ol.push_back(I->asString());
     }
+    return 0;
 }
