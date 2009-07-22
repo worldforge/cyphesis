@@ -14,11 +14,11 @@ class Sift(server.Task):
     """A task for sifting through a pile of earth for earthworms"""
     
     materials = ['earth']
-    def get_quality(self, location, moisture):
+    def get_quality(self, location, target, moisture):
         z = location.z
         zval = math.exp(-z*z/2)
-        target = self.world.get_object(self.target)
-        normal = target.terrain.get_normal(location.x, location.y);
+        normal = target.terrain.get_normal(location);
+        print normal
         i = Vector3D(1, 0, 0)
         slope = normal.dot(i) / normal.mag
         return zval + moisture + (1 - slope)
@@ -38,8 +38,8 @@ class Sift(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dig.tick"
-        world = self.location.parent
         target = server.world.get_object(self.target)
+        world = target.location.parent
         if not target:
             print "Target is no more"
             self.irrelevant()
@@ -78,7 +78,7 @@ class Sift(server.Task):
         moisture = 10 * world.moisture
         self_loc.coordinates = self.pos
 
-        quality = 10 * self.get_quality(self_loc.coordinates, moisture)
+        quality = 10 * self.get_quality(self_loc.coordinates, target, moisture)
         for i in range(quality/2, quality):
             res = res + Operation("create", Entity(name = "scrawny earthworm", parents = ["annelid"], location = self_loc), to=self.character)
         for i in range((10-quality)/2, quality):
