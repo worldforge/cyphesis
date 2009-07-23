@@ -603,7 +603,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindActuateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Acuate op from mind" << std::endl << std::flush;);
+    debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush;);
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
