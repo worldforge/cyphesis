@@ -20,6 +20,7 @@
 #include "Py_Property.h"
 
 #include "Py_Point3D.h"
+#include "Py_Vector3D.h"
 
 #include "TerrainProperty.h"
 
@@ -65,9 +66,32 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
     return PyInt_FromLong(surface);
 }
 
+static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
+											 PyObject * args)
+{
+#ifndef NDEBUG
+	if (self->m_entity == NULL) {
+		PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+		return NULL;
+	}
+#endif
+	float x,y;
+	if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
+		return NULL;
+	}
+	Vector3D normal;
+	normal = self->m_property->getNormal(x, y);
+	PyVector3D * ret = new PyVector3D();
+	if (ret != NULL) {
+		ret->coords = normal;
+	}
+	return (PyObject *)ret;
+}
+
 static PyMethodDef TerrainProperty_methods[] = {
     {"get_height",   (PyCFunction)TerrainProperty_getHeight,     METH_VARARGS},
     {"get_surface",  (PyCFunction)TerrainProperty_getSurface,    METH_VARARGS},
+    {"get_normal",   (PyCFunction)TerrainProperty_getNormal,	 METH_VARARGS},
     {NULL,           NULL}           /* sentinel */
 };
 
