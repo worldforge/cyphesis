@@ -87,6 +87,7 @@ systemtest_LDADD = \
         $(NETWORK_LIBS)
 
 type_utilstest_SOURCES = type_utilstest.cpp
+type_utilstest_LDADD = $(top_builddir)/common/type_utils.o
 
 consttest_SOURCES = consttest.cpp
 consttest_LDADD = $(top_builddir)/common/const.o
