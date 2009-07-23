@@ -1,3 +1,15 @@
+2009-07-23  Alexey Torkhov  <atorkhov@gmail.com>
+
+	* rulesets/Task.cpp, rulesets/Task.h: Add support for freefrom task
+	  attributes.
+
+	* rulesets/TaskProperties.cpp: Expose task attributes to Set
+	  operations.
+
+	* tests/PropertyCoverage.cpp, tests/PropertyCoverage.h: Add
+	  functionality for testing character specific property
+	  functionality.
+
 2009-07-23  Amey Parulekar  <amey.par@gmail.com>
 
 	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h:
