@@ -18,10 +18,18 @@
 // $Id$
 
 #include "PropertyCoverage.h"
+#include "TestWorld.h"
 
+#include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 #include "rulesets/TasksProperty.h"
+#include "rulesets/TaskScript.h"
+
+#include <Atlas/Message/Element.h>
 
 using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+using Atlas::Message::Element;
 
 int main()
 {
@@ -29,7 +37,20 @@ int main()
 
     PropertyCoverage pc(ap);
 
-    // Coverage is complete, but it wouldn't hurt to add some bad data here.
+    Character * chr = pc.createCharacterEntity();
+    Task * task = new TaskScript(*chr);
+    task->progress() = .1;
+    task->rate() = .1;
+    chr->setTask(task);
+
+    MapType map;
+    map["one"] = 23;
+    map["two"] = 23.;
+    map["three"] = "twenty_three";
+    map["four"] = ListType(1, 23);
+    map["five"] = ListType(1, 23.);
+    map["six"] = ListType(1, "twenty_three");
+    pc.testDataAppend(ListType(1, map));
 
     pc.basicCoverage();
 

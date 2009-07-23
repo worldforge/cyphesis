@@ -28,6 +28,7 @@
 
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Message::MapType;
 
 /// \brief Task constructor for classes which inherit from Task
 Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr)
@@ -60,6 +61,11 @@ void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
     }
     if (m_rate >= 0) {
         task["progress_rate"] = m_rate;
+    }
+    MapType::const_iterator J = m_attr.begin();
+    MapType::const_iterator Jend = m_attr.end();
+    for (; J != Jend; ++J) {
+        task[J->first] = J->second;
     }
     ent->setAttr("tasks", Atlas::Message::ListType(1, task));
 }

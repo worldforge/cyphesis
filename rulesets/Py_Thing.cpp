@@ -87,7 +87,7 @@ static PyObject * Character_get_task(PyEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.get_task");
         return NULL;
     }
 #endif // NDEBUG
@@ -108,7 +108,7 @@ static PyObject * Character_set_task(PyEntity * self, PyTask * task)
 {
 #ifndef NDEBUG
     if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.set_task");
         return NULL;
     }
 #endif // NDEBUG
@@ -125,7 +125,7 @@ static PyObject * Character_clear_task(PyEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.clear_task");
         return NULL;
     }
 #endif // NDEBUG
@@ -138,7 +138,7 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
     if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
         return NULL;
     }
 #endif // NDEBUG
