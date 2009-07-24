@@ -124,14 +124,24 @@ tailor_prices = [('shirt', 'price', '5'),
 
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 
+# Fish goals
+pickerel_goals=[(il.forage,"forage('juicy earthworm')"),
+                (il.forage,"forage('scrawny earthworm')"),
+                (il.school,"school()"),
+                (il.avoid,"avoid(['settler','orc'],10.0)"),
+                (il.amble,"amble()")]
 
-trout_goals=[(il.forage,"forage('juicy earthworm')"),
+bass_goals=[(il.forage,"forage('juicy earthworm')"),
+            (il.forage,"forage('juicy larva')"),
             (il.forage,"forage('scrawny earthworm')"),
+            (il.forage,"forage('scrawny larva')"),
             (il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()")]
 
-salmon_goals=[(il.forage,"forage('juicy earthworm')"),
+bluegill_goals=[(il.forage,"forage('juicy maggot')"),
+            (il.forage,"forage('juicy earthworm')"),
+            (il.forage,"forage('scrawny maggot')"),
             (il.forage,"forage('scrawny earthworm')"),
             (il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
@@ -536,8 +546,9 @@ def _add_animals(m):
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
-    trout=[]
-    salmon=[]
+    bluegill=[]
+    pickerel=[]
+    bass=[]
     #xbase = lake_pos[0]
     #ybase = lake_pos[1]
     xbase = 0
@@ -546,14 +557,16 @@ def _add_animals(m):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
-        c=m.make('fish', name='trout', pos=(xpos, ypos, zpos), transient=-1)
-        d=m.make('fish', name='salmon', pos=(xpos, ypos, zpos), transient=-1)
-        trout.append(c)
-        salmon.append(d)
-    m.learn(trout,trout_goals)
-    m.learn(salmon,salmon_goals)
+        c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
+        d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
+        d=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
+        bluegill.append(c)
+        pickerel.append(d)
+        bass.append(d)
+    m.learn(bluegill,bluegill_goals)
+    m.learn(pickerel,pickerel_goals)
+    m.learn(bass,bass_goals)
     
-
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     #m.tell_importance(guard,il.defend,'>',il.patrol)
