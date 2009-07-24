@@ -353,6 +353,10 @@ void Entity::UpdateOperation(const Operation &, OpVector &)
 {
 }
 
+void Entity::UseOperation(const Operation &, OpVector &)
+{
+}
+
 void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
