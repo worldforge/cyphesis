@@ -26,7 +26,7 @@ class school(DynamicGoal):
         if ent==None: 
             #print "type is none"
             return
-        if ent.type[0]!=me.type[0]:
+        if ent.name!=me.name:
             #print "ent.type!=me.type"
             return
         if type(ent.location.parent) == type(None):
