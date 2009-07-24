@@ -338,3 +338,4 @@ def test_task(mapeditor):
     oak=m.make('oak',pos=(5,0,0))
 
     mapeditor.send(Operation("wield", Entity(axe.id), to=settler))
+    mapeditor.send(Operation("use", Operation("cut", Entity(oak.id)), to=settler))
