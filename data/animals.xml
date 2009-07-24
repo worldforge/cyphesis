@@ -4,6 +4,35 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
+          <float>0</float>
+          <float>0</float>
+          <float>0</float>
+          <float>0.05</float>
+          <float>0.01</float>
+          <float>0.01</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">annelid</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>mobile</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
           <float>-0.2</float>
           <float>-0.1</float>
           <float>0</float>
@@ -171,34 +200,6 @@
     </list>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0</float>
-          <float>0</float>
-          <float>0</float>
-          <float>0.05</float>
-          <float>0.01</float>
-          <float>0.01</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="biomass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">annelid</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
-  </map>
 
   <map>
     <map name="attributes">
@@ -218,8 +219,14 @@
         <string name="visibility">public</string>
       </map>
       <map name="mass">
-        <float name="default">1</float>
+        <float name="min">3</float>
+        <float name="default">5</float>
+        <float name="max">10</float>
         <string name="visibility">public</string>
+      </map>
+      <map name="maxmass">
+        <float name="default">10</float>
+        <string name="visibility">private</string>
       </map>
       <map name="mode">
         <string name="default">swimming</string>
@@ -294,6 +301,64 @@
       </map>
     </map>
     <string name="id">pig</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>mobile</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0</float>
+          <float>0</float>
+          <float>0</float>
+          <float>0.05</float>
+          <float>0.01</float>
+          <float>0.01</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">larva</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>mobile</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>0</float>
+          <float>0</float>
+          <float>0</float>
+          <float>0.05</float>
+          <float>0.01</float>
+          <float>0.01</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="biomass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">maggot</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>mobile</string>
