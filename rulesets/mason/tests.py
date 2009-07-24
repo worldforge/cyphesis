@@ -332,8 +332,6 @@ def test_chickens(mapeditor):
 
 def test_task(mapeditor):
 
-    print mapeditor, type(mapeditor)
-
     m=editor(mapeditor)
     settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
