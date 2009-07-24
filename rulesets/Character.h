@@ -92,6 +92,7 @@ class Character : public Character_parent {
     virtual void TickOperation(const Operation & op, OpVector &);
     virtual void TalkOperation(const Operation & op, OpVector &);
     virtual void NourishOperation(const Operation & op, OpVector &);
+    virtual void UseOperation(const Operation & op, OpVector &);
     virtual void WieldOperation(const Operation & op, OpVector &);
     virtual void AttackOperation(const Operation & op, OpVector &);
 

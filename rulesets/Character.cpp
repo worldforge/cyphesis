@@ -445,6 +445,211 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     res.push_back(si);
 }
 
+void Character::UseOperation(const Operation & op, OpVector & res)
+{
+    debug(std::cout << "Got Use op" << std::endl << std::flush;);
+
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        if (m_task != 0) {
+            if (!m_task->obsolete()) {
+                m_task->irrelevant();
+            }
+            assert(m_task->obsolete());
+            clearTask();
+        }
+        return;
+    }
+
+    // Are we going to modify this really?
+    EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+    if (rhw == 0) {
+        error(op, "Character::UseOp No tool wielded.", res, getId());
+        return;
+    }
+
+    Entity * tool = rhw->data().get();
+    if (tool == 0) {
+        error(op, "Character::UseOp No tool wielded.", res, getId());
+        return;
+    }
+    // FIXME Get a tool id from the op attributes?
+
+    Element toolOpAttr;
+    std::set<std::string> toolOps;
+    std::string op_type;
+
+    // Determine the operations this tool supports
+    if (!tool->getAttr("operations", toolOpAttr)) {
+        log(NOTICE, "Character::UseOp Attempt to use something not a tool");
+        return;
+    }
+
+    if (!toolOpAttr.isList()) {
+        log(ERROR, "Character::UseOp Tool has non list operations list");
+        return;
+    }
+    const ListType & toolOpList = toolOpAttr.asList();
+    if (toolOpList.empty()) {
+        log(ERROR, "Character::UseOp Tool operation list is empty");
+        return;
+    }
+    ListType::const_iterator J = toolOpList.begin();
+    ListType::const_iterator Jend = toolOpList.end();
+    assert(J != Jend);
+    if (!(*J).isString()) {
+        log(ERROR, "Character::UseOp Tool operation list is malformed");
+        return;
+    }
+    op_type = (*J).String();
+    debug(std::cout << "default tool op is " << op_type << std::endl
+                                                        << std::flush;);
+    for (; J != Jend; ++J) {
+        if (!(*J).isString()) {
+            log(ERROR, "Character::UseOp Tool has non string in operations list");
+        } else {
+            toolOps.insert((*J).String());
+        }
+    }
+
+
+    RootEntity entity_arg(0);
+
+    assert(!entity_arg.isValid());
+
+    // Look at Use args. If arg is an entity, this is the target.
+    // If arg is an operation, this is the operation to be used, and the
+    // sub op arg may be an entity specifying target. If op to be used is
+    // specified, this is checked against the ops permitted by this tool.
+    const Root & arg = args.front();
+    const std::string & argtype = arg->getObjtype();
+    if (argtype == "op") {
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+            (arg->getParents().empty())) {
+            error(op, "Use arg op has malformed parents", res, getId());
+            return;
+        }
+        op_type = arg->getParents().front();
+        debug(std::cout << "Got op type " << op_type << " from arg"
+                        << std::endl << std::flush;);
+        if (toolOps.find(op_type) == toolOps.end()) {
+            error(op, "Use op is not permitted by tool", res, getId());
+            return;
+        }
+        // Check against valid ops
+        Operation arg_op = smart_dynamic_cast<Operation>(arg);
+        if (!arg_op.isValid()) {
+            error(op, "Use op arg is a malformed op", res, getId());
+            return;
+        }
+
+        const std::vector<Root> & arg_op_args = arg_op->getArgs();
+        if (!arg_op_args.empty()) {
+            entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
+            if (!entity_arg.isValid()) {
+                error(op, "Use op target is malformed", res, getId());
+                return;
+            }
+        }
+    } else if (argtype == "obj") {
+        entity_arg = smart_dynamic_cast<RootEntity>(arg);
+        if (!entity_arg.isValid()) {
+            error(op, "Use target is malformed", res, getId());
+            return;
+        }
+    } else {
+        error(op, "Use arg has unknown objtype", res, getId());
+        return;
+    }
+
+    Anonymous target;
+    if (!entity_arg.isValid()) {
+        error(op, "Character::UseOperation No target specified", res, getId());
+        return;
+    }
+
+    if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        error(op, "Character::UseOperation Target entity has no ID", res, getId());
+        return;
+    }
+    target->setId(entity_arg->getId());
+
+    if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+        target->setPos(entity_arg->getPos());
+    }
+
+    if (op_type.empty()) {
+        error(op, "Character::UseOperation Unable to determine op type for tool", res, getId());
+        return;
+    }
+
+    debug(std::cout << "Using tool " << tool->getType() << " on "
+                    << target->getId()
+                    << " with " << op_type << " action."
+                    << std::endl << std::flush;);
+
+    Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
+    if (!obj.isValid()) {
+        log(ERROR,
+            String::compose("Character::UseOperation Unknown op type "
+                            "\"%1\" requested by \"%2\" tool.",
+                            op_type, tool->getType()));
+        return;
+    }
+    Operation rop = smart_dynamic_cast<Operation>(obj);
+    if (!rop.isValid()) {
+        log(ERROR, String::compose("Character::UseOperation Op type "
+                                   "\"%1\" requested by %2 tool, "
+                                   "but it is not an operation type",
+                                   op_type, tool->getType()));
+        // FIXME Think hard about how this error is reported. Would the error
+        // make it back to the client if we made an error response?
+        return;
+    } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        debug(std::cout << "No target" << std::endl << std::flush;);
+    } else {
+        rop->setArgs1(target);
+    }
+
+    rop->setTo(tool->getId());
+
+    Entity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
+    if (target_ent == 0) {
+        error(op, "Character::UseOperation Target does not exist", res, getId());
+        return;
+    }
+
+    Task * task = BaseWorld::instance().activateTask(tool->getType()->name(),
+                                                     op_type,
+                                                     target_ent->getType()->name(),
+                                                     *this);
+    if (task != NULL) {
+        setTask(task);
+        assert(res.empty());
+        m_task->initTask(rop, res);
+        if (m_task->obsolete()) {
+            clearTask();
+        } else if (res.empty()) {
+            // If initialising the task did not result in any operation at all
+            // then the task cannot work correctly. In this case all we can
+            // do is flag an error, and get rid of the task.
+            log(ERROR, String::compose("Character::UseOperation Op type "
+                                       "\"%1\" of tool \"%2\" activated a task,"
+                                       " but it did not initialise",
+                                       op_type, tool->getType()));
+            m_task->irrelevant();
+            clearTask();
+        }
+        return;
+    }
+
+    res.push_back(rop);
+
+    Sight sight;
+    sight->setArgs1(rop);
+    res.push_back(sight);
+}
+
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
@@ -787,205 +992,8 @@ void Character::mindSetupOperation(const Operation & op, OpVector & res)
 void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
-
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        if (m_task != 0) {
-            if (!m_task->obsolete()) {
-                m_task->irrelevant();
-            }
-            assert(m_task->obsolete());
-            clearTask();
-        }
-        return;
-    }
-
-    EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-    if (rhw == 0) {
-        error(op, "Character::mindUseOp No tool wielded.", res, getId());
-        return;
-    }
-
-    Entity * tool = rhw->data().get();
-    if (tool == 0) {
-        error(op, "Character::mindUseOp No tool wielded.", res, getId());
-        return;
-    }
-    // FIXME Get a tool id from the op attributes?
-
-    Element toolOpAttr;
-    std::set<std::string> toolOps;
-    std::string op_type;
-
-    // Determine the operations this tool supports
-    if (!tool->getAttr("operations", toolOpAttr)) {
-        log(NOTICE, "Character::mindUseOp Attempt to use something not a tool");
-        return;
-    }
-
-    if (!toolOpAttr.isList()) {
-        log(ERROR, "Character::mindUseOp Tool has non list operations list");
-        return;
-    }
-    const ListType & toolOpList = toolOpAttr.asList();
-    if (toolOpList.empty()) {
-        log(ERROR, "Character::mindUseOp Tool operation list is empty");
-        return;
-    }
-    ListType::const_iterator J = toolOpList.begin();
-    ListType::const_iterator Jend = toolOpList.end();
-    assert(J != Jend);
-    if (!(*J).isString()) {
-        log(ERROR, "Character::mindUseOp Tool operation list is malformed");
-        return;
-    }
-    op_type = (*J).String();
-    debug(std::cout << "default tool op is " << op_type << std::endl
-                                                        << std::flush;);
-    for (; J != Jend; ++J) {
-        if (!(*J).isString()) {
-            log(ERROR, "Character::mindUseOp Tool has non string in operations list");
-        } else {
-            toolOps.insert((*J).String());
-        }
-    }
-
-
-    RootEntity entity_arg(0);
-
-    assert(!entity_arg.isValid());
-
-    // Look at Use args. If arg is an entity, this is the target.
-    // If arg is an operation, this is the operation to be used, and the
-    // sub op arg may be an entity specifying target. If op to be used is
-    // specified, this is checked against the ops permitted by this tool.
-    const Root & arg = args.front();
-    const std::string & argtype = arg->getObjtype();
-    if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-            (arg->getParents().empty())) {
-            error(op, "Use arg op has malformed parents", res, getId());
-            return;
-        }
-        op_type = arg->getParents().front();
-        debug(std::cout << "Got op type " << op_type << " from arg"
-                        << std::endl << std::flush;);
-        if (toolOps.find(op_type) == toolOps.end()) {
-            error(op, "Use op is not permitted by tool", res, getId());
-            return;
-        }
-        // Check against valid ops
-        Operation arg_op = smart_dynamic_cast<Operation>(arg);
-        if (!arg_op.isValid()) {
-            error(op, "Use op arg is a malformed op", res, getId());
-            return;
-        }
-
-        const std::vector<Root> & arg_op_args = arg_op->getArgs();
-        if (!arg_op_args.empty()) {
-            entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
-            if (!entity_arg.isValid()) {
-                error(op, "Use op target is malformed", res, getId());
-                return;
-            }
-        }
-    } else if (argtype == "obj") {
-        entity_arg = smart_dynamic_cast<RootEntity>(arg);
-        if (!entity_arg.isValid()) {
-            error(op, "Use target is malformed", res, getId());
-            return;
-        }
-    } else {
-        error(op, "Use arg has unknown objtype", res, getId());
-        return;
-    }
-
-    Anonymous target;
-    if (!entity_arg.isValid()) {
-        error(op, "Character::mindUseOperation No target specified", res, getId());
-        return;
-    }
-
-    if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "Character::mindUseOperation Target entity has no ID", res, getId());
-        return;
-    }
-    target->setId(entity_arg->getId());
-
-    if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        target->setPos(entity_arg->getPos());
-    }
-
-    if (op_type.empty()) {
-        error(op, "Character::mindUseOperation Unable to determine op type for tool", res, getId());
-        return;
-    }
-
-    debug(std::cout << "Using tool " << tool->getType() << " on "
-                    << target->getId()
-                    << " with " << op_type << " action."
-                    << std::endl << std::flush;);
-
-    Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
-    if (!obj.isValid()) {
-        log(ERROR,
-            String::compose("Character::mindUseOperation Unknown op type "
-                            "\"%1\" requested by \"%2\" tool.",
-                            op_type, tool->getType()));
-        return;
-    }
-    Operation rop = smart_dynamic_cast<Operation>(obj);
-    if (!rop.isValid()) {
-        log(ERROR, String::compose("Character::mindUseOperation Op type "
-                                   "\"%1\" requested by %2 tool, "
-                                   "but it is not an operation type",
-                                   op_type, tool->getType()));
-        // FIXME Think hard about how this error is reported. Would the error
-        // make it back to the client if we made an error response?
-        return;
-    } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        debug(std::cout << "No target" << std::endl << std::flush;);
-    } else {
-        rop->setArgs1(target);
-    }
-
-    rop->setTo(tool->getId());
-
-    Entity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
-    if (target_ent == 0) {
-        error(op, "Character::mindUseOperation Target does not exist", res, getId());
-        return;
-    }
-
-    Task * task = BaseWorld::instance().activateTask(tool->getType()->name(),
-                                                     op_type,
-                                                     target_ent->getType()->name(),
-                                                     *this);
-    if (task != NULL) {
-        setTask(task);
-        assert(res.empty());
-        m_task->initTask(rop, res);
-        if (m_task->obsolete()) {
-            clearTask();
-        } else if (res.empty()) {
-            // If initialising the task did not result in any operation at all
-            // then the task cannot work correctly. In this case all we can
-            // do is flag an error, and get rid of the task.
-            log(ERROR, String::compose("Character::mindUseOperation Op type "
-                                       "\"%1\" of tool \"%2\" activated a task,"
-                                       " but it did not initialise",
-                                       op_type, tool->getType()));
-            m_task->irrelevant();
-            clearTask();
-        }
-        return;
-    }
-
-    res.push_back(rop);
-
-    Sight sight;
-    sight->setArgs1(rop);
-    res.push_back(sight);
+    op->setTo(getId());
+    res.push_back(op);
 }
 
 /// \brief Filter a Update operation coming from the mind
