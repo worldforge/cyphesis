@@ -17,35 +17,29 @@
 
 // $Id$
 
-#ifndef TESTS_PROPERTY_COVERAGE_H
-#define TESTS_PROPERTY_COVERAGE_H
+#include "rulesets/ActivePropertyFactory_impl.h"
+#include "common/Property.h"
 
-#include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Operation.h>
 
-class PropertyBase;
-class Entity;
-class BaseWorld;
-class Character;
+#include <cassert>
 
-class PropertyCoverage {
-  protected:
-    PropertyBase * const prop;
-    Entity * const tlve;
-    BaseWorld * const wrld;
-    Entity * ent;
+static void testFactory(PropertyKit & pk)
+{
+    PropertyBase * p = pk.newProperty();
+    assert(p != 0);
+}
 
-    Atlas::Message::ListType m_testData;
-  public:
+static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
+{
+    return OPERATION_IGNORED;
+}
 
-    explicit PropertyCoverage(PropertyBase * pb);
+int main()
+{
+    ActivePropertyFactory<int > pf(Atlas::Objects::Operation::MOVE_NO, test_handler);
 
-    ~PropertyCoverage();
+    testFactory(pf);
 
-    void basicCoverage();
-
-    Character * createCharacterEntity();
-
-    void testDataAppend(const Atlas::Message::Element &);
-};
-
-#endif // TESTS_PROPERTY_COVERAGE_H
+    return 0;
+}

@@ -21,6 +21,7 @@
 #include "TestWorld.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -98,6 +99,21 @@ void PropertyCoverage::basicCoverage()
     prop->add("test_name", map);
     Anonymous ent;
     prop->add("test_name", ent);
+}
+
+Character * PropertyCoverage::createCharacterEntity()
+{
+    ent->m_location.m_loc = 0;
+    delete ent;
+    tlve->m_contains->clear();
+
+    Character * chr = new Character("2", 2);
+    ent = chr;
+    ent->m_location.m_loc = tlve;
+    ent->m_location.m_pos = Point3D(1,0,0);
+    tlve->m_contains->insert(ent);
+
+    return chr;
 }
 
 void PropertyCoverage::testDataAppend(const Element & o)

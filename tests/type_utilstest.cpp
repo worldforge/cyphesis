@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "common/type_utils.h"
+#include "common/type_utils_impl.h"
 
 #include "physics/Vector3D.h"
 #include "physics/Quaternion.h"
@@ -27,6 +27,8 @@
 #include <cassert>
 
 typedef std::vector<Quaternion> OrientationList;
+
+using Atlas::Message::ListType;
 
 int main()
 {
@@ -66,12 +68,12 @@ int main()
     {
         VectorList pointList;
 
-        Atlas::Message::ListType point;
+        ListType point;
         point.push_back(1.5);
         point.push_back(1.5);
         point.push_back(1.5);
 
-        Atlas::Message::ListType pointData;
+        ListType pointData;
         pointData.push_back(point);
         pointData.push_back(point);
         pointData.push_back(point);
@@ -99,13 +101,13 @@ int main()
     {
         OrientationList pointList;
 
-        Atlas::Message::ListType point;
+        ListType point;
         point.push_back(0);
         point.push_back(0);
         point.push_back(0);
         point.push_back(1);
 
-        Atlas::Message::ListType pointData;
+        ListType pointData;
         pointData.push_back(point);
         pointData.push_back(point);
         pointData.push_back(point);
@@ -129,5 +131,22 @@ int main()
             const Quaternion & q = *I;
             assert(q == Quaternion().identity());
         }
+    }
+    {
+        ListType list(1, "1");
+        IdList id_list;
+
+        int res = idListFromAtlas(list, id_list);
+        assert(res == 0);
+        assert(id_list.size() == list.size());
+
+        list.clear();
+        idListasObject(id_list, list);
+        assert(id_list.size() == list.size());
+
+        list = ListType(1, 2.0);
+        res = idListFromAtlas(list, id_list);
+        assert(res == -1);
+        assert(id_list.size() == 0);
     }
 }

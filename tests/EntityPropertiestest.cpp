@@ -17,35 +17,24 @@
 
 // $Id$
 
-#ifndef TESTS_PROPERTY_COVERAGE_H
-#define TESTS_PROPERTY_COVERAGE_H
+#include "PropertyCoverage.h"
 
-#include <Atlas/Message/Element.h>
+#include "common/Property.h"
+#include "common/types.h"
 
-class PropertyBase;
-class Entity;
-class BaseWorld;
-class Character;
+static void test_Property_IdList()
+{
+    Property<IdList> * ap = new Property<IdList>;
 
-class PropertyCoverage {
-  protected:
-    PropertyBase * const prop;
-    Entity * const tlve;
-    BaseWorld * const wrld;
-    Entity * ent;
+    PropertyCoverage pc(ap);
 
-    Atlas::Message::ListType m_testData;
-  public:
+    // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
-    explicit PropertyCoverage(PropertyBase * pb);
+    pc.basicCoverage();
+}
 
-    ~PropertyCoverage();
-
-    void basicCoverage();
-
-    Character * createCharacterEntity();
-
-    void testDataAppend(const Atlas::Message::Element &);
-};
-
-#endif // TESTS_PROPERTY_COVERAGE_H
+int main()
+{
+    test_Property_IdList();
+    return 0;
+}

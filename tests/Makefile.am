@@ -27,9 +27,10 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
                  TransientPropertytest TasksPropertytest \
+                 InternalPropertiestest EntityPropertiestest \
                  Domaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
-                 Pedestriantest \
+                 Pedestriantest ActivePropertyFactorytest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
@@ -86,6 +87,7 @@ systemtest_LDADD = \
         $(NETWORK_LIBS)
 
 type_utilstest_SOURCES = type_utilstest.cpp
+type_utilstest_LDADD = $(top_builddir)/common/type_utils.o
 
 consttest_SOURCES = consttest.cpp
 consttest_LDADD = $(top_builddir)/common/const.o
@@ -613,6 +615,28 @@ TasksPropertytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
+InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+InternalPropertiestest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+EntityPropertiestest_SOURCES = EntityPropertiestest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+EntityPropertiestest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
 AtlasPropertiestest_SOURCES = AtlasPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 AtlasPropertiestest_LDADD = \
@@ -676,6 +700,16 @@ Movementtest_LDADD = \
 
 Pedestriantest_SOURCES = Pedestriantest.cpp
 Pedestriantest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+ActivePropertyFactorytest_SOURCES = ActivePropertyFactorytest.cpp
+ActivePropertyFactorytest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
         $(top_builddir)/rulesets/librulesetbase.a \

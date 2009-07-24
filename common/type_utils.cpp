@@ -17,35 +17,27 @@
 
 // $Id$
 
-#ifndef TESTS_PROPERTY_COVERAGE_H
-#define TESTS_PROPERTY_COVERAGE_H
+#include "common/type_utils_impl.h"
 
-#include <Atlas/Message/Element.h>
+void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
+{
+    ol.clear();
+    IdList::const_iterator Iend = l.end();
+    for (IdList::const_iterator I = l.begin(); I != Iend; ++I) {
+        ol.push_back(*I);
+    }
+}
 
-class PropertyBase;
-class Entity;
-class BaseWorld;
-class Character;
-
-class PropertyCoverage {
-  protected:
-    PropertyBase * const prop;
-    Entity * const tlve;
-    BaseWorld * const wrld;
-    Entity * ent;
-
-    Atlas::Message::ListType m_testData;
-  public:
-
-    explicit PropertyCoverage(PropertyBase * pb);
-
-    ~PropertyCoverage();
-
-    void basicCoverage();
-
-    Character * createCharacterEntity();
-
-    void testDataAppend(const Atlas::Message::Element &);
-};
-
-#endif // TESTS_PROPERTY_COVERAGE_H
+int idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
+{
+    ol.clear();
+    Atlas::Message::ListType::const_iterator Iend = l.end();
+    Atlas::Message::ListType::const_iterator I = l.begin();
+    for (; I != Iend; ++I) {
+        if (!I->isString()) {
+            return -1;
+        }
+        ol.push_back(I->asString());
+    }
+    return 0;
+}

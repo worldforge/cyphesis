@@ -330,3 +330,11 @@ def test_chickens(mapeditor):
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
+def test_task(mapeditor):
+
+    m=editor(mapeditor)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('axe',pos=(0,0,0),parent=settler.id)
+    oak=m.make('oak',pos=(5,0,0))
+
+    mapeditor.send(Operation("wield", Entity(axe.id), to=settler))

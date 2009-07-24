@@ -24,52 +24,16 @@
 
 typedef std::vector<std::string> IdList;
 
-inline void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
-{
-    ol.clear();
-    IdList::const_iterator Iend = l.end();
-    for (IdList::const_iterator I = l.begin(); I != Iend; ++I) {
-        ol.push_back(*I);
-    }
-}
+void idListasObject(const IdList & l, Atlas::Message::ListType & ol);
 
-inline void idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
-{
-    ol.clear();
-    Atlas::Message::ListType::const_iterator Iend = l.end();
-    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
-        ol.push_back(I->asString());
-    }
-}
+int idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol);
 
 // This could probably be made into a template, as it will work
 // on any type which implements asMessage()
 template<typename List_T>
-void objectListAsMessage(const List_T & l, Atlas::Message::ListType & ol)
-{
-    ol.clear();
-    typename List_T::const_iterator Iend = l.end();
-    for (typename List_T::const_iterator I = l.begin(); I != Iend; ++I) {
-        ol.push_back(I->toAtlas());
-    }
-}
+void objectListAsMessage(const List_T & l, Atlas::Message::ListType & ol);
 
 template<typename T, typename List_T>
-inline int objectListFromMessage(const Atlas::Message::ListType & l,
-                                 List_T & ol)
-{
-    ol.clear();
-    
-    Atlas::Message::ListType::const_iterator Iend = l.end();
-    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
-        try {
-            ol.push_back(T(I->asList()));
-        }
-        catch (Atlas::Message::WrongTypeException) {
-            return -1;
-        }
-    }
-    return 0;
-}
+int objectListFromMessage(const Atlas::Message::ListType & l, List_T & ol);
 
 #endif // COMMON_TYPE_UTILS_H

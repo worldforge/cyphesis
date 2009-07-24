@@ -17,35 +17,47 @@
 
 // $Id$
 
-#ifndef TESTS_PROPERTY_COVERAGE_H
-#define TESTS_PROPERTY_COVERAGE_H
+#include "PropertyCoverage.h"
 
-#include <Atlas/Message/Element.h>
+#include "rulesets/InternalProperties.h"
 
-class PropertyBase;
-class Entity;
-class BaseWorld;
-class Character;
+void test_SetupProperty()
+{
+    SetupProperty * ap = new SetupProperty;
 
-class PropertyCoverage {
-  protected:
-    PropertyBase * const prop;
-    Entity * const tlve;
-    BaseWorld * const wrld;
-    Entity * ent;
+    PropertyCoverage pc(ap);
 
-    Atlas::Message::ListType m_testData;
-  public:
+    pc.testDataAppend(0);
 
-    explicit PropertyCoverage(PropertyBase * pb);
+    pc.basicCoverage();
+}
 
-    ~PropertyCoverage();
+void test_TickProperty()
+{
+    TickProperty * ap = new TickProperty;
 
-    void basicCoverage();
+    PropertyCoverage pc(ap);
 
-    Character * createCharacterEntity();
+    pc.testDataAppend(0);
 
-    void testDataAppend(const Atlas::Message::Element &);
-};
+    pc.basicCoverage();
+}
 
-#endif // TESTS_PROPERTY_COVERAGE_H
+void test_SimpleProperty()
+{
+    SimpleProperty * ap = new SimpleProperty;
+
+    PropertyCoverage pc(ap);
+
+    pc.testDataAppend(0);
+
+    pc.basicCoverage();
+}
+
+int main()
+{
+    test_SetupProperty();
+    test_TickProperty();
+    test_SimpleProperty();
+    return 0;
+}

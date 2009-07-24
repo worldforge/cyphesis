@@ -64,6 +64,9 @@
         case Atlas::Objects::Operation::TOUCH_NO: \
             _prefix ## TouchOperation(_op, _result); \
             break; \
+        case Atlas::Objects::Operation::USE_NO: \
+            _prefix ## UseOperation(_op, _result); \
+            break; \
         case Atlas::Objects::Operation::WIELD_NO: \
             _prefix ## WieldOperation(_op, _result); \
             break; \

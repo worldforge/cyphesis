@@ -1,3 +1,62 @@
+2009-07-23  Alexey Torkhov  <atorkhov@gmail.com>
+
+	* rulesets/Task.cpp, rulesets/Task.h: Add support for freefrom task
+	  attributes.
+
+	* rulesets/TaskProperties.cpp: Expose task attributes to Set
+	  operations.
+
+	* tests/PropertyCoverage.cpp, tests/PropertyCoverage.h: Add
+	  functionality for testing character specific property
+	  functionality.
+
+2009-07-23  Amey Parulekar  <amey.par@gmail.com>
+
+	* rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h:
+	  Add a method to query the normal at a point on the terrain.
+
+	* rulesets/Py_TerrainProperty.cpp: Add Python binding for the
+	  normal querying method.
+
+2009-07-23  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/DynamicProperty.cpp, common/DynamicProperty.h,
+	  common/DynamicProperty_impl.h: Remove some long obsolete files.
+
+	* common/custom.cpp, common/custom.h: Clean up the way custom
+	  ops are defined so there is not so much header clutter.
+
+	* common/terrain_utils.cpp: Remove an unused file.
+
+	* common/type_utils.cpp, common/type_utils.h,
+	  common/types_utils_impl.h: Don't inline heavyweight code.
+
+	* rulesets/Character.cpp, rulesets/Character.h: Add stub handlers
+	  for debug operations from AI code.
+
+	* rulesets/EntityProperties.cpp: Add checks so that malformed data
+	  does not cause a crash.
+
+	* rulesets/LineProperty.h: Include template implementation so code
+	  is generated for type conversion function templates.
+
+
+	* rulesets/PythonEntityScript.cpp: Add better reporting of errors
+	  from Python scripts.
+
+	* rulesets/basic/min/goals/animal/herd.py: Try and clean up the
+	  flock goal.
+
+	* rulesets/mason/define_world.py: Disable flock for chickens.
+	  It was just too broken.
+
+	* rulesets/mason/test.py: Add tests for chickens, and fire entity
+	  containment.
+
+	* scripts/run_coverage_tests.sh: Add better reporting when tests
+	  fail to report coverage, and allow for files with no executable
+	  code.
+
 2009-07-05  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* client/Py_CreatorClient.cpp, client/client.cpp,

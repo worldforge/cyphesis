@@ -45,7 +45,9 @@ template<>
 void Property<IdList>::set(const Element & e)
 {
     if (e.isList()) {
-        idListFromAtlas(e.asList(), this->m_data);
+        if (idListFromAtlas(e.asList(), this->m_data) != 0) {
+            this->m_data.clear();
+        }
     }
 }
 

@@ -19,7 +19,7 @@
 
 #include "LineProperty.h"
 
-#include "common/type_utils.h"
+#include "common/type_utils_impl.h"
 #include "common/debug.h"
 
 #include <wfmath/atlasconv.h>

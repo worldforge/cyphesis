@@ -206,6 +206,7 @@ class Entity : public LocatedEntity {
     virtual void TickOperation(const Operation &, OpVector &);
     virtual void TouchOperation(const Operation &, OpVector &);
     virtual void UpdateOperation(const Operation &, OpVector &);
+    virtual void UseOperation(const Operation &, OpVector &);
     virtual void WieldOperation(const Operation &, OpVector &);
 
     virtual void externalOperation(const Operation & op);
