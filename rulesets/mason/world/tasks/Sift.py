@@ -17,7 +17,9 @@ class Sift(server.Task):
     def get_quality(self, location, target, moisture):
         z = location.z
         zval = math.exp(-z*z/2)
-        normal = target.terrain.get_normal(location);
+        if not hasattr(target, location):
+            return 0
+        normal = target.location.parent.terrain.get_normal(location);
         print normal
         i = Vector3D(1, 0, 0)
         slope = normal.dot(i) / normal.mag

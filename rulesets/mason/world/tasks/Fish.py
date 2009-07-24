@@ -12,7 +12,7 @@ import server
 class Fish(server.Task):
     """A task for fishing in the ocean"""
     
-    baitlist = ["annelid"]
+    baitlist = ["annelid", "larva", "maggot"]
     def sow_operation(self, op):
         """ Op handler for sow op which activates this task """
 

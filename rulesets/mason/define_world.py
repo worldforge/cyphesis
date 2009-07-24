@@ -125,7 +125,13 @@ tailor_prices = [('shirt', 'price', '5'),
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 
 
-fish_goals=[(il.forage,"forage('juicy earthworm')"),
+trout_goals=[(il.forage,"forage('juicy earthworm')"),
+            (il.forage,"forage('scrawny earthworm')"),
+            (il.school,"school()"),
+            (il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.amble,"amble()")]
+
+salmon_goals=[(il.forage,"forage('juicy earthworm')"),
             (il.forage,"forage('scrawny earthworm')"),
             (il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
@@ -530,7 +536,8 @@ def _add_animals(m):
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
-    fish=[]
+    trout=[]
+    salmon=[]
     #xbase = lake_pos[0]
     #ybase = lake_pos[1]
     xbase = 0
@@ -539,9 +546,12 @@ def _add_animals(m):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
-        d=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
-        fish.append(d)
-    m.learn(fish,fish_goals)
+        c=m.make('fish', name='trout', pos=(xpos, ypos, zpos), transient=-1)
+        d=m.make('fish', name='salmon', pos=(xpos, ypos, zpos), transient=-1)
+        trout.append(c)
+        salmon.append(d)
+    m.learn(trout,trout_goals)
+    m.learn(salmon,salmon_goals)
     
 
     # I am not sure if we need a guard
