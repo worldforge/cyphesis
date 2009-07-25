@@ -150,9 +150,9 @@ bluegill_goals=[(il.forage,"forage('juicy maggot')"),
 tuna_goals=[(il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()"),
-            (il.hunt,"predate('bluegill',30.0)"),
-            (il.hunt,"predate('bass',30.0)"),
-            (il.hunt,"predate('pickerel',30.0)")]
+            (il.hunt,"predate('bluegill',10.0)"),
+            (il.hunt,"predate('bass',10.0)"),
+            (il.hunt,"predate('pickerel',10.0)")]
 
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage('acorn')"),
@@ -556,6 +556,7 @@ def _add_animals(m):
     bluegill=[]
     pickerel=[]
     bass=[]
+    tuna=[]
     #xbase = lake_pos[0]
     #ybase = lake_pos[1]
     xbase = 0
@@ -566,10 +567,12 @@ def _add_animals(m):
         zpos = uniform(-4,0)
         c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
         d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
-        d=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
+        e=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
+        f=m.make('fish', name='tuna', pos=(xpos, ypos, zpos), transient=-1)
         bluegill.append(c)
         pickerel.append(d)
-        bass.append(d)
+        bass.append(e)
+        tuna.append(f) # Need to change the position of tuna
     m.learn(bluegill,bluegill_goals)
     m.learn(pickerel,pickerel_goals)
     m.learn(bass,bass_goals)
