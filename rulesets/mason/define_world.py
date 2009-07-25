@@ -140,12 +140,12 @@ bass_goals=[(il.forage,"forage('juicy earthworm')"),
             (il.amble,"amble()")]
 
 bluegill_goals=[(il.forage,"forage('juicy maggot')"),
-            (il.forage,"forage('juicy earthworm')"),
-            (il.forage,"forage('scrawny maggot')"),
-            (il.forage,"forage('scrawny earthworm')"),
-            (il.school,"school()"),
-            (il.avoid,"avoid(['settler','orc'],10.0)"),
-            (il.amble,"amble()")]
+                (il.forage,"forage('juicy earthworm')"),
+                (il.forage,"forage('scrawny maggot')"),
+                (il.forage,"forage('scrawny earthworm')"),
+                (il.school,"school()"),
+                (il.avoid,"avoid(['settler','orc'],10.0)"),
+                (il.amble,"amble()")]
 
 tuna_goals=[(il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
@@ -565,6 +565,8 @@ def _add_animals(m):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
+        world = m.look()
+        print "world.terrain['points']
         c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
         d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
         e=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
