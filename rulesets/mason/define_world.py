@@ -147,6 +147,13 @@ bluegill_goals=[(il.forage,"forage('juicy maggot')"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()")]
 
+tuna_goals=[(il.school,"school()"),
+            (il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.amble,"amble()"),
+            (il.hunt,"predate('bluegill',30.0)"),
+            (il.hunt,"predate('bass',30.0)"),
+            (il.hunt,"predate('pickerel',30.0)")]
+
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage('acorn')"),
            (il.forage,"forage('apple')"),
