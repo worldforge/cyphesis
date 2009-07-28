@@ -565,8 +565,6 @@ def _add_animals(m):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
-        world = m.look()
-        print "world.terrain['points']
         c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
         d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
         e=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
@@ -924,6 +922,7 @@ def modify_terrain(mapeditor):
     world=m.look()
 
     _setup_terrain(m, world)
+    m.make('ocean',pos=(0,0,0),bbox=[-500,-321,-20,320,321,0])
 
 def add_castle(mapeditor):
     
