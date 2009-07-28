@@ -554,30 +554,31 @@ def _add_animals(m):
     m.learn(chickens,chicken_goals)
 
     bluegill=[]
-    pickerel=[]
-    bass=[]
-    tuna=[]
+    #pickerel=[]
+    #bass=[]
+    #tuna=[]
     #xbase = lake_pos[0]
     #ybase = lake_pos[1]
     xbase = 0
     ybase = 0
-    for i in range(0, 10):
+    for i in range(0, 2):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
         zpos = uniform(-4,0)
         world = m.look()
-        print "world.terrain['points']
+        print "world.terrain['points']"
         c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
-        d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
-        e=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
-        f=m.make('fish', name='tuna', pos=(xpos, ypos, zpos), transient=-1)
+        #d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
+        #e=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
+        #f=m.make('fish', name='tuna', pos=(xpos, ypos, zpos), transient=-1)
         bluegill.append(c)
-        pickerel.append(d)
-        bass.append(e)
-        tuna.append(f) # Need to change the position of tuna
+        #pickerel.append(d)
+        #bass.append(e)
+        #tuna.append(f) # Need to change the position of tuna
     m.learn(bluegill,bluegill_goals)
-    m.learn(pickerel,pickerel_goals)
-    m.learn(bass,bass_goals)
+    #m.learn(pickerel,pickerel_goals)
+    #m.learn(bass,bass_goals)
+    #m.learn(tuna,tuna_goals)
     
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))

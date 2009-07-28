@@ -9,7 +9,7 @@ from physics import Vector3D
 
 import server
 
-class Fish(server.Task):
+class Fishing(server.Task):
     """A task for fishing in the ocean"""
     
     baitlist = ["annelid", "larva", "maggot"]
