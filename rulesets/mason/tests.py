@@ -339,3 +339,10 @@ def test_task(mapeditor):
 
     mapeditor.send(Operation("wield", Entity(axe.id), to=settler))
     mapeditor.send(Operation("use", Operation("cut", Entity(oak.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+    m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
