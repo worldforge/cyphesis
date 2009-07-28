@@ -289,17 +289,7 @@ int Character::startTask(Task * task, const Operation & op, OpVector & res)
     }
 
     if (update_required) {
-
-        TasksProperty * tp = requirePropertyClass<TasksProperty>("tasks");
-
-        // FIXME Check if this flag is already set. If so, there may be no need
-        // to send the update op.
-        tp->setFlags(flag_unsent);
-
-        Update update;
-        update->setTo(getId());
-
-        sendWorld(update);
+        updateTask();
     }
 
     return (m_task == 0) ? -1 : 0;
@@ -326,11 +316,7 @@ void Character::setTask(Task * task)
 /// to reflect the current status of the task.
 void Character::updateTask()
 {
-    if (m_task == 0) {
-        log(ERROR, "Character::updateTask called when no task running");
-    }
-
-    TasksProperty * tp = requirePropertyClass<TasksProperty>("tasks");
+    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
 
     // Check if this flag is already set. If so, there may be no need
     // to send the update op.
@@ -355,15 +341,7 @@ void Character::clearTask()
     m_task->decRef();
     m_task = 0;
 
-    Anonymous set_arg;
-    set_arg->setAttr(TASKS, ListType());
-    set_arg->setId(getId());
-
-    Set set;
-    set->setArgs1(set_arg);
-    set->setTo(getId());
-
-    sendWorld(set);
+    updateTask();
 }
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
