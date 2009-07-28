@@ -43,6 +43,20 @@ class school(DynamicGoal):
             #print type(ent.location.coordinates)
             #print "type(ent.location.coordinates)!=InstanceType"
             return
+        id=me.get_knowledge('focus', 'hook')
+        if id == None: 
+            continue
+        thing = me.map.get(id)
+        if thing == None:
+            me.remove_knowledge('focus', what)
+            continue
+        if thing.location.parent.id != me.location.parent.id:
+            me.remove_knowledge('focus', what)
+            continue
+        if thing.location.parent.id != me.id:
+            continue
+        else:
+            return
         distance=(ent.location.coordinates-me.location.coordinates).mag()
         #ensures that the entity will check only other entities really close to it,
         #thereby reducing the possibility of infinite loops

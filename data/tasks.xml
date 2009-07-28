@@ -90,7 +90,7 @@
     </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Fish.Fish</string>
+      <string name="name">world.tasks.Fishing.Fishing</string>
     </map>
   </map>
 
