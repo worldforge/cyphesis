@@ -814,10 +814,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    setTask(combat);
-    m_task->initTask(op, res);
-    if (m_task->obsolete()) {
-        clearTask();
+    if (startTask(combat, op, res) != 0) {
         return;
     }
 
@@ -828,10 +825,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    attacker->setTask(combat);
-    attacker->m_task->initTask(op, res);
-    if (attacker->m_task->obsolete()) {
-        attacker->clearTask();
+    if (attacker->startTask(combat, op, res) != 0) {
         clearTask();
         return;
     }
