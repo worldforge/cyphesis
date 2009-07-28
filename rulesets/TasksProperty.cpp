@@ -39,7 +39,7 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 bool TasksProperty::get(Atlas::Message::Element & val) const
 {
     if (m_task == 0 || *m_task == 0) {
-        log(ERROR, "No task");
+        log(ERROR, "No task in ::get");
         return false;
     }
     log(NOTICE, "Task property setting.");
@@ -68,7 +68,7 @@ void TasksProperty::set(const Atlas::Message::Element & val)
     }
 
     if (m_task == 0 || *m_task == 0) {
-        log(ERROR, "No task");
+        log(ERROR, "No task in ::set");
         return;
     }
 
