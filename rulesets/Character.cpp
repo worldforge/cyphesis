@@ -664,11 +664,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                                                      *this);
     if (task != NULL) {
         assert(res.empty());
-        setTask(task);
-        m_task->initTask(rop, res);
-        if (m_task->obsolete()) {
-            clearTask();
-        } else if (res.empty()) {
+        if (startTask(task, rop, res) == 0 && res.empty()) {
             // If initialising the task did not result in any operation at all
             // then the task cannot work correctly. In this case all we can
             // do is flag an error, and get rid of the task.
