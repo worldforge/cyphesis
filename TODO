@@ -1,3 +1,7 @@
+It might be useful to expose task attributes so they can be modified by
+the task script itself, and ensure this propagates immediately back to
+the client UI.
+
 Clear out setTask as it is not used any more.
 
 mindUseOperation() is touching all kinds of things it should. The mind
