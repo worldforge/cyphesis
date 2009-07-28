@@ -1,3 +1,5 @@
+Clear out setTask as it is not used any more.
+
 mindUseOperation() is touching all kinds of things it should. The mind
 interface should just be a filter.
 
