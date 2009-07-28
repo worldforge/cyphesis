@@ -266,6 +266,45 @@ Character::~Character()
     }
 }
 
+/// \brief Set up a new task as the one being performed by the Character
+///
+/// @param task The new task to be assigned to the Character
+int Character::startTask(Task * task, const Operation & op, OpVector & res)
+{
+    bool update_required = false;
+    if (m_task != 0) {
+        update_required = true;
+        m_task->decRef();
+    }
+    m_task = task;
+    m_task->incRef();
+
+    m_task->initTask(op, res);
+
+    if (m_task->obsolete()) {
+        m_task->decRef();
+        m_task = 0;
+    } else {
+        update_required = true;
+    }
+
+    if (update_required) {
+
+        TasksProperty * tp = requirePropertyClass<TasksProperty>("tasks");
+
+        // FIXME Check if this flag is already set. If so, there may be no need
+        // to send the update op.
+        tp->setFlags(flag_unsent);
+
+        Update update;
+        update->setTo(getId());
+
+        sendWorld(update);
+    }
+
+    return (m_task == 0) ? -1 : 0;
+}
+
 /// \brief Set a new task as the one being performed by the Character
 ///
 /// The old one is cleared and deleted if present
@@ -624,8 +663,8 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                                                      target_ent->getType()->name(),
                                                      *this);
     if (task != NULL) {
-        setTask(task);
         assert(res.empty());
+        setTask(task);
         m_task->initTask(rop, res);
         if (m_task->obsolete()) {
             clearTask();

@@ -81,6 +81,7 @@ class Character : public Character_parent {
     Task * task() { return m_task; }
     Task ** monitorTask() { return &m_task; }
 
+    int startTask(Task *, const Operation & op, OpVector &);
     void setTask(Task *);
     void updateTask();
     void clearTask();
