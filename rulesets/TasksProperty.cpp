@@ -38,9 +38,13 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 
 bool TasksProperty::get(Atlas::Message::Element & val) const
 {
-    if (m_task == 0 || *m_task == 0) {
-        log(ERROR, "No task in ::get");
+    if (m_task == 0) {
+        log(ERROR, "No task pointer in ::get");
         return false;
+    }
+    if (*m_task == 0) {
+        val = ListType();
+        return true;
     }
     log(NOTICE, "Task property setting.");
     MapType task;
