@@ -46,7 +46,6 @@ bool TasksProperty::get(Atlas::Message::Element & val) const
         val = ListType();
         return true;
     }
-    log(NOTICE, "Task property setting.");
     MapType task;
     task["name"] = (*m_task)->name();
     float progress = (*m_task)->progress();
@@ -63,8 +62,6 @@ bool TasksProperty::get(Atlas::Message::Element & val) const
 
 void TasksProperty::set(const Atlas::Message::Element & val)
 {
-    log(NOTICE, "Task property got set");
-
     if (!val.isList())
     {
         log(ERROR, "Task property must be a list.");
@@ -75,8 +72,6 @@ void TasksProperty::set(const Atlas::Message::Element & val)
         log(ERROR, "No task in ::set");
         return;
     }
-
-    debug_dump(val.asList());
 
     ListType tasks = val.asList();
     ListType::const_iterator I = tasks.begin();
@@ -103,7 +98,6 @@ void TasksProperty::install(Entity * owner)
     Character * c = dynamic_cast<Character *>(owner);
     if (c != 0) {
         m_task = c->monitorTask();
-        log(NOTICE, String::compose("Bound task property to %1", c->getId()));
     }
 }
 
