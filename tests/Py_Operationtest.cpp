@@ -29,7 +29,12 @@ int main()
 
     assert(PyRun_SimpleString("from atlas import *") == 0);
     assert(PyRun_SimpleString("o=Operation('get')") == 0);
-    assert(PyRun_SimpleString("o=Operation('not valid')") == -1);
+    // This should fail, but the error throwing has been disabled to
+    // allow cooler stuff to be done from the client.
+    // FIXME Once the client is constrained to real operations, go back
+    // to disallowing arbitrary operation names.
+    // assert(PyRun_SimpleString("o=Operation('not_valid')") == -1);
+    assert(PyRun_SimpleString("o=Operation('not_valid')") == 0);
     assert(PyRun_SimpleString("o=Operation('get', to='1', from_='1')") == 0);
     assert(PyRun_SimpleString("e=Entity('1')") == 0);
     assert(PyRun_SimpleString("o=Operation('get', to=e, from_=e)") == 0);
