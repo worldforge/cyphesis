@@ -269,6 +269,8 @@ Character::~Character()
 /// \brief Set up a new task as the one being performed by the Character
 ///
 /// @param task The new task to be assigned to the Character
+/// @param op The operation that initiates the task.
+/// @param res The result of the task startup.
 int Character::startTask(Task * task, const Operation & op, OpVector & res)
 {
     bool update_required = false;
@@ -293,21 +295,6 @@ int Character::startTask(Task * task, const Operation & op, OpVector & res)
     }
 
     return (m_task == 0) ? -1 : 0;
-}
-
-/// \brief Set a new task as the one being performed by the Character
-///
-/// The old one is cleared and deleted if present
-/// @param task The new task to be assigned to the Character
-void Character::setTask(Task * task)
-{
-    if (m_task != 0) {
-        clearTask();
-    }
-    m_task = task;
-    task->incRef();
-
-    updateTask();
 }
 
 /// \brief Update the visible representation of the current task
