@@ -2,10 +2,8 @@ It might be useful to expose task attributes so they can be modified by
 the task script itself, and ensure this propagates immediately back to
 the client UI.
 
-Clear out setTask as it is not used any more.
-
-mindUseOperation() is touching all kinds of things it should. The mind
-interface should just be a filter.
+Add a single function for handling all those mind ops which just need
+TO setting.
 
 Check all Python for InstanceType, as that is what C++ objects used to be,
 but not any more.
