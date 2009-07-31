@@ -31,6 +31,8 @@
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/objectFactory.h>
 
+using Atlas::Objects::Root;
+using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;
 
 static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
@@ -125,7 +127,14 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
             PyErr_SetString(PyExc_TypeError, "arg is a Message that is not a map");
             return NULL;
         }
-        Atlas::Objects::Root obj = Atlas::Objects::Factories::instance()->createObject(me->m_obj->asMap());
+        Root obj(0);
+        try {
+            obj = Factories::instance()->createObject(me->m_obj->asMap());
+        }
+        catch (Atlas::Message::WrongTypeException&) {
+            PyErr_SetString(PyExc_TypeError, "arg is a Message that contains malformed attributes");
+            return NULL;
+        }
         RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
         if (!ent.isValid()) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that does not represent an entity");
