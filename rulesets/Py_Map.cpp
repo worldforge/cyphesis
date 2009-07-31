@@ -132,6 +132,10 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
             return NULL;
         }
         MemEntity * ret = self->m_map->updateAdd(ent, time);
+        if (ret == NULL) {
+            PyErr_SetString(PyExc_TypeError, "arg is a Message that does not have an ID");
+            return NULL;
+        }
         PyObject * thing = wrapEntity(ret);
         return thing;
     } else if (PyRootEntity_Check(arg)) {
