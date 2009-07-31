@@ -40,11 +40,13 @@ int main()
     assert(PyRun_SimpleString("m.find_by_type(1)") == -1);
     assert(PyRun_SimpleString("m.find_by_type('foo')") == 0);
     assert(PyRun_SimpleString("m.add()") == -1);
+    assert(PyRun_SimpleString("m.add('2')") == -1);
+    assert(PyRun_SimpleString("m.add('2', 1.2)") == -1);
     assert(PyRun_SimpleString("m.add(Message())") == -1);
     assert(PyRun_SimpleString("m.add(Message(), 1.2)") == -1);
     assert(PyRun_SimpleString("m.add(Message({'objtype': 'op', 'parents': ['get']}), 1.2)") == -1);
     assert(PyRun_SimpleString("m.add(Message({}), 1.2)") == -1);
-    // assert(PyRun_SimpleString("m.add(Message({'objtype': 'obj'}), 1.2)") == 0);
+    assert(PyRun_SimpleString("m.add(Message({'parents': 'get'}), 1.2)") == -1);
     assert(PyRun_SimpleString("m.add(Message({'id': '2'}), 1.2)") == 0);
     assert(PyRun_SimpleString("m.add(Message({'id': '2'}), 1.2)") == 0);
     assert(PyRun_SimpleString("m.add(Entity())") == -1);
