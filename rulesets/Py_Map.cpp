@@ -133,17 +133,11 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         }
         MemEntity * ret = self->m_map->updateAdd(ent, time);
         PyObject * thing = wrapEntity(ret);
-        if (thing == NULL) {
-            return NULL;
-        }
         return thing;
     } else if (PyRootEntity_Check(arg)) {
         PyRootEntity * ent = (PyRootEntity*)arg;
         MemEntity * ret = self->m_map->updateAdd(ent->entity, time);
         PyObject * thing = wrapEntity(ret);
-        if (thing == NULL) {
-            return NULL;
-        }
         return thing;
     } else {
         PyErr_SetString(PyExc_TypeError, "arg is not an Atlas Entity or Message");
@@ -189,9 +183,6 @@ static PyObject * Map_get(PyMap * self, PyObject * py_id)
         return Py_None;
     }
     PyObject * thing = wrapEntity(ret);
-    if (thing == NULL) {
-        return NULL;
-    }
     return thing;
 }
 
@@ -211,9 +202,6 @@ static PyObject * Map_get_add(PyMap * self, PyObject * py_id)
     MemEntity * ret = self->m_map->getAdd(id);
     assert(ret != 0);
     PyObject * thing = wrapEntity(ret);
-    if (thing == NULL) {
-        return NULL;
-    }
     return thing;
 }
 
