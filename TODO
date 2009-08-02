@@ -1,9 +1,6 @@
 Use a hidden property giving a list of worker IDs to establish common
 state with tasks.
 
-Check for anywhere Atlas::Objects::Factories::createObject is used
-and ensure that exceptions will be caught.
-
 It might be useful to expose task attributes so they can be modified by
 the task script itself, and ensure this propagates immediately back to
 the client UI.
