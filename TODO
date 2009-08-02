@@ -1,3 +1,9 @@
+It makes increasing sense to make the python subsystem behave a little
+differently in the client:
+ 1) Allow all operation types in client, but error on unknown in server.
+ 2) Redirect Python output via logging mechanism in server, but not in client.
+Needs to be done to make things sane.
+
 FOO_NO numbers for operation classes are currently initialised to zero,
 meaning they get missed in valgrind tests for non-initialised data.
 Remove the initialisation and see what happens with valgrind now.
