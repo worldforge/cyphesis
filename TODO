@@ -1,3 +1,7 @@
+Minds which are asleep currently ignore all updates. This is a bit mad,
+as it means we waste storage on what is inevitably going to be an outdated
+world view. Either keep it updated, or just purge it completely.
+
 Use a hidden property giving a list of worker IDs to establish common
 state with tasks.
 
