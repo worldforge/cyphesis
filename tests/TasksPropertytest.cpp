@@ -26,6 +26,8 @@
 #include "rulesets/TaskScript.h"
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -37,11 +39,12 @@ int main()
 
     PropertyCoverage pc(ap);
 
+    OpVector res;
     Character * chr = pc.createCharacterEntity();
     Task * task = new TaskScript(*chr);
     task->progress() = .1;
     task->rate() = .1;
-    chr->setTask(task);
+    chr->startTask(task, Atlas::Objects::Operation::Action(), res);
 
     MapType map;
     map["one"] = 23;

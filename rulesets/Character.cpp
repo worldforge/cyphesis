@@ -266,19 +266,35 @@ Character::~Character()
     }
 }
 
-/// \brief Set a new task as the one being performed by the Character
+/// \brief Set up a new task as the one being performed by the Character
 ///
-/// The old one is cleared and deleted if present
 /// @param task The new task to be assigned to the Character
-void Character::setTask(Task * task)
+/// @param op The operation that initiates the task.
+/// @param res The result of the task startup.
+int Character::startTask(Task * task, const Operation & op, OpVector & res)
 {
+    bool update_required = false;
     if (m_task != 0) {
-        clearTask();
+        update_required = true;
+        m_task->decRef();
     }
     m_task = task;
-    task->incRef();
+    m_task->incRef();
 
-    updateTask();
+    m_task->initTask(op, res);
+
+    if (m_task->obsolete()) {
+        m_task->decRef();
+        m_task = 0;
+    } else {
+        update_required = true;
+    }
+
+    if (update_required) {
+        updateTask();
+    }
+
+    return (m_task == 0) ? -1 : 0;
 }
 
 /// \brief Update the visible representation of the current task
@@ -287,11 +303,7 @@ void Character::setTask(Task * task)
 /// to reflect the current status of the task.
 void Character::updateTask()
 {
-    if (m_task == 0) {
-        log(ERROR, "Character::updateTask called when no task running");
-    }
-
-    TasksProperty * tp = requirePropertyClass<TasksProperty>("tasks");
+    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
 
     // Check if this flag is already set. If so, there may be no need
     // to send the update op.
@@ -316,15 +328,7 @@ void Character::clearTask()
     m_task->decRef();
     m_task = 0;
 
-    Anonymous set_arg;
-    set_arg->setAttr(TASKS, ListType());
-    set_arg->setId(getId());
-
-    Set set;
-    set->setArgs1(set_arg);
-    set->setTo(getId());
-
-    sendWorld(set);
+    updateTask();
 }
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
@@ -624,12 +628,8 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                                                      target_ent->getType()->name(),
                                                      *this);
     if (task != NULL) {
-        setTask(task);
         assert(res.empty());
-        m_task->initTask(rop, res);
-        if (m_task->obsolete()) {
-            clearTask();
-        } else if (res.empty()) {
+        if (startTask(task, rop, res) == 0 && res.empty()) {
             // If initialising the task did not result in any operation at all
             // then the task cannot work correctly. In this case all we can
             // do is flag an error, and get rid of the task.
@@ -779,10 +779,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    setTask(combat);
-    m_task->initTask(op, res);
-    if (m_task->obsolete()) {
-        clearTask();
+    if (startTask(combat, op, res) != 0) {
         return;
     }
 
@@ -793,10 +790,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    attacker->setTask(combat);
-    attacker->m_task->initTask(op, res);
-    if (attacker->m_task->obsolete()) {
-        attacker->clearTask();
+    if (attacker->startTask(combat, op, res) != 0) {
         clearTask();
         return;
     }

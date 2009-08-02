@@ -25,10 +25,13 @@
 
 #include "common/log.h"
 
+#include <Atlas/Objects/Generic.h>
+
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Operation::Generic;
 using Atlas::Objects::Entity::RootEntity;
 
 /*
@@ -667,8 +670,10 @@ static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
     Root r = Atlas::Objects::Factories::instance()->createObject(type);
     self->operation = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
     if (!self->operation.isValid()) {
-        PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
-        return -1;
+        // PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
+        // return -1;
+        self->operation = Generic();
+        self->operation->setParents(std::list<std::string>(1, type));
     }
     if (kwds != NULL) {
         PyObject * from = PyDict_GetItemString(kwds, "from_");

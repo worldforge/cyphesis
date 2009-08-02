@@ -104,19 +104,35 @@ static PyObject * Character_get_task(PyEntity * self)
     
 }
 
-static PyObject * Character_set_task(PyEntity * self, PyTask * task)
+static PyObject * Character_start_task(PyEntity * self, PyObject * args)
 {
 #ifndef NDEBUG
     if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.set_task");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.start_task");
         return NULL;
     }
 #endif // NDEBUG
-    if (!PyTask_Check(task)) {
-        PyErr_SetString(PyExc_TypeError, "Entity.set_task must be a task");
+    PyObject * task;
+    PyObject * op;
+    PyObject * res;
+    if (!PyArg_ParseTuple(args, "OOO", &task, &op, &res)) {
         return NULL;
     }
-    self->m_entity.c->setTask(task->m_task);
+    if (!PyTask_Check(task)) {
+        PyErr_SetString(PyExc_TypeError, "Entity.start_task must be a task");
+        return NULL;
+    }
+    if (!PyOperation_Check(op)) {
+        PyErr_SetString(PyExc_TypeError, "Entity.start_task must be an op");
+        return NULL;
+    }
+    if (!PyOplist_Check(res)) {
+        PyErr_SetString(PyExc_TypeError, "Entity.start_task must be an oplist");
+        return NULL;
+    }
+    self->m_entity.c->startTask(((PyTask*)task)->m_task,
+                                ((PyOperation*)op)->operation,
+                                *((PyOplist*)res)->ops);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -170,7 +186,7 @@ static PyMethodDef Character_methods[] = {
     {"as_entity",       (PyCFunction)Entity_as_entity,     METH_NOARGS},
     {"send_world",      (PyCFunction)Entity_send_world,    METH_O},
     {"get_task",        (PyCFunction)Character_get_task,   METH_NOARGS},
-    {"set_task",        (PyCFunction)Character_set_task,   METH_O},
+    {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
     {"clear_task",      (PyCFunction)Character_clear_task, METH_NOARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
     {NULL,              NULL}           /* sentinel */
