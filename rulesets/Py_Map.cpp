@@ -31,6 +31,8 @@
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/objectFactory.h>
 
+using Atlas::Objects::Root;
+using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;
 
 static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
@@ -125,25 +127,30 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
             PyErr_SetString(PyExc_TypeError, "arg is a Message that is not a map");
             return NULL;
         }
-        Atlas::Objects::Root obj = Atlas::Objects::Factories::instance()->createObject(me->m_obj->asMap());
+        Root obj(0);
+        try {
+            obj = Factories::instance()->createObject(me->m_obj->asMap());
+        }
+        catch (Atlas::Message::WrongTypeException&) {
+            PyErr_SetString(PyExc_TypeError, "arg is a Message that contains malformed attributes");
+            return NULL;
+        }
         RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
         if (!ent.isValid()) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that does not represent an entity");
             return NULL;
         }
         MemEntity * ret = self->m_map->updateAdd(ent, time);
-        PyObject * thing = wrapEntity(ret);
-        if (thing == NULL) {
+        if (ret == NULL) {
+            PyErr_SetString(PyExc_TypeError, "arg is a Message that does not have an ID");
             return NULL;
         }
+        PyObject * thing = wrapEntity(ret);
         return thing;
     } else if (PyRootEntity_Check(arg)) {
         PyRootEntity * ent = (PyRootEntity*)arg;
         MemEntity * ret = self->m_map->updateAdd(ent->entity, time);
         PyObject * thing = wrapEntity(ret);
-        if (thing == NULL) {
-            return NULL;
-        }
         return thing;
     } else {
         PyErr_SetString(PyExc_TypeError, "arg is not an Atlas Entity or Message");
@@ -189,9 +196,6 @@ static PyObject * Map_get(PyMap * self, PyObject * py_id)
         return Py_None;
     }
     PyObject * thing = wrapEntity(ret);
-    if (thing == NULL) {
-        return NULL;
-    }
     return thing;
 }
 
@@ -211,9 +215,6 @@ static PyObject * Map_get_add(PyMap * self, PyObject * py_id)
     MemEntity * ret = self->m_map->getAdd(id);
     assert(ret != 0);
     PyObject * thing = wrapEntity(ret);
-    if (thing == NULL) {
-        return NULL;
-    }
     return thing;
 }
 

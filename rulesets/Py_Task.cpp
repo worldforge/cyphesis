@@ -19,8 +19,9 @@
 
 #include "Py_Task.h"
 
-#include "Py_Thing.h"
+#include "Py_Message.h"
 #include "Py_Operation.h"
+#include "Py_Thing.h"
 #include "PythonWrapper.h"
 
 #include "TaskScript.h"
@@ -131,6 +132,10 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
     }
     if (strcmp(name, "rate") == 0) {
         return PyFloat_FromDouble(self->m_task->rate());
+    }
+    Atlas::Message::Element val;
+    if (self->m_task->getAttr(name, val)) {
+        return MessageElement_asPyObject(val);
     }
     if (self->Task_attr != NULL) {
         PyObject *v = PyDict_GetItemString(self->Task_attr, name);
