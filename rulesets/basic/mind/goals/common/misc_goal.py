@@ -275,19 +275,16 @@ class amble(Goal):
 
     def do_amble(self, me):
         id=me.get_knowledge('focus', 'hook')
-        if id == None: 
-            continue
-        thing = me.map.get(id)
-        if thing == None:
-            me.remove_knowledge('focus', what)
-            continue
-        if thing.location.parent.id != me.location.parent.id:
-            me.remove_knowledge('focus', what)
-            continue
-        if thing.location.parent.id != me.id:
-            continue
-        else:
-            return
+        if id != None: 
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+            else:
+                if thing.location.parent.id != me.location.parent.id:
+                    me.remove_knowledge('focus', what)
+                else:
+                    if thing.location.parent.id == me.id:
+                        return
         #world = 
         #ground = world.id 
         #op = Operation("eat", ground)
