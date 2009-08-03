@@ -554,31 +554,49 @@ def _add_animals(m):
     m.learn(chickens,chicken_goals)
 
     bluegill=[]
-    #pickerel=[]
-    #bass=[]
-    #tuna=[]
-    #xbase = lake_pos[0]
-    #ybase = lake_pos[1]
-    xbase = 0
-    ybase = 0
+    pickerel=[]
+    bass=[]
+    tuna=[]
+    bluegillxbase = lake_pos[0]
+    bluegillybase = lake_pos[1]
+    pickerelxbase = lake_pos[0]
+    pickerelybase = lake_pos[1]
+    bassxbase = lake_pos[0]
+    bassybase = lake_pos[1]
+    tunaxbase = -8
+    tunaybase = -6
     for i in range(0, 2):
-        xpos = xbase + uniform(-5,5)
-        ypos = ybase + uniform(-5,5)
+        xpos = bluegillxbase + uniform(-15,-10)
+        ypos = bluegillybase + uniform(-15,-10)
         zpos = uniform(-4,0)
         world = m.look()
-        print "world.terrain['points']"
         c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
-        #d=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
-        #e=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
-        #f=m.make('fish', name='tuna', pos=(xpos, ypos, zpos), transient=-1)
         bluegill.append(c)
-        #pickerel.append(d)
-        #bass.append(e)
-        #tuna.append(f) # Need to change the position of tuna
+    for i in range(0, 2):
+        xpos = pickerelxbase + uniform(-10,-5)
+        ypos = pickerelybase + uniform(-10,-5)
+        zpos = uniform(-4,0)
+        world = m.look()
+        c=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
+        pickerel.append(c)
+    for i in range(0, 2):
+        xpos = bassxbase + uniform(-5,0)
+        ypos = bassybase + uniform(-5,0)
+        zpos = uniform(-4,0)
+        world = m.look()
+        c=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
+        bass.append(c)
+    for i in range(0, 2):
+        xpos = tunaxbase + uniform(0,5)
+        ypos = tunaybase + uniform(0,5)
+        zpos = uniform(-21,-18)
+        world = m.look()
+        c=m.make('fish', name='tuna', pos=(xpos, ypos, zpos), transient=-1)
+        tuna.append(c)
     m.learn(bluegill,bluegill_goals)
-    #m.learn(pickerel,pickerel_goals)
-    #m.learn(bass,bass_goals)
-    #m.learn(tuna,tuna_goals)
+    m.learn(pickerel,pickerel_goals)
+    m.learn(bass,bass_goals)
+    m.learn(tuna,tuna_goals)
     
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
