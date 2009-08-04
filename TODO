@@ -30,8 +30,6 @@ not be available at all in the client bindings.
 
 Look into loudmouth for XMPP stuff.
 
-Clean out old commented out new Python object creation.
-
 Would it be better to expose Point3D more directly to Python, rather than
 avoid it by converting to Vector3D as in BBox_getattr?
 
