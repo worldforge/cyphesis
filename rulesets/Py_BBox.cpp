@@ -65,25 +65,22 @@ static PyObject * BBox_getattr(PyBBox *self, char *name)
 
 static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
 {
-    if (!PyVector3D_Check(v)) {
-        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Vector");
+    if (!PyPoint3D_Check(v)) {
+        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Point");
         return -1;
     }
-    PyVector3D * vec = (PyVector3D *)v;
-    if (!vec->coords.isValid()) {
-        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a valid Vector");
+    PyPoint3D * pt = (PyPoint3D *)v;
+    if (!pt->coords.isValid()) {
+        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a valid Point");
         return -1;
     }
-    const Vector3D & vector = vec->coords;
+    const Point3D & point = pt->coords;
+    // FIXME Brutal ugly casts which can go away once wfmath is updated.
     if (strcmp(name, "near_point") == 0) {
-        (WFMath::Point<3>&)self->box.lowCorner() = WFMath::Point<3>(vector.x(),
-                                                                    vector.y(),
-                                                                    vector.z());
+        (WFMath::Point<3>&)self->box.lowCorner() = point;
         return 0;
     } else if (strcmp(name, "far_point") == 0) {
-        (WFMath::Point<3>&)self->box.highCorner()= WFMath::Point<3>(vector.x(),
-                                                                    vector.y(),
-                                                                    vector.z());
+        (WFMath::Point<3>&)self->box.highCorner()= point;
         return 0;
     }
 
