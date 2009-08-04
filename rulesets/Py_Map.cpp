@@ -129,7 +129,7 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         }
         Root obj(0);
         try {
-            obj = Factories::instance()->createObject(me->m_obj->asMap());
+            obj = Factories::instance()->createObject(me->m_obj->Map());
         }
         catch (Atlas::Message::WrongTypeException&) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that contains malformed attributes");

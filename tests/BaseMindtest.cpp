@@ -19,6 +19,8 @@
 
 #include "rulesets/BaseMind.h"
 
+#include "common/Unseen.h"
+
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -150,6 +152,19 @@ int main()
     {
         OpVector res;
         Atlas::Objects::Operation::Disappearance op;
+        bm->operation(op, res);
+
+        Atlas::Objects::Entity::Anonymous arg;
+        op->setArgs1(arg);
+        bm->operation(op, res);
+
+        arg->setId("2");
+        bm->operation(op, res);
+    }
+
+    {
+        OpVector res;
+        Atlas::Objects::Operation::Unseen op;
         bm->operation(op, res);
 
         Atlas::Objects::Entity::Anonymous arg;

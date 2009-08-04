@@ -21,10 +21,11 @@
 
 #include "Script.h"
 
-#include "common/log.h"
+#include "common/custom.h"
 #include "common/debug.h"
-#include "common/op_switch.h"
 #include "common/Inheritance.h"
+#include "common/log.h"
+#include "common/op_switch.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -251,6 +252,21 @@ void BaseMind::DisappearanceOperation(const Operation & op, OpVector & res)
     }
 }
 
+void BaseMind::UnseenOperation(const Operation & op, OpVector & res)
+{
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        debug( std::cout << " no args!" << std::endl << std::flush;);
+        return;
+    }
+    const Root & arg = args.front();
+    if (arg->isDefaultId()) {
+        log(ERROR, "BaseMind: Unseen op has no arg ID");
+        return;
+    }
+    m_map.del(arg->getId());
+}
+
 void BaseMind::operation(const Operation & op, OpVector & res)
 {
     // This might end up being quite tricky to do
@@ -285,6 +301,9 @@ void BaseMind::operation(const Operation & op, OpVector & res)
             DisappearanceOperation(op, res);
             break;
         default:
+            if (op_no == Atlas::Objects::Operation::UNSEEN_NO) {
+                UnseenOperation(op, res);
+            }
             // ERROR
             break;
     }
