@@ -1,3 +1,41 @@
+2009-08-04  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/op_switch.h, rulesets/Character.cpp,
+	  rulesets/Entity.h, rulesets/Entity.cpp: Move Task operations
+	  from being set up in the mind filter to being handled at the
+	  Entity level, so they can be initiated remotely.
+
+	* rulesets/BaseMind.h, rulesets/BaseMind.cpp: Handle Unseen operations
+	  in the core C++ code.
+
+	* rulesets/Character.h, rulesets/Character.cpp: Re-factor the
+	  way tasks are started adding a higher level, consistent and
+	  more efficient method to start them. Remove idiosyncrasies in
+	  the way task updates are handled.
+
+	* rulesets/Py_Thing.cpp: Update the wrappers for the task creation
+	  function.
+
+	* rulesets/Py_BBox.cpp: Box corners are points, so expose them
+	  to Python using the Point type to cut down mangling and copies.
+
+	* rulesets/Py_Map.cpp, tools/AdminClient.cpp:
+	  Add necessary try/catch blocks around calls to createObject.
+
+	* rulesets/Py_Map.cpp: Remove some unnecessary null checks.
+
+	* rulesets/Py_Operation.cpp: Allow operations of any type to be
+	  created, not just those classes registered with the Atlas-C++
+	  factory, so the client can inject arbitrary operations.
+
+	* rulesets/Task.h, rulesets/Task.cpp, rulesets/Py_Task.cpp:
+	  Expose underlying soft attributes in the task object.
+
+	* rulesets/TasksProperty.cpp: Handle retrieving task data
+	  when no task is running more cleanly.
+
+	* 
+
 2009-07-23  Alexey Torkhov  <atorkhov@gmail.com>
 
 	* rulesets/Task.cpp, rulesets/Task.h: Add support for freefrom task
