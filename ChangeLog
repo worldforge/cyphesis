@@ -1,3 +1,9 @@
+2009-08-05  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/PythonEntityScript.cpp, rulesets/Python_API.cpp:
+	  Clear up a couple of locations where new Python objects are not
+	  checked for NULL.
+
 2009-08-04  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/op_switch.h, rulesets/Character.cpp,
