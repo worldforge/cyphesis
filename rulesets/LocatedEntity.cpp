@@ -91,8 +91,13 @@ bool LocatedEntity::hasAttr(const std::string & name) const
     if (I != m_properties.end()) {
         return true;
     }
+    if (m_type != 0) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return true;
+        }
+    }
     return false;
-    
 }
 
 /// \brief Get the value of an attribute
