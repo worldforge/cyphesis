@@ -1,5 +1,13 @@
 2009-08-05  Alistair Riddoch  <alriddoch@googlemail.com>
 
+	* server/WorldRouter.cpp, rulesets/Domain.cpp: Fix mode handling and
+	  make "fixed" work again.
+
+	* rulesets/LocatedEntity.cpp: Fix implementation of hasAttr so that
+	  it checks type defaults as well as instance attributes.
+
+2009-08-05  Alistair Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/PythonEntityScript.cpp, rulesets/Python_API.cpp:
 	  Clear up a couple of locations where new Python objects are not
 	  checked for NULL.
