@@ -303,7 +303,15 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
         Set s;
 
-        Root set_arg = Atlas::Objects::Factories::instance()->createObject(rule);
+        Root set_arg(0);
+        try {
+            set_arg = Atlas::Objects::Factories::instance()->createObject(rule);
+        }
+        catch (Atlas::Message::WrongTypeException&) {
+            std::cerr << "Malformed data in rule"
+                      << std::endl << std::flush;
+            return -1;
+        }
         if (!set_arg.isValid()) {
             std::cerr << "Unknown error converting rule for upload"
                       << std::endl << std::flush;
@@ -381,7 +389,15 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     Create c;
 
-    Root create_arg = Atlas::Objects::Factories::instance()->createObject(rule);
+    Root create_arg;
+    try {
+        create_arg  = Atlas::Objects::Factories::instance()->createObject(rule);
+    }
+    catch (Atlas::Message::WrongTypeException&) {
+        std::cerr << "Malformed data in rule"
+                  << std::endl << std::flush;
+        return -1;
+    }
     if (!create_arg.isValid()) {
         std::cerr << "Unknown error converting rule for upload"
                   << std::endl << std::flush;

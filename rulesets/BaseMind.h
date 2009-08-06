@@ -64,6 +64,7 @@ class BaseMind : public MemEntity {
     virtual void SoundOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
     virtual void DisappearanceOperation(const Operation &, OpVector &);
+    virtual void UnseenOperation(const Operation &, OpVector &);
 
     void callSightOperation(const Operation &, OpVector &);
     void callSoundOperation(const Operation &, OpVector &);
