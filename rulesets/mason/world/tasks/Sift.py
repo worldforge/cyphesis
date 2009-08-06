@@ -77,7 +77,10 @@ class Sift(server.Task):
 
         self_loc = Location(self.character)
         self_loc.velocity = Vector3D()
-        moisture = 10 * world.moisture
+        if hasattr(world, 'moisture'):
+            moisture = 10 * world.moisture
+        else:
+            moisture = 1
         self_loc.coordinates = self.pos
 
         quality = 10 * self.get_quality(self_loc.coordinates, target, moisture)
