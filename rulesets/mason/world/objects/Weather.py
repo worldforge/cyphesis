@@ -24,5 +24,5 @@ class Weather(server.Thing):
             self.rain=0.0
             self.visibility=1000
             res = res + Operation("set", Entity(world.id, moisture=moisture-0.5), to=world)
-        res = res + Operation("set", Entity(self.id,rain=self.rain,visibility=self.visibility), to=self)
+        res = res+Operation("set", Entity(self.id,rain=self.rain,visibility=self.visibility), to=self)
         return res
