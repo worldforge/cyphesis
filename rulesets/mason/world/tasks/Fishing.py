@@ -79,20 +79,23 @@ class Fishing(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         hook = 0
-        for item in bait.contains:
-            if item.type[0] == "hook":
-                hook = item
+        try:
+            for item in bait.contains:
+                if item.type[0] == "hook":
+                    hook = item
 
-        while hook.location.parent.id == bait.id:
-            old_rate = self.rate
+            while hook.location.parent.id == bait.id:
+                old_rate = self.rate
 
-            self.rate = 0.1 / 17.5
-            self.progress += 0.1
+                self.rate = 0.1 / 17.5
+                self.progress += 0.1
 
-            if old_rate < 0.01:
-                self.progress = 0
-            else:
-                self.progress += 0.01
-        #a fish has eaten the bait
-        self.progress = 1
-        return
+                if old_rate < 0.01:
+                    self.progress = 0
+                else:
+                    self.progress += 0.01
+            #a fish has eaten the bait
+            self.progress = 1
+            return
+        except NameError:
+            return
