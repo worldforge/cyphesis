@@ -407,6 +407,9 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
         return;
     }
     PyMind * wrapper = newPyMind();
+    if (wrapper == NULL) {
+        return;
+    }
     wrapper->m_mind = mind;
 
     PyObject * script = Create_PyScript((PyObject *)wrapper, py_class);
@@ -450,10 +453,9 @@ static PyObject * distance_to(PyObject * self, PyObject * args)
     }
 #endif // NDEBUG
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret != NULL) {
+        ret->coords = distanceTo(*sloc->location, *oloc->location);
     }
-    ret->coords = distanceTo(*sloc->location, *oloc->location);
     return (PyObject *)ret;
 }
 
@@ -753,7 +755,11 @@ void init_python_api()
     PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
 
     PyWorld * world = newPyWorld();
-    PyModule_AddObject(server, "world", (PyObject *)world);
+    if (world != NULL) {
+        PyModule_AddObject(server, "world", (PyObject *)world);
+    } else {
+        log(CRITICAL, "Python init failed to create World object");
+    }
 
     // FIXME Remove once we are sure.
     // PyObject * rules = Py_InitModule("rulesets", no_methods);
