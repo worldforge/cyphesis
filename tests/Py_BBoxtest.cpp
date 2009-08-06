@@ -42,18 +42,18 @@ int main()
     assert(PyRun_SimpleString("print b.near_point") == 0);
     assert(PyRun_SimpleString("print b.far_point") == 0);
     assert(PyRun_SimpleString("print b.square_bounding_radius()") == 0);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
+    assert(PyRun_SimpleString("from physics import Point3D") == 0);
     assert(PyRun_SimpleString("b.near_point=1") == -1);
-    assert(PyRun_SimpleString("b.near_point=Vector3D()") == -1);
-    assert(PyRun_SimpleString("b.far_point=Vector3D()") == -1);
-    assert(PyRun_SimpleString("b.near_point=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("b.far_point=Vector3D(1,1,1)") == 0);
-    assert(PyRun_SimpleString("b.other=Vector3D(0,0,0)") == -1);
+    assert(PyRun_SimpleString("b.near_point=Point3D()") == -1);
+    assert(PyRun_SimpleString("b.far_point=Point3D()") == -1);
+    assert(PyRun_SimpleString("b.near_point=Point3D(0,0,0)") == 0);
+    assert(PyRun_SimpleString("b.far_point=Point3D(1,1,1)") == 0);
+    assert(PyRun_SimpleString("b.other=Point3D(0,0,0)") == -1);
     assert(PyRun_SimpleString("print b.square_bounding_radius()") == 0);
     assert(PyRun_SimpleString("b2=BBox()") == 0);
     assert(PyRun_SimpleString("print b == b2") == 0);
-    assert(PyRun_SimpleString("b2.near_point=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("b2.far_point=Vector3D(1,1,1)") == 0);
+    assert(PyRun_SimpleString("b2.near_point=Point3D(0,0,0)") == 0);
+    assert(PyRun_SimpleString("b2.far_point=Point3D(1,1,1)") == 0);
     assert(PyRun_SimpleString("print b == b2") == 0);
     assert(PyRun_SimpleString("print b == '0'") == 0);
     

@@ -20,6 +20,7 @@
 #include "Py_BBox.h"
 
 #include "Py_Vector3D.h"
+#include "Py_Point3D.h"
 #include "Py_Message.h"
 
 static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
@@ -45,18 +46,16 @@ static void BBox_dealloc(PyBBox * self)
 static PyObject * BBox_getattr(PyBBox *self, char *name)
 {
     if (strcmp(name, "near_point") == 0) {
-        PyVector3D * v = newPyVector3D();
+        PyPoint3D * v = newPyPoint3D();
         if (v != NULL) {
-            const WFMath::Point<3> & lc = self->box.lowCorner();
-            v->coords = Vector3D(lc.x(), lc.y(), lc.z());
+            v->coords = self->box.lowCorner();
         }
         return (PyObject *)v;
     }
     if (strcmp(name, "far_point") == 0) {
-        PyVector3D * v = newPyVector3D();
+        PyPoint3D * v = newPyPoint3D();
         if (v != NULL) {
-            const WFMath::Point<3> & hc = self->box.highCorner();
-            v->coords = Vector3D(hc.x(), hc.y(), hc.z());
+            v->coords = self->box.highCorner();
         }
         return (PyObject *)v;
     }
@@ -66,25 +65,22 @@ static PyObject * BBox_getattr(PyBBox *self, char *name)
 
 static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
 {
-    if (!PyVector3D_Check(v)) {
-        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Vector");
+    if (!PyPoint3D_Check(v)) {
+        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Point");
         return -1;
     }
-    PyVector3D * vec = (PyVector3D *)v;
-    if (!vec->coords.isValid()) {
-        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a valid Vector");
+    PyPoint3D * pt = (PyPoint3D *)v;
+    if (!pt->coords.isValid()) {
+        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a valid Point");
         return -1;
     }
-    const Vector3D & vector = vec->coords;
+    const Point3D & point = pt->coords;
+    // FIXME Brutal ugly casts which can go away once wfmath is updated.
     if (strcmp(name, "near_point") == 0) {
-        (WFMath::Point<3>&)self->box.lowCorner() = WFMath::Point<3>(vector.x(),
-                                                                    vector.y(),
-                                                                    vector.z());
+        (WFMath::Point<3>&)self->box.lowCorner() = point;
         return 0;
     } else if (strcmp(name, "far_point") == 0) {
-        (WFMath::Point<3>&)self->box.highCorner()= WFMath::Point<3>(vector.x(),
-                                                                    vector.y(),
-                                                                    vector.z());
+        (WFMath::Point<3>&)self->box.highCorner()= point;
         return 0;
     }
 

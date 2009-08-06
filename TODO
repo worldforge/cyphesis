@@ -30,16 +30,9 @@ not be available at all in the client bindings.
 
 Look into loudmouth for XMPP stuff.
 
-Clean out old commented out new Python object creation.
-
-Would it be better to expose Point3D more directly to Python, rather than
-avoid it by converting to Vector3D as in BBox_getattr?
-
-Check where newPy*() is being used in wrappers, and ensure if NULL is returned
-it is not used. No need to set error, just return the null.
-
 Fix Arithmetic and Mind code so the factory is not created every time,
-nor the type looked up every time.
+nor the type looked up every time. Python related factories need to be way
+more consistent.
 
 Look through dynamic casts and consider when it would be cleaner to
 extend the interface in the base class.

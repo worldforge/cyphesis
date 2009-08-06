@@ -44,6 +44,9 @@ float Domain::constrainHeight(LocatedEntity * parent,
                               const std::string & mode)
 {
     assert(parent != 0);
+    if (mode == "fixed") {
+        return pos.z();
+    }
     const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
     if (tp != 0) {
         float h;
