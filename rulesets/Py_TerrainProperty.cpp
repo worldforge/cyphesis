@@ -81,7 +81,7 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
 	}
 	Vector3D normal;
 	normal = self->m_property->getNormal(x, y);
-	PyVector3D * ret = new PyVector3D();
+	PyVector3D * ret = newPyVector3D();
 	if (ret != NULL) {
 		ret->coords = normal;
 	}

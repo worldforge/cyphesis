@@ -19,10 +19,10 @@ class Sift(server.Task):
         zval = math.exp(-z*z/2)
         if not hasattr(target, 'location'):
             return 0
-        normal = target.location.parent.terrain.get_normal(location);
+        normal = target.location.parent.terrain.get_normal(location.x, location.y);
         print normal
         i = Vector3D(1, 0, 0)
-        slope = normal.dot(i) / normal.mag
+        slope = normal.dot(i) / normal.mag()
         return zval + moisture + (1 - slope)
 
     def cut_operation(self, op):
