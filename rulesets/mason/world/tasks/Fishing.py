@@ -71,7 +71,7 @@ class Fishing(server.Task):
 
         
         res = Operation("create", Entity(name = "float", parents = ["float"], location = float_loc), to = target)
-        res = res + Operation("move", Entity(bait.id, location = bait_loc))
+        res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
         res = res + Operation("create", Entity(name = "hook", parents = ["hook"], location = bait_loc), to = bait)
         return res
 
