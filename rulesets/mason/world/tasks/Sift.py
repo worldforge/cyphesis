@@ -19,10 +19,10 @@ class Sift(server.Task):
         zval = math.exp(-z*z/2)
         if not hasattr(target, 'location'):
             return 0
-        normal = target.location.parent.terrain.get_normal(location);
+        normal = target.location.parent.terrain.get_normal(location.x, location.y);
         print normal
         i = Vector3D(1, 0, 0)
-        slope = normal.dot(i) / normal.mag
+        slope = normal.dot(i) / normal.mag()
         return zval + moisture + (1 - slope)
 
     def cut_operation(self, op):
@@ -83,10 +83,11 @@ class Sift(server.Task):
             moisture = 1
         self_loc.coordinates = self.pos
 
-        quality = 10 * self.get_quality(self_loc.coordinates, target, moisture)
-        for i in range(quality/2, quality):
+        quality = int(self.get_quality(self_loc.coordinates, target, moisture))
+        print quality
+        for i in range(int(quality/2), quality):
             res = res + Operation("create", Entity(name = "scrawny earthworm", parents = ["annelid"], location = self_loc), to=self.character)
-        for i in range((10-quality)/2, quality):
+        for i in range(int((10-quality)/2), quality):
             res = res + Operation("create", Entity(name = "juicy earthworm", parents = ["annelid"], location = self_loc), to=self.character)
 
         #res.append(self.next_tick(1.75))

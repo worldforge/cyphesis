@@ -69,11 +69,10 @@ class Fishing(server.Task):
         bait_loc = float_loc
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
 
-        hook = Operation("create", Entity(name = "hook", parents = ["hook"], location = bait_loc), to = bait)
         
         res = Operation("create", Entity(name = "float", parents = ["float"], location = float_loc), to = target)
         res = res + Operation("move", Entity(bait.id, location = bait_loc))
-
+        res = res + Operation("create", Entity(name = "hook", parents = ["hook"], location = bait_loc), to = bait)
         return res
 
     def tick_operation(self, op):
