@@ -57,18 +57,19 @@ class Fishing(server.Task):
         #This is <server.Entity object at 0xb161b90>
         
         float_loc.velocity = Vector3D()
-        #float_loc.coordinates = self.pos
+        float_loc.coordinates = self.pos
 
-        dist_vector = distance_to(self.character.location,target.location).unit_vector()
-        dist_vector.x = 5 * dist_vector.x
-        dist_vector.y = 5 * dist_vector.y
-        dist_vector.z = -self.character.location.coordinates.z
-        float_loc.coordinates = self.character.location.coordinates + dist_vector
+        #dist_vector = distance_to(self.character.location,target.location).unit_vector()
+        #dist_vector.x = 5 * dist_vector.x
+        #dist_vector.y = 5 * dist_vector.y
+        #dist_vector.z = -self.character.location.coordinates.z
+        #float_loc.coordinates = self.character.location.coordinates + dist_vector
         
         bait_vector = Vector3D(0, 0, -0.5)
         bait_loc = float_loc
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
-
+        print float_loc.coordinates
+        print bait_loc.coordinates
         
         res = Operation("create", Entity(name = "float", parents = ["float"], location = float_loc), to = target)
         res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
@@ -78,6 +79,7 @@ class Fishing(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         hook = 0
+        res=Oplist()
         try:
             for item in bait.contains:
                 if item.type[0] == "hook":
@@ -95,6 +97,7 @@ class Fishing(server.Task):
                     self.progress += 0.01
             #a fish has eaten the bait
             self.progress = 1
-            return
+            res.append(self.next_tick(1.75))
         except NameError:
-            return
+            res.append(self.irrelevant())
+        return res
