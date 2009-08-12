@@ -42,7 +42,6 @@ class Fishing(server.Task):
 
         if not target:
             print "Target is no more"
-            self.irrelevant()
             return
         
         if "ocean" not in target.type:
@@ -56,17 +55,10 @@ class Fishing(server.Task):
         float_loc = Location(self.character.location.parent)
         #This is <server.Entity object at 0xb161b90>
         
-        float_loc.velocity = Vector3D()
         float_loc.coordinates = self.pos
 
-        #dist_vector = distance_to(self.character.location,target.location).unit_vector()
-        #dist_vector.x = 5 * dist_vector.x
-        #dist_vector.y = 5 * dist_vector.y
-        #dist_vector.z = -self.character.location.coordinates.z
-        #float_loc.coordinates = self.character.location.coordinates + dist_vector
-        
         bait_vector = Vector3D(0, 0, -0.5)
-        bait_loc = float_loc
+        bait_loc = float_loc.copy()
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
         print float_loc.coordinates
         print bait_loc.coordinates
@@ -98,6 +90,7 @@ class Fishing(server.Task):
             #a fish has eaten the bait
             self.progress = 1
             res.append(self.next_tick(1.75))
+            return res
         except NameError:
-            res.append(self.irrelevant())
-        return res
+            res.append(self.next_tick(1.75))
+            return res
