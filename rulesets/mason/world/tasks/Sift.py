@@ -90,6 +90,6 @@ class Sift(server.Task):
         for i in range(int((10-quality)/2), quality):
             res = res + Operation("create", Entity(name = "juicy earthworm", parents = ["annelid"], location = self_loc), to=self.character)
 
-        #res.append(self.next_tick(1.75))
+        res.append(self.irrelevant())
 
         return res

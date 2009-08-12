@@ -79,6 +79,7 @@ class Fishing(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         hook = 0
+        res=Oplist()
         try:
             for item in bait.contains:
                 if item.type[0] == "hook":
@@ -96,6 +97,7 @@ class Fishing(server.Task):
                     self.progress += 0.01
             #a fish has eaten the bait
             self.progress = 1
-            return
+            res.append(self.next_tick(1.75))
         except NameError:
-            return
+            res.append(self.irrelevant())
+        return res
