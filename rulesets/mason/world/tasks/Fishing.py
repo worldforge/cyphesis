@@ -88,8 +88,9 @@ class Fishing(server.Task):
                 else:
                     self.progress += 0.01
             #a fish has eaten the bait
+            self.character.contains.append(server.world.get_object(hook.location.parent.id))
             self.progress = 1
-            res.append(self.next_tick(1.75))
+            self.irrelevant()
             return res
         except NameError:
             res.append(self.next_tick(1.75))
