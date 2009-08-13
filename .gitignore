@@ -32,3 +32,6 @@ cypython
 tests/*test
 doc
 python_doc
+cc.vim
+log
+tags
