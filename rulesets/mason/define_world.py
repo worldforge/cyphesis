@@ -127,7 +127,6 @@ tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 # Fish goals
 pickerel_goals=[(il.forage,"forage('juicy earthworm')"),
                 (il.forage,"forage('scrawny earthworm')"),
-                (il.school,"school()"),
                 (il.avoid,"avoid(['settler','orc'],10.0)"),
                 (il.amble,"amble()")]
 
@@ -135,7 +134,6 @@ bass_goals=[(il.forage,"forage('juicy earthworm')"),
             (il.forage,"forage('juicy larva')"),
             (il.forage,"forage('scrawny earthworm')"),
             (il.forage,"forage('scrawny larva')"),
-            (il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()")]
 
@@ -143,13 +141,11 @@ bluegill_goals=[(il.forage,"forage('juicy maggot')"),
                 (il.forage,"forage('juicy earthworm')"),
                 (il.forage,"forage('scrawny maggot')"),
                 (il.forage,"forage('scrawny earthworm')"),
-                (il.school,"school()"),
                 (il.avoid,"avoid(['settler','orc'],10.0)"),
                 (il.amble,"amble()")]
 
 tuna_goals=[(il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
-            (il.amble,"amble()"),
             (il.hunt,"predate('bluegill',10.0)"),
             (il.hunt,"predate('bass',10.0)"),
             (il.hunt,"predate('pickerel',10.0)")]
