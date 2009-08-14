@@ -127,7 +127,6 @@ tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 # Fish goals
 pickerel_goals=[(il.forage,"forage('juicy earthworm')"),
                 (il.forage,"forage('scrawny earthworm')"),
-                (il.school,"school()"),
                 (il.avoid,"avoid(['settler','orc'],10.0)"),
                 (il.amble,"amble()")]
 
@@ -135,7 +134,6 @@ bass_goals=[(il.forage,"forage('juicy earthworm')"),
             (il.forage,"forage('juicy larva')"),
             (il.forage,"forage('scrawny earthworm')"),
             (il.forage,"forage('scrawny larva')"),
-            (il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()")]
 
@@ -143,13 +141,11 @@ bluegill_goals=[(il.forage,"forage('juicy maggot')"),
                 (il.forage,"forage('juicy earthworm')"),
                 (il.forage,"forage('scrawny maggot')"),
                 (il.forage,"forage('scrawny earthworm')"),
-                (il.school,"school()"),
                 (il.avoid,"avoid(['settler','orc'],10.0)"),
                 (il.amble,"amble()")]
 
 tuna_goals=[(il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
-            (il.amble,"amble()"),
             (il.hunt,"predate('bluegill',10.0)"),
             (il.hunt,"predate('bass',10.0)"),
             (il.hunt,"predate('pickerel',10.0)")]
@@ -1039,3 +1035,24 @@ def add_castle(mapeditor):
         [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
     m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
 
+def populate(mapeditor):
+    #   general things
+
+    m=editor(mapeditor)
+
+    fish_goals=[(il.forage,"forage('juicy maggot')"),
+                    (il.forage,"forage('juicy earthworm')"),
+                    (il.forage,"forage('scrawny maggot')"),
+                    (il.forage,"forage('scrawny earthworm')"),
+                    (il.school,"school()"),
+                    (il.avoid,"avoid(['settler','orc'],10.0)"),
+                    (il.amble,"amble()")]
+    fish = []
+    for i in range(0, 2):
+        xpos = uniform(-15,-10)
+        ypos = uniform(-15,-10)
+        zpos = uniform(-4,0)
+        world = m.look()
+        c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
+        fish.append(c)
+    m.learn(fish, fish_goals)
