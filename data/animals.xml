@@ -236,7 +236,7 @@
     <string name="id">fish</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>character</string>
+      <string>mobile</string>
     </list>
   </map>
 
