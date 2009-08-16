@@ -189,16 +189,9 @@ float TerrainProperty::getHeight(float x, float y) const
 /// \brief Return the normal to the surface at the given point on the terrain
 Vector3D TerrainProperty::getNormal(float x, float y) const
 {
-    Mercator::Segment * segment = m_data.getSegment(x, y);
-    if (segment == 0) {
-        return Vector3D(0, 0, 0);
-    }
-    if (!segment->isValid()) {
-        segment->populate();
-    }
     WFMath::Vector<3> normal;
     float height = 0;
-    segment->getHeightAndNormal(x, y, height, normal);
+    m_data.getHeightAndNormal(x, y, height, normal);
     return normal;
 }
 
