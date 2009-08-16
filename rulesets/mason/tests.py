@@ -346,3 +346,18 @@ def test_task(mapeditor):
         return
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
+
+def test_fish(mapeditor):
+    #   general things
+
+    m=editor(mapeditor)
+
+    fish_goals=[(il.forage,"forage('annelid')")]
+    fish = []
+    for i in range(0, 5):
+        xpos = uniform(-35,-31)
+        ypos = uniform(-32,-28)
+        zpos = uniform(-4,0)
+        c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
+        fish.append(c)
+    m.learn(fish, fish_goals)
