@@ -98,7 +98,7 @@ class Fishing(server.Task):
                 self.irrelevant()
             fish = hook.location.parent
             #TODO: add check to ensure that the fish's parent isn't world or something like that
-            res.append(Operation("move", Entity(fish.id, Location(self.character, Point3D(0,0,0)), to=fish)))
+            res.append(Operation("move", Entity(fish.id, location = Location(self.character, Point3D(0,0,0))), to=fish))
             self.progress = 1
             self.irrelevant()
         return res
