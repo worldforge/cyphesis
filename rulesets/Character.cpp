@@ -390,6 +390,11 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                 clearTask();
             } else {
                 updateTask();
+                if (res.empty()) {
+                    log(WARNING, String::compose("Character::%1: Task %2 has "
+                                                 "stalled", __func__,
+                                                 m_task->name()));
+                }
             }
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.

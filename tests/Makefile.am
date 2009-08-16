@@ -220,6 +220,7 @@ Monitorstest_SOURCES = Monitorstest.cpp
 Monitorstest_LDADD = $(top_builddir)/common/Monitors.o
 
 operationstest_SOURCES = operationstest.cpp
+operationstest_LDADD = $(top_builddir)/common/const.o
 
 serialnotest_SOURCES = serialnotest.cpp
 
