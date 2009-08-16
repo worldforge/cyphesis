@@ -125,24 +125,18 @@ tailor_prices = [('shirt', 'price', '5'),
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
 
 # Fish goals
-pickerel_goals=[(il.forage,"forage('juicy earthworm')"),
-                (il.forage,"forage('scrawny earthworm')"),
+pickerel_goals=[(il.forage,"forage('annelid')"),
+                (il.forage,"forage('annelid')"),
                 (il.avoid,"avoid(['settler','orc'],10.0)"),
                 (il.amble,"amble()")]
 
-bass_goals=[(il.forage,"forage('juicy earthworm')"),
-            (il.forage,"forage('juicy larva')"),
-            (il.forage,"forage('scrawny earthworm')"),
-            (il.forage,"forage('scrawny larva')"),
+bass_goals=[(il.forage,"forage('annelid')"),
+            (il.forage,"forage('larva')"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.amble,"amble()")]
 
-bluegill_goals=[(il.forage,"forage('juicy maggot')"),
-                (il.forage,"forage('juicy earthworm')"),
-                (il.forage,"forage('scrawny maggot')"),
-                (il.forage,"forage('scrawny earthworm')"),
-                (il.avoid,"avoid(['settler','orc'],10.0)"),
-                (il.amble,"amble()")]
+bluegill_goals=[(il.forage,"forage('maggot')"),
+                (il.forage,"forage('annelid')")]
 
 tuna_goals=[(il.school,"school()"),
             (il.avoid,"avoid(['settler','orc'],10.0)"),
@@ -553,8 +547,8 @@ def _add_animals(m):
     pickerel=[]
     bass=[]
     tuna=[]
-    bluegillxbase = lake_pos[0]
-    bluegillybase = lake_pos[1]
+    bluegillxbase = -10
+    bluegillybase = -11
     pickerelxbase = lake_pos[0]
     pickerelybase = lake_pos[1]
     bassxbase = lake_pos[0]
@@ -562,9 +556,9 @@ def _add_animals(m):
     tunaxbase = -8
     tunaybase = -6
     for i in range(0, 2):
-        xpos = bluegillxbase + uniform(-15,-10)
-        ypos = bluegillybase + uniform(-15,-10)
-        zpos = uniform(-4,0)
+        xpos = bluegillxbase + uniform(-1,1)
+        ypos = bluegillybase + uniform(-1,1)
+        zpos = uniform(6,8)
         world = m.look()
         c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
         bluegill.append(c)

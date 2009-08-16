@@ -48,6 +48,8 @@ class Fishing(server.Task):
             print "Can fish only in the ocean"
             return
 
+        self.bait_id = bait.id
+        self.hook_id = -1
         self.progress = 0.5
 
         res=Oplist()
@@ -60,38 +62,38 @@ class Fishing(server.Task):
         bait_vector = Vector3D(0, 0, -0.5)
         bait_loc = float_loc.copy()
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
-        print float_loc.coordinates
-        print bait_loc.coordinates
         
         res = Operation("create", Entity(name = "float", parents = ["float"], location = float_loc), to = target)
         res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
-        res = res + Operation("create", Entity(name = "hook", parents = ["hook"], location = bait_loc), to = bait)
+        res = res + Operation("create", Entity(parents = ["hook"], location = Location(bait, Point3D(0,0,0))), to = bait)
         return res
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        hook = 0
         res=Oplist()
-        try:
+        bait = server.world.get_object(self.bait_id)
+
+        if self.hook_id == -1:
             for item in bait.contains:
                 if item.type[0] == "hook":
-                    hook = item
+                    self.hook_id = item.id
 
-            while hook.location.parent.id == bait.id:
-                old_rate = self.rate
+        hook = server.world.get_object(self.hook_id)
 
-                self.rate = 0.1 / 17.5
+        if hook.location.parent.id == bait.id:
+            old_rate = self.rate
+
+            self.rate = 0.1 / 17.5
+            self.progress += 0.1
+
+            if old_rate < 0.01:
+                self.progress = 0
+            else:
                 self.progress += 0.1
-
-                if old_rate < 0.01:
-                    self.progress = 0
-                else:
-                    self.progress += 0.01
-            #a fish has eaten the bait
+            res.append(self.next_tick(0.75))
+        else:
+        #a fish has eaten the bait
             self.character.contains.append(server.world.get_object(hook.location.parent.id))
             self.progress = 1
             self.irrelevant()
-            return res
-        except NameError:
-            res.append(self.next_tick(1.75))
-            return res
+        return res

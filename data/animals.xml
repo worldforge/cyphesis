@@ -2,17 +2,6 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0</float>
-          <float>0</float>
-          <float>0</float>
-          <float>0.05</float>
-          <float>0.01</float>
-          <float>0.01</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
       <map name="biomass">
         <float name="default">1</float>
         <string name="visibility">public</string>
@@ -309,17 +298,6 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0</float>
-          <float>0</float>
-          <float>0</float>
-          <float>0.05</float>
-          <float>0.01</float>
-          <float>0.01</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
       <map name="biomass">
         <float name="default">1</float>
         <string name="visibility">public</string>
@@ -338,17 +316,6 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0</float>
-          <float>0</float>
-          <float>0</float>
-          <float>0.05</float>
-          <float>0.01</float>
-          <float>0.01</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
       <map name="biomass">
         <float name="default">1</float>
         <string name="visibility">public</string>
