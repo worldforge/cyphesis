@@ -933,6 +933,7 @@ def modify_terrain(mapeditor):
     world=m.look()
 
     _setup_terrain(m, world)
+    m.make('ocean',pos=(0,0,0),bbox=[-500,-321,-20,320,321,0])
 
 def add_castle(mapeditor):
     
