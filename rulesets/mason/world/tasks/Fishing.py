@@ -71,16 +71,16 @@ class Fishing(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         res=Oplist()
+        hook = 0
         bait = server.world.get_object(self.bait_id)
-
-        if self.hook_id == -1:
-            for item in bait.contains:
-                if item.type[0] == "hook":
-                    self.hook_id = item.id
-
-        hook = server.world.get_object(self.hook_id)
-
-        if hook.location.parent.id == bait.id:
+        if bait != None:
+            if self.hook_id == -1:
+                for item in bait.contains:
+                    if item.type[0] == "hook":
+                        self.hook_id = item.id
+            if self.hook_id == -1:
+                #something has gone wrong, there is bait, but no hook inside it
+                self.irrelevant()
             old_rate = self.rate
 
             self.rate = 0.1 / 17.5
@@ -93,7 +93,12 @@ class Fishing(server.Task):
             res.append(self.next_tick(0.75))
         else:
         #a fish has eaten the bait
-            self.character.contains.append(server.world.get_object(hook.location.parent.id))
+            hook = server.world.get_object(self.hook_id)
+            if hook == None:
+                self.irrelevant()
+            fish = hook.location.parent
+            #TODO: add check to ensure that the fish's parent isn't world or something like that
+            res.append(Operation("move", Entity(fish.id, Location(self.character, Point3D(0,0,0)), to=fish)))
             self.progress = 1
             self.irrelevant()
         return res
