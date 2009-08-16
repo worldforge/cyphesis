@@ -305,7 +305,6 @@ class pick_up_focus(Goal):
                        self.pick_it_up])
         if type(what) == types.ListType:
             self.what = what
-            "Picking up: ", what
         else:
             self.what = [ what ]
         self.vars=["what"]

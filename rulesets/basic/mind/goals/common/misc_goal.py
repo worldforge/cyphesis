@@ -183,7 +183,6 @@ class spot_something(Goal):
             self.what = what
         else:
             self.what = [ what ]
-        print "Spotted: ", what
         self.range=range
         self.condition=condition
         self.vars=["what","range"]
