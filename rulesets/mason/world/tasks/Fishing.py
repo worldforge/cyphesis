@@ -38,14 +38,17 @@ class Fishing(server.Task):
                 break
         else:
             print "No bait in inventory"
+            self.irrelevant()
             return
 
         if not target:
             print "Target is no more"
+            self.irrelevant()
             return
         
         if "ocean" not in target.type:
             print "Can fish only in the ocean"
+            self.irrelevant()
             return
 
         self.bait_id = bait.id
@@ -81,6 +84,7 @@ class Fishing(server.Task):
             if self.hook_id == -1:
                 #something has gone wrong, there is bait, but no hook inside it
                 self.irrelevant()
+                return
             old_rate = self.rate
 
             self.rate = 0.1 / 17.5
@@ -96,6 +100,7 @@ class Fishing(server.Task):
             hook = server.world.get_object(self.hook_id)
             if hook == None:
                 self.irrelevant()
+                return
             fish = hook.location.parent
             #TODO: add check to ensure that the fish's parent isn't world or something like that
             res.append(Operation("move", Entity(fish.id, location = Location(self.character, Point3D(0,0,0))), to=fish))

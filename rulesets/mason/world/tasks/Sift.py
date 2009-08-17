@@ -18,6 +18,7 @@ class Sift(server.Task):
         z = location.z
         zval = math.exp(-z*z/2)
         if not hasattr(target, 'location'):
+            self.irrelevant()
             return 0
         normal = target.location.parent.terrain.get_normal(location.x, location.y);
         print normal

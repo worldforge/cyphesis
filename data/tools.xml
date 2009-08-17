@@ -88,6 +88,10 @@
         <string name="default">floating</string>
         <string name="visibility">public</string>
       </map>
+	  <map name="transient">
+		<float name="default">1800</float>
+		<string name="visibility">public</string>
+	  </map>
     </map>
     <string name="id">float</string>
     <string name="objtype">class</string>
