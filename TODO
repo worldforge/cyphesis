@@ -1,3 +1,6 @@
+Separate the rulesets loading code out of EntityBuilder, making EntityBuilder
+vastly simpler.
+
 It makes increasing sense to make the python subsystem behave a little
 differently in the client:
  1) Allow all operation types in client, but error on unknown in server.
