@@ -28,16 +28,16 @@ class Entity;
 
 /// \brief Factory interface for creating scripts to attach to in game
 /// entity objects.
-class ScriptFactory {
+class ScriptKit {
   protected:
     /// \brief Name of the script package where the script type is
     std::string m_package;
     /// \brief Name of the script type instanced by this factory
     std::string m_type;
 
-    ScriptFactory(const std::string & package, const std::string & type);
+    ScriptKit(const std::string & package, const std::string & type);
   public:
-    virtual ~ScriptFactory();
+    virtual ~ScriptKit();
 
     /// \brief Accessor for package name
     const std::string & package() { return m_package; }
@@ -50,7 +50,7 @@ class ScriptFactory {
 
 /// \brief Factory implementation for creating python script objects to attach
 /// to in game entity objects.
-class PythonScriptFactory : public ScriptFactory {
+class PythonScriptFactory : public ScriptKit {
   protected:
     /// \brief Module object which contains the script class
     PyObject * m_module;

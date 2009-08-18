@@ -768,7 +768,7 @@ int EntityBuilder::modifyEntityClass(const std::string & class_name,
     EntityKit * factory = I->second;
     assert(factory != 0);
     
-    ScriptFactory * script_factory = factory->m_scriptFactory;
+    ScriptKit * script_factory = factory->m_scriptFactory;
     if (script_factory != 0) {
         script_factory->refreshClass();
     }

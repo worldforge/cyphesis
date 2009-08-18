@@ -25,7 +25,7 @@
 #include <set>
 
 class Entity;
-class ScriptFactory;
+class ScriptKit;
 class TypeNode;
 
 /// \brief Base class for for factories for creating entities
@@ -37,7 +37,7 @@ class EntityKit {
   protected:
     EntityKit();
   public:
-    ScriptFactory * m_scriptFactory;
+    ScriptKit * m_scriptFactory;
     /// Default attribute values for this class
     Atlas::Message::MapType m_classAttributes;
     /// Default attribute values for instances of this class, including

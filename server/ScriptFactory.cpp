@@ -28,17 +28,17 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-/// \brief ScriptFactory constructor
+/// \brief ScriptKit constructor
 /// 
 /// @param package name of the script package scripts are to be created from
 /// @param type name of the type instanced to create scripts
-ScriptFactory::ScriptFactory(const std::string & package,
-                             const std::string & type) : m_package(package),
-                                                         m_type(type)
+ScriptKit::ScriptKit(const std::string & package,
+                     const std::string & type) : m_package(package),
+                                                 m_type(type)
 {
 }
 
-ScriptFactory::~ScriptFactory()
+ScriptKit::~ScriptKit()
 {
 }
 
@@ -69,7 +69,7 @@ int PythonScriptFactory::getClass()
 /// @param type Name of the scrpt types instanced by this factory
 PythonScriptFactory::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
-                                         ScriptFactory(package, type),
+                                         ScriptKit(package, type),
                                          m_module(0), m_class(0)
 {
     // FIXME #4 This sort of code should not be in the constructor
