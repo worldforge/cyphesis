@@ -30,11 +30,11 @@ class Character;
 class Entity;
 class EntityKit;
 class Task;
-class TaskFactory;
+class TaskKit;
 
 typedef std::map<std::string, EntityKit *> FactoryDict;
-typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
-typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
+typedef std::map<std::string, TaskKit *> TaskFactoryDict;
+typedef std::multimap<std::string, TaskKit *> TaskFactoryMultimap;
 typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
 
 /// \brief Class to handle rules that cannot yet be installed, and the reason
@@ -80,7 +80,7 @@ class EntityBuilder {
                               EntityKit * factory,
                               const Atlas::Message::MapType & class_desc);
     int populateTaskFactory(const std::string & class_name,
-                            TaskFactory * factory,
+                            TaskKit * factory,
                             const Atlas::Message::MapType & class_desc);
 
     int installTaskClass(const std::string & class_name,

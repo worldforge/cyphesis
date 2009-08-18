@@ -348,7 +348,7 @@ int EntityBuilder::populateEntityFactory(const std::string & class_name,
 }
 
 int EntityBuilder::populateTaskFactory(const std::string & class_name,
-                                       TaskFactory * factory,
+                                       TaskKit * factory,
                                        const MapType & class_desc)
 {
     // assert(class_name == class_desc->getId());
@@ -483,7 +483,7 @@ int EntityBuilder::installTaskClass(const std::string & class_name,
     std::string script_package = script_name.substr(0, ptr);
     std::string script_class = script_name.substr(ptr + 1);
 
-    TaskFactory * factory = new PythonTaskScriptFactory(class_name,
+    TaskKit * factory = new PythonTaskScriptFactory(class_name,
                                                         script_package,
                                                         script_class);
 
@@ -816,7 +816,7 @@ int EntityBuilder::modifyTaskClass(const std::string & class_name,
         return -1;
     }
     // FIXME Actually update the task factory.
-    // TaskFactory * factory = I->second;
+    // TaskKit * factory = I->second;
     // assert(factory != 0);
 
     return 0;

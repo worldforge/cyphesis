@@ -30,7 +30,7 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-TaskFactory::~TaskFactory()
+TaskKit::~TaskKit()
 {
 }
 

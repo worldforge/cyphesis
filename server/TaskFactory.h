@@ -33,12 +33,12 @@ class Task;
 /// An Entity consists of an instance of one of a number of C++ classes
 /// optionally with a script. Stores information about default attributes,
 /// script language and class name.
-class TaskFactory {
+class TaskKit {
   public:
     /// \brief Type name of the base entity class this task works on
     std::string m_target;
 
-    virtual ~TaskFactory();
+    virtual ~TaskKit();
 
     /// \brief Create a new task
     ///
@@ -47,7 +47,7 @@ class TaskFactory {
 };
 
 /// \brief Factory for creating tasks implemented as python scripts.
-class PythonTaskScriptFactory : public TaskFactory {
+class PythonTaskScriptFactory : public TaskKit {
   protected:
     /// \brief Python module object containing the script type
     PyObject * m_module;
