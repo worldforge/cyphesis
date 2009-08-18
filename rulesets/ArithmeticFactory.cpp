@@ -29,7 +29,7 @@
 
 #include <iostream>
 
-ArithmeticFactory::~ArithmeticFactory()
+ArithmeticKit::~ArithmeticKit()
 {
 }
 

@@ -28,9 +28,9 @@ class ArithmeticScript;
 class Entity;
 
 /// \brief Base class for for factories for creating arithmetic scripts
-class ArithmeticFactory {
+class ArithmeticKit {
   public:
-    virtual ~ArithmeticFactory();
+    virtual ~ArithmeticKit();
 
     /// \brief Create a new arithmetic model object
     ///
@@ -39,7 +39,7 @@ class ArithmeticFactory {
 };
 
 /// \brief Factory class for for creating python arithmetic scripts
-class PythonArithmeticFactory : public ArithmeticFactory {
+class PythonArithmeticFactory : public ArithmeticKit {
   public:
     /// /brief Python module object containing the script type
     PyObject * m_module;
