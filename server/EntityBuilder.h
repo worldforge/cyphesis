@@ -32,9 +32,6 @@ class EntityKit;
 class Task;
 class TaskFactory;
 
-template <class T>
-class PersistantThingFactory;
-
 typedef std::map<std::string, EntityKit *> FactoryDict;
 typedef std::map<std::string, TaskFactory *> TaskFactoryDict;
 typedef std::multimap<std::string, TaskFactory *> TaskFactoryMultimap;
