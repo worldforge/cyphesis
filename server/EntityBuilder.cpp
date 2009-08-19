@@ -25,8 +25,6 @@
 #include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
-#include "Persistence.h"
-#include "Player.h"
 
 #include "rulesets/Thing.h"
 #include "rulesets/MindFactory.h"
@@ -53,11 +51,6 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/RootOperation.h>
-
-#include <sys/types.h>
-#ifdef HAVE_DIRENT_H
-#include <dirent.h>
-#endif // HAS_DIRENT_H
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;

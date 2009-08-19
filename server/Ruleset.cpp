@@ -47,7 +47,7 @@
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/objectFactory.h>
 
 #include <sys/types.h>
 #ifdef HAVE_DIRENT_H
@@ -58,7 +58,6 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
-using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
 
