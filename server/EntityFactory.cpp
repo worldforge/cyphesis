@@ -21,7 +21,6 @@
 
 #include "EntityFactory_impl.h"
 #include "ScriptFactory.h"
-#include "EntityBuilder.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Thing.h"
