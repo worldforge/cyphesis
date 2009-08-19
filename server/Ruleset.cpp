@@ -76,7 +76,6 @@ void Ruleset::init()
 
 Ruleset::Ruleset(EntityBuilder * eb) : m_builder(eb)
 {
-    eb = 0;
 }
 
 Ruleset::~Ruleset()
