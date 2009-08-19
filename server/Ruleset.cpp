@@ -28,17 +28,10 @@
 #include "Persistence.h"
 #include "Player.h"
 
-#include "rulesets/Thing.h"
 #include "rulesets/MindFactory.h"
-#include "rulesets/Character.h"
-#include "rulesets/Creator.h"
-#include "rulesets/Plant.h"
-#include "rulesets/Stackable.h"
-#include "rulesets/World.h"
 
 #include "rulesets/Python_Script_Utils.h"
 
-#include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"

@@ -1,5 +1,5 @@
 Separate the rulesets loading code out of EntityBuilder, making EntityBuilder
-vastly simpler.
+vastly simpler. Remove unused headers from EnittyBuilder and Ruleset.
 
 It makes increasing sense to make the python subsystem behave a little
 differently in the client:

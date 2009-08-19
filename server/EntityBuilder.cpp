@@ -44,7 +44,6 @@
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/Inheritance.h"
-#include "common/AtlasFileLoader.h"
 #include "common/random.h"
 #include "common/compose.hpp"
 #include "common/Monitors.h"
@@ -60,9 +59,7 @@
 #include <dirent.h>
 #endif // HAS_DIRENT_H
 
-using Atlas::Message::Element;
 using Atlas::Message::MapType;
-using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
