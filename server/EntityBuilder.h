@@ -37,19 +37,6 @@ typedef std::map<std::string, TaskKit *> TaskFactoryDict;
 typedef std::multimap<std::string, TaskKit *> TaskFactoryMultimap;
 typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
 
-/// \brief Class to handle rules that cannot yet be installed, and the reason
-class RuleWaiting {
-  public:
-    /// Name of the rule.
-    std::string name;
-    /// Complete description of the rule.
-    Atlas::Objects::Root desc;
-    /// Message giving a description of why this rule has not been installed.
-    std::string reason;
-};
-
-typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
-
 /// \brief Builder to handle the creation of all entities for the world.
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
@@ -65,49 +52,12 @@ class EntityBuilder {
     TaskFactoryActivationDict m_taskActivations;
 
     BaseWorld & m_world;
-    RuleWaitList m_waitingRules;
 
-    void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
-    void installRules();
-    void installFactory(const std::string & class_name,
-                        const std::string & parent,
-                        EntityKit * factory,
-                        Atlas::Objects::Root classDesc = 0);
     EntityKit * getNewFactory(const std::string & parent);
-    bool isTask(const std::string & class_name);
 
-    int populateEntityFactory(const std::string & class_name,
-                              EntityKit * factory,
-                              const Atlas::Message::MapType & class_desc);
-    int populateTaskFactory(const std::string & class_name,
-                            TaskKit * factory,
-                            const Atlas::Message::MapType & class_desc);
-
-    int installTaskClass(const std::string & class_name,
-                         const std::string & parent,
-                         const Atlas::Objects::Root & class_desc);
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root&);
-    int installOpDefinition(const std::string & class_name,
-                            const std::string & parent,
-                            const Atlas::Objects::Root & class_desc);
-
-    int modifyTaskClass(const std::string & class_name,
-                        const Atlas::Objects::Root & class_desc);
-    int modifyEntityClass(const std::string & class_name,
-                          const Atlas::Objects::Root & class_desc);
-    int modifyOpDefinition(const std::string & class_name,
-                           const Atlas::Objects::Root & class_desc);
-
-    void waitForRule(const std::string & class_name,
-                     const Atlas::Objects::Root & class_desc,
-                     const std::string & dependent,
-                     const std::string & reason);
   public:
     static void init(BaseWorld & w) {
         m_instance = new EntityBuilder(w);
-        m_instance->installRules();
     }
     static EntityBuilder * instance() {
         return m_instance;
@@ -119,23 +69,31 @@ class EntityBuilder {
         }
     }
 
+    void installFactory(const std::string & class_name,
+                        const std::string & parent,
+                        EntityKit * factory,
+                        Atlas::Objects::Root classDesc = 0);
+    EntityKit * getClassFactory(const std::string & class_name);
     Entity * newEntity(const std::string & id,
                        long intId,
                        const std::string & type,
                        const Atlas::Objects::Entity::RootEntity & attrs) const;
     void flushFactories();
 
-    Task * newTask(const std::string & name,
+    bool isTask(const std::string & class_name);
+    bool hasTask(const std::string & class_name);
+    Task * newTask(const std::string & class_name,
                    Character & owner) const;
+    void installTaskFactory(const std::string & class_name,
+                            TaskKit * factory);
+    TaskKit * getTaskFactory(const std::string & class_name);
+    void addTaskActivation(const std::string & tool,
+                           const std::string & op,
+                           TaskKit * factory);
     Task * activateTask(const std::string & tool,
                         const std::string & op,
                         const std::string & target,
                         Character & owner) const;
-
-    int installRule(const std::string & class_name,
-                    const Atlas::Objects::Root & class_desc);
-    int modifyRule(const std::string & class_name,
-                   const Atlas::Objects::Root & class_desc);
 };
 
 #endif // SERVER_ENTITY_BUILDER_H

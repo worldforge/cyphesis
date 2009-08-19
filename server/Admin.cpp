@@ -21,7 +21,7 @@
 
 #include "ServerRouting.h"
 #include "Connection.h"
-#include "EntityBuilder.h"
+#include "Ruleset.h"
 #include "CommPeer.h"
 #include "CommServer.h"
 #include "Peer.h"
@@ -284,7 +284,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         // Manipulate attributes of existing objects.
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
-            if (EntityBuilder::instance()->modifyRule(id, arg) == 0) {
+            if (Ruleset::instance()->modifyRule(id, arg) == 0) {
                 Info info;
                 info->setTo(getId());
                 info->setArgs1(arg);
@@ -348,7 +348,7 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
                   res, getId());
             return;
         }
-        if (EntityBuilder::instance()->installRule(id, arg) == 0) {
+        if (Ruleset::instance()->installRule(id, arg) == 0) {
             Info info;
             info->setTo(getId());
             info->setArgs1(arg);

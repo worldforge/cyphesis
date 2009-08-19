@@ -86,6 +86,7 @@ cyphesis_SOURCES = \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
+		Ruleset.cpp Ruleset.h \
 		EntityBuilder.cpp EntityBuilder.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \

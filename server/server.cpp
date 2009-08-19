@@ -33,6 +33,7 @@
 #include "EntityBuilder.h"
 #include "Persistence.h"
 #include "WorldRouter.h"
+#include "Ruleset.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"
 #include "UpdateTester.h"
@@ -182,6 +183,8 @@ int main(int argc, char ** argv)
     Inheritance::instance();
 
     WorldRouter world;
+
+    Ruleset::init();
 
     StorageManager store(world);
 
