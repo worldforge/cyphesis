@@ -39,34 +39,13 @@ class ExposedEntityBuilder : public EntityBuilder {
   public:
     explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder(w) { }
 
-    void getRulesFromFiles(std::map<std::string, Root> & rules) {
-        EntityBuilder::getRulesFromFiles(rules);
-    }
-    void installRules() {
-        EntityBuilder::installRules();
-    }
     void installFactory(const std::string & class_name,
                         const std::string & parent,
                         EntityKit * factory) {
         EntityBuilder::installFactory(class_name, parent, factory);
     }
-    void populateEntityFactory(const std::string & class_name,
-                               EntityKit * factory,
-                               const MapType & class_desc) {
-        EntityBuilder::populateEntityFactory(class_name, factory, class_desc);
-    }
     EntityKit * getNewFactory(const std::string & clss) {
         return EntityBuilder::getNewFactory(clss);
-    }
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Root & class_desc) {
-        return EntityBuilder::installEntityClass(class_name, parent, class_desc);
-    }
-    int installOpDefinition(const std::string & op_def_name,
-                            const std::string & parent,
-                            const Root & op_def_desc) {
-        return EntityBuilder::installOpDefinition(op_def_name, parent, op_def_desc);
     }
 
     const FactoryDict & factoryDict() const { return m_entityFactories; }
@@ -78,8 +57,6 @@ int main(int argc, char ** argv)
     loadConfig(argc, argv);
 
     init_python_api();
-
-    int ret;
 
     {
         World e("1", 1);
@@ -174,23 +151,6 @@ int main(int argc, char ** argv)
         // have not yet installed.
         assert(factory_dict.find("custom_type") == factory_dict.end());
 
-        // Set up a type description for a new type, and install it.
-        {
-            Root custom_type_description;
-            MapType attrs;
-            MapType test_custom_type_attr;
-            test_custom_type_attr["default"] = "test_value";
-            test_custom_type_attr["visibility"] = "public";
-            attrs["test_custom_type_attr"] = test_custom_type_attr;
-            custom_type_description->setAttr("attributes", attrs);
-            custom_type_description->setId("custom_type");
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
-
-            ret = entity_factory.installEntityClass("custom_type", "thing", custom_type_description);
-
-            assert(ret == 0);
-        }
-
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
         FactoryDict::const_iterator I = factory_dict.find("custom_type");
@@ -235,24 +195,6 @@ int main(int argc, char ** argv)
         // Assert the dictionary does not contain the factory we know we have
         // have not yet installed.
         assert(factory_dict.find("custom_inherited_type") == factory_dict.end());
-
-        // Set up a type description for a second new type which inherits
-        // from the first, and install it.
-        {
-            Root custom_inherited_type_description;
-            MapType attrs;
-            MapType test_custom_type_attr;
-            test_custom_type_attr["default"] = "test_inherited_value";
-            test_custom_type_attr["visibility"] = "public";
-            attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
-            custom_inherited_type_description->setAttr("attributes", attrs);
-            custom_inherited_type_description->setId("custom_inherited_type");
-            custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
-
-            ret = entity_factory.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description);
-
-            assert(ret == 0);
-        }
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
@@ -308,37 +250,6 @@ int main(int argc, char ** argv)
         assert(test_ent->getAttr("test_custom_inherited_type_attr", val));
         assert(val.isString());
         assert(val.String() == "test_inherited_value");
-
-        // FIXME TODO Modify a type, and ensure attribute propagate to inherited types.
-
-        // Make sure than attempting to modify a non-existant type fails
-        {
-            Anonymous nonexistant_description;
-            MapType attrs;
-            MapType test_custom_type_attr;
-
-            test_custom_type_attr["default"] = "no_value";
-            test_custom_type_attr["visibility"] = "public";
-            attrs["no_custom_type_attr"] = test_custom_type_attr;
-
-            nonexistant_description->setId("nonexistant");
-            nonexistant_description->setAttr("attributes", attrs);
-
-            ret = entity_factory.modifyRule("nonexistant", nonexistant_description);
-
-            assert(ret != 0);
-        }
-
-        // Modify the second custom type removing its custom attribute
-        {
-            Anonymous new_custom_inherited_type_description;
-            new_custom_inherited_type_description->setId("custom_inherited_type");
-            new_custom_inherited_type_description->setAttr("attributes", MapType());
-
-            ret = entity_factory.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
-
-            assert(ret == 0);
-        }
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
@@ -398,17 +309,6 @@ int main(int argc, char ** argv)
         // Check the custom type has the attribute described when the
         // second custom type was installed
         assert(!test_ent->getAttr("test_custom_inherited_type_attr", val));
-
-        // Modify the first custom type removing its custom attribute
-        {
-            Anonymous new_custom_type_description;
-            new_custom_type_description->setId("custom_type");
-            new_custom_type_description->setAttr("attributes", MapType());
-
-            ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
-
-            assert(ret == 0);
-        }
 
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
@@ -496,31 +396,6 @@ int main(int argc, char ** argv)
         // Check the custom type has the attribute described when the
         // second custom type was installed
         assert(!test_ent->getAttr("test_custom_inherited_type_attr", val));
-
-        // Add more custom attributes to the first type
-        {
-            Anonymous new_custom_type_description;
-            MapType attrs;
-            MapType test_custom_type_attr;
-
-            test_custom_type_attr["default"] = "test_value";
-            test_custom_type_attr["visibility"] = "public";
-            attrs["test_custom_type_attr"] = test_custom_type_attr;
-
-            MapType new_custom_type_attr;
-
-            new_custom_type_attr["default"] = "new_value";
-            new_custom_type_attr["visibility"] = "public";
-            attrs["new_custom_type_attr"] = new_custom_type_attr;
-
-            new_custom_type_description->setId("custom_type");
-            new_custom_type_description->setAttr("attributes", attrs);
-
-            ret = entity_factory.modifyRule("custom_type", new_custom_type_description);
-
-            assert(ret == 0);
-            
-        }
 
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.

@@ -920,11 +920,6 @@ EntityBuildertest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
-        $(top_builddir)/server/Persistence.o \
-        $(top_builddir)/server/Account.o \
-        $(top_builddir)/server/Admin.o \
-        $(top_builddir)/server/Player.o \
-        $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/buildid.o \
         $(top_builddir)/server/ExternalMind.o \
@@ -954,11 +949,6 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
-        $(top_builddir)/server/Persistence.o \
-        $(top_builddir)/server/Account.o \
-        $(top_builddir)/server/Admin.o \
-        $(top_builddir)/server/Player.o \
-        $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/buildid.o \
         $(top_builddir)/server/ExternalMind.o \
