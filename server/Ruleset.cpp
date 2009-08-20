@@ -83,8 +83,8 @@ Ruleset::~Ruleset()
 }
 
 int Ruleset::populateEntityFactory(const std::string & class_name,
-                                         EntityKit * factory,
-                                         const MapType & class_desc)
+                                   EntityKit * factory,
+                                   const MapType & class_desc)
 {
     // assert(class_name == class_desc->getId());
     // Establish whether this rule has an associated script, and
@@ -181,8 +181,8 @@ int Ruleset::populateEntityFactory(const std::string & class_name,
 }
 
 int Ruleset::populateTaskFactory(const std::string & class_name,
-                                       TaskKit * factory,
-                                       const MapType & class_desc)
+                                 TaskKit * factory,
+                                 const MapType & class_desc)
 {
     // assert(class_name == class_desc->getId());
 
@@ -259,8 +259,8 @@ static void updateChildrenProperties(EntityKit * factory)
 }
 
 int Ruleset::installTaskClass(const std::string & class_name,
-                                    const std::string & parent,
-                                    const Root & class_desc)
+                              const std::string & parent,
+                              const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -416,8 +416,8 @@ int Ruleset::installTaskClass(const std::string & class_name,
 }
 
 int Ruleset::installEntityClass(const std::string & class_name,
-                                      const std::string & parent,
-                                      const Root & class_desc)
+                                const std::string & parent,
+                                const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -477,8 +477,8 @@ int Ruleset::installEntityClass(const std::string & class_name,
 }
 
 int Ruleset::installOpDefinition(const std::string & class_name,
-                                       const std::string & parent,
-                                       const Root & class_desc)
+                                 const std::string & parent,
+                                 const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -507,7 +507,7 @@ int Ruleset::installOpDefinition(const std::string & class_name,
 }
 
 int Ruleset::installRule(const std::string & class_name,
-                               const Root & class_desc)
+                         const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -579,7 +579,7 @@ int Ruleset::installRule(const std::string & class_name,
 }
 
 int Ruleset::modifyEntityClass(const std::string & class_name,
-                                     const Root & class_desc)
+                               const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -628,7 +628,7 @@ int Ruleset::modifyEntityClass(const std::string & class_name,
 }
 
 int Ruleset::modifyTaskClass(const std::string & class_name,
-                                   const Root & class_desc)
+                             const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -646,14 +646,14 @@ int Ruleset::modifyTaskClass(const std::string & class_name,
 }
 
 int Ruleset::modifyOpDefinition(const std::string & class_name,
-                                      const Root & class_desc)
+                                const Root & class_desc)
 {
     // Nothing to actually do
     return 0;
 }
 
 int Ruleset::modifyRule(const std::string & class_name,
-                              const Root & class_desc)
+                        const Root & class_desc)
 {
     assert(class_name == class_desc->getId());
 
@@ -677,9 +677,9 @@ int Ruleset::modifyRule(const std::string & class_name,
 /// Note that a rule cannot yet be installed because it depends on something
 /// that has not yet occured, or a more fatal condition has occured.
 void Ruleset::waitForRule(const std::string & rulename,
-                                const Root & ruledesc,
-                                const std::string & dependent,
-                                const std::string & reason)
+                          const Root & ruledesc,
+                          const std::string & dependent,
+                          const std::string & reason)
 {
     RuleWaiting rule;
     rule.name = rulename;
