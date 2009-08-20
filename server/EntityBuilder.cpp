@@ -25,6 +25,7 @@
 #include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
+#include "TaskScriptFactory.h"
 
 #include "rulesets/Thing.h"
 #include "rulesets/MindFactory.h"
@@ -33,6 +34,8 @@
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
+
+#include "rulesets/TaskScript.h"
 
 #include "rulesets/Python_Script_Utils.h"
 
@@ -171,6 +174,22 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     return thing;
 }
 
+Task * EntityBuilder::buildTask(TaskKit * factory, Character & owner) const
+{
+    Task * task = factory->newTask(owner);
+    if (task == 0) {
+        return 0;
+    }
+    TaskScript * task_script = dynamic_cast<TaskScript *>(task);
+
+    if (task_script != 0 && factory->m_scriptFactory != 0) {
+        if (factory->m_scriptFactory->addScript(task_script) != 0) {
+            log(ERROR, "Assigning script to task failed");
+        }
+    }
+    return task;
+}
+
 /// \brief Build and populate a new task object.
 ///
 /// @param name The name of the task type.
@@ -181,7 +200,8 @@ Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
     if (I == m_taskFactories.end()) {
         return 0;
     }
-    return I->second->newTask(owner);
+    std::cout << "0" << std::endl << std::flush;
+    return buildTask(I->second, owner);
 }
 
 void EntityBuilder::installTaskFactory(const std::string & class_name,
@@ -240,7 +260,7 @@ Task * EntityBuilder::activateTask(const std::string & tool,
                 continue;
             }
         }
-        return J->second->newTask(owner);
+        return buildTask(J->second, owner);
     }
     return 0;
 }

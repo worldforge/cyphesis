@@ -27,6 +27,7 @@
 class Character;
 class ScriptFactory;
 class Task;
+class TaskScriptKit;
 
 /// \brief Factory interface for for factories for creating tasks
 ///
@@ -34,7 +35,10 @@ class Task;
 /// optionally with a script. Stores information about default attributes,
 /// script language and class name.
 class TaskKit {
+  protected:
+    TaskKit();
   public:
+    TaskScriptKit * m_scriptFactory;
     /// \brief Type name of the base entity class this task works on
     std::string m_target;
 
@@ -47,30 +51,14 @@ class TaskKit {
 };
 
 /// \brief Factory for creating tasks implemented as python scripts.
-class PythonTaskScriptFactory : public TaskKit {
+class TaskFactory : public TaskKit {
   protected:
-    /// \brief Python module object containing the script type
-    PyObject * m_module;
-    /// \brief Python class object for the script type
-    PyObject * m_class;
-
-    /// \brief Name of the package containing the script
-    std::string m_package;
-    /// \brief Name of the class within the package for the script
-    std::string m_type;
-
     /// \brief Name of the class within the package for the script
     std::string m_name;
 
-    // FIXME #3 Work out what was intended by these methods, currently
-    // unimplemented.
-    int getClass();
-    int addScript();
   public:
-    PythonTaskScriptFactory(const std::string & name,
-                            const std::string & package,
-                            const std::string & type);
-    virtual ~PythonTaskScriptFactory();
+    TaskFactory(const std::string & name);
+    virtual ~TaskFactory();
 
     virtual Task * newTask(Character & chr);
 };

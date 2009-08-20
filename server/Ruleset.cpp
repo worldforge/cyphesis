@@ -25,6 +25,7 @@
 #include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
+#include "TaskScriptFactory.h"
 #include "Persistence.h"
 #include "Player.h"
 
@@ -267,8 +268,11 @@ int Ruleset::installTaskClass(const std::string & class_name,
     if (m_builder->hasTask(class_name)) {
         log(ERROR, compose("Attempt to install task \"%1\" which is already "
                            "installed.", class_name));
+        return -1;
     }
     
+    TaskKit * factory = new TaskFactory(class_name);
+
     // Establish that this rule has an associated script.
     Element script_attr;
     if (class_desc->copyAttr("script", script_attr) != 0 ||
@@ -307,9 +311,8 @@ int Ruleset::installTaskClass(const std::string & class_name,
     std::string script_package = script_name.substr(0, ptr);
     std::string script_class = script_name.substr(ptr + 1);
 
-    TaskKit * factory = new PythonTaskScriptFactory(class_name,
-                                                        script_package,
-                                                        script_class);
+    factory->m_scriptFactory = new PythonTaskScriptFactory(script_package,
+                                                           script_class);
 
     Element activation_attr;
     if (class_desc->copyAttr("activation", activation_attr) != 0 ||

@@ -81,6 +81,7 @@ class EntityBuilder {
 
     bool isTask(const std::string & class_name);
     bool hasTask(const std::string & class_name);
+    Task * buildTask(TaskKit * factory, Character & owner) const;
     Task * newTask(const std::string & class_name,
                    Character & owner) const;
     void installTaskFactory(const std::string & class_name,

@@ -19,94 +19,35 @@
 
 #include "server/TaskFactory.h"
 
-#include "server/ScriptFactory.h"
-
-#include "rulesets/Py_Task.h"
-#include "rulesets/Python_Script_Utils.h"
-#include "rulesets/PythonEntityScript.h"
 #include "rulesets/TaskScript.h"
-#include "rulesets/Character.h"
 
-#include "common/log.h"
-#include "common/compose.hpp"
+TaskKit::TaskKit() : m_scriptFactory(0)
+{
+}
 
 TaskKit::~TaskKit()
 {
 }
 
-/// \brief PythonTaskScriptFactory constructor
+/// \brief TaskFactory constructor
 ///
 /// @param package name of the package containing the script
 /// @param name name of the type within the package for the script
-PythonTaskScriptFactory::PythonTaskScriptFactory(const std::string & name,
-                                                 const std::string & package,
-                                                 const std::string & type) :
-                                                 m_module(0), m_class(0),
-                                                 m_package(package),
-                                                 m_type(type),
-                                                 m_name(name)
+TaskFactory::TaskFactory(const std::string & name) : m_name(name)
 {
-    // Import the module
-    m_module = Get_PyModule(m_package);
-    if (m_module == NULL) {
-        return;
-    }
-
-    // Get a reference to the class
-    m_class = Get_PyClass(m_module, m_package, m_type);
-
-    if (m_class == 0) {
-        return;
-    }
-
-    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
-        log(ERROR, String::compose("Python class does not inherit from "
-                                   "a core server type. \"%1.%2\"",
-                                   m_package, m_type));
-        Py_DECREF(m_class);
-        m_class = 0;
-        return;
-    }
-
-    return;
 }
 
-PythonTaskScriptFactory::~PythonTaskScriptFactory()
+TaskFactory::~TaskFactory()
 {
-    if (m_module != 0) {
-        Py_DECREF(m_module);
-    }
-    if (m_class != 0) {
-        Py_DECREF(m_class);
-    }
 }
 
-Task * PythonTaskScriptFactory::newTask(Character & chr)
+Task * TaskFactory::newTask(Character & chr)
 {
     // Create the task, and use its script to add a script
-    if (m_class == 0) {
-        std::cout << "No class" << std::endl << std::flush;
-        return 0;
-    }
 
     TaskScript * task = new TaskScript(chr);
     task->name() = m_name;
     assert(task != 0);
-
-    PyTask * wrapper = newPyTask();
-    assert(wrapper != 0);
-    wrapper->m_task = task;
-    assert(wrapper->m_task != 0);
-
-    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
-
-    Py_DECREF(wrapper);
-    
-    if (script != NULL) {
-        task->setScript(new PythonEntityScript(script));
-
-        Py_DECREF(script);
-    }
 
     return task;
 }

@@ -84,6 +84,7 @@ cyphesis_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		StorageManager.cpp StorageManager.h \
 		ScriptFactory.cpp ScriptFactory.h \
+		TaskScriptFactory.cpp TaskScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		Ruleset.cpp Ruleset.h \
