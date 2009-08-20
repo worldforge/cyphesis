@@ -26,6 +26,7 @@
 #include "server/EntityFactory.h"
 
 #include "common/Inheritance.h"
+#include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -39,11 +40,6 @@ class ExposedEntityBuilder : public EntityBuilder {
   public:
     explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder(w) { }
 
-    void installFactory(const std::string & class_name,
-                        const std::string & parent,
-                        EntityKit * factory) {
-        EntityBuilder::installFactory(class_name, parent, factory);
-    }
     EntityKit * getNewFactory(const std::string & clss) {
         return EntityBuilder::getNewFactory(clss);
     }
@@ -76,7 +72,6 @@ int main(int argc, char ** argv)
         Inheritance::clear();
     }
 
-    std::cout << "FOOF" << std::endl << std::endl;
     {
         World e("1", 1);
         TestWorld test_world(e);
@@ -151,15 +146,32 @@ int main(int argc, char ** argv)
         // have not yet installed.
         assert(factory_dict.find("custom_type") == factory_dict.end());
 
+        // Set up a type description for a new type, and install it
+        EntityKit * custom_type_factory = new EntityFactory<Thing>();
+        custom_type_factory->m_attributes["test_custom_type_attr"] =
+              "test_value";
+        {
+            Anonymous custom_type_desc;
+            custom_type_desc->setId("custom_type");
+            custom_type_desc->setParents(std::list<std::string>(1, "thing"));
+            entity_factory.installFactory("custom_type", "thing",
+                                          custom_type_factory, custom_type_desc);
+        }
+
+        custom_type_factory->m_type->defaults()["test_custom_type_attr"] = 
+              new Property<std::string>; 
+        custom_type_factory->m_type->defaults()["test_custom_type_attr"]->set("test_value");
+
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
         FactoryDict::const_iterator I = factory_dict.find("custom_type");
         assert(I != factory_dict.end());
-        EntityKit * custom_type_factory = I->second;
+        assert(custom_type_factory == I->second);
 
+        MapType::const_iterator J;
         // Check the factory has the attributes we described on the custom
         // type.
-        MapType::const_iterator J = custom_type_factory->m_attributes.find("test_custom_type_attr");
+        J = custom_type_factory->m_attributes.find("test_custom_type_attr");
         assert(J != custom_type_factory->m_attributes.end());
         assert(J->second.isString());
         assert(J->second.String() == "test_value");
@@ -177,6 +189,8 @@ int main(int argc, char ** argv)
         assert(test_ent->getAttr("funky", val));
         assert(val.isString());
         assert(val.String() == "true");
+
+        assert(test_ent->getType() == custom_type_factory->m_type);
 
         // Reset val.
         val = Atlas::Message::Element();
