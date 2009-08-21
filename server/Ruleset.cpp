@@ -373,9 +373,10 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
                                                                script_class);
     }
 
-    m_builder->addTaskActivation(activation_tool, activation_op,
-                                  factory);
-    // m_taskActivations[activation_tool].insert(std::make_pair(activation_op, factory));
+    // FIXME This does not check for or remove old activations for this
+    // factory
+    m_builder->addTaskActivation(activation_tool, activation_op, factory);
+
     MapType::iterator L = tool_factory->m_classAttributes.find("operations");
     if (L == tool_factory->m_classAttributes.end()) {
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
@@ -658,11 +659,9 @@ int Ruleset::modifyTaskClass(const std::string & class_name,
     }
 
 
-    // FIXME populateTaskFactory does not check for an existing script factory
-    // and remove it before adding a new one.
-    // FIXME move creating the python factory lower until after other errors have
-    // been checked for.
-    // populateTaskFactory(class_name, factory, class_desc);
+    if (populateTaskFactory(class_name, factory, class_desc) != 0) {
+        return -1;
+    }
 
     return 0;
 }
