@@ -35,7 +35,6 @@ class World : public World_parent {
   protected:
     TerrainProperty * terrain();
     int getSurface(const Point3D &,  int &);
-    float getHeight(float x, float y);
   public:
     explicit World(const std::string & id, long intId);
     virtual ~World();

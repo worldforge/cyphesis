@@ -72,17 +72,6 @@ TerrainProperty * World::terrain()
     return modPropertyClass<TerrainProperty>("terrain");
 }
 
-/// \brief Calculate the terrain height at the given x,y coordinates
-float World::getHeight(float x, float y)
-{
-    TerrainProperty * tp = terrain();
-    if (tp != 0) {
-        return tp->getHeight(x, y);
-    }
-    log(ERROR, "No terrain in getHeight");
-    return 0.f;
-}
-
 /// \brief Get a number encoding the surface type at the given x,y coordinates
 ///
 /// @param pos the x,y coordinates of the point on the terrain
