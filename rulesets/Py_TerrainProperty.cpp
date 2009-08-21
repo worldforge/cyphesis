@@ -37,8 +37,11 @@ static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
     if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
         return NULL;
     }
-    float height = self->m_property->getHeight(x, y);
-    return PyFloat_FromDouble(height);
+    // Return a sensible default.
+    Vector3D normal(0,0,1);
+    float h = 0;
+    self->m_property->getHeightAndNormal(x, y, h, normal);
+    return PyFloat_FromDouble(h);
 }
 
 static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
@@ -79,8 +82,10 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
 	if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
 		return NULL;
 	}
-	Vector3D normal;
-	normal = self->m_property->getNormal(x, y);
+	// Return a sensible default.
+	Vector3D normal(0,0,1);
+	float h = 0;
+	self->m_property->getHeightAndNormal(x, y, h, normal);
 	PyVector3D * ret = newPyVector3D();
 	if (ret != NULL) {
 		ret->coords = normal;

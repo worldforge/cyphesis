@@ -176,23 +176,17 @@ void TerrainProperty::clearMods(float x, float y)
     } 
 }
 
-/// \brief Calculate the terrain height at the given x,y coordinates
-float TerrainProperty::getHeight(float x, float y) const
+/// \brief Return the height and normal to the surface at the given point
+bool TerrainProperty::getHeightAndNormal(float x,
+                                         float y,
+                                         float & height,
+                                         Vector3D & normal) const
 {
     Mercator::Segment * s = m_data.getSegment(x, y);
     if (s != 0 && !s->isValid()) {
         s->populate();
     }
-    return m_data.get(x, y);
-}
-
-/// \brief Return the normal to the surface at the given point on the terrain
-Vector3D TerrainProperty::getNormal(float x, float y) const
-{
-    WFMath::Vector<3> normal;
-    float height = 0;
-    m_data.getHeightAndNormal(x, y, height, normal);
-    return normal;
+    return m_data.getHeightAndNormal(x, y, height, normal);
 }
 
 /// \brief Get a number encoding the surface type at the given x,y coordinates

@@ -49,11 +49,12 @@ float Domain::constrainHeight(LocatedEntity * parent,
     }
     const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
     if (tp != 0) {
-        float h;
         if (mode == "floating") {
             return 0.f;
         }
-        h = tp->getHeight(pos.x(), pos.y());
+        float h = pos.z();
+        Vector3D normal;
+        tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
         // FIXME Use a virtual movement_domain function to get the constraints
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);

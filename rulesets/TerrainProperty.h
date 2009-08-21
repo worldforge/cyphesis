@@ -66,8 +66,7 @@ class TerrainProperty : public PropertyBase {
     // Removes a single TerrainMod from the terrain
     void removeMod(Mercator::TerrainMod *);
 
-    float getHeight(float x, float y) const;
-    Vector3D getNormal(float x, float y) const;
+    bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
     int getSurface(const Point3D &,  int &);
 };
 
