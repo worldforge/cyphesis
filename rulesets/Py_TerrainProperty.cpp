@@ -70,27 +70,27 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
 }
 
 static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
-											 PyObject * args)
+                                            PyObject * args)
 {
 #ifndef NDEBUG
-	if (self->m_entity == NULL) {
-		PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
-		return NULL;
-	}
+    if (self->m_entity == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+        return NULL;
+    }
 #endif
-	float x,y;
-	if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
-		return NULL;
-	}
-	// Return a sensible default.
-	Vector3D normal(0,0,1);
-	float h = 0;
-	self->m_property->getHeightAndNormal(x, y, h, normal);
-	PyVector3D * ret = newPyVector3D();
-	if (ret != NULL) {
-		ret->coords = normal;
-	}
-	return (PyObject *)ret;
+    float x,y;
+    if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
+        return NULL;
+    }
+    // Return a sensible default.
+    Vector3D normal(0,0,1);
+    float h = 0;
+    self->m_property->getHeightAndNormal(x, y, h, normal);
+    PyVector3D * ret = newPyVector3D();
+    if (ret != NULL) {
+        ret->coords = normal;
+    }
+    return (PyObject *)ret;
 }
 
 static PyMethodDef TerrainProperty_methods[] = {
