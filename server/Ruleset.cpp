@@ -640,9 +640,13 @@ int Ruleset::modifyTaskClass(const std::string & class_name,
                            "\"%1\"", class_name));
         return -1;
     }
-    // FIXME Actually update the task factory.
-    // TaskKit * factory = I->second;
-    // assert(factory != 0);
+
+    assert(factory != 0);
+
+    TaskScriptKit * script_factory = factory->m_scriptFactory;
+    if (script_factory != 0) {
+        script_factory->refreshClass();
+    }
 
     return 0;
 }
