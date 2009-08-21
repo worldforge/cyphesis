@@ -294,9 +294,6 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
     std::string script_package = script_name.substr(0, ptr);
     std::string script_class = script_name.substr(ptr + 1);
 
-    factory->m_scriptFactory = new PythonTaskScriptFactory(script_package,
-                                                           script_class);
-
     Element activation_attr;
     if (class_desc->copyAttr("activation", activation_attr) != 0 ||
         !activation_attr.isMap()) {
@@ -313,22 +310,6 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
     }
     const std::string & activation_tool = J->second.String();
 
-    Inheritance & i = Inheritance::instance();
-
-    if (!i.hasClass(activation_tool)) {
-        waitForRule(class_name, class_desc, activation_tool,
-                    compose("Task \"%1\" is activated by tool \"%2\" which "
-                            "does not exist.", class_name, activation_tool));
-        return 1;
-    }
-    EntityKit * tool_factory = m_builder->getClassFactory(activation_tool);
-    if (tool_factory == 0) {
-        log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
-                           "which is not an entity class.", class_name,
-                           activation_tool));
-        return -1;
-    }
-
     J = activation.find("operation");
     if (J == act_end || !J->second.isString()) {
         log(ERROR, compose("Task \"%1\" activation has no operation.",
@@ -337,13 +318,8 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
     }
 
     const std::string & activation_op = J->second.String();
-    if (!i.hasClass(activation_op)) {
-        waitForRule(class_name, class_desc, activation_op,
-                    compose("Task \"%1\" is activated by operation \"%2\" "
-                            "which does not exist.", class_name, 
-                            activation_op));
-        return 1;
-    }
+
+    Inheritance & i = Inheritance::instance();
 
     J = activation.find("target");
     if (J != act_end) {
@@ -362,6 +338,39 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
             return 1;
         }
         factory->m_target = target_base;
+    }
+
+    if (!i.hasClass(activation_tool)) {
+        waitForRule(class_name, class_desc, activation_tool,
+                    compose("Task \"%1\" is activated by tool \"%2\" which "
+                            "does not exist.", class_name, activation_tool));
+        return 1;
+    }
+    EntityKit * tool_factory = m_builder->getClassFactory(activation_tool);
+    if (tool_factory == 0) {
+        log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
+                           "which is not an entity class.", class_name,
+                           activation_tool));
+        return -1;
+    }
+
+    if (!i.hasClass(activation_op)) {
+        waitForRule(class_name, class_desc, activation_op,
+                    compose("Task \"%1\" is activated by operation \"%2\" "
+                            "which does not exist.", class_name, 
+                            activation_op));
+        return 1;
+    }
+
+    if (factory->m_scriptFactory != 0) {
+        if (factory->m_scriptFactory->package() != script_package) {
+            delete factory->m_scriptFactory;
+            factory->m_scriptFactory = 0;
+        }
+    }
+    if (factory->m_scriptFactory == 0) {
+        factory->m_scriptFactory = new PythonTaskScriptFactory(script_package,
+                                                               script_class);
     }
 
     m_builder->addTaskActivation(activation_tool, activation_op,
@@ -647,6 +656,13 @@ int Ruleset::modifyTaskClass(const std::string & class_name,
     if (script_factory != 0) {
         script_factory->refreshClass();
     }
+
+
+    // FIXME populateTaskFactory does not check for an existing script factory
+    // and remove it before adding a new one.
+    // FIXME move creating the python factory lower until after other errors have
+    // been checked for.
+    // populateTaskFactory(class_name, factory, class_desc);
 
     return 0;
 }
