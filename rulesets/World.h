@@ -32,9 +32,6 @@ typedef Thing World_parent;
 /// used an out of game object of type WorldRouter to represent the world.
 /// \ingroup EntityClasses
 class World : public World_parent {
-  protected:
-    TerrainProperty * terrain();
-    int getSurface(const Point3D &,  int &);
   public:
     explicit World(const std::string & id, long intId);
     virtual ~World();

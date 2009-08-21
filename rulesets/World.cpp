@@ -67,26 +67,6 @@ World::~World()
 {
 }
 
-TerrainProperty * World::terrain()
-{
-    return modPropertyClass<TerrainProperty>("terrain");
-}
-
-/// \brief Get a number encoding the surface type at the given x,y coordinates
-///
-/// @param pos the x,y coordinates of the point on the terrain
-/// @param material a reference to the integer to be used to store the
-/// material identifier at this location.
-int World::getSurface(const Point3D & pos, int & material)
-{
-    TerrainProperty * tp = terrain();
-    if (tp != 0) {
-        return tp->getSurface(pos, material);
-    }
-    log(ERROR, "No terrain in getSurface");
-    return -1;
-}
-
 void World::EatOperation(const Operation & op, OpVector & res)
 {
     const std::string & from_id = op->getFrom();
@@ -97,9 +77,14 @@ void World::EatOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    TerrainProperty * tp = modPropertyClass<TerrainProperty>("terrain");
+    if (tp == 0) {
+        log(ERROR, "No terrain in getSurface");
+        return;
+    }
     Point3D from_pos = relativePos(m_location, from->m_location);
     int material;
-    if (getSurface(from_pos, material) != 0) {
+    if (tp->getSurface(from_pos, material) != 0) {
         debug(std::cout << "no surface hit" << std::endl << std::flush;);
         return;
     }
