@@ -191,7 +191,7 @@ int Ruleset::populateEntityFactory(const std::string & class_name,
         std::string script_package = script_name.substr(0, ptr);
         std::string script_class = script_name.substr(ptr + 1);
         if (factory->m_scriptFactory != 0) {
-            if (factory->m_scriptFactory->package() != script_name) {
+            if (factory->m_scriptFactory->package() != script_package) {
                 delete factory->m_scriptFactory;
                 factory->m_scriptFactory = 0;
             }
