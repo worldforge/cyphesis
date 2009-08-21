@@ -63,7 +63,7 @@ class Ruleset {
                               const Atlas::Message::MapType & class_desc);
     int populateTaskFactory(const std::string & class_name,
                             TaskKit * factory,
-                            const Atlas::Message::MapType & class_desc);
+                            const Atlas::Objects::Root & class_desc);
 
     int installTaskClass(const std::string & class_name,
                          const std::string & parent,

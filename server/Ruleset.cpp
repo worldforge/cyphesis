@@ -68,6 +68,75 @@ static const bool debug_flag = false;
 
 Ruleset * Ruleset::m_instance = NULL;
 
+static void updateChildren(EntityKit * factory)
+{
+    std::set<EntityKit *>::const_iterator I = factory->m_children.begin();
+    std::set<EntityKit *>::const_iterator Iend = factory->m_children.end();
+    for (; I != Iend; ++I) {
+        EntityKit * child_factory = *I;
+        child_factory->m_attributes = factory->m_attributes;
+        MapType::const_iterator J = child_factory->m_classAttributes.begin();
+        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
+        for (; J != Jend; ++J) {
+            child_factory->m_attributes[J->first] = J->second;
+        }
+        updateChildren(child_factory);
+    }
+}
+
+static void updateChildrenProperties(EntityKit * factory)
+{
+    // Discover the default attributes which are no longer
+    // present after the update.
+    std::set<std::string> removed_properties;
+    PropertyDict & defaults = factory->m_type->defaults();
+    PropertyDict::const_iterator I = defaults.begin();
+    PropertyDict::const_iterator Iend = defaults.end();
+    MapType::const_iterator Jend = factory->m_attributes.end();
+    for (; I != Iend; ++I) {
+        if (factory->m_attributes.find(I->first) == Jend) {
+            debug( std::cout << I->first << " removed" << std::endl; );
+            removed_properties.insert(I->first);
+        }
+    }
+
+    // Remove the class properties for the default attributes that
+    // no longer exist
+    std::set<std::string>::const_iterator L = removed_properties.begin();
+    std::set<std::string>::const_iterator Lend = removed_properties.end();
+    for (; L != Lend; ++L) {
+        PropertyDict::iterator M = defaults.find(*L);
+        delete M->second;
+        defaults.erase(M);
+    }
+
+    // Update the values of existing class properties, and add new class
+    // properties for added default attributes.
+    MapType::const_iterator J = factory->m_attributes.begin();
+    PropertyBase * p;
+    for (; J != Jend; ++J) {
+        PropertyDict::const_iterator I = defaults.find(J->first);
+        if (I == Iend) {
+            p = PropertyManager::instance()->addProperty(J->first,
+                                                         J->second.getType());
+            assert(p != 0);
+            p->setFlags(flag_class);
+            defaults[J->first] = p;
+        } else {
+            p = I->second;
+        }
+        p->set(J->second);
+    }
+
+    // Propagate the changes to all child factories
+    std::set<EntityKit *>::const_iterator K = factory->m_children.begin();
+    std::set<EntityKit *>::const_iterator Kend = factory->m_children.end();
+    for (; K != Kend; ++K) {
+        EntityKit * child_factory = *K;
+        updateChildrenProperties(child_factory);
+    }
+}
+
 void Ruleset::init()
 {
     m_instance = new Ruleset(EntityBuilder::instance());
@@ -183,95 +252,9 @@ int Ruleset::populateEntityFactory(const std::string & class_name,
 
 int Ruleset::populateTaskFactory(const std::string & class_name,
                                  TaskKit * factory,
-                                 const MapType & class_desc)
+                                 const Root & class_desc)
 {
     // assert(class_name == class_desc->getId());
-
-    return 0;
-}
-
-static void updateChildren(EntityKit * factory)
-{
-    std::set<EntityKit *>::const_iterator I = factory->m_children.begin();
-    std::set<EntityKit *>::const_iterator Iend = factory->m_children.end();
-    for (; I != Iend; ++I) {
-        EntityKit * child_factory = *I;
-        child_factory->m_attributes = factory->m_attributes;
-        MapType::const_iterator J = child_factory->m_classAttributes.begin();
-        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
-        for (; J != Jend; ++J) {
-            child_factory->m_attributes[J->first] = J->second;
-        }
-        updateChildren(child_factory);
-    }
-}
-
-static void updateChildrenProperties(EntityKit * factory)
-{
-    // Discover the default attributes which are no longer
-    // present after the update.
-    std::set<std::string> removed_properties;
-    PropertyDict & defaults = factory->m_type->defaults();
-    PropertyDict::const_iterator I = defaults.begin();
-    PropertyDict::const_iterator Iend = defaults.end();
-    MapType::const_iterator Jend = factory->m_attributes.end();
-    for (; I != Iend; ++I) {
-        if (factory->m_attributes.find(I->first) == Jend) {
-            debug( std::cout << I->first << " removed" << std::endl; );
-            removed_properties.insert(I->first);
-        }
-    }
-
-    // Remove the class properties for the default attributes that
-    // no longer exist
-    std::set<std::string>::const_iterator L = removed_properties.begin();
-    std::set<std::string>::const_iterator Lend = removed_properties.end();
-    for (; L != Lend; ++L) {
-        PropertyDict::iterator M = defaults.find(*L);
-        delete M->second;
-        defaults.erase(M);
-    }
-
-    // Update the values of existing class properties, and add new class
-    // properties for added default attributes.
-    MapType::const_iterator J = factory->m_attributes.begin();
-    PropertyBase * p;
-    for (; J != Jend; ++J) {
-        PropertyDict::const_iterator I = defaults.find(J->first);
-        if (I == Iend) {
-            p = PropertyManager::instance()->addProperty(J->first,
-                                                         J->second.getType());
-            assert(p != 0);
-            p->setFlags(flag_class);
-            defaults[J->first] = p;
-        } else {
-            p = I->second;
-        }
-        p->set(J->second);
-    }
-
-    // Propagate the changes to all child factories
-    std::set<EntityKit *>::const_iterator K = factory->m_children.begin();
-    std::set<EntityKit *>::const_iterator Kend = factory->m_children.end();
-    for (; K != Kend; ++K) {
-        EntityKit * child_factory = *K;
-        updateChildrenProperties(child_factory);
-    }
-}
-
-int Ruleset::installTaskClass(const std::string & class_name,
-                              const std::string & parent,
-                              const Root & class_desc)
-{
-    assert(class_name == class_desc->getId());
-
-    if (m_builder->hasTask(class_name)) {
-        log(ERROR, compose("Attempt to install task \"%1\" which is already "
-                           "installed.", class_name));
-        return -1;
-    }
-    
-    TaskKit * factory = new TaskFactory(class_name);
 
     // Establish that this rule has an associated script.
     Element script_attr;
@@ -317,7 +300,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
     Element activation_attr;
     if (class_desc->copyAttr("activation", activation_attr) != 0 ||
         !activation_attr.isMap()) {
-        delete factory;
         log(ERROR, compose("Task \"%1\" has no activation.", class_name));
         return -1;
     }
@@ -326,7 +308,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
     MapType::const_iterator act_end = activation.end();
     J = activation.find("tool");
     if (J == act_end || !J->second.isString()) {
-        delete factory;
         log(ERROR, compose("Task \"%1\" activation has no tool.", class_name));
         return -1;
     }
@@ -335,7 +316,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
     Inheritance & i = Inheritance::instance();
 
     if (!i.hasClass(activation_tool)) {
-        delete factory;
         waitForRule(class_name, class_desc, activation_tool,
                     compose("Task \"%1\" is activated by tool \"%2\" which "
                             "does not exist.", class_name, activation_tool));
@@ -343,7 +323,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
     }
     EntityKit * tool_factory = m_builder->getClassFactory(activation_tool);
     if (tool_factory == 0) {
-        delete factory;
         log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
                            "which is not an entity class.", class_name,
                            activation_tool));
@@ -352,7 +331,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
 
     J = activation.find("operation");
     if (J == act_end || !J->second.isString()) {
-        delete factory;
         log(ERROR, compose("Task \"%1\" activation has no operation.",
                            class_name));
         return -1;
@@ -360,7 +338,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
 
     const std::string & activation_op = J->second.String();
     if (!i.hasClass(activation_op)) {
-        delete factory;
         waitForRule(class_name, class_desc, activation_op,
                     compose("Task \"%1\" is activated by operation \"%2\" "
                             "which does not exist.", class_name, 
@@ -371,7 +348,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
     J = activation.find("target");
     if (J != act_end) {
         if (!J->second.isString()) {
-            delete factory;
             log(ERROR, compose("Task \"%1\" activation has \"%2\" target.",
                                class_name,
                                Element::typeName(J->second.getType())));
@@ -379,7 +355,6 @@ int Ruleset::installTaskClass(const std::string & class_name,
         }
         const std::string & target_base = J->second.String();
         if (!i.hasClass(target_base)) {
-            delete factory;
             waitForRule(class_name, class_desc, target_base,
                         compose("Task \"%1\" is activated on target \"%2\" "
                                 "which does not exist.", class_name,
@@ -411,7 +386,31 @@ int Ruleset::installTaskClass(const std::string & class_name,
         }
     }
     
+    return 0;
+}
+
+int Ruleset::installTaskClass(const std::string & class_name,
+                              const std::string & parent,
+                              const Root & class_desc)
+{
+    assert(class_name == class_desc->getId());
+
+    if (m_builder->hasTask(class_name)) {
+        log(ERROR, compose("Attempt to install task \"%1\" which is already "
+                           "installed.", class_name));
+        return -1;
+    }
+    
+    TaskKit * factory = new TaskFactory(class_name);
+
+    if (populateTaskFactory(class_name, factory,
+                            class_desc) != 0) {
+        delete factory;
+        return -1;
+    }
     m_builder->installTaskFactory(class_name, factory);
+
+    Inheritance & i = Inheritance::instance();
 
     i.addChild(class_desc);
 
