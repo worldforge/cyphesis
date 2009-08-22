@@ -21,37 +21,17 @@
 #define SERVER_WORLD_ROUTER_H
 
 #include "common/BaseWorld.h"
-#include "common/OperationRouter.h"
 
 #include <list>
 #include <set>
 
 extern "C" {
     #include <sys/time.h>
-    #include <unistd.h>
 }
 
 class Entity;
 
 struct OpQueEntry;
-#if 0
-struct OpQueEntry {
-    const Operation & op;
-    Entity & from;
-
-    explicit OpQueEntry(const Operation & o, Entity & f);
-    OpQueEntry(const OpQueEntry & o);
-    ~OpQueEntry();
-
-    Operation & operator*() const {
-        return *op.get();
-    }
-
-    Atlas::Objects::Operation::RootOperationData * operator->() const {
-        return op.get();
-    }
-};
-#endif
 
 typedef std::list<OpQueEntry> OpQueue;
 typedef std::set<Entity *> EntitySet;
@@ -74,11 +54,11 @@ class WorldRouter : public BaseWorld {
     /// Count of in world entities
     int m_entityCount;
 
-    void addOperationToQueue(const Operation &, Entity &);
-    Operation getOperationFromQueue();
-    bool broadcastPerception(const Operation &) const;
+    void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &, Entity &);
+    Atlas::Objects::Operation::RootOperation getOperationFromQueue();
+    bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void updateTime(int sec, int usec);
-    void deliverTo(const Operation &, Entity &);
+    void deliverTo(const Atlas::Objects::Operation::RootOperation &, Entity &);
     void delEntity(Entity * obj);
   public:
     explicit WorldRouter();
@@ -91,10 +71,11 @@ class WorldRouter : public BaseWorld {
     Task * activateTask(const std::string &, const std::string &,
                         const std::string &, Character &);
 
-    void operation(const Operation &, Entity &);
+    void operation(const Atlas::Objects::Operation::RootOperation &, Entity &);
 
     virtual void addPerceptive(Entity *);
-    virtual void message(const Operation &, Entity &);
+    virtual void message(const Atlas::Objects::Operation::RootOperation &,
+                         Entity &);
     virtual Entity * findByName(const std::string & name);
     virtual Entity * findByType(const std::string & type);
 
