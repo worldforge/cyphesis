@@ -22,10 +22,6 @@
 
 #include "LineProperty.h"
 
-#include "physics/Vector3D.h"
-
-#include <set>
-
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
 class AreaProperty : public PropertyBase {
