@@ -20,8 +20,6 @@
 #ifndef RULESETS_PYTHON_WRAPPER_H
 #define RULESETS_PYTHON_WRAPPER_H
 
-#include <Python.h>
-
 #include "Script.h"
 
 /// \brief Wrapper class for entities without scripts but with wrappers
@@ -29,13 +27,13 @@
 class PythonWrapper : public Script {
   protected:
     /// \brief Python object that wraps the entity.
-    PyObject * m_wrapper;
+    struct _object * m_wrapper;
   public:
-    explicit PythonWrapper(PyObject * wrapper);
+    explicit PythonWrapper(struct _object * wrapper);
     virtual ~PythonWrapper();
 
     /// \brief Accessor for the python object that wraps the entity.
-    PyObject * wrapper() const { return m_wrapper; }
+    struct _object * wrapper() const { return m_wrapper; }
 };
 
 #endif // RULESETS_PYTHON_WRAPPER_H

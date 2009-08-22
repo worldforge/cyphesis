@@ -17,6 +17,8 @@
 
 // $Id$
 
+#include <Python.h>
+
 #include "PythonWrapper.h"
 
 /// \brief PythonWrapper constructor

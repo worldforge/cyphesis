@@ -17,6 +17,8 @@
 
 // $Id$
 
+#include <Python.h>
+
 #include "PythonEntityScript.h"
 
 #include "Py_Operation.h"
