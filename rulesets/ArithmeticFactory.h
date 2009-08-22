@@ -20,8 +20,6 @@
 #ifndef RULESETS_ARITHMETIC_FACTORY_H
 #define RULESETS_ARITHMETIC_FACTORY_H
 
-#include <Python.h>
-
 #include <string>
 
 class ArithmeticScript;
@@ -42,9 +40,9 @@ class ArithmeticKit {
 class PythonArithmeticFactory : public ArithmeticKit {
   public:
     /// /brief Python module object containing the script type
-    PyObject * m_module;
+    struct _object * m_module;
     /// \brief Python clas object for the script type
-    PyObject * m_class;
+    struct _object * m_class;
 
     /// \brief Name of the package containing the script
     std::string m_package;
