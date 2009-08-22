@@ -24,12 +24,9 @@
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
 using Atlas::Objects::Root;
-using Atlas::Message::Element;
-using Atlas::Message::MapType;
 
 /// \brief Called from the base class when a complete message has been decoded
 void AtlasFileLoader::objectArrived(const Root & obj)
