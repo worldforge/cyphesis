@@ -398,17 +398,6 @@ MemEntityVector MemMap::findByLocation(const Location & loc, double radius,
 #endif
 }
 
-const Element MemMap::asMessage()
-{
-    MapType omap;
-    
-    MemEntityDict::const_iterator Iend = m_entities.end();
-    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        I->second->addToMessage((omap[I->second->getId()] = MapType()).asMap());
-    }
-    return Element(omap);
-}
-
 void MemMap::check(const double & time)
 {
     MemEntityDict::const_iterator entities_end = m_entities.end();

@@ -22,7 +22,6 @@
 
 #include "common/OperationRouter.h"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <string>
@@ -80,8 +79,6 @@ class MemMap {
     MemEntityVector findByType(const std::string & what);
     MemEntityVector findByLocation(const Location & where, double radius,
                                    const std::string & what);
-
-    const Atlas::Message::Element asMessage();
 
     void check(const double &);
     void flush();
