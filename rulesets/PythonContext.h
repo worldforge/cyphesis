@@ -22,13 +22,9 @@
 
 #include <string>
 
-struct _object;
-
-typedef struct _object PyObject;
-
 class PythonContext {
   protected:
-    PyObject * m_context;
+    struct _object * m_context;
   public:
     PythonContext();
 
