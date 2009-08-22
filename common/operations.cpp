@@ -17,20 +17,6 @@
 
 // $Id$
 
-#include "Add.h"
-#include "Attack.h"
-#include "Eat.h"
-#include "Burn.h"
-#include "Drop.h"
-#include "Nourish.h"
-#include "Pickup.h"
-#include "Setup.h"
-#include "Tick.h"
-#include "Unseen.h"
-#include "Update.h"
-#include "Monitor.h"
-#include "Connect.h"
-
 /// \brief Operation classes not defined in the Atlas spec
 ///
 /// Operation classes used by Cyphesis as extensions of the
