@@ -20,9 +20,12 @@
 #ifndef SERVER_LOBBY_H
 #define SERVER_LOBBY_H
 
-#include "Account.h"
+#include "common/Router.h"
 
+class Account;
 class ServerRouting;
+
+typedef std::map<std::string, Account *> AccountDict;
 
 /// \brief This class handles the default out-of-game chat area that all
 /// Account objects that are currently logged in are subscribed to by default.
