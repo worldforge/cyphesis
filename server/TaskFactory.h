@@ -20,8 +20,6 @@
 #ifndef SERVER_TASK_FACTORY_H
 #define SERVER_TASK_FACTORY_H
 
-#include <Python.h>
-
 #include <string>
 
 class Character;
