@@ -26,8 +26,6 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <skstream/skstream.h>
-
 #include <deque>
 
 namespace Atlas {
