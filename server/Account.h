@@ -22,6 +22,15 @@
 
 #include "common/Router.h"
 
+#include <vector>
+
+namespace Atlas {
+    namespace Message {
+        class Element;
+        typedef std::vector<Element> ListType;
+    }
+}
+
 class Connection;
 
 typedef std::map<long, Entity *> EntityDict;
