@@ -22,10 +22,6 @@
 
 #include "Thing.h"
 
-#include "modules/EntityRef.h"
-
-#include <sigc++/connection.h>
-
 class BaseMind;
 class Movement;
 class Task;
