@@ -26,8 +26,6 @@
 
 #include <wfmath/point.h>
 
-#include <set>
-
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
 class LineProperty : public PropertyBase {
