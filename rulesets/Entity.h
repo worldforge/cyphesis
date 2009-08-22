@@ -22,8 +22,6 @@
 
 #include "LocatedEntity.h"
 
-#include "modules/Location.h"
-
 #include "common/BaseWorld.h"
 #include "common/Property.h"
 
