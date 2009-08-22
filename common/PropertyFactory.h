@@ -20,8 +20,6 @@
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
 
-#include <string>
-
 class Entity;
 class PropertyBase;
 
