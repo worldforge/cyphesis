@@ -22,8 +22,6 @@
 
 #include "common/Property.h"
 
-#include <set>
-
 class Task;
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
