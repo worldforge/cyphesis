@@ -20,19 +20,17 @@
 #ifndef RULESETS_PYTHON_SCRIPT_UTILS_H
 #define RULESETS_PYTHON_SCRIPT_UTILS_H
 
-#include <Python.h>
-
 #include <string>
 
 class BaseMind;
 class Entity;
 
-PyObject * Get_PyClass(PyObject * module,
+struct _object * Get_PyClass(struct _object * module,
                        const std::string & package,
                        const std::string & type);
-PyObject * Get_PyModule(const std::string & package);
+struct _object * Get_PyModule(const std::string & package);
 void Create_PyMind(BaseMind * mind, const std::string & package,
                                     const std::string & type);
-PyObject * Create_PyScript(PyObject *, PyObject *);
+struct _object * Create_PyScript(struct _object *, struct _object *);
 
 #endif // RULESETS_PYTHON_SCRIPT_UTILS_H
