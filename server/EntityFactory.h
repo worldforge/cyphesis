@@ -22,6 +22,7 @@
 
 #include <set>
 #include <map>
+#include <string>
 
 namespace Atlas {
     namespace Message {
