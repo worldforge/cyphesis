@@ -24,12 +24,11 @@
 
 #include "common/Property.h"
 
-#include <Mercator/TerrainMod.h>
-
 #include <set>
 
 namespace Mercator {
     class Terrain;
+    class TerrainMod;
     class TileShader;
 }
 
