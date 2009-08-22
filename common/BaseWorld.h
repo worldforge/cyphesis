@@ -27,8 +27,6 @@
 
 #include <sigc++/signal.h>
 
-#include <cassert>
-
 class Character;
 class Entity;
 class Task;
@@ -76,19 +74,7 @@ class BaseWorld {
 
     Entity * getEntity(const std::string & id) const;
 
-    /// \brief Get an in-game Entity by its integer ID.
-    ///
-    /// @param id integer ID of Entity to be retrieved.
-    /// @return pointer to Entity retrieved, or zero if it was not found.
-    Entity * getEntity(long id) const {
-        EntityDict::const_iterator I = m_eobjects.find(id);
-        if (I != m_eobjects.end()) {
-            assert(I->second != 0);
-            return I->second;
-        } else {
-            return 0;
-        }
-    }
+    Entity * getEntity(long id) const;
 
     /// \brief Read only accessor for the in-game objects dictionary.
     const EntityDict & getEntities() const {

@@ -24,6 +24,8 @@
 #include "debug.h"
 #include "compose.hpp"
 
+#include <cassert>
+
 BaseWorld * BaseWorld::m_instance = 0;
 
 /// \brief BaseWorld constructor.
@@ -57,6 +59,21 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     long intId = integerId(id);
 
     EntityDict::const_iterator I = m_eobjects.find(intId);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+/// \brief Get an in-game Entity by its integer ID.
+///
+/// @param id integer ID of Entity to be retrieved.
+/// @return pointer to Entity retrieved, or zero if it was not found.
+Entity * BaseWorld::getEntity(long id) const
+{
+    EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
         assert(I->second != 0);
         return I->second;
