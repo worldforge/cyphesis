@@ -23,7 +23,6 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Objects/ObjectsFwd.h>
 
 class EntityBuilder;
 class EntityKit;
