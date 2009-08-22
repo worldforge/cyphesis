@@ -24,8 +24,6 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
-#include <iostream>
-
 class PropertyBase;
 class TypeNode;
 
