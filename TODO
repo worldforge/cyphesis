@@ -1,3 +1,5 @@
+Does _anyone_ use Atlas::Objects iterators?
+
 Haeders checked up to Movement.h
 
 Excessive inlining in ServerRouting.h, and removes need for Account header,
