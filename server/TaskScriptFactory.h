@@ -20,8 +20,6 @@
 #ifndef SERVER_TASK_SCRIPT_FACTORY_H
 #define SERVER_TASK_SCRIPT_FACTORY_H
 
-#include <Python.h>
-
 #include <string>
 
 class TaskScript;
@@ -53,9 +51,9 @@ class TaskScriptKit {
 class PythonTaskScriptFactory : public TaskScriptKit {
   protected:
     /// \brief Module object which contains the script class
-    PyObject * m_module;
+    struct _object * m_module;
     /// \brief Class object to be instanced when creating scripts
-    PyObject * m_class;
+    struct _object * m_class;
 
     int getClass();
   public:
