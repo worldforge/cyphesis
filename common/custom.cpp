@@ -21,7 +21,6 @@
 
 #include "custom.h"
 
-#include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Generic.h>
 
 void installCustomOperations()
