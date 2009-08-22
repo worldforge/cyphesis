@@ -22,7 +22,6 @@
 
 #include "CommStreamClient.h"
 
-#include <list>
 #include <string>
 
 class PythonContext;
