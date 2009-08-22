@@ -22,8 +22,7 @@
 
 #include <Atlas/Message/Element.h>
 
-#include <string>
-#include <fstream>
+#include <iosfwd>
 
 /// \brief Class to output Atlas data in human readable formatted XML-like.
 class FormattedXMLWriter {
