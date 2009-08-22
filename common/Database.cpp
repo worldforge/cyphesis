@@ -32,7 +32,6 @@
 
 #include <varconf/config.h>
 
-#include <iostream>
 #include <sstream>
 
 #include <cstring>
