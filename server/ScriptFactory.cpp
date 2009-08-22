@@ -17,6 +17,8 @@
 
 // $Id$
 
+#include <Python.h>
+
 #include "ScriptFactory.h"
 
 #include "rulesets/Py_Thing.h"

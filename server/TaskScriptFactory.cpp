@@ -18,6 +18,8 @@
 
 // $Id$
 
+#include <Python.h>
+
 #include "TaskScriptFactory.h"
 
 #include "rulesets/Py_Task.h"

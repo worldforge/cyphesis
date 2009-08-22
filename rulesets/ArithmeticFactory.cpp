@@ -17,6 +17,8 @@
 
 // $Id$
 
+#include <Python.h>
+
 #include "rulesets/ArithmeticFactory.h"
 
 #include "rulesets/Python_Script_Utils.h"
