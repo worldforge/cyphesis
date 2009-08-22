@@ -20,9 +20,15 @@
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
 
-#include <Atlas/Message/Element.h>
-
 #include <set>
+#include <map>
+
+namespace Atlas {
+    namespace Message {
+        class Element;
+        typedef std::map<std::string, Element> MapType;
+    }
+}
 
 class Entity;
 class ScriptKit;
