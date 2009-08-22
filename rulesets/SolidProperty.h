@@ -22,10 +22,6 @@
 
 #include "common/Property.h"
 
-#include "physics/Vector3D.h"
-
-#include <set>
-
 class Entity;
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
