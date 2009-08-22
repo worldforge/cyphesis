@@ -23,9 +23,6 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <sigc++/trackable.h>
-#include <sigc++/signal.h>
-
 class Entity;
 
 /// \brief Interface for Entity properties
