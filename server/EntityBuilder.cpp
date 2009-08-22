@@ -17,8 +17,6 @@
 
 // $Id$
 
-#include <Python.h>
-
 #include "EntityBuilder.h"
 
 #include "CorePropertyManager.h"
@@ -28,7 +26,6 @@
 #include "TaskScriptFactory.h"
 
 #include "rulesets/Thing.h"
-#include "rulesets/MindFactory.h"
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
@@ -36,8 +33,6 @@
 #include "rulesets/World.h"
 
 #include "rulesets/TaskScript.h"
-
-#include "rulesets/Python_Script_Utils.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -60,8 +55,6 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
-
-typedef std::map<std::string, Atlas::Objects::Root> RootDict;
 
 static const bool debug_flag = false;
 
