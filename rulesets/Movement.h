@@ -21,7 +21,6 @@
 #define RULESETS_MOVEMENT_H
 
 #include "physics/Vector3D.h"
-#include "physics/Quaternion.h"
 
 #include <wfmath/point.h>
 
