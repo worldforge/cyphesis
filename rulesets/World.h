@@ -22,8 +22,6 @@
 
 #include "Thing.h"
 
-class TerrainProperty;
-
 typedef Thing World_parent;
 
 /// \brief This is the in-game entity class used to represent the world.
