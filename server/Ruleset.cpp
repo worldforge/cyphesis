@@ -17,8 +17,6 @@
 
 // $Id$
 
-#include <Python.h>
-
 #include "Ruleset.h"
 
 #include "EntityBuilder.h"
@@ -31,23 +29,18 @@
 
 #include "rulesets/MindFactory.h"
 
-#include "rulesets/Python_Script_Utils.h"
-
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/Inheritance.h"
 #include "common/AtlasFileLoader.h"
-#include "common/random.h"
 #include "common/compose.hpp"
-#include "common/Monitors.h"
 #include "common/Property.h"
 #include "common/TypeNode.h"
 #include "common/PropertyManager.h"
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/objectFactory.h>
 
 #include <sys/types.h>
@@ -62,7 +55,7 @@ using Atlas::Objects::Root;
 
 using String::compose;
 
-typedef std::map<std::string, Atlas::Objects::Root> RootDict;
+typedef std::map<std::string, Root> RootDict;
 
 static const bool debug_flag = false;
 
@@ -569,7 +562,7 @@ int Ruleset::installRule(const std::string & class_name,
     // could be installed
     RuleWaitList::iterator I = m_waitingRules.lower_bound(class_name);
     RuleWaitList::iterator Iend = m_waitingRules.upper_bound(class_name);
-    std::map<std::string, Root> readyRules;
+    RootDict readyRules;
     for (; I != Iend; ++I) {
         const std::string & wClassName = I->second.name;
         const Root & wClassDesc = I->second.desc;
@@ -580,8 +573,8 @@ int Ruleset::installRule(const std::string & class_name,
     }
     m_waitingRules.erase(class_name);
         
-    std::map<std::string, Root>::const_iterator K = readyRules.begin();
-    std::map<std::string, Root>::const_iterator Kend = readyRules.end();
+    RootDict::const_iterator K = readyRules.begin();
+    RootDict::const_iterator Kend = readyRules.end();
     for (; K != Kend; ++K) {
         const std::string & rClassName = K->first;
         const Root & rClassDesc = K->second;
@@ -710,7 +703,7 @@ void Ruleset::waitForRule(const std::string & rulename,
     m_waitingRules.insert(std::make_pair(dependent, rule));
 }
 
-void Ruleset::getRulesFromFiles(std::map<std::string, Root> & rules)
+void Ruleset::getRulesFromFiles(RootDict & rules)
 {
     std::string filename;
 
@@ -744,7 +737,7 @@ void Ruleset::getRulesFromFiles(std::map<std::string, Root> & rules)
 
 void Ruleset::installRules()
 {
-    std::map<std::string, Root> ruleTable;
+    RootDict ruleTable;
 
     if (database_flag) {
         Persistence * p = Persistence::instance();
