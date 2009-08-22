@@ -22,7 +22,11 @@
 
 #include <Python.h>
 
-#include <Atlas/Message/Element.h>
+namespace Atlas {
+    namespace Message {
+        class Element;
+    }
+}
 
 /// \brief Wrapper for Atlas::Message::Element in Python
 /// \ingroup PythonWrappers

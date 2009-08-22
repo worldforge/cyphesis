@@ -22,6 +22,8 @@
 #include "Py_Quaternion.h"
 #include "Py_Message.h"
 
+#include <Atlas/Message/Element.h>
+
 static PyObject * Vector3D_dot(PyVector3D * self, PyVector3D * other)
 {
     if (!PyVector3D_Check(other)) {

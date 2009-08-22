@@ -23,6 +23,8 @@
 #include "Py_Point3D.h"
 #include "Py_Message.h"
 
+#include <Atlas/Message/Element.h>
+
 static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
 {
     float square_radius = 0;

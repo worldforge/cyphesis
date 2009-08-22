@@ -22,6 +22,8 @@
 #include "Py_Vector3D.h"
 #include "Py_Message.h"
 
+#include <Atlas/Message/Element.h>
+
 static PyObject * Point3D_mag(PyPoint3D * self)
 {
     return PyFloat_FromDouble(sqrt(sqrMag(self->coords)));
