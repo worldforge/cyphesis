@@ -20,9 +20,6 @@
 #include "BaseWorld.h"
 
 #include "id.h"
-#include "log.h"
-#include "debug.h"
-#include "compose.hpp"
 
 #include <cassert>
 
