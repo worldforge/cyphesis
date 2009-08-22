@@ -22,8 +22,6 @@
 
 #include "CommStreamClient.h"
 
-#include <skstream/skstream.h>
-
 #include <list>
 #include <string>
 
