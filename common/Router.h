@@ -22,9 +22,15 @@
 
 #include "OperationRouter.h"
 
-#include <Atlas/Message/Element.h>
-
 #include <string>
+#include <map>
+
+namespace Atlas {
+    namespace Message {
+        class Element;
+        typedef std::map<std::string, Element> MapType;
+    }
+}
 
 /// \brief This is the base class for any entity which has an Atlas
 /// compatible indentifier.
