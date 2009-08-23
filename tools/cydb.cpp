@@ -65,14 +65,16 @@ int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 {
     size_t max_length = 0;
 
-    for (struct dbsys * I = system; I->sys_name != NULL; ++I) {
+    for (struct dbsys * I = system->sys_subsys; I->sys_name != NULL; ++I) {
        max_length = std::max(max_length, strlen(I->sys_name));
     }
     max_length += 2;
 
-    std::cout << "Cyphesis database systems:" << std::endl << std::endl;
+    std::cout << "Cyphesis database tool." << std::endl
+              << system->sys_name << " commands:"
+              << std::endl << std::endl;
 
-    for (struct dbsys * I = system; I->sys_name != NULL; ++I) {
+    for (struct dbsys * I = system->sys_subsys; I->sys_name != NULL; ++I) {
         std::cout << "    " << I->sys_name
                   << std::string(max_length - strlen(I->sys_name), ' ')
                   << I->sys_description << std::endl;
@@ -270,7 +272,7 @@ int dbs_generic(AccountBase & ab, struct dbsys * system,
     }
     int nargc = argc - 1;
     if (nargc < 1) {
-        dbs_help(ab, subsyss, argc, argv);
+        dbs_help(ab, system, argc, argv);
         return 1;
     }
     char ** nargv = &argv[1];
@@ -282,13 +284,13 @@ int dbs_generic(AccountBase & ab, struct dbsys * system,
     std::cout << "ERROR: No such command: "
               << system->sys_name << " " << nargv[0]
               << std::endl << std::endl << std::flush;
-    dbs_help(ab, subsyss, argc, argv);
+    dbs_help(ab, system, argc, argv);
     return 0;
 }
 
 struct dbsys world_cmds[] = {
     { "purge", "Purge world data", &world_purge, 0 },
-    { "help",  "Show world help", &dbs_help, 0 },
+    { "help",  "Show world help", &dbs_help, &world_cmds[0] },
     { NULL,    "Guard", }
 };
 
@@ -297,23 +299,27 @@ struct dbsys users_cmds[] = {
     { "list",  "List user accounts", &users_list, 0 },
     { "del",   "Delete a user account", &users_del, 0 },
     { "mod",   "Modify a user account", &users_mod, 0 },
-    { "help",  "Show users help", &dbs_help, 0 },
+    { "help",  "Show users help", &dbs_help, &users_cmds[0] },
     { NULL,    "Guard", }
 };
 
 struct dbsys rules_cmds[] = {
     { "purge", "Purge rules data", &rules_purge, 0 },
     { "list",  "List rules", &rules_list, 0 },
-    { "help",  "Show rules help", &dbs_help, 0 },
+    { "help",  "Show rules help", &dbs_help, &rules_cmds[0] },
     { NULL,    "Guard", }
 };
 
 struct dbsys systems[] = {
     { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
-    { "user", "Modify the user account table", &dbs_generic, &users_cmds[0] },
+    { "user",  "Modify the user account table", &dbs_generic, &users_cmds[0] },
     { "world", "Modify the world storage tables", &dbs_generic, &world_cmds[0] },
-    { "help",  "Show command help", &dbs_help, 0 },
+    { "help",  "Show command help", &dbs_help, &systems[0] },
     { NULL,    "Guard", }
+};
+
+struct dbsys tool = {
+    "cydb",  "Work with cyphesis databases", &dbs_help, &systems[0]
 };
 
 int completion_iterator = 0;
@@ -646,7 +652,7 @@ static int run_command(AccountBase & ab, int argc, char ** argv)
     }
     std::cout << "ERROR: No such command: " << argv[0]
               << std::endl << std::endl << std::flush;
-    dbs_help(ab, &systems[0], argc, argv);
+    dbs_help(ab, &tool, argc, argv);
     return 1;
 }
 
@@ -686,6 +692,7 @@ int main(int argc, char ** argv)
     if (!interactive) {
         ret = run_command(ab, argc - optind, &argv[optind]);
     } else {
+        dbs_help(ab, &tool, argc, argv);
     }
 
     delete global_conf;
