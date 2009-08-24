@@ -22,7 +22,7 @@
 
 #include <Atlas/Message/Element.h>
 
-/// \brief Base class for dynamic variable monitors
+/// \brief Abstract class for dynamic variable monitors
 ///
 /// Variables which should be represented in the monitors output are
 /// referenced by subclasses this interface
@@ -32,6 +32,10 @@ class MonitorBase {
     virtual void send(std::ostream &) = 0;
 };
 
+/// \brief Concrete class template for dynamic variable monitors
+///
+/// Objects of this type expose the variable they reference to the
+/// monitoring subsystem.
 template<typename T>
 class Monitor : public MonitorBase {
   protected:
