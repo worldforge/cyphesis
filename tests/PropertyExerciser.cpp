@@ -25,6 +25,7 @@
 
 #include <Atlas/Objects/Anonymous.h>
 
+#include <iostream>
 #include <limits>
 
 #include <cassert>
