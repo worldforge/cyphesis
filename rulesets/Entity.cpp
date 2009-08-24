@@ -273,90 +273,112 @@ Domain * Entity::getMovementDomain()
     return Domain::instance();
 }
 
+/// \brief Handle a actuate operation
 void Entity::ActuateOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a appearance operation
 void Entity::AppearanceOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a attack operation
 void Entity::AttackOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a combine operation
 void Entity::CombineOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a create operation
 void Entity::CreateOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a delete operation
 void Entity::DeleteOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a disappearance operation
 void Entity::DisappearanceOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a divide operation
 void Entity::DivideOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a eat operation
 void Entity::EatOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a imaginary operation
 void Entity::ImaginaryOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a look operation
 void Entity::LookOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a move operation
 void Entity::MoveOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a nourish operation
 void Entity::NourishOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a set operation
 void Entity::SetOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a sight operation
 void Entity::SightOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a sound operation
 void Entity::SoundOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a talk operation
 void Entity::TalkOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a tick operation
 void Entity::TickOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a touch operation
 void Entity::TouchOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a update operation
 void Entity::UpdateOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a use operation
 void Entity::UseOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a wield operation
 void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
