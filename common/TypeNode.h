@@ -29,6 +29,7 @@ class PropertyBase;
 
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
+/// \brief Entry in the type hierarchy for in-game entity classes.
 class TypeNode {
   protected:
     std::string m_name;
