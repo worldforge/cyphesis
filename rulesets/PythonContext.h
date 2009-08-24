@@ -22,6 +22,7 @@
 
 #include <string>
 
+/// \brief Handle running python commands in the servers interpreter context
 class PythonContext {
   protected:
     struct _object * m_context;

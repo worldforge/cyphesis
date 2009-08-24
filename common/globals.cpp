@@ -66,6 +66,7 @@ static const int M = USAGE_CYCMD;
 static const int D = USAGE_DBASE;
 static const int P = USAGE_CYPYTHON;
 
+/// \brief Structure for holding data about varconf options
 typedef struct {
     const char * section;
     const char * option;
@@ -161,6 +162,7 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
 
 template int readConfigItem<bool>(const std::string & section, const std::string & key, bool & storage);
 
+/// \brief Base class for handling varconf options declared inline.
 class Option {
   protected:
     std::string m_value;
@@ -184,6 +186,7 @@ class Option {
     virtual void postProcess() { }
 };
 
+/// \brief Basic varconf option which does not require any processing
 class DumbOption : public Option {
   protected:
     std::string m_default;
@@ -200,6 +203,7 @@ class DumbOption : public Option {
     virtual size_t size() const;
 };
 
+/// \brief Basic varconf option declared as a variable inline
 template<typename ValueT>
 class StaticOption : public Option {
   protected:
@@ -272,6 +276,7 @@ size_t StaticOption<ValueT>::size() const
 
 template class StaticOption<int>;
 
+/// \brief Handle the processing required for a unix socket option
 class UnixSockOption : public StaticOption<std::string>
 {
   protected:
@@ -305,6 +310,7 @@ void UnixSockOption::postProcess()
 typedef std::map<std::string, Option *> OptionMap;
 typedef std::map<std::string, OptionMap> SectionMap;
 
+/// \brief Singleton to manage all information about varconf options.
 class Options {
   protected:
     SectionMap m_sectionMap;

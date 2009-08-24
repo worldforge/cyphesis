@@ -82,21 +82,25 @@ string_config_register _var ## _register(_var, _section, _setting, _help);
 std::string _var = _val; \
 unixsock_config_register _var ## _register(_var, _section, _setting, _help, _format);
 
+/// \brief Object to register an integer varconf option on construction
 class int_config_register {
   public:
     int_config_register(int &, const char *, const char *, const char *);
 };
 
+/// \brief Object to register a bool varconf option on construction
 class bool_config_register {
   public:
     bool_config_register(bool &, const char *, const char *, const char *);
 };
 
+/// \brief Object to register a string varconf option on construction
 class string_config_register {
   public:
     string_config_register(std::string &, const char *, const char *, const char *);
 };
 
+/// \brief Object to register a socket varconf option on construction
 class unixsock_config_register {
   public:
     unixsock_config_register(std::string &, const char *, const char *, const char *, const char *);
