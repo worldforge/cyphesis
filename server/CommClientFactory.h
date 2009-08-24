@@ -25,7 +25,7 @@
 class CommServer;
 class CommClient;
 
-/// \brief Kit class for factories to create CommClient objects.
+/// \brief Abstract factory for creating objects from subclasses of CommClient
 class CommClientKit {
   public:
     virtual ~CommClientKit();
@@ -33,17 +33,20 @@ class CommClientKit {
     virtual int newCommClient(CommServer &, int, const std::string &) = 0;
 };
 
+/// \brief Concrete factory for createing CommClient objects
 template <class ConnectionT>
 class CommClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
 
+/// \brief Concrete factory for createing CommHttpClient objects
 class CommHttpClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
 
+/// \brief Concrete factory for createing CommPythonClient objects
 class CommPythonClientFactory : public CommClientKit {
   public:
     virtual int newCommClient(CommServer &, int, const std::string &);
