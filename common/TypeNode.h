@@ -32,45 +32,57 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 /// \brief Entry in the type hierarchy for in-game entity classes.
 class TypeNode {
   protected:
+    /// \brief name
     std::string m_name;
 
+    /// \brief property defaults
     PropertyDict m_defaults;
 
+    /// \brief type description
     Atlas::Objects::Root m_description;
 
+    /// \brief parent node
     const TypeNode * m_parent;
   public:
     TypeNode();
     ~TypeNode();
 
+    /// \brief const accessor for name
     const std::string & name() const {
         return m_name;
     }
 
+    /// \brief accessor for name
     std::string & name() {
         return m_name;
     }
 
+    /// \brief const accessor for property defaults
     const PropertyDict & defaults() const {
         return m_defaults;
     }
 
+    /// \brief accessor for property defaults
     PropertyDict & defaults() {
         return m_defaults;
     }
 
+    /// \brief accessor for type description
     Atlas::Objects::Root & description() {
         return m_description;
     }
 
+    /// \brief const accessor for type description
     const Atlas::Objects::Root & description() const {
         return m_description;
     }
 
+    /// \brief const accessor for parent node
     const TypeNode * parent() const {
         return m_parent;
     }
 
+    /// \brief set the parent node
     void setParent(const TypeNode * parent) {
         m_parent = parent;
     }
