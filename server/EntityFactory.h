@@ -35,7 +35,7 @@ class Entity;
 class ScriptKit;
 class TypeNode;
 
-/// \brief Base class for for factories for creating entities
+/// \brief Abstract factory for creating in-game entity objects.
 ///
 /// An Entity consists of an instance of one of a number of C++ classes
 /// optionally with a script. Stores information about default attributes,
@@ -76,6 +76,7 @@ class EntityKit {
     virtual EntityKit * duplicateFactory() = 0;
 };
 
+/// \brief Concrete factory template for creating in-game entity objects.
 template <class T>
 class EntityFactory : public EntityKit {
   protected:
