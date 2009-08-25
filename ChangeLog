@@ -1,5 +1,29 @@
 2009-08-25  Alistair Riddoch  <alriddoch@googlemail.com>
 
+	* data/animals.xml, data/tasks.xml, data/terrain.xml, data/tools.xml:
+	  Add fish classes, and the tools and tasks required for fishing.
+
+	* rulesets/basic/mind/goals/animal/herd.py: Add a new non-functional
+	  school goal for fish.
+
+	* rulesets/basic/mind/goals/common/misc_goal.py: Add a random movement
+	  goal for fish.
+
+	* rulesets/basic/mind/panlingua/interlinguish.py: Add new verbs for
+	  fish.
+
+	* rulesets/mason/define_world.py: Add some shoals of fish into the
+	  world, and make fishing tools available at the market stall.
+
+	* rulesets/mason/world/objects/Weather.py: Make the weather affect
+	  the moistness of the terrain for the bait gathering goals.
+
+	* rulesets/mason/world/tasks/Sift.py: The new task for bait gathering.
+
+	* rulesets/mason/world/tasks/Fishing.py: The new task for fishing.
+
+2009-08-25  Alistair Riddoch  <alriddoch@googlemail.com>
+
 	* rulesets/ArithmeticFactory.cpp, rulesets/ArithmeticFactory.h,
 	  server/EntityFactory.cpp, server/EntityFactory.h,
 	  server/ScriptFactory.cpp, server/ScriptFactory.h,
