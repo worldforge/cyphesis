@@ -111,8 +111,6 @@ toolprices = [('bowl', 'price', '3'),
               ('scythe', 'price', '7'),
               ('tinderbox', 'price', '8'),
               ('sieve', 'price', '3'),
-              ('float', 'price', '1'),
-              ('hook', 'price', '1'),
               ('fishingrod', 'price', '4'),
               ('bucksaw', 'price', '10')]
 
@@ -376,8 +374,10 @@ def default(mapeditor):
 
         tools=[]
         # the different tools must be stated here \|/
-        tooltypes=['shovel', 'axe', 'fishingrod', 'tinderbox', 'bowl', 'pole', 'bottle', 'hook',
-                   'cleaver', 'pickaxe', 'scythe', 'bucksaw', 'trowel', 'sieve', 'float', 'hammer'] 
+        tooltypes=['shovel', 'axe', 'tinderbox', 'bowl', 'pole', 'bottle',
+                   'cleaver', 'pickaxe', 'scythe', 'bucksaw', 'trowel', 
+                   'hammer', 'fishingrod', 'sieve',
+                  ] 
     
         for i in range(0, 20):
             tty = tooltypes[randint(0,len(tooltypes)-1)]
