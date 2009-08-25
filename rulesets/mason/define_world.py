@@ -1024,7 +1024,7 @@ def add_castle(mapeditor):
         [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
     m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
 
-def populate(mapeditor):
+def add_fish(mapeditor):
     #   general things
 
     m=editor(mapeditor)
