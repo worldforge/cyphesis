@@ -1,3 +1,42 @@
+2009-08-25  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/ArithmeticFactory.cpp, rulesets/ArithmeticFactory.h,
+	  server/EntityFactory.cpp, server/EntityFactory.h,
+	  server/ScriptFactory.cpp, server/ScriptFactory.h,
+	  server/TaskFactory.cpp, server/TaskFactory.h,
+	  server/TaskScriptFactory.cpp, server/TaskScriptFactory.h:
+	  Rename abstract factory classes to use the Kit suffix for
+	  consistency. Re-work the code path for task scripts so it works
+	  the same way as it does for entity scripts.
+
+	* rulesets/Character.cpp: Add an error message if a task looks like
+	  it has stalled.
+
+	* rulesets/Domain.cpp: Add crude support for the "floating" mode.
+
+	* rulesets/Py_TerrainProperty.cpp, rulesets/TerrainProperty.cpp,
+	  rulesets/TerrainProperty.h:
+	  Clean up the methods involved in retrieving height and normal
+	  data from the terrain. Fix a few issues and make them more
+	  efficient.
+
+	* rulesets/World.cpp, rulesets/World.h: Remove some hardcoded
+	  terrain related functions and depend on properties for terrain data.
+
+	* rulesets/mason/tests.py: Add a test method for fish.
+
+	* server/Admin.cpp, server/EntityBuilder.cpp, server/EntityBuilder.h,
+	  server/Ruleset.cpp, server/Ruleset.h, server/server.cpp: Move code
+	  for loading rules from files or database and parsing the Atlas
+	  data out of EntituBuilder into a class of its own called Ruleset.
+	  Implement re-loading and updating of task classes.
+
+	* tests/EntityBuildertest.cpp, tests/Rulesettest.cpp:
+	  Update the tests now that the functionality has been broken up.
+
+	* Comprehensively review and remove unnecessary includes, and add
+	  doc comments.
+
 2009-08-05  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* server/WorldRouter.cpp, rulesets/Domain.cpp: Fix mode handling and
