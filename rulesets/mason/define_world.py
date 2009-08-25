@@ -1040,7 +1040,6 @@ def populate(mapeditor):
         xpos = uniform(-15,-10)
         ypos = uniform(-15,-10)
         zpos = uniform(-4,0)
-        world = m.look()
         c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(c)
     m.learn(fish, fish_goals)
