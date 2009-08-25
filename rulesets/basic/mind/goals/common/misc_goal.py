@@ -258,6 +258,42 @@ class sit_down(Goal):
     def sit(self,me):
         return Operation("set", Entity(me.id, mode="sitting"))
 
+############################ MOVE AROUND RANDOMLY ###########################################
+
+class amble(Goal):
+    """Move randomly if not already moving."""
+    def __init__(self) :
+        Goal.__init__(self, "move in a random direction if not already in motion",
+                      self.am_i_moving,
+                      [self.do_amble])
+        self.what="world"
+    
+    def am_i_moving(self,me):
+        if me.location.velocity:
+            return 0
+        return 1
+
+    def do_amble(self, me):
+        id=me.get_knowledge('focus', 'hook')
+        if id != None: 
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+            else:
+                if thing.location.parent.id != me.location.parent.id:
+                    me.remove_knowledge('focus', what)
+                else:
+                    if thing.location.parent.id == me.id:
+                        return
+        #world = 
+        #ground = world.id 
+        #op = Operation("eat", ground)
+        #print "Fish ambling"
+        target = Location(me.location.parent, me.location.coordinates)
+        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y+ uniform(-1.5,1.5), target.coordinates.z)
+        target.velocity = Vector3D(1,0,0)
+        return Operation("move",  Entity(me.id, location=target))
+
 ############################ FEED (FOR FOOD) ##################################
 
 class feed(Goal):

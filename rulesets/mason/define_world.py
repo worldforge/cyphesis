@@ -110,6 +110,8 @@ toolprices = [('bowl', 'price', '3'),
               ('pickaxe', 'price', '6'),
               ('scythe', 'price', '7'),
               ('tinderbox', 'price', '8'),
+              ('sieve', 'price', '3'),
+              ('fishingrod', 'price', '4'),
               ('bucksaw', 'price', '10')]
 
 toolmerc_knowledge=[('market', 'location', tool_stall_pos)]
@@ -119,6 +121,25 @@ tailor_prices = [('shirt', 'price', '5'),
                  ('cloak', 'price', '5')]
 
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
+
+# Fish goals
+pickerel_goals=[(il.forage,"forage('annelid')"),
+                (il.forage,"forage('annelid')"),
+                (il.avoid,"avoid(['settler','orc'],10.0)"),
+                (il.amble,"amble()")]
+
+bass_goals=[(il.forage,"forage('annelid')"),
+            (il.forage,"forage('larva')"),
+            (il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.amble,"amble()")]
+
+bluegill_goals=[(il.forage,"forage('maggot')"),
+                (il.forage,"forage('annelid')")]
+
+tuna_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
+            (il.hunt,"predate('bluegill',10.0)"),
+            (il.hunt,"predate('bass',10.0)"),
+            (il.hunt,"predate('pickerel',10.0)")]
 
 pig_goals=[(il.avoid,"avoid(['wolf','skeleton','crab'],10.0)"),
            (il.forage,"forage('acorn')"),
@@ -354,7 +375,9 @@ def default(mapeditor):
         tools=[]
         # the different tools must be stated here \|/
         tooltypes=['shovel', 'axe', 'tinderbox', 'bowl', 'pole', 'bottle',
-                   'cleaver', 'pickaxe', 'scythe', 'bucksaw','trowel','hammer'] 
+                   'cleaver', 'pickaxe', 'scythe', 'bucksaw', 'trowel', 
+                   'hammer', 'fishingrod', 'sieve',
+                  ] 
     
         for i in range(0, 20):
             tty = tooltypes[randint(0,len(tooltypes)-1)]
@@ -519,17 +542,47 @@ def _add_animals(m):
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
-    fish=[]
-    xbase = lake_pos[0]
-    ybase = lake_pos[1]
-    for i in range(0, 10):
-        xpos = xbase + uniform(-5,5)
-        ypos = ybase + uniform(-5,5)
+    bluegill=[]
+    pickerel=[]
+    bass=[]
+    tuna=[]
+    bluegillxbase = -10
+    bluegillybase = -11
+    pickerelxbase = lake_pos[0]
+    pickerelybase = lake_pos[1]
+    bassxbase = lake_pos[0]
+    bassybase = lake_pos[1]
+    tunaxbase = -8
+    tunaybase = -6
+    for i in range(0, 2):
+        xpos = bluegillxbase + uniform(-1,1)
+        ypos = bluegillybase + uniform(-1,1)
+        zpos = uniform(6,8)
+        c=m.make('fish', name='bluegill', pos=(xpos, ypos, zpos), transient=-1)
+        bluegill.append(c)
+    for i in range(0, 2):
+        xpos = pickerelxbase + uniform(-10,-5)
+        ypos = pickerelybase + uniform(-10,-5)
         zpos = uniform(-4,0)
-        d=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
-        fish.append(d)
+        c=m.make('fish', name='pickerel', pos=(xpos, ypos, zpos), transient=-1)
+        pickerel.append(c)
+    for i in range(0, 2):
+        xpos = bassxbase + uniform(-5,0)
+        ypos = bassybase + uniform(-5,0)
+        zpos = uniform(-4,0)
+        c=m.make('fish', name='bass', pos=(xpos, ypos, zpos), transient=-1)
+        bass.append(c)
+    for i in range(0, 2):
+        xpos = tunaxbase + uniform(0,5)
+        ypos = tunaybase + uniform(0,5)
+        zpos = uniform(-21,-18)
+        c=m.make('fish', name='tuna', pos=(xpos, ypos, zpos), transient=-1)
+        tuna.append(c)
+    m.learn(bluegill,bluegill_goals)
+    m.learn(pickerel,pickerel_goals)
+    m.learn(bass,bass_goals)
+    m.learn(tuna,tuna_goals)
     
-
     # I am not sure if we need a guard
     #m.learn(guard,(il.patrol,"patrol(['m1', 'm2', 'm3', 'm4', 'm5', 'm6'])"))
     #m.tell_importance(guard,il.defend,'>',il.patrol)
@@ -558,7 +611,7 @@ def _setup_landscape(m, world):
     for i in forests:
         for j in range(0, i[1]):
             m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)], style = tree_styles[i[0]][randint(0,len(tree_styles[i[0]]) - 1)])
-
+    m.make('ocean',pos=(0,0,0),bbox=[-500,-321,-20,320,321,0])
     m.make('weather', pos=(0,1,0))
 
 
@@ -875,6 +928,7 @@ def modify_terrain(mapeditor):
     world=m.look()
 
     _setup_terrain(m, world)
+    m.make('ocean',pos=(0,0,0),bbox=[-500,-321,-20,320,321,0])
 
 def add_castle(mapeditor):
     
@@ -969,5 +1023,23 @@ def add_castle(mapeditor):
     castle_path_area = {'points': [[-400, -34], [-372, -34], [-350, -42], [-300, -56], [-215, -42], [-180, -5], [-125, -6], [-86, -4],
         [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
     m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
- 
 
+def add_fish(mapeditor):
+    #   general things
+
+    m=editor(mapeditor)
+
+    fish_goals=[(il.forage,"forage('juicy maggot')"),
+                    (il.forage,"forage('juicy earthworm')"),
+                    (il.forage,"forage('scrawny maggot')"),
+                    (il.forage,"forage('scrawny earthworm')"),
+                    (il.avoid,"avoid(['settler','orc'],10.0)"),
+                    (il.amble,"amble()")]
+    fish = []
+    for i in range(0, 2):
+        xpos = uniform(-15,-10)
+        ypos = uniform(-15,-10)
+        zpos = uniform(-4,0)
+        c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
+        fish.append(c)
+    m.learn(fish, fish_goals)
