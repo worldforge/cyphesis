@@ -138,8 +138,7 @@ bass_goals=[(il.forage,"forage('annelid')"),
 bluegill_goals=[(il.forage,"forage('maggot')"),
                 (il.forage,"forage('annelid')")]
 
-tuna_goals=[(il.school,"school()"),
-            (il.avoid,"avoid(['settler','orc'],10.0)"),
+tuna_goals=[(il.avoid,"avoid(['settler','orc'],10.0)"),
             (il.hunt,"predate('bluegill',10.0)"),
             (il.hunt,"predate('bass',10.0)"),
             (il.hunt,"predate('pickerel',10.0)")]
@@ -1038,7 +1037,6 @@ def populate(mapeditor):
                     (il.forage,"forage('juicy earthworm')"),
                     (il.forage,"forage('scrawny maggot')"),
                     (il.forage,"forage('scrawny earthworm')"),
-                    (il.school,"school()"),
                     (il.avoid,"avoid(['settler','orc'],10.0)"),
                     (il.amble,"amble()")]
     fish = []
