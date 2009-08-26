@@ -27,8 +27,11 @@
 #include "common/debug.h"
 #include "common/const.h"
 #include "common/log.h"
+#include "common/TypeNode.h"
 
 #include <iostream>
+
+using String::compose;
 
 static const bool debug_flag = false;
 
@@ -183,7 +186,12 @@ bool Motion::resolveCollision()
         // the last move has taken effect, so we make the new
         // pos exactly as it was when the last collision was
         // predicted.
-        log(ERROR, "NON COLLISION - target does not have common parent");
+        log(ERROR, compose("Collision Error: %1(%2) with parent %3 "
+                           "colliding with %4(%5) with parent %6",
+                           m_entity.getId(), m_entity.getType()->name(),
+                           location.m_loc->getId(), m_collEntity->getId(),
+                           m_collEntity->getType()->name(),
+                           m_collEntity->m_location.m_loc->getId()));
     } else {
         // FIXME Generate touch ops
         // This code relies on m_collNormal being a unit vector
