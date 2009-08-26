@@ -1,3 +1,8 @@
+2009-08-26  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* rulesets/Motion.cpp: Ensure full details are reported when a
+	  collision does not work as expected.
+
 2009-08-25  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* data/animals.xml, data/tasks.xml, data/terrain.xml, data/tools.xml:
