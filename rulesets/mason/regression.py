@@ -5,50 +5,74 @@ from atlas import *
 from cyphesis.editor import editor
 from types import StringType
 
+ALL_CLASSES=["acorn", "acorn", "annelid", "apple", "apple", "appletree", "appletree", "area", "arm", "arm", "armory", "arrow", "axe", "barrel", "birch", "block_house", "blueprint", "board", "boat", "boots", "bottle", "boulder", "boundary", "bow", "bowl", "bucksaw", "bunny", "butcher_house", "campfire", "carrot", "castle_foundation", "castle_house", "castle_outer_wall", "chicken", "chop", "cleaver", "cleaver", "cloak", "coin", "collapse", "combat", "construction", "cow", "crab", "crab", "cultivate", "curtain_wall", "cut", "deed", "deer", "deer", "delve", "dig", "disperse", "dog", "don_jon", "door", "extinguish", "feature", "fern", "fir", "fircone", "fire", "fish", "fishing", "fishingrod", "float", "flower", "forest", "gallows", "gallows", "garment", "gateway", "goblin", "grass", "gravestone", "hall", "ham", "hammer", "hangman", "hat", "hook", "horse", "house", "ignite", "inn", "jetty", "keep", "knife", "larva", "leaf", "lever", "loaf", "logging", "longtable", "lumber", "lych", "lych", "maggot", "marshall", "material", "mausoleum", "mayor", "mercenary", "merchant", "mobile", "mushroom", "oak", "oak", "ocean", "path", "pelvis", "pelvis", "pickaxe", "pig", "pig", "pile", "ploughed_field", "pole", "poplar", "raise", "ram", "reap", "ribcage", "ribcage", "rope", "scythe", "seed", "seed", "settler", "sharpen", "shin", "shin", "shirt", "shoot", "shovel", "sieve", "sift", "skeleton", "skeleton", "skull", "skull", "slaughter", "slice", "sow", "spider", "squirrel", "squirrel", "stake", "stall", "statue", "stone", "stonehouse", "strike", "structure", "sty", "sword", "tent", "theodolite", "thigh", "thigh", "tinderbox", "torch", "tower", "trailblaze", "tree", "tree", "trousers", "trowel", "tuber", "turnip", "twobyfour", "venison", "villager", "wall", "wear", "weather", "weather", "willow", "wolf", "wolf", "wood"]
+
+class RegressionTester:
+    def __init__(self, editor, sx = 0, sy = 0, width = 64):
+        self.editor = editor
+        self.x = sx
+        self.y = sy
+        self.width = width
+    def get_pos(self):
+        pos = (self.x, self.y, 0)
+        self.x += 2
+        if self.x > self.width:
+            self.x = 0
+            self.y += 2
+        return pos
+
+    def create_all(self, types):
+        for type in types:
+            self.editor.make(type, pos=self.get_pos())
+
+    def create_character(self, type, pos):
+        return self.editor.make(type, pos=pos)
+
+    def test_task(self, task, target, tool, op, avatar = 'settler'):
+        if type(avatar)== StringType:
+            c = self.create_character(avatar, self.get_pos())
+        else:
+            c = avatar
+
+        if type(tool)==StringType:
+            t = self.editor.make(tool, pos=(0,0,0), parent=c.id)
+        else:
+            t = tool
+
+        if type(target)==StringType:
+            o = self.editor.make(target, pos=self.get_pos())
+        else:
+            o = target
+
+        self.editor.m.send(Operation('wield', Entity(t.id), to=c))
+        self.editor.m.send(Operation('use', Operation(op, Entity(o.id)), to=c))
+
+        c = self.editor.look(c.id)
+
+        if not hasattr(c, 'tasks') or len(c.tasks) < 1:
+            raise AssertionError, 'Task \'%s\' failed to start' % task
+
+        if c.tasks[0].name != task:
+            raise AssertionError, 'Task \'%s\' started instead of ' \
+                                  'expected \"%s\"' % (c.tasks[0].name, task)
+
+
+
 def default(mapeditor):
     m = editor(mapeditor)
 
     world=m.look()
 
-    # _test_task(m, 'cultivate', 'acorn', 'trowel', 'sow')
-    _test_task(m, 'delve', world, 'pickaxe', 'cut')
-    _test_task(m, 'dig', world, 'shovel', 'cut')
-    # _test_task(m, 'fishing', 'ocean', 'fishingrod', 'sow')
-    _test_task(m, 'logging', 'oak', 'axe', 'cut')
-    _test_task(m, 'raise', 'stake', 'pole', 'lever')
-    _test_task(m, 'reap', world, 'scythe', 'cut')
-    _test_task(m, 'ram', 'stake', 'hammer', 'strike')
+    p=RegressionTester(m)
 
-def _test_task(m, task, target, tool, op, avatar = 'settler'):
+    p.create_all(ALL_CLASSES)
 
-    if type(avatar)== StringType:
-        c = _create_character(m, avatar, (10, 5, 0))
-    else:
-        c = avatar
+    # p.test_task('cultivate', 'acorn', 'trowel', 'sow')
+    p.test_task('delve', world, 'pickaxe', 'cut')
+    p.test_task('dig', world, 'shovel', 'cut')
+    # p.test_task(m, 'fishing', 'ocean', 'fishingrod', 'sow')
+    p.test_task('logging', 'oak', 'axe', 'cut')
+    p.test_task('raise', 'stake', 'pole', 'lever')
+    p.test_task('reap', world, 'scythe', 'cut')
+    p.test_task('ram', 'stake', 'hammer', 'strike')
 
-    if type(tool)==StringType:
-        t = m.make(tool, pos=(0,0,0), parent=c.id)
-    else:
-        t = tool
-
-    if type(target)==StringType:
-        o = m.make(target, pos=(12, 5, 0))
-    else:
-        o = target
-
-    m.m.send(Operation('wield', Entity(t.id), to=c))
-    m.m.send(Operation('use', Operation(op, Entity(o.id)), to=c))
-
-    c = m.look(c.id)
-
-    if not hasattr(c, 'tasks') or len(c.tasks) < 1:
-        raise AssertionError, 'Task \'%s\' failed to start' % task
-
-    if c.tasks[0].name != task:
-        raise AssertionError, 'Task \'%s\' started ' \
-                              'instead of expected \"%s\"' % (c.tasks[0].name,
-                                                              task)
-
-
-def _create_character(m, type, pos):
-    return m.make(type, pos=pos)
