@@ -14,6 +14,7 @@ class RegressionTester:
         self.y = sy
         self.width = width
     def get_pos(self):
+        "Get the next position on a spaced out grid"
         pos = (self.x, self.y, 0)
         self.x += 2
         if self.x > self.width:
@@ -22,13 +23,16 @@ class RegressionTester:
         return pos
 
     def create_all(self, types):
+        "Create an instance of every type given"
         for type in types:
             self.editor.make(type, pos=self.get_pos())
 
     def create_character(self, type, pos):
+        "Create a character entity"
         return self.editor.make(type, pos=pos)
 
     def test_task(self, task, target, tool, op, avatar = 'settler'):
+        "Test activating a task using a tool on a target"
         if type(avatar)== StringType:
             c = self.create_character(avatar, self.get_pos())
         else:
