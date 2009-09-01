@@ -1,3 +1,11 @@
+Internal "perceptive" property, which stores a set of currently visible IDs,
+and can be used to send appearance/disappearance ops. Should cut down to cost
+but increase storage.
+
+A Dungeon Master like play style, where lots of minions are available to
+dig and build dungeons, which a classic dungeon crawl mechanic for heros
+in the Diablo style.
+
 We really need to expose mind state better.
 
 Add functionality to handle ids in blocks or ranges.
