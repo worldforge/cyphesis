@@ -115,8 +115,6 @@ parent. Point to it from the Motion object. (safe reference).
 Encapsulate most data related to movement in Motion rather than leaving
 it to clog up Location.
 
-Tolerate FooBase in the check script.
-
 Fix up cycmd to work more like cydb.
 
 Move account update functionality into AccountBase. Keep cypasswd as the
