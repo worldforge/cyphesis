@@ -115,7 +115,6 @@ parent. Point to it from the Motion object. (safe reference).
 Encapsulate most data related to movement in Motion rather than leaving
 it to clog up Location.
 
-Rename Monitor as Variable, and give it a place of it's own.
 Tolerate FooBase in the check script.
 
 Fix up cycmd to work more like cydb.
