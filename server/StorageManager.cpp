@@ -34,6 +34,7 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/Variable.h"
 
 #include <Atlas/Objects/Anonymous.h>
 

@@ -19,34 +19,12 @@
 
 #include "Monitors.h"
 
+#include "Variable.h"
+
 #include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
-
-MonitorBase::~MonitorBase()
-{
-}
-
-template <typename T>
-Monitor<T>::Monitor(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Monitor<T>::~Monitor()
-{
-}
-
-template <typename T>
-void Monitor<T>::send(std::ostream & o)
-{
-    o << m_variable;
-}
-
-template class Monitor<int>;
-template class Monitor<std::string>;
-template class Monitor<const char *>;
 
 Monitors * Monitors::m_instance = NULL;
 

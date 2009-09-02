@@ -45,6 +45,7 @@
 #include "common/Monitors.h"
 #include "common/Property.h"
 #include "common/TypeNode.h"
+#include "common/Variable.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Entity.h>

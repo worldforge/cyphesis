@@ -20,11 +20,12 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 
-#include "common/debug.h"
-#include "common/const.h"
 #include "common/BaseWorld.h"
-#include "common/Monitors.h"
 #include "common/compose.hpp"
+#include "common/const.h"
+#include "common/debug.h"
+#include "common/Monitors.h"
+#include "common/Variable.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
