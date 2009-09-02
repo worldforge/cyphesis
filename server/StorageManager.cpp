@@ -67,23 +67,23 @@ StorageManager:: StorageManager(WorldRouter & world) :
               &StorageManager::entityInserted));
 
         Monitors::instance()->watch("storage_entity_inserts",
-                                    new Monitor<int>(m_insertEntityCount));
+                                    new Variable<int>(m_insertEntityCount));
         Monitors::instance()->watch("storage_entity_updates",
-                                    new Monitor<int>(m_updateEntityCount));
+                                    new Variable<int>(m_updateEntityCount));
         Monitors::instance()->watch("storage_property_inserts",
-                                    new Monitor<int>(m_insertPropertyCount));
+                                    new Variable<int>(m_insertPropertyCount));
         Monitors::instance()->watch("storage_property_updates",
-                                    new Monitor<int>(m_updatePropertyCount));
+                                    new Variable<int>(m_updatePropertyCount));
 
         Monitors::instance()->watch("storage_qps{qtype=inserts,t=1}",
-                                    new Monitor<int>(m_insertQpsNow));
+                                    new Variable<int>(m_insertQpsNow));
         Monitors::instance()->watch("storage_qps{qtype=updates,t=1}",
-                                    new Monitor<int>(m_updateQpsNow));
+                                    new Variable<int>(m_updateQpsNow));
 
         Monitors::instance()->watch("storage_qps{qtype=inserts,t=32}",
-                                    new Monitor<int>(m_insertQpsAvg));
+                                    new Variable<int>(m_insertQpsAvg));
         Monitors::instance()->watch("storage_qps{qtype=updates,t=32}",
-                                    new Monitor<int>(m_updateQpsAvg));
+                                    new Variable<int>(m_updateQpsAvg));
 
         for (int i = 0; i < 32; ++i) {
             m_insertQpsRing[i] = 0;

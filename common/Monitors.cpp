@@ -63,7 +63,7 @@ void Monitors::insert(const std::string & key, const Element & val)
     m_pairs[key] = val;
 }
 
-void Monitors::watch(const::std::string & name, MonitorBase * monitor)
+void Monitors::watch(const::std::string & name, VariableBase * monitor)
 {
     m_variableMonitors[name] = monitor;
 }

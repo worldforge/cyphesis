@@ -297,7 +297,7 @@ void EntityBuilder::installFactory(const std::string & class_name,
 
     m_entityFactories[class_name] = factory;
     Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
-                                new Monitor<int>(factory->m_createdCount));
+                                new Variable<int>(factory->m_createdCount));
 
     Inheritance & i = Inheritance::instance();
 

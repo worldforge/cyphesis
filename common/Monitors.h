@@ -22,7 +22,7 @@
 
 #include <Atlas/Message/Element.h>
 
-class MonitorBase;
+class VariableBase;
 
 /// \brief Storage for monitor values to be exported
 ///
@@ -30,7 +30,7 @@ class MonitorBase;
 /// the http interface can access it.
 class Monitors {
   protected:
-    typedef std::map<std::string, MonitorBase *> MonitorDict;
+    typedef std::map<std::string, VariableBase *> MonitorDict;
 
     static Monitors * m_instance;
 
@@ -44,7 +44,7 @@ class Monitors {
     static void cleanup();
 
     void insert(const std::string &, const Atlas::Message::Element &);
-    void watch(const std::string &, MonitorBase *);
+    void watch(const std::string &, VariableBase *);
     void send(std::ostream &);
 };
 

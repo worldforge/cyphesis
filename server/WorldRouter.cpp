@@ -117,7 +117,7 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
-    Monitors::instance()->watch("entities", new Monitor<int>(m_entityCount));
+    Monitors::instance()->watch("entities", new Variable<int>(m_entityCount));
 }
 
 /// \brief Destructor for the world object.

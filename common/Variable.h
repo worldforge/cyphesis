@@ -26,9 +26,9 @@
 ///
 /// Variables which should be represented in the monitors output are
 /// referenced by subclasses this interface
-class MonitorBase {
+class VariableBase {
   public:
-    virtual ~MonitorBase() = 0;
+    virtual ~VariableBase() = 0;
     virtual void send(std::ostream &) = 0;
 };
 
@@ -37,13 +37,13 @@ class MonitorBase {
 /// Objects of this type expose the variable they reference to the
 /// monitoring subsystem.
 template<typename T>
-class Monitor : public MonitorBase {
+class Variable : public VariableBase {
   protected:
     const T & m_variable;
   public:
-    Monitor(const T & variable);
+    Variable(const T & variable);
 
-    virtual ~Monitor();
+    virtual ~Variable();
     virtual void send(std::ostream &);
 };
 

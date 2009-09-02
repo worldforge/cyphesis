@@ -21,26 +21,26 @@
 
 #include <iostream>
 
-MonitorBase::~MonitorBase()
+VariableBase::~VariableBase()
 {
 }
 
 template <typename T>
-Monitor<T>::Monitor(const T & variable) : m_variable(variable)
+Variable<T>::Variable(const T & variable) : m_variable(variable)
 {
 }
 
 template <typename T>
-Monitor<T>::~Monitor()
+Variable<T>::~Variable()
 {
 }
 
 template <typename T>
-void Monitor<T>::send(std::ostream & o)
+void Variable<T>::send(std::ostream & o)
 {
     o << m_variable;
 }
 
-template class Monitor<int>;
-template class Monitor<std::string>;
-template class Monitor<const char *>;
+template class Variable<int>;
+template class Variable<std::string>;
+template class Variable<const char *>;
