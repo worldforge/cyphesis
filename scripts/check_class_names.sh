@@ -8,6 +8,9 @@ check_header_file() {
         if [ "$FILE" == "$name" ]
         then
             true
+        elif [ "${FILE}Base" == "$name" ]
+        then
+            true
         elif [ "Python${FILE}" == "$name" ]
         then
             # PythonFoo is the standard python version derived from Foo
