@@ -217,7 +217,9 @@ customtest_LDADD = \
         $(top_builddir)/common/globals.o
 
 Monitorstest_SOURCES = Monitorstest.cpp
-Monitorstest_LDADD = $(top_builddir)/common/Monitors.o
+Monitorstest_LDADD = \
+        $(top_builddir)/common/Monitors.o \
+        $(top_builddir)/common/Variable.o
 
 operationstest_SOURCES = operationstest.cpp
 operationstest_LDADD = $(top_builddir)/common/const.o

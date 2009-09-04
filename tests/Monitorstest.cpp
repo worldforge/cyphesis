@@ -18,6 +18,7 @@
 // $Id$
 
 #include "common/Monitors.h"
+#include "common/Variable.h"
 
 #include <iostream>
 
@@ -31,7 +32,7 @@ int main()
 
     int foo = 1;
 
-    m->watch("foo", new Monitor<int>(foo));
+    m->watch("foo", new Variable<int>(foo));
 
     m->insert("bar", 3);
     m->insert("mim", 3.f);
