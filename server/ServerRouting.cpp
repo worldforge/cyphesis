@@ -76,6 +76,58 @@ ServerRouting::~ServerRouting()
     delete &m_lobby;
 }
 
+/// Add an OOG object to the server.
+void ServerRouting::addObject(Router * obj)
+{
+    assert(!obj->getId().empty());
+    assert(integerId(obj->getId()) == obj->getIntId());
+    assert(obj->getIntId() > 0);
+    m_objects[obj->getIntId()] = obj;
+}
+
+/// Add an Account object to the server.
+void ServerRouting::addAccount(Account * a)
+{
+    m_accounts[a->m_username] = a;
+    addObject(a);
+}
+
+/// Remove an OOG object from the server.
+void ServerRouting::delObject(Router * obj)
+{
+    m_objects.erase(obj->getIntId());
+}
+
+/// \brief Find an object with the given id.
+///
+/// @return a pointer to the object with the given id, or
+/// zero if no object with this id is present.
+Router * ServerRouting::getObject(const std::string & id) const
+{
+    RouterMap::const_iterator I = m_objects.find(integerId(id));
+    if (I == m_objects.end()) {
+        return 0;
+    } else {
+        return I->second;
+    }
+}
+
+/// \brief Find an account with a given username.
+///
+/// @return a pointer to the Account object with the given
+/// username, or zero if the Account is not present. Does
+/// not check any external authentication sources, or the
+/// database.
+Account * ServerRouting::getAccountByName(const std::string & username) const
+{
+    AccountDict::const_iterator I = m_accounts.find(username);
+    if (I == m_accounts.end()) {
+        return 0;
+    } else {
+        return I->second;
+    }
+}
+
 void ServerRouting::addToMessage(MapType & omap) const
 {
     omap["objtype"] = "obj";
