@@ -120,7 +120,8 @@ does other stuff.
 
 Look up Proactor pattern, Bloom filter.
 
-How to support phasing?
+How to support phasing? (Instancing so that the same place changes
+fundamentally only to a subset of players)
 
 Paxos algorithm for consensus (master election) in an unreliable distributed
 system.
