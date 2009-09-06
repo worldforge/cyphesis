@@ -12,9 +12,6 @@ Add functionality to handle ids in blocks or ranges.
 
 Does _anyone_ use Atlas::Objects iterators?
 
-Excessive inlining in ServerRouting.h, and removes need for Account header,
-and AccountDict in Account.h
-
 EntityFactory::m_children is only used in updating children properties, and
 probably could be done by look up the children in Inheritance.
 
