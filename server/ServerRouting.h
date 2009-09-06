@@ -20,17 +20,14 @@
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
 
-#include "Account.h"
-
-#include "common/id.h"
 #include "common/Router.h"
 
-#include <cassert>
-
+class Account;
 class BaseWorld;
 class Lobby;
 
 typedef std::map<long, Router *> RouterMap;
+typedef std::map<std::string, Account *> AccountDict;
 
 extern bool restricted_flag;
 

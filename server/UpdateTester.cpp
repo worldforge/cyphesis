@@ -19,6 +19,7 @@
 
 #include "UpdateTester.h"
 
+#include "Account.h"
 #include "CommServer.h"
 #include "Connection.h"
 #include "ServerRouting.h"

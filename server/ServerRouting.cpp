@@ -18,12 +18,15 @@
 // $Id$
 
 #include "ServerRouting.h"
+
+#include "Account.h"
 #include "Lobby.h"
 
 #include "common/BaseWorld.h"
 #include "common/compose.hpp"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/id.h"
 #include "common/Monitors.h"
 #include "common/Variable.h"
 
