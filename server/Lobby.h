@@ -43,7 +43,8 @@ class Lobby : public Router {
     void addAccount(Account * a);
     void delAccount(Account * a);
 
-    inline const AccountDict & getAccounts() const {
+    /// Accessor for Accounts map.
+    const AccountDict & getAccounts() const {
         return m_accounts;
     }
 
