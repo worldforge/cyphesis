@@ -101,6 +101,4 @@ class Account : public Router {
     }
 };
 
-typedef std::map<std::string, Account *> AccountDict;
-
 #endif // SERVER_ACCOUNT_H
