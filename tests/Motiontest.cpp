@@ -21,21 +21,29 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/TypeNode.h"
+
 int main()
 {
+    TypeNode type;
     Entity tlve("0", 0), ent("1", 1), other("2", 2);
+
+    type.name() == "test_type";
 
     ent.m_location.m_loc = &tlve;
     ent.m_location.m_pos = Point3D(1, 1, 0);
     ent.m_location.m_velocity = Vector3D(1,0,0);
+    ent.setType(&type);
 
     // Set up another entity to test collisions with.
     other.m_location.m_loc = &tlve;
     other.m_location.m_pos = Point3D(10, 0, 0);
+    other.setType(&type);
 
     tlve.m_contains = new LocatedEntitySet;
     tlve.m_contains->insert(&ent);
     tlve.m_contains->insert(&other);
+    tlve.setType(&type);
     tlve.incRef();
     tlve.incRef();
 
