@@ -28,7 +28,7 @@ int main()
     TypeNode type;
     Entity tlve("0", 0), ent("1", 1), other("2", 2);
 
-    type.name() == "test_type";
+    type.name() = "test_type";
 
     ent.m_location.m_loc = &tlve;
     ent.m_location.m_pos = Point3D(1, 1, 0);
