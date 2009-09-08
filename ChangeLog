@@ -1,3 +1,18 @@
+2009-09-08  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/Monitors.cpp, common/Monitors.h,
+	  common/Variable.cpp, common/Variable.h: Move monitor variables
+	  into their own file.
+
+	* server/EntityBuilder.cpp, server/ServerRouting.cpp,
+	  server/StorageManager.cpp, server/WorldRouter.cpp:
+	  Update code that exposes variables as monitors.
+
+	* server/Account.h, server/Lobby.cpp, server/Lobby.h,
+	  server/ServerRouting.cpp, server/ServerRouting.h,
+	  server/UpdateTester.cpp: Clean up the account header,
+	  using inline where appropriate.
+
 2009-08-26  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* rulesets/Motion.cpp: Ensure full details are reported when a
