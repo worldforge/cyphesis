@@ -36,6 +36,10 @@
 
 #include <cstring>
 
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
+
 #include <cassert>
 
 const char * CYPHESIS = "cyphesis";
