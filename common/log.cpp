@@ -29,6 +29,7 @@
 #include <fstream>
 
 #include <cstring>
+#include <ctime>
 
 extern "C" {
 #ifdef HAVE_SYSLOG_H
