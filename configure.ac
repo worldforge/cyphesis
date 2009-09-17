@@ -383,6 +383,8 @@ ensure than pg_config is on the PATH. See http://www.postgresql.org/ for
 details of how to download the software.])
 )
 
+if test x"$cross_compiling" = "xno"; then
+
 ac_save_LIBS="$LIBS"
 LIBS="$LIBS $PG_LIBS"
 AC_CHECK_LIB(pq,PQconnectdb,
@@ -392,6 +394,8 @@ AC_CHECK_LIB(pq,PQconnectdb,
 Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development
 software?]))
 LIBS="$ac_save_LIBS"
+
+fi
 
 READLINE_LIBS=
 
