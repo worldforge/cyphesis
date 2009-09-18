@@ -30,6 +30,10 @@
 
 #include <wfmath/MersenneTwister.h>
 
+#ifdef _WIN32
+#undef DATADIR
+#endif // HAVE_WINSOCK_H
+
 #include <gcrypt.h>
 
 #include <iostream>
@@ -44,7 +48,6 @@ extern "C" {
 #endif // HAVE_SYS_UTSNAME_H
     #include <sys/types.h>
 #ifdef HAVE_WINSOCK_H
-    #undef DATADIR
     #include <winsock.h>
 #endif // HAVE_WINSOCK_H
 #ifdef HAVE_SYS_WAIT_H
@@ -55,6 +58,10 @@ extern "C" {
     #include <unistd.h>
     #include <stdio.h>
 }
+
+#ifdef ERROR
+#undef ERROR
+#endif
 
 static const bool debug_flag = false;
 
