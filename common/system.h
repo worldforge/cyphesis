@@ -59,7 +59,7 @@ int getfiletime(const std::string & filename, time_t & t);
 
 #ifdef _WIN32
 
-int gettimeofday(struct timeval * tv, struct timezone * tz);
+// int gettimeofday(struct timeval * tv, struct timezone * tz);
 
 #else // _WIN32
 
