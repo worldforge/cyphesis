@@ -90,7 +90,7 @@ int CommMetaClient::getFd() const
 
 bool CommMetaClient::eof()
 {
-    return m_clientIos.peek() == EOF;
+    return m_clientIos.peek() == std::iostream::traits_type::eof();
 }
 
 bool CommMetaClient::isOpen() const

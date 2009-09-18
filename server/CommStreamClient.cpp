@@ -47,5 +47,6 @@ bool CommStreamClient::isOpen() const
 
 bool CommStreamClient::eof()
 {
-    return (m_clientIos.fail() || m_clientIos.peek() == EOF);
+    return (m_clientIos.fail() ||
+            m_clientIos.peek() == std::iostream::traits_type::eof());
 }
