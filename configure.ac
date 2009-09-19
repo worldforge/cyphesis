@@ -106,7 +106,7 @@ AC_CHECK_FUNCS([sigset sigaction epoll_create poll localtime_r syslog uname])
 AC_CHECK_FUNCS([getuid nice fork setsid wait4 getppid kill inet_ntop])
 AC_CHECK_FUNCS([unlink usleep Sleep gettimeofday getnameinfo])
 
-AC_CHECK_FUNC(cos,,[AC_CHECK_LIB(m,cos)])
+AC_SEARCH_LIBS([cos], [m])
 
 AC_MSG_CHECKING([whether we have res_init() available])
 AC_LINK_IFELSE(
@@ -383,19 +383,24 @@ ensure than pg_config is on the PATH. See http://www.postgresql.org/ for
 details of how to download the software.])
 )
 
-if test x"$cross_compiling" = "xno"; then
-
 ac_save_LIBS="$LIBS"
 LIBS="$LIBS $PG_LIBS"
 AC_CHECK_LIB(pq,PQconnectdb,
 [
     PGSQL_LIBS="$PGSQL_LIBS -lpq"
-],AC_MSG_ERROR([
+],
+[
+    AC_CHECK_LIB(pq,PQconnectStart,
+    [
+        PGSQL_LIBS="$PGSQL_LIBS -lpq"
+    ],
+    [
+        AC_MSG_ERROR([
 Cannot find PostgreSQL bindings! Have you installed the PostgreSQL development
-software?]))
+software?])
+    ],[-lws2_32 -lwsock32 -lsecur32])
+])
 LIBS="$ac_save_LIBS"
-
-fi
 
 READLINE_LIBS=
 
