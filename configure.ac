@@ -392,7 +392,7 @@ AC_CHECK_LIB(pq,PQconnectdb,
 [
     AC_CHECK_LIB(pq,PQconnectStart,
     [
-        PGSQL_LIBS="$PGSQL_LIBS -lpq"
+        PGSQL_LIBS="$PGSQL_LIBS -lpq -lws2_32 -lwsock32 -lsecur32"
     ],
     [
         AC_MSG_ERROR([
