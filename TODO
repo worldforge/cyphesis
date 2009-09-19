@@ -1,3 +1,5 @@
+Use PGconnectStart for async db stuff.
+
 Internal "perceptive" property, which stores a set of currently visible IDs,
 and can be used to send appearance/disappearance ops. Should cut down to cost
 but increase storage.
