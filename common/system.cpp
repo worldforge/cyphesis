@@ -32,7 +32,7 @@
 
 #ifdef _WIN32
 #undef DATADIR
-#endif // HAVE_WINSOCK_H
+#endif // _WIN32
 
 #include <gcrypt.h>
 
