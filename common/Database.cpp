@@ -190,8 +190,8 @@ int Database::initConnection()
     std::string error_message;
 
     if (connect(::instance, error_message) != 0) {
-        log(ERROR, compose("Connection to database failed: \n%1",
-                           error_message));
+        log(ERROR, "Connection to database failed:");
+        log_formatted(ERROR, error_message);
         return -1;
     }
 
