@@ -190,6 +190,11 @@ void log_formatted(LogLevel lvl, const std::string & msg)
         s = p + 1;
         p = msg.find('\n', s);
     } while (p != std::string::npos);
+
+    // If the last line is not terminated with a newline, print it.
+    if (s < msg.size()) {
+        log(lvl, msg.substr(s));
+    }
 }
 
 void logEvent(LogEvent lev, const std::string & msg)
