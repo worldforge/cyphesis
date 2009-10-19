@@ -35,6 +35,11 @@ int main()
     log(SCRIPT_ERROR, "Script Error log message.");
     log(CRITICAL, "Critical log message.");
 
+    log_formatted(INFO, "Info message with no \\n");
+    log_formatted(INFO, "Info message with a \\n\n");
+    log_formatted(INFO, "Info message with a \\n \n and text on another line");
+    log_formatted(INFO, "Info message with two \\n\n on two lines\n");
+
     errno = 0;
     logSysError(INFO);
     logSysError(SCRIPT);
