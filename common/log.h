@@ -37,6 +37,7 @@ typedef enum log_event { START, STOP, CONNECT, DISCONNECT, LOGIN, LOGOUT,
 void initLogger();
 void rotateLogger();
 void log(LogLevel, const std::string & msg);
+void log_formatted(LogLevel, const std::string & msg);
 void logEvent(LogEvent, const std::string & msg);
 void logSysError(LogLevel);
 

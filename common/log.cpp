@@ -181,6 +181,17 @@ void log(LogLevel lvl, const std::string & msg)
     }
 }
 
+void log_formatted(LogLevel lvl, const std::string & msg)
+{
+    std::string::size_type s = 0;
+    std::string::size_type p = msg.find('\n');
+    do {
+        log(lvl, msg.substr(s, p - s));
+        s = p + 1;
+        p = msg.find('\n', s);
+    } while (p != std::string::npos);
+}
+
 void logEvent(LogEvent lev, const std::string & msg)
 {
     if (!event_log.is_open()) {
