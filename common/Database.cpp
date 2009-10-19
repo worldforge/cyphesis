@@ -52,10 +52,8 @@ Database * Database::m_instance = NULL;
 
 static void databaseNotice(void * arg, const char * message)
 {
-    std::string msg = std::string("DATABASE: ") + message;
-    // Remove the trailing \n from the message.
-    msg = msg.substr(0, msg.size() - 1);
-    log(NOTICE, msg);
+    log(NOTICE, "Notice from database:");
+    log_formatted(NOTICE, message);
 }
 
 Database::Database() : m_rule_db("rules"),
