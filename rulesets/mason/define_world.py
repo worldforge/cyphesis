@@ -1029,16 +1029,15 @@ def add_fish(mapeditor):
 
     m=editor(mapeditor)
 
-    fish_goals=[(il.forage,"forage('juicy maggot')"),
-                    (il.forage,"forage('juicy earthworm')"),
-                    (il.forage,"forage('scrawny maggot')"),
-                    (il.forage,"forage('scrawny earthworm')"),
-                    (il.avoid,"avoid(['settler','orc'],10.0)"),
+    fish_goals=[(il.forage,"forage('annelid')"),
+                    (il.forage,"forage('annelid')"),
+                    (il.forage,"forage('annelid')"),
+                    (il.forage,"forage('annelid')"),
                     (il.amble,"amble()")]
     fish = []
     for i in range(0, 2):
-        xpos = uniform(-15,-10)
-        ypos = uniform(-15,-10)
+        xpos = uniform(-35,-30)
+        ypos = uniform(-30,-25)
         zpos = uniform(-4,0)
         c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(c)
