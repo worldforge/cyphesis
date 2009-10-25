@@ -1,3 +1,9 @@
+Constrain movement if not directly in a movement domain.
+
+Tower defense game.
+
+Implement configurable spawn points.
+
 Use PGconnectStart for async db stuff.
 
 Internal "perceptive" property, which stores a set of currently visible IDs,
