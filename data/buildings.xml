@@ -581,4 +581,24 @@
     </list>
   </map>
 
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+	  <float>-1.08641</float>
+	  <float>-1.21978</float>
+	  <float>0</float>
+	  <float>1.11871</float>
+	  <float>0.954559</float>
+	  <float>3.04309</float>
+	</list>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">waterwell</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
 </atlas>
