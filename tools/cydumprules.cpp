@@ -231,6 +231,8 @@ int main(int argc, char ** argv)
 
         std::cout << rule_store.size() << " classes stores in " << ruleset
                   << std::endl << std::flush;
+
+        rule_store.clear();
     }
 
     delete db;
