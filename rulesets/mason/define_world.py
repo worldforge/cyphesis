@@ -1030,10 +1030,7 @@ def add_fish(mapeditor):
     m=editor(mapeditor)
 
     fish_goals=[(il.forage,"forage('annelid')"),
-                    (il.forage,"forage('annelid')"),
-                    (il.forage,"forage('annelid')"),
-                    (il.forage,"forage('annelid')"),
-                    (il.amble,"amble()")]
+                (il.amble,"amble()")]
     fish = []
     for i in range(0, 2):
         xpos = uniform(-35,-30)
