@@ -109,6 +109,54 @@ class RuleReader {
     }
 };
 
+class MultLineListFormatter : public Atlas::Formatter
+{
+  public:
+    MultLineListFormatter(std::iostream & s, Atlas::Bridge & b) :
+        Atlas::Formatter(s,b) {
+    }
+
+    virtual void mapListItem(const std::string & name) {
+        Atlas::Formatter::mapListItem(name);
+        m_indent += m_spacing;
+        m_stream << std::endl;
+    }
+
+    virtual void listMapItem() {
+        m_stream << std::string(m_indent, ' ');
+        Atlas::Formatter::listMapItem();
+        m_stream << std::endl;
+    }
+    virtual void listListItem() {
+        m_stream << std::string(m_indent, ' ');
+        Atlas::Formatter::listListItem();
+        m_indent += m_spacing;
+        m_stream << std::endl;
+    }
+    virtual void listIntItem(long l) {
+        m_stream << std::string(m_indent, ' ');
+        Atlas::Formatter::listIntItem(l);
+        m_stream << std::endl;
+    }
+    virtual void listFloatItem(double d) {
+        m_stream << std::string(m_indent, ' ');
+        Atlas::Formatter::listFloatItem(d);
+        m_stream << std::endl;
+    }
+    virtual void listStringItem(const std::string&s) {
+        m_stream << std::string(m_indent, ' ');
+        Atlas::Formatter::listStringItem(s);
+        m_stream << std::endl;
+    }
+    virtual void listEnd()
+    {
+        m_indent -= m_spacing;
+        m_stream << std::string(m_indent, ' ');
+        Atlas::Formatter::listEnd();
+    }
+
+};
+
 RuleReader * RuleReader::m_instance = NULL;
 
 int main(int argc, char ** argv)
@@ -163,7 +211,7 @@ int main(int argc, char ** argv)
         file.open(ruleset.c_str(), std::ios::out);
     
         Atlas::Codecs::XML codec(file, decoder);
-        Atlas::Formatter formatter(file, codec);
+        MultLineListFormatter  formatter(file, codec);
         Atlas::Message::Encoder encoder(formatter);
 
         formatter.streamBegin();
