@@ -62,7 +62,7 @@
           <float>0.0</float>
           <float>0.04</float>
           <float>0.04</float>
-          <float>1</float>
+          <float>2</float>
         </list>
         <string name="visibility">public</string>
       </map>
