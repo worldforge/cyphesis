@@ -140,6 +140,10 @@
 
   <map>
     <map name="attributes">
+      <map name="agility">
+        <float name="default">0.3</float>
+        <string name="visibility">private</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
@@ -151,20 +155,16 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="strength">
-        <float name="default">0.3</float>
+      <map name="mind">
+        <string name="default">NPC</string>
         <string name="visibility">private</string>
       </map>
       <map name="stamina">
-        <float name="default">1.0</float>
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="agility">
+      <map name="strength">
         <float name="default">0.3</float>
-        <string name="visibility">private</string>
-      </map>
-      <map name="mind">
-        <string name="default">NPC</string>
         <string name="visibility">private</string>
       </map>
       <map name="tick">
@@ -220,9 +220,9 @@
       </map>
       <map name="statistics">
         <map name="default">
-          <float name="strength">23</float>
           <float name="attack">25</float>
           <float name="defend">21</float>
+          <float name="strength">23</float>
         </map>
       </map>
     </map>
