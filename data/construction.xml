@@ -7,7 +7,8 @@
         <string name="visibility">public</string>
       </map>
       <map name="parameters">
-        <list name="default"></list>
+        <list name="default">
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -20,10 +21,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.6</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-1</float>
@@ -33,6 +30,10 @@
           <float>0.125</float>
           <float>0.02</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.6</float>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -92,12 +93,12 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="burn_speed">
         <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">10</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -136,12 +137,12 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="burn_speed">
         <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -169,7 +170,7 @@
       <string>material</string>
     </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
