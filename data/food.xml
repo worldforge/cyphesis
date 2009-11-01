@@ -2,12 +2,12 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">1.0</float>
+      <map name="biomass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="biomass">
-        <float name="default">1.0</float>
+      <map name="mass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -49,12 +49,12 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">1.0</float>
+      <map name="biomass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="biomass">
-        <float name="default">1.0</float>
+      <map name="mass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
     </map>
