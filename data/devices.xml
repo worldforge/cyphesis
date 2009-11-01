@@ -2,6 +2,13 @@
 
   <map>
     <map name="attributes">
+      <map name="actions">
+        <list name="default">
+          <string>ignite</string>
+          <string>chop</string>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="bbox">
         <list name="default">
           <float>1</float>
@@ -12,13 +19,6 @@
       </map>
       <map name="mass">
         <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="actions">
-        <list name="default">
-          <string>ignite</string>
-          <string>chop</string>
-        </list>
         <string name="visibility">public</string>
       </map>
     </map>
