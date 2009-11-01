@@ -77,10 +77,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.2</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-3.4</float>
@@ -90,6 +86,10 @@
           <float>3.4</float>
           <float>5</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.2</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -102,10 +102,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.2</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-2.5</float>
@@ -117,6 +113,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="burn_speed">
+        <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">butcher_house</string>
     <string name="objtype">class</string>
@@ -124,7 +124,7 @@
       <string>thing</string>
     </list>
   </map>
- 
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -273,8 +273,8 @@
     <list name="parents">
       <string>structure</string>
     </list>
-  </map>  
-  
+  </map>
+
   <map>
     <map name="attributes">
     </map>
@@ -371,10 +371,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.05</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-5</float>
@@ -384,6 +380,10 @@
           <float>5</float>
           <float>2</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.05</float>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -509,6 +509,7 @@
     <map name="attributes">
       <map name="area">
         <map name="default">
+          <int name="layer">7</int>
           <list name="points">
             <list>
               <float>0</float>
@@ -527,7 +528,6 @@
               <float>0</float>
             </list>
           </list>
-          <int name="layer">7</int>
         </map>
       </map>
       <map name="bbox">
@@ -585,13 +585,13 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-	  <float>-1.08641</float>
-	  <float>-1.21978</float>
-	  <float>0</float>
-	  <float>1.11871</float>
-	  <float>0.954559</float>
-	  <float>3.04309</float>
-	</list>
+          <float>-1.08641</float>
+          <float>-1.21978</float>
+          <float>0</float>
+          <float>1.11871</float>
+          <float>0.954559</float>
+          <float>3.04309</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -601,4 +601,5 @@
       <string>thing</string>
     </list>
   </map>
+
 </atlas>
