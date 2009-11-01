@@ -85,7 +85,7 @@
           <float>0</float>
           <float>2.25</float>
           <float>0.5</float>
-          <float>2.0</float>
+          <float>2</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -189,7 +189,6 @@
     </list>
   </map>
 
-
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -208,9 +207,9 @@
         <string name="visibility">public</string>
       </map>
       <map name="mass">
-        <float name="min">3</float>
         <float name="default">5</float>
         <float name="max">10</float>
+        <float name="min">3</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
@@ -312,9 +311,9 @@
         <string name="visibility">public</string>
       </map>
       <map name="mass">
-        <float name="min">3</float>
         <float name="default">5</float>
         <float name="max">30</float>
+        <float name="min">3</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
