@@ -81,7 +81,7 @@
         <string name="visibility">public</string>
       </map>
       <map name="status">
-        <float name="default">1.0</float>
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
       <map name="tick">
