@@ -1,6 +1,10 @@
 <atlas>
 
   <map>
+    <map name="activation">
+      <string name="operation">attack</string>
+      <string name="tool">sword</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">combat</string>
@@ -8,10 +12,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">attack</string>
-      <string name="tool">sword</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Combat.Combat</string>
@@ -19,6 +19,11 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">sow</string>
+      <string name="target">seed</string>
+      <string name="tool">trowel</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">cultivate</string>
@@ -26,11 +31,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">sow</string>
-      <string name="tool">trowel</string>
-      <string name="target">seed</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Cultivate.Cultivate</string>
@@ -38,6 +38,11 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">world</string>
+      <string name="tool">pickaxe</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">delve</string>
@@ -45,11 +50,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">pickaxe</string>
-      <string name="target">world</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Delve.Delve</string>
@@ -57,6 +57,11 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">world</string>
+      <string name="tool">shovel</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">dig</string>
@@ -64,11 +69,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">shovel</string>
-      <string name="target">world</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Dig.Dig</string>
@@ -76,6 +76,11 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">sow</string>
+      <string name="target">ocean</string>
+      <string name="tool">fishingrod</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">fishing</string>
@@ -83,11 +88,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">sow</string>
-      <string name="tool">fishingrod</string>
-      <string name="target">ocean</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Fishing.Fishing</string>
@@ -95,6 +95,11 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">tree</string>
+      <string name="tool">axe</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">logging</string>
@@ -102,11 +107,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">axe</string>
-      <string name="target">tree</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Logging.Logging</string>
@@ -114,6 +114,11 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">lever</string>
+      <string name="target">game_entity</string>
+      <string name="tool">pole</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">raise</string>
@@ -121,11 +126,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">lever</string>
-      <string name="tool">pole</string>
-      <string name="target">game_entity</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Raise.Raise</string>
@@ -133,25 +133,11 @@
   </map>
 
   <map>
-    <map name="attributes">
-    </map>
-    <string name="id">reap</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
     <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">scythe</string>
-      <string name="target">world</string>
+      <string name="operation">strike</string>
+      <string name="target">game_entity</string>
+      <string name="tool">hammer</string>
     </map>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.tasks.Reap.Reap</string>
-    </map>
-  </map>
-
-  <map>
     <map name="attributes">
     </map>
     <string name="id">ram</string>
@@ -159,11 +145,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">strike</string>
-      <string name="tool">hammer</string>
-      <string name="target">game_entity</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Ram.Ram</string>
@@ -171,63 +152,30 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">world</string>
+      <string name="tool">scythe</string>
+    </map>
     <map name="attributes">
     </map>
-    <string name="id">sift</string>
+    <string name="id">reap</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">sieve</string>
-      <string name="target">pile</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
-      <string name="name">world.tasks.Sift.Sift</string>
+      <string name="name">world.tasks.Reap.Reap</string>
     </map>
   </map>
 
   <map>
-    <map name="attributes">
-    </map>
-    <string name="id">slaughter</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
     <map name="activation">
       <string name="operation">cut</string>
-      <string name="tool">cleaver</string>
-      <string name="target">character</string>
-    </map>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.tasks.Slaughter.Slaughter</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="id">slice</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
-    <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">bucksaw</string>
       <string name="target">lumber</string>
+      <string name="tool">axe</string>
     </map>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.tasks.Slice.Slice</string>
-    </map>
-  </map>
-
-  <map>
     <map name="attributes">
     </map>
     <string name="id">sharpen</string>
@@ -235,11 +183,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">cut</string>
-      <string name="tool">axe</string>
-      <string name="target">lumber</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Sharpen.Sharpen</string>
@@ -247,6 +190,67 @@
   </map>
 
   <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">pile</string>
+      <string name="tool">sieve</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">sift</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Sift.Sift</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">character</string>
+      <string name="tool">cleaver</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">slaughter</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Slaughter.Slaughter</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">lumber</string>
+      <string name="tool">bucksaw</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">slice</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Slice.Slice</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
+      <string name="operation">strike</string>
+      <string name="tool">theodolite</string>
+    </map>
     <map name="attributes">
     </map>
     <string name="id">trailblaze</string>
@@ -254,10 +258,6 @@
     <list name="parents">
       <string>task</string>
     </list>
-    <map name="activation">
-      <string name="operation">strike</string>
-      <string name="tool">theodolite</string>
-    </map>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Trailblaze.Trailblaze</string>
