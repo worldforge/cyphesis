@@ -111,10 +111,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.05</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.2</float>
@@ -124,6 +120,10 @@
           <float>0.2</float>
           <float>12</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.05</float>
         <string name="visibility">public</string>
       </map>
       <map name="height">
@@ -279,10 +279,6 @@
 
   <map>
     <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">0.7</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>
@@ -292,6 +288,10 @@
           <float>0.1</float>
           <float>1</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="burn_speed">
+        <float name="default">0.7</float>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -311,7 +311,7 @@
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
-          <float>0.0</float>
+          <float>0</float>
           <float>0</float>
           <float>0.25</float>
           <float>0.65</float>
@@ -364,6 +364,7 @@
     <map name="attributes">
       <map name="area">
         <map name="default">
+          <int name="layer">6</int>
           <list name="points">
             <list>
               <float>-3.5</float>
@@ -398,7 +399,6 @@
               <float>-5</float>
             </list>
           </list>
-          <int name="layer">6</int>
         </map>
         <string name="visibility">public</string>
       </map>
@@ -417,12 +417,12 @@
         <float name="default">0.025</float>
         <string name="visibility">public</string>
       </map>
-      <map name="fruitName">
-        <string name="default">acorn</string>
-        <string name="visibility">public</string>
-      </map>
       <map name="fruitChance">
         <int name="default">2</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruitName">
+        <string name="default">acorn</string>
         <string name="visibility">public</string>
       </map>
       <map name="fruits">
@@ -519,12 +519,12 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="tick">
-        <float name="default">0</float>
-        <string name="visibility">public</string>
-      </map>
       <map name="height">
         <float name="default">6</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="tick">
+        <float name="default">0</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -548,7 +548,7 @@
       <string>thing</string>
     </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="biomass">
