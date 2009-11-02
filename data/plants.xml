@@ -85,10 +85,6 @@
         <string name="default">apple</string>
         <string name="visibility">public</string>
       </map>
-      <map name="fruitChance">
-        <int name="default">2</int>
-        <string name="visibility">public</string>
-      </map>
       <map name="fruits">
         <int name="default">3</int>
         <string name="visibility">public</string>
