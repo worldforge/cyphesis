@@ -148,8 +148,9 @@ class DatabaseFileLoader : public Atlas::Message::DecoderBase {
         }
     }
 
-    void report() {
-        std::cout << m_count << " classes stored in rule database."
+    void report(const std::string & set) {
+        std::cout << m_count << " classes stored in rule database from "
+                  << set << "."
                   << std::endl << std::flush;
     }
 
@@ -199,7 +200,7 @@ int main(int argc, char ** argv)
         }
         db->setRuleset(argv[optind]);
         f.read();
-        f.report();
+        f.report(argv[optind]);
     } else if (optind == argc) {
         db->clearRules();
         std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
@@ -216,7 +217,7 @@ int main(int argc, char ** argv)
                           << std::endl << std::flush;
                 db->setRuleset(ruleset);
                 f.read();
-                f.report();
+                f.report(ruleset);
             }
         } else {
             while (struct dirent * rules_entry = ::readdir(rules_dir)) {
@@ -232,7 +233,7 @@ int main(int argc, char ** argv)
                 } else {
                     db->setRuleset(rules_entry->d_name);
                     f.read();
-                    f.report();
+                    f.report(rules_entry->d_name);
                 }
             }
         }
