@@ -60,6 +60,7 @@
     <map name="attributes">
       <map name="area">
         <map name="default">
+          <int name="layer">8</int>
           <list name="points">
             <list>
               <float>-3.5</float>
@@ -94,7 +95,6 @@
               <float>-5</float>
             </list>
           </list>
-          <int name="layer">8</int>
         </map>
         <string name="visibility">public</string>
       </map>
