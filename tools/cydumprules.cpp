@@ -201,9 +201,6 @@ int main(int argc, char ** argv)
     for(; I != Iend; ++I) {
         const std::string & ruleset = *I;
 
-        std::cout << "Dumping rules from " << ruleset
-                  << std::endl << std::flush;
-
         db->readRuleTable(ruleset, rule_store);
 
         std::fstream file;
@@ -229,7 +226,7 @@ int main(int argc, char ** argv)
 
         formatter.streamEnd();
 
-        std::cout << rule_store.size() << " classes stores in " << ruleset
+        std::cout << rule_store.size() << " classes stored in " << ruleset
                   << std::endl << std::flush;
 
         rule_store.clear();
