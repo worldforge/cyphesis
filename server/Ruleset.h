@@ -55,7 +55,7 @@ class Ruleset {
     RuleWaitList m_waitingRules;
 
     void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
-    void installRules();
+    void loadRules();
 
     int populateEntityFactory(const std::string & class_name,
                               EntityKit * factory,

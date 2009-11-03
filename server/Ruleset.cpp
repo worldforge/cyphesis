@@ -137,7 +137,7 @@ static void updateChildrenProperties(EntityKit * factory)
 void Ruleset::init()
 {
     m_instance = new Ruleset(EntityBuilder::instance());
-    m_instance->installRules();
+    m_instance->loadRules();
 }
 
 
@@ -739,7 +739,7 @@ void Ruleset::getRulesFromFiles(RootDict & rules)
     ::closedir(rules_dir);
 }
 
-void Ruleset::installRules()
+void Ruleset::loadRules()
 {
     RootDict ruleTable;
 
