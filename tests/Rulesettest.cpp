@@ -43,9 +43,6 @@ class ExposedRuleset : public Ruleset {
     void getRulesFromFiles(std::map<std::string, Root> & rules) {
         Ruleset::getRulesFromFiles(rules);
     }
-    void installRules() {
-        Ruleset::installRules();
-    }
     void populateEntityFactory(const std::string & class_name,
                                EntityKit * factory,
                                const MapType & class_desc) {
