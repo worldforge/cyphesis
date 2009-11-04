@@ -54,6 +54,12 @@ class Ruleset {
 
     RuleWaitList m_waitingRules;
 
+    void installItem(const std::string & class_name,
+                     const Atlas::Objects::Root & class_desc);
+    int installRuleInner(const std::string & class_name,
+                         const Atlas::Objects::Root & class_desc,
+                         std::string & dependent,
+                         std::string & reason);
     void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
     void loadRules();
 

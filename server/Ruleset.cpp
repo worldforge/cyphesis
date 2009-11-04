@@ -524,8 +524,10 @@ int Ruleset::installOpDefinition(const std::string & class_name,
     return 0;
 }
 
-int Ruleset::installRule(const std::string & class_name,
-                         const Root & class_desc)
+int Ruleset::installRuleInner(const std::string & class_name,
+                              const Root & class_desc,
+                              std::string & dependent,
+                              std::string & reason)
 {
     assert(class_name == class_desc->getId());
 
@@ -549,7 +551,6 @@ int Ruleset::installRule(const std::string & class_name,
         return -1;
     }
     int ret;
-    std::string dependent, reason;
     if (objtype == "class") {
         if (m_builder->isTask(parent)) {
             ret = installTaskClass(class_name, parent, class_desc,
@@ -567,11 +568,27 @@ int Ruleset::installRule(const std::string & class_name,
         return -1;
     }
 
+    return ret;
+}
+
+int Ruleset::installRule(const std::string & class_name,
+                         const Root & class_desc)
+{
+    std::string dependent, reason;
+    // Possibly we should report some types of failure here.
+    return installRuleInner(class_name, class_desc, dependent, reason);
+}
+
+void Ruleset::installItem(const std::string & class_name,
+                          const Root & class_desc)
+{
+    std::string dependent, reason;
+    int ret = installRuleInner(class_name, class_desc, dependent, reason);
     if (ret != 0) {
         if (ret > 0) {
             waitForRule(class_name, class_desc, dependent, reason);
         }
-        return ret;
+        return;
     }
 
     // Install any rules that were waiting for this rule before they
@@ -594,9 +611,9 @@ int Ruleset::installRule(const std::string & class_name,
     for (; K != Kend; ++K) {
         const std::string & rClassName = K->first;
         const Root & rClassDesc = K->second;
-        installRule(rClassName, rClassDesc);
+        installItem(rClassName, rClassDesc);
     }
-    return 0;
+    return;
 }
 
 int Ruleset::modifyEntityClass(const std::string & class_name,
@@ -779,7 +796,7 @@ void Ruleset::loadRules()
     for (RootDict::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
         const std::string & class_name = I->first;
         const Root & class_desc = I->second;
-        installRule(class_name, class_desc);
+        installItem(class_name, class_desc);
     }
     // Report on the non-cleared rules.
     // Perhaps we can keep them too?
