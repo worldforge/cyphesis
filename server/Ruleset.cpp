@@ -249,7 +249,9 @@ int Ruleset::populateEntityFactory(const std::string & class_name,
 
 int Ruleset::populateTaskFactory(const std::string & class_name,
                                  TaskKit * factory,
-                                 const Root & class_desc)
+                                 const Root & class_desc,
+                                 std::string & dependent,
+                                 std::string & reason)
 {
     // assert(class_name == class_desc->getId());
 
@@ -328,19 +330,19 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
         }
         const std::string & target_base = J->second.String();
         if (!i.hasClass(target_base)) {
-            waitForRule(class_name, class_desc, target_base,
-                        compose("Task \"%1\" is activated on target \"%2\" "
-                                "which does not exist.", class_name,
-                                target_base));
+            dependent = target_base;
+            reason = compose("Task \"%1\" is activated on target \"%2\" "
+                             "which does not exist.", class_name,
+                             target_base);
             return 1;
         }
         factory->m_target = target_base;
     }
 
     if (!i.hasClass(activation_tool)) {
-        waitForRule(class_name, class_desc, activation_tool,
-                    compose("Task \"%1\" is activated by tool \"%2\" which "
-                            "does not exist.", class_name, activation_tool));
+        dependent = activation_tool;
+        reason = compose("Task \"%1\" is activated by tool \"%2\" which "
+                         "does not exist.", class_name, activation_tool);
         return 1;
     }
     EntityKit * tool_factory = m_builder->getClassFactory(activation_tool);
@@ -352,10 +354,10 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
     }
 
     if (!i.hasClass(activation_op)) {
-        waitForRule(class_name, class_desc, activation_op,
-                    compose("Task \"%1\" is activated by operation \"%2\" "
-                            "which does not exist.", class_name, 
-                            activation_op));
+        dependent = activation_op;
+        reason = compose("Task \"%1\" is activated by operation \"%2\" "
+                         "which does not exist.", class_name, 
+                         activation_op);
         return 1;
     }
 
@@ -398,7 +400,9 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
 
 int Ruleset::installTaskClass(const std::string & class_name,
                               const std::string & parent,
-                              const Root & class_desc)
+                              const Root & class_desc,
+                              std::string & dependent,
+                              std::string & reason)
 {
     assert(class_name == class_desc->getId());
 
@@ -410,10 +414,11 @@ int Ruleset::installTaskClass(const std::string & class_name,
     
     TaskKit * factory = new TaskFactory(class_name);
 
-    if (populateTaskFactory(class_name, factory,
-                            class_desc) != 0) {
+    int ret = populateTaskFactory(class_name, factory, class_desc,
+                                  dependent, reason);
+    if (ret != 0) {
         delete factory;
-        return -1;
+        return ret;
     }
     m_builder->installTaskFactory(class_name, factory);
 
@@ -426,7 +431,9 @@ int Ruleset::installTaskClass(const std::string & class_name,
 
 int Ruleset::installEntityClass(const std::string & class_name,
                                 const std::string & parent,
-                                const Root & class_desc)
+                                const Root & class_desc,
+                                std::string & dependent,
+                                std::string & reason)
 {
     assert(class_name == class_desc->getId());
 
@@ -436,9 +443,9 @@ int Ruleset::installEntityClass(const std::string & class_name,
         debug(std::cout << "class \"" << class_name
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
-        waitForRule(class_name, class_desc, parent,
-                    compose("Entity rule \"%1\" has parent \"%2\" which does "
-                            "not exist.", class_name, parent));
+        dependent = parent;
+        reason = compose("Entity rule \"%1\" has parent \"%2\" which does "
+                         "not exist.", class_name, parent);
         return 1;
     }
     EntityKit * factory = parent_factory->duplicateFactory();
@@ -487,7 +494,9 @@ int Ruleset::installEntityClass(const std::string & class_name,
 
 int Ruleset::installOpDefinition(const std::string & class_name,
                                  const std::string & parent,
-                                 const Root & class_desc)
+                                 const Root & class_desc,
+                                 std::string & dependent,
+                                 std::string & reason)
 {
     assert(class_name == class_desc->getId());
 
@@ -497,9 +506,9 @@ int Ruleset::installOpDefinition(const std::string & class_name,
         debug(std::cout << "op_definition \"" << class_name
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
-        waitForRule(class_name, class_desc, parent,
-                    compose("Operation \"%1\" has parent \"%2\" which does "
-                            "not exist.", class_name, parent));
+        dependent = parent;
+        reason = compose("Operation \"%1\" has parent \"%2\" which does "
+                         "not exist.", class_name, parent);
         return 1;
     }
 
@@ -539,27 +548,30 @@ int Ruleset::installRule(const std::string & class_name,
                            class_name));
         return -1;
     }
+    int ret;
+    std::string dependent, reason;
     if (objtype == "class") {
         if (m_builder->isTask(parent)) {
-            int ret = installTaskClass(class_name, parent, class_desc);
-            if (ret != 0) {
-                return ret;
-            }
+            ret = installTaskClass(class_name, parent, class_desc,
+                                   dependent, reason);
         } else {
-            int ret = installEntityClass(class_name, parent, class_desc);
-            if (ret != 0) {
-                return ret;
-            }
+            ret = installEntityClass(class_name, parent, class_desc,
+                                     dependent, reason);
         }
     } else if (objtype == "op_definition") {
-        int ret = installOpDefinition(class_name, parent, class_desc);
-        if (ret != 0) {
-            return ret;
-        }
+        ret = installOpDefinition(class_name, parent, class_desc,
+                                  dependent, reason);
     } else {
         log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",
                            class_name, objtype));
         return -1;
+    }
+
+    if (ret != 0) {
+        if (ret > 0) {
+            waitForRule(class_name, class_desc, dependent, reason);
+        }
+        return ret;
     }
 
     // Install any rules that were waiting for this rule before they
@@ -655,8 +667,13 @@ int Ruleset::modifyTaskClass(const std::string & class_name,
         script_factory->refreshClass();
     }
 
-
-    if (populateTaskFactory(class_name, factory, class_desc) != 0) {
+    std::string dependent, reason;
+    int ret = populateTaskFactory(class_name, factory, class_desc,
+                                  dependent, reason);
+    if (ret != 0) {
+        if (ret > 0) {
+            log(ERROR, reason);
+        }
         return -1;
     }
 
