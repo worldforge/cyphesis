@@ -112,9 +112,9 @@ class ServerRulesFileLoader : public Atlas::Message::DecoderBase
     }
 
     /// \brief Send a report of rules laoded and uploaded to standard out
-    void report() {
+    void report(const std::string & source) {
         std::cout << m_count << " new classes uploaded out of "
-                  << m_total << " loaded from file."
+                  << m_total << " loaded from " << source << "."
                   << std::endl << std::flush;
     }
 
@@ -205,7 +205,7 @@ int main(int argc, char ** argv)
             return 1;
         }
         f.read();
-        f.report();
+        f.report(argv[optind]);
     } else if (optind == argc) {
         std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
         std::string filename;
@@ -220,7 +220,7 @@ int main(int argc, char ** argv)
                           << filename << "\""
                           << std::endl << std::flush;
                 f.read();
-                f.report();
+                f.report(ruleset);
             }
         } else {
             while (struct dirent * rules_entry = ::readdir(rules_dir)) {
@@ -235,7 +235,7 @@ int main(int argc, char ** argv)
                               << std::endl << std::flush;
                 } else {
                     f.read();
-                    f.report();
+                    f.report(rules_entry->d_name);
                 }
             }
         }
