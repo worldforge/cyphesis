@@ -254,6 +254,21 @@ bool Persistence::getRules(std::map<std::string, Root> & t)
     return m_connection.getTable(m_connection.rule(), t);
 }
 
+bool Persistence::storeRule(const Atlas::Objects::Root & rule,
+                            const std::string & key)
+{
+    if (m_connection.hasKey(m_connection.rule(), key)) {
+        return false;
+    }
+    m_connection.putObject(m_connection.rule(), key, rule->asMessage(),
+                           StringVector(1, "woo"));
+    if (!m_connection.clearPendingQuery()) {
+        std::cerr << "Failed" << std::endl << std::flush;
+        return false;
+    }
+    return true;
+}
+
 bool Persistence::clearRules()
 {
     return m_connection.clearTable(m_connection.rule());

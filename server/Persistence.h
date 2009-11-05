@@ -55,6 +55,8 @@ class Persistence {
     void delCharacter(const std::string &);
     
     bool getRules(std::map<std::string, Atlas::Objects::Root> & m);
+    bool storeRule(const Atlas::Objects::Root & rule,
+                   const std::string & key);
     bool clearRules();
 };
 
