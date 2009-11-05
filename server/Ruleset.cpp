@@ -578,7 +578,6 @@ int Ruleset::installRule(const std::string & class_name,
     // Possibly we should report some types of failure here.
     int ret = installRuleInner(class_name, class_desc, dependent, reason);
     if (ret == 0 && database_flag) {
-        log(NOTICE, compose("Storing \"%1\"", class_name));
         Persistence * p = Persistence::instance();
         p->storeRule(class_desc, class_name);
     }
