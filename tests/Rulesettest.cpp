@@ -43,9 +43,6 @@ class ExposedRuleset : public Ruleset {
     void getRulesFromFiles(std::map<std::string, Root> & rules) {
         Ruleset::getRulesFromFiles(rules);
     }
-    void installRules() {
-        Ruleset::installRules();
-    }
     void populateEntityFactory(const std::string & class_name,
                                EntityKit * factory,
                                const MapType & class_desc) {
@@ -53,13 +50,19 @@ class ExposedRuleset : public Ruleset {
     }
     int installEntityClass(const std::string & class_name,
                            const std::string & parent,
-                           const Root & class_desc) {
-        return Ruleset::installEntityClass(class_name, parent, class_desc);
+                           const Root & class_desc,
+                           std::string & dependent,
+                           std::string & reason) {
+        return Ruleset::installEntityClass(class_name, parent, class_desc,
+                                            dependent, reason);
     }
     int installOpDefinition(const std::string & op_def_name,
                             const std::string & parent,
-                            const Root & op_def_desc) {
-        return Ruleset::installOpDefinition(op_def_name, parent, op_def_desc);
+                            const Root & op_def_desc,
+                            std::string & dependent,
+                            std::string & reason) {
+        return Ruleset::installOpDefinition(op_def_name, parent, op_def_desc,
+                                            dependent, reason);
     }
 
 };
@@ -176,9 +179,12 @@ int main(int argc, char ** argv)
             custom_type_description->setId("custom_type");
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.installEntityClass("custom_type", "thing", custom_type_description);
+            std::string dependent, reason;
+            ret = test_ruleset.installEntityClass("custom_type", "thing", custom_type_description, dependent, reason);
 
             assert(ret == 0);
+            assert(dependent.empty());
+            assert(reason.empty());
         }
 
         // Check that the factory dictionary now contains a factory for
@@ -234,9 +240,12 @@ int main(int argc, char ** argv)
             custom_inherited_type_description->setId("custom_inherited_type");
             custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
 
-            ret = test_ruleset.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description);
+            std::string dependent, reason;
+            ret = test_ruleset.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description, dependent, reason);
 
             assert(ret == 0);
+            assert(dependent.empty());
+            assert(reason.empty());
         }
 
         // Check that the factory dictionary does contain the factory for
