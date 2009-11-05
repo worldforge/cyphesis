@@ -257,11 +257,28 @@ bool Persistence::getRules(std::map<std::string, Root> & t)
 bool Persistence::storeRule(const Atlas::Objects::Root & rule,
                             const std::string & key)
 {
-    if (m_connection.hasKey(m_connection.rule(), key)) {
+    const std::string & table = m_connection.rule();
+    if (m_connection.hasKey(table, key)) {
         return false;
     }
-    m_connection.putObject(m_connection.rule(), key, rule->asMessage(),
-                           StringVector(1, "woo"));
+    MapType rule_msg = rule->asMessage();
+
+    // Sort out the correct filename, and remove the reference to it
+    std::string file = String::compose("%1.xml", ruleset);
+    MapType::const_iterator I = rule_msg.find("ruleset");
+    if (I != rule_msg.end()) {
+        if (I->second.isString()) {
+            const std::string & new_set = I->second.asString();
+            if (new_set.find(".xml") == std::string::npos) {
+                file = String::compose("%1.xml", new_set);
+            } else {
+                file = new_set;
+            }
+        }
+        rule_msg.erase("ruleset");
+    }
+
+    m_connection.putObject(table, key, rule_msg, StringVector(1, file));
     if (!m_connection.clearPendingQuery()) {
         std::cerr << "Failed" << std::endl << std::flush;
         return false;
