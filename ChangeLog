@@ -1,3 +1,37 @@
+2009-11-06  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/log.cpp, common/log.h: Add a function to log multiline
+	  strings more cleanly.
+
+	* tests/logtest.cpp: Add tests for new log functionality.
+
+	* common/Database.cpp: Clean up logging of errors and notices.
+
+	* scripts/mingw32_configure.sh: Add a script to configure for
+	  mingw cross-compiling.
+
+	* common/globals.cpp, common/log.cpp, common/log.h,
+	  configure.ac, rulesets/HandlerProperty.cpp,
+	  rulesets/MultiHandlerProperty.cpp:
+	  Add headers and cleanups required by some obscure systems.
+
+	* server/CommMDNSPublisher.cpp: Add cassert include to the right
+	  place, so this file compiles no matter which MDNS backend is
+	  selected.
+
+	* server/CommStreamClient.cpp, server/CommMetaClient.cpp:
+	  Use the correct C++ library way of checking for eof.
+
+	* server/Persistence.cpp, server/Persistence.h,
+	  server/Ruleset.cpp, server/Ruleset.h: Fully implement rule
+	  persistence.
+
+	* tests/Rulesettest.cpp: Update Ruleset tests.
+
+	* tools/cyaddrules.cpp, tools/cydumprules.cpp,
+	  tools/cyloadrules.cpp: Update tools to produce cleaner output,
+	  and report what they have done more sanely.
+
 2009-09-08  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* NEWS: Update NEWS announcement for release.
