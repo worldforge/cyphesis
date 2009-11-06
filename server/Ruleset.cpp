@@ -720,13 +720,19 @@ int Ruleset::modifyRule(const std::string & class_name,
                            "inheritance", class_name));
         return -1;
     }
+    int ret;
     if (o->getParents().front() == "task") {
-        return modifyTaskClass(class_name, class_desc);
+        ret = modifyTaskClass(class_name, class_desc);
     } else if (class_desc->getObjtype() == "op_definition") {
-        return modifyOpDefinition(class_name, class_desc);
+        ret = modifyOpDefinition(class_name, class_desc);
     } else {
-        return modifyEntityClass(class_name, class_desc);
+        ret = modifyEntityClass(class_name, class_desc);
     }
+    if (ret == 0 && database_flag) {
+        Persistence * p = Persistence::instance();
+        p->updateRule(class_desc, class_name);
+    }
+    return ret;
 }
 
 /// \brief Mark a rule down as waiting for another.
