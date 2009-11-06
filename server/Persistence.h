@@ -57,6 +57,8 @@ class Persistence {
     bool getRules(std::map<std::string, Atlas::Objects::Root> & m);
     bool storeRule(const Atlas::Objects::Root & rule,
                    const std::string & key);
+    bool updateRule(const Atlas::Objects::Root & rule,
+                    const std::string & key);
     bool clearRules();
 };
 

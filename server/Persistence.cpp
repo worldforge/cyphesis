@@ -286,6 +286,30 @@ bool Persistence::storeRule(const Atlas::Objects::Root & rule,
     return true;
 }
 
+bool Persistence::updateRule(const Atlas::Objects::Root & rule,
+                             const std::string & key)
+{
+    const std::string & table = m_connection.rule();
+    if (!m_connection.hasKey(table, key)) {
+        std::cout << "Existing rule" << std::endl << std::flush;
+        return false;
+    }
+    MapType rule_msg = rule->asMessage();
+
+    // Remove the reference to filename
+    MapType::iterator I = rule_msg.find("ruleset");
+    if (I != rule_msg.end()) {
+        rule_msg.erase(I);
+    }
+
+    m_connection.updateObject(table, key, rule_msg);
+    if (!m_connection.clearPendingQuery()) {
+        std::cerr << "Failed" << std::endl << std::flush;
+        return false;
+    }
+    return true;
+}
+
 bool Persistence::clearRules()
 {
     return m_connection.clearTable(m_connection.rule());
