@@ -71,6 +71,8 @@ int main(int argc, char ** argv)
 {
     loadConfig(argc, argv);
 
+    database_flag = false;
+
     init_python_api();
 
     int ret;
