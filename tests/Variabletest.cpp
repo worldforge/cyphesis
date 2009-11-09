@@ -25,4 +25,16 @@
 
 int main()
 {
+    int i;
+    Variable<int> v1(i);
+
+    std::string s;
+    Variable<std::string> v2(s);
+
+    const char * c = "bar";
+    Variable<const char *> v3(c);
+
+    v1.send(std::cout);
+    v2.send(std::cout);
+    v3.send(std::cout);
 }
