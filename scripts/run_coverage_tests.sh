@@ -11,7 +11,12 @@ check_coverage() {
     then
         if [ ${report} -eq 1 -o ${single} -eq 1 ]
         then
-            echo No test for ${source_file}
+            if grep -l DOXYGEN_SHOULD_SKIP_THIS ${source_file} > /dev/null
+            then
+                true
+            else
+                echo No test for ${source_file}
+            fi
         fi
         return
     fi
