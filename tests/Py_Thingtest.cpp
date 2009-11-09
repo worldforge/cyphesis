@@ -78,6 +78,7 @@ int main()
 
     assert(PyRun_SimpleString("from server import *") == 0);
     assert(PyRun_SimpleString("from atlas import Operation") == 0);
+    assert(PyRun_SimpleString("from atlas import Oplist") == 0);
 
     assert(PyRun_SimpleString("LocatedEntity()") == -1);
     assert(PyRun_SimpleString("le=LocatedEntity('1')") == 0);
@@ -110,7 +111,13 @@ int main()
     assert(PyRun_SimpleString("c.as_entity()") == 0);
     assert(PyRun_SimpleString("c.send_world(Operation('get'))") == 0);
     assert(PyRun_SimpleString("print c.get_task()") == 0);
-    assert(PyRun_SimpleString("print c.set_task()") == -1);
+    assert(PyRun_SimpleString("print c.start_task()") == -1);
+    assert(PyRun_SimpleString("print c.start_task(Task(c))") == -1);
+    assert(PyRun_SimpleString("print c.start_task(1,Operation('cut'),Oplist())") == -1);
+    assert(PyRun_SimpleString("print c.start_task(Task(c),1,Oplist())") == -1);
+    assert(PyRun_SimpleString("print c.start_task(Task(c),Operation('cut'),1)") == -1);
+    assert(PyRun_SimpleString("print c.start_task(Task(c),Operation('cut'),Oplist())") == 0);
+    assert(PyRun_SimpleString("print c.get_task()") == 0);
     assert(PyRun_SimpleString("print c.clear_task()") == 0);
     assert(PyRun_SimpleString("print c.type") == -1);
     assert(PyRun_SimpleString("print c.foo_operation") == -1);
