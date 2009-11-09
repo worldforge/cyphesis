@@ -9,7 +9,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                client_sockettest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
                FormattedXMLWritertest PropertyFactorytest \
-               PropertyManagertest
+               PropertyManagertest Variabletest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -250,6 +250,10 @@ PropertyFactorytest_LDADD = \
 
 PropertyManagertest_SOURCES = PropertyManagertest.cpp
 PropertyManagertest_LDADD = $(top_builddir)/common/PropertyManager.o
+
+Variabletest_SOURCES = Variabletest.cpp
+Variabletest_LDADD = \
+        $(top_builddir)/common/Variable.o
 
 # PHYSICS_TESTS
 
