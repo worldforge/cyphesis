@@ -85,7 +85,7 @@ usage() {
     echo "usage: run_coverage_tests.sh [OPTION]"
     echo "       run_coverage_tests.sh [SOURCEFILE]"
     echo "Options:"
-    echo "  -r Report source files with a coverage test"
+    echo "  -r Report source files with no coverage test"
     echo "  -c Re-configure the build to include coverage data"
     echo "  -h Display this usage data"
     cat <<EOF
