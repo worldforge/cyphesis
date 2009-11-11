@@ -20,6 +20,7 @@
 #include <Python.h>
 
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_BBox.h"
 
 #include <cassert>
 
@@ -27,12 +28,19 @@ int main()
 {
     init_python_api();
 
+    PyBBox * bbox = newPyBBox();
+    assert(bbox != 0);
+
     assert(PyRun_SimpleString("from physics import BBox") == 0);
     assert(PyRun_SimpleString("b=BBox()") == 0);
     assert(PyRun_SimpleString("b=BBox([1])") == -1);
     assert(PyRun_SimpleString("b=BBox([1,1,1])") == 0);
     assert(PyRun_SimpleString("b=BBox([1.0,1.0,1.0])") == 0);
+    assert(PyRun_SimpleString("b=BBox([1,1,1])") == 0);
     assert(PyRun_SimpleString("b=BBox(['1','1','1'])") == -1);
+    assert(PyRun_SimpleString("from atlas import Message") == 0);
+    assert(PyRun_SimpleString("b=BBox([Message(1),Message(1),Message(1)])") == 0);
+    assert(PyRun_SimpleString("b=BBox([Message('1'),Message('1'),Message('1')])") == -1);
     assert(PyRun_SimpleString("b=BBox(1)") == -1);
     assert(PyRun_SimpleString("b=BBox(1,1)") == -1);
     assert(PyRun_SimpleString("b=BBox(1,1,1)") == 0);
