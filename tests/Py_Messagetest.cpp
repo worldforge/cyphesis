@@ -20,12 +20,40 @@
 #include <Python.h>
 
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_Message.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyMessage * o)
+{
+    if (!PyMessage_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return Py_True;
+    }
+#ifndef NDEBUG
+    o->m_obj = NULL;
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
+
 
 int main()
 {
     init_python_api();
+
+    setup_test_functions();
 
     assert(PyRun_SimpleString("from atlas import Message") == 0);
     assert(PyRun_SimpleString("from atlas import Operation") == 0);
@@ -67,6 +95,16 @@ int main()
     assert(PyRun_SimpleString("print m.foo") == 0);
     assert(PyRun_SimpleString("m.foo = {'foo': 1}") == 0);
     assert(PyRun_SimpleString("print m.foo") == 0);
+
+#ifndef NDEBUG
+    assert(PyRun_SimpleString("import sabotage") == 0);
+    assert(PyRun_SimpleString("get_name_method=m.get_name") == 0);
+    assert(PyRun_SimpleString("sabotage.null(m)") == 0);
+    // Hit the assert checks.
+    assert(PyRun_SimpleString("print get_name_method()") == -1);
+    assert(PyRun_SimpleString("print m.foo") == -1);
+    assert(PyRun_SimpleString("m.foo = 1") == -1);
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;
