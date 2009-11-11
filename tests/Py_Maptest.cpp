@@ -20,12 +20,42 @@
 #include <Python.h>
 
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_Map.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyMap * o)
+{
+    if (!PyMap_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return Py_True;
+    }
+#ifndef NDEBUG
+    o->m_map = NULL;
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
+
+    setup_test_functions();
+
+    PyMap * map = newPyMap();
+    assert(map != 0);
 
     assert(PyRun_SimpleString("from server import Map") == 0);
     assert(PyRun_SimpleString("from atlas import Location") == 0);
@@ -36,6 +66,7 @@ int main()
     assert(PyRun_SimpleString("l=Location()") == 0);
     assert(PyRun_SimpleString("m.find_by_location(l)") == -1);
     assert(PyRun_SimpleString("m.find_by_location(l, 5.0, 'foo')") == -1);
+    assert(PyRun_SimpleString("m.find_by_location(5, 5.0, 'foo')") == -1);
     assert(PyRun_SimpleString("m.find_by_type()") == -1);
     assert(PyRun_SimpleString("m.find_by_type(1)") == -1);
     assert(PyRun_SimpleString("m.find_by_type('foo')") == 0);
@@ -73,6 +104,21 @@ int main()
     assert(PyRun_SimpleString("m.delete_hooks_append()") == -1);
     assert(PyRun_SimpleString("m.delete_hooks_append(1)") == -1);
     assert(PyRun_SimpleString("m.delete_hooks_append('delete_map')") == 0);
+
+#ifndef NDEBUG
+    assert(PyRun_SimpleString("import sabotage") == 0);
+    assert(PyRun_SimpleString("sabotage.null(m)") == 0);
+    // Hit the assert checks.
+    assert(PyRun_SimpleString("m.find_by_location(l, 5.0, 'foo')") == -1);
+    assert(PyRun_SimpleString("m.find_by_type('foo')") == -1);
+    assert(PyRun_SimpleString("m.add(Entity('1', type='thing'), 1.1)") == -1);
+    assert(PyRun_SimpleString("m.delete('1')") == -1);
+    assert(PyRun_SimpleString("m.get('1')") == -1);
+    assert(PyRun_SimpleString("m.get_add('3')") == -1);
+    assert(PyRun_SimpleString("m.add_hooks_append('add_map')") == -1);
+    assert(PyRun_SimpleString("m.update_hooks_append('update_map')") == -1);
+    assert(PyRun_SimpleString("m.delete_hooks_append('delete_map')") == -1);
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;
