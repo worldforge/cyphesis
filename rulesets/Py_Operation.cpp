@@ -27,9 +27,12 @@
 
 #include <Atlas/Objects/Generic.h>
 
+#include <iostream>
+
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Factories;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Generic;
 using Atlas::Objects::Entity::RootEntity;
@@ -191,19 +194,27 @@ static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "args not a list");
         return NULL;
     }
-    ListType argslist;
+    std::vector<Root> argslist;
     for(int i = 0; i < PyList_Size(args); i++) {
         PyObject * item = PyList_GetItem(args, i);
         if (PyMessage_Check(item)) {
-            argslist.push_back(*((PyMessage*)item)->m_obj);
+            Element & e = *((PyMessage*)item)->m_obj;
+            if (!e.isMap()) {
+                PyErr_SetString(PyExc_TypeError,"args contains non map");
+                return NULL;
+            }
+            argslist.push_back(Factories::instance()->createObject(e.Map()));
         } else if (PyOperation_Check(item)) {
-            argslist.push_back(((PyOperation*)item)->operation->asMessage());
+            argslist.push_back(((PyOperation*)item)->operation);
+        } else if (PyRootEntity_Check(item)) {
+            argslist.push_back(((PyRootEntity*)item)->entity);
         } else {
+            std::cout << "o: " << i << item->ob_type->tp_name << std::endl << std::flush;
             PyErr_SetString(PyExc_TypeError,"args contains non Atlas Object");
             return NULL;
         }
     }
-    self->operation->setArgsAsList(argslist);
+    self->operation->setArgs(argslist);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -343,7 +354,7 @@ static Py_ssize_t Operation_seq_length(PyOperation * self)
 #ifndef NDEBUG
     if (!self->operation.isValid()) {
         PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.seq_length");
-        return 0;
+        return -1;
     }
 #endif // NDEBUG
     return self->operation->getArgs().size();
@@ -426,6 +437,7 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
 #ifndef NDEBUG
         if (!op->operation.isValid()) {
             PyErr_SetString(PyExc_AssertionError, "NULL Operation in other of Operation.num_add");
+            return NULL;
         }
 #endif // NDEBUG
         PyOplist * res = newPyOplist();
