@@ -20,6 +20,7 @@
 #include <Python.h>
 
 #include "TestWorld.h"
+#include "TestPropertyManager.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Thing.h"
@@ -66,6 +67,8 @@ int main()
 {
     check_union();
 
+    new TestPropertyManager;
+
     init_python_api();
 
     Entity * e = new Entity("1", 1);
@@ -95,6 +98,12 @@ int main()
     assert(PyRun_SimpleString("le.type='game_entity'") == 0);
     assert(PyRun_SimpleString("le.type='game_entity'") == -1);
     assert(PyRun_SimpleString("le.type") == 0);
+    assert(PyRun_SimpleString("le.map_attr={'1': 2}") == 0);
+    assert(PyRun_SimpleString("le.map_attr") == 0);
+    assert(PyRun_SimpleString("le.list_attr=[1,2]") == 0);
+    assert(PyRun_SimpleString("le.list_attr") == 0);
+    assert(PyRun_SimpleString("le.non_atlas=set([1,2])") == 0);
+    assert(PyRun_SimpleString("le.non_atlas") == 0);
     // assert(PyRun_SimpleString("le.foo=1") == 0);
     // assert(PyRun_SimpleString("le.foo='1'") == 0);
     // assert(PyRun_SimpleString("le.foo=[1]") == 0);

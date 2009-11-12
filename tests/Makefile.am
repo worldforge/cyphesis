@@ -824,7 +824,7 @@ Py_Oplisttest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Thingtest_SOURCES = Py_Thingtest.cpp
+Py_Thingtest_SOURCES = Py_Thingtest.cpp TestPropertyManager.cpp TestPropertyManager.h
 Py_Thingtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
