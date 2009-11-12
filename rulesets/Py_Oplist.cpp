@@ -122,7 +122,7 @@ static Py_ssize_t Oplist_seq_length(PyOplist * self)
 #ifndef NDEBUG
     if (self->ops == NULL) {
         PyErr_SetString(PyExc_AssertionError,"Invalid Oplist in Oplist.seq_length");
-        return 0;
+        return -1;
     }
 #endif // NDEBUG
     return self->ops->size();
