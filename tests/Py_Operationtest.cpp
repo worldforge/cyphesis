@@ -22,6 +22,8 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_Oplist.h"
+#include "rulesets/Py_Message.h"
+#include "rulesets/Py_RootEntity.h"
 
 #include <cassert>
 
@@ -35,9 +37,17 @@ static PyObject * null_wrapper(PyObject * self, PyOperation * o)
 #ifndef NDEBUG
         ((PyOplist*)o)->ops = 0;
 #endif // NDEBUG
+    } else if (PyRootEntity_Check(o)) {
+#ifndef NDEBUG
+        ((PyRootEntity*)o)->entity = Atlas::Objects::Entity::RootEntity(0);
+#endif // NDEBUG
+    } else if (PyMessage_Check(o)) {
+#ifndef NDEBUG
+        ((PyMessage*)o)->m_obj = 0;
+#endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return Py_True;
+        return NULL;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -73,6 +83,11 @@ int main()
 
     setup_test_functions();
 
+    PyOperation * op = newPyOperation();
+    assert(op != 0);
+    op = newPyConstOperation();
+    assert(op != 0);
+
     assert(PyRun_SimpleString("from atlas import *") == 0);
     assert(PyRun_SimpleString("o=Operation('get')") == 0);
     // This should fail, but the error throwing has been disabled to
@@ -82,12 +97,18 @@ int main()
     // assert(PyRun_SimpleString("o=Operation('not_valid')") == -1);
     assert(PyRun_SimpleString("o=Operation('not_valid')") == 0);
     assert(PyRun_SimpleString("o=Operation('get', to='1', from_='1')") == 0);
+    assert(PyRun_SimpleString("o=Operation('get', from_=Message({'nonid': '1'}))") == -1);
+    assert(PyRun_SimpleString("o=Operation('get', from_=Message({'id': 1}))") == -1);
+    assert(PyRun_SimpleString("o=Operation('get', to=Message({'nonid': '1'}))") == -1);
+    assert(PyRun_SimpleString("o=Operation('get', to=Message({'id': 1}))") == -1);
     assert(PyRun_SimpleString("e=Entity('1')") == 0);
     assert(PyRun_SimpleString("o=Operation('get', to=e, from_=e)") == 0);
     assert(PyRun_SimpleString("o=Operation('get', Entity(), to='1', from_='1')") == 0);
     assert(PyRun_SimpleString("o=Operation('get', Operation('set'), to='1', from_='1')") == 0);
     assert(PyRun_SimpleString("o=Operation('get', Location(), to='1', from_='1')") == -1);
     assert(PyRun_SimpleString("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')") == 0);
+    assert(PyRun_SimpleString("Operation('get', Message('1'))") == -1);
+    assert(PyRun_SimpleString("Operation('get', Message({'objtype': 'obj', 'parents': ['thing']}))") == 0);
     assert(PyRun_SimpleString("o=Operation()") == -1);
     assert(PyRun_SimpleString("o=Operation(1)") == -1);
     assert(PyRun_SimpleString("o=Operation('get')") == 0);
@@ -147,8 +168,22 @@ int main()
 #ifndef NDEBUG
     assert(PyRun_SimpleString("import sabotage") == 0);
 
-
     // Hit the assert checks.
+    assert(PyRun_SimpleString("arg1=Message({'objtype': 'obj', 'parents': ['thing']})") == 0);
+    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
+    assert(PyRun_SimpleString("Operation('get', arg1)") == -1);
+
+    assert(PyRun_SimpleString("arg1=Entity()") == 0);
+    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
+    assert(PyRun_SimpleString("Operation('get', arg1)") == -1);
+
+    assert(PyRun_SimpleString("arg1=Operation('get')") == 0);
+    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
+    assert(PyRun_SimpleString("Operation('get', arg1)") == -1);
+
+    assert(PyRun_SimpleString("Operation('get', Entity(), arg1)") == -1);
+    assert(PyRun_SimpleString("Operation('get', Entity(), Entity(), arg1)") == -1);
+
     assert(PyRun_SimpleString("o2=Operation('get')") == 0);
     assert(PyRun_SimpleString("sabotage.null(o2)") == 0);
     assert(PyRun_SimpleString("o + o2") == -1);
