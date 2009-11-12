@@ -160,6 +160,7 @@ static inline void addToOplist(PyOperation * op, PyOplist * o)
     }
 }
 
+// FIXME Lots of silent failure here, and oddly unexpected results.
 static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
 {
     PyOperation *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
