@@ -89,6 +89,12 @@ int main()
     assert(PyRun_SimpleString("print le.foo_operation") == -1);
     assert(PyRun_SimpleString("print le.location") == 0);
     assert(PyRun_SimpleString("print le.contains") == 0);
+    assert(PyRun_SimpleString("le.type") == -1);
+    assert(PyRun_SimpleString("le.type='non_exist'") == -1);
+    assert(PyRun_SimpleString("le.type=1") == -1);
+    assert(PyRun_SimpleString("le.type='game_entity'") == 0);
+    assert(PyRun_SimpleString("le.type='game_entity'") == -1);
+    assert(PyRun_SimpleString("le.type") == 0);
     // assert(PyRun_SimpleString("le.foo=1") == 0);
     // assert(PyRun_SimpleString("le.foo='1'") == 0);
     // assert(PyRun_SimpleString("le.foo=[1]") == 0);
