@@ -75,8 +75,11 @@ int main()
     assert(PyRun_SimpleString("m += Oplist(Operation('get'))") == 0);
     assert(PyRun_SimpleString("len(m)") == 0);
     
+    assert(PyRun_SimpleString("Oplist(1)") == -1);
+    assert(PyRun_SimpleString("Oplist(Operation('get'), 1)") == -1);
+    assert(PyRun_SimpleString("Oplist(Operation('get'), Operation('get'), 1)") == -1);
+    assert(PyRun_SimpleString("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)") == -1);
     assert(PyRun_SimpleString("Oplist(Operation('get'), Operation('get'), Operation('get'), Operation('get'), Operation('get'))") == -1);
-    assert(PyRun_SimpleString("Oplist(1)") == 0);
 
 #ifndef NDEBUG
     assert(PyRun_SimpleString("import sabotage") == 0);
