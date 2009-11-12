@@ -28,6 +28,9 @@ int main()
     init_python_api();
 
     assert(PyRun_SimpleString("from physics import Point3D") == 0);
+    assert(PyRun_SimpleString("from atlas import Message") == 0);
+    assert(PyRun_SimpleString("Point3D([Message(1), Message(0), Message(0)])") == 0);
+    assert(PyRun_SimpleString("Point3D([Message('1'), Message(0), Message(0)])") == -1);
     assert(PyRun_SimpleString("p=Point3D(1,0,0)") == 0);
     assert(PyRun_SimpleString("p1=Point3D(0,1,0)") == 0);
     assert(PyRun_SimpleString("p2=Point3D(0,1,0)") == 0);
