@@ -88,6 +88,14 @@ static void setup_test_functions()
     assert(sabotage != 0);
 }
 
+class TestLocatedEntity : public LocatedEntity {
+  public:
+    TestLocatedEntity(const std::string & id, long intId) :
+                      LocatedEntity(id, intId) { }
+
+    virtual void operation(const Operation &, OpVector &) { }
+};
+
 int main()
 {
     check_union();
@@ -115,6 +123,23 @@ int main()
     assert(e->m_location.m_loc->m_contains != 0);
     e->m_location.m_loc->m_contains->insert(e);
     TestWorld test_world(*wrld);
+
+    PyObject * wrap_e = wrapEntity(e);
+    assert(wrap_e != 0);
+    PyObject * wrap_e_again = wrapEntity(e);
+    assert(wrap_e_again != 0);
+    assert(wrap_e == wrap_e_again);
+
+    Character * c = new Character("2", 2);
+    assert(c != 0);
+    PyObject * wrap_c = wrapEntity(c);
+    assert(wrap_c != 0);
+
+    LocatedEntity * le = new TestLocatedEntity("3", 3);
+    assert(le != 0);
+    PyObject * wrap_le = wrapEntity(le);
+    assert(wrap_le != 0);
+    
 
     assert(PyRun_SimpleString("from server import *") == 0);
     assert(PyRun_SimpleString("from atlas import Operation") == 0);
