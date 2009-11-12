@@ -119,6 +119,9 @@ int main()
     assert(PyRun_SimpleString("c.start_task(Task(c),Operation('cut'),Oplist())") == 0);
     assert(PyRun_SimpleString("c.get_task()") == 0);
     assert(PyRun_SimpleString("c.clear_task()") == 0);
+    assert(PyRun_SimpleString("c.mind2body(1)") == -1);
+    assert(PyRun_SimpleString("c.mind2body(Operation('update'))") == 0);
+    assert(PyRun_SimpleString("c.mind2body(Operation('get'))") == 0);
     assert(PyRun_SimpleString("print c.type") == -1);
     assert(PyRun_SimpleString("print c.foo_operation") == -1);
     assert(PyRun_SimpleString("print c.location") == 0);
