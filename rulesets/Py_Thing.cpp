@@ -284,7 +284,7 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_entity.e == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.setattr");
         return -1;
     }
 #endif // NDEBUG
