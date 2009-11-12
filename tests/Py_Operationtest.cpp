@@ -211,7 +211,6 @@ int main()
     assert(PyRun_SimpleString("method_getArgs=o.getArgs") == 0);
     assert(PyRun_SimpleString("method_get_name=o.get_name") == 0);
 
-    // assert(PyRun_SimpleString("copy_methd=l.copy") == 0);
     assert(PyRun_SimpleString("sabotage.null(o)") == 0);
     assert(PyRun_SimpleString("print o.to") == -1);
     assert(PyRun_SimpleString("len(o)") == -1);
