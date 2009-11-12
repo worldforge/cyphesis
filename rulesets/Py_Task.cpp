@@ -276,6 +276,7 @@ PyTypeObject PyTask_Type = {
         0,                              // tp_new
 };
 
+#if 0
 PyObject * wrapTask(Task * task)
 {
     PyObject * wrapper;
@@ -296,6 +297,7 @@ PyObject * wrapTask(Task * task)
     }
     return wrapper;
 }
+#endif
 
 PyTask * newPyTask()
 {
