@@ -84,9 +84,11 @@ int main()
     assert(PyRun_SimpleString("from atlas import Oplist") == 0);
 
     assert(PyRun_SimpleString("LocatedEntity()") == -1);
+    assert(PyRun_SimpleString("LocatedEntity('s')") == -1);
     assert(PyRun_SimpleString("le=LocatedEntity('1')") == 0);
     assert(PyRun_SimpleString("le.as_entity()") == 0);
     assert(PyRun_SimpleString("le.send_world(Operation('get'))") == -1);
+    assert(PyRun_SimpleString("le==LocatedEntity('2')") == 0);
     assert(PyRun_SimpleString("print le.get_task()") == -1);
     assert(PyRun_SimpleString("print le.type") == -1);
     assert(PyRun_SimpleString("print le.foo_operation") == -1);
@@ -98,6 +100,7 @@ int main()
     assert(PyRun_SimpleString("le.type='game_entity'") == 0);
     assert(PyRun_SimpleString("le.type='game_entity'") == -1);
     assert(PyRun_SimpleString("le.type") == 0);
+    assert(PyRun_SimpleString("le.map=1") == -1);
     assert(PyRun_SimpleString("le.map_attr={'1': 2}") == 0);
     assert(PyRun_SimpleString("le.map_attr") == 0);
     assert(PyRun_SimpleString("le.list_attr=[1,2]") == 0);
@@ -111,7 +114,10 @@ int main()
     // assert(PyRun_SimpleString("le.foo={'foo': 1, 'bar': '1'}") == 0);
 
     assert(PyRun_SimpleString("Thing()") == -1);
+    assert(PyRun_SimpleString("Thing('s')") == -1);
+    assert(PyRun_SimpleString("Thing(1)") == -1);
     assert(PyRun_SimpleString("t=Thing('1')") == 0);
+    assert(PyRun_SimpleString("Thing(t)") == 0);
     assert(PyRun_SimpleString("t.as_entity()") == 0);
     assert(PyRun_SimpleString("t.send_world(Operation('get'))") == 0);
     assert(PyRun_SimpleString("t.send_world('get')") == -1);
@@ -122,7 +128,10 @@ int main()
     assert(PyRun_SimpleString("print t.contains") == 0);
 
     assert(PyRun_SimpleString("Character()") == -1);
+    assert(PyRun_SimpleString("Character('s')") == -1);
+    assert(PyRun_SimpleString("Character(1)") == -1);
     assert(PyRun_SimpleString("c=Character('1')") == 0);
+    assert(PyRun_SimpleString("Character(c)") == 0);
     assert(PyRun_SimpleString("c.as_entity()") == 0);
     assert(PyRun_SimpleString("c.send_world(Operation('get'))") == 0);
     assert(PyRun_SimpleString("c.get_task()") == 0);
