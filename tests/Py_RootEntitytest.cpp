@@ -45,6 +45,7 @@ int main()
     assert(PyRun_SimpleString("Entity('1', type=1)") == -1);
     assert(PyRun_SimpleString("Entity('1', type='pig')") == 0);
     assert(PyRun_SimpleString("Entity('1', other=1)") == 0);
+    assert(PyRun_SimpleString("Entity('1', other=set([1,1]))") == -1);
     assert(PyRun_SimpleString("e=Entity()") == 0);
     assert(PyRun_SimpleString("e.get_name()") == 0);
     assert(PyRun_SimpleString("e.name") == 0);
