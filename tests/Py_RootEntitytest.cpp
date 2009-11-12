@@ -20,12 +20,42 @@
 #include <Python.h>
 
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_RootEntity.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyRootEntity * o)
+{
+    if (!PyRootEntity_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+#ifndef NDEBUG
+    o->entity = Atlas::Objects::Entity::RootEntity(0);
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
+
+    setup_test_functions();
+
+    PyRootEntity * ent = newPyRootEntity();
+    assert(ent != 0);
 
     assert(PyRun_SimpleString("from atlas import Entity") == 0);
     assert(PyRun_SimpleString("from atlas import Location") == 0);
@@ -57,7 +87,20 @@ int main()
     assert(PyRun_SimpleString("e.bar=1") == 0);
     assert(PyRun_SimpleString("e.baz=[1,2.0,'three']") == 0);
     assert(PyRun_SimpleString("e.qux={'mim': 23}") == 0);
+    assert(PyRun_SimpleString("e.ptr=set([1,2])") == 0);
     assert(PyRun_SimpleString("e.foo") == 0);
+    assert(PyRun_SimpleString("e.ptr") == 0);
+
+#ifndef NDEBUG
+    assert(PyRun_SimpleString("import sabotage") == 0);
+    // Hit the assert checks.
+    assert(PyRun_SimpleString("get_name_methd=e.get_name") == 0);
+    assert(PyRun_SimpleString("sabotage.null(e)") == 0);
+    assert(PyRun_SimpleString("get_name_methd()") == -1);
+    assert(PyRun_SimpleString("e.name") == -1);
+    assert(PyRun_SimpleString("e.name='Bob'") == -1);
+#endif // NDEBUG
+
 
     shutdown_python_api();
     return 0;
