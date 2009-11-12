@@ -28,7 +28,7 @@ static PyObject * null_wrapper(PyObject * self, PyLocation * o)
 {
     if (!PyLocation_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return Py_True;
+        return NULL;
     }
 #ifndef NDEBUG
     o->location = NULL;
