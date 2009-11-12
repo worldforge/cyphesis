@@ -71,6 +71,16 @@ int main()
 
     init_python_api();
 
+    PyEntity * ent = newPyLocatedEntity();
+    assert(ent != 0);
+    Py_DECREF(ent);
+    ent = newPyEntity();
+    assert(ent != 0);
+    Py_DECREF(ent);
+    ent = newPyCharacter();
+    assert(ent != 0);
+    Py_DECREF(ent);
+
     Entity * e = new Entity("1", 1);
     Entity * wrld = new Entity("0", 0);
     e->m_location.m_loc = wrld;
