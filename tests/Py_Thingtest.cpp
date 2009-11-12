@@ -63,6 +63,31 @@ void check_union()
     ent.m_entity.e = new Entity("1", 1);
 }
 
+static PyObject * null_wrapper(PyObject * self, PyEntity * o)
+{
+    if (PyLocatedEntity_Check(o) || PyEntity_Check(o) || PyCharacter_Check(o)) {
+#ifndef NDEBUG
+        o->m_entity.l = NULL;
+#endif // NDEBUG
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
+
 int main()
 {
     check_union();
@@ -70,6 +95,8 @@ int main()
     new TestPropertyManager;
 
     init_python_api();
+
+    setup_test_functions();
 
     PyEntity * ent = newPyLocatedEntity();
     assert(ent != 0);
@@ -160,6 +187,41 @@ int main()
     assert(PyRun_SimpleString("print c.foo_operation") == -1);
     assert(PyRun_SimpleString("print c.location") == 0);
     assert(PyRun_SimpleString("print c.contains") == 0);
+
+#ifndef NDEBUG
+    assert(PyRun_SimpleString("import sabotage") == 0);
+    // Hit the assert checks.
+
+    assert(PyRun_SimpleString("t4=Thing('4')") == 0);
+    assert(PyRun_SimpleString("sabotage.null(t4)") == 0);
+    assert(PyRun_SimpleString("Thing(t4)") == -1);
+    
+    assert(PyRun_SimpleString("c5=Character('5')") == 0);
+    assert(PyRun_SimpleString("sabotage.null(c5)") == 0);
+    assert(PyRun_SimpleString("Character(c5)") == -1);
+
+    assert(PyRun_SimpleString("sabotage.null(le)") == 0);
+    assert(PyRun_SimpleString("le.location") == -1);
+    assert(PyRun_SimpleString("le.foo=1") == -1);
+    assert(PyRun_SimpleString("le == t") == -1);
+
+    assert(PyRun_SimpleString("as_entity_method=t.as_entity") == 0);
+    assert(PyRun_SimpleString("send_world_method=t.send_world") == 0);
+    assert(PyRun_SimpleString("sabotage.null(t)") == 0);
+    assert(PyRun_SimpleString("as_entity_method()") == -1);
+    assert(PyRun_SimpleString("send_world_method(Operation('get'))") == -1);
+
+    assert(PyRun_SimpleString("get_task_method=c.get_task") == 0);
+    assert(PyRun_SimpleString("start_task_method=c.start_task") == 0);
+    assert(PyRun_SimpleString("clear_task_method=c.clear_task") == 0);
+    assert(PyRun_SimpleString("mind2body_method=c.mind2body") == 0);
+    assert(PyRun_SimpleString("sabotage.null(c)") == 0);
+    assert(PyRun_SimpleString("get_task_method()") == -1);
+    assert(PyRun_SimpleString("start_task_method(Task(Character('3')),Operation('cut'),Oplist())") == -1);
+    assert(PyRun_SimpleString("clear_task_method()") == -1);
+    assert(PyRun_SimpleString("mind2body_method(Operation('update'))") == -1);
+
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;
