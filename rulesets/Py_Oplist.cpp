@@ -148,16 +148,17 @@ static PySequenceMethods Oplist_as_sequence = {
     NULL                             /* sq_ass_slice */
 };
 
-static inline void addToOplist(PyOperation * op, PyOplist * o)
+static inline int addToOplist(PyOperation * op, PyOplist * o)
 {
     if (op != NULL) {
        if (PyOperation_Check(op)) {
            o->ops->push_back(op->operation);
        } else if ((PyObject*)op != Py_None) {
            PyErr_SetString(PyExc_TypeError, "Argument must be an op");
-           return;
+           return -1;
        }
     }
+    return 0;
 }
 
 // FIXME Lots of silent failure here, and oddly unexpected results.
@@ -168,10 +169,18 @@ static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
         return -1;
     }
     self->ops = new OpVector();
-    addToOplist(op1, self);
-    addToOplist(op2, self);
-    addToOplist(op3, self);
-    addToOplist(op4, self);
+    if (addToOplist(op1, self) != 0) {
+        return -1;
+    }
+    if (addToOplist(op2, self) != 0) {
+        return -1;
+    }
+    if (addToOplist(op3, self) != 0) {
+        return -1;
+    }
+    if (addToOplist(op4, self) != 0) {
+        return -1;
+    }
     return 0;
 }
 
