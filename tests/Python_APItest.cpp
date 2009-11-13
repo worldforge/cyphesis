@@ -20,12 +20,53 @@
 #include <Python.h>
 
 #include "rulesets/Python_API.h"
+#include "rulesets/Python_Script_Utils.h"
+#include "rulesets/Py_Location.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyLocation * o)
+{
+    if (!PyLocation_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+#ifndef NDEBUG
+    o->location = NULL;
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
+
+    setup_test_functions();
+
+    PyObject * mod = Get_PyModule("notamodule");
+    assert(mod == 0);
+    mod = Get_PyModule("BaseHTTPServer");
+    assert(mod != 0);
+    PyObject * cls = Get_PyClass(mod, "BaseHTTPServer", "noclassbythisname");
+    assert(cls == 0);
+    cls = Get_PyClass(mod, "BaseHTTPServer", "HTTPServer");
+    assert(cls == 0);
+    cls = Get_PyClass(mod, "BaseHTTPServer", "__all__");
+    assert(cls == 0);
+    // We don't actually get a class back, because apparantly classes in
+    // the library don't inherit from object yet.
 
     assert(PyRun_SimpleString("print 'hello'") == 0);
     assert(PyRun_SimpleString("import sys") == 0);
@@ -56,6 +97,17 @@ int main()
     assert(PyRun_SimpleString("physics.distance_to('1', l2)") == -1);
     assert(PyRun_SimpleString("physics.square_distance('1', l2)") == -1);
     assert(PyRun_SimpleString("physics.square_horizontal_distance('1', l2)") == -1);
+
+#ifndef NDEBUG
+    assert(PyRun_SimpleString("import sabotage") == 0);
+    assert(PyRun_SimpleString("sabotage.null(l1)") == 0);
+    assert(PyRun_SimpleString("physics.distance_to(l1, l2)") == -1);
+    assert(PyRun_SimpleString("physics.distance_to(l2, l1)") == -1);
+    assert(PyRun_SimpleString("physics.square_distance(l1, l2)") == -1);
+    assert(PyRun_SimpleString("physics.square_distance(l2, l1)") == -1);
+    assert(PyRun_SimpleString("physics.square_horizontal_distance(l1, l2)") == -1);
+    assert(PyRun_SimpleString("physics.square_horizontal_distance(l2, l1)") == -1);
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;
