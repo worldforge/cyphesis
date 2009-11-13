@@ -207,9 +207,10 @@ static PyObject * Location_repr(PyLocation *self)
 static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
 {
     // We need to deal with actual args here
-    PyObject * refO = NULL, * coordsO = NULL;
+    PyObject * refO = NULL;
+    PyPoint3D * coords = NULL;
     LocatedEntity * ref_ent = NULL;
-    if (!PyArg_ParseTuple(args, "|OO", &refO, &coordsO)) {
+    if (!PyArg_ParseTuple(args, "|OO", &refO, &coords)) {
         return -1;
     }
     if (refO != NULL) {
@@ -225,7 +226,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
                 return -1;
             }
         }
-        if (coordsO != NULL && !PyPoint3D_Check(coordsO)) {
+        if (coords != NULL && !PyPoint3D_Check(coords)) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             return -1;
         }
@@ -252,7 +253,6 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
             ref_ent = ref->m_entity.l;
         }
     }
-    PyPoint3D * coords = (PyPoint3D*)coordsO;
     if (coords == NULL) {
         self->location = new Location(ref_ent);
     } else {
