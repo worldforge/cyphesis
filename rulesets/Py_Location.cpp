@@ -219,6 +219,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
             !PyCharacter_Check(refO) &&
             !PyWorld_Check(refO) &&
             !PyMind_Check(refO)) {
+            // FIXME This is archaic. Nothing uses it any more.
             if (PyObject_HasAttrString(refO, "cppthing")) {
                 refO = PyObject_GetAttrString(refO, "cppthing");
                 decrefO = true;
