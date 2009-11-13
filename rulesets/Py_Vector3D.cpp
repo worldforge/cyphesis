@@ -177,14 +177,6 @@ static void Vector3D_dealloc(PyVector3D *self)
     self->ob_type->tp_free(self);
 }
 
-static int Vector3D_print(PyVector3D * self, FILE * fp, int)
-{
-    // if (flags & Py_PRINT_RAW) {
-    // }
-    fprintf(fp, "(%lf %lf %lf", self->coords.x(), self->coords.y(), self->coords.z());
-    return 0;
-}
-
 static PyObject* Vector3D_repr(PyVector3D * self)
 {
     char buf[64];
@@ -406,7 +398,7 @@ PyTypeObject PyVector3D_Type = {
         0,                              // tp_itemsize
         // methods 
         (destructor)Vector3D_dealloc,   // tp_dealloc
-        (printfunc)Vector3D_print,      // tp_print
+        0,                              // tp_print
         (getattrfunc)Vector3D_getattr,  // tp_getattr
         (setattrfunc)Vector3D_setattr,  // tp_setattr
         (cmpfunc)Vector3D_compare,      // tp_compare
