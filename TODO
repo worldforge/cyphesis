@@ -1,3 +1,6 @@
+Allow local connection to create temporary "sys" accounts,
+with world edit privs. No need to persist them.
+
 Constrain movement if not directly in a movement domain.
 
 Tower defense game.
