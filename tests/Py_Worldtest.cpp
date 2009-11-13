@@ -31,13 +31,14 @@ int main()
 {
     init_python_api();
 
-    Entity wrld("0", 1);
+    Entity wrld("0", 0);
     TestWorld tw(wrld);
 
 
     assert(PyRun_SimpleString("from server import World") == 0);
     assert(PyRun_SimpleString("w=World()") == 0);
     assert(PyRun_SimpleString("w.get_time()") == 0);
+    assert(PyRun_SimpleString("w.get_object('0')") == 0);
     assert(PyRun_SimpleString("w.get_object('1')") == 0);
     assert(PyRun_SimpleString("w.get_object(1)") == -1);
     assert(PyRun_SimpleString("w == World()") == 0);
