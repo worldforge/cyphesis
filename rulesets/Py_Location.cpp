@@ -209,7 +209,6 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
     // We need to deal with actual args here
     PyObject * refO = NULL, * coordsO = NULL;
     LocatedEntity * ref_ent = NULL;
-    bool decrefO = false;
     if (!PyArg_ParseTuple(args, "|OO", &refO, &coordsO)) {
         return -1;
     }
@@ -219,21 +218,15 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
             !PyCharacter_Check(refO) &&
             !PyWorld_Check(refO) &&
             !PyMind_Check(refO)) {
-            // FIXME This is archaic. Nothing uses it any more.
-            if (PyObject_HasAttrString(refO, "cppthing")) {
-                refO = PyObject_GetAttrString(refO, "cppthing");
-                decrefO = true;
-            }
+            // FIXME This is odd. Should be wrapped into the above check
             if (!PyObject_IsInstance(refO, (PyObject *)&PyMind_Type) &&
                 !PyObject_IsInstance(refO, (PyObject *)&PyEntity_Type)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
-                if (decrefO) { Py_DECREF(refO); }
                 return -1;
             }
         }
         if (coordsO != NULL && !PyPoint3D_Check(coordsO)) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
-            if (decrefO) { Py_DECREF(refO); }
             return -1;
         }
     
@@ -244,7 +237,6 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
 #ifndef NDEBUG
             if (ref->m_mind == NULL) {
                 PyErr_SetString(PyExc_AssertionError, "Parent mind is invalid");
-                if (decrefO) { Py_DECREF(refO); }
                 return -1;
             }
 #endif // NDEBUG
@@ -254,14 +246,12 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
 #ifndef NDEBUG
             if (ref->m_entity.l == NULL) {
                 PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
-                if (decrefO) { Py_DECREF(refO); }
                 return -1;
             }
 #endif // NDEBUG
             ref_ent = ref->m_entity.l;
         }
     }
-    if (decrefO) { Py_DECREF(refO); }
     PyPoint3D * coords = (PyPoint3D*)coordsO;
     if (coords == NULL) {
         self->location = new Location(ref_ent);
