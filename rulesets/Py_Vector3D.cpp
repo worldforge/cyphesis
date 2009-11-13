@@ -50,6 +50,7 @@ static PyObject * Vector3D_rotatex(PyVector3D * self, PyObject * arg)
 {
     if (!PyFloat_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotatex with a float");
+        return NULL;
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateX(angle);
@@ -61,6 +62,7 @@ static PyObject * Vector3D_rotatey(PyVector3D * self, PyObject * arg)
 {
     if (!PyFloat_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotatey with a float");
+        return NULL;
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateY(angle);
@@ -72,6 +74,7 @@ static PyObject * Vector3D_rotatez(PyVector3D * self, PyObject * arg)
 {
     if (!PyFloat_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotatez with a float");
+        return NULL;
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateZ(angle);
