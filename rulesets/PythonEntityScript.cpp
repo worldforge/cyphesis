@@ -135,6 +135,7 @@ void PythonEntityScript::hook(const std::string & function,
             log(ERROR, "Reporting python error");
             PyErr_Print();
         }
+    } else {
+        Py_DECREF(ret);
     }
-    Py_DECREF(ret);
 }
