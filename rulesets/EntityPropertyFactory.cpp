@@ -17,4 +17,7 @@
 
 // $Id$
 
-#include "ActivePropertyFactory_impl.h"
+#error This file has been removed from the build.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+#include "EntityPropertyFactory_impl.h"
