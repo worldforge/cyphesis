@@ -36,7 +36,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
                  Py_Thingtest Py_Maptest Py_Mindtest Py_Tasktest \
-                 Py_Worldtest Py_Messagetest Py_WorldTimetest
+                 Py_Worldtest Py_Messagetest Py_WorldTimetest \
+                 PythonWrappertest
 
 
 CLIENT_TESTS = Py_CreatorClienttest
@@ -915,6 +916,17 @@ Py_Messagetest_LDADD = \
 
 Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp
 Py_WorldTimetest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+PythonWrappertest_SOURCES = PythonWrappertest.cpp
+PythonWrappertest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
