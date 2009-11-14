@@ -37,7 +37,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
                  Py_Thingtest Py_Maptest Py_Mindtest Py_Tasktest \
                  Py_Worldtest Py_Messagetest Py_WorldTimetest \
-                 PythonWrappertest PythonEntityScripttest
+                 PythonWrappertest PythonEntityScripttest \
+                 MindFactorytest
 
 CLIENT_TESTS = Py_CreatorClienttest
 
@@ -937,6 +938,18 @@ PythonWrappertest_LDADD = \
 
 PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp
 PythonEntityScripttest_LDADD = \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+MindFactorytest_SOURCES = MindFactorytest.cpp
+MindFactorytest_LDADD = \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
