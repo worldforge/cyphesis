@@ -39,7 +39,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Worldtest Py_Messagetest Py_WorldTimetest \
                  PythonWrappertest PythonEntityScripttest \
                  MindFactorytest TaskScripttest PythonContexttest \
-                 ArithmeticScripttest
+                 ArithmeticScripttest PythonArithmeticScripttest
 
 CLIENT_TESTS = Py_CreatorClienttest
 
@@ -985,6 +985,17 @@ PythonContexttest_LDADD = \
 ArithmeticScripttest_SOURCES = ArithmeticScripttest.cpp
 ArithmeticScripttest_LDADD = \
         $(top_builddir)/rulesets/ArithmeticScript.o \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp
+PythonArithmeticScripttest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
