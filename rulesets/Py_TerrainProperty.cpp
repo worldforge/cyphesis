@@ -53,6 +53,8 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
         return NULL;
     }
 #endif // NDEBUG
+    // FIXME Inconsistent interface. Should take the same args as others.
+    // If it really should take a point, METH_O would work better.
     PyPoint3D * pos;
     if (!PyArg_ParseTuple(args, "O", &pos)) {
         return NULL;
