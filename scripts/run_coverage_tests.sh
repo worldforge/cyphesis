@@ -115,7 +115,7 @@ rulesets/Character.cpp.gcov
 EOF
 }
 
-DIRS="physics common modules rulesets"
+DIRS="physics common modules rulesets server"
 
 declare -i report=0
 declare -i configure=0
