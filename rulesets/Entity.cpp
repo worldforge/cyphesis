@@ -150,9 +150,11 @@ PropertyBase * Entity::modProperty(const std::string & name)
 ///
 /// @param name name of the attribute for which the property is given
 /// @param prop the property object to be used
-void Entity::setProperty(const std::string & name, PropertyBase * prop)
+/// @returns a pointer to the property
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
 {
-    m_properties[name] = prop;
+    return m_properties[name] = prop;
 }
 
 /// \brief Copy attributes into an Atlas element
