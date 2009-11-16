@@ -28,7 +28,7 @@ static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
                                             PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity == NULL || self->m_property == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
         return NULL;
     }
@@ -48,7 +48,7 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
                                              PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity == NULL || self->m_property == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
         return NULL;
     }
@@ -75,7 +75,7 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
                                             PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity == NULL || self->m_property == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
         return NULL;
     }
@@ -110,7 +110,7 @@ static void TerrainProperty_dealloc(PyTerrainProperty *self)
 static PyObject * TerrainProperty_getattr(PyTerrainProperty *self, char * name)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity == NULL || self->m_property == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
         return NULL;
     }
@@ -123,7 +123,7 @@ static int TerrainProperty_setattr(PyTerrainProperty * self,
                                    PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL) {
+    if (self->m_entity == NULL || self->m_property == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.setattro");
         return -1;
     }
