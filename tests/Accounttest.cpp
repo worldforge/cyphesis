@@ -46,6 +46,7 @@ using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Move;
 
 class TestCommClient : public CommClient {
   public:
@@ -113,6 +114,19 @@ int main()
 
         chr->destroy();
 
+    }
+
+    std::string known_chr_id;
+    {
+        Entity * chr = new Character("7", 7);
+        chr->m_location.m_loc = &e;
+        chr->m_location.m_loc->makeContainer();
+        assert(chr->m_location.m_loc->m_contains != 0);
+        chr->m_location.m_loc->m_contains->insert(chr);
+
+        ac->addCharacter(chr);
+
+        known_chr_id = chr->getId();
     }
 
     {
@@ -184,7 +198,9 @@ int main()
         Anonymous op_arg;
         op->setArgs1(op_arg);
         ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
+        op_arg->setId("1");
+        ac->operation(op, res);
+        op_arg->setId(known_chr_id);
         ac->operation(op, res);
     }
 
@@ -212,6 +228,10 @@ int main()
         ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
         ac->operation(op, res);
+        op->setSerialno(1);
+        ac->operation(op, res);
+        op_arg->setLoc("1");
+        ac->operation(op, res);
     }
 
     {
@@ -219,6 +239,20 @@ int main()
         OpVector res;
         ac->operation(op, res);
         op->setSerialno(1);
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
+
+    {
+        // Move has no meaning
+        Move op;
+        OpVector res;
         ac->operation(op, res);
         op->setArgs1(Root());
         ac->operation(op, res);
