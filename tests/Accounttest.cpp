@@ -35,10 +35,11 @@
 
 #include <cassert>
 
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Imaginary;
@@ -89,9 +90,10 @@ int main()
     TestCommClient * tc = new TestCommClient(commServer);
     Connection * c = new Connection(*tc, server, "addr", "3");
     TestAccount * ac = new TestAccount(c, "user", "password", "4", 4);
+    Entity * chr;
 
     {
-        Entity * chr = new Entity("5", 5);
+        chr = new Entity("5", 5);
         chr->m_location.m_loc = &e;
         chr->m_location.m_loc->makeContainer();
         assert(chr->m_location.m_loc->m_contains != 0);
@@ -104,7 +106,7 @@ int main()
     }
 
     {
-        Entity * chr = new Character("6", 6);
+        chr = new Character("6", 6);
         chr->m_location.m_loc = &e;
         chr->m_location.m_loc->makeContainer();
         assert(chr->m_location.m_loc->m_contains != 0);
@@ -116,17 +118,14 @@ int main()
 
     }
 
-    std::string known_chr_id;
     {
-        Entity * chr = new Character("7", 7);
+        chr = new Character("7", 7);
         chr->m_location.m_loc = &e;
         chr->m_location.m_loc->makeContainer();
         assert(chr->m_location.m_loc->m_contains != 0);
         chr->m_location.m_loc->m_contains->insert(chr);
 
         ac->addCharacter(chr);
-
-        known_chr_id = chr->getId();
     }
 
     {
@@ -182,10 +181,12 @@ int main()
         ac->operation(op, res);
         op->setArgs1(Root());
         ac->operation(op, res);
+        op->setSerialno(1);
+        ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
         ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
+        op_arg->setLoc("2");
         ac->operation(op, res);
     }
 
@@ -200,7 +201,7 @@ int main()
         ac->operation(op, res);
         op_arg->setId("1");
         ac->operation(op, res);
-        op_arg->setId(known_chr_id);
+        op_arg->setId(chr->getId());
         ac->operation(op, res);
     }
 
@@ -213,7 +214,20 @@ int main()
         Anonymous op_arg;
         op->setArgs1(op_arg);
         ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
+        op_arg->setId("1");
+        ac->operation(op, res);
+        op_arg->setId(chr->getId());
+        ac->operation(op, res);
+        op_arg->setAttr("guise", "foo");
+        ac->operation(op, res);
+        op_arg->setAttr("height", 3.0);
+        ac->operation(op, res);
+        BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
+                    WFMath::Point<3>(-0.5, -0.5, 2.0));
+        chr->m_location.setBBox(newBox);
+        op_arg->setAttr("height", 3.0);
+        ac->operation(op, res);
+        op_arg->setAttr("tasks", ListType());
         ac->operation(op, res);
     }
 
