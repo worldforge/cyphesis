@@ -31,10 +31,21 @@
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 
+using Atlas::Message::MapType;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Get;
+using Atlas::Objects::Operation::Imaginary;
+using Atlas::Objects::Operation::Logout;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Talk;
 
 class TestCommClient : public CommClient {
   public:
@@ -109,6 +120,114 @@ int main()
         Entity * chr = ac->testAddNewCharacter("game_entity", new_char);
     }
 
+    ac->getType();
+
+    {
+        MapType emap;
+        ac->addToMessage(emap);
+    }
+
+    {
+        RootEntity ent;
+        ac->addToEntity(ent);
+    }
+
+    {
+        Create op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>(1, "game_entity"));
+        ac->operation(op, res);
+        op_arg->setName("Bob");
+        ac->operation(op, res);
+    }
+
+    {
+        Get op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
+
+    {
+        Imaginary op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
+
+    {
+        Look op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
+
+    {
+        Set op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
+
+    {
+        Talk op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
+
+    {
+        Logout op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setSerialno(1);
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+    }
 
     delete ac;
 
