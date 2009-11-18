@@ -23,7 +23,9 @@
 #include "server/CommClient.h"
 #include "server/Connection.h"
 #include "server/WorldRouter.h"
+#include "server/Ruleset.h"
 
+#include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 
@@ -79,8 +81,12 @@ int main()
 {
     database_flag = false;
 
+    init_python_api();
+
     WorldRouter world;
     Entity & e = world.m_gameWorld;
+
+    Ruleset::init();
 
     ServerRouting server(world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
@@ -158,7 +164,19 @@ int main()
         ac->operation(op, res);
         op_arg->setParents(std::list<std::string>(1, "game_entity"));
         ac->operation(op, res);
+        op_arg->setObjtype("obj");
+        ac->operation(op, res);
         op_arg->setName("Bob");
+        ac->operation(op, res);
+        op_arg->setObjtype("class");
+        ac->operation(op, res);
+        op_arg->setId("game_entity");
+        ac->operation(op, res);
+        op_arg->setId("new_class");
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>(1, ""));
+        ac->operation(op, res);
+        op_arg->setParents(std::list<std::string>(1, "non_exist"));
         ac->operation(op, res);
     }
 
@@ -172,6 +190,22 @@ int main()
         op->setArgs1(op_arg);
         ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
+        ac->operation(op, res);
+        op_arg->setObjtype("obj");
+        ac->operation(op, res);
+        op_arg->setId("");
+        ac->operation(op, res);
+        op_arg->setId("1");
+        ac->operation(op, res);
+        op_arg->setId("2");
+        ac->operation(op, res);
+        op_arg->setId("0");
+        ac->operation(op, res);
+        op_arg->setObjtype("class");
+        ac->operation(op, res);
+        op_arg->setId("game_entity");
+        ac->operation(op, res);
+        op_arg->setObjtype("non_objtype");
         ac->operation(op, res);
     }
 
@@ -214,7 +248,15 @@ int main()
         Anonymous op_arg;
         op->setArgs1(op_arg);
         ac->operation(op, res);
+        op_arg->setObjtype("obj");
+        ac->operation(op, res);
         op_arg->setId("1");
+        ac->operation(op, res);
+        op_arg->setObjtype("class");
+        ac->operation(op, res);
+        op_arg->setId("game_entity");
+        ac->operation(op, res);
+        op_arg->setObjtype("obj");
         ac->operation(op, res);
         op_arg->setId(chr->getId());
         ac->operation(op, res);
@@ -228,6 +270,8 @@ int main()
         op_arg->setAttr("height", 3.0);
         ac->operation(op, res);
         op_arg->setAttr("tasks", ListType());
+        ac->operation(op, res);
+        op_arg->setObjtype("non_objtype");
         ac->operation(op, res);
     }
 
@@ -261,6 +305,10 @@ int main()
         ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
         ac->operation(op, res);
+        op_arg->setId("1");
+        ac->operation(op, res);
+        op_arg->setId("4");
+        ac->operation(op, res);
     }
 
     {
@@ -279,5 +327,6 @@ int main()
 
     delete ac;
 
+    shutdown_python_api();
     return 0;
 }
