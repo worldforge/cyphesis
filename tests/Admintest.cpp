@@ -24,10 +24,14 @@
 #include "server/Connection.h"
 #include "server/WorldRouter.h"
 #include "server/Ruleset.h"
+#include "server/Player.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
+
+#include "common/Monitor.h"
+#include "common/Connect.h"
 
 #include "TestWorld.h"
 
@@ -50,6 +54,8 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Monitor;
+using Atlas::Objects::Operation::Connect;
 
 class TestCommClient : public CommClient {
   public:
@@ -75,82 +81,14 @@ class TestAdmin : public Admin {
     {
         return addNewCharacter(typestr, ent);
     }
+
+    void testOpDispatched(const Operation & op) {
+        opDispatched(op);
+    }
 };
 
-int main()
+void run_operation_checks(TestAdmin * ac, Entity * chr)
 {
-    database_flag = false;
-
-    init_python_api();
-
-    WorldRouter world;
-    Entity & e = world.m_gameWorld;
-
-    Ruleset::init();
-
-    ServerRouting server(world, "noruleset", "unittesting",
-                         "1", 1, "2", 2);
-
-    CommServer commServer(server);
-
-    TestCommClient * tc = new TestCommClient(commServer);
-    Connection * c = new Connection(*tc, server, "addr", "3");
-    TestAdmin * ac = new TestAdmin(c, "user", "password", "4", 4);
-    Entity * chr;
-
-    {
-        chr = new Entity("5", 5);
-        chr->m_location.m_loc = &e;
-        chr->m_location.m_loc->makeContainer();
-        assert(chr->m_location.m_loc->m_contains != 0);
-        chr->m_location.m_loc->m_contains->insert(chr);
-
-        ac->addCharacter(chr);
-
-        chr->destroy();
-
-    }
-
-    {
-        chr = new Character("6", 6);
-        chr->m_location.m_loc = &e;
-        chr->m_location.m_loc->makeContainer();
-        assert(chr->m_location.m_loc->m_contains != 0);
-        chr->m_location.m_loc->m_contains->insert(chr);
-
-        ac->addCharacter(chr);
-
-        chr->destroy();
-
-    }
-
-    {
-        chr = new Character("7", 7);
-        chr->m_location.m_loc = &e;
-        chr->m_location.m_loc->makeContainer();
-        assert(chr->m_location.m_loc->m_contains != 0);
-        chr->m_location.m_loc->m_contains->insert(chr);
-
-        ac->addCharacter(chr);
-    }
-
-    {
-        Anonymous new_char;
-        Entity * chr = ac->testAddNewCharacter("game_entity", new_char);
-    }
-
-    ac->getType();
-
-    {
-        MapType emap;
-        ac->addToMessage(emap);
-    }
-
-    {
-        RootEntity ent;
-        ac->addToEntity(ent);
-    }
-
     {
         Create op;
         OpVector res;
@@ -200,6 +138,8 @@ int main()
         op_arg->setId("2");
         ac->operation(op, res);
         op_arg->setId("0");
+        ac->operation(op, res);
+        op_arg->setId("8");
         ac->operation(op, res);
         op_arg->setObjtype("class");
         ac->operation(op, res);
@@ -309,6 +249,8 @@ int main()
         ac->operation(op, res);
         op_arg->setId("4");
         ac->operation(op, res);
+        op_arg->setId("8");
+        ac->operation(op, res);
     }
 
     {
@@ -324,6 +266,133 @@ int main()
         op_arg->setParents(std::list<std::string>());
         ac->operation(op, res);
     }
+
+    {
+        Monitor op;
+        Move test_op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        ac->testOpDispatched(test_op);
+        op->setArgs(std::vector<Root>());
+        ac->operation(op, res);
+        ac->testOpDispatched(test_op);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+    }
+
+    {
+        Connect op;
+        OpVector res;
+        ac->operation(op, res);
+        op->setArgs1(Root());
+        ac->operation(op, res);
+        Anonymous op_arg;
+        op->setArgs1(op_arg);
+        ac->operation(op, res);
+        op_arg->setAttr("hostname", 1);
+        ac->operation(op, res);
+        op_arg->setAttr("hostname", "localhost");
+        ac->operation(op, res);
+    }
+}
+
+int main()
+{
+    database_flag = false;
+
+    init_python_api();
+
+    WorldRouter world;
+    Entity & e = world.m_gameWorld;
+
+    Ruleset::init();
+
+    ServerRouting server(world, "noruleset", "unittesting",
+                         "1", 1, "2", 2);
+
+
+    CommServer commServer(server);
+
+    TestCommClient * tc = new TestCommClient(commServer);
+    Connection * c = new Connection(*tc, server, "addr", "3");
+    TestAdmin * ac = new TestAdmin(c, "user", "password", "4", 4);
+    Entity * chr;
+
+    Player * p = new Player(0, "bob", "bobspass", "8", 8);
+    server.addAccount(p);
+
+    {
+        chr = new Entity("5", 5);
+        chr->m_location.m_loc = &e;
+        chr->m_location.m_loc->makeContainer();
+        assert(chr->m_location.m_loc->m_contains != 0);
+        chr->m_location.m_loc->m_contains->insert(chr);
+
+        ac->addCharacter(chr);
+
+        chr->destroy();
+
+    }
+
+    {
+        chr = new Character("6", 6);
+        chr->m_location.m_loc = &e;
+        chr->m_location.m_loc->makeContainer();
+        assert(chr->m_location.m_loc->m_contains != 0);
+        chr->m_location.m_loc->m_contains->insert(chr);
+
+        ac->addCharacter(chr);
+
+        chr->destroy();
+
+    }
+
+    {
+        chr = new Character("7", 7);
+        chr->m_location.m_loc = &e;
+        chr->m_location.m_loc->makeContainer();
+        assert(chr->m_location.m_loc->m_contains != 0);
+        chr->m_location.m_loc->m_contains->insert(chr);
+
+        ac->addCharacter(chr);
+    }
+
+    {
+        Anonymous new_char;
+        ac->testAddNewCharacter("game_entity", new_char);
+    }
+
+    ac->getType();
+
+    {
+        MapType emap;
+        ac->addToMessage(emap);
+    }
+
+    {
+        RootEntity ent;
+        ac->addToEntity(ent);
+    }
+
+    {
+        Create op;
+        Anonymous ent;
+        OpVector res;
+
+        ac->testCharacterError(op, ent, res);
+        ent->setParents(std::list<std::string>(1, "game_entity"));
+        ac->testCharacterError(op, ent, res);
+        ent->setParents(std::list<std::string>());
+        ac->testCharacterError(op, ent, res);
+    }
+
+    run_operation_checks(ac, chr);
+
+    ac->m_connection = 0;
+
+    run_operation_checks(ac, chr);
 
     delete ac;
 
