@@ -46,7 +46,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
 CLIENT_TESTS = Py_CreatorClienttest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
-               CommServertest Accounttest Admintest Playertest
+               CommServertest Accounttest Admintest Playertest buildidtest
 
 PYTHON_TESTS = python_class
 
@@ -1290,6 +1290,12 @@ Playertest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 Playertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+buildidtest_SOURCES = buildidtest.cpp
+buildidtest_LDADD = \
+        $(top_builddir)/server/buildid.o
+
+# PYTHON_TESTS
 
 python_class_SOURCES = python_class.cpp
 python_class_LDADD = \
