@@ -50,10 +50,10 @@ class Connection : public Router, virtual public sigc::trackable {
     /// it can destroy certain types of entity connected to itself,
     /// without them trying to remove themselves from the connection.
     bool m_obsolete;
-
+  protected:
     Account * addPlayer(const std::string &, const std::string &);
     Account * removePlayer(Router *, const std::string & event);
-  protected:
+
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
   public:
