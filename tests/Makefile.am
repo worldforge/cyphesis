@@ -47,7 +47,7 @@ CLIENT_TESTS = Py_CreatorClienttest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
-               EntityFactorytest TaskFactorytest
+               EntityFactorytest TaskFactorytest Connectiontest
 
 PYTHON_TESTS = python_class
 
@@ -1323,6 +1323,43 @@ TaskFactorytest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 buildidtest_SOURCES = buildidtest.cpp
 buildidtest_LDADD = \
         $(top_builddir)/server/buildid.o
+
+Connectiontest_SOURCES = Connectiontest.cpp
+Connectiontest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+Connectiontest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 # PYTHON_TESTS
 
