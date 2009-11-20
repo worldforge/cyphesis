@@ -1,3 +1,6 @@
+CommServer::addSocket shoudl return success/failure, so that parent knows the
+score.
+
 Allow local connection to create temporary "sys" accounts,
 with world edit privs. No need to persist them.
 
