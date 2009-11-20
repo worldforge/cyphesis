@@ -42,12 +42,12 @@ int main()
 
     run_python_string("import testmod");
     run_python_string("class TestArithmeticScript(object):\n"
-                              " def __init__(self):\n"
-                              "  self.foo=1\n"
-                              "  self.bar=1.1\n"
-                              "  self.baz=None\n"
-                              "  self.qux='1'\n"
-                              );
+                      " def __init__(self):\n"
+                      "  self.foo=1\n"
+                      "  self.bar=1.1\n"
+                      "  self.baz=None\n"
+                      "  self.qux='1'\n"
+                     );
     run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
 
     PyObject * clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
