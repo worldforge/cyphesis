@@ -250,7 +250,7 @@ void CommServer::poll()
 }
 
 /// Add a new CommSocket object to the manager.
-void CommServer::addSocket(CommSocket * cs)
+int CommServer::addSocket(CommSocket * cs)
 {
 #ifdef HAVE_EPOLL_CREATE
     struct epoll_event ee;
@@ -261,9 +261,12 @@ void CommServer::addSocket(CommSocket * cs)
     if (ret != 0) {
         log(CYLOG_ERROR, "Error calling epoll_ctl to add socket");
         logSysError(CYLOG_ERROR);
+        return -1;
     }
+    return 0;
 #endif // HAVE_EPOLL_CREATE
     m_sockets.insert(cs);
+    return 0;
 }
 
 /// \brief Remove and delete a CommSocket from the server.

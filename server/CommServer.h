@@ -65,7 +65,7 @@ class CommServer {
 
     int setup();
     void poll();
-    void addSocket(CommSocket * cs);
+    int addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
 
     /// \brief Accessor for the current time in seconds.
