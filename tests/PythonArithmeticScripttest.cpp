@@ -29,6 +29,9 @@ static PyMethodDef no_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
+#define run_python_string(_s) { int pyret = PyRun_SimpleString(_s); \
+                                assert(pyret == 0); }
+
 int main()
 {
     init_python_api();
@@ -37,15 +40,15 @@ int main()
 
     assert(testmod != 0);
 
-    assert(PyRun_SimpleString("import testmod") == 0);
-    assert(PyRun_SimpleString("class TestArithmeticScript(object):\n"
+    run_python_string("import testmod");
+    run_python_string("class TestArithmeticScript(object):\n"
                               " def __init__(self):\n"
                               "  self.foo=1\n"
                               "  self.bar=1.1\n"
                               "  self.baz=None\n"
                               "  self.qux='1'\n"
-                              ) == 0);
-    assert(PyRun_SimpleString("testmod.TestArithmeticScript=TestArithmeticScript") == 0);
+                              );
+    run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
 
     PyObject * clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
 
