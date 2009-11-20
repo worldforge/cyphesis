@@ -73,10 +73,12 @@ int main(int argc, char ** argv)
 
     assert(ret == 0);
 
-    commServer.addSocket(cfs);
+    ret = commServer.addSocket(cfs);
+
+    if (ret != 0) {
+        commServer.removeSocket(cfs);
+    }
 
     commServer.poll();
-
-    commServer.removeSocket(cfs);
 
 }
