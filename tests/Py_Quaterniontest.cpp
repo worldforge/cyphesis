@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 
 #include <cassert>
@@ -27,38 +29,38 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
-    assert(PyRun_SimpleString("q=Quaternion()") == 0);
-    assert(PyRun_SimpleString("q=Quaternion([1])") == -1);
-    assert(PyRun_SimpleString("q=Quaternion([0,0,0,1])") == 0);
-    assert(PyRun_SimpleString("q=Quaternion([0.0,0.0,0.0,1.0])") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(['0.0',0.0,0.0,1.0])") == -1);
-    assert(PyRun_SimpleString("q=Quaternion(1,0)") == -1);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(Vector3D(1,0,0),0)") == -1);
-    assert(PyRun_SimpleString("q=Quaternion(Vector3D(1,0,0),0.0)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(Vector3D(1,0,0),Vector3D(0,1,0))") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(1,0,0)") == -1);
-    assert(PyRun_SimpleString("q=Quaternion(0,0,0,1)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(0.0,0.0,0.0,1.0)") == 0);
-    assert(PyRun_SimpleString("q=Quaternion('0.0',0.0,0.0,1.0)") == -1);
-    assert(PyRun_SimpleString("q=Quaternion()") == 0);
-    assert(PyRun_SimpleString("q2=Quaternion()") == 0);
-    assert(PyRun_SimpleString("q3=Quaternion(1,0,0,0)") == 0);
-    assert(PyRun_SimpleString("print q == q2") == 0);
-    assert(PyRun_SimpleString("print q == q3") == 0);
-    assert(PyRun_SimpleString("print q * q2") == 0);
-    assert(PyRun_SimpleString("print q * 2") == -1);
-    assert(PyRun_SimpleString("print q.is_valid()") == 0);
-    assert(PyRun_SimpleString("print q.as_list()") == 0);
-    assert(PyRun_SimpleString("print q.rotation()") == -1);
-    assert(PyRun_SimpleString("print q.rotation('foo',1.0)") == -1);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("v=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("print q == v") == 0);
-    assert(PyRun_SimpleString("print v == q") == 0);
-    assert(PyRun_SimpleString("print q.rotation(v,1.0)") == 0);
-    assert(PyRun_SimpleString("print repr(q)") == 0);
+    run_python_string("from physics import Quaternion");
+    run_python_string("q=Quaternion()");
+    fail_python_string("q=Quaternion([1])");
+    run_python_string("q=Quaternion([0,0,0,1])");
+    run_python_string("q=Quaternion([0.0,0.0,0.0,1.0])");
+    fail_python_string("q=Quaternion(['0.0',0.0,0.0,1.0])");
+    fail_python_string("q=Quaternion(1,0)");
+    run_python_string("from physics import Vector3D");
+    fail_python_string("q=Quaternion(Vector3D(1,0,0),0)");
+    run_python_string("q=Quaternion(Vector3D(1,0,0),0.0)");
+    run_python_string("q=Quaternion(Vector3D(1,0,0),Vector3D(0,1,0))");
+    fail_python_string("q=Quaternion(1,0,0)");
+    run_python_string("q=Quaternion(0,0,0,1)");
+    run_python_string("q=Quaternion(0.0,0.0,0.0,1.0)");
+    fail_python_string("q=Quaternion('0.0',0.0,0.0,1.0)");
+    run_python_string("q=Quaternion()");
+    run_python_string("q2=Quaternion()");
+    run_python_string("q3=Quaternion(1,0,0,0)");
+    run_python_string("print q == q2");
+    run_python_string("print q == q3");
+    run_python_string("print q * q2");
+    fail_python_string("print q * 2");
+    run_python_string("print q.is_valid()");
+    run_python_string("print q.as_list()");
+    fail_python_string("print q.rotation()");
+    fail_python_string("print q.rotation('foo',1.0)");
+    run_python_string("from physics import Vector3D");
+    run_python_string("v=Vector3D(0,0,0)");
+    run_python_string("print q == v");
+    run_python_string("print v == q");
+    run_python_string("print q.rotation(v,1.0)");
+    run_python_string("print repr(q)");
 
     shutdown_python_api();
     return 0;

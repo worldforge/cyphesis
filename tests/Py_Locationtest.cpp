@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "TestWorld.h"
 
 #include "rulesets/Python_API.h"
@@ -70,70 +72,70 @@ int main()
     Entity wrld("0", 0);
     TestWorld tw(wrld);
 
-    assert(PyRun_SimpleString("import atlas") == 0);
-    assert(PyRun_SimpleString("import server") == 0);
-    assert(PyRun_SimpleString("from physics import Point3D") == 0);
-    assert(PyRun_SimpleString("atlas.Location(set([1,1]))") == -1);
-    assert(PyRun_SimpleString("atlas.Location(1,1,1)") == -1);
-    assert(PyRun_SimpleString("atlas.Location(server.LocatedEntity('1'))") == 0);
-    assert(PyRun_SimpleString("atlas.Location(server.Thing('1'))") == 0);
-    assert(PyRun_SimpleString("atlas.Location(server.Character('1'))") == 0);
-    assert(PyRun_SimpleString("atlas.Location(server.World())") == 0);
-    assert(PyRun_SimpleString("atlas.Location(server.Mind('1'))") == 0);
-    assert(PyRun_SimpleString("atlas.Location(server.Thing('1'), 1)") == -1);
-    assert(PyRun_SimpleString("atlas.Location(server.Thing('1'), Point3D(0,0,0))") == 0);
-    assert(PyRun_SimpleString("l=atlas.Location()") == 0);
-    assert(PyRun_SimpleString("l1=l.copy()") == 0);
-    assert(PyRun_SimpleString("l.parent") == 0);
-    assert(PyRun_SimpleString("l.coordinates") == 0);
-    assert(PyRun_SimpleString("l.velocity") == 0);
-    assert(PyRun_SimpleString("l.orientation") == 0);
-    assert(PyRun_SimpleString("l.bbox") == 0);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
-    assert(PyRun_SimpleString("from physics import BBox") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Point3D()") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Point3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Vector3D()") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=()") == -1);
-    assert(PyRun_SimpleString("l.coordinates=(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=(0.0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=('0',0,0)") == -1);
-    assert(PyRun_SimpleString("l.coordinates=[]") == -1);
-    assert(PyRun_SimpleString("l.coordinates=[0,0,0]") == 0);
-    assert(PyRun_SimpleString("l.coordinates=[0.0,0,0]") == 0);
-    assert(PyRun_SimpleString("l.coordinates=['0',0,0]") == -1);
-    assert(PyRun_SimpleString("l.velocity=Vector3D()") == 0);
-    assert(PyRun_SimpleString("l.velocity=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.orientation=Quaternion()") == 0);
-    assert(PyRun_SimpleString("l.orientation=Quaternion(0,0,0,1)") == 0);
-    assert(PyRun_SimpleString("l.bbox=BBox()") == 0);
-    assert(PyRun_SimpleString("l.bbox=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.parent='1'") == -1);
-    assert(PyRun_SimpleString("l.parent=server.Thing('1')") == 0);
-    assert(PyRun_SimpleString("l.other=Vector3D(0,0,0)") == -1);
-    assert(PyRun_SimpleString("repr(l)") == 0);
-    assert(PyRun_SimpleString("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))") == 0);
-    assert(PyRun_SimpleString("l.parent") == 0);
+    run_python_string("import atlas");
+    run_python_string("import server");
+    run_python_string("from physics import Point3D");
+    fail_python_string("atlas.Location(set([1,1]))");
+    fail_python_string("atlas.Location(1,1,1)");
+    run_python_string("atlas.Location(server.LocatedEntity('1'))");
+    run_python_string("atlas.Location(server.Thing('1'))");
+    run_python_string("atlas.Location(server.Character('1'))");
+    run_python_string("atlas.Location(server.World())");
+    run_python_string("atlas.Location(server.Mind('1'))");
+    fail_python_string("atlas.Location(server.Thing('1'), 1)");
+    run_python_string("atlas.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("l=atlas.Location()");
+    run_python_string("l1=l.copy()");
+    run_python_string("l.parent");
+    run_python_string("l.coordinates");
+    run_python_string("l.velocity");
+    run_python_string("l.orientation");
+    run_python_string("l.bbox");
+    run_python_string("from physics import Vector3D");
+    run_python_string("from physics import Quaternion");
+    run_python_string("from physics import BBox");
+    run_python_string("l.coordinates=Point3D()");
+    run_python_string("l.coordinates=Point3D(0,0,0)");
+    run_python_string("l.coordinates=Vector3D()");
+    run_python_string("l.coordinates=Vector3D(0,0,0)");
+    fail_python_string("l.coordinates=()");
+    run_python_string("l.coordinates=(0,0,0)");
+    run_python_string("l.coordinates=(0.0,0,0)");
+    fail_python_string("l.coordinates=('0',0,0)");
+    fail_python_string("l.coordinates=[]");
+    run_python_string("l.coordinates=[0,0,0]");
+    run_python_string("l.coordinates=[0.0,0,0]");
+    fail_python_string("l.coordinates=['0',0,0]");
+    run_python_string("l.velocity=Vector3D()");
+    run_python_string("l.velocity=Vector3D(0,0,0)");
+    run_python_string("l.orientation=Quaternion()");
+    run_python_string("l.orientation=Quaternion(0,0,0,1)");
+    run_python_string("l.bbox=BBox()");
+    run_python_string("l.bbox=Vector3D(0,0,0)");
+    fail_python_string("l.parent='1'");
+    run_python_string("l.parent=server.Thing('1')");
+    fail_python_string("l.other=Vector3D(0,0,0)");
+    run_python_string("repr(l)");
+    run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("l.parent");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
+    run_python_string("import sabotage");
     // Hit the assert checks.
-    assert(PyRun_SimpleString("t=server.Thing('1')") == 0);
-    assert(PyRun_SimpleString("sabotage.null(t)") == 0);
-    assert(PyRun_SimpleString("l.parent=t") == -1);
-    assert(PyRun_SimpleString("atlas.Location(t)") == -1);
+    run_python_string("t=server.Thing('1')");
+    run_python_string("sabotage.null(t)");
+    fail_python_string("l.parent=t");
+    fail_python_string("atlas.Location(t)");
 
-    assert(PyRun_SimpleString("m=server.Mind('1')") == 0);
-    assert(PyRun_SimpleString("sabotage.null(m)") == 0);
-    assert(PyRun_SimpleString("atlas.Location(m)") == -1);
+    run_python_string("m=server.Mind('1')");
+    run_python_string("sabotage.null(m)");
+    fail_python_string("atlas.Location(m)");
 
-    assert(PyRun_SimpleString("copy_methd=l.copy") == 0);
-    assert(PyRun_SimpleString("sabotage.null(l)") == 0);
-    assert(PyRun_SimpleString("copy_methd()") == -1);
-    assert(PyRun_SimpleString("l.parent") == -1);
-    assert(PyRun_SimpleString("l.velocity=Vector3D()") == -1);
+    run_python_string("copy_methd=l.copy");
+    run_python_string("sabotage.null(l)");
+    fail_python_string("copy_methd()");
+    fail_python_string("l.parent");
+    fail_python_string("l.velocity=Vector3D()");
 #endif // NDEBUG
 
     shutdown_python_api();

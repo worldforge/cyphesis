@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Message.h"
 
@@ -55,55 +57,55 @@ int main()
 
     setup_test_functions();
 
-    assert(PyRun_SimpleString("from atlas import Message") == 0);
-    assert(PyRun_SimpleString("from atlas import Operation") == 0);
-    assert(PyRun_SimpleString("from atlas import Oplist") == 0);
-    assert(PyRun_SimpleString("from atlas import Location") == 0);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("Message()") == 0);
-    assert(PyRun_SimpleString("Message(1)") == 0);
-    assert(PyRun_SimpleString("Message(1.1)") == 0);
-    assert(PyRun_SimpleString("Message('1')") == 0);
-    assert(PyRun_SimpleString("Message([1, 1])") == 0);
-    assert(PyRun_SimpleString("Message((1, 1))") == 0);
-    assert(PyRun_SimpleString("Message({'foo': 1})") == 0);
-    assert(PyRun_SimpleString("Message(Message(1))") == 0);
-    assert(PyRun_SimpleString("Message(Operation('get'))") == 0);
-    assert(PyRun_SimpleString("Message(Oplist(Operation('get')))") == 0);
-    assert(PyRun_SimpleString("Message(Location())") == 0);
-    assert(PyRun_SimpleString("Message(Vector3D())") == -1);
-    assert(PyRun_SimpleString("Message([Message(1)])") == 0);
-    assert(PyRun_SimpleString("Message([Vector3D()])") == -1);
-    assert(PyRun_SimpleString("Message({'foo': Message(1)})") == 0);
-    assert(PyRun_SimpleString("Message({'foo': Vector3D()})") == -1);
-    assert(PyRun_SimpleString("Message(1, 1)") == -1);
+    run_python_string("from atlas import Message");
+    run_python_string("from atlas import Operation");
+    run_python_string("from atlas import Oplist");
+    run_python_string("from atlas import Location");
+    run_python_string("from physics import Vector3D");
+    run_python_string("Message()");
+    run_python_string("Message(1)");
+    run_python_string("Message(1.1)");
+    run_python_string("Message('1')");
+    run_python_string("Message([1, 1])");
+    run_python_string("Message((1, 1))");
+    run_python_string("Message({'foo': 1})");
+    run_python_string("Message(Message(1))");
+    run_python_string("Message(Operation('get'))");
+    run_python_string("Message(Oplist(Operation('get')))");
+    run_python_string("Message(Location())");
+    fail_python_string("Message(Vector3D())");
+    run_python_string("Message([Message(1)])");
+    fail_python_string("Message([Vector3D()])");
+    run_python_string("Message({'foo': Message(1)})");
+    fail_python_string("Message({'foo': Vector3D()})");
+    fail_python_string("Message(1, 1)");
 
-    assert(PyRun_SimpleString("m=Message(1)") == 0);
-    assert(PyRun_SimpleString("print m.get_name()") == 0);
-    assert(PyRun_SimpleString("print m.foo") == -1);
-    assert(PyRun_SimpleString("m.foo = 1") == -1);
-    assert(PyRun_SimpleString("m=Message({})") == 0);
-    assert(PyRun_SimpleString("print m.foo") == -1);
-    assert(PyRun_SimpleString("m.foo = Vector3D()") == -1);
-    assert(PyRun_SimpleString("m.foo = 1") == 0);
-    assert(PyRun_SimpleString("print m.foo") == 0);
-    assert(PyRun_SimpleString("m.foo = 1.1") == 0);
-    assert(PyRun_SimpleString("print m.foo") == 0);
-    assert(PyRun_SimpleString("m.foo = '1'") == 0);
-    assert(PyRun_SimpleString("print m.foo") == 0);
-    assert(PyRun_SimpleString("m.foo = ['1']") == 0);
-    assert(PyRun_SimpleString("print m.foo") == 0);
-    assert(PyRun_SimpleString("m.foo = {'foo': 1}") == 0);
-    assert(PyRun_SimpleString("print m.foo") == 0);
+    run_python_string("m=Message(1)");
+    run_python_string("print m.get_name()");
+    fail_python_string("print m.foo");
+    fail_python_string("m.foo = 1");
+    run_python_string("m=Message({})");
+    fail_python_string("print m.foo");
+    fail_python_string("m.foo = Vector3D()");
+    run_python_string("m.foo = 1");
+    run_python_string("print m.foo");
+    run_python_string("m.foo = 1.1");
+    run_python_string("print m.foo");
+    run_python_string("m.foo = '1'");
+    run_python_string("print m.foo");
+    run_python_string("m.foo = ['1']");
+    run_python_string("print m.foo");
+    run_python_string("m.foo = {'foo': 1}");
+    run_python_string("print m.foo");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
-    assert(PyRun_SimpleString("get_name_method=m.get_name") == 0);
-    assert(PyRun_SimpleString("sabotage.null(m)") == 0);
+    run_python_string("import sabotage");
+    run_python_string("get_name_method=m.get_name");
+    run_python_string("sabotage.null(m)");
     // Hit the assert checks.
-    assert(PyRun_SimpleString("print get_name_method()") == -1);
-    assert(PyRun_SimpleString("print m.foo") == -1);
-    assert(PyRun_SimpleString("m.foo = 1") == -1);
+    fail_python_string("print get_name_method()");
+    fail_python_string("print m.foo");
+    fail_python_string("m.foo = 1");
 #endif // NDEBUG
 
     shutdown_python_api();

@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_Oplist.h"
@@ -88,151 +90,151 @@ int main()
     op = newPyConstOperation();
     assert(op != 0);
 
-    assert(PyRun_SimpleString("from atlas import *") == 0);
-    assert(PyRun_SimpleString("o=Operation('get')") == 0);
+    run_python_string("from atlas import *");
+    run_python_string("o=Operation('get')");
     // This should fail, but the error throwing has been disabled to
     // allow cooler stuff to be done from the client.
     // FIXME Once the client is constrained to real operations, go back
     // to disallowing arbitrary operation names.
-    // assert(PyRun_SimpleString("o=Operation('not_valid')") == -1);
-    assert(PyRun_SimpleString("o=Operation('not_valid')") == 0);
-    assert(PyRun_SimpleString("o=Operation('get', to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("o=Operation('get', from_=Message({'nonid': '1'}))") == -1);
-    assert(PyRun_SimpleString("o=Operation('get', from_=Message({'id': 1}))") == -1);
-    assert(PyRun_SimpleString("o=Operation('get', to=Message({'nonid': '1'}))") == -1);
-    assert(PyRun_SimpleString("o=Operation('get', to=Message({'id': 1}))") == -1);
-    assert(PyRun_SimpleString("e=Entity('1')") == 0);
-    assert(PyRun_SimpleString("o=Operation('get', to=e, from_=e)") == 0);
-    assert(PyRun_SimpleString("o=Operation('get', Entity(), to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("o=Operation('get', Operation('set'), to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("o=Operation('get', Location(), to='1', from_='1')") == -1);
-    assert(PyRun_SimpleString("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')") == 0);
-    assert(PyRun_SimpleString("Operation('get', Message('1'))") == -1);
-    assert(PyRun_SimpleString("Operation('get', Message({'objtype': 'obj', 'parents': ['thing']}))") == 0);
-    assert(PyRun_SimpleString("o=Operation()") == -1);
-    assert(PyRun_SimpleString("o=Operation(1)") == -1);
-    assert(PyRun_SimpleString("o=Operation('get')") == 0);
-    assert(PyRun_SimpleString("o.setSerialno(1)") == 0);
-    assert(PyRun_SimpleString("o.setSerialno('1')") == -1);
-    assert(PyRun_SimpleString("o.setRefno(1)") == 0);
-    assert(PyRun_SimpleString("o.setRefno('1')") == -1);
-    assert(PyRun_SimpleString("o.setTo('1')") == 0);
-    assert(PyRun_SimpleString("o.setTo(1)") == -1);
-    assert(PyRun_SimpleString("o.setFrom('2')") == 0);
-    assert(PyRun_SimpleString("o.setFrom(2)") == -1);
-    assert(PyRun_SimpleString("o.setSeconds(2)") == 0);
-    assert(PyRun_SimpleString("o.setSeconds(2.0)") == 0);
-    assert(PyRun_SimpleString("o.setSeconds('2.0')") == -1);
-    assert(PyRun_SimpleString("o.setFutureSeconds(2)") == 0);
-    assert(PyRun_SimpleString("o.setFutureSeconds(2.0)") == 0);
-    assert(PyRun_SimpleString("o.setFutureSeconds('2.0')") == -1);
-    assert(PyRun_SimpleString("o.setArgs()") == -1);
-    assert(PyRun_SimpleString("o.setArgs([])") == 0);
-    assert(PyRun_SimpleString("o.setArgs(1)") == -1);
-    assert(PyRun_SimpleString("o.setArgs([1])") == -1);
-    assert(PyRun_SimpleString("o.setArgs([Operation('get')])") == 0);
-    assert(PyRun_SimpleString("o.setArgs([Entity(parents=[\"oak\"])])") == 0);
-    assert(PyRun_SimpleString("o.setArgs([Message({'parents': ['root']})])") == 0);
-    assert(PyRun_SimpleString("o.setArgs([Message('1')])") == -1);
-    assert(PyRun_SimpleString("o.getSerialno()") == 0);
-    assert(PyRun_SimpleString("o.getRefno()") == 0);
-    assert(PyRun_SimpleString("o.getTo()") == 0);
-    assert(PyRun_SimpleString("o.getFrom()") == 0);
-    assert(PyRun_SimpleString("o.getSeconds()") == 0);
-    assert(PyRun_SimpleString("o.getFutureSeconds()") == 0);
-    assert(PyRun_SimpleString("o.getArgs()") == 0);
-    assert(PyRun_SimpleString("o.get_name()") == 0);
-    assert(PyRun_SimpleString("len(o)") == 0);
-    assert(PyRun_SimpleString("o.setArgs([Operation('get'), Entity(parents=[\"oak\"]), Message({'parents': ['root'], 'objtype': 'obj'})])") == 0);
-    assert(PyRun_SimpleString("o[0]") == 0);
-    assert(PyRun_SimpleString("o[1]") == 0);
-    assert(PyRun_SimpleString("o[2]") == 0);
-    assert(PyRun_SimpleString("o[3]") == -1);
-    assert(PyRun_SimpleString("o + None") == 0);
-    assert(PyRun_SimpleString("o + 1") == -1);
-    assert(PyRun_SimpleString("o + Oplist()") == 0);
-    assert(PyRun_SimpleString("o + Operation('get')") == 0);
-    assert(PyRun_SimpleString("print o.from_") == 0);
-    assert(PyRun_SimpleString("print o.to") == 0);
-    assert(PyRun_SimpleString("print o.id") == 0);
-    assert(PyRun_SimpleString("o.from_='1'") == -1);
-    assert(PyRun_SimpleString("o.from_=1") == -1);
-    assert(PyRun_SimpleString("o.from_=Message({'id': 1})") == -1);
-    assert(PyRun_SimpleString("o.from_=Message({'id': '1'})") == 0);
-    assert(PyRun_SimpleString("o.to='1'") == -1);
-    assert(PyRun_SimpleString("o.to=1") == -1);
-    assert(PyRun_SimpleString("o.to=Message({'id': 1})") == -1);
-    assert(PyRun_SimpleString("o.to=Message({'id': '1'})") == 0);
-    assert(PyRun_SimpleString("o.other=1") == -1);
+    // fail_python_string("o=Operation('not_valid')");
+    run_python_string("o=Operation('not_valid')");
+    run_python_string("o=Operation('get', to='1', from_='1')");
+    fail_python_string("o=Operation('get', from_=Message({'nonid': '1'}))");
+    fail_python_string("o=Operation('get', from_=Message({'id': 1}))");
+    fail_python_string("o=Operation('get', to=Message({'nonid': '1'}))");
+    fail_python_string("o=Operation('get', to=Message({'id': 1}))");
+    run_python_string("e=Entity('1')");
+    run_python_string("o=Operation('get', to=e, from_=e)");
+    run_python_string("o=Operation('get', Entity(), to='1', from_='1')");
+    run_python_string("o=Operation('get', Operation('set'), to='1', from_='1')");
+    fail_python_string("o=Operation('get', Location(), to='1', from_='1')");
+    run_python_string("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')");
+    fail_python_string("Operation('get', Message('1'))");
+    run_python_string("Operation('get', Message({'objtype': 'obj', 'parents': ['thing']}))");
+    fail_python_string("o=Operation()");
+    fail_python_string("o=Operation(1)");
+    run_python_string("o=Operation('get')");
+    run_python_string("o.setSerialno(1)");
+    fail_python_string("o.setSerialno('1')");
+    run_python_string("o.setRefno(1)");
+    fail_python_string("o.setRefno('1')");
+    run_python_string("o.setTo('1')");
+    fail_python_string("o.setTo(1)");
+    run_python_string("o.setFrom('2')");
+    fail_python_string("o.setFrom(2)");
+    run_python_string("o.setSeconds(2)");
+    run_python_string("o.setSeconds(2.0)");
+    fail_python_string("o.setSeconds('2.0')");
+    run_python_string("o.setFutureSeconds(2)");
+    run_python_string("o.setFutureSeconds(2.0)");
+    fail_python_string("o.setFutureSeconds('2.0')");
+    fail_python_string("o.setArgs()");
+    run_python_string("o.setArgs([])");
+    fail_python_string("o.setArgs(1)");
+    fail_python_string("o.setArgs([1])");
+    run_python_string("o.setArgs([Operation('get')])");
+    run_python_string("o.setArgs([Entity(parents=[\"oak\"])])");
+    run_python_string("o.setArgs([Message({'parents': ['root']})])");
+    fail_python_string("o.setArgs([Message('1')])");
+    run_python_string("o.getSerialno()");
+    run_python_string("o.getRefno()");
+    run_python_string("o.getTo()");
+    run_python_string("o.getFrom()");
+    run_python_string("o.getSeconds()");
+    run_python_string("o.getFutureSeconds()");
+    run_python_string("o.getArgs()");
+    run_python_string("o.get_name()");
+    run_python_string("len(o)");
+    run_python_string("o.setArgs([Operation('get'), Entity(parents=[\"oak\"]), Message({'parents': ['root'], 'objtype': 'obj'})])");
+    run_python_string("o[0]");
+    run_python_string("o[1]");
+    run_python_string("o[2]");
+    fail_python_string("o[3]");
+    run_python_string("o + None");
+    fail_python_string("o + 1");
+    run_python_string("o + Oplist()");
+    run_python_string("o + Operation('get')");
+    run_python_string("print o.from_");
+    run_python_string("print o.to");
+    run_python_string("print o.id");
+    fail_python_string("o.from_='1'");
+    fail_python_string("o.from_=1");
+    fail_python_string("o.from_=Message({'id': 1})");
+    run_python_string("o.from_=Message({'id': '1'})");
+    fail_python_string("o.to='1'");
+    fail_python_string("o.to=1");
+    fail_python_string("o.to=Message({'id': 1})");
+    run_python_string("o.to=Message({'id': '1'})");
+    fail_python_string("o.other=1");
     
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
+    run_python_string("import sabotage");
 
     // Hit the assert checks.
-    assert(PyRun_SimpleString("arg1=Message({'objtype': 'obj', 'parents': ['thing']})") == 0);
-    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
-    assert(PyRun_SimpleString("Operation('get', arg1)") == -1);
+    run_python_string("arg1=Message({'objtype': 'obj', 'parents': ['thing']})");
+    run_python_string("sabotage.null(arg1)");
+    fail_python_string("Operation('get', arg1)");
 
-    assert(PyRun_SimpleString("arg1=Entity()") == 0);
-    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
-    assert(PyRun_SimpleString("Operation('get', arg1)") == -1);
+    run_python_string("arg1=Entity()");
+    run_python_string("sabotage.null(arg1)");
+    fail_python_string("Operation('get', arg1)");
 
-    assert(PyRun_SimpleString("arg1=Operation('get')") == 0);
-    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
-    assert(PyRun_SimpleString("Operation('get', arg1)") == -1);
+    run_python_string("arg1=Operation('get')");
+    run_python_string("sabotage.null(arg1)");
+    fail_python_string("Operation('get', arg1)");
 
-    assert(PyRun_SimpleString("Operation('get', Entity(), arg1)") == -1);
-    assert(PyRun_SimpleString("Operation('get', Entity(), Entity(), arg1)") == -1);
+    fail_python_string("Operation('get', Entity(), arg1)");
+    fail_python_string("Operation('get', Entity(), Entity(), arg1)");
 
-    assert(PyRun_SimpleString("o2=Operation('get')") == 0);
-    assert(PyRun_SimpleString("sabotage.null(o2)") == 0);
-    assert(PyRun_SimpleString("o + o2") == -1);
+    run_python_string("o2=Operation('get')");
+    run_python_string("sabotage.null(o2)");
+    fail_python_string("o + o2");
 
-    assert(PyRun_SimpleString("sabotage.clear_parents(o)") == 0);
-    assert(PyRun_SimpleString("print o.id") == -1);
+    run_python_string("sabotage.clear_parents(o)");
+    fail_python_string("print o.id");
 
-    assert(PyRun_SimpleString("ol = Oplist()") == 0);
-    assert(PyRun_SimpleString("sabotage.null(ol)") == 0);
-    assert(PyRun_SimpleString("o + ol") == -1);
+    run_python_string("ol = Oplist()");
+    run_python_string("sabotage.null(ol)");
+    fail_python_string("o + ol");
 
-    assert(PyRun_SimpleString("method_setSerialno=o.setSerialno") == 0);
-    assert(PyRun_SimpleString("method_setRefno=o.setRefno") == 0);
-    assert(PyRun_SimpleString("method_setTo=o.setTo") == 0);
-    assert(PyRun_SimpleString("method_setFrom=o.setFrom") == 0);
-    assert(PyRun_SimpleString("method_setSeconds=o.setSeconds") == 0);
-    assert(PyRun_SimpleString("method_setFutureSeconds=o.setFutureSeconds") == 0);
-    assert(PyRun_SimpleString("method_setArgs=o.setArgs") == 0);
-    assert(PyRun_SimpleString("method_getSerialno=o.getSerialno") == 0);
-    assert(PyRun_SimpleString("method_getRefno=o.getRefno") == 0);
-    assert(PyRun_SimpleString("method_getTo=o.getTo") == 0);
-    assert(PyRun_SimpleString("method_getFrom=o.getFrom") == 0);
-    assert(PyRun_SimpleString("method_getSeconds=o.getSeconds") == 0);
-    assert(PyRun_SimpleString("method_getFutureSeconds=o.getFutureSeconds") == 0);
-    assert(PyRun_SimpleString("method_getArgs=o.getArgs") == 0);
-    assert(PyRun_SimpleString("method_get_name=o.get_name") == 0);
+    run_python_string("method_setSerialno=o.setSerialno");
+    run_python_string("method_setRefno=o.setRefno");
+    run_python_string("method_setTo=o.setTo");
+    run_python_string("method_setFrom=o.setFrom");
+    run_python_string("method_setSeconds=o.setSeconds");
+    run_python_string("method_setFutureSeconds=o.setFutureSeconds");
+    run_python_string("method_setArgs=o.setArgs");
+    run_python_string("method_getSerialno=o.getSerialno");
+    run_python_string("method_getRefno=o.getRefno");
+    run_python_string("method_getTo=o.getTo");
+    run_python_string("method_getFrom=o.getFrom");
+    run_python_string("method_getSeconds=o.getSeconds");
+    run_python_string("method_getFutureSeconds=o.getFutureSeconds");
+    run_python_string("method_getArgs=o.getArgs");
+    run_python_string("method_get_name=o.get_name");
 
-    assert(PyRun_SimpleString("sabotage.null(o)") == 0);
-    assert(PyRun_SimpleString("print o.to") == -1);
-    assert(PyRun_SimpleString("len(o)") == -1);
-    assert(PyRun_SimpleString("o[0]") == -1);
-    assert(PyRun_SimpleString("o + None") == -1);
-    assert(PyRun_SimpleString("o.to='1'") == -1);
+    run_python_string("sabotage.null(o)");
+    fail_python_string("print o.to");
+    fail_python_string("len(o)");
+    fail_python_string("o[0]");
+    fail_python_string("o + None");
+    fail_python_string("o.to='1'");
 
-    assert(PyRun_SimpleString("method_setSerialno(1)") == -1);
-    assert(PyRun_SimpleString("method_setRefno(1)") == -1);
-    assert(PyRun_SimpleString("method_setTo('1')") == -1);
-    assert(PyRun_SimpleString("method_setFrom('2')") == -1);
-    assert(PyRun_SimpleString("method_setSeconds(2.0)") == -1);
-    assert(PyRun_SimpleString("method_setFutureSeconds(2.0)") == -1);
-    assert(PyRun_SimpleString("method_setArgs([])") == -1);
-    assert(PyRun_SimpleString("method_getSerialno()") == -1);
-    assert(PyRun_SimpleString("method_getRefno()") == -1);
-    assert(PyRun_SimpleString("method_getTo()") == -1);
-    assert(PyRun_SimpleString("method_getFrom()") == -1);
-    assert(PyRun_SimpleString("method_getSeconds()") == -1);
-    assert(PyRun_SimpleString("method_getFutureSeconds()") == -1);
-    assert(PyRun_SimpleString("method_getArgs()") == -1);
-    assert(PyRun_SimpleString("method_get_name()") == -1);
+    fail_python_string("method_setSerialno(1)");
+    fail_python_string("method_setRefno(1)");
+    fail_python_string("method_setTo('1')");
+    fail_python_string("method_setFrom('2')");
+    fail_python_string("method_setSeconds(2.0)");
+    fail_python_string("method_setFutureSeconds(2.0)");
+    fail_python_string("method_setArgs([])");
+    fail_python_string("method_getSerialno()");
+    fail_python_string("method_getRefno()");
+    fail_python_string("method_getTo()");
+    fail_python_string("method_getFrom()");
+    fail_python_string("method_getSeconds()");
+    fail_python_string("method_getFutureSeconds()");
+    fail_python_string("method_getArgs()");
+    fail_python_string("method_get_name()");
 
 #endif // NDEBUG
 

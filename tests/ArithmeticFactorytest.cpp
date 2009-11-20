@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/ArithmeticFactory.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
@@ -37,20 +39,20 @@ int main()
 
     assert(testmod != 0);
 
-    assert(PyRun_SimpleString("import testmod") == 0);
-    assert(PyRun_SimpleString("class TestArithmeticScript(object):\n"
-                              " def __init__(self):\n"
-                              "  self.foo=1\n"
-                              "  self.bar=1.1\n"
-                              "  self.baz=None\n"
-                              "  self.qux='1'\n"
-                              ) == 0);
-    assert(PyRun_SimpleString("class FailArithmeticScript(object):\n"
-                              " def __init__(self):\n"
-                              "  raise AssertionError, 'deliberate'\n"
-                              ) == 0);
-    assert(PyRun_SimpleString("testmod.TestArithmeticScript=TestArithmeticScript") == 0);
-    assert(PyRun_SimpleString("testmod.FailArithmeticScript=FailArithmeticScript") == 0);
+    run_python_string("import testmod");
+    run_python_string("class TestArithmeticScript(object):\n"
+                      " def __init__(self):\n"
+                      "  self.foo=1\n"
+                      "  self.bar=1.1\n"
+                      "  self.baz=None\n"
+                      "  self.qux='1'\n"
+                     );
+    run_python_string("class FailArithmeticScript(object):\n"
+                      " def __init__(self):\n"
+                      "  raise AssertionError, 'deliberate'\n"
+                     );
+    run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
+    run_python_string("testmod.FailArithmeticScript=FailArithmeticScript");
 
     {
         PythonArithmeticFactory paf("badmod", "TestArithmeticScript");

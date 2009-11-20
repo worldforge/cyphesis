@@ -754,7 +754,7 @@ ActivePropertyFactorytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Python_APItest_SOURCES = Python_APItest.cpp
+Python_APItest_SOURCES = Python_APItest.cpp python_testers.h
 Python_APItest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -798,7 +798,7 @@ Py_Point3Dtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_BBoxtest_SOURCES = Py_BBoxtest.cpp
+Py_BBoxtest_SOURCES = Py_BBoxtest.cpp python_testers.h
 Py_BBoxtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -809,7 +809,7 @@ Py_BBoxtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Locationtest_SOURCES = Py_Locationtest.cpp
+Py_Locationtest_SOURCES = Py_Locationtest.cpp python_testers.h
 Py_Locationtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -820,7 +820,7 @@ Py_Locationtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_RootEntitytest_SOURCES = Py_RootEntitytest.cpp
+Py_RootEntitytest_SOURCES = Py_RootEntitytest.cpp python_testers.h
 Py_RootEntitytest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -831,7 +831,7 @@ Py_RootEntitytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Operationtest_SOURCES = Py_Operationtest.cpp
+Py_Operationtest_SOURCES = Py_Operationtest.cpp python_testers.h
 Py_Operationtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -842,7 +842,7 @@ Py_Operationtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Oplisttest_SOURCES = Py_Oplisttest.cpp
+Py_Oplisttest_SOURCES = Py_Oplisttest.cpp python_testers.h
 Py_Oplisttest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -853,7 +853,7 @@ Py_Oplisttest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Thingtest_SOURCES = Py_Thingtest.cpp TestPropertyManager.cpp TestPropertyManager.h
+Py_Thingtest_SOURCES = Py_Thingtest.cpp TestPropertyManager.cpp TestPropertyManager.h python_testers.h
 Py_Thingtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -864,7 +864,7 @@ Py_Thingtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Maptest_SOURCES = Py_Maptest.cpp
+Py_Maptest_SOURCES = Py_Maptest.cpp python_testers.h
 Py_Maptest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -875,7 +875,7 @@ Py_Maptest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Mindtest_SOURCES = Py_Mindtest.cpp
+Py_Mindtest_SOURCES = Py_Mindtest.cpp python_testers.h
 Py_Mindtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -886,7 +886,7 @@ Py_Mindtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Tasktest_SOURCES = Py_Tasktest.cpp
+Py_Tasktest_SOURCES = Py_Tasktest.cpp python_testers.h
 Py_Tasktest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -897,7 +897,7 @@ Py_Tasktest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Worldtest_SOURCES = Py_Worldtest.cpp
+Py_Worldtest_SOURCES = Py_Worldtest.cpp python_testers.h
 Py_Worldtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -908,7 +908,7 @@ Py_Worldtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Messagetest_SOURCES = Py_Messagetest.cpp
+Py_Messagetest_SOURCES = Py_Messagetest.cpp python_testers.h
 Py_Messagetest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -919,7 +919,7 @@ Py_Messagetest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp
+Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp python_testers.h
 Py_WorldTimetest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -930,7 +930,7 @@ Py_WorldTimetest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Propertytest_SOURCES = Py_Propertytest.cpp
+Py_Propertytest_SOURCES = Py_Propertytest.cpp python_testers.h
 Py_Propertytest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -941,7 +941,7 @@ Py_Propertytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_TerrainPropertytest_SOURCES = Py_TerrainPropertytest.cpp
+Py_TerrainPropertytest_SOURCES = Py_TerrainPropertytest.cpp python_testers.h
 Py_TerrainPropertytest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -963,7 +963,7 @@ PythonWrappertest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp
+PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp python_testers.h
 PythonEntityScripttest_LDADD = \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/rulesets/libscriptpython.a \
@@ -1016,7 +1016,7 @@ ArithmeticScripttest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp
+PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp python_testers.h
 PythonArithmeticScripttest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1040,7 +1040,7 @@ ArithmeticFactorytest_LDADD = \
 
 # CLIENT_TESTS
 
-Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp
+Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp python_testers.h
 Py_CreatorClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/CreatorClient.o \

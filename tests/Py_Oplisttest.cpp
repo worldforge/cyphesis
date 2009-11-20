@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Oplist.h"
 #include "rulesets/Py_Operation.h"
@@ -60,40 +62,40 @@ int main()
 
     setup_test_functions();
 
-    assert(PyRun_SimpleString("from atlas import Oplist") == 0);
-    assert(PyRun_SimpleString("from atlas import Operation") == 0);
-    assert(PyRun_SimpleString("m=Oplist()") == 0);
-    assert(PyRun_SimpleString("m.append(None)") == 0);
-    assert(PyRun_SimpleString("m.append(1)") == -1);
-    assert(PyRun_SimpleString("m.append(Operation('get'))") == 0);
-    assert(PyRun_SimpleString("m.append(Oplist())") == 0);
-    assert(PyRun_SimpleString("m.append(Oplist(Operation('get')))") == 0);
-    assert(PyRun_SimpleString("m += None") == 0);
-    assert(PyRun_SimpleString("m += 1") == -1);
-    assert(PyRun_SimpleString("m += Operation('get')") == 0);
-    assert(PyRun_SimpleString("m += Oplist()") == 0);
-    assert(PyRun_SimpleString("m += Oplist(Operation('get'))") == 0);
-    assert(PyRun_SimpleString("len(m)") == 0);
+    run_python_string("from atlas import Oplist");
+    run_python_string("from atlas import Operation");
+    run_python_string("m=Oplist()");
+    run_python_string("m.append(None)");
+    fail_python_string("m.append(1)");
+    run_python_string("m.append(Operation('get'))");
+    run_python_string("m.append(Oplist())");
+    run_python_string("m.append(Oplist(Operation('get')))");
+    run_python_string("m += None");
+    fail_python_string("m += 1");
+    run_python_string("m += Operation('get')");
+    run_python_string("m += Oplist()");
+    run_python_string("m += Oplist(Operation('get'))");
+    run_python_string("len(m)");
     
-    assert(PyRun_SimpleString("Oplist(1)") == -1);
-    assert(PyRun_SimpleString("Oplist(Operation('get'), 1)") == -1);
-    assert(PyRun_SimpleString("Oplist(Operation('get'), Operation('get'), 1)") == -1);
-    assert(PyRun_SimpleString("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)") == -1);
-    assert(PyRun_SimpleString("Oplist(Operation('get'), Operation('get'), Operation('get'), Operation('get'), Operation('get'))") == -1);
+    fail_python_string("Oplist(1)");
+    fail_python_string("Oplist(Operation('get'), 1)");
+    fail_python_string("Oplist(Operation('get'), Operation('get'), 1)");
+    fail_python_string("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)");
+    fail_python_string("Oplist(Operation('get'), Operation('get'), Operation('get'), Operation('get'), Operation('get'))");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
+    run_python_string("import sabotage");
 
     // Hit the assert checks.
-    assert(PyRun_SimpleString("arg1=Operation('get')") == 0);
-    assert(PyRun_SimpleString("sabotage.null(arg1)") == 0);
-    assert(PyRun_SimpleString("m += arg1") == 0);
+    run_python_string("arg1=Operation('get')");
+    run_python_string("sabotage.null(arg1)");
+    run_python_string("m += arg1");
     
-    assert(PyRun_SimpleString("sabotage.null(m)") == 0);
+    run_python_string("sabotage.null(m)");
 
-    assert(PyRun_SimpleString("m.append(None)") == -1);
-    assert(PyRun_SimpleString("m += None") == -1);
-    assert(PyRun_SimpleString("len(m)") == -1);
+    fail_python_string("m.append(None)");
+    fail_python_string("m += None");
+    fail_python_string("len(m)");
 
 #endif // NDEBUG
 

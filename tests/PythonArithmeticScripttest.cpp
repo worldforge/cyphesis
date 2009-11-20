@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonArithmeticScript.h"
@@ -28,9 +30,6 @@
 static PyMethodDef no_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
-
-#define run_python_string(_s) { int pyret = PyRun_SimpleString(_s); \
-                                assert(pyret == 0); }
 
 int main()
 {

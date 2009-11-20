@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "TestWorld.h"
 
 #include "rulesets/Python_API.h"
@@ -35,13 +37,13 @@ int main()
     TestWorld tw(wrld);
 
 
-    assert(PyRun_SimpleString("from server import World") == 0);
-    assert(PyRun_SimpleString("w=World()") == 0);
-    assert(PyRun_SimpleString("w.get_time()") == 0);
-    assert(PyRun_SimpleString("w.get_object('0')") == 0);
-    assert(PyRun_SimpleString("w.get_object('1')") == 0);
-    assert(PyRun_SimpleString("w.get_object(1)") == -1);
-    assert(PyRun_SimpleString("w == World()") == 0);
+    run_python_string("from server import World");
+    run_python_string("w=World()");
+    run_python_string("w.get_time()");
+    run_python_string("w.get_object('0')");
+    run_python_string("w.get_object('1')");
+    fail_python_string("w.get_object(1)");
+    run_python_string("w == World()");
 
     shutdown_python_api();
     return 0;

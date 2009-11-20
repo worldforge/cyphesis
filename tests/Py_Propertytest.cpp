@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
@@ -68,16 +70,16 @@ int main()
 
     setup_test_functions();
 
-    assert(PyRun_SimpleString("from server import *") == 0);
-    assert(PyRun_SimpleString("import testprop") == 0);
-    assert(PyRun_SimpleString("t=Thing('1')") == 0);
-    assert(PyRun_SimpleString("t.line") == -1);
-    assert(PyRun_SimpleString("t.statistics") == -1);
-    assert(PyRun_SimpleString("t.terrain") == -1);
-    assert(PyRun_SimpleString("testprop.add_properties(t)") == 0);
-    assert(PyRun_SimpleString("t.line") == 0);
-    assert(PyRun_SimpleString("t.statistics") == 0);
-    assert(PyRun_SimpleString("t.terrain") == 0);
+    run_python_string("from server import *");
+    run_python_string("import testprop");
+    run_python_string("t=Thing('1')");
+    fail_python_string("t.line");
+    fail_python_string("t.statistics");
+    fail_python_string("t.terrain");
+    run_python_string("testprop.add_properties(t)");
+    run_python_string("t.line");
+    run_python_string("t.statistics");
+    run_python_string("t.terrain");
 
 
     shutdown_python_api();

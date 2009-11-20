@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Py_Property.h"
@@ -84,48 +86,48 @@ int main()
 
     setup_test_functions();
 
-    assert(PyRun_SimpleString("from server import *") == 0);
-    assert(PyRun_SimpleString("import testprop") == 0);
-    assert(PyRun_SimpleString("t=Thing('1')") == 0);
-    assert(PyRun_SimpleString("t.terrain") == -1);
-    assert(PyRun_SimpleString("testprop.add_properties(t)") == 0);
-    assert(PyRun_SimpleString("terrain = t.terrain") == 0);
-    assert(PyRun_SimpleString("terrain.foo = 1") == -1);
-    assert(PyRun_SimpleString("terrain.get_height()") == -1);
-    assert(PyRun_SimpleString("terrain.get_height(0,0)") == 0);
-    assert(PyRun_SimpleString("terrain.get_surface()") == -1);
-    assert(PyRun_SimpleString("terrain.get_surface('1')") == -1);
-    assert(PyRun_SimpleString("from physics import *") == 0);
-    assert(PyRun_SimpleString("terrain.get_surface(Point3D(0,0,0))") == -1);
-    assert(PyRun_SimpleString("terrain.get_normal()") == -1);
-    assert(PyRun_SimpleString("terrain.get_normal(0,0)") == 0);
+    run_python_string("from server import *");
+    run_python_string("import testprop");
+    run_python_string("t=Thing('1')");
+    fail_python_string("t.terrain");
+    run_python_string("testprop.add_properties(t)");
+    run_python_string("terrain = t.terrain");
+    fail_python_string("terrain.foo = 1");
+    fail_python_string("terrain.get_height()");
+    run_python_string("terrain.get_height(0,0)");
+    fail_python_string("terrain.get_surface()");
+    fail_python_string("terrain.get_surface('1')");
+    run_python_string("from physics import *");
+    fail_python_string("terrain.get_surface(Point3D(0,0,0))");
+    fail_python_string("terrain.get_normal()");
+    run_python_string("terrain.get_normal(0,0)");
 
-    assert(PyRun_SimpleString("points = { }") == 0);
-    assert(PyRun_SimpleString("points['-1x-1'] = [-1, -1, -16.8]") == 0);
-    assert(PyRun_SimpleString("points['0x-1'] = [0, -1, -3.8]") == 0);
-    assert(PyRun_SimpleString("points['-1x0'] = [-1, 0, -2.8]") == 0);
-    assert(PyRun_SimpleString("points['-1x1'] = [-1, 1, -1.8]") == 0);
-    assert(PyRun_SimpleString("points['1x-1'] = [1, -1, 15.8]") == 0);
-    assert(PyRun_SimpleString("points['0x0'] = [0, 0, 12.8]") == 0);
-    assert(PyRun_SimpleString("points['1x0'] = [1, 0, 23.1]") == 0);
-    assert(PyRun_SimpleString("points['0x1'] = [0, 1, 14.2]") == 0);
-    assert(PyRun_SimpleString("points['1x1'] = [1, 1, 19.7]") == 0);
-    assert(PyRun_SimpleString("t.terrain = {'points': points}") == 0);
+    run_python_string("points = { }");
+    run_python_string("points['-1x-1'] = [-1, -1, -16.8]");
+    run_python_string("points['0x-1'] = [0, -1, -3.8]");
+    run_python_string("points['-1x0'] = [-1, 0, -2.8]");
+    run_python_string("points['-1x1'] = [-1, 1, -1.8]");
+    run_python_string("points['1x-1'] = [1, -1, 15.8]");
+    run_python_string("points['0x0'] = [0, 0, 12.8]");
+    run_python_string("points['1x0'] = [1, 0, 23.1]");
+    run_python_string("points['0x1'] = [0, 1, 14.2]");
+    run_python_string("points['1x1'] = [1, 1, 19.7]");
+    run_python_string("t.terrain = {'points': points}");
 
-    assert(PyRun_SimpleString("terrain.get_surface(Point3D(0,0,0))") == 0);
+    run_python_string("terrain.get_surface(Point3D(0,0,0))");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
+    run_python_string("import sabotage");
     // Hit the assert checks.
-    assert(PyRun_SimpleString("method_get_height = terrain.get_height") == 0);
-    assert(PyRun_SimpleString("method_get_surface = terrain.get_surface") == 0);
-    assert(PyRun_SimpleString("method_get_normal = terrain.get_normal") == 0);
-    assert(PyRun_SimpleString("sabotage.null(terrain)") == 0);
-    assert(PyRun_SimpleString("terrain.foo") == -1);
-    assert(PyRun_SimpleString("terrain.foo = 1") == -1);
-    assert(PyRun_SimpleString("method_get_height(0,0)") == -1);
-    assert(PyRun_SimpleString("method_get_surface(Point3D(0,0,0))") == -1);
-    assert(PyRun_SimpleString("method_get_normal(0,0)") == -1);
+    run_python_string("method_get_height = terrain.get_height");
+    run_python_string("method_get_surface = terrain.get_surface");
+    run_python_string("method_get_normal = terrain.get_normal");
+    run_python_string("sabotage.null(terrain)");
+    fail_python_string("terrain.foo");
+    fail_python_string("terrain.foo = 1");
+    fail_python_string("method_get_height(0,0)");
+    fail_python_string("method_get_surface(Point3D(0,0,0))");
+    fail_python_string("method_get_normal(0,0)");
 #endif // NDEBUG
    
 

@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_WorldTime.h"
 
@@ -57,24 +59,24 @@ int main()
     PyWorldTime * world_time = newPyWorldTime();
     assert(world_time != 0);
 
-    assert(PyRun_SimpleString("from server import WorldTime") == 0);
-    assert(PyRun_SimpleString("WorldTime()") == -1);
-    assert(PyRun_SimpleString("WorldTime(23)") == 0);
-    assert(PyRun_SimpleString("WorldTime(23.1)") == 0);
+    run_python_string("from server import WorldTime");
+    fail_python_string("WorldTime()");
+    run_python_string("WorldTime(23)");
+    run_python_string("WorldTime(23.1)");
 
-    assert(PyRun_SimpleString("w=WorldTime(23)") == 0);
-    assert(PyRun_SimpleString("w.season") == 0);
-    assert(PyRun_SimpleString("w.foo") == -1);
-    assert(PyRun_SimpleString("w.is_now('morning')") == 0);
-    assert(PyRun_SimpleString("w.is_now(1)") == -1);
-    assert(PyRun_SimpleString("w.seconds()") == 0);
+    run_python_string("w=WorldTime(23)");
+    run_python_string("w.season");
+    fail_python_string("w.foo");
+    run_python_string("w.is_now('morning')");
+    fail_python_string("w.is_now(1)");
+    run_python_string("w.seconds()");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
-    assert(PyRun_SimpleString("sabotage.null(w)") == 0);
+    run_python_string("import sabotage");
+    run_python_string("sabotage.null(w)");
     // Hit the assert checks.
-    assert(PyRun_SimpleString("w.is_now('morning')") == -1);
-    assert(PyRun_SimpleString("w.seconds()") == -1);
+    fail_python_string("w.is_now('morning')");
+    fail_python_string("w.seconds()");
 #endif // NDEBUG
 
     shutdown_python_api();

@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_RootEntity.h"
 
@@ -57,48 +59,48 @@ int main()
     PyRootEntity * ent = newPyRootEntity();
     assert(ent != 0);
 
-    assert(PyRun_SimpleString("from atlas import Entity") == 0);
-    assert(PyRun_SimpleString("from atlas import Location") == 0);
-    assert(PyRun_SimpleString("Entity('1')") == 0);
-    assert(PyRun_SimpleString("Entity(1)") == -1);
-    assert(PyRun_SimpleString("Entity('1', location='loc')") == -1);
-    assert(PyRun_SimpleString("l=Location()") == 0);
-    assert(PyRun_SimpleString("Entity('1', location=l)") == 0);
-    assert(PyRun_SimpleString("Entity('1', pos=())") == 0);
-    assert(PyRun_SimpleString("Entity('1', pos=[])") == 0);
-    assert(PyRun_SimpleString("Entity('1', pos=(1,1.0,'1'))") == -1);
-    assert(PyRun_SimpleString("Entity('1', pos=[1,1.0,'1'])") == -1);
-    assert(PyRun_SimpleString("Entity('1', tasks=[{'name': 'twist', 'param': 'value'}])") == 0);
-    assert(PyRun_SimpleString("Entity('1', pos=1)") == -1);
-    assert(PyRun_SimpleString("Entity('1', parent=1)") == -1);
-    assert(PyRun_SimpleString("Entity('1', parent='0')") == 0);
-    assert(PyRun_SimpleString("Entity('1', type=1)") == -1);
-    assert(PyRun_SimpleString("Entity('1', type='pig')") == 0);
-    assert(PyRun_SimpleString("Entity('1', other=1)") == 0);
-    assert(PyRun_SimpleString("Entity('1', other=set([1,1]))") == -1);
-    assert(PyRun_SimpleString("e=Entity()") == 0);
-    assert(PyRun_SimpleString("e.get_name()") == 0);
-    assert(PyRun_SimpleString("e.name") == 0);
-    assert(PyRun_SimpleString("e.id") == 0);
-    assert(PyRun_SimpleString("e.foo") == -1);
-    assert(PyRun_SimpleString("e.name='Bob'") == 0);
-    assert(PyRun_SimpleString("e.name=1") == -1);
-    assert(PyRun_SimpleString("e.foo='Bob'") == 0);
-    assert(PyRun_SimpleString("e.bar=1") == 0);
-    assert(PyRun_SimpleString("e.baz=[1,2.0,'three']") == 0);
-    assert(PyRun_SimpleString("e.qux={'mim': 23}") == 0);
-    assert(PyRun_SimpleString("e.ptr=set([1,2])") == 0);
-    assert(PyRun_SimpleString("e.foo") == 0);
-    assert(PyRun_SimpleString("e.ptr") == 0);
+    run_python_string("from atlas import Entity");
+    run_python_string("from atlas import Location");
+    run_python_string("Entity('1')");
+    fail_python_string("Entity(1)");
+    fail_python_string("Entity('1', location='loc')");
+    run_python_string("l=Location()");
+    run_python_string("Entity('1', location=l)");
+    run_python_string("Entity('1', pos=())");
+    run_python_string("Entity('1', pos=[])");
+    fail_python_string("Entity('1', pos=(1,1.0,'1'))");
+    fail_python_string("Entity('1', pos=[1,1.0,'1'])");
+    run_python_string("Entity('1', tasks=[{'name': 'twist', 'param': 'value'}])");
+    fail_python_string("Entity('1', pos=1)");
+    fail_python_string("Entity('1', parent=1)");
+    run_python_string("Entity('1', parent='0')");
+    fail_python_string("Entity('1', type=1)");
+    run_python_string("Entity('1', type='pig')");
+    run_python_string("Entity('1', other=1)");
+    fail_python_string("Entity('1', other=set([1,1]))");
+    run_python_string("e=Entity()");
+    run_python_string("e.get_name()");
+    run_python_string("e.name");
+    run_python_string("e.id");
+    fail_python_string("e.foo");
+    run_python_string("e.name='Bob'");
+    fail_python_string("e.name=1");
+    run_python_string("e.foo='Bob'");
+    run_python_string("e.bar=1");
+    run_python_string("e.baz=[1,2.0,'three']");
+    run_python_string("e.qux={'mim': 23}");
+    run_python_string("e.ptr=set([1,2])");
+    run_python_string("e.foo");
+    run_python_string("e.ptr");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
+    run_python_string("import sabotage");
     // Hit the assert checks.
-    assert(PyRun_SimpleString("get_name_methd=e.get_name") == 0);
-    assert(PyRun_SimpleString("sabotage.null(e)") == 0);
-    assert(PyRun_SimpleString("get_name_methd()") == -1);
-    assert(PyRun_SimpleString("e.name") == -1);
-    assert(PyRun_SimpleString("e.name='Bob'") == -1);
+    run_python_string("get_name_methd=e.get_name");
+    run_python_string("sabotage.null(e)");
+    fail_python_string("get_name_methd()");
+    fail_python_string("e.name");
+    fail_python_string("e.name='Bob'");
 #endif // NDEBUG
 
 

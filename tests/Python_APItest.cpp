@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/Py_Location.h"
@@ -68,45 +70,45 @@ int main()
     // We don't actually get a class back, because apparantly classes in
     // the library don't inherit from object yet.
 
-    assert(PyRun_SimpleString("print 'hello'") == 0);
-    assert(PyRun_SimpleString("import sys") == 0);
-    assert(PyRun_SimpleString("sys.stdout.write('hello')") == 0);
-    assert(PyRun_SimpleString("sys.stdout.write(1)") == -1);
-    assert(PyRun_SimpleString("sys.stderr.write('hello')") == 0);
-    assert(PyRun_SimpleString("sys.stderr.write(1)") == -1);
+    run_python_string("print 'hello'");
+    run_python_string("import sys");
+    run_python_string("sys.stdout.write('hello')");
+    fail_python_string("sys.stdout.write(1)");
+    run_python_string("sys.stderr.write('hello')");
+    fail_python_string("sys.stderr.write(1)");
 
-    assert(PyRun_SimpleString("from common import log") == 0);
-    assert(PyRun_SimpleString("log.debug('foo')") == 0);
-    assert(PyRun_SimpleString("log.thinking('foo')") == 0);
+    run_python_string("from common import log");
+    run_python_string("log.debug('foo')");
+    run_python_string("log.thinking('foo')");
 
-    assert(PyRun_SimpleString("import atlas") == 0);
+    run_python_string("import atlas");
 
-    assert(PyRun_SimpleString("l=atlas.Location()") == 0);
-    assert(PyRun_SimpleString("atlas.isLocation(l)") == 0);
-    assert(PyRun_SimpleString("atlas.isLocation(1)") == 0);
-    assert(PyRun_SimpleString("l1=atlas.Location()") == 0);
-    assert(PyRun_SimpleString("l2=atlas.Location()") == 0);
+    run_python_string("l=atlas.Location()");
+    run_python_string("atlas.isLocation(l)");
+    run_python_string("atlas.isLocation(1)");
+    run_python_string("l1=atlas.Location()");
+    run_python_string("l2=atlas.Location()");
 
-    assert(PyRun_SimpleString("import physics") == 0);
-    assert(PyRun_SimpleString("physics.distance_to()") == -1);
-    assert(PyRun_SimpleString("physics.square_distance()") == -1);
-    assert(PyRun_SimpleString("physics.square_horizontal_distance()") == -1);
-    assert(PyRun_SimpleString("physics.distance_to(l1, l2)") == 0);
-    assert(PyRun_SimpleString("physics.square_distance(l1, l2)") == 0);
-    assert(PyRun_SimpleString("physics.square_horizontal_distance(l1, l2)") == 0);
-    assert(PyRun_SimpleString("physics.distance_to('1', l2)") == -1);
-    assert(PyRun_SimpleString("physics.square_distance('1', l2)") == -1);
-    assert(PyRun_SimpleString("physics.square_horizontal_distance('1', l2)") == -1);
+    run_python_string("import physics");
+    fail_python_string("physics.distance_to()");
+    fail_python_string("physics.square_distance()");
+    fail_python_string("physics.square_horizontal_distance()");
+    run_python_string("physics.distance_to(l1, l2)");
+    run_python_string("physics.square_distance(l1, l2)");
+    run_python_string("physics.square_horizontal_distance(l1, l2)");
+    fail_python_string("physics.distance_to('1', l2)");
+    fail_python_string("physics.square_distance('1', l2)");
+    fail_python_string("physics.square_horizontal_distance('1', l2)");
 
 #ifndef NDEBUG
-    assert(PyRun_SimpleString("import sabotage") == 0);
-    assert(PyRun_SimpleString("sabotage.null(l1)") == 0);
-    assert(PyRun_SimpleString("physics.distance_to(l1, l2)") == -1);
-    assert(PyRun_SimpleString("physics.distance_to(l2, l1)") == -1);
-    assert(PyRun_SimpleString("physics.square_distance(l1, l2)") == -1);
-    assert(PyRun_SimpleString("physics.square_distance(l2, l1)") == -1);
-    assert(PyRun_SimpleString("physics.square_horizontal_distance(l1, l2)") == -1);
-    assert(PyRun_SimpleString("physics.square_horizontal_distance(l2, l1)") == -1);
+    run_python_string("import sabotage");
+    run_python_string("sabotage.null(l1)");
+    fail_python_string("physics.distance_to(l1, l2)");
+    fail_python_string("physics.distance_to(l2, l1)");
+    fail_python_string("physics.square_distance(l1, l2)");
+    fail_python_string("physics.square_distance(l2, l1)");
+    fail_python_string("physics.square_horizontal_distance(l1, l2)");
+    fail_python_string("physics.square_horizontal_distance(l2, l1)");
 #endif // NDEBUG
 
     shutdown_python_api();

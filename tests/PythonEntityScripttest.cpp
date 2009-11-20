@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
@@ -41,23 +43,23 @@ int main()
 
     Py_InitModule("testmod", no_methods);
 
-    assert(PyRun_SimpleString("import server") == 0);
-    assert(PyRun_SimpleString("import testmod") == 0);
-    assert(PyRun_SimpleString("from atlas import Operation") == 0);
-    assert(PyRun_SimpleString("class TestEntity(server.Thing):\n"
-                              " def look_operation(self, op): pass\n"
-                              " def delete_operation(self, op):\n"
-                              "  raise AssertionError, 'deliberate'\n"
-                              " def tick_operation(self, op):\n"
-                              "  raise AssertionError, 'deliberate'\n"
-                              " def talk_operation(self, op):\n"
-                              "  return 'invalid result'\n"
-                              " def set_operation(self, op):\n"
-                              "  return Operation('sight')\n"
-                              " def move_operation(self, op):\n"
-                              "  return Operation('sight') + Operation('move')\n"
-                              " def test_hook(self, ent): pass\n") == 0);
-    assert(PyRun_SimpleString("testmod.TestEntity=TestEntity") == 0);
+    run_python_string("import server");
+    run_python_string("import testmod");
+    run_python_string("from atlas import Operation");
+    run_python_string("class TestEntity(server.Thing):\n"
+                      " def look_operation(self, op): pass\n"
+                      " def delete_operation(self, op):\n"
+                      "  raise AssertionError, 'deliberate'\n"
+                      " def tick_operation(self, op):\n"
+                      "  raise AssertionError, 'deliberate'\n"
+                      " def talk_operation(self, op):\n"
+                      "  return 'invalid result'\n"
+                      " def set_operation(self, op):\n"
+                      "  return Operation('sight')\n"
+                      " def move_operation(self, op):\n"
+                      "  return Operation('sight') + Operation('move')\n"
+                      " def test_hook(self, ent): pass\n");
+    run_python_string("testmod.TestEntity=TestEntity");
 
     // PyObject * package_name = PyString_FromString("testmod");
     // PyObject * testmod = PyImport_Import(package_name);
