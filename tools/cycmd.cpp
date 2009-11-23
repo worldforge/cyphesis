@@ -111,7 +111,7 @@ struct command commands[] = {
     { "cancel",         "Cancel the current admin task", },
     { "creator_create", "Use agent to create an entity", },
     { "delete",         "Delete an entity from the server", },
-    { "get",            "Examine a class on the server", },
+    { "get",            "Examine any object on the server", },
     { "find_by_name",   "Find an entity with the given name", },
     { "find_by_type",   "Find an entity with the given type", },
     { "flush",          "Flush entities from the server", },
@@ -120,7 +120,7 @@ struct command commands[] = {
     { "look",           "Return the current server lobby", },
     { "logout",         "Log user out of server", },
     { "monitor",        "Enable in-game op monitoring", },
-    { "query",          "Examine an object on the server", },
+    { "query",          "Synonym for \"get\" (deprecated)", },
     { "reload",         "Reload the script for a type", },
     { "stat",           "Return current server status", },
     { "unmonitor",      "Disable in-game op monitoring", },
@@ -996,6 +996,11 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         reply_expected = false;
     } else if (cmd == "look") {
         Look l;
+        if (!arg.empty()) {
+            Anonymous cmap;
+            cmap->setId(arg);
+            l->setArgs1(cmap);
+        }
         l->setFrom(accountId);
         encoder->streamObjectsMessage(l);
     } else if (cmd == "logout") {
@@ -1021,12 +1026,16 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     } else if (cmd == "query") {
         Get g;
 
-        Anonymous cmap;
-        cmap->setObjtype("obj");
         if (!arg.empty()) {
+            Anonymous cmap;
+            if (::isdigit(arg[0])) {
+                cmap->setObjtype("obj");
+            } else {
+                cmap->setObjtype("meta");
+            }
             cmap->setId(arg);
+            g->setArgs1(cmap);
         }
-        g->setArgs1(cmap);
         g->setFrom(accountId);
 
         encoder->streamObjectsMessage(g);
@@ -1048,12 +1057,16 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     } else if (cmd == "get") {
         Get g;
 
-        Anonymous cmap;
-        cmap->setObjtype("class");
         if (!arg.empty()) {
+            Anonymous cmap;
+            if (::isdigit(arg[0])) {
+                cmap->setObjtype("obj");
+            } else {
+                cmap->setObjtype("meta");
+            }
             cmap->setId(arg);
+            g->setArgs1(cmap);
         }
-        g->setArgs1(cmap);
         g->setFrom(accountId);
 
         encoder->streamObjectsMessage(g);
