@@ -151,6 +151,46 @@ int ClientConnection::connectLocal(const std::string & sockname)
         return -1;
     }
 
+    // Prove to the server that we are real.
+
+    unsigned char buf[1];
+
+    buf[0] = '\0';
+
+    struct iovec vec[1];
+
+    vec[0].iov_base = buf;
+    vec[0].iov_len = 1;
+
+    struct msghdr auth_message;
+
+    auth_message.msg_iov = vec;
+    auth_message.msg_iovlen = 1;
+    auth_message.msg_name = 0;
+    auth_message.msg_namelen = 0;
+    auth_message.msg_controllen = CMSG_SPACE(sizeof(struct ucred));
+    auth_message.msg_control = new unsigned char[auth_message.msg_controllen];
+    auth_message.msg_flags = 0;
+
+    struct cmsghdr * control = CMSG_FIRSTHDR(&auth_message);
+    control->cmsg_len = CMSG_LEN(sizeof(struct ucred));
+    control->cmsg_level = SOL_SOCKET;
+    control->cmsg_type = SCM_CREDENTIALS;
+    struct ucred * creds = (struct ucred *)CMSG_DATA(control);
+    creds->pid = ::getpid();
+    creds->uid = ::getuid();
+    creds->gid = ::getgid();
+
+    int serr = sendmsg(fd, &auth_message, 0);
+
+    if (serr > 0) {
+        std::cout << "SENT:" << serr << std::endl << std::flush;
+    } else {
+        perror("sendmsg");
+    }
+
+    // Done proving we are real.
+
     ios.setSocket(fd);
     if (!ios.is_open()) {
         std::cerr << "ERROR: For some reason " << sockname << " not open."

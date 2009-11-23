@@ -92,6 +92,55 @@ int CommUnixListener::accept()
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
 
+    // Start getting data from the client about who it really is
+
+    int flagon = 1;
+    if (::setsockopt(asockfd, SOL_SOCKET, SO_PASSCRED, &flagon, sizeof(int)) < 0) {
+        log(WARNING, "Credentials don't work");
+    } else {
+
+        char data_buf[1], control_buf[1024];
+
+        struct iovec vec;
+        vec.iov_base        = data_buf;
+        vec.iov_len         = sizeof(data_buf);
+
+        struct msghdr auth_message;
+        auth_message.msg_name        = NULL;
+        auth_message.msg_namelen     = 0;
+        auth_message.msg_iov         = &vec;
+        auth_message.msg_iovlen      = 1;
+        auth_message.msg_control     = control_buf;
+        auth_message.msg_controllen  = sizeof(control_buf);
+        auth_message.msg_flags       = 0;
+
+        std::cout << "RECV:" << std::endl << std::flush;
+        if (recvmsg(asockfd, &auth_message, 0) == -1) {
+            log(WARNING, "Credentials recieve failed");
+        }
+
+        struct cmsghdr * cmsg = 0;
+        struct ucred * creds = 0;
+        for (cmsg = CMSG_FIRSTHDR(&auth_message);
+             cmsg != NULL;
+             cmsg = CMSG_NXTHDR(&auth_message, cmsg)) {
+            if (cmsg->cmsg_level == SOL_SOCKET &&
+                cmsg->cmsg_type == SCM_CREDENTIALS) {
+                creds = (struct ucred *)CMSG_DATA(cmsg);
+                break;
+            }
+        }
+
+        if (creds != 0) {
+            log(NOTICE, "Gottem");
+            std::cout << "U: " << creds->uid << std::endl << std::flush;
+        } else {
+            log(ERROR, "Fail");
+        }
+    }
+
+    // Got client auth data
+
     return create(asockfd, "local");
 }
 
