@@ -1,3 +1,8 @@
+cyclient - add interactive
+         - add args on commandline
+         - add automatic account creation, using local system usernames
+           (requires socket support)
+
 CommServer::addSocket shoudl return success/failure, so that parent knows the
 score.
 

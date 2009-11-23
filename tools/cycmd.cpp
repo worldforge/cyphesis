@@ -110,6 +110,7 @@ struct command commands[] = {
     { "connect",        "Connect server to a peer", },
     { "cancel",         "Cancel the current admin task", },
     { "creator_create", "Use agent to create an entity", },
+    { "creator_look",   "Use agent to look at an entity", },
     { "delete",         "Delete an entity from the server", },
     { "get",            "Examine any object on the server", },
     { "find_by_name",   "Find an entity with the given name", },
@@ -1210,7 +1211,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            std::cout << "Please specify the type to create" << std::endl << std::flush;
             reply_expected = false;
         } else {
             Create c;
@@ -1223,6 +1224,23 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             encoder->streamObjectsMessage(c);
 
             reply_expected = false;
+        }
+    } else if (cmd == "creator_look") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Look l;
+
+            if (!arg.empty()) {
+                Anonymous cmap;
+                cmap->setId(arg);
+                l->setArgs1(cmap);
+            }
+            l->setFrom(agentId);
+
+            encoder->streamObjectsMessage(l);
+            reply_expected = true;
         }
     } else if (cmd == "cancel") {
         if (endTask() != 0) {
