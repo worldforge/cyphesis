@@ -45,6 +45,10 @@ class Account : public Router {
   protected:
     /// \brief A store of Character entities belonging to this account
     EntityDict m_charactersDict;
+    /// \brief The username of this account
+    std::string m_username;
+    /// \brief The password used to authenticate this account
+    std::string m_password;
 
     Entity * addNewCharacter(const std::string &,
                              const Atlas::Objects::Entity::RootEntity &);
@@ -66,15 +70,19 @@ class Account : public Router {
   public:
     /// \brief The network connection currently subscribed to this account
     Connection * m_connection;
-    /// \brief The username of this account
-    std::string m_username;
-    /// \brief The password used to authenticate this account
-    std::string m_password;
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
                                const std::string & id, long intId);
     virtual ~Account();
+
+    const std::string & username() const {
+        return m_username;
+    }
+
+    const std::string & password() const {
+        return m_password;
+    }
 
     /// \brief Get a string representation of the type of account
     virtual const char * getType() const;

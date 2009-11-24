@@ -92,7 +92,7 @@ void ServerRouting::addObject(Router * obj)
 /// Add an Account object to the server.
 void ServerRouting::addAccount(Account * a)
 {
-    m_accounts[a->m_username] = a;
+    m_accounts[a->username()] = a;
     addObject(a);
     if (database_flag) {
         Persistence::instance()->putAccount(*a);

@@ -126,7 +126,7 @@ Account * Connection::removePlayer(Router * obj, const std::string & event)
         m_server.m_lobby.delAccount(ac);
         ac->m_connection = 0;
         logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
-                                         ac->getId(), ac->m_username, event));
+                                         ac->getId(), ac->username(), event));
         return ac;
     }
     Character * chr = dynamic_cast<Character *>(obj);
@@ -244,7 +244,7 @@ int Connection::verifyCredentials(const Account & account,
     }
     const std::string & passwd = passwd_attr.String();
 
-    return check_password(passwd, account.m_password);
+    return check_password(passwd, account.password());
 }
 
 void Connection::operation(const Operation & op, OpVector & res)
