@@ -38,7 +38,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     basic_socket_stream * m_ios;
     std::string m_username;
 
-    void objectArrived(const Atlas::Objects::Root &);
+    // void objectArrived(const Atlas::Objects::Root &);
     int authenticateLocal();
 
   public:
