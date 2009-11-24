@@ -31,6 +31,9 @@
 /// or because it has connected over a unix domain socket.
 class TrustedConnection : public Connection {
   protected:
+    virtual Account * addPlayer(const std::string & account,
+                                const std::string & username,
+                                const std::string & password);
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
   public:

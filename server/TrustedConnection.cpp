@@ -35,6 +35,13 @@ TrustedConnection::TrustedConnection(CommClient & client,
 {
 }
 
+Account * TrustedConnection::addPlayer(const std::string & account,
+                                       const std::string & username,
+                                       const std::string & password)
+{
+    return Connection::addPlayer(account, username, password);
+}
+
 /// \brief Verify the client has a valid login attempt
 ///
 /// This overide of Connection::verifyCredentials skips all checks allowing
