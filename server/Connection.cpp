@@ -401,12 +401,8 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     Element user_attr;
     std::string username;
     if (arg->copyAttr("username", user_attr) != 0 || !user_attr.isString()) {
-        log(WARNING, "Got Create for account with no username. Checking for old style Create.");
-        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            error(op, "Got account Create with no username.", res);
-            return;
-        }
-        username = arg->getId();
+        error(op, "Got account Create with no username.", res);
+        return;
     } else {
         username = user_attr.String();
     }
