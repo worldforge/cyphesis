@@ -361,7 +361,6 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
         }
     }
 
-    void send(const Operation &);
     int connect(const std::string & host);
     int connectLocal(const std::string & host);
     int login();
