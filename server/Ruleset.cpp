@@ -728,9 +728,12 @@ int Ruleset::modifyRule(const std::string & class_name,
     } else {
         ret = modifyEntityClass(class_name, class_desc);
     }
-    if (ret == 0 && database_flag) {
-        Persistence * p = Persistence::instance();
-        p->updateRule(class_desc, class_name);
+    if (ret == 0) {
+        Inheritance::instance().updateClass(class_name, class_desc);
+        if (database_flag) {
+            Persistence * p = Persistence::instance();
+            p->updateRule(class_desc, class_name);
+        }
     }
     return ret;
 }
