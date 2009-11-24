@@ -58,7 +58,7 @@ class TestConnection : public Connection {
 
     Account * testAddPlayer(const std::string & username,
                             const std::string & password) {
-        return addPlayer(username, password);
+        return addPlayer("player", username, password);
     }
 
     Account * testRemovePlayer(Router * obj) {
