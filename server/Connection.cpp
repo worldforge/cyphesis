@@ -420,6 +420,15 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         clientError(op, "Account creation is invalid", res);
         return;
     }
+    std::string account("player");
+    if (!arg->isDefaultParents()) {
+        const std::list<std::string> & parents = arg->getParents();
+        if (!parents.empty()) {
+            account = parents.front();
+            std::cout << "Creating " << account << " account"
+                      << std::endl << std::flush;
+        }
+    }
     Account * player = addPlayer(username, password);
     if (player == 0) {
         clientError(op, "Account creation failed", res);
