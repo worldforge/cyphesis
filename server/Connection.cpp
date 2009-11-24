@@ -93,8 +93,9 @@ void Connection::send(const Operation & op) const
     m_commClient.send(op);
 }
 
-Account * Connection::addPlayer(const std::string& username,
-                                const std::string& password)
+Account * Connection::addPlayer(const std::string & account,
+                                const std::string & username,
+                                const std::string & password)
 {
     std::string hash;
     encrypt_password(password, hash);
@@ -429,7 +430,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
                       << std::endl << std::flush;
         }
     }
-    Account * player = addPlayer(username, password);
+    Account * player = addPlayer(account, username, password);
     if (player == 0) {
         clientError(op, "Account creation failed", res);
         return;
