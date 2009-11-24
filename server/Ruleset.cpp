@@ -720,6 +720,23 @@ int Ruleset::modifyRule(const std::string & class_name,
                            "inheritance", class_name));
         return -1;
     }
+    if (class_desc->isDefaultParents()) {
+        log(ERROR, compose("Updated type \"%1\" has no parents in its "
+                           "description", class_name));
+        return -1;
+    }
+    const std::list<std::string> & class_parents = class_desc->getParents();
+    if (class_parents.empty()) {
+        log(ERROR, compose("Updated type \"%1\" has empty parents in its "
+                           "description", class_name));
+        return -1;
+    }
+    if (class_parents.front() != o->getParents().front()) {
+        log(ERROR, compose("Updated type \"%1\" attempting to change parent "
+                           "from %2 to %3", class_name,
+                           o->getParents().front(), class_parents.front()));
+        return -1;
+    }
     int ret;
     if (o->getParents().front() == "task") {
         ret = modifyTaskClass(class_name, class_desc);
