@@ -35,7 +35,7 @@ typedef int OpNo;
 
 typedef std::map<std::string, OpNo> OpNoDict;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
-typedef std::map<std::string, const TypeNode *> TypeNodeDict;
+typedef std::map<std::string, TypeNode *> TypeNodeDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance {
@@ -63,6 +63,8 @@ class Inheritance {
     OpNo opEnumerate(const std::string & parent) const;
     OpNo opEnumerate(const Atlas::Objects::Operation::RootOperation &) const;
     const Atlas::Objects::Root & getClass(const std::string & parent);
+    int updateClass(const std::string & name,
+                    const Atlas::Objects::Root & obj);
     const TypeNode * getType(const std::string & parent);
     bool hasClass(const std::string & parent);
     TypeNode * addChild(const Atlas::Objects::Root & obj,

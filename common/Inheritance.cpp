@@ -153,6 +153,18 @@ const Root & Inheritance::getClass(const std::string & parent)
     return I->second->description();
 }
 
+int Inheritance::updateClass(const std::string & parent,
+                             const Root & description)
+{
+    TypeNodeDict::iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return -1;
+    }
+    TypeNode * tn = I->second;
+    tn->description() = description;
+    return 0;
+}
+
 const TypeNode * Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
