@@ -127,20 +127,20 @@ Router * ServerRouting::getObject(const std::string & id) const
 /// database.
 Account * ServerRouting::getAccountByName(const std::string & username)
 {
-    Account * player = 0;
+    Account * account = 0;
     AccountDict::const_iterator I = m_accounts.find(username);
     if (I != m_accounts.end()) {
-        player = I->second;
+        account = I->second;
     } else if (database_flag) {
-        player = Persistence::instance()->getAccount(username);
-        if (player != 0) {
-            Persistence::instance()->registerCharacters(*player,
+        account = Persistence::instance()->getAccount(username);
+        if (account != 0) {
+            Persistence::instance()->registerCharacters(*account,
                                                m_world.getEntities());
-            m_accounts[player->m_username] = player;
-            addObject(player);
+            m_accounts[username] = account;
+            addObject(account);
         }
     }
-    return player;
+    return account;
 }
 
 void ServerRouting::addToMessage(MapType & omap) const
