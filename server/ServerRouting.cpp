@@ -136,7 +136,8 @@ Account * ServerRouting::getAccountByName(const std::string & username)
         if (player != 0) {
             Persistence::instance()->registerCharacters(*player,
                                                m_world.getEntities());
-            addAccount(player);
+            m_accounts[player->m_username] = player;
+            addObject(player);
         }
     }
     return player;
