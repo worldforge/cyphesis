@@ -36,11 +36,15 @@ void installCustomOperations()
     Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory);
     i.opInstall("burn", Atlas::Objects::Operation::BURN_NO);
 
+    i.addChild(atlasOpDefinition("connect", "set"));
+    Atlas::Objects::Operation::CONNECT_NO = atlas_factories->addFactory("connect", &Atlas::Objects::generic_factory);
+    i.opInstall("connect", Atlas::Objects::Operation::CONNECT_NO);
+
     i.addChild(atlasOpDefinition("eat", "action"));
     Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory);
     i.opInstall("eat", Atlas::Objects::Operation::EAT_NO);
 
-    i.addChild(atlasOpDefinition("monitor", "affect"));
+    i.addChild(atlasOpDefinition("monitor", "set"));
     Atlas::Objects::Operation::MONITOR_NO = atlas_factories->addFactory("monitor", &Atlas::Objects::generic_factory);
     i.opInstall("monitor", Atlas::Objects::Operation::MONITOR_NO);
 

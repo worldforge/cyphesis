@@ -19,43 +19,112 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_Task.h"
+#include "rulesets/Py_Thing.h"
+#include "rulesets/Character.h"
+#include "rulesets/TaskScript.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyTask * o)
+{
+    if (PyTask_Check(o)) {
+#ifndef NDEBUG
+        o->m_task = NULL;
+#endif // NDEBUG
+    } else if (PyCharacter_Check(o)) {
+#ifndef NDEBUG
+        ((PyEntity*)o)->m_entity.c = 0;
+#endif // NDEBUG
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from server import Task") == 0);
-    assert(PyRun_SimpleString("Task()") == -1);
-    assert(PyRun_SimpleString("Task(1)") == -1);
-    assert(PyRun_SimpleString("Task('1')") == -1);
-    assert(PyRun_SimpleString("from server import Character") == 0);
-    assert(PyRun_SimpleString("c=Character('1')") == 0);
-    assert(PyRun_SimpleString("t=Task(c)") == 0);
-    assert(PyRun_SimpleString("print t.character") == 0);
-    assert(PyRun_SimpleString("print t.progress") == 0);
-    assert(PyRun_SimpleString("print t.rate") == 0);
-    assert(PyRun_SimpleString("print t.foo") == -1);
-    assert(PyRun_SimpleString("t.progress = 0") == 0);
-    assert(PyRun_SimpleString("t.progress = 0.5") == 0);
-    assert(PyRun_SimpleString("t.progress = '1'") == -1);
-    assert(PyRun_SimpleString("t.rate = 0") == 0);
-    assert(PyRun_SimpleString("t.rate = 0.5") == 0);
-    assert(PyRun_SimpleString("t.rate = '1'") == -1);
-    assert(PyRun_SimpleString("t.foo = 1") == 0);
-    assert(PyRun_SimpleString("t.foo = 1.1") == 0);
-    assert(PyRun_SimpleString("t.foo = 'foois1'") == 0);
-    assert(PyRun_SimpleString("print t.foo") == 0);
-    assert(PyRun_SimpleString("print t.obsolete()") == 0);
-    assert(PyRun_SimpleString("print t.count()") == 0);
-    assert(PyRun_SimpleString("print t.new_tick()") == 0);
-    assert(PyRun_SimpleString("print t.next_tick(1)") == 0);
-    assert(PyRun_SimpleString("print t.next_tick(1.1)") == 0);
-    assert(PyRun_SimpleString("print t.next_tick('1')") == -1);
-    assert(PyRun_SimpleString("t.irrelevant()") == 0);
-    assert(PyRun_SimpleString("print t.obsolete()") == 0);
+    setup_test_functions();
+
+    PyTask * task = newPyTask();
+    assert(task != 0);
+
+    run_python_string("from server import Task");
+    fail_python_string("Task()");
+    fail_python_string("Task(1)");
+    fail_python_string("Task('1')");
+    run_python_string("from server import Character");
+    run_python_string("c=Character('1')");
+    run_python_string("t=Task(c)");
+    run_python_string("Task(t)");
+    run_python_string("t==Task(c)");
+    run_python_string("print t.character");
+    run_python_string("print t.progress");
+    run_python_string("print t.rate");
+    fail_python_string("print t.foo");
+    run_python_string("t.progress = 0");
+    run_python_string("t.progress = 0.5");
+    fail_python_string("t.progress = '1'");
+    run_python_string("t.rate = 0");
+    run_python_string("t.rate = 0.5");
+    fail_python_string("t.rate = '1'");
+    run_python_string("t.foo = 1");
+    run_python_string("t.foo = 1.1");
+    run_python_string("t.foo = 'foois1'");
+    run_python_string("print t.foo");
+    run_python_string("print t.obsolete()");
+    run_python_string("print t.count()");
+    run_python_string("print t.new_tick()");
+    run_python_string("print t.next_tick(1)");
+    run_python_string("print t.next_tick(1.1)");
+    fail_python_string("print t.next_tick('1')");
+    run_python_string("t.irrelevant()");
+    run_python_string("print t.obsolete()");
+
+#ifndef NDEBUG
+    run_python_string("import sabotage");
+    // Hit the assert checks.
+    run_python_string("irrelevant_methd=t.irrelevant");
+    run_python_string("obsolete_methd=t.obsolete");
+    run_python_string("count_methd=t.count");
+    run_python_string("new_tick_methd=t.new_tick");
+    run_python_string("next_tick_methd=t.next_tick");
+
+    run_python_string("sabotage.null(t)");
+
+    fail_python_string("irrelevant_methd()");
+    fail_python_string("obsolete_methd()");
+    fail_python_string("count_methd()");
+    fail_python_string("new_tick_methd()");
+    fail_python_string("next_tick_methd(1.1)");
+
+    fail_python_string("t.progress");
+    fail_python_string("t.progress = 0");
+    fail_python_string("t==Task(c)");
+    fail_python_string("Task(t)");
+
+    run_python_string("c2=Character('2')");
+    run_python_string("sabotage.null(c2)");
+    fail_python_string("t=Task(c2)");
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

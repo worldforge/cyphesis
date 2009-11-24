@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 
 #include <cassert>
@@ -27,37 +29,40 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from physics import Point3D") == 0);
-    assert(PyRun_SimpleString("p=Point3D(1,0,0)") == 0);
-    assert(PyRun_SimpleString("p1=Point3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("p2=Point3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("print Point3D()") == 0);
-    assert(PyRun_SimpleString("print Point3D([1])") == -1);
-    assert(PyRun_SimpleString("print Point3D([1,0,0])") == 0);
-    assert(PyRun_SimpleString("print Point3D([1.1,0.0,0.0])") == 0);
-    assert(PyRun_SimpleString("print Point3D(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("print Point3D(1.1)") == -1);
-    assert(PyRun_SimpleString("print Point3D(1.1,0.0,0.0)") == 0);
-    assert(PyRun_SimpleString("print Point3D('1','1','1')") == -1);
-    assert(PyRun_SimpleString("print Point3D(1.1,0.0,0.0,1.1)") == -1);
-    assert(PyRun_SimpleString("print repr(p)") == 0);
-    assert(PyRun_SimpleString("print p.mag()") == 0);
-    assert(PyRun_SimpleString("print p.unit_vector_to(p1)") == 0);
-    assert(PyRun_SimpleString("print p.unit_vector_to(1.0)") == -1);
-    assert(PyRun_SimpleString("print p.distance(p1)") == 0);
-    assert(PyRun_SimpleString("print p.distance(1.0)") == -1);
-    assert(PyRun_SimpleString("print p.is_valid()") == 0);
-    assert(PyRun_SimpleString("print p") == 0);
-    assert(PyRun_SimpleString("print p == p1") == 0);
-    assert(PyRun_SimpleString("print p1 == p2") == 0);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("v=Vector3D(1,0,0)") == 0);
-    assert(PyRun_SimpleString("print p + v") == 0);
-    assert(PyRun_SimpleString("print p + p1") == -1);
-    assert(PyRun_SimpleString("print p - v") == 0);
-    assert(PyRun_SimpleString("print p - p1") == 0);
-    assert(PyRun_SimpleString("print p - 1.0") == -1);
-    assert(PyRun_SimpleString("print p == v") == 0);
+    run_python_string("from physics import Point3D");
+    run_python_string("from atlas import Message");
+    run_python_string("Point3D([Message(1), Message(0), Message(0)])");
+    fail_python_string("Point3D([Message('1'), Message(0), Message(0)])");
+    run_python_string("p=Point3D(1,0,0)");
+    run_python_string("p1=Point3D(0,1,0)");
+    run_python_string("p2=Point3D(0,1,0)");
+    run_python_string("print Point3D()");
+    fail_python_string("print Point3D([1])");
+    run_python_string("print Point3D([1,0,0])");
+    run_python_string("print Point3D([1.1,0.0,0.0])");
+    fail_python_string("print Point3D(['1','1','1'])");
+    fail_python_string("print Point3D(1.1)");
+    run_python_string("print Point3D(1.1,0.0,0.0)");
+    fail_python_string("print Point3D('1','1','1')");
+    fail_python_string("print Point3D(1.1,0.0,0.0,1.1)");
+    run_python_string("print repr(p)");
+    run_python_string("print p.mag()");
+    run_python_string("print p.unit_vector_to(p1)");
+    fail_python_string("print p.unit_vector_to(1.0)");
+    run_python_string("print p.distance(p1)");
+    fail_python_string("print p.distance(1.0)");
+    run_python_string("print p.is_valid()");
+    run_python_string("print p");
+    run_python_string("print p == p1");
+    run_python_string("print p1 == p2");
+    run_python_string("from physics import Vector3D");
+    run_python_string("v=Vector3D(1,0,0)");
+    run_python_string("print p + v");
+    fail_python_string("print p + p1");
+    run_python_string("print p - v");
+    run_python_string("print p - p1");
+    fail_python_string("print p - 1.0");
+    run_python_string("print p == v");
 
     shutdown_python_api();
     return 0;

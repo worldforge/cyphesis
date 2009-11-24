@@ -238,18 +238,30 @@ inline void IGEntityExerciser<EntityType>::runOperations()
         }
         this->flushOperations(ov);
 
+        if (this->m_ent.m_location.m_loc != 0) {
+            move_arg->setLoc(this->m_ent.m_location.m_loc->getId());
+        }
+        std::vector<double> pos(3, 0);
+        move_arg->setPos(pos);
+        this->m_ent.MoveOperation(op, ov);
+
         move_arg->setAttr("mode", 1);
         this->m_ent.MoveOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
+        this->flushOperations(ov);
+
+        move_arg->setAttr("mode", "standing");
+        this->m_ent.MoveOperation(op, ov);
+        this->flushOperations(ov);
+
+        this->m_ent.MoveOperation(op, ov);
         this->flushOperations(ov);
 
         move_arg->removeAttr("mode");
         this->m_ent.MoveOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
+        this->flushOperations(ov);
+
+        this->m_ent.setFlags(entity_perceptive);
+        this->m_ent.MoveOperation(op, ov);
         this->flushOperations(ov);
     }
     {

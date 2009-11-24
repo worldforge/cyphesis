@@ -150,9 +150,11 @@ PropertyBase * Entity::modProperty(const std::string & name)
 ///
 /// @param name name of the attribute for which the property is given
 /// @param prop the property object to be used
-void Entity::setProperty(const std::string & name, PropertyBase * prop)
+/// @returns a pointer to the property
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
 {
-    m_properties[name] = prop;
+    return m_properties[name] = prop;
 }
 
 /// \brief Copy attributes into an Atlas element
@@ -208,7 +210,9 @@ void Entity::addToEntity(const RootEntity & ent) const
     }
 
     ent->setStamp(m_seq);
-    ent->setParents(std::list<std::string>(1, m_type->name()));
+    if (m_type != 0) {
+        ent->setParents(std::list<std::string>(1, m_type->name()));
+    }
     m_location.addToEntity(ent);
     ent->setObjtype("obj");
 }

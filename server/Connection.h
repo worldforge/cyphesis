@@ -40,6 +40,7 @@ typedef std::map<long, Router *> RouterMap;
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
 class Connection : public Router, virtual public sigc::trackable {
+  protected:
     RouterMap m_objects;
 
     /// \brief Flag to indicate if this connection has already been
@@ -53,7 +54,7 @@ class Connection : public Router, virtual public sigc::trackable {
 
     Account * addPlayer(const std::string &, const std::string &);
     Account * removePlayer(Router *, const std::string & event);
-  protected:
+
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
   public:

@@ -27,6 +27,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
                  TransientPropertytest TasksPropertytest \
+                 HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  Domaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
@@ -35,12 +36,19 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
                  Py_Thingtest Py_Maptest Py_Mindtest Py_Tasktest \
-                 Py_Worldtest Py_Messagetest Py_WorldTimetest
-
+                 Py_Worldtest Py_Messagetest Py_WorldTimetest \
+                 Py_Propertytest Py_TerrainPropertytest \
+                 PythonWrappertest PythonEntityScripttest \
+                 MindFactorytest TaskScripttest PythonContexttest \
+                 ArithmeticScripttest PythonArithmeticScripttest \
+                 ArithmeticFactorytest
 
 CLIENT_TESTS = Py_CreatorClienttest
 
-SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest
+SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
+               CommServertest Accounttest Admintest Playertest buildidtest \
+               EntityFactorytest TaskFactorytest Connectiontest \
+               TrustedConnectiontest
 
 PYTHON_TESTS = python_class
 
@@ -622,6 +630,28 @@ TasksPropertytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
+HandlerPropertytest_SOURCES = HandlerPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+HandlerPropertytest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+MultiHandlerPropertytest_SOURCES = MultiHandlerPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+MultiHandlerPropertytest_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
 InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 InternalPropertiestest_LDADD = \
@@ -725,7 +755,7 @@ ActivePropertyFactorytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Python_APItest_SOURCES = Python_APItest.cpp
+Python_APItest_SOURCES = Python_APItest.cpp python_testers.h
 Python_APItest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -769,7 +799,7 @@ Py_Point3Dtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_BBoxtest_SOURCES = Py_BBoxtest.cpp
+Py_BBoxtest_SOURCES = Py_BBoxtest.cpp python_testers.h
 Py_BBoxtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -780,7 +810,7 @@ Py_BBoxtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Locationtest_SOURCES = Py_Locationtest.cpp
+Py_Locationtest_SOURCES = Py_Locationtest.cpp python_testers.h
 Py_Locationtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -791,7 +821,7 @@ Py_Locationtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_RootEntitytest_SOURCES = Py_RootEntitytest.cpp
+Py_RootEntitytest_SOURCES = Py_RootEntitytest.cpp python_testers.h
 Py_RootEntitytest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -802,7 +832,7 @@ Py_RootEntitytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Operationtest_SOURCES = Py_Operationtest.cpp
+Py_Operationtest_SOURCES = Py_Operationtest.cpp python_testers.h
 Py_Operationtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -813,7 +843,7 @@ Py_Operationtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Oplisttest_SOURCES = Py_Oplisttest.cpp
+Py_Oplisttest_SOURCES = Py_Oplisttest.cpp python_testers.h
 Py_Oplisttest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -824,7 +854,7 @@ Py_Oplisttest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Thingtest_SOURCES = Py_Thingtest.cpp
+Py_Thingtest_SOURCES = Py_Thingtest.cpp TestPropertyManager.cpp TestPropertyManager.h python_testers.h
 Py_Thingtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -835,7 +865,7 @@ Py_Thingtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Maptest_SOURCES = Py_Maptest.cpp
+Py_Maptest_SOURCES = Py_Maptest.cpp python_testers.h
 Py_Maptest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -846,7 +876,7 @@ Py_Maptest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Mindtest_SOURCES = Py_Mindtest.cpp
+Py_Mindtest_SOURCES = Py_Mindtest.cpp python_testers.h
 Py_Mindtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -857,7 +887,7 @@ Py_Mindtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Tasktest_SOURCES = Py_Tasktest.cpp
+Py_Tasktest_SOURCES = Py_Tasktest.cpp python_testers.h
 Py_Tasktest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -868,7 +898,7 @@ Py_Tasktest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Worldtest_SOURCES = Py_Worldtest.cpp
+Py_Worldtest_SOURCES = Py_Worldtest.cpp python_testers.h
 Py_Worldtest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -879,7 +909,7 @@ Py_Worldtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_Messagetest_SOURCES = Py_Messagetest.cpp
+Py_Messagetest_SOURCES = Py_Messagetest.cpp python_testers.h
 Py_Messagetest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -890,8 +920,116 @@ Py_Messagetest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
-Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp
+Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp python_testers.h
 Py_WorldTimetest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+Py_Propertytest_SOURCES = Py_Propertytest.cpp python_testers.h
+Py_Propertytest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+Py_TerrainPropertytest_SOURCES = Py_TerrainPropertytest.cpp python_testers.h
+Py_TerrainPropertytest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+PythonWrappertest_SOURCES = PythonWrappertest.cpp
+PythonWrappertest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp python_testers.h
+PythonEntityScripttest_LDADD = \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+MindFactorytest_SOURCES = MindFactorytest.cpp
+MindFactorytest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+TaskScripttest_SOURCES = TaskScripttest.cpp
+TaskScripttest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+PythonContexttest_SOURCES = PythonContexttest.cpp
+PythonContexttest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+ArithmeticScripttest_SOURCES = ArithmeticScripttest.cpp
+ArithmeticScripttest_LDADD = \
+        $(top_builddir)/rulesets/ArithmeticScript.o \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp python_testers.h
+PythonArithmeticScripttest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+ArithmeticFactorytest_SOURCES = ArithmeticFactorytest.cpp
+ArithmeticFactorytest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -903,7 +1041,7 @@ Py_WorldTimetest_LDADD = \
 
 # CLIENT_TESTS
 
-Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp
+Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp python_testers.h
 Py_CreatorClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/CreatorClient.o \
@@ -1014,6 +1152,255 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 PropertyFlagtest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+CommServertest_SOURCES = CommServertest.cpp
+CommServertest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+CommServertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+Accounttest_SOURCES = Accounttest.cpp
+Accounttest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+Accounttest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+Admintest_SOURCES = Admintest.cpp
+Admintest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+Admintest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+Playertest_SOURCES = Playertest.cpp
+Playertest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+Playertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+EntityFactorytest_SOURCES = EntityFactorytest.cpp
+EntityFactorytest_LDADD = \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+EntityFactorytest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+TaskFactorytest_SOURCES = TaskFactorytest.cpp
+TaskFactorytest_LDADD = \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+TaskFactorytest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+buildidtest_SOURCES = buildidtest.cpp
+buildidtest_LDADD = \
+        $(top_builddir)/server/buildid.o
+
+Connectiontest_SOURCES = Connectiontest.cpp
+Connectiontest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+Connectiontest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+TrustedConnectiontest_SOURCES = TrustedConnectiontest.cpp
+TrustedConnectiontest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/TrustedConnection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+TrustedConnectiontest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+# PYTHON_TESTS
 
 python_class_SOURCES = python_class.cpp
 python_class_LDADD = \

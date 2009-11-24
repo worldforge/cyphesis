@@ -111,8 +111,9 @@ struct command commands[] = {
     { "connect",        "Connect server to a peer", },
     { "cancel",         "Cancel the current admin task", },
     { "creator_create", "Use agent to create an entity", },
+    { "creator_look",   "Use agent to look at an entity", },
     { "delete",         "Delete an entity from the server", },
-    { "get",            "Examine a class on the server", },
+    { "get",            "Examine any object on the server", },
     { "find_by_name",   "Find an entity with the given name", },
     { "find_by_type",   "Find an entity with the given type", },
     { "flush",          "Flush entities from the server", },
@@ -121,7 +122,7 @@ struct command commands[] = {
     { "look",           "Return the current server lobby", },
     { "logout",         "Log user out of server", },
     { "monitor",        "Enable in-game op monitoring", },
-    { "query",          "Examine an object on the server", },
+    { "query",          "Synonym for \"get\" (deprecated)", },
     { "reload",         "Reload the script for a type", },
     { "stat",           "Return current server status", },
     { "unmonitor",      "Disable in-game op monitoring", },
@@ -997,6 +998,11 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         reply_expected = false;
     } else if (cmd == "look") {
         Look l;
+        if (!arg.empty()) {
+            Anonymous cmap;
+            cmap->setId(arg);
+            l->setArgs1(cmap);
+        }
         l->setFrom(accountId);
         encoder->streamObjectsMessage(l);
     } else if (cmd == "logout") {
@@ -1022,12 +1028,16 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     } else if (cmd == "query") {
         Get g;
 
-        Anonymous cmap;
-        cmap->setObjtype("obj");
         if (!arg.empty()) {
+            Anonymous cmap;
+            if (::isdigit(arg[0])) {
+                cmap->setObjtype("obj");
+            } else {
+                cmap->setObjtype("meta");
+            }
             cmap->setId(arg);
+            g->setArgs1(cmap);
         }
-        g->setArgs1(cmap);
         g->setFrom(accountId);
 
         encoder->streamObjectsMessage(g);
@@ -1049,12 +1059,16 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     } else if (cmd == "get") {
         Get g;
 
-        Anonymous cmap;
-        cmap->setObjtype("class");
         if (!arg.empty()) {
+            Anonymous cmap;
+            if (::isdigit(arg[0])) {
+                cmap->setObjtype("obj");
+            } else {
+                cmap->setObjtype("meta");
+            }
             cmap->setId(arg);
+            g->setArgs1(cmap);
         }
-        g->setArgs1(cmap);
         g->setFrom(accountId);
 
         encoder->streamObjectsMessage(g);
@@ -1198,7 +1212,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            std::cout << "Please specify the type to create" << std::endl << std::flush;
             reply_expected = false;
         } else {
             Create c;
@@ -1211,6 +1225,23 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             encoder->streamObjectsMessage(c);
 
             reply_expected = false;
+        }
+    } else if (cmd == "creator_look") {
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Look l;
+
+            if (!arg.empty()) {
+                Anonymous cmap;
+                cmap->setId(arg);
+                l->setArgs1(cmap);
+            }
+            l->setFrom(agentId);
+
+            encoder->streamObjectsMessage(l);
+            reply_expected = true;
         }
     } else if (cmd == "cancel") {
         if (endTask() != 0) {

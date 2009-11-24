@@ -111,7 +111,9 @@ void Account::addCharacter(Entity * chr)
 Entity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent)
 {
-    assert(m_connection != 0);
+    if (m_connection == 0) {
+        return 0;
+    }
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr = world.addNewEntity(typestr, ent);
@@ -464,8 +466,9 @@ void Account::SetOperation(const Operation & op, OpVector & res)
         s->setTo(id);
         new_arg->setId(id);
         s->setArgs1(new_arg);
-        assert(m_connection != 0);
-        m_connection->m_server.m_world.message(s, *e);
+        if (m_connection != 0) {
+            m_connection->m_server.m_world.message(s, *e);
+        }
     }
 }
 
@@ -495,8 +498,9 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     } else {
         s->setTo(op->getTo());
     }
-    assert(m_connection != 0);
-    m_connection->m_server.m_lobby.operation(s, res);
+    if (m_connection != 0) {
+        m_connection->m_server.m_lobby.operation(s, res);
+    }
 }
 
 void Account::TalkOperation(const Operation & op, OpVector & res)
@@ -527,13 +531,16 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     } else {
         s->setTo(op->getTo());
     }
-    assert(m_connection != 0);
-    m_connection->m_server.m_lobby.operation(s, res);
+    if (m_connection != 0) {
+        m_connection->m_server.m_lobby.operation(s, res);
+    }
 }
 
 void Account::LookOperation(const Operation & op, OpVector & res)
 {
-    assert(m_connection != 0);
+    if (m_connection == 0) {
+        return;
+    }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         Sight s;

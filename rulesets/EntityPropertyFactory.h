@@ -17,6 +17,9 @@
 
 // $Id$
 
+#error This file has been removed from the build
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #ifndef RULESETS_ENTITY_PROPERTY_FACTORY_H
 #define RULESETS_ENTITY_PROPERTY_FACTORY_H
 

@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 
 #include <cassert>
@@ -28,8 +30,8 @@ int main()
     init_python_api();
     extend_client_python_api();
 
-    assert(PyRun_SimpleString("import server") == 0);
-    assert(PyRun_SimpleString("c=server.CreatorClient(\"1\")") == 0);
+    run_python_string("import server");
+    run_python_string("c=server.CreatorClient(\"1\")");
 
     shutdown_python_api();
     return 0;

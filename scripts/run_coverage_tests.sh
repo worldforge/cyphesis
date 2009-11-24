@@ -72,7 +72,7 @@ check_coverage() {
 
 
     coverage_percent=$( (cd ${source_dir} && LC_ALL=C gcov ${source_file}) | \
-          grep -A 1 "^File '$(basename ${source_file})" | \
+          grep -A 1 "^File '${base_file}.cpp" | \
           grep ^Lines | \
           head -n 1 | \
           sed "s/^Lines executed:\([0-9]\+\)\.[0-9]\+% of .*$/\1/")
@@ -115,7 +115,7 @@ rulesets/Character.cpp.gcov
 EOF
 }
 
-DIRS="physics common modules rulesets"
+DIRS="physics common modules rulesets server"
 
 declare -i report=0
 declare -i configure=0

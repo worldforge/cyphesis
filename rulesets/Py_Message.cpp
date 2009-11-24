@@ -106,10 +106,9 @@ static int Message_setattr( PyMessage *self, char *name, PyObject *v)
         if (PyObject_asMessageElement(v, v_obj) == 0) {
             omap[name] = v_obj;
             return 0;
-        } else {
-            PyErr_SetString(PyExc_TypeError, "object cannot be converted to Atlas data in MessageElement.setattr");
-            return -1;
         }
+        PyErr_SetString(PyExc_TypeError, "object cannot be converted to Atlas data in MessageElement.setattr");
+        return -1;
     }
     PyErr_SetString(PyExc_TypeError, "Cannot set attribute on non-map in MessageElement.setattr");
     return -1;

@@ -19,6 +19,8 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
 
 #include <cassert>
@@ -27,56 +29,67 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("from atlas import Message") == 0);
-    assert(PyRun_SimpleString("v=Vector3D(1,0,0)") == 0);
-    assert(PyRun_SimpleString("v1=Vector3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("v2=Vector3D(0,1,0)") == 0);
-    assert(PyRun_SimpleString("print Vector3D()") == 0);
-    assert(PyRun_SimpleString("print Vector3D([1])") == -1);
-    assert(PyRun_SimpleString("print Vector3D([1,0,0])") == 0);
-    assert(PyRun_SimpleString("print Vector3D([1.1,0.0,0.0])") == 0);
-    assert(PyRun_SimpleString("print Vector3D([Message(1.0),0,0])") == 0);
-    assert(PyRun_SimpleString("print Vector3D([Message(1),0,0])") == 0);
-    assert(PyRun_SimpleString("print Vector3D(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("print Vector3D(1.1)") == -1);
-    assert(PyRun_SimpleString("print Vector3D(1.1,0.0,0.0)") == 0);
-    assert(PyRun_SimpleString("print Vector3D(1.1,0.0,0.0,1.1)") == -1);
-    assert(PyRun_SimpleString("print repr(v)") == 0);
-    assert(PyRun_SimpleString("print v.dot(1.0)") == -1);
-    assert(PyRun_SimpleString("print v.dot(v1)") == 0);
-    assert(PyRun_SimpleString("print v.cross(1.0)") == -1);
-    assert(PyRun_SimpleString("print v.cross(v1)") == 0);
-    assert(PyRun_SimpleString("v.rotatex(1.0)") == 0);
-    assert(PyRun_SimpleString("v.rotatey(1.0)") == 0);
-    assert(PyRun_SimpleString("v.rotatez(1.0)") == 0);
-    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
-    assert(PyRun_SimpleString("q=Quaternion(1,0,0,0)") == 0);
-    assert(PyRun_SimpleString("v.rotate(q)") == 0);
-    assert(PyRun_SimpleString("print v.angle(1.0)") == -1);
-    assert(PyRun_SimpleString("print v.angle(v1)") == 0);
-    assert(PyRun_SimpleString("print v.square_mag()") == 0);
-    assert(PyRun_SimpleString("print v.mag()") == 0);
-    assert(PyRun_SimpleString("print v.is_valid()") == 0);
-    assert(PyRun_SimpleString("print v.unit_vector()") == 0);
-    assert(PyRun_SimpleString("print v.unit_vector_to(v1)") == 0);
-    assert(PyRun_SimpleString("print v") == 0);
-    assert(PyRun_SimpleString("v.x=1") == 0);
-    assert(PyRun_SimpleString("v.y=1") == 0);
-    assert(PyRun_SimpleString("v.z=1") == 0);
-    assert(PyRun_SimpleString("v.z=1.9") == 0);
-    assert(PyRun_SimpleString("v.z='1'") == -1);
-    assert(PyRun_SimpleString("v.w=1") == -1);
-    assert(PyRun_SimpleString("print v == v1") == 0);
-    assert(PyRun_SimpleString("print v1 == v2") == 0);
-    assert(PyRun_SimpleString("print v1 + v2") == 0);
-    assert(PyRun_SimpleString("print v1 - v2") == 0);
-    assert(PyRun_SimpleString("print v * 1") == 0);
-    assert(PyRun_SimpleString("print v * 1.2") == 0);
-    assert(PyRun_SimpleString("print v * '1.2'") == -1);
-    assert(PyRun_SimpleString("print v / 1") == 0);
-    assert(PyRun_SimpleString("print v / 1.2") == 0);
-    assert(PyRun_SimpleString("print v / '1.2'") == -1);
+    run_python_string("from physics import Vector3D");
+    run_python_string("from atlas import Message");
+    run_python_string("v=Vector3D(1,0,0)");
+    run_python_string("v1=Vector3D(0,1,0)");
+    run_python_string("v2=Vector3D(0,1,0)");
+    run_python_string("Vector3D()");
+    fail_python_string("Vector3D([1])");
+    run_python_string("Vector3D([1,0,0])");
+    run_python_string("Vector3D([1.1,0.0,0.0])");
+    run_python_string("Vector3D([Message(1.0),0,0])");
+    run_python_string("Vector3D([Message(1),0,0])");
+    fail_python_string("Vector3D([Message('1'),0,0])");
+    fail_python_string("Vector3D(['1','1','1'])");
+    fail_python_string("Vector3D(1.1)");
+    run_python_string("Vector3D(1.1,0.0,0.0)");
+    fail_python_string("Vector3D(1.1,0.0,'0.0')");
+    fail_python_string("Vector3D(1.1,0.0,0.0,1.1)");
+    run_python_string("repr(v)");
+    fail_python_string("v.dot(1.0)");
+    run_python_string("v.dot(v1)");
+    fail_python_string("v.cross(1.0)");
+    run_python_string("v.cross(v1)");
+    run_python_string("v.rotatex(1.0)");
+    fail_python_string("v.rotatex(1)");
+    run_python_string("v.rotatey(1.0)");
+    fail_python_string("v.rotatey(1)");
+    run_python_string("v.rotatez(1.0)");
+    fail_python_string("v.rotatez(1)");
+    run_python_string("from physics import Quaternion");
+    run_python_string("q=Quaternion(1,0,0,0)");
+    run_python_string("v.rotate(q)");
+    fail_python_string("v.rotate(Vector3D(0,1,0))");
+    fail_python_string("v.angle(1.0)");
+    run_python_string("v.angle(v1)");
+    run_python_string("v.square_mag()");
+    run_python_string("v.mag()");
+    run_python_string("v.is_valid()");
+    run_python_string("v.unit_vector()");
+    fail_python_string("Vector3D(0,0,0).unit_vector()");
+    run_python_string("v.unit_vector_to(v1)");
+    fail_python_string("v.unit_vector_to(v)");
+    fail_python_string("v.unit_vector_to(q)");
+    run_python_string("print v");
+    run_python_string("v.x=1");
+    run_python_string("v.y=1");
+    run_python_string("v.z=1");
+    run_python_string("v.z=1.9");
+    fail_python_string("v.z='1'");
+    fail_python_string("v.w=1");
+    run_python_string("v == v1");
+    run_python_string("v1 == v2");
+    run_python_string("v1 + v2");
+    fail_python_string("v1 + 2");
+    run_python_string("v1 - v2");
+    fail_python_string("v1 - 2");
+    run_python_string("v * 1");
+    run_python_string("v * 1.2");
+    fail_python_string("v * '1.2'");
+    run_python_string("v / 1");
+    run_python_string("v / 1.2");
+    fail_python_string("v / '1.2'");
 
     shutdown_python_api();
     return 0;

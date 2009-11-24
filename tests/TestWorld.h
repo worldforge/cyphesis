@@ -27,7 +27,9 @@
 /// Test implementation of the BaseWorld interface
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld(Entity & gw) : BaseWorld(gw) { }
+    explicit TestWorld(Entity & gw) : BaseWorld(gw) {
+        m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
+    }
 
     virtual bool idle(int, int) { return false; }
     virtual Entity * addEntity(Entity * ent) { 

@@ -196,7 +196,8 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
         PyObject * keys = PyDict_Keys(kwds);
         PyObject * vals = PyDict_Values(kwds);
         if (keys == NULL || vals == NULL) {
-            PyErr_SetString(PyExc_RuntimeError, "Error in keywords");
+            // No need to set error, as it will have been set inside the
+            // called functions above which failed.
             return -1;
         }
         int i, size = PyList_Size(keys);

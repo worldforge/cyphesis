@@ -90,9 +90,6 @@ static PyObject * Quaternion_getattr(PyQuaternion *self, char *name)
 
 static int Quaternion_compare(PyQuaternion * self, PyQuaternion * other)
 {
-    if (!PyQuaternion_Check(other)) {
-        return -1;
-    }
     if (self->rotation == other->rotation) {
         return 0;
     }

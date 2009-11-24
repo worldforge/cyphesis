@@ -19,26 +19,65 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_WorldTime.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyWorldTime * o)
+{
+    if (!PyWorldTime_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return Py_True;
+    }
+#ifndef NDEBUG
+    o->time = NULL;
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from server import WorldTime") == 0);
-    assert(PyRun_SimpleString("WorldTime()") == -1);
-    assert(PyRun_SimpleString("WorldTime(23)") == 0);
-    assert(PyRun_SimpleString("WorldTime(23.1)") == 0);
+    setup_test_functions();
 
-    assert(PyRun_SimpleString("w=WorldTime(23)") == 0);
-    assert(PyRun_SimpleString("w.season") == 0);
-    assert(PyRun_SimpleString("w.foo") == -1);
-    assert(PyRun_SimpleString("w.is_now('morning')") == 0);
-    assert(PyRun_SimpleString("w.is_now(1)") == -1);
-    assert(PyRun_SimpleString("w.seconds()") == 0);
+    PyWorldTime * world_time = newPyWorldTime();
+    assert(world_time != 0);
 
+    run_python_string("from server import WorldTime");
+    fail_python_string("WorldTime()");
+    run_python_string("WorldTime(23)");
+    run_python_string("WorldTime(23.1)");
+
+    run_python_string("w=WorldTime(23)");
+    run_python_string("w.season");
+    fail_python_string("w.foo");
+    run_python_string("w.is_now('morning')");
+    fail_python_string("w.is_now(1)");
+    run_python_string("w.seconds()");
+
+#ifndef NDEBUG
+    run_python_string("import sabotage");
+    run_python_string("sabotage.null(w)");
+    // Hit the assert checks.
+    fail_python_string("w.is_now('morning')");
+    fail_python_string("w.seconds()");
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

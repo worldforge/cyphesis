@@ -23,6 +23,7 @@
 #include "rulesets/Character.h"
 
 #include <Atlas/Objects/Generic.h>
+#include <Atlas/Objects/RootEntity.h>
 
 #include <iostream>
 
@@ -48,6 +49,24 @@ int main()
 
     {
         Fell fell(chr, ent1, ent2);
+
+        fell.nextTick(1.5);
+
+        Atlas::Message::Element val;
+        fell.getAttr("foo", val);
+        assert(val.isNone());
+        fell.setAttr("foo", 1);
+        fell.getAttr("foo", val);
+        assert(val.isInt());
+
+        Atlas::Objects::Entity::RootEntity ent;
+        fell.addToEntity(ent);
+
+        fell.progress() = 0.5f;
+        fell.addToEntity(ent);
+
+        fell.rate() = 0.5f;
+        fell.addToEntity(ent);
 
         assert(!fell.obsolete());
 

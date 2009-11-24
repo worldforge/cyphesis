@@ -19,7 +19,10 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_BBox.h"
 
 #include <cassert>
 
@@ -27,35 +30,42 @@ int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from physics import BBox") == 0);
-    assert(PyRun_SimpleString("b=BBox()") == 0);
-    assert(PyRun_SimpleString("b=BBox([1])") == -1);
-    assert(PyRun_SimpleString("b=BBox([1,1,1])") == 0);
-    assert(PyRun_SimpleString("b=BBox([1.0,1.0,1.0])") == 0);
-    assert(PyRun_SimpleString("b=BBox(['1','1','1'])") == -1);
-    assert(PyRun_SimpleString("b=BBox(1)") == -1);
-    assert(PyRun_SimpleString("b=BBox(1,1)") == -1);
-    assert(PyRun_SimpleString("b=BBox(1,1,1)") == 0);
-    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0)") == 0);
-    assert(PyRun_SimpleString("b=BBox(1.0,1.0,1.0,1.0,1.0,1.0)") == 0);
-    assert(PyRun_SimpleString("b=BBox('1','1','1')") == -1);
-    assert(PyRun_SimpleString("print b.near_point") == 0);
-    assert(PyRun_SimpleString("print b.far_point") == 0);
-    assert(PyRun_SimpleString("print b.square_bounding_radius()") == 0);
-    assert(PyRun_SimpleString("from physics import Point3D") == 0);
-    assert(PyRun_SimpleString("b.near_point=1") == -1);
-    assert(PyRun_SimpleString("b.near_point=Point3D()") == -1);
-    assert(PyRun_SimpleString("b.far_point=Point3D()") == -1);
-    assert(PyRun_SimpleString("b.near_point=Point3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("b.far_point=Point3D(1,1,1)") == 0);
-    assert(PyRun_SimpleString("b.other=Point3D(0,0,0)") == -1);
-    assert(PyRun_SimpleString("print b.square_bounding_radius()") == 0);
-    assert(PyRun_SimpleString("b2=BBox()") == 0);
-    assert(PyRun_SimpleString("print b == b2") == 0);
-    assert(PyRun_SimpleString("b2.near_point=Point3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("b2.far_point=Point3D(1,1,1)") == 0);
-    assert(PyRun_SimpleString("print b == b2") == 0);
-    assert(PyRun_SimpleString("print b == '0'") == 0);
+    PyBBox * bbox = newPyBBox();
+    assert(bbox != 0);
+
+    run_python_string("from physics import BBox");
+    run_python_string("b=BBox()");
+    fail_python_string("b=BBox([1])");
+    run_python_string("b=BBox([1,1,1])");
+    run_python_string("b=BBox([1.0,1.0,1.0])");
+    run_python_string("b=BBox([1,1,1])");
+    fail_python_string("b=BBox(['1','1','1'])");
+    run_python_string("from atlas import Message");
+    run_python_string("b=BBox([Message(1),Message(1),Message(1)])");
+    fail_python_string("b=BBox([Message('1'),Message('1'),Message('1')])");
+    fail_python_string("b=BBox(1)");
+    fail_python_string("b=BBox(1,1)");
+    run_python_string("b=BBox(1,1,1)");
+    run_python_string("b=BBox(1.0,1.0,1.0)");
+    run_python_string("b=BBox(1.0,1.0,1.0,1.0,1.0,1.0)");
+    fail_python_string("b=BBox('1','1','1')");
+    run_python_string("print b.near_point");
+    run_python_string("print b.far_point");
+    run_python_string("print b.square_bounding_radius()");
+    run_python_string("from physics import Point3D");
+    fail_python_string("b.near_point=1");
+    fail_python_string("b.near_point=Point3D()");
+    fail_python_string("b.far_point=Point3D()");
+    run_python_string("b.near_point=Point3D(0,0,0)");
+    run_python_string("b.far_point=Point3D(1,1,1)");
+    fail_python_string("b.other=Point3D(0,0,0)");
+    run_python_string("print b.square_bounding_radius()");
+    run_python_string("b2=BBox()");
+    run_python_string("print b == b2");
+    run_python_string("b2.near_point=Point3D(0,0,0)");
+    run_python_string("b2.far_point=Point3D(1,1,1)");
+    run_python_string("print b == b2");
+    run_python_string("print b == '0'");
     
 
     shutdown_python_api();

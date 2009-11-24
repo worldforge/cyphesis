@@ -19,46 +19,124 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
+#include "TestWorld.h"
+
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_Location.h"
+#include "rulesets/Py_Thing.h"
+#include "rulesets/Py_Mind.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyLocation * o)
+{
+    if (PyLocation_Check(o)) {
+#ifndef NDEBUG
+        o->location = NULL;
+#endif // NDEBUG
+    } else if (PyMind_Check(o)) {
+#ifndef NDEBUG
+        ((PyMind*)o)->m_mind = NULL;
+#endif // NDEBUG
+    } else if (PyLocatedEntity_Check(o) || PyEntity_Check(o) || PyCharacter_Check(o)) {
+#ifndef NDEBUG
+        ((PyEntity*)o)->m_entity.l = NULL;
+#endif // NDEBUG
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("import atlas") == 0);
-    assert(PyRun_SimpleString("l=atlas.Location()") == 0);
-    assert(PyRun_SimpleString("l1=l.copy()") == 0);
-    assert(PyRun_SimpleString("l.parent") == 0);
-    assert(PyRun_SimpleString("l.coordinates") == 0);
-    assert(PyRun_SimpleString("l.velocity") == 0);
-    assert(PyRun_SimpleString("l.orientation") == 0);
-    assert(PyRun_SimpleString("l.bbox") == 0);
-    assert(PyRun_SimpleString("from physics import Point3D") == 0);
-    assert(PyRun_SimpleString("from physics import Vector3D") == 0);
-    assert(PyRun_SimpleString("from physics import Quaternion") == 0);
-    assert(PyRun_SimpleString("from physics import BBox") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Point3D()") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Point3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Vector3D()") == 0);
-    assert(PyRun_SimpleString("l.coordinates=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=()") == -1);
-    assert(PyRun_SimpleString("l.coordinates=(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=(0.0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.coordinates=('0',0,0)") == -1);
-    assert(PyRun_SimpleString("l.coordinates=[]") == -1);
-    assert(PyRun_SimpleString("l.coordinates=[0,0,0]") == 0);
-    assert(PyRun_SimpleString("l.coordinates=[0.0,0,0]") == 0);
-    assert(PyRun_SimpleString("l.coordinates=['0',0,0]") == -1);
-    assert(PyRun_SimpleString("l.velocity=Vector3D()") == 0);
-    assert(PyRun_SimpleString("l.velocity=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.orientation=Quaternion()") == 0);
-    assert(PyRun_SimpleString("l.orientation=Quaternion(0,0,0,1)") == 0);
-    assert(PyRun_SimpleString("l.bbox=BBox()") == 0);
-    assert(PyRun_SimpleString("l.bbox=Vector3D(0,0,0)") == 0);
-    assert(PyRun_SimpleString("l.other=Vector3D(0,0,0)") == -1);
-    assert(PyRun_SimpleString("repr(l)") == 0);
+    setup_test_functions();
+
+    Entity wrld("0", 0);
+    TestWorld tw(wrld);
+
+    run_python_string("import atlas");
+    run_python_string("import server");
+    run_python_string("from physics import Point3D");
+    fail_python_string("atlas.Location(set([1,1]))");
+    fail_python_string("atlas.Location(1,1,1)");
+    run_python_string("atlas.Location(server.LocatedEntity('1'))");
+    run_python_string("atlas.Location(server.Thing('1'))");
+    run_python_string("atlas.Location(server.Character('1'))");
+    run_python_string("atlas.Location(server.World())");
+    run_python_string("atlas.Location(server.Mind('1'))");
+    fail_python_string("atlas.Location(server.Thing('1'), 1)");
+    run_python_string("atlas.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("l=atlas.Location()");
+    run_python_string("l1=l.copy()");
+    run_python_string("l.parent");
+    run_python_string("l.coordinates");
+    run_python_string("l.velocity");
+    run_python_string("l.orientation");
+    run_python_string("l.bbox");
+    run_python_string("from physics import Vector3D");
+    run_python_string("from physics import Quaternion");
+    run_python_string("from physics import BBox");
+    run_python_string("l.coordinates=Point3D()");
+    run_python_string("l.coordinates=Point3D(0,0,0)");
+    run_python_string("l.coordinates=Vector3D()");
+    run_python_string("l.coordinates=Vector3D(0,0,0)");
+    fail_python_string("l.coordinates=()");
+    run_python_string("l.coordinates=(0,0,0)");
+    run_python_string("l.coordinates=(0.0,0,0)");
+    fail_python_string("l.coordinates=('0',0,0)");
+    fail_python_string("l.coordinates=[]");
+    run_python_string("l.coordinates=[0,0,0]");
+    run_python_string("l.coordinates=[0.0,0,0]");
+    fail_python_string("l.coordinates=['0',0,0]");
+    run_python_string("l.velocity=Vector3D()");
+    run_python_string("l.velocity=Vector3D(0,0,0)");
+    run_python_string("l.orientation=Quaternion()");
+    run_python_string("l.orientation=Quaternion(0,0,0,1)");
+    run_python_string("l.bbox=BBox()");
+    run_python_string("l.bbox=Vector3D(0,0,0)");
+    fail_python_string("l.parent='1'");
+    run_python_string("l.parent=server.Thing('1')");
+    fail_python_string("l.other=Vector3D(0,0,0)");
+    run_python_string("repr(l)");
+    run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("l.parent");
+
+#ifndef NDEBUG
+    run_python_string("import sabotage");
+    // Hit the assert checks.
+    run_python_string("t=server.Thing('1')");
+    run_python_string("sabotage.null(t)");
+    fail_python_string("l.parent=t");
+    fail_python_string("atlas.Location(t)");
+
+    run_python_string("m=server.Mind('1')");
+    run_python_string("sabotage.null(m)");
+    fail_python_string("atlas.Location(m)");
+
+    run_python_string("copy_methd=l.copy");
+    run_python_string("sabotage.null(l)");
+    fail_python_string("copy_methd()");
+    fail_python_string("l.parent");
+    fail_python_string("l.velocity=Vector3D()");
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

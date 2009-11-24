@@ -188,7 +188,6 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
 
 void Admin::GetOperation(const Operation & op, OpVector & res)
 {
-    assert(m_connection != 0);
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "Get has no args.", res, getId());
@@ -211,6 +210,9 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
     }
     Info info;
     if (objtype == "object" || objtype == "obj") {
+        if (m_connection == 0) {
+            return;
+        }
         long intId = integerId(id);
 
         const RouterMap & OOGDict = m_connection->m_server.getObjects();

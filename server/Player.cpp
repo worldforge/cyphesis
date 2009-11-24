@@ -85,17 +85,10 @@ int Player::characterError(const Operation & op,
         return true;
     }
     const std::string & name = ent->getName();
-#if defined(__GNUC__) && __GNUC__ < 3
-    if (!name.substr(0,5).compare("admin")) {
+    if (name.compare(0,5,"admin") == 0) {
         error(op, "Entity to be created cannot start with admin", res, getId());
         return true;
     }
-#else
-    if (!name.compare(0,5,"admin")) {
-        error(op, "Entity to be created cannot start with admin", res, getId());
-        return true;
-    }
-#endif
 
     // Parents must have been checked already before calling this method
     const std::string & type = ent->getParents().front(); 

@@ -19,35 +19,85 @@
 
 #include <Python.h>
 
+#include "python_testers.h"
+
 #include "rulesets/Python_API.h"
+#include "rulesets/Py_Mind.h"
 
 #include <cassert>
+
+static PyObject * null_wrapper(PyObject * self, PyMind * o)
+{
+    if (!PyMind_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+#ifndef NDEBUG
+    o->m_mind = NULL;
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef sabotage_methods[] = {
+    {"null", (PyCFunction)null_wrapper,                 METH_O},
+    {NULL,          NULL}                       /* Sentinel */
+};
+
+static void setup_test_functions()
+{
+    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
+    assert(sabotage != 0);
+}
 
 int main()
 {
     init_python_api();
 
-    assert(PyRun_SimpleString("from server import Mind") == 0);
-    assert(PyRun_SimpleString("Mind()") == -1);
-    assert(PyRun_SimpleString("Mind(1)") == -1);
-    assert(PyRun_SimpleString("Mind('s')") == -1);
-    assert(PyRun_SimpleString("m=Mind('1')") == 0);
-    assert(PyRun_SimpleString("print m.as_entity()") == 0);
-    assert(PyRun_SimpleString("print m.foo_operation()") == -1);
-    assert(PyRun_SimpleString("print m.id") == 0);
-    assert(PyRun_SimpleString("print m.type") == -1);
-    assert(PyRun_SimpleString("print m.map") == 0);
-    assert(PyRun_SimpleString("print m.location") == 0);
-    assert(PyRun_SimpleString("print m.time") == 0);
-    assert(PyRun_SimpleString("print m.contains") == 0);
-    assert(PyRun_SimpleString("print m.foo") == -1);
-    assert(PyRun_SimpleString("m.map=1") == -1);
-    assert(PyRun_SimpleString("m.foo=1") == 0);
-    assert(PyRun_SimpleString("m.foo=1.1") == 0);
-    assert(PyRun_SimpleString("m.foo='1'") == 0);
-    assert(PyRun_SimpleString("print m.foo") == 0);
-    assert(PyRun_SimpleString("m.bar=[1]") == 0);
-    assert(PyRun_SimpleString("m.baz={'foo': 1}") == 0);
+    setup_test_functions();
+
+    PyMind * mind = newPyMind();
+    assert(mind != 0);
+
+    run_python_string("from server import Mind");
+    fail_python_string("Mind()");
+    fail_python_string("Mind(1)");
+    fail_python_string("Mind('s')");
+    run_python_string("m=Mind('1')");
+    run_python_string("print m.as_entity()");
+    fail_python_string("print m.foo_operation()");
+    run_python_string("print m.id");
+    fail_python_string("print m.type");
+    run_python_string("print m.map");
+    run_python_string("print m.location");
+    run_python_string("print m.time");
+    run_python_string("print m.contains");
+    fail_python_string("print m.foo");
+    fail_python_string("m.map=1");
+    run_python_string("m.foo=1");
+    run_python_string("m.foo=1.1");
+    run_python_string("m.foo='1'");
+    run_python_string("print m.foo");
+    run_python_string("m.bar=[1]");
+    run_python_string("m.baz={'foo': 1}");
+    fail_python_string("print m.qux");
+    run_python_string("print m.baz");
+    run_python_string("m==m");
+    run_python_string("m2=Mind('2')");
+    fail_python_string("m2.mind=1");
+    run_python_string("m2.mind=m");
+    
+
+#ifndef NDEBUG
+    run_python_string("import sabotage");
+    // Hit the assert checks.
+    run_python_string("as_entity_methd=m.as_entity");
+    run_python_string("sabotage.null(m)");
+    fail_python_string("as_entity_methd()");
+    fail_python_string("m==m");
+    fail_python_string("print m.id");
+    fail_python_string("m.foo=1");
+#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

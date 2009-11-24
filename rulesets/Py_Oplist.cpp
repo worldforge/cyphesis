@@ -122,7 +122,7 @@ static Py_ssize_t Oplist_seq_length(PyOplist * self)
 #ifndef NDEBUG
     if (self->ops == NULL) {
         PyErr_SetString(PyExc_AssertionError,"Invalid Oplist in Oplist.seq_length");
-        return 0;
+        return -1;
     }
 #endif // NDEBUG
     return self->ops->size();
@@ -148,18 +148,20 @@ static PySequenceMethods Oplist_as_sequence = {
     NULL                             /* sq_ass_slice */
 };
 
-static inline void addToOplist(PyOperation * op, PyOplist * o)
+static inline int addToOplist(PyOperation * op, PyOplist * o)
 {
     if (op != NULL) {
        if (PyOperation_Check(op)) {
            o->ops->push_back(op->operation);
        } else if ((PyObject*)op != Py_None) {
            PyErr_SetString(PyExc_TypeError, "Argument must be an op");
-           return;
+           return -1;
        }
     }
+    return 0;
 }
 
+// FIXME Lots of silent failure here, and oddly unexpected results.
 static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
 {
     PyOperation *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
@@ -167,10 +169,18 @@ static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
         return -1;
     }
     self->ops = new OpVector();
-    addToOplist(op1, self);
-    addToOplist(op2, self);
-    addToOplist(op3, self);
-    addToOplist(op4, self);
+    if (addToOplist(op1, self) != 0) {
+        return -1;
+    }
+    if (addToOplist(op2, self) != 0) {
+        return -1;
+    }
+    if (addToOplist(op3, self) != 0) {
+        return -1;
+    }
+    if (addToOplist(op4, self) != 0) {
+        return -1;
+    }
     return 0;
 }
 

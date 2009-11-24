@@ -111,7 +111,7 @@ class Entity : public LocatedEntity {
     virtual const PropertyBase * getProperty(const std::string & name) const;
 
     PropertyBase * modProperty(const std::string & name);
-    void setProperty(const std::string & name, PropertyBase * prop);
+    PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
 
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>

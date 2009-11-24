@@ -447,7 +447,7 @@ static PyObject * distance_to(PyObject * self, PyObject * args)
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc == NULL) {
+    if (sloc->location == NULL || oloc->location == NULL) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
         return NULL;
     }
@@ -472,7 +472,7 @@ static PyObject * square_distance(PyObject * self, PyObject * args)
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc == NULL) {
+    if (sloc->location == NULL || oloc->location == NULL) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
         return NULL;
     }
@@ -493,7 +493,7 @@ static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc == NULL) {
+    if (sloc->location == NULL || oloc->location == NULL) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
         return NULL;
     }

@@ -99,7 +99,7 @@ int main()
         Entity wrld("1", 1);
         TestWorld tw(wrld);
 
-        assert(tw.getEntities().empty());
+        assert(tw.getEntities().size() == 1);
     }
 
     {
