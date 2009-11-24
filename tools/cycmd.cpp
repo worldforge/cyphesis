@@ -73,6 +73,7 @@ extern "C" {
 #include <algorithm>
 
 #include <cstdio>
+#include <sys/time.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
