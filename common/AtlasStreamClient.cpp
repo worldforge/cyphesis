@@ -75,6 +75,7 @@ int AtlasStreamClient::authenticateLocal()
     }
 
     // Done proving we are real.
+    return 0;
 }
 
 AtlasStreamClient::AtlasStreamClient() : m_encoder(0), m_codec(0), m_ios(0)
@@ -110,9 +111,9 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
         return -1;
     }
 
-    authenticateLocal();
-
     m_fd = m_ios->getSocket();
+
+    authenticateLocal();
 
     return negotiate();
 }
