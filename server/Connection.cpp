@@ -25,7 +25,6 @@
 #include "CommServer.h"
 #include "Player.h"
 #include "ExternalMind.h"
-#include "Persistence.h"
 #include "ExternalProperty.h"
 
 #include "rulesets/Character.h"
@@ -429,9 +428,6 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     if (player == 0) {
         clientError(op, "Account creation failed", res);
         return;
-    }
-    if (database_flag) {
-        Persistence::instance()->putAccount(*player);
     }
     Info info;
     Anonymous info_arg;
