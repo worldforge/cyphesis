@@ -33,6 +33,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <cstdio>
+
 #ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
 #endif // HAVE_SYS_UN_H
