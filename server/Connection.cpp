@@ -349,17 +349,6 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     // account, either from existing account ....
     Account * player = m_server.getAccountByName(username);
     // or if not, from the database
-    if (database_flag && player == 0) {
-        debug(std::cout << "No account called " << username
-                        << " in server. Checking in database."
-                        << std::endl << std::flush;);
-        player = Persistence::instance()->getAccount(username);
-        if (player != 0) {
-            Persistence::instance()->registerCharacters(*player,
-                                               m_server.m_world.getEntities());
-            m_server.addAccount(player);
-        }
-    }
     if (player == 0 || verifyCredentials(*player, arg) != 0) {
         clientError(op, "Login is invalid", res);
         return;
@@ -431,8 +420,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     const std::string & password = passwd_attr.String();
 
     if (username.empty() || password.empty() ||
-        (0 != m_server.getAccountByName(username)) ||
-        (database_flag && Persistence::instance()->findAccount(username))) {
+        (0 != m_server.getAccountByName(username))) {
         // Account exists, or creation data is duff
         clientError(op, "Account creation is invalid", res);
         return;

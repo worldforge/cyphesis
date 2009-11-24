@@ -21,6 +21,7 @@
 
 #include "Account.h"
 #include "Lobby.h"
+#include "Persistence.h"
 
 #include "common/BaseWorld.h"
 #include "common/compose.hpp"
@@ -121,14 +122,21 @@ Router * ServerRouting::getObject(const std::string & id) const
 /// username, or zero if the Account is not present. Does
 /// not check any external authentication sources, or the
 /// database.
-Account * ServerRouting::getAccountByName(const std::string & username) const
+Account * ServerRouting::getAccountByName(const std::string & username)
 {
+    Account * player = 0;
     AccountDict::const_iterator I = m_accounts.find(username);
-    if (I == m_accounts.end()) {
-        return 0;
-    } else {
-        return I->second;
+    if (I != m_accounts.end()) {
+        player = I->second;
+    } else if (database_flag) {
+        player = Persistence::instance()->getAccount(username);
+        if (player != 0) {
+            Persistence::instance()->registerCharacters(*player,
+                                               m_world.getEntities());
+            addAccount(player);
+        }
     }
+    return player;
 }
 
 void ServerRouting::addToMessage(MapType & omap) const

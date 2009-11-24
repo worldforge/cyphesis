@@ -86,7 +86,7 @@ class ServerRouting : public Router {
     void addAccount(Account * a);
     void delObject(Router * obj);
     Router * getObject(const std::string & id) const;
-    Account * getAccountByName(const std::string & username) const;
+    Account * getAccountByName(const std::string & username);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
