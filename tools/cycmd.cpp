@@ -33,6 +33,7 @@
 #include "config.h"
 #endif
 
+#include "common/AtlasStreamClient.h"
 #include "common/log.h"
 #include "common/OperationRouter.h"
 #include "common/globals.h"
@@ -311,17 +312,12 @@ class OperationMonitor : public AdminTask {
 
 /// \brief Class template for clients used to connect to and administrate
 /// a cyphesis server.
-class Interactive : public Atlas::Objects::ObjectsDecoder,
+class Interactive : public AtlasStreamClient,
                     virtual public sigc::trackable
 {
   private:
     bool error_flag, reply_flag, login_flag, avatar_flag, server_flag;
-    int cli_fd;
-    Atlas::Objects::ObjectsEncoder * encoder;
-    Atlas::Codec * codec;
-    basic_socket_stream * ios;
     std::string password;
-    std::string username;
     std::string accountType;
     std::string accountId;
     std::string agentId;
@@ -348,21 +344,13 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     void updatePrompt();
   public:
     Interactive() : error_flag(false), reply_flag(false), login_flag(false),
-                    avatar_flag(false), server_flag(false), encoder(0),
-                    codec(0), ios(0), serverName("cyphesis"), prompt("cyphesis> "),
+                    avatar_flag(false), server_flag(false),
+                    serverName("cyphesis"), prompt("cyphesis> "),
                     exit(false), currentTask(0)
                     { }
     ~Interactive() {
-        if (encoder != 0) {
-            delete encoder;
-        }
-        if (codec != 0) {
-            delete codec;
-        }
     }
 
-    int connect(const std::string & host);
-    int connectLocal(const std::string & host);
     int login();
     int setup();
     void exec(const std::string & cmd, const std::string & arg);
@@ -378,7 +366,7 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     }
 
     void setUsername(const std::string & uname) {
-        username = uname;
+        m_username = uname;
     }
 
     static void gotCommand(char *);
@@ -451,10 +439,8 @@ void Interactive::objectArrived(const Atlas::Objects::Root & obj)
         currentTask->operation(op, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-            encoder->streamObjectsMessage(*I);
+            send(*I);
         }
-
-        (*ios) << std::flush;
 
         if (currentTask->isComplete()) {
             delete currentTask;
@@ -743,7 +729,7 @@ int Interactive::runTask(AdminTask * task, const std::string & arg)
 
     OpVector::const_iterator Iend = res.end();
     for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        encoder->streamObjectsMessage(*I);
+        send(*I);
     }
     return 0;
 }
@@ -796,28 +782,28 @@ void Interactive::poll(bool rewrite_prompt)
 
     FD_ZERO(&infds);
 
-    FD_SET(cli_fd, &infds);
+    FD_SET(m_fd, &infds);
     FD_SET(STDIN_FILENO, &infds);
 
     tv.tv_sec = 0;
     tv.tv_usec = 500000;
 
     if (rewrite_prompt) {
-        retval = select(cli_fd+1, &infds, NULL, NULL, NULL);
+        retval = select(m_fd+1, &infds, NULL, NULL, NULL);
     } else {
-        retval = select(cli_fd+1, &infds, NULL, NULL, &tv);
+        retval = select(m_fd+1, &infds, NULL, NULL, &tv);
     }
 
     if (retval > 0) {
-        if (FD_ISSET(cli_fd, &infds)) {
-            if (ios->peek() == -1) {
+        if (FD_ISSET(m_fd, &infds)) {
+            if (m_ios->peek() == -1) {
                 std::cout << "Server disconnected" << std::endl << std::flush;
                 exit = true;
             } else {
                 if (rewrite_prompt) {
                     std::cout << std::endl;
                 }
-                codec->poll();
+                m_codec->poll();
                 if (rewrite_prompt) {
                     rl_forced_update_display();
                 }
@@ -834,76 +820,16 @@ void Interactive::getLogin()
     // This needs to be re-written to hide input, so the password can be
     // secret
     std::cout << "Username: " << std::flush;
-    std::cin >> username;
+    std::cin >> m_username;
     std::cout << "Password: " << std::flush;
     std::cin >> password;
-}
-
-int Interactive::connect(const std::string & host)
-{
-    std::cout << "Connecting... " << std::flush;
-    ios = new tcp_socket_stream(host, client_port_num);
-    if (!ios->is_open()) {
-        std::cout << "failed." << std::endl << std::flush;
-        return -1;
-    }
-    std::cout << "done." << std::endl << std::flush;
-    cli_fd = ios->getSocket();
-
-    return negotiate();
-}
-
-int Interactive::connectLocal(const std::string & filename)
-{
-    std::cout << "Connecting... " << std::flush;
-    ios = new unix_socket_stream(filename);
-    if (!ios->is_open()) {
-        std::cout << "failed." << std::endl << std::flush;
-        return -1;
-    }
-    std::cout << "done." << std::endl << std::flush;
-    cli_fd = ios->getSocket();
-
-    return negotiate();
-}
-
-int Interactive::negotiate()
-{
-    // Do client negotiation with the server
-    Atlas::Net::StreamConnect conn("cycmd", *ios);
-
-    std::cout << "Negotiating... " << std::flush;
-    while (conn.getState() == Atlas::Negotiate::IN_PROGRESS) {
-        // conn.poll() does all the negotiation
-        conn.poll();
-    }
-    std::cout << "done." << std::endl << std::flush;
-
-    // Check whether negotiation was successful
-    if (conn.getState() == Atlas::Negotiate::FAILED) {
-        std::cerr << "Failed to negotiate." << std::endl;
-        return -1;
-    }
-    // Negotiation was successful
-
-    // Get the codec that negotiation established
-    codec = conn.getCodec(*this);
-
-    // Create the encoder
-    encoder = new Atlas::Objects::ObjectsEncoder(*codec);
-
-    // Send whatever codec specific data marks the beginning of a stream
-    codec->streamBegin();
-
-    return 0;
-
 }
 
 void Interactive::updatePrompt()
 {
     std::string designation(">");
-    if (!username.empty()) {
-        prompt = username + "@";
+    if (!m_username.empty()) {
+        prompt = m_username + "@";
         if (accountType == "admin") {
             designation = "#";
         } else {
@@ -922,23 +848,14 @@ void Interactive::updatePrompt()
 
 int Interactive::login()
 {
-    Atlas::Objects::Entity::Account account;
-    Login l;
     error_flag = false;
     reply_flag = false;
     login_flag = true;
  
-    account->setAttr("username", username);
-    account->setAttr("password", password);
- 
-    l->setArgs1(account);
- 
-    encoder->streamObjectsMessage(l);
-
-    (*ios) << std::flush;
+    AtlasStreamClient::login(m_username, password);
  
     while (!reply_flag) {
-       codec->poll();
+       m_codec->poll();
     }
 
     login_flag = false;
@@ -954,13 +871,13 @@ int Interactive::setup()
 {
     Get get;
 
-    encoder->streamObjectsMessage(get);
-    (*ios) << std::flush;
+    send(get);
+
     server_flag = true;
 
     reply_flag = true;
     while (server_flag && !error_flag) {
-       codec->poll();
+       m_codec->poll();
     }
 
     server_flag = false;
@@ -978,7 +895,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
     if (cmd == "stat") {
         Get g;
-        encoder->streamObjectsMessage(g);
+        send(g);
     } else if (cmd == "install") {
         size_t space = arg.find(' ');
         if (space == std::string::npos || space >= (arg.size() - 1)) {
@@ -992,7 +909,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             ent->setObjtype("class");
             ent->setParents(std::list<std::string>(1, std::string(arg, space + 1)));
             c->setArgs1(ent);
-            encoder->streamObjectsMessage(c);
+            send(c);
         }
         reply_expected = false;
     } else if (cmd == "look") {
@@ -1003,7 +920,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             l->setArgs1(cmap);
         }
         l->setFrom(accountId);
-        encoder->streamObjectsMessage(l);
+        send(l);
     } else if (cmd == "logout") {
         Logout l;
         l->setFrom(accountId);
@@ -1013,14 +930,14 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             l->setArgs1(lmap);
             reply_expected = false;
         }
-        encoder->streamObjectsMessage(l);
+        send(l);
     } else if (cmd == "say") {
         Talk t;
         Anonymous ent;
         ent->setAttr("say", arg);
         t->setArgs1(ent);
         t->setFrom(accountId);
-        encoder->streamObjectsMessage(t);
+        send(t);
     } else if (cmd == "help" || cmd == "?") {
         reply_expected = false;
         help();
@@ -1039,7 +956,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         }
         g->setFrom(accountId);
 
-        encoder->streamObjectsMessage(g);
+        send(g);
     } else if (cmd == "reload") {
         if (arg.empty()) {
             reply_expected = false;
@@ -1053,7 +970,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             s->setArgs1(tmap);
             s->setFrom(accountId);
 
-            encoder->streamObjectsMessage(s);
+            send(s);
         }
     } else if (cmd == "get") {
         Get g;
@@ -1070,7 +987,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         }
         g->setFrom(accountId);
 
-        encoder->streamObjectsMessage(g);
+        send(g);
     } else if (cmd == "monitor") {
         AdminTask * task = new OperationMonitor;
         if (runTask(task, arg) == 0) {
@@ -1079,7 +996,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             m->setArgs1(Anonymous());
             m->setFrom(accountId);
 
-            encoder->streamObjectsMessage(m);
+            send(m);
         }
 
         reply_expected = false;
@@ -1091,7 +1008,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             m->setFrom(accountId);
 
-            encoder->streamObjectsMessage(m);
+            send(m);
 
             reply_expected = false;
 
@@ -1116,7 +1033,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         m->setArgs1(cmap);
         m->setFrom(accountId);
 
-        encoder->streamObjectsMessage(m);
+        send(m);
     } else if (cmd == "add_agent") {
         std::string agent_type("creator");
 
@@ -1135,7 +1052,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         avatar_flag = true;
 
-        encoder->streamObjectsMessage(c);
+        send(c);
     } else if (cmd == "delete") {
         if (agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
@@ -1152,7 +1069,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             del->setFrom(agentId);
             del->setTo(arg);
 
-            encoder->streamObjectsMessage(del);
+            send(del);
 
             reply_expected = false;
         }
@@ -1171,7 +1088,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             l->setArgs1(lmap);
             l->setFrom(agentId);
 
-            encoder->streamObjectsMessage(l);
+            send(l);
 
             reply_expected = false;
         }
@@ -1190,7 +1107,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             l->setArgs1(lmap);
             l->setFrom(agentId);
 
-            encoder->streamObjectsMessage(l);
+            send(l);
 
             reply_expected = false;
         }
@@ -1221,7 +1138,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             c->setArgs1(thing);
             c->setFrom(agentId);
 
-            encoder->streamObjectsMessage(c);
+            send(c);
 
             reply_expected = false;
         }
@@ -1239,7 +1156,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             }
             l->setFrom(agentId);
 
-            encoder->streamObjectsMessage(l);
+            send(l);
             reply_expected = true;
         }
     } else if (cmd == "cancel") {
@@ -1250,8 +1167,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         reply_expected = false;
         std::cout << cmd << ": Command not known" << std::endl << std::flush;
     }
-
-    (*ios) << std::flush;
 
     if (!reply_expected) { return; }
     // Wait for reply
