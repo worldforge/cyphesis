@@ -362,8 +362,8 @@ class Interactive : public Atlas::Objects::ObjectsDecoder,
     }
 
     void send(const Operation &);
-    int connect_tcp(const std::string & host);
-    int connect_unix(const std::string & host);
+    int connect(const std::string & host);
+    int connectLocal(const std::string & host);
     int login();
     int setup();
     void exec(const std::string & cmd, const std::string & arg);
@@ -840,7 +840,7 @@ void Interactive::getLogin()
     std::cin >> password;
 }
 
-int Interactive::connect_tcp(const std::string & host)
+int Interactive::connect(const std::string & host)
 {
     std::cout << "Connecting... " << std::flush;
     ios = new tcp_socket_stream(host, client_port_num);
@@ -854,7 +854,7 @@ int Interactive::connect_tcp(const std::string & host)
     return negotiate();
 }
 
-int Interactive::connect_unix(const std::string & filename)
+int Interactive::connectLocal(const std::string & filename)
 {
     std::cout << "Connecting... " << std::flush;
     ios = new unix_socket_stream(filename);
@@ -1320,7 +1320,7 @@ int main(int argc, char ** argv)
         }
 
         std::cout << "Attempting local connection" << std::endl << std::flush;
-        if (bridge.connect_unix(localSocket) == 0) {
+        if (bridge.connectLocal(localSocket) == 0) {
             bridge.setUsername("admin");
 
             bridge.setup();
@@ -1349,7 +1349,7 @@ int main(int argc, char ** argv)
     
     std::cerr << "Attempting tcp connection" << std::endl << std::flush;
 
-    if (bridge.connect_tcp(server) != 0) {
+    if (bridge.connect(server) != 0) {
         return 1;
     }
     bridge.setup();
