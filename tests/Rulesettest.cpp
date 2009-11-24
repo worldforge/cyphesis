@@ -328,6 +328,7 @@ int main(int argc, char ** argv)
             Anonymous new_custom_inherited_type_description;
             new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
+            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
 
             ret = test_ruleset.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
 
@@ -396,6 +397,7 @@ int main(int argc, char ** argv)
             Anonymous new_custom_type_description;
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", MapType());
+            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
             ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
@@ -504,6 +506,7 @@ int main(int argc, char ** argv)
 
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", attrs);
+            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
             ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
