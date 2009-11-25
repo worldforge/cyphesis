@@ -79,6 +79,18 @@ int AtlasStreamClient::authenticateLocal()
     return 0;
 }
 
+int AtlasStreamClient::linger()
+{
+    struct linger {
+        int   l_onoff;
+        int   l_linger;
+    } listenLinger = { 1, 10 };
+    ::setsockopt(m_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
+                                                   sizeof(listenLinger));
+    // Ensure the address can be reused once we are done with it.
+    return 0;
+}
+
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
     switch (item.getType()) {
@@ -144,6 +156,8 @@ int AtlasStreamClient::connect(const std::string & host, int port)
     }
     m_fd = m_ios->getSocket();
 
+    linger();
+
     return negotiate();
 
 }
@@ -158,6 +172,8 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
     m_fd = m_ios->getSocket();
 
     authenticateLocal();
+
+    linger();
 
     return negotiate();
 }
