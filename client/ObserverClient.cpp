@@ -66,7 +66,7 @@ int ObserverClient::setup(const std::string & account,
     }
 
     m_player = createPlayer(account, password);
-    if (m_player.empty()) {
+    if (!m_player.isValid()) {
         return -1;
     }
     m_character = createCharacter("creator");
