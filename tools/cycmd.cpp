@@ -328,9 +328,7 @@ class Interactive : public AtlasStreamClient,
     bool exit;
     AdminTask * currentTask;
 
-    void output(const Element & item, int depth = 0);
   protected:
-
     void objectArrived(const Atlas::Objects::Root &);
 
     void appearanceArrived(const Operation &);
@@ -371,49 +369,6 @@ class Interactive : public AtlasStreamClient,
 
     static void gotCommand(char *);
 };
-
-void Interactive::output(const Element & item, int depth)
-{
-    switch (item.getType()) {
-        case Element::TYPE_INT:
-            std::cout << item.Int();
-            break;
-        case Element::TYPE_FLOAT:
-            std::cout << item.Float();
-            break;
-        case Element::TYPE_STRING:
-            std::cout << "\"" << item.String() << "\"";
-            break;
-        case Element::TYPE_LIST:
-            {
-                std::cout << "[ ";
-                ListType::const_iterator I = item.List().begin();
-                ListType::const_iterator Iend = item.List().end();
-                for(; I != Iend; ++I) {
-                    output(*I, depth);
-                    std::cout << " ";
-                }
-                std::cout << "]";
-            }
-            break;
-        case Element::TYPE_MAP:
-            {
-                std::cout << "{" << std::endl << std::flush;
-                MapType::const_iterator I = item.Map().begin();
-                MapType::const_iterator Iend = item.Map().end();
-                for(; I != Iend; ++I) {
-                    std::cout << std::string((depth + 1) * 4, ' ') << I->first << ": ";
-                    output(I->second, depth + 1);
-                    std::cout << std::endl;
-                }
-                std::cout << std::string(depth * 4, ' ') << "}";
-            }
-            break;
-        default:
-            std::cout << "(\?\?\?)";
-            break;
-    }
-}
 
 void Interactive::objectArrived(const Atlas::Objects::Root & obj)
 {

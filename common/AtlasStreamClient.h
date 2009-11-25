@@ -41,6 +41,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     // void objectArrived(const Atlas::Objects::Root &);
     int authenticateLocal();
     int negotiate();
+    void output(const Atlas::Message::Element & item, int depth = 0) const;
 
   public:
     AtlasStreamClient();

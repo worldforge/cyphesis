@@ -29,6 +29,9 @@
 #include <skstream/skstream.h>
 #include <skstream/skstream_unix.h>
 
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Login;
@@ -74,6 +77,49 @@ int AtlasStreamClient::authenticateLocal()
 
     // Done proving we are real.
     return 0;
+}
+
+void AtlasStreamClient::output(const Element & item, int depth) const
+{
+    switch (item.getType()) {
+        case Element::TYPE_INT:
+            std::cout << item.Int();
+            break;
+        case Element::TYPE_FLOAT:
+            std::cout << item.Float();
+            break;
+        case Element::TYPE_STRING:
+            std::cout << "\"" << item.String() << "\"";
+            break;
+        case Element::TYPE_LIST:
+            {
+                std::cout << "[ ";
+                ListType::const_iterator I = item.List().begin();
+                ListType::const_iterator Iend = item.List().end();
+                for(; I != Iend; ++I) {
+                    output(*I, depth);
+                    std::cout << " ";
+                }
+                std::cout << "]";
+            }
+            break;
+        case Element::TYPE_MAP:
+            {
+                std::cout << "{" << std::endl << std::flush;
+                MapType::const_iterator I = item.Map().begin();
+                MapType::const_iterator Iend = item.Map().end();
+                for(; I != Iend; ++I) {
+                    std::cout << std::string((depth + 1) * 4, ' ') << I->first << ": ";
+                    output(I->second, depth + 1);
+                    std::cout << std::endl;
+                }
+                std::cout << std::string(depth * 4, ' ') << "}";
+            }
+            break;
+        default:
+            std::cout << "(\?\?\?)";
+            break;
+    }
 }
 
 AtlasStreamClient::AtlasStreamClient() : m_encoder(0), m_codec(0), m_ios(0)
