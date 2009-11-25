@@ -58,9 +58,7 @@ class AdminClient : public AtlasStreamClient
     /// \brief List of names of rules already uploaded
     std::set<std::string> m_uploadedRules;
 
-    void output(const Atlas::Message::Element & item, bool recurse = true);
   protected:
-
     void objectArrived(const Atlas::Objects::Root &);
 
     void infoArrived(const Atlas::Objects::Operation::RootOperation &);

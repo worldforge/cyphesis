@@ -52,56 +52,6 @@ using Atlas::Objects::Operation::Error;
 
 static const bool debug_flag = false;
 
-/// \brief Output formatted representation of Atlas message data.
-///
-/// @param item Atlas value to be output
-/// @param recurse flag indicating whether to recurse into container messages
-void AdminClient::output(const Element & item, bool recurse)
-{
-    std::cout << " ";
-    switch (item.getType()) {
-        case Element::TYPE_INT:
-            std::cout << item.Int();
-            break;
-        case Element::TYPE_FLOAT:
-            std::cout << item.Float();
-            break;
-        case Element::TYPE_STRING:
-            std::cout << item.String();
-            break;
-        case Element::TYPE_LIST:
-            if (recurse) {
-                std::cout << "[ ";
-                ListType::const_iterator I = item.List().begin();
-                ListType::const_iterator Iend = item.List().end();
-                for(; I != Iend; ++I) {
-                    output(*I, true);
-                }
-                std::cout << " ]";
-            } else {
-                std::cout << "(list)";
-            }
-            break;
-        case Element::TYPE_MAP:
-            if (recurse) {
-                std::cout << "{ ";
-                MapType::const_iterator I = item.Map().begin();
-                MapType::const_iterator Iend = item.Map().end();
-                for(; I != Iend; ++I) {
-                    std::cout << I->first << ": ";
-                    output(I->second, true);
-                }
-                std::cout << " }";
-            } else {
-                std::cout << "(map)";
-            }
-            break;
-        default:
-            std::cout << "(\?\?\?)";
-            break;
-    }
-}
-
 /// \brief Function call from the base class when an object arrives from the
 /// server
 ///
