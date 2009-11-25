@@ -195,7 +195,7 @@ int ClientConnection::connectLocal(const std::string & sockname)
 
     // Done proving we are real.
 
-    m_ios = new udp_socket_stream();
+    m_ios = new unix_socket_stream();
     m_ios->setSocket(fd);
     if (!m_ios->is_open()) {
         std::cerr << "ERROR: For some reason " << sockname << " not open."
