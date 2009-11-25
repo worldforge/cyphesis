@@ -20,7 +20,8 @@
 #ifndef TOOLS_ADMIN_CLIENT_H
 #define TOOLS_ADMIN_CLIENT_H
 
-#include <Atlas/Objects/Decoder.h>
+#include "common/AtlasStreamClient.h"
+
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <skstream/skstream_unix.h>
@@ -38,23 +39,13 @@ namespace Atlas {
 typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>, Atlas::Message::MapType> > RuleWaitList;
 
 /// \brief Client class to encapsulate functionality of an administrative client
-class AdminClient : public Atlas::Objects::ObjectsDecoder
+class AdminClient : public AtlasStreamClient
 {
   private:
     /// \brief Flags used to track replies from the server
     bool error_flag, reply_flag, login_flag;
-    /// \brief File descriptor used to communicate with the server
-    int cli_fd;
-    /// \brief Atlas encoder used to send to the server
-    Atlas::Objects::ObjectsEncoder * encoder;
-    /// \brief Atlas codec used to communicate with the server
-    Atlas::Codec * codec;
-    /// \brief iostream used to communicate with the server
-    basic_socket_stream * ios;
     /// \brief Password used to log into the server
     std::string password;
-    /// \brief Username used to log into the server
-    std::string username;
     /// \brief Account identifier returned after successful login
     std::string accountId;
     /// \brief Stored error message from the last received Error operation
@@ -75,17 +66,12 @@ class AdminClient : public Atlas::Objects::ObjectsDecoder
     void infoArrived(const Atlas::Objects::Operation::RootOperation &);
     void errorArrived(const Atlas::Objects::Operation::RootOperation &);
 
-    int negotiate();
-
     void waitForInfo();
     int checkRule(const std::string & id);
   public:
     AdminClient();
     ~AdminClient();
 
-    void send(const Atlas::Objects::Operation::RootOperation &);
-    int connect(const std::string & host);
-    int connect_unix(const std::string & host);
     int login();
     void loop();
     void poll();
@@ -100,7 +86,7 @@ class AdminClient : public Atlas::Objects::ObjectsDecoder
 
     /// \brief Set the username used to log into the server
     void setUsername(const std::string & uname) {
-        username = uname;
+        m_username = uname;
     }
 
     void report();

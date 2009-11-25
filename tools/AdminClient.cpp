@@ -175,22 +175,12 @@ void AdminClient::errorArrived(const RootOperation & op)
 
 /// \brief AdminClient constructor
 AdminClient::AdminClient() : error_flag(false), reply_flag(false),
-                             login_flag(false), encoder(0), codec(0),
-                             ios(0), exit(false)
+                             login_flag(false), exit(false)
 {
 }
 
 AdminClient::~AdminClient()
 {
-    if (encoder != 0) {
-        delete encoder;
-    }
-    if (codec != 0) {
-        delete codec;
-    }
-    if (ios != 0) {
-        delete ios;
-    }
 }
 
 /// \brief Main client application loop
@@ -211,23 +201,23 @@ void AdminClient::poll()
 
     FD_ZERO(&infds);
 
-    FD_SET(cli_fd, &infds);
+    FD_SET(m_fd, &infds);
 
     tv.tv_sec = 0;
     tv.tv_usec = 100000;
 
-    int retval = select(cli_fd+1, &infds, NULL, NULL, &tv);
+    int retval = select(m_fd+1, &infds, NULL, NULL, &tv);
 
     if (retval < 1) {
         return;
     }
 
-    if (FD_ISSET(cli_fd, &infds)) {
-        if (ios->peek() == -1) {
+    if (FD_ISSET(m_fd, &infds)) {
+        if (m_ios->peek() == -1) {
             std::cerr << "Server disconnected" << std::endl << std::flush;
             exit = true;
         } else {
-            codec->poll();
+            m_codec->poll();
         }
     }
 }
@@ -238,7 +228,7 @@ void AdminClient::getLogin()
     // This needs to be re-written to hide input, so the password can be
     // secret
     std::cout << "Username: " << std::flush;
-    std::cin >> username;
+    std::cin >> m_username;
     std::cout << "Password: " << std::flush;
     std::cin >> password;
 }
@@ -262,9 +252,7 @@ int AdminClient::checkRule(const std::string & id)
 
     g->setFrom(accountId);
 
-    encoder->streamObjectsMessage(g);
-
-    (*ios) << std::flush;
+    send(g);
 
     waitForInfo();
 
@@ -323,9 +311,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
         s->setFrom(accountId);
 
-        encoder->streamObjectsMessage(s);
-
-        (*ios) << std::flush;
+        send(s);
 
         waitForInfo();
 
@@ -409,9 +395,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     c->setFrom(accountId);
 
-    encoder->streamObjectsMessage(c);
-
-    (*ios) << std::flush;
+    send(c);
 
     waitForInfo();
 
@@ -445,68 +429,6 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     return count;
 }
 
-/// \brief Connect to a remote server using a network socket
-///
-/// @param host Hostname where the server is running.
-int AdminClient::connect(const std::string & host)
-{
-    tcp_socket_stream * stream = new tcp_socket_stream;
-    stream->open(host, client_port_num);
-    if (!stream->is_open()) {
-        return -1;
-    }
-    cli_fd = stream->getSocket();
-
-    ios = stream;
-    return negotiate();
-}
-
-/// \brief Connect to a local server using a unix socket
-///
-/// @param filename Filename of unix socket where the server is running.
-int AdminClient::connect_unix(const std::string & filename)
-{
-    unix_socket_stream * stream = new unix_socket_stream;
-    stream->open(filename);
-    if (!stream->is_open()) {
-        return -1;
-    }
-    cli_fd = stream->getSocket();
-
-    ios = stream;
-    return negotiate();
-}
-
-/// \brief Setup Atlas negotiation on a new server connection.
-int AdminClient::negotiate()
-{
-    // Do client negotiation with the server
-    Atlas::Net::StreamConnect conn("cycmd", *ios);
-
-    while (conn.getState() == Atlas::Negotiate::IN_PROGRESS) {
-        // conn.poll() does all the negotiation
-        conn.poll();
-    }
-
-    // Check whether negotiation was successful
-    if (conn.getState() == Atlas::Negotiate::FAILED) {
-        std::cerr << "Failed to negotiate." << std::endl;
-        return -1;
-    }
-    // Negotiation was successful
-
-    // Get the codec that negotiation established
-    codec = conn.getCodec(*this);
-
-    // Create the encoder
-    encoder = new Atlas::Objects::ObjectsEncoder(*codec);
-
-    // Send whatever codec specific data marks the beginning of a stream
-    codec->streamBegin();
-    return 0;
-
-}
-
 /// \brief Keep polling the server connection until a response arrives.
 ///
 /// An Info operation is typically expected but this function will also
@@ -523,20 +445,11 @@ void AdminClient::waitForInfo()
 /// This function uses credentials that have been set earlier.
 int AdminClient::login()
 {
-    Account account;
-    Login l;
     error_flag = false;
     reply_flag = false;
     login_flag = true;
  
-    account->setAttr("username", username);
-    account->setAttr("password", password);
- 
-    l->setArgs1(account);
- 
-    encoder->streamObjectsMessage(l);
-
-    (*ios) << std::flush;
+    AtlasStreamClient::login(m_username, password);
  
     waitForInfo();
 

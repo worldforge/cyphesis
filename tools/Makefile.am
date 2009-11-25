@@ -111,6 +111,7 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/log.o \
+                   $(top_builddir)/common/AtlasStreamClient.o \
                    $(NETWORKTOOL_LIBS) \
                    $(TOOL_LIBS)
 

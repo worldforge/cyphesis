@@ -174,7 +174,7 @@ int main(int argc, char ** argv)
             localSocket = client_socket_name;
         }
 
-        if (bridge.connect_unix(localSocket) != 0) {
+        if (bridge.connectLocal(localSocket) != 0) {
             std::cerr << "Failed to connect to local server"
                       << std::endl << std::flush;
             return 1;
