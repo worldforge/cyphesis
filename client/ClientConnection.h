@@ -46,13 +46,13 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
     /// \brief Flag to indicate that an error has been received from the server
     bool error_flag;
     /// \brief File descriptor used to communicate with the server
-    int client_fd;
+    int m_fd;
     /// \brief iostream used to communicate with the server
-    tcp_socket_stream ios;
+    basic_socket_stream * m_ios;
     /// \brief Atlas codec used to communicate with the server
-    Atlas::Codec * codec;
+    Atlas::Codec * m_codec;
     /// \brief Atlas encoder used to serialise messages for the server
-    Atlas::Objects::ObjectsEncoder * encoder;
+    Atlas::Objects::ObjectsEncoder * m_encoder;
     /// \brief Store for reply data from the server
     Atlas::Objects::Root reply;
     /// \brief Counter used to track serial numbers sent to the server
@@ -85,17 +85,17 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
 
     /// \brief Check the iostream for waiting data
     int peek() {
-        return ios.peek();
+        return m_ios->peek();
     }
 
     /// \brief Check the iostream to see if it is disconnected
     int eof() {
-        return ios.eof();
+        return m_ios->eof();
     }
 
     /// \brief Accessor to the server file descriptor
     int get_fd() {
-        return client_fd;
+        return m_fd;
     }
 
     /// \brief Read only accessor for Info reply data from the server

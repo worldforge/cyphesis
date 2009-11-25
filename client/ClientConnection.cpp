@@ -33,6 +33,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <skstream/skstream_unix.h>
+
 #include <cstdio>
 
 #ifdef HAVE_SYS_UN_H
@@ -46,14 +48,14 @@ using Atlas::Objects::Operation::RootOperation;
 static bool debug_flag = false;
 
 ClientConnection::ClientConnection() :
-    client_fd(-1), encoder(NULL), serialNo(512)
+    m_fd(-1), m_ios(0), m_codec(0), m_encoder(NULL), serialNo(512)
 {
 }
 
 ClientConnection::~ClientConnection()
 {
-    if (encoder != NULL) {
-        delete encoder;
+    if (m_encoder != NULL) {
+        delete m_encoder;
     }
 }
 
@@ -129,8 +131,8 @@ void ClientConnection::infoArrived(const RootOperation & op)
 }
 
 int ClientConnection::read() {
-    if (ios.is_open()) {
-        codec->poll();
+    if (m_ios != 0 && m_ios->is_open()) {
+        m_codec->poll();
         return 0;
     } else {
         return -1;
@@ -193,20 +195,21 @@ int ClientConnection::connectLocal(const std::string & sockname)
 
     // Done proving we are real.
 
-    ios.setSocket(fd);
-    if (!ios.is_open()) {
+    m_ios = new udp_socket_stream();
+    m_ios->setSocket(fd);
+    if (!m_ios->is_open()) {
         std::cerr << "ERROR: For some reason " << sockname << " not open."
                   << std::endl << std::flush;
         return -1;
     }
 
-    client_fd = ios.getSocket();
+    m_fd = m_ios->getSocket();
 
     linger();
     int ret = negotiate();
 
     if (ret == -1) {
-        ios.close();
+        m_ios->close();
     }
     return ret;
 #else // HAVE_SYS_UN_H
@@ -218,14 +221,16 @@ int ClientConnection::connect(const std::string & server, int port)
 {
     debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
 
-    ios.open(server, port);
-    if (!ios.is_open()) {
+    tcp_socket_stream * tss = new tcp_socket_stream();
+    tss->open(server, port);
+    if (!tss->is_open()) {
         debug(std::cerr << "ERROR: Could not connect to " << server << "."
                         << std::endl << std::flush;);
         return -1;
     }
 
-    client_fd = ios.getSocket();
+    m_fd = tss->getSocket();
+    m_ios = tss;
 
     linger();
     return negotiate();
@@ -237,7 +242,7 @@ int ClientConnection::linger()
         int   l_onoff;
         int   l_linger;
     } listenLinger = { 1, 10 };
-    ::setsockopt(client_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
+    ::setsockopt(m_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
                                                    sizeof(listenLinger));
     // Ensure the address can be reused once we are done with it.
     return 0;
@@ -245,7 +250,7 @@ int ClientConnection::linger()
 
 int ClientConnection::negotiate()
 {
-    Atlas::Net::StreamConnect conn("cyphesis_aiclient", ios);
+    Atlas::Net::StreamConnect conn("cyphesis_aiclient", *m_ios);
 
     debug(std::cout << "Negotiating... " << std::flush;);
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
@@ -258,11 +263,11 @@ int ClientConnection::negotiate()
         return -1;
     }
 
-    codec = conn.getCodec(*this);
+    m_codec = conn.getCodec(*this);
 
-    encoder = new Atlas::Objects::ObjectsEncoder(*codec);
+    m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
 
-    codec->streamBegin();
+    m_codec->streamBegin();
 
     return 0;
 }
@@ -317,8 +322,8 @@ void ClientConnection::send(const RootOperation & op)
           std::cout << std::endl << std::flush;); */
 
     op->setSerialno(++serialNo);
-    encoder->streamObjectsMessage(op);
-    ios << std::flush;
+    m_encoder->streamObjectsMessage(op);
+    (*m_ios) << std::flush;
 }
 
 void ClientConnection::poll(int timeOut)
@@ -328,24 +333,24 @@ void ClientConnection::poll(int timeOut)
 
     FD_ZERO(&infds);
 
-    FD_SET(client_fd, &infds);
+    FD_SET(m_fd, &infds);
 
     tv.tv_sec = timeOut;
     tv.tv_usec = 0;
 
-    int retval = select(client_fd+1, &infds, NULL, NULL, &tv);
+    int retval = select(m_fd+1, &infds, NULL, NULL, &tv);
 
     if (retval < 1) {
         return;
     }
 
-    if (FD_ISSET(client_fd, &infds)) {
-        if (ios.peek() == -1) {
+    if (FD_ISSET(m_fd, &infds)) {
+        if (m_ios->peek() == -1) {
             std::cerr << "Server disconnected" << std::endl << std::flush;
             error_flag = true;
             reply_flag = true;
         } else {
-            codec->poll();
+            m_codec->poll();
         }
     }
 }
