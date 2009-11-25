@@ -33,7 +33,7 @@ class BaseClient {
     /// \brief Client object that manages the creator avatar
     CreatorClient * m_character;
     /// \brief Store for details of the account after login
-    Atlas::Message::MapType m_player;
+    Atlas::Objects::Root m_player;
     /// \brief Name used for the username of the account and the name of avatars
     std::string m_playerName;
     /// \brief Identifier of the Account on the server after login
@@ -43,8 +43,8 @@ class BaseClient {
     BaseClient();
     virtual ~BaseClient();
 
-    Atlas::Message::MapType createPlayer(const std::string & name,
-                                         const std::string & pword);
+    Atlas::Objects::Root createPlayer(const std::string & name,
+                                                    const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void logout();
     void handleNet();

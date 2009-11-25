@@ -54,8 +54,8 @@ BaseClient::~BaseClient()
 ///
 /// @param name User name of the new account
 /// @param password Password of the new account
-MapType BaseClient::createPlayer(const std::string & name,
-                                 const std::string & password)
+Root BaseClient::createPlayer(const std::string & name,
+                              const std::string & password)
 {
     m_playerName = name;
 
@@ -78,7 +78,7 @@ MapType BaseClient::createPlayer(const std::string & name,
         if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;
-            return MapType();
+            return Root(0);
         }
     }
 
@@ -93,7 +93,7 @@ MapType BaseClient::createPlayer(const std::string & name,
     //if (ent.find("characters") != ent.end()) {
     //}
 
-    return ent->asMessage();
+    return ent;
 }
 
 /// \brief Create a new Character or avatar on the server
