@@ -95,8 +95,10 @@ int CommUnixListener::accept()
     // Start getting data from the client about who it really is
 
     int flagon = 1;
-    if (::setsockopt(asockfd, SOL_SOCKET, SO_PASSCRED, &flagon, sizeof(int)) < 0) {
-        log(WARNING, "Credentials don't work");
+    if (::setsockopt(asockfd, SOL_SOCKET, SO_PASSCRED,
+                     &flagon, sizeof(int)) < 0) {
+        log(ERROR, "Unable to enable unix credentials.");
+        logSysError(ERROR);
     } else {
 
         char data_buf[1], control_buf[1024];
@@ -114,7 +116,6 @@ int CommUnixListener::accept()
         auth_message.msg_controllen  = sizeof(control_buf);
         auth_message.msg_flags       = 0;
 
-        std::cout << "RECV:" << std::endl << std::flush;
         if (recvmsg(asockfd, &auth_message, 0) == -1) {
             log(WARNING, "Credentials recieve failed");
         }
@@ -131,11 +132,8 @@ int CommUnixListener::accept()
             }
         }
 
-        if (creds != 0) {
-            log(NOTICE, "Gottem");
-            std::cout << "U: " << creds->uid << std::endl << std::flush;
-        } else {
-            log(ERROR, "Fail");
+        if (creds == 0) {
+            log(ERROR, "Unix client connected but did not give credentials.");
         }
     }
 
