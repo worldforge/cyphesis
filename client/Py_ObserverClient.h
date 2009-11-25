@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000,2001 Alistair Riddoch
+// Copyright (C) 2009 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,12 +17,26 @@
 
 // $Id$
 
-#ifndef RULESETS_PYTHON_API_H
-#define RULESETS_PYTHON_API_H
+#ifndef CLIENT_PY_OBSERVER_CLIENT_H
+#define CLIENT_PY_OBSERVER_CLIENT_H
 
-void init_python_api();
-void shutdown_python_api();
-void extend_client_python_api();
-void python_prompt();
+#include <Python.h>
 
-#endif // RULESETS_PYTHON_API_H
+#include <string>
+
+class ObserverClient;
+
+extern PyTypeObject PyObserverClient_Type;
+
+/// \brief Wrapper for ObserverClient in Python
+typedef struct {
+    PyObject_HEAD
+    /// \brief CreateClient object handled by this wrapper
+    ObserverClient    * m_client;
+} PyObserverClient;
+
+#define PyObserverClient_Check(_o) ((_o)->ob_type == &PyObserverClient_Type)
+
+PyObserverClient * newPyObserverClient();
+
+#endif // CLIENT_PY_OBSERVER_CLIENT_H

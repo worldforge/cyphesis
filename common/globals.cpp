@@ -84,6 +84,7 @@ static const usage_data usage[] = {
     { "", "help", "", "", "Display usage information and exit", S|C|M|D },
     { "", "version", "", "", "Display the version information and exit", S|C|M|D },
     { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
+    { "", "interactive", "", "", "Run in interactive mode, giving a Python prompt", C },
     { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
     { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
     { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
@@ -439,6 +440,7 @@ int loadConfig(int argc, char ** argv, int usage)
     global_conf->setParameterLookup('?', "help");
 
     global_conf->setParameterLookup('v', "version");
+    global_conf->setParameterLookup('i', "interactive");
 
     // Check the commmand line config doesn't contain any unknown or
     // inappropriate options.

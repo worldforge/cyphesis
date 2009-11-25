@@ -89,25 +89,31 @@ int main(int argc, char ** argv)
         return 1;
     }
 
+    bool interactive = global_conf->findItem("", "interactive");
+
     init_python_api();
     extend_client_python_api();
 
-    try {
-        new ClientPropertyManager();
-        ObserverClient & observer = *new ObserverClient();
-        observer.setServer(server);
-        if (observer.setup(account, password) != 0) {
-            std::cerr << "ERROR: Connection failed."
-                      << std::endl << std::flush;
-            return 1;
+    if (interactive) {
+        python_prompt();
+    } else {
+        try {
+            new ClientPropertyManager();
+            ObserverClient & observer = *new ObserverClient();
+            observer.setServer(server);
+            if (observer.setup(account, password) != 0) {
+                std::cerr << "ERROR: Connection failed."
+                          << std::endl << std::flush;
+                return 1;
+            }
+            observer.load(package, function);
+            //observer.run();
+            observer.logout();
+            delete &observer;
         }
-        observer.load(package, function);
-        //observer.run();
-        observer.logout();
-        delete &observer;
-    }
-    catch (...) {
-        std::cerr << "EMERGENCY: cyclient: Exception caught in main; exiting" << std::endl << std::flush;
+        catch (...) {
+            std::cerr << "EMERGENCY: cyclient: Exception caught in main; exiting" << std::endl << std::flush;
+        }
     }
 
     shutdown_python_api();

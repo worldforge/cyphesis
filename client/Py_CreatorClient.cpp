@@ -19,6 +19,8 @@
 
 #include "Py_CreatorClient.h"
 
+#include "Py_ObserverClient.h"
+
 #include "CreatorClient.h"
 
 #include "rulesets/Python_Script_Utils.h"
@@ -429,5 +431,20 @@ void extend_client_python_api()
         log(CRITICAL, "Python init failed to ready CreatorClient wrapper type");
         return;
     }
-    PyModule_AddObject(server, "CreatorClient", (PyObject *)&PyMap_Type);
+    PyModule_AddObject(server, "CreatorClient", (PyObject *)&PyCreatorClient_Type);
+
+    PyObserverClient_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyObserverClient_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready ObserverClient wrapper type");
+        return;
+    }
+    PyModule_AddObject(server, "ObserverClient", (PyObject *)&PyObserverClient_Type);
 }
+
+void python_prompt()
+{
+    char * argv[1] = { "python" };
+
+    Py_Main(1, &argv[0]);
+}
+

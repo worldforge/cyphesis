@@ -37,6 +37,7 @@ cyclient_SOURCES = CharacterClient.cpp CharacterClient.h \
                    BaseClient.cpp BaseClient.h \
                    ObserverClient.cpp ObserverClient.h \
                    ClientConnection.cpp ClientConnection.h \
+                   Py_ObserverClient.cpp Py_ObserverClient.h \
                    Py_CreatorClient.cpp Py_CreatorClient.h \
                    ClientPropertyManager.cpp ClientPropertyManager.h \
                    client.cpp
