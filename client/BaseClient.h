@@ -43,8 +43,12 @@ class BaseClient {
     BaseClient();
     virtual ~BaseClient();
 
+    CreatorClient * character() {
+        return m_character;
+    }
+
     Atlas::Objects::Root createPlayer(const std::string & name,
-                                                    const std::string & pword);
+                                      const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void logout();
     void handleNet();
