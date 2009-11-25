@@ -18,6 +18,7 @@
 // $Id$
 
 #include "Py_ObserverClient.h"
+#include "Py_CreatorClient.h"
 
 #include "ObserverClient.h"
 
@@ -71,6 +72,15 @@ static PyObject * ObserverClient_getattr(PyObserverClient *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    if (strcmp(name, "character") == 0) {
+        if (self->m_client->character() == 0) {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+        PyCreatorClient * pcc = newPyCreatorClient();
+        pcc->m_mind = self->m_client->character();
+        return (PyObject*)pcc;
+    }
     return Py_FindMethod(ObserverClient_methods, (PyObject *)self, name);
 }
 
