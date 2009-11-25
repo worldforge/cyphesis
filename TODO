@@ -1,3 +1,5 @@
+Check what happens to the memory used for return value from PyString_AsString
+
 cyclient - add interactive
          - add args on commandline
          - add automatic account creation, using local system usernames
