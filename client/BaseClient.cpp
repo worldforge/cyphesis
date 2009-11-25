@@ -42,7 +42,7 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-BaseClient::BaseClient()
+BaseClient::BaseClient() : m_character(0)
 {
 }
 
