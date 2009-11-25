@@ -22,22 +22,13 @@
 
 #include <common/AtlasStreamClient.h>
 
-#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Root.h>
-#include <Atlas/Codec.h>
 
 #include <skstream/skstream.h>
 
 #include <deque>
-
-namespace Atlas {
-  class Codec;
-  namespace Objects {
-    class ObjectsEncoder;
-  }
-}
 
 /// \brief Class to handle socket connection to a cyphesis server from an
 /// an admin client
