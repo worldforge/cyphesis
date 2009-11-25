@@ -23,7 +23,6 @@
 #include "common/debug.h"
 #include "common/compose.hpp"
 
-#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
@@ -171,8 +170,7 @@ void ClientConnection::send(const RootOperation & op)
           std::cout << std::endl << std::flush;); */
 
     op->setSerialno(++serialNo);
-    m_encoder->streamObjectsMessage(op);
-    (*m_ios) << std::flush;
+    AtlasStreamClient::send(op);
 }
 
 void ClientConnection::poll(int timeOut)
