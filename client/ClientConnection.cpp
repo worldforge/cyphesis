@@ -39,9 +39,6 @@ ClientConnection::ClientConnection() : serialNo(512)
 
 ClientConnection::~ClientConnection()
 {
-    if (m_encoder != NULL) {
-        delete m_encoder;
-    }
 }
 
 void ClientConnection::operation(const RootOperation & op)
