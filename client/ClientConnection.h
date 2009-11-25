@@ -20,6 +20,8 @@
 #ifndef CLIENT_CLIENT_CONNECTION_H
 #define CLIENT_CLIENT_CONNECTION_H
 
+#include <common/AtlasStreamClient.h>
+
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -39,20 +41,12 @@ namespace Atlas {
 
 /// \brief Class to handle socket connection to a cyphesis server from an
 /// an admin client
-class ClientConnection : public Atlas::Objects::ObjectsDecoder {
+class ClientConnection : public AtlasStreamClient {
   private:
     /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;
     /// \brief Flag to indicate that an error has been received from the server
     bool error_flag;
-    /// \brief File descriptor used to communicate with the server
-    int m_fd;
-    /// \brief iostream used to communicate with the server
-    basic_socket_stream * m_ios;
-    /// \brief Atlas codec used to communicate with the server
-    Atlas::Codec * m_codec;
-    /// \brief Atlas encoder used to serialise messages for the server
-    Atlas::Objects::ObjectsEncoder * m_encoder;
     /// \brief Store for reply data from the server
     Atlas::Objects::Root reply;
     /// \brief Counter used to track serial numbers sent to the server
@@ -62,9 +56,6 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
     std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
 
     void operation(const Atlas::Objects::Operation::RootOperation&);
-
-    int linger();
-    int negotiate();
 
     virtual void objectArrived(const Atlas::Objects::Root &);
 
@@ -76,8 +67,6 @@ class ClientConnection : public Atlas::Objects::ObjectsDecoder {
     ~ClientConnection();
 
     int read();
-    int connectLocal(const std::string &);
-    int connect(const std::string &, int port);
     void login(const std::string &, const std::string &);
     void create(const std::string &, const std::string &);
     int wait();

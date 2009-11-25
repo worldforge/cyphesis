@@ -17,29 +17,15 @@
 
 // $Id$
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif // HAVE_CONFIG_H
-
 #include "ClientConnection.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
 
-#include <Atlas/Codecs/XML.h>
-#include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <skstream/skstream_unix.h>
-
-#include <cstdio>
-
-#ifdef HAVE_SYS_UN_H
-#include <sys/un.h>
-#endif // HAVE_SYS_UN_H
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
@@ -47,8 +33,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 static bool debug_flag = false;
 
-ClientConnection::ClientConnection() :
-    m_fd(-1), m_ios(0), m_codec(0), m_encoder(NULL), serialNo(512)
+ClientConnection::ClientConnection() : serialNo(512)
 {
 }
 
@@ -137,139 +122,6 @@ int ClientConnection::read() {
     } else {
         return -1;
     }
-}
-
-int ClientConnection::connectLocal(const std::string & sockname)
-{
-#ifdef HAVE_SYS_UN_H
-    debug(std::cout << "Attempting local connect." << std::endl << std::flush;);
-
-    struct sockaddr_un sun;
-    sun.sun_family = AF_UNIX;
-    strncpy(sun.sun_path, sockname.c_str(), sizeof(sun.sun_path));
-
-    int fd = ::socket(PF_UNIX, SOCK_STREAM, 0);
-
-    if (0 != ::connect(fd, (struct sockaddr *)&sun, sizeof(sun))) {
-        debug(std::cout << "Local connect refused" << std::endl << std::flush;);
-        return -1;
-    }
-
-    // Prove to the server that we are real.
-
-    unsigned char buf[1];
-
-    buf[0] = '\0';
-
-    struct iovec vec[1];
-
-    vec[0].iov_base = buf;
-    vec[0].iov_len = 1;
-
-    struct msghdr auth_message;
-
-    auth_message.msg_iov = vec;
-    auth_message.msg_iovlen = 1;
-    auth_message.msg_name = 0;
-    auth_message.msg_namelen = 0;
-    auth_message.msg_controllen = CMSG_SPACE(sizeof(struct ucred));
-    auth_message.msg_control = new unsigned char[auth_message.msg_controllen];
-    auth_message.msg_flags = 0;
-
-    struct cmsghdr * control = CMSG_FIRSTHDR(&auth_message);
-    control->cmsg_len = CMSG_LEN(sizeof(struct ucred));
-    control->cmsg_level = SOL_SOCKET;
-    control->cmsg_type = SCM_CREDENTIALS;
-    struct ucred * creds = (struct ucred *)CMSG_DATA(control);
-    creds->pid = ::getpid();
-    creds->uid = ::getuid();
-    creds->gid = ::getgid();
-
-    int serr = sendmsg(fd, &auth_message, 0);
-
-    if (serr > 0) {
-        std::cout << "SENT:" << serr << std::endl << std::flush;
-    } else {
-        perror("sendmsg");
-    }
-
-    // Done proving we are real.
-
-    m_ios = new unix_socket_stream();
-    m_ios->setSocket(fd);
-    if (!m_ios->is_open()) {
-        std::cerr << "ERROR: For some reason " << sockname << " not open."
-                  << std::endl << std::flush;
-        return -1;
-    }
-
-    m_fd = m_ios->getSocket();
-
-    linger();
-    int ret = negotiate();
-
-    if (ret == -1) {
-        m_ios->close();
-    }
-    return ret;
-#else // HAVE_SYS_UN_H
-    return -1;
-#endif // HAVE_SYS_UN_H
-}
-
-int ClientConnection::connect(const std::string & server, int port)
-{
-    debug(std::cout << "Connecting to " << server << std::endl << std::flush;);
-
-    tcp_socket_stream * tss = new tcp_socket_stream();
-    tss->open(server, port);
-    if (!tss->is_open()) {
-        debug(std::cerr << "ERROR: Could not connect to " << server << "."
-                        << std::endl << std::flush;);
-        return -1;
-    }
-
-    m_fd = tss->getSocket();
-    m_ios = tss;
-
-    linger();
-    return negotiate();
-}
-
-int ClientConnection::linger()
-{
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 10 };
-    ::setsockopt(m_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                   sizeof(listenLinger));
-    // Ensure the address can be reused once we are done with it.
-    return 0;
-}
-
-int ClientConnection::negotiate()
-{
-    Atlas::Net::StreamConnect conn("cyphesis_aiclient", *m_ios);
-
-    debug(std::cout << "Negotiating... " << std::flush;);
-    while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
-      conn.poll();
-    }
-    debug(std::cout << "done" << std::endl;);
-  
-    if (conn.getState() == Atlas::Net::StreamConnect::FAILED) {
-        std::cerr << "Failed to negotiate" << std::endl;
-        return -1;
-    }
-
-    m_codec = conn.getCodec(*this);
-
-    m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
-
-    m_codec->streamBegin();
-
-    return 0;
 }
 
 void ClientConnection::login(const std::string & account,
