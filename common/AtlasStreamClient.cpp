@@ -17,6 +17,10 @@
 
 // $Id$
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif // HAVE_CONFIG_H
+
 #include "common/AtlasStreamClient.h"
 
 #include <Atlas/Codec.h>
@@ -164,6 +168,7 @@ int AtlasStreamClient::connect(const std::string & host, int port)
 
 int AtlasStreamClient::connectLocal(const std::string & filename)
 {
+#ifdef HAVE_SYS_UN_H
     m_ios = new unix_socket_stream(filename);
     if (!m_ios->is_open()) {
         return -1;
@@ -176,6 +181,9 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
     linger();
 
     return negotiate();
+#else // HAVE_SYS_UN_H
+    return -1;
+#endif // HAVE_SYS_UN_H
 }
 
 int AtlasStreamClient::negotiate()
