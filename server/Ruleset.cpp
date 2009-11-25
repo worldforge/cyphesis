@@ -720,6 +720,8 @@ int Ruleset::modifyRule(const std::string & class_name,
                            "inheritance", class_name));
         return -1;
     }
+    assert(!o->isDefaultParents());
+    assert(!o->getParents().empty());
     if (class_desc->isDefaultParents()) {
         log(ERROR, compose("Updated type \"%1\" has no parents in its "
                            "description", class_name));
