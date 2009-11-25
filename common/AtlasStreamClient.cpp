@@ -68,9 +68,7 @@ int AtlasStreamClient::authenticateLocal()
 
     int serr = sendmsg(m_fd, &auth_message, 0);
 
-    if (serr > 0) {
-        std::cout << "SENT:" << serr << std::endl << std::flush;
-    } else {
+    if (serr < 0) {
         perror("sendmsg");
     }
 
