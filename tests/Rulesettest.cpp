@@ -328,9 +328,30 @@ int main(int argc, char ** argv)
             Anonymous new_custom_inherited_type_description;
             new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
+
+            // No parents
+            ret = test_ruleset.modifyRule("custom_inherited_type",
+                                          new_custom_inherited_type_description);
+            assert(ret != 0);
+
+            // empty parents
+            new_custom_inherited_type_description->setParents(std::list<std::string>());
+
+            ret = test_ruleset.modifyRule("custom_inherited_type",
+                                          new_custom_inherited_type_description);
+            assert(ret != 0);
+
+            // wrong parents
+            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "wrong_parent"));
+
+            ret = test_ruleset.modifyRule("custom_inherited_type",
+                                          new_custom_inherited_type_description);
+            assert(ret != 0);
+
             new_custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
 
-            ret = test_ruleset.modifyRule("custom_inherited_type", new_custom_inherited_type_description);
+            ret = test_ruleset.modifyRule("custom_inherited_type",
+                                          new_custom_inherited_type_description);
 
             assert(ret == 0);
         }
