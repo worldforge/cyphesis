@@ -72,7 +72,6 @@ class AdminClient : public AtlasStreamClient
 
     int login();
     void loop();
-    int poll(int timeout = 0, int msec = 0);
     void getLogin();
     int uploadRule(const std::string & id, const std::string & set,
                     const Atlas::Message::MapType &);

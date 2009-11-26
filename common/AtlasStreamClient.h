@@ -53,6 +53,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int connectLocal(const std::string & host);
     int login(const std::string & username, const std::string & password);
     int create(const std::string & username, const std::string & password);
+    int poll(int timeout = 0, int msec = 0);
 
 };
 

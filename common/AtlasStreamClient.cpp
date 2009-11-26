@@ -259,3 +259,36 @@ int AtlasStreamClient::create(const std::string & username,
 
     return 0;
 }
+
+int AtlasStreamClient::poll(int timeOut, int msec)
+{
+    if (m_fd < 0) {
+        return -1;
+    }
+
+    fd_set infds;
+    struct timeval tv;
+
+    FD_ZERO(&infds);
+
+    FD_SET(m_fd, &infds);
+
+    tv.tv_sec = timeOut;
+    tv.tv_usec = msec;
+
+    int retval = select(m_fd+1, &infds, NULL, NULL, &tv);
+
+    if (retval < 1) {
+        return retval;
+    }
+
+    if (FD_ISSET(m_fd, &infds)) {
+        if (m_ios->peek() == -1) {
+            std::cerr << "Server disconnected" << std::endl << std::flush;
+            return -1;
+        } else {
+            m_codec->poll();
+        }
+    }
+    return 0;
+}
