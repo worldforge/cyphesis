@@ -353,7 +353,7 @@ class Interactive : public AtlasStreamClient,
     int setup();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
-    void poll(bool rewrite_prompt = true);
+    void select(bool rewrite_prompt = true);
     void getLogin();
     void runCommand(char *);
     int runTask(AdminTask * task, const std::string & arg);
@@ -722,13 +722,13 @@ void Interactive::loop()
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
     while (!exit) {
-        poll();
+        select();
     };
     std::cout << std::endl << std::flush;
     rl_callback_handler_remove();
 }
 
-void Interactive::poll(bool rewrite_prompt)
+void Interactive::select(bool rewrite_prompt)
 // poll the codec if select says there is something there.
 {
     fd_set infds;
@@ -744,9 +744,9 @@ void Interactive::poll(bool rewrite_prompt)
     tv.tv_usec = 500000;
 
     if (rewrite_prompt) {
-        retval = select(m_fd+1, &infds, NULL, NULL, NULL);
+        retval = ::select(m_fd+1, &infds, NULL, NULL, NULL);
     } else {
-        retval = select(m_fd+1, &infds, NULL, NULL, &tv);
+        retval = ::select(m_fd+1, &infds, NULL, NULL, &tv);
     }
 
     if (retval > 0) {
@@ -1131,7 +1131,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
            std::cout << cmd << ": No reply from server" << std::endl << std::flush;
            return;
        }
-       poll(false);
+       select(false);
     }
 }
 
