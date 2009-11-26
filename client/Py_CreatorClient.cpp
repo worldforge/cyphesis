@@ -207,7 +207,7 @@ static void CreatorClient_dealloc(PyCreatorClient *self)
         //delete self->m_mind;
     //}
     Py_XDECREF(self->CreatorClient_attr);
-    PyMem_DEL(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
@@ -324,6 +324,8 @@ static int CreatorClient_init(PyCreatorClient * self,
         PyErr_SetString(PyExc_TypeError, "CreatorClient() requires string/int ID");
         return -1;
     }
+    self->m_mind = 0;
+    self->CreatorClient_attr = 0;
     // self->m_mind = new CreatorClient(id, intId);
     return 0;
 }

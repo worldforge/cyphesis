@@ -60,7 +60,7 @@ static void ObserverClient_dealloc(PyObserverClient *self)
     if (self->m_client != NULL) {
         delete self->m_client;
     }
-    PyMem_DEL(self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 static PyObject * ObserverClient_getattr(PyObserverClient *self, char *name)
