@@ -26,11 +26,6 @@
 
 #include <set>
 
-namespace Atlas {
-  class Codec;
-  namespace Objects { class ObjectsEncoder; }
-}
-
 typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>, Atlas::Message::MapType> > RuleWaitList;
 
 /// \brief Client class to encapsulate functionality of an administrative client
