@@ -110,45 +110,6 @@ void ClientConnection::infoArrived(const RootOperation & op)
     }
 }
 
-int ClientConnection::read() {
-    if (m_ios != 0 && m_ios->is_open()) {
-        m_codec->poll();
-        return 0;
-    } else {
-        return -1;
-    }
-}
-
-void ClientConnection::login(const std::string & account,
-                             const std::string & password)
-{
-    Atlas::Objects::Operation::Login l;
-    Anonymous login_arg;
-    login_arg->setAttr("username", account);
-    login_arg->setAttr("password", password);
-
-    l->setArgs1(login_arg);
-
-    reply_flag = false;
-    error_flag = false;
-    send(l);
-}
-
-void ClientConnection::create(const std::string & account,
-                              const std::string & password)
-{
-    Atlas::Objects::Operation::Create c;
-    Anonymous create_arg;
-    create_arg->setAttr("username", account);
-    create_arg->setAttr("password", password);
-
-    c->setArgs1(create_arg);
-
-    reply_flag = false;
-    error_flag = false;
-    send(c);
-}
-
 int ClientConnection::wait()
 // Waits for response from server. Used when we are expecting a login response
 // Return whether or not an error occured

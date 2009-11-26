@@ -57,9 +57,6 @@ class ClientConnection : public AtlasStreamClient {
     ClientConnection();
     ~ClientConnection();
 
-    int read();
-    void login(const std::string &, const std::string &);
-    void create(const std::string &, const std::string &);
     int wait();
     void send(const Atlas::Objects::Operation::RootOperation & op);
 
