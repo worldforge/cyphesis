@@ -33,7 +33,7 @@
 /// \brief Class to handle socket connection to a cyphesis server from an
 /// an admin client
 class ClientConnection : public AtlasStreamClient {
-  private:
+  protected:
     /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;
     /// \brief Flag to indicate that an error has been received from the server
