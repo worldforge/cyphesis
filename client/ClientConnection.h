@@ -83,7 +83,7 @@ class ClientConnection : public AtlasStreamClient {
         return reply;
     }
 
-    void poll(int timeOut = 0);
+    int poll(int timeOut = 0);
     Atlas::Objects::Operation::RootOperation pop();
     bool pending();
 };

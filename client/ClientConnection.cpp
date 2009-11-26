@@ -158,7 +158,9 @@ int ClientConnection::wait()
    error_flag = false;
    reply_flag = false;
    while (!reply_flag) {
-      poll(1);
+      if (poll(1) != 0) {
+          return -1;
+      }
    }
    return error_flag ? -1 : 0;
 }
@@ -174,8 +176,12 @@ void ClientConnection::send(const RootOperation & op)
     AtlasStreamClient::send(op);
 }
 
-void ClientConnection::poll(int timeOut)
+int ClientConnection::poll(int timeOut)
 {
+    if (m_fd < 0) {
+        return -1;
+    }
+
     fd_set infds;
     struct timeval tv;
 
@@ -189,18 +195,18 @@ void ClientConnection::poll(int timeOut)
     int retval = select(m_fd+1, &infds, NULL, NULL, &tv);
 
     if (retval < 1) {
-        return;
+        return retval;
     }
 
     if (FD_ISSET(m_fd, &infds)) {
         if (m_ios->peek() == -1) {
             std::cerr << "Server disconnected" << std::endl << std::flush;
-            error_flag = true;
-            reply_flag = true;
+            return -1;
         } else {
             m_codec->poll();
         }
     }
+    return 0;
 }
 
 RootOperation ClientConnection::pop()
