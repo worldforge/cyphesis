@@ -96,16 +96,14 @@ void ClientConnection::errorArrived(const RootOperation & op)
 void ClientConnection::infoArrived(const RootOperation & op)
 {
     debug(std::cout << "INFO" << std::endl << std::flush;);
-    const std::string & from = op->getFrom();
-    if (from.empty()) {
-        try {
+    if (op->isDefaultFrom()) {
+        if (op->isDefaultArgs() || op->getArgs().empty()) {
+            std::cerr << "WARNING: Malformed account from server" << std::endl << std::flush;
+        } else {
             const Root & ac = op->getArgs().front();
             reply = ac;
             // const std::string & acid = reply["id"].asString();
             // objects[acid] = new ClientAccount(acid, *this);
-        }
-        catch (...) {
-            std::cerr << "WARNING: Malformed account from server" << std::endl << std::flush;
         }
     } else {
         operation(op);
