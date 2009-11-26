@@ -43,7 +43,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest
 
-CLIENT_TESTS = Py_CreatorClienttest
+CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
@@ -1043,6 +1043,25 @@ ArithmeticFactorytest_LDADD = \
 
 Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp python_testers.h
 Py_CreatorClienttest_LDADD = \
+        $(top_builddir)/client/Py_CreatorClient.o \
+        $(top_builddir)/client/Py_ObserverClient.o \
+        $(top_builddir)/client/CreatorClient.o \
+        $(top_builddir)/client/CharacterClient.o \
+        $(top_builddir)/client/ClientConnection.o \
+        $(top_builddir)/client/ObserverClient.o \
+        $(top_builddir)/client/BaseClient.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+
+
+Py_ObserverClienttest_SOURCES = Py_ObserverClienttest.cpp python_testers.h
+Py_ObserverClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
         $(top_builddir)/client/CreatorClient.o \
