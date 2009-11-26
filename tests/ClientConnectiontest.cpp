@@ -58,7 +58,6 @@ int main()
     // Try all the method calls when not connected
     cc = new ClientConnection();
 
-    cc->read();
     cc->login("username", "password");
     cc->create("username", "password");
     cc->wait();
