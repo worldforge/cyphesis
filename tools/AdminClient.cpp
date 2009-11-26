@@ -125,24 +125,12 @@ void AdminClient::errorArrived(const RootOperation & op)
 
 /// \brief AdminClient constructor
 AdminClient::AdminClient() : error_flag(false), reply_flag(false),
-                             login_flag(false), exit(false)
+                             login_flag(false)
 {
 }
 
 AdminClient::~AdminClient()
 {
-}
-
-/// \brief Main client application loop
-///
-/// Check for incoming data until the client is ready to exit
-void AdminClient::loop()
-{
-    while (!exit) {
-        if (poll(0, 100000) != 0) {
-            return;
-        }
-    };
 }
 
 /// \brief Read login credentials from standard input

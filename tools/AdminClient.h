@@ -50,8 +50,6 @@ class AdminClient : public AtlasStreamClient
     std::string accountId;
     /// \brief Stored error message from the last received Error operation
     std::string m_errorMessage;
-    /// \brief Flag set to indicate that the task is complete, and should exit
-    bool exit;
     /// \brief Store of rules which can't be uploaded until their parent has
     /// been uploaded
     RuleWaitList m_waitingRules;
@@ -71,7 +69,6 @@ class AdminClient : public AtlasStreamClient
     ~AdminClient();
 
     int login();
-    void loop();
     void getLogin();
     int uploadRule(const std::string & id, const std::string & set,
                     const Atlas::Message::MapType &);
