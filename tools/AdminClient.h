@@ -24,12 +24,7 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <skstream/skstream_unix.h>
-
-#include <iostream>
 #include <set>
-
-#include <cstdio>
 
 namespace Atlas {
   class Codec;
@@ -71,7 +66,7 @@ class AdminClient : public AtlasStreamClient
     int login();
     void getLogin();
     int uploadRule(const std::string & id, const std::string & set,
-                    const Atlas::Message::MapType &);
+                   const Atlas::Message::MapType &);
 
     /// \brief Set the password used to log into the server
     void setPassword(const std::string & passwd) {

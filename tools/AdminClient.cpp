@@ -33,6 +33,8 @@
 
 #include <Atlas/Objects/Operation.h>
 
+#include <iostream>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
