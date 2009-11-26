@@ -60,21 +60,6 @@ class ClientConnection : public AtlasStreamClient {
     int wait();
     void send(const Atlas::Objects::Operation::RootOperation & op);
 
-    /// \brief Check the iostream for waiting data
-    int peek() {
-        return m_ios->peek();
-    }
-
-    /// \brief Check the iostream to see if it is disconnected
-    int eof() {
-        return m_ios->eof();
-    }
-
-    /// \brief Accessor to the server file descriptor
-    int get_fd() {
-        return m_fd;
-    }
-
     /// \brief Read only accessor for Info reply data from the server
     const Atlas::Objects::Root & getReply() {
         return reply;
