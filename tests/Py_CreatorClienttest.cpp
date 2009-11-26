@@ -31,7 +31,7 @@ int main()
     extend_client_python_api();
 
     run_python_string("import server");
-    run_python_string("c=server.CreatorClient(\"1\")");
+    run_python_string("server.CreatorClient(\"1\")");
 
     shutdown_python_api();
     return 0;
