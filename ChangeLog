@@ -10,6 +10,7 @@
 	  tools/cyaddrules.cpp, tools/cycmd.cpp:
 	  Create a new base class, and move common functionality from
 	  tools and clients which connect to a server to it.
+	  Remove unused functions.
 
 	* client/Py_CreatorClient.cpp: Fix some bugs with the creation
 	  and cleanup of this wrapper.
