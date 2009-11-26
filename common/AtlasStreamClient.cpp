@@ -138,7 +138,8 @@ void AtlasStreamClient::output(const Element & item, int depth) const
     }
 }
 
-AtlasStreamClient::AtlasStreamClient() : m_encoder(0), m_codec(0), m_ios(0)
+AtlasStreamClient::AtlasStreamClient() : m_fd(-1), m_encoder(0),
+                                         m_codec(0), m_ios(0)
 {
 }
 
@@ -157,6 +158,9 @@ AtlasStreamClient::~AtlasStreamClient()
 
 void AtlasStreamClient::send(const RootOperation & op)
 {
+    if (m_encoder == 0 || m_ios == 0) {
+        return;
+    }
     m_encoder->streamObjectsMessage(op);
     (*m_ios) << std::flush;
 }
