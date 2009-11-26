@@ -1,3 +1,118 @@
+2009-11-26  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* client/BaseClient.cpp, client/BaseClient.h,
+	  client/ObserverClient.cpp:
+	  Clean up and use the Atlas-C++ API a bit better.
+
+	* common/AtlasStreamClient.cpp, common/AtlasStreamClient.h, 
+	  client/ClientConnection.cpp, client/ClientConnection.h,
+	  tools/AdminClient.cpp, tools/AdminClient.h,
+	  tools/cyaddrules.cpp, tools/cycmd.cpp:
+	  Create a new base class, and move common functionality from
+	  tools and clients which connect to a server to it.
+
+	* client/Py_CreatorClient.cpp: Fix some bugs with the creation
+	  and cleanup of this wrapper.
+
+	* client/Py_CreatorClient.cpp, client/Py_ObserverClient.cpp,
+	  client/Py_ObserverClient.h, rulesets/Python_API.h:
+	  Implement a wrapper for ObserverClient, and a function
+	  which calls the Main function of the Python interpretter.
+
+	* client/client.cpp: Handle setup of client objects better.
+	  Implement interactive mode which gives the user a Python
+	  prompt.
+
+	* common/globals.cpp: Add documentation for the added client
+	  interactive option.
+
+	* common/Inheritance.h, common/Inheritance.cpp: Provide a mechanism
+	  for types to be updated in the tree.
+
+	* common/custom.cpp: Add a type definition for the missing Connect
+	  operation.
+
+	* rulesets/Entity.cpp, rulesets/Entity.h: Improve the setProperty()
+	  interface making it more useful.
+
+	* rulesets/Entity.cpp: Fix a segfault when at entity with no type
+	  is represented in Atlas.
+
+	* rulesets/Py_Location.cpp: Remove obsolete support for the
+	  remove way of supporting entity scripts.
+
+	* rulesets/Py_Message.cpp: Clean up the way an error is reported.
+
+	* rulesets/Py_Operation.cpp: Convert to using the latest Atlas-C++
+	  API properly and fix some places where error conditions were not
+	  correctly returned.
+
+	* rulesets/Py_Oplist.cpp: Return error conditions in some places
+	  where they were missed.
+
+	* rulesets/Py_Point3D.cpp: Remove pointless _print operator.
+	  It is never called.
+
+	* rulesets/Py_Quaternion.cpp: Remove unnecessary type check from
+	  comparison operator.
+
+	* rulesets/Py_RootEntity.cpp: Don't set an error when the Python
+	  API function will already have set it.
+
+	* rulesets/Py_Task.cpp: Remove a useless, unused function.
+
+	* rulesets/Py_TerrainProperty.cpp: Add null checks for all
+	  pointers in the object to the assertion checks.
+
+	* rulesets/Py_Thing.cpp: Allow type to be set by the Python API,
+	  as long as has not been set already.
+
+	* rulesets/Py_Vector3D.cpp: Return errors in a bunch of places
+	  where it was missed. Remove pointless _print operator.
+
+	* rulesets/PythonEntityScript.cpp: DECREF in the right place.
+
+	* scripts/run_coverage_tests.sh: Update to handle files in
+	  the tree that are no longer in the build.
+
+	* server/Account.cpp, server/Admin.cpp: Initialise pointers better,
+	  and be more tolerant of non-fatal error conditions.
+
+	* server/Account.h: Make members protected as they should be.
+
+	* server/CommServer.cpp, server/CommServer.h: Report errors when
+	  adding a socket fails.
+
+	* server/CommUnixListener.cpp: Add unix socket based user
+	  authentication as implemented in the new client socket class,
+	  so that all local connections can be locked down, thus making
+	  it easier to grant them privs.
+
+	* server/Connection.cpp, server/Connection.h: Expand the interface
+	  for account creation so the kind of account can be specified.
+	  Remove support for the legacy protocol, now many years obsolete.
+	  Move handling of persistent accounts into the ServerRouting
+	  object which owns them.
+
+	* server/Persistence.cpp: Access the protected members of Account
+	  correctly.
+
+	* server/Player.cpp: Remove support for libstdc++ API from about
+	  a decade ago.
+
+	* server/Ruleset.cpp: Check updated types way more thoroughly,
+	  and push the updated Atlas descritpion into the Inheritance tree.
+
+	* server/ServerRouting.cpp, server/ServerRouting.h: Handle account
+	  persistence here.
+
+	* server/TrustedConnection.cpp, server/TrustedConnection.h:
+	  Override account creation so extra privs are available to local
+	  connections.
+
+	* tools/cycmd.cpp: Make commands for querying objects and types
+	  more coherant and consistent. Add command for IG looks.
+
 2009-11-06  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/log.cpp, common/log.h: Add a function to log multiline
