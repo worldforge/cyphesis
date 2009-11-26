@@ -61,7 +61,8 @@ int AtlasStreamClient::authenticateLocal()
     auth_message.msg_name = 0;
     auth_message.msg_namelen = 0;
     auth_message.msg_controllen = CMSG_SPACE(sizeof(struct ucred));
-    auth_message.msg_control = new unsigned char[auth_message.msg_controllen];
+    unsigned char * mcb = new unsigned char[auth_message.msg_controllen];
+    auth_message.msg_control = mcb;
     auth_message.msg_flags = 0;
 
     struct cmsghdr * control = CMSG_FIRSTHDR(&auth_message);
@@ -74,6 +75,8 @@ int AtlasStreamClient::authenticateLocal()
     creds->gid = ::getgid();
 
     int serr = sendmsg(m_fd, &auth_message, 0);
+
+    delete [] mcb;
 
     if (serr < 0) {
         perror("sendmsg");
