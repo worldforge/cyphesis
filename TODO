@@ -1,3 +1,8 @@
+Make cycmd stop dumping all ops to output unless monitoring is on,
+and stop it re-writing the prompt so much.
+
+Make AdminClient::poll and ClientConnection::poll more compatible.
+
 Check what happens to the memory used for return value from PyString_AsString
 
 cyclient - add interactive
