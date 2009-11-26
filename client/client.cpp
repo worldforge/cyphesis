@@ -90,6 +90,7 @@ int main(int argc, char ** argv)
     }
 
     bool interactive = global_conf->findItem("", "interactive");
+    int status = 0;
 
     init_python_api();
     extend_client_python_api();
@@ -104,11 +105,12 @@ int main(int argc, char ** argv)
             if (observer.setup(account, password) != 0) {
                 std::cerr << "ERROR: Connection failed."
                           << std::endl << std::flush;
-                return 1;
+                status = 1;
+            } else {
+                observer.load(package, function);
+                //observer.run();
+                observer.logout();
             }
-            observer.load(package, function);
-            //observer.run();
-            observer.logout();
             delete &observer;
         }
         catch (...) {
@@ -117,4 +119,6 @@ int main(int argc, char ** argv)
     }
 
     shutdown_python_api();
+
+    return status;
 }
