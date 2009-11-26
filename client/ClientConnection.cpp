@@ -174,7 +174,7 @@ void ClientConnection::send(const RootOperation & op)
     AtlasStreamClient::send(op);
 }
 
-int ClientConnection::poll(int timeOut)
+int ClientConnection::poll(int timeOut, int msec)
 {
     if (m_fd < 0) {
         return -1;
@@ -188,7 +188,7 @@ int ClientConnection::poll(int timeOut)
     FD_SET(m_fd, &infds);
 
     tv.tv_sec = timeOut;
-    tv.tv_usec = 0;
+    tv.tv_usec = msec;
 
     int retval = select(m_fd+1, &infds, NULL, NULL, &tv);
 

@@ -139,13 +139,19 @@ AdminClient::~AdminClient()
 void AdminClient::loop()
 {
     while (!exit) {
-        poll();
+        if (poll(0, 100000) != 0) {
+            return;
+        }
     };
 }
 
 /// \brief Poll the codec to see if data is available
-void AdminClient::poll()
+int AdminClient::poll(int timeOut, int msec)
 {
+    if (m_fd < 0) {
+        return -1;
+    }
+
     fd_set infds;
     struct timeval tv;
 
@@ -153,23 +159,24 @@ void AdminClient::poll()
 
     FD_SET(m_fd, &infds);
 
-    tv.tv_sec = 0;
-    tv.tv_usec = 100000;
+    tv.tv_sec = timeOut;
+    tv.tv_usec = msec;
 
     int retval = select(m_fd+1, &infds, NULL, NULL, &tv);
 
     if (retval < 1) {
-        return;
+        return retval;
     }
 
     if (FD_ISSET(m_fd, &infds)) {
         if (m_ios->peek() == -1) {
             std::cerr << "Server disconnected" << std::endl << std::flush;
-            exit = true;
+            return -1;
         } else {
             m_codec->poll();
         }
     }
+    return 0;
 }
 
 /// \brief Read login credentials from standard input
@@ -386,7 +393,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 void AdminClient::waitForInfo()
 {
     for (int i = 0; i < 10 && !reply_flag; ++i) {
-       poll();
+       poll(0, 100000);
     }
 }
 
