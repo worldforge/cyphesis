@@ -50,12 +50,12 @@ class Interactive : public AtlasStreamClient,
 
     virtual void operation(const Operation &);
 
-    void appearanceArrived(const Operation &);
-    void disappearanceArrived(const Operation &);
-    void infoArrived(const Operation &);
-    void errorArrived(const Operation &);
-    void sightArrived(const Operation &);
-    void soundArrived(const Operation &);
+    virtual void appearanceArrived(const Operation &);
+    virtual void disappearanceArrived(const Operation &);
+    virtual void infoArrived(const Operation &);
+    virtual void errorArrived(const Operation &);
+    virtual void sightArrived(const Operation &);
+    virtual void soundArrived(const Operation &);
 
     void updatePrompt();
   public:

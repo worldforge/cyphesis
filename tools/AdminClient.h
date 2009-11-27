@@ -51,8 +51,8 @@ class AdminClient : public AtlasStreamClient
 
     virtual void operation(const Atlas::Objects::Operation::RootOperation &);
 
-    void infoArrived(const Atlas::Objects::Operation::RootOperation &);
-    void errorArrived(const Atlas::Objects::Operation::RootOperation &);
+    virtual void infoArrived(const Atlas::Objects::Operation::RootOperation &);
+    virtual void errorArrived(const Atlas::Objects::Operation::RootOperation &);
 
     void waitForInfo();
     int checkRule(const std::string & id);
