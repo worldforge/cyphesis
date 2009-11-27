@@ -141,36 +141,14 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
-Interactive::Interactive() : error_flag(false), reply_flag(false),
-                             login_flag(false), avatar_flag(false),
-                             server_flag(false), serverName("cyphesis"),
-                             prompt("cyphesis> "), exit(false), currentTask(0)
+Interactive::Interactive() : avatar_flag(false), server_flag(false),
+                             serverName("cyphesis"), prompt("cyphesis> "),
+                             exit(false), currentTask(0)
 {
 }
 
 Interactive::~Interactive()
 {
-}
-
-void Interactive::objectArrived(const Atlas::Objects::Root & obj)
-{
-    Operation op = Atlas::Objects::smart_dynamic_cast<Operation>(obj);
-    if (!op.isValid()) {
-        std::cerr << "Non op object received from client" << std::endl << std::flush;
-        if (!obj->isDefaultParents() && !obj->getParents().empty()) {
-            std::cerr << "NOTICE: Unexpected object has parent "
-                      << obj->getParents().front()
-                      << std::endl << std::flush;
-        }
-        if (!obj->isDefaultObjtype()) {
-            std::cerr << "NOTICE: Unexpected object has objtype "
-                      << obj->getObjtype()
-                      << std::endl << std::flush;
-        }
-
-        return;
-    }
-    operation(op);
 }
 
 void Interactive::operation(const Operation & op)
@@ -554,16 +532,6 @@ void Interactive::select(bool rewrite_prompt)
             rl_callback_read_char();
         }
     }
-}
-
-void Interactive::getLogin()
-{
-    // This needs to be re-written to hide input, so the password can be
-    // secret
-    std::cout << "Username: " << std::flush;
-    std::cin >> m_username;
-    std::cout << "Password: " << std::flush;
-    std::cin >> password;
 }
 
 void Interactive::updatePrompt()

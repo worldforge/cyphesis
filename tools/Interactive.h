@@ -20,8 +20,9 @@
 #ifndef TOOLS_INTERACTIVE_H
 #define TOOLS_INTERACTIVE_H
 
+#include "AdminClient.h"
+
 #include "common/OperationRouter.h"
-#include "common/AtlasStreamClient.h"
 
 #include <sigc++/trackable.h>
 
@@ -29,14 +30,12 @@ class AdminTask;
 
 /// \brief Class template for clients used to connect to and administrate
 /// a cyphesis server.
-class Interactive : public AtlasStreamClient,
+class Interactive : public AdminClient,
                     virtual public sigc::trackable
 {
   private:
-    bool error_flag, reply_flag, login_flag, avatar_flag, server_flag;
-    std::string password;
+    bool avatar_flag, server_flag;
     std::string accountType;
-    std::string accountId;
     std::string agentId;
     std::string agentName;
     std::string serverName;
@@ -46,8 +45,6 @@ class Interactive : public AtlasStreamClient,
     AdminTask * currentTask;
 
   protected:
-    void objectArrived(const Atlas::Objects::Root &);
-
     virtual void operation(const Operation &);
 
     virtual void appearanceArrived(const Operation &);
@@ -67,18 +64,9 @@ class Interactive : public AtlasStreamClient,
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
     void select(bool rewrite_prompt = true);
-    void getLogin();
     void runCommand(char *);
     int runTask(AdminTask * task, const std::string & arg);
     int endTask();
-
-    void setPassword(const std::string & passwd) {
-        password = passwd;
-    }
-
-    void setUsername(const std::string & uname) {
-        m_username = uname;
-    }
 
     static void gotCommand(char *);
 };
