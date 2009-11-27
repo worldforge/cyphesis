@@ -44,6 +44,10 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int linger();
     void output(const Atlas::Message::Element & item, int depth = 0) const;
 
+    virtual void objectArrived(const Atlas::Objects::Root &);
+
+    virtual void operation(const Atlas::Objects::Operation::RootOperation &) = 0;
+
   public:
     AtlasStreamClient();
     virtual ~AtlasStreamClient();

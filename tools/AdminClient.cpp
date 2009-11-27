@@ -54,32 +54,6 @@ using Atlas::Objects::Operation::Error;
 
 static const bool debug_flag = false;
 
-/// \brief Function call from the base class when an object arrives from the
-/// server
-///
-/// @param obj Object that has arrived from the server
-void AdminClient::objectArrived(const Root & obj)
-{
-    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
-    if (!op.isValid()) {
-        std::cerr << "ERROR: Non op object received from server"
-                  << std::endl << std::flush;;
-        if (!obj->isDefaultParents() && !obj->getParents().empty()) {
-            std::cerr << "NOTICE: Unexpected object has parent "
-                      << obj->getParents().front()
-                      << std::endl << std::flush;
-        }
-        if (!obj->isDefaultObjtype()) {
-            std::cerr << "NOTICE: Unexpected object has objtype "
-                      << obj->getObjtype()
-                      << std::endl << std::flush;
-        }
-        return;
-    }
-
-    operation(op);
-}
-
 void AdminClient::operation(const RootOperation & op)
 {
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
