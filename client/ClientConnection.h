@@ -46,9 +46,7 @@ class ClientConnection : public AtlasStreamClient {
     /// \brief Store for operations arrived from the server
     std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
 
-    void operation(const Atlas::Objects::Operation::RootOperation&);
-
-    virtual void objectArrived(const Atlas::Objects::Root &);
+    virtual void operation(const Atlas::Objects::Operation::RootOperation&);
 
     void errorArrived(const Atlas::Objects::Operation::RootOperation &);
     void infoArrived(const Atlas::Objects::Operation::RootOperation &);

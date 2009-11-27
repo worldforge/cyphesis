@@ -43,6 +43,16 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::operation(const RootOperation & op)
 {
+    debug(std::cout << "A " << op->getParents().front() << " op from server!" << std::endl << std::flush;);
+
+    reply_flag = true;
+    operationQueue.push_back(op);
+
+    if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+        errorArrived(op);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+        infoArrived(op);
+    }
 #if 0
     const std::string & from = op->getFrom();
     if (from.empty()) {
@@ -61,30 +71,6 @@ void ClientConnection::operation(const RootOperation & op)
         send(*(*J));
     }
 #endif
-}
-
-void ClientConnection::objectArrived(const Atlas::Objects::Root & obj)
-{
-    RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
-    if (!op.isValid()) {
-        const std::list<std::string> & parents = obj->getParents();
-        if (parents.empty()) {
-            log(ERROR, String::compose("Object of type \"%1\" with no parent arrived from server", obj->getObjtype()));
-        } else {
-            log(ERROR, String::compose("Object of type \"%1\" with parent \"%2\" arrived from server", obj->getObjtype(), obj->getParents().front()));
-        }
-        return;
-    }
-    debug(std::cout << "A " << op->getParents().front() << " op from server!" << std::endl << std::flush;);
-
-    reply_flag = true;
-    operationQueue.push_back(op);
-
-    if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
-        errorArrived(op);
-    } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-        infoArrived(op);
-    }
 }
 
 void ClientConnection::errorArrived(const RootOperation & op)
