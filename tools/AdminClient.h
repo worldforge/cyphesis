@@ -33,7 +33,7 @@ class AdminClient : public AtlasStreamClient
 {
   protected:
     /// \brief Flags used to track replies from the server
-    bool error_flag, reply_flag, login_flag;
+    bool login_flag;
     /// \brief Password used to log into the server
     std::string password;
     /// \brief Account identifier returned after successful login

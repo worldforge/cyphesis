@@ -106,8 +106,7 @@ void AdminClient::errorArrived(const RootOperation & op)
 }
 
 /// \brief AdminClient constructor
-AdminClient::AdminClient() : error_flag(false), reply_flag(false),
-                             login_flag(false)
+AdminClient::AdminClient() : login_flag(false)
 {
 }
 

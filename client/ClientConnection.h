@@ -34,10 +34,6 @@
 /// an admin client
 class ClientConnection : public AtlasStreamClient {
   protected:
-    /// \brief Flag to indicate that a reply has been received from the server
-    bool reply_flag;
-    /// \brief Flag to indicate that an error has been received from the server
-    bool error_flag;
     /// \brief Store for reply data from the server
     Atlas::Objects::Root reply;
     /// \brief Counter used to track serial numbers sent to the server

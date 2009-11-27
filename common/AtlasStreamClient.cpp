@@ -168,7 +168,8 @@ void AtlasStreamClient::objectArrived(const Root & obj)
     operation(op);
 }
 
-AtlasStreamClient::AtlasStreamClient() : m_fd(-1), m_encoder(0),
+AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
+                                         m_fd(-1), m_encoder(0),
                                          m_codec(0), m_ios(0)
 {
 }

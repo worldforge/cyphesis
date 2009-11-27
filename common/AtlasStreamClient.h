@@ -32,6 +32,11 @@ class basic_socket_stream;
 class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 {
   protected:
+    /// \brief Flag to indicate that a reply has been received from the server
+    bool reply_flag;
+    /// \brief Flag to indicate that an error has been received from the server
+    bool error_flag;
+
     int m_fd;
     Atlas::Objects::ObjectsEncoder * m_encoder;
     Atlas::Codec * m_codec;
