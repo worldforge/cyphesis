@@ -170,7 +170,11 @@ void Interactive::objectArrived(const Atlas::Objects::Root & obj)
 
         return;
     }
+    operation(op);
+}
 
+void Interactive::operation(const Operation & op)
+{
     if (currentTask != 0) {
         OpVector res;
         currentTask->operation(op, res);

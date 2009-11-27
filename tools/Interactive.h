@@ -48,6 +48,8 @@ class Interactive : public AtlasStreamClient,
   protected:
     void objectArrived(const Atlas::Objects::Root &);
 
+    virtual void operation(const Operation &);
+
     void appearanceArrived(const Operation &);
     void disappearanceArrived(const Operation &);
     void infoArrived(const Operation &);
