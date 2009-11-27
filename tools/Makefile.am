@@ -79,7 +79,8 @@ endif
 cycmd_SOURCES = cycmd.cpp \
         AdminTask.cpp AdminTask.h \
         Flusher.cpp Flusher.h \
-        OperationMonitor.cpp OperationMonitor.h
+        OperationMonitor.cpp OperationMonitor.h \
+        Interactive.cpp Interactive.h
 cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/client_socket.o \
               $(top_builddir)/common/globals.o \
