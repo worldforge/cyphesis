@@ -555,27 +555,6 @@ void Interactive::updatePrompt()
     rl_set_prompt(prompt.c_str());
 }
 
-int Interactive::login()
-{
-    error_flag = false;
-    reply_flag = false;
-    login_flag = true;
- 
-    AtlasStreamClient::login(m_username, password);
- 
-    while (!reply_flag) {
-       m_codec->poll();
-    }
-
-    login_flag = false;
-
-    if (!error_flag) {
-       updatePrompt();
-       return 0;
-    }
-    return -1;
-}
-
 int Interactive::setup()
 {
     Get get;

@@ -54,16 +54,15 @@ class Interactive : public AdminClient,
     virtual void sightArrived(const Operation &);
     virtual void soundArrived(const Operation &);
 
-    void updatePrompt();
   public:
     Interactive();
     ~Interactive();
 
-    int login();
     int setup();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
     void select(bool rewrite_prompt = true);
+    void updatePrompt();
     void runCommand(char *);
     int runTask(AdminTask * task, const std::string & arg);
     int endTask();

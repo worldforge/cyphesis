@@ -113,6 +113,7 @@ int main(int argc, char ** argv)
                 bridge.exec(cmd, "");
                 return 0;
             } else {
+                bridge.updatePrompt();
                 bridge.loop();
             }
             return 0;
@@ -143,6 +144,7 @@ int main(int argc, char ** argv)
     if (!interactive) {
         bridge.exec(cmd, "");
     } else {
+        bridge.updatePrompt();
         bridge.loop();
     }
     delete global_conf;
