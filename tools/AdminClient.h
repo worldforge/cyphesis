@@ -31,7 +31,7 @@ typedef std::multimap<std::string, std::pair<std::pair<std::string, std::string>
 /// \brief Client class to encapsulate functionality of an administrative client
 class AdminClient : public AtlasStreamClient
 {
-  private:
+  protected:
     /// \brief Flags used to track replies from the server
     bool error_flag, reply_flag, login_flag;
     /// \brief Password used to log into the server
