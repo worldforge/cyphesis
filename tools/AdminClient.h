@@ -47,7 +47,9 @@ class AdminClient : public AtlasStreamClient
     std::set<std::string> m_uploadedRules;
 
   protected:
-    void objectArrived(const Atlas::Objects::Root &);
+    virtual void objectArrived(const Atlas::Objects::Root &);
+
+    virtual void operation(const Atlas::Objects::Operation::RootOperation &);
 
     void infoArrived(const Atlas::Objects::Operation::RootOperation &);
     void errorArrived(const Atlas::Objects::Operation::RootOperation &);

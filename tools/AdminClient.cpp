@@ -76,6 +76,12 @@ void AdminClient::objectArrived(const Root & obj)
         }
         return;
     }
+
+    operation(op);
+}
+
+void AdminClient::operation(const RootOperation & op)
+{
     debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
 
     int class_no = op->getClassNo();
