@@ -48,11 +48,7 @@ void ClientConnection::operation(const RootOperation & op)
     reply_flag = true;
     operationQueue.push_back(op);
 
-    if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
-        errorArrived(op);
-    } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-        infoArrived(op);
-    }
+    AtlasStreamClient::operation(op);
 #if 0
     const std::string & from = op->getFrom();
     if (from.empty()) {
@@ -71,12 +67,6 @@ void ClientConnection::operation(const RootOperation & op)
         send(*(*J));
     }
 #endif
-}
-
-void ClientConnection::errorArrived(const RootOperation & op)
-{
-    debug(std::cout << "ERROR" << std::endl << std::flush;);
-    error_flag = true;
 }
 
 void ClientConnection::infoArrived(const RootOperation & op)

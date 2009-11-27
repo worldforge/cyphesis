@@ -168,6 +168,34 @@ void AtlasStreamClient::objectArrived(const Root & obj)
     operation(op);
 }
 
+void AtlasStreamClient::operation(const RootOperation & op)
+{
+    int class_no = op->getClassNo();
+    if (class_no == Atlas::Objects::Operation::INFO_NO) {
+        infoArrived(op);
+    } else if (class_no == Atlas::Objects::Operation::ERROR_NO) {
+        errorArrived(op);
+    }
+}
+
+/// \brief Called when an Error operation arrives
+///
+/// @param op Operation to be processed
+void AtlasStreamClient::errorArrived(const RootOperation & op)
+{
+    reply_flag = true;
+    error_flag = true;
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return;
+    }
+    const Root & arg = args.front();
+    Element message_attr;
+    if (arg->copyAttr("message", message_attr) == 0 && message_attr.isString()) {
+        m_errorMessage = message_attr.String();
+    }
+}
+
 AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
                                          m_fd(-1), m_encoder(0),
                                          m_codec(0), m_ios(0)

@@ -36,20 +36,13 @@ class AdminClient : public AtlasStreamClient
     bool login_flag;
     /// \brief Password used to log into the server
     std::string password;
-    /// \brief Account identifier returned after successful login
-    std::string accountId;
-    /// \brief Stored error message from the last received Error operation
-    std::string m_errorMessage;
     /// \brief Store of rules which can't be uploaded until their parent has
     /// been uploaded
     RuleWaitList m_waitingRules;
     /// \brief List of names of rules already uploaded
     std::set<std::string> m_uploadedRules;
 
-    virtual void operation(const Atlas::Objects::Operation::RootOperation &);
-
     virtual void infoArrived(const Atlas::Objects::Operation::RootOperation &);
-    virtual void errorArrived(const Atlas::Objects::Operation::RootOperation &);
 
     void waitForInfo();
     int checkRule(const std::string & id);

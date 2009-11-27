@@ -44,7 +44,6 @@ class ClientConnection : public AtlasStreamClient {
 
     virtual void operation(const Atlas::Objects::Operation::RootOperation&);
 
-    void errorArrived(const Atlas::Objects::Operation::RootOperation &);
     void infoArrived(const Atlas::Objects::Operation::RootOperation &);
 
   public:

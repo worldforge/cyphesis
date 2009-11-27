@@ -54,18 +54,6 @@ using Atlas::Objects::Operation::Error;
 
 static const bool debug_flag = false;
 
-void AdminClient::operation(const RootOperation & op)
-{
-    debug(std::cout << "A " << op->getParents().front() << " op from client!" << std::endl << std::flush;);
-
-    int class_no = op->getClassNo();
-    if (class_no == Atlas::Objects::Operation::INFO_NO) {
-        infoArrived(op);
-    } else if (class_no == Atlas::Objects::Operation::ERROR_NO) {
-        errorArrived(op);
-    }
-}
-
 /// \brief Called when an Info operation arrives
 ///
 /// @param op Operation to be processed
@@ -84,24 +72,6 @@ void AdminClient::infoArrived(const RootOperation & op)
         } else {
             accountId = ent->getId();
         }
-    }
-}
-
-/// \brief Called when an Error operation arrives
-///
-/// @param op Operation to be processed
-void AdminClient::errorArrived(const RootOperation & op)
-{
-    reply_flag = true;
-    error_flag = true;
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return;
-    }
-    const Root & arg = args.front();
-    Element message_attr;
-    if (arg->copyAttr("message", message_attr) == 0 && message_attr.isString()) {
-        m_errorMessage = message_attr.String();
     }
 }
 

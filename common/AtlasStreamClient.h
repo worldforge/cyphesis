@@ -43,6 +43,11 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     basic_socket_stream * m_ios;
     std::string m_username;
 
+    /// \brief Account identifier returned after successful login
+    std::string accountId;
+    /// \brief Stored error message from the last received Error operation
+    std::string m_errorMessage;
+
     // void objectArrived(const Atlas::Objects::Root &);
     int authenticateLocal();
     int negotiate();
@@ -51,7 +56,10 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     virtual void objectArrived(const Atlas::Objects::Root &);
 
-    virtual void operation(const Atlas::Objects::Operation::RootOperation &) = 0;
+    virtual void operation(const Atlas::Objects::Operation::RootOperation &);
+
+    virtual void infoArrived(const Atlas::Objects::Operation::RootOperation &) = 0;
+    virtual void errorArrived(const Atlas::Objects::Operation::RootOperation &);
 
   public:
     AtlasStreamClient();
