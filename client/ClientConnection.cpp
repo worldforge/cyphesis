@@ -91,8 +91,6 @@ void ClientConnection::infoArrived(const RootOperation & op)
             // const std::string & acid = reply["id"].asString();
             // objects[acid] = new ClientAccount(acid, *this);
         }
-    } else {
-        operation(op);
     }
 }
 
