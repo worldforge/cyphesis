@@ -1,5 +1,15 @@
 2009-11-26  Alistair Riddoch  <alriddoch@googlemail.com>
 
+	* tools/AdminTask.cpp, tools/AdminTask.h,
+	* tools/Flusher.cpp, tools/Flusher.h,
+	* tools/Interactive.cpp, tools/Interactive.h,
+	* tools/OperationMonitor.cpp, tools/OperationMonitor.h,
+	* tools/cycmd.cpp: Break out classes into separate files for
+	  better maintainability. Move more functionality into base
+	  classes.
+
+2009-11-26  Alistair Riddoch  <alriddoch@googlemail.com>
+
 	* client/BaseClient.cpp, client/BaseClient.h,
 	  client/ObserverClient.cpp:
 	  Clean up and use the Atlas-C++ API a bit better.
