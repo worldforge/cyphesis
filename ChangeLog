@@ -1,4 +1,17 @@
-2009-11-26  Alistair Riddoch  <alriddoch@googlemail.com>
+2009-11-28  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* client/BaseClient.cpp, client/CharacterClient.cpp,
+	  client/ClientConnection.cpp, client/ClientConnection.h.
+	  common/AtlasStreamClient.cpp, common/AtlasStreamClient.h,
+	  common/ClientTask.cpp, common/ClientTask.h,
+	  tools/AdminClient.cpp, tools/AdminClient.h,
+	  tools/AdminTask.cpp, tools/AdminTask.h,
+	  tools/Interactive.cpp, tools/Interactive.h,
+	  tools/Flusher.h, tools/OperationMonitor.h:
+	  Clean up client code, moving all generic functionality into
+	  a common class, with features available to all tools and clients.
+
+2009-11-27  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* tools/AdminTask.cpp, tools/AdminTask.h,
 	* tools/Flusher.cpp, tools/Flusher.h,
