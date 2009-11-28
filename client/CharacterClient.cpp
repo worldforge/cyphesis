@@ -56,10 +56,11 @@ void CharacterClient::send(const Operation & op)
 /// @param res Result with correct refno is returned here
 int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
 {
+    long no = m_connection.newSerialNo();
+    op->setSerialno(no);
     send(op);
     debug(std::cout << "Waiting for reply to " << op->getParents().front()
                     << std::endl << std::flush;);
-    long no = op->getSerialno();
     while (true) {
         if (m_connection.pending()) {
             Operation input = m_connection.pop();

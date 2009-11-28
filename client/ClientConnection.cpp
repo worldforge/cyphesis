@@ -33,7 +33,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 static bool debug_flag = false;
 
-ClientConnection::ClientConnection() : serialNo(512)
+ClientConnection::ClientConnection()
 {
 }
 
@@ -96,17 +96,6 @@ int ClientConnection::wait()
       }
    }
    return error_flag ? -1 : 0;
-}
-
-void ClientConnection::send(const RootOperation & op)
-{
-    /* debug(Atlas::Codecs::XML c((std::iostream&)std::cout, (Atlas::Bridge*)this);
-          Atlas::Objects::Encoder enc(&c);
-          enc.streamMessage(&op);
-          std::cout << std::endl << std::flush;); */
-
-    op->setSerialno(++serialNo);
-    AtlasStreamClient::send(op);
 }
 
 RootOperation ClientConnection::pop()

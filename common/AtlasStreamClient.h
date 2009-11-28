@@ -36,6 +36,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     bool reply_flag;
     /// \brief Flag to indicate that an error has been received from the server
     bool error_flag;
+    /// \brief Counter used to track serial numbers sent to the server
+    int serialNo;
 
     int m_fd;
     Atlas::Objects::ObjectsEncoder * m_encoder;
@@ -64,6 +66,10 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
   public:
     AtlasStreamClient();
     virtual ~AtlasStreamClient();
+
+    int newSerialNo() {
+        return ++serialNo;
+    }
 
     void send(const Atlas::Objects::Operation::RootOperation & op);
     int connect(const std::string & host, int port = 6767);

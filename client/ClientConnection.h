@@ -36,8 +36,6 @@ class ClientConnection : public AtlasStreamClient {
   protected:
     /// \brief Store for reply data from the server
     Atlas::Objects::Root reply;
-    /// \brief Counter used to track serial numbers sent to the server
-    int serialNo;
 
     /// \brief Store for operations arrived from the server
     std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
@@ -51,7 +49,6 @@ class ClientConnection : public AtlasStreamClient {
     ~ClientConnection();
 
     int wait();
-    void send(const Atlas::Objects::Operation::RootOperation & op);
 
     /// \brief Read only accessor for Info reply data from the server
     const Atlas::Objects::Root & getReply() {
