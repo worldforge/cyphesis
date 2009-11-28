@@ -269,20 +269,7 @@ void Interactive::infoArrived(const Operation & op)
     }
     const Root & ent = op->getArgs().front();
     if (login_flag) {
-        std::cout << "login success" << std::endl << std::flush;
-        if (ent->isDefaultId()) {
-            std::cerr << "ERROR: Response to login does not contain account id"
-                      << std::endl << std::flush;
-            
-        } else {
-            accountId = ent->getId();
-        }
-        if (!ent->isDefaultParents()) {
-            const std::list<std::string> & parents = ent->getParents();
-            if (!parents.empty()) {
-                accountType = parents.front();
-            }
-        }
+        AtlasStreamClient::infoArrived(op);
     } else if (avatar_flag) {
         std::cout << "Create agent success" << std::endl << std::flush;
         if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {

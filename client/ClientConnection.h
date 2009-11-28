@@ -34,26 +34,16 @@
 /// an admin client
 class ClientConnection : public AtlasStreamClient {
   protected:
-    /// \brief Store for reply data from the server
-    Atlas::Objects::Root reply;
-
     /// \brief Store for operations arrived from the server
     std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
 
     virtual void operation(const Atlas::Objects::Operation::RootOperation&);
-
-    void infoArrived(const Atlas::Objects::Operation::RootOperation &);
 
   public:
     ClientConnection();
     ~ClientConnection();
 
     int wait();
-
-    /// \brief Read only accessor for Info reply data from the server
-    const Atlas::Objects::Root & getReply() {
-        return reply;
-    }
 
     Atlas::Objects::Operation::RootOperation pop();
     bool pending();

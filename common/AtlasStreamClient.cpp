@@ -178,6 +178,26 @@ void AtlasStreamClient::operation(const RootOperation & op)
     }
 }
 
+void AtlasStreamClient::infoArrived(const RootOperation & op)
+{
+    reply_flag = true;
+    if (!op->isDefaultFrom()) {
+        return;
+    }
+    if (op->isDefaultArgs() || op->getArgs().empty()) {
+        std::cerr << "WARNING: Malformed account from server" << std::endl << std::flush;
+        return;
+    }
+    if (op->isDefaultRefno()) {
+        return;
+    }
+    if (op->getRefno() != serialNo) {
+        std::cerr << "WARNING: This is not our response" << std::endl << std::flush;
+        return;
+    }
+    m_infoReply = op->getArgs().front();
+}
+
 /// \brief Called when an Error operation arrives
 ///
 /// @param op Operation to be processed
@@ -292,10 +312,29 @@ int AtlasStreamClient::login(const std::string & username,
     account->setAttr("password", password);
  
     l->setArgs1(account);
+    l->setSerialno(newSerialNo());
  
     send(l);
 
-    return 0;
+    reply_flag = false;
+
+    for (int i = 0; i < 10; ++i) {
+       if (poll(0, 100000) != 0) {
+           return -1;
+       }
+       if (reply_flag) {
+           if (m_infoReply->isDefaultId()) {
+              std::cerr << "Malformed reply" << std::endl << std::flush;
+           } else {
+               std::cerr << "Got it" << std::endl << std::flush;
+               accountId = m_infoReply->getId();
+               return 0;
+           }
+           reply_flag = false;
+       }
+    }
+
+    return -1;
 }
 
 int AtlasStreamClient::create(const std::string & username,
@@ -310,10 +349,29 @@ int AtlasStreamClient::create(const std::string & username,
     account->setAttr("password", password);
 
     c->setArgs1(account);
+    c->setSerialno(newSerialNo());
 
     send(c);
 
-    return 0;
+    reply_flag = false;
+
+    for (int i = 0; i < 10; ++i) {
+       if (poll(0, 100000) != 0) {
+           return -1;
+       }
+       if (reply_flag) {
+           if (m_infoReply->isDefaultId()) {
+              std::cerr << "Malformed reply" << std::endl << std::flush;
+           } else {
+               std::cerr << "Got it" << std::endl << std::flush;
+               accountId = m_infoReply->getId();
+               return 0;
+           }
+           reply_flag = false;
+       }
+    }
+
+    return -1;
 }
 
 int AtlasStreamClient::poll(int timeOut, int msec)

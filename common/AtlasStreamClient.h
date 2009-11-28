@@ -22,6 +22,8 @@
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 namespace Atlas {
   class Codec;
@@ -45,6 +47,9 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     basic_socket_stream * m_ios;
     std::string m_username;
 
+    /// \brief Store for reply data from the server
+    Atlas::Objects::Root m_infoReply;
+
     /// \brief Account identifier returned after successful login
     std::string accountId;
     /// \brief Stored error message from the last received Error operation
@@ -60,7 +65,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     virtual void operation(const Atlas::Objects::Operation::RootOperation &);
 
-    virtual void infoArrived(const Atlas::Objects::Operation::RootOperation &) = 0;
+    virtual void infoArrived(const Atlas::Objects::Operation::RootOperation &);
     virtual void errorArrived(const Atlas::Objects::Operation::RootOperation &);
 
   public:
@@ -69,6 +74,10 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     int newSerialNo() {
         return ++serialNo;
+    }
+
+    const Atlas::Objects::Root & getInfoReply() const {
+        return m_infoReply;
     }
 
     void send(const Atlas::Objects::Operation::RootOperation & op);

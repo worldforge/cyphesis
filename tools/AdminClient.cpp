@@ -54,27 +54,6 @@ using Atlas::Objects::Operation::Error;
 
 static const bool debug_flag = false;
 
-/// \brief Called when an Info operation arrives
-///
-/// @param op Operation to be processed
-void AdminClient::infoArrived(const RootOperation & op)
-{
-    reply_flag = true;
-    if (op->getArgs().empty()) {
-        return;
-    }
-    const Root & ent = op->getArgs().front();
-    if (login_flag) {
-        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            std::cerr << "ERROR: Response to login does not contain account id"
-                      << std::endl << std::flush;
-            
-        } else {
-            accountId = ent->getId();
-        }
-    }
-}
-
 /// \brief AdminClient constructor
 AdminClient::AdminClient() : login_flag(false)
 {

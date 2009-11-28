@@ -69,11 +69,13 @@ Root BaseClient::createPlayer(const std::string & name,
     
     Login loginAccountOp;
     loginAccountOp->setArgs1(player_ent);
+    loginAccountOp->setSerialno(m_connection.newSerialNo());
     send(loginAccountOp);
 
     if (m_connection.wait() != 0) {
         Create createAccountOp;
         createAccountOp->setArgs1(player_ent);
+        createAccountOp->setSerialno(m_connection.newSerialNo());
         send(createAccountOp);
         if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
@@ -82,7 +84,7 @@ Root BaseClient::createPlayer(const std::string & name,
         }
     }
 
-    const Root & ent = m_connection.getReply();
+    const Root & ent = m_connection.getInfoReply();
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
@@ -111,6 +113,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     Create createOp;
     createOp->setFrom(m_playerId);
     createOp->setArgs1(character);
+    createOp->setSerialno(m_connection.newSerialNo());
     send(createOp);
 
     if (m_connection.wait() != 0) {
@@ -119,7 +122,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
         return NULL;
     }
 
-    RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getReply());
+    RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Character created, but has no id" << std::endl

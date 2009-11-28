@@ -69,21 +69,6 @@ void ClientConnection::operation(const RootOperation & op)
 #endif
 }
 
-void ClientConnection::infoArrived(const RootOperation & op)
-{
-    debug(std::cout << "INFO" << std::endl << std::flush;);
-    if (op->isDefaultFrom()) {
-        if (op->isDefaultArgs() || op->getArgs().empty()) {
-            std::cerr << "WARNING: Malformed account from server" << std::endl << std::flush;
-        } else {
-            const Root & ac = op->getArgs().front();
-            reply = ac;
-            // const std::string & acid = reply["id"].asString();
-            // objects[acid] = new ClientAccount(acid, *this);
-        }
-    }
-}
-
 int ClientConnection::wait()
 // Waits for response from server. Used when we are expecting a login response
 // Return whether or not an error occured
