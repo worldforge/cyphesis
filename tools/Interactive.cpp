@@ -167,28 +167,7 @@ void Interactive::operation(const Operation & op)
         }
     }
 
-    switch (op->getClassNo()) {
-        case Atlas::Objects::Operation::APPEARANCE_NO:
-            appearanceArrived(op);
-            break;
-        case Atlas::Objects::Operation::DISAPPEARANCE_NO:
-            disappearanceArrived(op);
-            break;
-        case Atlas::Objects::Operation::INFO_NO:
-            infoArrived(op);
-            break;
-        case Atlas::Objects::Operation::ERROR_NO:
-            errorArrived(op);
-            break;
-        case Atlas::Objects::Operation::SIGHT_NO:
-            sightArrived(op);
-            break;
-        case Atlas::Objects::Operation::SOUND_NO:
-            soundArrived(op);
-            break;
-        default:
-            break;
-    }
+    AtlasStreamClient::operation(op);
 }
 
 void Interactive::appearanceArrived(const Operation & op)
