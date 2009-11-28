@@ -170,11 +170,27 @@ void AtlasStreamClient::objectArrived(const Root & obj)
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
-    int class_no = op->getClassNo();
-    if (class_no == Atlas::Objects::Operation::INFO_NO) {
-        infoArrived(op);
-    } else if (class_no == Atlas::Objects::Operation::ERROR_NO) {
-        errorArrived(op);
+    switch (op->getClassNo()) {
+        case Atlas::Objects::Operation::APPEARANCE_NO:
+            appearanceArrived(op);
+            break;
+        case Atlas::Objects::Operation::DISAPPEARANCE_NO:
+            disappearanceArrived(op);
+            break;
+        case Atlas::Objects::Operation::INFO_NO:
+            infoArrived(op);
+            break;
+        case Atlas::Objects::Operation::ERROR_NO:
+            errorArrived(op);
+            break;
+        case Atlas::Objects::Operation::SIGHT_NO:
+            sightArrived(op);
+            break;
+        case Atlas::Objects::Operation::SOUND_NO:
+            soundArrived(op);
+            break;
+        default:
+            break;
     }
 }
 
@@ -196,6 +212,22 @@ void AtlasStreamClient::infoArrived(const RootOperation & op)
         return;
     }
     m_infoReply = op->getArgs().front();
+}
+
+void AtlasStreamClient::appearanceArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::disappearanceArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::sightArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::soundArrived(const RootOperation & op)
+{
 }
 
 /// \brief Called when an Error operation arrives

@@ -20,6 +20,8 @@
 #ifndef COMMON_ATLAS_STREAM_CLIENT_H
 #define COMMON_ATLAS_STREAM_CLIENT_H
 
+#include "common/OperationRouter.h"
+
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
@@ -69,6 +71,11 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     virtual void infoArrived(const Atlas::Objects::Operation::RootOperation &);
     virtual void errorArrived(const Atlas::Objects::Operation::RootOperation &);
+    virtual void appearanceArrived(const Operation &);
+    virtual void disappearanceArrived(const Operation &);
+    virtual void sightArrived(const Operation &);
+    virtual void soundArrived(const Operation &);
+
 
   public:
     AtlasStreamClient();
