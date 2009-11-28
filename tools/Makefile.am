@@ -77,7 +77,6 @@ MATHTOOL_LIBS = $(MATH_LIBS)
 endif
 
 cycmd_SOURCES = cycmd.cpp \
-        AdminTask.cpp AdminTask.h \
         Flusher.cpp Flusher.h \
         OperationMonitor.cpp OperationMonitor.h \
         AdminClient.cpp AdminClient.h \
@@ -89,6 +88,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/log.o \
               $(top_builddir)/common/const.o \
               $(top_builddir)/common/AtlasStreamClient.o \
+              $(top_builddir)/common/ClientTask.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)

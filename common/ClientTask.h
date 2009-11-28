@@ -29,15 +29,15 @@
 /// Typical tasks that inherit from this class are ones which last for
 /// non trivial time and will typically require the user to be able to
 /// continue issuing commands.
-class AdminTask {
+class ClientTask {
   protected:
     /// \brief Flag that indicates when the task is complete
     bool m_complete;
 
-    ///\brief AdminTask constructor
-    AdminTask();
+    ///\brief ClientTask constructor
+    ClientTask();
   public:
-    virtual ~AdminTask();
+    virtual ~ClientTask();
 
     /// \brief Set up the task processing user arguments
     virtual void setup(const std::string & arg, OpVector &) = 0;

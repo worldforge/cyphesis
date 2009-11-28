@@ -26,7 +26,7 @@
 
 #include <sigc++/trackable.h>
 
-class AdminTask;
+class ClientTask;
 
 /// \brief Class template for clients used to connect to and administrate
 /// a cyphesis server.
@@ -41,7 +41,7 @@ class Interactive : public AdminClient,
     std::string systemType;
     std::string prompt;
     bool exit;
-    AdminTask * currentTask;
+    ClientTask * currentTask;
 
   protected:
     virtual void operation(const Operation &);
@@ -63,7 +63,7 @@ class Interactive : public AdminClient,
     void select(bool rewrite_prompt = true);
     void updatePrompt();
     void runCommand(char *);
-    int runTask(AdminTask * task, const std::string & arg);
+    int runTask(ClientTask * task, const std::string & arg);
     int endTask();
 
     static void gotCommand(char *);

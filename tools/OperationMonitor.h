@@ -20,10 +20,10 @@
 #ifndef TOOLS_OPERATION_MONITOR_H
 #define TOOLS_OPERATION_MONITOR_H
 
-#include "AdminTask.h"
+#include "common/ClientTask.h"
 
 /// \brief Task class for monitoring all in-game operations occuring.
-class OperationMonitor : public AdminTask {
+class OperationMonitor : public ClientTask {
   protected:
     int op_count;
     int start_time;

@@ -20,10 +20,10 @@
 #ifndef TOOLS_FLUSHER_H
 #define TOOLS_FLUSHER_H
 
-#include "AdminTask.h"
+#include "common/ClientTask.h"
 
 /// \brief Task class for flushing the server of character entities
-class Flusher : public AdminTask {
+class Flusher : public ClientTask {
   protected:
     const std::string agentId;
     std::string type;

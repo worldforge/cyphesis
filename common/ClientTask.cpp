@@ -17,12 +17,12 @@
 
 // $Id$
 
-#include "AdminTask.h"
+#include "ClientTask.h"
 
-AdminTask::AdminTask() : m_complete(false)
+ClientTask::ClientTask() : m_complete(false)
 {
 }
 
-AdminTask::~AdminTask()
+ClientTask::~ClientTask()
 {
 }

@@ -43,6 +43,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Monitors.cpp Monitors.h \
 		      Variable.cpp Variable.h \
 		      AtlasStreamClient.cpp AtlasStreamClient.h \
+		      ClientTask.cpp ClientTask.h \
 		      Actuate.h Add.h Affect.h Attack.h Burn.h Connect.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h

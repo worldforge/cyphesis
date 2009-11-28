@@ -417,7 +417,7 @@ void Interactive::runCommand(char * cmd)
     exec(cmd, arg);
 }
 
-int Interactive::runTask(AdminTask * task, const std::string & arg)
+int Interactive::runTask(ClientTask * task, const std::string & arg)
 {
     assert(task != 0);
 
@@ -663,7 +663,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         send(g);
     } else if (cmd == "monitor") {
-        AdminTask * task = new OperationMonitor;
+        ClientTask * task = new OperationMonitor;
         if (runTask(task, arg) == 0) {
             Monitor m;
 
@@ -793,7 +793,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "Please specify the type to flush" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            AdminTask * task = new Flusher(agentId);
+            ClientTask * task = new Flusher(agentId);
             runTask(task, arg);
             reply_expected = false;
         }
