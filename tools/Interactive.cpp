@@ -143,31 +143,12 @@ static void help()
 
 Interactive::Interactive() : avatar_flag(false), server_flag(false),
                              serverName("cyphesis"), prompt("cyphesis> "),
-                             exit(false), currentTask(0)
+                             exit(false)
 {
 }
 
 Interactive::~Interactive()
 {
-}
-
-void Interactive::operation(const Operation & op)
-{
-    if (currentTask != 0) {
-        OpVector res;
-        currentTask->operation(op, res);
-        OpVector::const_iterator Iend = res.end();
-        for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-            send(*I);
-        }
-
-        if (currentTask->isComplete()) {
-            delete currentTask;
-            currentTask = 0;
-        }
-    }
-
-    AtlasStreamClient::operation(op);
 }
 
 void Interactive::appearanceArrived(const Operation & op)
@@ -396,38 +377,6 @@ void Interactive::runCommand(char * cmd)
     exec(cmd, arg);
 }
 
-int Interactive::runTask(ClientTask * task, const std::string & arg)
-{
-    assert(task != 0);
-
-    if (currentTask != 0) {
-        std::cout << "Busy" << std::endl << std::flush;
-        return -1;
-    }
-
-    currentTask = task;
-
-    OpVector res;
-
-    currentTask->setup(arg, res);
-
-    OpVector::const_iterator Iend = res.end();
-    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        send(*I);
-    }
-    return 0;
-}
-
-int Interactive::endTask()
-{
-    if (currentTask == 0) {
-        return -1;
-    }
-    delete currentTask;
-    currentTask = 0;
-    return 0;
-}
-
 int completion_iterator = 0;
 
 char * completion_generator(const char * text, int state)
@@ -654,7 +603,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         reply_expected = false;
     } else if (cmd == "unmonitor") {
-        OperationMonitor * om = dynamic_cast<OperationMonitor *>(currentTask);
+        OperationMonitor * om = dynamic_cast<OperationMonitor *>(m_currentTask);
 
         if (om != 0) {
             Monitor m;

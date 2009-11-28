@@ -32,6 +32,7 @@ namespace Atlas {
 } // namespace Atlas
 
 class basic_socket_stream;
+class ClientTask;
 
 class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 {
@@ -47,6 +48,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     Atlas::Objects::ObjectsEncoder * m_encoder;
     Atlas::Codec * m_codec;
     basic_socket_stream * m_ios;
+    ClientTask * m_currentTask;
+
     std::string m_username;
 
     /// \brief Store for reply data from the server
@@ -95,6 +98,9 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int login(const std::string & username, const std::string & password);
     int create(const std::string & username, const std::string & password);
     int poll(int timeout = 0, int msec = 0);
+
+    int runTask(ClientTask * task, const std::string & arg);
+    int endTask();
 
 };
 

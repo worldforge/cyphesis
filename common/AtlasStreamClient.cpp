@@ -22,6 +22,7 @@
 #endif // HAVE_CONFIG_H
 
 #include "common/AtlasStreamClient.h"
+#include "common/ClientTask.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -170,6 +171,20 @@ void AtlasStreamClient::objectArrived(const Root & obj)
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
+    if (m_currentTask != 0) {
+        OpVector res;
+        m_currentTask->operation(op, res);
+        OpVector::const_iterator Iend = res.end();
+        for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+            send(*I);
+        }
+
+        if (m_currentTask->isComplete()) {
+            delete m_currentTask;
+            m_currentTask = 0;
+        }
+    }
+
     switch (op->getClassNo()) {
         case Atlas::Objects::Operation::APPEARANCE_NO:
             appearanceArrived(op);
@@ -250,7 +265,7 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
 
 AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
                                          serialNo(512), m_fd(-1), m_encoder(0),
-                                         m_codec(0), m_ios(0)
+                                         m_codec(0), m_ios(0), m_currentTask(0)
 {
 }
 
@@ -443,5 +458,37 @@ int AtlasStreamClient::poll(int timeOut, int msec)
             m_codec->poll();
         }
     }
+    return 0;
+}
+
+int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
+{
+    assert(task != 0);
+
+    if (m_currentTask != 0) {
+        std::cout << "Busy" << std::endl << std::flush;
+        return -1;
+    }
+
+    m_currentTask = task;
+
+    OpVector res;
+
+    m_currentTask->setup(arg, res);
+
+    OpVector::const_iterator Iend = res.end();
+    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+        send(*I);
+    }
+    return 0;
+}
+
+int AtlasStreamClient::endTask()
+{
+    if (m_currentTask == 0) {
+        return -1;
+    }
+    delete m_currentTask;
+    m_currentTask = 0;
     return 0;
 }

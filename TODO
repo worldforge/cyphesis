@@ -1,6 +1,3 @@
-Consider moving AdminTask functionality into a base class, and use it for
-things currently special cased.
-
 Make cycmd stop dumping all ops to output unless monitoring is on,
 and stop it re-writing the prompt so much.
 
