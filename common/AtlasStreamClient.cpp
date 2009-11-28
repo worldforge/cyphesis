@@ -240,6 +240,8 @@ void AtlasStreamClient::send(const RootOperation & op)
     if (m_encoder == 0 || m_ios == 0) {
         return;
     }
+    reply_flag = false;
+    error_flag = false;
     m_encoder->streamObjectsMessage(op);
     (*m_ios) << std::flush;
 }
@@ -324,10 +326,12 @@ int AtlasStreamClient::login(const std::string & username,
        }
        if (reply_flag) {
            if (m_infoReply->isDefaultId()) {
-              std::cerr << "Malformed reply" << std::endl << std::flush;
+               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
-               std::cerr << "Got it" << std::endl << std::flush;
                accountId = m_infoReply->getId();
+               if (!m_infoReply->getParents().empty()) {
+                   accountType = m_infoReply->getParents().front();
+               }
                return 0;
            }
            reply_flag = false;
@@ -365,6 +369,9 @@ int AtlasStreamClient::create(const std::string & username,
            } else {
                std::cerr << "Got it" << std::endl << std::flush;
                accountId = m_infoReply->getId();
+               if (m_infoReply->getParents().empty()) {
+                   accountType = m_infoReply->getParents().front();
+               }
                return 0;
            }
            reply_flag = false;

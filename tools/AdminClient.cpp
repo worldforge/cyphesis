@@ -55,7 +55,7 @@ using Atlas::Objects::Operation::Error;
 static const bool debug_flag = false;
 
 /// \brief AdminClient constructor
-AdminClient::AdminClient() : login_flag(false)
+AdminClient::AdminClient()
 {
 }
 
@@ -79,10 +79,6 @@ void AdminClient::getLogin()
 /// @return 0 if a rule exists, 1 if it does not
 int AdminClient::checkRule(const std::string & id)
 {
-    error_flag = false;
-    reply_flag = false;
-    login_flag = false;
-
     Get g;
 
     Anonymous get_arg;
@@ -111,10 +107,6 @@ int AdminClient::checkRule(const std::string & id)
 int AdminClient::uploadRule(const std::string & id, const std::string & set,
                             const MapType & rule)
 {
-    error_flag = false;
-    reply_flag = false;
-    login_flag = false;
-
     if (m_uploadedRules.find(id) != m_uploadedRules.end()) {
         std::cout << "Overriden rule " << id << " ignored."
                   << std::endl << std::flush;
@@ -125,10 +117,6 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
     if (checkRule(id) == 0) {
         std::cout << "Updating " << id << " on server."
                   << std::endl << std::flush;
-
-        error_flag = false;
-        reply_flag = false;
-        login_flag = false;
 
         Set s;
 
@@ -210,10 +198,6 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     std::cout << "Uploading " << id << " to server." << std::endl << std::flush;
 
-    error_flag = false;
-    reply_flag = false;
-    login_flag = false;
-
     Create c;
 
     Root create_arg;
@@ -286,20 +270,7 @@ void AdminClient::waitForInfo()
 /// This function uses credentials that have been set earlier.
 int AdminClient::login()
 {
-    error_flag = false;
-    reply_flag = false;
-    login_flag = true;
- 
-    AtlasStreamClient::login(m_username, password);
- 
-    waitForInfo();
-
-    login_flag = false;
-
-    if (!error_flag) {
-       return 0;
-    }
-    return -1;
+    return AtlasStreamClient::login(m_username, password);
 }
 
 /// \brief Report information about rules which didn't upload

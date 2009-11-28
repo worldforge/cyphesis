@@ -268,9 +268,7 @@ void Interactive::infoArrived(const Operation & op)
         return;
     }
     const Root & ent = op->getArgs().front();
-    if (login_flag) {
-        AtlasStreamClient::infoArrived(op);
-    } else if (avatar_flag) {
+    if (avatar_flag) {
         std::cout << "Create agent success" << std::endl << std::flush;
         if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Response to agent create does not contain agent id"
@@ -299,6 +297,7 @@ void Interactive::infoArrived(const Operation & op)
         }
         server_flag = false;
     } else {
+        AtlasStreamClient::infoArrived(op);
         std::cout << "Info(" << std::endl;
         MapType entmap = ent->asMessage();
         MapType::const_iterator Iend = entmap.end();

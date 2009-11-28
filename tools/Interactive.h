@@ -35,7 +35,6 @@ class Interactive : public AdminClient,
 {
   private:
     bool avatar_flag, server_flag;
-    std::string accountType;
     std::string agentId;
     std::string agentName;
     std::string serverName;
