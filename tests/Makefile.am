@@ -9,7 +9,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                client_sockettest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
                FormattedXMLWritertest PropertyFactorytest \
-               PropertyManagertest Variabletest AtlasStreamClienttest
+               PropertyManagertest Variabletest AtlasStreamClienttest \
+               ClientTasktest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
@@ -269,6 +270,10 @@ AtlasStreamClienttest_LDADD = \
         $(top_builddir)/common/AtlasStreamClient.o \
         $(top_builddir)/common/ClientTask.o \
         $(NETWORK_LIBS)
+
+ClientTasktest_SOURCES = ClientTasktest.cpp
+ClientTasktest_LDADD = \
+        $(top_builddir)/common/ClientTask.o
 
 # PHYSICS_TESTS
 
