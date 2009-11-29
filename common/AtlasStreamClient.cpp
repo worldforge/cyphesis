@@ -47,6 +47,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 int AtlasStreamClient::authenticateLocal()
 {
+#ifdef HAVE_SYS_UN_H
     // Prove to the server that we are real.
 
     unsigned char buf[1];
@@ -88,6 +89,9 @@ int AtlasStreamClient::authenticateLocal()
 
     // Done proving we are real.
     return 0;
+#else // HAVE_SYS_UN_H
+    return -1;
+#endif // HAVE_SYS_UN_H
 }
 
 int AtlasStreamClient::linger()
