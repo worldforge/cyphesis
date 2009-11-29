@@ -34,6 +34,8 @@
 #include <skstream/skstream.h>
 #include <skstream/skstream_unix.h>
 
+#include <cstdio>
+
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
