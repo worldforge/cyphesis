@@ -318,28 +318,30 @@ void Interactive::soundArrived(const Operation & op)
         return;
     }
     reply_flag = true;
-    const MapType & arg = op->getArgs().front()->asMessage();
-    MapType::const_iterator I = arg.find("from");
-    if (I == arg.end() || !I->second.isString()) {
+    if (op->getArgs().empty()) {
+        std::cout << "Sound op has no args" << std::endl << std::flush;
+        return;
+    }
+    Operation sub_op = smart_dynamic_cast<Operation>(op->getArgs().front());
+    if (!sub_op.isValid()) {
+        return;
+    }
+    if (sub_op->isDefaultFrom()) {
         std::cout << "Sound arg has no from" << std::endl << std::flush;
         return;
     }
-    const std::string & from = I->second.asString();
-    I = arg.find("args");
-    if (I == arg.end() || !I->second.isList()
-                       || I->second.asList().empty()
-                       || !I->second.asList().front().isMap()) {
+    const std::string & from = sub_op->getFrom();
+    if (sub_op->getArgs().empty()) {
         std::cout << "Sound arg has no args" << std::endl << std::flush;
         return;
     }
-    const MapType & ent = I->second.asList().front().asMap();
-    I = ent.find("say");
-    if (I == ent.end() || !I->second.isString()) {
+    const Root & arg = sub_op->getArgs().front();
+    Element say;
+    if (arg->copyAttr("say", say) != 0 || !say.isString()) {
         std::cout << "Sound arg arg has no say" << std::endl << std::flush;
         return;
     }
-    const std::string & say = I->second.asString();
-    std::cout << "[" << from << "] " << say
+    std::cout << "[" << from << "] " << say.String()
               << std::endl << std::flush;
 }
 
