@@ -40,6 +40,12 @@
 
 #ifdef HAVE_SYS_UN_H
 
+#include <sys/un.h>
+
+#ifdef HAVE_SYS_UCRED_H
+#include <sys/ucred.h>
+#endif // HAVE_SYS_UCRED_H
+
 static const bool debug_flag = false;
 
 /// \brief Constructor unix listen socket object.
@@ -85,17 +91,31 @@ int CommUnixListener::setup(const std::string & name)
 int CommUnixListener::accept()
 {
     debug(std::cout << "Local accepting.." << std::endl << std::flush;);
-    int asockfd = m_unixListener.accept();
+    int fd = m_unixListener.accept();
 
-    if (asockfd < 0) {
+    if (fd < 0) {
         return -1;
     }
     debug(std::cout << "Local accepted" << std::endl << std::flush;);
 
+#ifdef HAVE_SYS_UN_H
+#ifdef __APPLE__
+    struct xucred creds;
+    creds.cr_version = 0;
+    creds.cr_uid = 24;
+    socklen_t cred_len = sizeof(creds);
+    int ret = ::getsockopt(fd, SOL_SOCKET, LOCAL_PEERCRED, &creds, &cred_len);
+    if (ret != 0 || cred_len != sizeof(creds)) {
+        log(WARNING, "Unable to get unix credentials.");
+        if (ret != 0) {
+            logSysError(ERROR);
+        }
+    }
+#else // __APPLE__
     // Start getting data from the client about who it really is
 
     int flagon = 1;
-    if (::setsockopt(asockfd, SOL_SOCKET, SO_PASSCRED,
+    if (::setsockopt(fd, SOL_SOCKET, SO_PASSCRED,
                      &flagon, sizeof(int)) < 0) {
         log(ERROR, "Unable to enable unix credentials.");
         logSysError(ERROR);
@@ -116,7 +136,7 @@ int CommUnixListener::accept()
         auth_message.msg_controllen  = sizeof(control_buf);
         auth_message.msg_flags       = 0;
 
-        if (recvmsg(asockfd, &auth_message, 0) == -1) {
+        if (recvmsg(fd, &auth_message, 0) == -1) {
             log(WARNING, "Credentials recieve failed");
         }
 
@@ -136,10 +156,12 @@ int CommUnixListener::accept()
             log(ERROR, "Unix client connected but did not give credentials.");
         }
     }
+#endif // __APPLE__
+#endif // HAVE_SYS_UN_H
 
     // Got client auth data
 
-    return create(asockfd, "local");
+    return create(fd, "local");
 }
 
 #endif // HAVE_SYS_UN_H

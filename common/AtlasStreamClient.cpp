@@ -36,6 +36,10 @@
 
 #include <cstdio>
 
+#ifdef HAVE_SYS_UN_H
+#include <sys/un.h>
+#endif // HAVE_SYS_UN_H
+
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -48,6 +52,7 @@ using Atlas::Objects::Operation::RootOperation;
 int AtlasStreamClient::authenticateLocal()
 {
 #ifdef HAVE_SYS_UN_H
+#ifndef __APPLE__
     // Prove to the server that we are real.
 
     unsigned char buf[1];
@@ -89,6 +94,7 @@ int AtlasStreamClient::authenticateLocal()
 
     // Done proving we are real.
     return 0;
+#endif // __APPLE__
 #else // HAVE_SYS_UN_H
     return -1;
 #endif // HAVE_SYS_UN_H
