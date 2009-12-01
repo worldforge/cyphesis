@@ -52,11 +52,15 @@ class Connection : public Router, virtual public sigc::trackable {
     /// without them trying to remove themselves from the connection.
     bool m_obsolete;
 
-    virtual Account * addPlayer(const std::string & account,
-                                const std::string & username,
-                                const std::string & password);
-    Account * removePlayer(Router *, const std::string & event);
+    Account * addAccount(const std::string & account,
+                         const std::string & username,
+                         const std::string & password);
+    Account * removeAccount(Router *, const std::string & event);
 
+    virtual Account * newAccount(const std::string & type,
+                                 const std::string & username,
+                                 const std::string & passwd,
+                                 const std::string & id, long intId);
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
   public:

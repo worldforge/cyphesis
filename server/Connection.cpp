@@ -82,7 +82,7 @@ Connection::~Connection()
 
     RouterMap::const_iterator Iend = m_objects.end();
     for (RouterMap::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        removePlayer(I->second, "Disconnect");
+        removeAccount(I->second, "Disconnect");
     }
 
     m_server.decClients();
@@ -93,9 +93,17 @@ void Connection::send(const Operation & op) const
     m_commClient.send(op);
 }
 
-Account * Connection::addPlayer(const std::string & type,
-                                const std::string & username,
-                                const std::string & password)
+Account * Connection::newAccount(const std::string & type,
+                                 const std::string & username,
+                                 const std::string & hash,
+                                 const std::string & id, long intId)
+{
+    return new Player(this, username, hash, id, intId);
+}
+
+Account * Connection::addAccount(const std::string & type,
+                                 const std::string & username,
+                                 const std::string & password)
 {
     std::string hash;
     encrypt_password(password, hash);
@@ -107,7 +115,7 @@ Account * Connection::addPlayer(const std::string & type,
         return 0;
     }
 
-    Account * account = new Player(this, username, hash, newAccountId, intId);
+    Account * account = newAccount(type, username, hash, newAccountId, intId);
     addObject(account);
     assert(account->m_connection == this);
     account->m_connection = this;
@@ -120,7 +128,7 @@ Account * Connection::addPlayer(const std::string & type,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::removePlayer(Router * obj, const std::string & event)
+Account * Connection::removeAccount(Router * obj, const std::string & event)
 {
     Account * ac = dynamic_cast<Account *>(obj);
     if (ac != 0) {
@@ -430,7 +438,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
                       << std::endl << std::flush;
         }
     }
-    Account * account = addPlayer(type, username, password);
+    Account * account = addAccount(type, username, password);
     if (account == 0) {
         clientError(op, "Account creation failed", res);
         return;
@@ -478,7 +486,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    Account * ac = removePlayer(I->second, "Logout");
+    Account * ac = removeAccount(I->second, "Logout");
     if (ac != 0) {
         m_objects.erase(I);
         EntityDict::const_iterator J = ac->getCharacters().begin();

@@ -19,7 +19,11 @@
 
 #include "TrustedConnection.h"
 
-#include "common/id.h"
+#include "Admin.h"
+#include "Player.h"
+
+#include <common/compose.hpp>
+#include <common/log.h>
 
 /// \brief TrustedConnection constructor
 ///
@@ -35,11 +39,23 @@ TrustedConnection::TrustedConnection(CommClient & client,
 {
 }
 
-Account * TrustedConnection::addPlayer(const std::string & account,
-                                       const std::string & username,
-                                       const std::string & password)
+Account * TrustedConnection::newAccount(const std::string & type,
+                                        const std::string & username,
+                                        const std::string & hash,
+                                        const std::string & id, long intId)
 {
-    return Connection::addPlayer(account, username, password);
+    if (type == "sys") {
+        return new Admin(this, username, hash, id, intId);
+    } else if (type == "admin") {
+        return new Admin(this, username, hash, id, intId);
+    } else {
+        if (type != "player") {
+            log(WARNING, String::compose("Local client tried to create "
+                                         "account of unknown type \"%1\". "
+                                         "Creating Player.", type));
+        }
+        return new Player(this, username, hash, id, intId);
+    }
 }
 
 /// \brief Verify the client has a valid login attempt
