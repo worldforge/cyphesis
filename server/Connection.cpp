@@ -93,7 +93,7 @@ void Connection::send(const Operation & op) const
     m_commClient.send(op);
 }
 
-Account * Connection::addPlayer(const std::string & account,
+Account * Connection::addPlayer(const std::string & type,
                                 const std::string & username,
                                 const std::string & password)
 {
@@ -107,13 +107,13 @@ Account * Connection::addPlayer(const std::string & account,
         return 0;
     }
 
-    Player * player = new Player(this, username, hash, newAccountId, intId);
-    addObject(player);
-    assert(player->m_connection == this);
-    player->m_connection = this;
-    m_server.addAccount(player);
-    m_server.m_lobby.addAccount(player);
-    return player;
+    Account * account = new Player(this, username, hash, newAccountId, intId);
+    addObject(account);
+    assert(account->m_connection == this);
+    account->m_connection = this;
+    m_server.addAccount(account);
+    m_server.m_lobby.addAccount(account);
+    return account;
 }
 
 /// \brief Remove an object from this connection.
@@ -347,37 +347,37 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
 
     // We now have username, so can check whether we know this
     // account, either from existing account ....
-    Account * player = m_server.getAccountByName(username);
+    Account * account = m_server.getAccountByName(username);
     // or if not, from the database
-    if (player == 0 || verifyCredentials(*player, arg) != 0) {
+    if (account == 0 || verifyCredentials(*account, arg) != 0) {
         clientError(op, "Login is invalid", res);
         return;
     }
     // Account appears to be who they say they are
-    if (player->m_connection) {
+    if (account->m_connection) {
         // Internals don't allow player to log in more than once.
         clientError(op, "This account is already logged in", res);
         return;
     }
     // Connect everything up
-    addObject(player);
-    EntityDict::const_iterator J = player->getCharacters().begin();
-    EntityDict::const_iterator Jend = player->getCharacters().end();
+    addObject(account);
+    EntityDict::const_iterator J = account->getCharacters().begin();
+    EntityDict::const_iterator Jend = account->getCharacters().end();
     for (; J != Jend; ++J) {
         addEntity(J->second);
     }
-    player->m_connection = this;
-    m_server.m_lobby.addAccount(player);
+    account->m_connection = this;
+    m_server.m_lobby.addAccount(account);
     // Let the client know they have logged in
     Info info;
     Anonymous info_arg;
-    player->addToEntity(info_arg);
+    account->addToEntity(info_arg);
     info->setArgs1(info_arg);
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
 
     logEvent(LOGIN, String::compose("%1 %2 - Login account %3",
-                                    getId(), player->getId(), username));
+                                    getId(), account->getId(), username));
 }
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
@@ -421,29 +421,29 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         clientError(op, "Account creation is invalid", res);
         return;
     }
-    std::string account("player");
+    std::string type("player");
     if (!arg->isDefaultParents()) {
         const std::list<std::string> & parents = arg->getParents();
         if (!parents.empty()) {
-            account = parents.front();
-            std::cout << "Creating " << account << " account"
+            type = parents.front();
+            std::cout << "Creating " << type << " account"
                       << std::endl << std::flush;
         }
     }
-    Account * player = addPlayer(account, username, password);
-    if (player == 0) {
+    Account * account = addPlayer(type, username, password);
+    if (account == 0) {
         clientError(op, "Account creation failed", res);
         return;
     }
     Info info;
     Anonymous info_arg;
-    player->addToEntity(info_arg);
+    account->addToEntity(info_arg);
     info->setArgs1(info_arg);
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
     logEvent(LOGIN, String::compose("%1 %2 - Create account %3", getId(),
-                                    player->getId(), username));
+                                    account->getId(), username));
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)
