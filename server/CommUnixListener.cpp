@@ -112,6 +112,17 @@ int CommUnixListener::accept()
         }
     }
 #else // __APPLE__
+#ifdef SO_PEERCRED
+    struct ucred creds;
+    socklen_t cred_len = sizeof(creds);
+    int ret = ::getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &creds, &cred_len);
+    if (ret != 0 || cred_len != sizeof(creds)) {
+        log(WARNING, "Unable to get unix credentials.");
+        if (ret != 0) {
+            logSysError(ERROR);
+        }
+    }
+#else // SO_PEERCRED
     // Start getting data from the client about who it really is
 
     int flagon = 1;
@@ -156,6 +167,7 @@ int CommUnixListener::accept()
             log(ERROR, "Unix client connected but did not give credentials.");
         }
     }
+#endif // SO_PEERCRED
 #endif // __APPLE__
 #endif // HAVE_SYS_UN_H
 

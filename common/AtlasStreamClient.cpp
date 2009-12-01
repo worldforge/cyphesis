@@ -53,6 +53,7 @@ int AtlasStreamClient::authenticateLocal()
 {
 #ifdef HAVE_SYS_UN_H
 #ifndef __APPLE__
+#ifndef SO_PEERCRED
     // Prove to the server that we are real.
 
     unsigned char buf[1];
@@ -93,6 +94,7 @@ int AtlasStreamClient::authenticateLocal()
     }
 
     // Done proving we are real.
+#endif // SO_PEERCRED
     return 0;
 #endif // __APPLE__
 #else // HAVE_SYS_UN_H
