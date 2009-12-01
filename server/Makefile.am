@@ -77,6 +77,7 @@ cyphesis_SOURCES = \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
+		SystemAccount.cpp SystemAccount.h \
 		Persistence.cpp Persistence.h \
 		EntityFactory.cpp EntityFactory.h \
 		EntityFactory_impl.h \

@@ -19,8 +19,8 @@
 
 #include "TrustedConnection.h"
 
-#include "Admin.h"
 #include "Player.h"
+#include "SystemAccount.h"
 
 #include <common/compose.hpp>
 #include <common/log.h>
@@ -45,7 +45,7 @@ Account * TrustedConnection::newAccount(const std::string & type,
                                         const std::string & id, long intId)
 {
     if (type == "sys") {
-        return new Admin(this, username, hash, id, intId);
+        return new SystemAccount(this, username, hash, id, intId);
     } else if (type == "admin") {
         return new Admin(this, username, hash, id, intId);
     } else {
