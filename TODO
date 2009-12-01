@@ -1,3 +1,7 @@
+Note that the SystemAccount will probably cause problems during character
+creation, as the system will try and persist characters, and referential
+integretiy will be bad, as the account itself is not persisted.
+
 Make cycmd stop dumping all ops to output unless monitoring is on,
 and stop it re-writing the prompt so much.
 
