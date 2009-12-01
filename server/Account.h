@@ -87,6 +87,9 @@ class Account : public Router {
     /// \brief Get a string representation of the type of account
     virtual const char * getType() const;
 
+    /// \brief Store this account in the database
+    virtual void store() const;
+
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 

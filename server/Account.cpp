@@ -223,6 +223,13 @@ const char * Account::getType() const
     return "account";
 }
 
+void Account::store() const
+{
+    if (database_flag) {
+        Persistence::instance()->putAccount(*this);
+    }
+}
+
 void Account::addToMessage(MapType & omap) const
 {
     omap["username"] = m_username;

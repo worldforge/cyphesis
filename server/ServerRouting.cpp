@@ -94,9 +94,7 @@ void ServerRouting::addAccount(Account * a)
 {
     m_accounts[a->username()] = a;
     addObject(a);
-    if (database_flag) {
-        Persistence::instance()->putAccount(*a);
-    }
+    a->store();
 }
 
 /// Remove an OOG object from the server.
