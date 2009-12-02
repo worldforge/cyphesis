@@ -56,13 +56,13 @@ class TestConnection : public Connection {
       
     }
 
-    Account * testAddPlayer(const std::string & username,
+    Account * testAddAccount(const std::string & username,
                             const std::string & password) {
-        return addPlayer("player", username, password);
+        return addAccount("player", username, password);
     }
 
-    Account * testRemovePlayer(Router * obj) {
-        return removePlayer(obj, "test_event");
+    Account * testRemoveAccount(Router * obj) {
+        return removeAccount(obj, "test_event");
     }
 
     size_t numObjects() const {
@@ -96,10 +96,10 @@ int main()
     TestCommClient * tcc = new TestCommClient(commServer);
     TestConnection * tc = new TestConnection(*tcc, server, "addr", "3");
 
-    Account * ac = tc->testAddPlayer("bob", "foo");
+    Account * ac = tc->testAddAccount("bob", "foo");
     assert(ac != 0);
 
-    ac = tc->testRemovePlayer(ac);
+    ac = tc->testRemoveAccount(ac);
     assert(ac != 0);
     tc->removeObject(ac);
 

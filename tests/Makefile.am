@@ -1442,6 +1442,7 @@ TrustedConnectiontest_LDADD = \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/SystemAccount.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/Account.o \
