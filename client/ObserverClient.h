@@ -39,6 +39,7 @@ class ObserverClient : public BaseClient {
         m_server = server;
     }
 
+    int setup();
     int setup(const std::string & account, const std::string & password);
     void load(const std::string & package, const std::string & function);
     void idle();

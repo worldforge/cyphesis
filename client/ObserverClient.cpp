@@ -39,14 +39,26 @@ ObserverClient::~ObserverClient()
 {
 }
 
+int ObserverClient::setup()
+{
+    if (connectLocal(client_socket_name) != 0) {
+        return -1;
+    }
+    m_player = createSystemAccount();
+    if (!m_player.isValid()) {
+        return -1;
+    }
+    m_character = createCharacter("creator");
+    if (m_character == NULL) {
+        return -1;
+    }
+    return 0;
+}
+
 int ObserverClient::setup(const std::string & account,
                           const std::string & password)
 {
-    bool localConnection = false;;
-
-    if (connectLocal(client_socket_name) == 0) {
-        localConnection = true;
-    } else {
+    if (connectLocal(client_socket_name) != 0) {
         std::cerr << "WARNING: Could not make secure connection to:"
                   << std::endl << client_socket_name << "."
                   << std::endl;
@@ -65,7 +77,7 @@ int ObserverClient::setup(const std::string & account,
         }
     }
 
-    m_player = createPlayer(account, password);
+    m_player = createAccount(account, password);
     if (!m_player.isValid()) {
         return -1;
     }

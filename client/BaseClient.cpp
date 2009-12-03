@@ -54,8 +54,44 @@ BaseClient::~BaseClient()
 ///
 /// @param name User name of the new account
 /// @param password Password of the new account
-Root BaseClient::createPlayer(const std::string & name,
-                              const std::string & password)
+Root BaseClient::createSystemAccount()
+{
+    Anonymous player_ent;
+    player_ent->setAttr("username", String::compose("client_%1_%2",
+                                                    getpid(),
+                                                    getuid()));
+    player_ent->setAttr("password", "scramble");
+    player_ent->setParents(std::list<std::string>(1, "sys"));
+    
+    Create createAccountOp;
+    createAccountOp->setArgs1(player_ent);
+    createAccountOp->setSerialno(m_connection.newSerialNo());
+    send(createAccountOp);
+    if (m_connection.wait() != 0) {
+        std::cerr << "ERROR: Failed to log into server" << std::endl
+                  << std::flush;
+        return Root(0);
+    }
+
+    const Root & ent = m_connection.getInfoReply();
+
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        std::cerr << "ERROR: Logged in, but account has no id" << std::endl
+                  << std::flush;
+    } else {
+        m_playerId = ent->getId();
+        // m_playerName = name;
+    }
+
+    return ent;
+}
+
+/// \brief Create a new account on the server
+///
+/// @param name User name of the new account
+/// @param password Password of the new account
+Root BaseClient::createAccount(const std::string & name,
+                               const std::string & password)
 {
     m_playerName = name;
 
