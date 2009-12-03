@@ -41,7 +41,7 @@
 
 static void usage(char * prg)
 {
-    std::cerr << "usage: " << prg << " [ cmd [ server ] ]" << std::endl << std::flush;
+    std::cerr << "usage: " << prg << " [options] [ cmd [ server ] ]" << std::endl << std::flush;
 }
 
 int main(int argc, char ** argv)
