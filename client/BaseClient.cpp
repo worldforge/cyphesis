@@ -40,6 +40,8 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
+using String::compose;
+
 static const bool debug_flag = false;
 
 BaseClient::BaseClient() : m_character(0)
@@ -57,10 +59,10 @@ BaseClient::~BaseClient()
 Root BaseClient::createSystemAccount()
 {
     Anonymous player_ent;
-    player_ent->setAttr("username", String::compose("client_%1_%2",
-                                                    getpid(),
-                                                    getuid()));
-    player_ent->setAttr("password", "scramble");
+    player_ent->setAttr("username", compose("admin_%1_%2",
+                                            getpid(),
+                                            getuid()));
+    player_ent->setAttr("password", compose("%1%2", ::rand(), ::rand()));
     player_ent->setParents(std::list<std::string>(1, "sys"));
     
     Create createAccountOp;
