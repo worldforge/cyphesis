@@ -29,6 +29,7 @@ class SystemAccount : public Admin {
                   const std::string & passwd,
                   const std::string & id, long intId);
 
+    virtual const char * getType() const;
     virtual void store() const;
 };
 

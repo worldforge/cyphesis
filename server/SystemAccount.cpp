@@ -27,6 +27,11 @@ SystemAccount::SystemAccount(Connection * conn,
 {
 }
 
+const char * SystemAccount::getType() const
+{
+    return "sys";
+}
+
 void SystemAccount::store() const
 {
 }
