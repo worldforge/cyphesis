@@ -59,7 +59,7 @@ int main()
     cc = new ClientConnection();
 
     cc->login("username", "password");
-    cc->create("username", "password");
+    cc->create("player", "username", "password");
     cc->wait();
 
     {
