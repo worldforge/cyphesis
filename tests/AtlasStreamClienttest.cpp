@@ -166,7 +166,7 @@ int main()
     // Verify these bale out cleanly when unconnected
     asc->poll();
     asc->login("foo", "bar");
-    asc->create("foo", "bar");
+    asc->create("player", "foo", "bar");
 
     int ret = asc->connect("localhost", 2323);
     assert(ret != 0);
