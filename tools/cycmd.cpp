@@ -31,6 +31,7 @@
 
 #include "Interactive.h"
 
+#include "common/compose.hpp"
 #include "common/log.h"
 #include "common/globals.h"
 #include "common/sockets.h"
@@ -38,6 +39,8 @@
 #include <varconf/config.h>
 
 #include <iostream>
+
+using String::compose;
 
 static void usage(char * prg)
 {
@@ -94,18 +97,22 @@ int main(int argc, char ** argv)
 
         std::cout << "Attempting local connection" << std::endl << std::flush;
         if (bridge.connectLocal(localSocket) == 0) {
-            bridge.setUsername("admin");
-
             bridge.setup();
-            std::cout << "Logging in... " << std::flush;
-            if (bridge.login() != 0) {
-                std::cout << "failed." << std::endl << std::flush;
-                bridge.getLogin();
+            if (bridge.create("sys",
+                              compose("admin_%1_%2", getuid(), getpid()),
+                              compose("%1%2", ::rand(), ::rand())) != 0) {
+                bridge.setUsername("admin");
 
                 std::cout << "Logging in... " << std::flush;
-                if (!bridge.login()) {
+                if (bridge.login() != 0) {
                     std::cout << "failed." << std::endl << std::flush;
-                    return 1;
+                    bridge.getLogin();
+
+                    std::cout << "Logging in... " << std::flush;
+                    if (!bridge.login()) {
+                        std::cout << "failed." << std::endl << std::flush;
+                        return 1;
+                    }
                 }
             }
             std::cout << "done." << std::endl << std::flush;
