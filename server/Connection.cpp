@@ -434,8 +434,6 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         const std::list<std::string> & parents = arg->getParents();
         if (!parents.empty()) {
             type = parents.front();
-            std::cout << "Creating " << type << " account"
-                      << std::endl << std::flush;
         }
     }
     Account * account = addAccount(type, username, password);
