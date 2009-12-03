@@ -427,7 +427,7 @@ unixsock_config_register::unixsock_config_register(std::string & var,
                                                    const char * format)
 {
     Options::instance()->addOption(section, setting,
-                                   new UnixSockOption("<foo>", help, var, format));
+                                   new UnixSockOption("<filename>", help, var, format));
 }
 
 void readInstanceConfiguration(const std::string & section);
