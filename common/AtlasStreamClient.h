@@ -96,7 +96,9 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int connect(const std::string & host, int port = 6767);
     int connectLocal(const std::string & host);
     int login(const std::string & username, const std::string & password);
-    int create(const std::string & username, const std::string & password);
+    int create(const std::string & type,
+               const std::string & username,
+               const std::string & password);
     int poll(int timeout = 0, int msec = 0);
 
     int runTask(ClientTask * task, const std::string & arg);

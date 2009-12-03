@@ -402,8 +402,9 @@ int AtlasStreamClient::login(const std::string & username,
     return -1;
 }
 
-int AtlasStreamClient::create(const std::string & username,
-                               const std::string & password)
+int AtlasStreamClient::create(const std::string & type,
+                              const std::string & username,
+                              const std::string & password)
 {
     m_username = username;
 
@@ -412,6 +413,7 @@ int AtlasStreamClient::create(const std::string & username,
 
     account->setAttr("username", username);
     account->setAttr("password", password);
+    account->setParents(std::list<std::string>(1, type));
 
     c->setArgs1(account);
     c->setSerialno(newSerialNo());
