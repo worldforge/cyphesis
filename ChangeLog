@@ -1,3 +1,9 @@
+2009-12-04  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.22
+
 2009-11-28  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* client/BaseClient.cpp, client/CharacterClient.cpp,
