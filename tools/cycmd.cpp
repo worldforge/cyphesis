@@ -39,6 +39,7 @@
 #include <varconf/config.h>
 
 #include <iostream>
+#include <cstdlib>
 
 using String::compose;
 
