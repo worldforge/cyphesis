@@ -116,6 +116,9 @@ Account * Connection::addAccount(const std::string & type,
     }
 
     Account * account = newAccount(type, username, hash, newAccountId, intId);
+    if (account == 0) {
+        return 0;
+    }
     addObject(account);
     assert(account->m_connection == this);
     account->m_connection = this;
