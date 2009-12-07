@@ -102,24 +102,15 @@ int main(int argc, char ** argv)
             if (bridge.create("sys",
                               compose("admin_%1_%2", getuid(), getpid()),
                               compose("%1%2", ::rand(), ::rand())) != 0) {
-                bridge.setUsername("admin");
-
-                std::cout << "Logging in... " << std::flush;
+                bridge.getLogin();
                 if (bridge.login() != 0) {
                     std::cout << "failed." << std::endl << std::flush;
-                    bridge.getLogin();
-
-                    std::cout << "Logging in... " << std::flush;
-                    if (!bridge.login()) {
-                        std::cout << "failed." << std::endl << std::flush;
-                        return 1;
-                    }
+                    return 1;
                 }
             }
             std::cout << "done." << std::endl << std::flush;
             if (!interactive) {
                 bridge.exec(cmd, "");
-                return 0;
             } else {
                 bridge.updatePrompt();
                 bridge.loop();
