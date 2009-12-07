@@ -379,13 +379,11 @@ int AtlasStreamClient::login(const std::string & username,
  
     send(l);
 
-    reply_flag = false;
-
     for (int i = 0; i < 10; ++i) {
        if (poll(0, 100000) != 0) {
            return -1;
        }
-       if (reply_flag) {
+       if (reply_flag && !error_flag) {
            if (m_infoReply->isDefaultId()) {
                std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
@@ -420,13 +418,11 @@ int AtlasStreamClient::create(const std::string & type,
 
     send(c);
 
-    reply_flag = false;
-
     for (int i = 0; i < 10; ++i) {
        if (poll(0, 100000) != 0) {
            return -1;
        }
-       if (reply_flag) {
+       if (reply_flag && !error_flag) {
            if (m_infoReply->isDefaultId()) {
               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
