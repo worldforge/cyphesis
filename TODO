@@ -1,3 +1,6 @@
+Remove local connections ability to login as arbitrary account, as now they
+can create, there is no reason to.
+
 Note that the SystemAccount will probably cause problems during character
 creation, as the system will try and persist characters, and referential
 integretiy will be bad, as the account itself is not persisted.
