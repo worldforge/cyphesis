@@ -116,6 +116,37 @@ void rotateLogger()
     open_event_log();
 }
 
+std::ostream & operator<<(std::ostream & s, LogLevel lvl)
+{
+    switch (lvl) {
+        case INFO:
+            s << "INFO";
+            break;
+        case SCRIPT:
+            s << "SCRIPT";
+            break;
+        case NOTICE:
+            s << "NOTICE";
+            break;
+        case WARNING:
+            s << "WARNING";
+            break;
+        case ERROR:
+            s << "ERROR";
+            break;
+        case SCRIPT_ERROR:
+            s << "SCRIPT_ERROR";
+            break;
+        case CRITICAL:
+            s << "CRITICAL";
+            break;
+        default:
+            s << "UNKNOWN";
+            break;
+    };
+    return s;
+}
+
 void log(LogLevel lvl, const std::string & msg)
 {
 #ifdef HAVE_SYSLOG
@@ -149,35 +180,8 @@ void log(LogLevel lvl, const std::string & msg)
     {
 #endif // HAVE_SYSLOG
 
-        const char * type;
-        switch (lvl) {
-            case INFO:
-                type = "INFO";
-                break;
-            case SCRIPT:
-                type = "SCRIPT";
-                break;
-            case NOTICE:
-                type = "NOTICE";
-                break;
-            case WARNING:
-                type = "WARNING";
-                break;
-            case ERROR:
-                type = "ERROR";
-                break;
-            case SCRIPT_ERROR:
-                type = "SCRIPT_ERROR";
-                break;
-            case CRITICAL:
-                type = "CRITICAL";
-                break;
-            default:
-                type = "UNKNOWN";
-                break;
-        };
         logDate(std::cerr);
-        std::cerr << " " << type << " " << msg << std::endl << std::flush;
+        std::cerr << " " << lvl << " " << msg << std::endl << std::flush;
     }
 }
 
