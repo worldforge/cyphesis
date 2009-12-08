@@ -42,6 +42,9 @@ ObserverClient::~ObserverClient()
 int ObserverClient::setup()
 {
     if (connectLocal(client_socket_name) != 0) {
+        std::cerr << "WARNING: Could not make secure connection to:"
+                  << std::endl << client_socket_name << "."
+                  << std::endl;
         return -1;
     }
     m_player = createSystemAccount();
