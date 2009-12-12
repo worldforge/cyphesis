@@ -72,8 +72,9 @@ Root BaseClient::createSystemAccount()
     createAccountOp->setSerialno(m_connection.newSerialNo());
     send(createAccountOp);
     if (m_connection.wait() != 0) {
-        std::cerr << "ERROR: Failed to log into server" << std::endl
-                  << std::flush;
+        std::cerr << "ERROR: Failed to log into server: \""
+                  << m_connection.errorMessage() << "\""
+                  << std::endl << std::flush;
         return Root(0);
     }
 
