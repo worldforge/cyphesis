@@ -526,11 +526,19 @@ int loadConfig(int argc, char ** argv, int usage)
             } else {
                 J->second->missing();
             }
-            J->second->postProcess();
         }
     }
 
     readInstanceConfiguration(instance);
+
+    I = options->sectionMap().begin();
+    for (; I != Iend; ++I) {
+        J = I->second.begin();
+        Jend = I->second.end();
+        for (; J != Jend; ++J) {
+            J->second->postProcess();
+        }
+    }
 
     return optind;
 }
