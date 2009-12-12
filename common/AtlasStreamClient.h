@@ -92,6 +92,10 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
         return m_infoReply;
     }
 
+    const std::string & errorMessage() const {
+        return m_errorMessage;
+    }
+
     void send(const Atlas::Objects::Operation::RootOperation & op);
     int connect(const std::string & host, int port = 6767);
     int connectLocal(const std::string & host);
