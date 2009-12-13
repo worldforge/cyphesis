@@ -67,6 +67,9 @@ void Creator::operation(const Operation & op, OpVector & res)
         case Atlas::Objects::Operation::DELETE_NO:
             DeleteOperation(op, res);
             break;
+        case Atlas::Objects::Operation::TALK_NO:
+            TalkOperation(op, res);
+            break;
         default:
             if (op_no == Atlas::Objects::Operation::TICK_NO) {
                 TickOperation(op, res);
