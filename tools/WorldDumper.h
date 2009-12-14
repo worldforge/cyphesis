@@ -30,6 +30,7 @@ class WorldDumper : public ClientTask {
     std::string m_account;
     int m_lastSerialNo;
     std::list<std::string> m_queue;
+    int m_count;
 
     void infoArrived(const Operation &, OpVector & res);
   public:

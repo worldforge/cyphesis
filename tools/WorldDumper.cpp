@@ -46,6 +46,7 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
         return;
     }
     std::cout << "GOT INFO" << std::endl << std::flush;
+    ++m_count;
     const std::list<std::string> & contains = ent->getContains();
     std::list<std::string>::const_iterator I = contains.begin();
     std::list<std::string>::const_iterator Iend = contains.end();
@@ -55,6 +56,7 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
 
     if (m_queue.empty()) {
         m_complete = true;
+        std::cout << "COUNTED: " << m_count << std::endl << std::flush;
         return;
     }
 
@@ -74,7 +76,8 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
 }
 
 WorldDumper::WorldDumper(const std::string & accountId) : m_account(accountId),
-                                                          m_lastSerialNo(-1)
+                                                          m_lastSerialNo(-1),
+                                                          m_count(0)
 {
 }
 
