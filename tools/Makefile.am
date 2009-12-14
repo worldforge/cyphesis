@@ -130,7 +130,8 @@ cyloadrules_LDADD = $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/id.o \
                     $(DBTOOL_LIBS)
 
-cydumprules_SOURCES = cydumprules.cpp
+cydumprules_SOURCES = cydumprules.cpp \
+        MultiLineListFormatter.cpp MultiLineListFormatter.h
 
 cydumprules_LDADD = $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
