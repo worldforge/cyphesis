@@ -25,6 +25,7 @@
 
 #include "Flusher.h"
 #include "OperationMonitor.h"
+#include "WorldDumper.h"
 
 #include "common/AtlasStreamClient.h"
 #include "common/log.h"
@@ -767,6 +768,10 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         if (endTask() != 0) {
             std::cout << "No task currently running" << std::endl << std::flush;
         }
+    } else if (cmd == "dump") {
+        ClientTask * task = new WorldDumper(accountId);
+        runTask(task, arg);
+        reply_expected = false;
     } else {
         reply_expected = false;
         std::cout << cmd << ": Command not known" << std::endl << std::flush;
