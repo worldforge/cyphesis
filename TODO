@@ -1,3 +1,5 @@
+Implement a null Atlas::Bridge which just does nothing.
+
 Remove local connections ability to login as arbitrary account, as now they
 can create, there is no reason to.
 
