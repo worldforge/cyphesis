@@ -19,7 +19,12 @@
 
 #include "WorldDumper.h"
 
+#include "tools/MultiLineListFormatter.h"
+
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
@@ -29,6 +34,11 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Get;
+
+void WorldDumper::dumpEntity(const RootEntity & ent)
+{
+    m_encoder->streamObjectsMessage(ent);
+}
 
 void WorldDumper::infoArrived(const Operation & op, OpVector & res)
 {
@@ -47,6 +57,7 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
     }
     std::cout << "GOT INFO" << std::endl << std::flush;
     ++m_count;
+    dumpEntity(ent);
     const std::list<std::string> & contains = ent->getContains();
     std::list<std::string>::const_iterator I = contains.begin();
     std::list<std::string>::const_iterator Iend = contains.end();
@@ -55,6 +66,7 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
     }
 
     if (m_queue.empty()) {
+        m_formatter->streamBegin();
         m_complete = true;
         std::cout << "COUNTED: " << m_count << std::endl << std::flush;
         return;
@@ -77,12 +89,37 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
 
 WorldDumper::WorldDumper(const std::string & accountId) : m_account(accountId),
                                                           m_lastSerialNo(-1),
-                                                          m_count(0)
+                                                          m_count(0),
+                                                          m_codec(0),
+                                                          m_encoder(0),
+                                                          m_formatter(0)
 {
+}
+
+WorldDumper::~WorldDumper()
+{
+    if (m_encoder != 0) {
+        delete m_encoder;
+    }
+    if (m_formatter != 0) {
+        delete m_formatter;
+    }
+    if (m_codec != 0) {
+        delete m_codec;
+    }
 }
 
 void WorldDumper::setup(const std::string & arg, OpVector & res)
 {
+    m_file.open("world.xml", std::ios::out);
+
+    Atlas::Message::QueuedDecoder * decoder = new Atlas::Message::QueuedDecoder;
+    m_codec = new Atlas::Codecs::XML(m_file, *decoder);
+    m_formatter = new MultiLineListFormatter(m_file, *m_codec);
+    m_encoder = new Atlas::Objects::ObjectsEncoder (*m_formatter);
+
+    m_formatter->streamBegin();
+
     // Send a get for the root object
     Get get;
 

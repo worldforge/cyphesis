@@ -23,6 +23,13 @@
 #include "common/ClientTask.h"
 
 #include <list>
+#include <fstream>
+
+namespace Atlas {
+  class Bridge;
+  class Codec;
+  class Encoder;
+};
 
 /// \brief Task class for dumping the world to a file
 class WorldDumper : public ClientTask {
@@ -31,10 +38,16 @@ class WorldDumper : public ClientTask {
     int m_lastSerialNo;
     std::list<std::string> m_queue;
     int m_count;
+    std::fstream m_file;
+    Atlas::Codec * m_codec;
+    Atlas::Objects::ObjectsEncoder * m_encoder;
+    Atlas::Bridge * m_formatter;
 
+    void dumpEntity(const Atlas::Objects::Entity::RootEntity & ent);
     void infoArrived(const Operation &, OpVector & res);
   public:
     explicit WorldDumper(const std::string & accountId);
+    virtual ~WorldDumper();
 
     virtual void setup(const std::string & arg, OpVector & ret);
     virtual void operation(const Operation & op, OpVector & res);
