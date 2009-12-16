@@ -188,7 +188,7 @@ int main()
         op_arg->setId("23");
         tc->operation(op, res);
         // How to determine the real ID?
-        const RouterMap & rm = tc->getObjects();
+        const RouterMap rm = tc->getObjects();
         RouterMap::const_iterator I = rm.begin();
         for (;I != rm.end(); ++I) {
             std::string object_id = String::compose("%1", I->first);
