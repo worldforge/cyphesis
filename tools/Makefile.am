@@ -80,6 +80,7 @@ cycmd_SOURCES = cycmd.cpp \
         Flusher.cpp Flusher.h \
         OperationMonitor.cpp OperationMonitor.h \
         WorldDumper.cpp WorldDumper.h \
+        WorldLoader.cpp WorldLoader.h \
         MultiLineListFormatter.cpp MultiLineListFormatter.h \
         AdminClient.cpp AdminClient.h \
         Interactive.cpp Interactive.h
@@ -91,6 +92,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/const.o \
               $(top_builddir)/common/AtlasStreamClient.o \
               $(top_builddir)/common/ClientTask.o \
+              $(top_builddir)/common/AtlasFileLoader.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)

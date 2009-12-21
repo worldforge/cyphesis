@@ -26,6 +26,7 @@
 #include "Flusher.h"
 #include "OperationMonitor.h"
 #include "WorldDumper.h"
+#include "WorldLoader.h"
 
 #include "common/AtlasStreamClient.h"
 #include "common/log.h"
@@ -106,12 +107,14 @@ struct command commands[] = {
     { "creator_create", "Use agent to create an entity", },
     { "creator_look",   "Use agent to look at an entity", },
     { "delete",         "Delete an entity from the server", },
+    { "dump",           "Write a copy of the world to an Atlas file", },
     { "get",            "Examine any object on the server", },
     { "find_by_name",   "Find an entity with the given name", },
     { "find_by_type",   "Find an entity with the given type", },
     { "flush",          "Flush entities from the server", },
     { "help",           "Display this help", },
     { "install",        "Install a new type", },
+    { "restore",        "Read world data from file and add it to the world", },
     { "look",           "Return the current server lobby", },
     { "logout",         "Log user out of server", },
     { "monitor",        "Enable in-game op monitoring", },
@@ -770,6 +773,10 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         }
     } else if (cmd == "dump") {
         ClientTask * task = new WorldDumper(accountId);
+        runTask(task, arg);
+        reply_expected = false;
+    } else if (cmd == "restore") {
+        ClientTask * task = new WorldLoader(accountId);
         runTask(task, arg);
         reply_expected = false;
     } else {
