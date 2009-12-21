@@ -488,6 +488,12 @@ int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
 
     m_currentTask->setup(arg, res);
 
+    if (m_currentTask->isComplete()) {
+        delete task;
+        m_currentTask = 0;
+        return -1;
+    }
+
     OpVector::const_iterator Iend = res.end();
     for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         send(*I);
