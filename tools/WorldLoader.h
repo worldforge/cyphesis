@@ -37,7 +37,9 @@ class WorldLoader : public ClientTask {
     std::string m_account;
     int m_lastSerialNo;
     int m_count;
+    std::map<std::string, Atlas::Objects::Root> m_objects;
 
+    void dumpEntity(const Atlas::Objects::Entity::RootEntity & ent);
     void infoArrived(const Operation &, OpVector & res);
   public:
     explicit WorldLoader(const std::string & accountId);

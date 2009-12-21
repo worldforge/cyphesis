@@ -22,11 +22,10 @@
 #include "tools/MultiLineListFormatter.h"
 
 #include "common/AtlasFileLoader.h"
+#include "common/compose.hpp"
+#include "common/log.h"
 
-#include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
@@ -58,7 +57,17 @@ void WorldLoader::setup(const std::string & arg, OpVector & res)
         filename = arg;
     }
 
+    AtlasFileLoader loader(filename, m_objects);
+
+    if (!loader.isOpen()) {
+        log(ERROR, String::compose("Unable to open %1", filename));
+        m_complete = true;
+        return;
+    }
+    loader.read();
+    std::cout << "LOADED " << m_objects.size() << std::endl << std::flush;
     // Send initiating op.
+        m_complete = true;
 }
 
 void WorldLoader::operation(const Operation & op, OpVector & res)
