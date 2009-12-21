@@ -111,7 +111,11 @@ WorldDumper::~WorldDumper()
 
 void WorldDumper::setup(const std::string & arg, OpVector & res)
 {
-    m_file.open("world.xml", std::ios::out);
+    std::string filename("world.xml");
+    if (!arg.empty()) {
+        filename = arg;
+    }
+    m_file.open(filename.c_str(), std::ios::out);
 
     Atlas::Message::QueuedDecoder * decoder = new Atlas::Message::QueuedDecoder;
     m_codec = new Atlas::Codecs::XML(m_file, *decoder);
