@@ -35,6 +35,7 @@
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 
@@ -111,23 +112,31 @@ void Creator::externalOperation(const Operation & op)
         if (to != 0) {
             // Make it appear like it came from target itself;
             to->sendWorld(op);
+
+            Sight sight;
+            sight->setArgs1(op);
+            sight->setTo(getId());
+            if (!op->isDefaultSerialno()) {
+                sight->setRefno(op->getSerialno());
+            }
+            OpVector res;
+            sendMind(sight, res);
         } else {
             log(ERROR, String::compose("Creator operation from client "
                                        "is to unknown ID \"%1\"",
                                        op->getTo()));
 
-            Unseen u;
-
             Anonymous unseen_arg;
             unseen_arg->setId(op->getTo());
-            u->setArgs1(unseen_arg);
 
-            u->setTo(getId());
+            Unseen unseen;
+            unseen->setArgs1(unseen_arg);
+            unseen->setTo(getId());
             if (!op->isDefaultSerialno()) {
-                u->setRefno(op->getSerialno());
+                unseen->setRefno(op->getSerialno());
             }
             OpVector res;
-            sendMind(u, res);
+            sendMind(unseen, res);
             // We are not interested in anything the external mind might return
         }
     }
