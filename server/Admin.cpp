@@ -53,6 +53,8 @@ using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
+using String::compose;
+
 static const bool debug_flag = false;
 
 /// \brief Admin constructor
@@ -85,9 +87,9 @@ static void addTypeToList(const Root & type, ListType & typeList)
         return;
     }
     if (!children.isList()) {
-        log(ERROR, String::compose("Type %1 children attribute has type "
-                                   "%2 instead of string.", type->getId(),
-                                   Element::typeName(children.getType())));
+        log(ERROR, compose("Type %1 children attribute has type %2 instead of "
+                           "string.", type->getId(),
+                           Element::typeName(children.getType())));
         return;
     }
     ListType::const_iterator I = children.List().begin();
@@ -95,8 +97,8 @@ static void addTypeToList(const Root & type, ListType & typeList)
     for (; I != Iend; ++I) {
         Root child = Inheritance::instance().getClass(I->asString());
         if (!child.isValid()) {
-            log(ERROR, String::compose("Unable to find %1 in inheritance table",
-                                       I->asString()));
+            log(ERROR, compose("Unable to find %1 in inheritance table",
+                               I->asString()));
             continue;
         }
         addTypeToList(child, typeList);
@@ -230,8 +232,8 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
             K->second->addToEntity(info_arg);
             info->setArgs1(info_arg);
         } else {
-            error(op, String::compose("Unknown object id \"%1\" requested", id),
-                  res, getId());
+            clientError(op, compose("Unknown object id \"%1\" requested", id),
+                        res, getId());
             return;
         }
     } else if (objtype == "class" ||
@@ -239,17 +241,14 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
                objtype == "op_definition") {
         const Root & o = Inheritance::instance().getClass(id);
         if (!o.isValid()) {
-            error(op, String::compose("Unknown type definition for \"%1\" "
-                                      "requested", id),
-                  res);
+            clientError(op, compose("Unknown type definition for \"%1\" "
+                                    "requested", id), res);
             return;
         }
         info->setArgs1(o);
     } else {
-        error(op,
-              String::compose("Unknown object type \"%1\" requested for \"%2\"",
-                              objtype, id),
-              res, getId());
+        error(op, compose("Unknown object type \"%1\" requested for \"%2\"",
+                          objtype, id), res, getId());
         return;
     }
     res.push_back(info);
@@ -345,9 +344,8 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         }
         const Root & o = Inheritance::instance().getClass(parent);
         if (!o.isValid()) {
-            error(op, String::compose("Attempt to install type with "
-                                      "non-existant parent \"%1\"", parent),
-                  res, getId());
+            error(op, compose("Attempt to install type with non-existant "
+                              "parent \"%1\"", parent), res, getId());
             return;
         }
         if (Ruleset::instance()->installRule(id, arg) == 0) {
