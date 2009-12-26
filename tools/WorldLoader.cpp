@@ -109,6 +109,7 @@ void WorldLoader::walk(OpVector & res)
         }
     } else {
         // Start WALKING the current entity
+        assert(current.child == current.obj->getContains().end());
         current.child = current.obj->getContains().begin();
         assert(current.child != current.obj->getContains().end());
 
