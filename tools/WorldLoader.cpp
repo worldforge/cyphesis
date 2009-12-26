@@ -67,6 +67,7 @@ void WorldLoader::getEntity(const std::string & id, OpVector & res)
         return;
     }
 
+    m_state = WALKING;
     m_treeStack.push(StackEntry(obj));
 
     Anonymous get_arg;
@@ -94,7 +95,6 @@ void WorldLoader::startWalk(OpVector & res)
             StackEntry & se = m_treeStack.top();
             ++se.child;
             if (se.child != se.obj->getContains().end()) {
-                m_state = WALKING;
                 getEntity(*se.child, res);
                 break;
             }
@@ -112,7 +112,6 @@ void WorldLoader::startWalk(OpVector & res)
         current.child = current.obj->getContains().begin();
         assert(current.child != current.obj->getContains().end());
 
-        m_state = WALKING;
         getEntity(*current.child, res);
     }
 }
@@ -169,6 +168,9 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
     }
     if (op->isDefaultArgs() || op->getArgs().empty()) {
         std::cerr << "Info with no arg" << std::endl << std::flush;
+        return;
+    }
+    if (m_state != WALKING) {
         return;
     }
     const Root & arg = op->getArgs().front();
