@@ -53,6 +53,22 @@ StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
 
 void WorldLoader::getEntity(const std::string & id, OpVector & res)
 {
+    std::map<std::string, Root>::const_iterator I = m_objects.find(id);
+    if (I == m_objects.end()) {
+        std::cerr << "Inconsistency in dump file: "
+                  << id << " missing"
+                  << std::endl << std::flush;
+        return;
+    }
+    RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
+    if (!obj.isValid()) {
+        std::cerr << "Corrupt dump - non entity found " << id
+                  << std::endl << std::flush;
+        return;
+    }
+
+    m_treeStack.push(StackEntry(obj));
+
     Anonymous get_arg;
     get_arg->setId(id);
     get_arg->setObjtype("obj");
@@ -110,39 +126,21 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
       case WALKING:
         {
             assert(!m_treeStack.empty());
-            StackEntry & parent = m_treeStack.top();
-            assert(parent.child != parent.obj->getContains().end());
-            const std::string & id = *parent.child;
+            StackEntry & current = m_treeStack.top();
+            RootEntity obj = current.obj;
 
-            RootEntity create_arg;
-            std::map<std::string, Root>::const_iterator I = m_objects.find(id);
-            if (I == m_objects.end()) {
-                std::cerr << "Not found - tbc" << std::endl << std::flush;
-                std::cerr << "Inconsistency in dump file: "
-                          << id << " missing"
-                          << std::endl << std::flush;
-                break;
-            }
-            RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
-
-            if (!obj.isValid()) {
-                std::cerr << "Corrupt dump - non entity found " << id
-                          << std::endl << std::flush;
-                break;
-            }
+            assert(obj.isValid());
 
             ++m_count;
             ++m_createCount;
 
             m_state = CREATING;
-            m_treeStack.push(StackEntry(obj));
 
             RootEntity update = obj.copy();
 
             update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
             update->removeAttrFlag(Atlas::Objects::ID_FLAG);
             update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
-            update->setLoc(parent.obj->getId());
 
             Create create;
             create->setArgs1(update);
@@ -179,18 +177,12 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
                   << std::endl << std::flush;
     }
     const std::string & id = arg->getId();
-    std::map<std::string, Root>::const_iterator I = m_objects.find(id);
-    if (I == m_objects.end()) {
-        std::cerr << "Inconsistency in dump file: "
-                  << id << " missing"
-                  << std::endl << std::flush;
-        // If this is the TLVE we have a set of world data we don't really
-        // know how to import. So what? Walk the server side tree until a
-        // match is found?
-        return;
-    }
-    RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
+
+    StackEntry & current = m_treeStack.top();
+    RootEntity obj = current.obj;
+
     assert(id == obj->getId());
+
     Root update = obj.copy();
 
     update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
@@ -209,7 +201,6 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
     ++m_updateCount;
 
     m_state = UPDATING;
-    m_treeStack.push(StackEntry(obj));
 }
 
 void WorldLoader::sightArrived(const Operation & op, OpVector & res)
