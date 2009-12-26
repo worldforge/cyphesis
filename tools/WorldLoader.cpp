@@ -117,6 +117,29 @@ void WorldLoader::walk(OpVector & res)
     }
 }
 
+void WorldLoader::create(const RootEntity & obj, OpVector & res)
+{
+    ++m_count;
+    ++m_createCount;
+
+    m_state = CREATING;
+
+    RootEntity create_arg = obj.copy();
+
+    create_arg->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
+    create_arg->removeAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG);
+    create_arg->removeAttrFlag(Atlas::Objects::ID_FLAG);
+    create_arg->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+
+    Create create;
+    create->setArgs1(create_arg);
+    create->setFrom(m_agent);
+    ++m_lastSerialNo;
+    create->setSerialno(m_lastSerialNo);
+
+    res.push_back(create);
+}
+
 void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 {
     if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
@@ -131,25 +154,7 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 
             assert(obj.isValid());
 
-            ++m_count;
-            ++m_createCount;
-
-            m_state = CREATING;
-
-            RootEntity update = obj.copy();
-
-            update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
-            update->removeAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG);
-            update->removeAttrFlag(Atlas::Objects::ID_FLAG);
-            update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
-
-            Create create;
-            create->setArgs1(update);
-            create->setFrom(m_agent);
-            ++m_lastSerialNo;
-            create->setSerialno(m_lastSerialNo);
-
-            res.push_back(create);
+            create(obj, res);
         }
         break;
       case CREATING:
@@ -187,24 +192,29 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 
     assert(id == obj->getId());
 
-    Root update = obj.copy();
+    if (m_newIds.find(id) == m_newIds.end()) {
 
-    update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
-    update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+        Root update = obj.copy();
 
-    Set set;
-    set->setArgs1(update);
-    set->setFrom(m_agent);
-    set->setTo(id);
-    ++m_lastSerialNo;
-    set->setSerialno(m_lastSerialNo);
+        update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
+        update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+
+        Set set;
+        set->setArgs1(update);
+        set->setFrom(m_agent);
+        set->setTo(id);
+        ++m_lastSerialNo;
+        set->setSerialno(m_lastSerialNo);
     
-    res.push_back(set);
+        res.push_back(set);
 
-    ++m_count;
-    ++m_updateCount;
+        ++m_count;
+        ++m_updateCount;
 
-    m_state = UPDATING;
+        m_state = UPDATING;
+    } else {
+        create(obj, res);
+    }
 }
 
 void WorldLoader::sightArrived(const Operation & op, OpVector & res)
@@ -260,6 +270,7 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
                 break;
             }
             Root created = sub_op->getArgs().front();
+            m_newIds.insert(created->getId());
             std::cout << "Created: " << created->getParents().front()
                       << "(" << created->getId() << ")"
                       << std::endl << std::flush;

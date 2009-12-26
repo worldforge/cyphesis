@@ -26,6 +26,7 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <list>
+#include <set>
 #include <stack>
 #include <fstream>
 
@@ -58,9 +59,12 @@ class WorldLoader : public ClientTask {
     enum { INIT, UPDATING, CREATING, WALKING } m_state;
 
     std::stack<StackEntry> m_treeStack;
+    std::set<std::string> m_newIds;
 
     void getEntity(const std::string & id, OpVector & res);
     void walk(OpVector & res);
+    void create(const Atlas::Objects::Entity::RootEntity & obj,
+                OpVector & res);
 
     void errorArrived(const Operation &, OpVector & res);
     void infoArrived(const Operation &, OpVector & res);
