@@ -129,7 +129,14 @@ void WorldLoader::create(const RootEntity & obj, OpVector & res)
     create_arg->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
     create_arg->removeAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG);
     create_arg->removeAttrFlag(Atlas::Objects::ID_FLAG);
-    create_arg->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+
+    assert (m_treeStack.size() > 1);
+
+    std::deque<StackEntry>::reverse_iterator I = m_treeStack.rbegin();
+    ++I;
+    assert(I != m_treeStack.rend());
+    const std::string & loc = I->restored_id;
+    create_arg->setLoc(loc);
 
     Create create;
     create->setArgs1(create_arg);
