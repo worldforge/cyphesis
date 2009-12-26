@@ -34,15 +34,329 @@ using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Get;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Set;
 
-void WorldLoader::infoArrived(const Operation & op, OpVector & res)
+StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o,
+                       const std::list<std::string>::const_iterator & c) :
+            obj(o), child(c)
 {
 }
 
-WorldLoader::WorldLoader(const std::string & accountId) : m_account(accountId),
-                                                          m_lastSerialNo(-1),
-                                                          m_count(0)
+StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
+            obj(o)
+{
+    child = obj->getContains().end();
+}
+
+
+void WorldLoader::errorArrived(const Operation & op, OpVector & res)
+{
+    if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
+        std::cout << "Not our op" << std::endl << std::flush;
+        return;
+    }
+    switch (m_state) {
+      case WALKING:
+        {
+            assert(!m_treeStack.empty());
+            StackEntry & parent = m_treeStack.top();
+            assert(parent.child != parent.obj->getContains().end());
+            const std::string & id = *parent.child;
+            std::cout << "Non exist, gotta create: " << id
+                      << std::endl << std::flush;
+
+            RootEntity create_arg;
+            std::map<std::string, Root>::const_iterator I = m_objects.find(id);
+            if (I == m_objects.end()) {
+                std::cout << "Not found - tbc" << std::endl << std::flush;
+                std::cout << "Inconsistency in dump file"
+                          << std::endl << std::flush;
+                break;
+            }
+            std::cout << "FOUND - tbc" << std::endl << std::flush;
+            RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
+
+            if (!obj.isValid()) {
+                std::cout << "Corrupt dump - no entity found " << id
+                          << std::endl << std::flush;
+                break;
+            }
+
+            m_state = CREATING;
+            m_treeStack.push(StackEntry(obj));
+
+            RootEntity update = obj.copy();
+
+            update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
+            update->removeAttrFlag(Atlas::Objects::ID_FLAG);
+            update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+            update->setLoc(parent.obj->getId());
+
+            Create create;
+            create->setArgs1(update);
+            create->setFrom(m_agent);
+            ++m_lastSerialNo;
+            create->setSerialno(m_lastSerialNo);
+
+            res.push_back(create);
+        }
+        break;
+      case CREATING:
+        std::cout << "Could not create" << std::endl << std::flush;
+        m_complete = true;
+        break;
+      default:
+        std::cerr << "Unexpected state in state machine"
+                  << std::endl << std::flush;
+        break;
+    };
+}
+
+void WorldLoader::infoArrived(const Operation & op, OpVector & res)
+{
+    if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
+        std::cout << "Not our op" << std::endl << std::flush;
+        return;
+    }
+    std::cout << "Info" << std::endl << std::flush;
+    if (op->isDefaultArgs() || op->getArgs().empty()) {
+        std::cout << "No arg" << std::endl << std::flush;
+        return;
+    }
+    const Root & arg = op->getArgs().front();
+    if (arg->isDefaultId()) {
+        std::cerr << "Corrupted info response: no id"
+                  << std::endl << std::flush;
+    }
+    const std::string & id = arg->getId();
+    std::map<std::string, Root>::const_iterator I = m_objects.find(id);
+    if (I == m_objects.end()) {
+        std::cout << "NOT FOUND" << std::endl << std::flush;
+        // If this is the TLVE we have a set of world data we don't really
+        // know how to import. So what? Walk the server side tree until a
+        // match is found?
+        return;
+    }
+    std::cout << "FOUND" << std::endl << std::flush;
+    RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
+    assert(id == obj->getId());
+    Root update = obj.copy();
+
+    update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
+    update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+
+    Set set;
+    set->setArgs1(update);
+    set->setFrom(m_agent);
+    set->setTo(id);
+    ++m_lastSerialNo;
+    set->setSerialno(m_lastSerialNo);
+    
+    res.push_back(set);
+
+    m_state = UPDATING;
+    m_treeStack.push(StackEntry(obj));
+}
+
+void WorldLoader::sightArrived(const Operation & op, OpVector & res)
+{
+    std::cout << "Sight" << std::endl << std::flush;
+    if (op->isDefaultArgs() || op->getArgs().empty()) {
+        std::cout << "No arg" << std::endl << std::flush;
+        return;
+    }
+    const Root & arg = op->getArgs().front();
+    switch (m_state) {
+      case INIT:
+        std::cout << "Init state in state machine"
+                  << std::endl << std::flush;
+        if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
+            std::cout << "Not our op" << std::endl << std::flush;
+            break;
+        }
+        if (arg->isDefaultId()) {
+            std::cerr << "Corrupted top level entity: no id"
+                      << std::endl << std::flush;
+        }
+
+        {
+        const std::string & rootId = arg->getId();
+
+        Anonymous get_arg;
+        get_arg->setId(rootId);
+        get_arg->setObjtype("obj");
+
+        Get get;
+        get->setArgs1(get_arg);
+        get->setFrom(m_account);
+        ++m_lastSerialNo;
+        get->setSerialno(m_lastSerialNo);
+        res.push_back(get);
+        }
+        
+        // Expecting sight of world root
+        break;
+      case UPDATING:
+        {
+            std::cout << "Updating state in state machine"
+                      << std::endl << std::flush;
+            Operation sub_op = smart_dynamic_cast<Operation>(arg);
+            if (!sub_op.isValid()) {
+                break;
+            }
+            if (sub_op->getClassNo() != Atlas::Objects::Operation::SET_NO ||
+                sub_op->isDefaultSerialno() ||
+                sub_op->getSerialno() != m_lastSerialNo) {
+                std::cout << "This is not our entity update response"
+                          << std::endl << std::flush;
+                break;
+            }
+            std::cout << "This IS our entity update response"
+                      << std::endl << std::flush;
+            assert(!m_treeStack.empty());
+            StackEntry & current = m_treeStack.top();
+            std::cout << op->getFrom() << "," << current.obj->getId()
+                      << std::endl << std::flush;
+            // assert(op->getFrom() == current.obj->getId());
+            if (current.obj->getContains().empty()) {
+                // POP
+                // We are done, got back to WALKING parent
+                assert(!m_treeStack.empty());
+                while (!m_treeStack.empty()) {
+                    std::cout << "POP" << std::endl << std::flush;
+                    m_treeStack.pop();
+                    StackEntry & se = m_treeStack.top();
+                    ++se.child;
+                    if (se.child != se.obj->getContains().end()) {
+                        m_state = WALKING;
+                        const std::string & child_id = *se.child;
+                        Anonymous get_arg;
+                        get_arg->setId(child_id);
+                        get_arg->setObjtype("obj");
+
+                        Get get;
+                        get->setArgs1(get_arg);
+                        get->setFrom(m_account);
+                        ++m_lastSerialNo;
+                        get->setSerialno(m_lastSerialNo);
+                        res.push_back(get);
+                        break;
+                    }
+                }
+                if (m_treeStack.empty()) {
+                    std::cout << "Restore done" << std::endl << std::flush;
+                }
+            } else {
+                std::cout << "WALKING" << std::endl << std::flush;
+                m_state = WALKING;
+                current.child = current.obj->getContains().begin();
+                assert(current.child != current.obj->getContains().end());
+                const std::string & child_id = *current.child;
+
+                Anonymous get_arg;
+                get_arg->setId(child_id);
+                get_arg->setObjtype("obj");
+
+                Get get;
+                get->setArgs1(get_arg);
+                get->setFrom(m_account);
+                ++m_lastSerialNo;
+                get->setSerialno(m_lastSerialNo);
+                res.push_back(get);
+
+                std::cout << "Getting " << child_id << std::endl << std::flush;
+                // What now?
+                // This should result in a depth first walk
+                // as long as the pop is handled right.
+                // Where do we pop?
+            }
+        }
+        break;
+      case CREATING:
+        {
+            std::cout << "Create success?" << std::endl << std::flush;
+            Operation sub_op = smart_dynamic_cast<Operation>(arg);
+            if (!sub_op.isValid()) {
+                break;
+            }
+            if (sub_op->getClassNo() != Atlas::Objects::Operation::CREATE_NO ||
+                sub_op->isDefaultSerialno() ||
+                sub_op->getSerialno() != m_lastSerialNo) {
+                std::cout << "This is not our entity create response"
+                          << std::endl << std::flush;
+                break;
+            }
+            std::cout << "This IS our entity create response"
+                      << std::endl << std::flush;
+            assert(!m_treeStack.empty());
+            StackEntry & current = m_treeStack.top();
+
+            if (current.obj->getContains().empty()) {
+                // POP
+                // We are done, got back to WALKING parent
+                assert(!m_treeStack.empty());
+                while (!m_treeStack.empty()) {
+                    std::cout << "POP" << std::endl << std::flush;
+                    m_treeStack.pop();
+                    StackEntry & se = m_treeStack.top();
+                    ++se.child;
+                    if (se.child != se.obj->getContains().end()) {
+                        m_state = WALKING;
+                        const std::string & child_id = *se.child;
+                        Anonymous get_arg;
+                        get_arg->setId(child_id);
+                        get_arg->setObjtype("obj");
+
+                        Get get;
+                        get->setArgs1(get_arg);
+                        get->setFrom(m_account);
+                        ++m_lastSerialNo;
+                        get->setSerialno(m_lastSerialNo);
+                        res.push_back(get);
+                        break;
+                    }
+                }
+                if (m_treeStack.empty()) {
+                    std::cout << "Restore done" << std::endl << std::flush;
+                }
+            } else {
+                // Start going through the children of this entity
+                m_state = WALKING;
+                current.child = current.obj->getContains().begin();
+                assert(current.child != current.obj->getContains().end());
+                const std::string & child_id = *current.child;
+
+                Anonymous get_arg;
+                get_arg->setId(child_id);
+                get_arg->setObjtype("obj");
+
+                Get get;
+                get->setArgs1(get_arg);
+                get->setFrom(m_account);
+                ++m_lastSerialNo;
+                get->setSerialno(m_lastSerialNo);
+                res.push_back(get);
+
+                std::cout << "Getting " << child_id << std::endl << std::flush;
+            }
+        }
+        break;
+      default:
+        std::cerr << "Unexpected state in state machine"
+                  << std::endl << std::flush;
+        break;
+    };
+}
+
+WorldLoader::WorldLoader(const std::string & accountId,
+                         const std::string & agentId) : m_account(accountId),
+                                                        m_agent(agentId),
+                                                        m_lastSerialNo(-1),
+                                                        m_count(0),
+                                                        m_state(INIT)
 {
 }
 
@@ -67,12 +381,23 @@ void WorldLoader::setup(const std::string & arg, OpVector & res)
     loader.read();
     std::cout << "LOADED " << m_objects.size() << std::endl << std::flush;
     // Send initiating op.
-        m_complete = true;
+    // m_complete = true;
+    Look l;
+
+    l->setFrom(m_agent);
+    ++m_lastSerialNo;
+    l->setSerialno(m_lastSerialNo);
+
+    res.push_back(l);
 }
 
 void WorldLoader::operation(const Operation & op, OpVector & res)
 {
     if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
         infoArrived(op, res);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+        errorArrived(op, res);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+        sightArrived(op, res);
     }
 }

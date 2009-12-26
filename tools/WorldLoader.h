@@ -22,7 +22,11 @@
 
 #include "common/ClientTask.h"
 
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 #include <list>
+#include <stack>
 #include <fstream>
 
 namespace Atlas {
@@ -31,18 +35,34 @@ namespace Atlas {
   class Encoder;
 };
 
+class StackEntry {
+  public:
+    const Atlas::Objects::Entity::RootEntity obj;
+    std::list<std::string>::const_iterator child;
+
+    StackEntry(const Atlas::Objects::Entity::RootEntity & o,
+               const std::list<std::string>::const_iterator & c);
+    explicit StackEntry(const Atlas::Objects::Entity::RootEntity & o);
+};
+
 /// \brief Task class for dumping the world to a file
 class WorldLoader : public ClientTask {
   protected:
     std::string m_account;
+    std::string m_agent;
     int m_lastSerialNo;
     int m_count;
     std::map<std::string, Atlas::Objects::Root> m_objects;
+    enum { INIT, UPDATING, CREATING, WALKING } m_state;
 
-    void dumpEntity(const Atlas::Objects::Entity::RootEntity & ent);
+    std::stack<StackEntry> m_treeStack;
+
+    void errorArrived(const Operation &, OpVector & res);
     void infoArrived(const Operation &, OpVector & res);
+    void sightArrived(const Operation &, OpVector & res);
   public:
-    explicit WorldLoader(const std::string & accountId);
+    explicit WorldLoader(const std::string & accountId,
+                         const std::string & agentId);
     virtual ~WorldLoader();
 
     virtual void setup(const std::string & arg, OpVector & ret);

@@ -776,9 +776,14 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         runTask(task, arg);
         reply_expected = false;
     } else if (cmd == "restore") {
-        ClientTask * task = new WorldLoader(accountId);
-        runTask(task, arg);
-        reply_expected = false;
+        if (agentId.empty()) {
+            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            ClientTask * task = new WorldLoader(accountId, agentId);
+            runTask(task, arg);
+            reply_expected = false;
+        }
     } else {
         reply_expected = false;
         std::cout << cmd << ": Command not known" << std::endl << std::flush;
