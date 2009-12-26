@@ -51,6 +51,57 @@ StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
     child = obj->getContains().end();
 }
 
+void WorldLoader::getEntity(const std::string & id, OpVector & res)
+{
+    Anonymous get_arg;
+    get_arg->setId(id);
+    get_arg->setObjtype("obj");
+
+    Get get;
+    get->setArgs1(get_arg);
+    get->setFrom(m_account);
+    ++m_lastSerialNo;
+    get->setSerialno(m_lastSerialNo);
+    res.push_back(get);
+}
+
+void WorldLoader::startWalk(OpVector & res)
+{
+    assert(!m_treeStack.empty());
+    StackEntry & current = m_treeStack.top();
+    if (current.obj->getContains().empty()) {
+        // POP
+        // We are done, got back to WALKING parent
+        assert(!m_treeStack.empty());
+        m_treeStack.pop();
+        while (!m_treeStack.empty()) {
+            std::cout << "POP" << std::endl << std::flush;
+            StackEntry & se = m_treeStack.top();
+            ++se.child;
+            if (se.child != se.obj->getContains().end()) {
+                m_state = WALKING;
+                getEntity(*se.child, res);
+                break;
+            }
+            m_treeStack.pop();
+        }
+        if (m_treeStack.empty()) {
+            std::cout << "Restore done" << std::endl << std::flush;
+            std::cout << "Restored " << m_count
+                      << ", created(" << m_createCount
+                      << ", updated(" << m_updateCount
+                      << std::endl << std::flush;
+            m_complete = true;
+        }
+    } else {
+        std::cout << "WALKING" << std::endl << std::flush;
+        current.child = current.obj->getContains().begin();
+        assert(current.child != current.obj->getContains().end());
+
+        m_state = WALKING;
+        getEntity(*current.child, res);
+    }
+}
 
 void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 {
@@ -84,6 +135,9 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
                           << std::endl << std::flush;
                 break;
             }
+
+            ++m_count;
+            ++m_createCount;
 
             m_state = CREATING;
             m_treeStack.push(StackEntry(obj));
@@ -157,6 +211,9 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
     
     res.push_back(set);
 
+    ++m_count;
+    ++m_updateCount;
+
     m_state = UPDATING;
     m_treeStack.push(StackEntry(obj));
 }
@@ -182,21 +239,8 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
                       << std::endl << std::flush;
         }
 
-        {
-        const std::string & rootId = arg->getId();
+        getEntity(arg->getId(), res);
 
-        Anonymous get_arg;
-        get_arg->setId(rootId);
-        get_arg->setObjtype("obj");
-
-        Get get;
-        get->setArgs1(get_arg);
-        get->setFrom(m_account);
-        ++m_lastSerialNo;
-        get->setSerialno(m_lastSerialNo);
-        res.push_back(get);
-        }
-        
         // Expecting sight of world root
         break;
       case UPDATING:
@@ -216,63 +260,8 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
             }
             std::cout << "This IS our entity update response"
                       << std::endl << std::flush;
-            assert(!m_treeStack.empty());
-            StackEntry & current = m_treeStack.top();
-            std::cout << op->getFrom() << "," << current.obj->getId()
-                      << std::endl << std::flush;
             // assert(op->getFrom() == current.obj->getId());
-            if (current.obj->getContains().empty()) {
-                // POP
-                // We are done, got back to WALKING parent
-                assert(!m_treeStack.empty());
-                while (!m_treeStack.empty()) {
-                    std::cout << "POP" << std::endl << std::flush;
-                    m_treeStack.pop();
-                    StackEntry & se = m_treeStack.top();
-                    ++se.child;
-                    if (se.child != se.obj->getContains().end()) {
-                        m_state = WALKING;
-                        const std::string & child_id = *se.child;
-                        Anonymous get_arg;
-                        get_arg->setId(child_id);
-                        get_arg->setObjtype("obj");
-
-                        Get get;
-                        get->setArgs1(get_arg);
-                        get->setFrom(m_account);
-                        ++m_lastSerialNo;
-                        get->setSerialno(m_lastSerialNo);
-                        res.push_back(get);
-                        break;
-                    }
-                }
-                if (m_treeStack.empty()) {
-                    std::cout << "Restore done" << std::endl << std::flush;
-                }
-            } else {
-                std::cout << "WALKING" << std::endl << std::flush;
-                m_state = WALKING;
-                current.child = current.obj->getContains().begin();
-                assert(current.child != current.obj->getContains().end());
-                const std::string & child_id = *current.child;
-
-                Anonymous get_arg;
-                get_arg->setId(child_id);
-                get_arg->setObjtype("obj");
-
-                Get get;
-                get->setArgs1(get_arg);
-                get->setFrom(m_account);
-                ++m_lastSerialNo;
-                get->setSerialno(m_lastSerialNo);
-                res.push_back(get);
-
-                std::cout << "Getting " << child_id << std::endl << std::flush;
-                // What now?
-                // This should result in a depth first walk
-                // as long as the pop is handled right.
-                // Where do we pop?
-            }
+            startWalk(res);
         }
         break;
       case CREATING:
@@ -291,57 +280,7 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
             }
             std::cout << "This IS our entity create response"
                       << std::endl << std::flush;
-            assert(!m_treeStack.empty());
-            StackEntry & current = m_treeStack.top();
-
-            if (current.obj->getContains().empty()) {
-                // POP
-                // We are done, got back to WALKING parent
-                assert(!m_treeStack.empty());
-                while (!m_treeStack.empty()) {
-                    std::cout << "POP" << std::endl << std::flush;
-                    m_treeStack.pop();
-                    StackEntry & se = m_treeStack.top();
-                    ++se.child;
-                    if (se.child != se.obj->getContains().end()) {
-                        m_state = WALKING;
-                        const std::string & child_id = *se.child;
-                        Anonymous get_arg;
-                        get_arg->setId(child_id);
-                        get_arg->setObjtype("obj");
-
-                        Get get;
-                        get->setArgs1(get_arg);
-                        get->setFrom(m_account);
-                        ++m_lastSerialNo;
-                        get->setSerialno(m_lastSerialNo);
-                        res.push_back(get);
-                        break;
-                    }
-                }
-                if (m_treeStack.empty()) {
-                    std::cout << "Restore done" << std::endl << std::flush;
-                }
-            } else {
-                // Start going through the children of this entity
-                m_state = WALKING;
-                current.child = current.obj->getContains().begin();
-                assert(current.child != current.obj->getContains().end());
-                const std::string & child_id = *current.child;
-
-                Anonymous get_arg;
-                get_arg->setId(child_id);
-                get_arg->setObjtype("obj");
-
-                Get get;
-                get->setArgs1(get_arg);
-                get->setFrom(m_account);
-                ++m_lastSerialNo;
-                get->setSerialno(m_lastSerialNo);
-                res.push_back(get);
-
-                std::cout << "Getting " << child_id << std::endl << std::flush;
-            }
+            startWalk(res);
         }
         break;
       default:
@@ -356,6 +295,8 @@ WorldLoader::WorldLoader(const std::string & accountId,
                                                         m_agent(agentId),
                                                         m_lastSerialNo(-1),
                                                         m_count(0),
+                                                        m_updateCount(0),
+                                                        m_createCount(0),
                                                         m_state(INIT)
 {
 }

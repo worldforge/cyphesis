@@ -52,10 +52,15 @@ class WorldLoader : public ClientTask {
     std::string m_agent;
     int m_lastSerialNo;
     int m_count;
+    int m_updateCount;
+    int m_createCount;
     std::map<std::string, Atlas::Objects::Root> m_objects;
     enum { INIT, UPDATING, CREATING, WALKING } m_state;
 
     std::stack<StackEntry> m_treeStack;
+
+    void getEntity(const std::string & id, OpVector & res);
+    void startWalk(OpVector & res);
 
     void errorArrived(const Operation &, OpVector & res);
     void infoArrived(const Operation &, OpVector & res);
