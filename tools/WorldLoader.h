@@ -60,7 +60,7 @@ class WorldLoader : public ClientTask {
     std::stack<StackEntry> m_treeStack;
 
     void getEntity(const std::string & id, OpVector & res);
-    void startWalk(OpVector & res);
+    void walk(OpVector & res);
 
     void errorArrived(const Operation &, OpVector & res);
     void infoArrived(const Operation &, OpVector & res);

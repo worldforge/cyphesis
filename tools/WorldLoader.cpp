@@ -82,13 +82,12 @@ void WorldLoader::getEntity(const std::string & id, OpVector & res)
     res.push_back(get);
 }
 
-void WorldLoader::startWalk(OpVector & res)
+void WorldLoader::walk(OpVector & res)
 {
     assert(!m_treeStack.empty());
     StackEntry & current = m_treeStack.top();
     if (current.obj->getContains().empty()) {
-        // POP
-        // We are done, got back to WALKING parent
+        // Pop: Go back to WALKING parent
         assert(!m_treeStack.empty());
         m_treeStack.pop();
         while (!m_treeStack.empty()) {
@@ -109,6 +108,7 @@ void WorldLoader::startWalk(OpVector & res)
             m_complete = true;
         }
     } else {
+        // Start WALKING the current entity
         current.child = current.obj->getContains().begin();
         assert(current.child != current.obj->getContains().end());
 
@@ -240,7 +240,7 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
                           << std::endl << std::flush;
                 break;
             }
-            startWalk(res);
+            walk(res);
         }
         break;
       case CREATING:
@@ -261,7 +261,7 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
             std::cout << "Created: " << created->getParents().front()
                       << "(" << created->getId() << ")"
                       << std::endl << std::flush;
-            startWalk(res);
+            walk(res);
         }
         break;
       default:
