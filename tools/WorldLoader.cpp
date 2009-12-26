@@ -139,6 +139,7 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
             RootEntity update = obj.copy();
 
             update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
+            update->removeAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG);
             update->removeAttrFlag(Atlas::Objects::ID_FLAG);
             update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
 
