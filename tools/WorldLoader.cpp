@@ -124,18 +124,17 @@ void WorldLoader::create(const RootEntity & obj, OpVector & res)
 
     m_state = CREATING;
 
+    assert (m_treeStack.size() > 1);
+    std::deque<StackEntry>::reverse_iterator I = m_treeStack.rbegin();
+    ++I;
+    assert(I != m_treeStack.rend());
+    const std::string & loc = I->restored_id;
+
     RootEntity create_arg = obj.copy();
 
     create_arg->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
     create_arg->removeAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG);
     create_arg->removeAttrFlag(Atlas::Objects::ID_FLAG);
-
-    assert (m_treeStack.size() > 1);
-
-    std::deque<StackEntry>::reverse_iterator I = m_treeStack.rbegin();
-    ++I;
-    assert(I != m_treeStack.rend());
-    const std::string & loc = I->restored_id;
     create_arg->setLoc(loc);
 
     Create create;
