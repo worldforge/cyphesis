@@ -1,3 +1,5 @@
+Would it be easier to push before Get, instead of on response.
+
 Problem with restore tool. When creating, need to check against
 IDs already created, and kinda ignore those.
 Currently it is creating new entities which have ID clashes

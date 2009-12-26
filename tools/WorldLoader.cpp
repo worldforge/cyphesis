@@ -75,7 +75,6 @@ void WorldLoader::startWalk(OpVector & res)
         assert(!m_treeStack.empty());
         m_treeStack.pop();
         while (!m_treeStack.empty()) {
-            std::cout << "POP" << std::endl << std::flush;
             StackEntry & se = m_treeStack.top();
             ++se.child;
             if (se.child != se.obj->getContains().end()) {
@@ -94,7 +93,6 @@ void WorldLoader::startWalk(OpVector & res)
             m_complete = true;
         }
     } else {
-        std::cout << "WALKING" << std::endl << std::flush;
         current.child = current.obj->getContains().begin();
         assert(current.child != current.obj->getContains().end());
 
@@ -106,7 +104,6 @@ void WorldLoader::startWalk(OpVector & res)
 void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 {
     if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
-        std::cout << "Not our op" << std::endl << std::flush;
         return;
     }
     switch (m_state) {
@@ -116,22 +113,20 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
             StackEntry & parent = m_treeStack.top();
             assert(parent.child != parent.obj->getContains().end());
             const std::string & id = *parent.child;
-            std::cout << "Non exist, gotta create: " << id
-                      << std::endl << std::flush;
 
             RootEntity create_arg;
             std::map<std::string, Root>::const_iterator I = m_objects.find(id);
             if (I == m_objects.end()) {
-                std::cout << "Not found - tbc" << std::endl << std::flush;
-                std::cout << "Inconsistency in dump file"
+                std::cerr << "Not found - tbc" << std::endl << std::flush;
+                std::cerr << "Inconsistency in dump file: "
+                          << id << " missing"
                           << std::endl << std::flush;
                 break;
             }
-            std::cout << "FOUND - tbc" << std::endl << std::flush;
             RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
 
             if (!obj.isValid()) {
-                std::cout << "Corrupt dump - no entity found " << id
+                std::cerr << "Corrupt dump - non entity found " << id
                           << std::endl << std::flush;
                 break;
             }
@@ -159,7 +154,7 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
         }
         break;
       case CREATING:
-        std::cout << "Could not create" << std::endl << std::flush;
+        std::cerr << "Could not create" << std::endl << std::flush;
         m_complete = true;
         break;
       default:
@@ -172,12 +167,10 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 {
     if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
-        std::cout << "Not our op" << std::endl << std::flush;
         return;
     }
-    std::cout << "Info" << std::endl << std::flush;
     if (op->isDefaultArgs() || op->getArgs().empty()) {
-        std::cout << "No arg" << std::endl << std::flush;
+        std::cerr << "Info with no arg" << std::endl << std::flush;
         return;
     }
     const Root & arg = op->getArgs().front();
@@ -188,13 +181,14 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
     const std::string & id = arg->getId();
     std::map<std::string, Root>::const_iterator I = m_objects.find(id);
     if (I == m_objects.end()) {
-        std::cout << "NOT FOUND" << std::endl << std::flush;
+        std::cerr << "Inconsistency in dump file: "
+                  << id << " missing"
+                  << std::endl << std::flush;
         // If this is the TLVE we have a set of world data we don't really
         // know how to import. So what? Walk the server side tree until a
         // match is found?
         return;
     }
-    std::cout << "FOUND" << std::endl << std::flush;
     RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
     assert(id == obj->getId());
     Root update = obj.copy();
@@ -220,18 +214,14 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 
 void WorldLoader::sightArrived(const Operation & op, OpVector & res)
 {
-    std::cout << "Sight" << std::endl << std::flush;
     if (op->isDefaultArgs() || op->getArgs().empty()) {
-        std::cout << "No arg" << std::endl << std::flush;
+        std::cerr << "No arg" << std::endl << std::flush;
         return;
     }
     const Root & arg = op->getArgs().front();
     switch (m_state) {
       case INIT:
-        std::cout << "Init state in state machine"
-                  << std::endl << std::flush;
         if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
-            std::cout << "Not our op" << std::endl << std::flush;
             break;
         }
         if (arg->isDefaultId()) {
@@ -245,40 +235,38 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
         break;
       case UPDATING:
         {
-            std::cout << "Updating state in state machine"
-                      << std::endl << std::flush;
             Operation sub_op = smart_dynamic_cast<Operation>(arg);
             if (!sub_op.isValid()) {
                 break;
             }
             if (sub_op->getClassNo() != Atlas::Objects::Operation::SET_NO ||
+                sub_op->getArgs().empty() ||
                 sub_op->isDefaultSerialno() ||
                 sub_op->getSerialno() != m_lastSerialNo) {
-                std::cout << "This is not our entity update response"
+                std::cerr << "This is not our entity update response"
                           << std::endl << std::flush;
                 break;
             }
-            std::cout << "This IS our entity update response"
-                      << std::endl << std::flush;
-            // assert(op->getFrom() == current.obj->getId());
             startWalk(res);
         }
         break;
       case CREATING:
         {
-            std::cout << "Create success?" << std::endl << std::flush;
             Operation sub_op = smart_dynamic_cast<Operation>(arg);
             if (!sub_op.isValid()) {
                 break;
             }
             if (sub_op->getClassNo() != Atlas::Objects::Operation::CREATE_NO ||
+                sub_op->getArgs().empty() ||
                 sub_op->isDefaultSerialno() ||
                 sub_op->getSerialno() != m_lastSerialNo) {
-                std::cout << "This is not our entity create response"
+                std::cerr << "This is not our entity create response"
                           << std::endl << std::flush;
                 break;
             }
-            std::cout << "This IS our entity create response"
+            Root created = sub_op->getArgs().front();
+            std::cout << "Created: " << created->getParents().front()
+                      << "(" << created->getId() << ")"
                       << std::endl << std::flush;
             startWalk(res);
         }
