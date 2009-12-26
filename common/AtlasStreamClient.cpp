@@ -237,7 +237,6 @@ void AtlasStreamClient::infoArrived(const RootOperation & op)
         return;
     }
     if (op->getRefno() != serialNo) {
-        std::cerr << "WARNING: This is not our response" << std::endl << std::flush;
         return;
     }
     m_infoReply = op->getArgs().front();

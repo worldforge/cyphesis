@@ -68,7 +68,7 @@ void WorldLoader::getEntity(const std::string & id, OpVector & res)
     }
 
     m_state = WALKING;
-    m_treeStack.push(StackEntry(obj));
+    m_treeStack.push_back(StackEntry(obj));
 
     Anonymous get_arg;
     get_arg->setId(id);
@@ -85,19 +85,19 @@ void WorldLoader::getEntity(const std::string & id, OpVector & res)
 void WorldLoader::walk(OpVector & res)
 {
     assert(!m_treeStack.empty());
-    StackEntry & current = m_treeStack.top();
+    StackEntry & current = m_treeStack.back();
     if (current.obj->getContains().empty()) {
         // Pop: Go back to WALKING parent
         assert(!m_treeStack.empty());
-        m_treeStack.pop();
+        m_treeStack.pop_back();
         while (!m_treeStack.empty()) {
-            StackEntry & se = m_treeStack.top();
+            StackEntry & se = m_treeStack.back();
             ++se.child;
             if (se.child != se.obj->getContains().end()) {
                 getEntity(*se.child, res);
                 break;
             }
-            m_treeStack.pop();
+            m_treeStack.pop_back();
         }
         if (m_treeStack.empty()) {
             std::cout << "Restore done" << std::endl << std::flush;
@@ -149,7 +149,7 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
       case WALKING:
         {
             assert(!m_treeStack.empty());
-            StackEntry & current = m_treeStack.top();
+            StackEntry & current = m_treeStack.back();
             RootEntity obj = current.obj;
 
             assert(obj.isValid());
@@ -181,20 +181,38 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
         return;
     }
     const Root & arg = op->getArgs().front();
+    RootEntity ent = smart_dynamic_cast<RootEntity>(arg);
+    if (!ent.isValid()) {
+        std::cerr << "Info response is not entity"
+                  << std::endl << std::flush;
+        return;
+    }
     if (arg->isDefaultId()) {
         std::cerr << "Corrupted info response: no id"
                   << std::endl << std::flush;
     }
     const std::string & id = arg->getId();
 
-    StackEntry & current = m_treeStack.top();
+    StackEntry & current = m_treeStack.back();
     RootEntity obj = current.obj;
 
     assert(id == obj->getId());
 
-    if (m_newIds.find(id) == m_newIds.end()) {
+    if (m_newIds.find(id) != m_newIds.end() ||
+        (m_treeStack.size() != 1 && ent->isDefaultLoc()) ||
+        ent->getParents().front() != obj->getParents().front()) {
+        create(obj, res);
+    } else {
 
         Root update = obj.copy();
+
+        current.restored_id = id;
+
+        std::cout << "Updating: " << obj->getId() << ","
+                  << obj->getParents().front()
+                  << std::endl << std::flush;
+
+        // assert(id == "0");
 
         update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
         update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
@@ -212,8 +230,6 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
         ++m_updateCount;
 
         m_state = UPDATING;
-    } else {
-        create(obj, res);
     }
 }
 
@@ -271,6 +287,8 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
             }
             Root created = sub_op->getArgs().front();
             m_newIds.insert(created->getId());
+            StackEntry & current = m_treeStack.back();
+            current.restored_id = created->getId();
             std::cout << "Created: " << created->getParents().front()
                       << "(" << created->getId() << ")"
                       << std::endl << std::flush;

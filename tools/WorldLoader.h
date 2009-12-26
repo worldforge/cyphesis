@@ -39,6 +39,7 @@ namespace Atlas {
 class StackEntry {
   public:
     const Atlas::Objects::Entity::RootEntity obj;
+    std::string restored_id;
     std::list<std::string>::const_iterator child;
 
     StackEntry(const Atlas::Objects::Entity::RootEntity & o,
@@ -58,7 +59,7 @@ class WorldLoader : public ClientTask {
     std::map<std::string, Atlas::Objects::Root> m_objects;
     enum { INIT, UPDATING, CREATING, WALKING } m_state;
 
-    std::stack<StackEntry> m_treeStack;
+    std::deque<StackEntry> m_treeStack;
     std::set<std::string> m_newIds;
 
     void getEntity(const std::string & id, OpVector & res);
