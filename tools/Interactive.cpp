@@ -451,6 +451,7 @@ void Interactive::select(bool rewrite_prompt)
                 }
                 m_codec->poll();
                 if (rewrite_prompt) {
+                    updatePrompt();
                     rl_forced_update_display();
                 }
             }
@@ -464,21 +465,17 @@ void Interactive::select(bool rewrite_prompt)
 void Interactive::updatePrompt()
 {
     std::string designation(">");
-    if (!m_username.empty()) {
-        prompt = m_username + "@";
-        if (accountType == "admin" || accountType == "sys") {
-            designation = "#";
-        } else {
-            designation = "$";
-        }
+    if (accountType == "admin" || accountType == "sys") {
+        designation = "#";
     } else {
-        prompt = "";
+        designation = "$";
     }
-    prompt += serverName;
-    prompt += " ";
-    prompt += systemType;
-    prompt += designation;
-    prompt += " ";
+    std::string status = "idle";
+    if (m_currentTask != 0) {
+        status = m_currentTask->description();
+    }
+    prompt = String::compose("[%1@%2 %3{%4}]%5 ", m_username, serverName,
+                             systemType, status, designation);
     rl_set_prompt(prompt.c_str());
 }
 
@@ -796,7 +793,10 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         std::cout << cmd << ": Command not known" << std::endl << std::flush;
     }
 
-    if (!reply_expected) { return; }
+    if (!reply_expected) {
+        updatePrompt();
+        return;
+    }
     // Wait for reply
     time_t wait_start_time = time(NULL);
     while (!reply_flag) {
