@@ -260,7 +260,7 @@ void Interactive::infoArrived(const Operation & op)
             }
         }
         server_flag = false;
-    } else {
+    } else if (m_currentTask == 0) {
         AtlasStreamClient::infoArrived(op);
         std::cout << "Info(" << std::endl;
         MapType entmap = ent->asMessage();
@@ -280,6 +280,10 @@ void Interactive::errorArrived(const Operation & op)
 {
     reply_flag = true;
     error_flag = true;
+    
+    if (m_currentTask != 0) {
+        return;
+    }
     std::cout << "Error(";
     const std::vector<Root> & args = op->getArgs();
     const Root & arg = args.front();
@@ -300,6 +304,9 @@ void Interactive::sightArrived(const Operation & op)
         return;
     }
     reply_flag = true;
+    if (m_currentTask != 0) {
+        return;
+    }
     std::cout << "Sight(" << std::endl;
     const MapType & ent = op->getArgs().front()->asMessage();
     MapType::const_iterator Iend = ent.end();
