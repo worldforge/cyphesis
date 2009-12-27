@@ -19,6 +19,7 @@
 
 #include "Flusher.h"
 
+#include "common/compose.hpp"
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -41,6 +42,8 @@ Flusher::Flusher(const std::string & agent_id) : agentId(agent_id)
 void Flusher::setup(const std::string & arg, OpVector & ret)
 {
     type = arg;
+
+    m_description = String::compose("flushing %1", type);
 
     // Send a look to search by type.
     Look l;

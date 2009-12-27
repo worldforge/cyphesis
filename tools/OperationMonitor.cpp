@@ -26,12 +26,15 @@
 
 #include <sys/time.h>
 
-void OperationMonitor::setup(const std::string & arg, OpVector &) {
+void OperationMonitor::setup(const std::string & arg, OpVector &)
+{
     struct timeval tv;
 
     gettimeofday(&tv, NULL);
     start_time = tv.tv_sec;
     op_count = 0;
+
+    m_description = "monitoring";
 }
 
 void OperationMonitor::operation(const Operation & op, OpVector &) {

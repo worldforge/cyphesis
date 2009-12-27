@@ -21,6 +21,8 @@
 
 #include "tools/MultiLineListFormatter.h"
 
+#include "common/compose.hpp"
+
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -116,6 +118,8 @@ void WorldDumper::setup(const std::string & arg, OpVector & res)
         filename = arg;
     }
     m_file.open(filename.c_str(), std::ios::out);
+
+    m_description = String::compose("dumping %1", filename);
 
     Atlas::Message::QueuedDecoder * decoder = new Atlas::Message::QueuedDecoder;
     m_codec = new Atlas::Codecs::XML(m_file, *decoder);
