@@ -427,7 +427,7 @@ int AtlasStreamClient::create(const std::string & type,
            } else {
                std::cerr << "Got it" << std::endl << std::flush;
                accountId = m_infoReply->getId();
-               if (m_infoReply->getParents().empty()) {
+               if (!m_infoReply->getParents().empty()) {
                    accountType = m_infoReply->getParents().front();
                }
                return 0;
