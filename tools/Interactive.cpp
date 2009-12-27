@@ -466,7 +466,7 @@ void Interactive::updatePrompt()
     std::string designation(">");
     if (!m_username.empty()) {
         prompt = m_username + "@";
-        if (accountType == "admin") {
+        if (accountType == "admin" || accountType == "sys") {
             designation = "#";
         } else {
             designation = "$";
