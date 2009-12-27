@@ -33,6 +33,8 @@ class ClientTask {
   protected:
     /// \brief Flag that indicates when the task is complete
     bool m_complete;
+    /// \brief Description of the task running
+    std::string m_description;
 
     ///\brief ClientTask constructor
     ClientTask();
@@ -48,6 +50,9 @@ class ClientTask {
     ///
     /// @return true if the task is complete, false otherwise
     bool isComplete() const { return m_complete; }
+
+    /// \brief Accessor for task description
+    const std::string & description() { return m_description; }
 };
 
 #endif // TOOLS_ADMIN_TASK_H
