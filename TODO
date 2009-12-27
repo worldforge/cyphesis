@@ -1,13 +1,3 @@
-Would it be easier to push before Get, instead of on response.
-
-Problem with restore tool. When creating, need to check against
-IDs already created, and kinda ignore those.
-Currently it is creating new entities which have ID clashes
-with entities yet to be created. When it comes to create the
-clashing entities, it thinks it has already created them, so
-updates. Wrong. Need to store a set of created IDs to avoid
-clashing checks.
-
 Implement a null Atlas::Bridge which just does nothing.
 
 Remove local connections ability to login as arbitrary account, as now they
