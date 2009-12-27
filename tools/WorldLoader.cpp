@@ -339,8 +339,8 @@ void WorldLoader::setup(const std::string & arg, OpVector & res)
     }
     loader.read();
     std::cout << "LOADED " << m_objects.size() << std::endl << std::flush;
-    // Send initiating op.
-    // m_complete = true;
+    m_description = String::compose("restoring %1", filename);
+
     Look l;
 
     l->setFrom(m_agent);
