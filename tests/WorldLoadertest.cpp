@@ -35,5 +35,8 @@ int main()
     OpVector res;
     wl = new WorldLoader("23", "42");
     wl->setup(String::compose("%1/no_such_file", data_path), res);
+    assert(res.empty());
     delete wl;
+
+    res.clear();
 }
