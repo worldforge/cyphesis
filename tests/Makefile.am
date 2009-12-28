@@ -54,7 +54,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
 
 PYTHON_TESTS = python_class
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir)
+INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
+           -DTESTDATADIR=\"${top_srcdir}/tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
