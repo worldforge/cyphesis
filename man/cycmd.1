@@ -87,12 +87,10 @@ Write the contents of the world to an Atlas dump file.
 An Atlas representation of every entity on the server is written to a file
 using the XML codec.
 .TP
-\fB  get typename  \fR
-Examine a type on the server.
+\fB  get id  \fR
+Examine any object on the server.
 
-Get a type description from the server, and display its contents.
-The type information is typically either an entity class, or an operation
-definition.
+Get an object description from the server, and display its contents.
 .TP
 \fB  find_by_name name  \fR
 Find an entity with the given name.
@@ -141,9 +139,7 @@ of each operation is displayed, including the type, which entity the operation
 is from and which entity the operation is to.
 .TP
 \fB  query entity_id  \fR
-Examine an object on the server.
-
-Get an in-game entity description from the server, and display its contents.
+Synonym for "get" (deprecated).
 .TP
 \fB  reload type  \fR
 Reload the script for a type.

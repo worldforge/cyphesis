@@ -207,17 +207,15 @@ using the XML codec.
    <varlistentry>
     <term><cmdsynopsis>
       <command>get</command>
-      <arg choice="req">typename</arg>
+      <arg choice="req">id</arg>
      </cmdsynopsis>
     </term>
     <listitem>
      <para>
-Examine a type on the server.
+Examine any object on the server.
      </para>
      <para>
-Get a type description from the server, and display its contents.
-The type information is typically either an entity class, or an operation
-definition.
+Get an object description from the server, and display its contents.
      </para>
     </listitem>
    </varlistentry>
@@ -363,10 +361,7 @@ is from and which entity the operation is to.
     </term>
     <listitem>
      <para>
-Examine an object on the server.
-     </para>
-     <para>
-Get an in-game entity description from the server, and display its contents.
+Synonym for "get" (deprecated).
      </para>
     </listitem>
    </varlistentry>
