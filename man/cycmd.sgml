@@ -105,6 +105,41 @@ Specifies the filename to use to listen for local trusted client connections.
   <variablelist>
    <varlistentry>
     <term><cmdsynopsis>
+      <command>add_agent</command>
+      <arg choice="opt">type</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Create an in-game agent.
+     </para>
+     <para>
+Create an avatar or agent in the game to be used to manipulate the world.
+By default an avatar of type "creator" is created, and this is required for
+most operations. Avatars of other types can be created, but have limited
+ability to edit the world.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>cancel</command>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Cancel the current admin task.
+     </para>
+     <para>
+Various commands begin a background admin task in the client. This command
+stops any currently running task.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
       <command>connect</command>
       <arg choice="req">hostname</arg>
      </cmdsynopsis>
@@ -115,6 +150,56 @@ Connect the server to a peer.
      </para>
      <para>
 Try and establish a connection to a peer server.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>creator_create</command>
+      <arg choice="req">type</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Use agent to create an entity.
+     </para>
+     <para>
+Use the in-game agent owned by this client to create an in-game entity of any
+type.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>delete</command>
+      <arg choice="req">id</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Delete an entity from the server.
+     </para>
+     <para>
+Delete the in-game entity with the given ID from the world.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>dump</command>
+      <arg choice="opt">filename</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Write the contents of the world to an Atlas dump file.
+     </para>
+     <para>
+An Atlas representation of every entity on the server is written to a file
+using the XML codec.
      </para>
     </listitem>
    </varlistentry>
@@ -133,6 +218,60 @@ Examine a type on the server.
 Get a type description from the server, and display its contents.
 The type information is typically either an entity class, or an operation
 definition.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>find_by_name</command>
+      <arg choice="req">name</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Find an entity with the given name.
+     </para>
+     <para>
+Search the world for an entity with the given name, and return the first one
+found.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>find_by_type</command>
+      <arg choice="req">type</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Find an entity with the given type.
+     </para>
+     <para>
+Search the world for an entity with the given type, and return the first one
+found.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>flush</command>
+      <arg choice="req">type</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Flush entities from the server
+     </para>
+     <para>
+Search the world for entities with the given type, and delete them all.
+     </para>
+     <para>
+This process does not work perfectly reliably, so may have to be run multiple
+times to fully clear the server.
      </para>
     </listitem>
    </varlistentry>
@@ -194,12 +333,7 @@ are represented. The view is returned and displayed.
     </term>
     <listitem>
      <para>
-Examine a type on the server.
-     </para>
-     <para>
-Get a type description from the server, and display its contents.
-The type information is typically either an entity class, or an operation
-definition.
+Log user out of server.
      </para>
     </listitem>
    </varlistentry>
@@ -229,10 +363,55 @@ is from and which entity the operation is to.
     </term>
     <listitem>
      <para>
-Examine an in-game entity.
+Examine an object on the server.
      </para>
      <para>
 Get an in-game entity description from the server, and display its contents.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>reload</command>
+      <arg choice="req">type</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Reload the script for a type.
+     </para>
+     <para>
+Reload the Python script for a given type from the file on disk.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><cmdsynopsis>
+      <command>restore</command>
+      <arg choice="opt">filename</arg>
+     </cmdsynopsis>
+    </term>
+    <listitem>
+     <para>
+Restore the contents of an Atlas dump file into the world.
+     </para>
+     <para>
+Read entities from an Atlas XML codec dump file, and restore them into the
+server. The most reliable use case for this is with an empty server to restore
+a snapshot of the world taken at an earlier time.
+     </para>
+     <para>
+It is possible to restore a dump file into server which already contains a
+world, but the following caveats apply:
+     </para>
+     <para>
+If there are collisions between the ID space being used in the existing world,
+and the ID space used in the dump file, the tool will do its best to do the
+right thing, but the results are to some extent undefined. If an entity with
+the same ID and type exists in both spaces, only one will exist after the
+restore and it will have some of the properties of both copies of that entity.
      </para>
     </listitem>
    </varlistentry>

@@ -3,7 +3,7 @@
 .\" <http://shell.ipoline.com/~elmert/comp/docbook2X/> 
 .\" Please send any bug reports, improvements, comments, patches, 
 .\" etc. to Steve Cheng <steve@ggi-project.org>.
-.TH "CYCMD" "1" "22 October 2006" "" "cyphesis"
+.TH "CYCMD" "1" "28 December 2009" "" "cyphesis"
 
 .SH NAME
 cycmd \- cycmd game server process
@@ -51,10 +51,41 @@ Local liston socket for Unix domain connections.
 Specifies the filename to use to listen for local trusted client connections.
 .SH "COMMANDS"
 .TP
+\fB  add_agent [ type ]  \fR
+Create an in-game agent.
+
+Create an avatar or agent in the game to be used to manipulate the world.
+By default an avatar of type "creator" is created, and this is required for
+most operations. Avatars of other types can be created, but have limited
+ability to edit the world.
+.TP
+\fB  cancel  \fR
+Cancel the current admin task.
+
+Various commands begin a background admin task in the client. This command
+stops any currently running task.
+.TP
 \fB  connect hostname  \fR
 Connect the server to a peer.
 
 Try and establish a connection to a peer server.
+.TP
+\fB  creator_create type  \fR
+Use agent to create an entity.
+
+Use the in-game agent owned by this client to create an in-game entity of any
+type.
+.TP
+\fB  delete id  \fR
+Delete an entity from the server.
+
+Delete the in-game entity with the given ID from the world.
+.TP
+\fB  dump [ filename ]  \fR
+Write the contents of the world to an Atlas dump file.
+
+An Atlas representation of every entity on the server is written to a file
+using the XML codec.
 .TP
 \fB  get typename  \fR
 Examine a type on the server.
@@ -62,6 +93,26 @@ Examine a type on the server.
 Get a type description from the server, and display its contents.
 The type information is typically either an entity class, or an operation
 definition.
+.TP
+\fB  find_by_name name  \fR
+Find an entity with the given name.
+
+Search the world for an entity with the given name, and return the first one
+found.
+.TP
+\fB  find_by_type type  \fR
+Find an entity with the given type.
+
+Search the world for an entity with the given type, and return the first one
+found.
+.TP
+\fB  flush type  \fR
+Flush entities from the server
+
+Search the world for entities with the given type, and delete them all.
+
+This process does not work perfectly reliably, so may have to be run multiple
+times to fully clear the server.
 .TP
 \fB  help  \fR
 Display online help.
@@ -80,11 +131,7 @@ Look at the current server lobby, where all users currently logged in
 are represented. The view is returned and displayed.
 .TP
 \fB  logout [ account ]  \fR
-Examine a type on the server.
-
-Get a type description from the server, and display its contents.
-The type information is typically either an entity class, or an operation
-definition.
+Log user out of server.
 .TP
 \fB  monitor  \fR
 Enable server monitoring.
@@ -94,9 +141,30 @@ of each operation is displayed, including the type, which entity the operation
 is from and which entity the operation is to.
 .TP
 \fB  query entity_id  \fR
-Examine an in-game entity.
+Examine an object on the server.
 
 Get an in-game entity description from the server, and display its contents.
+.TP
+\fB  reload type  \fR
+Reload the script for a type.
+
+Reload the Python script for a given type from the file on disk.
+.TP
+\fB  restore [ filename ]  \fR
+Restore the contents of an Atlas dump file into the world.
+
+Read entities from an Atlas XML codec dump file, and restore them into the
+server. The most reliable use case for this is with an empty server to restore
+a snapshot of the world taken at an earlier time.
+
+It is possible to restore a dump file into server which already contains a
+world, but the following caveats apply:
+
+If there are collisions between the ID space being used in the existing world,
+and the ID space used in the dump file, the tool will do its best to do the
+right thing, but the results are to some extent undefined. If an entity with
+the same ID and type exists in both spaces, only one will exist after the
+restore and it will have some of the properties of both copies of that entity.
 .TP
 \fB  stat  \fR
 Examine the current server status.
