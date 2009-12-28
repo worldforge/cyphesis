@@ -52,14 +52,16 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest
 
+TOOLS_TESTS = WorldLoadertest
+
 PYTHON_TESTS = python_class
 
 INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
-           -DTESTDATADIR=\"${top_srcdir}/tests/data\"
+           -DTESTDATADIR=\"$(top_srcdir)/tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
-TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS) $(CLIENT_TESTS)
+TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS)
 
 EXTRA_PROGRAMS = $(PYTHON_TESTS)
 
@@ -1462,6 +1464,18 @@ TrustedConnectiontest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 TrustedConnectiontest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+# TOOLS_TESTS
+
+WorldLoadertest_SOURCES = WorldLoadertest.cpp
+WorldLoadertest_LDADD = \
+        $(top_builddir)/tools/WorldLoader.o \
+        $(top_builddir)/common/AtlasFileLoader.o \
+        $(top_builddir)/common/ClientTask.o \
+        $(top_builddir)/common/const.o \
+        $(top_builddir)/common/globals.o \
+        $(top_builddir)/common/log.o
+
 
 # PYTHON_TESTS
 
