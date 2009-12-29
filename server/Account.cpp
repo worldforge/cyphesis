@@ -238,13 +238,20 @@ void Account::addToMessage(MapType & omap) const
         omap["password"] = m_password;
     }
     omap["parents"] = ListType(1,getType());
-    ListType charlist;
+    if (m_connection != 0) {
+        BaseWorld & world = m_connection->m_server.m_world;
+        ListType spawn_list;
+        if (world.getSpawnList(spawn_list) == 0) {
+            omap["spawns"] = spawn_list;
+        }
+    }
+    ListType char_list;
     EntityDict::const_iterator I = m_charactersDict.begin();
     EntityDict::const_iterator Iend = m_charactersDict.end();
     for (; I != Iend; ++I) {
-        charlist.push_back(I->first);
+        char_list.push_back(I->first);
     }
-    omap["characters"] = charlist;
+    omap["characters"] = char_list;
     omap["objtype"] = "obj";
     omap["id"] = getId();
 }
@@ -257,13 +264,20 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
         ent->setAttr("password", m_password);
     }
     ent->setParents(std::list<std::string>(1,getType()));
-    ListType charlist;
+    if (m_connection != 0) {
+        BaseWorld & world = m_connection->m_server.m_world;
+        ListType spawn_list;
+        if (world.getSpawnList(spawn_list) == 0) {
+            ent->setAttr("spawns", spawn_list);
+        }
+    }
+    ListType char_list;
     EntityDict::const_iterator I = m_charactersDict.begin();
     EntityDict::const_iterator Iend = m_charactersDict.end();
     for (; I != Iend; ++I) {
-        charlist.push_back(I->second->getId());
+        char_list.push_back(I->second->getId());
     }
-    ent->setAttr("characters", charlist);
+    ent->setAttr("characters", char_list);
     ent->setObjtype("obj");
     ent->setId(getId());
 }
