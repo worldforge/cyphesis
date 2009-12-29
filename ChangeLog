@@ -1,5 +1,58 @@
 2009-12-04  Alistair Riddoch  <alriddoch@googlemail.com>
 
+	* common/AtlasStreamClient.h: Add an accessor for errors reported
+	  server communication.
+
+	* client/BaseClient.cpp: Improve error reporting using the accessor.
+
+	* client/ObserverClient.cpp: Report when an error fails making a
+	  local connection.
+
+	* common/AtlasStreamClient.cpp: Improve handling of reply and error
+	  flags. Fix a bug in how the account type was picked up on
+	  successful login. Correctly tidy up tasks which fail on setup.
+
+	* common/ClientTask.h, tools/Flusher.cpp, tools/OperationMonitor.cpp:
+	  Add a description to all tasks.
+
+	* common/globals.cpp: Change the point at which option post-processing
+	  is done to ensure all options have been read so related options
+	  get the right value.
+
+	* common/log.cpp: Improve the way log levels are output to use
+	  iostream operators, making it more flexible.
+
+	* rulesets/Creator.cpp: Enable Talk ops for the creator, giving it
+	  an opportunity to control AIs. Add confirmation of in-game
+	  operations puppeted to other entities which otherwise might not
+	  be visible.
+
+	* server/Admin.cpp: Modify some error reporting to only report an
+	  error to the client, and not log the error on the server.
+
+	* server/Connection.cpp: Support returning an error if account
+	  creation fails.
+
+	* tests/Connectiontest.cpp, tests/TrustedConnectiontest.cpp: Fix
+	  a bug which can cause a crash when a map was modified while
+	  iterating over it.
+
+	* tools/MultiLineListFormatter.cpp, tools/MultiLineListFormatter.h,
+	  tools/cydumprules.cpp
+	  Move a class for formatting Atlas XML data in a good readable way
+	  into its own file for reuse.
+
+	* tools/Interactive.cpp, tools/WorldDumper.cpp, tools/WorldDumper.h,
+	  tools/WorldLoader.cpp, tools/WorldLoader.h: 
+	  Add new commands for dumping and restoring world data. Suppress
+	  displaying lots of options when a task is running. Add more data
+	  to the prompt, including task descriptions.
+
+	* tools/cycmd.cpp: Simplify the logic around logging in in the common
+	  case.
+
+2009-12-04  Alistair Riddoch  <alriddoch@googlemail.com>
+
 	* NEWS: Update NEWS announcement for release.
 
 	* Release 0.5.22
