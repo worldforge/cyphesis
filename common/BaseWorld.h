@@ -103,6 +103,8 @@ class BaseWorld {
 
     virtual int createSpawnPoint(const Atlas::Message::MapType & data) = 0;
 
+    virtual int getSpawnList(Atlas::Message::ListType & data) = 0;
+
     virtual int applySpawnPoint(const std::string & name,
                                 const Atlas::Objects::Entity::RootEntity &) = 0;
 

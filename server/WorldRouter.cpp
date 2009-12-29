@@ -278,6 +278,11 @@ int WorldRouter::createSpawnPoint(const Atlas::Message::MapType & data)
     return 0;
 }
 
+int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
+{
+    return 0;
+}
+
 int WorldRouter::applySpawnPoint(const std::string & name,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
