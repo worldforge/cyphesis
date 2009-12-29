@@ -1,4 +1,4 @@
-2009-12-04  Alistair Riddoch  <alriddoch@googlemail.com>
+2009-12-29  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/AtlasStreamClient.h: Add an accessor for errors reported
 	  server communication.
