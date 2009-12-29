@@ -57,7 +57,7 @@ TOOLS_TESTS = WorldLoadertest
 PYTHON_TESTS = python_class
 
 INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
-           -DTESTDATADIR=\"$(top_srcdir)/tests/data\"
+           -DTESTDATADIR=\"$(abs_top_srcdir)/tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
@@ -66,6 +66,9 @@ TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SER
 EXTRA_PROGRAMS = $(PYTHON_TESTS)
 
 check_PROGRAMS = $(TESTS)
+
+dist-hook:
+	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
 # COMMON_TESTS
 
