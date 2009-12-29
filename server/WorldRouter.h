@@ -67,6 +67,9 @@ class WorldRouter : public BaseWorld {
     bool idle(int, int);
     Entity * addEntity(Entity * obj);
     Entity * addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
+    int createSpawnPoint(const Atlas::Message::MapType & data);
+    int applySpawnPoint(const std::string & name,
+                        const Atlas::Objects::Entity::RootEntity &);
     Task * newTask(const std::string &, Character &);
     Task * activateTask(const std::string &, const std::string &,
                         const std::string &, Character &);

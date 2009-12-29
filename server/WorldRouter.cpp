@@ -273,6 +273,18 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
     return addEntity(ent);
 }
 
+int WorldRouter::createSpawnPoint(const Atlas::Message::MapType & data)
+{
+    return 0;
+}
+
+int WorldRouter::applySpawnPoint(const std::string & name,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
+
 /// \brief Create a new task
 ///
 /// Construct a new task linked to the Character provided.
