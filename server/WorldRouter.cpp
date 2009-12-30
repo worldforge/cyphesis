@@ -305,15 +305,18 @@ Entity * WorldRouter::spawnNewEntity(const std::string & name,
 {
     SpawnDict::const_iterator I = m_spawns.find(name);
     if (I == m_spawns.end()) {
+        log(ERROR, String::compose("Spawn not found %1", name));
         return 0;
     }
     Spawn * s = I->second;
     int ret = s->spawnEntity(type, desc);
     if (ret != 0) {
+        log(ERROR, String::compose("Spawn not permitting %1", type));
         return 0;
     }
     Entity * e = addNewEntity(type, desc);
     if (e == 0) {
+        log(ERROR, String::compose("Entity creation failed %1", type));
         return e;
     }
     OpVector res;
