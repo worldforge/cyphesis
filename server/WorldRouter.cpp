@@ -293,6 +293,7 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
     for (; I != Iend; ++I) {
         MapType spawn;
         spawn.insert(std::make_pair("name", I->first));
+        I->second->addToMessage(spawn);
         data.push_back(spawn);
     }
     return 0;

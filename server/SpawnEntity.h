@@ -24,13 +24,10 @@
 
 #include "modules/EntityRef.h"
 
-#include <string>
 #include <vector>
 
 namespace Atlas {
     namespace Message {
-        class Element;
-        typedef std::map<std::string, Element> MapType;
         typedef std::vector<Element> ListType;
     }
 }
@@ -49,6 +46,7 @@ class SpawnEntity : public Spawn {
     int populateEntity(Entity * ent,
                        const Atlas::Objects::Entity::RootEntity & dsc,
                        OpVector & res);
+    int addToMessage(Atlas::Message::MapType & msg) const;
 };
 
 #endif // SERVER_SPAWN_ENTITY_H

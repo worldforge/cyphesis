@@ -19,7 +19,11 @@
 
 #include "SpawnEntity.h"
 
+#include "rulesets/Entity.h"
+
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -36,6 +40,11 @@ SpawnEntity::SpawnEntity(Entity * e, const MapType & data) : m_ent(e)
 int SpawnEntity::spawnEntity(const std::string & type,
                              const RootEntity & dsc)
 {
+    if (m_ent.get() == 0) {
+        return -1;
+    }
+    dsc->setLoc(m_ent->m_location.m_loc->getId());
+    ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
     ListType::const_iterator I = m_characterTypes.begin();
     ListType::const_iterator Iend = m_characterTypes.begin();
     for (; I != Iend; ++I) {
@@ -50,5 +59,11 @@ int SpawnEntity::populateEntity(Entity * ent,
                                 const RootEntity & dsc,
                                 OpVector & res)
 {
+    return 0;
+}
+
+int SpawnEntity::addToMessage(MapType & msg) const
+{
+    msg.insert(std::make_pair("character_types", m_characterTypes));
     return 0;
 }

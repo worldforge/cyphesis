@@ -24,6 +24,13 @@
 
 #include <string>
 
+namespace Atlas {
+    namespace Message {
+        class Element;
+        typedef std::map<std::string, Element> MapType;
+    }
+}
+
 class Spawn {
   public:
     virtual ~Spawn() = 0;
@@ -33,6 +40,7 @@ class Spawn {
     virtual int populateEntity(Entity * ent,
                                const Atlas::Objects::Entity::RootEntity & dsc,
                                OpVector & res) = 0;
+    virtual int addToMessage(Atlas::Message::MapType & msg) const = 0;
 };
 
 #endif // SERVER_SPAWN_H
