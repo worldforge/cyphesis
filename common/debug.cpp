@@ -82,3 +82,9 @@ void debug_dump<ListType>(const ListType & list)
 {
     output(list, 0);
 }
+
+template <>
+void debug_dump<Element>(const Element & e)
+{
+    output(e, 0);
+}
