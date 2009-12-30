@@ -98,7 +98,7 @@ class BaseWorld {
     virtual Entity * addEntity(Entity * obj) = 0;
 
     /// \brief Create a new entity and add to the world.
-    virtual Entity * addNewEntity(const std::string &,
+    virtual Entity * addNewEntity(const std::string & type,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
 
     virtual int createSpawnPoint(const Atlas::Message::MapType & data,
@@ -106,8 +106,9 @@ class BaseWorld {
 
     virtual int getSpawnList(Atlas::Message::ListType & data) = 0;
 
-    virtual int applySpawnPoint(const std::string & name,
-                                const Atlas::Objects::Entity::RootEntity &) = 0;
+    virtual Entity * spawnNewEntity(const std::string & name,
+                                    const std::string & type,
+                                    const Atlas::Objects::Entity::RootEntity &) = 0;
 
     /// \brief Create a new task
     virtual Task * newTask(const std::string &, Character &) = 0;

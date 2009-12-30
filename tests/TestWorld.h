@@ -43,8 +43,11 @@ class TestWorld : public BaseWorld {
     int createSpawnPoint(const Atlas::Message::MapType & data,
                          Entity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    int applySpawnPoint(const std::string & name,
-                        const Atlas::Objects::Entity::RootEntity &) {return 0;}
+    Entity * spawnNewEntity(const std::string & name,
+                            const std::string & type,
+                            const Atlas::Objects::Entity::RootEntity & desc) {
+        return addNewEntity(type, desc);
+    }
     virtual Task * newTask(const std::string &, Character &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 const std::string &, Character &) { return 0; }

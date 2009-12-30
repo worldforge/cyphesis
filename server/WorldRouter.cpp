@@ -298,14 +298,19 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
     return 0;
 }
 
-int WorldRouter::applySpawnPoint(const std::string & name,
-                                 const Atlas::Objects::Entity::RootEntity & ent)
+Entity * WorldRouter::spawnNewEntity(const std::string & name,
+                                     const std::string & type,
+                                     const RootEntity & ent)
 {
     SpawnDict::const_iterator I = m_spawns.find(name);
     if (I == m_spawns.end()) {
-        return -1;
+        return 0;
     }
-    return I->second->spawnEntity(ent);
+    int ret = I->second->spawnEntity(ent);
+    if (ret != 0) {
+        return 0;
+    }
+    return addNewEntity(type, ent);
 }
 
 
