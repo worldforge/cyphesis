@@ -51,6 +51,7 @@ class Account : public Router {
     std::string m_password;
 
     Entity * addNewCharacter(const std::string &,
+                             const Atlas::Objects::Entity::RootEntity &,
                              const Atlas::Objects::Entity::RootEntity &);
     void characterDestroyed(long);
 

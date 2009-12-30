@@ -109,14 +109,29 @@ void Account::addCharacter(Entity * chr)
 /// @param typestr The type name of the Character to be created
 /// @param ent Atlas description of the Character to be created
 Entity * Account::addNewCharacter(const std::string & typestr,
-                                  const RootEntity & ent)
+                                  const RootEntity & ent,
+                                  const RootEntity & arg)
 {
     if (m_connection == 0) {
         return 0;
     }
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    Entity * chr = world.addNewEntity(typestr, ent);
+    Entity * chr;
+    Element spawn;
+    if (arg->copyAttr("spawn_name", spawn) == 0) {
+        if (spawn.isString()) {
+            std::cout << "SPAWNING" << std::endl << std::flush;
+            chr = world.spawnNewEntity(spawn.String(), typestr, ent);
+        } else {
+            std::cout << "Ahat? spawning" << std::endl << std::flush;
+            debug_dump(spawn);
+            chr = world.addNewEntity(typestr, ent);
+        }
+    } else {
+        std::cout << "Not spawning" << std::endl << std::flush;
+        chr = world.addNewEntity(typestr, ent);
+    }
     if (chr == 0) {
         return 0;
     }
@@ -358,7 +373,7 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         new_character->setName(arg->getName());
     }
 
-    Entity * entity = addNewCharacter(typestr, new_character);
+    Entity * entity = addNewCharacter(typestr, new_character, arg);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
