@@ -19,12 +19,36 @@
 
 #include "SpawnEntity.h"
 
+#include <Atlas/Message/Element.h>
+
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-SpawnEntity::SpawnEntity(Entity * e) : m_ent(e)
+SpawnEntity::SpawnEntity(Entity * e, const MapType & data) : m_ent(e)
 {
+    MapType::const_iterator I = data.find("character_types");
+    if (I != data.end() && I->second.isList()) {
+        m_characterTypes = I->second.List();
+    }
 }
 
-int SpawnEntity::spawnEntity(const RootEntity & dsc)
+int SpawnEntity::spawnEntity(const std::string & type,
+                             const RootEntity & dsc)
 {
+    ListType::const_iterator I = m_characterTypes.begin();
+    ListType::const_iterator Iend = m_characterTypes.begin();
+    for (; I != Iend; ++I) {
+        if (*I == type) {
+            return 0;
+        }
+    }
+    return -1;
+}
+
+int SpawnEntity::populateEntity(Entity * ent,
+                                const RootEntity & dsc,
+                                OpVector & res)
+{
+    return 0;
 }

@@ -20,13 +20,19 @@
 #ifndef SERVER_SPAWN_H
 #define SERVER_SPAWN_H
 
-#include <Atlas/Objects/ObjectsFwd.h>
+#include "common/OperationRouter.h"
+
+#include <string>
 
 class Spawn {
   public:
     virtual ~Spawn() = 0;
 
-    virtual int spawnEntity(const Atlas::Objects::Entity::RootEntity & dsc) = 0;
+    virtual int spawnEntity(const std::string & type,
+                            const Atlas::Objects::Entity::RootEntity & dsc) = 0;
+    virtual int populateEntity(Entity * ent,
+                               const Atlas::Objects::Entity::RootEntity & dsc,
+                               OpVector & res) = 0;
 };
 
 #endif // SERVER_SPAWN_H

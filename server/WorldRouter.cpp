@@ -282,7 +282,7 @@ int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
         log(ERROR, "No name on spawn point");
     }
     const std::string & name = I->second.String();
-    m_spawns.insert(std::make_pair(name, new SpawnEntity(ent)));
+    m_spawns.insert(std::make_pair(name, new SpawnEntity(ent, data)));
     return 0;
 }
 
@@ -300,17 +300,31 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
 
 Entity * WorldRouter::spawnNewEntity(const std::string & name,
                                      const std::string & type,
-                                     const RootEntity & ent)
+                                     const RootEntity & desc)
 {
     SpawnDict::const_iterator I = m_spawns.find(name);
     if (I == m_spawns.end()) {
         return 0;
     }
-    int ret = I->second->spawnEntity(ent);
+    Spawn * s = I->second;
+    int ret = s->spawnEntity(type, desc);
     if (ret != 0) {
         return 0;
     }
-    return addNewEntity(type, ent);
+    Entity * e = addNewEntity(type, desc);
+    if (e == 0) {
+        return e;
+    }
+    OpVector res;
+
+    s->populateEntity(e, desc, res);
+
+    OpVector::const_iterator Iend = res.end();
+    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+        message(*I, *e);
+    }
+
+    return e;
 }
 
 

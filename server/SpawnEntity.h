@@ -24,13 +24,31 @@
 
 #include "modules/EntityRef.h"
 
+#include <string>
+#include <vector>
+
+namespace Atlas {
+    namespace Message {
+        class Element;
+        typedef std::map<std::string, Element> MapType;
+        typedef std::vector<Element> ListType;
+    }
+}
+
 class SpawnEntity : public Spawn {
   protected:
+    /// Reference to the entity that defines this spawn location
     EntityRef m_ent;
+    /// List of character types available here
+    Atlas::Message::ListType m_characterTypes;
   public:
-    explicit SpawnEntity(Entity * e);
+    explicit SpawnEntity(Entity * e, const Atlas::Message::MapType & data);
 
-    int spawnEntity(const Atlas::Objects::Entity::RootEntity & dsc);
+    int spawnEntity(const std::string & type,
+                    const Atlas::Objects::Entity::RootEntity & dsc);
+    int populateEntity(Entity * ent,
+                       const Atlas::Objects::Entity::RootEntity & dsc,
+                       OpVector & res);
 };
 
 #endif // SERVER_SPAWN_ENTITY_H
