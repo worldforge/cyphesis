@@ -30,11 +30,13 @@ extern "C" {
 }
 
 class Entity;
+class Spawn;
 
 struct OpQueEntry;
 
 typedef std::list<OpQueEntry> OpQueue;
 typedef std::set<Entity *> EntitySet;
+typedef std::map<std::string, Spawn *> SpawnDict;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
@@ -53,6 +55,8 @@ class WorldRouter : public BaseWorld {
     EntitySet m_perceptives;
     /// Count of in world entities
     int m_entityCount;
+    /// Map of spawns
+    SpawnDict m_spawns;
 
     void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &, Entity &);
     Atlas::Objects::Operation::RootOperation getOperationFromQueue();
@@ -67,7 +71,7 @@ class WorldRouter : public BaseWorld {
     bool idle(int, int);
     Entity * addEntity(Entity * obj);
     Entity * addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &);
-    int createSpawnPoint(const Atlas::Message::MapType & data);
+    int createSpawnPoint(const Atlas::Message::MapType & data, Entity * ent);
     int getSpawnList(Atlas::Message::ListType & data);
     int applySpawnPoint(const std::string & name,
                         const Atlas::Objects::Entity::RootEntity &);

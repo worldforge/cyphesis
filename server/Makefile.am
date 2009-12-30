@@ -83,6 +83,8 @@ cyphesis_SOURCES = \
 		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
+		Spawn.cpp Spawn.h \
+		SpawnEntity.cpp SpawnEntity.h \
 		StorageManager.cpp StorageManager.h \
 		ScriptFactory.cpp ScriptFactory.h \
 		TaskScriptFactory.cpp TaskScriptFactory.h \

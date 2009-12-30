@@ -101,7 +101,8 @@ class BaseWorld {
     virtual Entity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
 
-    virtual int createSpawnPoint(const Atlas::Message::MapType & data) = 0;
+    virtual int createSpawnPoint(const Atlas::Message::MapType & data,
+                                 Entity * ent) = 0;
 
     virtual int getSpawnList(Atlas::Message::ListType & data) = 0;
 

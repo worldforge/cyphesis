@@ -361,3 +361,10 @@ def test_fish(mapeditor):
         c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(c)
     m.learn(fish, fish_goals)
+
+def test_spawn(mapeditor):
+
+    m=editor(mapeditor)
+    
+    spawn_area={'points' : [ [2,0], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2,-1] ], 'layer' : 7}
+    m.make('path', name='spawn area',pos=(10, 20,settlement_height), area=spawn_area,bbox=[169,154,1],spawn={'name': 'legoland'})

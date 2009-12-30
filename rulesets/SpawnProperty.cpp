@@ -29,5 +29,5 @@ SpawnProperty::SpawnProperty()
 
 void SpawnProperty::apply(Entity * ent)
 {
-    BaseWorld::instance().createSpawnPoint(MapType());
+    BaseWorld::instance().createSpawnPoint(m_data, ent);
 }

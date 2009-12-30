@@ -40,7 +40,8 @@ class TestWorld : public BaseWorld {
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
-    int createSpawnPoint(const Atlas::Message::MapType & data) { return 0; }
+    int createSpawnPoint(const Atlas::Message::MapType & data,
+                         Entity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
     int applySpawnPoint(const std::string & name,
                         const Atlas::Objects::Entity::RootEntity &) {return 0;}

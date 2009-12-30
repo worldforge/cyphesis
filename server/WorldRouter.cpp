@@ -20,6 +20,7 @@
 #include "WorldRouter.h"
 
 #include "EntityBuilder.h"
+#include "SpawnEntity.h"
 
 #include "rulesets/World.h"
 #include "rulesets/Domain.h"
@@ -45,6 +46,7 @@
 #include <algorithm>
 
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
@@ -273,20 +275,37 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
     return addEntity(ent);
 }
 
-int WorldRouter::createSpawnPoint(const Atlas::Message::MapType & data)
+int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
 {
+    MapType::const_iterator I = data.find("name");
+    if (I == data.end() || !I->second.isString()) {
+        log(ERROR, "No name on spawn point");
+    }
+    const std::string & name = I->second.String();
+    m_spawns.insert(std::make_pair(name, new SpawnEntity(ent)));
     return 0;
 }
 
 int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
 {
+    SpawnDict::const_iterator I = m_spawns.begin();
+    SpawnDict::const_iterator Iend = m_spawns.end();
+    for (; I != Iend; ++I) {
+        MapType spawn;
+        spawn.insert(std::make_pair("name", I->first));
+        data.push_back(spawn);
+    }
     return 0;
 }
 
 int WorldRouter::applySpawnPoint(const std::string & name,
-                                 const Atlas::Objects::Entity::RootEntity &)
+                                 const Atlas::Objects::Entity::RootEntity & ent)
 {
-    return 0;
+    SpawnDict::const_iterator I = m_spawns.find(name);
+    if (I == m_spawns.end()) {
+        return -1;
+    }
+    return I->second->spawnEntity(ent);
 }
 
 
