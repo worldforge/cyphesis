@@ -37,22 +37,33 @@ SpawnEntity::SpawnEntity(Entity * e, const MapType & data) : m_ent(e)
     }
 }
 
-int SpawnEntity::spawnEntity(const std::string & type,
-                             const RootEntity & dsc)
+static const int check_character_type(const std::string & type,
+                                      const Atlas::Message::ListType & types)
 {
-    if (m_ent.get() == 0) {
-        return -1;
-    }
-    dsc->setLoc(m_ent->m_location.m_loc->getId());
-    ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
-    ListType::const_iterator I = m_characterTypes.begin();
-    ListType::const_iterator Iend = m_characterTypes.begin();
+    ListType::const_iterator I = types.begin();
+    ListType::const_iterator Iend = types.begin();
     for (; I != Iend; ++I) {
         if (*I == type) {
             return 0;
         }
     }
     return -1;
+}
+                                  
+
+int SpawnEntity::spawnEntity(const std::string & type,
+                             const RootEntity & dsc)
+{
+    if (m_ent.get() == 0) {
+        return -1;
+    }
+    if (check_character_type(type, m_characterTypes) != 0) {
+        return -1;
+    }
+    // FIXME this is exactly the same location as the spawn entity
+    dsc->setLoc(m_ent->m_location.m_loc->getId());
+    ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
+    return 0;
 }
 
 int SpawnEntity::populateEntity(Entity * ent,
