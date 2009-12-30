@@ -2,6 +2,7 @@ What are we doing with spawns?
 Set location
 Restrict classes
 Setup inventory
+Filter and modify character names.
 
 Implement a null Atlas::Bridge which just does nothing.
 
