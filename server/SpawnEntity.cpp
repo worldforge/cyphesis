@@ -45,7 +45,7 @@ static const int check_character_type(const std::string & type,
                                       const Atlas::Message::ListType & types)
 {
     ListType::const_iterator I = types.begin();
-    ListType::const_iterator Iend = types.begin();
+    ListType::const_iterator Iend = types.end();
     for (; I != Iend; ++I) {
         if (*I == type) {
             return 0;
