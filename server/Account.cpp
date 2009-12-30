@@ -119,17 +119,9 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     Entity * chr;
     Element spawn;
-    if (arg->copyAttr("spawn_name", spawn) == 0) {
-        if (spawn.isString()) {
-            std::cout << "SPAWNING" << std::endl << std::flush;
-            chr = world.spawnNewEntity(spawn.String(), typestr, ent);
-        } else {
-            std::cout << "Ahat? spawning" << std::endl << std::flush;
-            debug_dump(spawn);
-            chr = world.addNewEntity(typestr, ent);
-        }
+    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
+        chr = world.spawnNewEntity(spawn.String(), typestr, ent);
     } else {
-        std::cout << "Not spawning" << std::endl << std::flush;
         chr = world.addNewEntity(typestr, ent);
     }
     if (chr == 0) {
