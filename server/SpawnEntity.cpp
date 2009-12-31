@@ -20,6 +20,9 @@
 #include "SpawnEntity.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/AreaProperty.h"
+
+#include "common/log.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -63,6 +66,17 @@ int SpawnEntity::spawnEntity(const std::string & type,
     }
     if (check_character_type(type, m_characterTypes) != 0) {
         return -1;
+    }
+    const AreaProperty * ap = m_ent->getPropertyClass<AreaProperty>("area");
+    if (ap != 0) {
+        log(NOTICE, "Spawn entity has area");
+    } else {
+        if (m_ent->hasAttr("area")) {
+            log(WARNING, "Spawn entity has area but not an AreaProperty");
+        }
+        if (m_ent->m_location.bBox().isValid()) {
+            // Locate in bbox
+        }
     }
     // FIXME this is exactly the same location as the spawn entity
     dsc->setLoc(m_ent->m_location.m_loc->getId());
