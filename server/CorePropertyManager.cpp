@@ -33,6 +33,7 @@
 #include "rulesets/MindProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
+#include "rulesets/AreaProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -242,6 +243,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["tick"] = new PropertyFactory<TickProperty>;
     m_propertyFactories["statistics"] = new PropertyFactory<StatisticsProperty>;
     m_propertyFactories["spawn"] = new PropertyFactory<SpawnProperty>;
+    m_propertyFactories["area"] = new PropertyFactory<AreaProperty>;
     
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
