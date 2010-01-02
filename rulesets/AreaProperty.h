@@ -22,6 +22,9 @@
 
 #include "LineProperty.h"
 
+typedef WFMath::Point<2> Corner;
+typedef std::vector<WFMath::Point<2> > CornerList;
+
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
 class AreaProperty : public PropertyBase {
@@ -31,7 +34,7 @@ class AreaProperty : public PropertyBase {
   public:
     explicit AreaProperty();
 
-    const std::vector<WFMath::Point<2> > & line() const { return m_data; }
+    const CornerList & line() const { return m_data; }
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

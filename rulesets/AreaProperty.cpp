@@ -58,7 +58,7 @@ void AreaProperty::set(const Element & ent)
         MapType::const_iterator I = area.find("points");
         if (I != area.end()) {
             if (I->second.isList()) {
-                objectListFromMessage<WFMath::Point<2>, std::vector<WFMath::Point<2> > >(I->second.List(),
+                objectListFromMessage<Corner, CornerList>(I->second.List(),
                                                           m_data);
                 std::cout << "YEP " << I->second.List().size() << " " << m_data.size() << std::endl << std::flush;
             }
