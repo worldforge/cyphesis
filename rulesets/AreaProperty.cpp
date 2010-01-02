@@ -52,7 +52,6 @@ bool AreaProperty::get(Element & ent) const
 
 void AreaProperty::set(const Element & ent)
 {
-    std::cout << "SET" << std::endl << std::flush;
     if (ent.isMap()) {
         const MapType & area = ent.Map();
         MapType::const_iterator I = area.find("points");
@@ -60,7 +59,6 @@ void AreaProperty::set(const Element & ent)
             if (I->second.isList()) {
                 objectListFromMessage<Corner, CornerList>(I->second.List(),
                                                           m_data);
-                std::cout << "YEP " << I->second.List().size() << " " << m_data.size() << std::endl << std::flush;
             }
         }
     }
