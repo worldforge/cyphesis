@@ -30,7 +30,7 @@ typedef std::vector<WFMath::Point<2> > CornerList;
 class AreaProperty : public PropertyBase {
   protected:
     /// \brief Property data for the line that defines the outline of the area
-    std::vector<WFMath::Point<2> > m_data;
+    CornerList m_data;
   public:
     explicit AreaProperty();
 
