@@ -27,9 +27,11 @@
 class AreaProperty : public PropertyBase {
   protected:
     /// \brief Property data for the line that defines the outline of the area
-    LineProperty m_line;
+    std::vector<WFMath::Point<2> > m_data;
   public:
     explicit AreaProperty();
+
+    const std::vector<WFMath::Point<2> > & line() const { return m_data; }
 
     virtual bool get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

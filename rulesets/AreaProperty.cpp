@@ -19,18 +19,20 @@
 
 #include "AreaProperty.h"
 
-#include "common/type_utils.h"
+#include "common/type_utils_impl.h"
 #include "common/debug.h"
 
 #include <wfmath/atlasconv.h>
 
 #include <sstream>
+#include <iostream>
 
 #include <cassert>
 
 static const bool debug_flag = false;
 
 using Atlas::Message::Element;
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
 /// \brief AreaProperty constructor
@@ -43,17 +45,23 @@ AreaProperty::AreaProperty()
 bool AreaProperty::get(Element & ent) const
 {
     MapType & area = (ent = MapType()).Map();
-    m_line.get(area["points"]);
+    objectListAsMessage(m_data, (area["points"] = ListType()).List());
     return true;
+
 }
 
 void AreaProperty::set(const Element & ent)
 {
+    std::cout << "SET" << std::endl << std::flush;
     if (ent.isMap()) {
         const MapType & area = ent.Map();
         MapType::const_iterator I = area.find("points");
         if (I != area.end()) {
-            m_line.set(I->second);
+            if (I->second.isList()) {
+                objectListFromMessage<WFMath::Point<2>, std::vector<WFMath::Point<2> > >(I->second.List(),
+                                                          m_data);
+                std::cout << "YEP " << I->second.List().size() << " " << m_data.size() << std::endl << std::flush;
+            }
         }
     }
 }
