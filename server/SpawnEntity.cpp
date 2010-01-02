@@ -92,15 +92,16 @@ int SpawnEntity::spawnEntity(const std::string & type,
             WFMath::CoordType x = uniform(lx, hx);
             WFMath::CoordType y = uniform(ly, hy);
             if (Intersect(spawn_area, Corner(x, y), true)) {
-                std::cout << x << "," << y << " is in" << std::endl << std::flush;
-                new_pos += Vector3D(x, y);
+                new_pos += Vector3D(x, y, 0);
                 break;
             }
         }
-        log(NOTICE, "Spawn entity has area");
-        std::cout << "Size is " << spawn_area.numCorners()
-                  << std::endl << std::flush;
+        ::addToEntity(new_pos, dsc->modifyPos());
     } else if (m_ent->m_location.bBox().isValid()) {
+        const BBox & b = m_ent->m_location.bBox();
+        ::addToEntity(Point3D(uniform(b.lowCorner().x(), b.highCorner().x()),
+                              uniform(b.lowCorner().y(), b.highCorner().y()),
+                              0), dsc->modifyPos());
             // Locate in bbox
     } else {
         ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
