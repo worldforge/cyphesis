@@ -23,12 +23,16 @@
 #include "rulesets/AreaProperty.h"
 
 #include "common/log.h"
+#include "common/random.h"
+#include "common/type_utils_impl.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+#include <wfmath/polygon.h>
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -67,20 +71,41 @@ int SpawnEntity::spawnEntity(const std::string & type,
     if (check_character_type(type, m_characterTypes) != 0) {
         return -1;
     }
+    dsc->setLoc(m_ent->m_location.m_loc->getId());
     const AreaProperty * ap = m_ent->getPropertyClass<AreaProperty>("area");
     if (ap != 0) {
+        const CornerList & line = ap->line();
+        WFMath::Polygon<2> spawn_area;
+        WFMath::CoordType lx = WFMATH_MAX, ly = WFMATH_MAX,
+                          hx = WFMATH_MIN, hy = WFMATH_MIN;
+        spawn_area.resize(line.size());
+        CornerList::const_iterator I = line.begin();
+        CornerList::const_iterator Iend = line.end();
+        for (int i = 0; I != Iend; ++I, ++i) {
+            WFMath::CoordType x = I->x(), y = I->y();
+            spawn_area.addCorner(i, Corner(x, y));
+            if (x < lx) { lx = x; }
+            if (y < ly) { ly = y; }
+        }
+        Point3D new_pos = m_ent->m_location.pos();
+        for (int i = 0; i < 10; ++i) {
+            WFMath::CoordType x = uniform(lx, hx);
+            WFMath::CoordType y = uniform(ly, hy);
+            if (Intersect(spawn_area, Corner(x, y), true)) {
+                std::cout << x << "," << y << " is in" << std::endl << std::flush;
+                new_pos += Vector3D(x, y);
+                break;
+            }
+        }
         log(NOTICE, "Spawn entity has area");
-    } else {
-        if (m_ent->hasAttr("area")) {
-            log(WARNING, "Spawn entity has area but not an AreaProperty");
-        }
-        if (m_ent->m_location.bBox().isValid()) {
+        std::cout << "Size is " << spawn_area.numCorners()
+                  << std::endl << std::flush;
+    } else if (m_ent->m_location.bBox().isValid()) {
             // Locate in bbox
-        }
+    } else {
+        ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
     }
     // FIXME this is exactly the same location as the spawn entity
-    dsc->setLoc(m_ent->m_location.m_loc->getId());
-    ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
     return 0;
 }
 
