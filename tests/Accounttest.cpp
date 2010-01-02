@@ -69,9 +69,10 @@ class TestAccount : public Account {
     }
 
     Entity * testAddNewCharacter(const std::string & typestr,
-                                 const Atlas::Objects::Entity::RootEntity & ent)
+                                 const Atlas::Objects::Entity::RootEntity & ent,
+                                 const Atlas::Objects::Entity::RootEntity & arg)
     {
-        return addNewCharacter(typestr, ent);
+        return addNewCharacter(typestr, ent, arg);
     }
 };
 
@@ -130,7 +131,8 @@ int main()
 
     {
         Anonymous new_char;
-        Entity * chr = ac->testAddNewCharacter("game_entity", new_char);
+        Entity * chr = ac->testAddNewCharacter("game_entity", new_char,
+                                               RootEntity());
     }
 
     ac->getType();
