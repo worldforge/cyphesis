@@ -62,6 +62,7 @@ void AreaProperty::set(const Element & ent)
     if (I != Iend && I->second.isString()) {
         if (I->second.String() != "polygon") {
             log(ERROR, "Area is not a polygon shape");
+            return;
         }
     }
     I = area.find("points");
