@@ -19,8 +19,9 @@
 
 #include "AreaProperty.h"
 
-#include "common/type_utils_impl.h"
 #include "common/debug.h"
+#include <common/log.h>
+#include "common/type_utils_impl.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -52,15 +53,21 @@ bool AreaProperty::get(Element & ent) const
 
 void AreaProperty::set(const Element & ent)
 {
-    if (ent.isMap()) {
-        const MapType & area = ent.Map();
-        MapType::const_iterator I = area.find("points");
-        if (I != area.end()) {
-            if (I->second.isList()) {
-                objectListFromMessage<Corner, CornerList>(I->second.List(),
-                                                          m_data);
-            }
+    if (!ent.isMap()) {
+        return;
+    }
+    const MapType & area = ent.Map();
+    MapType::const_iterator I = area.find("type");
+    MapType::const_iterator Iend = area.end();
+    if (I != Iend && I->second.isString()) {
+        if (I->second.String() != "polygon") {
+            log(ERROR, "Area is not a polygon shape");
         }
+    }
+    I = area.find("points");
+    if (I != Iend && I->second.isList()) {
+        objectListFromMessage<Corner, CornerList>(I->second.List(),
+                                                  m_data);
     }
 }
 

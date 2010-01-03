@@ -366,7 +366,7 @@ def test_spawn(mapeditor):
 
     m=editor(mapeditor)
    
-    spawn_area={'points' : [ [3,0], [2, 2], [0,3], [-2,2], [-3, 0], [-2, -2], [0,-3], [2,-2] ], 'layer' : 7}
+    spawn_area={'points' : [ [3,0], [2, 2], [0,3], [-2,2], [-3, 0], [-2, -2], [0,-3], [2,-2] ], 'layer' : 7, 'type': 'polygon'}
     m.make('path',
            name='spawn area',
            pos=(40, 40,settlement_height),
