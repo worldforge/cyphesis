@@ -201,7 +201,7 @@ Operation WorldRouter::getOperationFromQueue()
 /// class. Send a Setup op to the entity.
 Entity * WorldRouter::addEntity(Entity * ent)
 {
-    debug(std::cout << "WorldRouter::addEntity(Entity *)" << std::endl
+    debug(std::cout << "WorldRouter::addEntity(" << ent->getIntId() << ")" << std::endl
                     << std::flush;);
     assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
