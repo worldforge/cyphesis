@@ -38,6 +38,8 @@ class SpawnEntity : public Spawn {
     EntityRef m_ent;
     /// List of character types available here
     Atlas::Message::ListType m_characterTypes;
+    /// List of inventory here
+    Atlas::Message::ListType m_inventory;
   public:
     explicit SpawnEntity(Entity * e, const Atlas::Message::MapType & data);
 

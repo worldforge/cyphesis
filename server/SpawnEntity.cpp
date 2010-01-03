@@ -43,8 +43,13 @@ using Atlas::Objects::Operation::Create;
 SpawnEntity::SpawnEntity(Entity * e, const MapType & data) : m_ent(e)
 {
     MapType::const_iterator I = data.find("character_types");
-    if (I != data.end() && I->second.isList()) {
+    MapType::const_iterator Iend = data.end();
+    if (I != Iend && I->second.isList()) {
         m_characterTypes = I->second.List();
+    }
+    I = data.find("contains");
+    if (I != Iend && I->second.isList()) {
+        m_inventory = I->second.List();
     }
 }
 
@@ -117,52 +122,22 @@ int SpawnEntity::populateEntity(Entity * ent,
     // Hack in default objects
     // This needs to be done in a generic way
     Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1,"coin"));
     ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
     create_arg->setLoc(ent->getId());
-    // FIXME We can probably send the same op 10 times, rather than create 10
-    // FIXME alternatively we can set 10 args on one op
-    for(int i = 0; i < 10; i++) {
+
+    ListType::const_iterator I = m_inventory.begin();
+    ListType::const_iterator Iend = m_inventory.end();
+    for (; I != Iend; ++I) {
+        if (!I->isString()) {
+            continue;
+        }
         Create c;
         c->setTo(ent->getId());
+        create_arg = create_arg.copy();
+        create_arg->setParents(std::list<std::string>(1, I->String()));
         c->setArgs1(create_arg);
         res.push_back(c);
     }
-
-    create_arg = create_arg.copy();
-    create_arg->setParents(std::list<std::string>(1, "shirt"));
-    Create c;
-    c->setTo(ent->getId());
-    c->setArgs1(create_arg);
-    res.push_back(c);
-
-    create_arg = create_arg.copy();
-    create_arg->setParents(std::list<std::string>(1, "trousers"));
-    c = Create();
-    c->setTo(ent->getId());
-    c->setArgs1(create_arg);
-    res.push_back(c);
-
-    create_arg = create_arg.copy();
-    create_arg->setParents(std::list<std::string>(1, "cloak"));
-    c = Create();
-    c->setTo(ent->getId());
-    c->setArgs1(create_arg);
-    res.push_back(c);
-
-    create_arg = create_arg.copy();
-    create_arg->setParents(std::list<std::string>(1, "boots"));
-    c = Create();
-    c->setTo(ent->getId());
-    c->setArgs1(create_arg);
-    res.push_back(c);
-
-    create_arg = create_arg.copy();
-    create_arg->setParents(std::list<std::string>(1, "hat"));
-    c = Create();
-    c->setTo(ent->getId());
-    c->setArgs1(create_arg);
-    res.push_back(c);
 
     return 0;
 }

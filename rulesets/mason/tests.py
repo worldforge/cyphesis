@@ -366,11 +366,17 @@ def test_spawn(mapeditor):
 
     m=editor(mapeditor)
    
-    spawn_area={'points' : [ [3,0], [2, 2], [0,3], [-2,2], [-3, 0], [-2, -2], [0,-3], [2,-2] ], 'layer' : 7, 'type': 'polygon'}
+    spawn_area={'points' : [ [3,0], [2, 2], [0,3], [-2,2], [-3, 0],
+                             [-2, -2], [0,-3], [2,-2] ],
+                'layer' : 7,
+                'type': 'polygon'}
     m.make('path',
            name='spawn area',
            pos=(40, 40,settlement_height),
            area=spawn_area,
            bbox=[-5,-5,0,5,5,1],
            spawn={'name': 'legoland',
-                  'character_types': ['settler']})
+                  'character_types': ['settler'],
+                  'contains': ['coin', 'coin', 'coin', 'coin', 'coin',
+                               'coin', 'coin', 'coin', 'coin', 'coin',
+                               'shirt', 'trousers', 'cloak', 'boots', 'hat']})
