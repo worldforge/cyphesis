@@ -142,57 +142,6 @@ Entity * Account::addNewCharacter(const std::string & typestr,
         if (consts::enable_persistence) {
             Persistence::instance()->addCharacter(*this, *chr);
         }
-
-        // Hack in default objects
-        // This needs to be done in a generic way
-        Anonymous create_arg;
-        create_arg->setParents(std::list<std::string>(1,"coin"));
-        ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
-        create_arg->setLoc(chr->getId());
-        // FIXME We can probably send the same op 10 times, rather than create 10
-        // FIXME alternatively we can set 10 args on one op
-        for(int i = 0; i < 10; i++) {
-            Create c;
-            c->setTo(chr->getId());
-            c->setArgs1(create_arg);
-            world.message(c, *chr);
-        }
-
-        create_arg = create_arg.copy();
-        create_arg->setParents(std::list<std::string>(1, "shirt"));
-        Create c;
-        c->setTo(chr->getId());
-        c->setArgs1(create_arg);
-        world.message(c, *chr);
-
-        create_arg = create_arg.copy();
-        create_arg->setParents(std::list<std::string>(1, "trousers"));
-        c = Create();
-        c->setTo(chr->getId());
-        c->setArgs1(create_arg);
-        world.message(c, *chr);
-
-        create_arg = create_arg.copy();
-        create_arg->setParents(std::list<std::string>(1, "cloak"));
-        c = Create();
-        c->setTo(chr->getId());
-        c->setArgs1(create_arg);
-        world.message(c, *chr);
-
-        create_arg = create_arg.copy();
-        create_arg->setParents(std::list<std::string>(1, "boots"));
-        c = Create();
-        c->setTo(chr->getId());
-        c->setArgs1(create_arg);
-        world.message(c, *chr);
-
-        create_arg = create_arg.copy();
-        create_arg->setParents(std::list<std::string>(1, "hat"));
-        c = Create();
-        c->setTo(chr->getId());
-        c->setArgs1(create_arg);
-        world.message(c, *chr);
-
     }
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
