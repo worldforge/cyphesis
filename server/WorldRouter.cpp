@@ -136,6 +136,10 @@ WorldRouter::~WorldRouter()
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
         J->second->decRef();
     }
+    SpawnDict::const_iterator Kend = m_spawns.end();
+    for (SpawnDict::const_iterator K = m_spawns.begin(); K != Kend; ++K) {
+        delete K->second;
+    }
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
     m_gameWorld.decRef();
@@ -282,7 +286,13 @@ int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
         log(ERROR, "No name on spawn point");
     }
     const std::string & name = I->second.String();
-    m_spawns.insert(std::make_pair(name, new SpawnEntity(ent, data)));
+    SpawnDict::iterator J = m_spawns.find(name);
+    if (J != m_spawns.end()) {
+        delete J->second;
+        m_spawns.insert(J, std::make_pair(name, new SpawnEntity(ent, data)));
+    } else {
+        m_spawns.insert(std::make_pair(name, new SpawnEntity(ent, data)));
+    }
     return 0;
 }
 
