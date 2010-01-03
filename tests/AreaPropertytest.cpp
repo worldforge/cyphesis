@@ -32,7 +32,11 @@ int main()
 
     MapType area;
     area["points"] = ListType(1, ListType(3, 1.f));
+    area["type"] = "foo";
 
+    pc.testDataAppend(area);
+
+    area["type"] = "polygon";
     pc.testDataAppend(area);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
