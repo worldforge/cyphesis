@@ -716,9 +716,15 @@ def _setup_settlement(m):
                             [132,122], [140,127], [144.5, 146.5], [169, 153],
                             [169,155], [142.5,148.5], [138,129], [130,124],
                             [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ],
-               'layer' : 7}
+               'layer' : 7,
+               'type': 'polygon'}
     m.make('path', name='path to village', pos=(10, 20,settlement_height),
-           area=path_area, bbox=[-38,-62,0,169,154,1])
+           area=path_area, bbox=[-38,-62,0,169,154,1],
+           spawn={'name': 'settler village',
+                  'character_types': ['settler'],
+                  'contains': ['coin', 'coin', 'coin', 'coin', 'coin',
+                               'coin', 'coin', 'coin', 'coin', 'coin',
+                               'shirt', 'trousers', 'cloak', 'boots', 'hat']})
 
     m.make('tower',pos=(210,210,5))
     m.make('gallows',pos=(185,175,5))
@@ -774,9 +780,12 @@ def _setup_camp(m):
     camp_area_points=[]
     for i in range(10, 350, 17):
         camp_area_points.append([14 * sin(radians(i)), 16 * cos(radians(i))])
-    camp_area={'points': camp_area_points, 'layer':7 }
+    camp_area={'points': camp_area_points, 'layer':7, 'type': 'polygon' }
     m.make('path', name='camp_area', pos=camp_pos, area=camp_area,
-           bbox=[-14, -16, 0, 14, 16, 1])
+           bbox=[-14, -16, 0, 14, 16, 1],
+           spawn={'name': 'goblin village',
+                  'character_types': ['goblin'],
+                  'contains': ['shirt', 'trousers', 'cloak', 'boots', 'hat']})
 
 def _add_resources(m):
 
