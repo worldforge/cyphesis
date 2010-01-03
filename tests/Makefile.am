@@ -51,7 +51,7 @@ CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
                EntityFactorytest TaskFactorytest Connectiontest \
-               TrustedConnectiontest
+               TrustedConnectiontest WorldRoutertest
 
 TOOLS_TESTS = WorldLoadertest
 
@@ -1489,6 +1489,25 @@ TrustedConnectiontest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 TrustedConnectiontest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+WorldRoutertest_SOURCES = WorldRoutertest.cpp
+WorldRoutertest_LDADD = \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/SpawnEntity.o \
+        $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+WorldRoutertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 # TOOLS_TESTS
 
