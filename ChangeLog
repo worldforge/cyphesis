@@ -1,3 +1,9 @@
+2009-01-03  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.23
+
 2010-01-03  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/BaseWorld.h, common/Property.cpp, common/debug.cpp,
