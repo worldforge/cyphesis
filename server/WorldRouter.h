@@ -58,6 +58,7 @@ class WorldRouter : public BaseWorld {
     /// Map of spawns
     SpawnDict m_spawns;
 
+  protected:
     void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &, Entity &);
     Atlas::Objects::Operation::RootOperation getOperationFromQueue();
     bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
