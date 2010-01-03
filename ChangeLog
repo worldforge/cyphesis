@@ -1,3 +1,14 @@
+2010-01-03  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/BaseWorld.h, common/Property.cpp, common/debug.cpp,
+	  rulesets/AreaProperty.cpp, rulesets/AreaProperty.h,
+	  rulesets/SpawnProperty.cpp, rulesets/SpawnProperty.h,
+	  server/Account.cpp, server/Account.h,
+	  server/CorePropertyManager.cpp,
+	  server/Spawn,cpp, server/Spawn.h, server/SpawnEntity.cpp,
+	  server/SpawnEntity.h, server/WorldRouter.cpp, server/WorldRouter.h:
+	  Implement configurable data driven spawn points.
+
 2009-12-29  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/AtlasStreamClient.h: Add an accessor for errors reported
