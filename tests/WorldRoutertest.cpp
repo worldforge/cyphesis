@@ -23,20 +23,37 @@
 
 #include "common/globals.h"
 #include "common/id.h"
+#include "common/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
 
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Tick;
+
+class TestWorldRouter : public WorldRouter
+{
+  public:
+    Operation test_getOperationFromQueue() {
+        return getOperationFromQueue();
+    }
+
+    void test_delEntity(Entity * e) {
+        delEntity(e);
+    }
+};
 
 int main()
 {
     database_flag = false;
 
-    WorldRouter * test_world = new WorldRouter;
+    TestWorldRouter * test_world = new TestWorldRouter;
 
-    Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
+    Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
+    assert(ent1 == 0);
+
+    ent1 = test_world->addNewEntity("thing", Anonymous());
     assert(ent1 != 0);
 
     std::string id;
@@ -47,6 +64,84 @@ int main()
     ent2->m_location.m_loc = &test_world->m_gameWorld;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
+
+    test_world->test_getOperationFromQueue();
+
+    Tick tick;
+    tick->setFutureSeconds(0);
+    tick->setTo(ent2->getId());
+    test_world->message(tick, *ent2);
+
+    test_world->test_getOperationFromQueue();
+
+    {
+        Atlas::Message::MapType spawn_data;
+        test_world->createSpawnPoint(spawn_data, ent2);
+
+        spawn_data["name"] = 1;
+        test_world->createSpawnPoint(spawn_data, ent2);
+
+        spawn_data["name"] = "bob";
+        test_world->createSpawnPoint(spawn_data, ent2);
+
+        test_world->createSpawnPoint(spawn_data, ent2);
+    }
+    {
+        Atlas::Message::ListType spawn_repr;
+        test_world->getSpawnList(spawn_repr);
+        assert(!spawn_repr.empty());
+    }
+
+    Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",
+                                               "character",
+                                               Anonymous());
+    assert(ent3 == 0);
+
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "character",
+                                      Anonymous());
+    assert(ent3 == 0);
+
+    {
+        Atlas::Message::MapType spawn_data;
+        spawn_data["name"] = "bob";
+        spawn_data["character_types"] = Atlas::Message::ListType(1, "spiddler");
+        test_world->createSpawnPoint(spawn_data, ent2);
+    }
+
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "spiddler",
+                                      Anonymous());
+    assert(ent3 == 0);
+
+    {
+        Atlas::Message::MapType spawn_data;
+        spawn_data["name"] = "bob";
+        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
+        test_world->createSpawnPoint(spawn_data, ent2);
+    }
+
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "character",
+                                      Anonymous());
+    assert(ent3 != 0);
+
+    {
+        Atlas::Message::MapType spawn_data;
+        spawn_data["name"] = "bob";
+        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
+        spawn_data["contains"] = Atlas::Message::ListType(1, "thing");
+        test_world->createSpawnPoint(spawn_data, ent2);
+    }
+
+    Entity * ent4 = test_world->spawnNewEntity("bob",
+                                               "character",
+                                               Anonymous());
+    assert(ent4 != 0);
+
+    test_world->test_delEntity(&test_world->m_gameWorld);
+    test_world->test_delEntity(ent4);
+    ent4 = 0;
 
     delete test_world;
 
