@@ -284,6 +284,7 @@ int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
     MapType::const_iterator I = data.find("name");
     if (I == data.end() || !I->second.isString()) {
         log(ERROR, "No name on spawn point");
+        return -1;
     }
     const std::string & name = I->second.String();
     SpawnDict::iterator J = m_spawns.find(name);
