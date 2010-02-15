@@ -31,7 +31,7 @@ BaseWorld * BaseWorld::m_instance = 0;
 /// This constructor registers the instance created as the singleton, and
 /// in debug mode ensures that an instance has not already been created.
 /// @param gw the top level in-game entity in the world.
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(Entity & gw) : m_isFrozen(false), m_gameWorld(gw)
 {
     assert(m_instance == 0);
     m_instance = this;

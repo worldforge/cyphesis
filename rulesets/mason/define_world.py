@@ -1048,3 +1048,18 @@ def add_fish(mapeditor):
         c=m.make('fish', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(c)
     m.learn(fish, fish_goals)
+    
+    
+#Freezes the world, allowing authors to alter it while not worrying about entities moving or changing.
+def freeze(mapeditor):
+    m=editor(mapeditor)
+
+    world=m.look()
+    m.set(world.id, frozen=1)
+
+#Unfreezes a previously frozen world.
+def unfreeze(mapeditor):
+    m=editor(mapeditor)
+
+    world=m.look()
+    m.set(world.id, frozen=0)

@@ -556,26 +556,28 @@ void WorldRouter::addPerceptive(Entity * perceptive)
 /// @param usec world time microseconds component
 bool WorldRouter::idle(int sec, int usec)
 {
-    updateTime(sec, usec);
-    unsigned int op_count = 0;
-    OpQueue::iterator I = m_operationQueue.begin();
-    OpQueue::iterator Iend = m_operationQueue.end();
-    while (++op_count < 10 && I != Iend && (*I)->getSeconds() <= m_realTime) {
-        assert(I != m_operationQueue.end());
-        OpQueEntry & oqe = *I;
-        Dispatching.emit(oqe.op);
-        try {
-            operation(oqe.op, oqe.from);
-        }
-        catch (...) {
-            log(ERROR, String::compose("Exception caught in world.idle() "
-                                       "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\"",
-                                       oqe->getTo(), oqe->getFrom()));
-        }
-        m_operationQueue.erase(I);
-        I = m_operationQueue.begin();
-    }
+	unsigned int op_count = 0;
+	OpQueue::iterator I = m_operationQueue.begin();
+	OpQueue::iterator Iend = m_operationQueue.end();
+	if (!m_isFrozen) {
+		updateTime(sec, usec);
+		while (++op_count < 10 && I != Iend && (*I)->getSeconds() <= m_realTime) {
+			assert(I != m_operationQueue.end());
+			OpQueEntry & oqe = *I;
+			Dispatching.emit(oqe.op);
+			try {
+				operation(oqe.op, oqe.from);
+			}
+			catch (...) {
+				log(ERROR, String::compose("Exception caught in world.idle() "
+										   "thrown while processing operation "
+										   "sent to \"%1\" from \"%2\"",
+										   oqe->getTo(), oqe->getFrom()));
+			}
+			m_operationQueue.erase(I);
+			I = m_operationQueue.begin();
+		}
+	}
 
     I = m_immediateQueue.begin();
     Iend = m_immediateQueue.end();

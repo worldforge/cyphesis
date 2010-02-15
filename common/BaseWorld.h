@@ -60,6 +60,15 @@ class BaseWorld {
     /// their integer ID.
     EntityDict m_eobjects;
 
+    /// \brief Whether the base world is frozen or not.
+    ///
+    /// If this is set to true, the world is "frozen". In this state no
+    /// ops which aren't sent to or from either the world itself or
+    /// an entity of "creator" type is allowed. This is useful for when
+    /// a world author wants to edit the world beforehand, and doesn't want the
+    /// simulation or any external client to alter it.
+    bool m_isFrozen;
+
     explicit BaseWorld(Entity &);
   public:
     /// \brief The top level in-game entity in the world.
@@ -89,6 +98,21 @@ class BaseWorld {
     /// \brief Get the time the world has been running since the server started.
     const double upTime() const {
         return m_realTime - timeoffset;
+    }
+
+    /// \brief Gets whether the world is frozen or not.
+    const bool & getIsFrozen() const {
+    	return m_isFrozen;
+    }
+
+    /// \brief Sets whether the world is frozen or not.
+    /// If the world is "frozen" no ops which aren't sent to or from either the
+    /// world itself or an entity of "creator" type is allowed. This is useful
+    /// for when a world author wants to edit the world beforehand, and doesn't
+    /// want the simulation or any external client to alter it.
+    void setIsFrozen(bool frozen)
+    {
+    	m_isFrozen = frozen;
     }
 
     /// \brief Main world loop function.
