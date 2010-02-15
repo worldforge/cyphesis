@@ -40,6 +40,7 @@
 #include "common/Monitors.h"
 #include "common/SystemTime.h"
 #include "common/Variable.h"
+#include "common/Tick.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -414,6 +415,16 @@ void WorldRouter::delEntity(LocatedEntity * ent)
     ent->decRef();
 }
 
+void WorldRouter::resumeWorld()
+{
+    //Take all suspended operations and add them to be executed.
+    for (OpQueue::const_iterator I = m_suspendedQueue.begin(); I != m_suspendedQueue.end(); ++I) {
+        addOperationToQueue(I->op, I->from);
+    }
+    m_suspendedQueue.clear();
+}
+
+
 /// \brief Pass an operation to the World.
 ///
 /// Pass an operation to addOperationToQueue()
@@ -457,6 +468,14 @@ bool WorldRouter::broadcastPerception(const Operation & op) const
 /// dispatch.
 void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 {
+    //If the world is suspended and the op is a tick, we should store it
+    //(to be resent when the world is resumed) and not process it now.
+    if (m_isSuspended) {
+        if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+            m_suspendedQueue.push_back(OpQueEntry(op, ent));
+            return;
+        }
+    }
     OpVector res;
     ent.operation(op, res);
     OpVector::const_iterator Iend = res.end();
@@ -573,9 +592,9 @@ void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 bool WorldRouter::idle(const SystemTime & time)
 {
     updateTime(time);
-    unsigned int op_count = 0;
-    OpQueue::iterator I = m_operationQueue.begin();
-    OpQueue::iterator Iend = m_operationQueue.end();
+	unsigned int op_count = 0;
+	OpQueue::iterator I = m_operationQueue.begin();
+	OpQueue::iterator Iend = m_operationQueue.end();
     while (++op_count < 10 && I != Iend && (*I)->getSeconds() <= m_realTime) {
         assert(I != m_operationQueue.end());
         OpQueEntry & oqe = *I;

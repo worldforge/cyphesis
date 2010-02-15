@@ -61,7 +61,19 @@ class BaseWorld {
     /// their integer ID.
     EntityDict m_eobjects;
 
+    /// \brief Whether the base world is suspended or not.
+    ///
+    /// If this is set to true, the world is "suspended". In this state no
+    /// Tick ops are sent.
+    /// This is useful for when a world author wants to edit the world
+    /// without the simulation altering it.
+    bool m_isSuspended;
+
     explicit BaseWorld(LocatedEntity &);
+
+    /// \brief Called when the world is resumed.
+    virtual void resumeWorld() {}
+
   public:
     /// \brief The top level in-game entity in the world.
     LocatedEntity & m_gameWorld;
@@ -91,6 +103,18 @@ class BaseWorld {
     const double upTime() const {
         return m_realTime - timeoffset;
     }
+
+    /// \brief Gets whether the world is suspended or not.
+    const bool & getIsSuspended() const {
+    	return m_isSuspended;
+    }
+
+    /// \brief Sets whether the world is suspended or not.
+    /// If this is set to true, the world is "suspended". In this state no
+    /// Tick ops are sent.
+    /// This is useful for when a world author wants to edit the world
+    /// without the simulation altering it.
+    void setIsSuspended(bool suspended);
 
     /// \brief Main world loop function.
     virtual bool idle(const SystemTime &) = 0;

@@ -46,6 +46,8 @@ class WorldRouter : public BaseWorld {
     OpQueue m_operationQueue;
     /// An ordered queue of operations to be dispatched now
     OpQueue m_immediateQueue;
+    /// An ordered queue of suspended operations to be dispatched when resumed.
+    OpQueue m_suspendedQueue;
     /// The system time when the server was started.
     std::time_t m_initTime;
     /// List of perceptive entities.
@@ -54,7 +56,6 @@ class WorldRouter : public BaseWorld {
     int m_entityCount;
     /// Map of spawns
     SpawnDict m_spawns;
-
   protected:
     void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &,
                              LocatedEntity &);
@@ -64,6 +65,7 @@ class WorldRouter : public BaseWorld {
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
     void delEntity(LocatedEntity * obj);
+    void resumeWorld();
   public:
     explicit WorldRouter(const SystemTime &);
     virtual ~WorldRouter();
