@@ -39,6 +39,7 @@
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/VisibilityProperty.h"
+#include "rulesets/SuspendedProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -113,6 +114,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<VisibilityProperty>("visibility", "float");
     installProperty<TerrainModProperty>("terrainmod", "map");
     installProperty<TeleportProperty>("linked", "string");
+    installProperty<SuspendedProperty>("suspended", "int");
 }
 
 CorePropertyManager::~CorePropertyManager()

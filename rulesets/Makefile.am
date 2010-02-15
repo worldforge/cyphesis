@@ -58,7 +58,8 @@ librulesetentity_a_SOURCES = \
 			     DecaysProperty.cpp DecaysProperty.h \
 			     Task.cpp Task.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
-			     ArithmeticFactory.cpp ArithmeticFactory.h
+			     ArithmeticFactory.cpp ArithmeticFactory.h \
+			     SuspendedProperty.cpp SuspendedProperty.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
