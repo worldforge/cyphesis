@@ -1219,7 +1219,7 @@ def create_empty_terrain(mapeditor):
     m=editor(mapeditor)
     world=m.look()
     points = { }
-    for i in range(-18, 17):
+    for i in range(-16, 17):
         for j in range(-16, 17):
             points['%ix%i'%(i,j)] = [i, j, -4]
 
@@ -1271,8 +1271,8 @@ def create_large_empty_terrain(mapeditor):
     m=editor(mapeditor)
     world=m.look()
     points = { }
-    for i in range(-32, 31):
-        for j in range(-32, 31):
+    for i in range(-32, 33):
+        for j in range(-32, 33):
             points['%ix%i'%(i,j)] = [i, j, -4]
 
     minx=0
@@ -1323,7 +1323,7 @@ def create_small_empty_terrain(mapeditor):
     points = { }
     for i in range(-1, 2):
         for j in range(-1,9):
-            points['%ix%i'%(i,j)] = [i, j, 4]
+            points['%ix%i'%(i,j)] = [i, j, -4]
 
     minx=0
     miny=0
