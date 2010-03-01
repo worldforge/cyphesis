@@ -150,17 +150,17 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.45086</float>
-          <float>-0.471878</float>
-          <float>-0.0810289</float>
-          <float>0.464189</float>
-          <float>0.461909</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>-0.08</float>
+          <float>0.1</float>
+          <float>0.1</float>
           <float>1.6</float>
         </list>
         <string name="visibility">public</string>
       </map>
     </map>
-    <string name="id">bush</string>
+    <string name="id">shrub</string>
     <string name="objtype">class</string>
     <list name="parents"><string>thing</string></list>
   </map>
