@@ -51,7 +51,7 @@ CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
                EntityFactorytest TaskFactorytest Connectiontest \
-               TrustedConnectiontest WorldRoutertest
+               TrustedConnectiontest WorldRoutertest Peertest
 
 TOOLS_TESTS = WorldLoadertest
 
@@ -1508,6 +1508,12 @@ WorldRoutertest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 WorldRoutertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+Peertest_SOURCES = Peertest.cpp
+Peertest_LDADD = \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/common/libcommon.a
+
 
 # TOOLS_TESTS
 
