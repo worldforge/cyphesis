@@ -19,11 +19,6 @@
 
 #include "server/Peer.h"
 
-#include "server/CommPeer.h"
-#include "server/CommServer.h"
-#include "server/Lobby.h"
-#include "server/ServerRouting.h"
-
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
