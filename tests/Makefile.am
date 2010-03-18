@@ -53,6 +53,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest
 
+SERVER_COMM_TESTS = CommSockettest CommStreamClienttest
+
 TOOLS_TESTS = WorldLoadertest
 
 PYTHON_TESTS = python_class
@@ -62,7 +64,8 @@ INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
-TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS)
+TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
+        $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS)
 
 EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
@@ -1519,6 +1522,16 @@ Lobbytest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/common/libcommon.a
 
+# SERVER_COMM_TESTS
+
+CommSockettest_SOURCES = CommSockettest.cpp
+CommSockettest_LDADD = \
+        $(top_builddir)/server/CommSocket.o
+
+CommStreamClienttest_SOURCES = CommStreamClienttest.cpp
+CommStreamClienttest_LDADD = \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(NETWORK_LIBS)
 
 # Other TESTS
 
