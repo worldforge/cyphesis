@@ -51,7 +51,7 @@ CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
                EntityFactorytest TaskFactorytest Connectiontest \
-               TrustedConnectiontest WorldRoutertest Peertest
+               TrustedConnectiontest WorldRoutertest Peertest Lobbytest
 
 TOOLS_TESTS = WorldLoadertest
 
@@ -64,7 +64,7 @@ LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LI
 
 TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) $(SERVER_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS)
 
-EXTRA_PROGRAMS = $(PYTHON_TESTS)
+EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
 check_PROGRAMS = $(TESTS)
 
@@ -1512,6 +1512,19 @@ WorldRoutertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 Peertest_SOURCES = Peertest.cpp
 Peertest_LDADD = \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/common/libcommon.a
+
+Lobbytest_SOURCES = Lobbytest.cpp
+Lobbytest_LDADD = \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/common/libcommon.a
+
+
+# Other TESTS
+
+Mastertest_SOURCES = Mastertest.cpp
+Mastertest_LDADD = \
+        $(top_builddir)/server/Master.o \
         $(top_builddir)/common/libcommon.a
 
 
