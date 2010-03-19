@@ -29,7 +29,7 @@ check_coverage() {
     if [ ! -x ${test_program} ]
     then
         echo Test programs have not been built for ${source_file}
-        exit 1
+        return
     fi
 
     if [ ${source_file} -nt ${test_program} ]
