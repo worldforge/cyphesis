@@ -1,3 +1,5 @@
+Make m_encoder an Atlas::EncoderBase *
+
 What are we doing with spawns?
 Set location
 Restrict classes
