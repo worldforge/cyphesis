@@ -201,6 +201,9 @@ int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
     if (m_clientIos.fail()) {
         return -1;
     }
+    if (m_encoder == 0) {
+        return -1;
+    }
     m_encoder->streamObjectsMessage(op);
     struct timeval tv = {0, 0};
     fd_set sfds;
