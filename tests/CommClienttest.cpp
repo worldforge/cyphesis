@@ -30,6 +30,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootOperation.h>
 
+#include <cstdlib>
+
 #include <cassert>
 
 class TestCodec : public Atlas::Codec
@@ -163,6 +165,36 @@ class TestCommClient : public CommClient
     {
         operation(op);
     }
+
+    void test_openSocket()
+    {
+        int fds[2];
+        if (socketpair(AF_UNIX, SOCK_STREAM, 0, &fds[0]) != 0) {
+            exit(1);
+        }
+
+        m_clientIos.setSocket(fds[0]);
+
+        pid_t p = fork();
+        if (p == -1) {
+            exit(1);
+        }
+        if (p == 0) {
+            char buf[1];
+            while(::read(fds[1], &buf[0], 1) == 1);
+            exit(0);
+        }
+    }
+
+    void test_idle(int i)
+    {
+        idle(i);
+    }
+
+    void test_setConnectTime(time_t t)
+    {
+        m_connectTime = t;
+    }
 };
 
 class TestRouter : public Router
@@ -239,6 +271,85 @@ int main()
         cs->test_setNegotiateState(Atlas::Negotiate::FAILED);
 
         cs->test_negotiate();
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnectTime(0);
+        cs->test_idle(0);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
+        cs->test_negotiate();
+
+        cs->test_setConnectTime(0);
+        cs->test_idle(0);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnectTime(0);
+        cs->test_idle(20);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->read();
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setEncoder();
+        cs->read();
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        Atlas::Objects::Operation::RootOperation op;
+        cs->send(op);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_openSocket();
+
+        Atlas::Objects::Operation::RootOperation op;
+        cs->send(op);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_openSocket();
+        cs->test_setEncoder();
+
+        Atlas::Objects::Operation::RootOperation op;
+        cs->send(op);
 
         delete cs;
     }
