@@ -155,19 +155,10 @@ BaseWorldtest_LDADD = \
 
 Databasetest_SOURCES = Databasetest.cpp
 Databasetest_LDADD = \
-        $(top_builddir)/common/Database.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/id.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/Database.o
 
 idtest_SOURCES = idtest.cpp
 idtest_LDADD = \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o \
         $(top_builddir)/common/id.o
 
 AccountBasetest_SOURCES = AccountBasetest.cpp
@@ -338,12 +329,7 @@ WorldTimetest_LDADD = \
 
 EntityReftest_SOURCES = EntityReftest.cpp
 EntityReftest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(top_builddir)/modules/EntityRef.o
 
 # RULESETS_TESTS
 

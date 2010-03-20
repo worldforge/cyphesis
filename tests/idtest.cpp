@@ -19,6 +19,8 @@
 
 #include "common/id.h"
 
+#include "common/log.h"
+
 #include <iostream>
 
 #include <cstdlib>
@@ -127,4 +129,8 @@ int main()
 
 
     return 0;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }

@@ -19,6 +19,12 @@
 
 #include "common/Database.h"
 
+#include "common/const.h"
+#include "common/compose.hpp"
+#include "common/log.h"
+
+#include <cstdlib>
+
 #include <cassert>
 
 int main()
@@ -61,4 +67,42 @@ int main()
 
 
     return 0;
+}
+
+const char * CYPHESIS = "cyphesis";
+std::string instance("test_instance");
+
+namespace consts {
+  const long rootWorldIntId = 0L;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void log_formatted(LogLevel lvl, const std::string & msg)
+{
+}
+
+long forceIntegerId(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        log(CRITICAL, String::compose("Unable to convert ID \"%1\" to an integer", id));
+        abort();
+    }
+
+    return intId;
+}
+
+template <typename T>
+int readConfigItem(const std::string & section, const std::string & key, T & storage)
+{
+    return -1;
+}
+
+template<>
+int readConfigItem<std::string>(const std::string & section, const std::string & key, std::string & storage)
+{
+    return -1;
 }
