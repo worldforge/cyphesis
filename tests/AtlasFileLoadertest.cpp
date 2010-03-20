@@ -19,6 +19,8 @@
 
 #include "common/AtlasFileLoader.h"
 
+#include "common/log.h"
+
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -58,4 +60,8 @@ int main()
     }
 
     return 0;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }

@@ -78,10 +78,7 @@ dist-hook:
 
 logtest_SOURCES = logtest.cpp
 logtest_LDADD = \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/log.o
 
 Inheritancetest_SOURCES = Inheritancetest.cpp
 Inheritancetest_LDADD = \
@@ -99,12 +96,7 @@ Propertytest_LDADD = $(top_builddir)/common/Property.o
 
 systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = \
-        $(top_builddir)/common/system.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o \
-        $(NETWORK_LIBS)
+        $(top_builddir)/common/system.o
 
 type_utilstest_SOURCES = type_utilstest.cpp
 type_utilstest_LDADD = $(top_builddir)/common/type_utils.o
@@ -155,20 +147,11 @@ Updatetest_LDADD = $(top_builddir)/common/operations.o
 
 AtlasFileLoadertest_SOURCES = AtlasFileLoadertest.cpp
 AtlasFileLoadertest_LDADD = \
-        $(top_builddir)/common/AtlasFileLoader.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/AtlasFileLoader.o
 
 BaseWorldtest_SOURCES = BaseWorldtest.cpp
 BaseWorldtest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(top_builddir)/common/BaseWorld.o
 
 Databasetest_SOURCES = Databasetest.cpp
 Databasetest_LDADD = \

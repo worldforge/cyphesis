@@ -77,3 +77,7 @@ int main()
     
     return 0;
 }
+
+bool daemon_flag = false;
+std::string var_directory("/var/tmp");
+std::string instance("test_instance");

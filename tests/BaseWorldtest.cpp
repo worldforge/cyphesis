@@ -17,19 +17,69 @@
 
 // $Id$
 
-#include "TestWorld.h"
-
-#include "rulesets/Entity.h"
+#include "common/BaseWorld.h"
 
 #include <Atlas/Objects/RootOperation.h>
 
 #include <sigc++/functors/ptr_fun.h>
 
+#include <cstdlib>
+
 #include <cassert>
 
-static void test_function(Operation)
+static void test_function(Atlas::Objects::Operation::RootOperation)
 {
 }
+
+class LocatedEntity;
+
+class Entity
+{
+  public:
+    const std::string m_id;
+    const long m_intId;
+    explicit Entity(const std::string & id, long intId) : m_id(id), m_intId(intId) { }
+
+    const std::string & getId() const {
+        return m_id;
+    }
+
+    long getIntId() const {
+        return m_intId;
+    }
+};
+
+class TestWorld : public BaseWorld {
+  public:
+    explicit TestWorld(Entity & gw) : BaseWorld(gw) {
+        m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
+    }
+
+    virtual bool idle(int, int) { return false; }
+    virtual Entity * addEntity(Entity * ent) { 
+        m_eobjects[ent->getIntId()] = ent;
+        return 0;
+    }
+    virtual Entity * addNewEntity(const std::string &,
+                                  const Atlas::Objects::Entity::RootEntity &) {
+        return 0;
+    }
+    int createSpawnPoint(const Atlas::Message::MapType & data,
+                         Entity *) { return 0; }
+    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
+    Entity * spawnNewEntity(const std::string & name,
+                            const std::string & type,
+                            const Atlas::Objects::Entity::RootEntity & desc) {
+        return addNewEntity(type, desc);
+    }
+    virtual Task * newTask(const std::string &, Character &) { return 0; }
+    virtual Task * activateTask(const std::string &, const std::string &,
+                                const std::string &, Character &) { return 0; }
+    virtual void message(const Atlas::Objects::Operation::RootOperation & op, Entity & ent) { }
+    virtual Entity * findByName(const std::string & name) { return 0; }
+    virtual Entity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(Entity *) { }
+};
 
 int main()
 {
@@ -128,3 +178,15 @@ int main()
 
     return 0;
 }
+
+long integerId(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        intId = -1L;
+    }
+
+    return intId;
+}
+
+int timeoffset = 0;

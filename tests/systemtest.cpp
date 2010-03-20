@@ -23,6 +23,7 @@
 
 #include "common/globals.h"
 #include "common/system.h"
+#include "common/log.h"
 
 #include <skstream/sksocket.h>
 
@@ -45,8 +46,8 @@ int main()
     res = security_init();
     assert(res == 0);
 
-    res = security_check();
-    assert(res == SECURITY_OKAY);
+    unsigned magic_res = security_check();
+    assert(magic_res == SECURITY_OKAY);
 
     reduce_priority(1);
     
@@ -145,3 +146,17 @@ int main()
     return 0;
 #endif // HAVE_GETTIMEOFDAY
 }
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void rotateLogger()
+{
+}
+
+bool exit_flag = false;
+bool daemon_flag = false;
+std::string var_directory("/var/tmp");
+std::string instance("test_instance");
+int dynamic_port_end = 6899;
