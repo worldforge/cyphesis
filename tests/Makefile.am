@@ -53,7 +53,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest
 
-SERVER_COMM_TESTS = CommSockettest CommStreamClienttest
+SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest
 
 TOOLS_TESTS = WorldLoadertest
 
@@ -1531,6 +1531,11 @@ CommSockettest_LDADD = \
 CommStreamClienttest_SOURCES = CommStreamClienttest.cpp
 CommStreamClienttest_LDADD = \
         $(top_builddir)/server/CommStreamClient.o \
+        $(NETWORK_LIBS)
+
+CommClienttest_SOURCES = CommClienttest.cpp
+CommClienttest_LDADD = \
+        $(top_builddir)/server/CommClient.o \
         $(NETWORK_LIBS)
 
 # Other TESTS
