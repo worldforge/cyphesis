@@ -18,16 +18,18 @@
 // $Id$
 
 #include "server/CommServer.h"
-#include "server/ServerRouting.h"
+
 #include "server/CommSocket.h"
+#include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
-
-#include "TestWorld.h"
+#include "common/BaseWorld.h"
+#include "common/log.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
+#include <string>
 
 #include <cassert>
 
@@ -54,10 +56,40 @@ class CommFakeSocket : public CommSocket {
 
 };
 
+class TestWorld : public BaseWorld {
+  public:
+    explicit TestWorld() : BaseWorld(*(Entity*)0) {
+    }
+
+    virtual bool idle(int, int) { return false; }
+    virtual Entity * addEntity(Entity * ent) { 
+        return 0;
+    }
+    virtual Entity * addNewEntity(const std::string &,
+                                  const Atlas::Objects::Entity::RootEntity &) {
+        return 0;
+    }
+    int createSpawnPoint(const Atlas::Message::MapType & data,
+                         Entity *) { return 0; }
+    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
+    Entity * spawnNewEntity(const std::string & name,
+                            const std::string & type,
+                            const Atlas::Objects::Entity::RootEntity & desc) {
+        return addNewEntity(type, desc);
+    }
+    virtual Task * newTask(const std::string &, Character &) { return 0; }
+    virtual Task * activateTask(const std::string &, const std::string &,
+                                const std::string &, Character &) { return 0; }
+    virtual void message(const Atlas::Objects::Operation::RootOperation & op,
+                         Entity & ent) { }
+    virtual Entity * findByName(const std::string & name) { return 0; }
+    virtual Entity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(Entity *) { }
+};
+
 int main(int argc, char ** argv)
 {
-    Entity e("0", 0);
-    TestWorld world(e);
+    TestWorld world;
 
     ServerRouting server(world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
@@ -81,4 +113,68 @@ int main(int argc, char ** argv)
 
     commServer.poll();
 
+}
+
+// Stub functions
+
+CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+
+CommSocket::~CommSocket()
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void logSysError(LogLevel lvl)
+{
+}
+
+ServerRouting::ServerRouting(BaseWorld & wrld,
+                             const std::string & ruleset,
+                             const std::string & name,
+                             const std::string & id, long intId,
+                             const std::string & lId, long lIntId) :
+        Router(id, intId),
+        m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
+{
+}
+
+ServerRouting::~ServerRouting()
+{
+}
+
+void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+}
+
+BaseWorld::~BaseWorld()
+{
 }
