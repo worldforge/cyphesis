@@ -119,6 +119,7 @@ int CommClient::negotiate()
 
 int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
+    assert(m_connection != 0);
     OpVector reply;
     long serialno = op->getSerialno();
     m_connection->operation(op, reply);
