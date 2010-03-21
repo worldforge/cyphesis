@@ -38,7 +38,7 @@ static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, int fd) :
             CommStreamClient(svr, fd), Idle(svr),
-            m_codec(NULL), m_encoder(NULL),
+            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
@@ -48,7 +48,7 @@ CommClient::CommClient(CommServer & svr, int fd) :
 
 CommClient::CommClient(CommServer & svr) :
             CommStreamClient(svr), Idle(svr),
-            m_codec(NULL), m_encoder(NULL),
+            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
@@ -58,7 +58,9 @@ CommClient::CommClient(CommServer & svr) :
 
 CommClient::~CommClient()
 {
-    delete m_connection;
+    if (m_connection != NULL) {
+        delete m_connection;
+    }
     if (m_negotiate != NULL) {
         delete m_negotiate;
     }
