@@ -27,8 +27,9 @@
 #include <Atlas/Codec.h>
 #include <Atlas/Negotiate.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 #include <cstdlib>
 
@@ -195,17 +196,34 @@ class TestCommClient : public CommClient
     {
         m_connectTime = t;
     }
+
+    void test_setupQueue()
+    {
+        Atlas::Objects::Operation::RootOperation op;
+        m_opQueue.push_back(op);
+    }
+
+    void test_objectArrived(const Atlas::Objects::Root & obj)
+    {
+        objectArrived(obj);
+    }
 };
 
 class TestRouter : public Router
 {
+  protected:
+    int m_reply;
   public:
-    TestRouter() : Router("5", 5)
+    TestRouter(int reply = 0) : Router("5", 5), m_reply(reply)
     {
     }
 
-    virtual void operation(const Operation&, OpVector&)
+    virtual void operation(const Operation&, OpVector&res)
     {
+        if (m_reply) {
+            Atlas::Objects::Operation::RootOperation op;
+            res.push_back(op);
+        }
     }
 };
 
@@ -361,6 +379,78 @@ int main()
 
         Atlas::Objects::Operation::RootOperation op;
         cs->test_operation(op);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnection(new TestRouter(1));
+
+        Atlas::Objects::Operation::RootOperation op;
+        cs->test_operation(op);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnection(new TestRouter(1));
+
+        Atlas::Objects::Operation::RootOperation op;
+        op->setSerialno(23);
+        cs->test_operation(op);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnection(new TestRouter(1));
+
+        cs->dispatch();
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnection(new TestRouter(1));
+
+        cs->test_setupQueue();
+        cs->dispatch();
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        Atlas::Objects::Entity::RootEntity ent;
+        cs->test_objectArrived(ent);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        Atlas::Objects::Entity::RootEntity ent;
+        ent->setParents(std::list<std::string>());
+        cs->test_objectArrived(ent);
+
+        delete cs;
+    }
+
+    {
+        TestCommClient * cs = new TestCommClient(comm_server);
+
+        Atlas::Objects::Operation::RootOperation op;
+        cs->test_objectArrived(op);
 
         delete cs;
     }
