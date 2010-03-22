@@ -58,213 +58,111 @@ class TestWorldRouter : public WorldRouter
     }
 };
 
-static bool stub_deny_newid = false;
-
 int main()
 {
-    {
-        new TestWorldRouter;
-    }
+    database_flag = false;
+
+    TestWorldRouter * test_world = new TestWorldRouter;
+
+    Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
+    assert(ent1 == 0);
+
+    ent1 = test_world->addNewEntity("thing", Anonymous());
+    assert(ent1 != 0);
+
+    std::string id;
+    long int_id = newId(id);
+
+    Entity * ent2 = new Thing(id, int_id);
+    assert(ent2 != 0);
+    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_pos = Point3D(0,0,0);
+    test_world->addEntity(ent2);
+
+    test_world->test_getOperationFromQueue();
+
+    Tick tick;
+    tick->setFutureSeconds(0);
+    tick->setTo(ent2->getId());
+    test_world->message(tick, *ent2);
+
+    test_world->test_getOperationFromQueue();
 
     {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        delete test_world;
+        Atlas::Message::MapType spawn_data;
+        test_world->createSpawnPoint(spawn_data, ent2);
+
+        spawn_data["name"] = 1;
+        test_world->createSpawnPoint(spawn_data, ent2);
+
+        spawn_data["name"] = "bob";
+        test_world->createSpawnPoint(spawn_data, ent2);
+
+        test_world->createSpawnPoint(spawn_data, ent2);
     }
+    {
+        Atlas::Message::ListType spawn_repr;
+        test_world->getSpawnList(spawn_repr);
+        assert(!spawn_repr.empty());
+    }
+
+    Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",
+                                               "character",
+                                               Anonymous());
+    assert(ent3 == 0);
+
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "character",
+                                      Anonymous());
+    assert(ent3 == 0);
 
     {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
-        assert(ent1 == 0);
-
-        delete test_world;
+        Atlas::Message::MapType spawn_data;
+        spawn_data["name"] = "bob";
+        spawn_data["character_types"] = Atlas::Message::ListType(1, "spiddler");
+        test_world->createSpawnPoint(spawn_data, ent2);
     }
+
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "spiddler",
+                                      Anonymous());
+    assert(ent3 == 0);
 
     {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
-        assert(ent1 != 0);
-
-        delete test_world;
+        Atlas::Message::MapType spawn_data;
+        spawn_data["name"] = "bob";
+        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
+        test_world->createSpawnPoint(spawn_data, ent2);
     }
 
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "character",
+                                      Anonymous());
+    assert(ent3 != 0);
 
     {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        stub_deny_newid = true;
-
-        Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
-        assert(ent1 == 0);
-
-        stub_deny_newid = false;
-
-        delete test_world;
+        Atlas::Message::MapType spawn_data;
+        spawn_data["name"] = "bob";
+        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
+        spawn_data["contains"] = Atlas::Message::ListType(1, "thing");
+        test_world->createSpawnPoint(spawn_data, ent2);
     }
 
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
+    Entity * ent4 = test_world->spawnNewEntity("bob",
+                                               "character",
+                                               Anonymous());
+    assert(ent4 != 0);
 
-        std::string id;
-        long int_id = newId(id);
+    test_world->test_delEntity(&test_world->m_gameWorld);
+    test_world->test_delEntity(ent4);
+    ent4 = 0;
 
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        test_world->test_getOperationFromQueue();
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        Tick tick;
-        tick->setFutureSeconds(0);
-        tick->setTo(ent2->getId());
-        test_world->message(tick, *ent2);
-
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        Tick tick;
-        tick->setFutureSeconds(0);
-        tick->setTo(ent2->getId());
-        test_world->message(tick, *ent2);
-
-        test_world->test_getOperationFromQueue();
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",
-                                                   "thing",
-                                                   Anonymous());
-        assert(ent3 == 0);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        Entity * ent3 = test_world->spawnNewEntity("bob",
-                                                   "thing",
-                                                   Anonymous());
-        assert(ent3 == 0);
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        {
-            int ret;
-
-            Atlas::Message::MapType spawn_data;
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == -1);
-
-            spawn_data["name"] = 1;
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == -1);
-
-            spawn_data["name"] = "bob";
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == 0);
-
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == 0);
-        }
-
-        {
-            Atlas::Message::ListType spawn_repr;
-            test_world->getSpawnList(spawn_repr);
-            assert(!spawn_repr.empty());
-        }
-
-        Entity * ent3 = test_world->spawnNewEntity("bob",
-                                          "permitted_non_existant",
-                                          Anonymous());
-        assert(ent3 == 0);
-
-        ent3 = test_world->spawnNewEntity("bob",
-                                          "thing",
-                                          Anonymous());
-        assert(ent3 != 0);
-
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        test_world->test_delEntity(ent2);
-        test_world->test_delEntity(&test_world->m_gameWorld);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        test_world->test_delEntity(&test_world->m_gameWorld);
-
-        delete test_world;
-    }
+    delete test_world;
 
     return 0;
 }
 
+#if 0
 // Stubs
 
 int timeoffset = 0;
@@ -657,9 +555,6 @@ static long idGenerator = 0;
 
 long newId(std::string & id)
 {
-    if (stub_deny_newid) {
-        return -1;
-    }
     static char buf[32];
     long new_id = ++idGenerator;
     sprintf(buf, "%ld", new_id);
@@ -810,9 +705,6 @@ SpawnEntity::SpawnEntity(Entity * e, const MapType & data)
 int SpawnEntity::spawnEntity(const std::string & type,
                              const RootEntity & dsc)
 {
-    if (type == "thing" || type == "permitted_non_existant") {
-        return 0;
-    }
     return -1;
 }
 
@@ -831,3 +723,4 @@ int SpawnEntity::addToMessage(MapType & msg) const
 Spawn::~Spawn()
 {
 }
+#endif // 0

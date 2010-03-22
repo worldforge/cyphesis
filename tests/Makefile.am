@@ -55,6 +55,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest
 
+SERVER_INTEGRATION_TESTS = WorldRouterintegration
+
 TOOLS_TESTS = WorldLoadertest
 
 PYTHON_TESTS = python_class
@@ -65,7 +67,8 @@ INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
 TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
-        $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS)
+        $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS) \
+        $(SERVER_INTEGRATION_TESTS)
 
 EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
@@ -1432,22 +1435,7 @@ TrustedConnectiontest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 WorldRoutertest_SOURCES = WorldRoutertest.cpp
 WorldRoutertest_LDADD = \
-        $(top_builddir)/server/WorldRouter.o \
-        $(top_builddir)/server/EntityBuilder.o \
-        $(top_builddir)/server/CorePropertyManager.o \
-        $(top_builddir)/server/SpawnEntity.o \
-        $(top_builddir)/server/Spawn.o \
-        $(top_builddir)/server/EntityFactory.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
-WorldRoutertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+        $(top_builddir)/server/WorldRouter.o
 
 Peertest_SOURCES = Peertest.cpp
 Peertest_LDADD = \
@@ -1474,6 +1462,27 @@ CommClienttest_SOURCES = CommClienttest.cpp
 CommClienttest_LDADD = \
         $(top_builddir)/server/CommClient.o \
         $(NETWORK_LIBS)
+
+# SERVER_INTEGRATION_TESTS
+
+WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
+WorldRouterintegration_LDADD = \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/SpawnEntity.o \
+        $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+WorldRouterintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 # Other TESTS
 
