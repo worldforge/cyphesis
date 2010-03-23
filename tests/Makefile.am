@@ -1328,17 +1328,7 @@ EntityFactorytest_LDADD = \
 
 TaskFactorytest_SOURCES = TaskFactorytest.cpp
 TaskFactorytest_LDADD = \
-        $(top_builddir)/server/TaskFactory.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
-TaskFactorytest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+        $(top_builddir)/server/TaskFactory.o
 
 buildidtest_SOURCES = buildidtest.cpp
 buildidtest_LDADD = \
