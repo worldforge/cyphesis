@@ -52,7 +52,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
-               Spawntest
+               Spawntest SpawnEntitytest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest
 
@@ -1381,6 +1381,10 @@ Lobbytest_LDADD = \
 Spawntest_SOURCES = Spawntest.cpp
 Spawntest_LDADD = \
         $(top_builddir)/server/Spawn.o
+
+SpawnEntitytest_SOURCES = SpawnEntitytest.cpp
+SpawnEntitytest_LDADD = \
+        $(top_builddir)/server/SpawnEntity.o
 
 # SERVER_COMM_TESTS
 
