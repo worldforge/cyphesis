@@ -19,9 +19,79 @@
 
 #include "common/Inheritance.h"
 
+#include <Atlas/Objects/Anonymous.h>
+
+using Atlas::Objects::Root;
+
 int main()
 {
     installCustomOperations();
     installCustomEntities();
     return 0;
 }
+
+// stubs
+
+Inheritance * Inheritance::m_instance = NULL;
+
+Inheritance::Inheritance()
+{
+}
+
+Inheritance & Inheritance::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Inheritance();
+    }
+    return *m_instance;
+}
+
+TypeNode * Inheritance::addChild(const Root & obj,
+                                 const PropertyDict & defaults)
+{
+    return 0;
+}
+
+Root atlasOpDefinition(const std::string & name, const std::string & parent)
+{
+    Atlas::Objects::Entity::Anonymous r;
+
+    r->setParents(std::list<std::string>(1, parent));
+    r->setObjtype("op_definition");
+    r->setId(name);
+
+    return r;
+}
+
+Root atlasClass(const std::string & name, const std::string & parent)
+{
+    Atlas::Objects::Entity::Anonymous r;
+
+    r->setParents(std::list<std::string>(1, parent));
+    r->setObjtype("class");
+    r->setId(name);
+
+    return r;
+}
+
+
+namespace Atlas { namespace Objects { namespace Operation {
+
+int ACTUATE_NO = -1;
+int ADD_NO = -1;
+int ATTACK_NO = -1;
+int BURN_NO = -1;
+int CONNECT_NO = -1;
+int DROP_NO = -1;
+int MONITOR_NO = -1;
+int EAT_NO = -1;
+int UNSEEN_NO = -1;
+int UPDATE_NO = -1;
+int NOURISH_NO = -1;
+int PICKUP_NO = -1;
+int SETUP_NO = -1;
+int TICK_NO = -1;
+int THOUGHT_NO = -1;
+int GOAL_INFO_NO = -1;
+
+} } }

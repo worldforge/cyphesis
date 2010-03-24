@@ -202,13 +202,7 @@ client_sockettest_LDADD = \
 
 customtest_SOURCES = customtest.cpp
 customtest_LDADD = \
-        $(top_builddir)/common/custom.o \
-        $(top_builddir)/common/Inheritance.o \
-        $(top_builddir)/common/TypeNode.o \
-        $(top_builddir)/common/operations.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/custom.o
 
 Monitorstest_SOURCES = Monitorstest.cpp
 Monitorstest_LDADD = \
