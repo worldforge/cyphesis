@@ -191,11 +191,7 @@ OperationRoutertest_LDADD = $(top_builddir)/common/OperationRouter.o
 
 Routertest_SOURCES = Routertest.cpp
 Routertest_LDADD = \
-        $(top_builddir)/common/Router.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/Router.o
 
 client_sockettest_SOURCES = client_sockettest.cpp
 client_sockettest_LDADD = \

@@ -19,6 +19,8 @@
 
 #include "common/Router.h"
 
+#include "common/log.h"
+
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -76,4 +78,10 @@ int main()
     }
 
     return 0;
+}
+
+// stubs
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }
