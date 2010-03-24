@@ -19,7 +19,9 @@
 
 #include "common/id.h"
 
+#include "common/Database.h"
 #include "common/globals.h"
+#include "common/log.h"
 
 #include <cassert>
 
@@ -34,5 +36,41 @@ int main()
     assert(!id.empty());
     assert(int_id > 0);
 
+    database_flag = true;
+
+    int_id = newId(id);
+
+    assert(!id.empty());
+    assert(int_id > 0);
+
     return 0;
+}
+
+// stubs
+
+bool database_flag = true;
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+Database * Database::m_instance = NULL;
+
+Database * Database::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Database();
+    }
+    return m_instance;
+}
+
+Database::Database() : m_rule_db("rules"),
+                       m_queryInProgress(false),
+                       m_connection(NULL)
+{
+}
+
+long Database::newId(std::string & id)
+{
+    return 1;
 }

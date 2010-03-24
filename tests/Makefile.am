@@ -216,12 +216,7 @@ serialnotest_SOURCES = serialnotest.cpp
 
 newidtest_SOURCES = newidtest.cpp
 newidtest_LDADD = \
-        $(top_builddir)/common/newid.o \
-        $(top_builddir)/common/Database.o \
-        $(top_builddir)/common/id.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/newid.o
 
 TypeNodetest_SOURCES = TypeNodetest.cpp
 TypeNodetest_LDADD = \
