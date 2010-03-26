@@ -32,3 +32,7 @@ int main()
 
     return 0;
 }
+
+namespace Atlas { namespace Objects { namespace Operation {
+int EAT_NO = -1;
+} } }

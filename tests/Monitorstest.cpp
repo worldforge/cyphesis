@@ -43,3 +43,7 @@ int main()
     Monitors::cleanup();
     return 0;
 }
+
+namespace Atlas { namespace Objects { namespace Operation {
+int MONITOR_NO = -1;
+} } }

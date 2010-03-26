@@ -32,3 +32,7 @@ int main()
 
     return 0;
 }
+
+namespace Atlas { namespace Objects { namespace Operation {
+int CONNECT_NO = -1;
+} } }

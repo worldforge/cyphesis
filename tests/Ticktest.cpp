@@ -32,3 +32,7 @@ int main()
 
     return 0;
 }
+
+namespace Atlas { namespace Objects { namespace Operation {
+int TICK_NO = -1;
+} } }

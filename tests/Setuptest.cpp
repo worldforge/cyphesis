@@ -32,3 +32,7 @@ int main()
 
     return 0;
 }
+
+namespace Atlas { namespace Objects { namespace Operation {
+int SETUP_NO = -1;
+} } }
