@@ -21,6 +21,8 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/log.h"
+
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -737,5 +739,9 @@ void Router::addToMessage(Atlas::Message::MapType & omap) const
 }
 
 void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
 {
 }

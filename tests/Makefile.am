@@ -301,9 +301,7 @@ DateTimetest_LDADD = $(top_builddir)/modules/DateTime.o
 Locationtest_SOURCES = Locationtest.cpp
 Locationtest_LDADD = \
         $(top_builddir)/modules/Location.o \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/physics/libphysics.a
 
 WorldTimetest_SOURCES = WorldTimetest.cpp
 WorldTimetest_LDADD = \
