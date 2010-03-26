@@ -316,13 +316,7 @@ EntityReftest_LDADD = \
 
 LocatedEntitytest_SOURCES = LocatedEntitytest.cpp
 LocatedEntitytest_LDADD = \
-        $(top_builddir)/rulesets/LocatedEntity.o \
-        $(top_builddir)/rulesets/EntityProperties.o \
-        $(top_builddir)/rulesets/AtlasProperties.o \
-        $(top_builddir)/rulesets/Script.o \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a
+        $(top_builddir)/rulesets/LocatedEntity.o
 
 Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
 Entitytest_LDADD = \

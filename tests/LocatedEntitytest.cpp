@@ -20,6 +20,8 @@
 #include "EntityExerciser.h"
 
 #include "rulesets/LocatedEntity.h"
+
+#include "rulesets/AtlasProperties.h"
 #include "rulesets/Script.h"
 
 #include <cassert>
@@ -93,13 +95,6 @@ void runCoverageTest()
 
     MapType entityAsAtlas;
 
-    // Dump a representation of the entity into an Atlas Message
-    le->addToMessage(entityAsAtlas);
-
-    // Make sure we got at least some of it
-    assert(entityAsAtlas.size() >= 2);
-
-    // Read the contents of the Atlas Message back in
     le->merge(entityAsAtlas);
 
     // Throw an op of every type at the entity again now it is subscribed,
@@ -221,4 +216,148 @@ int main()
     runCoverageTest();
 
     return 0;
+}
+
+// stubs
+
+Script noScript;
+
+namespace Atlas { namespace Objects { namespace Operation {
+int EAT_NO = -1;
+int NOURISH_NO = -1;
+int SETUP_NO = -1;
+int TICK_NO = -1;
+} } }
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Script::Script()
+{
+}
+
+/// \brief Script destructor
+Script::~Script()
+{
+}
+
+bool Script::operation(const std::string & opname,
+                       const Atlas::Objects::Operation::RootOperation & op,
+                       OpVector & res)
+{
+   return false;
+}
+
+void Script::hook(const std::string & function, LocatedEntity * entity)
+{
+}
+
+Location::Location()
+{
+}
+
+TypeNode::TypeNode() : m_parent(0)
+{
+}
+
+IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+                                                   m_data(data)
+{
+}
+
+bool IdProperty::get(Atlas::Message::Element & e) const
+{
+    return true;
+}
+
+void IdProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     Atlas::Message::MapType & ent) const
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+SoftProperty::SoftProperty()
+{
+}
+
+SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
+              PropertyBase(0), m_data(data)
+{
+}
+
+bool SoftProperty::get(Atlas::Message::Element & val) const
+{
+    val = m_data;
+    return true;
+}
+
+void SoftProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+      PropertyBase(per_ephem), m_data(data)
+{
+}
+
+bool ContainsProperty::get(Atlas::Message::Element & e) const
+{
+    return true;
+}
+
+void ContainsProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void ContainsProperty::add(const std::string & s,
+                           const Atlas::Objects::Entity::RootEntity & ent) const
+{
 }
