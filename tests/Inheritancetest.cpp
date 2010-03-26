@@ -18,7 +18,10 @@
 // $Id$
 
 #include "common/Inheritance.h"
+
+#include "common/log.h"
 #include "common/OperationRouter.h"
+#include "common/TypeNode.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -183,4 +186,39 @@ int main()
     
     // Clean up and delete it
     Inheritance::clear();
+}
+
+// stubs
+
+namespace Atlas { namespace Objects { namespace Operation {
+
+int ACTUATE_NO = -1;
+int ADD_NO = -1;
+int ATTACK_NO = -1;
+int BURN_NO = -1;
+int CONNECT_NO = -1;
+int DROP_NO = -1;
+int MONITOR_NO = -1;
+int EAT_NO = -1;
+int UNSEEN_NO = -1;
+int UPDATE_NO = -1;
+int NOURISH_NO = -1;
+int PICKUP_NO = -1;
+int SETUP_NO = -1;
+int TICK_NO = -1;
+int THOUGHT_NO = -1;
+int GOAL_INFO_NO = -1;
+
+} } }
+
+TypeNode::TypeNode() : m_parent(0)
+{
+}
+
+TypeNode::~TypeNode()
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }

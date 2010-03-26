@@ -87,13 +87,7 @@ logtest_LDADD = \
 Inheritancetest_SOURCES = Inheritancetest.cpp
 Inheritancetest_LDADD = \
         $(top_builddir)/common/Inheritance.o \
-        $(top_builddir)/common/TypeNode.o \
-        $(top_builddir)/common/custom.o \
-        $(top_builddir)/common/operations.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/custom.o
 
 Propertytest_SOURCES = Propertytest.cpp
 Propertytest_LDADD = $(top_builddir)/common/Property.o
