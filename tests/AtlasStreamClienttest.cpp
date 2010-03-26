@@ -174,3 +174,13 @@ int main()
     assert(ret != 0);
 
 }
+
+// stubs
+
+ClientTask::ClientTask() : m_complete(false)
+{
+}
+
+ClientTask::~ClientTask()
+{
+}

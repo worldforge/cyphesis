@@ -241,7 +241,6 @@ Variabletest_LDADD = \
 AtlasStreamClienttest_SOURCES = AtlasStreamClienttest.cpp
 AtlasStreamClienttest_LDADD = \
         $(top_builddir)/common/AtlasStreamClient.o \
-        $(top_builddir)/common/ClientTask.o \
         $(NETWORK_LIBS)
 
 ClientTasktest_SOURCES = ClientTasktest.cpp
@@ -270,8 +269,7 @@ Collisiontest_LDADD = \
         $(top_builddir)/common/log.o \
         $(top_builddir)/common/const.o \
         $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o \
-        $(MATH_LIBS)
+        $(top_builddir)/common/globals.o
 
 emergencetest_SOURCES = emergencetest.cpp
 emergencetest_LDADD = \
@@ -282,11 +280,9 @@ emergencetest_LDADD = \
         $(top_builddir)/common/log.o \
         $(top_builddir)/common/const.o \
         $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o \
-        $(MATH_LIBS)
+        $(top_builddir)/common/globals.o
 
 transformtest_SOURCES = transformtest.cpp
-transformtest_LDADD = $(MATH_LIBS)
 
 distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = \
@@ -295,7 +291,7 @@ distancetest_LDADD = \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(TERRAIN_LIBS)
 
 # MODULE_TESTS
 
@@ -304,12 +300,10 @@ DateTimetest_LDADD = $(top_builddir)/modules/DateTime.o
 
 Locationtest_SOURCES = Locationtest.cpp
 Locationtest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/modules/Location.o \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(TERRAIN_LIBS)
 
 WorldTimetest_SOURCES = WorldTimetest.cpp
 WorldTimetest_LDADD = \
