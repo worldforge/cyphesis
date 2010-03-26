@@ -133,6 +133,16 @@ int main()
     descendTree(rt, i, count);
     assert(count > 20);
 
+    {
+        Root r;
+
+        r->setId("squigglymuff");
+        r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
+        
+        int ret = i.updateClass("squigglymuff", r);
+        assert(ret == -1);
+    }
+
     // Make sure inserting a type with unknown parents fails with null
     Root r;
     r->setId("squigglymuff");
@@ -146,6 +156,16 @@ int main()
     assert(i.addChild(r) != 0);
 
     assert(i.hasClass("squigglymuff"));
+
+    {
+        Root r;
+
+        r->setId("squigglymuff");
+        r->setParents(std::list<std::string>(1, "root_operation"));
+        
+        int ret = i.updateClass("squigglymuff", r);
+        assert(ret == 0);
+    }
 
     // Make sure adding a duplicate fails. 
     r = Root();
