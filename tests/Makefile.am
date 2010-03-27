@@ -148,14 +148,7 @@ idtest_LDADD = \
 
 AccountBasetest_SOURCES = AccountBasetest.cpp
 AccountBasetest_LDADD = \
-        $(top_builddir)/common/AccountBase.o \
-        $(top_builddir)/common/Database.o \
-        $(top_builddir)/common/system.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/id.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/AccountBase.o
 
 debugtest_SOURCES = debugtest.cpp
 debugtest_LDADD = $(top_builddir)/common/debug.o
