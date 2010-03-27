@@ -155,9 +155,6 @@ debugtest_LDADD = $(top_builddir)/common/debug.o
 
 globalstest_SOURCES = globalstest.cpp
 globalstest_LDADD = \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
         $(top_builddir)/common/globals.o
 
 OperationRoutertest_SOURCES = OperationRoutertest.cpp

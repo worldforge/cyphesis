@@ -19,6 +19,8 @@
 
 #include "common/globals.h"
 
+#include "common/log.h"
+
 #include <cassert>
 
 int main(int argc, char ** argv)
@@ -38,4 +40,14 @@ int main(int argc, char ** argv)
     showUsage(argv[0], USAGE_SERVER, "test usage string");
 
     return 0;
+}
+
+// stubs
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+namespace consts {
+  const char * version = "unit_test";
 }
