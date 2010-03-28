@@ -59,9 +59,8 @@ float Domain::constrainHeight(LocatedEntity * parent,
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;
-    } else {
+    } else if (parent->m_location.m_loc != 0) {
         static const Quaternion identity(Quaternion().identity());
-        assert(parent->m_location.m_loc != 0);
         const Point3D & ppos = parent->m_location.pos();
         debug(std::cout << "parent " << parent->getId() << " of type "
                         << parent->getType() << " pos " << ppos.z()
@@ -77,4 +76,5 @@ float Domain::constrainHeight(LocatedEntity * parent,
                         << std::endl << std::flush;);
         return h;
     }
+    return pos.z();
 }
