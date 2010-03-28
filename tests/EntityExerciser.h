@@ -24,6 +24,7 @@
 
 #include "common/OperationRouter.h"
 #include "common/TypeNode.h"
+#include "common/Property.h"
 
 #include "common/Add.h"
 #include "common/Burn.h"
@@ -62,6 +63,7 @@ class EntityExerciser {
         if (e.getType() == 0) {
             TypeNode * test_type = new TypeNode;
             test_type->name() = "test_type";
+            test_type->defaults()["test_default"] = new SoftProperty;
             e.setType(test_type);
         }
         attr_types.insert(Atlas::Message::Element::TYPE_INT);
