@@ -54,9 +54,6 @@ class TestWorld : public BaseWorld {
     virtual void message(const Operation & op, Entity & ent) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual float constrainHeight(LocatedEntity * parent,
-                                  const Point3D & pos,
-                                  const std::string & mode) { return 0.f; }
     virtual void addPerceptive(Entity *) { }
 };
 
