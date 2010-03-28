@@ -22,6 +22,15 @@
 
 #include "rulesets/Entity.h"
 
+#include "rulesets/AtlasProperties.h"
+#include "rulesets/Domain.h"
+#include "rulesets/Script.h"
+
+#include "common/id.h"
+#include "common/Property_impl.h"
+
+#include <cstdlib>
+
 #include <cassert>
 
 using Atlas::Message::MapType;
@@ -40,26 +49,6 @@ int main()
     std::set<std::string> opNames;
     ee.addAllOperations(opNames);
 
-    std::set<std::string> attrNames;
-    attrNames.insert("id");
-
-    // Make sure we have all the default attributes
-    assert(ee.checkAttributes(attrNames));
-    assert(ee.checkProperties(attrNames));
-
-    attrNames.insert("test_int");
-    attrNames.insert("test_float");
-    attrNames.insert("test_list_string");
-    attrNames.insert("test_list_int");
-    attrNames.insert("test_list_float");
-    attrNames.insert("test_map_string");
-    attrNames.insert("test_map_int");
-    attrNames.insert("test_map_float");
-
-    // Make sure we don't have the test attributes yet
-    assert(!ee.checkAttributes(attrNames));
-    assert(!ee.checkProperties(attrNames));
-
     // Add the test attributes
     e.setAttr("test_int", 1);
     e.setAttr("test_float", 1.f);
@@ -76,16 +65,17 @@ int main()
     e.setAttr("test_map_string", test_map);
     
     // Make sure we have the test attributes now
-    assert(ee.checkAttributes(attrNames));
-    assert(ee.checkProperties(attrNames));
-
     MapType entityAsAtlas;
 
     // Dump a representation of the entity into an Atlas Message
     e.addToMessage(entityAsAtlas);
 
+    Atlas::Objects::Entity::RootEntity entityAsAtlasEntity;
+
+    e.addToEntity(entityAsAtlasEntity);
+
     // Make sure we got at least some of it
-    assert(entityAsAtlas.size() >= 14);
+    assert(entityAsAtlas.size() >= 9);
 
     // Read the contents of the Atlas Message back in
     e.merge(entityAsAtlas);
@@ -94,5 +84,354 @@ int main()
     // and full of data.
     ee.runOperations();
 
+    {
+        e.getProperty("test_int");
+    }
+
+    {
+        e.getProperty("non_existant");
+    }
+
+    {
+        e.modProperty("test_int");
+    }
+
+    {
+        e.modProperty("non_existant");
+    }
+
+    {
+        e.modProperty("test_default");
+    }
+
+    {
+        e.setProperty("new_test_prop", new SoftProperty);
+    }
+
     return 0;
+}
+
+// stubs
+
+Script noScript;
+
+namespace Atlas { namespace Objects { namespace Operation {
+int ACTUATE_NO = -1;
+int ATTACK_NO = -1;
+int EAT_NO = -1;
+int NOURISH_NO = -1;
+int SETUP_NO = -1;
+int TICK_NO = -1;
+int UPDATE_NO = -1;
+} } }
+
+LocatedEntity::LocatedEntity(const std::string & id, long intId) :
+               Router(id, intId),
+               m_refCount(0), m_seq(0),
+               m_script(&noScript), m_type(0), m_contains(0)
+{
+}
+
+LocatedEntity::~LocatedEntity()
+{
+}
+
+bool LocatedEntity::hasAttr(const std::string & name) const
+{
+    return false;
+}
+
+bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+{
+    return false;
+}
+
+bool LocatedEntity::getAttrType(const std::string & name,
+                                Atlas::Message::Element & attr,
+                                int type) const
+{
+    return false;
+}
+
+void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+{
+    return;
+}
+
+const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
+{
+    return 0;
+}
+
+void LocatedEntity::onContainered()
+{
+}
+
+void LocatedEntity::onUpdated()
+{
+}
+
+void LocatedEntity::makeContainer()
+{
+    if (m_contains == 0) {
+        m_contains = new LocatedEntitySet;
+    }
+}
+
+void LocatedEntity::merge(const MapType & ent)
+{
+}
+
+Domain * Domain::m_instance = new Domain();
+
+Domain::Domain() : m_refCount(0)
+{
+}
+
+Domain::~Domain()
+{
+}
+
+float Domain::constrainHeight(LocatedEntity * parent,
+                              const Point3D & pos,
+                              const std::string & mode)
+{
+    return 0.f;
+}
+
+void addToEntity(const Point3D & p, std::vector<double> & vd)
+{
+    vd.resize(3);
+    vd[0] = p[0];
+    vd[1] = p[1];
+    vd[2] = p[2];
+}
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+BaseWorld * BaseWorld::m_instance = 0;
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+    m_instance = this;
+}
+
+BaseWorld::~BaseWorld()
+{
+    m_instance = 0;
+}
+
+Entity * BaseWorld::getEntity(const std::string & id) const
+{
+    long intId = integerId(id);
+
+    EntityDict::const_iterator I = m_eobjects.find(intId);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+Entity * BaseWorld::getEntity(long id) const
+{
+    EntityDict::const_iterator I = m_eobjects.find(id);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+Script::Script()
+{
+}
+
+/// \brief Script destructor
+Script::~Script()
+{
+}
+
+bool Script::operation(const std::string & opname,
+                       const Atlas::Objects::Operation::RootOperation & op,
+                       OpVector & res)
+{
+   return false;
+}
+
+void Script::hook(const std::string & function, LocatedEntity * entity)
+{
+}
+
+void Location::addToMessage(MapType & omap) const
+{
+}
+
+Location::Location()
+{
+}
+
+void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+TypeNode::TypeNode() : m_parent(0)
+{
+}
+
+IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+                                                   m_data(data)
+{
+}
+
+bool IdProperty::get(Atlas::Message::Element & e) const
+{
+    return true;
+}
+
+void IdProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     Atlas::Message::MapType & ent) const
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+    get(ent[s]);
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+template<>
+void Property<int>::set(const Atlas::Message::Element & e)
+{
+    if (e.isInt()) {
+        this->m_data = e.asInt();
+    }
+}
+
+template<>
+void Property<double>::set(const Atlas::Message::Element & e)
+{
+    if (e.isNum()) {
+        this->m_data = e.asNum();
+    }
+}
+
+template<>
+void Property<std::string>::set(const Atlas::Message::Element & e)
+{
+    if (e.isString()) {
+        this->m_data = e.String();
+    }
+}
+
+template class Property<int>;
+template class Property<double>;
+template class Property<std::string>;
+
+SoftProperty::SoftProperty()
+{
+}
+
+SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
+              PropertyBase(0), m_data(data)
+{
+}
+
+bool SoftProperty::get(Atlas::Message::Element & val) const
+{
+    val = m_data;
+    return true;
+}
+
+void SoftProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+      PropertyBase(per_ephem), m_data(data)
+{
+}
+
+bool ContainsProperty::get(Atlas::Message::Element & e) const
+{
+    return true;
+}
+
+void ContainsProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void ContainsProperty::add(const std::string & s,
+                           const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+PropertyManager * PropertyManager::m_instance = 0;
+
+PropertyManager::PropertyManager()
+{
+    assert(m_instance == 0);
+    m_instance = this;
+}
+
+PropertyManager::~PropertyManager()
+{
+   m_instance = 0;
+}
+
+long integerId(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        intId = -1L;
+    }
+
+    return intId;
 }

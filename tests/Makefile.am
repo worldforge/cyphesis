@@ -289,14 +289,11 @@ LocatedEntitytest_SOURCES = LocatedEntitytest.cpp
 LocatedEntitytest_LDADD = \
         $(top_builddir)/rulesets/LocatedEntity.o
 
-Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp TestPropertyManager.h IGEntityExerciser.h EntityExerciser.h allOperations.h
+Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp \
+                     TestPropertyManager.h IGEntityExerciser.h \
+                     EntityExerciser.h allOperations.h
 Entitytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(top_builddir)/rulesets/Entity.o
 
 Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Planttest_LDADD = \
