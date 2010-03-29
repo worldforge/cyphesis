@@ -243,22 +243,14 @@ emergencetest_LDADD = \
         $(top_builddir)/physics/Collision.o \
         $(top_builddir)/physics/BBox.o \
         $(top_builddir)/physics/Vector3D.o \
-        $(top_builddir)/modules/Location.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/prefix.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/modules/Location.o
 
 transformtest_SOURCES = transformtest.cpp
 
 distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/physics/Vector3D.o \
+        $(top_builddir)/modules/Location.o
 
 # MODULE_TESTS
 

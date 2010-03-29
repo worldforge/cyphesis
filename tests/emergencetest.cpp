@@ -21,6 +21,8 @@
 
 #include "modules/Location.h"
 
+#include "common/log.h"
+
 #include <iostream>
 
 #include <cassert>
@@ -75,4 +77,10 @@ int main()
     }
 
     return ret;
+}
+
+// stubs
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }
