@@ -289,14 +289,11 @@ Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp \
 Planttest_LDADD = \
         $(top_builddir)/rulesets/Plant.o
 
-Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp \
+                        TestPropertyManager.h IGEntityExerciser.h \
+                        EntityExerciser.h allOperations.h
 Stackabletest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(top_builddir)/rulesets/Stackable.o
 
 Thingtest_SOURCES = Thingtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
 Thingtest_LDADD = \
