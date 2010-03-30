@@ -61,21 +61,6 @@ int main()
     // Throw an op of every type at the entity again now it is subscribed
     ee.runOperations();
 
-    // Add the test attributes
-    e.setAttr("test_int", 1);
-    e.setAttr("test_float", 1.f);
-    e.setAttr("test_list_string", "test_value");
-    e.setAttr("test_list_int", ListType(1, 1));
-    e.setAttr("test_list_float", ListType(1, 1.f));
-    e.setAttr("test_map_string", ListType(1, "test_value"));
-    MapType test_map;
-    test_map["test_key"] = 1;
-    e.setAttr("test_map_int", test_map);
-    test_map["test_key"] = 1.f;
-    e.setAttr("test_map_float", test_map);
-    test_map["test_key"] = "test_value";
-    e.setAttr("test_map_string", test_map);
-    
     return 0;
 }
 
