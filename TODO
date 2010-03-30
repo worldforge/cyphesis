@@ -1,3 +1,5 @@
+De-template EntityExerciser and IGEntEx.
+
 Inheritance::isTypeOf(TypeNode) can have a tighter loop
 
 Make m_encoder an Atlas::EncoderBase *
