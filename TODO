@@ -1,3 +1,5 @@
+Inheritance::isTypeOf(TypeNode) can have a tighter loop
+
 Make m_encoder an Atlas::EncoderBase *
 
 What are we doing with spawns?
