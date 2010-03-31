@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
     type.name() = "creator";
     e.setType(&type);
 
-    IGEntityExerciser<Creator> ee(e);
+    IGEntityExerciser ee(e);
 
     // Throw an op of every type at the entity
     ee.runOperations();

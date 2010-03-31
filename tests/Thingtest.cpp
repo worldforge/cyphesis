@@ -36,7 +36,7 @@ int main()
     type.name() = "thing";
     e.setType(&type);
 
-    IGEntityExerciser<Thing> ee(e);
+    IGEntityExerciser ee(e);
 
     // Throw an op of every type at the entity
     ee.runOperations();

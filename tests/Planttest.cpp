@@ -49,7 +49,7 @@ int main()
     type.name() = "plant";
     e.setType(&type);
 
-    IGEntityExerciser<Plant> ee(e);
+    IGEntityExerciser ee(e);
 
     // Throw an op of every type at the entity
     ee.runOperations();

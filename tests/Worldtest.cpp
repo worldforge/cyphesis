@@ -53,7 +53,7 @@ int main()
     type.name() = "world";
     e.setType(&type);
 
-    IGEntityExerciser<World> ee(e);
+    IGEntityExerciser ee(e);
 
     assert(e.m_location.m_loc == 0);
 

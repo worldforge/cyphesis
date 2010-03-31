@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
     type.name() = "character";
     e.setType(&type);
 
-    IGEntityExerciser<Character> ee(e);
+    IGEntityExerciser ee(e);
 
     // Throw an op of every type at the entity
     ee.runOperations();

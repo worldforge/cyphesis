@@ -49,7 +49,7 @@ int main()
     type.name() = "stackable";
     e.setType(&type);
 
-    IGEntityExerciser<Stackable> ee(e);
+    IGEntityExerciser ee(e);
 
     // Throw an op of every type at the entity
     ee.runOperations();

@@ -286,19 +286,24 @@ Entitytest_SOURCES = Entitytest.cpp \
 Entitytest_LDADD = \
         $(top_builddir)/rulesets/Entity.o
 
-Planttest_SOURCES = Planttest.cpp TestPropertyManager.cpp \
-                    TestPropertyManager.h IGEntityExerciser.h \
-                    EntityExerciser.h allOperations.h
+Planttest_SOURCES = Planttest.cpp \
+                    TestPropertyManager.cpp TestPropertyManager.h \
+                    IGEntityExerciser.cpp IGEntityExerciser.h \
+                    EntityExerciser.cpp EntityExerciser.h allOperations.h
 Planttest_LDADD = \
         $(top_builddir)/rulesets/Plant.o
 
-Stackabletest_SOURCES = Stackabletest.cpp TestPropertyManager.cpp \
-                        TestPropertyManager.h IGEntityExerciser.h \
-                        EntityExerciser.h allOperations.h
+Stackabletest_SOURCES = Stackabletest.cpp \
+                        TestPropertyManager.cpp TestPropertyManager.h \
+                        IGEntityExerciser.cpp IGEntityExerciser.h \
+                        EntityExerciser.cpp EntityExerciser.h allOperations.h
 Stackabletest_LDADD = \
         $(top_builddir)/rulesets/Stackable.o
 
-Thingtest_SOURCES = Thingtest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Thingtest_SOURCES = Thingtest.cpp \
+                    TestPropertyManager.cpp TestPropertyManager.h \
+                    IGEntityExerciser.cpp IGEntityExerciser.h \
+                    EntityExerciser.cpp EntityExerciser.h allOperations.h
 Thingtest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetbase.a \
@@ -307,13 +312,17 @@ Thingtest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(MATH_LIBS)
 
-Worldtest_SOURCES = Worldtest.cpp TestPropertyManager.cpp \
-                    TestPropertyManager.h IGEntityExerciser.h \
-                    EntityExerciser.h allOperations.h
+Worldtest_SOURCES = Worldtest.cpp \
+                    TestPropertyManager.cpp TestPropertyManager.h \
+                    IGEntityExerciser.cpp IGEntityExerciser.h \
+                    EntityExerciser.cpp EntityExerciser.h allOperations.h
 Worldtest_LDADD = \
         $(top_builddir)/rulesets/World.o
 
-Charactertest_SOURCES = Charactertest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h
+Charactertest_SOURCES = Charactertest.cpp \
+                        TestPropertyManager.cpp TestPropertyManager.h \
+                        IGEntityExerciser.cpp IGEntityExerciser.h \
+                        EntityExerciser.cpp EntityExerciser.h allOperations.h
 Charactertest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -325,7 +334,10 @@ Charactertest_LDADD = \
         $(TERRAIN_LIBS)
 Charactertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
-Creatortest_SOURCES = Creatortest.cpp TestPropertyManager.cpp IGEntityExerciser.h EntityExerciser.h allOperations.h TestWorld.h
+Creatortest_SOURCES = Creatortest.cpp \
+                      TestPropertyManager.cpp TestPropertyManager.h \
+                      IGEntityExerciser.cpp IGEntityExerciser.h \
+                      EntityExerciser.cpp EntityExerciser.h allOperations.h
 Creatortest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
