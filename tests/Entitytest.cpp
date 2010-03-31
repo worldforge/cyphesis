@@ -40,7 +40,7 @@ int main()
 {
     Entity e("1", 1);
 
-    IGEntityExerciser<Entity> ee(e);
+    IGEntityExerciser ee(e);
 
     // Throw an op of every type at the entity
     ee.runOperations();

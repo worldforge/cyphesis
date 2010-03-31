@@ -273,13 +273,16 @@ EntityReftest_LDADD = \
 
 # RULESETS_TESTS
 
-LocatedEntitytest_SOURCES = LocatedEntitytest.cpp
+LocatedEntitytest_SOURCES = LocatedEntitytest.cpp \
+                            EntityExerciser.cpp EntityExerciser.h \
+                            allOperations.h
 LocatedEntitytest_LDADD = \
         $(top_builddir)/rulesets/LocatedEntity.o
 
-Entitytest_SOURCES = Entitytest.cpp TestPropertyManager.cpp \
-                     TestPropertyManager.h IGEntityExerciser.h \
-                     EntityExerciser.h allOperations.h
+Entitytest_SOURCES = Entitytest.cpp \
+                     TestPropertyManager.cpp TestPropertyManager.h \
+                     IGEntityExerciser.cpp IGEntityExerciser.h \
+                     EntityExerciser.cpp EntityExerciser.h allOperations.h
 Entitytest_LDADD = \
         $(top_builddir)/rulesets/Entity.o
 
