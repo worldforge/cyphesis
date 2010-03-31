@@ -29,15 +29,6 @@
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-class LocatedEntityTest : public LocatedEntity {
-  public:
-    LocatedEntityTest(const std::string & id, int iid) :
-        LocatedEntity(id, iid) { }
-
-    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
-};
-
-
 void runCoverageTest()
 {
     LocatedEntityTest * le = new LocatedEntityTest("1", 1);
@@ -49,7 +40,7 @@ void runCoverageTest()
     le->onContainered();
     le->onUpdated();
 
-    EntityExerciser<LocatedEntityTest> ee(*le);
+    EntityExerciser ee(*le);
     // Throw an op of every type at the entity
     ee.runOperations();
 

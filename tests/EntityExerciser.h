@@ -44,18 +44,25 @@
 
 #include <cassert>
 
-template <class EntityType>
+class LocatedEntityTest : public LocatedEntity {
+  public:
+    LocatedEntityTest(const std::string & id, int iid) :
+        LocatedEntity(id, iid) { }
+
+    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
+};
+
 class EntityExerciser {
   protected:
-    EntityType & m_ent;
+    LocatedEntity & m_ent;
     std::set<int> attr_types;
   public:
-    explicit EntityExerciser(EntityType & e) : m_ent(e) {
+    explicit EntityExerciser(LocatedEntity & e) : m_ent(e) {
         if (e.getIntId() == 0) {
             e.makeContainer();
             assert(e.m_contains != 0);
         } else {
-            e.m_location.m_loc = new EntityType("0", 0);
+            e.m_location.m_loc = new LocatedEntityTest("0", 0);
             e.m_location.m_loc->makeContainer();
             assert(e.m_location.m_loc->m_contains != 0);
             e.m_location.m_loc->m_contains->insert(&e);
@@ -92,8 +99,7 @@ class EntityExerciser {
     void flushOperations(OpVector & ops);
 };
 
-template <class EntityType>
-inline bool EntityExerciser<EntityType>::checkAttributes(const std::set<std::string> & attr_names)
+inline bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
 {
     Atlas::Message::Element null;
     bool res = true;
@@ -119,8 +125,7 @@ inline bool EntityExerciser<EntityType>::checkAttributes(const std::set<std::str
     return res;
 }
 
-template <class EntityType>
-inline bool EntityExerciser<EntityType>::checkProperties(const std::set<std::string> & prop_names)
+inline bool EntityExerciser::checkProperties(const std::set<std::string> & prop_names)
 {
     std::set<std::string>::const_iterator I = prop_names.begin();
     std::set<std::string>::const_iterator Iend = prop_names.end();
@@ -129,8 +134,7 @@ inline bool EntityExerciser<EntityType>::checkProperties(const std::set<std::str
     return true;
 }
 
-template <class EntityType>
-inline void EntityExerciser<EntityType>::addAllOperations(std::set<std::string> & ops)
+void EntityExerciser::addAllOperations(std::set<std::string> & ops)
 {
     ops.insert("login");
     ops.insert("logout");
@@ -163,8 +167,7 @@ inline void EntityExerciser<EntityType>::addAllOperations(std::set<std::string> 
     ops.insert("error");
 }
 
-template <class EntityType>
-inline void EntityExerciser<EntityType>::runOperations()
+inline void EntityExerciser::runOperations()
 {
     {
         Atlas::Objects::Operation::Login op;
@@ -273,8 +276,7 @@ inline void EntityExerciser<EntityType>::runOperations()
     }
 }
 
-template <class EntityType>
-inline void EntityExerciser<EntityType>::runConversions()
+inline void EntityExerciser::runConversions()
 {
     {
         Atlas::Message::MapType data;
@@ -293,8 +295,7 @@ inline void EntityExerciser<EntityType>::runConversions()
     }
 }
 
-template <class EntityType>
-inline void EntityExerciser<EntityType>::flushOperations(OpVector & ops)
+inline void EntityExerciser::flushOperations(OpVector & ops)
 {
     ops.clear();
 }
