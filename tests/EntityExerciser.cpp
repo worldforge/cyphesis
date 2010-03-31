@@ -41,6 +41,42 @@
 
 #include <cassert>
 
+EntityExerciser::EntityExerciser(LocatedEntity & e) : m_ent(e)
+{
+    if (e.getIntId() == 0) {
+        e.makeContainer();
+        assert(e.m_contains != 0);
+    } else {
+        e.m_location.m_loc = new LocatedEntityTest("0", 0);
+        e.m_location.m_loc->makeContainer();
+        assert(e.m_location.m_loc->m_contains != 0);
+        e.m_location.m_loc->m_contains->insert(&e);
+    }
+    if (e.getType() == 0) {
+        TypeNode * test_type = new TypeNode;
+        test_type->name() = "test_type";
+        test_type->defaults()["test_default"] = new SoftProperty;
+        e.setType(test_type);
+    }
+    attr_types.insert(Atlas::Message::Element::TYPE_INT);
+    attr_types.insert(Atlas::Message::Element::TYPE_FLOAT);
+    attr_types.insert(Atlas::Message::Element::TYPE_STRING);
+    attr_types.insert(Atlas::Message::Element::TYPE_MAP);
+    attr_types.insert(Atlas::Message::Element::TYPE_LIST);
+}
+
+EntityExerciser::~EntityExerciser()
+{
+}
+
+void EntityExerciser::dispatchOp(const Atlas::Objects::Operation::RootOperation&op)
+{
+    OpVector ov1;
+    m_ent.operation(op, ov1);
+    flushOperations(ov1);
+}
+
+
 bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
 {
     Atlas::Message::Element null;
