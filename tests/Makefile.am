@@ -305,12 +305,7 @@ Thingtest_SOURCES = Thingtest.cpp \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
                     EntityExerciser.cpp EntityExerciser.h allOperations.h
 Thingtest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(MATH_LIBS)
+        $(top_builddir)/rulesets/Thing.o
 
 Worldtest_SOURCES = Worldtest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
