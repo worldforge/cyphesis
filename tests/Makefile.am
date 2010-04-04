@@ -319,30 +319,14 @@ Charactertest_SOURCES = Charactertest.cpp \
                         IGEntityExerciser.cpp IGEntityExerciser.h \
                         EntityExerciser.cpp EntityExerciser.h allOperations.h
 Charactertest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
-Charactertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+        $(top_builddir)/rulesets/Character.o
 
 Creatortest_SOURCES = Creatortest.cpp \
                       TestPropertyManager.cpp TestPropertyManager.h \
                       IGEntityExerciser.cpp IGEntityExerciser.h \
                       EntityExerciser.cpp EntityExerciser.h allOperations.h
 Creatortest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
-Creatortest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+        $(top_builddir)/rulesets/Creator.o
 
 ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
 ThingupdatePropertiestest_LDADD = \
