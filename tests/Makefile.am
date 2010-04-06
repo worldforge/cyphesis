@@ -346,15 +346,9 @@ Tasktest_LDADD = \
 
 EntityPropertytest_SOURCES = EntityPropertytest.cpp
 EntityPropertytest_LDADD = \
-        $(top_builddir)/rulesets/Python_API.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/EntityProperty.o \
+        $(top_builddir)/modules/EntityRef.o \
+        $(top_builddir)/common/Property.o
 
 AllPropertytest_SOURCES = AllPropertytest.cpp PropertyExerciser.cpp \
         PropertyExerciser.h
