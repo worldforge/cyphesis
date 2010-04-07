@@ -350,17 +350,23 @@ EntityPropertytest_LDADD = \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/common/Property.o
 
-AllPropertytest_SOURCES = AllPropertytest.cpp PropertyExerciser.cpp \
-        PropertyExerciser.h
+AllPropertytest_SOURCES = AllPropertytest.cpp \
+                          PropertyExerciser.cpp PropertyExerciser.h
 AllPropertytest_LDADD = \
-        $(top_builddir)/rulesets/Python_API.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
+        $(top_builddir)/rulesets/AreaProperty.o \
+        $(top_builddir)/rulesets/AtlasProperties.o \
+        $(top_builddir)/rulesets/CalendarProperty.o \
+        $(top_builddir)/rulesets/EntityProperty.o \
+        $(top_builddir)/rulesets/LineProperty.o \
+        $(top_builddir)/rulesets/OutfitProperty.o \
+        $(top_builddir)/rulesets/StatisticsProperty.o \
+        $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/modules/EntityRef.o \
+        $(top_builddir)/modules/DateTime.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/Inheritance.o \
+        $(top_builddir)/common/custom.o \
+        $(top_builddir)/common/operations.o \
         $(TERRAIN_LIBS)
 
 Scripttest_SOURCES = Scripttest.cpp

@@ -28,9 +28,12 @@
 #include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainProperty.h"
 
-#include "rulesets/Character.h"
+#include "rulesets/ArithmeticFactory.h"
 
+#include "common/BaseWorld.h"
+#include "common/log.h"
 #include "common/Property_impl.h"
+#include "common/TypeNode.h"
 
 #include <Mercator/Terrain.h>
 
@@ -150,4 +153,61 @@ int main()
     }
 
     return 0;
+}
+
+// stubs
+
+ArithmeticKit::~ArithmeticKit()
+{
+}
+
+PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
+                                                 const std::string & name) :
+                                                 m_module(0), m_class(0),
+                                                 m_package(package),
+                                                 m_type(name)
+{
+}
+
+PythonArithmeticFactory::~PythonArithmeticFactory()
+{
+}
+
+ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
+{
+    return 0;
+}
+
+BaseWorld * BaseWorld::m_instance = 0;
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+    m_instance = this;
+}
+
+BaseWorld::~BaseWorld()
+{
+    m_instance = 0;
+}
+
+Entity * BaseWorld::getEntity(const std::string & id) const
+{
+    return 0;
+}
+
+Entity * BaseWorld::getEntity(long id) const
+{
+    return 0;
+}
+
+TypeNode::TypeNode() : m_parent(0)
+{
+}
+
+TypeNode::~TypeNode()
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }
