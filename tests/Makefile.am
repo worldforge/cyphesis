@@ -384,204 +384,115 @@ Motiontest_LDADD = \
 AreaPropertytest_SOURCES = AreaPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 AreaPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/AreaProperty.o \
+        $(top_builddir)/common/Property.o
 
 BBoxPropertytest_SOURCES = BBoxPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 BBoxPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/BBoxProperty.o \
+        $(top_builddir)/common/Property.o
 
 CalendarPropertytest_SOURCES = CalendarPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 CalendarPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/CalendarProperty.o \
+        $(top_builddir)/modules/DateTime.o \
+        $(top_builddir)/common/Property.o
 
 LinePropertytest_SOURCES = LinePropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 LinePropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/LineProperty.o \
+        $(top_builddir)/common/Property.o
 
 MindPropertytest_SOURCES = MindPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 MindPropertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/MindProperty.o \
+        $(top_builddir)/common/Property.o
 
 OutfitPropertytest_SOURCES = OutfitPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 OutfitPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/OutfitProperty.o \
+        $(top_builddir)/modules/EntityRef.o \
+        $(top_builddir)/common/Property.o
 
 SolidPropertytest_SOURCES = SolidPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 SolidPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/SolidProperty.o \
+        $(top_builddir)/common/Property.o
 
 StatisticsPropertytest_SOURCES = StatisticsPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 StatisticsPropertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/StatisticsProperty.o \
+        $(top_builddir)/common/Property.o
 
 StatusPropertytest_SOURCES = StatusPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 StatusPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/StatusProperty.o \
+        $(top_builddir)/common/Property.o
 
 TerrainModPropertytest_SOURCES = TerrainModPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TerrainModPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
+        $(top_builddir)/rulesets/TerrainModProperty.o \
+        $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
 
 TerrainPropertytest_SOURCES = TerrainPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TerrainPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
+        $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
 
 TransientPropertytest_SOURCES = TransientPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TransientPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/TransientProperty.o \
+        $(top_builddir)/common/Property.o
 
 TasksPropertytest_SOURCES = TasksPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TasksPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/TasksProperty.o \
+        $(top_builddir)/common/Property.o
 
 HandlerPropertytest_SOURCES = HandlerPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 HandlerPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/HandlerProperty.o \
+        $(top_builddir)/common/Property.o
 
 MultiHandlerPropertytest_SOURCES = MultiHandlerPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 MultiHandlerPropertytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/MultiHandlerProperty.o \
+        $(top_builddir)/common/Property.o
 
 InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 InternalPropertiestest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/InternalProperties.o \
+        $(top_builddir)/common/Property.o
 
 EntityPropertiestest_SOURCES = EntityPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 EntityPropertiestest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/EntityProperty.o \
+        $(top_builddir)/common/Property.o
 
 AtlasPropertiestest_SOURCES = AtlasPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 AtlasPropertiestest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/AtlasProperties.o \
+        $(top_builddir)/common/Property.o
 
 Domaintest_SOURCES = Domaintest.cpp
 Domaintest_LDADD = \

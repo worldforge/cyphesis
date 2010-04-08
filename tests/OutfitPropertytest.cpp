@@ -34,3 +34,10 @@ int main()
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }
+
+// stubs
+
+namespace Atlas { namespace Objects { namespace Operation {
+int UPDATE_NO = -1;
+} } }
+

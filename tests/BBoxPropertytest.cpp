@@ -20,6 +20,7 @@
 #include "PropertyCoverage.h"
 
 #include "rulesets/BBoxProperty.h"
+#include "modules/Location.h"
 
 using Atlas::Message::ListType;
 
@@ -38,4 +39,10 @@ int main()
 
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
+}
+
+// stubs
+
+void Location::modifyBBox()
+{
 }

@@ -20,6 +20,7 @@
 #include "PropertyCoverage.h"
 
 #include "rulesets/MindProperty.h"
+#include "rulesets/MindFactory.h"
 
 int main()
 {
@@ -32,5 +33,23 @@ int main()
     pc.basicCoverage();
 
     // The is no code in operations.cpp to execute, but we need coverage.
+    return 0;
+}
+
+// stubs
+
+namespace Atlas { namespace Objects { namespace Operation {
+int SETUP_NO = -1;
+} } }
+
+MindFactory * MindFactory::m_instance = NULL;
+
+MindFactory::MindFactory()
+{
+}
+
+BaseMind * MindFactory::newMind(const std::string & id, long intId,
+                                const TypeNode * const type)
+{
     return 0;
 }

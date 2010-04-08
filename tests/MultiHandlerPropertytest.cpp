@@ -20,6 +20,7 @@
 #include "PropertyCoverage.h"
 
 #include "rulesets/MultiHandlerProperty.h"
+#include "rulesets/Entity.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -57,4 +58,10 @@ int main()
     }
 
     return 0;
+}
+
+// stubs
+
+void Entity::installHandler(int class_no, Handler handler)
+{
 }

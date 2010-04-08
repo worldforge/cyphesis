@@ -36,3 +36,14 @@ int main()
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }
+
+// stubs
+
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
