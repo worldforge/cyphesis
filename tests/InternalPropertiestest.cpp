@@ -61,3 +61,10 @@ int main()
     test_SimpleProperty();
     return 0;
 }
+
+// stubs
+
+namespace Atlas { namespace Objects { namespace Operation {
+int TICK_NO = -1;
+int SETUP_NO = -1;
+} } }

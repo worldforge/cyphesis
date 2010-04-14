@@ -485,7 +485,7 @@ InternalPropertiestest_LDADD = \
 EntityPropertiestest_SOURCES = EntityPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 EntityPropertiestest_LDADD = \
-        $(top_builddir)/rulesets/EntityProperty.o \
+        $(top_builddir)/rulesets/EntityProperties.o \
         $(top_builddir)/common/Property.o
 
 AtlasPropertiestest_SOURCES = AtlasPropertiestest.cpp \

@@ -38,3 +38,14 @@ int main()
     test_Property_IdList();
     return 0;
 }
+
+// stubs
+
+void idListasObject(const IdList & l, Atlas::Message::ListType & ol)
+{
+}
+
+int idListFromAtlas(const Atlas::Message::ListType & l, IdList & ol)
+{
+    return 0;
+}
