@@ -494,19 +494,14 @@ AtlasPropertiestest_LDADD = \
         $(top_builddir)/rulesets/AtlasProperties.o \
         $(top_builddir)/common/Property.o
 
-Domaintest_SOURCES = Domaintest.cpp
-Domaintest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
-
 SpawnPropertytest_SOURCES = SpawnPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 SpawnPropertytest_LDADD = \
+        $(top_builddir)/rulesets/SpawnProperty.o \
+        $(top_builddir)/common/Property.o
+
+Domaintest_SOURCES = Domaintest.cpp
+Domaintest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
         $(top_builddir)/rulesets/librulesetbase.a \
