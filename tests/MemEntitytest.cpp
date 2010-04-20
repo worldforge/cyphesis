@@ -29,3 +29,72 @@ int main()
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }
+
+// stubs
+
+LocatedEntity::LocatedEntity(const std::string & id, long intId) :
+               Router(id, intId),
+               m_refCount(0), m_seq(0),
+               m_script(0), m_type(0), m_contains(0)
+{
+}
+
+LocatedEntity::~LocatedEntity()
+{
+}
+
+bool LocatedEntity::hasAttr(const std::string & name) const
+{
+    return false;
+}
+
+bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+{
+    return false;
+}
+
+bool LocatedEntity::getAttrType(const std::string & name,
+                                Atlas::Message::Element & attr,
+                                int type) const
+{
+    return false;
+}
+
+void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+{
+    return;
+}
+
+const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
+{
+    return 0;
+}
+
+void LocatedEntity::onContainered()
+{
+}
+
+void LocatedEntity::onUpdated()
+{
+}
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Location::Location()
+{
+}

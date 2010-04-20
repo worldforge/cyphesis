@@ -19,6 +19,8 @@
 
 #include "rulesets/Domain.h"
 
+#include "rulesets/TerrainProperty.h"
+
 int main()
 {
     Domain * d = Domain::instance();
@@ -28,4 +30,60 @@ int main()
 
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
+}
+
+// stubs
+
+TerrainProperty::TerrainProperty() :
+    m_data(*(Mercator::Terrain*)0),
+    m_tileShader(*(Mercator::TileShader*)0)
+{
+}
+
+TerrainProperty::~TerrainProperty()
+{
+}
+
+bool TerrainProperty::get(Atlas::Message::Element & ent) const
+{
+    return true;
+}
+
+void TerrainProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+bool TerrainProperty::getHeightAndNormal(float x,
+                                         float y,
+                                         float & height,
+                                         Vector3D & normal) const
+{
+    return true;
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+    get(ent[s]);
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
 }

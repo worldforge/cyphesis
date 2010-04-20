@@ -502,13 +502,7 @@ SpawnPropertytest_LDADD = \
 
 Domaintest_SOURCES = Domaintest.cpp
 Domaintest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/Domain.o
 
 BaseMindtest_SOURCES = BaseMindtest.cpp
 BaseMindtest_LDADD = \
@@ -522,23 +516,11 @@ BaseMindtest_LDADD = \
 
 MemEntitytest_SOURCES = MemEntitytest.cpp
 MemEntitytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/MemEntity.o
 
 MemMaptest_SOURCES = MemMaptest.cpp
 MemMaptest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/MemMap.o
 
 Movementtest_SOURCES = Movementtest.cpp
 Movementtest_LDADD = \
