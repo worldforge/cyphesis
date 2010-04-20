@@ -21,6 +21,8 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/const.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -45,9 +47,7 @@ class TestMovement : public Movement {
 
 int main()
 {
-    Entity e("1", 1);
-
-    TestMovement * m = new TestMovement(e);
+    TestMovement * m = new TestMovement(*(Entity*)0);
 
     Location loc;
     m->updateNeeded(loc);
@@ -55,6 +55,14 @@ int main()
     m->reset();
 
     delete m;
-    // The is no code in operations.cpp to execute, but we need coverage.
+
     return 0;
+}
+
+Location::Location() :
+    m_simple(true), m_solid(true),
+    m_boxSize(consts::minBoxSize),
+    m_squareBoxSize(consts::minSqrBoxSize),
+    m_loc(0)
+{
 }

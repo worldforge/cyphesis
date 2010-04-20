@@ -524,13 +524,7 @@ MemMaptest_LDADD = \
 
 Movementtest_SOURCES = Movementtest.cpp
 Movementtest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/Movement.o
 
 Pedestriantest_SOURCES = Pedestriantest.cpp
 Pedestriantest_LDADD = \
