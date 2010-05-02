@@ -83,7 +83,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
 /// @return 1 if no update was made, or 0 otherwise
 int Pedestrian::getUpdatedLocation(Location & return_location)
 {
-    const double & current_time = BaseWorld::instance().getTime();
+    double current_time = BaseWorld::instance().getTime();
     double time_diff = current_time - m_body.m_location.timeStamp();
 
     if (!updateNeeded(m_body.m_location)) {
