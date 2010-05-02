@@ -18,7 +18,10 @@
 // $Id$
 
 #include "rulesets/ActivePropertyFactory_impl.h"
-#include "common/Property.h"
+
+#include "rulesets/HandlerProperty_impl.h"
+
+#include "common/Property_impl.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -42,4 +45,44 @@ int main()
     testFactory(pf);
 
     return 0;
+}
+
+// stubs
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+PropertyKit::~PropertyKit()
+{
+}
+
+template class HandlerProperty<int>;
+template class Property<int>;
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+    get(ent[s]);
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
 }

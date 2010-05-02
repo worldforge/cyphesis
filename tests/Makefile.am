@@ -533,13 +533,7 @@ Pedestriantest_LDADD = \
 
 ActivePropertyFactorytest_SOURCES = ActivePropertyFactorytest.cpp
 ActivePropertyFactorytest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/ActivePropertyFactory.o
 
 Python_APItest_SOURCES = Python_APItest.cpp python_testers.h
 Python_APItest_LDADD = \
