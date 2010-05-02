@@ -43,7 +43,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  PythonWrappertest PythonEntityScripttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
-                 ArithmeticFactorytest
+                 ArithmeticFactorytest \
+                 MindFactoryintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest
@@ -758,14 +759,7 @@ PythonEntityScripttest_LDADD = \
 
 MindFactorytest_SOURCES = MindFactorytest.cpp
 MindFactorytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/MindFactory.o
 
 TaskScripttest_SOURCES = TaskScripttest.cpp
 TaskScripttest_LDADD = \
@@ -810,6 +804,17 @@ PythonArithmeticScripttest_LDADD = \
 
 ArithmeticFactorytest_SOURCES = ArithmeticFactorytest.cpp
 ArithmeticFactorytest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+MindFactoryintegration_SOURCES = MindFactoryintegration.cpp
+MindFactoryintegration_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
