@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# NOTES:
+# Define STATICLIB (see declspec.h) to ensure windows doesn't turn it all
+# into a dll.
+
+set -eu
+
+EXCLUSIONS="--exclude=upnpc.c --exclude=testigddescparse.c \
+            --exclude=testminiwget.c --exclude=testminixml.c \
+            --exclude=testupnpreplyparse.c --exclude=minixmlvalid.c \
+            --exclude=wingenminiupnpcstrings.c \
+            --exclude=miniupnpcmodule.c"
+
+mkdir -p libraries/miniupnpc
+pushd libraries/miniupnpc
+
+if [ "$#" -ne "1" ]
+then
+        echo usage: $0 \<miniupnpc_source_tarball\> >&2
+        exit 1
+fi
+tar xvzf "$1" ${EXCLUSIONS} miniupnpc-1.*/*.h miniupnpc-1.*/*.c
+
+rsync -av miniupnpc-1*/* .
+rm -rf miniupnpc-1*
+
+STRING_HDR="miniupnpcstrings.h"
+
+echo -e "#ifndef __MINIUPNPCSTRINGS_H__" >> ${STRING_HDR}_tmp
+echo -e "#define __MINIUPNPCSTRINGS_H__" >> ${STRING_HDR}_tmp
+echo -e "#define OS_STRING \"CYPHESIS\"" >> ${STRING_HDR}_tmp
+echo -e "#define MINIUPNPC_VERSION_STRING \"1.4\"" >> ${STRING_HDR}_tmp
+echo -e "#endif /* __MINIUPNPCSTRINGS_H__ */" >> ${STRING_HDR}_tmp
+
+if [ ! -f ${STRING_HDR} ] || ! cmp ${STRING_HDR}_tmp ${STRING_HDR}
+then
+    mv -f ${STRING_HDR}_tmp ${STRING_HDR}
+else
+    echo ${STRING_HDR} unchanged.
+    rm -f ${STRING_HDR}_tmp
+fi
+
+SOURCES=""
+MAKEFILE="Makefile.am"
+
+for entry in *.c *.h
+do
+    if [ ${entry: -2:2} == ".c" -o ${entry: -2:2} == ".h" ]
+    then
+        SOURCES="${SOURCES} ${entry}"
+    fi
+done
+
+echo > ${MAKEFILE}_tmp
+
+if [ -n "${SOURCES}" ]
+then
+    echo -e "noinst_LIBRARIES = libminiupnpc.a\n" >> ${MAKEFILE}_tmp
+    echo -e "INCLUDES = -I\$(top_srcdir)/libraries/miniupnpc\n" >> ${MAKEFILE}_tmp
+    echo -e "libminiupnpc_a_SOURCES = ${SOURCES}\n" >> ${MAKEFILE}_tmp
+fi
+
+# If Makefile.am is new or changed, move it to the right name.
+if [ ! -f ${MAKEFILE} ] || ! cmp ${MAKEFILE}_tmp ${MAKEFILE}
+then
+    mv -f ${MAKEFILE}_tmp ${MAKEFILE}
+else
+    echo ${MAKEFILE} unchanged.
+    rm -f ${MAKEFILE}_tmp
+fi
+
+echo Check libraries/miniupnpc/Makefile.am is in configure.ac
