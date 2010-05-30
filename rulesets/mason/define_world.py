@@ -707,7 +707,7 @@ def _setup_terrain(m, world):
 def _setup_outpost(m):
 
     m.make('jetty',pos=(-22,-48,0))
-    m.make('boat',pos=(-22,-56,0))
+    m.make('boat',pos=(-22,-56,0),teleport='255.255.255.255')
 
     # a camp near the origin
 
