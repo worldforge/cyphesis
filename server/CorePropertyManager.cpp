@@ -222,7 +222,14 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
 
 HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
 {
-	std::cout << "Hello Teleport!\n";
+    const Property<std::string> * pb = e->getPropertyType<std::string>("teleport");
+    if (pb == NULL) {
+        debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
+                        << std::flush;);
+        return OPERATION_IGNORED;
+    }
+	std::cout << "Hello Teleport!\nTeleport IP: " << pb->data() << "\n";
+	std::cout << "Entity ID: " << e->getId() << "\n";
     return OPERATION_IGNORED;
 }
 
