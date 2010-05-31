@@ -47,7 +47,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      ClientTask.cpp ClientTask.h \
 		      Actuate.h Add.h Affect.h Attack.h Burn.h Connect.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
-		      Pickup.h Setup.h Tick.h Unseen.h Update.h
+		      Pickup.h Setup.h Tick.h Unseen.h Update.h Teleport.h
 
 libtools_a_SOURCES = AccountBase.cpp AccountBase.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h

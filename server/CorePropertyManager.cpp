@@ -39,6 +39,7 @@
 #include "common/Burn.h"
 #include "common/Nourish.h"
 #include "common/Update.h"
+#include "common/Teleport.h"
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
@@ -219,6 +220,12 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
     return OPERATION_IGNORED;
 }
 
+HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
+{
+	std::cout << "Hello Teleport!\n";
+    return OPERATION_IGNORED;
+}
+
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
@@ -249,6 +256,8 @@ CorePropertyManager::CorePropertyManager()
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
     terrainModHandles[Atlas::Objects::Operation::DELETE_NO] = terrainmod_deleteHandler;
     m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
+
+    m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, teleport_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()
