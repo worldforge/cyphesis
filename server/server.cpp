@@ -248,6 +248,7 @@ int main(int argc, char ** argv)
 		std::string serverAccId;
 		long sintId = newId(serverAccId);
 		assert(sintId > 0);
+		std::cout << "ID = " << sintId << "\nServer Account ID = " << serverAccId << "\n";
 
 		ServerAccount *srv = new ServerAccount(0, "server", "BAD_HASH", serverAccId, sintId);
 		server.addAccount(srv);

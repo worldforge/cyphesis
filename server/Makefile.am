@@ -118,6 +118,7 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
+		InterServerConnection.cpp InterServerConnection.h \
 		server.cpp server.h \
 		buildid.cpp
 

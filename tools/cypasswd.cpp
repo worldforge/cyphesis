@@ -40,6 +40,8 @@
 #include <string>
 #include <iostream>
 
+#include <cstring>
+
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #include <unistd.h>
@@ -62,7 +64,7 @@ using Atlas::Message::MapType;
 void usage(std::ostream & stream, char * n, bool verbose = false)
 {
     stream << "usage: " << n << std::endl;
-    stream << "       " << n << " [ -a | -d ] account" << std::endl;
+    stream << "       " << n << " [ -a | -d ] [ -s ] account" << std::endl;
     stream << "       " << n << " -h" << std::endl;
     if (!verbose) {
         stream << std::flush;
@@ -75,6 +77,7 @@ void usage(std::ostream & stream, char * n, bool verbose = false)
     stream << "Managing accounts" << std::endl;
     stream << "  -a                          Add a new account" << std::endl;
     stream << "  -d                          Delete an account" << std::endl;
+    stream << "  -s                          Make server account" << std::endl;
 }
 
 int main(int argc, char ** argv)
@@ -83,6 +86,7 @@ int main(int argc, char ** argv)
 
     conf->setParameterLookup('a', "add");
     conf->setParameterLookup('d', "del");
+    conf->setParameterLookup('s', "serv");
 
     int config_status = loadConfig(argc, argv, USAGE_DBASE);
     if (config_status < 0) {
