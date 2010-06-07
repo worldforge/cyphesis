@@ -1,4 +1,4 @@
-// Cyphesis Online RPG Server and AI Engine
+// Cyphesis Online RPG ServerAccount and AI Engine
 // Copyright (C) 2000-2006 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "Server.h"
+#include "ServerAccount.h"
 
 #include "ServerRouting.h"
 #include "Connection.h"
@@ -57,8 +57,8 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-/// \brief Server constructor
-Server::Server(Connection * conn,
+/// \brief ServerAccount constructor
+ServerAccount::ServerAccount(Connection * conn,
              const std::string & username,
              const std::string & passwd,
              const std::string & id,
@@ -67,11 +67,11 @@ Server::Server(Connection * conn,
 {
 }
 
-Server::~Server()
+ServerAccount::~ServerAccount()
 {
 }
 
-const char * Server::getType() const
+const char * ServerAccount::getType() const
 {
     return "server";
 }
@@ -102,7 +102,7 @@ static void addTypeToList(const Root & type, ListType & typeList)
     }
 }
 
-void Server::addToMessage(MapType & omap) const
+void ServerAccount::addToMessage(MapType & omap) const
 {
     Account::addToMessage(omap);
     ListType & typeList = (omap["character_types"] = ListType()).asList();
@@ -112,7 +112,7 @@ void Server::addToMessage(MapType & omap) const
     }
 }
 
-void Server::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+void ServerAccount::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     Account::addToEntity(ent);
     ListType typeList;
@@ -123,7 +123,7 @@ void Server::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setAttr("character_types", typeList);
 }
 
-int Server::characterError(const Operation & op,
+int ServerAccount::characterError(const Operation & op,
                           const RootEntity & ent, OpVector & res) const
 {
     if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
@@ -138,7 +138,7 @@ int Server::characterError(const Operation & op,
     return false;
 }
 
-void Server::CreateOperation(const Operation & op, OpVector & res)
+void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {

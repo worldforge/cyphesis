@@ -17,25 +17,25 @@
 
 // $Id$
 
-#ifndef SERVER_ADMIN_H
-#define SERVER_ADMIN_H
+#ifndef SERVER_SERVERACCOUNT_H
+#define SERVER_SERVERACCOUNT_H
 
 #include "Account.h"
 
 #include <sigc++/connection.h>
 
 /// \brief This is a class for handling users with administrative priveleges
-class Server : public Account {
+class ServerAccount : public Account {
   protected:
     virtual int characterError(const Operation & op,
                                const Atlas::Objects::Entity::RootEntity & ent,
                                OpVector & res) const;
 
   public:
-    Server(Connection * conn, const std::string & username,
+    ServerAccount(Connection * conn, const std::string & username,
                              const std::string & passwd,
                              const std::string & id, long intId);
-    virtual ~Server();
+    virtual ~ServerAccount();
 
     virtual const char * getType() const;
 

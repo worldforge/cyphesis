@@ -39,7 +39,7 @@
 #include "IdleConnector.h"
 #include "UpdateTester.h"
 #include "Admin.h"
-#include "Admin.h"
+#include "ServerAccount.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
@@ -244,6 +244,13 @@ int main(int argc, char ** argv)
 
         Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
         server.addAccount(admin);
+
+		std::string serverAccId;
+		long sintId = newId(serverAccId);
+		assert(sintId > 0);
+
+		ServerAccount *srv = new ServerAccount(0, "server", "BAD_HASH", serverAccId, sintId);
+		server.addAccount(srv);
     }
 
     // Add the test object, and call it regularly so it can do what it does.
