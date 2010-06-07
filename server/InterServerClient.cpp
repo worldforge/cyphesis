@@ -41,7 +41,8 @@ InterServerClient::InterServerClient(InterServerConnection & c) : m_connection(c
 /// @param op Operation to be sent
 void InterServerClient::send(const Operation & op)
 {
-    op->setFrom(getId());
+	// We don't have any entity ID right?
+    //op->setFrom(getId());
     m_connection.send(op);
 }
 

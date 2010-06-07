@@ -22,8 +22,8 @@
 
 #include "InterServerConnection.h"
 
-/// \brief Class to implement a character entity in an admin client
-class CharacterClient {
+/// \brief Class to implement a client for inter-server communication
+class InterServerClient {
   protected:
     InterServerConnection & m_connection;
 
