@@ -246,19 +246,21 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
 	// FIXME: Set a lower timeout or move to this to a separate thread
 	if(c.connect(pb->data()) == -1)
 	{
-		std::cout << "Connection to server at IP " << pb->data() << " failed\n";
+		std::cerr << "Connection to server at IP " << pb->data() << " failed\n";
 		return OPERATION_IGNORED;
 	}
-	std::cout << "Connected successfully\n";
-	
 	// Do a hashtable/DB lookup here
 	if(c.login("server", "nonsense") == -1)
 	{
-		std::cout << "Login failed\n";
+		std::cerr << "Login failed for \"server\" account. Check credentials.\n";
 		return OPERATION_IGNORED;
 	}
-	std::cout << "Successfully logged into server account\n";
-
+	Entity * entity = BaseWorld::instance().getEntity(from);
+	Atlas::Objects::Entity::Anonymous atlas_repr;
+	entity->addToEntity(atlas_repr);
+	std::string new_id = c.injectEntity(atlas_repr);
+	if(!new_id.empty())
+		std::cout << new_id << "\n";
     return OPERATION_IGNORED;
 }
 
