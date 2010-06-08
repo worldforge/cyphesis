@@ -243,6 +243,12 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
 		return OPERATION_IGNORED;
 	}
 	std::cout << "Connected successfully\n";
+	if(c.login("server", "nonsense") == -1)
+	{
+		std::cout << "Login failed\n";
+		return OPERATION_IGNORED;
+	}
+	std::cout << "Successfully logged into server account\n";
 
     return OPERATION_IGNORED;
 }
