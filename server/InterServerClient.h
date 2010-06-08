@@ -22,6 +22,12 @@
 
 #include "InterServerConnection.h"
 
+#include <Atlas/Codec.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
+
+using Atlas::Objects::Entity::RootEntity;
+
 /// \brief Class to implement a client for inter-server communication
 class InterServerClient {
   protected:
@@ -43,6 +49,9 @@ class InterServerClient {
 
 	/// \brief Send an operation to the connected server
     void send(const Operation & op);
+    
+    /// \brief Inject a new entity into the connected server
+    std::string injectEntity(const RootEntity & entity);
 };
 
 #endif // SERVER_INTER_SERVER_CLIENT_H

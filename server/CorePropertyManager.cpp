@@ -234,15 +234,24 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
 	std::cout << "Hello Teleport!\n";
 	std::cout << "Teleport IP: " << pb->data() << "\n";
 	std::cout << "Entity that activated the teleport: " << e->getId() << "\n";
+	const std::string & from = op->getFrom();
+    if (from.empty()) {
+        std::cerr << "ERROR: Operation with no entity to be teleported" << std::endl << std::flush;
+        return OPERATION_IGNORED;
+    }
 	std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
 	InterServerConnection conn;
 	InterServerClient c(conn);
+	
+	// FIXME: Set a lower timeout or move to this to a separate thread
 	if(c.connect(pb->data()) == -1)
 	{
 		std::cout << "Connection to server at IP " << pb->data() << " failed\n";
 		return OPERATION_IGNORED;
 	}
 	std::cout << "Connected successfully\n";
+	
+	// Do a hashtable/DB lookup here
 	if(c.login("server", "nonsense") == -1)
 	{
 		std::cout << "Login failed\n";

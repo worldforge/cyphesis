@@ -20,9 +20,22 @@
 #include "InterServerClient.h"
 #include "InterServerConnection.h"
 
+#include <Atlas/Codec.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
+
 #include "common/debug.h"
 
 #include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/RootEntity.h>
+
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::RootOperation;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Entity::RootEntity;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -78,4 +91,76 @@ int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)
             return -1;
         }
     }
+}
+
+std::string InterServerClient::injectEntity(const RootEntity & entity)
+{
+    Create op;
+    op->setArgs1(entity);
+    // We don't have an ID right?
+    //op->setFrom(getId());
+    //op->setTo(getId());
+    OpVector result;
+    if (sendAndWaitReply(op, result) != 0) {
+        std::cerr << "No reply to make" << std::endl << std::flush;
+        return NULL;
+    }
+    assert(!result.empty());
+    const Operation & res = result.front();
+    if (!res.isValid()) {
+        std::cerr << "NULL reply to make" << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & resparents = res->getParents().front();
+    if (resparents != "sight") {
+        std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
+        return NULL;
+    }
+    if (res->getArgs().empty()) {
+        std::cerr << "Reply to make has no args" << std::endl << std::flush;
+        return NULL;
+    }
+    RootOperation arg = smart_dynamic_cast<RootOperation>(res->getArgs().front());
+    if (!arg.isValid()) {
+        std::cerr << "Arg of reply to make is not an operation"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || arg->getParents().empty()) {
+        std::cerr << "Arg of reply to make has no parents"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & resargp = arg->getParents().front();
+    if (resargp != "create") {
+        std::cerr << "Reply to make isn't sight of create"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    if (arg->getArgs().empty()) {
+        std::cerr << "Arg of reply to make has no args"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    RootEntity created = smart_dynamic_cast<RootEntity>(arg->getArgs().front());
+    if (!created.isValid()) {
+        std::cerr << "Created argument is not an entity"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    if (!created->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        std::cerr << "Created entity has no id"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & created_id = created->getId();
+    if (created->getParents().empty()) {
+        std::cerr << "Created entity " << created_id << " has no type"
+                  << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & created_type = created->getParents().front();
+    std::cout << "Created: " << created_type << "(" << created_id << ")"
+              << std::endl << std::flush;
+    return created->getId();
 }
