@@ -19,6 +19,9 @@
 
 #include "CorePropertyManager.h"
 
+#include "InterServerClient.h"
+#include "InterServerConnection.h"
+
 #include "rulesets/ActivePropertyFactory_impl.h"
 
 #include "rulesets/LineProperty.h"
@@ -228,8 +231,19 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
                         << std::flush;);
         return OPERATION_IGNORED;
     }
-	std::cout << "Hello Teleport!\nTeleport IP: " << pb->data() << "\n";
-	std::cout << "Entity ID: " << e->getId() << "\n";
+	std::cout << "Hello Teleport!\n";
+	std::cout << "Teleport IP: " << pb->data() << "\n";
+	std::cout << "Entity that activated the teleport: " << e->getId() << "\n";
+	std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
+	InterServerConnection conn;
+	InterServerClient c(conn);
+	if(c.connect(pb->data()) == -1)
+	{
+		std::cout << "Connection to server at IP " << pb->data() << " failed\n";
+		return OPERATION_IGNORED;
+	}
+	std::cout << "Connected successfully\n";
+
     return OPERATION_IGNORED;
 }
 
