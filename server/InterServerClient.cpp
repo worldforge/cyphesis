@@ -46,6 +46,22 @@ InterServerClient::InterServerClient(InterServerConnection & c) : m_connection(c
 {
 }
 
+/// \brief Connect to a cyphesis instance using a network socket
+///
+/// @param server The hostname/IP to connect to
+/// @param port The port to connect on
+int InterServerClient::connect(const std::string & server, int port) {
+    return m_connection.connect(server, port);
+}
+
+/// \brief Login to another cyphesis instance using the specified credentials
+///
+/// @param username The username to use
+/// @param password The password to use
+int InterServerClient::login(const std::string & username, const std::string & password) {
+    return m_connection.login(username, password);
+}
+
 /// \brief Send an operation to the server from this account
 ///
 /// @param op Operation to be sent
@@ -88,6 +104,9 @@ int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)
     }
 }
 
+/// \brief Inject an entity into a remote cyphesis instance
+///
+/// @param entity The entity to be inserted
 std::string InterServerClient::injectEntity(const RootEntity & entity)
 {
     Create op;

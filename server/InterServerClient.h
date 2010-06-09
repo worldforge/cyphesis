@@ -38,14 +38,10 @@ class InterServerClient {
     InterServerClient(InterServerConnection&);
 
     /// \brief Connect to a cyphesis instance using a network socket
-    int connect(const std::string & server, int port = 6767) {
-        return m_connection.connect(server, port);
-    }
+    int connect(const std::string & server, int port = 6767);
     
     /// \brief Login to another cyphesis instance using the specified credentials
-    int login(const std::string & username, const std::string & password) {
-        return m_connection.login(username, password);
-    }
+    int login(const std::string & username, const std::string & password);
 
     /// \brief Send an operation to the connected server
     void send(const Operation & op);
