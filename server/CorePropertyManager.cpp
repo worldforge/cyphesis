@@ -231,36 +231,36 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
                         << std::flush;);
         return OPERATION_IGNORED;
     }
-	std::cout << "Hello Teleport!\n";
-	std::cout << "Teleport IP: " << pb->data() << "\n";
-	std::cout << "Entity that activated the teleport: " << e->getId() << "\n";
-	const std::string & from = op->getFrom();
+    std::cout << "Hello Teleport!\n";
+    std::cout << "Teleport IP: " << pb->data() << "\n";
+    std::cout << "Entity that activated the teleport: " << e->getId() << "\n";
+    const std::string & from = op->getFrom();
     if (from.empty()) {
         std::cerr << "ERROR: Operation with no entity to be teleported" << std::endl << std::flush;
         return OPERATION_IGNORED;
     }
-	std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
-	InterServerConnection conn;
-	InterServerClient c(conn);
-	
-	// FIXME: Set a lower timeout or move to this to a separate thread
-	if(c.connect(pb->data()) == -1)
-	{
-		std::cerr << "Connection to server at IP " << pb->data() << " failed\n";
-		return OPERATION_IGNORED;
-	}
-	// Do a hashtable/DB lookup here
-	if(c.login("server", "nonsense") == -1)
-	{
-		std::cerr << "Login failed for \"server\" account. Check credentials.\n";
-		return OPERATION_IGNORED;
-	}
-	Entity * entity = BaseWorld::instance().getEntity(from);
-	Atlas::Objects::Entity::Anonymous atlas_repr;
-	entity->addToEntity(atlas_repr);
-	std::string new_id = c.injectEntity(atlas_repr);
-	if(!new_id.empty())
-		std::cout << new_id << "\n";
+    std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
+    InterServerConnection conn;
+    InterServerClient c(conn);
+    
+    // FIXME: Set a lower timeout or move to this to a separate thread
+    if(c.connect(pb->data()) == -1)
+    {
+        std::cerr << "Connection to server at IP " << pb->data() << " failed\n";
+        return OPERATION_IGNORED;
+    }
+    // Do a hashtable/DB lookup here
+    if(c.login("server", "nonsense") == -1)
+    {
+        std::cerr << "Login failed for \"server\" account. Check credentials.\n";
+        return OPERATION_IGNORED;
+    }
+    Entity * entity = BaseWorld::instance().getEntity(from);
+    Atlas::Objects::Entity::Anonymous atlas_repr;
+    entity->addToEntity(atlas_repr);
+    std::string new_id = c.injectEntity(atlas_repr);
+    if(!new_id.empty())
+        std::cout << new_id << "\n";
     return OPERATION_IGNORED;
 }
 

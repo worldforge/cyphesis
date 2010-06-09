@@ -30,8 +30,7 @@
 
 #include <deque>
 
-/// \brief Class to handle socket connection to a cyphesis server from another
-/// cyphesis instance
+/// \brief Class to handle socket connection between cyphesis instances
 class InterServerConnection : public AtlasStreamClient {
   protected:
     /// \brief Store for operations arrived from the server

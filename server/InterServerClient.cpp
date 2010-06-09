@@ -41,28 +41,23 @@ static const bool debug_flag = false;
 
 /// \brief InterServerClient constructor
 ///
-/// @param id String identifier
-/// @param intId Integer identifier
-/// @param name The name of the avatar used by this remote agent
 /// @param c The network connection to the server used for communication
 InterServerClient::InterServerClient(InterServerConnection & c) : m_connection(c)
 {
 }
 
-/// \brief Send an operation to the server from this avatar
+/// \brief Send an operation to the server from this account
 ///
 /// @param op Operation to be sent
 void InterServerClient::send(const Operation & op)
 {
-	// We don't have any entity ID right?
+    // We don't have any entity ID right?
     //op->setFrom(getId());
     m_connection.send(op);
 }
 
 /// \brief Send an operation to the server, and wait for a reply
 ///
-/// Reply is identified as it should have its refno attribute set to
-/// the serialno of the operation sent.
 /// @param op Operation to be sent
 /// @param res Result with correct refno is returned here
 int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)

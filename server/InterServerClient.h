@@ -37,17 +37,17 @@ class InterServerClient {
   public:
     InterServerClient(InterServerConnection&);
 
-	/// \brief Connect to a remote server using a network socket
-	int connect(const std::string & server, int port = 6767) {
-		return m_connection.connect(server, port);
-	}
-	
-	/// \brief Login to a remote server using the specified credentials
-	int login(const std::string & username, const std::string & password) {
-		return m_connection.login(username, password);
-	}
+    /// \brief Connect to a cyphesis instance using a network socket
+    int connect(const std::string & server, int port = 6767) {
+        return m_connection.connect(server, port);
+    }
+    
+    /// \brief Login to another cyphesis instance using the specified credentials
+    int login(const std::string & username, const std::string & password) {
+        return m_connection.login(username, password);
+    }
 
-	/// \brief Send an operation to the connected server
+    /// \brief Send an operation to the connected server
     void send(const Operation & op);
     
     /// \brief Inject a new entity into the connected server
