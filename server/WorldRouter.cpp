@@ -575,11 +575,12 @@ bool WorldRouter::idle(int sec, int usec)
         try {
             operation(oqe.op, oqe.from);
         }
-        catch (...) {
+        catch (const std::exception& ex) {
             log(ERROR, String::compose("Exception caught in world.idle() "
                                        "thrown while processing operation "
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
+            std::cout << ex.what() << "\n";
         }
         m_operationQueue.erase(I);
         I = m_operationQueue.begin();
