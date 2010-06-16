@@ -32,21 +32,36 @@ using Atlas::Objects::Entity::RootEntity;
 class InterServerClient {
   protected:
     InterServerConnection & m_connection;
-
+    
+    /// \brief Send an operation to the server, and wait for a reply
+    ///
+    /// @param op Operation to be sent
+    /// @param res Result with correct refno is returned here
     int sendAndWaitReply(const Operation &, OpVector &);
+    
   public:
     InterServerClient(InterServerConnection&);
 
     /// \brief Connect to a cyphesis instance using a network socket
+    ///
+    /// @param server The hostname/IP to connect to
+    /// @param port The port to connect on
     int connect(const std::string & server, int port = 6767);
     
     /// \brief Login to another cyphesis instance using the specified credentials
+    ///
+    /// @param username The username to use
+    /// @param password The password to use
     int login(const std::string & username, const std::string & password);
 
-    /// \brief Send an operation to the connected server
+    /// \brief Send an operation to the server from this account
+    ///
+    /// @param op Operation to be sent
     void send(const Operation & op);
     
-    /// \brief Inject a new entity into the connected server
+    /// \brief Inject an entity into a remote cyphesis instance
+    ///
+    /// @param entity The entity to be inserted
     std::string injectEntity(const RootEntity & entity);
 };
 

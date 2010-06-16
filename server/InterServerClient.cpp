@@ -46,25 +46,14 @@ InterServerClient::InterServerClient(InterServerConnection & c) : m_connection(c
 {
 }
 
-/// \brief Connect to a cyphesis instance using a network socket
-///
-/// @param server The hostname/IP to connect to
-/// @param port The port to connect on
 int InterServerClient::connect(const std::string & server, int port) {
     return m_connection.connect(server, port);
 }
 
-/// \brief Login to another cyphesis instance using the specified credentials
-///
-/// @param username The username to use
-/// @param password The password to use
 int InterServerClient::login(const std::string & username, const std::string & password) {
     return m_connection.login(username, password);
 }
 
-/// \brief Send an operation to the server from this account
-///
-/// @param op Operation to be sent
 void InterServerClient::send(const Operation & op)
 {
     // We don't have any entity ID right?
@@ -72,10 +61,6 @@ void InterServerClient::send(const Operation & op)
     m_connection.send(op);
 }
 
-/// \brief Send an operation to the server, and wait for a reply
-///
-/// @param op Operation to be sent
-/// @param res Result with correct refno is returned here
 int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)
 {
     long no = m_connection.newSerialNo();
@@ -104,16 +89,13 @@ int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)
     }
 }
 
-/// \brief Inject an entity into a remote cyphesis instance
-///
-/// @param entity The entity to be inserted
 std::string InterServerClient::injectEntity(const RootEntity & entity)
 {
     Create op;
     op->setArgs1(entity);
     // We don't have an ID right?
-    //op->setFrom(getId());
-    //op->setTo(getId());
+    //op->setFrom(entity->getId());
+    //op->setTo(entity->getId());
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
         std::cerr << "No reply to make" << std::endl << std::flush;

@@ -580,7 +580,13 @@ bool WorldRouter::idle(int sec, int usec)
                                        "thrown while processing operation "
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
-            std::cout << ex.what() << "\n";
+			log(ERROR, ex.what());
+        }
+        catch (...) {
+            log(ERROR, String::compose("Exception caught in world.idle() "
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\"",
+                                       oqe->getTo(), oqe->getFrom()));
         }
         m_operationQueue.erase(I);
         I = m_operationQueue.begin();
@@ -594,6 +600,13 @@ bool WorldRouter::idle(int sec, int usec)
         Dispatching.emit(oqe.op);
         try {
             operation(oqe.op, oqe.from);
+        }
+        catch (const std::exception& ex) {
+            log(ERROR, String::compose("Exception caught in world.idle() "
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\"",
+                                       oqe->getTo(), oqe->getFrom()));
+			log(ERROR, ex.what());
         }
         catch (...) {
             log(ERROR, String::compose("Exception caught in world.idle() "

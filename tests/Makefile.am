@@ -1268,6 +1268,12 @@ Mastertest_LDADD = \
         $(top_builddir)/common/libcommon.a
 
 
+InterServerConnectiontest_SOURCES = InterServerConnectiontest.cpp python_testers.h
+InterServerConnectiontest_LDADD = \
+        $(top_builddir)/server/InterServerConnection.o \
+        $(top_builddir)/common/libcommon.a \
+        $(NETWORK_LIBS)
+
 # TOOLS_TESTS
 
 WorldLoadertest_SOURCES = WorldLoadertest.cpp
