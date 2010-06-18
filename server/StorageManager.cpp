@@ -286,6 +286,12 @@ void StorageManager::restoreChildren(Entity * parent)
         const std::string type = I.column("type");
         Atlas::Objects::Entity::Anonymous attrs;
         Entity * child = eb->newEntity(id, int_id, type, attrs);
+        if (!child) {
+            log(ERROR, compose("Could not restore entity with id %1 of type %2"
+                    ", most likely caused by this type missing.",
+                    id, type));
+            continue;
+        }
         
         const std::string location_string = I.column("location");
         MapType loc_data;

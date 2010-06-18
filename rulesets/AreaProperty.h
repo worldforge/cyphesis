@@ -31,8 +31,12 @@ class AreaProperty : public PropertyBase {
   protected:
     /// \brief Property data for the line that defines the outline of the area
     CornerList m_data;
+
+    /// \breif Optional terrain layer property.
+    int* m_layer;
   public:
     explicit AreaProperty();
+    virtual ~AreaProperty();
 
     const CornerList & line() const { return m_data; }
 

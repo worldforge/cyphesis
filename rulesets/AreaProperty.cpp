@@ -40,13 +40,23 @@ using Atlas::Message::MapType;
 ///
 /// @param flags Flags used to persist this property
 AreaProperty::AreaProperty()
+: m_layer(0)
 {
 }
+
+AreaProperty::~AreaProperty()
+{
+    delete m_layer;
+}
+
 
 bool AreaProperty::get(Element & ent) const
 {
     MapType & area = (ent = MapType()).Map();
     objectListAsMessage(m_data, (area["points"] = ListType()).List());
+    if (m_layer) {
+        area["layer"] = *m_layer;
+    }
     return true;
 
 }
@@ -69,6 +79,15 @@ void AreaProperty::set(const Element & ent)
     if (I != Iend && I->second.isList()) {
         objectListFromMessage<Corner, CornerList>(I->second.List(),
                                                   m_data);
+    }
+
+    delete m_layer;
+    I = area.find("layer");
+    if (I != Iend && I->second.isInt()) {
+        m_layer = new int();
+        *m_layer = I->second.asInt();
+    } else {
+        m_layer = 0;
     }
 }
 

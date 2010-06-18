@@ -43,7 +43,11 @@ you automatically. If this is the case please see
     </para>
 
     <para>
-The first step is to setup the database access. The database is required
+
+    </para>
+
+    <para>
+The first step to consider is database access. The database cat be used
 to store account and rule information. If full server persistence is enabled,
 the database is also used to store the entire world state. A postgresql server
 must be running on the system where you plan to run cyphesis, and the user who
