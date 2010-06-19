@@ -10,7 +10,7 @@ AC_CANONICAL_HOST
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news color-tests])
+AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news])
 
 AM_BINRELOC
 
