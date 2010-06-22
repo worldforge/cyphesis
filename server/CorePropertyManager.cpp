@@ -47,6 +47,7 @@
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
 
+#include "common/id.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -244,7 +245,14 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     // std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
     
     InterServerConnection conn;
-    InterServerClient c(conn);
+    std::string newAccountId;
+
+    long intId = newId(newAccountId);
+    if (intId < 0) {
+        log(ERROR, "Account creation failed as no ID available");
+        return OPERATION_IGNORED;
+    }
+    InterServerClient c(newAccountId, intId, conn);
     
     // FIXME: Set a lower timeout or move to this to a separate thread
     if(c.connect(pb->data()) == -1) {

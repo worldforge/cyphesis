@@ -43,6 +43,7 @@ class InterServerConnection : public AtlasStreamClient {
     ~InterServerConnection();
 
     int wait();
+	std::string getAccountId() { return accountId; }
 
     Atlas::Objects::Operation::RootOperation pop();
     bool pending();

@@ -580,7 +580,6 @@ bool WorldRouter::idle(int sec, int usec)
                                        "thrown while processing operation "
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
-			log(ERROR, ex.what());
         }
         catch (...) {
             log(ERROR, String::compose("Exception caught in world.idle() "
@@ -606,7 +605,6 @@ bool WorldRouter::idle(int sec, int usec)
                                        "thrown while processing operation "
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
-			log(ERROR, ex.what());
         }
         catch (...) {
             log(ERROR, String::compose("Exception caught in world.idle() "

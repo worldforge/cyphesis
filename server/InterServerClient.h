@@ -22,6 +22,8 @@
 
 #include "InterServerConnection.h"
 
+#include "rulesets/BaseMind.h"
+
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -29,7 +31,7 @@
 using Atlas::Objects::Entity::RootEntity;
 
 /// \brief Class to implement a client for inter-server communication
-class InterServerClient {
+class InterServerClient : public BaseMind {
   protected:
     InterServerConnection & m_connection;
     
@@ -40,7 +42,7 @@ class InterServerClient {
     int sendAndWaitReply(const Operation &, OpVector &);
     
   public:
-    InterServerClient(InterServerConnection&);
+    InterServerClient(const std::string &, long, InterServerConnection &);
 
     /// \brief Connect to a cyphesis instance using a network socket
     ///

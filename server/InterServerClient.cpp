@@ -42,7 +42,9 @@ static const bool debug_flag = false;
 /// \brief InterServerClient constructor
 ///
 /// @param c The network connection to the server used for communication
-InterServerClient::InterServerClient(InterServerConnection & c) : m_connection(c)
+InterServerClient::InterServerClient(const std::string &id, long intId,
+                                     InterServerConnection & c) : 
+                   BaseMind(id, intId), m_connection(c)
 {
 }
 
@@ -57,7 +59,7 @@ int InterServerClient::login(const std::string & username, const std::string & p
 void InterServerClient::send(const Operation & op)
 {
     // We don't have any entity ID right?
-    //op->setFrom(getId());
+    op->setFrom(m_connection.getAccountId());
     m_connection.send(op);
 }
 
@@ -94,8 +96,8 @@ std::string InterServerClient::injectEntity(const RootEntity & entity)
     Create op;
     op->setArgs1(entity);
     // We don't have an ID right?
-    //op->setFrom(entity->getId());
-    //op->setTo(entity->getId());
+    op->setFrom(m_connection.getAccountId());
+    op->setTo(m_connection.getAccountId());
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
         std::cerr << "No reply to make" << std::endl << std::flush;
