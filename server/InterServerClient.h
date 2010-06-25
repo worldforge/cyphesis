@@ -31,7 +31,7 @@
 using Atlas::Objects::Entity::RootEntity;
 
 /// \brief Class to implement a client for inter-server communication
-class InterServerClient : public BaseMind {
+class InterServerClient {
   protected:
     InterServerConnection & m_connection;
     
@@ -42,7 +42,7 @@ class InterServerClient : public BaseMind {
     int sendAndWaitReply(const Operation &, OpVector &);
     
   public:
-    InterServerClient(const std::string &, long, InterServerConnection &);
+    InterServerClient(InterServerConnection &);
 
     /// \brief Connect to a cyphesis instance using a network socket
     ///
@@ -60,6 +60,8 @@ class InterServerClient : public BaseMind {
     ///
     /// @param op Operation to be sent
     void send(const Operation & op);
+    
+    std::string addCharacter(const RootEntity & entity);
     
     /// \brief Inject an entity into a remote cyphesis instance
     ///

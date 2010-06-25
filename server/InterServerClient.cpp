@@ -25,6 +25,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include "common/debug.h"
+#include "common/id.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/RootEntity.h>
@@ -42,9 +43,7 @@ static const bool debug_flag = false;
 /// \brief InterServerClient constructor
 ///
 /// @param c The network connection to the server used for communication
-InterServerClient::InterServerClient(const std::string &id, long intId,
-                                     InterServerConnection & c) : 
-                   BaseMind(id, intId), m_connection(c)
+InterServerClient::InterServerClient(InterServerConnection & c) : m_connection(c)
 {
 }
 
@@ -91,6 +90,36 @@ int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)
     }
 }
 
+std::string InterServerClient::addCharacter(const RootEntity & entity)
+{
+	Create op;
+	op->setFrom(m_connection.getAccountId());
+	op->setArgs1(entity);
+	op->setSerialno(m_connection.newSerialNo());
+	send(op);
+
+    if (m_connection.wait() != 0) {
+        return NULL;
+    }
+
+    RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
+
+    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        std::cerr << "ERROR: Character created, but has no id" << std::endl
+                  << std::flush;
+        return NULL;
+    }
+
+    const std::string & id = ent->getId();
+
+    long intId = integerId(id);
+
+    if (intId == -1) {
+        return NULL;
+    }
+    return id;
+}
+
 std::string InterServerClient::injectEntity(const RootEntity & entity)
 {
     Create op;
@@ -110,6 +139,7 @@ std::string InterServerClient::injectEntity(const RootEntity & entity)
         return NULL;
     }
     const std::string & resparents = res->getParents().front();
+	std::cout << resparents << "\n";
     if (resparents != "sight") {
         std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
         return NULL;

@@ -245,14 +245,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     // std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
     
     InterServerConnection conn;
-    std::string newAccountId;
-
-    long intId = newId(newAccountId);
-    if (intId < 0) {
-        log(ERROR, "Account creation failed as no ID available");
-        return OPERATION_IGNORED;
-    }
-    InterServerClient c(newAccountId, intId, conn);
+    InterServerClient c(conn);
     
     // FIXME: Set a lower timeout or move to this to a separate thread
     if(c.connect(pb->data()) == -1) {
@@ -274,7 +267,8 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     }
     Atlas::Objects::Entity::Anonymous atlas_repr;
     entity->addToEntity(atlas_repr);
-    std::string new_id = c.injectEntity(atlas_repr);
+    std::string new_id = c.addCharacter(atlas_repr);
+    std::cout << "New ID: " << new_id << "\n";
     //if(!new_id.empty())
     //    std::cout << new_id << "\n";
     return OPERATION_IGNORED;
