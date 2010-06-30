@@ -144,7 +144,6 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     if (args.empty()) {
         return;
     }
-
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
         arg->getParents().empty()) {
