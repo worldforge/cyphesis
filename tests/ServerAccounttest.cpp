@@ -29,6 +29,7 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
+#include "rulesets/World.h"
 
 #include "common/Monitor.h"
 #include "common/Connect.h"
@@ -75,15 +76,82 @@ class TestServerAccount : public ServerAccount {
     {
         return addNewCharacter(typestr, ent, arg);
     }
-#if 0
-    void testOpDispatched(const Operation & op) {
-        opDispatched(op);
-    }
-#endif
 };
 
-void run_operation_checks(TestServerAccount * ac, Entity * chr)
+void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter *world)
 {
+    // Entity injection test
+    {
+        Entity * ent = new Entity("1", 1);
+        
+        ent->m_location.m_loc = new World("0", 0);
+        ent->m_location.m_loc->makeContainer();
+        assert(ent->m_location.m_loc->m_contains != 0);
+        ent->m_location.m_loc->m_contains->insert(ent);
+
+        // Add the test attributes
+        ent->setAttr("name", "test_entity");
+        ent->setAttr("test_int", 1);
+        ent->setAttr("test_float", 1.f);
+        ent->setAttr("test_list_string", "test_value");
+        ent->setAttr("test_list_int", ListType(1, 1));
+        ent->setAttr("test_list_float", ListType(1, 1.f));
+        ent->setAttr("test_map_string", ListType(1, "test_value"));
+        MapType test_map;
+        test_map["test_key"] = 1;
+        ent->setAttr("test_map_int", test_map);
+        test_map["test_key"] = 1.f;
+        ent->setAttr("test_map_float", test_map);
+        test_map["test_key"] = "test_value";
+        ent->setAttr("test_map_string", test_map);
+        
+        Atlas::Objects::Entity::Anonymous atlas_repr;
+        ent->addToEntity(atlas_repr);
+        
+        Create op;
+        OpVector res;
+        op->setArgs1(atlas_repr);
+        ac->operation(op, res);
+        
+        Entity *reply = world->findByName("test_entity");
+        assert(reply != 0);
+        
+        Atlas::Message::Element val;
+        // Check the integer attribute
+        assert(reply->getAttr("test_int", val) == true);
+        assert(val == 1);
+        // Check the float attribute
+        assert(reply->getAttr("test_float", val) == true);
+        assert(val == 1.f);
+        // Check the string attribute
+        assert(reply->getAttr("test_list_string", val) == true);
+        assert(val == "test_value");
+        // Check the integer list attribute
+        assert(ent->getAttr("test_list_int", val) == true);
+        assert(val == ListType(1, 1));
+        // Check the float list attribute
+        assert(ent->getAttr("test_list_float", val) == true);
+        assert(val == ListType(1, 1.f));
+        // Check the string map attribute
+        assert(ent->getAttr("test_map_string", val) == true);
+        assert(val == ListType(1, "test_value"));
+        
+        MapType reply_map;
+        // Check the integer map value
+        reply_map["test_key"] = 1;
+        assert(ent->getAttr("test_map_int", val) == true);
+        assert(val == reply_map);
+        // Check the float map value
+        test_map["test_key"] = 1.f;
+        assert(ent->getAttr("test_map_float", val) == true);
+        assert(val == reply_map);
+        // Check the string map value
+        assert(test_map["test_key"] = "test_value" == true);
+        assert(ent->getAttr("test_map_string", val) == true);
+        assert(val == reply_map);
+    }
+    
+    // Regular create op tests
     {
         // This is the only op we've overridden
         Create op;
@@ -205,11 +273,11 @@ int main()
         ac->testCharacterError(op, ent, res);
     }
 
-    run_operation_checks(ac, chr);
+    run_operation_checks(ac, chr, &world);
 
     ac->m_connection = 0;
 
-    run_operation_checks(ac, chr);
+    run_operation_checks(ac, chr, &world);
 
     delete ac;
 
