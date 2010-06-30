@@ -66,7 +66,7 @@ class InterServerClient {
     /// \brief Inject an entity into a remote cyphesis instance
     ///
     /// @param entity The entity to be inserted
-    std::string injectEntity(const RootEntity & entity);
+    /// std::string injectEntity(const RootEntity & entity);
 };
 
 #endif // SERVER_INTER_SERVER_CLIENT_H

@@ -164,6 +164,9 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
 
     RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
 
+    if(!ent)
+        return 0;
+
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Character created, but has no id" << std::endl
                   << std::flush;

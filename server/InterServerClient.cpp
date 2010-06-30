@@ -104,6 +104,9 @@ std::string InterServerClient::addCharacter(const RootEntity & entity)
 
     RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
 
+    if(!ent)
+        return NULL;
+
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Character created, but has no id" << std::endl
                   << std::flush;
@@ -120,6 +123,7 @@ std::string InterServerClient::addCharacter(const RootEntity & entity)
     return id;
 }
 
+#if 0
 std::string InterServerClient::injectEntity(const RootEntity & entity)
 {
     Create op;
@@ -139,7 +143,6 @@ std::string InterServerClient::injectEntity(const RootEntity & entity)
         return NULL;
     }
     const std::string & resparents = res->getParents().front();
-	std::cout << resparents << "\n";
     if (resparents != "sight") {
         std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
         return NULL;
@@ -192,3 +195,4 @@ std::string InterServerClient::injectEntity(const RootEntity & entity)
               << std::endl << std::flush;
     return created->getId();
 }
+#endif
