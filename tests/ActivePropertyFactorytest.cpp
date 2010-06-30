@@ -57,6 +57,12 @@ PropertyKit::~PropertyKit()
 {
 }
 
+
+template<>
+void Property<int>::set(const Atlas::Message::Element & e)
+{
+}
+
 template class HandlerProperty<int>;
 template class Property<int>;
 
