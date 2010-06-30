@@ -78,7 +78,7 @@ class TestServerAccount : public ServerAccount {
     }
 };
 
-void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter *world)
+void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter & world)
 {
     // Entity injection test
     {
@@ -113,41 +113,41 @@ void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter *wor
         op->setArgs1(atlas_repr);
         ac->operation(op, res);
         
-        Entity *reply = world->findByName("test_entity");
+        Entity *reply = world.findByName("test_entity");
         assert(reply != 0);
         
         Atlas::Message::Element val;
         // Check the integer attribute
-        assert(reply->getAttr("test_int", val) == true);
+        assert(reply->getAttr("test_int", val));
         assert(val == 1);
         // Check the float attribute
-        assert(reply->getAttr("test_float", val) == true);
+        assert(reply->getAttr("test_float", val));
         assert(val == 1.f);
         // Check the string attribute
-        assert(reply->getAttr("test_list_string", val) == true);
+        assert(reply->getAttr("test_list_string", val));
         assert(val == "test_value");
         // Check the integer list attribute
-        assert(ent->getAttr("test_list_int", val) == true);
+        assert(ent->getAttr("test_list_int", val));
         assert(val == ListType(1, 1));
         // Check the float list attribute
-        assert(ent->getAttr("test_list_float", val) == true);
+        assert(ent->getAttr("test_list_float", val));
         assert(val == ListType(1, 1.f));
         // Check the string map attribute
-        assert(ent->getAttr("test_map_string", val) == true);
+        assert(ent->getAttr("test_map_string", val));
         assert(val == ListType(1, "test_value"));
         
         MapType reply_map;
         // Check the integer map value
         reply_map["test_key"] = 1;
-        assert(ent->getAttr("test_map_int", val) == true);
+        assert(ent->getAttr("test_map_int", val));
         assert(val == reply_map);
         // Check the float map value
         test_map["test_key"] = 1.f;
-        assert(ent->getAttr("test_map_float", val) == true);
+        assert(ent->getAttr("test_map_float", val));
         assert(val == reply_map);
         // Check the string map value
-        assert(test_map["test_key"] = "test_value" == true);
-        assert(ent->getAttr("test_map_string", val) == true);
+        test_map["test_key"] = "test_value";
+        assert(ent->getAttr("test_map_string", val));
         assert(val == reply_map);
     }
     
@@ -273,11 +273,11 @@ int main()
         ac->testCharacterError(op, ent, res);
     }
 
-    run_operation_checks(ac, chr, &world);
+    run_operation_checks(ac, chr, world);
 
     ac->m_connection = 0;
 
-    run_operation_checks(ac, chr, &world);
+    run_operation_checks(ac, chr, world);
 
     delete ac;
 

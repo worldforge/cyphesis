@@ -26,6 +26,7 @@
 
 #include "common/debug.h"
 #include "common/id.h"
+#include "common/log.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/RootEntity.h>
@@ -90,7 +91,7 @@ int InterServerClient::sendAndWaitReply(const Operation & op, OpVector & res)
     }
 }
 
-std::string InterServerClient::addCharacter(const RootEntity & entity)
+std::string InterServerClient::injectEntity(const RootEntity & entity)
 {
 	Create op;
 	op->setFrom(m_connection.getAccountId());
@@ -104,12 +105,12 @@ std::string InterServerClient::addCharacter(const RootEntity & entity)
 
     RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
 
-    if(!ent)
+    if(!ent.isValid()) {
         return NULL;
+    }
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        std::cerr << "ERROR: Character created, but has no id" << std::endl
-                  << std::flush;
+        log(ERROR, "Character created, but has no id");
         return NULL;
     }
 

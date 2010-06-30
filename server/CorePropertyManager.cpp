@@ -267,7 +267,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     }
     Atlas::Objects::Entity::Anonymous atlas_repr;
     entity->addToEntity(atlas_repr);
-    std::string new_id = c.addCharacter(atlas_repr);
+    std::string new_id = c.injectEntity(atlas_repr);
     std::cout << "New ID: " << new_id << "\n";
     //if(!new_id.empty())
     //    std::cout << new_id << "\n";

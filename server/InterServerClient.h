@@ -61,7 +61,7 @@ class InterServerClient {
     /// @param op Operation to be sent
     void send(const Operation & op);
     
-    std::string addCharacter(const RootEntity & entity);
+    std::string injectEntity(const RootEntity & entity);
     
     /// \brief Inject an entity into a remote cyphesis instance
     ///
