@@ -21,6 +21,7 @@
 
 #include "InterServerClient.h"
 #include "InterServerConnection.h"
+#include "ExternalMind.h"
 
 #include "rulesets/ActivePropertyFactory_impl.h"
 
@@ -37,6 +38,7 @@
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
+#include "rulesets/Character.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -54,6 +56,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <wfmath/atlasconv.h>
+#include <wfmath/MersenneTwister.h>
 
 #include <iostream>
 
@@ -62,6 +65,8 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Burn;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::RootEntity;
@@ -226,27 +231,25 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
 
 HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
 {
+    // Get the teleport property value (in our case, the IP to teleport to)
     const Property<std::string> * pb = e->getPropertyType<std::string>("teleport");
     if (pb == NULL) {
         debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
                         << std::flush;);
         return OPERATION_IGNORED;
     }
-    //
-    // std::cout << "Hello Teleport!\n";
-    // std::cout << "Teleport IP: " << pb->data() << "\n";
-    // std::cout << "Entity that activated the teleport: " << e->getId() << "\n";
+
+    // Get the ID of the sender
     const std::string & from = op->getFrom();
     if (from.empty()) {
         debug(std::cout << "ERROR: Operation with no entity to be teleported" 
                         << std::endl << std::flush;);
         return OPERATION_IGNORED;
     }
-    // std::cout << "Entity to be teleported: " << op->getFrom() << "\n";
     
+    // Do an inter server connnection now using a "server" account
     InterServerConnection conn;
     InterServerClient c(conn);
-    
     // FIXME: Set a lower timeout or move to this to a separate thread
     if(c.connect(pb->data()) == -1) {
         debug(std::cout << "Connection to server at IP " << pb->data() 
@@ -259,18 +262,54 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
                         << "credentials.\n";);
         return OPERATION_IGNORED;
     }
+
+    // This is the sender entity
     Entity * entity = BaseWorld::instance().getEntity(from);
     if (entity == 0) {
         debug(std::cout << "No entity found with the specified ID: "
                         << from;);
         return OPERATION_IGNORED;
     }
+
+    // Get an Atlas representation and inject it on remote server
     Atlas::Objects::Entity::Anonymous atlas_repr;
     entity->addToEntity(atlas_repr);
     std::string new_id = c.injectEntity(atlas_repr);
-    std::cout << "New ID: " << new_id << "\n";
-    //if(!new_id.empty())
-    //    std::cout << new_id << "\n";
+
+    // Check if the entity has a mind
+    bool isMind = true;
+    Character * chr = dynamic_cast<Character *>(entity);
+    if(!chr) {
+        isMind = false;
+    }
+    if (chr->m_externalMind == 0) {
+        isMind = false;
+    }
+    ExternalMind * mind = 0;
+    mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+    if (mind == 0 || !mind->isConnected()) {
+        isMind = false;
+    }
+    if(isMind) {
+        // Entity has a mind. Logout as and extra.
+        debug(std::cout << "Entity has a mind\n";);
+        WFMath::MTRand generator;
+        long key = generator.randInt();
+        Logout logoutOp;
+        Anonymous op_arg;
+        op_arg->setId(from);
+        logoutOp->setArgs1(op_arg);
+        logoutOp->setTo(from);
+        entity->sendWorld(logoutOp);
+    }
+
+    // Delete the entity from the current world
+    Delete delOp;
+    Anonymous del_arg;
+    del_arg->setId(from);
+    delOp->setArgs1(del_arg);
+    delOp->setTo(from);
+    entity->sendWorld(delOp);
     return OPERATION_IGNORED;
 }
 
