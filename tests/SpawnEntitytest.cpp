@@ -110,6 +110,10 @@ AreaProperty::AreaProperty()
 {
 }
 
+AreaProperty::~AreaProperty()
+{
+}
+
 bool AreaProperty::get(Atlas::Message::Element & ent) const
 {
     return true;
