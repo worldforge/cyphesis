@@ -291,7 +291,8 @@ Entitytest_LDADD = \
 Planttest_SOURCES = Planttest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
-                    EntityExerciser.cpp EntityExerciser.h allOperations.h
+                    EntityExerciser.cpp EntityExerciser.h allOperations.h \
+                    TestWorld.h
 Planttest_LDADD = \
         $(top_builddir)/rulesets/Plant.o
 
