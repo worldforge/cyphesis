@@ -31,6 +31,10 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
 
+#ifdef _WIN32
+#undef DATADIR
+#endif // _WIN32
+
 #include <skstream/skstream.h>
 #include <skstream/skstream_unix.h>
 
