@@ -293,14 +293,20 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     if(isMind) {
         // Entity has a mind. Logout as and extra.
         debug(std::cout << "Entity has a mind\n";);
+        // Generate a nice and long key
         WFMath::MTRand generator;
-        long key = generator.randInt();
+        std::string key("");
+        for(int i=0;i<32;i++) {
+            char ch = (char)((int)'a' + generator.rand(25));
+            key += ch;
+        }
         Logout logoutOp;
         Anonymous op_arg;
         op_arg->setId(from);
         logoutOp->setArgs1(op_arg);
         logoutOp->setTo(from);
-        entity->sendWorld(logoutOp);
+        OpVector res;
+        mind->operation(logoutOp, res);
     }
 
     // Delete the entity from the current world
