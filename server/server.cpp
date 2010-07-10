@@ -40,6 +40,7 @@
 #include "UpdateTester.h"
 #include "Admin.h"
 #include "ServerAccount.h"
+#include "Peer.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
@@ -360,6 +361,28 @@ int main(int argc, char ** argv)
     }
 
 #endif // defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
+
+    // Pre-connect cyphesis peer instances
+    // Implement a single one for now (testing purposes)
+    // Load list of peers to connect to from DB in the future
+    std::string peer_id;
+    if (newId(peer_id) < 0) {
+        log(CRITICAL, "Unable to get peer ID from Database");
+        return EXIT_DATABASE_ERROR;
+    }
+
+    // Get this from database in future
+    std::string peer_ip("10.0.0.3");
+
+    CommPeer * peer = new CommPeer(commServer);
+    std::string peer_host(peer_ip);
+    if(peer->connect(peer_host) != 0) {
+        log(ERROR, "Could not connect to cyphesis peer");
+        return EXIT_SOCKET_ERROR;
+    }
+    peer->setup(new Peer(*peer, commServer.m_server, peer_ip, peer_id));
+    commServer.addSocket(peer);
+    log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_ip, peer_id));
 
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
