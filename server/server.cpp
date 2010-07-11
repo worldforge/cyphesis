@@ -372,8 +372,7 @@ int main(int argc, char ** argv)
     std::string::size_type lastPos = peer_ip_list.find_first_not_of(delimiters, 0);
     // Find first "non-delimiter".
     std::string::size_type pos = peer_ip_list.find_first_of(delimiters, lastPos);
-    while (std::string::npos != pos || std::string::npos != lastPos)
-    {
+    while (std::string::npos != pos || std::string::npos != lastPos) {
         // Found a token, add it to the vector.
         peer_list.push_back(peer_ip_list.substr(lastPos, pos - lastPos));
         // Skip delimiters.  Note the "not_of"
@@ -400,6 +399,16 @@ int main(int argc, char ** argv)
         peer->setup(new Peer(*peer, commServer.m_server, peer_list[i], peer_id));
         commServer.addSocket(peer);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_list[i], peer_id));
+
+        std::string username("");
+        for(unsigned int j=0;j<peer_list[i].size();j++) {
+            if(peer_list[i][j] == '.') {
+                username = username + '_';
+            } else {
+                username = username + peer_list[i][j];
+            }
+        }
+        std::cout << username << "\n";
     }   
 
     // Configuration is now complete, and verified as somewhat sane, so
