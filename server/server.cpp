@@ -362,27 +362,45 @@ int main(int argc, char ** argv)
 
 #endif // defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
 
-    // Pre-connect cyphesis peer instances
-    // Implement a single one for now (testing purposes)
-    // Load list of peers to connect to from DB in the future
-    std::string peer_id;
-    if (newId(peer_id) < 0) {
-        log(CRITICAL, "Unable to get peer ID from Database");
-        return EXIT_DATABASE_ERROR;
-    }
 
-    // Get this from database in future
-    std::string peer_ip("10.0.0.3");
-
-    CommPeer * peer = new CommPeer(commServer);
-    std::string peer_host(peer_ip);
-    if(peer->connect(peer_host) != 0) {
-        log(ERROR, "Could not connect to cyphesis peer");
-        return EXIT_SOCKET_ERROR;
+    // Get the peer IP list from ~/.cyphesis.vconf
+    std::string peer_ip_list = global_conf->getItem("cyphesis", "peers").as_string();
+    // Tokenize the list of IP addresses
+    std::string delimiters = " ";
+    std::vector<std::string> peer_list;
+    // Skip delimiters at beginning.
+    std::string::size_type lastPos = peer_ip_list.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    std::string::size_type pos = peer_ip_list.find_first_of(delimiters, lastPos);
+    while (std::string::npos != pos || std::string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        peer_list.push_back(peer_ip_list.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = peer_ip_list.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = peer_ip_list.find_first_of(delimiters, lastPos);
     }
-    peer->setup(new Peer(*peer, commServer.m_server, peer_ip, peer_id));
-    commServer.addSocket(peer);
-    log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_ip, peer_id));
+    
+    for(unsigned int i=0;i<peer_list.size();i++)
+    {
+        // Generate the ID for the socket object
+        std::string peer_id;
+        if (newId(peer_id) < 0) {
+            log(CRITICAL, "Unable to get peer ID from Database");
+            return EXIT_DATABASE_ERROR;
+        }
+
+        CommPeer * peer = new CommPeer(commServer);
+        std::string peer_host(peer_list[i]);
+        if(peer->connect(peer_host) != 0) {
+            log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1\"", peer_list[i]));
+            return EXIT_SOCKET_ERROR;
+        }
+        peer->setup(new Peer(*peer, commServer.m_server, peer_list[i], peer_id));
+        commServer.addSocket(peer);
+        log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_list[i], peer_id));
+    }   
 
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
