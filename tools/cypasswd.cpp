@@ -200,6 +200,9 @@ int main(int argc, char ** argv)
         bool res;
         if (action == ADD) {
             amap["username"] = acname;
+            if(server) {
+                amap["type"] = "server";
+            }
             res = db.putAccount(amap);
         } else {
             res = db.modAccount(amap, acname);
