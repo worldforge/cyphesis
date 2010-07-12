@@ -35,6 +35,7 @@
 #include "common/log.h"
 #include "common/globals.h"
 #include "common/sockets.h"
+#include "common/system.h"
 
 #include <varconf/config.h>
 
@@ -100,7 +101,7 @@ int main(int argc, char ** argv)
         if (bridge.connectLocal(localSocket) == 0) {
             bridge.setup();
             if (bridge.create("sys",
-                              compose("admin_%1_%2", getuid(), getpid()),
+                              create_session_username(),
                               compose("%1%2", ::rand(), ::rand())) != 0) {
                 bridge.getLogin();
                 if (bridge.login() != 0) {
