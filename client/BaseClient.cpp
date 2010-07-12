@@ -25,6 +25,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/system.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -61,9 +62,7 @@ BaseClient::~BaseClient()
 Root BaseClient::createSystemAccount()
 {
     Anonymous player_ent;
-    player_ent->setAttr("username", compose("admin_%1_%2",
-                                            getpid(),
-                                            getuid()));
+    player_ent->setAttr("username", create_session_username());
     player_ent->setAttr("password", compose("%1%2", ::rand(), ::rand()));
     player_ent->setParents(std::list<std::string>(1, "sys"));
     
