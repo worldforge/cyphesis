@@ -73,17 +73,6 @@ unsigned int security_init()
     return 0;
 }
 
-unsigned int security_check()
-{
-#ifdef HAVE_GETUID
-    if (getuid() == 0 || geteuid() == 0) {
-        log(CYLOG_ERROR, "Running cyphesis as the superuser is dangerous.");
-        return 0;
-    }
-#endif // HAVE_GETUID
-    return SECURITY_OKAY;
-}
-
 static int security_new_key(const std::string & key_filename)
 {
     FILE * key_file = ::fopen(key_filename.c_str(), "wx");
