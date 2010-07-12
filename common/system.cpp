@@ -47,9 +47,6 @@ extern "C" {
     #include <sys/utsname.h>
 #endif // HAVE_SYS_UTSNAME_H
     #include <sys/types.h>
-#ifdef HAVE_WINSOCK_H
-    #include <winsock.h>
-#endif // HAVE_WINSOCK_H
 #ifdef HAVE_SYS_WAIT_H
     #include <sys/wait.h>
 #endif // HAVE_SYS_WAIT_H
@@ -58,6 +55,10 @@ extern "C" {
     #include <unistd.h>
     #include <stdio.h>
 }
+
+#ifdef HAVE_WINSOCK_H
+#include <winsock2.h>
+#endif // HAVE_WINSOCK_H
 
 #ifdef ERROR
 #undef ERROR
