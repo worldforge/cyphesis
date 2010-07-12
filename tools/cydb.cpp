@@ -39,6 +39,10 @@
 
 #include "common/compose.hpp"
 
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif // HAVE_GETOPT_H
+
 #ifndef READLINE_CXX_SANE   // defined in config.h
 extern "C" {
 #endif
