@@ -96,7 +96,9 @@ Propertytest_LDADD = $(top_builddir)/common/Property.o
 
 systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = \
-        $(top_builddir)/common/system.o
+        $(top_builddir)/common/system.o \
+        $(top_builddir)/common/system_net.o \
+        $(top_builddir)/common/system_uid.o
 
 type_utilstest_SOURCES = type_utilstest.cpp
 type_utilstest_LDADD = $(top_builddir)/common/type_utils.o
