@@ -49,6 +49,8 @@ void daemon_signals();
 int daemonise();
 void running();
 
+std::string create_session_username();
+
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash);
 
