@@ -153,6 +153,7 @@ AC_COMPILE_IFELSE(
 dnl General header checks
 AC_CHECK_HEADERS(termios.h signal.h syslog.h sys/utsname.h sys/wait.h)
 AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h dirent.h io.h sys/ucred.h)
+AC_CHECK_HEADERS(windows.h getopt.h)
 
 dnl then check for the header file Python.h and set
 dnl python_include_path and python_version
