@@ -66,24 +66,6 @@ extern "C" {
 
 static const bool debug_flag = false;
 
-const std::string get_hostname()
-{
-#ifndef HAVE_UNAME
-    char hostname_buf[256];
-
-    if (gethostname(hostname_buf, 256) != 0) {
-        return "UNKNOWN";
-    }
-    return std::string(hostname_buf);
-#else // HAVE_UNAME
-    struct utsname host_ident;
-    if (uname(&host_ident) != 0) {
-        return "UNKNOWN";
-    }
-    return std::string(host_ident.nodename);
-#endif // HAVE_UNAME
-}
-
 unsigned int security_init()
 {
     gcry_check_version(0);
