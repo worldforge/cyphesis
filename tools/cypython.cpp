@@ -45,6 +45,10 @@ extern "C" {
 
 #include <iostream>
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 int main(int argc, char ** argv)
 {
     int config_status = loadConfig(argc, argv, 0); 
@@ -67,6 +71,10 @@ int main(int argc, char ** argv)
         return 1;
     }
 
+#ifdef _WIN32
+    std::cerr << argv[0] << ": This tool is not available on windows."
+              << std::endl << std::flush;
+#else // _WIN32
     unix_socket_stream sk;
 
     sk.open(python_socket_name);
@@ -87,6 +95,7 @@ int main(int argc, char ** argv)
             sk << line << std::endl << std::flush;
         }
     }
+#endif // _WIN32
 
     delete global_conf;
     return 0;
