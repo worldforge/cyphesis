@@ -157,27 +157,6 @@ int main()
 
 // stubs
 
-ArithmeticKit::~ArithmeticKit()
-{
-}
-
-PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
-                                                 const std::string & name) :
-                                                 m_module(0), m_class(0),
-                                                 m_package(package),
-                                                 m_type(name)
-{
-}
-
-PythonArithmeticFactory::~PythonArithmeticFactory()
-{
-}
-
-ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
-{
-    return 0;
-}
-
 BaseWorld * BaseWorld::m_instance = 0;
 
 BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
