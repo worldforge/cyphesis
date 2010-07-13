@@ -56,6 +56,9 @@ static const unsigned int entity_queued = 1 << 5;
 /// \brief Flag indicaiting entity is ephemeral
 /// \ingroup EntityFlags
 static const unsigned int entity_ephem = 1 << 6;
+/// \brief Flag indicaiting entity is has a visibility distance specified
+/// \ingroup EntityFlags
+static const unsigned int entity_visdist = 1 << 7;
 
 /// \brief This is the base class from which all in-game objects inherit.
 ///
