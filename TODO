@@ -10,9 +10,6 @@ Filter and modify character names.
 
 Implement a null Atlas::Bridge which just does nothing.
 
-Remove local connections ability to login as arbitrary account, as now they
-can create, there is no reason to.
-
 Note that the SystemAccount will probably cause problems during character
 creation, as the system will try and persist characters, and referential
 integretiy will be bad, as the account itself is not persisted.
@@ -22,14 +19,9 @@ and stop it re-writing the prompt so much.
 
 cyclient - add interactive
          - add args on commandline
-         - add automatic account creation, using local system usernames
-           (requires socket support)
 
 CommServer::addSocket shoudl return success/failure, so that parent knows the
 score.
-
-Allow local connection to create temporary "sys" accounts,
-with world edit privs. No need to persist them.
 
 Constrain movement if not directly in a movement domain.
 
