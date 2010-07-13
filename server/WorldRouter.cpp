@@ -19,6 +19,7 @@
 
 #include "WorldRouter.h"
 
+#include "ArithmeticBuilder.h"
 #include "EntityBuilder.h"
 #include "SpawnEntity.h"
 
@@ -375,6 +376,13 @@ Task * WorldRouter::activateTask(const std::string & tool,
 {
     return EntityBuilder::instance()->activateTask(tool, op, target, owner);
 }
+
+ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
+                                              Entity * owner)
+{
+    return ArithmeticBuilder::instance()->newArithmetic(name, owner);
+}
+
 
 /// \brief Remove an entity from the world.
 ///

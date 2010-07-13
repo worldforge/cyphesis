@@ -17,14 +17,12 @@
 
 // $Id$
 
-#include <Python.h>
-
 #include "StatisticsProperty.h"
 
 #include "rulesets/ArithmeticScript.h"
-#include "rulesets/ArithmeticFactory.h"
 
 #include "common/log.h"
+#include "common/BaseWorld.h"
 
 #include <cassert>
 
@@ -56,8 +54,7 @@ void StatisticsProperty::apply(Entity * ent)
             instance = ent;
         }
 
-        PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
-        m_script = paf.newScript(instance);
+        m_script = BaseWorld::instance().newArithmetic("statistics", instance);
         if (m_script == 0) {
             return;
         }

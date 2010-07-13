@@ -20,8 +20,6 @@
 #ifndef RULESETS_ARITHMETIC_FACTORY_H
 #define RULESETS_ARITHMETIC_FACTORY_H
 
-#include <string>
-
 class ArithmeticScript;
 class Entity;
 
@@ -34,29 +32,6 @@ class ArithmeticKit {
     ///
     /// @param chr The Character object for which the model should be created
     virtual ArithmeticScript * newScript(Entity * owner) = 0;
-};
-
-/// \brief Factory class for for creating python arithmetic scripts
-class PythonArithmeticFactory : public ArithmeticKit {
-  public:
-    /// /brief Python module object containing the script type
-    struct _object * m_module;
-    /// \brief Python clas object for the script type
-    struct _object * m_class;
-
-    /// \brief Name of the package containing the script
-    std::string m_package;
-    /// \brief Name of the type within the package for the script
-    std::string m_type;
-
-    int getClass();
-    int addScript();
-  public:
-    PythonArithmeticFactory(const std::string & package,
-                            const std::string & name);
-    virtual ~PythonArithmeticFactory();
-
-    virtual ArithmeticScript * newScript(Entity * owner);
 };
 
 #endif // RULESETS_ARITHMETIC_FACTORY_H

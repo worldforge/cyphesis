@@ -92,6 +92,7 @@ cyphesis_SOURCES = \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		Ruleset.cpp Ruleset.h \
 		EntityBuilder.cpp EntityBuilder.h \
+		ArithmeticBuilder.cpp ArithmeticBuilder.h \
 		Lobby.cpp Lobby.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \

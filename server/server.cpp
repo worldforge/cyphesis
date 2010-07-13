@@ -31,6 +31,7 @@
 #include "CommPeer.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
+#include "ArithmeticBuilder.h"
 #include "Persistence.h"
 #include "WorldRouter.h"
 #include "Ruleset.h"
@@ -397,6 +398,7 @@ int main(int argc, char ** argv)
 
     EntityBuilder::instance()->flushFactories();
     EntityBuilder::del();
+    ArithmeticBuilder::del();
     MindFactory::del();
 
     Inheritance::clear();

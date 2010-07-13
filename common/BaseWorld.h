@@ -27,6 +27,7 @@
 
 #include <sigc++/signal.h>
 
+class ArithmeticScript;
 class Character;
 class Entity;
 class Task;
@@ -116,6 +117,9 @@ class BaseWorld {
     /// \brief Activate a new tast
     virtual Task * activateTask(const std::string &, const std::string &,
                                 const std::string &, Character &) = 0;
+
+    /// \brief Create a new Arithmetic object
+    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) = 0;
 
     /// \brief Pass an operation to the world.
     virtual void message(const Atlas::Objects::Operation::RootOperation &,

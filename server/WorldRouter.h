@@ -82,6 +82,8 @@ class WorldRouter : public BaseWorld {
     Task * activateTask(const std::string &, const std::string &,
                         const std::string &, Character &);
 
+    ArithmeticScript * newArithmetic(const std::string &, Entity *);
+
     void operation(const Atlas::Objects::Operation::RootOperation &, Entity &);
 
     virtual void addPerceptive(Entity *);
