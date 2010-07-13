@@ -310,14 +310,18 @@ Thingtest_SOURCES = Thingtest.cpp \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
                     EntityExerciser.cpp EntityExerciser.h allOperations.h
 Thingtest_LDADD = \
-        $(top_builddir)/rulesets/Thing.o
+        $(top_builddir)/rulesets/Thing.o \
+        $(top_builddir)/rulesets/VisibilityCalculator.o \
+        $(top_builddir)/rulesets/VisDistProperty.o
 
 Worldtest_SOURCES = Worldtest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
                     EntityExerciser.cpp EntityExerciser.h allOperations.h
 Worldtest_LDADD = \
-        $(top_builddir)/rulesets/World.o
+        $(top_builddir)/rulesets/World.o \
+        $(top_builddir)/rulesets/VisibilityCalculator.o \
+        $(top_builddir)/rulesets/VisDistProperty.o
 
 Charactertest_SOURCES = Charactertest.cpp \
                         TestPropertyManager.cpp TestPropertyManager.h \
@@ -1129,7 +1133,8 @@ TrustedConnectiontest_LDADD = \
 
 WorldRoutertest_SOURCES = WorldRoutertest.cpp
 WorldRoutertest_LDADD = \
-        $(top_builddir)/server/WorldRouter.o
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/rulesets/VisibilityCalculator.o
 
 Peertest_SOURCES = Peertest.cpp
 Peertest_LDADD = \

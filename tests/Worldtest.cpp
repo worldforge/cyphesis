@@ -675,3 +675,13 @@ const float squareDistance(const Location & self, const Location & other)
 {
     return 1.f;
 }
+
+static inline float sqr(float x)
+{
+    return x * x;
+}
+
+float squareDistance(const Point3D & u, const Point3D & v)
+{
+    return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
+}
