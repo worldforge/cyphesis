@@ -1195,6 +1195,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
