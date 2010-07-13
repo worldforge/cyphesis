@@ -24,6 +24,7 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Domain.h"
+#include "rulesets/VisibilityCalculator.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -504,22 +505,14 @@ void WorldRouter::operation(const Operation & op, Entity & from)
             delEntity(to_entity);
         }
     } else if (broadcastPerception(op)) {
-        // Where broadcasts go depends on type of op
-        float fromSquSize = from.m_location.squareBoxSize();
+        VisibilityCalculator visCalc(from);
         EntitySet::const_iterator I = m_perceptives.begin();
         EntitySet::const_iterator Iend = m_perceptives.end();
         for (; I != Iend; ++I) {
-            // Calculate square distance to target
-            float dist = squareDistance(from.m_location, (*I)->m_location);
-            float view_factor = fromSquSize / dist;
-            if (view_factor < consts::square_sight_factor) {
-                debug(std::cout << "Op from " << from.getId()
-                                << " cannot be seen by " << (*I)->getId()
-                                << std::endl << std::flush;);
-                continue;
+            if (visCalc.isEntityVisibleFor(**I)) {
+                op->setTo((*I)->getId());
+                deliverTo(op, **I);
             }
-            op->setTo((*I)->getId());
-            deliverTo(op, **I);
         }
     } else {
         EntityDict::const_iterator I = m_eobjects.begin();

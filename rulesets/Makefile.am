@@ -58,7 +58,9 @@ librulesetentity_a_SOURCES = \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
-			     ArithmeticFactory.cpp ArithmeticFactory.h
+			     ArithmeticFactory.cpp ArithmeticFactory.h \
+			     VisDistProperty.cpp VisDistProperty.h \
+			     VisibilityCalculator.cpp VisibilityCalculator.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

@@ -21,6 +21,7 @@
 
 #include "TerrainProperty.h"
 #include "CalendarProperty.h"
+#include "VisibilityCalculator.h"
 
 #include "common/log.h"
 #include "common/const.h"
@@ -146,10 +147,8 @@ void World::LookOperation(const Operation & op, OpVector & res)
         LocatedEntitySet::const_iterator Iend = m_contains->end();
         LocatedEntitySet::const_iterator I = m_contains->begin();
         for (; I != Iend; ++I) {
-            float fromSquSize = (*I)->m_location.squareBoxSize();
-            float dist = squareDistance((*I)->m_location, from->m_location);
-            float view_factor = fromSquSize / dist;
-            if (view_factor > consts::square_sight_factor) {
+            VisibilityCalculator visCalc(**I);
+            if (visCalc.isEntityVisibleFor(*from)) {
                 contlist.push_back((*I)->getId());
             }
         }

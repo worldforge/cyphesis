@@ -21,6 +21,7 @@
 
 #include "Motion.h"
 #include "Domain.h"
+#include "VisibilityCalculator.h"
 
 #include "common/log.h"
 #include "common/const.h"
@@ -323,7 +324,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
 {
     debug(std::cout << "testing range" << std::endl;);
-    float fromSquSize = m_location.squareBoxSize();
     std::vector<Root> appear, disappear;
 
     Anonymous this_ent;
@@ -332,58 +332,53 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
 
     assert(m_location.m_loc != 0);
     assert(m_location.m_loc->m_contains != 0);
+
+    VisibilityCalculator visCalc(*this);
     LocatedEntitySet::const_iterator I = m_location.m_loc->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = m_location.m_loc->m_contains->end();
     for(; I != Iend; ++I) {
-        float old_dist = squareDistance((*I)->m_location.pos(), old_pos),
-              new_dist = squareDistance((*I)->m_location.pos(), m_location.pos()),
-              squ_size = (*I)->m_location.squareBoxSize();
+        unsigned int visibilityResult = visCalc.calculateMovementChanges(**I, old_pos);
 
-        // Build appear and disappear lists, and send operations
-        // Also so operations to (dis)appearing perceptive
-        // entities saying that we are (dis)appearing
-        // FIXME Should this be Entity *
-        Entity * viewer = dynamic_cast<Entity *>(*I);
-        assert(viewer != 0);
-        if (viewer->isPerceptive()) {
-            bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor),
-                 is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
-            if (was_in_range != is_in_range) {
-                if (was_in_range) {
-                    // Send operation to the entity in question so it
-                    // knows it is losing sight of us.
-                    Disappearance d;
-                    d->setArgs1(this_ent);
-                    d->setTo((*I)->getId());
-                    res.push_back(d);
-                } else /*if (is_in_range)*/ {
-                    // Send operation to the entity in question so it
-                    // knows it is gaining sight of us.
-                    // FIXME We don't need to do this, cos its about
-                    // to get our Sight(Move)
-                    Appearance a;
-                    a->setArgs1(this_ent);
-                    a->setTo((*I)->getId());
-                    res.push_back(a);
-                }
+        if (((visibilityResult & VisibilityCalculator::was_seeing) &&
+                (visibilityResult & VisibilityCalculator::isnt_seeing)) ||
+                ((visibilityResult & VisibilityCalculator::wasnt_seeing) &&
+                (visibilityResult & VisibilityCalculator::is_seeing))) {
+            if (visibilityResult & VisibilityCalculator::was_seeing) {
+                // Send operation to the entity in question so it
+                // knows it is losing sight of us.
+                Disappearance d;
+                d->setArgs1(this_ent);
+                d->setTo((*I)->getId());
+                res.push_back(d);
+            } else /*if (is_in_range)*/ {
+                // Send operation to the entity in question so it
+                // knows it is gaining sight of us.
+                // FIXME We don't need to do this, cos its about
+                // to get our Sight(Move)
+                Appearance a;
+                a->setArgs1(this_ent);
+                a->setTo((*I)->getId());
+                res.push_back(a);
             }
         }
         
-        bool could_see = ((squ_size / old_dist) > consts::square_sight_factor),
-             can_see = ((squ_size / new_dist) > consts::square_sight_factor);
-        if (could_see ^ can_see) {
+
+        if (((visibilityResult & VisibilityCalculator::was_seen) &&
+                (visibilityResult & VisibilityCalculator::is_unseen)) ||
+                ((visibilityResult & VisibilityCalculator::was_unseen) &&
+                (visibilityResult & VisibilityCalculator::is_seen))) {
             Anonymous that_ent;
             that_ent->setId((*I)->getId());
             that_ent->setStamp((*I)->getSeq());
-            if (could_see) {
+            if (visibilityResult & VisibilityCalculator::was_seen) {
                 // We are losing sight of that object
                 disappear.push_back(that_ent);
-                debug(std::cout << getId() << ": losing site of "
+                debug(std::cout << getId() << ": losing sight of "
                                 << (*I)->getId() << std::endl;);
             } else /*if (can_see)*/ {
                 // We are gaining sight of that object
                 appear.push_back(that_ent);
-                debug(std::cout << getId() << ": gaining site of "
+                debug(std::cout << getId() << ": gaining sight of "
                                 << (*I)->getId() << std::endl;);
             }
         }
