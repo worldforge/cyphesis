@@ -75,6 +75,7 @@ class TestWorld : public BaseWorld {
     virtual Task * newTask(const std::string &, Character &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 const std::string &, Character &) { return 0; }
+    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {}
     virtual void message(const Atlas::Objects::Operation::RootOperation & op, Entity & ent) { }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
