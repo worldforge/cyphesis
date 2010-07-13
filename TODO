@@ -1,3 +1,5 @@
+Rename ArithmeticScript as Arithmetic
+
 Inheritance::isTypeOf(TypeNode) can have a tighter loop
 
 What are we doing with spawns?
