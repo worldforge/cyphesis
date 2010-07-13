@@ -37,26 +37,3 @@ int main(int argc, char ** argv)
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }
-
-// stubs
-
-ArithmeticKit::~ArithmeticKit()
-{
-}
-
-PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
-                                                 const std::string & name) :
-                                                 m_module(0), m_class(0),
-                                                 m_package(package),
-                                                 m_type(name)
-{
-}
-
-PythonArithmeticFactory::~PythonArithmeticFactory()
-{
-}
-
-ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
-{
-    return 0;
-}
