@@ -1017,6 +1017,7 @@ Accounttest_LDADD = \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1056,6 +1057,7 @@ Admintest_LDADD = \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1095,6 +1097,7 @@ Playertest_LDADD = \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
