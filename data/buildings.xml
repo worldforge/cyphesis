@@ -128,7 +128,14 @@
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-22.7419</float><float>-15.6169</float><float>-0.103573</float><float>15.5259</float><float>23.5883</float><float>51.1286</float></list>
+        <list name="default">
+          <float>-22.7419</float>
+          <float>-15.6169</float>
+          <float>-0.103573</float>
+          <float>15.5259</float>
+          <float>23.5883</float>
+          <float>51.1286</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -146,7 +153,14 @@
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-2.51547</float><float>-3.11357</float><float>-0.1488</float><float>2.5871</float><float>5.90999</float><float>5.38026</float></list>
+        <list name="default">
+          <float>-2.51547</float>
+          <float>-3.11357</float>
+          <float>-0.1488</float>
+          <float>2.5871</float>
+          <float>5.90999</float>
+          <float>5.38026</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -156,13 +170,22 @@
     </map>
     <string name="id">castle_house_a</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
+    <list name="parents">
+      <string>house</string>
+    </list>
   </map>
 
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-5.93499</float><float>-7.2289</float><float>-0.125899</float><float>6.86736</float><float>7.22889</float><float>5.98173</float></list>
+        <list name="default">
+          <float>-5.93499</float>
+          <float>-7.2289</float>
+          <float>-0.125899</float>
+          <float>6.86736</float>
+          <float>7.22889</float>
+          <float>5.98173</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -172,13 +195,22 @@
     </map>
     <string name="id">castle_house_b</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
+    <list name="parents">
+      <string>house</string>
+    </list>
   </map>
 
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-5.43797</float><float>-6.76054</float><float>-0.103223</float><float>7.58183</float><float>5.41143</float><float>9.21597</float></list>
+        <list name="default">
+          <float>-5.43797</float>
+          <float>-6.76054</float>
+          <float>-0.103223</float>
+          <float>7.58183</float>
+          <float>5.41143</float>
+          <float>9.21597</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -188,13 +220,22 @@
     </map>
     <string name="id">castle_house_c</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
+    <list name="parents">
+      <string>house</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-11.6595</float><float>-0.90907</float><float>-1.09059</float><float>3.45192</float><float>9.03773</float><float>7.31214</float></list>
+        <list name="default">
+          <float>-11.6595</float>
+          <float>-0.90907</float>
+          <float>-1.09059</float>
+          <float>3.45192</float>
+          <float>9.03773</float>
+          <float>7.31214</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -204,13 +245,22 @@
     </map>
     <string name="id">castle_house_d</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
+    <list name="parents">
+      <string>house</string>
+    </list>
   </map>
-    
+
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-3.64054</float><float>-3.09246</float><float>-0.0577576</float><float>2.66366</float><float>1.63569</float><float>2.93437</float></list>
+        <list name="default">
+          <float>-3.64054</float>
+          <float>-3.09246</float>
+          <float>-0.0577576</float>
+          <float>2.66366</float>
+          <float>1.63569</float>
+          <float>2.93437</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -220,13 +270,22 @@
     </map>
     <string name="id">castle_house_ruin</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
-  </map>  
+    <list name="parents">
+      <string>house</string>
+    </list>
+  </map>
 
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-13.8315</float><float>-10.0225</float><float>-0.152639</float><float>3.67463</float><float>7.74018</float><float>11.1409</float></list>
+        <list name="default">
+          <float>-13.8315</float>
+          <float>-10.0225</float>
+          <float>-0.152639</float>
+          <float>3.67463</float>
+          <float>7.74018</float>
+          <float>11.1409</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="burn_speed">
@@ -240,13 +299,22 @@
     </map>
     <string name="id">castle_inn</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
+    <list name="parents">
+      <string>house</string>
+    </list>
   </map>
 
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-10.6625</float><float>-11.1741</float><float>0</float><float>6.36573</float><float>6.88367</float><float>8.51144</float></list>
+        <list name="default">
+          <float>-10.6625</float>
+          <float>-11.1741</float>
+          <float>0</float>
+          <float>6.36573</float>
+          <float>6.88367</float>
+          <float>8.51144</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -256,9 +324,11 @@
     </map>
     <string name="id">castle_smithy</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>house</string></list>
+    <list name="parents">
+      <string>house</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -279,7 +349,9 @@
     </map>
     <string name="id">castle_wall_corner</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
 
   <map>
@@ -302,9 +374,11 @@
     </map>
     <string name="id">castle_wall_gate</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -325,9 +399,11 @@
     </map>
     <string name="id">castle_wall_run</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -348,13 +424,22 @@
     </map>
     <string name="id">castle_wall_stairs</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
-        <list name="default"><float>-0.389939</float><float>-3.04805</float><float>0</float><float>2.22545</float><float>0.0188072</float><float>2.08025</float></list>
+        <list name="default">
+          <float>-0.389939</float>
+          <float>-3.04805</float>
+          <float>0</float>
+          <float>2.22545</float>
+          <float>0.0188072</float>
+          <float>2.08025</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
@@ -364,7 +449,9 @@
     </map>
     <string name="id">concrete_stairs</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
 
   <map>
@@ -380,14 +467,16 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="material" >
-        <string name="default" >wood</string>
-        <string name="visibility" >public</string>
+      <map name="material">
+        <string name="default">wood</string>
+        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">fence_gate</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
 
   <map>
@@ -403,15 +492,17 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="material" >
-        <string name="default" >wood</string>
-        <string name="visibility" >public</string>
+      <map name="material">
+        <string name="default">wood</string>
+        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">fence_section</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
-  </map>  
+    <list name="parents">
+      <string>structure</string>
+    </list>
+  </map>
 
   <map>
     <map name="attributes">
@@ -598,9 +689,11 @@
     </map>
     <string name="id">palissade_circle</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -617,9 +710,11 @@
     </map>
     <string name="id">palissade_entry</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
-  
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -636,7 +731,9 @@
     </map>
     <string name="id">palissade_unit</string>
     <string name="objtype">class</string>
-    <list name="parents"><string>structure</string></list>
+    <list name="parents">
+      <string>structure</string>
+    </list>
   </map>
 
   <map>
@@ -677,9 +774,9 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="style" >
-        <string name="default" >whole</string>
-        <string name="visibility" >public</string>
+      <map name="style">
+        <string name="default">whole</string>
+        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">stone_palisade</string>
@@ -687,8 +784,7 @@
     <list name="parents">
       <string>structure</string>
     </list>
-  </map> 
-
+  </map>
 
   <map>
     <map name="attributes">
