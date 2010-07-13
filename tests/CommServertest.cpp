@@ -82,6 +82,9 @@ class TestWorld : public BaseWorld {
                                 const std::string &, Character &) { return 0; }
     virtual void message(const Atlas::Objects::Operation::RootOperation & op,
                          Entity & ent) { }
+    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+        return 0;
+    }
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(Entity *) { }
