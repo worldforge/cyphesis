@@ -35,8 +35,6 @@ class TrustedConnection : public Connection {
                                  const std::string & username,
                                  const std::string & passwd,
                                  const std::string & id, long intId);
-    virtual int verifyCredentials(const Account &,
-                                  const Atlas::Objects::Root &) const;
   public:
     TrustedConnection(CommClient & client,
                       ServerRouting & svr,

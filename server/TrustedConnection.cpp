@@ -57,13 +57,3 @@ Account * TrustedConnection::newAccount(const std::string & type,
         return new Player(this, username, hash, id, intId);
     }
 }
-
-/// \brief Verify the client has a valid login attempt
-///
-/// This overide of Connection::verifyCredentials skips all checks allowing
-/// the usually local client to log in as anyone they want.
-int TrustedConnection::verifyCredentials(const Account &,
-                                         const Atlas::Objects::Root &) const
-{
-    return 0;
-}
