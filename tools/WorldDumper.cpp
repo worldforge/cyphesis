@@ -22,6 +22,7 @@
 #include "tools/MultiLineListFormatter.h"
 
 #include "common/compose.hpp"
+#include "common/id.h"
 
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
@@ -30,6 +31,8 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
+#include <functional>
+#include <cstdlib>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -41,6 +44,12 @@ void WorldDumper::dumpEntity(const RootEntity & ent)
 {
     m_encoder->streamObjectsMessage(ent);
 }
+
+bool idSorter(const std::string& lhs, const std::string& rhs)
+{
+  return integerId(lhs) < integerId(rhs);
+}
+
 
 void WorldDumper::infoArrived(const Operation & op, OpVector & res)
 {
@@ -59,13 +68,20 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
     }
     std::cout << "GOT INFO" << std::endl << std::flush;
     ++m_count;
-    dumpEntity(ent);
-    const std::list<std::string> & contains = ent->getContains();
+    //Make a copy so that we can sort the contains list and update it in the
+    //entity
+    RootEntity entityCopy(ent->copy());
+    std::list<std::string> contains = ent->getContains();
+    //Sort the contains list so it's deterministic
+    contains.sort(idSorter);
+    entityCopy->setContains(contains);
+    dumpEntity(entityCopy);
     std::list<std::string>::const_iterator I = contains.begin();
     std::list<std::string>::const_iterator Iend = contains.end();
     for (; I != Iend; ++I) {
         m_queue.push_back(*I);
     }
+
 
     if (m_queue.empty()) {
         m_formatter->streamBegin();

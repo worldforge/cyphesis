@@ -94,6 +94,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/ClientTask.o \
               $(top_builddir)/common/AtlasFileLoader.o \
               $(top_builddir)/common/system_uid.o \
+              $(top_builddir)/common/id.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)
