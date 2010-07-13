@@ -19,6 +19,7 @@
 
 #include "server/WorldRouter.h"
 
+#include "server/ArithmeticBuilder.h"
 #include "server/EntityBuilder.h"
 #include "server/SpawnEntity.h"
 
@@ -765,6 +766,19 @@ Monitors * Monitors::instance()
 
 void Monitors::watch(const::std::string & name, VariableBase * monitor)
 {
+}
+
+ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
+
+ArithmeticBuilder * ArithmeticBuilder::instance()
+{
+    return 0;
+}
+
+ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string &,
+                                                    Entity *)
+{
+    return 0;
 }
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
