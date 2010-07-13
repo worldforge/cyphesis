@@ -21,6 +21,8 @@
 
 #include "python_testers.h"
 
+#include "TestWorld.h"
+
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
@@ -69,6 +71,9 @@ int main()
     init_python_api();
 
     setup_test_functions();
+
+    Entity wrld("0", 0);
+    TestWorld tw(wrld);
 
     run_python_string("from server import *");
     run_python_string("import testprop");
