@@ -17,83 +17,20 @@
 
 // $Id$
 
-#include <Python.h>
-
-#include "python_testers.h"
-
 #include "rulesets/ArithmeticFactory.h"
-#include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
 
 #include <cassert>
 
-static PyMethodDef no_methods[] = {
-    {NULL,          NULL}                       /* Sentinel */
+class TestArithmeticFactory : public ArithmeticKit
+{
+  public:
+    ArithmeticScript * newScript(Entity * owner) { return 0; }
 };
 
 int main()
 {
-    init_python_api();
+    TestArithmeticFactory taf;
 
-    PyObject * testmod = Py_InitModule("testmod", no_methods);
-
-    assert(testmod != 0);
-
-    run_python_string("import testmod");
-    run_python_string("class TestArithmeticScript(object):\n"
-                      " def __init__(self):\n"
-                      "  self.foo=1\n"
-                      "  self.bar=1.1\n"
-                      "  self.baz=None\n"
-                      "  self.qux='1'\n"
-                     );
-    run_python_string("class FailArithmeticScript(object):\n"
-                      " def __init__(self):\n"
-                      "  raise AssertionError, 'deliberate'\n"
-                     );
-    run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
-    run_python_string("testmod.FailArithmeticScript=FailArithmeticScript");
-
-    {
-        PythonArithmeticFactory paf("badmod", "TestArithmeticScript");
-        assert(paf.m_module == 0);
-        assert(paf.m_class == 0);
-
-        ArithmeticScript * as = paf.newScript(0);
-        assert(as == 0);
-    }
-
-    {
-        PythonArithmeticFactory paf("testmod", "BadArithmeticScriptClass");
-        assert(paf.m_module != 0);
-        assert(paf.m_class == 0);
-
-        ArithmeticScript * as = paf.newScript(0);
-        assert(as == 0);
-    }
-
-    {
-        PythonArithmeticFactory paf("testmod", "FailArithmeticScript");
-        assert(paf.m_module != 0);
-        assert(paf.m_class != 0);
-
-        ArithmeticScript * as = paf.newScript(0);
-        assert(as != 0);
-    }
-
-
-    PythonArithmeticFactory paf("testmod", "TestArithmeticScript");
-    assert(paf.m_module != 0);
-    assert(paf.m_class != 0);
-
-    ArithmeticScript * as = paf.newScript(0);
-    assert(as != 0);
-    
-    Entity * e = new Entity("1", 1);
-
-    as = paf.newScript(e);
-    assert(as != 0);
-    
-    shutdown_python_api();
-    return 0;
+    taf.newScript(0);
 }
