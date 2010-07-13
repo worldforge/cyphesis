@@ -35,3 +35,4 @@ python_doc
 cc.vim
 log
 tags
+*.exe
