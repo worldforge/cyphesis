@@ -57,10 +57,14 @@
 #include "common/nls.h"
 #include "common/sockets.h"
 #include "common/utils.h"
+#include "common/serialno.h"
 
 #include <varconf/config.h>
 
 #include <sigc++/functors/mem_fun.h>
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sstream>
 
@@ -395,7 +399,8 @@ int main(int argc, char ** argv)
         }
 
         std::string peer_host(peer_data[0]);
-        std::string peer_port(peer_data[1]);
+        int peer_port;
+        from_string<int>(peer_port, peer_data[1], std::dec);
         std::string peer_username(peer_data[2]);
         std::string peer_password(peer_data[3]);
         
@@ -411,8 +416,8 @@ int main(int argc, char ** argv)
         commServer.addSocket(peers[i]);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
         
-        Login l;
-        Anonymous account;
+        Atlas::Objects::Operation::Login l;
+        Atlas::Objects::Entity::Anonymous account;
         account->setAttr("username", peer_username);
         account->setAttr("password", peer_password);
         l->setArgs1(account);
