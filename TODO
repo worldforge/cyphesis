@@ -1,3 +1,6 @@
+Once we can switch to automake 1.11, support color tests results, and
+parallel-tests.
+
 Rename ArithmeticScript as Arithmetic
 
 Inheritance::isTypeOf(TypeNode) can have a tighter loop
