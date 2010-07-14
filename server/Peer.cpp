@@ -20,6 +20,10 @@
 #include "Peer.h"
 
 #include "common/id.h"
+#include "common/log.h"
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 /// \brief Constructor
 ///
@@ -39,6 +43,12 @@ Peer::~Peer()
 {
 }
 
-void Peer::operation(const Operation &, OpVector &)
+void Peer::operation(const Operation &op, OpVector &res)
 {
+    const OpNo op_no = op->getClassNo();
+    switch(op_no) {
+        case Atlas::Objects::Operation::INFO_NO:
+            log(INFO, "Got info op!");
+            break;
+    }
 }
