@@ -370,6 +370,8 @@ int main(int argc, char ** argv)
     std::vector<std::string> peer_list;
     tokenize(peer_data_list, peer_list, " ");
     
+    CommPeer **peers = new CommPeer *[peer_list.size()];
+    
     for(unsigned int i=0;i<peer_list.size();i++)
     {
         std::vector<std::string> peer_data;
@@ -377,12 +379,18 @@ int main(int argc, char ** argv)
         if(peer_data.size() != 4)
         {
             log(ERROR, "Peer configuration entry should be of the form ADDR|PORT|USERNAME|PASSWORD");
+            for(unsigned int j=0;j<i;j++) {
+                delete peers[j];
+            }
             return EXIT_CONFIG_ERROR;
         }
         // Generate the ID for the socket object
         std::string peer_id;
         if (newId(peer_id) < 0) {
             log(CRITICAL, "Unable to get peer ID from Database");
+            for(unsigned int j=0;j<i;j++) {
+                delete peers[j];
+            }
             return EXIT_DATABASE_ERROR;
         }
 
@@ -391,13 +399,16 @@ int main(int argc, char ** argv)
         std::string peer_username(peer_data[2]);
         std::string peer_password(peer_data[3]);
         
-        CommPeer * peer = new CommPeer(commServer);
-        if(peer->connect(peer_host, peer_port) != 0) {
+        peers[i] = new CommPeer(commServer);
+        if(peers[i]->connect(peer_host, peer_port) != 0) {
             log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
+            for(unsigned int j=0;j<=i;j++) {
+                delete peers[j];
+            }
             return EXIT_SOCKET_ERROR;
         }
-        peer->setup(new Peer(*peer, commServer.m_server, peer_host, peer_id));
-        commServer.addSocket(peer);
+        peers[i]->setup(new Peer(*peers[i], commServer.m_server, peer_host, peer_id));
+        commServer.addSocket(peers[i]);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
         
         Login l;
@@ -407,8 +418,11 @@ int main(int argc, char ** argv)
         l->setArgs1(account);
         l->setSerialno(newSerialNo());
 
-        if(peer->send(l) == -1) {
+        if(peers[i]->send(l) == -1) {
             log(ERROR, String::compose("Could not authenticate on cyphesis peer at \"%1:%2\"", peer_host, peer_port));
+            for(unsigned int j=0;j<=i;j++) {
+                delete peers[j];
+            }
             return EXIT_SOCKET_ERROR;
         }
     }   
