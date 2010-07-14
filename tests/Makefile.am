@@ -1356,3 +1356,4 @@ python_class_LDADD = \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a
+
