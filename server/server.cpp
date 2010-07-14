@@ -424,7 +424,7 @@ int main(int argc, char ** argv)
         l->setSerialno(newSerialNo());
 
         if(peers[i]->read() == -1) {
-            log(ERROR, String::compose("Could not negotiate with server at \"%1:%2\"", peer_host, peer_port));
+            log(ERROR, String::compose("Failed to negotiate with server at \"%1:%2\"", peer_host, peer_port));
             for(unsigned int j=0;j<=i;j++) {
                 delete peers[j];
             }

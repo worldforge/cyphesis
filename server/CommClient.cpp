@@ -92,6 +92,7 @@ int CommClient::negotiate()
     m_negotiate->poll();
 
     if (m_negotiate->getState() == Atlas::Negotiate::IN_PROGRESS) {
+        log(INFO, "Negotiate in progress");
         return 0;
     }
     debug(std::cout << "done" << std::endl;);
@@ -204,6 +205,7 @@ int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
         return -1;
     }
     if (m_encoder == 0) {
+        log(ERROR, "Encoder not initialized");
         return -1;
     }
     m_encoder->streamObjectsMessage(op);
