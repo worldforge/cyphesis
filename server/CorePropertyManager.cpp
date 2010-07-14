@@ -246,7 +246,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
                         << std::endl << std::flush;);
         return OPERATION_IGNORED;
     }
-    
+#if 0
     // Do an inter server connnection now using a "server" account
     InterServerConnection conn;
     InterServerClient c(conn);
@@ -262,7 +262,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
                         << "credentials.\n";);
         return OPERATION_IGNORED;
     }
-
+#endif
     // This is the sender entity
     Entity * entity = BaseWorld::instance().getEntity(from);
     if (entity == 0) {
@@ -274,7 +274,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     // Get an Atlas representation and inject it on remote server
     Atlas::Objects::Entity::Anonymous atlas_repr;
     entity->addToEntity(atlas_repr);
-    std::string new_id = c.injectEntity(atlas_repr);
+    // std::string new_id = c.injectEntity(atlas_repr);
 
     // Check if the entity has a mind
     bool isMind = true;
