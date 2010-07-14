@@ -32,6 +32,7 @@ class CommPeer : public CommClient {
     virtual ~CommPeer();
 
     int connect(const std::string &);
+    int connect(const std::string &, int);
 };
 
 #endif // SERVER_COMM_PEER_H

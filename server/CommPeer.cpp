@@ -47,3 +47,12 @@ int CommPeer::connect(const std::string & host)
     }
     return -1;
 }
+
+int CommPeer::connect(const std::string & host, int port)
+{
+    m_clientIos.open(host, port);
+    if (m_clientIos.is_open()) {
+        return 0;
+    }
+    return -1;
+}
