@@ -22,7 +22,18 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 
 void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = " ");
+
+// the third parameter of from_string() should be 
+// one of std::hex, std::dec or std::oct
+template <class T>
+bool from_string(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&))
+{
+    std::istringstream iss(s);
+    return !(iss >> f >> t).fail();
+}
+
 
 #endif
