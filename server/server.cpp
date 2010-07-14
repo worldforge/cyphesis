@@ -56,6 +56,7 @@
 #include "common/system.h"
 #include "common/nls.h"
 #include "common/sockets.h"
+#include "common/utils.h"
 
 #include <varconf/config.h>
 
@@ -364,25 +365,20 @@ int main(int argc, char ** argv)
 
 
     // Get the peer IP list from ~/.cyphesis.vconf
-    std::string peer_ip_list = global_conf->getItem("cyphesis", "peers").as_string();
+    std::string peer_data_list = global_conf->getItem("cyphesis", "peers").as_string();
     // Tokenize the list of IP addresses
-    std::string delimiters = " ";
     std::vector<std::string> peer_list;
-    // Skip delimiters at beginning.
-    std::string::size_type lastPos = peer_ip_list.find_first_not_of(delimiters, 0);
-    // Find first "non-delimiter".
-    std::string::size_type pos = peer_ip_list.find_first_of(delimiters, lastPos);
-    while (std::string::npos != pos || std::string::npos != lastPos) {
-        // Found a token, add it to the vector.
-        peer_list.push_back(peer_ip_list.substr(lastPos, pos - lastPos));
-        // Skip delimiters.  Note the "not_of"
-        lastPos = peer_ip_list.find_first_not_of(delimiters, pos);
-        // Find next "non-delimiter"
-        pos = peer_ip_list.find_first_of(delimiters, lastPos);
-    }
+    tokenize(peer_data_list, peer_list, " ");
     
     for(unsigned int i=0;i<peer_list.size();i++)
     {
+        std::vector<std::string> peer_data;
+        tokenize(peer_list[i], peer_data, ",");
+        if(peer_data.size() != 4)
+        {
+            log(ERROR, "Peer configuration entry should be of the form ADDR|PORT|USERNAME|PASSWORD");
+            return EXIT_CONFIG_ERROR;
+        }
         // Generate the ID for the socket object
         std::string peer_id;
         if (newId(peer_id) < 0) {
@@ -390,25 +386,31 @@ int main(int argc, char ** argv)
             return EXIT_DATABASE_ERROR;
         }
 
+        std::string peer_host(peer_data[0]);
+        std::string peer_port(peer_data[1]);
+        std::string peer_username(peer_data[2]);
+        std::string peer_password(peer_data[3]);
+        
         CommPeer * peer = new CommPeer(commServer);
-        std::string peer_host(peer_list[i]);
-        if(peer->connect(peer_host) != 0) {
-            log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1\"", peer_list[i]));
+        if(peer->connect(peer_host, peer_port) != 0) {
+            log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
             return EXIT_SOCKET_ERROR;
         }
-        peer->setup(new Peer(*peer, commServer.m_server, peer_list[i], peer_id));
+        peer->setup(new Peer(*peer, commServer.m_server, peer_host, peer_id));
         commServer.addSocket(peer);
-        log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_list[i], peer_id));
+        log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
+        
+        Login l;
+        Anonymous account;
+        account->setAttr("username", peer_username);
+        account->setAttr("password", peer_password);
+        l->setArgs1(account);
+        l->setSerialno(newSerialNo());
 
-        std::string username("");
-        for(unsigned int j=0;j<peer_list[i].size();j++) {
-            if(peer_list[i][j] == '.') {
-                username = username + '_';
-            } else {
-                username = username + peer_list[i][j];
-            }
+        if(peer->send(l) == -1) {
+            log(ERROR, String::compose("Could not authenticate on cyphesis peer at \"%1:%2\"", peer_host, peer_port));
+            return EXIT_SOCKET_ERROR;
         }
-        std::cout << username << "\n";
     }   
 
     // Configuration is now complete, and verified as somewhat sane, so
