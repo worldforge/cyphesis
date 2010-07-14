@@ -66,10 +66,12 @@ void usage(std::ostream & stream, char * n, bool verbose = false)
     stream << "usage: " << n << std::endl;
     stream << "       " << n << " [ -a | -d ] [ -s ] account" << std::endl;
     stream << "       " << n << " -h" << std::endl;
+
     if (!verbose) {
         stream << std::flush;
         return;
     }
+
     stream << std::endl;
     stream << "Help options" << std::endl;
     stream << "  -h                          Display this help" << std::endl;
