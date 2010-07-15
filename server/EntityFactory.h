@@ -85,7 +85,7 @@ class EntityFactory : public EntityKit {
     EntityFactory();
     virtual ~EntityFactory();
 
-    virtual T * newEntity(const std::string & id, long intId);
+    virtual Entity * newEntity(const std::string & id, long intId);
     virtual int populate(Entity &);
     virtual EntityKit * duplicateFactory();
 };

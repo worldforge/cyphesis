@@ -44,7 +44,7 @@ EntityKit::~EntityKit()
 }
 
 template <>
-World * EntityFactory<World>::newEntity(const std::string & id, long intId)
+Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
 {
     return 0;
 }
