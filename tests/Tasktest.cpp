@@ -59,15 +59,6 @@ int main()
         fell.getAttr("foo", val);
         assert(val.isInt());
 
-        Atlas::Objects::Entity::RootEntity ent;
-        fell.addToEntity(ent);
-
-        fell.progress() = 0.5f;
-        fell.addToEntity(ent);
-
-        fell.rate() = 0.5f;
-        fell.addToEntity(ent);
-
         assert(!fell.obsolete());
 
         OpVector res;
