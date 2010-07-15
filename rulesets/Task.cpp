@@ -52,24 +52,6 @@ void Task::irrelevant()
     m_obsolete = true;
 }
 
-void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-    Atlas::Message::MapType task;
-    task["name"] = m_name;
-    if (m_progress >= 0) {
-        task["progress"] = m_progress;
-    }
-    if (m_rate >= 0) {
-        task["progress_rate"] = m_rate;
-    }
-    MapType::const_iterator J = m_attr.begin();
-    MapType::const_iterator Jend = m_attr.end();
-    for (; J != Jend; ++J) {
-        task[J->first] = J->second;
-    }
-    ent->setAttr("tasks", Atlas::Message::ListType(1, task));
-}
-
 Operation Task::nextTick(double interval)
 {
     Anonymous tick_arg;

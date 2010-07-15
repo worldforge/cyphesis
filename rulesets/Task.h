@@ -90,12 +90,6 @@ class Task {
     /// @param res The result of the operation is returned here.
     virtual void TickOperation(const Operation & op, OpVector & res) = 0;
 
-    /// \brief Add a representation of this task to an entity
-    ///
-    /// Adds a TASK attribute to the entity, which is a list containing
-    /// an atlas representation of this task.
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &);
-
     /// \brief Create a new tick op for the next iteration of this task
     Operation nextTick(double interval);
 
