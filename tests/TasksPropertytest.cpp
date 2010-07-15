@@ -80,10 +80,6 @@ void Task::irrelevant()
 {
 }
 
-void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-}
-
 void Task::setAttr(const std::string & attr,
                    const Atlas::Message::Element & val)
 {

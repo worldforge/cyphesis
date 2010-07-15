@@ -106,10 +106,6 @@ void Task::irrelevant()
 {
 }
 
-void Task::addToEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-}
-
 Character::Character(const std::string & id, long intId) :
            Character_parent(id, intId),
                m_movement(*(Movement*)0),
