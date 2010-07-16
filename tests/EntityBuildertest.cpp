@@ -64,6 +64,19 @@ class ExposedEntityBuilder : public EntityBuilder {
 
 };
 
+class TestScriptFactory : public ScriptKit {
+  public:
+    TestScriptFactory() : ScriptKit("foo", "bar") { }
+
+    int addScript(Entity * entity) { return 0; }
+    int refreshClass() { return 0; }
+};
+
+enum action {
+  DO_NOTHING,
+  SET_POS,
+  SET_VELOCITY } LocatedEntity_merge_action = DO_NOTHING;
+
 int main(int argc, char ** argv)
 {
     {
@@ -93,10 +106,42 @@ int main(int argc, char ** argv)
 
         assert(EntityBuilder::instance() != 0);
 
+        // Create a normal Entity
         Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
 
+        // Create an entity specifying an attrbute
         attributes->setAttr("funky", "true");
+
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        assert(test_ent != 0);
+
+        // Create an entity causing VELOCITY to be set
+        attributes = Anonymous();
+
+        attributes->setVelocity(std::vector<double>(3, 1.5));
+
+        LocatedEntity_merge_action = SET_VELOCITY;
+
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        assert(test_ent != 0);
+
+        LocatedEntity_merge_action = DO_NOTHING;
+
+        // Create an entity causing VELOCITY to be set for no obvious reason
+        attributes = Anonymous();
+
+        LocatedEntity_merge_action = SET_VELOCITY;
+
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        assert(test_ent != 0);
+
+        LocatedEntity_merge_action = DO_NOTHING;
+
+        // Create an entity specifying a LOC
+        attributes = Anonymous();
+
+        attributes->setLoc("1");
 
         test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
@@ -121,6 +166,22 @@ int main(int argc, char ** argv)
         // Create an entity which is an instance of one of the core classes
         Entity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes);
         assert(test_ent != 0);
+
+        Inheritance::clear();
+    }
+
+    {
+        // Create a test world.
+        Entity e("1", 1);
+        TestWorld test_world(e);
+
+        // Instance of EntityBuilder with all protected methods exposed
+        // for testing
+        ExposedEntityBuilder entity_factory(test_world);
+
+        // Attributes for test entities being created
+        Anonymous attributes;
+
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
@@ -167,7 +228,7 @@ int main(int argc, char ** argv)
         assert(J->second.String() == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes);
+        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes);
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);
@@ -179,6 +240,53 @@ int main(int argc, char ** argv)
         // Assert the dictionary does not contain the factory we know we have
         // have not yet installed.
         assert(factory_dict.find("custom_inherited_type") == factory_dict.end());
+        Inheritance::clear();
+    }
+
+    {
+        Entity e("1", 1);
+        TestWorld test_world(e);
+        ExposedEntityBuilder entity_factory(test_world);
+        Anonymous attributes;
+
+        // Get a reference to the internal dictionary of entity factories.
+        const FactoryDict & factory_dict = entity_factory.factoryDict();
+
+        // Make sure it has some factories in it already.
+        assert(!factory_dict.empty());
+
+        // Assert the dictionary does not contain the factory we know we have
+        // have not yet installed.
+        assert(factory_dict.find("custom_scripted_type") == factory_dict.end());
+
+        // Set up a type description for a new type, and install it
+        EntityKit * custom_type_factory = new EntityFactory<Entity>();
+        custom_type_factory->m_attributes["test_custom_type_attr"] =
+              "test_value";
+
+        custom_type_factory->m_scriptFactory = new TestScriptFactory();
+
+        {
+            Anonymous custom_type_desc;
+            custom_type_desc->setId("custom_scripted_type");
+            custom_type_desc->setParents(std::list<std::string>(1, "thing"));
+            entity_factory.installFactory("custom_scripted_type", "thing",
+                                          custom_type_factory, custom_type_desc);
+        }
+
+        // Check that the factory dictionary now contains a factory for
+        // the custom type we just installed.
+        FactoryDict::const_iterator I = factory_dict.find("custom_scripted_type");
+        assert(I != factory_dict.end());
+        assert(custom_type_factory == I->second);
+
+        // Create an instance of our custom type, ensuring that it works.
+        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes);
+        assert(test_ent != 0);
+
+        assert(test_ent->getType() == custom_type_factory->m_type);
+
+        Inheritance::clear();
     }
 }
 
@@ -465,6 +573,18 @@ void LocatedEntity::makeContainer()
 
 void LocatedEntity::merge(const MapType & ent)
 {
+    switch (LocatedEntity_merge_action) {
+      case SET_POS:
+        this->m_location.m_pos.setValid();
+        break;
+      case SET_VELOCITY:
+        this->m_location.m_velocity.setValid();
+        break;
+      case DO_NOTHING:
+      default:
+        break;
+    };
+
 }
 
 void log(LogLevel lvl, const std::string & msg)
@@ -831,4 +951,14 @@ Root atlasClass(const std::string & name, const std::string & parent)
     r->setObjtype("class");
     r->setId(name);
     return r;
+}
+
+ScriptKit::ScriptKit(const std::string & package,
+                     const std::string & type) : m_package(package),
+                                                 m_type(type)
+{
+}
+
+ScriptKit::~ScriptKit()
+{
 }
