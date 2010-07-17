@@ -23,6 +23,11 @@
 #include "CommServer.h"
 
 #include "common/globals.h"
+#include "common/serialno.h"
+#include "common/log.h"
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
            "Network listen port for peer server connections");
@@ -30,13 +35,29 @@ INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr), m_login_required(false), m_loggedin(false)
+{
+    std::cout << "Outgoing peer connection." << std::endl << std::flush;
+}
+
+/// \brief Constructor remote peer socket object.
+///
+/// @param svr Reference to the object that manages all socket communication.
+/// @param username Username to login with on peer
+/// @param password Password to login with on peer
+CommPeer::CommPeer(CommServer & svr, std::string & username, std::string & password)
+                   : CommClient(svr),
+                     m_username(username),
+                     m_password(password), 
+                     m_login_required(true),
+                     m_loggedin(false)
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
 
 CommPeer::~CommPeer()
 {
+    std::cout << "Peer disconnected." << std::endl << std::flush;
 }
 
 int CommPeer::connect(const std::string & host)
@@ -55,4 +76,27 @@ int CommPeer::connect(const std::string & host, int port)
         return 0;
     }
     return -1;
+}
+
+void CommPeer::idle(time_t t)
+{
+    if (m_negotiate != 0) {
+        if ((t - m_connectTime) > 10) {
+            log(NOTICE, "Client disconnected because of negotiation timeout.");
+            m_clientIos.shutdown();
+        }
+    }
+    else {
+        if(m_login_required && !m_loggedin) {
+            Atlas::Objects::Operation::Login l;
+            Atlas::Objects::Entity::Anonymous account;
+            account->setAttr("username", m_username);
+            account->setAttr("password", m_password);
+            l->setArgs1(account);
+            l->setSerialno(newSerialNo());
+            // Send the login op
+            send(l);
+            m_loggedin = true;
+        }
+    }
 }
