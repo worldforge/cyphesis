@@ -398,7 +398,7 @@ int main(int argc, char ** argv)
         std::string peer_username(peer_data[2]);
         std::string peer_password(peer_data[3]);
         
-        peers[i] = new CommPeer(commServer);
+        peers[i] = new CommPeer(commServer, peer_username, peer_password);
         if(peers[i]->connect(peer_host, peer_port) != 0) {
             log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
             delete peers[i];
@@ -408,6 +408,7 @@ int main(int argc, char ** argv)
         peers[i]->setup(new Peer(*peers[i], commServer.m_server, peer_host, peer_id));
         commServer.addSocket(peers[i]);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
+        peers[i]->read();
         
 #if 0
         Atlas::Objects::Operation::Login l;
