@@ -383,19 +383,13 @@ int main(int argc, char ** argv)
         if(peer_data.size() != 4)
         {
             log(ERROR, "Peer configuration entry should be of the form ADDR|PORT|USERNAME|PASSWORD");
-            for(unsigned int j=0;j<i;j++) {
-                delete peers[j];
-            }
-            return EXIT_CONFIG_ERROR;
+            continue;
         }
         // Generate the ID for the socket object
         std::string peer_id;
         if (newId(peer_id) < 0) {
             log(CRITICAL, "Unable to get peer ID from Database");
-            for(unsigned int j=0;j<i;j++) {
-                delete peers[j];
-            }
-            return EXIT_DATABASE_ERROR;
+            continue;
         }
 
         std::string peer_host(peer_data[0]);
@@ -407,15 +401,15 @@ int main(int argc, char ** argv)
         peers[i] = new CommPeer(commServer);
         if(peers[i]->connect(peer_host, peer_port) != 0) {
             log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
-            for(unsigned int j=0;j<=i;j++) {
-                delete peers[j];
-            }
-            return EXIT_SOCKET_ERROR;
+            delete peers[i];
+            peers[i] = NULL;
+            continue;
         }
         peers[i]->setup(new Peer(*peers[i], commServer.m_server, peer_host, peer_id));
         commServer.addSocket(peers[i]);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
         
+#if 0
         Atlas::Objects::Operation::Login l;
         Atlas::Objects::Entity::Anonymous account;
         account->setAttr("username", peer_username);
@@ -438,6 +432,7 @@ int main(int argc, char ** argv)
             }
             return EXIT_SOCKET_ERROR;
         }
+#endif
     }   
 
     // Configuration is now complete, and verified as somewhat sane, so
