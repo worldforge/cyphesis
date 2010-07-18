@@ -45,6 +45,7 @@ Peer::~Peer()
 
 void Peer::operation(const Operation &op, OpVector &res)
 {
+    log(INFO, "GOT AN OP!");
     const OpNo op_no = op->getClassNo();
     switch(op_no) {
         case Atlas::Objects::Operation::INFO_NO:

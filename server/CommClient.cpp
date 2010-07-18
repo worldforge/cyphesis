@@ -117,6 +117,8 @@ int CommClient::negotiate()
     delete m_negotiate;
     m_negotiate = NULL;
 
+    log(INFO, "Negotiate completed");
+
     return 0;
 }
 

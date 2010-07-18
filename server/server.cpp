@@ -405,10 +405,11 @@ int main(int argc, char ** argv)
             peers[i] = NULL;
             continue;
         }
+        log(INFO, String::compose("Successfully connected to peer at \"%1:%2\"", peer_host, peer_port));
         peers[i]->setup(new Peer(*peers[i], commServer.m_server, peer_host, peer_id));
         commServer.addSocket(peers[i]);
+        commServer.addIdle(peers[i]);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
-        peers[i]->read();
         
 #if 0
         Atlas::Objects::Operation::Login l;

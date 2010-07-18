@@ -86,7 +86,8 @@ void CommPeer::idle(time_t t)
             m_clientIos.shutdown();
         }
     }
-    else {
+    if(m_negotiate == 0)
+    {
         if(m_login_required && !m_loggedin) {
             Atlas::Objects::Operation::Login l;
             Atlas::Objects::Entity::Anonymous account;
@@ -97,6 +98,7 @@ void CommPeer::idle(time_t t)
             // Send the login op
             send(l);
             m_loggedin = true;
+            log(INFO, "Sent login op to peer");
         }
     }
 }
