@@ -64,9 +64,7 @@ class Peer : public Router {
 
     virtual void operation(const Operation &, OpVector &);
     
-    int verifyCredentials(const Account & account,
-                                  const Root & creds) const;
-    void LoginOperation(const Operation & op, OpVector & res);
+    int teleportEntity(const RootEntity &, Peer &);
 };
 
 #endif // SERVER_PEER_H

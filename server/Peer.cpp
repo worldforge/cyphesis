@@ -27,6 +27,7 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/system.h"
+#include "common/serialno.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
@@ -37,6 +38,7 @@
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Entity::Anonymous;
 
@@ -58,22 +60,58 @@ Peer::~Peer()
 {
 }
 
+void Peer::setAuthState(PeerAuthState state)
+{
+    m_state = state;
+}
+
+PeerAuthState Peer::getAuthState()
+{
+    return m_state;
+}
+
 void Peer::operation(const Operation &op, OpVector &res)
 {
     log(INFO, "GOT AN OP!");
     const OpNo op_no = op->getClassNo();
-    std::cout << Atlas::Objects::Operation::INFO_NO << "\n" << op_no << "\n";
     switch (op_no) {
         case Atlas::Objects::Operation::INFO_NO:
         {
-            log(INFO, "Got info op!");
-            CommPeer &comm = dynamic_cast<CommPeer&>(m_commClient);
-            if (comm.m_state == PEER_AUTHENTICATING) {
-                comm.m_state = PEER_AUTHENTICATED;
-                log(INFO, "Peer authenticated");
+            if (m_state == PEER_AUTHENTICATING) {
+                // Response to a Login op
+                m_accountId = op->getId();
+                if (!op->getParents().empty()) {
+                    m_accountType = op->getParents().front();
+                }
+                if (m_state == PEER_AUTHENTICATING) {
+                    m_state = PEER_AUTHENTICATED;
+                    log(INFO, "Peer authenticated");
+                }
+            } else if (m_state == PEER_AUTHENTICATED) {
+                // Response to a Create op
             }
             break;
         }
-            break;
     }
+}
+
+int Peer::teleportEntity(const RootEntity &entity, Peer &peer)
+{
+    if (m_state != PEER_AUTHENTICATED) {
+        log(ERROR, "Peer not authenticated yet.");
+        return -1;
+    }
+    const std::string &id = entity->getId();
+    if (id.empty()) {
+        log(ERROR, "Entity has invalid ID");
+        return -1;
+    }
+
+    Create op;
+    op->setFrom(m_accountId);
+    op->setArgs1(entity);
+    op->setSerialno(newSerialNo());
+    m_commClient.send(op);
+
+    return 0;
 }
