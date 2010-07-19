@@ -399,7 +399,11 @@ int main(int argc, char ** argv)
         std::string peer_password(peer_data[3]);
         
         peers[i] = new CommPeer(commServer, peer_username, peer_password);
-        if(peers[i]->connect(peer_host, peer_port) != 0) {
+        if (peers[i] == NULL) {
+            log(ERROR, "Unable to allocate peer object");
+            continue;
+        }
+        if (peers[i]->connect(peer_host, peer_port) != 0) {
             log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
             delete peers[i];
             peers[i] = NULL;
