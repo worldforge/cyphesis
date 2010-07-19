@@ -26,11 +26,15 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/RootEntity.h>
 
 using Atlas::Objects::Root;
+using Atlas::Objects::Entity::RootEntity;
 
 class CommClient;
 class ServerRouting;
+
+enum PeerAuthState { PEER_INIT, PEER_AUTHENTICATING, PEER_AUTHENTICATED };
 
 /// \brief Class represening connections from another server that is peered to
 /// to this one
@@ -38,6 +42,12 @@ class ServerRouting;
 /// This is the main point of dispatch for any operation from the peer.
 class Peer : public Router {
   protected:
+    /// \brief Account identifier returned after successful login
+    std::string m_accountId;
+    /// \brief Account type returned after login
+    std::string m_accountType;
+    /// The authentication state of the peer object
+    PeerAuthState m_state;
     
   public:
     /// The client socket used to connect to the peer.
@@ -48,6 +58,9 @@ class Peer : public Router {
     Peer(CommClient & client, ServerRouting & svr,
          const std::string & addr, const std::string & id);
     virtual ~Peer();
+
+    void setAuthState(PeerAuthState state);
+    PeerAuthState getAuthState();
 
     virtual void operation(const Operation &, OpVector &);
     

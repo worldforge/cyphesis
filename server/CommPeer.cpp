@@ -36,9 +36,7 @@ INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommPeer::CommPeer(CommServer & svr) : CommClient(svr), 
-                                       m_login_required(false),
-                                       m_loggedin(false),
-                                       m_state(PEER_INIT)
+                                       m_login_required(false)
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
@@ -52,9 +50,7 @@ CommPeer::CommPeer(CommServer & svr, std::string & username, std::string & passw
                    : CommClient(svr),
                      m_username(username),
                      m_password(password), 
-                     m_login_required(true),
-                     m_loggedin(false),
-                     m_state(PEER_INIT)
+                     m_login_required(true)
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
@@ -92,7 +88,12 @@ void CommPeer::idle(time_t t)
     }
     if(m_negotiate == 0)
     {
-        if(m_login_required && m_state == PEER_INIT) {
+        Peer *peer = dynamic_cast<Peer*>(m_connection);
+        if (peer == NULL) {
+            log(ERROR, "Casting connection to Peer failed");
+            return;
+        }
+        if(m_login_required && peer->getAuthState() == PEER_INIT) {
             Atlas::Objects::Operation::Login l;
             Atlas::Objects::Entity::Anonymous account;
             account->setAttr("username", m_username);
@@ -102,10 +103,10 @@ void CommPeer::idle(time_t t)
             // Send the login op
             send(l);
             log(INFO, "Sent login op to peer");
-            m_state = PEER_AUTHENTICATING;
+            peer->setAuthState(PEER_AUTHENTICATING);
         }
         if ((t - m_connectTime) > 20) {
-            if (m_state == PEER_AUTHENTICATING) {
+            if (peer->getAuthState() == PEER_AUTHENTICATING) {
                 log(NOTICE, "Client disconnected because authentication timed out.");
                 m_clientIos.shutdown();
             }
