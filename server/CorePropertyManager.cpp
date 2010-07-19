@@ -22,6 +22,8 @@
 #include "InterServerClient.h"
 #include "InterServerConnection.h"
 #include "ExternalMind.h"
+#include "ServerRouting.h"
+#include "Peer.h"
 
 #include "rulesets/ActivePropertyFactory_impl.h"
 
@@ -236,6 +238,18 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     if (pb == NULL) {
         debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
                         << std::flush;);
+        return OPERATION_IGNORED;
+    }
+
+    ServerRouting *svr = ServerRouting::instance();
+    if(svr == NULL) {
+        log(ERROR, "Unable to access ServerRouting object");
+        return OPERATION_IGNORED;
+    }
+    // Try and get the peer with the requested ID
+    Peer *peer = dynamic_cast<Peer*>(svr->getObject(pb->data()));
+    if(peer == NULL) {
+        log(ERROR, "Unknown or disconnected peer ID specified");
         return OPERATION_IGNORED;
     }
 
