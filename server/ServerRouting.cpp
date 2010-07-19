@@ -44,6 +44,8 @@ using Atlas::Objects::Entity::RootEntity;
 BOOL_OPTION(restricted_flag, false, CYPHESIS, "restricted",
             "Flag to control restricted mode");
 
+ServerRouting * ServerRouting::m_instance = 0;
+
 /// \brief Constructor for server object.
 ///
 /// Requires a reference to the World management object, as well as the
@@ -68,6 +70,8 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
     monitors->watch("version", new Variable<const char *>(consts::version));
     monitors->watch("buildid", new Variable<int>(consts::buildId));
     monitors->watch("clients", new Variable<int>(m_numClients));
+
+    m_instance = this;
 }
 
 /// Server destructor, implicitly destroys all OOG objects in the server.

@@ -47,11 +47,17 @@ class ServerRouting : public Router {
     const std::string m_svrName;
     /// The number of clients currently connected.
     int m_numClients;
+    /// Static self object for external access
+    static ServerRouting * m_instance;
   public:
     /// A reference to the World management object.
     BaseWorld & m_world;
     /// A reference to the Lobby management object.
     Lobby & m_lobby;
+
+    static ServerRouting * instance() {
+        return m_instance;
+    }
 
     ServerRouting(BaseWorld & wrld,
                   const std::string & ruleset,
