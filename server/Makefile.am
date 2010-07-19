@@ -118,6 +118,7 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
+        TeleportState.cpp TeleportState.h \
 		InterServerConnection.cpp InterServerConnection.h \
 		InterServerClient.cpp InterServerClient.h \
 		server.cpp server.h \
@@ -162,6 +163,7 @@ cyslave_SOURCES = \
 		CommMaster.cpp CommMaster.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
+        TeleportState.cpp TeleportState.h \
 		slave.cpp
 
 nodist_cyslave_SOURCES = \

@@ -23,6 +23,7 @@
 #include "Lobby.h"
 #include "CommClient.h"
 #include "CommPeer.h"
+#include "TeleportState.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -52,7 +53,8 @@ Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
            const std::string & id) :
-      Router(id, forceIntegerId(id)), m_commClient(client), m_server(svr)
+      Router(id, forceIntegerId(id)), m_commClient(client), m_server(svr),
+      m_state(PEER_INIT)
 {
 }
 
@@ -72,7 +74,6 @@ PeerAuthState Peer::getAuthState()
 
 void Peer::operation(const Operation &op, OpVector &res)
 {
-    log(INFO, "GOT AN OP!");
     const OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::INFO_NO:
@@ -89,6 +90,23 @@ void Peer::operation(const Operation &op, OpVector &res)
                 }
             } else if (m_state == PEER_AUTHENTICATED) {
                 // Response to a Create op
+                const std::vector<Root> & args = op->getArgs();
+                if (args.empty()) {
+                    return;
+                }
+                const Root & arg = args.front();
+                if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                    error(op, "Set arg has no id.", res, getId());
+                    return;
+                }
+                const std::string & id = arg->getId();
+                TeleportState *s = getTeleportState(id);
+                if(s == NULL) {
+                    log(INFO, "Info op for unknown create");
+                    return;
+                }
+                s->setCreated();
+                log(INFO, String::compose("Entity with ID %1 created on peer", id));
             }
             break;
         }
@@ -113,5 +131,22 @@ int Peer::teleportEntity(const RootEntity &entity, Peer &peer)
     op->setSerialno(newSerialNo());
     m_commClient.send(op);
 
+    TeleportState *s = new TeleportState(id, true);
+    if(s == NULL) {
+        log(ERROR, "Unable to allocate teleport state object");
+        return -1;
+    }
+    s->setRequested();
+    m_teleports.push_back(s);
+
     return 0;
+}
+
+TeleportState *Peer::getTeleportState(const std::string & id)
+{
+    for (unsigned int i=0;i<m_teleports.size();i++) {
+        if (m_teleports[i]->getId() == id)
+            return m_teleports[i];
+    }
+    return NULL;
 }

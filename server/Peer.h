@@ -33,6 +33,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 class CommClient;
 class ServerRouting;
+class TeleportState;
 
 enum PeerAuthState { PEER_INIT, PEER_AUTHENTICATING, PEER_AUTHENTICATED };
 
@@ -48,6 +49,8 @@ class Peer : public Router {
     std::string m_accountType;
     /// The authentication state of the peer object
     PeerAuthState m_state;
+    /// The states of the various active teleports
+    std::vector<TeleportState *> m_teleports;
     
   public:
     /// The client socket used to connect to the peer.
@@ -65,6 +68,7 @@ class Peer : public Router {
     virtual void operation(const Operation &, OpVector &);
     
     int teleportEntity(const RootEntity &, Peer &);
+    TeleportState *getTeleportState(const std::string & id);
 };
 
 #endif // SERVER_PEER_H
