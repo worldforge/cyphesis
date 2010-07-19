@@ -379,7 +379,7 @@ int main(int argc, char ** argv)
     for(unsigned int i=0;i<peer_list.size();i++)
     {
         std::vector<std::string> peer_data;
-        tokenize(peer_list[i], peer_data, ",");
+        tokenize(peer_list[i], peer_data, "|");
         if(peer_data.size() != 4)
         {
             log(ERROR, "Peer configuration entry should be of the form ADDR|PORT|USERNAME|PASSWORD");
