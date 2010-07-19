@@ -410,9 +410,18 @@ int main(int argc, char ** argv)
             continue;
         }
         log(INFO, String::compose("Successfully connected to peer at \"%1:%2\"", peer_host, peer_port));
-        peers[i]->setup(new Peer(*peers[i], commServer.m_server, peer_host, peer_id));
+        Peer *peer = new Peer(*peers[i], commServer.m_server, peer_host, peer_id);
+        if (peer == NULL) {
+            log(ERROR, "Unable to allocate peer object");
+            delete peers[i];
+            peers[i] = NULL;
+            continue;
+        }
+        peers[i]->setup(peer);
         commServer.addSocket(peers[i]);
         commServer.addIdle(peers[i]);
+        /// Add object to ServerRouting so we can find it
+        server.addObject(peer);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
         
 #if 0
