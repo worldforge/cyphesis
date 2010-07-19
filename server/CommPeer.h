@@ -24,6 +24,8 @@
 
 extern int peer_port_num;
 
+enum CommPeerState { PEER_INIT, PEER_AUTHENTICATING, PEER_AUTHENTICATED };
+
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {
@@ -34,6 +36,9 @@ class CommPeer : public CommClient {
     bool m_loggedin;
 
   public:
+    /// The state of the connection
+    CommPeerState m_state;
+
     CommPeer(CommServer & svr);
     CommPeer(CommServer & svr, std::string &, std::string &);
     virtual ~CommPeer();

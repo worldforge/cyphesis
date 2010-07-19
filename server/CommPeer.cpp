@@ -35,7 +35,10 @@ INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr), m_login_required(false), m_loggedin(false)
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr), 
+                                       m_login_required(false),
+                                       m_loggedin(false),
+                                       m_state(PEER_INIT)
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
@@ -50,7 +53,8 @@ CommPeer::CommPeer(CommServer & svr, std::string & username, std::string & passw
                      m_username(username),
                      m_password(password), 
                      m_login_required(true),
-                     m_loggedin(false)
+                     m_loggedin(false),
+                     m_state(PEER_INIT)
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
@@ -88,7 +92,7 @@ void CommPeer::idle(time_t t)
     }
     if(m_negotiate == 0)
     {
-        if(m_login_required && !m_loggedin) {
+        if(m_login_required && m_state == PEER_INIT) {
             Atlas::Objects::Operation::Login l;
             Atlas::Objects::Entity::Anonymous account;
             account->setAttr("username", m_username);
@@ -97,8 +101,14 @@ void CommPeer::idle(time_t t)
             l->setSerialno(newSerialNo());
             // Send the login op
             send(l);
-            m_loggedin = true;
             log(INFO, "Sent login op to peer");
+            m_state = PEER_AUTHENTICATING;
+        }
+        if ((t - m_connectTime) > 20) {
+            if (m_state == PEER_AUTHENTICATING) {
+                log(NOTICE, "Client disconnected because authentication timed out.");
+                m_clientIos.shutdown();
+            }
         }
     }
 }
