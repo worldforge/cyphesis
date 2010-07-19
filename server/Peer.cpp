@@ -19,11 +19,24 @@
 
 #include "Peer.h"
 
+#include "ServerRouting.h"
+#include "Lobby.h"
+
 #include "common/id.h"
 #include "common/log.h"
+#include "common/system.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <iostream>
+
+using Atlas::Message::Element;
+using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Entity::Anonymous;
 
 /// \brief Constructor
 ///
@@ -51,5 +64,83 @@ void Peer::operation(const Operation &op, OpVector &res)
         case Atlas::Objects::Operation::INFO_NO:
             log(INFO, "Got info op!");
             break;
+        case Atlas::Objects::Operation::LOGIN_NO:
+            LoginOperation(op, res);
+            break;
     }
+}
+
+int Peer::verifyCredentials(const Account & account,
+                                  const Root & creds) const
+{
+    Element passwd_attr;
+    if (creds->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
+        return -1;
+    }
+    const std::string & passwd = passwd_attr.String();
+
+    return check_password(passwd, account.password());
+}
+
+void Peer::LoginOperation(const Operation & op, OpVector & res)
+{
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        error(op, "Login has no argument", res);
+        return;
+    }
+    // Account should be the first argument of the op
+    const Root & arg = args.front();
+    // Check for username, and if its not there, then check for
+    // id in case we are dealing with an old client.
+    Element user_attr;
+    std::string username;
+    if (arg->copyAttr("username", user_attr) != 0 || !user_attr.isString()) {
+        log(WARNING, "Got Login for account with no username. Checking for old style Login.");
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "Got account Login with no username.", res);
+            return;
+        }
+        username = arg->getId();
+    } else {
+        username = user_attr.String();
+    }
+    if (username.empty()) {
+        error(op, "Empty username provided for Login", res);
+        return;
+    }
+
+    // We now have username, so can check whether we know this
+    // account, either from existing account ....
+    Account * account = m_server.getAccountByName(username);
+    // or if not, from the database
+    if (account == 0 || verifyCredentials(*account, arg) != 0) {
+        clientError(op, "Login is invalid", res);
+        return;
+    }
+    // Account appears to be who they say they are
+    if (account->m_connection) {
+        // Internals don't allow player to log in more than once.
+        clientError(op, "This account is already logged in", res);
+        return;
+    }
+    // Connect everything up
+//    addObject(account);
+//    EntityDict::const_iterator J = account->getCharacters().begin();
+//    EntityDict::const_iterator Jend = account->getCharacters().end();
+//    for (; J != Jend; ++J) {
+//        addEntity(J->second);
+//    }
+    account->m_connection = (Connection *)this;
+    m_server.m_lobby.addAccount(account);
+    // Let the client know they have logged in
+    Info info;
+    Anonymous info_arg;
+    account->addToEntity(info_arg);
+    info->setArgs1(info_arg);
+    log(INFO, "Successful login");
+    res.push_back(info);
+
+    logEvent(LOGIN, String::compose("%1 %2 - Login account %3",
+                                    getId(), account->getId(), username));
 }

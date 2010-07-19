@@ -20,7 +20,14 @@
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
 
+#include "Account.h"
+
 #include "common/Router.h"
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
+
+using Atlas::Objects::Root;
 
 class CommClient;
 class ServerRouting;
@@ -43,6 +50,10 @@ class Peer : public Router {
     virtual ~Peer();
 
     virtual void operation(const Operation &, OpVector &);
+    
+    int verifyCredentials(const Account & account,
+                                  const Root & creds) const;
+    void LoginOperation(const Operation & op, OpVector & res);
 };
 
 #endif // SERVER_PEER_H
