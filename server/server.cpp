@@ -423,31 +423,6 @@ int main(int argc, char ** argv)
         /// Add object to ServerRouting so we can find it
         server.addObject(peer);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
-        
-#if 0
-        Atlas::Objects::Operation::Login l;
-        Atlas::Objects::Entity::Anonymous account;
-        account->setAttr("username", peer_username);
-        account->setAttr("password", peer_password);
-        l->setArgs1(account);
-        l->setSerialno(newSerialNo());
-
-        if(peers[i]->read() == -1) {
-            log(ERROR, String::compose("Failed to negotiate with server at \"%1:%2\"", peer_host, peer_port));
-            for(unsigned int j=0;j<=i;j++) {
-                delete peers[j];
-            }
-            return EXIT_SOCKET_ERROR;
-        }
-
-        if(peers[i]->send(l) == -1) {
-            log(ERROR, String::compose("Could not authenticate on cyphesis peer at \"%1:%2\"", peer_host, peer_port));
-            for(unsigned int j=0;j<=i;j++) {
-                delete peers[j];
-            }
-            return EXIT_SOCKET_ERROR;
-        }
-#endif
     }   
 
     // Configuration is now complete, and verified as somewhat sane, so
