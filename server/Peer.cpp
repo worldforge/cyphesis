@@ -96,11 +96,10 @@ void Peer::operation(const Operation &op, OpVector &res)
                 }
                 const Root & arg = args.front();
                 if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                    error(op, "Set arg has no id.", res, getId());
                     return;
                 }
                 const std::string & id = arg->getId();
-                TeleportState *s = getTeleportState(id);
+                TeleportState *s = m_teleports.find(id)->second;
                 if(s == NULL) {
                     log(INFO, "Info op for unknown create");
                     return;
@@ -131,22 +130,13 @@ int Peer::teleportEntity(const RootEntity &entity, Peer &peer)
     op->setSerialno(newSerialNo());
     m_commClient.send(op);
 
-    TeleportState *s = new TeleportState(id, true);
+    TeleportState *s = new TeleportState();
     if(s == NULL) {
         log(ERROR, "Unable to allocate teleport state object");
         return -1;
     }
     s->setRequested();
-    m_teleports.push_back(s);
+    m_teleports[id] = s;
 
     return 0;
-}
-
-TeleportState *Peer::getTeleportState(const std::string & id)
-{
-    for (unsigned int i=0;i<m_teleports.size();i++) {
-        if (m_teleports[i]->getId() == id)
-            return m_teleports[i];
-    }
-    return NULL;
 }

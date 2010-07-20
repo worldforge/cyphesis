@@ -5,18 +5,13 @@
 
 class TeleportState
 {
-    bool m_valid;
-    std::string m_entityid;
     enum {  TELEPORT_NONE,
             TELEPORT_REQUESTED,
             TELEPORT_CREATED } m_state;
 
     public:
-    TeleportState(const std::string &, bool);
+    TeleportState();
     
-    const std::string & getId();
-    bool isValid();
-
     void setRequested();
     void setCreated();
 

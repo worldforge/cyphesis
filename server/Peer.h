@@ -50,7 +50,7 @@ class Peer : public Router {
     /// The authentication state of the peer object
     PeerAuthState m_state;
     /// The states of the various active teleports
-    std::vector<TeleportState *> m_teleports;
+    std::map<std::string, TeleportState *> m_teleports;
     
   public:
     /// The client socket used to connect to the peer.
