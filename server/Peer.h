@@ -67,8 +67,9 @@ class Peer : public Router {
 
     virtual void operation(const Operation &, OpVector &);
     
-    int teleportEntity(const RootEntity &, Peer &);
+    int teleportEntity(const RootEntity &);
     TeleportState *getTeleportState(const std::string & id);
+    void peerTeleportResponse(const Operation &op, OpVector &res);
 };
 
 #endif // SERVER_PEER_H

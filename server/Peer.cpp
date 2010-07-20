@@ -24,6 +24,7 @@
 #include "CommClient.h"
 #include "CommPeer.h"
 #include "TeleportState.h"
+#include "ExternalMind.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -31,8 +32,12 @@
 #include "common/serialno.h"
 #include "common/compose.hpp"
 
+#include "rulesets/Character.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <wfmath/MersenneTwister.h>
 
 #include <iostream>
 
@@ -40,6 +45,8 @@ using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Entity::Anonymous;
 
@@ -89,30 +96,14 @@ void Peer::operation(const Operation &op, OpVector &res)
                     log(INFO, "Peer authenticated");
                 }
             } else if (m_state == PEER_AUTHENTICATED) {
-                // Response to a Create op
-                const std::vector<Root> & args = op->getArgs();
-                if (args.empty()) {
-                    return;
-                }
-                const Root & arg = args.front();
-                if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                    return;
-                }
-                const std::string & id = arg->getId();
-                TeleportState *s = m_teleports.find(id)->second;
-                if(s == NULL) {
-                    log(INFO, "Info op for unknown create");
-                    return;
-                }
-                s->setCreated();
-                log(INFO, String::compose("Entity with ID %1 created on peer", id));
+                peerTeleportResponse(op, res);
             }
             break;
         }
     }
 }
 
-int Peer::teleportEntity(const RootEntity &entity, Peer &peer)
+int Peer::teleportEntity(const RootEntity &entity)
 {
     if (m_state != PEER_AUTHENTICATED) {
         log(ERROR, "Peer not authenticated yet.");
@@ -139,4 +130,73 @@ int Peer::teleportEntity(const RootEntity &entity, Peer &peer)
     m_teleports[id] = s;
 
     return 0;
+}
+
+void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
+{
+    // Response to a Create op
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return;
+    }
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        return;
+    }
+    const std::string & id = arg->getId();
+    TeleportState *s = m_teleports.find(id)->second;
+    if (s == NULL) {
+        log(INFO, "Info op for unknown create");
+        return;
+    }
+    s->setCreated();
+    log(INFO, String::compose("Entity with ID %1 created on peer", id));
+
+    // This is the sender entity
+    Entity * entity = BaseWorld::instance().getEntity(id);
+    if (entity == 0) {
+        log(ERROR, String::compose("No entity found with ID: %1", id));
+        return;
+    }
+    // Check if the entity has a mind
+    bool isMind = true;
+    Character * chr = dynamic_cast<Character *>(entity);
+    if (!chr) {
+        isMind = false;
+    }
+    if (chr->m_externalMind == 0) {
+        isMind = false;
+    }
+    ExternalMind * mind = 0;
+    mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+    if (mind == 0 || !mind->isConnected()) {
+        isMind = false;
+    }
+    if (isMind) {
+        // Entity has a mind. Logout as and extra.
+        // Generate a nice and long key
+        WFMath::MTRand generator;
+        std::string key("");
+        for(int i=0;i<32;i++) {
+            char ch = (char)((int)'a' + generator.rand(25));
+            key += ch;
+        }
+        std::vector<Root> val;
+        Logout logoutOp;
+        Anonymous op_arg;
+        op_arg->setId(id);
+        logoutOp->setArgs1(op_arg);
+        logoutOp->setTo(id);
+//        OpVector res;
+//        mind->operation(logoutOp, res);
+        res.push_back(logoutOp);
+    }
+
+    // Delete the entity from the current world
+    Delete delOp;
+    Anonymous del_arg;
+    del_arg->setId(id);
+    delOp->setArgs1(del_arg);
+    delOp->setTo(id);
+    entity->sendWorld(delOp);
 }

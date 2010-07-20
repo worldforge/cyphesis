@@ -288,49 +288,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     // Get an Atlas representation and inject it on remote server
     Atlas::Objects::Entity::Anonymous atlas_repr;
     entity->addToEntity(atlas_repr);
-    // std::string new_id = c.injectEntity(atlas_repr);
-
-    // Check if the entity has a mind
-    bool isMind = true;
-    Character * chr = dynamic_cast<Character *>(entity);
-    if(!chr) {
-        isMind = false;
-    }
-    if (chr->m_externalMind == 0) {
-        isMind = false;
-    }
-    ExternalMind * mind = 0;
-    mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-    if (mind == 0 || !mind->isConnected()) {
-        isMind = false;
-    }
-    if(isMind) {
-        // Entity has a mind. Logout as and extra.
-        debug(std::cout << "Entity has a mind\n";);
-        // Generate a nice and long key
-        WFMath::MTRand generator;
-        std::string key("");
-        for(int i=0;i<32;i++) {
-            char ch = (char)((int)'a' + generator.rand(25));
-            key += ch;
-        }
-        Logout logoutOp;
-        Anonymous op_arg;
-        op_arg->setId(from);
-        logoutOp->setArgs1(op_arg);
-        logoutOp->setTo(from);
-        OpVector res;
-        mind->operation(logoutOp, res);
-    }
-
-    // Delete the entity from the current world
-    Delete delOp;
-    Anonymous del_arg;
-    del_arg->setId(from);
-    delOp->setArgs1(del_arg);
-    delOp->setTo(from);
-    entity->sendWorld(delOp);
-    return OPERATION_IGNORED;
+    peer->teleportEntity(atlas_repr);
 }
 
 CorePropertyManager::CorePropertyManager()
