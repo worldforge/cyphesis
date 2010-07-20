@@ -60,8 +60,10 @@ Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
            const std::string & id) :
-      Router(id, forceIntegerId(id)), m_commClient(client), m_server(svr),
-      m_state(PEER_INIT)
+      Router(id, forceIntegerId(id)),
+      m_state(PEER_INIT),
+      m_commClient(client),
+      m_server(svr)
 {
 }
 
