@@ -289,6 +289,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     Atlas::Objects::Entity::Anonymous atlas_repr;
     entity->addToEntity(atlas_repr);
     peer->teleportEntity(atlas_repr);
+    return OPERATION_IGNORED;
 }
 
 CorePropertyManager::CorePropertyManager()
