@@ -88,6 +88,14 @@ void Peer::operation(const Operation &op, OpVector &res)
         case Atlas::Objects::Operation::INFO_NO:
         {
             if (m_state == PEER_AUTHENTICATING) {
+                const std::vector<Root> & args = op->getArgs();
+                if (args.empty()) {
+                    return;
+                }
+                const Root & arg = args.front();
+                if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                    return;
+                }
                 // Response to a Login op
                 m_accountId = op->getId();
                 if (!op->getParents().empty()) {
