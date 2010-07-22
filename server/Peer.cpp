@@ -130,6 +130,7 @@ int Peer::teleportEntity(const RootEntity &entity)
     op->setArgs1(entity);
     op->setSerialno(newSerialNo());
     m_commClient.send(op);
+    log(INFO, "Sent Create op to peer");
 
     TeleportState *s = new TeleportState();
     if(s == NULL) {
@@ -138,12 +139,14 @@ int Peer::teleportEntity(const RootEntity &entity)
     }
     s->setRequested();
     m_teleports[id] = s;
+    log(INFO, "Added new teleport state");
 
     return 0;
 }
 
 void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
 {
+    log(INFO, "Got a peer teleport response");
     // Response to a Create op
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -185,6 +188,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     if (isMind) {
         // Entity has a mind. Logout as and extra.
         // Generate a nice and long key
+        log(INFO, "Entity has a mind. Generating random key");
         WFMath::MTRand generator;
         std::string key("");
         for(int i=0;i<32;i++) {
@@ -209,4 +213,5 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     delOp->setArgs1(del_arg);
     delOp->setTo(id);
     entity->sendWorld(delOp);
+    log(INFO, "Deleted entity from current server");
 }
