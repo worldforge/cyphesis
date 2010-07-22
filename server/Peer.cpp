@@ -156,12 +156,12 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     const Root & arg = args.front();
     // We have exactly two arguments;
     const Root & arg2 = args.back();
-    const std::string old_id = arg2->getId();
-    std::cout << "Old id: " << old_id << "\n" << std::flush;
+    // Get the original ID of the entity on this server
+    const std::string & id = arg2->getId();
+
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         return;
     }
-    const std::string & id = arg->getId();
     TeleportState *s = m_teleports.find(id)->second;
     if (s == NULL) {
         log(INFO, "Info op for unknown create");
