@@ -27,6 +27,7 @@
 #include "Peer.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -50,8 +51,11 @@ using Atlas::Message::ListType;
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 using String::compose;
 
@@ -144,13 +148,10 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     if (args.empty()) {
         return;
     }
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-        arg->getParents().empty()) {
-        error(op, "Object to be created has no type", res, getId());
-        return;
-    }
-    const std::string & parent = arg->getParents().front();
+    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    // const Root & arg = args.front();
+    const std::string & old_id = arg->getId();
+    log(INFO, compose("Old entity had ID %1", old_id));
 
     if (!arg->hasAttrFlag(Atlas::Objects::OBJTYPE_FLAG)) {
         error(op, "Object to be created has no objtype", res, getId());
@@ -158,38 +159,72 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     }
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
-        // New entity type
-        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            error(op, "Set arg has no id.", res, getId());
-            return;
-        }
-        const std::string & id = arg->getId();
-
-        if (parent.empty()) {
-            error(op, "Attempt to install type with empty parent", res,
-                  getId());
-            return;
-        }
-        if (Inheritance::instance().hasClass(id)) {
-            error(op, "Attempt to install type that already exists", res,
-                  getId());
-            return;
-        }
-        const Root & o = Inheritance::instance().getClass(parent);
-        if (!o.isValid()) {
-            error(op, compose("Attempt to install type with non-existant "
-                              "parent \"%1\"", parent), res, getId());
-            return;
-        }
-        if (Ruleset::instance()->installRule(id, arg) == 0) {
-            Info info;
-            info->setTo(getId());
-            info->setArgs1(arg);
-            res.push_back(info);
-        } else {
-            error(op, "Installing new type failed", res, getId());
-        }
-    } else {
-        Account::CreateOperation(op, res);
+        log(INFO, "Only creation of characters supported currently");
+        return;
     }
+
+    if (!arg.isValid()) {
+        error(op, "Character creation arg is malformed", res, getId());
+        return;
+    }
+
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+        error(op, "Entity has no type", res, getId());
+        return;
+    }
+
+    const std::list<std::string> & parents = arg->getParents();
+    if (parents.empty()) {
+        error(op, "Entity has empty type list.", res, getId());
+        return;
+    }
+    
+    const std::string & typestr = parents.front();
+
+    if (characterError(op, arg, res)) {
+        return;
+    }
+
+    debug( std::cout << "Account creating a " << typestr << " object"
+                     << std::endl << std::flush; );
+
+    Anonymous new_character;
+    new_character->setParents(std::list<std::string>(1, typestr));
+    new_character->setAttr("status", 0.024);
+    new_character->setAttr("mind", "");
+    if (!arg->isDefaultName()) {
+        new_character->setName(arg->getName());
+    }
+
+    Entity * entity = addNewCharacter(typestr, new_character, arg);
+
+    if (entity == 0) {
+        error(op, "Character creation failed", res, getId());
+        return;
+    }
+
+    Character * character = dynamic_cast<Character *>(entity);
+    if (character != 0) {
+        // Inform the client that it has successfully subscribed
+        Info info;
+        std::vector<Root> reply_args;
+        Anonymous info_arg;
+        RootEntity prev_id;
+        prev_id->setId(old_id);
+        entity->addToEntity(info_arg);
+        reply_args.push_back(info_arg);
+        reply_args.push_back(prev_id);
+        info->setArgs(reply_args);
+        res.push_back(info);
+    }
+#if 0
+// We don't want to tell the remote peer about the new char
+    // Inform the client of the newly created character
+    Sight sight;
+    sight->setTo(getId());
+    Anonymous sight_arg;
+    addToEntity(sight_arg);
+    sight->setArgs1(sight_arg);
+    res.push_back(sight);
+#endif
 }
