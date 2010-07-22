@@ -53,6 +53,7 @@
 
 #include "common/id.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -260,6 +261,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
                         << std::endl << std::flush;);
         return OPERATION_IGNORED;
     }
+    log(INFO, String::compose("Teleport request sender has ID %1", from));
 #if 0
     // Do an inter server connnection now using a "server" account
     InterServerConnection conn;
