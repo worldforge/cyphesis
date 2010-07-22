@@ -162,6 +162,11 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         return;
     }
+    CommPeer *peer = dynamic_cast<CommPeer*>(&m_commClient);
+    if(peer == 0) {
+        log(ERROR, "Unable to get CommPeer object");
+        return;
+    }
     TeleportState *s = m_teleports.find(id)->second;
     if (s == NULL) {
         log(INFO, "Info op for unknown create");
@@ -200,10 +205,16 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
             char ch = (char)((int)'a' + generator.rand(25));
             key += ch;
         }
-        std::vector<Root> val;
+        std::vector<Root> logout_args;
         Logout logoutOp;
         Anonymous op_arg;
         op_arg->setId(id);
+        logout_args.push_back(op_arg);
+        Anonymous ip_arg;
+        ip_arg->setAttr("logout_ip", peer->getHost());
+        ip_arg->setAttr("logout_port", peer->getPort());
+        ip_arg->setAttr("private_key", key);
+        logout_args.push_back(ip_arg);
         logoutOp->setArgs1(op_arg);
         logoutOp->setTo(id);
         OpVector temp;
