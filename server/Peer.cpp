@@ -97,7 +97,8 @@ void Peer::operation(const Operation &op, OpVector &res)
                     return;
                 }
                 // Response to a Login op
-                m_accountId = op->getId();
+                m_accountId = arg->getId();
+                log(INFO, String::compose("Received account ID: %1", m_accountId));
                 if (!op->getParents().empty()) {
                     m_accountType = op->getParents().front();
                 }
@@ -153,6 +154,10 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
     const Root & arg = args.front();
+    // We have exactly two arguments;
+    const Root & arg2 = args.back();
+    const std::string old_id = arg2->getId();
+    std::cout << "Old id: " << old_id << "\n" << std::flush;
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         return;
     }
