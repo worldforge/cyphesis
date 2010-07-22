@@ -27,6 +27,9 @@ extern int peer_port_num;
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {
+    std::string m_host;
+    int m_port;
+
     std::string m_username;
     std::string m_password;
 
@@ -41,6 +44,9 @@ class CommPeer : public CommClient {
 
     int connect(const std::string &);
     int connect(const std::string &, int);
+
+    std::string & getHost();
+    int getPort();
 };
 
 #endif // SERVER_COMM_PEER_H

@@ -71,11 +71,23 @@ int CommPeer::connect(const std::string & host)
 
 int CommPeer::connect(const std::string & host, int port)
 {
+    m_host = host;
+    m_port = port;
     m_clientIos.open(host, port);
     if (m_clientIos.is_open()) {
         return 0;
     }
     return -1;
+}
+
+std::string & CommPeer::getHost()
+{
+    return m_host;
+}
+
+int CommPeer::getPort()
+{
+    return m_port;
 }
 
 void CommPeer::idle(time_t t)
