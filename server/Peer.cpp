@@ -206,9 +206,9 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         op_arg->setId(id);
         logoutOp->setArgs1(op_arg);
         logoutOp->setTo(id);
-//        OpVector res;
-//        mind->operation(logoutOp, res);
-        res.push_back(logoutOp);
+        OpVector temp;
+        mind->operation(logoutOp, temp);
+        log(INFO, "Sent random key to connected mind");
     }
 
     // Delete the entity from the current world
