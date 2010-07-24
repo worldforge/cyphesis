@@ -149,6 +149,10 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    if(!arg.isValid()) {
+        log(ERROR, "Unable to cast argument");
+        return;
+    }
     // const Root & arg = args.front();
     const std::string & old_id = arg->getId();
     log(INFO, compose("Old entity had ID %1", old_id));
