@@ -211,11 +211,12 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         op_arg->setId(id);
         logout_args.push_back(op_arg);
         Anonymous ip_arg;
-        ip_arg->setAttr("logout_ip", peer->getHost());
-        ip_arg->setAttr("logout_port", peer->getPort());
-        ip_arg->setAttr("private_key", key);
+        ip_arg->setAttr("teleport_host", peer->getHost());
+        ip_arg->setAttr("teleport_port", peer->getPort());
+        ip_arg->setAttr("possess_key", key);
+        ip_arg->setAttr("possess_entity_id", arg->getId());
         logout_args.push_back(ip_arg);
-        logoutOp->setArgs1(op_arg);
+        logoutOp->setArgs(logout_args);
         logoutOp->setTo(id);
         OpVector temp;
         mind->operation(logoutOp, temp);
