@@ -76,13 +76,7 @@ LocatedEntity * CreatorClient::make(const RootEntity & entity)
                   << std::endl << std::flush;
         return NULL;
     }
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || arg->getParents().empty()) {
-        std::cerr << "Arg of reply to make has no parents"
-                  << std::endl << std::flush;
-        return NULL;
-    }
-    const std::string & resargp = arg->getParents().front();
-    if (resargp != "create") {
+    if (arg->getClassNo() != Atlas::Objects::Operation::CREATE_NO) {
         std::cerr << "Reply to make isn't sight of create"
                   << std::endl << std::flush;
         return NULL;
