@@ -173,7 +173,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
     s->setCreated();
-    log(INFO, String::compose("Entity with ID %1 created on peer", id));
+    log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
 
     // This is the sender entity
     Entity * entity = BaseWorld::instance().getEntity(id);
