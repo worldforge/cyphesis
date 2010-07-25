@@ -62,8 +62,7 @@ LocatedEntity * CreatorClient::make(const RootEntity & entity)
         std::cerr << "NULL reply to make" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resparents = res->getParents().front();
-    if (resparents != "sight") {
+    if (res->getClassNo() != Atlas::Objects::Operation::SIGHT_NO) {
         std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
         return NULL;
     }
