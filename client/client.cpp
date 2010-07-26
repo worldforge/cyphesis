@@ -93,7 +93,7 @@ int main(int argc, char ** argv)
     bool login = global_conf->findItem("client", "account");
     int status = 0;
 
-    init_python_api();
+    init_python_api(false);
     extend_client_python_api();
     new ClientPropertyManager();
 
