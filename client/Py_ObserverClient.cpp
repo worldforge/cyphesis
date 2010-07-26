@@ -57,8 +57,21 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
     return Py_None;
 }
 
+static PyObject * ObserverClient_run(PyObserverClient * self)
+{
+#ifndef NDEBUG
+    if (self->m_client == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
+        return NULL;
+    }
+#endif // NDEBUG
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef ObserverClient_methods[] = {
         {"setup",          (PyCFunction)ObserverClient_setup,     METH_VARARGS},
+        {"run",            (PyCFunction)ObserverClient_run,       METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 
