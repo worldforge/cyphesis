@@ -520,7 +520,7 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-void init_python_api()
+void init_python_api(bool log_stdout)
 {
     Py_Initialize();
 
@@ -544,11 +544,15 @@ void init_python_api()
         return;
     }
 
-    PyObject * out_logger = PyOutLogger_Type.tp_new(&PyOutLogger_Type, 0, 0);
-    PyModule_AddObject(sys_module, "stdout", out_logger);
+    if (log_stdout) {
 
-    PyObject * err_logger = PyErrLogger_Type.tp_new(&PyErrLogger_Type, 0, 0);
-    PyModule_AddObject(sys_module, "stderr", err_logger);
+        PyObject * out_logger = PyOutLogger_Type.tp_new(&PyOutLogger_Type, 0, 0);
+        PyModule_AddObject(sys_module, "stdout", out_logger);
+
+        PyObject * err_logger = PyErrLogger_Type.tp_new(&PyErrLogger_Type, 0, 0);
+        PyModule_AddObject(sys_module, "stderr", err_logger);
+
+    }
 
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
     if (sys_path != 0) {

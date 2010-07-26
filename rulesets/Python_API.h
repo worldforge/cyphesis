@@ -20,7 +20,7 @@
 #ifndef RULESETS_PYTHON_API_H
 #define RULESETS_PYTHON_API_H
 
-void init_python_api();
+void init_python_api(bool log = true);
 void shutdown_python_api();
 void extend_client_python_api();
 void python_prompt();
