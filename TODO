@@ -1,3 +1,6 @@
+Make cyclient a bunch more Python driven, with a default Python class which
+handles much of the current automated login stuffs.
+
 Once we can switch to automake 1.11, support color tests results, and
 parallel-tests.
 
