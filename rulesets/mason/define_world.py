@@ -12,6 +12,8 @@ from physics import Quaternion
 from physics import Vector3D
 from math import *
 
+import server
+
 #goal priority
 #1) eating: certain times
 #2) market/tavern: certain times, certain probability
@@ -194,6 +196,8 @@ tree_styles = {
             'oak' : ['gnarly', 'knotted', 'weathered'], 
             'fir' : ['gnarly', 'knotted', 'weathered']
             }
+
+class Default(server.ObserverClient): pass
 
 #observer calls this
 def default(mapeditor):
