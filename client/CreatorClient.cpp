@@ -175,12 +175,12 @@ LocatedEntity * CreatorClient::sendLook(const Operation & op)
         std::cerr << "Looked at entity has no id" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_id = seen->getId();
+    const std::string & sight_id = seen->getId();
     if (seen->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         std::cout << "Seen: " << seen->getParents().front()
-                  << "(" << created_id << ")" << std::endl << std::flush;
+                  << "(" << sight_id << ")" << std::endl << std::flush;
     } else {
-        std::cout << "Seen: " << created_id << std::endl << std::flush;
+        std::cout << "Seen: " << sight_id << std::endl << std::flush;
     }
     LocatedEntity * obj = m_map.updateAdd(seen, res->getSeconds());
     return obj;
