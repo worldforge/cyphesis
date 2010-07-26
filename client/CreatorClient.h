@@ -26,15 +26,11 @@ class LocatedEntity;
 
 /// \brief Class to implement a creator entity in an admin client
 class CreatorClient : public CharacterClient {
-  private:
-    LocatedEntity * sendLook(const Operation & op);
   public:
     CreatorClient(const std::string &, long, ClientConnection&);
 
     LocatedEntity * make(const Atlas::Objects::Entity::RootEntity &);
     void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);
-    LocatedEntity * look(const std::string &);
-    LocatedEntity * lookFor(const Atlas::Objects::Entity::RootEntity &);
     void del(const std::string &);
     int runScript(const std::string & package, const std::string & function);
 };

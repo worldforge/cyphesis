@@ -23,7 +23,14 @@
 
 #include "common/debug.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
+
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
+
+using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
@@ -46,6 +53,26 @@ void CharacterClient::send(const Operation & op)
 {
     op->setFrom(getId());
     m_connection.send(op);
+}
+
+LocatedEntity * CharacterClient::look(const std::string & id)
+{
+    Look op;
+    if (!id.empty()) {
+        Anonymous ent;
+        ent->setId(id);
+        op->setArgs1(ent);
+    }
+    op->setFrom(getId());
+    return sendLook(op);
+}
+
+LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
+{
+    Look op;
+    op->setArgs1(ent);
+    op->setFrom(getId());
+    return sendLook(op);
 }
 
 /// \brief Send an operation to the server, and wait for a reply
@@ -92,4 +119,49 @@ int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
             return -1;
         }
     }
+}
+
+LocatedEntity * CharacterClient::sendLook(const Operation & op)
+{
+    OpVector result;
+    if (sendAndWaitReply(op, result) != 0) {
+        std::cerr << "No reply to look" << std::endl << std::flush;
+        return NULL;
+    }
+    assert(!result.empty());
+    const Operation & res = result.front();
+    if (!res.isValid()) {
+        std::cerr << "NULL reply to look" << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & resparents = res->getParents().front();
+    if (resparents == "unseen") {
+        return NULL;
+    }
+    if (resparents != "sight") {
+        std::cerr << "Reply to look is " << resparents << " not sight" << std::endl << std::flush;
+        return NULL;
+    }
+    if (res->getArgs().empty()) {
+        std::cerr << "Reply to look has no args" << std::endl << std::flush;
+        return NULL;
+    }
+    RootEntity seen = smart_dynamic_cast<RootEntity>(res->getArgs().front());
+    if (!seen.isValid()) {
+        std::cerr << "Sight arg is not an entity" << std::endl << std::flush;
+        return NULL;
+    }
+    if (!seen->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        std::cerr << "Looked at entity has no id" << std::endl << std::flush;
+        return NULL;
+    }
+    const std::string & sight_id = seen->getId();
+    if (seen->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+        std::cout << "Seen: " << seen->getParents().front()
+                  << "(" << sight_id << ")" << std::endl << std::flush;
+    } else {
+        std::cout << "Seen: " << sight_id << std::endl << std::flush;
+    }
+    LocatedEntity * obj = m_map.updateAdd(seen, res->getSeconds());
+    return obj;
 }

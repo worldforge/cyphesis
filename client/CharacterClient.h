@@ -30,10 +30,13 @@ class CharacterClient : public BaseMind {
     ClientConnection & m_connection;
 
     int sendAndWaitReply(const Operation &, OpVector &);
+    LocatedEntity * sendLook(const Operation & op);
   public:
     CharacterClient(const std::string &, long, ClientConnection&);
 
     void send(const Operation & op);
+    LocatedEntity * look(const std::string &);
+    LocatedEntity * lookFor(const Atlas::Objects::Entity::RootEntity &);
 };
 
 #endif // CLIENT_CHARACTER_CLIENT_H
