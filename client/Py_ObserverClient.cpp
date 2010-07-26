@@ -42,10 +42,17 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
 #endif // NDEBUG
     char * username = NULL;
     char * password = NULL;
-    if (!PyArg_ParseTuple(args, "ss", &username, &password)) {
+    if (!PyArg_ParseTuple(args, "|ss", &username, &password)) {
         return NULL;
     }
-    self->m_client->setup(username, password);
+    if (username == NULL) {
+        self->m_client->setup();
+    } else if (password == NULL) {
+        PyErr_SetString(PyExc_TypeError, "function takes 0 or 2 arguments (1 given)");
+        return NULL;
+    } else {
+        self->m_client->setup(username, password);
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -63,7 +70,8 @@ static void ObserverClient_dealloc(PyObserverClient *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * ObserverClient_getattr(PyObserverClient *self, char *name)
+static PyObject * ObserverClient_getattro(PyObserverClient *self,
+                                          PyObject * oname)
 {
     // Fairly major re-write of this to use operator[] of ObserverClient base class
 #ifndef NDEBUG
@@ -72,6 +80,7 @@ static PyObject * ObserverClient_getattr(PyObserverClient *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "character") == 0) {
         if (self->m_client->character() == 0) {
             Py_INCREF(Py_None);
@@ -81,16 +90,18 @@ static PyObject * ObserverClient_getattr(PyObserverClient *self, char *name)
         pcc->m_mind = self->m_client->character();
         return (PyObject*)pcc;
     }
-    return Py_FindMethod(ObserverClient_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int ObserverClient_setattr(PyObserverClient *self, char *name, PyObject *v)
+static int ObserverClient_setattro(PyObserverClient *self,
+                                   PyObject * oname, PyObject *v)
 {
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "server") == 0 && PyString_Check(v)) {
         self->m_client->setServer(PyString_AsString(v));
         return 0;
     }
-    return -1;
+    return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
 static int ObserverClient_compare(PyObserverClient *self, PyObserverClient *other)
@@ -114,14 +125,14 @@ static int ObserverClient_init(PyObserverClient * self,
 PyTypeObject PyObserverClient_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      /*ob_size*/
-        "ObserverClient",                       /*tp_name*/
+        "server.ObserverClient",                /*tp_name*/
         sizeof(PyObserverClient),               /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
         /* methods */
         (destructor)ObserverClient_dealloc,     /*tp_dealloc*/
         0,                                      /*tp_print*/
-        (getattrfunc)ObserverClient_getattr,    /*tp_getattr*/
-        (setattrfunc)ObserverClient_setattr,    /*tp_setattr*/
+        0,                                      /*tp_getattr*/
+        0,                                      /*tp_setattr*/
         (cmpfunc)ObserverClient_compare,        /*tp_compare*/
         0,                                      /*tp_repr*/
         0,                                      /*tp_as_number*/
@@ -130,10 +141,10 @@ PyTypeObject PyObserverClient_Type = {
         0,                                      /*tp_hash*/
         0,                                      // tp_call
         0,                                      // tp_str
-        0,                                      // tp_getattro
-        0,                                      // tp_setattro
+        (getattrofunc)ObserverClient_getattro,  // tp_getattro
+        (setattrofunc)ObserverClient_setattro,  // tp_setattro
         0,                                      // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,                     // tp_flags
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, // tp_flags
         "ObserverClient objects",               // tp_doc
         0,                                      // tp_travers
         0,                                      // tp_clear
@@ -141,7 +152,7 @@ PyTypeObject PyObserverClient_Type = {
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext
-        0,                                      // tp_methods
+        ObserverClient_methods,                 // tp_methods
         0,                                      // tp_members
         0,                                      // tp_getset
         0,                                      // tp_base
