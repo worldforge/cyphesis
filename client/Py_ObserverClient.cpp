@@ -23,9 +23,7 @@
 #include "ObserverClient.h"
 
 #include "common/debug.h"
-#include "common/id.h"
 #include "common/log.h"
-#include "common/TypeNode.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

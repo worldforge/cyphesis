@@ -20,8 +20,6 @@
 #ifndef CLIENT_PYTHON_CLIENT_API_H
 #define CLIENT_PYTHON_CLIENT_API_H
 
-#include <Python.h>
-
 #include <map>
 #include <string>
 

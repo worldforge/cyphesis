@@ -19,11 +19,8 @@
 
 #include "Py_CreatorClient.h"
 
-#include "Py_ObserverClient.h"
-
 #include "CreatorClient.h"
 
-#include "rulesets/Python_Script_Utils.h"
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_RootEntity.h"
 #include "rulesets/Py_WorldTime.h"
