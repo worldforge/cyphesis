@@ -22,6 +22,10 @@
 
 #include <Python.h>
 
+#include <string>
+
+class CreatorClient;
+
 int runClientScript(CreatorClient *, const std::string &, const std::string &);
 void extend_client_python_api();
 void python_prompt();

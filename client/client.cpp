@@ -17,8 +17,11 @@
 
 // $Id$
 
-#include "ObserverClient.h"
-#include "ClientPropertyManager.h"
+#include <Python.h>
+
+#include "client/ClientPropertyManager.h"
+#include "client/ObserverClient.h"
+#include "client/Python_ClientAPI.h"
 
 #include "rulesets/Python_API.h"
 

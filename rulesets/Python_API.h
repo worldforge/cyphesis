@@ -22,7 +22,5 @@
 
 void init_python_api(bool log_stdout = true);
 void shutdown_python_api();
-void extend_client_python_api();
-void python_prompt();
 
 #endif // RULESETS_PYTHON_API_H

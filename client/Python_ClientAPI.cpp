@@ -17,6 +17,8 @@
 
 // $Id$
 
+#include "Python_ClientAPI.h"
+
 #include "Py_CreatorClient.h"
 #include "Py_ObserverClient.h"
 
