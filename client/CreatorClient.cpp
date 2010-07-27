@@ -18,6 +18,7 @@
 // $Id$
 
 #include "Py_CreatorClient.h"
+#include "Python_ClientAPI.h"
 
 #include "CreatorClient.h"
 

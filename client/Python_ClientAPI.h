@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2010 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,28 +17,13 @@
 
 // $Id$
 
-#ifndef CLIENT_PY_CREATOR_CLIENT_H
-#define CLIENT_PY_CREATOR_CLIENT_H
+#ifndef CLIENT_PYTHON_CLIENT_API_H
+#define CLIENT_PYTHON_CLIENT_API_H
 
 #include <Python.h>
 
-#include <string>
+int runClientScript(CreatorClient *, const std::string &, const std::string &);
+void extend_client_python_api();
+void python_prompt();
 
-class CreatorClient;
-
-extern PyTypeObject PyCreatorClient_Type;
-
-/// \brief Wrapper for CreatorClient in Python
-typedef struct {
-    PyObject_HEAD
-    /// \brief Storage for additional attributes
-    PyObject         * CreatorClient_attr;    // Attributes dictionary
-    /// \brief CreateClient object handled by this wrapper
-    CreatorClient    * m_mind;
-} PyCreatorClient;
-
-#define PyCreatorClient_Check(_o) ((_o)->ob_type == &PyCreatorClient_Type)
-
-PyCreatorClient * newPyCreatorClient();
-
-#endif // CLIENT_PY_CREATOR_CLIENT_H
+#endif // CLIENT_PYTHON_CLIENT_API_H
