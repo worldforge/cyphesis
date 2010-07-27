@@ -32,7 +32,6 @@ class CreatorClient : public CharacterClient {
     LocatedEntity * make(const Atlas::Objects::Entity::RootEntity &);
     void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);
     void del(const std::string &);
-    int runScript(const std::string & package, const std::string & function);
 };
 
 #endif // CLIENT_CREATOR_CLIENT_H

@@ -54,7 +54,11 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
         PyErr_SetString(PyExc_TypeError, "function takes 0 or 2 arguments (1 given)");
         return NULL;
     }
-    self->m_client->setup(username, password);
+    int res = self->m_client->setup(username, password);
+    if (res != 0) {
+        PyErr_SetString(PyExc_RuntimeError, "client setup failed");
+        return NULL;
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }

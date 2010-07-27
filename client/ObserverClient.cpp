@@ -76,13 +76,6 @@ int ObserverClient::setup(const std::string & account,
     return 0;
 }
 
-void ObserverClient::load(const std::string & package,
-                          const std::string & function)
-{
-    //DefineWorld::define(m_character);
-    m_character->runScript(package, function);
-}
-
 void ObserverClient::idle()
 {
 #ifdef HAVE_USLEEP

@@ -131,9 +131,3 @@ void CreatorClient::del(const std::string & id)
     op->setTo(id);
     return send(op);
 }
-
-int CreatorClient::runScript(const std::string & package,
-                             const std::string & function)
-{
-    return runClientScript(this, package, function);
-}

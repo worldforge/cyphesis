@@ -28,8 +28,9 @@
 
 #include <iostream>
 
-int runClientScript(CreatorClient * c, const std::string & package,
-                                       const std::string & func)
+int python_client_script(const std::string & package,
+                         const std::string & func,
+                         const std::map<std::string, std::string> & keywords)
 {
     PyObject * module = Get_PyModule(package);
     if (module == NULL) {
@@ -50,13 +51,21 @@ int runClientScript(CreatorClient * c, const std::string & package,
         Py_DECREF(function);
         return -1;
     }
-    PyCreatorClient * editor = newPyCreatorClient();
-    if (editor == NULL) {
-        Py_DECREF(function);
-        return -1;
+    PyObject * args = Py_BuildValue("()");
+    PyObject * kwds = PyDict_New();
+    std::map<std::string, std::string>::const_iterator I = keywords.begin();
+    std::map<std::string, std::string>::const_iterator Iend = keywords.end();
+    for (; I != Iend; ++I) {
+        PyObject * v = PyString_FromString(I->second.c_str());
+        PyDict_SetItemString(kwds, I->first.c_str(), v);
+        Py_DECREF(v);
     }
-    editor->m_mind = c;
-    PyObject * pyob = PyEval_CallFunction(function, "(O)", editor);
+    PyObject * pyob = PyEval_CallObjectWithKeywords(function,
+                                                    args,
+                                                    kwds);
+
+    Py_DECREF(kwds);
+    Py_DECREF(args);
 
     if (pyob == NULL) {
         if (PyErr_Occurred() == NULL) {

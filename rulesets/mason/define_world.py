@@ -197,13 +197,17 @@ tree_styles = {
             'fir' : ['gnarly', 'knotted', 'weathered']
             }
 
-class Default(server.ObserverClient): pass
-
 #observer calls this
-def default(mapeditor):
+def default(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    c=server.ObserverClient()
+
+    c.server = host
+
+    c.setup(account, password)
+
+    m=editor(c.character)
 
     world=m.look()
 

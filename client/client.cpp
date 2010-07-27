@@ -43,7 +43,7 @@ static void usage(const char * prgname)
 STRING_OPTION(server, "localhost", "client", "serverhost",
               "Hostname of the server to connect to");
 
-STRING_OPTION(account, "admin", "client", "account",
+STRING_OPTION(account, "", "client", "account",
               "Account name to use to authenticate to the server");
 
 STRING_OPTION(password, "", "client", "password",
@@ -93,7 +93,6 @@ int main(int argc, char ** argv)
     }
 
     bool interactive = global_conf->findItem("", "interactive");
-    bool login = global_conf->findItem("client", "account");
     int status = 0;
 
     init_python_api(false);
@@ -103,24 +102,11 @@ int main(int argc, char ** argv)
     if (interactive) {
         python_prompt();
     } else {
-        ObserverClient & observer = *new ObserverClient();
-        observer.setServer(server);
-        int ret;
-        if (login) {
-            ret = observer.setup(account, password);
-        } else {
-            ret = observer.setup();
-        }
-        if (ret != 0) {
-            std::cerr << "ERROR: Connection failed."
-                      << std::endl << std::flush;
-            status = 1;
-        } else {
-            observer.load(package, function);
-            //observer.run();
-            observer.logout();
-        }
-        delete &observer;
+        std::map<std::string, std::string> keywords;
+        keywords["account"] = account;
+        keywords["password"] = password;
+        keywords["host"] = server;
+        python_client_script(package, function, keywords);
     }
 
     shutdown_python_api();
