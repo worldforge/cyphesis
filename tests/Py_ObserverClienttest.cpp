@@ -21,6 +21,8 @@
 
 #include "python_testers.h"
 
+#include "client/Python_ClientAPI.h"
+
 #include "rulesets/Python_API.h"
 
 #include <cassert>

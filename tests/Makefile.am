@@ -845,6 +845,7 @@ Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp python_testers.h
 Py_CreatorClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
+        $(top_builddir)/client/Python_ClientAPI.o \
         $(top_builddir)/client/CreatorClient.o \
         $(top_builddir)/client/CharacterClient.o \
         $(top_builddir)/client/ClientConnection.o \
@@ -864,6 +865,7 @@ Py_ObserverClienttest_SOURCES = Py_ObserverClienttest.cpp python_testers.h
 Py_ObserverClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
+        $(top_builddir)/client/Python_ClientAPI.o \
         $(top_builddir)/client/CreatorClient.o \
         $(top_builddir)/client/CharacterClient.o \
         $(top_builddir)/client/ClientConnection.o \
