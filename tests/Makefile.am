@@ -1,5 +1,6 @@
 COMMON_TESTS = logtest Inheritancetest Propertytest \
-               systemtest type_utilstest \
+               systemtest system_nettest system_uidtest \
+               type_utilstest \
                consttest randomtest Addtest Attacktest Burntest \
                Connecttest Droptest Eattest \
                Monitortest Nourishtest Pickuptest Setuptest \
@@ -96,8 +97,14 @@ Propertytest_LDADD = $(top_builddir)/common/Property.o
 
 systemtest_SOURCES = systemtest.cpp
 systemtest_LDADD = \
-        $(top_builddir)/common/system.o \
-        $(top_builddir)/common/system_net.o \
+        $(top_builddir)/common/system.o
+
+system_nettest_SOURCES = system_nettest.cpp
+system_nettest_LDADD = \
+        $(top_builddir)/common/system_net.o
+
+system_uidtest_SOURCES = system_uidtest.cpp
+system_uidtest_LDADD = \
         $(top_builddir)/common/system_uid.o
 
 type_utilstest_SOURCES = type_utilstest.cpp

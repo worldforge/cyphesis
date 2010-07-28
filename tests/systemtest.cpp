@@ -38,16 +38,10 @@
 
 int main()
 {
-    std::string hostname = get_hostname();
-    assert(!hostname.empty());
-
     int res;
 
     res = security_init();
     assert(res == 0);
-
-    unsigned magic_res = security_check();
-    assert(magic_res == SECURITY_OKAY);
 
     reduce_priority(1);
     
