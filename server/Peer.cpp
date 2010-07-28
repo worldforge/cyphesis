@@ -126,18 +126,71 @@ int Peer::teleportEntity(const RootEntity &entity)
         return -1;
     }
 
-    Create op;
-    op->setFrom(m_accountId);
-    op->setArgs1(entity);
-    op->setSerialno(newSerialNo());
-    m_commClient.send(op);
-    log(INFO, "Sent Create op to peer");
+    Entity * ent = BaseWorld::instance().getEntity(id);
+    if (ent == 0) {
+        log(ERROR, String::compose("No entity found with ID: %1", id));
+        return -1;
+    }
+    // Check if the entity has a mind
+    bool isMind = true;
+    Character * chr = dynamic_cast<Character *>(ent);
+    if (!chr) {
+        isMind = false;
+    }
+    if (chr->m_externalMind == 0) {
+        isMind = false;
+    }
+    ExternalMind * mind = 0;
+    mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+    if (mind == 0 || !mind->isConnected()) {
+        isMind = false;
+    }
+    std::string key("");
+    if (isMind) {
+        // Generate a nice and long key
+        log(INFO, "Entity has a mind. Generating random key");
+        WFMath::MTRand generator;
+        for(int i=0;i<32;i++) {
+            char ch = (char)((int)'a' + generator.rand(25));
+            key += ch;
+        }
+    }
 
-    TeleportState *s = new TeleportState();
+    TeleportState *s;
+    if (isMind) {
+        s = new TeleportState(key);
+    } else {
+        s = new TeleportState();
+    }
+
     if(s == NULL) {
         log(ERROR, "Unable to allocate teleport state object");
         return -1;
     }
+    
+    if (isMind) {
+        // Add an additional possess key argument
+        std::vector<Root> create_args;
+        Anonymous key_arg;
+        key_arg->setAttr("possess_key", key);
+        create_args.push_back(entity);
+        create_args.push_back(key_arg);
+
+        Create op;
+        op->setFrom(m_accountId);
+        op->setArgs(create_args);
+        op->setSerialno(newSerialNo());
+        m_commClient.send(op);
+    } else {
+        // Plain old create without additional argument
+        Create op;
+        op->setFrom(m_accountId);
+        op->setArgs1(entity);
+        op->setSerialno(newSerialNo());
+        m_commClient.send(op);
+    }
+    log(INFO, "Sent Create op to peer");
+
     s->setRequested();
     m_teleports[id] = s;
     log(INFO, "Added new teleport state");
@@ -213,7 +266,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         Anonymous ip_arg;
         ip_arg->setAttr("teleport_host", peer->getHost());
         ip_arg->setAttr("teleport_port", peer->getPort());
-        ip_arg->setAttr("possess_key", key);
+        ip_arg->setAttr("possess_key", s->getPossessKey());
         ip_arg->setAttr("possess_entity_id", arg->getId());
         logout_args.push_back(ip_arg);
         logoutOp->setArgs(logout_args);
