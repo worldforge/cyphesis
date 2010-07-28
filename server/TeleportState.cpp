@@ -17,7 +17,15 @@
 
 #include "server/TeleportState.h"
 
-TeleportState::TeleportState() : m_state(TELEPORT_NONE)
+TeleportState::TeleportState() : m_isMind(false),
+                                    m_possessKey(""),
+                                    m_state(TELEPORT_NONE)
+{
+}
+
+TeleportState::TeleportState(const std::string &key) : m_isMind(true),
+                                                        m_possessKey(key),
+                                                        m_state(TELEPORT_NONE)
 {
 }
 
@@ -39,4 +47,14 @@ bool TeleportState::isCreated()
 bool TeleportState::isRequested()
 {
     return (m_state == TELEPORT_REQUESTED);
+}
+
+bool TeleportState::isMind()
+{
+    return m_isMind;
+}
+
+const std::string & TeleportState::getPossessKey()
+{
+    return m_possessKey;
 }

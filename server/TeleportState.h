@@ -22,18 +22,24 @@
 
 class TeleportState
 {
+    bool m_isMind;
+    std::string m_possessKey;
     enum {  TELEPORT_NONE,
             TELEPORT_REQUESTED,
             TELEPORT_CREATED } m_state;
 
     public:
     TeleportState();
+    TeleportState(const std::string &key);
     
     void setRequested();
     void setCreated();
 
     bool isCreated();
     bool isRequested();
+
+    bool isMind();
+    const std::string & getPossessKey();
 };
 
 #endif
