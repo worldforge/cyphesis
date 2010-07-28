@@ -55,7 +55,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
-               CommClientFactorytest
+               CommClientFactorytest ServerRoutingtest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest
@@ -1149,6 +1149,10 @@ CommClientFactorytest_SOURCES = CommClientFactorytest.cpp
 CommClientFactorytest_LDADD = \
         $(top_builddir)/server/CommClientFactory.o \
         $(NETWORK_LIBS)
+
+ServerRoutingtest_SOURCES = ServerRoutingtest.cpp
+ServerRoutingtest_LDADD = \
+        $(top_builddir)/server/ServerRouting.o
 
 # SERVER_COMM_TESTS
 
