@@ -209,6 +209,10 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     const Root & arg = args.front();
     // We have exactly two arguments;
     const Root & arg2 = args.back();
+    if(!arg.isValid() || arg2.isValid()) {
+        log(ERROR, "One or more Info op arguments invalid");
+        return;
+    }
     // Get the original ID of the entity on this server
     const std::string & id = arg2->getId();
 
@@ -228,35 +232,35 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     s->setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
 
-    // This is the sender entity
+    // This is the sender entity. This is retreived again rather than
+    // relying on a pointer (in the TeleportState object perhaps) as the
+    // entity might have been deleted in the time between sending and response
     Entity * entity = BaseWorld::instance().getEntity(id);
     if (entity == 0) {
         log(ERROR, String::compose("No entity found with ID: %1", id));
         return;
     }
+
+
     // Check if the entity has a mind
-    bool isMind = true;
-    Character * chr = dynamic_cast<Character *>(entity);
-    if (!chr) {
-        isMind = false;
-    }
-    if (chr->m_externalMind == 0) {
-        isMind = false;
-    }
-    ExternalMind * mind = 0;
-    mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-    if (mind == 0 || !mind->isConnected()) {
-        isMind = false;
-    }
+    bool isMind = s->isMind();
+
+    // If entity has a mind, add extra information in the Logout op
     if (isMind) {
-        // Entity has a mind. Logout as and extra.
-        // Generate a nice and long key
-        log(INFO, "Entity has a mind. Generating random key");
-        WFMath::MTRand generator;
-        std::string key("");
-        for(int i=0;i<32;i++) {
-            char ch = (char)((int)'a' + generator.rand(25));
-            key += ch;
+        Character * chr = dynamic_cast<Character *>(entity);
+        if (!chr) {
+            log(ERROR, "Entity is not a character");
+            return;
+        }
+        if (chr->m_externalMind == 0) {
+            log(ERROR, "No external mind (though teleport state claims it)");
+            return;
+        }
+        ExternalMind * mind = 0;
+        mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+        if (mind == 0 || !mind->isConnected()) {
+            log(ERROR, "Mind is NULL or not connected");
+            return;
         }
         std::vector<Root> logout_args;
         Logout logoutOp;
