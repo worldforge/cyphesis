@@ -62,7 +62,7 @@ SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration
 
-TOOLS_TESTS = WorldLoadertest
+TOOLS_TESTS = WorldLoadertest AdminClienttest
 
 PYTHON_TESTS = python_class
 
@@ -1252,6 +1252,9 @@ WorldLoadertest_LDADD = \
         $(top_builddir)/common/globals.o \
         $(top_builddir)/common/log.o
 
+AdminClienttest_SOURCES = AdminClienttest.cpp
+AdminClienttest_LDADD = \
+        $(top_builddir)/tools/AdminClient.o
 
 # PYTHON_TESTS
 
