@@ -19,10 +19,25 @@
 
 #include "server/StorageManager.h"
 
+#include "server/WorldRouter.h"
+
 #include <cassert>
 
 int main()
 {
+    {
+        WorldRouter world;
+
+        StorageManager store(world);
+    }
+
+    {
+        WorldRouter world;
+
+        StorageManager store(world);
+    }
+
+
     return 0;
 }
 
@@ -35,7 +50,6 @@ int main()
 #include "modules/EntityRef.h"
 #include "modules/Location.h"
 
-#include "common/BaseWorld.h"
 #include "common/Database.h"
 #include "common/globals.h"
 #include "common/log.h"
@@ -43,12 +57,127 @@ int main()
 #include "common/PropertyManager.h"
 #include "common/Variable.h"
 
+#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 #include <cstdlib>
 
 #include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
+
+struct OpQueEntry {
+    Operation op;
+    Entity & from;
+
+    explicit OpQueEntry(const Operation & o, Entity & f);
+    OpQueEntry(const OpQueEntry & o);
+    ~OpQueEntry();
+
+    const Operation & operator*() const {
+        return op;
+    }
+
+    Atlas::Objects::Operation::RootOperationData * operator->() const {
+        return op.get();
+    }
+};
+
+OpQueEntry::OpQueEntry(const Operation & o, Entity & f) : op(o), from(f)
+{
+    from.incRef();
+}
+
+OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
+{
+    from.incRef();
+}
+
+OpQueEntry::~OpQueEntry()
+{
+    from.decRef();
+}
+
+WorldRouter::WorldRouter() : BaseWorld(*(Entity*)0),
+                             m_entityCount(1)
+          
+{
+}
+
+WorldRouter::~WorldRouter()
+{
+}
+
+Entity * WorldRouter::addEntity(Entity * ent)
+{
+    return 0;
+}
+
+Entity * WorldRouter::addNewEntity(const std::string & typestr,
+                                   const RootEntity & attrs)
+{
+    return 0;
+}
+
+int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
+{
+    return 0;
+}
+
+int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
+{
+    return 0;
+}
+
+Entity * WorldRouter::spawnNewEntity(const std::string & name,
+                                     const std::string & type,
+                                     const RootEntity & desc)
+{
+    return 0;
+}
+
+Task * WorldRouter::newTask(const std::string & name, Character & owner)
+{
+    return 0;
+}
+
+Task * WorldRouter::activateTask(const std::string & tool,
+                                 const std::string & op,
+                                 const std::string & target,
+                                 Character & owner)
+{
+    return 0;
+}
+
+void WorldRouter::message(const Operation & op, Entity & ent)
+{
+}
+
+bool WorldRouter::idle(int sec, int usec)
+{
+    return false;
+}
+
+Entity * WorldRouter::findByName(const std::string & name)
+{
+    return 0;
+}
+
+Entity * WorldRouter::findByType(const std::string & type)
+{
+    return 0;
+}
+
+ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
+                                              Entity * owner)
+{
+    return 0;
+}
+
+void WorldRouter::addPerceptive(Entity * perceptive)
+{
+}
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
@@ -268,4 +397,4 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-bool database_flag = false;
+bool database_flag = true;
