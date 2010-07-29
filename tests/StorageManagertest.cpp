@@ -21,7 +21,42 @@
 
 #include "server/WorldRouter.h"
 
+#include "rulesets/Entity.h"
+
 #include <cassert>
+
+class TestStorageManager : public StorageManager
+{
+  public:
+    TestStorageManager(WorldRouter&w) : StorageManager(w) { }
+
+    
+    void test_entityInserted(Entity * e) {
+        entityInserted(e);
+    }
+    void test_entityUpdated(Entity * e) {
+        entityUpdated(e);
+    }
+
+    void test_encodeProperty(PropertyBase * p, std::string & s) {
+        encodeProperty(p, s);
+    }
+    void test_restoreProperties(Entity * e) {
+        restoreProperties(e);
+    }
+
+    void test_insertEntity(Entity * e) {
+        insertEntity(e);
+    }
+    void test_updateEntity(Entity * e) {
+        updateEntity(e);
+    }
+    void test_restoreChildren(Entity * e) {
+        restoreChildren(e);
+    }
+
+
+};
 
 int main()
 {
@@ -55,6 +90,65 @@ int main()
         store.tick();
     }
 
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        store.test_entityInserted(new Entity("1", 1));
+    }
+
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        store.test_entityUpdated(new Entity("1", 1));
+    }
+
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        std::string val;
+
+        // store.test_encodeProperty(0, val);
+    }
+
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        store.test_restoreProperties(new Entity("1", 1));
+    }
+
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        store.test_insertEntity(new Entity("1", 1));
+    }
+
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        store.test_updateEntity(new Entity("1", 1));
+    }
+
+    {
+        WorldRouter world;
+
+        TestStorageManager store(world);
+
+        store.test_restoreChildren(new Entity("1", 1));
+    }
+
+
 
     return 0;
 }
@@ -63,7 +157,6 @@ int main()
 
 #include "server/EntityBuilder.h"
 
-#include "rulesets/Entity.h"
 #include "rulesets/Script.h"
 
 #include "modules/EntityRef.h"
