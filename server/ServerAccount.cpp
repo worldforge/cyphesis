@@ -221,14 +221,4 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         info->setArgs(reply_args);
         res.push_back(info);
     }
-#if 0
-// We don't want to tell the remote peer about the new char
-    // Inform the client of the newly created character
-    Sight sight;
-    sight->setTo(getId());
-    Anonymous sight_arg;
-    addToEntity(sight_arg);
-    sight->setArgs1(sight_arg);
-    res.push_back(sight);
-#endif
 }
