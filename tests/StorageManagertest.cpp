@@ -35,6 +35,24 @@ int main()
         WorldRouter world;
 
         StorageManager store(world);
+
+        store.initWorld();
+    }
+
+    {
+        WorldRouter world;
+
+        StorageManager store(world);
+
+        store.restoreWorld();
+    }
+
+    {
+        WorldRouter world;
+
+        StorageManager store(world);
+
+        store.tick();
     }
 
 
