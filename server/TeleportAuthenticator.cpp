@@ -18,6 +18,8 @@
 #include "TeleportAuthenticator.h"
 #include "PendingTeleport.h"
 
+TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
+
 bool TeleportAuthenticator::isPending(const std::string &account_id)
 {
     return (m_teleports[account_id] != NULL);

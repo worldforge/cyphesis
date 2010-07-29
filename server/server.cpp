@@ -41,6 +41,7 @@
 #include "Admin.h"
 #include "ServerAccount.h"
 #include "Peer.h"
+#include "TeleportAuthenticator.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
@@ -192,6 +193,8 @@ int main(int argc, char ** argv)
     WorldRouter world;
 
     Ruleset::init();
+
+    TeleportAuthenticator::init();
 
     StorageManager store(world);
 
@@ -472,6 +475,7 @@ int main(int argc, char ** argv)
     EntityBuilder::del();
     ArithmeticBuilder::del();
     MindFactory::del();
+    TeleportAuthenticator::del();
 
     Inheritance::clear();
 
