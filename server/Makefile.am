@@ -119,6 +119,7 @@ cyphesis_SOURCES = \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
         TeleportState.cpp TeleportState.h \
+        TeleportAuthenticator.cpp TeleportAuthenticator.h \
         PendingTeleport.cpp PendingTeleport.h \
 		InterServerConnection.cpp InterServerConnection.h \
 		InterServerClient.cpp InterServerClient.h \
