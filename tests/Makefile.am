@@ -55,7 +55,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
-               CommClientFactorytest ServerRoutingtest Idletest
+               CommClientFactorytest ServerRoutingtest Idletest \
+               StorageManagertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest
@@ -1157,6 +1158,10 @@ ServerRoutingtest_LDADD = \
 Idletest_SOURCES = Idletest.cpp
 Idletest_LDADD = \
         $(top_builddir)/server/Idle.o
+
+StorageManagertest_SOURCES = StorageManagertest.cpp
+StorageManagertest_LDADD = \
+        $(top_builddir)/server/StorageManager.o
 
 # SERVER_COMM_TESTS
 
