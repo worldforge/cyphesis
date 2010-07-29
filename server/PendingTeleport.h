@@ -24,12 +24,18 @@ class PendingTeleport
 {
     std::string m_entity_id;
     std::string m_possess_key;
+    bool m_valid;
 
     public:
 
     PendingTeleport(const std::string &, const std::string &);
     const std::string & getPossessKey();
     const std::string & getEntityID();
+
+    bool validate(const std::string &, const std::string &);
+
+    bool setValidated();
+    bool isValidated();
 };
 
 #endif
