@@ -150,10 +150,10 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     }
     RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
     if(!arg.isValid()) {
-        log(ERROR, "Unable to cast argument");
+        log(ERROR, "Character creation arg is malformed");
         return;
     }
-    // const Root & arg = args.front();
+
     const std::string & old_id = arg->getId();
     log(INFO, compose("Old entity had ID %1", old_id));
 
@@ -163,12 +163,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     }
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
-        log(INFO, "Only creation of characters supported currently");
-        return;
-    }
-
-    if (!arg.isValid()) {
-        error(op, "Character creation arg is malformed", res, getId());
+        log(INFO, "Only creation of characters currently supported");
         return;
     }
 
