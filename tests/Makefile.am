@@ -56,7 +56,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
                CommClientFactorytest ServerRoutingtest Idletest \
-               StorageManagertest
+               StorageManagertest HttpCachetest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest
@@ -1162,6 +1162,10 @@ Idletest_LDADD = \
 StorageManagertest_SOURCES = StorageManagertest.cpp
 StorageManagertest_LDADD = \
         $(top_builddir)/server/StorageManager.o
+
+HttpCachetest_SOURCES = HttpCachetest.cpp
+HttpCachetest_LDADD = \
+        $(top_builddir)/server/HttpCache.o
 
 # SERVER_COMM_TESTS
 
