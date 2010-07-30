@@ -26,11 +26,10 @@
 /// \brief A caching generator for the results of http requests.
 ///
 class HttpCache {
-  private:
+  protected:
     HttpCache();
     static HttpCache * m_instance;
 
-  protected:
     void sendHeaders(std::ostream &,
                      int status = 200,
                      const std::string & type = "text/plain",
