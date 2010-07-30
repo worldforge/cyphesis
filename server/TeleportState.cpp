@@ -18,7 +18,6 @@
 #include "server/TeleportState.h"
 
 TeleportState::TeleportState() : m_isMind(false),
-                                    m_possessKey(""),
                                     m_state(TELEPORT_NONE)
 {
 }
