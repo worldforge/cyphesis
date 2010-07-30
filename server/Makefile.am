@@ -118,9 +118,9 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
-        TeleportState.cpp TeleportState.h \
-        TeleportAuthenticator.cpp TeleportAuthenticator.h \
-        PendingTeleport.cpp PendingTeleport.h \
+		TeleportState.cpp TeleportState.h \
+		TeleportAuthenticator.cpp TeleportAuthenticator.h \
+		PendingTeleport.cpp PendingTeleport.h \
 		InterServerConnection.cpp InterServerConnection.h \
 		InterServerClient.cpp InterServerClient.h \
 		server.cpp server.h \
