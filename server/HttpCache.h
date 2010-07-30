@@ -48,6 +48,7 @@ class HttpCache {
     static void del() {
         if (m_instance != NULL) {
             delete m_instance;
+            m_instance = NULL;
         }
     }
     void processQuery(std::ostream &, const std::list<std::string> &);
