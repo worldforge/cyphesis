@@ -203,13 +203,14 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     log(INFO, "Got a peer teleport response");
     // Response to a Create op
     const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
+    if (args.size() != 2) {
+        log(ERROR, "Malformed args in Info op");
         return;
     }
     const Root & arg = args.front();
     // We have exactly two arguments;
     const Root & arg2 = args.back();
-    if(!arg.isValid() || arg2.isValid()) {
+    if(!arg.isValid() || !arg2.isValid()) {
         log(ERROR, "One or more Info op arguments invalid");
         return;
     }
