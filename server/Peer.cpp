@@ -234,10 +234,6 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
     TeleportState *s = m_teleports.find(id)->second;
-    if (s == NULL) {
-        log(ERROR, "NULL state found");
-        return;
-    }
     s->setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
 
