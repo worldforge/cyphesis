@@ -125,8 +125,7 @@ int Peer::teleportEntity(const RootEntity &entity)
         log(ERROR, "Entity has invalid ID");
         return -1;
     }
-    TeleportState *existing = m_teleports.find(id)->second;
-    if (existing != NULL) {
+    if (m_teleports.find(id) != m_teleports.end()) {
         log(INFO, "Transfer of this entity already in progress");
         return -1;
     }
@@ -230,16 +229,20 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         log(ERROR, "Unable to get CommPeer object");
         return;
     }
+    if (m_teleports.find(id) != m_teleports.end()) {
+        log(ERROR, "Info op for unknown create");
+        return;
+    }
     TeleportState *s = m_teleports.find(id)->second;
     if (s == NULL) {
-        log(INFO, "Info op for unknown create");
+        log(ERROR, "NULL state found");
         return;
     }
     s->setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
 
     // This is the sender entity. This is retreived again rather than
-    // relying on a pointer (in the TeleportState object perhaps) as the
+    // rlying on a pointer (in the TeleportState object perhaps) as the
     // entity might have been deleted in the time between sending and response
     Entity * entity = BaseWorld::instance().getEntity(id);
     if (entity == 0) {
