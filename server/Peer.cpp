@@ -125,10 +125,10 @@ int Peer::teleportEntity(const RootEntity &entity)
         log(ERROR, "Entity has invalid ID");
         return -1;
     }
-    TeleportState *s = m_teleports.find(id)->second;
-    if (s != NULL) {
+    TeleportState *existing = m_teleports.find(id)->second;
+    if (existing != NULL) {
         log(INFO, "Transfer of this entity already in progress");
-        return;
+        return -1;
     }
 
     Entity * ent = BaseWorld::instance().getEntity(id);
