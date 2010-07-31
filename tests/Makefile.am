@@ -56,10 +56,11 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
                CommClientFactorytest ServerRoutingtest Idletest \
-               StorageManagertest
+               StorageManagertest HttpCachetest UpdateTestertest \
+               ExternalMindtest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
-                    CommHttpClienttest
+                    CommHttpClienttest CommStreamListenertest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration
 
@@ -1163,6 +1164,18 @@ StorageManagertest_SOURCES = StorageManagertest.cpp
 StorageManagertest_LDADD = \
         $(top_builddir)/server/StorageManager.o
 
+HttpCachetest_SOURCES = HttpCachetest.cpp
+HttpCachetest_LDADD = \
+        $(top_builddir)/server/HttpCache.o
+
+UpdateTestertest_SOURCES = UpdateTestertest.cpp
+UpdateTestertest_LDADD = \
+        $(top_builddir)/server/UpdateTester.o
+
+ExternalMindtest_SOURCES = ExternalMindtest.cpp
+ExternalMindtest_LDADD = \
+        $(top_builddir)/server/ExternalMind.o
+
 # SERVER_COMM_TESTS
 
 CommSockettest_SOURCES = CommSockettest.cpp
@@ -1182,6 +1195,11 @@ CommClienttest_LDADD = \
 CommHttpClienttest_SOURCES = CommHttpClienttest.cpp
 CommHttpClienttest_LDADD = \
         $(top_builddir)/server/CommHttpClient.o \
+        $(NETWORK_LIBS)
+
+CommStreamListenertest_SOURCES = CommStreamListenertest.cpp
+CommStreamListenertest_LDADD = \
+        $(top_builddir)/server/CommStreamListener.o \
         $(NETWORK_LIBS)
 
 # SERVER_INTEGRATION_TESTS
