@@ -56,7 +56,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
                CommClientFactorytest ServerRoutingtest Idletest \
-               StorageManagertest HttpCachetest UpdateTestertest
+               StorageManagertest HttpCachetest UpdateTestertest \
+               ExternalMindtest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest
@@ -1170,6 +1171,10 @@ HttpCachetest_LDADD = \
 UpdateTestertest_SOURCES = UpdateTestertest.cpp
 UpdateTestertest_LDADD = \
         $(top_builddir)/server/UpdateTester.o
+
+ExternalMindtest_SOURCES = ExternalMindtest.cpp
+ExternalMindtest_LDADD = \
+        $(top_builddir)/server/ExternalMind.o
 
 # SERVER_COMM_TESTS
 
