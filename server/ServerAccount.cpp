@@ -162,8 +162,8 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & objtype = arg->getObjtype();
-    if (objtype == "class" || objtype == "op_definition") {
-        log(INFO, "Only creation of characters currently supported");
+    if (objtype != "obj") {
+        log(INFO, "Only creation of entities currently supported");
         return;
     }
 
