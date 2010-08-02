@@ -22,6 +22,8 @@
 
 #include "Account.h"
 
+#include "common/Router.h"
+
 #include <sigc++/connection.h>
 
 /// \brief This is a class for handling users with administrative priveleges
@@ -41,6 +43,10 @@ class ServerAccount : public Account {
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+
+    Entity * addNewEntity(const std::string &,
+                             const Atlas::Objects::Entity::RootEntity &,
+                             const Atlas::Objects::Entity::RootEntity &);
 
     virtual void CreateOperation(const Operation &, OpVector &);
 };

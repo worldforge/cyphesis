@@ -187,33 +187,56 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    Anonymous new_character;
-    new_character->setParents(std::list<std::string>(1, typestr));
-    new_character->setAttr("status", 0.024);
-    new_character->setAttr("mind", "");
+    Anonymous new_entity;
+    new_entity->setParents(std::list<std::string>(1, typestr));
+    new_entity->setAttr("status", 0.024);
+    new_entity->setAttr("mind", "");
     if (!arg->isDefaultName()) {
-        new_character->setName(arg->getName());
+        new_entity->setName(arg->getName());
     }
 
-    Entity * entity = addNewCharacter(typestr, new_character, arg);
+    Entity * entity = addNewEntity(typestr, new_entity, arg);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
         return;
     }
 
-    Character * character = dynamic_cast<Character *>(entity);
-    if (character != 0) {
-        // Inform the client that it has successfully subscribed
-        Info info;
-        std::vector<Root> reply_args;
-        Anonymous info_arg;
-        RootEntity prev_id;
-        prev_id->setId(old_id);
-        entity->addToEntity(info_arg);
-        reply_args.push_back(info_arg);
-        reply_args.push_back(prev_id);
-        info->setArgs(reply_args);
-        res.push_back(info);
-    }
+    // Inform the client that it has successfully subscribed
+    Info info;
+    std::vector<Root> reply_args;
+    Anonymous info_arg;
+    RootEntity prev_id;
+    prev_id->setId(old_id);
+    entity->addToEntity(info_arg);
+    reply_args.push_back(info_arg);
+    reply_args.push_back(prev_id);
+    info->setArgs(reply_args);
+    res.push_back(info);
 }
+
+Entity * ServerAccount::addNewEntity(const std::string & typestr,
+                                  const RootEntity & ent,
+                                  const RootEntity & arg)
+{
+    if (m_connection == 0) {
+        return 0;
+    }
+    BaseWorld & world = m_connection->m_server.m_world;
+    debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
+    Entity * chr;
+    Element spawn;
+    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
+        chr = world.spawnNewEntity(spawn.String(), typestr, ent);
+    } else {
+        chr = world.addNewEntity(typestr, ent);
+    }
+    if (chr == 0) {
+        return 0;
+    }
+    debug(std::cout << "Added" << std::endl << std::flush;);
+    assert(chr->m_location.isValid());
+    debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
+    return chr;
+}
+
