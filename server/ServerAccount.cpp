@@ -25,6 +25,7 @@
 #include "CommPeer.h"
 #include "CommServer.h"
 #include "Peer.h"
+#include "TeleportAuthenticator.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
@@ -184,6 +185,29 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    // If we have a possess key (entity has a mind)
+    bool isMind = false;
+    std::string possess_key;
+    if (args.size() == 2) {
+        RootEntity arg2 = smart_dynamic_cast<RootEntity>(args.back());
+        Element key;
+        if(arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
+            log(ERROR, "Entity has mind but no possess key found");
+            return;
+        }
+        possess_key = key.String();
+        isMind = true;
+    }
+
+    TeleportAuthenticator *tele_auth = NULL;
+    if (isMind) {
+        tele_auth = TeleportAuthenticator::instance();
+        if (tele_auth == NULL) {
+            log(ERROR, "Unable to retreive TeleportAuthenticator instance");
+            return;
+        }
+    }
+
     debug( std::cout << "Account creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
@@ -200,6 +224,15 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
         return;
+    }
+
+    if (isMind) {
+        // TODO: Get this from the Create op (have it send in Peer.cpp)
+        std::string accountId;
+        if (tele_auth->addTeleport(accountId, entity->getId(), possess_key) == -1) {
+            log(ERROR, "Unable to insert into TeleportAuthenticator");
+            return;
+        }
     }
 
     // Inform the client that it has successfully subscribed
