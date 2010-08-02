@@ -262,23 +262,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
         return OPERATION_IGNORED;
     }
     log(INFO, String::compose("Teleport request sender has ID %1", from));
-#if 0
-    // Do an inter server connnection now using a "server" account
-    InterServerConnection conn;
-    InterServerClient c(conn);
-    // FIXME: Set a lower timeout or move to this to a separate thread
-    if(c.connect(pb->data()) == -1) {
-        debug(std::cout << "Connection to server at IP " << pb->data() 
-                        << " failed\n";);
-        return OPERATION_IGNORED;
-    }
-    // Do a hashtable/DB lookup here
-    if(c.login("server", "nonsense") == -1) {
-        debug(std::cout << "Login failed for \"server\" account. Check " 
-                        << "credentials.\n";);
-        return OPERATION_IGNORED;
-    }
-#endif
+
     // This is the sender entity
     Entity * entity = BaseWorld::instance().getEntity(from);
     if (entity == 0) {
