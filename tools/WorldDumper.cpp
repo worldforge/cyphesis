@@ -84,7 +84,7 @@ void WorldDumper::infoArrived(const Operation & op, OpVector & res)
 
 
     if (m_queue.empty()) {
-        m_formatter->streamBegin();
+        m_formatter->streamEnd();
         m_complete = true;
         std::cout << "COUNTED: " << m_count << std::endl << std::flush;
         return;
