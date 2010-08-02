@@ -149,7 +149,7 @@ int Peer::teleportEntity(const RootEntity &entity)
     if (mind == 0 || !mind->isConnected()) {
         isMind = false;
     }
-    std::string key("");
+    std::string key;
     if (isMind) {
         // Generate a nice and long key
         log(INFO, "Entity has a mind. Generating random key");
