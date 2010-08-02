@@ -19,8 +19,6 @@
 
 #include "CorePropertyManager.h"
 
-#include "InterServerClient.h"
-#include "InterServerConnection.h"
 #include "ExternalMind.h"
 #include "ServerRouting.h"
 #include "Peer.h"

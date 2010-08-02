@@ -121,8 +121,6 @@ cyphesis_SOURCES = \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
-		InterServerConnection.cpp InterServerConnection.h \
-		InterServerClient.cpp InterServerClient.h \
 		server.cpp server.h \
 		buildid.cpp
 

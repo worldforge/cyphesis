@@ -918,8 +918,6 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -962,8 +960,6 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -999,8 +995,6 @@ Accounttest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -1043,8 +1037,6 @@ Admintest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -1088,8 +1080,6 @@ ServerAccounttest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -1131,8 +1121,6 @@ Playertest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -1201,8 +1189,6 @@ Peertest_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/CommStreamClient.o \
         $(top_builddir)/server/CommClient.o \
-        $(top_builddir)/server/InterServerClient.o \
-        $(top_builddir)/server/InterServerConnection.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
@@ -1367,12 +1353,6 @@ Mastertest_LDADD = \
         $(top_builddir)/server/Master.o \
         $(top_builddir)/common/libcommon.a
 
-
-InterServerConnectiontest_SOURCES = InterServerConnectiontest.cpp python_testers.h
-InterServerConnectiontest_LDADD = \
-        $(top_builddir)/server/InterServerConnection.o \
-        $(top_builddir)/common/libcommon.a \
-        $(NETWORK_LIBS)
 
 # TOOLS_TESTS
 
