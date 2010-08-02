@@ -47,24 +47,20 @@ class TeleportAuthenticator
 
     /// \brief Checks if there is a pending teleport on an account
     ///
-    /// \param account_id The account ID to check for pending teleports
+    /// \param entity_id The entity ID to check for pending teleport
     bool isPending(const std::string &);
 
     /// \brief Add a teleport authentication entry
     ///
-    /// \param account_id The account ID that the teleport is being done by
     /// \param entity_id The ID of the entity that has been created
     /// \param key The possess key the client will use to authenticate himself
-    int addTeleport(const std::string &, const std::string &, 
-                                            const std::string &);
+    int addTeleport(const std::string &, const std::string &);
 
     /// \brief Authenticate a teleport request
     ///
-    /// \param account_id The account ID that the teleport is being done by
     /// \param entity_id The ID of the entity that was created
     /// \param key The possess key sent by the client
-    bool authenticateTeleport(const std::string &, const std::string &, 
-                                                const std::string &);
+    bool authenticateTeleport(const std::string &, const std::string &);
 };
 
 #endif

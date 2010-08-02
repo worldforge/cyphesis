@@ -20,29 +20,29 @@
 
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
-bool TeleportAuthenticator::isPending(const std::string &account_id)
+bool TeleportAuthenticator::isPending(const std::string &entity_id)
 {
-    return (m_teleports[account_id] != NULL);
+    std::map<std::string, PendingTeleport *>::iterator i = m_teleports.find(entity_id);
+    return (i != m_teleports.end());
 }
 
-int TeleportAuthenticator::addTeleport(const std::string &account_id, 
-                                        const std::string &entity_id,
+int TeleportAuthenticator::addTeleport(const std::string &entity_id,
                                         const std::string &possess_key)
 {
-    if (isPending(account_id)) {
+    if (isPending(entity_id)) {
         return -1;
     }
-    m_teleports[account_id] = new PendingTeleport(entity_id, possess_key);
+    m_teleports[entity_id] = new PendingTeleport(entity_id, possess_key);
 }
 
-bool TeleportAuthenticator::authenticateTeleport(const std::string &account_id,
-                                            const std::string &entity_id,
+bool TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
-    if (!isPending(account_id)) {
+    if (!isPending(entity_id)) {
         return false;
     }
-    PendingTeleport *entry = m_teleports[account_id];
+    std::map<std::string, PendingTeleport *>::iterator i = m_teleports.find(entity_id);
+    PendingTeleport *entry = i->second;
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
         entry->setValidated();

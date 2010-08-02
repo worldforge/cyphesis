@@ -227,9 +227,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     }
 
     if (isMind) {
-        // TODO: Get this from the Create op (have it send in Peer.cpp)
-        std::string accountId;
-        if (tele_auth->addTeleport(accountId, entity->getId(), possess_key) == -1) {
+        if (tele_auth->addTeleport(entity->getId(), possess_key) == -1) {
             log(ERROR, "Unable to insert into TeleportAuthenticator");
             return;
         }
