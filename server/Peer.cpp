@@ -230,7 +230,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
 
-	TeleportMap::iterator I = m_teleports.find(id);
+    TeleportMap::iterator I = m_teleports.find(id);
     if (I != m_teleports.end()) {
         log(ERROR, "Info op for unknown create");
         return;
