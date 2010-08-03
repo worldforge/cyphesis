@@ -909,8 +909,6 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
-        $(top_builddir)/server/TeleportAuthenticator.o \
-        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
