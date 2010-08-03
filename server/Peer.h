@@ -37,6 +37,8 @@ class TeleportState;
 
 enum PeerAuthState { PEER_INIT, PEER_AUTHENTICATING, PEER_AUTHENTICATED };
 
+typedef std::map<std::string, TeleportState *> TeleportMap;
+
 /// \brief Class represening connections from another server that is peered to
 /// to this one
 ///
@@ -50,7 +52,7 @@ class Peer : public Router {
     /// The authentication state of the peer object
     PeerAuthState m_state;
     /// The states of the various active teleports
-    std::map<std::string, TeleportState *> m_teleports;
+    TeleportMap m_teleports;
     
   public:
     /// The client socket used to connect to the peer.

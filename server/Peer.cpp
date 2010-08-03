@@ -229,11 +229,16 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         log(ERROR, "Unable to get CommPeer object");
         return;
     }
-    if (m_teleports.find(id) != m_teleports.end()) {
+
+	TeleportMap::iterator it = m_teleports.find(id);
+    if (it != m_teleports.end()) {
         log(ERROR, "Info op for unknown create");
         return;
     }
-    TeleportState *s = m_teleports.find(id)->second;
+
+    TeleportState *s = it->second;
+	assert (s != NULL);
+
     s->setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
 
