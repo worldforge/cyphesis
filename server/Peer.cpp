@@ -237,7 +237,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     }
 
     TeleportState *s = I->second;
-	assert (s != NULL);
+    assert (s != NULL);
 
     s->setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
