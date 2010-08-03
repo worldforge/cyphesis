@@ -374,3 +374,4 @@ PyCreatorClient * newPyCreatorClient()
 {
     return (PyCreatorClient *)PyCreatorClient_Type.tp_new(&PyCreatorClient_Type, 0, 0);
 }
+
