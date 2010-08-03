@@ -909,6 +909,8 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -922,10 +924,12 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -953,6 +957,8 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/buildid.o \
         $(top_builddir)/server/ExternalMind.o \
@@ -1008,6 +1014,8 @@ Accounttest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
@@ -1047,6 +1055,8 @@ Admintest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
@@ -1086,6 +1096,8 @@ ServerAccounttest_LDADD = \
         $(top_builddir)/server/Peer.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
@@ -1131,6 +1143,8 @@ Playertest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
@@ -1199,6 +1213,8 @@ Peertest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
