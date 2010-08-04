@@ -561,7 +561,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     if (args.size() == 2) {
         const Root & arg2 = args.back();
         Element key;
-        if (arg2->copyAttr("key", key) == 0 && key.isString()) {
+        if (arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
             const std::string & keystr = key.String();
             Entity *character;
             character = TeleportAuthenticator::instance()->authenticateTeleport(to, keystr);
