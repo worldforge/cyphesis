@@ -24,6 +24,7 @@
 #include "Lobby.h"
 #include "ExternalMind.h"
 #include "Persistence.h"
+#include "TeleportAuthenticator.h"
 
 #include "rulesets/Character.h"
 
@@ -557,6 +558,18 @@ void Account::LookOperation(const Operation & op, OpVector & res)
 
     long intId = integerId(to);
 
+    if (args.size() == 2) {
+        const Root & arg2 = args.back();
+        Element key;
+        if (arg2->copyAttr("key", key) == 0 && key.isString()) {
+            const std::string & keystr = key.String();
+            Entity *character;
+            character = TeleportAuthenticator::instance()->authenticateTeleport(to, keystr);
+            if(character) {
+                connectCharacter(character);
+            }
+        }
+    }
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {
         Sight s;
