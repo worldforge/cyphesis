@@ -71,6 +71,9 @@ class Account : public Router {
   public:
     /// \brief The network connection currently subscribed to this account
     Connection * m_connection;
+    
+    /// \brief Connect and add a character to this account
+    bool connectCharacter(Entity *chr);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,

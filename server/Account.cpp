@@ -91,6 +91,26 @@ void Account::characterDestroyed(long id)
     }
 }
 
+bool Account::connectCharacter(Entity *chr)
+{
+    Character * character = dynamic_cast<Character *>(chr);
+    if (character != 0) {
+        m_connection->connectAvatar(character);
+        // Only genuinely playable characters should go in here. Otherwise
+        // if a normal entity gets into the account, and connection, it
+        // starts getting hard to tell whether or not they exist.
+        m_charactersDict[chr->getIntId()] = chr;
+        chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
+        m_connection->addEntity(chr);
+        if (consts::enable_persistence) {
+            Persistence::instance()->addCharacter(*this, *chr);
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /// \brief Add a Character to those that belong to this Account
 ///
 /// @param chr Character object to be adddded
