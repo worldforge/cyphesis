@@ -18,12 +18,17 @@
 #include "TeleportAuthenticator.h"
 #include "PendingTeleport.h"
 
+#include "common/log.h"
+#include "common/compose.hpp"
+
+#include <string>
+
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
 bool TeleportAuthenticator::isPending(const std::string &entity_id)
 {
-    std::map<std::string, PendingTeleport *>::iterator i = m_teleports.find(entity_id);
-    return (i != m_teleports.end());
+    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
+    return (I != m_teleports.end());
 }
 
 int TeleportAuthenticator::addTeleport(const std::string &entity_id,
@@ -33,21 +38,50 @@ int TeleportAuthenticator::addTeleport(const std::string &entity_id,
         return -1;
     }
     m_teleports[entity_id] = new PendingTeleport(entity_id, possess_key);
+    log(INFO, String::compose("Added teleport auth entry for %1,%2",
+                                                entity_id,possess_key));
+    return 0;
 }
 
-bool TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
+{
+    if (!isPending(entity_id)) {
+        return -1;
+    }
+    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
+    if (I == m_teleports.end()) {
+        log(ERROR, String::compose("No teleport auth entry for entity ID %1",
+                                                entity_id));
+    }
+    if (I->second) {
+        delete I->second;
+    }
+    m_teleports.erase(I);
+    log(ERROR, String::compose("Removed teleport auth entry for entity ID %1",
+                                                entity_id));
+    return 0;
+}
+
+Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     if (!isPending(entity_id)) {
-        return false;
+        return NULL;
     }
-    std::map<std::string, PendingTeleport *>::iterator i = m_teleports.find(entity_id);
+    PendingTeleportMap::iterator i = m_teleports.find(entity_id);
     PendingTeleport *entry = i->second;
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
-        entry->setValidated();
-        return true;
-    } else {
-        return false;
+        // entry->setValidated();
+        Entity * entity = BaseWorld::instance().getEntity(entity_id);
+        if (entity != 0) {
+            log(ERROR, String::compose("Unable to find teleported entity with ID %s", 
+                                                                        entity_id));
+            removeTeleport(entity_id);
+            return NULL;
+        }
+        removeTeleport(entity_id);
+        return entity;
     }
+    return NULL;
 }

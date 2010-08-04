@@ -20,13 +20,17 @@
 
 #include "PendingTeleport.h"
 
+#include "common/BaseWorld.h"
+
 #include <string>
 #include <map>
+
+typedef std::map<std::string, PendingTeleport *> PendingTeleportMap;
 
 class TeleportAuthenticator
 {
     static TeleportAuthenticator * m_instance;
-    std::map<std::string, PendingTeleport *> m_teleports;
+    PendingTeleportMap m_teleports;
 
     public:
 
@@ -56,11 +60,18 @@ class TeleportAuthenticator
     /// \param key The possess key the client will use to authenticate himself
     int addTeleport(const std::string &, const std::string &);
 
+    /// \brief Remove a teleport authentications entry. Typically after a
+    ///        successful authentication
+    ///
+    /// \param entity_id The ID of the entity whose data is to be removed
+    int removeTeleport(const std::string &);
+
     /// \brief Authenticate a teleport request
     ///
+    /// \param account The account to add the entity to
     /// \param entity_id The ID of the entity that was created
     /// \param key The possess key sent by the client
-    bool authenticateTeleport(const std::string &, const std::string &);
+    Entity *authenticateTeleport(const std::string &, const std::string &);
 };
 
 #endif
