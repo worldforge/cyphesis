@@ -56,13 +56,11 @@ int TeleportAuthenticator::addTeleport(const std::string &entity_id,
 /// \param entity_id The ID of the entity whose data is to be removed
 int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 {
-    if (!isPending(entity_id)) {
-        return -1;
-    }
     PendingTeleportMap::iterator I = m_teleports.find(entity_id);
     if (I == m_teleports.end()) {
         log(ERROR, String::compose("No teleport auth entry for entity ID %1",
                                                 entity_id));
+        return -1;
     }
     if (I->second) {
         delete I->second;
@@ -87,15 +85,15 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
     PendingTeleport *entry = i->second;
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
-        // entry->setValidated();
         Entity * entity = BaseWorld::instance().getEntity(entity_id);
-        if (entity != 0) {
+        if (entity == 0) {
             log(ERROR, String::compose("Unable to find teleported entity with ID %s", 
                                                                         entity_id));
             removeTeleport(entity_id);
             return NULL;
         }
-        // Don't remove the entry yet.
+        // Don't remove the entry yet. It will be removed after connecting 
+        // the entity to the account in Account::LookOperation() successfully
         // removeTeleport(entity_id);
         return entity;
     }
