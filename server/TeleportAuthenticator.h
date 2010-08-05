@@ -59,6 +59,10 @@ class TeleportAuthenticator
     ///        successful authentication
     int removeTeleport(const std::string &);
 
+    /// \brief Remove a teleport authentications entry. Typically after a
+    ///        successful authentication
+    int removeTeleport(PendingTeleportMap::iterator I);
+
     /// \brief Authenticate a teleport request
     Entity *authenticateTeleport(const std::string &, const std::string &);
 };

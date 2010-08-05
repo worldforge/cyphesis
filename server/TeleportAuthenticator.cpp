@@ -71,6 +71,22 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
+/// \brief Remove a teleport authentications entry. Typically after a
+///        successful authentication
+///
+/// \param I The iterator in m_teleports to be removed
+int TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
+{
+    if (I == m_teleports.end()) {
+        return -1;
+    }
+    if (I->second) {
+        delete I->second;
+    }
+    m_teleports.erase(I);
+    return 0;
+}
+
 /// \brief Authenticate a teleport request
 ///
 /// \param entity_id The ID of the entity that was created
@@ -78,11 +94,13 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
-    if (!isPending(entity_id)) {
+    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
+    if (I == m_teleports.end()) {
+        log(ERROR, String::compose("Unable to find teleported entity with ID %s", 
+                                                                    entity_id));
         return NULL;
     }
-    PendingTeleportMap::iterator i = m_teleports.find(entity_id);
-    PendingTeleport *entry = i->second;
+    PendingTeleport *entry = I->second;
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
         Entity * entity = BaseWorld::instance().getEntity(entity_id);
@@ -90,7 +108,7 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
             // This means the authentication entry itself is invalid. Remove it.
             log(ERROR, String::compose("Unable to find teleported entity with ID %s", 
                                                                         entity_id));
-            removeTeleport(entity_id);
+            removeTeleport(I);
             return NULL;
         }
         // Don't remove the entry yet. It will be removed after connecting 
