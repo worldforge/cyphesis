@@ -74,7 +74,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 /// \brief Authenticate a teleport request
 ///
 /// \param entity_id The ID of the entity that was created
-/// \param key The possess key sent by the client
+/// \param possess_key The possess key sent by the client
 Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
