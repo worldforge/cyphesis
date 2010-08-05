@@ -92,7 +92,7 @@ void Account::characterDestroyed(long id)
     }
 }
 
-bool Account::connectCharacter(Entity *chr)
+int Account::connectCharacter(Entity *chr)
 {
     Character * character = dynamic_cast<Character *>(chr);
     if (character != 0) {
@@ -106,10 +106,9 @@ bool Account::connectCharacter(Entity *chr)
         if (consts::enable_persistence) {
             Persistence::instance()->addCharacter(*this, *chr);
         }
-        return true;
-    } else {
-        return false;
+        return 0;
     }
+    return -1;
 }
 
 /// \brief Add a Character to those that belong to this Account

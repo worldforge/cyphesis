@@ -73,7 +73,7 @@ class Account : public Router {
     Connection * m_connection;
     
     /// \brief Connect and add a character to this account
-    bool connectCharacter(Entity *chr);
+    int connectCharacter(Entity *chr);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
