@@ -119,13 +119,13 @@ void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter & wo
         Atlas::Message::Element val;
         // Check the integer attribute
         assert(reply->getAttr("test_int", val));
-        assert(val == 1);
+        assert(val.Int() == 1);
         // Check the float attribute
         assert(reply->getAttr("test_float", val));
-        assert(val == 1.f);
+        assert(val.Float() == 1.f);
         // Check the string attribute
         assert(reply->getAttr("test_list_string", val));
-        assert(val == "test_value");
+        assert(val.String() == "test_value");
         // Check the integer list attribute
         assert(ent->getAttr("test_list_int", val));
         assert(val == ListType(1, 1));
