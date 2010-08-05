@@ -565,7 +565,9 @@ void Account::LookOperation(const Operation & op, OpVector & res)
             Entity *character;
             character = TeleportAuthenticator::instance()->authenticateTeleport(to, keystr);
             if(character) {
-                connectCharacter(character);
+                if(connectCharacter(character) == 0) {
+                    TeleportAuthenticator::instance()->removeTeleport(to);
+                }
             }
         }
     }

@@ -95,7 +95,8 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
             removeTeleport(entity_id);
             return NULL;
         }
-        removeTeleport(entity_id);
+        // Don't remove the entry yet.
+        // removeTeleport(entity_id);
         return entity;
     }
     return NULL;
