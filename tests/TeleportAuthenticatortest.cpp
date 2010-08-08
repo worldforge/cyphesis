@@ -1,5 +1,13 @@
 #include "server/TeleportAuthenticator.h"
 
+#include "common/BaseWorld.h"
+#include "common/id.h"
+#include "common/log.h"
+
+#include "rulesets/Entity.h"
+
+#include <cstdlib>
+
 #include <cassert>
 
 int main()
@@ -61,4 +69,91 @@ int main()
     }
     
     return 0;
+}
+
+// Stubs
+
+long integerId(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        intId = -1L;
+    }
+
+    return intId;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+BaseWorld * BaseWorld::m_instance = 0;
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+}
+
+BaseWorld::~BaseWorld()
+{
+}
+
+Entity * BaseWorld::getEntity(const std::string & id) const
+{
+    long intId = integerId(id);
+
+    EntityDict::const_iterator I = m_eobjects.find(intId);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+Entity * BaseWorld::getEntity(long id) const
+{
+    EntityDict::const_iterator I = m_eobjects.find(id);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+PendingTeleport::PendingTeleport(const std::string &id, const std::string &key) 
+                                            :   m_entity_id(id),
+                                                m_possess_key(key),
+                                                m_valid(false)
+{
+}
+
+const std::string & PendingTeleport::getPossessKey()
+{
+    return m_possess_key;
+}
+
+const std::string & PendingTeleport::getEntityID()
+{
+    return m_entity_id;
+}
+
+bool PendingTeleport::validate(const std::string &entity_id,
+                                const std::string &possess_key)
+{
+    if(m_entity_id == entity_id && m_possess_key == possess_key) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool PendingTeleport::setValidated()
+{
+    m_valid = true;
+}
+
+bool PendingTeleport::isValidated()
+{
+    return m_valid;
 }
