@@ -59,4 +59,6 @@ int main()
         TeleportAuthenticator::del();
         assert(TeleportAuthenticator::instance() == NULL);
     }
+    
+    return 0;
 }
