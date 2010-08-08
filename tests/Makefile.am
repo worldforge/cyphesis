@@ -1304,6 +1304,16 @@ CommStreamListenertest_LDADD = \
         $(top_builddir)/server/CommStreamListener.o \
         $(NETWORK_LIBS)
 
+TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
+TeleportAuthenticatortest_LDADD = \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/common/BaseWorld.o \
+        $(top_builddir)/common/id.o \
+        $(top_builddir)/common/globals.o \
+        $(top_builddir)/common/const.o \
+        $(top_builddir)/common/log.o
+
 # SERVER_INTEGRATION_TESTS
 
 WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
