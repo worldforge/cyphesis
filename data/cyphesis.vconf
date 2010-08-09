@@ -37,6 +37,10 @@ dbname = "cyphesis"
 # dbuser = "cyphesis"
 # Password used to access the rdbms, if required
 # dbpasswd = ""
+# List of peers to connect to during startup
+#   PeerEntry: hostname|port|server_account_username|server_account_password
+#   PeerList : "PeerEntry1 PeerEntry2 ..."
+# peers = "host|6767|server|server"
 
 [client]
 # Client specific options
