@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2010 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,46 +17,31 @@
 
 // $Id$
 
-#ifndef RULESETS_DOMAIN_H
-#define RULESETS_DOMAIN_H
+#ifndef RULESETS_BULLET_DOMAIN_H
+#define RULESETS_BULLET_DOMAIN_H
 
-#include "physics/Vector3D.h"
+#include "rulesets/Domain.h"
 
-#include <string>
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btBroadphaseInterface;
+class btCollisionWorld;
 
-class LocatedEntity;
-
-/// \brief Base class for movement domains
+/// \brief Movement domain using the bullet physics library
 ///
 /// The movement domain implements movement in the game world, including
 /// visibility calculations, collision detection and physics.
 /// Motion objects interact with the movement domain.
-class Domain {
-  private:
-    /// Count of references held by other objects to this domain
-    int m_refCount;
+class BulletDomain : public Domain {
   protected:
-    static Domain * m_instance;
+    btDefaultCollisionConfiguration * m_collisionConfiguration;
+    btCollisionDispatcher* m_dispatcher;
+    btBroadphaseInterface* m_overlappingPairCache;
+    btCollisionWorld * m_collisionWorld;
   public:
-    Domain();
+    BulletDomain();
 
-    virtual ~Domain();
-
-    static Domain * instance() {
-        return m_instance;
-    }
-
-    /// \brief Increment the reference count on this domain
-    void incRef() {
-        ++m_refCount;
-    }
-
-    /// \brief Decrement the reference count on this domain
-    void decRef() {
-        if (--m_refCount <= 0) {
-            delete this;
-        }
-    }
+    virtual ~BulletDomain();
 
     virtual float constrainHeight(LocatedEntity *, const Point3D &,
                                   const std::string &);
@@ -64,4 +49,4 @@ class Domain {
     virtual void tick(double t);
 };
 
-#endif // RULESETS_DOMAIN_H
+#endif // RULESETS_BULLET_DOMAIN_H

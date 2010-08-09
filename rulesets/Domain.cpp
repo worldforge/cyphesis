@@ -29,10 +29,12 @@
 
 static const bool debug_flag = false;
 
-Domain * Domain::m_instance = new Domain();
+Domain * Domain::m_instance = 0;
 
 Domain::Domain() : m_refCount(0)
 {
+    assert(m_instance == 0);
+    m_instance = this;
 }
 
 Domain::~Domain()

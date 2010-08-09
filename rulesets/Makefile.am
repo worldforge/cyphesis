@@ -32,6 +32,7 @@ librulesetentity_a_SOURCES = \
 			     Stackable.cpp Stackable.h \
 			     Motion.cpp Motion.h \
 			     Domain.cpp Domain.h \
+			     BulletDomain.cpp BulletDomain.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     EntityProperty.cpp EntityProperty.h \
