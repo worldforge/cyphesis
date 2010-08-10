@@ -80,3 +80,8 @@ float Domain::constrainHeight(LocatedEntity * parent,
     }
     return pos.z();
 }
+
+void Domain::tick(double t)
+{
+    
+}
