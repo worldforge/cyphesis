@@ -40,5 +40,15 @@ int main()
 
         delete p;
     }
+
+    {
+        // Test the setting of authentiaction states
+        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+
+        assert(p->getAuthState() == PEER_INIT);
+        p->setAuthState(PEER_AUTHENTICATED);
+        assert(p->getAuthState() == PEER_AUTHENTICATED);
+    }
+
     return 0;
 }
