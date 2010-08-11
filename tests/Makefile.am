@@ -1294,6 +1294,11 @@ CommClienttest_LDADD = \
         $(top_builddir)/server/CommClient.o \
         $(NETWORK_LIBS)
 
+CommPeertest_SOURCES = CommPeertest.cpp
+CommPeertest_LDADD = \
+        $(top_builddir)/server/CommPeer.o \
+        $(NETWORK_LIBS)
+
 CommHttpClienttest_SOURCES = CommHttpClienttest.cpp
 CommHttpClienttest_LDADD = \
         $(top_builddir)/server/CommHttpClient.o \
