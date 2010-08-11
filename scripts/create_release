@@ -3,7 +3,7 @@
 set -u
 
 declare -r RELEASE_DIR=${HOME}/rel
-declare -r RPM_DIR=${HOME}/RPM
+declare -r RPM_DIR=${HOME}/rpmbuild
 declare -r RPM_SOURCES="cyphesis.init cyclient.init cyphesis.sysconfig scripts/compile_python.py"
 declare -r RPM_SPEC=cyphesis.spec
 
@@ -49,14 +49,14 @@ verify_environment() {
 }
 
 get_release_user() {
-    GIT_USERNAME=$(git-config --get user.name)
+    GIT_USERNAME=$(git config --get user.name)
     if [ $? -ne 0 ]
     then
         echo EEEEE Git username not available
         exit 1
     fi
 
-    GIT_EMAIL=$(git-config --get user.email)
+    GIT_EMAIL=$(git config --get user.email)
     if [ $? -ne 0 ]
     then
         echo EEEEE Git email not available
@@ -114,22 +114,22 @@ check_version_recorded() {
     fi
     if [ $safe -eq 0 ]
     then
-        if git-status NEWS > /dev/null
+        if git status NEWS > /dev/null
         then
             echo MMMMM NEWS change commited
-            git-commit -m "Add news item for ${CY_VERSION} release" NEWS
+            git commit -m "Add news item for ${CY_VERSION} release" NEWS
         fi
-        if git-status ChangeLog > /dev/null
+        if git status ChangeLog > /dev/null
         then
             echo MMMMM ChangeLog change commited
-            git-commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
+            git commit -m "Update ChangeLog for ${CY_VERSION} release" ChangeLog
         fi
     fi
-    if ! git-tag -v ${CY_VERSION}
+    if ! git tag -v ${CY_VERSION}
     then
         if [ $safe -eq 0 ]
         then
-            if ! git-tag -s -m "${CY_VERSION} release" ${CY_VERSION}
+            if ! git tag -s -m "${CY_VERSION} release" ${CY_VERSION}
             then
                 echo EEEEE Failed to tag release.
                 # exit 1
