@@ -591,6 +591,7 @@ CommClient::CommClient(CommServer &svr) : CommStreamClient(svr),
                                         m_encoder(NULL), m_connection(NULL),
                                         m_connectTime(svr.time())
 {
+    m_negotiate = NULL;
 }
 
 CommClient::~CommClient()
@@ -625,6 +626,8 @@ void CommClient::dispatch()
 
 int CommClient::negotiate()
 {
+    delete m_negotiate;
+    m_negotiate = NULL;
     return 0;
 }
 
