@@ -144,6 +144,16 @@ class TestCommPeer : public CommPeer
     {
     }
 
+    const std::string &test_getUsername()
+    {
+        return m_username;
+    }
+
+    const std::string &test_getPassword()
+    {
+        return m_password;
+    }
+
     void test_setEncoder()
     {
         m_codec = new TestCodec;
@@ -246,11 +256,24 @@ int main()
     }
 
     {
+        new TestCommPeer(comm_server);
+    }
+
+    {
         new TestCommPeer(comm_server, "test_username", "test_password");
     }
 
     {
-        CommPeer * cs = new TestCommPeer(comm_server);
+        TestCommPeer * cs = new TestCommPeer(comm_server);
+
+        delete cs;
+    }
+
+    {
+        TestCommPeer * cs = new TestCommPeer(comm_server, "test_username", "test_password");
+
+        assert(cs->test_getUsername() == "test_username");
+        assert(cs->test_getPassword() == "test_password");
 
         delete cs;
     }
@@ -264,7 +287,7 @@ int main()
     }
 
     {
-        CommClient * cs = new TestCommPeer(comm_server);
+        TestCommPeer * cs = new TestCommPeer(comm_server);
 
         cs->setup(0);
 
