@@ -245,6 +245,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     Entity * entity = BaseWorld::instance().getEntity(id);
     if (entity == 0) {
         log(ERROR, String::compose("No entity found with ID: %1", id));
+        // TODO: Cleanup TeleportState here
         return;
     }
 
@@ -295,4 +296,6 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     delOp->setTo(id);
     entity->sendWorld(delOp);
     log(INFO, "Deleted entity from current server");
+
+    // TODO: Cleanup TeleportState here
 }
