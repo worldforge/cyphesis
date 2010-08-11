@@ -221,9 +221,6 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     // Get the original ID of the entity on this server
     const std::string & id = arg2->getId();
 
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        return;
-    }
     CommPeer *peer = dynamic_cast<CommPeer*>(&m_commClient);
     if(peer == 0) {
         log(ERROR, "Unable to get CommPeer object");
