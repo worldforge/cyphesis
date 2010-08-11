@@ -214,10 +214,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     const Root & arg = args.front();
     // We have exactly two arguments;
     const Root & arg2 = args.back();
-    if(!arg.isValid() || !arg2.isValid()) {
-        log(ERROR, "One or more Info op arguments invalid");
-        return;
-    }
+
     // Get the original ID of the entity on this server
     const std::string & id = arg2->getId();
 
