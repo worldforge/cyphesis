@@ -48,9 +48,9 @@ CommPeer::CommPeer(CommServer & svr) : CommClient(svr),
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
                    : CommClient(svr),
+                     m_login_required(true),
                      m_username(username),
-                     m_password(password), 
-                     m_login_required(true)
+                     m_password(password)
 {
     std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }

@@ -30,10 +30,11 @@ class CommPeer : public CommClient {
     std::string m_host;
     int m_port;
 
+    bool m_login_required;
+
+  protected:
     std::string m_username;
     std::string m_password;
-
-    bool m_login_required;
 
   public:
     CommPeer(CommServer & svr);
