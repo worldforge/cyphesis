@@ -37,7 +37,7 @@ class CommPeer : public CommClient {
 
   public:
     CommPeer(CommServer & svr);
-    CommPeer(CommServer & svr, std::string &, std::string &);
+    CommPeer(CommServer & svr, const std::string &, const std::string &);
     virtual ~CommPeer();
 
     void idle(time_t t);
