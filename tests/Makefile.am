@@ -1318,11 +1318,37 @@ TeleportAuthenticatortest_LDADD = \
 
 WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
 WorldRouterintegration_LDADD = \
+        $(top_builddir)/server/buildid.o \
         $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/SpawnEntity.o \
+        $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1343,6 +1369,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1360,6 +1387,9 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
