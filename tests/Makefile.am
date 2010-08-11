@@ -57,7 +57,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
                CommClientFactorytest ServerRoutingtest Idletest \
                StorageManagertest HttpCachetest UpdateTestertest \
-               ExternalMindtest
+               ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
+               CommPeertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest
