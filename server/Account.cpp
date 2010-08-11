@@ -557,20 +557,18 @@ void Account::LookOperation(const Operation & op, OpVector & res)
 
     long intId = integerId(to);
 
-    if (args.size() == 2) {
-        const Root & arg2 = args.back();
-        Element key;
-        if (arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
-            const std::string & keystr = key.String();
-            Entity *character;
-            character = TeleportAuthenticator::instance()->authenticateTeleport(to, keystr);
-            if(character) {
-                if(connectCharacter(character) == 0) {
-                    TeleportAuthenticator::instance()->removeTeleport(to);
-                }
+    Element key;
+    if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
+        const std::string & key_str = key.String();
+        Entity *character;
+        character = TeleportAuthenticator::instance()->authenticateTeleport(to, key_str);
+        if (character) {
+            if (connectCharacter(character) == 0) {
+                TeleportAuthenticator::instance()->removeTeleport(to);
             }
         }
     }
+
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {
         Sight s;
