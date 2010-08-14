@@ -25,11 +25,15 @@
 #include <string>
 #include <map>
 
+/// \brief Map of teleported entity IDs and their PendingState objects
 typedef std::map<std::string, PendingTeleport *> PendingTeleportMap;
 
+/// \brief A class that stores and authenticates teleport requests
 class TeleportAuthenticator
 {
+    /// \brief An instance pointer for singleton behaviour
     static TeleportAuthenticator * m_instance;
+    /// \brief Map of teleport requests
     PendingTeleportMap m_teleports;
 
     public:
