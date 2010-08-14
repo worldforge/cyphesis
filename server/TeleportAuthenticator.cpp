@@ -46,8 +46,6 @@ int TeleportAuthenticator::addTeleport(const std::string &entity_id,
         return -1;
     }
     m_teleports[entity_id] = new PendingTeleport(entity_id, possess_key);
-    std::cout << "Added entry successfully\n" << std::endl << std::flush;
-    std::cout << "m_teleports[" << entity_id << "] = " << possess_key << "\n" << std::endl << std::flush;
     log(INFO, String::compose("Added teleport auth entry for %1,%2",
                                                 entity_id,possess_key));
     return 0;
