@@ -77,6 +77,7 @@ ServerAccount::~ServerAccount()
 }
 
 /// \brief Get the type of account ("server" in this case)
+///
 /// \return The type string
 const char * ServerAccount::getType() const
 {
@@ -146,6 +147,7 @@ int ServerAccount::characterError(const Operation & op,
 }
 
 /// \brief This operation allows the creation of entities on the server
+///
 /// \param op The Create operation
 /// \param res The result set of replies
 void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
@@ -262,6 +264,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
 }
 
 /// \brief Add an entity to the world but don't add it to any particular account
+///
 /// \param typestr The type string of the entity
 /// \param ent A container for the entity to be created in the world
 /// \param arg The argument of the Create op containing the entity itself
