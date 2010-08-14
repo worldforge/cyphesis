@@ -92,6 +92,10 @@ void Account::characterDestroyed(long id)
     }
 }
 
+/// \brief Connect an existing character to this account
+///
+/// \brief chr The character to connect to this account
+/// \return Returns 0 on success and -1 on failure.
 int Account::connectCharacter(Entity *chr)
 {
     Character * character = dynamic_cast<Character *>(chr);
@@ -557,6 +561,10 @@ void Account::LookOperation(const Operation & op, OpVector & res)
 
     long intId = integerId(to);
 
+    // Check for a possess key attached to the argument of the Look op. If 
+    // we have one, this is a request to transfer a character to this account.
+    // Authenticate the requested character with the possess key found and if
+    // successful, add the character to this account.
     Element key;
     if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
         const std::string & key_str = key.String();
