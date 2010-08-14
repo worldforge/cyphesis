@@ -60,6 +60,10 @@ CommPeer::~CommPeer()
     std::cout << "Peer disconnected." << std::endl << std::flush;
 }
 
+/// \brief Connect to a remote peer
+///
+/// @param host The hostname of the peer to connect to
+/// @return Returns 0 on success and -1 on failure.
 int CommPeer::connect(const std::string & host)
 {
     m_clientIos.open(host, peer_port_num);
@@ -69,6 +73,11 @@ int CommPeer::connect(const std::string & host)
     return -1;
 }
 
+/// \brief Connect to a remote peer on a specific port
+///
+/// @param host The hostname of the peer to connect to
+/// @param port The port to connect on
+/// @return Returns 0 on success and -1 on failure.
 int CommPeer::connect(const std::string & host, int port)
 {
     m_host = host;
@@ -80,24 +89,35 @@ int CommPeer::connect(const std::string & host, int port)
     return -1;
 }
 
-std::string & CommPeer::getHost()
+/// \brief Get the hostname of the connected peer
+///
+/// @return The hostname of the connected peer
+const std::string & CommPeer::getHost()
 {
     return m_host;
 }
 
+/// \brief Get the port the peer is connected on
+///
+/// @return The port the peer is connected on
 int CommPeer::getPort()
 {
     return m_port;
 }
 
+/// \brief Called periodically by the server
+///
+/// \param t The current time at the time of calling
 void CommPeer::idle(time_t t)
 {
+    // Wait for the negotiation to finish with the peer
     if (m_negotiate != 0) {
         if ((t - m_connectTime) > 10) {
             log(NOTICE, "Client disconnected because of negotiation timeout.");
             m_clientIos.shutdown();
         }
     }
+    // As soon as negotiation is complete, authenticate on peer
     if(m_negotiate == 0)
     {
         Peer *peer = dynamic_cast<Peer*>(m_connection);
@@ -105,6 +125,7 @@ void CommPeer::idle(time_t t)
             log(ERROR, "Casting connection to Peer failed");
             return;
         }
+        // If a login is required, send the Login op to the peer
         if(m_login_required && peer->getAuthState() == PEER_INIT) {
             Atlas::Objects::Operation::Login l;
             Atlas::Objects::Entity::Anonymous account;
@@ -117,6 +138,8 @@ void CommPeer::idle(time_t t)
             log(INFO, "Sent login op to peer");
             peer->setAuthState(PEER_AUTHENTICATING);
         }
+        // Check if we have been stuck in a state of authentication in-progress
+        // for over 20 seconds. If so, disconnect from and remove peer.
         if ((t - m_connectTime) > 20) {
             if (peer->getAuthState() == PEER_AUTHENTICATING) {
                 log(NOTICE, "Client disconnected because authentication timed out.");

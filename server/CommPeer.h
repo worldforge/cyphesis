@@ -46,7 +46,7 @@ class CommPeer : public CommClient {
     int connect(const std::string &);
     int connect(const std::string &, int);
 
-    std::string & getHost();
+    const std::string & getHost();
     int getPort();
 };
 
