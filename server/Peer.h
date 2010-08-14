@@ -35,7 +35,11 @@ class CommClient;
 class ServerRouting;
 class TeleportState;
 
-enum PeerAuthState { PEER_INIT, PEER_AUTHENTICATING, PEER_AUTHENTICATED };
+enum PeerAuthState {
+    PEER_INIT,              /// \brief Peer has just been connected to
+    PEER_AUTHENTICATING,    /// \brief Peer is currently authenticating us
+    PEER_AUTHENTICATED      /// \brief We are authenticated and ready on the peer
+};
 
 typedef std::map<std::string, TeleportState *> TeleportMap;
 
