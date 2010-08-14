@@ -76,6 +76,8 @@ ServerAccount::~ServerAccount()
 {
 }
 
+/// \brief Get the type of account ("server" in this case)
+/// \return The type string
 const char * ServerAccount::getType() const
 {
     return "server";
@@ -143,8 +145,17 @@ int ServerAccount::characterError(const Operation & op,
     return false;
 }
 
+/// \brief This operation allows the creation of entities on the server
+/// \param op The Create operation
+/// \param res The result set of replies
 void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
 {
+    // Format of the Create ops that are received by this function should
+    // have the entity to be created as the first argument. If the entity
+    // being created is a character associated with an account, an additional
+    // argument should specify the possess key that will be used by the client
+    // to claim ownership of the entity being created.
+
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         return;
@@ -233,7 +244,11 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         }
     }
 
-    // Inform the client that it has successfully subscribed
+    // The reply to a successful Create operation in the ServerAccount class
+    // is an Info operation with two arguments. The first argument is the new 
+    // entity that has been created. The second argument is the ID of the
+    // entity on the sender server (used by the recipient of this reply to 
+    // figure out which Create op this reply is associated with
     Info info;
     std::vector<Root> reply_args;
     Anonymous info_arg;
@@ -246,6 +261,10 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     res.push_back(info);
 }
 
+/// \brief Add an entity to the world but don't add it to any particular account
+/// \param typestr The type string of the entity
+/// \param ent A container for the entity to be created in the world
+/// \param arg The argument of the Create op containing the entity itself
 Entity * ServerAccount::addNewEntity(const std::string & typestr,
                                   const RootEntity & ent,
                                   const RootEntity & arg)
