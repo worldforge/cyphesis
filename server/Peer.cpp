@@ -71,22 +71,34 @@ Peer::~Peer()
 {
 }
 
+/// \brief Set the authentication state of the peer connection
+///
+/// @param state The state to set
 void Peer::setAuthState(PeerAuthState state)
 {
     m_state = state;
 }
 
+/// \brief Get the authentication state of the peer
+///
+/// \return The current authentication state of the peer
 PeerAuthState Peer::getAuthState()
 {
     return m_state;
 }
 
+/// \brief Execute an operation sent by a connected peer
+///
+/// \param op The operation to be executed
+/// \param res The result set of replies
 void Peer::operation(const Operation &op, OpVector &res)
 {
     const OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::INFO_NO:
         {
+            // If we receive an Info op while we are not yet authenticated, it
+            // can only be the result of an authentication request.
             if (m_state == PEER_AUTHENTICATING) {
                 const std::vector<Root> & args = op->getArgs();
                 if (args.empty()) {
@@ -98,7 +110,6 @@ void Peer::operation(const Operation &op, OpVector &res)
                 }
                 // Response to a Login op
                 m_accountId = arg->getId();
-                log(INFO, String::compose("Received account ID: %1", m_accountId));
                 if (!op->getParents().empty()) {
                     m_accountType = op->getParents().front();
                 }
@@ -107,6 +118,8 @@ void Peer::operation(const Operation &op, OpVector &res)
                     log(INFO, "Peer authenticated");
                 }
             } else if (m_state == PEER_AUTHENTICATED) {
+                // If we received an Info op while authenticated, it is a
+                // response to a teleport request.
                 peerTeleportResponse(op, res);
             }
             break;
@@ -114,6 +127,10 @@ void Peer::operation(const Operation &op, OpVector &res)
     }
 }
 
+/// \brief Teleport an entity to the connected peer
+///
+/// @param entity The entity to be teleported
+/// @return Returns 0 on success and -1 on failure
 int Peer::teleportEntity(const RootEntity &entity)
 {
     if (m_state != PEER_AUTHENTICATED) {
@@ -160,8 +177,12 @@ int Peer::teleportEntity(const RootEntity &entity)
         }
     }
 
+    // Add a teleport state object to identify this teleport request
     TeleportState *s;
     if (isMind) {
+        // Entities with a mind require an additional one-time possess key that
+        // is used by the client to authenticate a teleport on the destination
+        // peer
         s = new TeleportState(key);
     } else {
         s = new TeleportState();
@@ -194,7 +215,8 @@ int Peer::teleportEntity(const RootEntity &entity)
         m_commClient.send(op);
     }
     log(INFO, "Sent Create op to peer");
-
+    
+    // Set it as validated and add to the list of teleports
     s->setRequested();
     m_teleports[id] = s;
     log(INFO, "Added new teleport state");
@@ -202,6 +224,10 @@ int Peer::teleportEntity(const RootEntity &entity)
     return 0;
 }
 
+/// \brief Handle an Info op response sent as reply to a teleport request
+///
+/// @param op The Info op sent back as reply to a teleport request
+/// @param res The result set of replies
 void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
 {
     log(INFO, "Got a peer teleport response");
@@ -237,7 +263,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
 
     // This is the sender entity. This is retreived again rather than
-    // rlying on a pointer (in the TeleportState object perhaps) as the
+    // relying on a pointer (in the TeleportState object perhaps) as the
     // entity might have been deleted in the time between sending and response
     Entity * entity = BaseWorld::instance().getEntity(id);
     if (entity == 0) {
