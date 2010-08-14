@@ -22,13 +22,18 @@
 
 class TeleportState
 {
+  protected:
+    /// \brief Specifies if the teleported entity has a mind or not
     bool m_isMind;
+    /// \brief Specifies the possess key generated for this specific teleport
     std::string m_possessKey;
-    enum {  TELEPORT_NONE,
-            TELEPORT_REQUESTED,
-            TELEPORT_CREATED } m_state;
+    enum {
+        TELEPORT_NONE,      /// \brief Initial state
+        TELEPORT_REQUESTED, /// \brief Teleport has been requested
+        TELEPORT_CREATED    /// \brief Teleport has succeeded
+    } m_state;
 
-    public:
+  public:
     TeleportState();
     TeleportState(const std::string &key);
     
