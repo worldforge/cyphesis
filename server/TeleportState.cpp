@@ -17,42 +17,60 @@
 
 #include "server/TeleportState.h"
 
+/// \brief Constructor
 TeleportState::TeleportState() : m_isMind(false),
                                     m_state(TELEPORT_NONE)
 {
 }
 
+/// \brief Constructor
+///
+/// @param key The possess key to be used for entities having an external mind
 TeleportState::TeleportState(const std::string &key) : m_isMind(true),
                                                         m_possessKey(key),
                                                         m_state(TELEPORT_NONE)
 {
 }
 
+/// \brief Set the teleport state as requested
 void TeleportState::setRequested()
 {
     m_state = TELEPORT_REQUESTED;
 }
 
+/// \brief Set the teleport state as created
 void TeleportState::setCreated()
 {
     m_state = TELEPORT_CREATED;
 }
 
+/// \brief Check if the teleported entity has been create on the remote end
+///
+/// @return Boolean whether entity has been created or not
 bool TeleportState::isCreated()
 {
     return (m_state == TELEPORT_CREATED);
 }
 
+/// \brief Check if the teleport state is 'currently requesting'
+///
+/// @return Whether the state is requesting or not
 bool TeleportState::isRequested()
 {
     return (m_state == TELEPORT_REQUESTED);
 }
 
+/// \brief Check if a teleported entity has an external mind
+///
+/// @return Whether the teleported entity has an external mind
 bool TeleportState::isMind()
 {
     return m_isMind;
 }
 
+/// \brief Get the possess key generated for this teleport
+///
+/// @return The randomly generated possess key for this teleport
 const std::string & TeleportState::getPossessKey()
 {
     return m_possessKey;
