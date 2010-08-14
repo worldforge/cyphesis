@@ -377,8 +377,6 @@ int main(int argc, char ** argv)
     std::vector<std::string> peer_list;
     tokenize(peer_data_list, peer_list, " ");
     
-    CommPeer **peers = new CommPeer *[peer_list.size()];
-    
     for(unsigned int i=0;i<peer_list.size();i++)
     {
         std::vector<std::string> peer_data;
@@ -401,28 +399,28 @@ int main(int argc, char ** argv)
         std::string peer_username(peer_data[2]);
         std::string peer_password(peer_data[3]);
         
-        peers[i] = new CommPeer(commServer, peer_username, peer_password);
-        if (peers[i] == NULL) {
+        CommPeer *peerConn = new CommPeer(commServer, peer_username, peer_password);
+        if (peerConn == NULL) {
             log(ERROR, "Unable to allocate peer object");
             continue;
         }
-        if (peers[i]->connect(peer_host, peer_port) != 0) {
+        if (peerConn->connect(peer_host, peer_port) != 0) {
             log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
-            delete peers[i];
-            peers[i] = NULL;
+            delete peerConn;
+            peerConn = NULL;
             continue;
         }
         log(INFO, String::compose("Successfully connected to peer at \"%1:%2\"", peer_host, peer_port));
-        Peer *peer = new Peer(*peers[i], commServer.m_server, peer_host, peer_id);
+        Peer *peer = new Peer(*peerConn, commServer.m_server, peer_host, peer_id);
         if (peer == NULL) {
             log(ERROR, "Unable to allocate peer object");
-            delete peers[i];
-            peers[i] = NULL;
+            delete peerConn;
+            peerConn = NULL;
             continue;
         }
-        peers[i]->setup(peer);
-        commServer.addSocket(peers[i]);
-        commServer.addIdle(peers[i]);
+        peerConn->setup(peer);
+        commServer.addSocket(peerConn);
+        commServer.addIdle(peerConn);
         /// Add object to ServerRouting so we can find it
         server.addObject(peer);
         log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
