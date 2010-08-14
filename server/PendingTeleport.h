@@ -34,7 +34,7 @@ class PendingTeleport
 
     bool validate(const std::string &, const std::string &);
 
-    bool setValidated();
+    void setValidated();
     bool isValidated();
 };
 

@@ -44,7 +44,8 @@ bool PendingTeleport::validate(const std::string &entity_id,
     }
 }
 
-bool PendingTeleport::setValidated()
+/// \brief Set this teleport as validated
+void PendingTeleport::setValidated()
 {
     m_valid = true;
 }
