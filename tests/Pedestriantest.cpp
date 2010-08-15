@@ -333,6 +333,11 @@ float Domain::constrainHeight(LocatedEntity * parent,
     return 8.f;
 }
 
+void Domain::tick(double t)
+{
+    
+}
+
 BaseWorld * BaseWorld::m_instance = 0;
 
 /// \brief BaseWorld constructor.

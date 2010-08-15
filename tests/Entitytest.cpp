@@ -199,6 +199,10 @@ float Domain::constrainHeight(LocatedEntity * parent,
     return 0.f;
 }
 
+void Domain::tick(double t)
+{
+}
+
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);
