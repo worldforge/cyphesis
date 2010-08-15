@@ -1,3 +1,21 @@
+Bullet Physics Ideas:
+  There are two suitable bullet world objects for us to use:
+    btCollisionWorld and btDynamicsWorld
+
+  The former should be pretty simple to use, the latter gives way more.
+
+  The former we can use by adding collision objects for the static world
+  content, then use convexSweepTest to calculate collisions for single
+  moving avatars which themselves do not need to be in the collisionWorld.
+  It can also be used to avoid object intersection at movement and creation
+  time if desirable.
+
+  In a more advanced implementation, perhaps using btDynamicsWorld a bunch
+  of interesting stuff can be simulated without us having to change the
+  way we handle basic avatar collisions. In addition as things get more
+  tricky we can use the bit field and matric features to define what collides
+  with what, all under the control of the designer/builder.
+
 CommPythonClient should probably execute python in dispath rather than read()
 
 Make cyclient a bunch more Python driven, with a default Python class which
