@@ -44,8 +44,9 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  PythonWrappertest PythonEntityScripttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
-                 ArithmeticFactorytest PythonArithmeticFactorytest \
-                 MindFactoryintegration
+                 ArithmeticFactorytest PythonArithmeticFactorytest
+
+RULESETS_INTEGRATION_TESTS = MindFactoryintegration BulletDomainintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest
@@ -75,7 +76,7 @@ LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LI
 
 TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
         $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS) \
-        $(SERVER_INTEGRATION_TESTS)
+        $(RULESETS_INTEGRATION_TESTS) $(SERVER_INTEGRATION_TESTS)
 
 EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
@@ -847,6 +848,12 @@ MindFactoryintegration_LDADD = \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
+BulletDomainintegration_LDADD = \
+        $(top_builddir)/rulesets/BulletDomain.o \
+        $(top_builddir)/rulesets/Domain.o \
         $(TERRAIN_LIBS)
 
 # CLIENT_TESTS
