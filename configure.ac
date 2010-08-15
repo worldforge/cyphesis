@@ -335,7 +335,7 @@ libraries required and where to obtain them.])
 
 PKG_CHECK_MODULES(BULLET, bullet >= 2.75,
     [
-        dnl CPPFLAGS="$CPPFLAGS $BULLET_CFLAGS"
+        CPPFLAGS="$CPPFLAGS $BULLET_CFLAGS"
         TERRAIN_LIBS="$TERRAIN_LIBS $BULLET_LIBS"
     ],
     [
