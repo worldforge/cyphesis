@@ -62,6 +62,8 @@ int main()
 {
     database_flag = false;
 
+    new Domain;
+
     TestWorldRouter * test_world = new TestWorldRouter;
 
     Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
