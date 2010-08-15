@@ -23,7 +23,7 @@
 
 int main()
 {
-    Domain * d = Domain::instance();
+    Domain * d = new Domain;
 
     d->incRef();
     d->decRef();
