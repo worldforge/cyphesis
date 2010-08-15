@@ -204,10 +204,9 @@ bool PendingTeleport::validate(const std::string &entity_id,
     }
 }
 
-bool PendingTeleport::setValidated()
+void PendingTeleport::setValidated()
 {
     m_valid = true;
-    return m_valid;
 }
 
 bool PendingTeleport::isValidated()
