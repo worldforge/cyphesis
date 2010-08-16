@@ -87,19 +87,6 @@ void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter & wo
         // Add the test attributes
         ent->setAttr("objtype", "obj");
         ent->setAttr("name", "test_entity");
-        ent->setAttr("test_int", 1);
-        ent->setAttr("test_float", 1.f);
-        ent->setAttr("test_list_string", "test_value");
-        ent->setAttr("test_list_int", ListType(1, 1));
-        ent->setAttr("test_list_float", ListType(1, 1.f));
-        ent->setAttr("test_map_string", ListType(1, "test_value"));
-        MapType test_map;
-        test_map["test_key"] = 1;
-        ent->setAttr("test_map_int", test_map);
-        test_map["test_key"] = 1.f;
-        ent->setAttr("test_map_float", test_map);
-        test_map["test_key"] = "test_value";
-        ent->setAttr("test_map_string", test_map);
         ent->setParents(std::list<std::string>(1,"thing"));
         
         Create op;
@@ -109,43 +96,6 @@ void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter & wo
         
         Entity *reply = world.findByName("test_entity");
         assert(reply != 0);
-        
-        Atlas::Message::Element val;
-        // Check the integer attribute
-        assert(reply->getAttr("test_int", val));
-        assert(val.isInt());
-        assert(val.Int() == 1);
-        // Check the float attribute
-        assert(reply->getAttr("test_float", val));
-        assert(val.isFloat());
-        assert(val.Float() == 1.f);
-        // Check the string attribute
-        assert(reply->getAttr("test_list_string", val));
-        assert(val.isString());
-        assert(val.String() == "test_value");
-        // Check the integer list attribute
-        assert(reply->getAttr("test_list_int", val));
-        assert(val == ListType(1, 1));
-        // Check the float list attribute
-        assert(reply->getAttr("test_list_float", val));
-        assert(val == ListType(1, 1.f));
-        // Check the string map attribute
-        assert(reply->getAttr("test_map_string", val));
-        assert(val == ListType(1, "test_value"));
-        
-        MapType reply_map;
-        // Check the integer map value
-        reply_map["test_key"] = 1;
-        assert(reply->getAttr("test_map_int", val));
-        assert(val == reply_map);
-        // Check the float map value
-        test_map["test_key"] = 1.f;
-        assert(reply->getAttr("test_map_float", val));
-        assert(val == reply_map);
-        // Check the string map value
-        test_map["test_key"] = "test_value";
-        assert(reply->getAttr("test_map_string", val));
-        assert(val == reply_map);
     }
     
     // Regular create op tests
