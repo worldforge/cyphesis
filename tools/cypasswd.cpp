@@ -61,6 +61,10 @@ using Atlas::Message::MapType;
 #define SET 1
 #define DEL 2
 
+#define ADMIN  0
+#define PLAYER 1
+#define SERVER 2
+
 void usage(std::ostream & stream, char * n, bool verbose = false)
 {
     stream << "usage: " << n << std::endl;
@@ -110,6 +114,7 @@ int main(int argc, char ** argv)
     int extra_arg_count = argc - config_status;
 
     std::string acname;
+    int actype = PLAYER;
     int action = SET;
 
     if (global_conf->findItem("", "add")) {
@@ -124,12 +129,17 @@ int main(int argc, char ** argv)
         action = DEL;
     }
 
+    if (global_conf->findItem("", "serv")) {
+        actype = SERVER;
+    }
+
     if (extra_arg_count == 0) {
         if (action != SET) {
             usage(std::cerr, argv[0]);
             return 1;
         }
         acname = "admin";
+        actype = ADMIN;
     } else if (extra_arg_count == 1) {
         acname = argv[config_status];
     } else {
@@ -202,7 +212,8 @@ int main(int argc, char ** argv)
         bool res;
         if (action == ADD) {
             amap["username"] = acname;
-            if(server) {
+            if (actype == SERVER) {
+                std::cout << "Creating server account" << std::endl << std::flush;
                 amap["type"] = "server";
             }
             res = db.putAccount(amap);
