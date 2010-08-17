@@ -77,6 +77,7 @@ int main(int argc, char ** argv)
     assert(thing->modPropertyType<std::string>("test_attr1") == 0);
 
     Property<int> * int_prop = thing->modPropertyType<int>("test_attr1");
+    assert(int_prop != 0);
     // assert(int_prop->flags() & flag_unsent);
     // TODO(alriddoch) make sure flags behave fully correctly, and signals
     // are emitted as required.

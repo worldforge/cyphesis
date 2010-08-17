@@ -157,6 +157,7 @@ int main(int argc, char ** argv)
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instance();
+        assert(test_eb == entity_factory);
         ExposedRuleset test_ruleset(test_eb);
 
         // Attributes for test entities being created
