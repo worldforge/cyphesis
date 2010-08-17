@@ -124,6 +124,7 @@ int main()
     assert(i.hasClass("login"));
     
     const TypeNode * rt_node = i.getType("root");
+    assert(rt_node != 0);
 
     const Root & rt = i.getClass("root");
 
