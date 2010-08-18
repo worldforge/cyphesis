@@ -48,6 +48,8 @@ int main()
         assert(p->getAuthState() == PEER_INIT);
         p->setAuthState(PEER_AUTHENTICATED);
         assert(p->getAuthState() == PEER_AUTHENTICATED);
+
+        delete p;
     }
 
     return 0;
