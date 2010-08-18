@@ -22,8 +22,12 @@
 
 class PendingTeleport
 {
+    /// \brief The ID of the entity that is being teleported
     std::string m_entity_id;
+    /// \brief The possess key that authenticates the clinet to the teleported
+    ///        entity
     std::string m_possess_key;
+    /// \brief Specifies if this object is valid
     bool m_valid;
 
     public:
