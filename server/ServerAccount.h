@@ -34,13 +34,13 @@ class ServerAccount : public Account {
                                OpVector & res) const;
 
     Entity * addNewEntity(const std::string &,
-                             const Atlas::Objects::Entity::RootEntity &,
-                             const Atlas::Objects::Entity::RootEntity &);
+                          const Atlas::Objects::Entity::RootEntity &,
+                          const Atlas::Objects::Entity::RootEntity &);
 
   public:
     ServerAccount(Connection * conn, const std::string & username,
-                             const std::string & passwd,
-                             const std::string & id, long intId);
+                  const std::string & passwd,
+                  const std::string & id, long intId);
     virtual ~ServerAccount();
 
     virtual const char * getType() const;
