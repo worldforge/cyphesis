@@ -1,7 +1,6 @@
-; -- Example3.iss --
-; Same as Example1.iss, but creates some registry entries too.
+; -- cyphesis.iss --
 
-; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
+; Create an installer for cyphesis
 
 [Setup]
 AppName=Cyphesis
