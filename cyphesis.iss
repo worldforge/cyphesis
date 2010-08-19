@@ -42,6 +42,11 @@ Source: "tools/cypython.exe"; DestDir: "{app}"
 Source: "data/cyphesis.vconf"; DestDir: "{app}\etc\cyphesis"
 Source: "data/*.xml"; Excludes: "acorn.xml,werewolf.xml"; DestDir: "{app}\etc\cyphesis\mason.d"
 Source: "rulesets/basic/mind/*.py"; DestDir: "{app}\share\cyphesis\rulesets\basic\mind"; Flags: recursesubdirs
+Source: "rulesets/mason/*.py"; DestDir: "{app}\share\cyphesis\rulesets\mason"; Flags: recursesubdirs
+Source: "rulesets/basic/world/objects/Thing.py"; DestDir: "{app}\share\cyphesis\scripts\cyphesis"
+Source: "rulesets/basic/world/probability.py"; DestDir: "{app}\share\cyphesis\scripts\cyphesis"
+Source: "rulesets/basic/world/objects/__init__.py"; DestDir: "{app}\share\cyphesis\scripts\cyphesis"
+Source: "rulesets/basic/editor.py"; DestDir: "{app}\share\cyphesis\scripts\cyphesis"
 ; Source: "README"; DestDir: "{app}"; Flags: isreadme
 
 [Icons]
