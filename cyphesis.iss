@@ -21,7 +21,9 @@ Name: "{app}\share"
 Name: "{app}\share\cyphesis"
 Name: "{app}\share\cyphesis\rulesets"
 Name: "{app}\share\cyphesis\rulesets\basic"
+Name: "{app}\share\cyphesis\rulesets\basic\mind"
 Name: "{app}\share\cyphesis\rulesets\mason"
+Name: "{app}\share\cyphesis\rulesets\mason\world"
 Name: "{app}\share\cyphesis\scripts"
 Name: "{app}\share\cyphesis\scripts\cyphesis"
 
@@ -39,6 +41,7 @@ Source: "tools/cypasswd.exe"; DestDir: "{app}"
 Source: "tools/cypython.exe"; DestDir: "{app}"
 Source: "data/cyphesis.vconf"; DestDir: "{app}\etc\cyphesis"
 Source: "data/*.xml"; Excludes: "acorn.xml,werewolf.xml"; DestDir: "{app}\etc\cyphesis\mason.d"
+Source: "rulesets/basic/mind/*.py"; DestDir: "{app}\share\cyphesis\rulesets\basic\mind"; Flags: recursesubdirs
 ; Source: "README"; DestDir: "{app}"; Flags: isreadme
 
 [Icons]
