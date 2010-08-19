@@ -297,7 +297,7 @@ package_sources
 
 package_rpms
 
-package_autopackage
+# package_autopackage
 
 echo NATURAL END
 
