@@ -30,6 +30,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Database.cpp Database.h \
 		      system.cpp system.h \
 		      system_net.cpp system_uid.cpp \
+		      system_prefix.cpp \
 		      serialno.cpp serialno.h \
 		      TypeNode.cpp TypeNode.h \
 		      Inheritance.cpp Inheritance.h \
