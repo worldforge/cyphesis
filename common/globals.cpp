@@ -27,6 +27,7 @@
 #include "const.h"
 #include "log.h"
 #include "compose.hpp"
+#include "system.h"
 
 #include <varconf/config.h>
 
@@ -466,6 +467,8 @@ int loadConfig(int argc, char ** argv, int usage)
     if (global_conf->findItem("", "help")) {
         return CONFIG_HELP;
     }
+
+    getinstallprefix();
 
     // Check if the config directory has been overriden at this point, as if
     // it has, that will affect loading the main config.
