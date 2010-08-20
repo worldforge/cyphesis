@@ -48,6 +48,10 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
+void getinstallprefix()
+{
+}
+
 namespace consts {
   const char * version = "unit_test";
 }

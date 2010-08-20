@@ -180,10 +180,7 @@ Routertest_LDADD = \
 
 client_sockettest_SOURCES = client_sockettest.cpp
 client_sockettest_LDADD = \
-        $(top_builddir)/common/client_socket.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/client_socket.o
 
 customtest_SOURCES = customtest.cpp
 customtest_LDADD = \
@@ -1277,6 +1274,7 @@ WorldLoadertest_LDADD = \
         $(top_builddir)/common/ClientTask.o \
         $(top_builddir)/common/const.o \
         $(top_builddir)/common/globals.o \
+        $(top_builddir)/common/system_prefix.o \
         $(top_builddir)/common/log.o
 
 AdminClienttest_SOURCES = AdminClienttest.cpp
