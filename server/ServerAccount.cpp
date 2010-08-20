@@ -53,6 +53,7 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
@@ -244,9 +245,9 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
             // Delete the created entity on failure
             Delete delOp;
             Anonymous del_arg;
-            del_arg->setId(id);
+            del_arg->setId(entity->getId());
             delOp->setArgs1(del_arg);
-            delOp->setTo(id);
+            delOp->setTo(entity->getId());
             entity->sendWorld(delOp);
             log(ERROR, "Unable to insert into TeleportAuthenticator. Entity deleted.");
             return;

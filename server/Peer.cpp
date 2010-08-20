@@ -201,6 +201,7 @@ int Peer::teleportEntity(const RootEntity &entity)
     
     if (isMind) {
         // Add an additional possess key argument
+        log(INFO, String::compose("Adding possess key %1 to Create op", key));
         std::vector<Root> create_args;
         Anonymous key_arg;
         key_arg->setAttr("possess_key", key);
