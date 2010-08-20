@@ -344,8 +344,9 @@ void Peer::cleanTeleports()
 
     TeleportMap::iterator I = m_teleports.begin();
     for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {
+        time_t time_passed = curr_time - I->second->getCreateTime();
         // If 5 seconds have passed, the teleport has failed
-        if (curr_time - I->second->getCreateTime() >= 10) {
+        if (time_passed >= 10 && I->second->isRequested()) {
             log(INFO, String::compose("Teleport timed out for entity (ID %1)",
                                             I->first));
             m_teleports.erase(I);
