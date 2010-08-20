@@ -19,13 +19,37 @@
 
 #include "server/Peer.h"
 
+#include "server/CommServer.h"
+#include "server/ServerRouting.h"
+#include "server/CommClient.h"
+#include "server/Connection.h"
+#include "server/WorldRouter.h"
+
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include <string>
+
+class TestCommClient : public CommClient {
+      public:
+          TestCommClient(CommServer & cs) : CommClient(cs) { }
+};
 
 int main()
 {
+    database_flag = false;
+
+    WorldRouter world;
+    Entity & e = world.m_gameWorld;
+
+    ServerRouting server(world, "noruleset", "unittesting",
+                                            "1", 1, "2", 2);
+
+    CommServer commServer(server);
+
+    TestCommClient * tc = new TestCommClient(commServer);
+
     {
         Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
         delete p;
@@ -50,6 +74,14 @@ int main()
         assert(p->getAuthState() == PEER_AUTHENTICATED);
 
         delete p;
+    }
+
+    {
+        Peer *p = new Peer(*(CommClient*)tc, *(ServerRouting*)&world, "addr", "1");
+        
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+        p->operation(op, res);
     }
 
     return 0;

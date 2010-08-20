@@ -206,11 +206,12 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         RootEntity arg2 = smart_dynamic_cast<RootEntity>(args.back());
         Element key;
         if(arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
+            possess_key = key.String();
+            isMind = true;
+        } else {
             log(ERROR, "Entity has mind but no possess key found");
             return;
         }
-        possess_key = key.String();
-        isMind = true;
     }
 
     TeleportAuthenticator *tele_auth = NULL;
@@ -241,7 +242,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     }
 
     if (isMind) {
-        if (tele_auth->addTeleport(entity->getId(), possess_key) == -1) {
+        if (tele_auth->addTeleport(entity->getId(), possess_key) != 0) {
             // Delete the created entity on failure
             Delete delOp;
             Anonymous del_arg;
