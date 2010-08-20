@@ -146,5 +146,8 @@ void CommPeer::idle(time_t t)
                 m_clientIos.shutdown();
             }
         }
+        if (peer->getAuthState() == PEER_AUTHENTICATED) {
+            peer->cleanTeleports();
+        }
     }
 }

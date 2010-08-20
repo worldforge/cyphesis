@@ -18,17 +18,20 @@
 #include "server/TeleportState.h"
 
 /// \brief Constructor
-TeleportState::TeleportState() : m_isMind(false),
-                                    m_state(TELEPORT_NONE)
+TeleportState::TeleportState(time_t time) : m_isMind(false),
+                                        m_state(TELEPORT_NONE),
+                                        m_teleportTime(time)
 {
 }
 
 /// \brief Constructor
 ///
 /// @param key The possess key to be used for entities having an external mind
-TeleportState::TeleportState(const std::string &key) : m_isMind(true),
+TeleportState::TeleportState(const std::string &key, time_t time) : 
+                                                        m_isMind(true),
                                                         m_possessKey(key),
-                                                        m_state(TELEPORT_NONE)
+                                                        m_state(TELEPORT_NONE),
+                                                        m_teleportTime(time)
 {
 }
 
@@ -74,4 +77,9 @@ bool TeleportState::isMind()
 const std::string & TeleportState::getPossessKey()
 {
     return m_possessKey;
+}
+
+time_t TeleportState::getCreateTime()
+{
+    return m_teleportTime;
 }

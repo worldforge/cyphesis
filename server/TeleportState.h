@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <sys/time.h>
+
 class TeleportState
 {
   protected:
@@ -33,9 +35,11 @@ class TeleportState
         TELEPORT_CREATED    /// \brief Teleport has succeeded
     } m_state;
 
+    time_t m_teleportTime;  /// \brief The time the teleport took place
+
   public:
-    TeleportState();
-    TeleportState(const std::string &key);
+    TeleportState(time_t time);
+    TeleportState(const std::string &key, time_t time);
     
     void setRequested();
     void setCreated();
@@ -45,6 +49,8 @@ class TeleportState
 
     bool isMind();
     const std::string & getPossessKey();
+
+    time_t getCreateTime();
 };
 
 #endif

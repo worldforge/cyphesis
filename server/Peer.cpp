@@ -41,6 +41,8 @@
 
 #include <iostream>
 
+#include <sys/time.h>
+
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
@@ -177,15 +179,18 @@ int Peer::teleportEntity(const RootEntity &entity)
         }
     }
 
+    struct timeval timeVal;
+    time_t teleport_time = timeVal.tv_sec;
+
     // Add a teleport state object to identify this teleport request
     TeleportState *s;
     if (isMind) {
         // Entities with a mind require an additional one-time possess key that
         // is used by the client to authenticate a teleport on the destination
         // peer
-        s = new TeleportState(key);
+        s = new TeleportState(key, teleport_time);
     } else {
-        s = new TeleportState();
+        s = new TeleportState(teleport_time);
     }
 
     if(s == NULL) {
@@ -268,7 +273,8 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     Entity * entity = BaseWorld::instance().getEntity(id);
     if (entity == 0) {
         log(ERROR, String::compose("No entity found with ID: %1", id));
-        // TODO: Cleanup TeleportState here
+        // Clean up the teleport state object
+        m_teleports.erase(I);
         return;
     }
 
@@ -320,5 +326,25 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     entity->sendWorld(delOp);
     log(INFO, "Deleted entity from current server");
 
-    // TODO: Cleanup TeleportState here
+    // Clean up the teleport state object
+    m_teleports.erase(I);
+}
+
+void Peer::cleanTeleports()
+{
+    if (m_teleports.size() == 0) {
+        return;
+    }
+    // Get the current time
+    struct timeval timeVal;
+    gettimeofday(&timeVal, NULL);
+    time_t curr_time = timeVal.tv_sec;
+
+    TeleportMap::iterator I = m_teleports.begin();
+    for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {
+        // If 5 seconds have passed, the teleport has failed
+        if (curr_time - I->second->getCreateTime() >= 10) {
+            m_teleports.erase(I);
+        }
+    }
 }
