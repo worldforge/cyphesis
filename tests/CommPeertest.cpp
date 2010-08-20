@@ -654,6 +654,10 @@ void Peer::operation(const Operation &op, OpVector &res)
 {
 }
 
+void Peer::cleanTeleports()
+{
+}
+
 int opSerialCount = 0;
 
 const char * CYPHESIS = "cyphesis";
