@@ -180,6 +180,7 @@ int Peer::teleportEntity(const RootEntity &entity)
     }
 
     struct timeval timeVal;
+    gettimeofday(&timeVal, NULL);
     time_t teleport_time = timeVal.tv_sec;
 
     // Add a teleport state object to identify this teleport request
@@ -344,6 +345,8 @@ void Peer::cleanTeleports()
     for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {
         // If 5 seconds have passed, the teleport has failed
         if (curr_time - I->second->getCreateTime() >= 10) {
+            log(INFO, String::compose("Teleport timed out for entity (ID %1)",
+                                            I->first));
             m_teleports.erase(I);
         }
     }
