@@ -244,13 +244,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     if (isMind) {
         if (tele_auth->addTeleport(entity->getId(), possess_key) != 0) {
             // Delete the created entity on failure
-            Delete delOp;
-            Anonymous del_arg;
-            del_arg->setId(entity->getId());
-            delOp->setArgs1(del_arg);
-            delOp->setTo(entity->getId());
-            entity->sendWorld(delOp);
-            log(ERROR, "Unable to insert into TeleportAuthenticator. Entity deleted.");
+            log(CRITICAL, "Unable to insert into TeleportAuthenticator");
             return;
         }
     }
