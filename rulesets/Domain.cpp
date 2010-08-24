@@ -39,6 +39,8 @@ Domain::Domain() : m_refCount(0)
 
 Domain::~Domain()
 {
+    assert(m_instance == this);
+    m_instance = 0;
 }
 
 float Domain::constrainHeight(LocatedEntity * parent,
