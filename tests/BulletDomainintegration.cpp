@@ -21,10 +21,49 @@
 
 #include "rulesets/TerrainProperty.h"
 
+#include "btBulletCollisionCommon.h"
+
 #include <cassert>
+
+class TestBulletDomain : public BulletDomain
+{
+  public:
+    btCollisionWorld * test_getCollisionWorld() const
+    {
+        return m_collisionWorld;
+    }
+};
 
 int main()
 {
+    {
+        BulletDomain * bd = new BulletDomain;
+        delete bd;
+    }
+
+    {
+        BulletDomain * bd = new BulletDomain;
+        delete bd;
+    }
+
+    {
+        TestBulletDomain * bd = new TestBulletDomain;
+        assert(bd->test_getCollisionWorld() != 0);
+
+        btCollisionObject * obj = new btCollisionObject;
+
+        btMatrix3x3 basis;
+        basis.setIdentity();
+        obj->getWorldTransform().setBasis(basis);
+
+        btBoxShape* box = new btBoxShape(btVector3(1,1,1));
+        obj->setCollisionShape(box);
+
+        bd->test_getCollisionWorld()->addCollisionObject(obj);
+
+        delete bd;
+    }
+
     return 0;
 }
 
