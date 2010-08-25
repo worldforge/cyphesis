@@ -463,6 +463,7 @@ AC_SUBST(MDNS_LIBS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(PYTHON_UTIL_LIBS)
+AC_SUBST(python_version)
 AC_SUBST(PGSQL_LIBS)
 
 AC_SUBST(STATIC_LIBSTDCPP)
@@ -474,6 +475,7 @@ AC_SUBST(TAR_PERM_FLAGS)
 dnl Generate files
 AC_CONFIG_FILES([
     cyphesis.spec
+    cyphesis.iss
     Makefile
     libraries/Makefile
     physics/Makefile

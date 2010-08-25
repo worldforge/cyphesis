@@ -4,7 +4,7 @@
 
 [Setup]
 AppName=Cyphesis
-AppVersion=0.5.23
+AppVersion=@VERSION@
 AppPublisher=WorldForge
 AppPublisherURL=http://www.worldforge.org/
 DefaultDirName={pf}\Cyphesis
@@ -75,11 +75,11 @@ Root: HKLM; Subkey: "Software\WorldForge\Cyphesis\Settings"; ValueType: string; 
 
 function InitializeSetup(): Boolean;
 begin
-  if RegKeyExists(HKLM, 'Software\\Python\\PythonCore\\2.6\\InstallPath') then
+  if RegKeyExists(HKLM, 'Software\\Python\\PythonCore\\@python_version@\\InstallPath') then
   begin
     Result := True;
   end else begin
-    MsgBox('Python version 2.6.x is required by Cyphesis to run.', mbError, MB_OK);
+    MsgBox('Python version @python_version@.x is required by Cyphesis to run.', mbError, MB_OK);
     Result := False;
   end;
 end;
