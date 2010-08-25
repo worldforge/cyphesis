@@ -5,8 +5,11 @@
 [Setup]
 AppName=Cyphesis
 AppVersion=0.5.23
+AppPublisher=WorldForge
+AppPublisherURL=http://www.worldforge.org/
 DefaultDirName={pf}\Cyphesis
 DefaultGroupName=WorldForge
+OutputBaseFilename=cyphesis-setup
 UninstallDisplayIcon={app}\cyphesis.exe
 ; OutputDir=userdocs:Inno Setup Examples Output
 
@@ -38,6 +41,11 @@ Source: "tools/cydumprules.exe"; DestDir: "{app}"
 Source: "tools/cyloadrules.exe"; DestDir: "{app}"
 Source: "tools/cypasswd.exe"; DestDir: "{app}"
 Source: "tools/cypython.exe"; DestDir: "{app}"
+Source: "server/libgcc_s_sjlj-1.dll"; DestDir: "{app}"
+Source: "server/libgcrypt-11.dll"; DestDir: "{app}"
+Source: "server/libgpg-error-0.dll"; DestDir: "{app}"
+Source: "server/libpq.dll"; DestDir: "{app}"
+Source: "server/libsigc-2.0-0.dll"; DestDir: "{app}"
 Source: "data/cyphesis.vconf"; DestDir: "{app}\etc\cyphesis"
 Source: "data/*.xml"; Excludes: "acorn.xml,werewolf.xml"; DestDir: "{app}\etc\cyphesis\mason.d"
 Source: "rulesets/basic/mind/*.py"; DestDir: "{app}\share\cyphesis\rulesets\basic\mind"; Flags: recursesubdirs
@@ -50,6 +58,7 @@ Source: "rulesets/basic/editor.py"; DestDir: "{app}\share\cyphesis\scripts\cyphe
 
 [Icons]
 Name: "{group}\Cyphesis"; Filename: "{app}\cyphesis.exe"
+Name: "{group}\Cyphesis Create World"; Filename: "{app}\cyclient.exe"
 
 [Registry]
 ; Start "Software\My Company\My Program" keys under HKEY_CURRENT_USER
@@ -61,3 +70,16 @@ Root: HKCU; Subkey: "Software\WorldForge\WorldForge"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\WorldForge"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\WorldForge\Cyphesis"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\WorldForge\Cyphesis\Settings"; ValueType: string; ValueName: "Path"; ValueData: "{app}"
+
+[Code]
+
+function InitializeSetup(): Boolean;
+begin
+  if RegKeyExists(HKLM, 'Software\\Python\\PythonCore\\2.6\\InstallPath') then
+  begin
+    Result := True;
+  end else begin
+    MsgBox('Python version 2.6.x is required by Cyphesis to run.', mbError, MB_OK);
+    Result := False;
+  end;
+end;
