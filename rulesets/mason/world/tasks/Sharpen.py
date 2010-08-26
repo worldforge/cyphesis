@@ -34,7 +34,9 @@ class Sharpen(server.Task):
             self.irrelevant()
             return
 
-        new_status = target.status - 0.1
+        new_status = 1
+        if hasattr(target, 'status'):
+            new_status = target.status - 0.1
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.progress = 1 - new_status
