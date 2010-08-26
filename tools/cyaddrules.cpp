@@ -31,10 +31,12 @@
 
 #include "AdminClient.h"
 
+#include "common/compose.hpp"
 #include "common/Database.h"
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/sockets.h"
+#include "common/system.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
@@ -43,6 +45,7 @@
 
 #include <string>
 #include <fstream>
+#include <cstdlib>
 
 #include <dirent.h>
 
@@ -132,7 +135,7 @@ static void usage(char * prgname)
 STRING_OPTION(server, "", "client", "serverhost",
               "Hostname of the server to connect to");
 
-STRING_OPTION(username, "admin", "client", "account",
+STRING_OPTION(username, "", "client", "account",
               "Account name to use to authenticate to the server");
 
 STRING_OPTION(password, "", "client", "password",
@@ -187,13 +190,22 @@ int main(int argc, char ** argv)
         }
     }
 
-    if (bridge.login() != 0) {
-        std::cerr << "Login failed." << std::endl << std::flush;
-        bridge.getLogin();
-
-        if (!bridge.login()) {
-            std::cerr << "Login failed." << std::endl << std::flush;
+    if (username.empty()) {
+        if (bridge.create("sys",
+                          create_session_username(),
+                          String::compose("%1%2", ::rand(), ::rand())) != 0) {
+            std::cerr << "Creation failed." << std::endl << std::flush;
             return 1;
+        }
+    } else {
+        if (bridge.login() != 0) {
+            std::cerr << "Login failed." << std::endl << std::flush;
+            bridge.getLogin();
+
+            if (!bridge.login()) {
+                std::cerr << "Login failed." << std::endl << std::flush;
+                return 1;
+            }
         }
     }
 

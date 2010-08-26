@@ -122,6 +122,7 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/client_socket.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/system_prefix.o \
+                   $(top_builddir)/common/system_uid.o \
                    $(top_builddir)/common/prefix.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/log.o \
