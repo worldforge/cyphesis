@@ -16,7 +16,7 @@ AM_BINRELOC
 
 AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
 
-dnl Don't need libtool
+dnl Do not need libtool
 
 dnl AC_PROG_LIBTOOL
 
