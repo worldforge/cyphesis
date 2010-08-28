@@ -37,7 +37,7 @@ class Interactive : public AdminClient,
     std::string m_serverName;
     std::string m_systemType;
     std::string m_prompt;
-    bool exit;
+    bool m_exit_flag;
 
   protected:
     virtual void appearanceArrived(const Operation &);

@@ -147,7 +147,7 @@ static void help()
 
 Interactive::Interactive() : avatar_flag(false), server_flag(false),
                              m_serverName("cyphesis"), m_prompt("cyphesis> "),
-                             exit(false)
+                             m_exit_flag(false)
 {
 }
 
@@ -366,7 +366,7 @@ void Interactive::gotCommand(char * cmd)
 void Interactive::runCommand(char * cmd)
 {
     if (cmd == NULL) {
-        exit = true;
+        m_exit_flag = true;
         std::cout << std::endl << std::flush;
         return;
     }
@@ -412,7 +412,7 @@ void Interactive::loop()
                                 &Interactive::gotCommand);
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
-    while (!exit) {
+    while (!m_exit_flag) {
         select();
     };
     std::cout << std::endl << std::flush;
@@ -444,7 +444,7 @@ void Interactive::select(bool rewrite_prompt)
         if (FD_ISSET(m_fd, &infds)) {
             if (m_ios->peek() == -1) {
                 std::cout << "Server disconnected" << std::endl << std::flush;
-                exit = true;
+                m_exit_flag = true;
             } else {
                 if (rewrite_prompt) {
                     std::cout << std::endl;
