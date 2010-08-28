@@ -43,14 +43,17 @@ class Sharpen(server.Task):
             self.rate = 0
             return self.next_tick(1.75)
 
-        set=Operation("set", Entity(self.target, status=new_status), to=target)
-        res.append(set)
-        if new_status < 0:
+        if new_status < 0.1:
+            new_status = -1
             new_loc = target.location.copy()
             new_loc.bbox = target.location.bbox
             new_loc.orientation = target.location.orientation
             create=Operation("create", Entity(name='stake',type='stake',location=new_loc), to=target)
             res.append(create)
+        
+        set=Operation("set", Entity(self.target, status=new_status), to=target)
+        res.append(set)
+        
         self.progress = 1 - new_status
         self.rate = 0.1 / 1.75
         
