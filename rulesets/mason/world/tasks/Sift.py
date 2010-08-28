@@ -63,8 +63,6 @@ class Sift(server.Task):
 
         if old_rate < 0.01:
             self.progress = 0
-        else:
-            self.progress += 0.1
 
         # print "%s" % self.pos
 
