@@ -10,7 +10,7 @@ from physics import Vector3D
 import server
 
 class Delve(server.Task):
-    """ A task for cutting a log into boards."""
+    """ A task for cutting chunks of material from the terrain with a pickaxe."""
 
     materials = { 0: 'boulder', 4: 'ice' }
     def cut_operation(self, op):
@@ -43,8 +43,6 @@ class Delve(server.Task):
 
         if old_rate < 0.01:
             self.progress = 0
-        else:
-            self.progress += 0.1
 
         # print "%s" % self.pos
 
