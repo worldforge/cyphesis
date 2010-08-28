@@ -145,7 +145,7 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
-Interactive::Interactive() : avatar_flag(false), server_flag(false),
+Interactive::Interactive() : m_avatar_flag(false), m_server_flag(false),
                              m_serverName("cyphesis"), m_prompt("cyphesis> "),
                              m_exit_flag(false)
 {
@@ -232,7 +232,7 @@ void Interactive::infoArrived(const Operation & op)
         return;
     }
     const Root & ent = op->getArgs().front();
-    if (avatar_flag) {
+    if (m_avatar_flag) {
         std::cout << "Create agent success" << std::endl << std::flush;
         if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Response to agent create does not contain agent id"
@@ -240,9 +240,9 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_agentId = ent->getId();
-            avatar_flag = false;
+            m_avatar_flag = false;
         }
-    } else if (server_flag) {
+    } else if (m_server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
         if (!ent->isDefaultName()) {
             m_serverName = ent->getName();
@@ -259,7 +259,7 @@ void Interactive::infoArrived(const Operation & op)
                 updatePrompt();
             }
         }
-        server_flag = false;
+        m_server_flag = false;
     } else if (m_currentTask == 0) {
         AtlasStreamClient::infoArrived(op);
         std::cout << "Info(" << std::endl;
@@ -485,14 +485,14 @@ int Interactive::setup()
 
     send(get);
 
-    server_flag = true;
+    m_server_flag = true;
 
     reply_flag = true;
-    while (server_flag && !error_flag) {
+    while (m_server_flag && !error_flag) {
        m_codec->poll();
     }
 
-    server_flag = false;
+    m_server_flag = false;
     if (!error_flag) {
        return 0;
     }
@@ -662,7 +662,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         c->setArgs1(cmap);
         c->setFrom(accountId);
 
-        avatar_flag = true;
+        m_avatar_flag = true;
 
         send(c);
     } else if (cmd == "delete") {
