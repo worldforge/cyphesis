@@ -146,7 +146,7 @@ static void help()
 }
 
 Interactive::Interactive() : avatar_flag(false), server_flag(false),
-                             serverName("cyphesis"), prompt("cyphesis> "),
+                             m_serverName("cyphesis"), m_prompt("cyphesis> "),
                              exit(false)
 {
 }
@@ -239,23 +239,23 @@ void Interactive::infoArrived(const Operation & op)
                       << std::endl << std::flush;
             
         } else {
-            agentId = ent->getId();
+            m_agentId = ent->getId();
             avatar_flag = false;
         }
     } else if (server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
         if (!ent->isDefaultName()) {
-            serverName = ent->getName();
-            std::string::size_type p = serverName.find(".");
+            m_serverName = ent->getName();
+            std::string::size_type p = m_serverName.find(".");
             if (p != std::string::npos) {
-                serverName = serverName.substr(0, p);
+                m_serverName = m_serverName.substr(0, p);
             }
             updatePrompt();
         }
         Element raw_attr;
         if (ent->copyAttr("server", raw_attr) == 0) {
             if (raw_attr.isString()) {
-                systemType = raw_attr.String();
+                m_systemType = raw_attr.String();
                 updatePrompt();
             }
         }
@@ -299,7 +299,7 @@ void Interactive::sightArrived(const Operation & op)
     if (accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo() && agentId != op->getTo()) {
+    if (accountId != op->getTo() && m_agentId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -408,7 +408,7 @@ char * completion_generator(const char * text, int state)
 
 void Interactive::loop()
 {
-    rl_callback_handler_install(prompt.c_str(),
+    rl_callback_handler_install(m_prompt.c_str(),
                                 &Interactive::gotCommand);
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
@@ -474,9 +474,9 @@ void Interactive::updatePrompt()
     if (m_currentTask != 0) {
         status = m_currentTask->description();
     }
-    prompt = String::compose("[%1@%2 %3{%4}]%5 ", m_username, serverName,
-                             systemType, status, designation);
-    rl_set_prompt(prompt.c_str());
+    m_prompt = String::compose("[%1@%2 %3{%4}]%5 ", m_username, m_serverName,
+                             m_systemType, status, designation);
+    rl_set_prompt(m_prompt.c_str());
 }
 
 int Interactive::setup()
@@ -666,7 +666,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         send(c);
     } else if (cmd == "delete") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
@@ -678,7 +678,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous del_arg;
             del_arg->setId(arg);
             del->setArgs1(del_arg);
-            del->setFrom(agentId);
+            del->setFrom(m_agentId);
             del->setTo(arg);
 
             send(del);
@@ -686,7 +686,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             reply_expected = false;
         }
     } else if (cmd == "find_by_name") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
@@ -698,14 +698,14 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setName(arg);
             l->setArgs1(lmap);
-            l->setFrom(agentId);
+            l->setFrom(m_agentId);
 
             send(l);
 
             reply_expected = false;
         }
     } else if (cmd == "find_by_type") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
@@ -717,26 +717,26 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setParents(std::list<std::string>(1, arg));
             l->setArgs1(lmap);
-            l->setFrom(agentId);
+            l->setFrom(m_agentId);
 
             send(l);
 
             reply_expected = false;
         }
     } else if (cmd == "flush") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
             std::cout << "Please specify the type to flush" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            ClientTask * task = new Flusher(agentId);
+            ClientTask * task = new Flusher(m_agentId);
             runTask(task, arg);
             reply_expected = false;
         }
     } else if (cmd == "creator_create") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else if (arg.empty()) {
@@ -748,14 +748,14 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous thing;
             thing->setParents(std::list<std::string>(1, arg));
             c->setArgs1(thing);
-            c->setFrom(agentId);
+            c->setFrom(m_agentId);
 
             send(c);
 
             reply_expected = false;
         }
     } else if (cmd == "creator_look") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -766,7 +766,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
                 cmap->setId(arg);
                 l->setArgs1(cmap);
             }
-            l->setFrom(agentId);
+            l->setFrom(m_agentId);
 
             send(l);
             reply_expected = true;
@@ -780,11 +780,11 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         runTask(task, arg);
         reply_expected = false;
     } else if (cmd == "restore") {
-        if (agentId.empty()) {
+        if (m_agentId.empty()) {
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            ClientTask * task = new WorldLoader(accountId, agentId);
+            ClientTask * task = new WorldLoader(accountId, m_agentId);
             runTask(task, arg);
             reply_expected = false;
         }
