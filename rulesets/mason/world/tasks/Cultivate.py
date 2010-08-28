@@ -11,7 +11,7 @@ from random import *
 import server
 
 class Cultivate(server.Task):
-    """ A proof of concept task for sharpening a log into a stake."""
+    """ A proof of concept task germinating seeds into plants."""
     def sow_operation(self, op):
         """ Op handler for sow op which activates this task """
         # print "Cultivate.sow"
