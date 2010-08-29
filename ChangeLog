@@ -1,3 +1,9 @@
+2010-08-29  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.24
+
 2010-08-19  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* Refactor client code to make it way more flexible.
