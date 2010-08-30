@@ -14,8 +14,6 @@ AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news])
 
 AM_BINRELOC
 
-AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
-
 dnl Do not need libtool
 
 dnl AC_PROG_LIBTOOL
