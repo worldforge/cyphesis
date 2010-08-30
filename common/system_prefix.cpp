@@ -21,6 +21,7 @@
 #include "config.h"
 #endif
 
+#include "binreloc.h"
 #include "compose.hpp"
 #include "globals.h"
 #include "log.h"
@@ -70,5 +71,15 @@ void getinstallprefix()
     }
 
     RegCloseKey(hKey);
+#else // HAVE_WINDOWS_H
+    BrInitError error;
+    if (br_init (&error) == 0) {
+        log(INFO, "Binreloc fail");
+        return;
+    }
+
+    etc_directory = br_find_etc_dir("");
+    share_directory = br_find_data_dir("data");
+    var_directory = String::compose("%1/var", br_find_prefix(""));
 #endif // HAVE_WINDOWS_H
 }

@@ -88,7 +88,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/client_socket.o \
               $(top_builddir)/common/globals.o \
               $(top_builddir)/common/system_prefix.o \
-              $(top_builddir)/common/prefix.o \
+              $(top_builddir)/common/binreloc.o \
               $(top_builddir)/common/log.o \
               $(top_builddir)/common/const.o \
               $(top_builddir)/common/AtlasStreamClient.o \
@@ -103,7 +103,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
 cyconfig_SOURCES = cyconfig.cpp
 cyconfig_LDADD = $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/system_prefix.o \
-                 $(top_builddir)/common/prefix.o \
+                 $(top_builddir)/common/binreloc.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/const.o \
                  $(TOOL_LIBS)
@@ -111,7 +111,7 @@ cyconfig_LDADD = $(top_builddir)/common/globals.o \
 cyconvertrules_SOURCES = cyconvertrules.cpp
 cyconvertrules_LDADD = $(top_builddir)/common/globals.o \
                        $(top_builddir)/common/system_prefix.o \
-                       $(top_builddir)/common/prefix.o \
+                       $(top_builddir)/common/binreloc.o \
                        $(top_builddir)/common/log.o \
                        $(top_builddir)/common/const.o \
                        $(TOOL_LIBS)
@@ -123,7 +123,7 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/system_prefix.o \
                    $(top_builddir)/common/system_uid.o \
-                   $(top_builddir)/common/prefix.o \
+                   $(top_builddir)/common/binreloc.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/log.o \
                    $(top_builddir)/common/AtlasStreamClient.o \
@@ -135,7 +135,7 @@ cyloadrules_SOURCES = cyloadrules.cpp
 cyloadrules_LDADD = $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/system_prefix.o \
-                    $(top_builddir)/common/prefix.o \
+                    $(top_builddir)/common/binreloc.o \
                     $(top_builddir)/common/const.o \
                     $(top_builddir)/common/log.o \
                     $(top_builddir)/common/id.o \
@@ -147,7 +147,7 @@ cydumprules_SOURCES = cydumprules.cpp \
 cydumprules_LDADD = $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
                     $(top_builddir)/common/system_prefix.o \
-                    $(top_builddir)/common/prefix.o \
+                    $(top_builddir)/common/binreloc.o \
                     $(top_builddir)/common/const.o \
                     $(top_builddir)/common/log.o \
                     $(top_builddir)/common/id.o \
@@ -159,7 +159,7 @@ cypasswd_LDADD = $(top_builddir)/common/Database.o \
                  $(top_builddir)/common/AccountBase.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/system_prefix.o \
-                 $(top_builddir)/common/prefix.o \
+                 $(top_builddir)/common/binreloc.o \
                  $(top_builddir)/common/const.o \
                  $(top_builddir)/common/log.o \
                  $(top_builddir)/common/id.o \
@@ -174,7 +174,7 @@ cydb_LDADD = $(top_builddir)/common/Database.o \
              $(top_builddir)/common/AccountBase.o \
              $(top_builddir)/common/globals.o \
              $(top_builddir)/common/system_prefix.o \
-             $(top_builddir)/common/prefix.o \
+             $(top_builddir)/common/binreloc.o \
              $(top_builddir)/common/const.o \
              $(top_builddir)/common/log.o \
              $(top_builddir)/common/id.o \
@@ -188,7 +188,7 @@ cypython_SOURCES = cypython.cpp
 cypython_LDADD = $(top_builddir)/common/client_socket.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/system_prefix.o \
-                 $(top_builddir)/common/prefix.o \
+                 $(top_builddir)/common/binreloc.o \
                  $(top_builddir)/common/const.o \
                  $(top_builddir)/common/log.o \
                  $(READLINETOOL_LIBS) \

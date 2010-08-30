@@ -23,7 +23,6 @@
 
 #include "globals.h"
 
-#include "prefix.h"
 #include "const.h"
 #include "log.h"
 #include "compose.hpp"

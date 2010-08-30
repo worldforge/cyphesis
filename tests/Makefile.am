@@ -1275,6 +1275,7 @@ WorldLoadertest_LDADD = \
         $(top_builddir)/common/const.o \
         $(top_builddir)/common/globals.o \
         $(top_builddir)/common/system_prefix.o \
+        $(top_builddir)/common/binreloc.o \
         $(top_builddir)/common/log.o
 
 AdminClienttest_SOURCES = AdminClienttest.cpp
