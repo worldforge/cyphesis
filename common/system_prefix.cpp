@@ -63,8 +63,6 @@ void getinstallprefix()
     {
         log(CYLOG_ERROR, "No install key for cyphesis");
     } else {
-        log(INFO, String::compose("Got %1", path));
-
         etc_directory = String::compose("%1/etc", path);
         var_directory = String::compose("%1/var", path);
         share_directory = String::compose("%1/share", path);
