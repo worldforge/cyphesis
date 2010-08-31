@@ -72,7 +72,6 @@ void getinstallprefix()
 #else // HAVE_WINDOWS_H
     BrInitError error;
     if (br_init (&error) == 0) {
-        log(INFO, "Binreloc fail");
         return;
     }
 
