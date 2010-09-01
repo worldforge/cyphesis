@@ -784,11 +784,7 @@ PythonContexttest_LDADD = \
 
 ArithmeticScripttest_SOURCES = ArithmeticScripttest.cpp
 ArithmeticScripttest_LDADD = \
-        $(top_builddir)/rulesets/ArithmeticScript.o \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/ArithmeticScript.o
 
 PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp python_testers.h
 PythonArithmeticScripttest_LDADD = \
