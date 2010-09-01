@@ -19,20 +19,20 @@
 
 #include <Python.h>
 
-#include "rulesets/Python_API.h"
 #include "rulesets/PythonContext.h"
 
 #include <cassert>
 
 int main()
 {
-    init_python_api();
+    Py_Initialize();
 
     PythonContext pc;
 
     pc.runCommand("1");
-    pc.runCommand("foo(");
+    pc.runCommand("foo()");
 
-    shutdown_python_api();
+    Py_Finalize();
+
     return 0;
 }
