@@ -24,8 +24,9 @@
 #include "server/Connection.h"
 #include "server/WorldRouter.h"
 
-#include "rulesets/Entity.h"
 #include "rulesets/Character.h"
+#include "rulesets/Domain.h"
+#include "rulesets/Entity.h"
 
 #include "TestWorld.h"
 
@@ -79,6 +80,8 @@ class TestAccount : public Account {
 int main()
 {
     database_flag = false;
+
+    (void)new Domain;
 
     WorldRouter world;
     Entity & e = world.m_gameWorld;
