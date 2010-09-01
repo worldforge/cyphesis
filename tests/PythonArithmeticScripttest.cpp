@@ -21,9 +21,10 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonArithmeticScript.h"
+
+#include "common/compose.hpp"
+#include "common/log.h"
 
 #include <cassert>
 
@@ -31,9 +32,13 @@ static PyMethodDef no_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
+PyObject * Get_PyClass(PyObject * module,
+                       const std::string & package,
+                       const std::string & type);
+
 int main()
 {
-    init_python_api();
+    Py_Initialize();
 
     PyObject * testmod = Py_InitModule("testmod", no_methods);
 
@@ -69,6 +74,43 @@ int main()
     pas.set("foo", 1.0f);
     pas.set("mim", 1.0f);
 
-    shutdown_python_api();
+    Py_Finalize();
     return 0;
+}
+
+// stubs
+
+PyObject * Get_PyClass(PyObject * module,
+                       const std::string & package,
+                       const std::string & type)
+{
+    PyObject * py_class = PyObject_GetAttrString(module, (char *)type.c_str());
+    if (py_class == NULL) {
+        log(ERROR, String::compose("Could not find python class \"%1.%2\"",
+                                   package, type));
+        PyErr_Print();
+        return NULL;
+    }
+    if (PyCallable_Check(py_class) == 0) {
+        log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
+                                   package, type));
+        Py_DECREF(py_class);
+        return NULL;
+    }
+    if (PyType_Check(py_class) == 0) {
+        log(ERROR, String::compose("PyCallable_Check returned true, "
+                                   "but PyType_Check returned false \"%1.%2\"",
+                                   package, type));
+        Py_DECREF(py_class);
+        return NULL;
+    }
+    return py_class;
+}
+
+ArithmeticScript::~ArithmeticScript()
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }

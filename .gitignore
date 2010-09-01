@@ -30,7 +30,10 @@ cyloadrules
 cypasswd
 cypython
 tests/*test
+tests/*test.log
 tests/*integration
+tests/*integration.log
+tests/test-suite.log
 doc
 python_doc
 cc.vim
