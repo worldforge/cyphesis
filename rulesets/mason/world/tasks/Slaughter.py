@@ -42,9 +42,6 @@ class Slaughter(server.Task):
             # print "Too far away"
             return self.next_tick(1.75)
 
-        self.progress = (self.count - target.mass) / self.count
-        self.rate = (1.0 / self.count) / 1.75
-
         res=Oplist()
 
         if target.mass <= 1:
@@ -54,6 +51,13 @@ class Slaughter(server.Task):
             set = Operation("set", Entity(target.id, mass = target.mass - 1),
                             to = target)
             res.append(set)
+
+        if self.count < 1:
+            self.progress = 1.0
+            self.rate = 0
+        else:
+            self.progress = (self.count - target.mass) / self.count
+            self.rate = (1.0 / self.count) / 1.75
 
         chunk_loc = target.location.copy()
         meat_type = 'meat'

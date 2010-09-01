@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT([cyphesis],[0.5.23],[alriddoch@googlemail.com])
+AC_INIT([cyphesis],[0.5.24],[alriddoch@googlemail.com])
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -10,13 +10,11 @@ AC_CANONICAL_HOST
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news])
+AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news color-tests parallel-tests])
 
 AM_BINRELOC
 
-AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
-
-dnl Don't need libtool
+dnl Do not need libtool
 
 dnl AC_PROG_LIBTOOL
 
@@ -479,6 +477,7 @@ AC_SUBST(MDNS_LIBS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(PYTHON_UTIL_LIBS)
+AC_SUBST(python_version)
 AC_SUBST(PGSQL_LIBS)
 
 AC_SUBST(STATIC_LIBSTDCPP)
@@ -490,6 +489,7 @@ AC_SUBST(TAR_PERM_FLAGS)
 dnl Generate files
 AC_CONFIG_FILES([
     cyphesis.spec
+    cyphesis.iss
     Makefile
     libraries/Makefile
     physics/Makefile

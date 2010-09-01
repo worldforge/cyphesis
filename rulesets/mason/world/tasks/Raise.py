@@ -57,7 +57,7 @@ class Raise(server.Task):
         # If distance is zero, axis becomes zero
         # print "DISTANCE ", distance, distance.is_valid(), axis, axis.is_valid()
         # If axis is zero, the quaternion contains NaNs.
-        rotation=Quaternion(axis, -0.01)
+        rotation=Quaternion(axis, -0.05)
         # print "ROT ", rotation, rotation.is_valid()
         if target.location.orientation.is_valid():
             # print "VALID"
@@ -70,6 +70,6 @@ class Raise(server.Task):
         res=Oplist()
         res.append(move)
 
-        res.append(self.next_tick(1))
+        res.append(self.next_tick(0.5))
 
         return res

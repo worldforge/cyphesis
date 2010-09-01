@@ -35,6 +35,8 @@
 #include "common/log.h"
 #include "common/system.h"
 
+#include <varconf/config.h>
+
 #include <string>
 #include <iostream>
 
@@ -60,7 +62,7 @@ using Atlas::Message::MapType;
 void usage(std::ostream & stream, char * n, bool verbose = false)
 {
     stream << "usage: " << n << std::endl;
-    stream << "       " << n << " { -a | -s | -d } account" << std::endl;
+    stream << "       " << n << " [ -a | -d ] account" << std::endl;
     stream << "       " << n << " -h" << std::endl;
     if (!verbose) {
         stream << std::flush;
@@ -72,13 +74,16 @@ void usage(std::ostream & stream, char * n, bool verbose = false)
     stream << std::endl;
     stream << "Managing accounts" << std::endl;
     stream << "  -a                          Add a new account" << std::endl;
-    stream << "  -s                          Set the password on" << std::endl;
-    stream << "                              an existing account" << std::endl;
     stream << "  -d                          Delete an account" << std::endl;
 }
 
 int main(int argc, char ** argv)
 {
+    varconf::Config * conf = varconf::Config::inst();
+
+    conf->setParameterLookup('a', "add");
+    conf->setParameterLookup('d', "del");
+
     int config_status = loadConfig(argc, argv, USAGE_DBASE);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
@@ -88,42 +93,39 @@ int main(int argc, char ** argv)
             usage(std::cout, argv[0]);
             return 0;
         } else if (config_status != CONFIG_ERROR) {
-            log(ERROR, "Unknown error reading configuration.");
+            std::cerr << "Unknown error reading configuration." << std::endl;
         }
         // Fatal error loading config file
         return 1;
     }
 
-    std::string acname;
-    int action;
+    std::cout << config_status << "," << argc << std::endl << std::flush;
 
-    if (argc == 1) {
-        acname = "admin";
-        action = SET;
-    } else if (argc == 3) {
-        if (argv[1][0] == '-') {
-            int c = argv[1][1];
-            if (c == 'a') {
-                action = ADD;
-            } else if (c == 's') {
-                action = SET;
-            } else if (c == 'd') {
-                action = DEL;
-            } else if (c == 'h') {
-                usage(std::cout, argv[0], true);
-                return 0;
-            } else {
-                usage(std::cerr, argv[0]);
-                return 1;
-            }
-            acname = argv[2];
-        } else {
+    int extra_arg_count = argc - config_status;
+
+    std::string acname;
+    int action = SET;
+
+    if (global_conf->findItem("", "add")) {
+        action = ADD;
+    }
+
+    if (global_conf->findItem("", "del")) {
+        if (action != SET) {
             usage(std::cerr, argv[0]);
             return 1;
         }
-    } else if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'h') {
-        usage(std::cout, argv[0], true);
-        return 0;
+        action = DEL;
+    }
+
+    if (extra_arg_count == 0) {
+        if (action != SET) {
+            usage(std::cerr, argv[0]);
+            return 1;
+        }
+        acname = "admin";
+    } else if (extra_arg_count == 1) {
+        acname = argv[config_status];
     } else {
         usage(std::cerr, argv[0]);
         return 1;
@@ -166,6 +168,7 @@ int main(int argc, char ** argv)
         return 0;
     }
 
+    // TODO Catch signals, and restore terminal
 #ifdef HAVE_TERMIOS_H
     termios termios_old, termios_new;
     

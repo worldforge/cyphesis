@@ -59,6 +59,8 @@ int check_password(const std::string & pwd, const std::string & hash);
 
 int getfiletime(const std::string & filename, time_t & t);
 
+void getinstallprefix();
+
 #ifdef _WIN32
 
 // int gettimeofday(struct timeval * tv, struct timezone * tz);

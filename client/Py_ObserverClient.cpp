@@ -40,13 +40,14 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
 #endif // NDEBUG
     char * username = NULL;
     char * password = NULL;
+    char empty[] = "";
     if (!PyArg_ParseTuple(args, "|ss", &username, &password)) {
         return NULL;
     }
     if (username == NULL) {
-        username = "";
+        username = &empty[0];
         if (password == NULL) {
-            password = "";
+            password = &empty[0];
         }
     } else if (password == NULL) {
         PyErr_SetString(PyExc_TypeError, "function takes 0 or 2 arguments (1 given)");

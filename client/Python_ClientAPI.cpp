@@ -106,7 +106,8 @@ void extend_client_python_api()
 
 void python_prompt()
 {
-    char * argv[1] = { "python" };
+    char prgname[] = "python";
+    char * argv[1] = { prgname };
 
     Py_Main(1, &argv[0]);
 }

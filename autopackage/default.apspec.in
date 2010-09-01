@@ -24,14 +24,20 @@ This package includes the rules data, scripts and map data required for the
 Mason game. Use this package if you intend to run an Mason server.
 
 [BuildPrepare]
-# export CC=gcc
-# export CXX=g++
-prepareBuild --enable-static-link --enable-binreloc
+export CC=gcc
+export CXX=g++
+prepareBuild --enable-binreloc
 
 [BuildUnprepare]
 unprepareBuild
 
 [Imports]
+for bin in bin/*
+do
+  mv ${bin} ${bin}_tmp
+  statifier ${bin}_tmp ${bin}
+  rm ${bin}_tmp
+done
 echo '*' | import
 
 [Prepare]

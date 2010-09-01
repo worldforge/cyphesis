@@ -1,20 +1,12 @@
 noinst_LIBRARIES = libcommon.a libtools.a
 
-if BIN_RELOC
-
-INCLUDES = -I$(top_srcdir) -I${top_builddir}
-
-else
-
-INCLUDES = -I$(top_srcdir)  -I${top_builddir} \
+INCLUDES = -I$(top_srcdir)  -I${top_builddir} $(BINRELOC_CFLAGS) \
            -DDATADIR=\"@datadir@\" \
            -DSYSCONFDIR=\"@sysconfdir@\" \
            -DLOCALSTATEDIR=\"@localstatedir@\"
 
-endif
-
 libcommon_a_SOURCES = const.cpp const.h \
-		      prefix.c prefix.h \
+		      binreloc.c binreloc.h \
 		      newid.cpp id.cpp id.h \
 		      log.cpp log.h \
 		      debug.cpp debug.h \
@@ -30,6 +22,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Database.cpp Database.h \
 		      system.cpp system.h \
 		      system_net.cpp system_uid.cpp \
+		      system_prefix.cpp \
 		      serialno.cpp serialno.h \
 		      TypeNode.cpp TypeNode.h \
 		      Inheritance.cpp Inheritance.h \

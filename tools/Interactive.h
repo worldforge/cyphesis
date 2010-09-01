@@ -32,13 +32,12 @@ class Interactive : public AdminClient,
                     virtual public sigc::trackable
 {
   private:
-    bool avatar_flag, server_flag;
-    std::string agentId;
-    std::string agentName;
-    std::string serverName;
-    std::string systemType;
-    std::string prompt;
-    bool exit;
+    bool m_avatar_flag, m_server_flag;
+    std::string m_agentId;
+    std::string m_serverName;
+    std::string m_systemType;
+    std::string m_prompt;
+    bool m_exit_flag;
 
   protected:
     virtual void appearanceArrived(const Operation &);

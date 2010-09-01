@@ -10,7 +10,7 @@ from physics import Vector3D
 import server
 
 class Dig(server.Task):
-    """ A task for cutting a log into boards."""
+    """ A task for digging soft material from the terrain."""
 
     materials = { 1: 'sand', 2: 'earth', 3: 'silt' }
     def cut_operation(self, op):
@@ -43,8 +43,6 @@ class Dig(server.Task):
 
         if old_rate < 0.01:
             self.progress = 0
-        else:
-            self.progress += 0.1
 
         # print "%s" % self.pos
 
