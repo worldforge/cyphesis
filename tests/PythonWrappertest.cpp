@@ -19,24 +19,38 @@
 
 #include <Python.h>
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Py_Thing.h"
-#include "rulesets/Entity.h"
+#include "rulesets/PythonWrapper.h"
 
 #include <cassert>
 
 int main()
 {
-    init_python_api();
+    Py_Initialize();
 
-    Entity * e = new Entity("1", 1);
+    PythonWrapper * pw = new PythonWrapper(PyInt_FromLong(1L));
+    delete pw;
 
-    PyObject * wrap_e = wrapEntity(e);
-    assert(wrap_e != 0);
-    Py_DECREF(wrap_e);
-
-    delete e;
-
-    shutdown_python_api();
+    Py_Finalize();
     return 0;
+}
+
+// stubs
+
+Script::Script()
+{
+}
+
+Script::~Script()
+{
+}
+
+bool Script::operation(const std::string & opname,
+                       const Atlas::Objects::Operation::RootOperation & op,
+                       OpVector & res)
+{
+   return false;
+}
+
+void Script::hook(const std::string & function, LocatedEntity * entity)
+{
 }
