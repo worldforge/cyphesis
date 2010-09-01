@@ -799,14 +799,7 @@ PythonArithmeticScripttest_LDADD = \
 
 ArithmeticFactorytest_SOURCES = ArithmeticFactorytest.cpp
 ArithmeticFactorytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/ArithmeticFactory.o
 
 PythonArithmeticFactorytest_SOURCES = PythonArithmeticFactorytest.cpp
 PythonArithmeticFactorytest_LDADD = \
