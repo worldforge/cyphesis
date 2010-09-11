@@ -1,3 +1,6 @@
+Use SCMS like scheme to ensure no grey goo. entities cannot create other
+entities which can create further persistent entities.
+
 Bullet Physics Ideas:
   There are two suitable bullet world objects for us to use:
     btCollisionWorld and btDynamicsWorld
