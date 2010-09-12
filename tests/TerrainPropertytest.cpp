@@ -23,15 +23,47 @@
 
 #include <Mercator/Terrain.h>
 
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
 int main()
 {
-    Mercator::Terrain terrain;
-
     TerrainProperty * ap = new TerrainProperty;
 
     PropertyCoverage pc(ap);
 
-    // Coverage is complete, but it wouldn't hurt to add some bad data here.
+    MapType terrain;
+    terrain["points"] = 1;
+    pc.testDataAppend(terrain);
+
+    terrain.clear();
+    MapType points;
+    points["0x0"] = ListType(3, 0);
+    terrain["points"] = points;
+    pc.testDataAppend(terrain);
+
+    terrain.clear();
+    points.clear();
+    points["0x0"] = ListType(2, 0);
+    terrain["points"] = points;
+    pc.testDataAppend(terrain);
+
+    terrain.clear();
+    points.clear();
+    points["0x0"] = 1;
+    terrain["points"] = points;
+    pc.testDataAppend(terrain);
+
+    terrain.clear();
+    terrain["surfaces"] = 1;
+    pc.testDataAppend(terrain);
+
+    terrain.clear();
+    MapType surface;
+    surface["name"] = "mud";
+    surface["pattern"] = "fill";
+    terrain["surfaces"] = ListType(1, surface);
+    pc.testDataAppend(terrain);
 
     pc.basicCoverage();
 
