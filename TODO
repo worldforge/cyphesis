@@ -1,3 +1,8 @@
+Delve goal established pattern for picking up existing terrin mods.
+  Add additional parallel mechanism for picking up areas.
+  Use areas and mods a whole load more for construction projects.
+  Returning the entities will be vastly more useful, so do that.
+
 CommPythonClient should probably execute python in dispath rather than read()
 
 Make cyclient a bunch more Python driven, with a default Python class which
