@@ -297,7 +297,13 @@ class TerrainModProperty : public PropertyBase {
     /// \brief the handlers this property should install
     HandlerMap m_handlers;
 
-    TerrainProperty* getTerrain();
+    /**
+     * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
+     * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
+     */
+    InnerTerrainMod* m_innerMod;
+
+    TerrainProperty* getTerrain(Entity * owner);
 
     /**
      *    @brief creates a CraterTerrainMod based on a shape and position
@@ -348,12 +354,13 @@ class TerrainModProperty : public PropertyBase {
     virtual void add(const std::string & key,
                      Atlas::Message::MapType & map) const;
     virtual void install(Entity *);
+    virtual void apply(Entity *);
 
     Mercator::TerrainMod * getModifier();
 //     void setPos(const Point3D &);
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
-    Mercator::TerrainMod * parseModData(const Atlas::Message::Element &);
+    Mercator::TerrainMod * parseModData(const Atlas::Message::MapType &);
     /// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses
     /// the given position
 //     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &,
@@ -363,16 +370,10 @@ class TerrainModProperty : public PropertyBase {
     void move(Entity*, const Point3D &);
 
     /// \brief Removes the modifier from the terrain
-    void remove();
+    void remove(Entity*);
     
     ///TODO: perhaps this isn't necessary if we inherit from EntityProperty instead?
     Entity* getEntity() { return m_owner;}
-    
-    /**
-     * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
-     * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
-     */
-    InnerTerrainMod* mInnerMod;
     
 };
 
