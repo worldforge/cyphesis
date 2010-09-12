@@ -62,7 +62,7 @@ public:
      * @param modElement The Atlas element describing the terrainmod. This should in most instances correspond directly to the "terrainmod" element found in the root atlas attribute map.
      * @return If the parsing was successful, true will be returned, and a new Mercator::TerrainMod will have been created, else false.
      */
-    virtual bool parseAtlasData(const Atlas::Message::MapType& modElement) = 0;
+    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement) = 0;
     
     /**
      * @brief Accessor for the Mercator::TerrainMod created and held by this instance.
@@ -109,7 +109,7 @@ protected:
     * @param modElement The top mod element.
     * @return The position of the mod, where the height has been adjusted.
     */
-    WFMath::Point<3> parsePosition(const Atlas::Message::MapType& modElement);
+    WFMath::Point<3> parsePosition(Entity * owner, const Atlas::Message::MapType& modElement);
 
 //  template <typename InnerTerrainMod_implType>
 //  InnerTerrainMod_implType* createInnerTerrainMod_impInstance(const Atlas::Message::MapType& modElement);
@@ -140,7 +140,7 @@ public:
     /**
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
-    virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement);
     
     /**
      * @copydoc InnerTerrainMod::getModifier()
@@ -181,7 +181,7 @@ public:
     /**
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
-    virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement);
     
     /**
      * @copydoc InnerTerrainMod::getModifier()
@@ -220,7 +220,7 @@ public:
     /**
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
-    virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement);
     
     /**
      * @copydoc InnerTerrainMod::getModifier()
@@ -261,7 +261,7 @@ public:
     /**
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
-    virtual bool parseAtlasData(const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement);
     
     /**
      * @copydoc InnerTerrainMod::getModifier()
@@ -290,9 +290,6 @@ class TerrainModProperty : public PropertyBase {
 
     /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
     Mercator::TerrainMod *m_modptr;
-
-    /// \brief the entity owner of this property
-    Entity * m_owner;
 
     /// \brief the handlers this property should install
     HandlerMap m_handlers;
@@ -360,7 +357,7 @@ class TerrainModProperty : public PropertyBase {
 //     void setPos(const Point3D &);
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
-    Mercator::TerrainMod * parseModData(const Atlas::Message::MapType &);
+    Mercator::TerrainMod * parseModData(Entity * owner, const Atlas::Message::MapType &);
     /// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses
     /// the given position
 //     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &,
@@ -371,10 +368,6 @@ class TerrainModProperty : public PropertyBase {
 
     /// \brief Removes the modifier from the terrain
     void remove(Entity*);
-    
-    ///TODO: perhaps this isn't necessary if we inherit from EntityProperty instead?
-    Entity* getEntity() { return m_owner;}
-    
 };
 
 
