@@ -59,11 +59,11 @@ class TerrainProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element &);
 
     // Applies a Mercator::TerrainMod to the terrain
-    Mercator::TerrainMod* setMod(Mercator::TerrainMod *);
+    Mercator::TerrainMod* setMod(Mercator::TerrainMod *) const;
     // Removes all TerrainMods from a terrain segment
     void clearMods(float, float);
     // Removes a single TerrainMod from the terrain
-    void removeMod(Mercator::TerrainMod *);
+    void removeMod(Mercator::TerrainMod *) const;
 
     bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
     int getSurface(const Point3D &,  int &);

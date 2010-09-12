@@ -160,12 +160,12 @@ void TerrainProperty::set(const Element & ent)
 
 }
 
-Mercator::TerrainMod* TerrainProperty::setMod(Mercator::TerrainMod *mod)
+Mercator::TerrainMod* TerrainProperty::setMod(Mercator::TerrainMod *mod) const
 {
     return m_data.addMod(*mod);
 }
 
-void TerrainProperty::removeMod(Mercator::TerrainMod *mod)
+void TerrainProperty::removeMod(Mercator::TerrainMod *mod) const
 {
     m_data.removeMod(mod);
 }
