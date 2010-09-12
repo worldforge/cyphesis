@@ -21,6 +21,8 @@
 
 #include "rulesets/TerrainModProperty.h"
 
+using Atlas::Message::MapType;
+
 int main()
 {
     HandlerMap terrainModHandlers;
@@ -29,7 +31,11 @@ int main()
 
     PropertyCoverage pc(ap);
 
-    // Coverage is complete, but it wouldn't hurt to add some bad data here.
+    MapType mod;
+    pc.testDataAppend(mod);
+
+    mod.clear();
+    pc.testDataAppend(mod);
 
     pc.basicCoverage();
 
