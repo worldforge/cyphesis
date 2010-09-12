@@ -32,6 +32,8 @@
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
 
+#include <wfmath/intersect.h>
+
 #include <sstream>
 
 #include <cassert>
@@ -228,4 +230,34 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     }
     material = tile_surface((int)x, (int)y, 0);
     return 0;
+}
+
+/// \brief Find the mods at a given location
+///
+/// @param pos the x,y coordinates of a point on the terrain
+/// @param mods a reference to the list to be returned
+void TerrainProperty::findMods(const Point3D & pos, std::vector<Mercator::TerrainMod *> & mod)
+{
+    Mercator::Segment * seg = m_data.getSegment(pos.x(), pos.y());
+    if (seg == 0) {
+        log(WARNING, "No terrain seg");
+        return;
+    }
+    float x = pos.x() - seg->getXRef();
+    float y = pos.y() - seg->getYRef();
+    const Mercator::ModList & seg_mods = seg->getMods();
+    Mercator::ModList::const_iterator I = seg_mods.begin();
+    Mercator::ModList::const_iterator Iend = seg_mods.end();
+    std::cout << "Terrain seg segment offset is " << x << ":" << y << " and seg has " << seg_mods.size() << " mods" << std::endl;
+    for (; I != Iend; ++I) {
+        Mercator::TerrainMod * mod = *I;
+        WFMath::AxisBox<2> mod_box = mod->bbox();
+        // FIXME There seem to be no mods here
+        std::cout << "Checking " << mod_box << " against " << x << ":" << y << std::endl;
+        if (x > mod_box.lowCorner().x() && x < mod_box.highCorner().x() &&
+            y > mod_box.lowCorner().y() && y < mod_box.highCorner().y()) {
+            std::cout << "It's in!" << std::endl;
+        }
+    }
+    log(NOTICE, "Find mods!");
 }
