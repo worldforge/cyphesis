@@ -5,9 +5,12 @@ from types import *
 from mind.panlingua import interlinguish
 il=interlinguish
 
+import server
+
 class editor:
-    def __init__(self,m):
-        self.m=m
+    def __init__(self,c):
+        self.c=c
+        self.m=c.character
         self.list_call={"say":(self._say,1),
                         "own":(self._own,2),
                         "know":(self._know,2),
@@ -86,3 +89,11 @@ class editor:
         s,i=il.importance(sub,cmp,obj)
         self.tell(target,s,i)
 
+def create_editor(host, account, password):
+    c=server.ObserverClient()
+
+    c.server = host
+
+    c.setup(account, password)
+
+    return editor(c)
