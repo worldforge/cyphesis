@@ -53,12 +53,6 @@ class Delve(server.Task):
 
         self.progress = 0
 
-        surface = target.terrain.get_surface(self.pos)
-        # print "SURFACE %d at %s" % (surface, self.pos)
-        if surface not in Delve.materials:
-            # print "Not rock"
-            self.irrelevant()
-            return
 
         res=Oplist()
 
@@ -68,11 +62,19 @@ class Delve(server.Task):
         chunk_loc.coordinates = self.pos
 
         if not hasattr(self, 'terrain_mod'):
-            print target.terrain
-            print "I have object %s which has " % target.id
             mods = target.terrain.find_mods(self.pos)
             if len(mods) == 0:
-                print "no mods"
+                # There is no terrain mod where we are digging,
+                # so we check if it is rock, and if so create
+                # a quarry
+                surface = target.terrain.get_surface(self.pos)
+                # print "SURFACE %d at %s" % (surface, self.pos)
+                if surface not in Delve.materials:
+                    print "Not rock"
+                    self.irrelevant()
+                    return
+                self.surface = surface
+
                 quarry_create=Operation("create",
                                         Entity(name="quarry",
                                                type="path",
@@ -97,8 +99,8 @@ class Delve(server.Task):
 
 
         create=Operation("create",
-                         Entity(name = Delve.materials[surface],
-                                type = Delve.materials[surface],
+                         Entity(name = Delve.materials[self.surface],
+                                type = Delve.materials[self.surface],
                                 location = chunk_loc), to = target)
         res.append(create)
 
