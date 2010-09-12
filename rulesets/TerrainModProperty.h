@@ -300,7 +300,7 @@ class TerrainModProperty : public PropertyBase {
      */
     InnerTerrainMod* m_innerMod;
 
-    TerrainProperty* getTerrain(Entity * owner);
+    const TerrainProperty* getTerrain(Entity * owner);
 
     /**
      *    @brief creates a CraterTerrainMod based on a shape and position

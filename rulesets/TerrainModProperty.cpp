@@ -368,19 +368,19 @@ void TerrainModProperty::set(const Element & ent)
 //     }
 // }
 
-TerrainProperty* TerrainModProperty::getTerrain(Entity * owner)
+const TerrainProperty * TerrainModProperty::getTerrain(Entity * owner)
 {
-    PropertyBase * terr;
-    Entity * ent = owner;
+    const PropertyBase * terr;
+    LocatedEntity * ent = owner;
 
-    while ( (terr = ent->modProperty("terrain")) == NULL) {
-        ent = (Entity*)(ent->m_location.m_loc);
+    while ( (terr = ent->getProperty("terrain")) == NULL) {
+        ent = ent->m_location.m_loc;
         if (ent == NULL) {
             return NULL;
         }
     }
 
-    TerrainProperty * tp = dynamic_cast<TerrainProperty*>(terr);
+    const TerrainProperty * tp = dynamic_cast<const TerrainProperty*>(terr);
     return tp;
 }
 
@@ -401,7 +401,7 @@ void TerrainModProperty::install(Entity * owner)
 void TerrainModProperty::apply(Entity * owner)
 {
     // Find the terrain
-    TerrainProperty * terr = NULL;
+    const TerrainProperty * terr = NULL;
     terr = getTerrain(owner);
 
     if (terr == NULL) {
@@ -427,7 +427,7 @@ void TerrainModProperty::apply(Entity * owner)
 void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
 {
     remove(owner);
-    TerrainProperty* terrain = getTerrain(owner);
+    const TerrainProperty* terrain = getTerrain(owner);
     if (terrain) {
         Mercator::TerrainMod* modifier = parseModData(owner, m_terrainmods);
         if (modifier) {
@@ -440,7 +440,7 @@ void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
 void TerrainModProperty::remove(Entity * owner)
 {
     if (m_modptr) {
-        TerrainProperty* terrain = getTerrain(owner);
+        const TerrainProperty* terrain = getTerrain(owner);
         if (terrain) {
             terrain->removeMod(m_modptr);
         }
