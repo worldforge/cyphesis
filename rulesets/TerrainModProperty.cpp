@@ -20,6 +20,7 @@
 #include "TerrainModProperty.h"
 
 #include "World.h"
+#include "TerrainMod_impl.h"
 
 #include "common/compose.hpp"
 #include "common/log.h"

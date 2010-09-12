@@ -21,16 +21,17 @@
 #define RULESETS_TERRAIN_MOD_PROPERTY_H
 
 #include "common/Property.h"
-#include "Entity.h"
-#include "TerrainProperty.h"
-#include "TerrainMod_impl.h"
+#include "common/OperationRouter.h"
 
-#include <Mercator/TerrainMod.h>
+#include "physics/Vector3D.h"
 
 namespace Mercator {
+    class CraterTerrainMod;
     class Terrain;
+    class TerrainMod;
 }
 
+class TerrainProperty;
 class TerrainModProperty;
 class InnerTerrainMod_impl;
 

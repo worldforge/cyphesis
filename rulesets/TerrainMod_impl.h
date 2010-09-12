@@ -25,6 +25,9 @@
 
 #include <Mercator/TerrainMod.h>
 #include <Mercator/TerrainMod_impl.h>
+
+#include <Atlas/Message/Element.h>
+
 #include <wfmath/ball.h>
 #include <wfmath/polygon.h>
 
