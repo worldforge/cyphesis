@@ -416,6 +416,10 @@ void Entity::setAttr(const std::string & name,
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
 {
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
     return 0;
 }
 
