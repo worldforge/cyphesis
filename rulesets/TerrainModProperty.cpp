@@ -194,13 +194,13 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner, const Ma
             const std::string& modType = modTypeElem.asString();
     
             if (modType == "slopemod") {
-                m_innerMod = new InnerTerrainModSlope(*this);
+                m_innerMod = new InnerTerrainModSlope();
             } else if (modType == "levelmod") {
-                m_innerMod = new InnerTerrainModLevel(*this);
+                m_innerMod = new InnerTerrainModLevel();
             } else if (modType == "adjustmod") {
-                m_innerMod = new InnerTerrainModAdjust(*this);
+                m_innerMod = new InnerTerrainModAdjust();
             } else  if (modType == "cratermod") {
-                m_innerMod = new InnerTerrainModCrater(*this);
+                m_innerMod = new InnerTerrainModCrater();
             }
         }
     }

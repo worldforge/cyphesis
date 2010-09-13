@@ -78,18 +78,13 @@ protected:
      * @param terrainMod The TerrainMod instance to which this instance belongs to.
      * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
      */
-    InnerTerrainMod(TerrainModProperty& terrainMod, const std::string& typemod);
+    InnerTerrainMod(const std::string& typemod);
     
     /**
      * @brief The type of mod this instance handles.
      * @see getTypename()
      */
     std::string mTypeName;
-    
-    /**
-     * @brief The TerrainMod instance to which this instance belongs.
-     */
-    TerrainModProperty& mTerrainMod;
     
     /**
      * @brief Parses the atlas data of the modifiers, finding the base atlas element for the shape definition, and returning the kind of shape specified.
@@ -129,7 +124,7 @@ public:
      * @brief Ctor.
      * @param terrainMod The TerrainMod instance to which this instance belongs to.
      */
-    InnerTerrainModSlope(TerrainModProperty& terrainMod);
+    InnerTerrainModSlope();
     
     /**
      * @brief Dtor.
@@ -170,7 +165,7 @@ public:
      * @brief Ctor.
      * @param terrainMod The TerrainMod instance to which this instance belongs to.
      */
-    InnerTerrainModCrater(TerrainModProperty& terrainMod);
+    InnerTerrainModCrater();
     
     /**
      * @brief Dtor.
@@ -209,7 +204,7 @@ public:
      * @brief Ctor.
      * @param terrainMod The TerrainMod instance to which this instance belongs to.
      */
-    InnerTerrainModLevel(TerrainModProperty& terrainMod);
+    InnerTerrainModLevel();
     
     /**
      * @brief Dtor.
@@ -250,7 +245,7 @@ public:
      * @brief Ctor.
      * @param terrainMod The TerrainMod instance to which this instance belongs to.
      */
-    InnerTerrainModAdjust(TerrainModProperty& terrainMod);
+    InnerTerrainModAdjust();
     
     /**
      * @brief Dtor.

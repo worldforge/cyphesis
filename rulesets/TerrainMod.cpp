@@ -51,8 +51,7 @@ typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
 
-InnerTerrainMod::InnerTerrainMod(TerrainModProperty& terrainMod, const std::string& typemod)
-: mTerrainMod(terrainMod)
+InnerTerrainMod::InnerTerrainMod(const std::string& typemod)
 {
 }
 
@@ -89,8 +88,8 @@ WFMath::Point<3> InnerTerrainMod::parsePosition(Entity * owner, const Atlas::Mes
     return pos;
 }
 
-InnerTerrainModCrater::InnerTerrainModCrater(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "cratermod")
+InnerTerrainModCrater::InnerTerrainModCrater()
+: InnerTerrainMod("cratermod")
 , mModifier(0)
 {
 }
@@ -131,8 +130,8 @@ bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const Atlas::Message:
 }
 
 
-InnerTerrainModSlope::InnerTerrainModSlope(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "slopemod")
+InnerTerrainModSlope::InnerTerrainModSlope()
+: InnerTerrainMod("slopemod")
 , mModifier_impl(0)
 {
 }
@@ -188,8 +187,8 @@ bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const Atlas::Message::
 }
 
 
-InnerTerrainModLevel::InnerTerrainModLevel(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "levelmod")
+InnerTerrainModLevel::InnerTerrainModLevel()
+: InnerTerrainMod("levelmod")
 , mModifier_impl(0)
 {
 }
@@ -228,8 +227,8 @@ bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const Atlas::Message::
     return false;
 }
 
-InnerTerrainModAdjust::InnerTerrainModAdjust(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "adjustmod")
+InnerTerrainModAdjust::InnerTerrainModAdjust()
+: InnerTerrainMod("adjustmod")
 , mModifier_impl(0)
 {
 }

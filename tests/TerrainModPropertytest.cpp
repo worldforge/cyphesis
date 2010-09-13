@@ -118,8 +118,7 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-InnerTerrainMod::InnerTerrainMod(TerrainModProperty& terrainMod, const std::string& typemod)
-: mTerrainMod(terrainMod)
+InnerTerrainMod::InnerTerrainMod(const std::string& typemod)
 {
 }
 
@@ -127,8 +126,8 @@ InnerTerrainMod::~InnerTerrainMod()
 {
 }
 
-InnerTerrainModCrater::InnerTerrainModCrater(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "cratermod")
+InnerTerrainModCrater::InnerTerrainModCrater()
+: InnerTerrainMod("cratermod")
 , mModifier(0)
 {
 }
@@ -148,8 +147,8 @@ bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const Atlas::Message:
     return true;
 }
 
-InnerTerrainModSlope::InnerTerrainModSlope(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "slopemod")
+InnerTerrainModSlope::InnerTerrainModSlope()
+: InnerTerrainMod("slopemod")
 , mModifier_impl(0)
 {
 }
@@ -169,8 +168,8 @@ bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const Atlas::Message::
     return true;
 }
 
-InnerTerrainModLevel::InnerTerrainModLevel(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "levelmod")
+InnerTerrainModLevel::InnerTerrainModLevel()
+: InnerTerrainMod("levelmod")
 , mModifier_impl(0)
 {
 }
@@ -189,8 +188,8 @@ bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const Atlas::Message::
     return true;
 }
 
-InnerTerrainModAdjust::InnerTerrainModAdjust(TerrainModProperty& terrainMod)
-: InnerTerrainMod(terrainMod, "adjustmod")
+InnerTerrainModAdjust::InnerTerrainModAdjust()
+: InnerTerrainMod("adjustmod")
 , mModifier_impl(0)
 {
 }
