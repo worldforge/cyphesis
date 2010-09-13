@@ -46,6 +46,8 @@ class PropertyCoverage {
     Character * createCharacterEntity();
 
     void testDataAppend(const Atlas::Message::Element &);
+
+    Entity * tlve() { return m_tlve; }
 };
 
 #endif // TESTS_PROPERTY_COVERAGE_H
