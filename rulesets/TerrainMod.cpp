@@ -47,10 +47,6 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-typedef Mercator::Terrain::Pointstore Pointstore;
-typedef Mercator::Terrain::Pointcolumn Pointcolumn;
-
-
 InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod)
 {
 }
@@ -64,13 +60,13 @@ const std::string& InnerTerrainMod::getTypename() const
     return mTypeName;
 }
 
-WFMath::Point<3> InnerTerrainMod::parsePosition(Entity * owner, const Atlas::Message::MapType& modElement)
+WFMath::Point<3> InnerTerrainMod::parsePosition(Entity * owner, const MapType& modElement)
 {
     ///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
     WFMath::Point<3> pos = owner->m_location.pos();
-    Atlas::Message::MapType::const_iterator I = modElement.find("height");
+    MapType::const_iterator I = modElement.find("height");
     if (I != modElement.end()) {
-        const Atlas::Message::Element& modHeightElem = I->second;
+        const Element& modHeightElem = I->second;
         if (modHeightElem.isNum()) {
             float height = modHeightElem.asNum();
             pos.z() = height;
@@ -78,7 +74,7 @@ WFMath::Point<3> InnerTerrainMod::parsePosition(Entity * owner, const Atlas::Mes
     } else {
         I = modElement.find("heightoffset");
         if (I != modElement.end()) {
-            const Atlas::Message::Element& modHeightElem = I->second;
+            const Element& modHeightElem = I->second;
             if (modHeightElem.isNum()) {
                 float heightoffset = modHeightElem.asNum();
                 pos.z() += heightoffset;
@@ -105,10 +101,10 @@ Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 }
 
 
-bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const MapType& modElement)
 {
 
-    const Atlas::Message::Element* shapeMap(0);
+    const Element* shapeMap(0);
     const std::string& shapeType = parseShape(modElement, &shapeMap);
     if (shapeMap) {
         if (shapeType == "ball") {
@@ -147,20 +143,20 @@ Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
 }
 
 
-bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const MapType& modElement)
 {
     // Get slopes
-    Atlas::Message::MapType::const_iterator I = modElement.find("slopes");
+    MapType::const_iterator I = modElement.find("slopes");
     if (I != modElement.end()) {
-        const Atlas::Message::Element& modSlopeElem = I->second;
+        const Element& modSlopeElem = I->second;
         if (modSlopeElem.isList()) {
-            const Atlas::Message::ListType & slopes = modSlopeElem.asList();
+            const ListType & slopes = modSlopeElem.asList();
             if (slopes.size() > 1) {
                 if (slopes[0].isNum() && slopes[1].isNum()) {
                     const float dx = slopes[0].asNum();
                     const float dy = slopes[1].asNum();
                     WFMath::Point<3> pos = parsePosition(owner, modElement);
-                    const Atlas::Message::Element* shapeMap(0);
+                    const Element* shapeMap(0);
                     const std::string& shapeType = parseShape(modElement, &shapeMap);
                     if (shapeMap) {
                         if (shapeType == "ball") {
@@ -202,10 +198,10 @@ Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
     return mModifier_impl->getModifier();
 }
 
-bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const MapType& modElement)
 {
     WFMath::Point<3> pos = parsePosition(owner, modElement);
-    const Atlas::Message::Element* shapeMap(0);
+    const Element* shapeMap(0);
     const std::string& shapeType = parseShape(modElement, &shapeMap);
     if (shapeMap) {
         if (shapeType == "ball") {
@@ -243,11 +239,11 @@ Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
 }
 
 
-bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const MapType& modElement)
 {
 
     WFMath::Point<3> pos = owner->m_location.pos();
-    const Atlas::Message::Element* shapeMap(0);
+    const Element* shapeMap(0);
     const std::string& shapeType = parseShape(modElement, &shapeMap);
     if (shapeMap) {
         if (shapeType == "ball") {
@@ -269,19 +265,19 @@ bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const Atlas::Message:
 }
 
 
-const std::string& InnerTerrainMod::parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::Element** shapeMap)
+const std::string& InnerTerrainMod::parseShape(const MapType& modElement, const Element** shapeMap)
 {
-    Atlas::Message::MapType::const_iterator I = modElement.find("shape");
+    MapType::const_iterator I = modElement.find("shape");
     if (I != modElement.end()) {
-        const Atlas::Message::Element& shapeElement = I->second;
+        const Element& shapeElement = I->second;
         if (shapeElement.isMap()) {
-            const Atlas::Message::MapType& localShapeMap = shapeElement.asMap();
+            const MapType& localShapeMap = shapeElement.asMap();
             *shapeMap = &shapeElement;
 
             // Get shape's type
-            Atlas::Message::MapType::const_iterator J = localShapeMap.find("type");
+            MapType::const_iterator J = localShapeMap.find("type");
             if (J != localShapeMap.end()) {
-                const Atlas::Message::Element& shapeTypeElem(J->second);
+                const Element& shapeTypeElem(J->second);
                 if (shapeTypeElem.isString()) {
                     const std::string& shapeType = shapeTypeElem.asString();
                     return shapeType;
