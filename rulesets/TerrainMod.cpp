@@ -51,7 +51,7 @@ typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
 
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod)
+InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod)
 {
 }
 
