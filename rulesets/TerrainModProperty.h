@@ -26,16 +26,11 @@
 #include "physics/Vector3D.h"
 
 namespace Mercator {
-    class CraterTerrainMod;
-    class Terrain;
     class TerrainMod;
 }
 
 class TerrainProperty;
-class TerrainModProperty;
 class InnerTerrainMod;
-class InnerTerrainMod_impl;
-
 
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
@@ -110,7 +105,9 @@ class TerrainModProperty : public PropertyBase {
     virtual void install(Entity *);
     virtual void apply(Entity *);
 
-    Mercator::TerrainMod * getModifier();
+    Mercator::TerrainMod * getModifier() {
+        return m_modptr;
+    }
 //     void setPos(const Point3D &);
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data

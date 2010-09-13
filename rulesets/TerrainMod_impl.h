@@ -281,6 +281,4 @@ bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::Ele
     return false;
 }
 
-
-
 #endif

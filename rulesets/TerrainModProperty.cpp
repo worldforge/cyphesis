@@ -62,11 +62,6 @@ bool TerrainModProperty::get(Element & ent) const
     return true;
 }
 
-Mercator::TerrainMod * TerrainModProperty::getModifier()
-{
-    return m_modptr;
-}
-
 void TerrainModProperty::set(const Element & ent)
 {
     if (ent.isMap()) {
