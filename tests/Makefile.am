@@ -45,7 +45,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
-                 MindFactoryintegration
+                 MindFactoryintegration TerrainModtest
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest
@@ -801,6 +801,12 @@ MindFactoryintegration_LDADD = \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
+
+TerrainModtest_SOURCES = TerrainModtest.cpp
+TerrainModtest_LDADD = \
+        $(top_builddir)/rulesets/TerrainMod.o \
+        $(TERRAIN_LIBS)
+
 
 # CLIENT_TESTS
 
