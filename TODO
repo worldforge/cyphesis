@@ -1,3 +1,6 @@
+Sort InnerTerrainMod with very thorough tests (check pre/post), then try
+and refactor.
+
 Delve goal established pattern for picking up existing terrin mods.
   Add additional parallel mechanism for picking up areas.
   Use areas and mods a whole load more for construction projects.
