@@ -295,6 +295,44 @@ int main()
         delete titm;
     }
 
+    // Call parseAtlasData with ball shape and valid ball params
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        shape_desc["radius"] = 1.f;
+        shape_desc["position"] = ListType(3, 1.);
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with ball shape and invalid ball params
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        shape_desc["radius"] = 1.f;
+        shape_desc["position"] = ListType(3, "1");
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+        assert(titm->getModifier() == 0);
+
+        delete titm;
+    }
+
     {
         InnerTerrainModSlope * titm = new InnerTerrainModSlope;
         delete titm;
@@ -443,6 +481,25 @@ int main()
         delete titm;
     }
 
+    // Call parseAtlasData with polygon shape and valid polygon
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, 2.);
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        shape_desc["points"] = ListType(3, ListType(2, 1.));
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
 
 
     {
@@ -533,6 +590,24 @@ int main()
         delete titm;
     }
 
+    // Call parseAtlasData with polygon shape and valid points
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        shape_desc["points"] = ListType(3, ListType(2, 1.));
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
     {
         InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
         delete titm;
@@ -621,7 +696,23 @@ int main()
         delete titm;
     }
 
+    // Call parseAtlasData with polygon shape and valid points
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        shape_desc["points"] = ListType(3, ListType(2, 1.));
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
 
     return 0;
 }
