@@ -92,9 +92,7 @@ InnerTerrainModCrater::InnerTerrainModCrater()
 
 InnerTerrainModCrater::~InnerTerrainModCrater()
 {
-    if (mModifier != 0) {
-        delete mModifier;
-    }
+    delete mModifier;
 }
 
 Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
@@ -138,9 +136,7 @@ InnerTerrainModSlope::InnerTerrainModSlope()
 
 InnerTerrainModSlope::~InnerTerrainModSlope()
 {
-    if (mModifier_impl != 0) {
-        delete mModifier_impl;
-    }
+    delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
@@ -199,9 +195,7 @@ InnerTerrainModLevel::InnerTerrainModLevel()
 
 InnerTerrainModLevel::~InnerTerrainModLevel()
 {
-    if (mModifier_impl != 0) {
-        delete mModifier_impl;
-    }
+    delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
@@ -244,9 +238,7 @@ InnerTerrainModAdjust::InnerTerrainModAdjust()
 
 InnerTerrainModAdjust::~InnerTerrainModAdjust()
 {
-    if (mModifier_impl != 0) {
-        delete mModifier_impl;
-    }
+    delete mModifier_impl;
 }
 
 Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
