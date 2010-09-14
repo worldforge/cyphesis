@@ -187,9 +187,9 @@ void TerrainModProperty::remove(Entity * owner)
 Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner, const MapType & modMap)
 {
     // Get modifier type
-    Atlas::Message::MapType::const_iterator mod_I = modMap.find("type");
+    MapType::const_iterator mod_I = modMap.find("type");
     if (mod_I != modMap.end()) {
-        const Atlas::Message::Element& modTypeElem(mod_I->second);
+        const Element& modTypeElem(mod_I->second);
         if (modTypeElem.isString()) {
             const std::string& modType = modTypeElem.asString();
     
