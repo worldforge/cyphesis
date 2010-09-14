@@ -115,9 +115,11 @@ bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const MapType& modEle
             WFMath::Ball<3> shape;
             try {
                 shape.fromAtlas(*shapeMap);
-                shape.shift(WFMath::Vector<3>(pos.x(), pos.y(), pos.z()));
-                mModifier = new Mercator::CraterTerrainMod(shape);
-                return true;
+                if (shape.isValid()) {
+                    shape.shift(WFMath::Vector<3>(pos.x(), pos.y(), pos.z()));
+                    mModifier = new Mercator::CraterTerrainMod(shape);
+                    return true;
+                }
             } catch (const Atlas::Message::WrongTypeException& ex) {
                 ///Just fall through
             }
