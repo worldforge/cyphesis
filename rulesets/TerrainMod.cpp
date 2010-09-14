@@ -20,7 +20,7 @@
 #include "TerrainMod.h"
 
 #include "rulesets/Entity.h"
-#include "rulesets/TerrainMod_impl.h"
+#include "rulesets/InnerTerrainMod_impl.h"
 
 #include "common/compose.hpp"
 #include "common/log.h"
