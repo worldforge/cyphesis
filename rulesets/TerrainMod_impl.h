@@ -78,11 +78,16 @@ protected:
 template<typename Shape>
 bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, Shape** shape)
 {
+    *shape = new Shape();
     try {
-        *shape = new Shape(shapeElement);
+        (*shape)->fromAtlas(shapeElement);
     } catch (...) {
         ///Just log an error and return false, this isn't fatal.
         log(WARNING, "Error when parsing shape from atlas.");
+        return false;
+    }
+
+    if (!(*shape)->isValid()) {
         return false;
     }
 
