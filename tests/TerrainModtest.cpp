@@ -166,6 +166,34 @@ int main()
         delete titm;
     }
 
+    // FIXME test parseShape()
+
+    ////////////////////// Specific classes ///////////////////////////
+
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        delete titm;
+    }
+
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        assert(titm->getModifier() == 0);
+        delete titm;
+    }
+
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType data;
+        titm->parseAtlasData(&e, data);
+
+        delete titm;
+    }
+
+
+
     return 0;
 }
 
