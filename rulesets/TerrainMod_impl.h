@@ -107,13 +107,15 @@ public:
     /**
      * @brief Ctor.
      */
-    InnerTerrainModSlope_impl() {}
+    InnerTerrainModSlope_impl() : mTerrainMod(0) {}
 
     /**
      * @brief Dtor.
      */
     virtual ~InnerTerrainModSlope_impl() {
-        delete mTerrainMod;
+        if (mTerrainMod != 0) {
+            delete mTerrainMod;
+        }
     }
 
     /**
@@ -170,13 +172,15 @@ public:
     /**
      * @brief Ctor.
      */
-    InnerTerrainModLevel_impl() {}
+    InnerTerrainModLevel_impl() : mTerrainMod(0) {}
 
     /**
      * @brief Dtor.
      */
     virtual ~InnerTerrainModLevel_impl() {
-        delete mTerrainMod;
+        if (mTerrainMod != 0) {
+            delete mTerrainMod;
+        }
     }
 
     /**
@@ -231,13 +235,15 @@ public:
     /**
      * @brief Ctor.
      */
-    InnerTerrainModAdjust_impl() {}
+    InnerTerrainModAdjust_impl() : mTerrainMod(0) {}
 
     /**
      * @brief Dtor.
      */
     virtual ~InnerTerrainModAdjust_impl() {
-        delete mTerrainMod;
+        if (mTerrainMod != 0) {
+            delete mTerrainMod;
+        }
     }
 
     /**
