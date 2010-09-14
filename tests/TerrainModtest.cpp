@@ -66,9 +66,12 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() < 0);
 
         delete titm;
     }
@@ -77,10 +80,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
         data["height"] = 1;
-        titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() > 0);
 
         delete titm;
     }
@@ -89,10 +95,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
         data["height"] = 1.;
-        titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() > 0);
 
         delete titm;
     }
@@ -101,10 +110,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
         data["height"] = "1.";
-        titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() < 0);
 
         delete titm;
     }
@@ -113,10 +125,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        data["heightoffset"] = 1;
-        titm->test_parsePosition(&e, data);
+        data["heightoffset"] = 2;
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() > 0);
 
         delete titm;
     }
@@ -125,10 +140,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        data["heightoffset"] = 1.;
-        titm->test_parsePosition(&e, data);
+        data["heightoffset"] = 2.;
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() > 0);
 
         delete titm;
     }
@@ -137,10 +155,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
         data["heightoffset"] = "1.";
-        titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(&e, data);
+        assert(new_pos.isValid());
+        assert(new_pos.z() < 0);
 
         delete titm;
     }
