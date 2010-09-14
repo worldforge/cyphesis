@@ -118,9 +118,7 @@ public:
      * @brief Dtor.
      */
     virtual ~InnerTerrainModSlope_impl() {
-        if (mTerrainMod != 0) {
-            delete mTerrainMod;
-        }
+        delete mTerrainMod;
     }
 
     /**
@@ -183,9 +181,7 @@ public:
      * @brief Dtor.
      */
     virtual ~InnerTerrainModLevel_impl() {
-        if (mTerrainMod != 0) {
-            delete mTerrainMod;
-        }
+        delete mTerrainMod;
     }
 
     /**
@@ -246,9 +242,7 @@ public:
      * @brief Dtor.
      */
     virtual ~InnerTerrainModAdjust_impl() {
-        if (mTerrainMod != 0) {
-            delete mTerrainMod;
-        }
+        delete mTerrainMod;
     }
 
     /**
