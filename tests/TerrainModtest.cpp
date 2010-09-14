@@ -23,6 +23,8 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
 class TestInnerTerrainMod : public InnerTerrainMod
@@ -45,10 +47,15 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return parsePosition(owner, modElement);
     }
 
+    const std::string& test_parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::Element** shapeMap)
+    {
+        return parseShape(modElement, shapeMap);
+    }
 };
 
 int main()
 {
+    // FIXME Add cases where fully valid shapes cause true to be returned.
     {
         InnerTerrainMod * titm = new TestInnerTerrainMod;
         delete titm;
@@ -166,9 +173,70 @@ int main()
         delete titm;
     }
 
-    // FIXME test parseShape()
+    // Call parseShape with empty mod data
+    {
+        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
 
-    ////////////////////// Specific classes ///////////////////////////
+        const Element * e;
+        MapType mod;
+        const std::string & shape = titm->test_parseShape(mod, &e);
+
+        assert(shape.empty());
+    }
+
+    // Call parseShape with invalid shape data
+    {
+        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
+
+        const Element * e;
+        MapType mod;
+        mod["shape"] = "invalid_shape";
+        const std::string & shape = titm->test_parseShape(mod, &e);
+
+        assert(shape.empty());
+    }
+
+    // Call parseShape with empty shape data
+    {
+        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
+
+        const Element * e;
+        MapType mod;
+        mod["shape"] = MapType();
+        const std::string & shape = titm->test_parseShape(mod, &e);
+
+        assert(shape.empty());
+    }
+
+    // Call parseShape with invalid shape type
+    {
+        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
+
+        const Element * e;
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = 1;
+        mod["shape"] = shape_desc;
+        const std::string & shape = titm->test_parseShape(mod, &e);
+
+        assert(shape.empty());
+    }
+
+    // Call parseShape with valid shape type
+    {
+        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
+
+        const Element * e;
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "valid_shape";
+        mod["shape"] = shape_desc;
+        const std::string & shape = titm->test_parseShape(mod, &e);
+
+        assert(shape == "valid_shape");
+    }
+
+    ////////////////////// Concrete classes ///////////////////////////
 
     {
         InnerTerrainModCrater * titm = new InnerTerrainModCrater;
@@ -181,13 +249,374 @@ int main()
         delete titm;
     }
 
+    // Call parseAtlasData with empty map
     {
         InnerTerrainModCrater * titm = new InnerTerrainModCrater;
         Entity e("1", 1);
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        titm->parseAtlasData(&e, data);
+        bool ret = titm->parseAtlasData(&e, data);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with unknown shape
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "unknown_shape";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with ball shape
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        delete titm;
+    }
+
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        assert(titm->getModifier() == 0);
+        delete titm;
+    }
+
+    // Call parseAtlasData with empty map
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType data;
+        bool ret = titm->parseAtlasData(&e, data);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with malformed slope
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = 1;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with empty slope
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType();
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with non-numeric slope
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, "naughty_string");
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with valid slope
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, 2.);
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with unknown shape
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, 2.);
+        MapType shape_desc;
+        shape_desc["type"] = "unknown";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with ball shape
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, 2.);
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with rotbox shape
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, 2.);
+        MapType shape_desc;
+        shape_desc["type"] = "rotbox";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with polygon shape
+    {
+        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        mod["slopes"] = ListType(2, 2.);
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+
+
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        delete titm;
+    }
+
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        assert(titm->getModifier() == 0);
+        delete titm;
+    }
+
+    // Call parseAtlasData with empty map
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType data;
+        bool ret = titm->parseAtlasData(&e, data);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with unknown shape
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "unknown_shape";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with ball shape
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with rotbox shape
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "rotbox";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with polygon shape
+    {
+        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        delete titm;
+    }
+
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        assert(titm->getModifier() == 0);
+        delete titm;
+    }
+
+    // Call parseAtlasData with empty map
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType data;
+        bool ret = titm->parseAtlasData(&e, data);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with unknown shape
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "unknown_shape";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with ball shape
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with rotbox shape
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "rotbox";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
+
+        delete titm;
+    }
+
+    // Call parseAtlasData with polygon shape
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(&e, mod);
+        assert(!ret);
 
         delete titm;
     }
