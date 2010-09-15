@@ -55,7 +55,6 @@ class TestInnerTerrainMod : public InnerTerrainMod
 
 int main()
 {
-    // FIXME Add cases where fully valid shapes cause true to be returned.
     {
         InnerTerrainMod * titm = new TestInnerTerrainMod;
         delete titm;
@@ -182,6 +181,7 @@ int main()
         const std::string & shape = titm->test_parseShape(mod, &e);
 
         assert(shape.empty());
+        delete titm;
     }
 
     // Call parseShape with invalid shape data
@@ -194,6 +194,7 @@ int main()
         const std::string & shape = titm->test_parseShape(mod, &e);
 
         assert(shape.empty());
+        delete titm;
     }
 
     // Call parseShape with empty shape data
@@ -206,6 +207,7 @@ int main()
         const std::string & shape = titm->test_parseShape(mod, &e);
 
         assert(shape.empty());
+        delete titm;
     }
 
     // Call parseShape with invalid shape type
@@ -220,6 +222,7 @@ int main()
         const std::string & shape = titm->test_parseShape(mod, &e);
 
         assert(shape.empty());
+        delete titm;
     }
 
     // Call parseShape with valid shape type
@@ -234,6 +237,7 @@ int main()
         const std::string & shape = titm->test_parseShape(mod, &e);
 
         assert(shape == "valid_shape");
+        delete titm;
     }
 
     ////////////////////// Concrete classes ///////////////////////////

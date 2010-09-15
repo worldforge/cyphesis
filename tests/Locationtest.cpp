@@ -32,6 +32,11 @@
 void testDistanceFunctions()
 {
     {
+        Location * l = new Location;
+        delete l;
+    }
+
+    {
         Entity tlve("0", 0), ent("1", 1);
 
         ent.m_location.m_loc = &tlve;
