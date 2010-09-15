@@ -50,14 +50,18 @@ static const bool debug_flag = false;
 
 /// \brief Construct a new CommServer object, storing a reference to the core
 /// server object.
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
+                                              m_congested(false),
+                                              m_server(svr)
 {
 }
 
 CommServer::~CommServer()
 {
 #ifdef HAVE_EPOLL_CREATE
-    close(m_epollFd);
+    if (m_epollFd > -1) {
+        close(m_epollFd);
+    }
 #endif // HAVE_EPOLL_CREATE
     CommSocketSet::const_iterator Iend = m_sockets.end();
     for (CommSocketSet::const_iterator I = m_sockets.begin(); I != Iend; ++I) {
