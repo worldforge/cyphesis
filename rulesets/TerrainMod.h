@@ -93,7 +93,7 @@ protected:
      * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
      * @return The name of the shape, or an empty string if no valid data could be found.
      */
-    const std::string& parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::Element** shapeMap);
+    const std::string& parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
     /**
     * @brief Parses the position of the mod.

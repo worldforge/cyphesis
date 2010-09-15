@@ -47,7 +47,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return parsePosition(owner, modElement);
     }
 
-    const std::string& test_parseShape(const Atlas::Message::MapType& modElement, const Atlas::Message::Element** shapeMap)
+    const std::string& test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
     {
         return parseShape(modElement, shapeMap);
     }
@@ -176,11 +176,12 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
 
-        const Element * e;
+        Element e;
         MapType mod;
-        const std::string & shape = titm->test_parseShape(mod, &e);
+        const std::string & shape = titm->test_parseShape(mod, e);
 
         assert(shape.empty());
+        assert(e.isNone());
         delete titm;
     }
 
@@ -188,12 +189,13 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
 
-        const Element * e;
+        Element e;
         MapType mod;
         mod["shape"] = "invalid_shape";
-        const std::string & shape = titm->test_parseShape(mod, &e);
+        const std::string & shape = titm->test_parseShape(mod, e);
 
         assert(shape.empty());
+        assert(e.isNone());
         delete titm;
     }
 
@@ -201,10 +203,10 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
 
-        const Element * e;
+        Element e;
         MapType mod;
         mod["shape"] = MapType();
-        const std::string & shape = titm->test_parseShape(mod, &e);
+        const std::string & shape = titm->test_parseShape(mod, e);
 
         assert(shape.empty());
         delete titm;
@@ -214,12 +216,12 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
 
-        const Element * e;
+        Element e;
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = 1;
         mod["shape"] = shape_desc;
-        const std::string & shape = titm->test_parseShape(mod, &e);
+        const std::string & shape = titm->test_parseShape(mod, e);
 
         assert(shape.empty());
         delete titm;
@@ -229,14 +231,15 @@ int main()
     {
         TestInnerTerrainMod * titm = new TestInnerTerrainMod;
 
-        const Element * e;
+        Element e;
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = "valid_shape";
         mod["shape"] = shape_desc;
-        const std::string & shape = titm->test_parseShape(mod, &e);
+        const std::string & shape = titm->test_parseShape(mod, e);
 
         assert(shape == "valid_shape");
+        assert(e.isMap());
         delete titm;
     }
 
