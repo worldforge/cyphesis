@@ -63,7 +63,10 @@ public:
      * @return True if the atlas data was successfully parsed and a shape was created.
      */
     template <typename Shape>
-    static bool parseShapeAtlasData(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, Shape** shape);
+    static bool parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
+                                    const WFMath::Point<3>& pos,
+                                    const WFMath::Quaternion& orientation,
+                                    Shape& shape);
 
     /**
      * @brief Gets the modifier which this instance represents.
@@ -76,18 +79,20 @@ protected:
 };
 
 template<typename Shape>
-bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, Shape** shape)
+bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
+                                               const WFMath::Point<3>& pos,
+                                               const WFMath::Quaternion& orientation,
+                                               Shape& shape)
 {
-    *shape = new Shape();
     try {
-        (*shape)->fromAtlas(shapeElement);
+        shape.fromAtlas(shapeElement);
     } catch (...) {
         ///Just log an error and return false, this isn't fatal.
         log(WARNING, "Error when parsing shape from atlas.");
         return false;
     }
 
-    if (!(*shape)->isValid()) {
+    if (!shape.isValid()) {
         return false;
     }
 
@@ -95,9 +100,9 @@ bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& sh
     WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
     double theta = atan2(xVec.y(), xVec.x());
     WFMath::RotMatrix<2> rm;
-    (*shape)->rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
+    shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
 
-    (*shape)->shift(WFMath::Vector<2>(pos.x(), pos.y())); ///This of course depends on the assumption that we'll only ever use 2d shapes. If a 3d shape is used the shift method expects a Vector<3> instead...
+    shape.shift(WFMath::Vector<2>(pos.x(), pos.y())); ///This of course depends on the assumption that we'll only ever use 2d shapes. If a 3d shape is used the shift method expects a Vector<3> instead...
     return true;
 }
 
@@ -154,13 +159,11 @@ Mercator::TerrainMod* InnerTerrainModSlope_impl<Shape>::getModifier()
 template <typename Shape>
 bool InnerTerrainModSlope_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, float level, float dx, float dy)
 {
-    Shape* shape(0);
-    if (parseShapeAtlasData<Shape>(shapeElement, pos, orientation, &shape)) {
-        mTerrainMod = new Mercator::SlopeTerrainMod<Shape>(level, dx, dy, *shape);
-        delete shape;
+    Shape shape;
+    if (parseShapeAtlasData<Shape>(shapeElement, pos, orientation, shape)) {
+        mTerrainMod = new Mercator::SlopeTerrainMod<Shape>(level, dx, dy, shape);
         return true;
     }
-    delete shape;
     return false;
 }
 
@@ -215,13 +218,11 @@ Mercator::TerrainMod* InnerTerrainModLevel_impl<Shape>::getModifier()
 template <typename Shape>
 bool InnerTerrainModLevel_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, float height)
 {
-    Shape* shape(0);
-    if (parseShapeAtlasData<Shape>(shapeElement, pos, orientation, &shape)) {
-        mTerrainMod = new Mercator::LevelTerrainMod<Shape>(height, *shape);
-        delete shape;
+    Shape shape;
+    if (parseShapeAtlasData<Shape>(shapeElement, pos, orientation, shape)) {
+        mTerrainMod = new Mercator::LevelTerrainMod<Shape>(height, shape);
         return true;
     }
-    delete shape;
     return false;
 }
 
@@ -276,13 +277,11 @@ Mercator::TerrainMod* InnerTerrainModAdjust_impl<Shape>::getModifier()
 template <typename Shape>
 bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, float height)
 {
-    Shape* shape(0);
-    if (parseShapeAtlasData<Shape>(shapeElement, pos, orientation, &shape)) {
-        mTerrainMod = new Mercator::AdjustTerrainMod<Shape>(height, *shape);
-        delete shape;
+    Shape shape;
+    if (parseShapeAtlasData<Shape>(shapeElement, pos, orientation, shape)) {
+        mTerrainMod = new Mercator::AdjustTerrainMod<Shape>(height, shape);
         return true;
     }
-    delete shape;
     return false;
 }
 
