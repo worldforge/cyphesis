@@ -96,11 +96,13 @@ bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& sh
         return false;
     }
 
-    /// rotation about Z axis
-    WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-    double theta = atan2(xVec.y(), xVec.x());
-    WFMath::RotMatrix<2> rm;
-    shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
+    if (orientation.isValid()) {
+        /// rotation about Z axis
+        WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
+        double theta = atan2(xVec.y(), xVec.x());
+        WFMath::RotMatrix<2> rm;
+        shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
+    }
 
     shape.shift(WFMath::Vector<2>(pos.x(), pos.y())); ///This of course depends on the assumption that we'll only ever use 2d shapes. If a 3d shape is used the shift method expects a Vector<3> instead...
     return true;
