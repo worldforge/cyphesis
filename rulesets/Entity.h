@@ -231,13 +231,19 @@ class Entity : public LocatedEntity {
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {
-    if (v.isValid()) {
-        return s << "{" << v.m_loc->getId() << "," << v.pos() << ","
-                 << v.m_velocity << "}";
+    s << "{";
+    if (v.m_loc != 0) {
+        s << v.m_loc->getId();
     } else {
-        return s << "{null," << v.pos() << ","
-                 << v.m_velocity << "}";
+        s << "null";
     }
+    if (v.pos().isValid()) {
+        s << "," << v.pos();
+        if (v.velocity().isValid()) {
+            s << "," << v.velocity();
+        }
+    }
+    return s << "}";
 }
 
 #endif // RULESETS_ENTITY_H
