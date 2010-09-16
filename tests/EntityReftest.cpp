@@ -474,6 +474,6 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }

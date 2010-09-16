@@ -168,7 +168,7 @@ void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

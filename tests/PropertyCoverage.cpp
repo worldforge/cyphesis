@@ -511,7 +511,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     return 0;
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

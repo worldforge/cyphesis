@@ -361,7 +361,7 @@ Entity * BaseWorld::getEntity(long id) const
     return 0;
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

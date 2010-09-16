@@ -517,6 +517,6 @@ void Router::clientError(const Operation & op,
 {
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
