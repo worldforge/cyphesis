@@ -133,10 +133,10 @@ void TerrainModProperty::install(Entity * owner)
 void TerrainModProperty::apply(Entity * owner)
 {
     // Find the terrain
-    const TerrainProperty * terr = NULL;
-    terr = getTerrain(owner);
+    const TerrainProperty * terrain = NULL;
+    terrain = getTerrain(owner);
 
-    if (terr == NULL) {
+    if (terrain == NULL) {
         log(ERROR, "Terrain Modifier could not find terrain");
         return;
     }
@@ -149,7 +149,7 @@ void TerrainModProperty::apply(Entity * owner)
 
     if (newMod != NULL) {
         // Apply the new mod to the terrain; retain the returned pointer
-        m_modptr = terr->setMod(newMod);
+        m_modptr = terrain->setMod(newMod);
     } else {
         m_modptr = NULL;
         log(ERROR, "Terrain Modifier could not be parsed!");
