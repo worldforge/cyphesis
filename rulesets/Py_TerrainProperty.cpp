@@ -20,8 +20,10 @@
 #include "Py_Property.h"
 
 #include "Py_Point3D.h"
+#include "Py_Thing.h"
 #include "Py_Vector3D.h"
 
+#include "Entity.h"
 #include "TerrainProperty.h"
 
 static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
@@ -108,7 +110,7 @@ static PyObject * TerrainProperty_findMods(PyTerrainProperty * self,
     std::vector<Entity *>::const_iterator I = result.begin();
     std::vector<Entity *>::const_iterator Iend = result.end();
     for (int i = 0; I != Iend; ++I, ++i) {
-        PyTuple_SetItem(ret, i, PyString_FromString("foo"));
+        PyTuple_SetItem(ret, i, wrapEntity(*I));
     }
     return ret;
 }
