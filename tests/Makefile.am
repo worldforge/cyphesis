@@ -383,6 +383,7 @@ AllPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/modules/DateTime.o \
+        $(top_builddir)/modules/TerrainContext.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/Inheritance.o \
         $(top_builddir)/common/custom.o \

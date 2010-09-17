@@ -70,3 +70,19 @@ int main()
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }
+
+// stubs
+
+#include "modules/TerrainContext.h"
+
+TerrainContext::TerrainContext(Entity * e) : m_entity(e)
+{
+}
+
+TerrainContext::~TerrainContext()
+{
+}
+
+EntityRef::EntityRef(Entity* e) : m_inner(e)
+{
+}

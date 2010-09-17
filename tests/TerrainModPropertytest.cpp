@@ -103,6 +103,8 @@ int main()
 
 #include "rulesets/TerrainMod.h"
 
+#include "modules/TerrainContext.h"
+
 PropertyBase * Entity::modProperty(const std::string & name)
 {
     return 0;
@@ -207,4 +209,16 @@ Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
 bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
 {
     return true;
+}
+
+TerrainContext::TerrainContext(Entity * e) : m_entity(e)
+{
+}
+
+TerrainContext::~TerrainContext()
+{
+}
+
+EntityRef::EntityRef(Entity* e) : m_inner(e)
+{
 }
