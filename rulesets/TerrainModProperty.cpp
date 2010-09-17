@@ -28,6 +28,9 @@
 #include "common/debug.h"
 
 #include "modules/Location.h"
+#include "modules/TerrainContext.h"
+
+#include <Mercator/TerrainMod.h>
 
 #include <sstream>
 
@@ -150,6 +153,8 @@ void TerrainModProperty::apply(Entity * owner)
     if (newMod != NULL) {
         // Apply the new mod to the terrain; retain the returned pointer
         m_modptr = terrain->setMod(newMod);
+        m_modptr->setContext(new TerrainContext(owner));
+        m_modptr->context()->setId(owner->getId());
     } else {
         m_modptr = NULL;
         log(ERROR, "Terrain Modifier could not be parsed!");

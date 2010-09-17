@@ -68,7 +68,7 @@ class TerrainProperty : public PropertyBase {
     bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
     int getSurface(const Point3D &,  int &);
 
-    void findMods(const Point3D &, std::vector<Mercator::TerrainMod *> &);
+    void findMods(const Point3D &, std::vector<Entity *> &);
 };
 
 #endif // RULESETS_TERRAIN_PROPERTY_H

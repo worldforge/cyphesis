@@ -22,6 +22,8 @@
 #include "common/log.h"
 #include "common/debug.h"
 
+#include "modules/TerrainContext.h"
+
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
@@ -236,7 +238,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 ///
 /// @param pos the x,y coordinates of a point on the terrain
 /// @param mods a reference to the list to be returned
-void TerrainProperty::findMods(const Point3D & pos, std::vector<Mercator::TerrainMod *> & ret)
+void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
 {
     Mercator::Segment * seg = m_data.getSegment(pos.x(), pos.y());
     if (seg == 0) {
@@ -250,7 +252,19 @@ void TerrainProperty::findMods(const Point3D & pos, std::vector<Mercator::Terrai
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
             pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
-            ret.push_back(mod);
+            Mercator::TerrainMod::Context * c = mod->context();
+            if (c == 0) {
+                log(WARNING, "Terrrain mod with no context");
+                continue;
+            }
+            std::cout << "Context has id" << c->id() << std::endl;
+            TerrainContext * tc = dynamic_cast<TerrainContext *>(c);
+            if (tc == 0) {
+                log(WARNING, "Terrrain mod with non Cyphesis context");
+                continue;
+            }
+            std::cout << "Context has pointer " << tc->entity().get() << std::endl;
+            ret.push_back(tc->entity().get());
         }
     }
 }
