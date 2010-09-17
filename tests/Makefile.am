@@ -16,7 +16,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
 
-MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest
+MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
+               TerrainContexttest
 
 RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
@@ -283,6 +284,11 @@ WorldTimetest_LDADD = \
 EntityReftest_SOURCES = EntityReftest.cpp
 EntityReftest_LDADD = \
         $(top_builddir)/modules/EntityRef.o
+
+TerrainContexttest_SOURCES = TerrainContexttest.cpp
+TerrainContexttest_LDADD = \
+        $(top_builddir)/modules/TerrainContext.o \
+        $(TERRAIN_LIBS)
 
 # RULESETS_TESTS
 
