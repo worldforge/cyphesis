@@ -1,3 +1,6 @@
+Extend Mercator to allow terrain mod volume calculations. Use these to work
+out when a quarry should work, and how much it should be extended.
+
 Sort InnerTerrainMod with very thorough tests (check pre/post), then try
 and refactor.
 
