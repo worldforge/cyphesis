@@ -61,7 +61,7 @@ bool TerrainModProperty::get(Element & ent) const
 {
 	///NOTE: what does this do? /erik
     MapType & mod = (ent = MapType()).Map();
-    mod = m_terrainmods;
+    mod = m_data;
     return true;
 }
 
@@ -69,7 +69,7 @@ void TerrainModProperty::set(const Element & ent)
 {
     if (ent.isMap()) {
         const MapType & mod = ent.Map();
-        m_terrainmods = mod;
+        m_data = mod;
     }
 
 }
@@ -148,7 +148,7 @@ void TerrainModProperty::apply(Entity * owner)
     remove(owner);
 
     // Parse the Atlas data for our mod
-    Mercator::TerrainMod *newMod = parseModData(owner, m_terrainmods);
+    Mercator::TerrainMod *newMod = parseModData(owner, m_data);
 
     if (newMod != NULL) {
         // Apply the new mod to the terrain; retain the returned pointer
@@ -166,7 +166,7 @@ void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
     remove(owner);
     const TerrainProperty* terrain = getTerrain(owner);
     if (terrain) {
-        Mercator::TerrainMod* modifier = parseModData(owner, m_terrainmods);
+        Mercator::TerrainMod* modifier = parseModData(owner, m_data);
         if (modifier) {
             terrain->setMod(modifier);
         }
@@ -217,3 +217,21 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner, const Ma
 
     return NULL;
 }
+
+int TerrainModProperty::getAttr(const std::string & name,
+                                Element & val)
+{
+    MapType::const_iterator I = m_data.find(name);
+    if (I != m_data.end()) {
+        val = I->second;
+        return 0;
+    }
+    return -1;
+}
+
+void TerrainModProperty::setAttr(const std::string & name,
+                                 const Element & val)
+{
+    m_data[name] = val;
+}
+

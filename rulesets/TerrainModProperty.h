@@ -38,7 +38,7 @@ class TerrainModProperty : public PropertyBase {
   protected:
 
     /// \brief Collection of applied terrain mod data
-    Atlas::Message::MapType  m_terrainmods;
+    Atlas::Message::MapType  m_data;
 
     /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
     Mercator::TerrainMod *m_modptr;
@@ -122,6 +122,13 @@ class TerrainModProperty : public PropertyBase {
 
     /// \brief Removes the modifier from the terrain
     void remove(Entity*);
+
+    /// \brief Retrieve a sub attribute of the property
+    int getAttr(const std::string &,
+                 Atlas::Message::Element &);
+    /// \brief Modify a sub attribute of the property
+    void setAttr(const std::string &,
+                 const Atlas::Message::Element &);
 };
 
 
