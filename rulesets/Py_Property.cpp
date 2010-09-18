@@ -20,6 +20,7 @@
 #include "Py_Property.h"
 
 #include "StatisticsProperty.h"
+#include "TerrainModProperty.h"
 #include "TerrainProperty.h"
 #include "PythonArithmeticScript.h"
 
@@ -56,6 +57,16 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
         if (prop != NULL) {
             prop->m_entity = owner;
             prop->m_property = tp;
+        }
+        return (PyObject*)prop;
+    }
+    TerrainModProperty * tm = dynamic_cast<TerrainModProperty *>(property);
+    if (tm != 0) {
+        // Create a new python wrapper for this property
+        PyTerrainModProperty * prop = newPyTerrainModProperty();
+        if (prop != NULL) {
+            prop->m_entity = owner;
+            prop->m_property = tm;
         }
         return (PyObject*)prop;
     }

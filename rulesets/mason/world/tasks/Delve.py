@@ -94,6 +94,13 @@ class Delve(server.Task):
                 res.append(quarry_create)
             else:
                 print mods
+                for mod in mods:
+                    if not hasattr(mod, 'name') or mod.name != 'quarry':
+                        print "%s is no good" % mod.id
+                        continue
+                    print "%s looks good" % mod.id
+                    print mod.terrainmod
+                    mod.terrainmod.heightoffset = -2.0
             # self.terrain_mod = "moddy_mod_mod"
 
 
