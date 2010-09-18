@@ -19,12 +19,17 @@
 
 #include "Py_Property.h"
 
+#include "Py_Message.h"
 #include "Py_Point3D.h"
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
 
 #include "Entity.h"
 #include "TerrainModProperty.h"
+
+#include "common/log.h"
+
+using Atlas::Message::Element;
 
 static PyMethodDef TerrainModProperty_methods[] = {
     {NULL,           NULL}           /* sentinel */
@@ -47,8 +52,8 @@ static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * 
 }
 
 static int TerrainModProperty_setattr(PyTerrainModProperty * self,
-                                   char * name,
-                                   PyObject *v)
+                                      char * name,
+                                      PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL || self->m_property == NULL) {
@@ -56,13 +61,23 @@ static int TerrainModProperty_setattr(PyTerrainModProperty * self,
         return -1;
     }
 #endif // NDEBUG
+    if (strcmp(name, "heightoffset") == 0) {
+        Element e;
+        if (PyObject_asMessageElement(v, e, true) == 0) {
+            self->m_property->setAttr(name, e);
+            self->m_property->setFlags(flag_unsent);
+            return 0;
+        } else {
+            log(WARNING, "Cannot convert value.");
+        }
+    }
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
 
 static int TerrainModProperty_init(PyTerrainModProperty * self,
-                                PyObject * args,
-                                PyObject * kwd)
+                                   PyObject * args,
+                                   PyObject * kwd)
 {
     if (!PyArg_ParseTuple(args, "")) {
         return -1;
