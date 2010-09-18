@@ -101,6 +101,9 @@ class Delve(server.Task):
                     print "%s looks good" % mod.id
                     print mod.terrainmod
                     mod.terrainmod.heightoffset = -2.0
+                    # We have modified the attribute in place, so must send an update op to propagate
+                    res.append(Operation("update", to=mod.id))
+                    break
             # self.terrain_mod = "moddy_mod_mod"
 
 
