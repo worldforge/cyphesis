@@ -36,10 +36,11 @@ class Delve(server.Task):
             self.irrelevant()
             return
 
+
         old_rate = self.rate
 
-        self.rate = 0.1 / 1.75
-        self.progress += 0.1
+        self.rate = 0.5 / 0.75
+        self.progress += 0.5
 
         if old_rate < 0.01:
             self.progress = 0
@@ -48,16 +49,10 @@ class Delve(server.Task):
 
         if self.progress < 1:
             # print "Not done yet"
-            return self.next_tick(1.75)
+            return self.next_tick(0.75)
 
         self.progress = 0
 
-        surface = target.terrain.get_surface(self.pos)
-        # print "SURFACE %d at %s" % (surface, self.pos)
-        if surface not in Delve.materials:
-            # print "Not rock"
-            self.irrelevant()
-            return
 
         res=Oplist()
 
@@ -66,12 +61,59 @@ class Delve(server.Task):
 
         chunk_loc.coordinates = self.pos
 
+        if not hasattr(self, 'terrain_mod'):
+            mods = target.terrain.find_mods(self.pos)
+            if len(mods) == 0:
+                # There is no terrain mod where we are digging,
+                # so we check if it is rock, and if so create
+                # a quarry
+                surface = target.terrain.get_surface(self.pos)
+                # print "SURFACE %d at %s" % (surface, self.pos)
+                if surface not in Delve.materials:
+                    print "Not rock"
+                    self.irrelevant()
+                    return
+                self.surface = surface
+
+                quarry_create=Operation("create",
+                                        Entity(name="quarry",
+                                               type="path",
+                                               location = chunk_loc,
+                                               terrainmod = {
+                                                             'heightoffset': -1.0,
+                                                             'shape': {
+                                                                       'points': [[ -1.0, -1.0 ],
+                                                                                  [ -1.0, 1.0 ],
+                                                                                  [ 1.0, 1.0 ],
+                                                                                  [ 1.0, -1.0 ]],
+                                                                       'type': 'polygon'
+                                                                       },
+                                                             'type': 'levelmod'                                    
+                                                             }),
+                                        to=target)
+                res.append(quarry_create)
+            else:
+                print mods
+                for mod in mods:
+                    if not hasattr(mod, 'name') or mod.name != 'quarry':
+                        print "%s is no good" % mod.id
+                        continue
+                    print "%s looks good" % mod.id
+                    print mod.terrainmod
+                    mod.terrainmod.heightoffset = -2.0
+                    # We have modified the attribute in place, so must send an update op to propagate
+                    res.append(Operation("update", to=mod.id))
+                    break
+            # self.terrain_mod = "moddy_mod_mod"
+
+
+
         create=Operation("create",
-                         Entity(name = Delve.materials[surface],
-                                type = Delve.materials[surface],
+                         Entity(name = Delve.materials[self.surface],
+                                type = Delve.materials[self.surface],
                                 location = chunk_loc), to = target)
         res.append(create)
 
-        res.append(self.next_tick(1.75))
+        res.append(self.next_tick(0.75))
 
         return res

@@ -19,6 +19,17 @@ Bullet Physics Ideas:
   tricky we can use the bit field and matric features to define what collides
   with what, all under the control of the designer/builder.
 
+Extend Mercator to allow terrain mod volume calculations. Use these to work
+out when a quarry should work, and how much it should be extended.
+
+Sort InnerTerrainMod with very thorough tests (check pre/post), then try
+and refactor.
+
+Delve goal established pattern for picking up existing terrin mods.
+  Add additional parallel mechanism for picking up areas.
+  Use areas and mods a whole load more for construction projects.
+  Returning the entities will be vastly more useful, so do that.
+
 CommPythonClient should probably execute python in dispath rather than read()
 
 Make cyclient a bunch more Python driven, with a default Python class which

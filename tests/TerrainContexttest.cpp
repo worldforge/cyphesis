@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2010 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,37 +17,26 @@
 
 // $Id$
 
-#ifndef TESTS_PROPERTY_COVERAGE_H
-#define TESTS_PROPERTY_COVERAGE_H
+#include "modules/TerrainContext.h"
 
-#include <Atlas/Message/Element.h>
+#include <cassert>
 
-class PropertyBase;
-class Entity;
-class BaseWorld;
-class Character;
+int main()
+{
+    {
+        TerrainContext * tc = new TerrainContext;
+        delete tc;
+    }
 
-class PropertyCoverage {
-  protected:
-    PropertyBase * const m_prop;
-    Entity * const m_tlve;
-    BaseWorld * const m_wrld;
-    Entity * m_ent;
+    {
+        TerrainContext * tc = new TerrainContext(0);
+        delete tc;
+    }
+    return 0;
+}
 
-    Atlas::Message::ListType m_testData;
-  public:
+// stubs
 
-    explicit PropertyCoverage(PropertyBase * pb);
-
-    ~PropertyCoverage();
-
-    void basicCoverage();
-
-    Character * createCharacterEntity();
-
-    void testDataAppend(const Atlas::Message::Element &);
-
-    Entity * tlve() { return m_tlve; }
-};
-
-#endif // TESTS_PROPERTY_COVERAGE_H
+EntityRef::EntityRef(Entity* e) : m_inner(e)
+{
+}

@@ -16,7 +16,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
 
-MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest
+MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
+               TerrainContexttest
 
 RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
@@ -44,7 +45,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  PythonWrappertest PythonEntityScripttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
-                 ArithmeticFactorytest PythonArithmeticFactorytest
+                 ArithmeticFactorytest PythonArithmeticFactorytest \
+                 TerrainModtest
 
 RULESETS_INTEGRATION_TESTS = MindFactoryintegration BulletDomainintegration
 
@@ -285,6 +287,11 @@ EntityReftest_SOURCES = EntityReftest.cpp
 EntityReftest_LDADD = \
         $(top_builddir)/modules/EntityRef.o
 
+TerrainContexttest_SOURCES = TerrainContexttest.cpp
+TerrainContexttest_LDADD = \
+        $(top_builddir)/modules/TerrainContext.o \
+        $(TERRAIN_LIBS)
+
 # RULESETS_TESTS
 
 LocatedEntitytest_SOURCES = LocatedEntitytest.cpp \
@@ -378,6 +385,7 @@ AllPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/modules/DateTime.o \
+        $(top_builddir)/modules/TerrainContext.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/Inheritance.o \
         $(top_builddir)/common/custom.o \
@@ -808,6 +816,12 @@ BulletDomainintegration_LDADD = \
         $(top_builddir)/rulesets/BulletDomain.o \
         $(top_builddir)/rulesets/Domain.o \
         $(TERRAIN_LIBS)
+
+TerrainModtest_SOURCES = TerrainModtest.cpp
+TerrainModtest_LDADD = \
+        $(top_builddir)/rulesets/TerrainMod.o \
+        $(TERRAIN_LIBS)
+
 
 # CLIENT_TESTS
 

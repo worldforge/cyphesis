@@ -783,6 +783,12 @@ void init_python_api(bool log_stdout)
         return;
     }
 
+    PyTerrainModProperty_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyTerrainModProperty_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready TerrainModProperty wrapper type");
+        return;
+    }
+
 
     debug(std::cout << Py_GetPath() << std::endl << std::flush;);
 }

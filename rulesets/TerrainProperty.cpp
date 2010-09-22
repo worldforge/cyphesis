@@ -22,6 +22,8 @@
 #include "common/log.h"
 #include "common/debug.h"
 
+#include "modules/TerrainContext.h"
+
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
@@ -31,6 +33,8 @@
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
+
+#include <wfmath/intersect.h>
 
 #include <sstream>
 
@@ -158,12 +162,12 @@ void TerrainProperty::set(const Element & ent)
 
 }
 
-Mercator::TerrainMod* TerrainProperty::setMod(Mercator::TerrainMod *mod)
+Mercator::TerrainMod* TerrainProperty::setMod(Mercator::TerrainMod *mod) const
 {
     return m_data.addMod(*mod);
 }
 
-void TerrainProperty::removeMod(Mercator::TerrainMod *mod)
+void TerrainProperty::removeMod(Mercator::TerrainMod *mod) const
 {
     m_data.removeMod(mod);
 }
@@ -228,4 +232,39 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     }
     material = tile_surface((int)x, (int)y, 0);
     return 0;
+}
+
+/// \brief Find the mods at a given location
+///
+/// @param pos the x,y coordinates of a point on the terrain
+/// @param mods a reference to the list to be returned
+void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
+{
+    Mercator::Segment * seg = m_data.getSegment(pos.x(), pos.y());
+    if (seg == 0) {
+        return;
+    }
+    const Mercator::ModList & seg_mods = seg->getMods();
+    Mercator::ModList::const_iterator I = seg_mods.begin();
+    Mercator::ModList::const_iterator Iend = seg_mods.end();
+    for (; I != Iend; ++I) {
+        Mercator::TerrainMod * mod = *I;
+        WFMath::AxisBox<2> mod_box = mod->bbox();
+        if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
+            pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
+            Mercator::TerrainMod::Context * c = mod->context();
+            if (c == 0) {
+                log(WARNING, "Terrrain mod with no context");
+                continue;
+            }
+            std::cout << "Context has id" << c->id() << std::endl;
+            TerrainContext * tc = dynamic_cast<TerrainContext *>(c);
+            if (tc == 0) {
+                log(WARNING, "Terrrain mod with non Cyphesis context");
+                continue;
+            }
+            std::cout << "Context has pointer " << tc->entity().get() << std::endl;
+            ret.push_back(tc->entity().get());
+        }
+    }
 }
