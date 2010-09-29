@@ -148,15 +148,13 @@ void TerrainModProperty::apply(Entity * owner)
     remove(owner);
 
     // Parse the Atlas data for our mod
-    Mercator::TerrainMod *newMod = parseModData(owner, m_data);
+    m_modptr = parseModData(owner, m_data);
 
-    if (newMod != NULL) {
+    if (m_modptr != NULL) {
         // Apply the new mod to the terrain; retain the returned pointer
-        m_modptr = terrain->setMod(newMod);
+        terrain->setMod(m_modptr);
         m_modptr->setContext(new TerrainContext(owner));
         m_modptr->context()->setId(owner->getId());
-    } else {
-        m_modptr = NULL;
         log(ERROR, "Terrain Modifier could not be parsed!");
     }
 }
