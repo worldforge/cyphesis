@@ -59,7 +59,7 @@ class TerrainProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element &);
 
     // Applies a Mercator::TerrainMod to the terrain
-    void setMod(Mercator::TerrainMod *) const;
+    void addMod(const Mercator::TerrainMod *) const;
     // Removes all TerrainMods from a terrain segment
     void clearMods(float, float);
     // Removes a single TerrainMod from the terrain

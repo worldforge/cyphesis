@@ -152,7 +152,7 @@ void TerrainModProperty::apply(Entity * owner)
 
     if (m_modptr != NULL) {
         // Apply the new mod to the terrain; retain the returned pointer
-        terrain->setMod(m_modptr);
+        terrain->addMod(m_modptr);
         m_modptr->setContext(new TerrainContext(owner));
         m_modptr->context()->setId(owner->getId());
         log(ERROR, "Terrain Modifier could not be parsed!");
@@ -166,7 +166,7 @@ void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
     if (terrain) {
         Mercator::TerrainMod* modifier = parseModData(owner, m_data);
         if (modifier) {
-            terrain->setMod(modifier);
+            terrain->addMod(modifier);
         }
     }
     

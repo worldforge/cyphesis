@@ -162,7 +162,7 @@ void TerrainProperty::set(const Element & ent)
 
 }
 
-void TerrainProperty::setMod(Mercator::TerrainMod *mod) const
+void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
 {
     m_data.addMod(mod);
 }
@@ -171,6 +171,7 @@ void TerrainProperty::removeMod(Mercator::TerrainMod *mod) const
 {
     m_data.removeMod(mod);
 }
+
 void TerrainProperty::clearMods(float x, float y)
 {
     Mercator::Segment *s = m_data.getSegment(x,y);
