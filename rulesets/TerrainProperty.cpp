@@ -248,7 +248,7 @@ void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
     Mercator::ModList::const_iterator I = seg_mods.begin();
     Mercator::ModList::const_iterator Iend = seg_mods.end();
     for (; I != Iend; ++I) {
-        Mercator::TerrainMod * mod = *I;
+        const Mercator::TerrainMod * mod = *I;
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
             pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
