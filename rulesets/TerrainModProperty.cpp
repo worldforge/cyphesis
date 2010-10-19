@@ -195,7 +195,8 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner, const Ma
         const Element& modTypeElem(mod_I->second);
         if (modTypeElem.isString()) {
             const std::string& modType = modTypeElem.asString();
-    
+
+            // TODO(alriddoch, 2010-10-19) m_innerMod is being leaked)
             if (modType == "slopemod") {
                 m_innerMod = new InnerTerrainModSlope();
             } else if (modType == "levelmod") {
