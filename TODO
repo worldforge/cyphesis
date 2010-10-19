@@ -1,3 +1,7 @@
+Abstract entities for tracking non-physical concepts such as quests, trade
+transactions, entity recipes, contruction blueprints etc.
+See http://www.igda.org/newsletter/?p=483 for how to do trading.
+
 Extend Mercator to allow terrain mod volume calculations. Use these to work
 out when a quarry should work, and how much it should be extended.
 
