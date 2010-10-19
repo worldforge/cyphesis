@@ -234,10 +234,11 @@ def test_device(mapeditor):
 
     world=m.look()
 
-def test_tmods(mapeditor):
+def test_tmods(host='', account='', password='', **args):
 #   general things
-    m=editor(mapeditor)
-    
+
+    m=create_editor(host, account, password)
+
     world=m.look()
     points = { }
     for i in range(-8, 7):
