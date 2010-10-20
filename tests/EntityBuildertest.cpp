@@ -41,6 +41,7 @@
 #include "common/Variable.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cstdlib>
 

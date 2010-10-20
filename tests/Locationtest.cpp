@@ -25,6 +25,7 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 

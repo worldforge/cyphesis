@@ -22,6 +22,7 @@
 #include "rulesets/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 
