@@ -103,7 +103,8 @@ Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 
 bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const MapType& modElement)
 {
-
+    // FIXME: wfmath::ball::isValid() checks if the center is valid,
+    // which it won't be unless one was specified in the Atlas data.
     Element shapeMap;
     const std::string& shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
