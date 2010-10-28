@@ -128,6 +128,11 @@ InnerTerrainMod::~InnerTerrainMod()
 {
 }
 
+const std::string& InnerTerrainMod::getTypename() const
+{
+    return mTypeName;
+}
+
 InnerTerrainModCrater::InnerTerrainModCrater()
 : InnerTerrainMod("cratermod")
 , mModifier(0)
