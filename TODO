@@ -1,3 +1,11 @@
+TerrainModProperty:
+What do we need to do in each scenario?
+set
+apply
+move
+remove
+Is that all?
+
 Abstract entities for tracking non-physical concepts such as quests, trade
 transactions, entity recipes, contruction blueprints etc.
 See http://www.igda.org/newsletter/?p=483 for how to do trading.
