@@ -253,7 +253,7 @@ void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
             pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
-            Mercator::TerrainMod::Context * c = mod->context();
+            Mercator::Effector::Context * c = mod->context();
             if (c == 0) {
                 log(WARNING, "Terrrain mod with no context");
                 continue;
