@@ -4,7 +4,7 @@ set
 apply
 move
 remove
-Is that all?
+Is that all? Do the same for areas.
 
 Abstract entities for tracking non-physical concepts such as quests, trade
 transactions, entity recipes, contruction blueprints etc.
