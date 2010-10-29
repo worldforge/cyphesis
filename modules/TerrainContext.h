@@ -24,7 +24,7 @@
 
 #include <Mercator/TerrainMod.h>
 
-class TerrainContext : public Mercator::TerrainMod::Context
+class TerrainContext : public Mercator::Effector::Context
 {
   protected:
     EntityRef m_entity;
