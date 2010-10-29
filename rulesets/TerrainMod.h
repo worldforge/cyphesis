@@ -30,7 +30,6 @@ namespace Mercator {
 }
 
 class Entity;
-class TerrainModProperty;
 class InnerTerrainMod_impl;
 
 /**
@@ -41,19 +40,9 @@ The TerrainMod class in itself doesn't hold the actual reference to the terrain 
 class InnerTerrainMod
 {
 public:
-    /**
-    * @brief Dtor.
-    */
     virtual ~InnerTerrainMod();
     
-    /**
-     * @brief Gets the type of terrain mod handled by this.
-     * This corresponds to the "type" attribute of the "terrainmod" atlas attribute, for example "cratermod" or "slopemod".
-     * Internally, it's stored in the mTypeName field, as set through the constructor.
-     * @return The type of mod handled by any instance of this.
-     */
     const std::string& getTypename() const;
-    
     /**
      * @brief Tries to parse the Atlas data.
      * It's up to the specific subclasses to provide proper parsing of the data depending on their needs.
@@ -72,12 +61,6 @@ public:
 
 protected:
 
-    /**
-     * @brief Ctor.
-     * This is protected to prevent any other class than subclasses of this to call it.
-     * @param terrainMod The TerrainMod instance to which this instance belongs to.
-     * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
-     */
     InnerTerrainMod(const std::string& typemod);
     
     /**
@@ -86,28 +69,9 @@ protected:
      */
     std::string mTypeName;
     
-    /**
-     * @brief Parses the atlas data of the modifiers, finding the base atlas element for the shape definition, and returning the kind of shape specified.
-     * This is an utility method to help with those many cases where we need to parse the shape data in order to determine the kind of shape. The actual parsing and creation of the shape happens in InnerTerrainMod_impl however, since that depends on templated calls. However, in order to know what kind of template to use we must first look at the type of shape, thus the need for this method.
-     * @param modElement The atlas element containing the modifier.
-     * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
-     * @return The name of the shape, or an empty string if no valid data could be found.
-     */
     const std::string& parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
-    /**
-    * @brief Parses the position of the mod.
-    * If no height data is given the height of the entity the mod belongs to will be used.
-    * If however a "height" value is set, that will be used instead.
-    * If no "height" value is set, but a "heightoffset" is present, that value will be added to the height set by the position of the entity the mod belongs to.
-    * @param modElement The top mod element.
-    * @return The position of the mod, where the height has been adjusted.
-    */
     WFMath::Point<3> parsePosition(Entity * owner, const Atlas::Message::MapType& modElement);
-
-//  template <typename InnerTerrainMod_implType>
-//  InnerTerrainMod_implType* createInnerTerrainMod_impInstance(const Atlas::Message::MapType& modElement);
-
 };
 
 
