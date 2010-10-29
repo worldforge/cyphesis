@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2010 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,21 +22,14 @@
 #include "rulesets/Entity.h"
 #include "rulesets/InnerTerrainMod_impl.h"
 
-#include "common/compose.hpp"
 #include "common/log.h"
 #include "common/debug.h"
 
 #include "modules/Location.h"
 
-#include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
 #include <Mercator/TerrainMod.h>
 
 #include <wfmath/atlasconv.h>
-
-#include "TerrainProperty.h"
-
-#include <sstream>
 
 #include <cassert>
 
