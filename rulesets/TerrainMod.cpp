@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2010 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,21 +22,14 @@
 #include "rulesets/Entity.h"
 #include "rulesets/InnerTerrainMod_impl.h"
 
-#include "common/compose.hpp"
 #include "common/log.h"
 #include "common/debug.h"
 
 #include "modules/Location.h"
 
-#include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
 #include <Mercator/TerrainMod.h>
 
 #include <wfmath/atlasconv.h>
-
-#include "TerrainProperty.h"
-
-#include <sstream>
 
 #include <cassert>
 
@@ -47,19 +40,40 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
+/**
+ * @brief Ctor.
+ * This is protected to prevent any other class than subclasses of this to call it.
+ * @param terrainMod The TerrainMod instance to which this instance belongs to.
+ * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
+ */
 InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod)
 {
 }
 
+/// @brief Dtor.
 InnerTerrainMod::~InnerTerrainMod()
 {
 }
 
+/**
+ * @brief Gets the type of terrain mod handled by this.
+ * This corresponds to the "type" attribute of the "terrainmod" atlas attribute, for example "cratermod" or "slopemod".
+ * Internally, it's stored in the mTypeName field, as set through the constructor.
+ * @return The type of mod handled by any instance of this.
+ */
 const std::string& InnerTerrainMod::getTypename() const
 {
     return mTypeName;
 }
 
+/**
+ * @brief Parses the position of the mod.
+ * If no height data is given the height of the entity the mod belongs to will be used.
+ * If however a "height" value is set, that will be used instead.
+ * If no "height" value is set, but a "heightoffset" is present, that value will be added to the height set by the position of the entity the mod belongs to.
+ * @param modElement The top mod element.
+ * @return The position of the mod, where the height has been adjusted.
+ */
 WFMath::Point<3> InnerTerrainMod::parsePosition(Entity * owner, const MapType& modElement)
 {
     ///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
@@ -103,7 +117,8 @@ Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 
 bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const MapType& modElement)
 {
-
+    // FIXME: wfmath::ball::isValid() checks if the center is valid,
+    // which it won't be unless one was specified in the Atlas data.
     Element shapeMap;
     const std::string& shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
@@ -275,7 +290,13 @@ bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const MapType& modEle
     return false;
 }
 
-
+/**
+ * @brief Parses the atlas data of the modifiers, finding the base atlas element for the shape definition, and returning the kind of shape specified.
+ * This is an utility method to help with those many cases where we need to parse the shape data in order to determine the kind of shape. The actual parsing and creation of the shape happens in InnerTerrainMod_impl however, since that depends on templated calls. However, in order to know what kind of template to use we must first look at the type of shape, thus the need for this method.
+ * @param modElement The atlas element containing the modifier.
+ * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
+ * @return The name of the shape, or an empty string if no valid data could be found.
+ */
 const std::string& InnerTerrainMod::parseShape(const MapType& modElement, Element& shapeMap)
 {
     MapType::const_iterator I = modElement.find("shape");
