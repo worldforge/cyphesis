@@ -180,15 +180,15 @@ bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const MapType& modElem
                     const std::string& shapeType = parseShape(modElement, shapeMap);
                     if (!shapeMap.isNone()) {
                         if (shapeType == "ball") {
-                            InnerTerrainModSlope_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Ball<2> >();
+                            InnerTerrainModSlope_impl<WFMath::Ball>* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Ball>();
                             mModifier_impl = modifierImpl;
                             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z(), dx, dy);
                         } else if (shapeType == "rotbox") {
-                            InnerTerrainModSlope_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::RotBox<2> >();
+                            InnerTerrainModSlope_impl<WFMath::RotBox>* modifierImpl = new InnerTerrainModSlope_impl<WFMath::RotBox>();
                             mModifier_impl = modifierImpl;
                             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z(), dx, dy);
                         } else if (shapeType == "polygon") {
-                            InnerTerrainModSlope_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Polygon<2> >();
+                            InnerTerrainModSlope_impl<WFMath::Polygon>* modifierImpl = new InnerTerrainModSlope_impl<WFMath::Polygon>();
                             mModifier_impl = modifierImpl;
                             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z(), dx, dy);
                         }
@@ -228,15 +228,15 @@ bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const MapType& modElem
     const std::string& shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
         if (shapeType == "ball") {
-            InnerTerrainModLevel_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Ball<2> >();
+            InnerTerrainModLevel_impl<WFMath::Ball>* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Ball>();
             mModifier_impl = modifierImpl;
             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z());
         } else if (shapeType == "rotbox") {
-            InnerTerrainModLevel_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::RotBox<2> >();
+            InnerTerrainModLevel_impl<WFMath::RotBox>* modifierImpl = new InnerTerrainModLevel_impl<WFMath::RotBox>();
             mModifier_impl = modifierImpl;
             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z());
         } else if (shapeType == "polygon") {
-            InnerTerrainModLevel_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Polygon<2> >();
+            InnerTerrainModLevel_impl<WFMath::Polygon>* modifierImpl = new InnerTerrainModLevel_impl<WFMath::Polygon>();
             mModifier_impl = modifierImpl;
             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z());
         }
@@ -273,15 +273,15 @@ bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const MapType& modEle
     const std::string& shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
         if (shapeType == "ball") {
-            InnerTerrainModAdjust_impl<WFMath::Ball<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Ball<2> >();
+            InnerTerrainModAdjust_impl<WFMath::Ball>* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Ball>();
             mModifier_impl = modifierImpl;
             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z());
         } else if (shapeType == "rotbox") {
-            InnerTerrainModAdjust_impl<WFMath::RotBox<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::RotBox<2> >();
+            InnerTerrainModAdjust_impl<WFMath::RotBox>* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::RotBox>();
             mModifier_impl = modifierImpl;
             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z());
         } else if (shapeType == "polygon") {
-            InnerTerrainModAdjust_impl<WFMath::Polygon<2> >* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Polygon<2> >();
+            InnerTerrainModAdjust_impl<WFMath::Polygon>* modifierImpl = new InnerTerrainModAdjust_impl<WFMath::Polygon>();
             mModifier_impl = modifierImpl;
             return modifierImpl->createInstance(shapeMap, pos, owner->m_location.orientation(), pos.z());
         }
