@@ -24,7 +24,6 @@
 #define RULESETS_TERRAIN_MOD_IMPL_H
 
 #include <Mercator/TerrainMod.h>
-#include <Mercator/TerrainMod_impl.h>
 
 #include <Atlas/Message/Element.h>
 
