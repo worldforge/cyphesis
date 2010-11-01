@@ -104,7 +104,7 @@ bool InnerTerrainMod_impl::parseShapeAtlasData(const Atlas::Message::Element& sh
         shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
     }
 
-    shape.shift(WFMath::Vector<2>(pos.x(), pos.y())); ///This of course depends on the assumption that we'll only ever use 2d shapes. If a 3d shape is used the shift method expects a Vector<3> instead...
+    shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
     return true;
 }
 
