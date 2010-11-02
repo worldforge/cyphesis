@@ -111,6 +111,9 @@ InnerTerrainModCrater::~InnerTerrainModCrater()
 
 Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 {
+    if (mModifier_impl == 0) {
+        return 0;
+    }
     return mModifier_impl->getModifier();
 }
 
