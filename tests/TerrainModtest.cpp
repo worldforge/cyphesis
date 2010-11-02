@@ -312,7 +312,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "ball";
         shape_desc["radius"] = 1.f;
-        shape_desc["position"] = ListType(3, 1.);
+        shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
         bool ret = titm->parseAtlasData(&e, mod);
         assert(ret);
