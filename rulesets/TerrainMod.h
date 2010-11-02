@@ -151,7 +151,7 @@ public:
      * @brief A reference to the crater terrain modifier held by this instance.
      * The ownership is ours, so it will be destroyed when this instance is destroyed.
      */
-    Mercator::CraterTerrainMod* mModifier;
+    InnerTerrainMod_impl* mModifier_impl;
 };
 
 /**

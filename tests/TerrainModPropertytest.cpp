@@ -135,7 +135,7 @@ const std::string& InnerTerrainMod::getTypename() const
 
 InnerTerrainModCrater::InnerTerrainModCrater()
 : InnerTerrainMod("cratermod")
-, mModifier(0)
+, mModifier_impl(0)
 {
 }
 

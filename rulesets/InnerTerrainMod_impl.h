@@ -286,4 +286,63 @@ bool InnerTerrainModAdjust_impl<Shape>::createInstance(const Atlas::Message::Ele
     return false;
 }
 
+/**
+ @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
+ @brief Handles instances of Mercator::CraterTerrainMod with arbitrary shapes.
+*/
+template <template <int> class Shape>
+class InnerTerrainModCrater_impl : public InnerTerrainMod_impl
+{
+public:
+    /**
+     * @brief Ctor.
+     */
+    InnerTerrainModCrater_impl() : mTerrainMod(0) {}
+
+    /**
+     * @brief Dtor.
+     */
+    virtual ~InnerTerrainModCrater_impl() {
+        delete mTerrainMod;
+    }
+
+    /**
+     * @brief Tries to create a new instance from the passes in atlas data.
+     * @param shapeElement The atlas data containing shape information.
+     * @param pos The position where the mod should be created, in world space.
+     * @param height The height where the level should be created.
+     * @return True if the atlas data could be successfully parsed an a mod created.
+     */
+    bool createInstance(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, float height);
+
+    /**
+     * @copydoc InnerTerrainMod_impl::getModifier()
+     */
+    inline virtual Mercator::TerrainMod* getModifier();
+
+protected:
+
+    /**
+     * @brief The actual terrain mod instance, owned by this instance.
+     */
+    Mercator::CraterTerrainMod* mTerrainMod;
+};
+
+template <template <int> class Shape>
+Mercator::TerrainMod* InnerTerrainModCrater_impl<Shape>::getModifier()
+{
+    return mTerrainMod;
+}
+
+template <template <int> class Shape>
+bool InnerTerrainModCrater_impl<Shape>::createInstance(const Atlas::Message::Element& shapeElement, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation, float height)
+{
+    Shape<2>  shape;
+    if (parseShapeAtlasData(shapeElement, pos, orientation, shape)) {
+        mTerrainMod = new Mercator::CraterTerrainMod(height, shape);
+        return true;
+    }
+    return false;
+}
+
 #endif
