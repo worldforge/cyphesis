@@ -110,7 +110,7 @@ public:
      * This is separate from this class because of the heavy use of templated shapes.
      * The ownership is ours, so it will be destroyed when this instance is destroyed.
      */
-    InnerTerrainMod_impl* mModifier_impl;
+    InnerTerrainMod_impl* m_impl;
 };
 
 /**
@@ -150,7 +150,7 @@ public:
      * @brief A reference to the crater terrain modifier held by this instance.
      * The ownership is ours, so it will be destroyed when this instance is destroyed.
      */
-    InnerTerrainMod_impl* mModifier_impl;
+    InnerTerrainMod_impl* m_impl;
 };
 
 /**
@@ -191,7 +191,7 @@ public:
      * This is separate from this class because of the heavy use of templated shapes.
      * The ownership is ours, so it will be destroyed when this instance is destroyed.
      */
-    InnerTerrainMod_impl* mModifier_impl;
+    InnerTerrainMod_impl* m_impl;
 };
 
 /**
@@ -232,7 +232,7 @@ public:
      * This is separate from this class because of the heavy use of templated shapes.
      * The ownership is ours, so it will be destroyed when this instance is destroyed.
      */
-    InnerTerrainMod_impl* mModifier_impl;
+    InnerTerrainMod_impl* m_impl;
 };
 
 

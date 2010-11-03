@@ -135,7 +135,7 @@ const std::string& InnerTerrainMod::getTypename() const
 
 InnerTerrainModCrater::InnerTerrainModCrater()
 : InnerTerrainMod("cratermod")
-, mModifier_impl(0)
+, m_impl(0)
 {
 }
 
@@ -156,7 +156,7 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> &, const WFMat
 
 InnerTerrainModSlope::InnerTerrainModSlope()
 : InnerTerrainMod("slopemod")
-, mModifier_impl(0)
+, m_impl(0)
 {
 }
 
@@ -177,7 +177,7 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> &, const WFMath
 
 InnerTerrainModLevel::InnerTerrainModLevel()
 : InnerTerrainMod("levelmod")
-, mModifier_impl(0)
+, m_impl(0)
 {
 }
 
@@ -197,7 +197,7 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> &, const WFMath
 
 InnerTerrainModAdjust::InnerTerrainModAdjust()
 : InnerTerrainMod("adjustmod")
-, mModifier_impl(0)
+, m_impl(0)
 {
 }
 
