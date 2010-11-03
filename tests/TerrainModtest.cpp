@@ -32,7 +32,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
   public:
     TestInnerTerrainMod() : InnerTerrainMod("test") { }
 
-    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement)
     {
         return true;
     }
@@ -42,9 +42,9 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return 0;
     }
 
-    WFMath::Point<3> test_parsePosition(Entity * owner, const MapType& modElement)
+    WFMath::Point<3> test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
     {
-        return parsePosition(owner, modElement);
+        return parsePosition(pos, modElement);
     }
 
     const std::string& test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
@@ -75,7 +75,7 @@ int main()
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() < 0);
 
@@ -90,7 +90,7 @@ int main()
 
         MapType data;
         data["height"] = 1;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() > 0);
 
@@ -105,7 +105,7 @@ int main()
 
         MapType data;
         data["height"] = 1.;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() > 0);
 
@@ -120,7 +120,7 @@ int main()
 
         MapType data;
         data["height"] = "1.";
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() < 0);
 
@@ -135,7 +135,7 @@ int main()
 
         MapType data;
         data["heightoffset"] = 2;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() > 0);
 
@@ -150,7 +150,7 @@ int main()
 
         MapType data;
         data["heightoffset"] = 2.;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() > 0);
 
@@ -165,7 +165,7 @@ int main()
 
         MapType data;
         data["heightoffset"] = "1.";
-        Point3D new_pos = titm->test_parsePosition(&e, data);
+        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
         assert(new_pos.isValid());
         assert(new_pos.z() < 0);
 
@@ -263,7 +263,7 @@ int main()
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), data);
         assert(!ret);
 
         delete titm;
@@ -279,7 +279,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "unknown_shape";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
 
@@ -296,7 +296,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "ball";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -314,7 +314,7 @@ int main()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(ret);
         assert(titm->getModifier() != 0);
 
@@ -333,7 +333,7 @@ int main()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(3, "1");
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
         assert(titm->getModifier() == 0);
 
@@ -358,7 +358,7 @@ int main()
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), data);
         assert(!ret);
 
         delete titm;
@@ -372,7 +372,7 @@ int main()
 
         MapType mod;
         mod["slopes"] = 1;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -386,7 +386,7 @@ int main()
 
         MapType mod;
         mod["slopes"] = ListType();
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -400,7 +400,7 @@ int main()
 
         MapType mod;
         mod["slopes"] = ListType(2, "naughty_string");
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -414,7 +414,7 @@ int main()
 
         MapType mod;
         mod["slopes"] = ListType(2, 2.);
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -431,7 +431,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "unknown";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -448,7 +448,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "ball";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -465,7 +465,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "rotbox";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -482,7 +482,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "polygon";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -500,7 +500,7 @@ int main()
         shape_desc["type"] = "polygon";
         shape_desc["points"] = ListType(3, ListType(2, 1.));
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(ret);
         assert(titm->getModifier() != 0);
 
@@ -527,7 +527,7 @@ int main()
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), data);
         assert(!ret);
 
         delete titm;
@@ -543,7 +543,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "unknown_shape";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -559,7 +559,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "ball";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -575,7 +575,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "rotbox";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -591,7 +591,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "polygon";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -608,7 +608,7 @@ int main()
         shape_desc["type"] = "polygon";
         shape_desc["points"] = ListType(3, ListType(2, 1.));
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(ret);
         assert(titm->getModifier() != 0);
 
@@ -633,7 +633,7 @@ int main()
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), data);
         assert(!ret);
 
         delete titm;
@@ -649,7 +649,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "unknown_shape";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -665,7 +665,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "ball";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -681,7 +681,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "rotbox";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -697,7 +697,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "polygon";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(!ret);
 
         delete titm;
@@ -714,7 +714,7 @@ int main()
         shape_desc["type"] = "polygon";
         shape_desc["points"] = ListType(3, ListType(2, 1.));
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
         assert(ret);
         assert(titm->getModifier() != 0);
 

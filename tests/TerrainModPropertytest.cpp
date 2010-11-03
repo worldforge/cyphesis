@@ -149,7 +149,7 @@ Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
 }
 
 
-bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
 {
     return true;
 }
@@ -170,7 +170,7 @@ Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
 }
 
 
-bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
 {
     return true;
 }
@@ -190,7 +190,7 @@ Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
     return 0;
 }
 
-bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
 {
     return true;
 }
@@ -211,7 +211,7 @@ Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
 }
 
 
-bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
 {
     return true;
 }

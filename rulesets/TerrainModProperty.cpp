@@ -226,7 +226,8 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
     }
 
 
-    if (m_innerMod->parseAtlasData(owner, modMap)) {
+    if (m_innerMod->parseAtlasData(owner->m_location.pos(),
+                                   owner->m_location.orientation(), modMap)) {
         return m_innerMod->getModifier();
     }
 
