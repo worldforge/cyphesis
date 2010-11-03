@@ -28,10 +28,6 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <cassert>
-
-static const bool debug_flag = false;
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -71,16 +67,16 @@ const std::string& InnerTerrainMod::getTypename() const
  * @param modElement The top mod element.
  * @return The position of the mod, where the height has been adjusted.
  */
-WFMath::Point<3> InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
+WFMath::Point<3> InnerTerrainMod::parsePosition(const WFMath::Point<3> & p, const MapType& modElement)
 {
     ///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
-    WFMath::Point<3> new_pos = pos;
+    WFMath::Point<3> pos = p;
     MapType::const_iterator I = modElement.find("height");
     if (I != modElement.end()) {
         const Element& modHeightElem = I->second;
         if (modHeightElem.isNum()) {
             float height = modHeightElem.asNum();
-            new_pos.z() = height;
+            pos.z() = height;
         }
     } else {
         I = modElement.find("heightoffset");
@@ -88,11 +84,11 @@ WFMath::Point<3> InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, co
             const Element& modHeightElem = I->second;
             if (modHeightElem.isNum()) {
                 float heightoffset = modHeightElem.asNum();
-                new_pos.z() += heightoffset;
+                pos.z() += heightoffset;
             }
         }
     }
-    return new_pos;
+    return pos;
 }
 
 InnerTerrainModCrater::InnerTerrainModCrater()
@@ -152,7 +148,7 @@ Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
 }
 
 
-bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const MapType& modElement)
+bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & p, const WFMath::Quaternion & orientation, const MapType& modElement)
 {
     // Get slopes
     MapType::const_iterator I = modElement.find("slopes");
@@ -164,7 +160,7 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & pos, const WF
                 if (slopes[0].isNum() && slopes[1].isNum()) {
                     const float dx = slopes[0].asNum();
                     const float dy = slopes[1].asNum();
-                    WFMath::Point<3> pos = parsePosition(pos, modElement);
+                    WFMath::Point<3> pos = parsePosition(p, modElement);
                     Element shapeMap;
                     const std::string& shapeType = parseShape(modElement, shapeMap);
                     if (!shapeMap.isNone()) {
