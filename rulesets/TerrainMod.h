@@ -25,7 +25,6 @@
 #include <wfmath/point.h>
 
 namespace Mercator {
-    class CraterTerrainMod;
     class TerrainMod;
 }
 
