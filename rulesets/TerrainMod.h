@@ -41,6 +41,7 @@ public:
     virtual ~InnerTerrainMod();
     
     const std::string& getTypename() const;
+
     /**
      * @brief Tries to parse the Atlas data.
      * It's up to the specific subclasses to provide proper parsing of the data depending on their needs.
