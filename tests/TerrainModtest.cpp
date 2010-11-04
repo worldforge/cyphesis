@@ -47,7 +47,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return parsePosition(pos, modElement);
     }
 
-    const std::string& test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
+    InnerTerrainMod::Shape test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
     {
         return parseShape(modElement, shapeMap);
     }

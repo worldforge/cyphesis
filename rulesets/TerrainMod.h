@@ -67,8 +67,10 @@ protected:
      * @see getTypename()
      */
     std::string mTypeName;
+
+    typedef enum shape { SHAPE_UNKNOWN, SHAPE_ROTBOX, SHAPE_POLYGON, SHAPE_BALL } Shape;
     
-    const std::string& parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
+    Shape parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
     float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
