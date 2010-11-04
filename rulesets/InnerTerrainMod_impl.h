@@ -20,17 +20,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef RULESETS_TERRAIN_MOD_IMPL_H
-#define RULESETS_TERRAIN_MOD_IMPL_H
+#ifndef WORLDFORGE_TERRAIN_MOD_IMPL_H
+#define WORLDFORGE_TERRAIN_MOD_IMPL_H
+
+#include "common/log.h"
 
 #include <Mercator/TerrainMod.h>
-
-#include <Atlas/Message/Element.h>
 
 #include <wfmath/ball.h>
 #include <wfmath/polygon.h>
 
-#include "common/log.h"
+#include <Atlas/Message/Element.h>
 
 /**
  @brief Base class for the inner terrain mod implementations.
