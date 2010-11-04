@@ -70,7 +70,7 @@ protected:
     
     const std::string& parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
-    WFMath::Point<3> parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
+    float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
     /**
      * @brief A reference to inner mod implementation.

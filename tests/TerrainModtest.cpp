@@ -42,7 +42,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return 0;
     }
 
-    WFMath::Point<3> test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
+    float test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
     {
         return parsePosition(pos, modElement);
     }
@@ -75,9 +75,8 @@ int main()
         e.m_location.m_pos = Point3D(0,0,-1);
 
         MapType data;
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() < 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z < 0);
 
         delete titm;
     }
@@ -90,9 +89,8 @@ int main()
 
         MapType data;
         data["height"] = 1;
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z > 0);
 
         delete titm;
     }
@@ -105,9 +103,8 @@ int main()
 
         MapType data;
         data["height"] = 1.;
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z > 0);
 
         delete titm;
     }
@@ -120,9 +117,8 @@ int main()
 
         MapType data;
         data["height"] = "1.";
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() < 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z < 0);
 
         delete titm;
     }
@@ -135,9 +131,8 @@ int main()
 
         MapType data;
         data["heightoffset"] = 2;
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z > 0);
 
         delete titm;
     }
@@ -150,9 +145,8 @@ int main()
 
         MapType data;
         data["heightoffset"] = 2.;
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z > 0);
 
         delete titm;
     }
@@ -165,9 +159,8 @@ int main()
 
         MapType data;
         data["heightoffset"] = "1.";
-        Point3D new_pos = titm->test_parsePosition(e.m_location.pos(), data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() < 0);
+        float z = titm->test_parsePosition(e.m_location.pos(), data);
+        assert(z < 0);
 
         delete titm;
     }
