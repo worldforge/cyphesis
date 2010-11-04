@@ -38,6 +38,11 @@ The TerrainMod class in itself doesn't hold the actual reference to the terrain 
 class InnerTerrainMod
 {
 public:
+    typedef enum shape { SHAPE_UNKNOWN,
+                         SHAPE_ROTBOX,
+                         SHAPE_POLYGON,
+                         SHAPE_BALL } Shape;
+    
     virtual ~InnerTerrainMod();
     
     const std::string& getTypename() const;
@@ -68,8 +73,6 @@ protected:
      */
     std::string mTypeName;
 
-    typedef enum shape { SHAPE_UNKNOWN, SHAPE_ROTBOX, SHAPE_POLYGON, SHAPE_BALL } Shape;
-    
     Shape parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
     float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
