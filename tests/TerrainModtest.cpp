@@ -171,9 +171,9 @@ int main()
 
         Element e;
         MapType mod;
-        const std::string & shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
 
-        assert(shape.empty());
+        assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         assert(e.isNone());
         delete titm;
     }
@@ -185,9 +185,9 @@ int main()
         Element e;
         MapType mod;
         mod["shape"] = "invalid_shape";
-        const std::string & shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
 
-        assert(shape.empty());
+        assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         assert(e.isNone());
         delete titm;
     }
@@ -199,9 +199,9 @@ int main()
         Element e;
         MapType mod;
         mod["shape"] = MapType();
-        const std::string & shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
 
-        assert(shape.empty());
+        assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         delete titm;
     }
 
@@ -214,9 +214,9 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = 1;
         mod["shape"] = shape_desc;
-        const std::string & shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
 
-        assert(shape.empty());
+        assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         delete titm;
     }
 
@@ -227,11 +227,11 @@ int main()
         Element e;
         MapType mod;
         MapType shape_desc;
-        shape_desc["type"] = "valid_shape";
+        shape_desc["type"] = "rotbox";
         mod["shape"] = shape_desc;
-        const std::string & shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
 
-        assert(shape == "valid_shape");
+        assert(shape == InnerTerrainMod::SHAPE_ROTBOX);
         assert(e.isMap());
         delete titm;
     }
