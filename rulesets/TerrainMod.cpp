@@ -39,13 +39,14 @@ using Atlas::Message::FloatType;
  * @param terrainMod The TerrainMod instance to which this instance belongs to.
  * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
  */
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod)
+InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod), m_impl(0)
 {
 }
 
 /// @brief Dtor.
 InnerTerrainMod::~InnerTerrainMod()
 {
+    delete m_impl;
 }
 
 /**
@@ -57,6 +58,14 @@ InnerTerrainMod::~InnerTerrainMod()
 const std::string& InnerTerrainMod::getTypename() const
 {
     return mTypeName;
+}
+
+Mercator::TerrainMod* InnerTerrainMod::getModifier()
+{
+    if (m_impl == 0) {
+        return 0;
+    }
+    return m_impl->getModifier();
 }
 
 /**
@@ -93,21 +102,11 @@ WFMath::Point<3> InnerTerrainMod::parsePosition(const WFMath::Point<3> & p, cons
 
 InnerTerrainModCrater::InnerTerrainModCrater()
 : InnerTerrainMod("cratermod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModCrater::~InnerTerrainModCrater()
 {
-    delete m_impl;
-}
-
-Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
-{
-    if (m_impl == 0) {
-        return 0;
-    }
-    return m_impl->getModifier();
 }
 
 
@@ -129,23 +128,12 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & p, const WFM
 
 InnerTerrainModSlope::InnerTerrainModSlope()
 : InnerTerrainMod("slopemod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModSlope::~InnerTerrainModSlope()
 {
-    delete m_impl;
 }
-
-Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
-{
-    if (m_impl == 0) {
-        return 0;
-    }
-    return m_impl->getModifier();
-}
-
 
 bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & p, const WFMath::Quaternion & orientation, const MapType& modElement)
 {
@@ -185,21 +173,11 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & p, const WFMa
 
 InnerTerrainModLevel::InnerTerrainModLevel()
 : InnerTerrainMod("levelmod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModLevel::~InnerTerrainModLevel()
 {
-    delete m_impl;
-}
-
-Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
-{
-    if (m_impl == 0) {
-        return 0;
-    }
-    return m_impl->getModifier();
 }
 
 bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & p, const WFMath::Quaternion & orientation, const MapType& modElement)
@@ -225,23 +203,12 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & p, const WFMa
 
 InnerTerrainModAdjust::InnerTerrainModAdjust()
 : InnerTerrainMod("adjustmod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModAdjust::~InnerTerrainModAdjust()
 {
-    delete m_impl;
 }
-
-Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
-{
-    if (m_impl == 0) {
-        return 0;
-    }
-    return m_impl->getModifier();
-}
-
 
 bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const MapType& modElement)
 {

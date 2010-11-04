@@ -120,12 +120,17 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod)
+InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : m_impl(0)
 {
 }
 
 InnerTerrainMod::~InnerTerrainMod()
 {
+}
+
+Mercator::TerrainMod* InnerTerrainMod::getModifier()
+{
+    return 0;
 }
 
 const std::string& InnerTerrainMod::getTypename() const
@@ -135,17 +140,11 @@ const std::string& InnerTerrainMod::getTypename() const
 
 InnerTerrainModCrater::InnerTerrainModCrater()
 : InnerTerrainMod("cratermod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModCrater::~InnerTerrainModCrater()
 {
-}
-
-Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
-{
-    return 0;
 }
 
 
@@ -156,19 +155,12 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> &, const WFMat
 
 InnerTerrainModSlope::InnerTerrainModSlope()
 : InnerTerrainMod("slopemod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModSlope::~InnerTerrainModSlope()
 {
 }
-
-Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
-{
-    return 0;
-}
-
 
 bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
 {
@@ -177,17 +169,11 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> &, const WFMath
 
 InnerTerrainModLevel::InnerTerrainModLevel()
 : InnerTerrainMod("levelmod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModLevel::~InnerTerrainModLevel()
 {
-}
-
-Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
-{
-    return 0;
 }
 
 bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
@@ -197,19 +183,12 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> &, const WFMath
 
 InnerTerrainModAdjust::InnerTerrainModAdjust()
 : InnerTerrainMod("adjustmod")
-, m_impl(0)
 {
 }
 
 InnerTerrainModAdjust::~InnerTerrainModAdjust()
 {
 }
-
-Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
-{
-    return 0;
-}
-
 
 bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement)
 {

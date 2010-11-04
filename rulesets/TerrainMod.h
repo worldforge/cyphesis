@@ -56,7 +56,7 @@ public:
      * If no terrain mod could be created, such as with faulty Atlas data, or if parseAtlasData() hasn't been called yet, this will return a null pointer.
      * @return A pointer to the TerrainMod held by this instance, or null if none created.
      */
-    virtual Mercator::TerrainMod* getModifier() = 0;
+    Mercator::TerrainMod* getModifier();
 
 protected:
 
@@ -71,6 +71,13 @@ protected:
     const std::string& parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
     WFMath::Point<3> parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
+
+    /**
+     * @brief A reference to inner mod implementation.
+     * This is separate from this class because of the heavy use of templated shapes.
+     * The ownership is ours, so it will be destroyed when this instance is destroyed.
+     */
+    InnerTerrainMod_impl* m_impl;
 };
 
 
@@ -98,19 +105,6 @@ public:
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
     virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
-    
-    /**
-     * @copydoc InnerTerrainMod::getModifier()
-     */
-    virtual Mercator::TerrainMod* getModifier();
-    
-    protected:
-    /**
-     * @brief A reference to inner mod implementation.
-     * This is separate from this class because of the heavy use of templated shapes.
-     * The ownership is ours, so it will be destroyed when this instance is destroyed.
-     */
-    InnerTerrainMod_impl* m_impl;
 };
 
 /**
@@ -139,18 +133,6 @@ public:
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
     virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
-    
-    /**
-     * @copydoc InnerTerrainMod::getModifier()
-     */
-    virtual Mercator::TerrainMod* getModifier();
-    
-    protected:
-    /**
-     * @brief A reference to the crater terrain modifier held by this instance.
-     * The ownership is ours, so it will be destroyed when this instance is destroyed.
-     */
-    InnerTerrainMod_impl* m_impl;
 };
 
 /**
@@ -178,20 +160,6 @@ public:
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
     virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
-    
-    /**
-     * @copydoc InnerTerrainMod::getModifier()
-     */
-    virtual Mercator::TerrainMod* getModifier();
-    
-    protected:
-    
-    /**
-     * @brief A reference to inner mod implementation.
-     * This is separate from this class because of the heavy use of templated shapes.
-     * The ownership is ours, so it will be destroyed when this instance is destroyed.
-     */
-    InnerTerrainMod_impl* m_impl;
 };
 
 /**
@@ -219,20 +187,6 @@ public:
      * @copydoc InnerTerrainMod::parseAtlasData()
      */
     virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
-    
-    /**
-     * @copydoc InnerTerrainMod::getModifier()
-     */
-    virtual Mercator::TerrainMod* getModifier();
-    
-    protected:
-    
-    /**
-     * @brief A reference to inner mod implementation.
-     * This is separate from this class because of the heavy use of templated shapes.
-     * The ownership is ours, so it will be destroyed when this instance is destroyed.
-     */
-    InnerTerrainMod_impl* m_impl;
 };
 
 
