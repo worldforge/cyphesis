@@ -20,8 +20,6 @@
 #ifndef RULESETS_TERRAIN_MOD_H
 #define RULESETS_TERRAIN_MOD_H
 
-#include "InnerTerrainMod_impl.h"
-
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/point.h>
@@ -41,7 +39,7 @@ public:
     typedef enum shape { SHAPE_UNKNOWN,
                          SHAPE_ROTBOX,
                          SHAPE_POLYGON,
-                         SHAPE_BALL } Shape;
+                         SHAPE_BALL } ShapeT;
     
     virtual ~InnerTerrainMod();
     
@@ -73,16 +71,33 @@ protected:
      */
     std::string mTypeName;
 
-    Shape parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
+    ShapeT parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
     float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
-    /**
-     * @brief A reference to inner mod implementation.
-     * This is separate from this class because of the heavy use of templated shapes.
-     * The ownership is ours, so it will be destroyed when this instance is destroyed.
-     */
-    InnerTerrainMod_impl m_impl;
+    template <template <int> class Shape>
+    static bool parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
+                                    const WFMath::Point<3>& pos,
+                                    const WFMath::Quaternion& orientation,
+                                    Shape<2> & shape);
+
+    template <template <int> class Shape,
+              template <template <int> class Shape> class Mod>
+    bool createInstance(const Atlas::Message::Element& shapeElement,
+                        const WFMath::Point<3>& pos,
+                        const WFMath::Quaternion& orientation,
+                        float,
+                        float,
+                        float);
+
+    template <template <int> class Shape,
+              template <template <int> class Shape> class Mod>
+    bool createInstance(const Atlas::Message::Element& shapeElement,
+                        const WFMath::Point<3>& pos,
+                        const WFMath::Quaternion& orientation,
+                        float);
+
+    Mercator::TerrainMod * m_mod;
 };
 
 

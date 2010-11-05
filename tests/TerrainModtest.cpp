@@ -47,7 +47,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return parsePosition(pos, modElement);
     }
 
-    InnerTerrainMod::Shape test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
+    InnerTerrainMod::ShapeT test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
     {
         return parseShape(modElement, shapeMap);
     }
@@ -171,7 +171,7 @@ int main()
 
         Element e;
         MapType mod;
-        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         assert(e.isNone());
@@ -185,7 +185,7 @@ int main()
         Element e;
         MapType mod;
         mod["shape"] = "invalid_shape";
-        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         assert(e.isNone());
@@ -199,7 +199,7 @@ int main()
         Element e;
         MapType mod;
         mod["shape"] = MapType();
-        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         delete titm;
@@ -214,7 +214,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = 1;
         mod["shape"] = shape_desc;
-        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         delete titm;
@@ -229,7 +229,7 @@ int main()
         MapType shape_desc;
         shape_desc["type"] = "rotbox";
         mod["shape"] = shape_desc;
-        InnerTerrainMod::Shape shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_ROTBOX);
         assert(e.isMap());

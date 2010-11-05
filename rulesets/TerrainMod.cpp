@@ -19,8 +19,6 @@
 
 #include "TerrainMod.h"
 
-#include "InnerTerrainMod_impl.h"
-
 #include "common/log.h"
 #include "common/debug.h"
 
@@ -39,7 +37,7 @@ using Atlas::Message::FloatType;
  * @param terrainMod The TerrainMod instance to which this instance belongs to.
  * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
  */
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod)
+InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod), m_mod(0)
 {
 }
 
@@ -61,7 +59,7 @@ const std::string& InnerTerrainMod::getTypename() const
 
 Mercator::TerrainMod* InnerTerrainMod::getModifier()
 {
-    return m_impl.getModifier();
+    return m_mod;
 }
 
 /**
@@ -94,6 +92,105 @@ float InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, const MapType
     return pos.z();
 }
 
+/**
+ * @brief Common method for parsing shape data from Atlas.
+ * Since each different shape expects different Atlas data this is a
+ * templated method with specialized implemtations for each available shape.
+ * If you call this and get error regarding missing implementations it
+ * probably means that there's no implementation for the type of shape you're
+ * calling it with. Note that a new shape instance will be put on the heap if
+ * the parsing is successful, and it's up to the calling code to properly
+ * delete it when done.
+ * @param shapeElement The atlas map element which contains the shape data.
+ * Often this is found with the key "shape" in the atlas data.
+ * @param pos The original position of the entity to which this shape will
+ * belong. The shape will be positioned according to this.
+ * @param shape The resulting shape is meant to be put here, if successfully
+ * created. That means that a new shape instance will be created, and it's
+ * then up to the calling method to properly delete it, to avoid memory leaks.
+ * @return True if the atlas data was successfully parsed and a shape was
+ * created.
+ */
+template<template <int> class Shape>
+bool InnerTerrainMod::parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
+                                          const WFMath::Point<3>& pos,
+                                          const WFMath::Quaternion& orientation,
+                                          Shape <2> & shape)
+{
+    try {
+        shape.fromAtlas(shapeElement);
+    } catch (...) {
+        ///Just log an error and return false, this isn't fatal.
+        log(WARNING, "Error when parsing shape from atlas.");
+        return false;
+    }
+
+    if (!shape.isValid()) {
+        return false;
+    }
+
+    if (orientation.isValid()) {
+        /// rotation about Z axis
+        WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
+        double theta = atan2(xVec.y(), xVec.x());
+        WFMath::RotMatrix<2> rm;
+        shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
+    }
+
+    shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+    return true;
+}
+
+/**
+ * @brief Tries to create a new instance from the passes in atlas data.
+ * @param shapeElement The atlas data containing shape information.
+ * @param pos The position where the mod should be created, in world space.
+ * @param height The height where the level should be created.
+ * @return True if the atlas data could be successfully parsed an a mod cre
+ */
+template <template <int> class Shape,
+          template <template <int> class Shape> class Mod>
+bool InnerTerrainMod::createInstance(
+      const Atlas::Message::Element& shapeElement,
+      const WFMath::Point<3>& pos,
+      const WFMath::Quaternion& orientation,
+      float level,
+      float dx,
+      float dy)
+{
+    Shape<2>  shape;
+    if (parseShapeAtlasData(shapeElement, pos, orientation, shape)) {
+        m_mod = new Mod<Shape>(level, dx, dy, shape);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @brief Tries to create a new instance from the passes in atlas data.
+ * @param shapeElement The atlas data containing shape information.
+ * @param pos The position where the mod should be created, in world space.
+ * @param level The level where the slope should be created.
+ * @param dx
+ * @param dy
+ * @return True if the atlas data could be successfully parsed an a mod cre
+ */
+template <template <int> class Shape,
+          template <template <int> class S> class Mod>
+bool InnerTerrainMod::createInstance(
+      const Atlas::Message::Element& shapeElement,
+      const WFMath::Point<3>& pos,
+      const WFMath::Quaternion& orientation,
+      float height)
+{
+    Shape<2>  shape;
+    if (parseShapeAtlasData(shapeElement, pos, orientation, shape)) {
+        m_mod = new Mod<Shape>(height, shape);
+        return true;
+    }
+    return false;
+}
+
 InnerTerrainModCrater::InnerTerrainModCrater()
 : InnerTerrainMod("cratermod")
 {
@@ -108,10 +205,10 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & pos, const W
 {
     float level = parsePosition(pos, modElement);
     Element shapeMap;
-    Shape shapeType = parseShape(modElement, shapeMap);
+    ShapeT shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
         if (shapeType == SHAPE_BALL) {
-            return m_impl.createInstance<WFMath::Ball, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
+            return createInstance<WFMath::Ball, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
         }
     }
     log(ERROR, "Crater terrain mod defined with incorrect shape");
@@ -142,14 +239,14 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & pos, const WF
                     const float dy = slopes[1].asNum();
                     float level = parsePosition(pos, modElement);
                     Element shapeMap;
-                    Shape shapeType = parseShape(modElement, shapeMap);
+                    ShapeT shapeType = parseShape(modElement, shapeMap);
                     if (!shapeMap.isNone()) {
                         if (shapeType == SHAPE_BALL) {
-                            return m_impl.createInstance<WFMath::Ball, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
+                            return createInstance<WFMath::Ball, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
                         } else if (shapeType == SHAPE_ROTBOX) {
-                            return m_impl.createInstance<WFMath::RotBox, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
+                            return createInstance<WFMath::RotBox, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
                         } else if (shapeType == SHAPE_POLYGON) {
-                            return m_impl.createInstance<WFMath::Polygon, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
+                            return createInstance<WFMath::Polygon, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
                         }
                     }
                 }
@@ -174,14 +271,14 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & pos, const WF
 {
     float level = parsePosition(pos, modElement);
     Element shapeMap;
-    Shape shapeType = parseShape(modElement, shapeMap);
+    ShapeT shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
         if (shapeType == SHAPE_BALL) {
-            return m_impl.createInstance<WFMath::Ball, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
+            return createInstance<WFMath::Ball, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
         } else if (shapeType == SHAPE_ROTBOX) {
-            return m_impl.createInstance<WFMath::RotBox, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
+            return createInstance<WFMath::RotBox, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
         } else if (shapeType == SHAPE_POLYGON) {
-            return m_impl.createInstance<WFMath::Polygon, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
+            return createInstance<WFMath::Polygon, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
         }
     }
     log(ERROR, "Level terrain mod defined with incorrect shape");
@@ -201,14 +298,14 @@ bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> & pos, const W
 {
 
     Element shapeMap;
-    Shape shapeType = parseShape(modElement, shapeMap);
+    ShapeT shapeType = parseShape(modElement, shapeMap);
     if (!shapeMap.isNone()) {
         if (shapeType == SHAPE_BALL) {
-            return m_impl.createInstance<WFMath::Ball, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
+            return createInstance<WFMath::Ball, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
         } else if (shapeType == SHAPE_ROTBOX) {
-            return m_impl.createInstance<WFMath::RotBox, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
+            return createInstance<WFMath::RotBox, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
         } else if (shapeType == SHAPE_POLYGON) {
-            return m_impl.createInstance<WFMath::Polygon, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
+            return createInstance<WFMath::Polygon, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
         }
     }
     log(ERROR, "Adjust terrain mod defined with incorrect shape");
@@ -222,7 +319,7 @@ bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> & pos, const W
  * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
  * @return The name of the shape, or an empty string if no valid data could be found.
  */
-InnerTerrainMod::Shape InnerTerrainMod::parseShape(const MapType& modElement, Element& shapeMap)
+InnerTerrainMod::ShapeT InnerTerrainMod::parseShape(const MapType& modElement, Element& shapeMap)
 {
     MapType::const_iterator I = modElement.find("shape");
     if (I != modElement.end()) {
