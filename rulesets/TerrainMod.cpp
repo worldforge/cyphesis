@@ -210,6 +210,10 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & pos, const W
     float level = parsePosition(pos, modElement);
     if (shapeType == SHAPE_BALL) {
         return createInstance<WFMath::Ball, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
+    } else if (shapeType == SHAPE_ROTBOX) {
+        return createInstance<WFMath::RotBox, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
+    } else if (shapeType == SHAPE_POLYGON) {
+        return createInstance<WFMath::Polygon, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
     }
     log(ERROR, "Crater terrain mod defined with incorrect shape");
     return false;
