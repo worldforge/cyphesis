@@ -45,7 +45,7 @@ public:
     /**
      *    @brief Ctor.
      */
-    InnerTerrainMod_impl() {}
+    InnerTerrainMod_impl() : mTerrainMod(0) {}
 
     /**
      *    @brief Dtor.
