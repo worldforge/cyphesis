@@ -196,11 +196,6 @@ InnerTerrainModCrater::InnerTerrainModCrater()
 {
 }
 
-InnerTerrainModCrater::~InnerTerrainModCrater()
-{
-}
-
-
 bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const MapType& modElement)
 {
     float level = parsePosition(pos, modElement);
@@ -218,10 +213,6 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & pos, const W
 
 InnerTerrainModSlope::InnerTerrainModSlope()
 : InnerTerrainMod("slopemod")
-{
-}
-
-InnerTerrainModSlope::~InnerTerrainModSlope()
 {
 }
 
@@ -263,10 +254,6 @@ InnerTerrainModLevel::InnerTerrainModLevel()
 {
 }
 
-InnerTerrainModLevel::~InnerTerrainModLevel()
-{
-}
-
 bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const MapType& modElement)
 {
     float level = parsePosition(pos, modElement);
@@ -287,10 +274,6 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & pos, const WF
 
 InnerTerrainModAdjust::InnerTerrainModAdjust()
 : InnerTerrainMod("adjustmod")
-{
-}
-
-InnerTerrainModAdjust::~InnerTerrainModAdjust()
 {
 }
 
