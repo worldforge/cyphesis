@@ -20,6 +20,8 @@
 #ifndef RULESETS_TERRAIN_MOD_H
 #define RULESETS_TERRAIN_MOD_H
 
+#include "InnerTerrainMod_impl.h"
+
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/point.h>
@@ -27,8 +29,6 @@
 namespace Mercator {
     class TerrainMod;
 }
-
-class InnerTerrainMod_impl;
 
 /**
 @author Erik Hjortsberg <erik.hjortsberg@iteam.se>
@@ -82,7 +82,7 @@ protected:
      * This is separate from this class because of the heavy use of templated shapes.
      * The ownership is ours, so it will be destroyed when this instance is destroyed.
      */
-    InnerTerrainMod_impl* m_impl;
+    InnerTerrainMod_impl m_impl;
 };
 
 
