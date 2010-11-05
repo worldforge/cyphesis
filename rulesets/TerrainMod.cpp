@@ -200,7 +200,7 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & pos, const W
 {
     Element shapeMap;
     ShapeT shapeType = parseShape(modElement, shapeMap);
-    if (shapeType == SHAPE_NONE) {
+    if (shapeType == SHAPE_UNKNOWN) {
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
@@ -224,7 +224,7 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & pos, const WF
 {
     Element shapeMap;
     ShapeT shapeType = parseShape(modElement, shapeMap);
-    if (shapeType == SHAPE_NONE) {
+    if (shapeType == SHAPE_UNKNOWN) {
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
@@ -266,7 +266,7 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & pos, const WF
 {
     Element shapeMap;
     ShapeT shapeType = parseShape(modElement, shapeMap);
-    if (shapeType == SHAPE_NONE) {
+    if (shapeType == SHAPE_UNKNOWN) {
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
@@ -294,7 +294,7 @@ bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> & pos, const W
 
     Element shapeMap;
     ShapeT shapeType = parseShape(modElement, shapeMap);
-    if (shapeType == SHAPE_NONE) {
+    if (shapeType == SHAPE_UNKNOWN) {
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
