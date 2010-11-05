@@ -41,7 +41,6 @@ librulesetentity_a_SOURCES = \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     TerrainModProperty.cpp TerrainModProperty.h \
 			     TerrainMod.cpp TerrainMod.h \
-			     InnerTerrainMod_impl.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \
