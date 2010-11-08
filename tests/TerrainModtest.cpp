@@ -314,6 +314,25 @@ int main()
         delete titm;
     }
 
+    // Call parseAtlasData with ball shape and valid ball and orientation
+    {
+        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation(0,0,0,1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        shape_desc["radius"] = 1.f;
+        shape_desc["position"] = ListType(2, 1.);
+        mod["shape"] = shape_desc;
+        bool ret = titm->parseAtlasData(pos, orientation, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
     // Call parseAtlasData with polygon shape and valid polygon params
     {
         InnerTerrainModCrater * titm = new InnerTerrainModCrater;
