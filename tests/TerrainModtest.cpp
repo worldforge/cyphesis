@@ -42,7 +42,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return 0;
     }
 
-    float test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
+    static float test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
     {
         return parsePosition(pos, modElement);
     }
@@ -113,92 +113,71 @@ int main()
 
     // Call parsePosition with empty height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z < 0);
-
-        delete titm;
     }
 
     // Call parsePosition with int height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["height"] = 1;
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z > 0);
-
-        delete titm;
     }
 
     // Call parsePosition with float height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["height"] = 1.;
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z > 0);
-
-        delete titm;
     }
 
     // Call parsePosition with bad (string) height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["height"] = "1.";
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z < 0);
-
-        delete titm;
     }
 
     // Call parsePosition with int heightoffset data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["heightoffset"] = 2;
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z > 0);
-
-        delete titm;
     }
 
     // Call parsePosition with float heightoffset data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["heightoffset"] = 2.;
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z > 0);
-
-        delete titm;
     }
 
     // Call parsePosition with bad (string) heightoffset data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["heightoffset"] = "1.";
-        float z = titm->test_parsePosition(pos, data);
+        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
         assert(z < 0);
-
-        delete titm;
     }
 
     // Call parseShape with empty mod data
