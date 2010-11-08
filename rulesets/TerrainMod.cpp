@@ -26,6 +26,8 @@
 
 #include <wfmath/atlasconv.h>
 
+#include <cassert>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -204,11 +206,14 @@ bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> & pos, const W
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
-    if (!shapeMap.isNone()) {
-        float level = parsePosition(pos, modElement);
-        if (shapeType == SHAPE_BALL) {
-            return createInstance<WFMath::Ball, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
-        }
+    assert(!shapeMap.isNone());
+    float level = parsePosition(pos, modElement);
+    if (shapeType == SHAPE_BALL) {
+        return createInstance<WFMath::Ball, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
+    } else if (shapeType == SHAPE_ROTBOX) {
+        return createInstance<WFMath::RotBox, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
+    } else if (shapeType == SHAPE_POLYGON) {
+        return createInstance<WFMath::Polygon, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, level);
     }
     log(ERROR, "Crater terrain mod defined with incorrect shape");
     return false;
@@ -228,29 +233,32 @@ bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> & pos, const WF
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
-    if (!shapeMap.isNone()) {
-        // Get slopes
-        MapType::const_iterator I = modElement.find("slopes");
-        if (I != modElement.end()) {
-            const Element& modSlopeElem = I->second;
-            if (modSlopeElem.isList()) {
-                const ListType & slopes = modSlopeElem.asList();
-                if (slopes.size() > 1) {
-                    if (slopes[0].isNum() && slopes[1].isNum()) {
-                        const float dx = slopes[0].asNum();
-                        const float dy = slopes[1].asNum();
-                        float level = parsePosition(pos, modElement);
-                        if (shapeType == SHAPE_BALL) {
-                            return createInstance<WFMath::Ball, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
-                        } else if (shapeType == SHAPE_ROTBOX) {
-                            return createInstance<WFMath::RotBox, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
-                        } else if (shapeType == SHAPE_POLYGON) {
-                            return createInstance<WFMath::Polygon, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
-                        }
-                    }
-                }
-            }
-        }
+    assert(!shapeMap.isNone());
+    // Get slopes
+    MapType::const_iterator I = modElement.find("slopes");
+    if (I == modElement.end()) {
+        log(ERROR, "SlopeTerrainMod defined without slopes");
+        return false;
+    }
+    const Element& modSlopeElem = I->second;
+    if (!modSlopeElem.isList()) {
+        log(ERROR, "SlopeTerrainMod defined with malformed slopes");
+        return false;
+    }
+    const ListType & slopes = modSlopeElem.asList();
+    if (slopes.size() < 2 || !slopes[0].isNum() || !slopes[1].isNum()) {
+        log(ERROR, "SlopeTerrainMod defined without slopes");
+        return false;
+    }
+    const float dx = slopes[0].asNum();
+    const float dy = slopes[1].asNum();
+    float level = parsePosition(pos, modElement);
+    if (shapeType == SHAPE_BALL) {
+        return createInstance<WFMath::Ball, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
+    } else if (shapeType == SHAPE_ROTBOX) {
+        return createInstance<WFMath::RotBox, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
+    } else if (shapeType == SHAPE_POLYGON) {
+        return createInstance<WFMath::Polygon, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, level, dx, dy);
     }
     log(ERROR, "SlopeTerrainMod defined with incorrect shape");
     return false;
@@ -270,15 +278,14 @@ bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> & pos, const WF
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
-    if (!shapeMap.isNone()) {
-        float level = parsePosition(pos, modElement);
-        if (shapeType == SHAPE_BALL) {
-            return createInstance<WFMath::Ball, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
-        } else if (shapeType == SHAPE_ROTBOX) {
-            return createInstance<WFMath::RotBox, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
-        } else if (shapeType == SHAPE_POLYGON) {
-            return createInstance<WFMath::Polygon, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
-        }
+    assert(!shapeMap.isNone());
+    float level = parsePosition(pos, modElement);
+    if (shapeType == SHAPE_BALL) {
+        return createInstance<WFMath::Ball, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
+    } else if (shapeType == SHAPE_ROTBOX) {
+        return createInstance<WFMath::RotBox, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
+    } else if (shapeType == SHAPE_POLYGON) {
+        return createInstance<WFMath::Polygon, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, level);
     }
     log(ERROR, "Level terrain mod defined with incorrect shape");
     return false;
@@ -298,14 +305,13 @@ bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> & pos, const W
         log(ERROR, "Crater terrain mod defined with unknwon shape");
         return false;
     }
-    if (!shapeMap.isNone()) {
-        if (shapeType == SHAPE_BALL) {
-            return createInstance<WFMath::Ball, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
-        } else if (shapeType == SHAPE_ROTBOX) {
-            return createInstance<WFMath::RotBox, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
-        } else if (shapeType == SHAPE_POLYGON) {
-            return createInstance<WFMath::Polygon, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
-        }
+    assert(!shapeMap.isNone());
+    if (shapeType == SHAPE_BALL) {
+        return createInstance<WFMath::Ball, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
+    } else if (shapeType == SHAPE_ROTBOX) {
+        return createInstance<WFMath::RotBox, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
+    } else if (shapeType == SHAPE_POLYGON) {
+        return createInstance<WFMath::Polygon, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, pos.z());
     }
     log(ERROR, "Adjust terrain mod defined with incorrect shape");
     return false;
