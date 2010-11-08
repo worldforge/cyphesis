@@ -47,7 +47,7 @@ class TestInnerTerrainMod : public InnerTerrainMod
         return parsePosition(pos, modElement);
     }
 
-    InnerTerrainMod::ShapeT test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
+    static InnerTerrainMod::ShapeT test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
     {
         return parseShape(modElement, shapeMap);
     }
@@ -203,73 +203,58 @@ int main()
 
     // Call parseShape with empty mod data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
         Element e;
         MapType mod;
-        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = TestInnerTerrainMod::test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         assert(e.isNone());
-        delete titm;
     }
 
     // Call parseShape with invalid shape data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
         Element e;
         MapType mod;
         mod["shape"] = "invalid_shape";
-        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = TestInnerTerrainMod::test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
         assert(e.isNone());
-        delete titm;
     }
 
     // Call parseShape with empty shape data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
         Element e;
         MapType mod;
         mod["shape"] = MapType();
-        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = TestInnerTerrainMod::test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
-        delete titm;
     }
 
     // Call parseShape with invalid shape type
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
         Element e;
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = 1;
         mod["shape"] = shape_desc;
-        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = TestInnerTerrainMod::test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_UNKNOWN);
-        delete titm;
     }
 
     // Call parseShape with valid shape type
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
         Element e;
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = "rotbox";
         mod["shape"] = shape_desc;
-        InnerTerrainMod::ShapeT shape = titm->test_parseShape(mod, e);
+        InnerTerrainMod::ShapeT shape = TestInnerTerrainMod::test_parseShape(mod, e);
 
         assert(shape == InnerTerrainMod::SHAPE_ROTBOX);
         assert(e.isMap());
-        delete titm;
     }
 
     ////////////////////// Concrete classes ///////////////////////////
