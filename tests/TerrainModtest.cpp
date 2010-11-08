@@ -53,6 +53,49 @@ class TestInnerTerrainMod : public InnerTerrainMod
     }
 };
 
+static int test_reparse()
+{
+    // Call parseAtlasData with polygon shape and valid points
+    {
+        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
+        Entity e("1", 1);
+        e.m_location.m_pos = Point3D(0,0,-1);
+        bool ret;
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        shape_desc["points"] = ListType(3, ListType(2, 1.));
+        mod["shape"] = shape_desc;
+        ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
+        assert(ret);
+        Mercator::TerrainMod * tm1 = titm->getModifier();
+        assert(tm1 != 0);
+
+        // Re-parse the same data. Should update the mod in place.
+        ret = titm->parseAtlasData(e.m_location.pos(),
+                                   e.m_location.orientation(), mod);
+        assert(ret);
+        Mercator::TerrainMod * tm2 = titm->getModifier();
+        assert(tm2 != 0);
+        // FIXME assert(tm2 == tm1);
+
+        // Change it to 2D ball shape. This requires a new mod.
+        shape_desc["type"] = "ball";
+        shape_desc["radius"] = 1.f;
+        shape_desc["position"] = ListType(2, 1.);
+        mod["shape"] = shape_desc;
+        ret = titm->parseAtlasData(e.m_location.pos(), e.m_location.orientation(), mod);
+        assert(ret);
+        Mercator::TerrainMod * tm3 = titm->getModifier();
+        assert(tm3 != 0);
+
+        delete titm;
+    }
+
+    return 0;
+}
+
 int main()
 {
     {
@@ -714,7 +757,7 @@ int main()
         delete titm;
     }
 
-    return 0;
+    return test_reparse();
 }
 
 // stubs
