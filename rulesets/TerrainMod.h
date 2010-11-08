@@ -71,9 +71,9 @@ protected:
      */
     std::string mTypeName;
 
-    ShapeT parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
+    static ShapeT parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
     
-    float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
+    static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
     template <template <int> class Shape>
     static bool parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
