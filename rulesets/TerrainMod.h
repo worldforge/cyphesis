@@ -45,6 +45,7 @@ public:
     
     const std::string& getTypename() const;
 
+protected:
     /**
      * @brief Tries to parse the Atlas data.
      * It's up to the specific subclasses to provide proper parsing of the data depending on their needs.
@@ -52,7 +53,13 @@ public:
      * @param modElement The Atlas element describing the terrainmod. This should in most instances correspond directly to the "terrainmod" element found in the root atlas attribute map.
      * @return If the parsing was successful, true will be returned, and a new Mercator::TerrainMod will have been created, else false.
      */
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement) = 0;
+    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & ) = 0;
+
+public:
+
+    bool parseData(const WFMath::Point<3> & pos,
+                   const WFMath::Quaternion &,
+                   const Atlas::Message::MapType &);
     
     /**
      * @brief Accessor for the Mercator::TerrainMod created and held by this instance.
@@ -116,7 +123,7 @@ public:
      */
     InnerTerrainModSlope();
     
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & );
 };
 
 /**
@@ -136,7 +143,7 @@ public:
      */
     InnerTerrainModCrater();
     
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & );
 };
 
 /**
@@ -155,7 +162,7 @@ public:
      */
     InnerTerrainModLevel();
     
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & );
 };
 
 /**
@@ -174,7 +181,7 @@ public:
      */
     InnerTerrainModAdjust();
     
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement);
+    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & );
 };
 
 
