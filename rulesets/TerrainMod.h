@@ -53,7 +53,14 @@ protected:
      * @param modElement The Atlas element describing the terrainmod. This should in most instances correspond directly to the "terrainmod" element found in the root atlas attribute map.
      * @return If the parsing was successful, true will be returned, and a new Mercator::TerrainMod will have been created, else false.
      */
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & ) = 0;
+    // virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & ) = 0;
+
+    template <template <int> class Shape>
+    bool parseStuff(const WFMath::Point<3> & pos,
+                    const WFMath::Quaternion & orientation,
+                    const Atlas::Message::MapType& modElement,
+                    Shape<2> & shape,
+                    const Atlas::Message::Element & shapeElement);
 
 public:
 

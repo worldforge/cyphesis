@@ -59,6 +59,25 @@ const std::string& InnerTerrainMod::getTypename() const
     return mTypeName;
 }
 
+template <template <int> class Shape>
+bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
+                                 const WFMath::Quaternion & orientation,
+                                 const MapType& modElement,
+                                 Shape<2> & shape,
+                                 const Element & shapeMap)
+{
+    if (mTypeName == "slopemod") {
+        return createInstance<Shape, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, modElement, 0, 0);
+    } else if (mTypeName == "levelmod") {
+        return createInstance<Shape, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, modElement);
+    } else if (mTypeName == "adjustmod") {
+        return createInstance<Shape, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, modElement);
+    } else if (mTypeName == "cratermod") {
+        return createInstance<Shape, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, modElement);
+    }
+    return false;
+}
+
 bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
                                 const WFMath::Quaternion & orientation,
                                 const MapType& modElement)
@@ -70,7 +89,17 @@ bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
         return false;
     }
     assert(shapeMap.isMap());
-    return this->parseAtlasData(pos, orientation, modElement, shapeType, shapeMap.asMap());
+    if (shapeType == SHAPE_BALL) {
+        WFMath::Ball<2> shape;
+        return parseStuff(pos, orientation, modElement, shape, shapeMap);
+    } else if (shapeType == SHAPE_ROTBOX) {
+        WFMath::RotBox<2> shape;
+        return parseStuff(pos, orientation, modElement, shape, shapeMap);
+    } else if (shapeType == SHAPE_POLYGON) {
+        WFMath::Polygon<2> shape;
+        return parseStuff(pos, orientation, modElement, shape, shapeMap);
+    }
+    return false;
 }
 
 
