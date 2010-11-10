@@ -145,46 +145,6 @@ const std::string& InnerTerrainMod::getTypename() const
     return mTypeName;
 }
 
-InnerTerrainModCrater::InnerTerrainModCrater()
-: InnerTerrainMod("cratermod")
-{
-}
-
-bool InnerTerrainModCrater::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType &)
-{
-    return true;
-}
-
-InnerTerrainModSlope::InnerTerrainModSlope()
-: InnerTerrainMod("slopemod")
-{
-}
-
-bool InnerTerrainModSlope::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType &)
-{
-    return true;
-}
-
-InnerTerrainModLevel::InnerTerrainModLevel()
-: InnerTerrainMod("levelmod")
-{
-}
-
-bool InnerTerrainModLevel::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType &)
-{
-    return true;
-}
-
-InnerTerrainModAdjust::InnerTerrainModAdjust()
-: InnerTerrainMod("adjustmod")
-{
-}
-
-bool InnerTerrainModAdjust::parseAtlasData(const WFMath::Point<3> &, const WFMath::Quaternion &, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType &)
-{
-    return true;
-}
-
 TerrainContext::TerrainContext(Entity * e) : m_entity(e)
 {
 }
