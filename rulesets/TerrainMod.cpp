@@ -263,31 +263,28 @@ bool InnerTerrainMod::createInstance(
  * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
  * @return The name of the shape, or an empty string if no valid data could be found.
  */
-InnerTerrainMod::ShapeT InnerTerrainMod::parseShape(const MapType& modElement, Element& shapeMap)
+InnerTerrainMod::ShapeT InnerTerrainMod::parseShape(const MapType& modElement,
+                                                    Element& shapeMap)
 {
     MapType::const_iterator I = modElement.find("shape");
-    if (I != modElement.end()) {
-        const Element& shapeElement = I->second;
-        if (shapeElement.isMap()) {
-            const MapType& localShapeMap = shapeElement.asMap();
-            shapeMap = localShapeMap;
+    if (I == modElement.end() || !I->second.isMap()) {
+        return SHAPE_UNKNOWN;
+    }
+    const MapType& localShapeMap = I->second.Map();
+    shapeMap = localShapeMap;
 
-            // Get shape's type
-            MapType::const_iterator J = localShapeMap.find("type");
-            if (J != localShapeMap.end()) {
-                const Element& shapeTypeElem(J->second);
-                if (shapeTypeElem.isString()) {
-                    const std::string& shapeType = shapeTypeElem.asString();
-                    if (shapeType == "rotbox") {
-                        return SHAPE_ROTBOX;
-                    } else if (shapeType == "polygon") {
-                        return SHAPE_POLYGON;
-                    } else if (shapeType == "ball") {
-                        return SHAPE_BALL;
-                    }
-                }
-            }
-        }
+    // Get shape's type
+    MapType::const_iterator J = localShapeMap.find("type");
+    if (J == localShapeMap.end() || !J->second.isString()) {
+        return SHAPE_UNKNOWN;
+    }
+    const std::string& shapeType = J->second.String();
+    if (shapeType == "rotbox") {
+        return SHAPE_ROTBOX;
+    } else if (shapeType == "polygon") {
+        return SHAPE_POLYGON;
+    } else if (shapeType == "ball") {
+        return SHAPE_BALL;
     }
     return SHAPE_UNKNOWN;
 }
