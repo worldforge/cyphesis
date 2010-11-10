@@ -158,7 +158,7 @@ float InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, const MapType
  * created.
  */
 template<template <int> class Shape>
-bool InnerTerrainMod::parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
+bool InnerTerrainMod::parseShapeAtlasData(const Element& shapeElement,
                                           const WFMath::Point<3>& pos,
                                           const WFMath::Quaternion& orientation,
                                           Shape <2> & shape)
@@ -197,7 +197,7 @@ bool InnerTerrainMod::parseShapeAtlasData(const Atlas::Message::Element& shapeEl
 template <template <int> class Shape,
           template <template <int> class Shape> class Mod>
 bool InnerTerrainMod::createInstance(
-      const Atlas::Message::Element& shapeElement,
+      const Element& shapeElement,
       const WFMath::Point<3>& pos,
       const WFMath::Quaternion& orientation,
       const MapType& modElement,
@@ -242,7 +242,7 @@ bool InnerTerrainMod::createInstance(
 template <template <int> class Shape,
           template <template <int> class S> class Mod>
 bool InnerTerrainMod::createInstance(
-      const Atlas::Message::Element& shapeElement,
+      const Element& shapeElement,
       const WFMath::Point<3>& pos,
       const WFMath::Quaternion& orientation,
       const MapType& modElement)
