@@ -210,21 +210,8 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
 
     if (m_innerMod == 0) {
         // TODO(alriddoch, 2010-10-19) m_innerMod is being leaked)
-        if (modType == "slopemod") {
-            m_innerMod = new InnerTerrainModSlope();
-        } else if (modType == "levelmod") {
-            m_innerMod = new InnerTerrainModLevel();
-        } else if (modType == "adjustmod") {
-            m_innerMod = new InnerTerrainModAdjust();
-        } else if (modType == "cratermod") {
-            m_innerMod = new InnerTerrainModCrater();
-        } else {
-            log(WARNING, String::compose("Unknown terrain mod type %1"
-                                         " requested", modType));
-            return 0;
-        }
+        m_innerMod = new InnerTerrainMod(modType);
     }
-
 
     if (m_innerMod->parseData(owner->m_location.pos(),
                               owner->m_location.orientation(), modMap)) {
