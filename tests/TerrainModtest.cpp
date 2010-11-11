@@ -82,6 +82,14 @@ static int test_reparse()
         assert(tm3 != 0);
         assert(tm3 != tm1);
 
+        // Change it to an adjustmod. This requires a new mod
+        mod["type"] = "adjustmod";
+        ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        Mercator::TerrainMod * tm4 = titm->getModifier();
+        assert(tm4 != 0);
+        assert(tm4 != tm1);
+
         delete titm;
     }
 
