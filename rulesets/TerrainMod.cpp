@@ -244,6 +244,12 @@ bool InnerTerrainMod::createInstance(
     }
     const float dx = slopes[0].asNum();
     const float dy = slopes[1].asNum();
+    if (m_mod != 0) {
+        // This is not totally type safe, but as long as this class is
+        // good, it will always work.
+        ((Mod<Shape>*)m_mod)->setShape(level, dx, dy, shape);
+        return true;
+    }
     m_mod = new Mod<Shape>(level, dx, dy, shape);
     return true;
 }
@@ -266,6 +272,8 @@ bool InnerTerrainMod::createInstance(
 {
     float level = parsePosition(pos, modElement);
     if (m_mod != 0) {
+        // This is not totally type safe, but as long as this class is
+        // good, it will always work.
         ((Mod<Shape>*)m_mod)->setShape(level, shape);
         return true;
     }
