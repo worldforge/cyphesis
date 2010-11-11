@@ -38,13 +38,12 @@ class InnerTerrainMod
 public:
     virtual ~InnerTerrainMod();
     
-    const std::string& getTypename() const;
-
 protected:
     template <template <int> class Shape>
     bool parseStuff(const WFMath::Point<3> & pos,
                     const WFMath::Quaternion & orientation,
                     const Atlas::Message::MapType& modElement,
+                    const std::string & typeName,
                     Shape<2> & shape,
                     const Atlas::Message::Element & shapeElement);
 
@@ -64,18 +63,6 @@ public:
     InnerTerrainMod();
     
 protected:
-
-    /**
-     * @brief The type of mod this instance handles.
-     * @see getTypename()
-     */
-    std::string mTypeName;
-
-    /**
-     * @brief The shape of mod this instance handles.
-     * @see getTypename()
-     */
-    std::string mShapeName;
 
     static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 

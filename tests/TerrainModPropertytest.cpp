@@ -140,11 +140,6 @@ Mercator::TerrainMod* InnerTerrainMod::getModifier()
     return 0;
 }
 
-const std::string& InnerTerrainMod::getTypename() const
-{
-    return mTypeName;
-}
-
 TerrainContext::TerrainContext(Entity * e) : m_entity(e)
 {
 }

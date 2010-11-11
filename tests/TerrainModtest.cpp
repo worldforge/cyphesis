@@ -102,14 +102,6 @@ int main()
         InnerTerrainMod * titm = new TestInnerTerrainMod;
         delete titm;
     }
-    {
-        InnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        const std::string & type = titm->getTypename();
-        assert(type == "");
-
-        delete titm;
-    }
 
     // Call parsePosition with empty height data
     {

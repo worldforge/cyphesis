@@ -48,34 +48,24 @@ InnerTerrainMod::~InnerTerrainMod()
 {
 }
 
-/**
- * @brief Gets the type of terrain mod handled by this.
- * This corresponds to the "type" attribute of the "terrainmod" atlas attribute, for example "cratermod" or "slopemod".
- * Internally, it's stored in the mTypeName field, as set through the constructor.
- * @return The type of mod handled by any instance of this.
- */
-const std::string& InnerTerrainMod::getTypename() const
-{
-    return mTypeName;
-}
-
 template <template <int> class Shape>
 bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
                                  const WFMath::Quaternion & orientation,
                                  const MapType& modElement,
+                                 const std::string & typeName,
                                  Shape<2> & shape,
                                  const Element & shapeMap)
 {
     if (!parseShape(shapeMap, pos, orientation, shape)) {
         return false;
     }
-    if (mTypeName == "slopemod") {
+    if (typeName == "slopemod") {
         return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);
-    } else if (mTypeName == "levelmod") {
+    } else if (typeName == "levelmod") {
         return createInstance<Mercator::LevelTerrainMod>(shape, pos, modElement);
-    } else if (mTypeName == "adjustmod") {
+    } else if (typeName == "adjustmod") {
         return createInstance<Mercator::AdjustTerrainMod>(shape, pos, modElement);
-    } else if (mTypeName == "cratermod") {
+    } else if (typeName == "cratermod") {
         return createInstance<Mercator::CraterTerrainMod>(shape, pos, modElement);
     }
     return false;
@@ -103,24 +93,15 @@ bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
         return false;
     }
     const std::string& shapeType = I->second.String();
-    if (m_mod != 0) {
-        assert(!mTypeName.empty());
-        assert(!mShapeName.empty());
-        if (mTypeName != modType || mShapeName != shapeType) {
-            m_mod = 0;
-        }
-    }
-    mTypeName = modType;
-    mShapeName = shapeType;
     if (shapeType == "ball") {
         WFMath::Ball<2> shape;
-        return parseStuff(pos, orientation, modElement, shape, shapeMap);
+        return parseStuff(pos, orientation, modElement, modType, shape, shapeMap);
     } else if (shapeType == "rotbox") {
         WFMath::RotBox<2> shape;
-        return parseStuff(pos, orientation, modElement, shape, shapeMap);
+        return parseStuff(pos, orientation, modElement, modType, shape, shapeMap);
     } else if (shapeType == "polygon") {
         WFMath::Polygon<2> shape;
-        return parseStuff(pos, orientation, modElement, shape, shapeMap);
+        return parseStuff(pos, orientation, modElement, modType, shape, shapeMap);
     }
     return false;
 }
@@ -245,10 +226,11 @@ bool InnerTerrainMod::createInstance(
     const float dx = slopes[0].asNum();
     const float dy = slopes[1].asNum();
     if (m_mod != 0) {
-        // This is not totally type safe, but as long as this class is
-        // good, it will always work.
-        ((Mod<Shape>*)m_mod)->setShape(level, dx, dy, shape);
-        return true;
+        Mod<Shape> * mod = dynamic_cast<Mod<Shape>*>(m_mod);
+        if (mod != 0) {
+            mod->setShape(level, dx, dy, shape);
+            return true;
+        }
     }
     m_mod = new Mod<Shape>(level, dx, dy, shape);
     return true;
@@ -272,10 +254,11 @@ bool InnerTerrainMod::createInstance(
 {
     float level = parsePosition(pos, modElement);
     if (m_mod != 0) {
-        // This is not totally type safe, but as long as this class is
-        // good, it will always work.
-        ((Mod<Shape>*)m_mod)->setShape(level, shape);
-        return true;
+        Mod<Shape> * mod = dynamic_cast<Mod<Shape>*>(m_mod);
+        if (mod != 0) {
+            mod->setShape(level, shape);
+            return true;
+        }
     }
     m_mod = new Mod<Shape>(level, shape);
     return true;
