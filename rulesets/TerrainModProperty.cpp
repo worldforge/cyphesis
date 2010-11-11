@@ -168,7 +168,7 @@ void TerrainModProperty::apply(Entity * owner)
     m_modptr->context()->setId(owner->getId());
 }
 
-void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
+void TerrainModProperty::move(Entity* owner)
 {
     const TerrainProperty* terrain = getTerrain(owner);
 

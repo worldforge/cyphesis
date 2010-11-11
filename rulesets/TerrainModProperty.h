@@ -118,7 +118,7 @@ class TerrainModProperty : public PropertyBase {
 //                                         const Point3D &);
 
     /// \brief Changes a modifier's position
-    void move(Entity*, const Point3D &);
+    void move(Entity*);
 
     /// \brief Removes the modifier from the terrain
     void remove(Entity*);
