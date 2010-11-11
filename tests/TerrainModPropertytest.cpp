@@ -120,7 +120,7 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod)
+InnerTerrainMod::InnerTerrainMod()
 {
 }
 
