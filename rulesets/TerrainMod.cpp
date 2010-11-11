@@ -82,20 +82,25 @@ bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
                                 const WFMath::Quaternion & orientation,
                                 const MapType& modElement)
 {
-    Element shapeMap;
-    ShapeT shapeType = parseShape(modElement, shapeMap);
-    if (shapeType == SHAPE_UNKNOWN) {
-        log(ERROR, "Crater terrain mod defined with unknwon shape");
+    MapType::const_iterator I = modElement.find("shape");
+    if (I == modElement.end() || !I->second.isMap()) {
         return false;
     }
-    assert(shapeMap.isMap());
-    if (shapeType == SHAPE_BALL) {
+    const MapType& shapeMap = I->second.Map();
+
+    // Get shape's type
+    I = shapeMap.find("type");
+    if (I == shapeMap.end() || !I->second.isString()) {
+        return false;
+    }
+    const std::string& shapeType = I->second.String();
+    if (shapeType == "ball") {
         WFMath::Ball<2> shape;
         return parseStuff(pos, orientation, modElement, shape, shapeMap);
-    } else if (shapeType == SHAPE_ROTBOX) {
+    } else if (shapeType == "rotbox") {
         WFMath::RotBox<2> shape;
         return parseStuff(pos, orientation, modElement, shape, shapeMap);
-    } else if (shapeType == SHAPE_POLYGON) {
+    } else if (shapeType == "polygon") {
         WFMath::Polygon<2> shape;
         return parseStuff(pos, orientation, modElement, shape, shapeMap);
     }
@@ -274,11 +279,11 @@ InnerTerrainMod::ShapeT InnerTerrainMod::parseShape(const MapType& modElement,
     shapeMap = localShapeMap;
 
     // Get shape's type
-    MapType::const_iterator J = localShapeMap.find("type");
-    if (J == localShapeMap.end() || !J->second.isString()) {
+    I = localShapeMap.find("type");
+    if (I == localShapeMap.end() || !I->second.isString()) {
         return SHAPE_UNKNOWN;
     }
-    const std::string& shapeType = J->second.String();
+    const std::string& shapeType = I->second.String();
     if (shapeType == "rotbox") {
         return SHAPE_ROTBOX;
     } else if (shapeType == "polygon") {
