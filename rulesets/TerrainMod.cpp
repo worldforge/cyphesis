@@ -39,7 +39,7 @@ using Atlas::Message::FloatType;
  * @param terrainMod The TerrainMod instance to which this instance belongs to.
  * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
  */
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod) : mTypeName(typemod), m_mod(0)
+InnerTerrainMod::InnerTerrainMod() : m_mod(0)
 {
 }
 
@@ -85,7 +85,14 @@ bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
                                 const WFMath::Quaternion & orientation,
                                 const MapType& modElement)
 {
-    MapType::const_iterator I = modElement.find("shape");
+    MapType::const_iterator I = modElement.find("type");
+    if (I == modElement.end() || !I->second.isString()) {
+        return false;
+    }
+    const std::string& modType = I->second.String();
+    mTypeName = modType;
+
+    I = modElement.find("shape");
     if (I == modElement.end() || !I->second.isMap()) {
         return false;
     }

@@ -190,27 +190,9 @@ void TerrainModProperty::remove(Entity * owner)
 Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
                                                         const MapType & modMap)
 {
-    // Get modifier type
-    MapType::const_iterator I = modMap.find("type");
-    if (I == modMap.end() || !I->second.isString()) {
-        log(WARNING, "Terrain mod data has no type");
-        return 0;
-    }
-    const std::string& modType = I->second.String();
-
-    if (m_innerMod != 0) {
-        log(INFO, String::compose("Checking type of existing mod %1, %2",
-                                  m_innerMod->getTypename(), modType));
-        if (m_innerMod->getTypename() != modType) {
-            log(WARNING, "Terrain mod type has changed");
-            delete m_innerMod;
-            m_innerMod = 0;
-        }
-    }
-
     if (m_innerMod == 0) {
         // TODO(alriddoch, 2010-10-19) m_innerMod is being leaked)
-        m_innerMod = new InnerTerrainMod(modType);
+        m_innerMod = new InnerTerrainMod;
     }
 
     if (m_innerMod->parseData(owner->m_location.pos(),

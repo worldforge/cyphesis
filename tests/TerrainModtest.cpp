@@ -30,7 +30,7 @@ using Atlas::Message::MapType;
 class TestInnerTerrainMod : public InnerTerrainMod
 {
   public:
-    TestInnerTerrainMod() : InnerTerrainMod("test") { }
+    TestInnerTerrainMod() : InnerTerrainMod() { }
 
     virtual Mercator::TerrainMod* getModifier()
     {
@@ -47,7 +47,7 @@ static int test_reparse()
 {
     // Call parseData with polygon shape and valid points
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
         bool ret;
@@ -57,6 +57,7 @@ static int test_reparse()
         shape_desc["type"] = "polygon";
         shape_desc["points"] = ListType(3, ListType(2, 1.));
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         Mercator::TerrainMod * tm1 = titm->getModifier();
@@ -74,6 +75,7 @@ static int test_reparse()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         Mercator::TerrainMod * tm3 = titm->getModifier();
@@ -95,7 +97,7 @@ int main()
         InnerTerrainMod * titm = new TestInnerTerrainMod;
 
         const std::string & type = titm->getTypename();
-        assert(type == "test");
+        assert(type == "");
 
         delete titm;
     }
@@ -172,19 +174,19 @@ int main()
     ////////////////////// Concrete classes ///////////////////////////
 
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("foo");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         delete titm;
     }
 
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("foo");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         assert(titm->getModifier() == 0);
         delete titm;
     }
 
     // Call parseData with empty map
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("foo");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -197,7 +199,7 @@ int main()
 
     // Call parseData with unknown shape
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -214,7 +216,7 @@ int main()
 
     // Call parseData with ball shape
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -230,7 +232,7 @@ int main()
 
     // Call parseData with ball shape and valid ball params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -240,6 +242,7 @@ int main()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         bool ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         assert(titm->getModifier() != 0);
@@ -249,7 +252,7 @@ int main()
 
     // Call parseData with ball shape and valid ball and orientation
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation(0,0,0,1);
 
@@ -259,6 +262,7 @@ int main()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         bool ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         assert(titm->getModifier() != 0);
@@ -268,7 +272,7 @@ int main()
 
     // Call parseData with polygon shape and valid polygon params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -277,6 +281,7 @@ int main()
         shape_desc["type"] = "polygon";
         shape_desc["points"] = ListType(3, ListType(2, 1.));
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         bool ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         assert(titm->getModifier() != 0);
@@ -286,7 +291,7 @@ int main()
 
     // Call parseData with rotbox shape and valid rotbox params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -296,6 +301,7 @@ int main()
         shape_desc["point"] = ListType(2, 1.);
         shape_desc["size"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         bool ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         assert(titm->getModifier() != 0);
@@ -305,7 +311,7 @@ int main()
 
     // Call parseData with ball shape and invalid ball params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod("levelmod");
+        InnerTerrainMod * titm = new InnerTerrainMod;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -315,6 +321,7 @@ int main()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(3, "1");
         mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
         bool ret = titm->parseData(pos, orientation, mod);
         assert(!ret);
         assert(titm->getModifier() == 0);

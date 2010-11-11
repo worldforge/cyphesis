@@ -66,7 +66,7 @@ public:
      */
     Mercator::TerrainMod* getModifier();
 
-    InnerTerrainMod(const std::string& typemod);
+    InnerTerrainMod();
     
 protected:
 
