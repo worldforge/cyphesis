@@ -32,11 +32,6 @@ class TestInnerTerrainMod : public InnerTerrainMod
   public:
     TestInnerTerrainMod() : InnerTerrainMod("test") { }
 
-    virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & )
-    {
-        return true;
-    }
-
     virtual Mercator::TerrainMod* getModifier()
     {
         return 0;

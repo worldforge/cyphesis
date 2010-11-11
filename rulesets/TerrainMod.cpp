@@ -66,7 +66,7 @@ bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
                                  Shape<2> & shape,
                                  const Element & shapeMap)
 {
-    if (!parseShapeAtlasData(shapeMap, pos, orientation, shape)) {
+    if (!parseShape(shapeMap, pos, orientation, shape)) {
         return false;
     }
     if (mTypeName == "slopemod") {
@@ -166,10 +166,10 @@ float InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, const MapType
  * created.
  */
 template<template <int> class Shape>
-bool InnerTerrainMod::parseShapeAtlasData(const Element& shapeElement,
-                                          const WFMath::Point<3>& pos,
-                                          const WFMath::Quaternion& orientation,
-                                          Shape <2> & shape)
+bool InnerTerrainMod::parseShape(const Element& shapeElement,
+                                 const WFMath::Point<3>& pos,
+                                 const WFMath::Quaternion& orientation,
+                                 Shape <2> & shape)
 {
     try {
         shape.fromAtlas(shapeElement);

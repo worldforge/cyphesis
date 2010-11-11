@@ -61,7 +61,7 @@ public:
     
     /**
      * @brief Accessor for the Mercator::TerrainMod created and held by this instance.
-     * If no terrain mod could be created, such as with faulty Atlas data, or if parseAtlasData() hasn't been called yet, this will return a null pointer.
+     * If no terrain mod could be created, such as with faulty Atlas data, or if parseData() hasn't been called yet, this will return a null pointer.
      * @return A pointer to the TerrainMod held by this instance, or null if none created.
      */
     Mercator::TerrainMod* getModifier();
@@ -79,10 +79,10 @@ protected:
     static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
     template <template <int> class Shape>
-    static bool parseShapeAtlasData(const Atlas::Message::Element& shapeElement,
-                                    const WFMath::Point<3>& pos,
-                                    const WFMath::Quaternion& orientation,
-                                    Shape<2> & shape);
+    static bool parseShape(const Atlas::Message::Element& shapeElement,
+                           const WFMath::Point<3>& pos,
+                           const WFMath::Quaternion& orientation,
+                           Shape<2> & shape);
 
     template <template <template <int> class Shape> class Mod,
               template <int> class Shape>
