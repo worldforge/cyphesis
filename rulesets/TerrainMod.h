@@ -36,11 +36,6 @@ The TerrainMod class in itself doesn't hold the actual reference to the terrain 
 class InnerTerrainMod
 {
 public:
-    typedef enum shape { SHAPE_UNKNOWN,
-                         SHAPE_ROTBOX,
-                         SHAPE_POLYGON,
-                         SHAPE_BALL } ShapeT;
-    
     virtual ~InnerTerrainMod();
     
     const std::string& getTypename() const;
