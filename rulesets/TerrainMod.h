@@ -84,16 +84,16 @@ protected:
                                     const WFMath::Quaternion& orientation,
                                     Shape<2> & shape);
 
-    template <template <int> class Shape,
-              template <template <int> class Shape> class Mod>
+    template <template <template <int> class Shape> class Mod,
+              template <int> class Shape>
     bool createInstance(Shape<2> & shape,
                         const WFMath::Point<3>& pos,
                         const Atlas::Message::MapType &,
                         float,
                         float);
 
-    template <template <int> class Shape,
-              template <template <int> class Shape> class Mod>
+    template <template <template <int> class Shape> class Mod,
+              template <int> class Shape>
     bool createInstance(Shape<2> & shape,
                         const WFMath::Point<3>& pos,
                         const Atlas::Message::MapType &);

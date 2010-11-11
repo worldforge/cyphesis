@@ -70,13 +70,13 @@ bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
         return false;
     }
     if (mTypeName == "slopemod") {
-        return createInstance<Shape, Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);
+        return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);
     } else if (mTypeName == "levelmod") {
-        return createInstance<Shape, Mercator::LevelTerrainMod>(shape, pos, modElement);
+        return createInstance<Mercator::LevelTerrainMod>(shape, pos, modElement);
     } else if (mTypeName == "adjustmod") {
-        return createInstance<Shape, Mercator::AdjustTerrainMod>(shape, pos, modElement);
+        return createInstance<Mercator::AdjustTerrainMod>(shape, pos, modElement);
     } else if (mTypeName == "cratermod") {
-        return createInstance<Shape, Mercator::CraterTerrainMod>(shape, pos, modElement);
+        return createInstance<Mercator::CraterTerrainMod>(shape, pos, modElement);
     }
     return false;
 }
@@ -202,8 +202,8 @@ bool InnerTerrainMod::parseShapeAtlasData(const Element& shapeElement,
  * @param height The height where the level should be created.
  * @return True if the atlas data could be successfully parsed an a mod cre
  */
-template <template <int> class Shape,
-          template <template <int> class Shape> class Mod>
+template <template <template <int> class Shape> class Mod,
+          template <int> class Shape>
 bool InnerTerrainMod::createInstance(
       Shape <2> & shape,
       const WFMath::Point<3>& pos,
@@ -242,8 +242,8 @@ bool InnerTerrainMod::createInstance(
  * @param dy
  * @return True if the atlas data could be successfully parsed an a mod cre
  */
-template <template <int> class Shape,
-          template <template <int> class S> class Mod>
+template <template <template <int> class S> class Mod,
+          template <int> class Shape>
 bool InnerTerrainMod::createInstance(
       Shape <2> & shape,
       const WFMath::Point<3>& pos,
