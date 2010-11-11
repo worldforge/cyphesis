@@ -52,14 +52,13 @@ TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
 
 TerrainModProperty::~TerrainModProperty()
 {
-	// TODO remove the mod from the terrain
+    // TODO remove the mod from the terrain
     // This is already covered from the Delete op handler when
     // the entity is deleted
 }
 
 bool TerrainModProperty::get(Element & ent) const
 {
-	///NOTE: what does this do? /erik
     MapType & mod = (ent = MapType()).Map();
     mod = m_data;
     return true;
@@ -136,40 +135,60 @@ void TerrainModProperty::install(Entity * owner)
 void TerrainModProperty::apply(Entity * owner)
 {
     // Find the terrain
-    const TerrainProperty * terrain = NULL;
-    terrain = getTerrain(owner);
+    const TerrainProperty * terrain = getTerrain(owner);
 
-    if (terrain == NULL) {
+    if (terrain == 0) {
         log(ERROR, "Terrain Modifier could not find terrain");
         return;
     }
 
-    // If we're updating an existing mod, remove it from the terrain first
-    remove(owner);
-
     // Parse the Atlas data for our mod
-    m_modptr = parseModData(owner, m_data);
+    Mercator::TerrainMod * mod = parseModData(owner, m_data);
 
-    if (m_modptr != NULL) {
-        // Apply the new mod to the terrain; retain the returned pointer
-        terrain->addMod(m_modptr);
-        m_modptr->setContext(new TerrainContext(owner));
-        m_modptr->context()->setId(owner->getId());
+    if (mod == 0) {
         log(ERROR, "Terrain Modifier could not be parsed!");
+        return;
     }
+
+    // If there is an old mod ...
+    if (m_modptr != 0) {
+        // and the new one is the same, just update
+        if (mod == m_modptr) {
+            terrain->updateMod(m_modptr);
+            return;
+        }
+        // If the mod has changed then remove the old one and dlete it.
+        terrain->removeMod(m_modptr);
+        delete m_modptr;
+        m_modptr = mod;
+    }
+    // Apply the new mod to the terrain; retain the returned pointer
+    terrain->addMod(m_modptr);
+    m_modptr->setContext(new TerrainContext(owner));
+    m_modptr->context()->setId(owner->getId());
 }
 
 void TerrainModProperty::move(Entity* owner, const Point3D & newPos)
 {
-    remove(owner);
     const TerrainProperty* terrain = getTerrain(owner);
-    if (terrain) {
-        Mercator::TerrainMod* modifier = parseModData(owner, m_data);
-        if (modifier) {
-            terrain->addMod(modifier);
-        }
+
+    if (terrain == 0) {
+        log(ERROR, "Terrain Modifier could not find terrain");
+        return;
     }
-    
+
+    Mercator::TerrainMod* mod = parseModData(owner, m_data);
+
+    if (mod == 0) {
+        log(ERROR, "Terrain Modifier could not be parsed!");
+        return;
+    }
+
+    if (mod != m_modptr) {
+        log(ERROR, "Terrain Modifier mysteriously changed when moved!");
+        return;
+    }
+    terrain->updateMod(mod);
 }
 
 void TerrainModProperty::remove(Entity * owner)
@@ -178,12 +197,9 @@ void TerrainModProperty::remove(Entity * owner)
         const TerrainProperty* terrain = getTerrain(owner);
         if (terrain) {
             terrain->removeMod(m_modptr);
+            delete m_modptr;
+            m_modptr = 0;
         }
-    }
-    m_modptr = 0;
-    if (m_innerMod) {
-        delete m_innerMod;
-        m_innerMod = 0;
     }
 }
 
@@ -200,7 +216,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
         return m_innerMod->getModifier();
     }
 
-    return NULL;
+    return 0;
 }
 
 int TerrainModProperty::getAttr(const std::string & name,

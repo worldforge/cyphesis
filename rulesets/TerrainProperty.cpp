@@ -167,7 +167,12 @@ void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
     m_data.addMod(mod);
 }
 
-void TerrainProperty::removeMod(Mercator::TerrainMod *mod) const
+void TerrainProperty::updateMod(const Mercator::TerrainMod *mod) const
+{
+    m_data.updateMod(mod);
+}
+
+void TerrainProperty::removeMod(const Mercator::TerrainMod *mod) const
 {
     m_data.removeMod(mod);
 }

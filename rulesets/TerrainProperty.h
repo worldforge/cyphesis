@@ -63,7 +63,9 @@ class TerrainProperty : public PropertyBase {
     // Removes all TerrainMods from a terrain segment
     void clearMods(float, float);
     // Removes a single TerrainMod from the terrain
-    void removeMod(Mercator::TerrainMod *) const;
+    void updateMod(const Mercator::TerrainMod *) const;
+    // Removes a single TerrainMod from the terrain
+    void removeMod(const Mercator::TerrainMod *) const;
 
     bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
     int getSurface(const Point3D &,  int &);
