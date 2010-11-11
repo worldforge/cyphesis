@@ -68,7 +68,7 @@ static int test_reparse()
         assert(ret);
         Mercator::TerrainMod * tm2 = titm->getModifier();
         assert(tm2 != 0);
-        // FIXME assert(tm2 == tm1);
+        assert(tm2 == tm1);
 
         // Change it to 2D ball shape. This requires a new mod.
         shape_desc["type"] = "ball";
@@ -80,6 +80,7 @@ static int test_reparse()
         assert(ret);
         Mercator::TerrainMod * tm3 = titm->getModifier();
         assert(tm3 != 0);
+        assert(tm3 != tm1);
 
         delete titm;
     }

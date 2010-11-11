@@ -265,6 +265,10 @@ bool InnerTerrainMod::createInstance(
       const MapType& modElement)
 {
     float level = parsePosition(pos, modElement);
+    if (m_mod != 0) {
+        ((Mod<Shape>*)m_mod)->setShape(level, shape);
+        return true;
+    }
     m_mod = new Mod<Shape>(level, shape);
     return true;
 }
