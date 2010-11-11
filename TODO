@@ -1,10 +1,6 @@
 TerrainModProperty:
-What do we need to do in each scenario?
-set
-apply
-move
-remove
-Is that all? Do the same for areas.
+Do the same for areas.
+We need op post-processing rather than pre-processing for move updates.
 
 Abstract entities for tracking non-physical concepts such as quests, trade
 transactions, entity recipes, contruction blueprints etc.
