@@ -108,14 +108,9 @@ class TerrainModProperty : public PropertyBase {
     Mercator::TerrainMod * getModifier() {
         return m_modptr;
     }
-//     void setPos(const Point3D &);
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
     Mercator::TerrainMod * parseModData(Entity * owner, const Atlas::Message::MapType &);
-    /// \brief Constructs a Mercator::TerrainMod from Atlas data, but uses
-    /// the given position
-//     Mercator::TerrainMod * parseModData(const Atlas::Message::Element &,
-//                                         const Point3D &);
 
     /// \brief Changes a modifier's position
     void move(Entity*);

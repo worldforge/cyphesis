@@ -55,6 +55,7 @@ TerrainModProperty::~TerrainModProperty()
     // TODO remove the mod from the terrain
     // This is already covered from the Delete op handler when
     // the entity is deleted
+    delete m_innerMod;
 }
 
 bool TerrainModProperty::get(Element & ent) const
@@ -72,35 +73,6 @@ void TerrainModProperty::set(const Element & ent)
     }
 
 }
-
-// void TerrainModProperty::setPos(const Point3D & newPos)
-// {
-//     if (m_owner != NULL) {
-// 
-//         TerrainProperty * terr = NULL;
-//         // Search for an entity with the terrain property
-//         terr = getTerrain();
-// 
-//         if (terr != NULL) {
-// 
-//             // If we're updating an existing mod, remove it from the terrain first
-//             if (m_modptr != NULL) {
-//                 terr->removeMod(m_modptr);
-//             }
-// 
-//             // Parse the Atlas data for our mod, using the new position
-//             Mercator::TerrainMod *newMod = parseModData(m_terrainmods);
-// 
-//             if (newMod != NULL) {
-//                 // Apply the new mod to the terrain; retain the returned pointer
-//                 m_modptr = terr->setMod(newMod);
-//             } else {
-//                 m_modptr = NULL;
-//                 log(ERROR, "Terrain Modifier could not be parsed!");
-//             }
-//         }
-//     }
-// }
 
 const TerrainProperty * TerrainModProperty::getTerrain(Entity * owner)
 {
@@ -207,7 +179,6 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
                                                         const MapType & modMap)
 {
     if (m_innerMod == 0) {
-        // TODO(alriddoch, 2010-10-19) m_innerMod is being leaked)
         m_innerMod = new InnerTerrainMod;
     }
 
