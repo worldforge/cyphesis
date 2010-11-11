@@ -260,36 +260,3 @@ bool InnerTerrainMod::createInstance(
     }
     return false;
 }
-
-/**
- * @brief Parses the atlas data of the modifiers, finding the base atlas element for the shape definition, and returning the kind of shape specified.
- * This is an utility method to help with those many cases where we need to parse the shape data in order to determine the kind of shape. The actual parsing and creation of the shape happens in InnerTerrainMod_impl however, since that depends on templated calls. However, in order to know what kind of template to use we must first look at the type of shape, thus the need for this method.
- * @param modElement The atlas element containing the modifier.
- * @param shapeMap A shape data is found, and it's in the map form, it will be put here.
- * @return The name of the shape, or an empty string if no valid data could be found.
- */
-InnerTerrainMod::ShapeT InnerTerrainMod::parseShape(const MapType& modElement,
-                                                    Element& shapeMap)
-{
-    MapType::const_iterator I = modElement.find("shape");
-    if (I == modElement.end() || !I->second.isMap()) {
-        return SHAPE_UNKNOWN;
-    }
-    const MapType& localShapeMap = I->second.Map();
-    shapeMap = localShapeMap;
-
-    // Get shape's type
-    I = localShapeMap.find("type");
-    if (I == localShapeMap.end() || !I->second.isString()) {
-        return SHAPE_UNKNOWN;
-    }
-    const std::string& shapeType = I->second.String();
-    if (shapeType == "rotbox") {
-        return SHAPE_ROTBOX;
-    } else if (shapeType == "polygon") {
-        return SHAPE_POLYGON;
-    } else if (shapeType == "ball") {
-        return SHAPE_BALL;
-    }
-    return SHAPE_UNKNOWN;
-}

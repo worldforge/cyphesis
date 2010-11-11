@@ -46,15 +46,6 @@ public:
     const std::string& getTypename() const;
 
 protected:
-    /**
-     * @brief Tries to parse the Atlas data.
-     * It's up to the specific subclasses to provide proper parsing of the data depending on their needs.
-     * If the data is successfully parsed, a new Mercator::TerrainMod instance will be created.
-     * @param modElement The Atlas element describing the terrainmod. This should in most instances correspond directly to the "terrainmod" element found in the root atlas attribute map.
-     * @return If the parsing was successful, true will be returned, and a new Mercator::TerrainMod will have been created, else false.
-     */
-    // virtual bool parseAtlasData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation, const Atlas::Message::MapType& modElement, ShapeT, const Atlas::Message::MapType & ) = 0;
-
     template <template <int> class Shape>
     bool parseStuff(const WFMath::Point<3> & pos,
                     const WFMath::Quaternion & orientation,
@@ -85,8 +76,6 @@ protected:
      */
     std::string mTypeName;
 
-    static ShapeT parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap);
-    
     static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
 
     template <template <int> class Shape>
