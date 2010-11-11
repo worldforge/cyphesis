@@ -66,14 +66,17 @@ bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
                                  Shape<2> & shape,
                                  const Element & shapeMap)
 {
+    if (!parseShapeAtlasData(shapeMap, pos, orientation, shape)) {
+        return false;
+    }
     if (mTypeName == "slopemod") {
-        return createInstance<Shape, Mercator::SlopeTerrainMod>(shapeMap, pos, orientation, modElement, 0, 0);
+        return createInstance<Shape, Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);
     } else if (mTypeName == "levelmod") {
-        return createInstance<Shape, Mercator::LevelTerrainMod>(shapeMap, pos, orientation, modElement);
+        return createInstance<Shape, Mercator::LevelTerrainMod>(shape, pos, modElement);
     } else if (mTypeName == "adjustmod") {
-        return createInstance<Shape, Mercator::AdjustTerrainMod>(shapeMap, pos, orientation, modElement);
+        return createInstance<Shape, Mercator::AdjustTerrainMod>(shape, pos, modElement);
     } else if (mTypeName == "cratermod") {
-        return createInstance<Shape, Mercator::CraterTerrainMod>(shapeMap, pos, orientation, modElement);
+        return createInstance<Shape, Mercator::CraterTerrainMod>(shape, pos, modElement);
     }
     return false;
 }
@@ -202,9 +205,8 @@ bool InnerTerrainMod::parseShapeAtlasData(const Element& shapeElement,
 template <template <int> class Shape,
           template <template <int> class Shape> class Mod>
 bool InnerTerrainMod::createInstance(
-      const Element& shapeElement,
+      Shape <2> & shape,
       const WFMath::Point<3>& pos,
-      const WFMath::Quaternion& orientation,
       const MapType& modElement,
       float ,
       float )
@@ -227,12 +229,8 @@ bool InnerTerrainMod::createInstance(
     }
     const float dx = slopes[0].asNum();
     const float dy = slopes[1].asNum();
-    Shape<2>  shape;
-    if (parseShapeAtlasData(shapeElement, pos, orientation, shape)) {
-        m_mod = new Mod<Shape>(level, dx, dy, shape);
-        return true;
-    }
-    return false;
+    m_mod = new Mod<Shape>(level, dx, dy, shape);
+    return true;
 }
 
 /**
@@ -247,16 +245,11 @@ bool InnerTerrainMod::createInstance(
 template <template <int> class Shape,
           template <template <int> class S> class Mod>
 bool InnerTerrainMod::createInstance(
-      const Element& shapeElement,
+      Shape <2> & shape,
       const WFMath::Point<3>& pos,
-      const WFMath::Quaternion& orientation,
       const MapType& modElement)
 {
     float level = parsePosition(pos, modElement);
-    Shape<2>  shape;
-    if (parseShapeAtlasData(shapeElement, pos, orientation, shape)) {
-        m_mod = new Mod<Shape>(level, shape);
-        return true;
-    }
-    return false;
+    m_mod = new Mod<Shape>(level, shape);
+    return true;
 }

@@ -86,18 +86,16 @@ protected:
 
     template <template <int> class Shape,
               template <template <int> class Shape> class Mod>
-    bool createInstance(const Atlas::Message::Element& shapeElement,
+    bool createInstance(Shape<2> & shape,
                         const WFMath::Point<3>& pos,
-                        const WFMath::Quaternion& orientation,
                         const Atlas::Message::MapType &,
                         float,
                         float);
 
     template <template <int> class Shape,
               template <template <int> class Shape> class Mod>
-    bool createInstance(const Atlas::Message::Element& shapeElement,
+    bool createInstance(Shape<2> & shape,
                         const WFMath::Point<3>& pos,
-                        const WFMath::Quaternion& orientation,
                         const Atlas::Message::MapType &);
 
     Mercator::TerrainMod * m_mod;
