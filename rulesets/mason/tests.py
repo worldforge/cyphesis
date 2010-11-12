@@ -15,26 +15,26 @@ from math import *
 
 from define_world import *
 
-def test_skeleton(mapeditor):
+def test_skeleton(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     skeleton = m.make('skeleton', pos=(-38,-25,settlement_height))
     m.learn(skeleton,skeleton_goals)
 
-def test_pig(mapeditor):
+def test_pig(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     pig = m.make('pig', pos=(3,3,settlement_height))
     m.learn(pig,pig_goals)
     m.make('acorn', pos=(4,4,settlement_height))
 
-def test_browse(mapeditor):
+def test_browse(host='', account='', password='', **args):
 #   test if browsing works
     
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     deer = m.make('deer', pos=(5, 0, settlement_height))
     m.learn(deer, (il.browse,"browse('fir', 0.8)"))
     m.make('fir',pos=(-10,-0,settlement_height))
@@ -42,24 +42,24 @@ def test_browse(mapeditor):
     m.make('fir',pos=(0,10,settlement_height))
     m.make('fir',pos=(10,0,settlement_height))
     
-def test_forest(mapeditor):
+def test_forest(host='', account='', password='', **args):
 #   test if browsing works
     
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     for i in forests:
         for j in range(0, i[1]):
             m.make(i[0],pos=(uniform(i[2],i[3]),uniform(i[4],i[5]),i[6]), orientation=directions[randint(0,7)])
 
    
-def test_coll(mapeditor):
+def test_coll(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     sty=m.make('sty',pos=pig_sty_pos,status=1.0,bbox=[5,5,3], orientation=directions[0])
 
-def test_butcher(mapeditor):
+def test_butcher(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     butcher=m.make('merchant', name='Ulad Bargan',desc='the butcher',
                  pos=(3,3,0),age=probability.fertility_age)
@@ -68,16 +68,16 @@ def test_butcher(mapeditor):
     m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'cut', 'ham', 'market')"))
     piglet = m.make('pig', pos=(3,2,0))
 
-def test_pig(mapeditor):
+def test_pig(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     piglet = m.make('pig', pos=(-3,-1,settlement_height))
     m.learn(piglet,pig_goals)
 
-def test_settler(mapeditor):
+def test_settler(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
@@ -85,9 +85,9 @@ def test_settler(mapeditor):
     m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
     m.make('oak',pos=(32,32,0))
 
-def test_forester(mapeditor):
+def test_forester(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     # An NPC forester
     settler=m.make('settler', name='forester',pos=(0, 12, 0))
     trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
@@ -96,23 +96,23 @@ def test_forester(mapeditor):
     m.learn(settler,(il.trade,"plant_seeds('acorn','oak','forest','trowel')"))
     m.make('oak',pos=(32,32,0))
 
-def test_warrior(mapeditor):
+def test_warrior(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     # An NPC warrior
     warrior=m.make('mercenary',pos=(0, 12, 0))
     m.learn(warrior,(il.trade,"gather(['loaf', 'axe'])"))
 
-def test_chicken(mapeditor):
+def test_chicken(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     chuck = m.make('chicken', pos=(-3,-1,settlement_height))
     m.learn(chuck,chicken_goals)
 
-def test_path(mapeditor):
+def test_path(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     path_area={'points' : [ [2,0], [22, 40], [132,122], [140,127], [144.5, 146.5], [169, 153], [169,155], [142.5,148.5], [138,129], [130,124], [18,40], [-2,-1] ], 'layer' : 7}
     m.make('path', name='path to village',pos=(10, 20,settlement_height), area=path_area,bbox=[169,154,1])
    
@@ -125,8 +125,8 @@ lych2_knowledge=[('w1','location',(-140,110,graveyard_height)),
 lych2_goals=[(il.assemble, "assemble(self, 'skeleton', ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin'])"),
             (il.patrol,"patrol(['w1', 'w2', 'w3', 'w4'])")]
    
-def test_graveyard(mapeditor):
-    m = editor(mapeditor)
+def test_graveyard(host='', account='', password='', **args):
+    m = create_editor(host, account, password)
     
     m.make('mausoleum', name='mausoleum of harrington', pos=mausoleum_pos, orientation=directions[0])
     m.make('wall', name='steps',pos=(-160,100,graveyard_height),bbox=[4,4,2])
@@ -152,24 +152,24 @@ def test_graveyard(mapeditor):
     m.know(lych,lych2_knowledge)
     m.tell_importance(lych,il.assemble,'>',il.patrol)
 
-def test_fire(mapeditor):
-    m = editor(mapeditor)
+def test_fire(host='', account='', password='', **args):
+    m = create_editor(host, account, password)
 
     cfire=m.make('campfire',pos=(3,9,settlement_height))
     m.make('fire',pos=(0,0,0),parent=cfire.id)
     m.make('lumber',pos=(0,0,0),parent=cfire.id)
 
-def test_own(mapeditor):
+def test_own(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     m.own(settler,axe)
 
 
-def test_goblins(mapeditor):
+def test_goblins(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     goblin_guards=[]
     goblin=m.make('goblin', pos=(102, -33, settlement_height))
     goblin_guards.append(goblin)
@@ -178,65 +178,65 @@ def test_goblins(mapeditor):
 
     m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
 
-def test_deer(mapeditor):
+def test_deer(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     d=m.make('deer', pos=(5, 0, settlement_height))
     m.learn(d,deer_goals)
     # m.make('settler', pos=(0, 0, settlement_height))
 
-def kill_world(mapeditor):
+def kill_world(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     world=m.look()
     m.set(world.id, status=-1)
 
-def kill_tree(mapeditor):
+def kill_tree(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     tree=m.make('oak')
     m.set(tree.id, status=-1)
 
-def test_oak(mapeditor):
+def test_oak(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     tree=m.make('oak')
 
-def test_attachment(mapeditor):
+def test_attachment(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     m.make('axe', attachment=23)
 
-def make_shirt(mapeditor):
+def make_shirt(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     m.make('shirt', worn='chest', attachment=23, mass=2)
     m.make('acorn', worn='chest', pos=(1,1,1), attachment=23, mass=2)
 
-def test_decays(mapeditor):
+def test_decays(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     m.make('axe', decays='oak')
 
-def test_device(mapeditor):
+def test_device(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     settler=m.make('settler',pos=(1,1,0))
     axe=m.make('door',pos=(0,0,0))
     m.learn(settler,(il.trade,"activate_device('door')"))
 
     world=m.look()
 
-def test_tmods(mapeditor):
+def test_tmods(host='', account='', password='', **args):
 #   general things
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     
     world=m.look()
     points = { }
@@ -318,9 +318,9 @@ chicken_goals=[(il.avoid,"avoid(['orc','wolf'],10.0)"),
                (il.flock,"flock()"),
                (il.peck,"peck()")]
 
-def test_chickens(mapeditor):
+def test_chickens(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     chickens=[]
     for i in range(0, 10):
@@ -330,9 +330,9 @@ def test_chickens(mapeditor):
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
-def test_task(mapeditor):
+def test_task(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
     settler=m.make('settler',pos=(1,1,0))
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     oak=m.make('oak',pos=(5,0,0))
@@ -347,10 +347,10 @@ def test_task(mapeditor):
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
 
-def test_fish(mapeditor):
+def test_fish(host='', account='', password='', **args):
     #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     fish_goals=[(il.forage,"forage('annelid')")]
     fish = []
@@ -362,9 +362,9 @@ def test_fish(mapeditor):
         fish.append(c)
     m.learn(fish, fish_goals)
 
-def test_spawn(mapeditor):
+def test_spawn(host='', account='', password='', **args):
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
    
     spawn_area={'points' : [ [3,0], [2, 2], [0,3], [-2,2], [-3, 0],
                              [-2, -2], [0,-3], [2,-2] ],

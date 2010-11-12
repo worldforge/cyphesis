@@ -2,7 +2,7 @@
 #Copyright (C) 2009 Alistair Riddoch
 
 from atlas import *
-from cyphesis.editor import editor
+from cyphesis.editor import create_editor
 from types import StringType
 
 ALL_CLASSES=["acorn", "annelid", "apple", "appletree", "area", "arm", "armory", "arrow", "axe", "barrel", "birch", "block_house", "blueprint", "board", "boat", "boots", "bottle", "boulder", "boundary", "bow", "bowl", "bucksaw", "bunny", "butcher_house", "campfire", "carrot", "castle_foundation", "castle_house", "castle_outer_wall", "chicken", "cleaver", "cloak", "coin", "construction", "cow", "crab", "curtain_wall", "deed", "deer", "dog", "don_jon", "door", "feature", "fern", "fir", "fircone", "fire", "fish", "fishingrod", "float", "flower", "forest", "gallows", "garment", "gateway", "goblin", "grass", "gravestone", "hall", "ham", "hammer", "hat", "hook", "horse", "house", "inn", "jetty", "keep", "knife", "larva", "leaf", "loaf", "longtable", "lumber", "lych", "maggot", "marshall", "material", "mausoleum", "mercenary", "merchant", "mobile", "mushroom", "oak", "ocean", "path", "pelvis", "pickaxe", "pig", "pile", "ploughed_field", "pole", "poplar", "ribcage", "rope", "scythe", "seed", "settler", "shin", "shirt", "shovel", "sieve", "skeleton", "skull", "spider", "squirrel", "stake", "stall", "statue", "stone", "stonehouse", "structure", "sty", "sword", "tent", "theodolite", "thigh", "tinderbox", "torch", "tower", "tree", "trousers", "trowel", "tuber", "turnip", "twobyfour", "venison", "wall", "weather", "willow", "wolf", "wood"]
@@ -62,8 +62,8 @@ class RegressionTester:
 
 
 
-def default(mapeditor):
-    m = editor(mapeditor)
+def default(host='', account='', password='', **args):
+    m = create_editor(host, account, password)
 
     world=m.look()
 
