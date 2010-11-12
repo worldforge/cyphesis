@@ -1,3 +1,38 @@
+2010-11-12  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* common/binreloc.c, common/binreloc.h, common/globals.cpp,
+	  common/prefix.c, common/prefix.h, common/system_prefix.cpp:
+	  Update to a newer version of the binreloc code.
+
+	* physics/Collision.h:
+	  Update for more recent compiler versions.
+
+	* modules/TerrainContext.cpp, modules/TerrainContext.h,
+	  rulesets/InnerTerrainMod_impl.h,
+	  rulesets/Py_Property.cpp, rulesets/Py_Property.h,
+	  rulesets/Py_TerrainModProperty.cpp, rulesets/Py_TerrainProperty.cpp,
+	  rulesets/Python_API.cpp,
+	  rulesets/TerrainMod.cpp, rulesets/TerrainMod.h,
+	  rulesets/TerrainModProperty.cpp, rulesets/TerrainModProperty.h,
+	  rulesets/TerrainMod_impl.h,
+	  rulesets/TerrainProperty.cpp, rulesets/TerrainProperty.h,
+	  rulesets/mason/world/tasks/Delve.py,
+	  server/CorePropertyManager.cpp, server/EntityBuilder.cpp:
+	  Implement creating quarry objects in Delve task by adding
+	  features to track the entity associated with a terrain mod
+	  and exposing terrain mods to the terrain property interface.
+
+	* rulesets/Entity.h: Update iostream output of Location for clarity.
+
+	* rulesets/basic/editor.py, rulesets/mason/benchmarks.py,
+	  rulesets/mason/define_world.py, rulesets/mason/regression.py,
+	  rulesets/mason/terrain.py, rulesets/mason/tests.py:
+	  Change the client script interface to be way more flexible allowing
+	  OOG operations in scripts.
+
+	* server/CommServer.cpp: Fix a corner case for testing where fd for
+	  epoll wasn't initialised.
+
 2010-08-29  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* NEWS: Update NEWS announcement for release.
