@@ -160,36 +160,42 @@ dnl
 dnl if found define HAVE_PYTHON_H
 dnl
 
-AC_CHECK_HEADER(python2.6/Python.h,
+AC_CHECK_HEADER(python2.7/Python.h,
 [
-    python_include_path=-I${python_prefix}/include/python2.6
-    python_version=2.6
+    python_include_path=-I${python_prefix}/include/python2.7
+    python_version=2.7
 ],[
-    AC_CHECK_HEADER(python2.5/Python.h,
+    AC_CHECK_HEADER(python2.6/Python.h,
     [
-        python_include_path=-I${python_prefix}/include/python2.5
-        python_version=2.5
+        python_include_path=-I${python_prefix}/include/python2.6
+        python_version=2.6
     ],[
-        AC_CHECK_HEADER(python2.4/Python.h,
+        AC_CHECK_HEADER(python2.5/Python.h,
         [
-            python_include_path=-I${python_prefix}/include/python2.4
-            python_version=2.4
+            python_include_path=-I${python_prefix}/include/python2.5
+            python_version=2.5
         ],[
-            AC_CHECK_HEADER(python2.3/Python.h,
+            AC_CHECK_HEADER(python2.4/Python.h,
             [
-                python_include_path=-I${python_prefix}/include/python2.3
-                python_version=2.3
+                python_include_path=-I${python_prefix}/include/python2.4
+                python_version=2.4
             ],[
-                AC_CHECK_HEADER(python2.2/Python.h,
+                AC_CHECK_HEADER(python2.3/Python.h,
                 [
-                    python_include_path=-I${python_prefix}/include/python2.2
-                    python_version=2.2
+                    python_include_path=-I${python_prefix}/include/python2.3
+                    python_version=2.3
                 ],[
-                    AC_MSG_ERROR([
+                    AC_CHECK_HEADER(python2.2/Python.h,
+                    [
+                        python_include_path=-I${python_prefix}/include/python2.2
+                        python_version=2.2
+                    ],[
+                        AC_MSG_ERROR([
 Cannot find python headers for Python 2.2 or later.
 Please see http://www.python.org/ for details of how to download and install
 Python. If Python is installed somewhere other than in /usr the please use the
 --with-python=DIR option to point to the prefix where Python is installed.])
+                    ])
                 ])
             ])
         ])
