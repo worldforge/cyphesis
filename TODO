@@ -1,3 +1,6 @@
+Add database stuff to store server metadata like version of server,
+(to detect rolling back to earlier versions).
+
 Extend Mercator to allow terrain mod volume calculations. Use these to work
 out when a quarry should work, and how much it should be extended.
 
