@@ -248,6 +248,24 @@
 
   <map>
     <map name="activation">
+      <string name="operation">cast</string>
+      <string name="tool">wand</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">spell</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Spell.Spell</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">strike</string>
       <string name="tool">theodolite</string>
     </map>
