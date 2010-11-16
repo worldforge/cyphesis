@@ -1,3 +1,9 @@
+2010-11-16  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* server/ScriptFactory.h, server/TaskScriptFactory.h,
+	  server/Ruleset.cpp: Fix bug where an error in a new Python
+	  script caused the server to get into an inconsistent state.
+
 2010-11-12  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/binreloc.c, common/binreloc.h, common/globals.cpp,
