@@ -1,3 +1,9 @@
+2010-11-16  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.25
+
 2010-11-12  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* common/binreloc.c, common/binreloc.h, common/globals.cpp,
