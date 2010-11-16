@@ -194,8 +194,14 @@ int Ruleset::populateEntityFactory(const std::string & class_name,
             }
         }
         if (factory->m_scriptFactory == 0) {
-            factory->m_scriptFactory = new PythonScriptFactory(script_package,
-                                                               script_class);
+            PythonScriptFactory * psf = new PythonScriptFactory(script_package,
+                                                                script_class);
+            if (psf->isOkay()) {
+                factory->m_scriptFactory = psf;
+            } else {
+                delete psf;
+                return -1;
+            }
         }
     }
 
@@ -368,8 +374,14 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
         }
     }
     if (factory->m_scriptFactory == 0) {
-        factory->m_scriptFactory = new PythonTaskScriptFactory(script_package,
-                                                               script_class);
+        PythonTaskScriptFactory * ptsf = new PythonTaskScriptFactory(script_package,
+                                                                     script_class);
+        if (ptsf->isOkay()) {
+            factory->m_scriptFactory = ptsf;
+        } else {
+            delete ptsf;
+            return -1;
+        }
     }
 
     // FIXME This does not check for or remove old activations for this
