@@ -50,6 +50,7 @@
 #include "common/PropertyFactory_impl.h"
 
 #include "common/id.h"
+#include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
 
