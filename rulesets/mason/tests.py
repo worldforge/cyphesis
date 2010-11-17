@@ -337,8 +337,8 @@ def test_task(host='', account='', password='', **args):
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     oak=m.make('oak',pos=(5,0,0))
 
-    mapeditor.send(Operation("wield", Entity(axe.id), to=settler))
-    mapeditor.send(Operation("use", Operation("cut", Entity(oak.id)), to=settler))
+    m.m.send(Operation("wield", Entity(axe.id), to=settler))
+    m.m.send(Operation("use", Operation("cut", Entity(oak.id)), to=settler))
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
