@@ -284,7 +284,7 @@ void Location::addToMessage(MapType & omap) const
 {
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

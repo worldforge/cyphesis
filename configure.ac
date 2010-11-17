@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT([cyphesis],[0.5.23],[alriddoch@googlemail.com])
+AC_INIT([cyphesis],[0.5.25],[alriddoch@googlemail.com])
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
@@ -10,13 +10,11 @@ AC_CANONICAL_HOST
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news])
+AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news color-tests parallel-tests])
 
 AM_BINRELOC
 
-AM_CONDITIONAL(BIN_RELOC, test x"$br_cv_binreloc" = xyes)
-
-dnl Don't need libtool
+dnl Do not need libtool
 
 dnl AC_PROG_LIBTOOL
 
@@ -162,36 +160,42 @@ dnl
 dnl if found define HAVE_PYTHON_H
 dnl
 
-AC_CHECK_HEADER(python2.6/Python.h,
+AC_CHECK_HEADER(python2.7/Python.h,
 [
-    python_include_path=-I${python_prefix}/include/python2.6
-    python_version=2.6
+    python_include_path=-I${python_prefix}/include/python2.7
+    python_version=2.7
 ],[
-    AC_CHECK_HEADER(python2.5/Python.h,
+    AC_CHECK_HEADER(python2.6/Python.h,
     [
-        python_include_path=-I${python_prefix}/include/python2.5
-        python_version=2.5
+        python_include_path=-I${python_prefix}/include/python2.6
+        python_version=2.6
     ],[
-        AC_CHECK_HEADER(python2.4/Python.h,
+        AC_CHECK_HEADER(python2.5/Python.h,
         [
-            python_include_path=-I${python_prefix}/include/python2.4
-            python_version=2.4
+            python_include_path=-I${python_prefix}/include/python2.5
+            python_version=2.5
         ],[
-            AC_CHECK_HEADER(python2.3/Python.h,
+            AC_CHECK_HEADER(python2.4/Python.h,
             [
-                python_include_path=-I${python_prefix}/include/python2.3
-                python_version=2.3
+                python_include_path=-I${python_prefix}/include/python2.4
+                python_version=2.4
             ],[
-                AC_CHECK_HEADER(python2.2/Python.h,
+                AC_CHECK_HEADER(python2.3/Python.h,
                 [
-                    python_include_path=-I${python_prefix}/include/python2.2
-                    python_version=2.2
+                    python_include_path=-I${python_prefix}/include/python2.3
+                    python_version=2.3
                 ],[
-                    AC_MSG_ERROR([
+                    AC_CHECK_HEADER(python2.2/Python.h,
+                    [
+                        python_include_path=-I${python_prefix}/include/python2.2
+                        python_version=2.2
+                    ],[
+                        AC_MSG_ERROR([
 Cannot find python headers for Python 2.2 or later.
 Please see http://www.python.org/ for details of how to download and install
 Python. If Python is installed somewhere other than in /usr the please use the
 --with-python=DIR option to point to the prefix where Python is installed.])
+                    ])
                 ])
             ])
         ])
@@ -463,6 +467,7 @@ AC_SUBST(MDNS_LIBS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(PYTHON_UTIL_LIBS)
+AC_SUBST(python_version)
 AC_SUBST(PGSQL_LIBS)
 
 AC_SUBST(STATIC_LIBSTDCPP)
@@ -474,6 +479,7 @@ AC_SUBST(TAR_PERM_FLAGS)
 dnl Generate files
 AC_CONFIG_FILES([
     cyphesis.spec
+    cyphesis.iss
     Makefile
     libraries/Makefile
     physics/Makefile

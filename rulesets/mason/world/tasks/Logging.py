@@ -43,17 +43,17 @@ class Logging(server.Task):
             return self.next_tick(1.75)
 
         res=Oplist()
-        if current_status > 0.5:
+        if current_status > 0.11:
             set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
             res.append(set)
             # print "CHOP",current_status
-        else:
+
             normal=Vector3D(0,0,1)
             # print "LOC.ori ", target.location.orientation
             if target.location.orientation.is_valid():
                 normal.rotate(target.location.orientation)
             # print "Normal ", normal, normal.dot(Vector3D(0,0,1))
-            if normal.dot(Vector3D(0,0,1)) > 0.8:
+            if normal.dot(Vector3D(0,0,1)) > 0.8 and current_status < 0.5:
                 # print "Fall down"
                 axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
                 axis = axis.unit_vector()
@@ -67,27 +67,21 @@ class Logging(server.Task):
                                                 location=move_location),
                                  to = self.target)
                 res.append(move)
-            elif current_status > 0.2:
-                set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
-                res.append(set)
-                # print "TRIM",current_status
-            else:
-                # print "become log"
-                set = Operation("set", Entity(self.target, status = -1),
-                                to = self.target)
-                res.append(set)
-                create_loc = target.location.copy()
-                create_loc.orientation = target.location.orientation
-                create = Operation("create",
-                                   Entity(parents = ["lumber"],
-                                          mass = target.mass, 
-                                          location = create_loc,
-                                          bbox = target.bbox),
-                                   to = self.target)
-                res.append(create)
-                                               
-                # chop=Operation("cut", Entity(self.target), to = self.tool)
-                # res.append(chop)
+        else:
+            # print "become log"
+            set = Operation("set", Entity(self.target, status = -1),
+                            to = self.target)
+            res.append(set)
+            create_loc = target.location.copy()
+            create_loc.orientation = target.location.orientation
+            create = Operation("create",
+                               Entity(parents = ["lumber"],
+                                      mass = target.mass, 
+                                      location = create_loc,
+                                      bbox = target.bbox),
+                               to = self.target)
+            res.append(create)
+                                            
         self.progress = 1 - current_status
         self.rate = 0.1 / 1.75
         

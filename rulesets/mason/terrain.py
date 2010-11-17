@@ -4,15 +4,18 @@ from random import *
 from mind.panlingua import interlinguish
 il=interlinguish
 from cyphesis import probability
-from cyphesis.editor import editor
+from cyphesis.editor import editor, create_editor
 from physics import Quaternion
 from physics import Vector3D
 from math import *
+import server
 
 
 
-def create_island_terrain(mapeditor):
-    m=editor(mapeditor)
+def create_island_terrain(host='', account='', password='', **args):
+    
+    m=create_editor(host, account, password)
+
     world=m.look()
     points = { }
     for i in range(-18, 17):
@@ -1215,8 +1218,10 @@ def create_island_terrain(mapeditor):
     m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
     
 
-def create_empty_terrain(mapeditor):
-    m=editor(mapeditor)
+def create_empty_terrain(host='', account='', password='', **args):
+    
+    m=create_editor(host, account, password)
+
     world=m.look()
     points = { }
     for i in range(-16, 17):
@@ -1267,9 +1272,12 @@ def create_empty_terrain(mapeditor):
     
     
     
-def create_large_empty_terrain(mapeditor):
-    m=editor(mapeditor)
+def create_large_empty_terrain(host='', account='', password='', **args):
+    
+    m=create_editor(host, account, password)
+
     world=m.look()
+    
     points = { }
     for i in range(-32, 33):
         for j in range(-32, 33):
@@ -1317,8 +1325,10 @@ def create_large_empty_terrain(mapeditor):
 
     m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
 
-def create_small_empty_terrain(mapeditor):
-    m=editor(mapeditor)
+def create_small_empty_terrain(host='', account='', password='', **args):
+    
+    m=create_editor(host, account, password)
+
     world=m.look()
     points = { }
     for i in range(-1, 2):

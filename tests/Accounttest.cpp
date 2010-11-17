@@ -131,8 +131,9 @@ int main()
 
     {
         Anonymous new_char;
-        Entity * chr = ac->testAddNewCharacter("game_entity", new_char,
+        Entity * chr = ac->testAddNewCharacter("thing", new_char,
                                                RootEntity());
+        assert(chr != 0);
     }
 
     ac->getType();

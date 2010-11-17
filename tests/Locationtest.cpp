@@ -25,12 +25,18 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 
 
 void testDistanceFunctions()
 {
+    {
+        Location * l = new Location;
+        delete l;
+    }
+
     {
         Entity tlve("0", 0), ent("1", 1);
 

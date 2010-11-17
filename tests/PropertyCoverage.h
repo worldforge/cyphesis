@@ -29,10 +29,10 @@ class Character;
 
 class PropertyCoverage {
   protected:
-    PropertyBase * const prop;
-    Entity * const tlve;
-    BaseWorld * const wrld;
-    Entity * ent;
+    PropertyBase * const m_prop;
+    Entity * const m_tlve;
+    BaseWorld * const m_wrld;
+    Entity * m_ent;
 
     Atlas::Message::ListType m_testData;
   public:
@@ -46,6 +46,8 @@ class PropertyCoverage {
     Character * createCharacterEntity();
 
     void testDataAppend(const Atlas::Message::Element &);
+
+    Entity * tlve() { return m_tlve; }
 };
 
 #endif // TESTS_PROPERTY_COVERAGE_H

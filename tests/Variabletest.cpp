@@ -25,7 +25,7 @@
 
 int main()
 {
-    int i;
+    int i = 1;
     Variable<int> v1(i);
 
     std::string s;

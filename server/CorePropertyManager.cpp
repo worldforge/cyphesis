@@ -225,7 +225,7 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
         return OPERATION_IGNORED;
     }
 
-    mod_property->remove();
+    mod_property->remove(e);
 
     return OPERATION_IGNORED;
 }

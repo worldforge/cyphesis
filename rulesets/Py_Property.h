@@ -25,6 +25,7 @@
 class Entity;
 class PropertyBase;
 class StatisticsProperty;
+class TerrainModProperty;
 class TerrainProperty;
 
 /// \brief Wrapper for generic properties. This is in effect a base class
@@ -50,7 +51,7 @@ typedef struct {
     StatisticsProperty * m_property;
 } PyStatisticsProperty;
 
-/// \brief Wrapper for statistics property.
+/// \brief Wrapper for terrain property.
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
@@ -60,10 +61,22 @@ typedef struct {
     TerrainProperty * m_property;
 } PyTerrainProperty;
 
+/// \brief Wrapper for terrain mod property
+/// \ingroup PythonWrappers
+typedef struct {
+    PyObject_HEAD
+    /// \brief Entity object that owns the Property
+    Entity * m_entity;
+    /// \brief TerrainModProperty object handled by this wrapper
+    TerrainModProperty * m_property;
+} PyTerrainModProperty;
+
 extern PyTypeObject PyTerrainProperty_Type;
+extern PyTypeObject PyTerrainModProperty_Type;
 
 PyObject * Property_asPyObject(PropertyBase * property, Entity * owner);
 
 PyTerrainProperty * newPyTerrainProperty();
+PyTerrainModProperty * newPyTerrainModProperty();
 
 #endif // RULESETS_PY_PROPERTY_H

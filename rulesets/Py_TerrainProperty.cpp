@@ -20,8 +20,10 @@
 #include "Py_Property.h"
 
 #include "Py_Point3D.h"
+#include "Py_Thing.h"
 #include "Py_Vector3D.h"
 
+#include "Entity.h"
 #include "TerrainProperty.h"
 
 static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
@@ -95,10 +97,29 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
     return (PyObject *)ret;
 }
 
+static PyObject * TerrainProperty_findMods(PyTerrainProperty * self,
+                                          PyObject * other)
+{
+    if (!PyPoint3D_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must be terrain pos");
+        return NULL;
+    }
+    std::vector<Entity *> result;
+    self->m_property->findMods(((PyPoint3D*)other)->coords, result);
+    PyObject * ret = PyTuple_New(result.size());
+    std::vector<Entity *>::const_iterator I = result.begin();
+    std::vector<Entity *>::const_iterator Iend = result.end();
+    for (int i = 0; I != Iend; ++I, ++i) {
+        PyTuple_SetItem(ret, i, wrapEntity(*I));
+    }
+    return ret;
+}
+
 static PyMethodDef TerrainProperty_methods[] = {
     {"get_height",   (PyCFunction)TerrainProperty_getHeight,     METH_VARARGS},
     {"get_surface",  (PyCFunction)TerrainProperty_getSurface,    METH_VARARGS},
     {"get_normal",   (PyCFunction)TerrainProperty_getNormal,	 METH_VARARGS},
+    {"find_mods",    (PyCFunction)TerrainProperty_findMods, METH_O},
     {NULL,           NULL}           /* sentinel */
 };
 

@@ -22,6 +22,7 @@
 #include "rulesets/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 
@@ -410,7 +411,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

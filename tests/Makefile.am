@@ -16,7 +16,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest
 
-MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest
+MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
+               TerrainContexttest
 
 RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Stackabletest Thingtest Worldtest \
@@ -45,7 +46,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
-                 MindFactoryintegration
+                 MindFactoryintegration TerrainModtest
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest
@@ -77,6 +78,8 @@ LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LI
 TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
         $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS) \
         $(SERVER_INTEGRATION_TESTS)
+
+RECHECK_LOGS =
 
 EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
@@ -181,10 +184,7 @@ Routertest_LDADD = \
 
 client_sockettest_SOURCES = client_sockettest.cpp
 client_sockettest_LDADD = \
-        $(top_builddir)/common/client_socket.o \
-        $(top_builddir)/common/log.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/globals.o
+        $(top_builddir)/common/client_socket.o
 
 customtest_SOURCES = customtest.cpp
 customtest_LDADD = \
@@ -286,6 +286,11 @@ EntityReftest_SOURCES = EntityReftest.cpp
 EntityReftest_LDADD = \
         $(top_builddir)/modules/EntityRef.o
 
+TerrainContexttest_SOURCES = TerrainContexttest.cpp
+TerrainContexttest_LDADD = \
+        $(top_builddir)/modules/TerrainContext.o \
+        $(TERRAIN_LIBS)
+
 # RULESETS_TESTS
 
 LocatedEntitytest_SOURCES = LocatedEntitytest.cpp \
@@ -379,6 +384,7 @@ AllPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/modules/DateTime.o \
+        $(top_builddir)/modules/TerrainContext.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/Inheritance.o \
         $(top_builddir)/common/custom.o \
@@ -751,14 +757,7 @@ Py_TerrainPropertytest_LDADD = \
 
 PythonWrappertest_SOURCES = PythonWrappertest.cpp
 PythonWrappertest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/PythonWrapper.o
 
 PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp python_testers.h
 PythonEntityScripttest_LDADD = \
@@ -778,66 +777,27 @@ MindFactorytest_LDADD = \
 
 TaskScripttest_SOURCES = TaskScripttest.cpp
 TaskScripttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/TaskScript.o
 
 PythonContexttest_SOURCES = PythonContexttest.cpp
 PythonContexttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/PythonContext.o
 
 ArithmeticScripttest_SOURCES = ArithmeticScripttest.cpp
 ArithmeticScripttest_LDADD = \
-        $(top_builddir)/rulesets/ArithmeticScript.o \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/ArithmeticScript.o
 
 PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp python_testers.h
 PythonArithmeticScripttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/PythonArithmeticScript.o
 
 ArithmeticFactorytest_SOURCES = ArithmeticFactorytest.cpp
 ArithmeticFactorytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/ArithmeticFactory.o
 
 PythonArithmeticFactorytest_SOURCES = PythonArithmeticFactorytest.cpp
 PythonArithmeticFactorytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/PythonArithmeticFactory.o
 
 MindFactoryintegration_SOURCES = MindFactoryintegration.cpp
 MindFactoryintegration_LDADD = \
@@ -849,6 +809,12 @@ MindFactoryintegration_LDADD = \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
+
+TerrainModtest_SOURCES = TerrainModtest.cpp
+TerrainModtest_LDADD = \
+        $(top_builddir)/rulesets/TerrainMod.o \
+        $(TERRAIN_LIBS)
+
 
 # CLIENT_TESTS
 
@@ -1417,6 +1383,8 @@ WorldLoadertest_LDADD = \
         $(top_builddir)/common/ClientTask.o \
         $(top_builddir)/common/const.o \
         $(top_builddir)/common/globals.o \
+        $(top_builddir)/common/system_prefix.o \
+        $(top_builddir)/common/binreloc.o \
         $(top_builddir)/common/log.o
 
 AdminClienttest_SOURCES = AdminClienttest.cpp

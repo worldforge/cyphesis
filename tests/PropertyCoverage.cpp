@@ -27,6 +27,7 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/RootOperation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -34,16 +35,16 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::Anonymous;
 
 PropertyCoverage::PropertyCoverage(PropertyBase * pb) :
-    prop(pb),
-    tlve(new Entity("0", 0)),
-    wrld(new TestWorld(*tlve)),
-    ent(new Entity("1", 1))
+    m_prop(pb),
+    m_tlve(new Entity("0", 0)),
+    m_wrld(new TestWorld(*m_tlve)),
+    m_ent(new Entity("1", 1))
 {
-    ent->m_location.m_loc = tlve;
-    ent->m_location.m_pos = Point3D(1,0,0);
+    m_ent->m_location.m_loc = m_tlve;
+    m_ent->m_location.m_pos = Point3D(1,0,0);
 
-    tlve->m_contains = new LocatedEntitySet;
-    tlve->m_contains->insert(ent);
+    m_tlve->m_contains = new LocatedEntitySet;
+    m_tlve->m_contains->insert(m_ent);
 
     m_testData.push_back(23);
     m_testData.push_back(23.);
@@ -65,11 +66,11 @@ PropertyCoverage::PropertyCoverage(PropertyBase * pb) :
 
 PropertyCoverage::~PropertyCoverage()
 {
-    ent->m_location.m_loc = 0;
-    delete ent;
-    delete tlve;
-    delete prop;
-    delete wrld;
+    m_ent->m_location.m_loc = 0;
+    delete m_ent;
+    delete m_tlve;
+    delete m_prop;
+    delete m_wrld;
 }
 
 void PropertyCoverage::basicCoverage()
@@ -78,42 +79,42 @@ void PropertyCoverage::basicCoverage()
 
     // assert(pb->flags() == 4);
 
-    prop->get(val);
+    m_prop->get(val);
 
     // FIXME cover all types inc. map
     ListType::const_iterator I = m_testData.begin();
     ListType::const_iterator Iend = m_testData.end();
     for (; I != Iend; ++I) {
-        prop->set(*I);
+        m_prop->set(*I);
     }
 
-    prop->get(val);
+    m_prop->get(val);
 
-    prop->install(ent);
+    m_prop->install(m_ent);
 
     I = m_testData.begin();
     for (; I != Iend; ++I) {
-        prop->set(*I);
-        prop->apply(ent);
+        m_prop->set(*I);
+        m_prop->apply(m_ent);
     }
 
     MapType map;
-    prop->add("test_name", map);
+    m_prop->add("test_name", map);
     Anonymous ent;
-    prop->add("test_name", ent);
+    m_prop->add("test_name", ent);
 }
 
 Character * PropertyCoverage::createCharacterEntity()
 {
-    ent->m_location.m_loc = 0;
-    delete ent;
-    tlve->m_contains->clear();
+    m_ent->m_location.m_loc = 0;
+    delete m_ent;
+    m_tlve->m_contains->clear();
 
     Character * chr = new Character("2", 2);
-    ent = chr;
-    ent->m_location.m_loc = tlve;
-    ent->m_location.m_pos = Point3D(1,0,0);
-    tlve->m_contains->insert(ent);
+    m_ent = chr;
+    m_ent->m_location.m_loc = m_tlve;
+    m_ent->m_location.m_pos = Point3D(1,0,0);
+    m_tlve->m_contains->insert(m_ent);
 
     return chr;
 }
@@ -416,6 +417,10 @@ void Entity::setAttr(const std::string & name,
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
 {
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
     return 0;
 }
 
@@ -507,7 +512,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     return 0;
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

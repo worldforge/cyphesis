@@ -41,6 +41,7 @@
 #include "common/Variable.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <cstdlib>
 
@@ -806,7 +807,7 @@ void Location::addToMessage(MapType & omap) const
 {
 }
 
-Location::Location()
+Location::Location() : m_loc(0)
 {
 }
 

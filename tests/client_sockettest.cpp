@@ -19,7 +19,7 @@
 
 #include "common/sockets.h"
 
-#include <cassert>
+#include "common/globals.h"
 
 int main()
 {
@@ -29,4 +29,16 @@ int main()
     (void)slave_socket_name;
 
     return 0;
+}
+
+// stubs
+
+const char * CYPHESIS = "cyphesis";
+
+unixsock_config_register::unixsock_config_register(std::string & var,
+                                                   const char * section,
+                                                   const char * setting,
+                                                   const char * help,
+                                                   const char * format)
+{
 }

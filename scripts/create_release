@@ -229,6 +229,13 @@ package_autopackage() {
         echo ..... Autopackage already built
         return
     fi
+
+    if [ $(cat /proc/sys/kernel/randomize_va_space) -ne 0 ]
+    then
+        echo EEEEE stack randomization is enabled, which will break statifier
+        echo EEEEE try: sysctl -w kernel.randomize_va_space=0
+        exit 1
+    fi
     
     if ! make clean
     then
@@ -236,6 +243,8 @@ package_autopackage() {
         exit 1
     fi
 
+    # Stripping undoes statifier bundling, and results in non-runnable binaries
+    export APKG_NO_STRIP=1
     if ! makepackage
     then
         echo EEEEE makepackage failed. Exiting.

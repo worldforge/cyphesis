@@ -40,7 +40,8 @@ librulesetentity_a_SOURCES = \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     TerrainModProperty.cpp TerrainModProperty.h \
-			     TerrainMod_impl.h \
+			     TerrainMod.cpp TerrainMod.h \
+			     InnerTerrainMod_impl.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \
@@ -83,6 +84,7 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_Location.cpp Py_Location.h \
 			    Py_Task.cpp Py_Task.h \
 			    Py_Property.cpp Py_Property.h \
+			    Py_TerrainModProperty.cpp \
 			    Py_TerrainProperty.cpp \
 			    Python_API.cpp Python_API.h \
 			    Python_Script_Utils.h \

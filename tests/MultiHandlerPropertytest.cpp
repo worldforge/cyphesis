@@ -26,6 +26,7 @@
 
 static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
 {
+    return OPERATION_HANDLED;
 }
 
 int main()

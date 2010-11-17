@@ -7,7 +7,7 @@ from random import *
 from mind.panlingua import interlinguish
 il=interlinguish
 from cyphesis import probability
-from cyphesis.editor import editor
+from cyphesis.editor import editor, create_editor
 from physics import Quaternion
 from physics import Vector3D
 from math import *
@@ -201,13 +201,7 @@ tree_styles = {
 def default(host='', account='', password='', **args):
 #   general things
 
-    c=server.ObserverClient()
-
-    c.server = host
-
-    c.setup(account, password)
-
-    m=editor(c.character)
+    m=create_editor(host, account, password)
 
     world=m.look()
 
@@ -858,10 +852,10 @@ def plantfield(m,plant,field,field_points,furrowdist=1,plantspacing=1):
             # make the plant (note that the plant is randomly facing any direction)
             m.make(plant,pos=plantpos,orientation=directions[randint(0,7)], parent = field.id)
 
-def add_pigs(mapeditor):
+def add_pigs(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     sty = m.look_for(type='sty')
     merchant = m.look_for(name='Dyfed Searae')
@@ -872,18 +866,18 @@ def add_pigs(mapeditor):
     m.learn(piglets,pig_goals)
     m.own(merchant,piglets)
 
-def add_memtest(mapeditor):
+def add_memtest(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     m.make('settler',pos=(0,5,5))
     m.make('oak',pos=(5,0,5))
 
-def add_village(mapeditor):
+def add_village(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     m.make('tower',pos=(210,210,5))
     m.make('gallows',pos=(185,175,5))
@@ -900,9 +894,10 @@ def add_village(mapeditor):
     m.make('ploughed_field', name='field',pos=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
     m.make('ploughed_field', name='field',pos=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
 
-def flat_terrain(mapeditor):
+def flat_terrain(host='', account='', password='', **args):
+#   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     world=m.look()
     points = { }
@@ -937,19 +932,20 @@ def flat_terrain(mapeditor):
         
     m.set(world.id, terrain={'points' : points}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
 
-def modify_terrain(mapeditor):
+def modify_terrain(host='', account='', password='', **args):
 #   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     world=m.look()
 
     _setup_terrain(m, world)
     m.make('ocean',pos=(0,0,0),bbox=[-500,-321,-20,320,321,0])
 
-def add_castle(mapeditor):
-    
-    m=editor(mapeditor)
+def add_castle(host='', account='', password='', **args):
+#   general things
+
+    m=create_editor(host, account, password)
 
     # create the peninsula for the castle
     world = m.look()
@@ -1041,10 +1037,10 @@ def add_castle(mapeditor):
         [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
     m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
 
-def add_fish(mapeditor):
-    #   general things
+def add_fish(host='', account='', password='', **args):
+#   general things
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     fish_goals=[(il.forage,"forage('annelid')"),
                 (il.amble,"amble()")]
