@@ -49,7 +49,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  MindFactoryintegration TerrainModtest
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
-               ClientConnectiontest
+               ClientConnectiontest BaseClienttest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
@@ -863,6 +863,9 @@ ClientConnectiontest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(NETWORK_LIBS)
 
+BaseClienttest_SOURCES = BaseClienttest.cpp
+BaseClienttest_LDADD = \
+        $(top_builddir)/client/BaseClient.o
 
 # SERVER_TESTS
 
