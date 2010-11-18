@@ -3,7 +3,7 @@
 .\" <http://shell.ipoline.com/~elmert/comp/docbook2X/> 
 .\" Please send any bug reports, improvements, comments, patches, 
 .\" etc. to Steve Cheng <steve@ggi-project.org>.
-.TH "CYPHESIS" "1" "22 October 2006" "" "cyphesis"
+.TH "CYPHESIS" "1" "18 November 2010" "" "cyphesis"
 
 .SH NAME
 cyphesis \- cyphesis game server process
@@ -154,6 +154,14 @@ database. PostgreSQL does not usually require a password when connecting
 to a PostgreSQL RDBMS on the same system as the server, when the database
 username to be used is the same as the user running the server. If
 this is the case then the setting must be omitted from the config file.
+.TP
+\fB      peers \fR
+This setting provides cyphesis with a list of peers to connect to during
+startup. The peers are connected to using special Server accounts that
+can be added using the cypasswd tool with the -s option. The format for
+this variables has the form "peer_host|port|server_acc_user|server_acc|pass".
+For multiple peers, entries should be separated by a space. eg.
+"Peer1Entry Peer2Entry ...".
 .SH "AUTHOR"
 .PP
 Written by Alistair Riddoch.
