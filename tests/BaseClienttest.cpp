@@ -26,8 +26,30 @@
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
+class TestBaseClient : public BaseClient
+{
+  public:
+    TestBaseClient() : BaseClient() { }
+
+    virtual void idle() { }
+};
+
 int main()
 {
+    {
+        BaseClient * bc = new TestBaseClient;
+
+        delete bc;
+    }
+
+    {
+        BaseClient * bc = new TestBaseClient;
+
+        bc->createSystemAccount();
+
+        delete bc;
+    }
+
     return 0;
 }
 
