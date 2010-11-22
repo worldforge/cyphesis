@@ -45,7 +45,39 @@ int main()
     {
         BaseClient * bc = new TestBaseClient;
 
+        bc->createAccount("8e7e4452-f666-11df-8027-00269e5444b3", "84abee0c-f666-11df-8f7e-00269e5444b3");
+
+        delete bc;
+    }
+
+    {
+        BaseClient * bc = new TestBaseClient;
+
         bc->createSystemAccount();
+
+        delete bc;
+    }
+
+    {
+        BaseClient * bc = new TestBaseClient;
+
+        bc->createCharacter("9e7f4004-f666-11df-a327-00269e5444b3");
+
+        delete bc;
+    }
+
+    {
+        BaseClient * bc = new TestBaseClient;
+
+        bc->logout();
+
+        delete bc;
+    }
+
+    {
+        BaseClient * bc = new TestBaseClient;
+
+        bc->handleNet();
 
         delete bc;
     }
