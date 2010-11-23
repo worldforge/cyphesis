@@ -124,8 +124,13 @@ void Peer::operation(const Operation &op, OpVector &res)
                 // response to a teleport request.
                 peerTeleportResponse(op, res);
             }
-            break;
         }
+        break;
+        case Atlas::Objects::Operation::ERROR_NO:
+        {
+            log(INFO, "Peer login failed");
+        }
+        break;
     }
 }
 
