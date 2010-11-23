@@ -179,6 +179,9 @@ void Character::AttackOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::ActuateOperation(const Operation & op, OpVector &)
+{
+}
 
 void Character::mindActuateOperation(const Operation &, OpVector &)
 {

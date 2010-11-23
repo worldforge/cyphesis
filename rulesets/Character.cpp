@@ -801,13 +801,17 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     }
 }
 
+void Character::ActuateOperation(const Operation & op, OpVector & res)
+{
+}
+
 /// \brief Filter an Actuate operation coming from the mind
 ///
 /// @param op The operation to be filtered.
 /// @param res The filtered result is returned here.
 void Character::mindActuateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush;);
+    std::cout << "Got Actuate op from mind" << std::endl << std::flush;
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
