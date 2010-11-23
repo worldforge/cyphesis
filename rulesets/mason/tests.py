@@ -380,3 +380,15 @@ def test_spawn(host='', account='', password='', **args):
                   'contains': ['coin', 'coin', 'coin', 'coin', 'coin',
                                'coin', 'coin', 'coin', 'coin', 'coin',
                                'shirt', 'trousers', 'cloak', 'boots', 'hat']})
+
+def test_teleport(host='', account='', password='', **args):
+    #   general things
+
+    m=create_editor(host, account, password)
+
+    settler=m.make('settler',pos=(1,1,0))
+
+    boat=m.make('boat',pos=(-1,-1,0),teleport='0',actions=["teleport"])
+
+    m.m.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
+    settler=m.look(settler.id)
