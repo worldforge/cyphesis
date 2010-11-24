@@ -114,8 +114,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    const std::string & old_id = arg->getId();
-    log(INFO, compose("Old entity had ID %1", old_id));
+    log(INFO, compose("Old entity had ID %1", arg->getId()));
 
     if (!arg->hasAttrFlag(Atlas::Objects::OBJTYPE_FLAG)) {
         error(op, "Object to be created has no objtype", res, getId());
@@ -190,17 +189,11 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     // FIXME Can we just use refno to determine which this is a reply to
     // and thus drop the second arg? Should be able to.
     Info info;
-    std::vector<Root> reply_args;
 
     Anonymous info_arg;
     entity->addToEntity(info_arg);
-    reply_args.push_back(info_arg);
 
-    Anonymous prev_id;
-    prev_id->setId(old_id);
-    reply_args.push_back(prev_id);
-
-    info->setArgs(reply_args);
+    info->setArgs1(info_arg);
     if (!op->isDefaultSerialno()) {
         info->setRefno(op->getSerialno());
     }

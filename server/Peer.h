@@ -42,7 +42,7 @@ enum PeerAuthState {
     PEER_FAILED,          /// \brief We have failed to authenticate
 };
 
-typedef std::map<std::string, TeleportState *> TeleportMap;
+typedef std::map<long, TeleportState *> TeleportMap;
 
 /// \brief Class represening connections from another server that is peered to
 /// to this one
@@ -74,7 +74,7 @@ class Peer : public Router {
 
     virtual void operation(const Operation &, OpVector &);
     
-    int teleportEntity(const RootEntity &);
+    int teleportEntity(long id, const RootEntity &);
     TeleportState *getTeleportState(const std::string & id);
     void peerTeleportResponse(const Operation &op, OpVector &res);
 

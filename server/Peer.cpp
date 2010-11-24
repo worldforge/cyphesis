@@ -139,25 +139,20 @@ void Peer::operation(const Operation &op, OpVector &res)
 ///
 /// @param entity The entity to be teleported
 /// @return Returns 0 on success and -1 on failure
-int Peer::teleportEntity(const RootEntity &entity)
+int Peer::teleportEntity(long iid, const RootEntity &entity)
 {
     if (m_state != PEER_AUTHENTICATED) {
         log(ERROR, "Peer not authenticated yet.");
         return -1;
     }
-    const std::string &id = entity->getId();
-    if (id.empty()) {
-        log(ERROR, "Entity has invalid ID");
-        return -1;
-    }
-    if (m_teleports.find(id) != m_teleports.end()) {
+    if (m_teleports.find(iid) != m_teleports.end()) {
         log(INFO, "Transfer of this entity already in progress");
         return -1;
     }
 
-    Entity * ent = BaseWorld::instance().getEntity(id);
+    Entity * ent = BaseWorld::instance().getEntity(iid);
     if (ent == 0) {
-        log(ERROR, String::compose("No entity found with ID: %1", id));
+        log(ERROR, String::compose("No entity found with ID: %1", iid));
         return -1;
     }
     // Check if the entity has a mind
@@ -217,21 +212,21 @@ int Peer::teleportEntity(const RootEntity &entity)
         Create op;
         op->setFrom(m_accountId);
         op->setArgs(create_args);
-        op->setSerialno(newSerialNo());
+        op->setSerialno(iid);
         m_commClient.send(op);
     } else {
         // Plain old create without additional argument
         Create op;
         op->setFrom(m_accountId);
         op->setArgs1(entity);
-        op->setSerialno(newSerialNo());
+        op->setSerialno(iid);
         m_commClient.send(op);
     }
     log(INFO, "Sent Create op to peer");
     
     // Set it as validated and add to the list of teleports
     s->setRequested();
-    m_teleports[id] = s;
+    m_teleports[iid] = s;
     log(INFO, "Added new teleport state");
 
     return 0;
@@ -246,16 +241,18 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     log(INFO, "Got a peer teleport response");
     // Response to a Create op
     const std::vector<Root> & args = op->getArgs();
-    if (args.size() != 2) {
+    if (args.size() < 1) {
         log(ERROR, "Malformed args in Info op");
         return;
     }
     const Root & arg = args.front();
-    // We have exactly two arguments;
-    const Root & arg2 = args.back();
 
-    // Get the original ID of the entity on this server
-    const std::string & id = arg2->getId();
+    if (op->isDefaultRefno()) {
+        log(ERROR, "Response to teleport has no refno");
+        return;
+    }
+
+    long iid = op->getRefno();
 
     CommPeer *peer = dynamic_cast<CommPeer*>(&m_commClient);
     if(peer == 0) {
@@ -263,7 +260,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
 
-    TeleportMap::iterator I = m_teleports.find(id);
+    TeleportMap::iterator I = m_teleports.find(iid);
     if (I == m_teleports.end()) {
         log(ERROR, "Info op for unknown create");
         return;
@@ -273,14 +270,14 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     assert (s != NULL);
 
     s->setCreated();
-    log(INFO, String::compose("Entity with ID %1 replicated on peer", id));
+    log(INFO, String::compose("Entity with ID %1 replicated on peer", iid));
 
     // This is the sender entity. This is retreived again rather than
     // relying on a pointer (in the TeleportState object perhaps) as the
     // entity might have been deleted in the time between sending and response
-    Entity * entity = BaseWorld::instance().getEntity(id);
+    Entity * entity = BaseWorld::instance().getEntity(iid);
     if (entity == 0) {
-        log(ERROR, String::compose("No entity found with ID: %1", id));
+        log(ERROR, String::compose("No entity found with ID: %1", iid));
         // Clean up the teleport state object
         m_teleports.erase(I);
         return;
@@ -310,7 +307,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         std::vector<Root> logout_args;
         Logout logoutOp;
         Anonymous op_arg;
-        op_arg->setId(id);
+        op_arg->setId(String::compose("%1", iid));
         logout_args.push_back(op_arg);
         Anonymous ip_arg;
         ip_arg->setAttr("teleport_host", peer->getHost());
@@ -319,18 +316,20 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         ip_arg->setAttr("possess_entity_id", arg->getId());
         logout_args.push_back(ip_arg);
         logoutOp->setArgs(logout_args);
-        logoutOp->setTo(id);
+        logoutOp->setTo(String::compose("%1", iid));
         OpVector temp;
         mind->operation(logoutOp, temp);
         log(INFO, "Sent random key to connected mind");
     }
 
+    // FIXME Remove from the world cleanly, not delete.
+
     // Delete the entity from the current world
     Delete delOp;
     Anonymous del_arg;
-    del_arg->setId(id);
+    del_arg->setId(String::compose("%1", iid));
     delOp->setArgs1(del_arg);
-    delOp->setTo(id);
+    delOp->setTo(String::compose("%1", iid));
     entity->sendWorld(delOp);
     log(INFO, "Deleted entity from current server");
 
