@@ -1,3 +1,6 @@
+The call path from teleport_handler through Peer::teleportEntity is very
+inefficient. Lots of unnecessary lookups.
+
 Add database stuff to store server metadata like version of server,
 (to detect rolling back to earlier versions).
 
