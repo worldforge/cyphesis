@@ -47,6 +47,7 @@
 #include "common/Monitor.h"
 #include "common/Connect.h"
 #include "common/compose.hpp"
+#include "common/utils.h"
 
 #include <skstream/skstream_unix.h>
 
@@ -640,12 +641,24 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         reply_expected = false;
         Connect m;
 
-        Anonymous cmap;
-        cmap->setAttr("hostname", arg);
-        m->setArgs1(cmap);
-        m->setFrom(accountId);
+        std::vector<std::string> args;
+        tokenize(arg, args);
 
-        send(m);
+        if (args.size() != 4) {
+            std::cout << "usage: connect <hostname> <port> "
+                         "<username> <password>"
+                      << std::endl << std::flush;
+        } else {
+            Anonymous cmap;
+            cmap->setAttr("hostname", args[0]);
+            cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
+            cmap->setAttr("username", args[2]);
+            cmap->setAttr("password", args[3]);
+            m->setArgs1(cmap);
+            m->setFrom(accountId);
+
+            send(m);
+        }
     } else if (cmd == "add_agent") {
         std::string agent_type("creator");
 
