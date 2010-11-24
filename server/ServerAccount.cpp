@@ -140,30 +140,18 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     
     const std::string & typestr = parents.front();
 
-    if (characterError(op, arg, res)) {
-        return;
-    }
-
     // If we have a possess key (entity has a mind)
-    bool isMind = false;
+    TeleportAuthenticator * tele_auth = 0;
     std::string possess_key;
+
     if (args.size() == 2) {
         RootEntity arg2 = smart_dynamic_cast<RootEntity>(args.back());
         Element key;
         if(arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
             possess_key = key.String();
-            isMind = true;
+            tele_auth = TeleportAuthenticator::instance();
         } else {
             log(ERROR, "Entity has mind but no possess key found");
-            return;
-        }
-    }
-
-    TeleportAuthenticator *tele_auth = NULL;
-    if (isMind) {
-        tele_auth = TeleportAuthenticator::instance();
-        if (tele_auth == NULL) {
-            log(ERROR, "Unable to retreive TeleportAuthenticator instance");
             return;
         }
     }
@@ -186,7 +174,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (isMind) {
+    if (tele_auth != 0) {
         if (tele_auth->addTeleport(entity->getId(), possess_key) != 0) {
             // Delete the created entity on failure
             log(CRITICAL, "Unable to insert into TeleportAuthenticator");
@@ -199,6 +187,8 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     // entity that has been created. The second argument is the ID of the
     // entity on the sender server (used by the recipient of this reply to 
     // figure out which Create op this reply is associated with
+    // FIXME Can we just use refno to determine which this is a reply to
+    // and thus drop the second arg? Should be able to.
     Info info;
     std::vector<Root> reply_args;
     Anonymous info_arg;
@@ -217,8 +207,8 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
 /// \param ent A container for the entity to be created in the world
 /// \param arg The argument of the Create op containing the entity itself
 Entity * ServerAccount::addNewEntity(const std::string & typestr,
-                                  const RootEntity & ent,
-                                  const RootEntity & arg)
+                                     const RootEntity & ent,
+                                     const RootEntity & arg)
 {
     if (m_connection == 0) {
         return 0;
