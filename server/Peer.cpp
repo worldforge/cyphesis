@@ -115,10 +115,8 @@ void Peer::operation(const Operation &op, OpVector &res)
                 if (!op->getParents().empty()) {
                     m_accountType = op->getParents().front();
                 }
-                if (m_state == PEER_AUTHENTICATING) {
-                    m_state = PEER_AUTHENTICATED;
-                    log(INFO, "Peer authenticated");
-                }
+                m_state = PEER_AUTHENTICATED;
+                log(INFO, "Peer authenticated");
             } else if (m_state == PEER_AUTHENTICATED) {
                 // If we received an Info op while authenticated, it is a
                 // response to a teleport request.
