@@ -156,7 +156,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         }
     }
 
-    debug( std::cout << "Account creating a " << typestr << " object"
+    debug( std::cout << "ServerAccount creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
     Anonymous new_entity;
@@ -191,13 +191,20 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     // and thus drop the second arg? Should be able to.
     Info info;
     std::vector<Root> reply_args;
+
     Anonymous info_arg;
-    RootEntity prev_id;
-    prev_id->setId(old_id);
     entity->addToEntity(info_arg);
     reply_args.push_back(info_arg);
+
+    Anonymous prev_id;
+    prev_id->setId(old_id);
     reply_args.push_back(prev_id);
+
     info->setArgs(reply_args);
+    if (!op->isDefaultSerialno()) {
+        info->setRefno(op->getSerialno());
+    }
+    // TO/FROM?
     res.push_back(info);
 }
 
