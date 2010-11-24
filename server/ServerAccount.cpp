@@ -158,15 +158,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     debug( std::cout << "ServerAccount creating a " << typestr << " object"
                      << std::endl << std::flush; );
 
-    Anonymous new_entity;
-    new_entity->setParents(std::list<std::string>(1, typestr));
-    new_entity->setAttr("status", 0.024);
-    new_entity->setAttr("mind", "");
-    if (!arg->isDefaultName()) {
-        new_entity->setName(arg->getName());
-    }
-
-    Entity * entity = addNewEntity(typestr, new_entity, arg);
+    Entity * entity = addNewEntity(typestr, arg, arg);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
