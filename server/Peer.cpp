@@ -139,25 +139,22 @@ void Peer::operation(const Operation &op, OpVector &res)
 ///
 /// @param entity The entity to be teleported
 /// @return Returns 0 on success and -1 on failure
-int Peer::teleportEntity(long iid, const RootEntity &entity)
+int Peer::teleportEntity(const Entity * ent)
 {
     if (m_state != PEER_AUTHENTICATED) {
         log(ERROR, "Peer not authenticated yet.");
         return -1;
     }
+
+    long iid = ent->getIntId();
     if (m_teleports.find(iid) != m_teleports.end()) {
         log(INFO, "Transfer of this entity already in progress");
         return -1;
     }
 
-    Entity * ent = BaseWorld::instance().getEntity(iid);
-    if (ent == 0) {
-        log(ERROR, String::compose("No entity found with ID: %1", iid));
-        return -1;
-    }
     // Check if the entity has a mind
     bool isMind = true;
-    Character * chr = dynamic_cast<Character *>(ent);
+    const Character * chr = dynamic_cast<const Character *>(ent);
     if (!chr) {
         isMind = false;
     }
@@ -199,6 +196,9 @@ int Peer::teleportEntity(long iid, const RootEntity &entity)
         log(ERROR, "Unable to allocate teleport state object");
         return -1;
     }
+
+    Atlas::Objects::Entity::Anonymous atlas_repr;
+    ent->addToEntity(atlas_repr);
     
     if (isMind) {
         // Add an additional possess key argument
@@ -206,7 +206,7 @@ int Peer::teleportEntity(long iid, const RootEntity &entity)
         std::vector<Root> create_args;
         Anonymous key_arg;
         key_arg->setAttr("possess_key", key);
-        create_args.push_back(entity);
+        create_args.push_back(atlas_repr);
         create_args.push_back(key_arg);
 
         Create op;
@@ -218,7 +218,7 @@ int Peer::teleportEntity(long iid, const RootEntity &entity)
         // Plain old create without additional argument
         Create op;
         op->setFrom(m_accountId);
-        op->setArgs1(entity);
+        op->setArgs1(atlas_repr);
         op->setSerialno(iid);
         m_commClient.send(op);
     }

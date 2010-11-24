@@ -270,10 +270,8 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
         return OPERATION_IGNORED;
     }
 
-    // Get an Atlas representation and inject it on remote server
-    Atlas::Objects::Entity::Anonymous atlas_repr;
-    entity->addToEntity(atlas_repr);
-    peer->teleportEntity(entity->getIntId(), atlas_repr);
+    // Inject the entity into remote server
+    peer->teleportEntity(entity);
     return OPERATION_IGNORED;
 }
 
