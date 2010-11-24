@@ -85,65 +85,10 @@ const char * ServerAccount::getType() const
     return "server";
 }
 
-static void addTypeToList(const Root & type, ListType & typeList)
-{
-    typeList.push_back(type->getId());
-    Element children;
-    if (type->copyAttr("children", children) != 0) {
-        return;
-    }
-    if (!children.isList()) {
-        log(ERROR, compose("Type %1 children attribute has type %2 instead of "
-                           "string.", type->getId(),
-                           Element::typeName(children.getType())));
-        return;
-    }
-    ListType::const_iterator I = children.List().begin();
-    ListType::const_iterator Iend = children.List().end();
-    for (; I != Iend; ++I) {
-        Root child = Inheritance::instance().getClass(I->asString());
-        if (!child.isValid()) {
-            log(ERROR, compose("Unable to find %1 in inheritance table",
-                               I->asString()));
-            continue;
-        }
-        addTypeToList(child, typeList);
-    }
-}
-
-void ServerAccount::addToMessage(MapType & omap) const
-{
-    Account::addToMessage(omap);
-    ListType & typeList = (omap["character_types"] = ListType()).asList();
-    Root character_type = Inheritance::instance().getClass("character");
-    if (character_type.isValid()) {
-        addTypeToList(character_type, typeList);
-    }
-}
-
-void ServerAccount::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-    Account::addToEntity(ent);
-    ListType typeList;
-    Root character_type = Inheritance::instance().getClass("character");
-    if (character_type.isValid()) {
-        addTypeToList(character_type, typeList);
-    }
-    ent->setAttr("character_types", typeList);
-}
-
 int ServerAccount::characterError(const Operation & op,
-                          const RootEntity & ent, OpVector & res) const
+                                  const RootEntity & ent,
+                                  OpVector & res) const
 {
-    if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        error(op, "You cannot create a character with no type.", res, getId());
-        return true;
-    }
-    const std::list<std::string> & parents = ent->getParents();
-    if (parents.empty()) {
-        error(op, "You cannot create a character with empty type.", res, getId());
-        return true;
-    }
     return false;
 }
 

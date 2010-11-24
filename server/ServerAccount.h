@@ -45,9 +45,6 @@ class ServerAccount : public Account {
 
     virtual const char * getType() const;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
-
     virtual void CreateOperation(const Operation &, OpVector &);
 };
 
