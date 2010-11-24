@@ -377,6 +377,11 @@ void Admin::OtherOperation(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Admin::customConnectOperation(const Operation & op, OpVector & res)
 {
+    if (m_connection == 0) {
+        log(ERROR, "Attempt to make peer connection from unconnected account");
+        return;
+    }
+
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "No argument to connect op", res, getId());
@@ -384,19 +389,33 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = args.front();
     Element hostname_attr;
-    if (arg->copyAttr("hostname", hostname_attr) != 0) {
+    if (arg->copyAttr("hostname", hostname_attr) != 0 ||
+        !hostname_attr.isString()) {
         error(op, "Argument to connect op has no hostname", res, getId());
         return;
     }
-    if (!hostname_attr.isString()) {
-        error(op, "Argument to connect op has non string hostname", res, getId());
-        return;
-    }
-    if (m_connection == 0) {
-        log(ERROR, "Attempt to make peer connection from unconnected account");
-        return;
-    }
     const std::string & hostname = hostname_attr.String();
+
+    Element port_attr;
+    if (arg->copyAttr("port", port_attr) != 0 || !port_attr.isInt()) {
+        error(op, "Argument to connect op has no port", res, getId());
+        return;
+    }
+    int port = port_attr.Int();
+
+    Element username_attr;
+    if (arg->copyAttr("username", username_attr) != 0 || !username_attr.isString()) {
+        error(op, "Argument to connect op has no username", res, getId());
+        return;
+    }
+    const std::string & username = username_attr.String();
+
+    Element password_attr;
+    if (arg->copyAttr("password", password_attr) != 0 || !password_attr.isString()) {
+        error(op, "Argument to connect op has no password", res, getId());
+        return;
+    }
+    const std::string & password = password_attr.String();
 
     std::string peerId;
     if (newId(peerId) < 0) {
@@ -404,9 +423,10 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer);
+    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
+                                 username, password);
     std::cout << "Connecting to " << hostname << std::endl << std::flush;
-    if (cp->connect(hostname) != 0) {
+    if (cp->connect(hostname, port) != 0) {
         error(op, "Connection failed", res, getId());
         return;
     }
@@ -414,6 +434,7 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     cp->setup(new Peer(*cp, m_connection->m_server,
                        hostname, peerId));
     m_connection->m_commClient.m_commServer.addSocket(cp);
+    m_connection->m_commClient.m_commServer.addIdle(cp);
     // Fix it up
 }
 
