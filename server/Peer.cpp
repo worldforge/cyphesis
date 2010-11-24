@@ -355,6 +355,7 @@ void Peer::cleanTeleports()
         if (time_passed >= 10 && I->second->isRequested()) {
             log(INFO, String::compose("Teleport timed out for entity (ID %1)",
                                             I->first));
+            // FIXME I think this is unsafe.
             m_teleports.erase(I);
         }
     }
