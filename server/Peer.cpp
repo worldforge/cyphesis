@@ -71,6 +71,8 @@ Peer::Peer(CommClient & client,
 
 Peer::~Peer()
 {
+    // FIXME Sometimes we need to be removed from ServerRouting
+    // m_server.delObject(this);
 }
 
 /// \brief Set the authentication state of the peer connection
@@ -126,6 +128,7 @@ void Peer::operation(const Operation &op, OpVector &res)
         break;
         case Atlas::Objects::Operation::ERROR_NO:
         {
+            m_state = PEER_FAILED;
             log(INFO, "Peer login failed");
         }
         break;
