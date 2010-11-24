@@ -430,11 +430,13 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
         error(op, "Connection failed", res, getId());
         return;
     }
-    log(INFO, "Connection succeeded");
-    cp->setup(new Peer(*cp, m_connection->m_server,
-                       hostname, peerId));
+    log(INFO, String::compose("Connection succeeded %1", peerId));
+    Peer * peer = new Peer(*cp, m_connection->m_server,
+                           hostname, peerId);
+    cp->setup(peer);
     m_connection->m_commClient.m_commServer.addSocket(cp);
     m_connection->m_commClient.m_commServer.addIdle(cp);
+    m_connection->m_server.addObject(peer);
     // Fix it up
 }
 
