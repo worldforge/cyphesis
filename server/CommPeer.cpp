@@ -138,6 +138,10 @@ void CommPeer::idle(time_t t)
             log(INFO, "Sent login op to peer");
             peer->setAuthState(PEER_AUTHENTICATING);
         }
+        if (peer->getAuthState() == PEER_FAILED) {
+            log(NOTICE, "Client disconnected because authentication failed.");
+            m_clientIos.shutdown();
+        }
         // Check if we have been stuck in a state of authentication in-progress
         // for over 20 seconds. If so, disconnect from and remove peer.
         if ((t - m_connectTime) > 20) {
