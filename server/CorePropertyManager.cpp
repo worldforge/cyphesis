@@ -254,19 +254,19 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     }
 
     // Get the ID of the sender
-    const std::string & from = op->getFrom();
-    if (from.empty()) {
+    if (op->isDefaultFrom()) {
         debug(std::cout << "ERROR: Operation with no entity to be teleported" 
                         << std::endl << std::flush;);
         return OPERATION_IGNORED;
     }
-    log(INFO, String::compose("Teleport request sender has ID %1", from));
+    log(INFO, String::compose("Teleport request sender has ID %1",
+                              op->getFrom()));
 
     // This is the sender entity
-    Entity * entity = BaseWorld::instance().getEntity(from);
+    Entity * entity = BaseWorld::instance().getEntity(op->getFrom());
     if (entity == 0) {
         debug(std::cout << "No entity found with the specified ID: "
-                        << from;);
+                        << op->getFrom(););
         return OPERATION_IGNORED;
     }
 
