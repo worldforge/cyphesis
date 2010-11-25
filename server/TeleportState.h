@@ -25,8 +25,6 @@
 class TeleportState
 {
   protected:
-    /// \brief Specifies if the teleported entity has a mind or not
-    bool m_isMind;
     /// \brief Specifies the possess key generated for this specific teleport
     std::string m_possessKey;
     enum {
@@ -44,13 +42,50 @@ class TeleportState
     void setCreated();
     void setKey(const std::string & key);
 
-    bool isCreated();
-    bool isRequested();
+    bool isCreated() const;
+    bool isRequested() const;
 
-    bool isMind();
-    const std::string & getPossessKey();
+    bool isMind() const;
+    const std::string & getPossessKey() const;
 
-    time_t getCreateTime();
+    time_t getCreateTime() const;
 };
+
+/// \brief Check if the teleported entity has been create on the remote end
+///
+/// @return Boolean whether entity has been created or not
+inline bool TeleportState::isCreated() const
+{
+    return (m_state == TELEPORT_CREATED);
+}
+
+/// \brief Check if the teleport state is 'currently requesting'
+///
+/// @return Whether the state is requesting or not
+inline bool TeleportState::isRequested() const
+{
+    return (m_state == TELEPORT_REQUESTED);
+}
+
+/// \brief Check if a teleported entity has an external mind
+///
+/// @return Whether the teleported entity has an external mind
+inline bool TeleportState::isMind() const
+{
+    return !m_possessKey.empty();
+}
+
+/// \brief Get the possess key generated for this teleport
+///
+/// @return The randomly generated possess key for this teleport
+inline const std::string & TeleportState::getPossessKey() const
+{
+    return m_possessKey;
+}
+
+inline time_t TeleportState::getCreateTime() const
+{
+    return m_teleportTime;
+}
 
 #endif

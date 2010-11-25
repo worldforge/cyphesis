@@ -217,9 +217,8 @@ using Atlas::Message::MapType;
 
 Script noScript;
 
-TeleportState::TeleportState(time_t time) : m_isMind(false),
-                                        m_state(TELEPORT_NONE),
-                                        m_teleportTime(time)
+TeleportState::TeleportState(time_t time) : m_state(TELEPORT_NONE),
+                                            m_teleportTime(time)
 {
 }
 
@@ -236,32 +235,6 @@ void TeleportState::setCreated()
 void TeleportState::setKey(const std::string & key)
 {
     m_possessKey = key;
-    m_isMind = true;
-}
-
-bool TeleportState::isCreated()
-{
-    return (m_state == TELEPORT_CREATED);
-}
-
-bool TeleportState::isRequested()
-{
-    return (m_state == TELEPORT_REQUESTED);
-}
-
-bool TeleportState::isMind()
-{
-    return m_isMind;
-}
-
-const std::string & TeleportState::getPossessKey()
-{
-    return m_possessKey;
-}
-
-time_t TeleportState::getCreateTime()
-{
-    return m_teleportTime;
 }
 
 CommPeer::~CommPeer()

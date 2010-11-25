@@ -18,9 +18,8 @@
 #include "server/TeleportState.h"
 
 /// \brief Constructor
-TeleportState::TeleportState(time_t time) : m_isMind(false),
-                                        m_state(TELEPORT_NONE),
-                                        m_teleportTime(time)
+TeleportState::TeleportState(time_t time) : m_state(TELEPORT_NONE),
+                                            m_teleportTime(time)
 {
 }
 
@@ -40,42 +39,4 @@ void TeleportState::setCreated()
 void TeleportState::setKey(const std::string & key)
 {
     m_possessKey = key;
-    m_isMind = true;
-}
-
-/// \brief Check if the teleported entity has been create on the remote end
-///
-/// @return Boolean whether entity has been created or not
-bool TeleportState::isCreated()
-{
-    return (m_state == TELEPORT_CREATED);
-}
-
-/// \brief Check if the teleport state is 'currently requesting'
-///
-/// @return Whether the state is requesting or not
-bool TeleportState::isRequested()
-{
-    return (m_state == TELEPORT_REQUESTED);
-}
-
-/// \brief Check if a teleported entity has an external mind
-///
-/// @return Whether the teleported entity has an external mind
-bool TeleportState::isMind()
-{
-    return m_isMind;
-}
-
-/// \brief Get the possess key generated for this teleport
-///
-/// @return The randomly generated possess key for this teleport
-const std::string & TeleportState::getPossessKey()
-{
-    return m_possessKey;
-}
-
-time_t TeleportState::getCreateTime()
-{
-    return m_teleportTime;
 }

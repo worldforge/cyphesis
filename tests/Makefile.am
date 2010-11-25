@@ -59,10 +59,10 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommClientFactorytest ServerRoutingtest Idletest \
                StorageManagertest HttpCachetest UpdateTestertest \
                ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
-               CommPeertest
+               TeleportStatetest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
-                    CommHttpClienttest CommStreamListenertest
+                    CommHttpClienttest CommStreamListenertest CommPeertest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration
 
@@ -1244,6 +1244,10 @@ CommStreamListenertest_LDADD = \
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
         $(top_builddir)/server/TeleportAuthenticator.o
+
+TeleportStatetest_SOURCES = TeleportStatetest.cpp
+TeleportStatetest_LDADD = \
+        $(top_builddir)/server/TeleportState.o
 
 # SERVER_INTEGRATION_TESTS
 
