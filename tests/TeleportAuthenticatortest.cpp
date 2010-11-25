@@ -184,18 +184,8 @@ PendingTeleport::PendingTeleport(const std::string &id, const std::string &key)
 {
 }
 
-const std::string & PendingTeleport::getPossessKey()
-{
-    return m_possess_key;
-}
-
-const std::string & PendingTeleport::getEntityID()
-{
-    return m_entity_id;
-}
-
 bool PendingTeleport::validate(const std::string &entity_id,
-                                const std::string &possess_key)
+                               const std::string &possess_key) const
 {
     if(m_entity_id == entity_id && m_possess_key == possess_key) {
         return true;
@@ -207,11 +197,6 @@ bool PendingTeleport::validate(const std::string &entity_id,
 void PendingTeleport::setValidated()
 {
     m_valid = true;
-}
-
-bool PendingTeleport::isValidated()
-{
-    return m_valid;
 }
 
 Entity::Entity(const std::string & id, long intId) :
