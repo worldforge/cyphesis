@@ -25,8 +25,6 @@
 class TeleportState
 {
   protected:
-    /// \brief Specifies if the teleported entity has a mind or not
-    bool m_isMind;
     /// \brief Specifies the possess key generated for this specific teleport
     std::string m_possessKey;
     enum {
@@ -74,7 +72,7 @@ inline bool TeleportState::isRequested() const
 /// @return Whether the teleported entity has an external mind
 inline bool TeleportState::isMind() const
 {
-    return m_isMind;
+    return !m_possessKey.empty();
 }
 
 /// \brief Get the possess key generated for this teleport

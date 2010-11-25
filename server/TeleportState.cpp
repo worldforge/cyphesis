@@ -18,9 +18,8 @@
 #include "server/TeleportState.h"
 
 /// \brief Constructor
-TeleportState::TeleportState(time_t time) : m_isMind(false),
-                                        m_state(TELEPORT_NONE),
-                                        m_teleportTime(time)
+TeleportState::TeleportState(time_t time) : m_state(TELEPORT_NONE),
+                                            m_teleportTime(time)
 {
 }
 
@@ -40,5 +39,4 @@ void TeleportState::setCreated()
 void TeleportState::setKey(const std::string & key)
 {
     m_possessKey = key;
-    m_isMind = true;
 }
