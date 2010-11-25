@@ -292,18 +292,21 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
             return;
         }
         std::vector<Root> logout_args;
-        Logout logoutOp;
+
         Anonymous op_arg;
-        op_arg->setId(String::compose("%1", iid));
+        op_arg->setId(entity->getId());
         logout_args.push_back(op_arg);
+
         Anonymous ip_arg;
         ip_arg->setAttr("teleport_host", peer->getHost());
         ip_arg->setAttr("teleport_port", peer->getPort());
         ip_arg->setAttr("possess_key", s->getPossessKey());
         ip_arg->setAttr("possess_entity_id", arg->getId());
         logout_args.push_back(ip_arg);
+
+        Logout logoutOp;
         logoutOp->setArgs(logout_args);
-        logoutOp->setTo(String::compose("%1", iid));
+        logoutOp->setTo(entity->getId());
         OpVector temp;
         mind->operation(logoutOp, temp);
         log(INFO, "Sent random key to connected mind");
@@ -314,9 +317,9 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     // Delete the entity from the current world
     Delete delOp;
     Anonymous del_arg;
-    del_arg->setId(String::compose("%1", iid));
+    del_arg->setId(entity->getId());
     delOp->setArgs1(del_arg);
-    delOp->setTo(String::compose("%1", iid));
+    delOp->setTo(entity->getId());
     entity->sendWorld(delOp);
     log(INFO, "Deleted entity from current server");
 
