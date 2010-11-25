@@ -33,13 +33,13 @@ class PendingTeleport
   public:
 
     PendingTeleport(const std::string &, const std::string &);
-    const std::string & getPossessKey();
-    const std::string & getEntityID();
+    const std::string & getPossessKey() const;
+    const std::string & getEntityID() const;
 
-    bool validate(const std::string &, const std::string &);
+    bool validate(const std::string &, const std::string &) const;
 
     void setValidated();
-    bool isValidated();
+    bool isValidated() const;
 };
 
 #endif

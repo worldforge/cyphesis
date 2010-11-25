@@ -31,7 +31,7 @@ PendingTeleport::PendingTeleport(const std::string &id, const std::string &key)
 /// \brief Get the possess key
 ///
 /// \return The possess key string
-const std::string & PendingTeleport::getPossessKey()
+const std::string & PendingTeleport::getPossessKey() const
 {
     return m_possess_key;
 }
@@ -39,7 +39,7 @@ const std::string & PendingTeleport::getPossessKey()
 /// \brief Get the entity ID this teleport belongs to
 ///
 /// \return The entity ID of the owner entity
-const std::string & PendingTeleport::getEntityID()
+const std::string & PendingTeleport::getEntityID() const
 {
     return m_entity_id;
 }
@@ -49,7 +49,7 @@ const std::string & PendingTeleport::getEntityID()
 /// \param entity_id The ID of the entity whose ownership is to be claimed
 /// \param possess_key The possess key sent for authentication
 bool PendingTeleport::validate(const std::string &entity_id,
-                                const std::string &possess_key)
+                               const std::string &possess_key) const
 {
     if(m_entity_id == entity_id && m_possess_key == possess_key) {
         return true;
@@ -69,7 +69,7 @@ void PendingTeleport::setValidated()
 /// \return Boolean whether this teleport is validated or not. A teleport is
 ///         considered validated if an entity was successfully created at the
 ///         destination.
-bool PendingTeleport::isValidated()
+bool PendingTeleport::isValidated() const
 {
     return m_valid;
 }
