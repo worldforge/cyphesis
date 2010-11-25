@@ -155,14 +155,10 @@ int Peer::teleportEntity(const Entity * ent)
     // Check if the entity has a mind
     bool isMind = true;
     const Character * chr = dynamic_cast<const Character *>(ent);
-    if (!chr) {
+    if (!chr || chr->m_externalMind == 0) {
         isMind = false;
     }
-    if (chr->m_externalMind == 0) {
-        isMind = false;
-    }
-    ExternalMind * mind = 0;
-    mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+    ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
     if (mind == 0 || !mind->isConnected()) {
         isMind = false;
     }
