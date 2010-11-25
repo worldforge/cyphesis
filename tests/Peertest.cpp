@@ -19,9 +19,11 @@
 
 #include "server/Peer.h"
 
+#include "server/ExternalMind.h"
+
 #include "common/BaseWorld.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -186,6 +188,57 @@ int main()
         assert(ret == 0);
     }
 
+    // Re-teleport same entity
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Entity e("3", 3);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+
+        ret = p->teleportEntity(&e);
+        assert(ret != 0);
+    }
+
+    // Character (no mind)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Character e("3", 3);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+    }
+
+    // Character (externl mind, unconnected)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Character e("3", 3);
+        e.m_externalMind = new ExternalMind(e);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+    }
+
+    // Character (externl mind, connected)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Character e("3", 3);
+        ExternalMind * mind = new ExternalMind(e);
+        mind->connect((Connection*)23);
+        e.m_externalMind = mind;
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+    }
+
     {
         Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
         
@@ -199,7 +252,6 @@ int main()
 
 #include "server/CommPeer.h"
 #include "server/CommServer.h"
-#include "server/ExternalMind.h"
 #include "server/TeleportState.h"
 
 #include "rulesets/Character.h"
@@ -340,12 +392,22 @@ Idle::~Idle()
 {
 }
 
+ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+                                         m_connection(0), m_entity(e)
+{
+}
+
 ExternalMind::~ExternalMind()
 {
 }
 
 void ExternalMind::operation(const Operation & op, OpVector & res)
 {
+}
+
+void ExternalMind::connect(Connection * c)
+{
+    m_connection = c;
 }
 
 Character::Character(const std::string & id, long intId) :
