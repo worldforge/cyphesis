@@ -19,6 +19,7 @@
 
 #include "server/Peer.h"
 
+#include "server/CommPeer.h"
 #include "server/ExternalMind.h"
 
 #include "common/BaseWorld.h"
@@ -46,6 +47,9 @@ class TestWorld : public BaseWorld {
     Entity * test_addEntity(Entity * ent, long intId) { 
         m_eobjects[intId] = ent;
         return 0;
+    }
+    void test_delEntity(long intId) { 
+        m_eobjects.erase(intId);
     }
     virtual Entity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) {
@@ -239,9 +243,150 @@ int main()
         assert(ret == 0);
     }
 
+    // No arg
     {
         Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
         
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+         
+        p->peerTeleportResponse(op, res);
+    }
+
+    // Empty arg, no refno
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+         
+        p->peerTeleportResponse(op, res);
+    }
+
+    // Empty arg, made up refno, not CommPeer
+    {
+        CommClient *peerConn = new CommClient(*(CommServer*)0);
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        op->setRefno(23);
+         
+        p->peerTeleportResponse(op, res);
+    }
+
+    // Empty arg, made up refno
+    {
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        op->setRefno(23);
+         
+        p->peerTeleportResponse(op, res);
+    }
+
+    // Empty arg, refno that matches earlier teleport, not in world
+    {
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Entity e("23", 23);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        op->setRefno(23);
+         
+        p->peerTeleportResponse(op, res);
+    }
+
+    // Empty arg, refno that matches earlier teleport, in world
+    {
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Entity e("23", 23);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+
+        world.test_addEntity(&e, 23);
+
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        op->setRefno(23);
+         
+        p->peerTeleportResponse(op, res);
+
+        world.test_delEntity(23);
+    }
+
+    // Empty arg, refno that matches earlier teleport, with mind
+    {
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Character e("23", 23);
+        ExternalMind * mind = new ExternalMind(e);
+        mind->connect((Connection*)23);
+        e.m_externalMind = mind;
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+
+        world.test_addEntity(&e, 23);
+
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        op->setRefno(23);
+         
+        p->peerTeleportResponse(op, res);
+
+        world.test_delEntity(23);
+    }
+
+    // No teleports to clear
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->cleanTeleports();
+    }
+
+    // One teleport to clear
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Entity e("23", 23);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
+
         p->cleanTeleports();
     }
 
@@ -250,7 +395,6 @@ int main()
 
 // stubs
 
-#include "server/CommPeer.h"
 #include "server/CommServer.h"
 #include "server/TeleportState.h"
 
@@ -289,6 +433,14 @@ void TeleportState::setKey(const std::string & key)
     m_possessKey = key;
 }
 
+CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
+                   : CommClient(svr),
+                     m_login_required(true),
+                     m_username(username),
+                     m_password(password)
+{
+}
+
 CommPeer::~CommPeer()
 {
 }
@@ -300,7 +452,7 @@ void CommPeer::idle(time_t t)
 CommClient::CommClient(CommServer &svr) : CommStreamClient(svr), 
                                         Idle(svr), m_codec(NULL), 
                                         m_encoder(NULL), m_connection(NULL),
-                                        m_connectTime(svr.time())
+                                        m_connectTime(0)
 {
     m_negotiate = NULL;
 }
