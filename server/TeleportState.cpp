@@ -46,7 +46,7 @@ void TeleportState::setKey(const std::string & key)
 /// \brief Check if the teleported entity has been create on the remote end
 ///
 /// @return Boolean whether entity has been created or not
-bool TeleportState::isCreated()
+bool TeleportState::isCreated() const
 {
     return (m_state == TELEPORT_CREATED);
 }
@@ -54,7 +54,7 @@ bool TeleportState::isCreated()
 /// \brief Check if the teleport state is 'currently requesting'
 ///
 /// @return Whether the state is requesting or not
-bool TeleportState::isRequested()
+bool TeleportState::isRequested() const
 {
     return (m_state == TELEPORT_REQUESTED);
 }
@@ -62,7 +62,7 @@ bool TeleportState::isRequested()
 /// \brief Check if a teleported entity has an external mind
 ///
 /// @return Whether the teleported entity has an external mind
-bool TeleportState::isMind()
+bool TeleportState::isMind() const
 {
     return m_isMind;
 }
@@ -70,12 +70,12 @@ bool TeleportState::isMind()
 /// \brief Get the possess key generated for this teleport
 ///
 /// @return The randomly generated possess key for this teleport
-const std::string & TeleportState::getPossessKey()
+const std::string & TeleportState::getPossessKey() const
 {
     return m_possessKey;
 }
 
-time_t TeleportState::getCreateTime()
+time_t TeleportState::getCreateTime() const
 {
     return m_teleportTime;
 }

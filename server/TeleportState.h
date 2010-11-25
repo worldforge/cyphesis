@@ -44,13 +44,13 @@ class TeleportState
     void setCreated();
     void setKey(const std::string & key);
 
-    bool isCreated();
-    bool isRequested();
+    bool isCreated() const;
+    bool isRequested() const;
 
-    bool isMind();
-    const std::string & getPossessKey();
+    bool isMind() const;
+    const std::string & getPossessKey() const;
 
-    time_t getCreateTime();
+    time_t getCreateTime() const;
 };
 
 #endif
