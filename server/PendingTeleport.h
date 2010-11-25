@@ -42,4 +42,30 @@ class PendingTeleport
     bool isValidated() const;
 };
 
+/// \brief Get the possess key
+///
+/// \return The possess key string
+inline const std::string & PendingTeleport::getPossessKey() const
+{
+    return m_possess_key;
+}
+
+/// \brief Get the entity ID this teleport belongs to
+///
+/// \return The entity ID of the owner entity
+inline const std::string & PendingTeleport::getEntityID() const
+{
+    return m_entity_id;
+}
+
+/// \brief Check if this teleport is validated or not
+///
+/// \return Boolean whether this teleport is validated or not. A teleport is
+///         considered validated if an entity was successfully created at the
+///         destination.
+inline bool PendingTeleport::isValidated() const
+{
+    return m_valid;
+}
+
 #endif
