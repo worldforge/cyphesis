@@ -137,7 +137,7 @@ void Peer::operation(const Operation &op, OpVector &res)
 
 /// \brief Teleport an entity to the connected peer
 ///
-/// @param entity The entity to be teleported
+/// @param ent The entity to be teleported
 /// @return Returns 0 on success and -1 on failure
 int Peer::teleportEntity(const Entity * ent)
 {
