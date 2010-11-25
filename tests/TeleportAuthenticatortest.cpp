@@ -122,6 +122,23 @@ int main()
         assert(TeleportAuthenticator::instance() == NULL);
     }
     
+    {
+        TeleportAuthenticator::init();
+        Entity ent("100", 100);
+        world.test_addEntity(&ent, 100);
+        assert(TeleportAuthenticator::instance() != NULL);
+
+        TeleportAuthenticator::instance()->addTeleport("101", "test_possess_key");
+
+        // Test ID authentication request, that we added, for a non existant
+        // entity
+        assert(TeleportAuthenticator::instance()->authenticateTeleport(
+                       "101", "test_possess_key") == NULL);
+
+        TeleportAuthenticator::del();
+        assert(TeleportAuthenticator::instance() == NULL);
+    }
+    
     return 0;
 }
 
