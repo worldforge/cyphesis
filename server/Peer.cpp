@@ -277,8 +277,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
             log(ERROR, "No external mind (though teleport state claims it)");
             return;
         }
-        ExternalMind * mind = 0;
-        mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+        ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
         if (mind == 0 || !mind->isConnected()) {
             log(ERROR, "Mind is NULL or not connected");
             return;
