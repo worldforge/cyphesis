@@ -107,6 +107,69 @@ int main()
         p->operation(op, res);
     }
 
+    // Authenticating (no args)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+
+        p->setAuthState(PEER_AUTHENTICATING);
+        
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+        p->operation(op, res);
+    }
+
+    // Authenticating (empty arg)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+
+        p->setAuthState(PEER_AUTHENTICATING);
+        
+        Atlas::Objects::Operation::Info op;
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        OpVector res;
+        p->operation(op, res);
+    }
+
+    // Authenticating (full arg)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+
+        p->setAuthState(PEER_AUTHENTICATING);
+        
+        Atlas::Objects::Operation::Info op;
+        Atlas::Objects::Root arg;
+        arg->setId("2");
+        op->setArgs1(arg);
+        OpVector res;
+        p->operation(op, res);
+    }
+
+    // Authenticated (no args)
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Atlas::Objects::Operation::Info op;
+        OpVector res;
+        p->operation(op, res);
+    }
+
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        Atlas::Objects::Operation::Error op;
+        OpVector res;
+        p->operation(op, res);
+    }
+
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->cleanTeleports();
+    }
+
     return 0;
 }
 
