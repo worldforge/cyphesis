@@ -152,17 +152,6 @@ int Peer::teleportEntity(const Entity * ent)
         return -1;
     }
 
-    // Check if the entity has a mind
-    bool isMind = true;
-    const Character * chr = dynamic_cast<const Character *>(ent);
-    if (!chr || chr->m_externalMind == 0) {
-        isMind = false;
-    }
-    ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-    if (mind == 0 || !mind->isConnected()) {
-        isMind = false;
-    }
-
     struct timeval timeVal;
     gettimeofday(&timeVal, NULL);
     time_t teleport_time = timeVal.tv_sec;
@@ -174,6 +163,13 @@ int Peer::teleportEntity(const Entity * ent)
         return -1;
     }
 
+    // Check if the entity has a mind
+    const Character * chr = dynamic_cast<const Character *>(ent);
+    ExternalMind * mind = 0;
+    if (chr && chr->m_externalMind == 0) {
+        mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
+    }
+
     Atlas::Objects::Entity::Anonymous atlas_repr;
     ent->addToEntity(atlas_repr);
 
@@ -181,7 +177,7 @@ int Peer::teleportEntity(const Entity * ent)
     op->setFrom(m_accountId);
     op->setSerialno(iid);
     
-    if (isMind) {
+    if (mind != 0 && mind->isConnected()) {
         // Entities with a mind require an additional one-time possess key that
         // is used by the client to authenticate a teleport on the destination
         // peer
@@ -270,12 +266,8 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
 
-
-    // Check if the entity has a mind
-    bool isMind = s->isMind();
-
     // If entity has a mind, add extra information in the Logout op
-    if (isMind) {
+    if (s->isMind()) {
         Character * chr = dynamic_cast<Character *>(entity);
         if (!chr) {
             log(ERROR, "Entity is not a character");

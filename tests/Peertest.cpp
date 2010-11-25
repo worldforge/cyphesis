@@ -21,6 +21,8 @@
 
 #include "common/BaseWorld.h"
 
+#include "rulesets/Entity.h"
+
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -162,6 +164,26 @@ int main()
         Atlas::Objects::Operation::Error op;
         OpVector res;
         p->operation(op, res);
+    }
+
+    // Not authenticated
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        Entity e("3", 3);
+        int ret = p->teleportEntity(&e);
+        assert(ret == -1);
+    }
+
+    // Authenticated
+    {
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        
+        p->setAuthState(PEER_AUTHENTICATED);
+        
+        Entity e("3", 3);
+        int ret = p->teleportEntity(&e);
+        assert(ret == 0);
     }
 
     {
