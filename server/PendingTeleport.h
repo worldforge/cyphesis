@@ -30,7 +30,7 @@ class PendingTeleport
     /// \brief Specifies if this object is valid
     bool m_valid;
 
-    public:
+  public:
 
     PendingTeleport(const std::string &, const std::string &);
     const std::string & getPossessKey();
