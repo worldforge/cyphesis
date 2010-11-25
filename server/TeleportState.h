@@ -39,10 +39,10 @@ class TeleportState
 
   public:
     TeleportState(time_t time);
-    TeleportState(const std::string &key, time_t time);
     
     void setRequested();
     void setCreated();
+    void setKey(const std::string & key);
 
     bool isCreated();
     bool isRequested();

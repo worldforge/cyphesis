@@ -24,17 +24,6 @@ TeleportState::TeleportState(time_t time) : m_isMind(false),
 {
 }
 
-/// \brief Constructor
-///
-/// @param key The possess key to be used for entities having an external mind
-TeleportState::TeleportState(const std::string &key, time_t time) : 
-                                                        m_isMind(true),
-                                                        m_possessKey(key),
-                                                        m_state(TELEPORT_NONE),
-                                                        m_teleportTime(time)
-{
-}
-
 /// \brief Set the teleport state as requested
 void TeleportState::setRequested()
 {
@@ -45,6 +34,13 @@ void TeleportState::setRequested()
 void TeleportState::setCreated()
 {
     m_state = TELEPORT_CREATED;
+}
+
+/// \brief Set the teleport possess key
+void TeleportState::setKey(const std::string & key)
+{
+    m_possessKey = key;
+    m_isMind = true;
 }
 
 /// \brief Check if the teleported entity has been create on the remote end

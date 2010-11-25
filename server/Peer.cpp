@@ -162,41 +162,39 @@ int Peer::teleportEntity(const Entity * ent)
     if (mind == 0 || !mind->isConnected()) {
         isMind = false;
     }
-    std::string key;
-    if (isMind) {
-        // Generate a nice and long key
-        log(INFO, "Entity has a mind. Generating random key");
-        WFMath::MTRand generator;
-        for(int i=0;i<32;i++) {
-            char ch = (char)((int)'a' + generator.rand(25));
-            key += ch;
-        }
-    }
 
     struct timeval timeVal;
     gettimeofday(&timeVal, NULL);
     time_t teleport_time = timeVal.tv_sec;
 
     // Add a teleport state object to identify this teleport request
-    TeleportState *s;
-    if (isMind) {
-        // Entities with a mind require an additional one-time possess key that
-        // is used by the client to authenticate a teleport on the destination
-        // peer
-        s = new TeleportState(key, teleport_time);
-    } else {
-        s = new TeleportState(teleport_time);
-    }
-
-    if(s == NULL) {
+    TeleportState * s = new TeleportState(teleport_time);
+    if (s == NULL) {
         log(ERROR, "Unable to allocate teleport state object");
         return -1;
     }
 
     Atlas::Objects::Entity::Anonymous atlas_repr;
     ent->addToEntity(atlas_repr);
+
+    Create op;
+    op->setFrom(m_accountId);
+    op->setSerialno(iid);
     
     if (isMind) {
+        // Entities with a mind require an additional one-time possess key that
+        // is used by the client to authenticate a teleport on the destination
+        // peer
+        std::string key;
+        log(INFO, "Entity has a mind. Generating random key");
+        // FIXME non-random, plus potetial timing attack.
+        WFMath::MTRand generator;
+        for(int i=0;i<32;i++) {
+            char ch = (char)((int)'a' + generator.rand(25));
+            key += ch;
+        }
+
+        s->setKey(key);
         // Add an additional possess key argument
         log(INFO, String::compose("Adding possess key %1 to Create op", key));
         std::vector<Root> create_args;
@@ -205,19 +203,12 @@ int Peer::teleportEntity(const Entity * ent)
         create_args.push_back(atlas_repr);
         create_args.push_back(key_arg);
 
-        Create op;
-        op->setFrom(m_accountId);
         op->setArgs(create_args);
-        op->setSerialno(iid);
-        m_commClient.send(op);
     } else {
         // Plain old create without additional argument
-        Create op;
-        op->setFrom(m_accountId);
         op->setArgs1(atlas_repr);
-        op->setSerialno(iid);
-        m_commClient.send(op);
     }
+    m_commClient.send(op);
     log(INFO, "Sent Create op to peer");
     
     // Set it as validated and add to the list of teleports
