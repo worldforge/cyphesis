@@ -32,8 +32,6 @@ class CommPeer : public CommClient {
     std::string m_host;
     /// \brief The port that this connection is on
     int m_port;
-    /// \brief Specifies whether a login is required on the peer
-    bool m_login_required;
     /// \brief The username of the account to authenticate with
     std::string m_username;
     /// \brief The password of the account to authenticate with

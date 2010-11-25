@@ -435,7 +435,6 @@ void TeleportState::setKey(const std::string & key)
 
 CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
                    : CommClient(svr),
-                     m_login_required(true),
                      m_username(username),
                      m_password(password)
 {

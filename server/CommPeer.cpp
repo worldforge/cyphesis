@@ -39,7 +39,6 @@ INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
                    : CommClient(svr),
-                     m_login_required(true),
                      m_username(username),
                      m_password(password)
 {
@@ -101,7 +100,7 @@ void CommPeer::idle(time_t t)
             return;
         }
         // If a login is required, send the Login op to the peer
-        if(m_login_required && peer->getAuthState() == PEER_INIT) {
+        if(peer->getAuthState() == PEER_INIT) {
             Atlas::Objects::Operation::Login l;
             Atlas::Objects::Entity::Anonymous account;
             account->setAttr("username", m_username);
