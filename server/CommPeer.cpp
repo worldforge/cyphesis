@@ -89,22 +89,6 @@ int CommPeer::connect(const std::string & host, int port)
     return -1;
 }
 
-/// \brief Get the hostname of the connected peer
-///
-/// @return The hostname of the connected peer
-const std::string & CommPeer::getHost()
-{
-    return m_host;
-}
-
-/// \brief Get the port the peer is connected on
-///
-/// @return The port the peer is connected on
-int CommPeer::getPort()
-{
-    return m_port;
-}
-
 /// \brief Called periodically by the server
 ///
 /// \param t The current time at the time of calling

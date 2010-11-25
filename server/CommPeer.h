@@ -49,8 +49,19 @@ class CommPeer : public CommClient {
     int connect(const std::string &);
     int connect(const std::string &, int);
 
-    const std::string & getHost();
-    int getPort();
+    /// \brief Get the hostname of the connected peer
+    ///
+    /// @return The hostname of the connected peer
+    const std::string & getHost() {
+        return m_host;
+    }
+
+    /// \brief Get the port the peer is connected on
+    ///
+    /// @return The port the peer is connected on
+    int getPort() {
+        return m_port;
+    }
 };
 
 #endif // SERVER_COMM_PEER_H
