@@ -135,12 +135,8 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    TestCommPeer(CommServer & svr, const std::string &user, const std::string &pass)
+    TestCommPeer(CommServer & svr, const std::string &user = "test_username", const std::string &pass = "test_password")
                                         : CommPeer(svr, user, pass)
-    {
-    }
-
-    TestCommPeer(CommServer & svr) : CommPeer(svr)
     {
     }
 

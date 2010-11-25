@@ -35,15 +35,6 @@ INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr), 
-                                       m_login_required(false)
-{
-    std::cout << "Outgoing peer connection." << std::endl << std::flush;
-}
-
-/// \brief Constructor remote peer socket object.
-///
-/// @param svr Reference to the object that manages all socket communication.
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)

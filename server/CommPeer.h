@@ -40,7 +40,6 @@ class CommPeer : public CommClient {
     std::string m_password;
 
   public:
-    CommPeer(CommServer & svr);
     CommPeer(CommServer & svr, const std::string &, const std::string &);
     virtual ~CommPeer();
 
