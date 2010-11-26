@@ -317,7 +317,7 @@ int main()
     CommServer commServer(server);
 
     TestCommClient * tc = new TestCommClient(commServer);
-    Connection * c = new Connection(*tc, server, "addr", "3");
+    Connection * c = new Connection(*tc, server, "addr", "3", 3);
     TestAdmin * ac = new TestAdmin(c, "user", "password", "4", 4);
     Entity * chr;
 
