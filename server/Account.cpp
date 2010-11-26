@@ -154,19 +154,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
-    Character * character = dynamic_cast<Character *>(chr);
-    if (character != 0) {
-        m_connection->connectAvatar(character);
-        // Only genuinely playable characters should go in here. Otherwise
-        // if a normal entity gets into the account, and connection, it
-        // starts getting hard to tell whether or not they exist.
-        m_charactersDict[chr->getIntId()] = chr;
-        chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
-        m_connection->addEntity(chr);
-        if (consts::enable_persistence) {
-            Persistence::instance()->addCharacter(*this, *chr);
-        }
-    }
+    connectCharacter(chr);
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
                                         "by account %5",
