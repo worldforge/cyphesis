@@ -66,7 +66,7 @@ class Peer : public Router {
     ServerRouting & m_server;
 
     Peer(CommClient & client, ServerRouting & svr,
-         const std::string & addr, const std::string & id);
+         const std::string & addr, const std::string & id, long iid);
     virtual ~Peer();
 
     void setAuthState(PeerAuthState state);

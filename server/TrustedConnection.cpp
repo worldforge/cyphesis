@@ -34,8 +34,8 @@
 TrustedConnection::TrustedConnection(CommClient & client,
                                      ServerRouting & svr,
                                      const std::string & addr,
-                                     const std::string & id) :
-                                     Connection(client, svr, addr, id)
+                                     const std::string & id, long iid) :
+                                     Connection(client, svr, addr, id, iid)
 {
 }
 

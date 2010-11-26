@@ -378,7 +378,8 @@ int main(int argc, char ** argv)
         }
         // Generate the ID for the socket object
         std::string peer_id;
-        if (newId(peer_id) < 0) {
+        long peer_iid = newId(peer_id);
+        if (peer_iid < 0) {
             log(CRITICAL, "Unable to get peer ID from Database");
             continue;
         }
@@ -401,7 +402,11 @@ int main(int argc, char ** argv)
             continue;
         }
         log(INFO, String::compose("Successfully connected to peer at \"%1:%2\"", peer_host, peer_port));
-        Peer *peer = new Peer(*peerConn, commServer.m_server, peer_host, peer_id);
+        Peer *peer = new Peer(*peerConn,
+                              commServer.m_server,
+                              peer_host,
+                              peer_id,
+                              peer_iid);
         if (peer == NULL) {
             log(ERROR, "Unable to allocate peer object");
             delete peerConn;

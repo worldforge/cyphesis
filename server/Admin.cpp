@@ -418,7 +418,8 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     const std::string & password = password_attr.String();
 
     std::string peerId;
-    if (newId(peerId) < 0) {
+    long peer_iid = newId(peerId);
+    if (peer_iid < 0) {
         error(op, "Connection failed as no ID available", res, getId());
         return;
     }
@@ -432,7 +433,7 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     }
     log(INFO, String::compose("Connection succeeded %1", peerId));
     Peer * peer = new Peer(*cp, m_connection->m_server,
-                           hostname, peerId);
+                           hostname, peerId, peer_iid);
     cp->setup(peer);
     m_connection->m_commClient.m_commServer.addSocket(cp);
     m_connection->m_commClient.m_commServer.addIdle(cp);

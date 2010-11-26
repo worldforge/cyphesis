@@ -68,7 +68,7 @@ class Connection : public Router, virtual public sigc::trackable {
     ServerRouting & m_server;
 
     Connection(CommClient &, ServerRouting & svr,
-               const std::string & addr, const std::string & id);
+               const std::string & addr, const std::string & id, long iid);
     virtual ~Connection();
 
     void addEntity(Entity * ent);

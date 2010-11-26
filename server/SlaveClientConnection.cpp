@@ -27,8 +27,8 @@
 SlaveClientConnection::SlaveClientConnection(CommClient & client,
                                              ServerRouting & svr,
                                              const std::string & address,
-                                             const std::string & id) :
-                       Router(id, -1),
+                                             const std::string & id, long iid) :
+                       Router(id, iid),
                        m_commClient(client), m_server(svr)
 {
 }

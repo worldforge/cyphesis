@@ -61,8 +61,8 @@ using Atlas::Objects::Entity::Anonymous;
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
-           const std::string & id) :
-      Router(id, forceIntegerId(id)),
+           const std::string & id, long iid) :
+      Router(id, iid),
       m_state(PEER_INIT),
       m_commClient(client),
       m_server(svr)

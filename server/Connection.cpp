@@ -60,8 +60,8 @@ static const bool debug_flag = false;
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, forceIntegerId(id)), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
