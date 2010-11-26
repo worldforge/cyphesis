@@ -144,8 +144,8 @@ using Atlas::Objects::Root;
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
@@ -192,8 +192,8 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
 TrustedConnection::TrustedConnection(CommClient & client,
                                      ServerRouting & svr,
                                      const std::string & addr,
-                                     const std::string & id) :
-                                     Connection(client, svr, addr, id)
+                                     const std::string & id, long iid) :
+                                     Connection(client, svr, addr, id, iid)
 {
 }
 
@@ -208,8 +208,8 @@ Account * TrustedConnection::newAccount(const std::string & type,
 SlaveClientConnection::SlaveClientConnection(CommClient & client,
                                              ServerRouting & svr,
                                              const std::string & address,
-                                             const std::string & id) :
-                       Router(id, -1),
+                                             const std::string & id, long iid) :
+                       Router(id, iid),
                        m_commClient(client), m_server(svr)
 {
 }
@@ -225,8 +225,8 @@ void SlaveClientConnection::operation(const Operation &, OpVector &)
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
-           const std::string & id) :
-      Router(id, forceIntegerId(id)), m_commClient(client), m_server(svr)
+           const std::string & id, long iid) :
+      Router(id, iid), m_commClient(client), m_server(svr)
 {
 }
 
