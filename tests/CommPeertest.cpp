@@ -40,73 +40,7 @@
 int _var = _val; \
 int_config_register _var ## _register(_var, _section, _setting, _help);
 
-class TestCodec : public Atlas::Codec
-{
-  public:
-    virtual void poll(bool can_get = true)
-    {
-    }
-
-    virtual void streamBegin()
-    {
-    }
-
-    virtual void streamMessage()
-    {
-    }
-
-    virtual void streamEnd()
-    {
-    }
-
-    virtual void mapMapItem(const std::string& name)
-    {
-    }
-
-    virtual void mapListItem(const std::string& name)
-    {
-    }
-
-    virtual void mapIntItem(const std::string& name, long)
-    {
-    }
-
-    virtual void mapFloatItem(const std::string& name, double)
-    {
-    }
-
-    virtual void mapStringItem(const std::string& name, const std::string&)
-    {
-    }
-
-    virtual void mapEnd()
-    {
-    }
-
-    virtual void listMapItem()
-    {
-    }
-
-    virtual void listListItem()
-    {
-    }
-
-    virtual void listIntItem(long)
-    {
-    }
-
-    virtual void listFloatItem(double)
-    {
-    }
-
-    virtual void listStringItem(const std::string&)
-    {
-    }
-
-    virtual void listEnd()
-    {
-    }
-};
+const time_t reference_seconds = 1000000000; // Some time in the early 21st
 
 class TestNegotiate : public Atlas::Negotiate
 {
@@ -124,7 +58,7 @@ class TestNegotiate : public Atlas::Negotiate
 
     virtual Atlas::Codec * getCodec(Atlas::Bridge &)
     {
-        return new TestCodec;
+        return 0;
     }
 
     virtual void poll(bool can_get = true)
@@ -150,33 +84,12 @@ class TestCommPeer : public CommPeer
         return m_password;
     }
 
-    void test_setEncoder()
-    {
-        m_codec = new TestCodec;
-        m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
-    }
-
-    void test_negotiate()
-    {
-        negotiate();
-    }
-
     void test_setNegotiateState(Atlas::Negotiate::State state)
     {
         if (m_negotiate != 0) {
             delete m_negotiate;
         }
         m_negotiate = new TestNegotiate(state);
-    }
-
-    void test_setConnection(Router * r)
-    {
-        m_connection = r;
-    }
-
-    void test_operation(const Atlas::Objects::Operation::RootOperation&op)
-    {
-        operation(op);
     }
 
     void test_openSocket()
@@ -199,43 +112,17 @@ class TestCommPeer : public CommPeer
         }
     }
 
-    void test_idle(int i)
-    {
-        idle(i);
-    }
-
     void test_setConnectTime(time_t t)
     {
         m_connectTime = t;
     }
-
-    void test_setupQueue()
-    {
-        Atlas::Objects::Operation::RootOperation op;
-        m_opQueue.push_back(op);
-    }
-
-    void test_objectArrived(const Atlas::Objects::Root & obj)
-    {
-        objectArrived(obj);
-    }
 };
 
-class TestRouter : public Router
+class TestRouter : public Peer
 {
-  protected:
-    int m_reply;
   public:
-    TestRouter(int reply = 0) : Router("5", 5), m_reply(reply)
+    TestRouter(CommClient & c, ServerRouting & s) : Peer(c, s, "test_addr", "5")
     {
-    }
-
-    virtual void operation(const Operation&, OpVector&res)
-    {
-        if (m_reply) {
-            Atlas::Objects::Operation::RootOperation op;
-            res.push_back(op);
-        }
     }
 };
 
@@ -248,18 +135,6 @@ int main()
     CommServer comm_server(server);
 
     {
-        new TestCommPeer(comm_server);
-    }
-
-    {
-        new TestCommPeer(comm_server);
-    }
-
-    {
-        new TestCommPeer(comm_server, "test_username", "test_password");
-    }
-
-    {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
         delete cs;
@@ -268,8 +143,10 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server, "test_username", "test_password");
 
-        assert(cs->test_getUsername() == "test_username");
-        assert(cs->test_getPassword() == "test_password");
+        const std::string & u = cs->test_getUsername();
+        assert(u == "test_username");
+        const std::string & p = cs->test_getPassword();
+        assert(p == "test_password");
 
         delete cs;
     }
@@ -277,23 +154,7 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        cs->test_setEncoder();
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->setup(0);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_negotiate();
+        cs->idle(reference_seconds);
 
         delete cs;
     }
@@ -303,26 +164,7 @@ int main()
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
 
-        cs->test_negotiate();
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setNegotiateState(Atlas::Negotiate::FAILED);
-
-        cs->test_negotiate();
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setConnectTime(0);
-        cs->test_idle(0);
+        cs->idle(reference_seconds);
 
         delete cs;
     }
@@ -331,10 +173,8 @@ int main()
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
-        cs->test_negotiate();
 
-        cs->test_setConnectTime(0);
-        cs->test_idle(0);
+        cs->idle(reference_seconds + 20);
 
         delete cs;
     }
@@ -342,8 +182,9 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        cs->test_setConnectTime(0);
-        cs->test_idle(20);
+        cs->setup(new TestRouter(*cs, server));
+
+        cs->idle(reference_seconds);
 
         delete cs;
     }
@@ -351,7 +192,11 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        cs->read();
+        TestRouter * tr = new TestRouter(*cs, server);
+        cs->setup(tr);
+        tr->setAuthState(PEER_AUTHENTICATED);
+
+        cs->idle(reference_seconds);
 
         delete cs;
     }
@@ -359,123 +204,11 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        cs->test_setEncoder();
-        cs->read();
+        TestRouter * tr = new TestRouter(*cs, server);
+        cs->setup(tr);
+        tr->setAuthState(PEER_FAILED);
 
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        Atlas::Objects::Operation::RootOperation op;
-        cs->send(op);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_openSocket();
-
-        Atlas::Objects::Operation::RootOperation op;
-        cs->send(op);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_openSocket();
-        cs->test_setEncoder();
-
-        Atlas::Objects::Operation::RootOperation op;
-        cs->send(op);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setConnection(new TestRouter);
-
-        Atlas::Objects::Operation::RootOperation op;
-        cs->test_operation(op);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setConnection(new TestRouter(1));
-
-        Atlas::Objects::Operation::RootOperation op;
-        cs->test_operation(op);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setConnection(new TestRouter(1));
-
-        Atlas::Objects::Operation::RootOperation op;
-        op->setSerialno(23);
-        cs->test_operation(op);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setConnection(new TestRouter(1));
-
-        cs->dispatch();
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setConnection(new TestRouter(1));
-
-        cs->test_setupQueue();
-        cs->dispatch();
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        Atlas::Objects::Entity::RootEntity ent;
-        cs->test_objectArrived(ent);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        Atlas::Objects::Entity::RootEntity ent;
-        ent->setParents(std::list<std::string>());
-        cs->test_objectArrived(ent);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        Atlas::Objects::Operation::RootOperation op;
-        cs->test_objectArrived(op);
+        cs->idle(reference_seconds);
 
         delete cs;
     }
@@ -559,6 +292,8 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 
 CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
 {
+    m_timeVal.tv_sec = 0;
+    m_timeVal.tv_usec = 0;
 }
 
 CommServer::~CommServer()
@@ -596,6 +331,7 @@ CommClient::~CommClient()
 
 void CommClient::setup(Router * connection)
 {
+    m_connection = connection;
 }
 
 void CommClient::objectArrived(const Atlas::Objects::Root & obj)
@@ -630,6 +366,17 @@ int CommClient::negotiate()
 int CommClient::send(const Atlas::Objects::Operation::RootOperation &op)
 {
     return 0;
+}
+
+Peer::Peer(CommClient & client,
+           ServerRouting & svr,
+           const std::string & addr,
+           const std::string & id) :
+      Router(id, 0L),
+      m_state(PEER_INIT),
+      m_commClient(client),
+      m_server(svr)
+{
 }
 
 Peer::~Peer()
