@@ -82,12 +82,12 @@ int main()
     TestWorld world;
 
     {
-        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         delete p;
     }
 
     {
-        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         Atlas::Objects::Operation::RootOperation op;
         OpVector res;
@@ -98,7 +98,7 @@ int main()
 
     {
         // Test the setting of authentiaction states
-        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         assert(p->getAuthState() == PEER_INIT);
         p->setAuthState(PEER_AUTHENTICATED);
@@ -108,7 +108,7 @@ int main()
     }
 
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -117,7 +117,7 @@ int main()
 
     // Authenticating (no args)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
@@ -128,7 +128,7 @@ int main()
 
     // Authenticating (empty arg)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
@@ -141,7 +141,7 @@ int main()
 
     // Authenticating (full arg)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
@@ -155,7 +155,7 @@ int main()
 
     // Authenticated (no args)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -165,7 +165,7 @@ int main()
     }
 
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Error op;
         OpVector res;
@@ -174,7 +174,7 @@ int main()
 
     // Not authenticated
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         Entity e("3", 3);
         int ret = p->teleportEntity(&e);
@@ -183,7 +183,7 @@ int main()
 
     // Authenticated
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -194,7 +194,7 @@ int main()
 
     // Re-teleport same entity
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -208,7 +208,7 @@ int main()
 
     // Character (no mind)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -219,7 +219,7 @@ int main()
 
     // Character (externl mind, unconnected)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -231,7 +231,7 @@ int main()
 
     // Character (externl mind, connected)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -245,7 +245,7 @@ int main()
 
     // No arg
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -255,7 +255,7 @@ int main()
 
     // Empty arg, no refno
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -269,7 +269,7 @@ int main()
     // Empty arg, made up refno, not CommPeer
     {
         CommClient *peerConn = new CommClient(*(CommServer*)0);
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -284,7 +284,7 @@ int main()
     // Empty arg, made up refno
     {
         CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -299,7 +299,7 @@ int main()
     // Empty arg, refno that matches earlier teleport, not in world
     {
         CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -320,7 +320,7 @@ int main()
     // Empty arg, refno that matches earlier teleport, in world
     {
         CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -345,7 +345,7 @@ int main()
     // Empty arg, refno that matches earlier teleport, with mind
     {
         CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -372,14 +372,14 @@ int main()
 
     // No teleports to clear
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->cleanTeleports();
     }
 
     // One teleport to clear
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1");
+        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
