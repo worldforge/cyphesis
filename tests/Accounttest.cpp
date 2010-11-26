@@ -280,6 +280,20 @@ int main()
         ac->operation(op, res);
     }
 
+    {
+        Entity e("7", 7);
+
+        int ret = ac->connectCharacter(&e);
+        assert(ret == -1);
+    }
+
+    {
+        Character e("8", 8);
+
+        int ret = ac->connectCharacter(&e);
+        assert(ret == 0);
+    }
+
     delete ac;
 
     return 0;
