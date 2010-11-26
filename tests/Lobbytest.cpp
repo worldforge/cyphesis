@@ -108,7 +108,7 @@ int main()
 
         tac->m_connection = new Connection(*(CommClient*)0,
                                            *(ServerRouting*)0,
-                                           "foo", "3");
+                                           "foo", "3", 3);
 
         l->addAccount(tac);
 
@@ -126,7 +126,7 @@ int main()
 
         tac->m_connection = new Connection(*(CommClient*)0,
                                            *(ServerRouting*)0,
-                                           "foo", "3");
+                                           "foo", "3", 3);
 
         l->addAccount(tac);
 
@@ -145,7 +145,7 @@ int main()
 
         tac->m_connection = new Connection(*(CommClient*)0,
                                            *(ServerRouting*)0,
-                                           "foo", "3");
+                                           "foo", "3", 3);
 
         l->addAccount(tac);
 
@@ -277,8 +277,8 @@ void Account::OtherOperation(const Operation &, OpVector &)
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
