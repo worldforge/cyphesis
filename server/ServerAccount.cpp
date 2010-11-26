@@ -174,12 +174,11 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     }
 
     // The reply to a successful Create operation in the ServerAccount class
-    // is an Info operation with two arguments. The first argument is the new 
-    // entity that has been created. The second argument is the ID of the
+    // is an Info operation. The argument is the new 
+    // entity that has been created. The refno is set to the serialno
+    // of the incoming operation, which is the ID of the
     // entity on the sender server (used by the recipient of this reply to 
     // figure out which Create op this reply is associated with
-    // FIXME Can we just use refno to determine which this is a reply to
-    // and thus drop the second arg? Should be able to.
     Info info;
 
     Anonymous info_arg;
