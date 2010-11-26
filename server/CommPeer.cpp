@@ -50,19 +50,6 @@ CommPeer::~CommPeer()
     std::cout << "Peer disconnected." << std::endl << std::flush;
 }
 
-/// \brief Connect to a remote peer
-///
-/// @param host The hostname of the peer to connect to
-/// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host)
-{
-    m_clientIos.open(host, peer_port_num);
-    if (m_clientIos.is_open()) {
-        return 0;
-    }
-    return -1;
-}
-
 /// \brief Connect to a remote peer on a specific port
 ///
 /// @param host The hostname of the peer to connect to
