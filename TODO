@@ -1,3 +1,5 @@
+Cut down on forceIntegerId in constructors
+
 The call path from teleport_handler through Peer::teleportEntity is very
 inefficient. Lots of unnecessary lookups.
 
