@@ -141,7 +141,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
     }
 
     // Connect to something, then disconnect
@@ -152,7 +152,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
         em.connect(0);
     }
 
@@ -164,7 +164,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
         const std::string & id = em.connectionId();
         assert(id == "4");
     }
@@ -246,7 +246,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -264,7 +264,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -282,7 +282,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -311,7 +311,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -353,8 +353,8 @@ int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
