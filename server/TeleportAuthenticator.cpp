@@ -18,11 +18,9 @@
 #include "TeleportAuthenticator.h"
 #include "PendingTeleport.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/compose.hpp"
-
-#include <string>
-#include <iostream>
 
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 

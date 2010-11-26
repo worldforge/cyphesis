@@ -18,12 +18,11 @@
 #ifndef SERVER_TELEPORT_AUTHENTICATOR_H
 #define SERVER_TELEPORT_AUTHENTICATOR_H
 
-#include "PendingTeleport.h"
-
-#include "common/BaseWorld.h"
-
 #include <string>
 #include <map>
+
+class Entity;
+class PendingTeleport;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
 typedef std::map<std::string, PendingTeleport *> PendingTeleportMap;
