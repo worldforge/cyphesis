@@ -22,8 +22,6 @@
 
 #include "CommClient.h"
 
-extern int peer_port_num;
-
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {

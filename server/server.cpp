@@ -303,16 +303,6 @@ int main(int argc, char ** argv)
     }
     commServer.addSocket(listener);
 
-    CommTCPListener * peerListener = new CommTCPListener(commServer,
-          *new CommClientFactory<Peer>());
-    if (peerListener->setup(peer_port_num) != 0) {
-        log(ERROR, String::compose("Could not create peer listen socket "
-                                   "on port %1.", peer_port_num));
-        delete peerListener;
-    } else {
-        commServer.addSocket(peerListener);
-    }
-
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(commServer,
           *new CommClientFactory<TrustedConnection>());

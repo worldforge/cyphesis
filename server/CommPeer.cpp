@@ -29,9 +29,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
-           "Network listen port for peer server connections");
-
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
