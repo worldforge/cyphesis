@@ -62,8 +62,8 @@ class TestCommClient : public CommClient {
 class TestConnection : public Connection {
   public:
     TestConnection(CommClient & cc, ServerRouting & svr,
-                   const std::string & addr, const std::string & id) :
-        Connection(cc, svr, addr, id) {
+                   const std::string & addr, const std::string & id, long iid) :
+        Connection(cc, svr, addr, id, iid) {
       
     }
 
@@ -103,7 +103,7 @@ int main()
     CommServer commServer(server);
 
     TestCommClient * tcc = new TestCommClient(commServer);
-    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3");
+    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
 
     Account * ac = tc->testAddAccount("bob", "foo");
     assert(ac != 0);
