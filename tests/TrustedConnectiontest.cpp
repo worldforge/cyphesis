@@ -65,8 +65,8 @@ class TestCommClient : public CommClient {
 class TestConnection : public TrustedConnection {
   public:
     TestConnection(CommClient & cc, ServerRouting & svr,
-                   const std::string & addr, const std::string & id) :
-        TrustedConnection(cc, svr, addr, id) {
+                   const std::string & addr, const std::string & id, long iid) :
+        TrustedConnection(cc, svr, addr, id, iid) {
       
     }
 
@@ -111,7 +111,7 @@ int main()
     CommServer commServer(server);
 
     TestCommClient * tcc = new TestCommClient(commServer);
-    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3");
+    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
 
     {
         Account * ac = tc->test_newAccount("_non_type_",
@@ -422,8 +422,8 @@ void Account::OtherOperation(const Operation &, OpVector &)
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
