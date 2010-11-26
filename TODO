@@ -1,3 +1,6 @@
+It looks as though Look FROM account is required to activate a possess key,
+which I was not expecting. Are clients expecting this?
+
 Cut down on forceIntegerId in constructors
 
 The call path from teleport_handler through Peer::teleportEntity is very
