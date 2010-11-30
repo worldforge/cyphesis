@@ -77,6 +77,8 @@ class TestWorld : public BaseWorld {
     virtual void addPerceptive(Entity *) { }
 };
 
+Atlas::Objects::Operation::RootOperation stub_CommClient_sent_op(0);
+
 int main()
 {
     TestWorld world;
@@ -190,6 +192,8 @@ int main()
         Entity e("3", 3);
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
+        assert(stub_CommClient_sent_op.isValid());
+        assert(stub_CommClient_sent_op->getArgs().size() == 1);
     }
 
     // Re-teleport same entity
@@ -201,6 +205,8 @@ int main()
         Entity e("3", 3);
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
+        assert(stub_CommClient_sent_op.isValid());
+        assert(stub_CommClient_sent_op->getArgs().size() == 1);
 
         ret = p->teleportEntity(&e);
         assert(ret != 0);
@@ -215,6 +221,8 @@ int main()
         Character e("3", 3);
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
+        assert(stub_CommClient_sent_op.isValid());
+        assert(stub_CommClient_sent_op->getArgs().size() == 1);
     }
 
     // Character (externl mind, unconnected)
@@ -227,6 +235,8 @@ int main()
         e.m_externalMind = new ExternalMind(e);
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
+        assert(stub_CommClient_sent_op.isValid());
+        assert(stub_CommClient_sent_op->getArgs().size() == 1);
     }
 
     // Character (externl mind, connected)
@@ -241,6 +251,8 @@ int main()
         e.m_externalMind = mind;
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
+        assert(stub_CommClient_sent_op.isValid());
+        assert(stub_CommClient_sent_op->getArgs().size() == 2);
     }
 
     // No arg
@@ -495,6 +507,7 @@ int CommClient::negotiate()
 
 int CommClient::send(const Atlas::Objects::Operation::RootOperation &op)
 {
+    stub_CommClient_sent_op = op;
     return 0;
 }
 
