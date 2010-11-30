@@ -176,6 +176,7 @@ int Peer::teleportEntity(const Entity * ent)
     Create op;
     op->setFrom(m_accountId);
     op->setSerialno(iid);
+    op->setArgs1(atlas_repr);
     
     if (mind != 0 && mind->isConnected()) {
         // Entities with a mind require an additional one-time possess key that
@@ -193,16 +194,11 @@ int Peer::teleportEntity(const Entity * ent)
         s->setKey(key);
         // Add an additional possess key argument
         log(INFO, String::compose("Adding possess key %1 to Create op", key));
-        std::vector<Root> create_args;
         Anonymous key_arg;
         key_arg->setAttr("possess_key", key);
-        create_args.push_back(atlas_repr);
-        create_args.push_back(key_arg);
 
-        op->setArgs(create_args);
-    } else {
-        // Plain old create without additional argument
-        op->setArgs1(atlas_repr);
+        std::vector<Root> & create_args = op->modifyArgs();
+        create_args.push_back(key_arg);
     }
     m_commClient.send(op);
     log(INFO, "Sent Create op to peer");
