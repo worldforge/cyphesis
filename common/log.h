@@ -31,8 +31,18 @@ typedef enum log_level { INFO, SCRIPT, NOTICE,
                          SCRIPT_ERROR,
                          CRITICAL } LogLevel;
 
-typedef enum log_event { START, STOP, CONNECT, DISCONNECT, LOGIN, LOGOUT,
-                         TAKE_CHAR, DROP_CHAR } LogEvent;
+typedef enum log_event { START,          // Server binary started
+                         STOP,           // Server binary stopped
+                         CONNECT,        // Atlas client connected
+                         DISCONNECT,     // Atlas client disconnected
+                         LOGIN,          // Account authenticated
+                         LOGOUT,         // Authenticated account disconnected
+                         TAKE_CHAR,      // Client avatar bound
+                         DROP_CHAR,      // Client avatar unbound
+                         EXPORT_ENT,     // Entity exported to peer
+                         IMPORT_ENT,     // Entity imported from peer
+                         POSSESS_CHAR,   // Imported avatar claimed
+} LogEvent;
 
 void initLogger();
 void rotateLogger();
