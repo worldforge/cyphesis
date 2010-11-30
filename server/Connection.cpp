@@ -388,8 +388,9 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     log(INFO, "Successful login");
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("%1 %2 - Login account %3",
-                                    getId(), account->getId(), username));
+    logEvent(LOGIN, String::compose("%1 %2 - Login account %3 (%4)",
+                                    getId(), account->getId(), username,
+                                    account->getType()));
 }
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
@@ -452,8 +453,11 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("%1 %2 - Create account %3", getId(),
-                                    account->getId(), username));
+    logEvent(LOGIN, String::compose("%1 %2 - Create account %3 (%4)",
+                                    getId(),
+                                    account->getId(),
+                                    username,
+                                    account->getType()));
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)
