@@ -1054,13 +1054,3 @@ long integerId(const std::string & id)
 
     return intId;
 }
-
-long forceIntegerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        abort();
-    }
-
-    return intId;
-}
