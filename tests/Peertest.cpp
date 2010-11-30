@@ -1058,6 +1058,10 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
+void logEvent(LogEvent lev, const std::string & msg)
+{
+}
+
 long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);
