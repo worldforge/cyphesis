@@ -67,6 +67,7 @@ Peer::Peer(CommClient & client,
       m_commClient(client),
       m_server(svr)
 {
+    logEvent(CONNECT, String::compose("%1 - - Connect to %2", id, addr));
 }
 
 Peer::~Peer()
@@ -309,6 +310,8 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     delOp->setTo(entity->getId());
     entity->sendWorld(delOp);
     log(INFO, "Deleted entity from current server");
+    logEvent(EXPORT_ENT, String::compose("%1 - %2 Exported entity",
+                                         getId(), entity->getId()));
 
     // Clean up the teleport state object
     m_teleports.erase(I);

@@ -561,6 +561,14 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         if (character) {
             if (connectCharacter(character) == 0) {
                 TeleportAuthenticator::instance()->removeTeleport(to);
+                logEvent(POSSESS_CHAR,
+                         String::compose("%1 %2 %3 Claimed character (%4) "
+                                         "by account %5",
+                                         m_connection->getId(),
+                                         getId(),
+                                         character->getId(),
+                                         character->getType(),
+                                         m_username));
             }
         }
     }

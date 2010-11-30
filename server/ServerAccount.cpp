@@ -159,6 +159,11 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         }
     }
 
+    logEvent(IMPORT_ENT, String::compose("%1 %2 %3 Imported entity",
+                                         m_connection->getId(),
+                                         getId(),
+                                         entity->getId()));
+
     // The reply to a successful Create operation in the ServerAccount class
     // is an Info operation. The argument is the new 
     // entity that has been created. The refno is set to the serialno
