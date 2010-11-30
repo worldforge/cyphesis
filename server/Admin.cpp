@@ -426,7 +426,7 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
 
     CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
                                  username, password);
-    std::cout << "Connecting to " << hostname << std::endl << std::flush;
+    debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     if (cp->connect(hostname, port) != 0) {
         error(op, "Connection failed", res, getId());
         return;

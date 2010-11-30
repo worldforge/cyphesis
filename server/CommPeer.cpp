@@ -39,12 +39,10 @@ CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::st
                      m_username(username),
                      m_password(password)
 {
-    std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
 
 CommPeer::~CommPeer()
 {
-    std::cout << "Peer disconnected." << std::endl << std::flush;
 }
 
 /// \brief Connect to a remote peer on a specific port
