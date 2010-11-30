@@ -248,7 +248,8 @@ void logEvent(LogEvent lev, const std::string & msg)
     };
 
     logDate(event_log);
-    event_log << " " << type << " " << msg << std::endl << std::flush;
+    event_log << " " << instance << " " << type << " " << msg
+              << std::endl << std::flush;
 }
 
 void logSysError(LogLevel lvl)
