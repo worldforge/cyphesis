@@ -119,7 +119,6 @@ void Peer::operation(const Operation &op, OpVector &res)
                     m_accountType = op->getParents().front();
                 }
                 m_state = PEER_AUTHENTICATED;
-                log(INFO, "Peer authenticated");
             } else if (m_state == PEER_AUTHENTICATED) {
                 // If we received an Info op while authenticated, it is a
                 // response to a teleport request.
@@ -130,7 +129,6 @@ void Peer::operation(const Operation &op, OpVector &res)
         case Atlas::Objects::Operation::ERROR_NO:
         {
             m_state = PEER_FAILED;
-            log(INFO, "Peer login failed");
         }
         break;
     }

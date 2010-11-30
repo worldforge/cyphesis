@@ -92,7 +92,6 @@ int CommClient::negotiate()
     m_negotiate->poll();
 
     if (m_negotiate->getState() == Atlas::Negotiate::IN_PROGRESS) {
-        log(INFO, "Negotiate in progress");
         return 0;
     }
     debug(std::cout << "done" << std::endl;);
@@ -116,8 +115,6 @@ int CommClient::negotiate()
     // Acceptor is now finished with
     delete m_negotiate;
     m_negotiate = NULL;
-
-    log(INFO, "Negotiate completed");
 
     return 0;
 }

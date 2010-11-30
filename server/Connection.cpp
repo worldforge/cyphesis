@@ -385,7 +385,6 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     account->addToEntity(info_arg);
     info->setArgs1(info_arg);
     debug(std::cout << "Good login" << std::endl << std::flush;);
-    log(INFO, "Successful login");
     res.push_back(info);
 
     logEvent(LOGIN, String::compose("%1 %2 - Login account %3 (%4)",

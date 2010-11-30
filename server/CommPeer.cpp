@@ -93,7 +93,6 @@ void CommPeer::idle(time_t t)
             l->setSerialno(newSerialNo());
             // Send the login op
             send(l);
-            log(INFO, "Sent login op to peer");
             peer->setAuthState(PEER_AUTHENTICATING);
         }
         if (peer->getAuthState() == PEER_FAILED) {
