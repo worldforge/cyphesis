@@ -1,3 +1,5 @@
+Add event logging for teleport
+
 It looks as though Look FROM account is required to activate a possess key,
 which I was not expecting. Are clients expecting this?
 
