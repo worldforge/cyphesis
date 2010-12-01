@@ -129,6 +129,9 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
         pcc->m_mind = self->m_client->character();
         return (PyObject*)pcc;
     }
+    if (strcmp(name, "id") == 0) {
+        return PyString_FromString(self->m_client->id().c_str());
+    }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
