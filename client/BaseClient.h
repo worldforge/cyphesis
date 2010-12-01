@@ -47,6 +47,10 @@ class BaseClient {
         return m_character;
     }
 
+    const std::string & id() const {
+        return m_playerId;
+    }
+
     Atlas::Objects::Root createSystemAccount();
     Atlas::Objects::Root createAccount(const std::string & name,
                                        const std::string & pword);
