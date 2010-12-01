@@ -22,6 +22,8 @@
 
 #include "ObserverClient.h"
 
+#include "rulesets/Py_Operation.h"
+
 #include "common/debug.h"
 #include "common/log.h"
 
@@ -74,9 +76,28 @@ static PyObject * ObserverClient_run(PyObserverClient * self)
     return Py_None;
 }
 
+static PyObject * ObserverClient_send(PyObserverClient * self, PyOperation * op)
+{
+#ifndef NDEBUG
+    if (self->m_client == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.send");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (!PyOperation_Check(op)) {
+        PyErr_SetString(PyExc_TypeError, "Can only send Atlas operation");
+        return NULL;
+    }
+    self->m_client->send(op->operation);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+
 static PyMethodDef ObserverClient_methods[] = {
         {"setup",          (PyCFunction)ObserverClient_setup,     METH_VARARGS},
         {"run",            (PyCFunction)ObserverClient_run,       METH_NOARGS},
+        {"send",           (PyCFunction)ObserverClient_send,      METH_O},
         {NULL,          NULL}           /* sentinel */
 };
 
