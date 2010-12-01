@@ -439,6 +439,14 @@ void Admin::customConnectOperation(const Operation & op, OpVector & res)
     m_connection->m_commClient.m_commServer.addIdle(cp);
     m_connection->m_server.addObject(peer);
     // Fix it up
+
+    Anonymous info_arg;
+    peer->addToEntity(info_arg);
+
+    Info info;
+    info->setTo(getId());
+    info->setArgs1(info_arg);
+    res.push_back(info);
 }
 
 /// \brief Process a Monitor operation
