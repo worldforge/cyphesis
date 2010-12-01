@@ -9,8 +9,8 @@ import server
 
 class editor:
     def __init__(self,c):
-        self.c=c
-        self.m=c.character
+        self.client=c
+        self.avatar=c.character
         self.list_call={"say":(self._say,1),
                         "own":(self._own,2),
                         "know":(self._know,2),
@@ -44,21 +44,21 @@ class editor:
         #ent=Entity(kw)
 ##         if hasattr(ent,"copy"):
 ##             foo
-        return self.m.make(ent)
+        return self.avatar.make(ent)
     def set(self, _id, **kw):
         kw['id']=_id
         ent=apply(Entity,(),kw)
-        return self.m.set(_id,ent)
+        return self.avatar.set(_id,ent)
     def look(self, _id=""):
-        return self.m.look(_id)
+        return self.avatar.look(_id)
     def look_for(self, **kw):
         ent=apply(Entity,(),kw)
-        return self.m.look_for(ent)
+        return self.avatar.look_for(ent)
     def delete(self, id):
-        return self.m.delete(id)
+        return self.avatar.delete(id)
     def _say(self,target,verb,subject,object,predicate=None):
 ##         es=Entity(verb=verb,subject=subject,object=object)
-##         self.m.send(Operation("talk",es,to=target))
+##         self.avatar.send(Operation("talk",es,to=target))
         if type(subject)==InstanceType: subject=subject.id
         elif type(subject)==TupleType: subject=`subject`
         elif type(subject)==StringType: pass
@@ -84,7 +84,7 @@ class editor:
     #Interlinguish
     def _tell(self,target,string,interlinguish):
         es=Entity(say=string)
-        self.m.send(Operation("talk",es,to=target))
+        self.avatar.send(Operation("talk",es,to=target))
     def tell_importance(self,target,sub,cmp,obj):
         s,i=il.importance(sub,cmp,obj)
         self.tell(target,s,i)

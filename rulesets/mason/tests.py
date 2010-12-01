@@ -337,8 +337,8 @@ def test_task(host='', account='', password='', **args):
     axe=m.make('axe',pos=(0,0,0),parent=settler.id)
     oak=m.make('oak',pos=(5,0,0))
 
-    m.m.send(Operation("wield", Entity(axe.id), to=settler))
-    m.m.send(Operation("use", Operation("cut", Entity(oak.id)), to=settler))
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("cut", Entity(oak.id)), to=settler))
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
@@ -390,5 +390,5 @@ def test_teleport(host='', account='', password='', **args):
 
     boat=m.make('boat',pos=(-1,-1,0),teleport='0',actions=["teleport"])
 
-    m.m.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
+    m.avatar.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
     settler=m.look(settler.id)
