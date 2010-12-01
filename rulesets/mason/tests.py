@@ -386,9 +386,19 @@ def test_teleport(host='', account='', password='', **args):
 
     m=create_editor(host, account, password)
 
+    rep=m.client.send_wait(Operation("connect",
+                                     Entity(hostname='localhost',
+                                            port=6767,
+                                            username='whimsy',
+                                            password='foo'),
+                                     from_=m.client.id))
+
+    peer = rep[0].id
+    time.sleep(2)
+
     settler=m.make('settler',pos=(1,1,0))
 
-    boat=m.make('boat',pos=(-1,-1,0),teleport='0',actions=["teleport"])
+    boat=m.make('boat',pos=(-1,-1,0),teleport=peer,actions=["teleport"])
 
     m.avatar.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
     settler=m.look(settler.id)
