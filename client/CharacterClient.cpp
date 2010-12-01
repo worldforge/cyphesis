@@ -83,42 +83,8 @@ LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
 /// @param res Result with correct refno is returned here
 int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
 {
-    long no = m_connection.newSerialNo();
-    op->setSerialno(no);
-    send(op);
-    debug(std::cout << "Waiting for reply to " << op->getParents().front()
-                    << std::endl << std::flush;);
-    while (true) {
-        if (m_connection.pending()) {
-            Operation input = m_connection.pop();
-            assert(input.isValid());
-            if (input.isValid()) {
-                // FIXME What the hell is this!
-#if 0
-                // Should we really do this here?
-                OpVector result;
-                operation(*input, result);
-                OpVector::const_iterator I = result.begin();
-                OpVector::const_iterator Iend = result.end();
-                for (; I != Iend; ++I) {
-                    send(*(*I));
-                }
-#endif
-    
-                if (input->getRefno() == no) {
-                    debug(std::cout << "Got reply" << std::endl << std::flush;);
-                    res.push_back(input);
-                    return 0;
-                } else {
-                    debug(std::cout << "Not reply" << std::endl << std::flush;);
-                }
-            } else {
-                debug(std::cout << "Not op" << std::endl << std::flush;);
-            }
-        } else if (m_connection.wait() != 0) {
-            return -1;
-        }
-    }
+    op->setFrom(getId());
+    return m_connection.sendAndWaitReply(op, res);
 }
 
 LocatedEntity * CharacterClient::sendLook(const Operation & op)
