@@ -127,7 +127,7 @@ int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
     m_connection->operation(op, reply);
     OpVector::const_iterator Iend = reply.end();
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
-        debug(std::cout << "sending reply" << std::endl << std::flush;);
+        debug(std::cout << "sending " << (*I)->getParents().front() << " reply" << std::endl << std::flush;);
         if (!op->isDefaultSerialno()) {
             // Should we respect existing refnos?
             if ((*I)->isDefaultRefno()) {
@@ -145,7 +145,7 @@ void CommClient::dispatch()
 {
     DispatchQueue::const_iterator Iend = m_opQueue.end();
     for(DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
-        debug(std::cout << "dispatching op" << std::endl << std::flush;);
+        debug(std::cout << "dispatching " << (*I)->getParents().front() << " op" << std::endl << std::flush;);
         if (operation(*I) != 0) {
             return;
         }
