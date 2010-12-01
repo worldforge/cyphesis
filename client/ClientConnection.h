@@ -44,6 +44,7 @@ class ClientConnection : public AtlasStreamClient {
     ~ClientConnection();
 
     int wait();
+    int sendAndWaitReply(const Operation & op, OpVector & res);
 
     Atlas::Objects::Operation::RootOperation pop();
     bool pending();
