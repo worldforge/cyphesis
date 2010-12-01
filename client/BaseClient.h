@@ -76,6 +76,14 @@ class BaseClient {
         m_connection.send(op);
     }
 
+    int wait() {
+        return m_connection.wait();
+    }
+
+    int sendAndWaitReply(const Operation & op, OpVector & res) {
+        return m_connection.sendAndWaitReply(op, res);
+    }
+
     /// \brief Default client main loop
     void run(const bool loop = true) {
         while (loop) {
