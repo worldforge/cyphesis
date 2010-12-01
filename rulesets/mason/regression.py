@@ -48,8 +48,8 @@ class RegressionTester:
         else:
             o = target
 
-        self.editor.m.send(Operation('wield', Entity(t.id), to=c))
-        self.editor.m.send(Operation('use', Operation(op, Entity(o.id)), to=c))
+        self.editor.avatar.send(Operation('wield', Entity(t.id), to=c))
+        self.editor.avatar.send(Operation('use', Operation(op, Entity(o.id)), to=c))
 
         c = self.editor.look(c.id)
 
