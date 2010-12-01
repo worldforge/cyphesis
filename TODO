@@ -1,3 +1,8 @@
+Consider whether the connection which creates a Peer should own it for a bit.
+Perhaps an Admin account should keep ownership of a Peer it creates, so it
+can manage it? Should the connection get updates as things change on the
+Peer, especially authentication
+
 Add event logging for teleport
 
 It looks as though Look FROM account is required to activate a possess key,
