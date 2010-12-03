@@ -134,7 +134,7 @@ void Account::addCharacter(Entity * chr)
 /// @param ent Atlas description of the Character to be created
 Entity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
-                                  const RootEntity & arg)
+                                  const Root & arg)
 {
     if (m_connection == 0) {
         return 0;
@@ -291,7 +291,7 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
+    const Root & arg = args.front();
 
     if (!arg.isValid()) {
         error(op, "Character creation arg is malformed", res, getId());

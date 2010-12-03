@@ -52,7 +52,7 @@ class Account : public Router {
 
     Entity * addNewCharacter(const std::string &,
                              const Atlas::Objects::Entity::RootEntity &,
-                             const Atlas::Objects::Entity::RootEntity &);
+                             const Atlas::Objects::Root &);
     void characterDestroyed(long);
 
     /// \brief Check a character creation op is within the privelege levels
