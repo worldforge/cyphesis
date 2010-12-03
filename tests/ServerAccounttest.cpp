@@ -65,7 +65,7 @@ class TestServerAccount : public ServerAccount {
     }
 
     virtual int testCharacterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const {
         return characterError(op, ent, res);
     }

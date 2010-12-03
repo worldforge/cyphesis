@@ -278,7 +278,7 @@ void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 int Admin::characterError(const Operation & op,
-                          const RootEntity & ent, OpVector & res) const
+                          const Root & ent, OpVector & res) const
 {
     return 0;
 }
@@ -328,7 +328,7 @@ void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 int Player::characterError(const Operation & op,
-                           const RootEntity & ent, OpVector & res) const
+                           const Root & ent, OpVector & res) const
 {
     return 0;
 }

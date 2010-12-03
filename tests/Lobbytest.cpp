@@ -35,7 +35,7 @@ class TestAccount : public Account
     TestAccount() : Account(0, "bob", "foo", "2", 2) { }
 
     virtual int characterError(const Operation &,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const
     {
         return false;
