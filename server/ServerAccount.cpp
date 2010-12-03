@@ -75,7 +75,7 @@ int ServerAccount::characterError(const Operation & op,
                                   const RootEntity & ent,
                                   OpVector & res) const
 {
-    return false;
+    return -1;
 }
 
 /// \brief This operation allows the creation of entities on the server
