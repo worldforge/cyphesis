@@ -22,13 +22,6 @@
 
 #include "common/Router.h"
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/RootEntity.h>
-
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::RootEntity;
-
 class CommClient;
 class ServerRouting;
 class TeleportState;
