@@ -35,7 +35,7 @@ class ServerAccount : public Account {
 
     Entity * addNewEntity(const std::string &,
                           const Atlas::Objects::Entity::RootEntity &,
-                          const Atlas::Objects::Entity::RootEntity &);
+                          const Atlas::Objects::Root &);
 
   public:
     ServerAccount(Connection * conn, const std::string & username,

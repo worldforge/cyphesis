@@ -190,7 +190,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
 /// \param arg The argument of the Create op containing the entity itself
 Entity * ServerAccount::addNewEntity(const std::string & typestr,
                                      const RootEntity & ent,
-                                     const RootEntity & arg)
+                                     const Root & arg)
 {
     if (m_connection == 0) {
         return 0;
