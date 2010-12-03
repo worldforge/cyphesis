@@ -1,3 +1,6 @@
+Generalize Account::CreateOp and use Root for arg as that would work.
+Then support creation of Junctures and other OOG objects
+
 Consider whether the connection which creates a Peer should own it for a bit.
 Perhaps an Admin account should keep ownership of a Peer it creates, so it
 can manage it? Should the connection get updates as things change on the
