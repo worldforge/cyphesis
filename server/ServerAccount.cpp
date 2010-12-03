@@ -130,7 +130,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     std::string possess_key;
 
     if (args.size() == 2) {
-        RootEntity arg2 = smart_dynamic_cast<RootEntity>(args.back());
+        const Root & arg2 = args.back();
         Element key;
         if(arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
             possess_key = key.String();
