@@ -20,8 +20,6 @@
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
 
-#include "Account.h"
-
 #include "common/Router.h"
 
 #include <Atlas/Objects/Operation.h>
