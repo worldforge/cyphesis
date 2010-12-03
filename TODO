@@ -1,4 +1,5 @@
 Generalize Account::CreateOp and use Root for arg as that would work.
+Remove smart_dynamic_cast in CreateOperation in Account and ServerAccount
 Then support creation of Junctures and other OOG objects
 
 Consider whether the connection which creates a Peer should own it for a bit.
