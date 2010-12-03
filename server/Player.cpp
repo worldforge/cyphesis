@@ -80,7 +80,7 @@ void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 int Player::characterError(const Operation & op,
                            const RootEntity & ent, OpVector & res) const
 {
-    if (!ent->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
+    if (ent->isDefaultName()) {
         error(op, "Entity to be created has no name", res, getId());
         return true;
     }
