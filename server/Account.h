@@ -62,7 +62,7 @@ class Account : public Router {
     /// @param ent A RootEntity representing the character to be created
     /// @param res Any resulting error is returned here
     virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const = 0;
 
     int filterTasks(const Atlas::Message::ListType & tasks,

@@ -143,7 +143,7 @@ void Admin::opDispatched(Operation op)
 }
 
 int Admin::characterError(const Operation & op,
-                          const RootEntity & ent, OpVector & res) const
+                          const Root & ent, OpVector & res) const
 {
     if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         error(op, "You cannot create a character with no type.", res, getId());

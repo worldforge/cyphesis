@@ -30,7 +30,7 @@
 class ServerAccount : public Account {
   protected:
     virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const;
 
     Entity * addNewEntity(const std::string &,

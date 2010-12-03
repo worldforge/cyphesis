@@ -28,7 +28,7 @@
 class Admin : public Account {
   protected:
     virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const;
     void opDispatched(Operation op);
 

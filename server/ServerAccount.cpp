@@ -72,7 +72,7 @@ const char * ServerAccount::getType() const
 }
 
 int ServerAccount::characterError(const Operation & op,
-                                  const RootEntity & ent,
+                                  const Root & ent,
                                   OpVector & res) const
 {
     return -1;
