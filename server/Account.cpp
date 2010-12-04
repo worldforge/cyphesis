@@ -293,11 +293,6 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
 
     const Root & arg = args.front();
 
-    if (!arg.isValid()) {
-        error(op, "Character creation arg is malformed", res, getId());
-        return;
-    }
-
     if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         error(op, "Entity has no type", res, getId());
         return;
