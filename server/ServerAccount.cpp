@@ -100,7 +100,6 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    log(INFO, compose("Old entity had ID %1", arg->getId()));
 
     if (!arg->hasAttrFlag(Atlas::Objects::OBJTYPE_FLAG)) {
         error(op, "Object to be created has no objtype", res, getId());
@@ -159,10 +158,11 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         }
     }
 
-    logEvent(IMPORT_ENT, String::compose("%1 %2 %3 Imported entity",
+    logEvent(IMPORT_ENT, String::compose("%1 %2 %3 Imported entity %4",
                                          m_connection->getId(),
                                          getId(),
-                                         entity->getId()));
+                                         entity->getId(),
+                                         arg->getId()));
 
     // The reply to a successful Create operation in the ServerAccount class
     // is an Info operation. The argument is the new 
