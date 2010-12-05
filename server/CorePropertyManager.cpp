@@ -246,10 +246,14 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
         log(ERROR, "Unable to access ServerRouting object");
         return OPERATION_IGNORED;
     }
-    // Try and get the peer with the requested ID
-    Peer *peer = dynamic_cast<Peer*>(svr->getObject(pb->data()));
+    Router * obj = svr->getObject(pb->data());
+    if(obj == NULL) {
+        log(ERROR, "Unknown peer ID specified");
+        return OPERATION_IGNORED;
+    }
+    Peer *peer = dynamic_cast<Peer*>(obj);
     if(peer == NULL) {
-        log(ERROR, "Unknown or disconnected peer ID specified");
+        log(ERROR, "Non Peer ID specified");
         return OPERATION_IGNORED;
     }
 
