@@ -285,43 +285,35 @@ void Account::operation(const Operation & op, OpVector & res)
 
 void Account::CreateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         return;
     }
 
     const Root & arg = args.front();
-
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        error(op, "Entity has no type", res, getId());
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+        arg->getParents().empty()) {
+        error(op, "Object to be created has no type", res, getId());
         return;
     }
-
-    const std::list<std::string> & parents = arg->getParents();
-    if (parents.empty()) {
-        error(op, "Entity has empty type list.", res, getId());
-        return;
-    }
-    
-    const std::string & typestr = parents.front();
+    const std::string & type_str = arg->getParents().front();
 
     if (characterError(op, arg, res)) {
         return;
     }
 
-    debug( std::cout << "Account creating a " << typestr << " object"
+    debug( std::cout << "Account creating a " << type_str << " object"
                      << std::endl << std::flush; );
 
     Anonymous new_character;
-    new_character->setParents(std::list<std::string>(1, typestr));
+    new_character->setParents(std::list<std::string>(1, type_str));
     new_character->setAttr("status", 0.024);
     new_character->setAttr("mind", "");
     if (!arg->isDefaultName()) {
         new_character->setName(arg->getName());
     }
 
-    Entity * entity = addNewCharacter(typestr, new_character, arg);
+    Entity * entity = addNewCharacter(type_str, new_character, arg);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());

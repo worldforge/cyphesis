@@ -317,12 +317,8 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         error(op, "Object to be created has no type", res, getId());
         return;
     }
-    const std::string & parent = arg->getParents().front();
+    const std::string & type_str = arg->getParents().front();
 
-    if (!arg->hasAttrFlag(Atlas::Objects::OBJTYPE_FLAG)) {
-        error(op, "Object to be created has no objtype", res, getId());
-        return;
-    }
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
         // New entity type
@@ -332,20 +328,15 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         }
         const std::string & id = arg->getId();
 
-        if (parent.empty()) {
-            error(op, "Attempt to install type with empty parent", res,
-                  getId());
-            return;
-        }
         if (Inheritance::instance().hasClass(id)) {
             error(op, "Attempt to install type that already exists", res,
                   getId());
             return;
         }
-        const Root & o = Inheritance::instance().getClass(parent);
+        const Root & o = Inheritance::instance().getClass(type_str);
         if (!o.isValid()) {
             error(op, compose("Attempt to install type with non-existant "
-                              "parent \"%1\"", parent), res, getId());
+                              "parent \"%1\"", type_str), res, getId());
             return;
         }
         if (Ruleset::instance()->installRule(id, arg) == 0) {

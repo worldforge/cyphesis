@@ -78,51 +78,43 @@ int ServerAccount::characterError(const Operation & op,
     return -1;
 }
 
+// Format of the Create ops that are received by this function should
+// have the entity to be created as the first argument. If the entity
+// being created is a character associated with an account, an additional
+// argument should specify the possess key that will be used by the client
+// to claim ownership of the entity being created.
+
 /// \brief This operation allows the creation of entities on the server
 ///
 /// \param op The Create operation
 /// \param res The result set of replies
 void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
 {
-    // Format of the Create ops that are received by this function should
-    // have the entity to be created as the first argument. If the entity
-    // being created is a character associated with an account, an additional
-    // argument should specify the possess key that will be used by the client
-    // to claim ownership of the entity being created.
-
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         return;
     }
-    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-    if(!arg.isValid()) {
+
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+        arg->getParents().empty()) {
+        error(op, "Object to be created has no type", res, getId());
+        return;
+    }
+    const std::string & type_str = arg->getParents().front();
+    
+    if (arg->getObjtype() != "obj") {
+        // Return error to peer
+        error(op, "Only creation of entities by peer server is permitted",
+              res, getId());
+        return;
+    }
+
+    RootEntity ent = smart_dynamic_cast<RootEntity>(arg);
+    if(!ent.isValid()) {
         log(ERROR, "Character creation arg is malformed");
         return;
     }
-
-
-    if (!arg->hasAttrFlag(Atlas::Objects::OBJTYPE_FLAG)) {
-        error(op, "Object to be created has no objtype", res, getId());
-        return;
-    }
-    const std::string & objtype = arg->getObjtype();
-    if (objtype != "obj") {
-        log(INFO, "Only creation of entities currently supported");
-        return;
-    }
-
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        error(op, "Entity has no type", res, getId());
-        return;
-    }
-
-    const std::list<std::string> & parents = arg->getParents();
-    if (parents.empty()) {
-        error(op, "Entity has empty type list.", res, getId());
-        return;
-    }
-    
-    const std::string & typestr = parents.front();
 
     // If we have a possess key (entity has a mind)
     TeleportAuthenticator * tele_auth = 0;
@@ -140,10 +132,10 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
         }
     }
 
-    debug( std::cout << "ServerAccount creating a " << typestr << " object"
+    debug( std::cout << "ServerAccount creating a " << type_str << " object"
                      << std::endl << std::flush; );
 
-    Entity * entity = addNewEntity(typestr, arg, arg);
+    Entity * entity = addNewEntity(type_str, ent, ent);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
