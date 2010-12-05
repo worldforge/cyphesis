@@ -1,3 +1,6 @@
+Segfault when Peer authentication fails. Fix segfault when peer disconnects.
+Probably the same thing.
+
 Generalize Account::CreateOp and use Root for arg as that would work.
 Remove smart_dynamic_cast in CreateOperation in Account and ServerAccount
 Then support creation of Junctures and other OOG objects
