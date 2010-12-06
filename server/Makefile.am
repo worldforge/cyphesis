@@ -99,6 +99,7 @@ cyphesis_SOURCES = \
 		TrustedConnection.cpp TrustedConnection.h \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
+		Juncture.cpp Juncture.h \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h \
 		UpdateTester.cpp UpdateTester.h \
