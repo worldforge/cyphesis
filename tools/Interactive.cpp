@@ -103,8 +103,9 @@ struct command {
 
 struct command commands[] = {
     { "add_agent",      "Create an in-game agent", },
-    { "connect",        "Connect server to a peer", },
     { "cancel",         "Cancel the current admin task", },
+    { "connect",        "Connect server to a peer", },
+    { "create",         "Use account to create server objects", },
     { "creator_create", "Use agent to create an entity", },
     { "creator_look",   "Use agent to look at an entity", },
     { "delete",         "Delete an entity from the server", },
@@ -115,6 +116,7 @@ struct command commands[] = {
     { "flush",          "Flush entities from the server", },
     { "help",           "Display this help", },
     { "install",        "Install a new type", },
+    { "login",          "Log into a peer server", },
     { "restore",        "Read world data from file and add it to the world", },
     { "look",           "Return the current server lobby", },
     { "logout",         "Log user out of server", },
@@ -147,6 +149,7 @@ static void help()
 }
 
 Interactive::Interactive() : m_avatar_flag(false), m_server_flag(false),
+                             m_juncture_flag(false),
                              m_serverName("cyphesis"), m_prompt("cyphesis> "),
                              m_exit_flag(false)
 {
@@ -242,6 +245,16 @@ void Interactive::infoArrived(const Operation & op)
         } else {
             m_agentId = ent->getId();
             m_avatar_flag = false;
+        }
+    } else if (m_juncture_flag) {
+        std::cout << "Juncture create success" << std::endl << std::flush;
+        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            std::cerr << "ERROR: Response to juncture create does not contain agent id"
+                      << std::endl << std::flush;
+            
+        } else {
+            m_juncture_id = ent->getId();
+            m_juncture_flag = false;
         }
     } else if (m_server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
@@ -639,25 +652,31 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         }
     } else if (cmd == "connect") {
         reply_expected = false;
-        Connect m;
-
-        std::vector<std::string> args;
-        tokenize(arg, args);
-
-        if (args.size() != 4) {
-            std::cout << "usage: connect <hostname> <port> "
-                         "<username> <password>"
+        if (m_juncture_id.empty()) {
+            std::cout << "Use create juncture to create a juncture object "
+                         "on the server"
                       << std::endl << std::flush;
         } else {
-            Anonymous cmap;
-            cmap->setAttr("hostname", args[0]);
-            cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
-            cmap->setAttr("username", args[2]);
-            cmap->setAttr("password", args[3]);
-            m->setArgs1(cmap);
-            m->setFrom(accountId);
 
-            send(m);
+            std::vector<std::string> args;
+            tokenize(arg, args);
+
+            if (args.size() != 2) {
+                std::cout << "usage: connect <hostname> <port>"
+                          << std::endl << std::flush;
+            } else {
+                Anonymous cmap;
+                cmap->setAttr("hostname", args[0]);
+                cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
+                // cmap->setAttr("username", args[2]);
+                // cmap->setAttr("password", args[3]);
+
+                Connect m;
+                m->setArgs1(cmap);
+                m->setFrom(m_juncture_id);
+
+                send(m);
+            }
         }
     } else if (cmd == "add_agent") {
         std::string agent_type("creator");
@@ -800,6 +819,53 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             ClientTask * task = new WorldLoader(accountId, m_agentId);
             runTask(task, arg);
             reply_expected = false;
+        }
+    } else if (cmd == "create") {
+        std::vector<std::string> args;
+        tokenize(arg, args);
+
+        if (args.size() < 1) {
+            std::cout << "usage: create <type> <params> ... "
+                      << std::endl << std::flush;
+            reply_expected = false;
+        } else {
+            Anonymous cmap;
+            cmap->setParents(std::list<std::string>(1, args[0]));
+            cmap->setObjtype("obj");
+
+            Create c;
+            c->setArgs1(cmap);
+            c->setFrom(accountId);
+
+            m_juncture_flag = true;
+
+            send(c);
+        }
+    } else if (cmd == "login") {
+        reply_expected = false;
+        if (m_juncture_id.empty()) {
+            std::cout << "Use create juncture to create a juncture object "
+                         "on the server"
+                      << std::endl << std::flush;
+        } else {
+
+            std::vector<std::string> args;
+            tokenize(arg, args);
+
+            if (args.size() != 2) {
+                std::cout << "usage: login <username> <password>"
+                          << std::endl << std::flush;
+            } else {
+                Anonymous cmap;
+                cmap->setAttr("username", args[0]);
+                cmap->setAttr("password", args[1]);
+
+                Login m;
+                m->setArgs1(cmap);
+                m->setFrom(m_juncture_id);
+
+                send(m);
+            }
         }
     } else {
         reply_expected = false;
