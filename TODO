@@ -1,3 +1,6 @@
+Use Java object builder/aspect pattern for Property factories in
+CorePropertyManager
+
 Segfault when Peer authentication fails. Fix segfault when peer disconnects.
 Probably the same thing.
 
