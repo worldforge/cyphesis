@@ -25,6 +25,9 @@
 
 #include <Atlas/Objects/Operation.h>
 
+using Atlas::Message::Element;
+using Atlas::Objects::Root;
+
 Juncture::Juncture(const std::string & id, long iid) : Router(id, iid),
                                                        m_socket(0),
                                                        m_peer(0)
@@ -53,6 +56,28 @@ void Juncture::operation(const Operation & op, OpVector & res)
 void Juncture::LoginOperation(const Operation & op, OpVector & res)
 {
     log(INFO, "Juncture got login");
+
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        error(op, "No argument to connect op", res, getId());
+        return;
+    }
+    const Root & arg = args.front();
+
+    Element username_attr;
+    if (arg->copyAttr("username", username_attr) != 0 || !username_attr.isString()) {
+        error(op, "Argument to connect op has no username", res, getId());
+        return;
+    }
+    const std::string & username = username_attr.String();
+
+    Element password_attr;
+    if (arg->copyAttr("password", password_attr) != 0 || !password_attr.isString()) {
+        error(op, "Argument to connect op has no password", res, getId());
+        return;
+    }
+    const std::string & password = password_attr.String();
+
 }
 
 void Juncture::OtherOperation(const Operation & op, OpVector & res)
@@ -66,4 +91,26 @@ void Juncture::OtherOperation(const Operation & op, OpVector & res)
 void Juncture::customConnectOperation(const Operation & op, OpVector & res)
 {
     log(INFO, "Juncture got connect");
+
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        error(op, "No argument to connect op", res, getId());
+        return;
+    }
+    const Root & arg = args.front();
+    Element hostname_attr;
+    if (arg->copyAttr("hostname", hostname_attr) != 0 ||
+        !hostname_attr.isString()) {
+        error(op, "Argument to connect op has no hostname", res, getId());
+        return;
+    }
+    const std::string & hostname = hostname_attr.String();
+
+    Element port_attr;
+    if (arg->copyAttr("port", port_attr) != 0 || !port_attr.isInt()) {
+        error(op, "Argument to connect op has no port", res, getId());
+        return;
+    }
+    int port = port_attr.Int();
+
 }

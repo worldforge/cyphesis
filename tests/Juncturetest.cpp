@@ -123,6 +123,13 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
+void Router::error(const Operation & op,
+                   const std::string & errstring,
+                   OpVector & res,
+                   const std::string & to) const
+{
+}
+
 void log(LogLevel lvl, const std::string & msg)
 {
 }
