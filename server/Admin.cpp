@@ -24,6 +24,7 @@
 #include "Ruleset.h"
 #include "CommPeer.h"
 #include "CommServer.h"
+#include "Juncture.h"
 #include "Peer.h"
 
 #include "rulesets/Entity.h"
@@ -337,6 +338,29 @@ void Admin::createObject(const std::string & type_str,
         } else {
             error(op, "Installing new type failed", res, getId());
         }
+    } else if (type_str == "juncture") {
+        std::string junc_id;
+        long junc_iid = newId(junc_id);
+        if (junc_iid < 0) {
+            error(op, "Juncture failed as no ID available", res, getId());
+            return;
+        }
+
+        Juncture * j = new Juncture(junc_id, junc_iid);
+
+        m_connection->addObject(j);
+        m_connection->m_server.addObject(j);
+
+        Anonymous info_arg;
+        j->addToEntity(info_arg);
+
+        Info info;
+        info->setTo(getId());
+        info->setArgs1(info_arg);
+        if (!op->isDefaultSerialno()) {
+            info->setRefno(op->getSerialno());
+        }
+        res.push_back(info);
     } else {
         Account::createObject(type_str, arg, op, res);
     }
