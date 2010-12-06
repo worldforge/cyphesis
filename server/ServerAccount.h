@@ -37,6 +37,10 @@ class ServerAccount : public Account {
                           const Atlas::Objects::Entity::RootEntity &,
                           const Atlas::Objects::Root &);
 
+    virtual void createObject(const std::string &,
+                              const Atlas::Objects::Root &,
+                              const Operation &,
+                              OpVector &);
   public:
     ServerAccount(Connection * conn, const std::string & username,
                   const std::string & passwd,
@@ -44,8 +48,6 @@ class ServerAccount : public Account {
     virtual ~ServerAccount();
 
     virtual const char * getType() const;
-
-    virtual void CreateOperation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_ADMIN_H

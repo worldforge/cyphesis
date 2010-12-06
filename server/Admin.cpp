@@ -304,21 +304,11 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
 }
 
-void Admin::CreateOperation(const Operation & op, OpVector & res)
+void Admin::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
 {
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return;
-    }
-
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-        arg->getParents().empty()) {
-        error(op, "Object to be created has no type", res, getId());
-        return;
-    }
-    const std::string & type_str = arg->getParents().front();
-
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
         // New entity type
@@ -348,7 +338,7 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
             error(op, "Installing new type failed", res, getId());
         }
     } else {
-        Account::CreateOperation(op, res);
+        Account::createObject(type_str, arg, op, res);
     }
 }
 

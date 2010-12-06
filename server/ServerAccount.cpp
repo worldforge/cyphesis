@@ -78,31 +78,17 @@ int ServerAccount::characterError(const Operation & op,
     return -1;
 }
 
+void ServerAccount::createObject(const std::string & type_str,
+                                 const Root & arg,
+                                 const Operation & op,
+                                 OpVector & res)
+{
 // Format of the Create ops that are received by this function should
 // have the entity to be created as the first argument. If the entity
 // being created is a character associated with an account, an additional
 // argument should specify the possess key that will be used by the client
 // to claim ownership of the entity being created.
 
-/// \brief This operation allows the creation of entities on the server
-///
-/// \param op The Create operation
-/// \param res The result set of replies
-void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
-{
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return;
-    }
-
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-        arg->getParents().empty()) {
-        error(op, "Object to be created has no type", res, getId());
-        return;
-    }
-    const std::string & type_str = arg->getParents().front();
-    
     if (arg->getObjtype() != "obj") {
         // Return error to peer
         error(op, "Only creation of entities by peer server is permitted",
@@ -120,6 +106,7 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     TeleportAuthenticator * tele_auth = 0;
     std::string possess_key;
 
+    const std::vector<Root> & args = op->getArgs();
     if (args.size() == 2) {
         const Root & arg2 = args.back();
         Element key;
@@ -162,11 +149,11 @@ void ServerAccount::CreateOperation(const Operation & op, OpVector & res)
     // of the incoming operation, which is the ID of the
     // entity on the sender server (used by the recipient of this reply to 
     // figure out which Create op this reply is associated with
-    Info info;
 
     Anonymous info_arg;
     entity->addToEntity(info_arg);
 
+    Info info;
     info->setArgs1(info_arg);
     if (!op->isDefaultSerialno()) {
         info->setRefno(op->getSerialno());

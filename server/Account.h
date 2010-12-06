@@ -65,6 +65,11 @@ class Account : public Router {
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const = 0;
 
+    virtual void createObject(const std::string &,
+                              const Atlas::Objects::Root &,
+                              const Operation &,
+                              OpVector &);
+
     int filterTasks(const Atlas::Message::ListType & tasks,
                     const Atlas::Objects::Entity::RootEntity &) const;
 

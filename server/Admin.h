@@ -30,6 +30,11 @@ class Admin : public Account {
     virtual int characterError(const Operation & op,
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const;
+    virtual void createObject(const std::string &,
+                              const Atlas::Objects::Root &,
+                              const Operation &,
+                              OpVector &);
+
     void opDispatched(Operation op);
 
     /// \brief Connection used to monitor the in-game operations
@@ -48,7 +53,6 @@ class Admin : public Account {
     virtual void LogoutOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void SetOperation(const Operation &, OpVector &);
-    virtual void CreateOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
 
     void customConnectOperation(const Operation &, OpVector &);

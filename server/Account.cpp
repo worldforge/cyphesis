@@ -298,6 +298,14 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     }
     const std::string & type_str = arg->getParents().front();
 
+    createObject(type_str, arg, op, res);
+}
+
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
     if (characterError(op, arg, res)) {
         return;
     }
