@@ -896,6 +896,7 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
@@ -942,6 +943,7 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
@@ -977,6 +979,7 @@ Accounttest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
@@ -1021,6 +1024,7 @@ Admintest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
@@ -1066,6 +1070,7 @@ ServerAccounttest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/ServerAccount.o \
         $(top_builddir)/server/TeleportAuthenticator.o \
@@ -1109,6 +1114,7 @@ Playertest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
@@ -1275,6 +1281,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/CommClient.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Spawn.o \
@@ -1326,6 +1333,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
