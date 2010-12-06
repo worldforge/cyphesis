@@ -360,6 +360,12 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
 {
 }
 
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
 
 void Account::operation(const Operation &, OpVector &)
 {

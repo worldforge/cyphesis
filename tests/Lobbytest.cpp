@@ -241,6 +241,12 @@ void Account::operation(const Operation &, OpVector &)
 {
 }
 
+void Account::createObject(const std::string & type_str,
+                           const Atlas::Objects::Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
 
 void Account::LogoutOperation(const Operation &, OpVector &)
 {

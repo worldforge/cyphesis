@@ -283,6 +283,13 @@ int Admin::characterError(const Operation & op,
     return 0;
 }
 
+void Admin::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
+
 void Admin::LogoutOperation(const Operation & op, OpVector & res)
 {
 }
@@ -292,10 +299,6 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
 }
 
 void Admin::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Admin::CreateOperation(const Operation & op, OpVector & res)
 {
 }
 
@@ -381,6 +384,12 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
 {
 }
 
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
 
 void Account::operation(const Operation &, OpVector &)
 {
