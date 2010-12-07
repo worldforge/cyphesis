@@ -386,12 +386,23 @@ def test_teleport(host='', account='', password='', **args):
 
     m=create_editor(host, account, password)
 
+    rep=m.client.send_wait(Operation("create",
+                                     Entity(parents=['juncture']),
+                                     from_=m.client.id))
+    juncture=rep[0]
+    print "Created juncture ", juncture.id
     rep=m.client.send_wait(Operation("connect",
                                      Entity(hostname='localhost',
-                                            port=6767,
-                                            username='whimsy',
-                                            password='foo'),
-                                     from_=m.client.id))
+                                            port=6767),
+                                     from_=juncture.id))
+    if not rep:
+        print "Connect failed"
+        return
+
+    m.client.send(Operation("login",
+                            Entity(username='whimsy',
+                                   password='foo'),
+                            from_=juncture.id))
 
     peer = rep[0].id
     time.sleep(2)
