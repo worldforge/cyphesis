@@ -19,18 +19,34 @@
 
 #include "Juncture.h"
 
+#include "CommPeer.h"
+#include "CommServer.h"
+#include "Connection.h"
+#include "Peer.h"
+
 #include "common/Connect.h"
 
+#include "common/compose.hpp"
+#include "common/debug.h"
+#include "common/id.h"
 #include "common/log.h"
 
+#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Login;
 
-Juncture::Juncture(const std::string & id, long iid) : Router(id, iid),
+static const bool debug_flag = true;
+
+Juncture::Juncture(Connection * c,
+                   const std::string & id, long iid) : Router(id, iid),
                                                        m_socket(0),
-                                                       m_peer(0)
+                                                       m_peer(0),
+                                                       m_connection(c)
 {
 }
 
@@ -78,6 +94,25 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
     }
     const std::string & password = password_attr.String();
 
+    if (m_peer == 0) {
+        error(op, "Juncture not connected", res, getId());
+        return;
+    }
+
+    if (m_peer->getAuthState() != PEER_INIT) {
+        error(op, "Juncture not ready", res, getId());
+        return;
+    }
+
+    Anonymous account;
+    account->setAttr("username", username);
+    account->setAttr("password", password);
+
+    Login l;
+    l->setArgs1(account);
+    // Send the login op
+    m_connection->m_commClient.send(l);
+    m_peer->setAuthState(PEER_AUTHENTICATING);
 }
 
 void Juncture::OtherOperation(const Operation & op, OpVector & res)
@@ -113,4 +148,33 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     }
     int port = port_attr.Int();
 
+    std::string peerId;
+    long peer_iid = newId(peerId);
+    if (peer_iid < 0) {
+        error(op, "Connection failed as no ID available", res, getId());
+        return;
+    }
+
+    m_socket = new CommPeer(m_connection->m_commClient.m_commServer, "", "");
+
+    debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
+    if (m_socket->connect(hostname, port) != 0) {
+        error(op, "Connection failed", res, getId());
+        return;
+    }
+    log(INFO, String::compose("Connection succeeded %1", peerId));
+    m_peer = new Peer(*m_socket, m_connection->m_server,
+                      hostname, peerId, peer_iid);
+    m_socket->setup(m_peer);
+    m_connection->m_commClient.m_commServer.addSocket(m_socket);
+    m_connection->m_commClient.m_commServer.addIdle(m_socket);
+    // m_connection->m_server.addObject(peer);
+
+    Anonymous info_arg;
+    m_peer->addToEntity(info_arg);
+
+    Info info;
+    info->setTo(getId());
+    info->setArgs1(info_arg);
+    res.push_back(info);
 }

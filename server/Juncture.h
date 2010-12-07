@@ -23,6 +23,7 @@
 #include "common/Router.h"
 
 class CommPeer;
+class Connection;
 class Peer;
 
 /// \brief Class managing and persisting connections to another server that
@@ -35,7 +36,9 @@ class Juncture : public Router {
     CommPeer * m_socket;
     Peer * m_peer;
   public:
-    Juncture(const std::string & id, long iid);
+    Connection * m_connection;
+
+    Juncture(Connection *, const std::string & id, long iid);
     virtual ~Juncture();
 
     virtual void operation(const Operation &, OpVector &);

@@ -346,7 +346,7 @@ void Admin::createObject(const std::string & type_str,
             return;
         }
 
-        Juncture * j = new Juncture(junc_id, junc_iid);
+        Juncture * j = new Juncture(m_connection, junc_id, junc_iid);
 
         m_connection->addObject(j);
         m_connection->m_server.addObject(j);
