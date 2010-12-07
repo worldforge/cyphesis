@@ -76,6 +76,7 @@ void CommPeer::idle(time_t t)
     // As soon as negotiation is complete, authenticate on peer
     if(m_negotiate == 0)
     {
+#if 0
         Peer *peer = dynamic_cast<Peer*>(m_connection);
         if (peer == NULL) {
             log(ERROR, "Casting connection to Peer failed");
@@ -108,5 +109,6 @@ void CommPeer::idle(time_t t)
         if (peer->getAuthState() == PEER_AUTHENTICATED) {
             peer->cleanTeleports();
         }
+#endif
     }
 }
