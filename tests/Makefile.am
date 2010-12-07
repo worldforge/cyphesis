@@ -1265,7 +1265,8 @@ PendingTeleporttest_LDADD = \
 
 Juncturetest_SOURCES = Juncturetest.cpp
 Juncturetest_LDADD = \
-        $(top_builddir)/server/Juncture.o
+        $(top_builddir)/server/Juncture.o \
+        $(NETWORK_LIBS)
 
 # SERVER_INTEGRATION_TESTS
 
