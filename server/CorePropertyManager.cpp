@@ -20,8 +20,8 @@
 #include "CorePropertyManager.h"
 
 #include "ExternalMind.h"
+#include "Juncture.h"
 #include "ServerRouting.h"
-#include "Peer.h"
 
 #include "rulesets/ActivePropertyFactory_impl.h"
 
@@ -251,8 +251,8 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
         log(ERROR, "Unknown peer ID specified");
         return OPERATION_IGNORED;
     }
-    Peer *peer = dynamic_cast<Peer*>(obj);
-    if(peer == NULL) {
+    Juncture * link = dynamic_cast<Juncture *>(obj);
+    if(link == NULL) {
         log(ERROR, "Non Peer ID specified");
         return OPERATION_IGNORED;
     }
@@ -275,7 +275,7 @@ HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
     }
 
     // Inject the entity into remote server
-    peer->teleportEntity(entity);
+    link->teleportEntity(entity);
     return OPERATION_IGNORED;
 }
 
