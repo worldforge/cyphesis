@@ -72,31 +72,11 @@ void CommPeer::idle(time_t t)
             log(NOTICE, "Client disconnected because of negotiation timeout.");
             m_clientIos.shutdown();
         }
-    }
-    // As soon as negotiation is complete, authenticate on peer
-    if(m_negotiate == 0)
-    {
-#if 0
+    } else {
         Peer *peer = dynamic_cast<Peer*>(m_connection);
         if (peer == NULL) {
-            log(ERROR, "Casting connection to Peer failed");
+            log(WARNING, "Casting CommPeer connection to Peer failed");
             return;
-        }
-        // If a login is required, send the Login op to the peer
-        if(peer->getAuthState() == PEER_INIT) {
-            Atlas::Objects::Operation::Login l;
-            Atlas::Objects::Entity::Anonymous account;
-            account->setAttr("username", m_username);
-            account->setAttr("password", m_password);
-            l->setArgs1(account);
-            l->setSerialno(newSerialNo());
-            // Send the login op
-            send(l);
-            peer->setAuthState(PEER_AUTHENTICATING);
-        }
-        if (peer->getAuthState() == PEER_FAILED) {
-            log(NOTICE, "Peer disconnected because authentication failed.");
-            m_clientIos.shutdown();
         }
         // Check if we have been stuck in a state of authentication in-progress
         // for over 20 seconds. If so, disconnect from and remove peer.
@@ -109,6 +89,5 @@ void CommPeer::idle(time_t t)
         if (peer->getAuthState() == PEER_AUTHENTICATED) {
             peer->cleanTeleports();
         }
-#endif
     }
 }
