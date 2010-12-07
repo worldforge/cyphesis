@@ -1,3 +1,6 @@
+Having a Connection member in Juncture is common with Account, and there are
+possibly other similarities. Base class?
+
 Use Java object builder/aspect pattern for Property factories in
 CorePropertyManager
 
