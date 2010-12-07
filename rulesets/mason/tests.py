@@ -398,6 +398,7 @@ def test_teleport(host='', account='', password='', **args):
     if not rep:
         print "Connect failed"
         return
+    time.sleep(1)
 
     m.client.send(Operation("login",
                             Entity(username='whimsy',
