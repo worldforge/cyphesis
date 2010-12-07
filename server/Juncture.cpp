@@ -111,7 +111,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
     Login l;
     l->setArgs1(account);
     // Send the login op
-    m_connection->m_commClient.send(l);
+    m_peer->m_commClient.send(l);
     m_peer->setAuthState(PEER_AUTHENTICATING);
 }
 
@@ -170,4 +170,12 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     info->setTo(getId());
     info->setArgs1(info_arg);
     res.push_back(info);
+}
+
+int Juncture::teleportEntity(const Entity * ent)
+{
+    if (m_peer == 0) {
+        log(ERROR, "Attempt to teleport through disconnected juncture");
+    }
+    return m_peer->teleportEntity(ent);
 }

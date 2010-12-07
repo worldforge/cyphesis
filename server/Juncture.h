@@ -47,6 +47,8 @@ class Juncture : public Router {
     void OtherOperation(const Operation &, OpVector &);
 
     void customConnectOperation(const Operation &, OpVector &);
+
+    int teleportEntity(const Entity *);
 };
 
 #endif // SERVER_JUNCTURE_H
