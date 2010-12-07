@@ -148,13 +148,6 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     }
     int port = port_attr.Int();
 
-    std::string peerId;
-    long peer_iid = newId(peerId);
-    if (peer_iid < 0) {
-        error(op, "Connection failed as no ID available", res, getId());
-        return;
-    }
-
     m_socket = new CommPeer(m_connection->m_commClient.m_commServer, "", "");
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
@@ -162,9 +155,9 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
         error(op, "Connection failed", res, getId());
         return;
     }
-    log(INFO, String::compose("Connection succeeded %1", peerId));
+    log(INFO, String::compose("Connection succeeded %1", getId()));
     m_peer = new Peer(*m_socket, m_connection->m_server,
-                      hostname, peerId, peer_iid);
+                      hostname, getId(), getIntId());
     m_socket->setup(m_peer);
     m_connection->m_commClient.m_commServer.addSocket(m_socket);
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
