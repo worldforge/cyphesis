@@ -48,6 +48,10 @@ void Juncture::onPeerLost()
     m_socket = 0;
 }
 
+void Juncture::onPeerReplied(const Operation &)
+{
+}
+
 Juncture::Juncture(Connection * c,
                    const std::string & id, long iid) : Router(id, iid),
                                                        m_socket(0),
@@ -178,6 +182,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
 
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
+    m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
 
     Anonymous info_arg;
     m_peer->addToEntity(info_arg);
