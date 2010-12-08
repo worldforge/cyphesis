@@ -42,6 +42,12 @@ using Atlas::Objects::Operation::Login;
 
 static const bool debug_flag = true;
 
+void Juncture::onPeerLost()
+{
+    m_peer = 0;
+    m_socket = 0;
+}
+
 Juncture::Juncture(Connection * c,
                    const std::string & id, long iid) : Router(id, iid),
                                                        m_socket(0),
@@ -98,6 +104,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
         error(op, "Juncture not connected", res, getId());
         return;
     }
+    assert(m_socket != 0);
 
     if (m_peer->getAuthState() != PEER_INIT) {
         error(op, "Juncture not ready", res, getId());
@@ -127,6 +134,12 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
 {
     log(INFO, "Juncture got connect");
 
+    if (m_peer != 0) {
+        error(op, "Juncture already connected", res, getId());
+        return;
+    }
+    assert(m_socket == 0);
+
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "No argument to connect op", res, getId());
@@ -153,6 +166,8 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     if (m_socket->connect(hostname, port) != 0) {
         error(op, "Connection failed", res, getId());
+        delete m_socket;
+        m_socket = 0;
         return;
     }
     log(INFO, String::compose("Connection succeeded %1", getId()));
@@ -161,7 +176,8 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     m_socket->setup(m_peer);
     m_connection->m_commClient.m_commServer.addSocket(m_socket);
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
-    // m_connection->m_server.addObject(peer);
+
+    m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
 
     Anonymous info_arg;
     m_peer->addToEntity(info_arg);

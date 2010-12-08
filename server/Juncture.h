@@ -22,6 +22,8 @@
 
 #include "common/Router.h"
 
+#include <sigc++/trackable.h>
+
 class CommPeer;
 class Connection;
 class Peer;
@@ -31,10 +33,12 @@ class Peer;
 ///
 /// This is the main point of dispatch for any operation from the manager of
 /// the peer connection
-class Juncture : public Router {
+class Juncture : public Router, virtual public sigc::trackable {
   protected:
     CommPeer * m_socket;
     Peer * m_peer;
+
+    void onPeerLost();
   public:
     Connection * m_connection;
 
