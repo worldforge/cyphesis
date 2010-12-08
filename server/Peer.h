@@ -22,6 +22,8 @@
 
 #include "common/Router.h"
 
+#include <sigc++/signal.h>
+
 class CommClient;
 class ServerRouting;
 class TeleportState;
@@ -70,6 +72,8 @@ class Peer : public Router {
     void peerTeleportResponse(const Operation &op, OpVector &res);
 
     void cleanTeleports();
+
+    sigc::signal<void> destroyed;
 };
 
 #endif // SERVER_PEER_H
