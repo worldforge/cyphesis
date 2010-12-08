@@ -398,15 +398,18 @@ def test_teleport(host='', account='', password='', **args):
     if not rep:
         print "Connect failed"
         return
+    peer = rep[0].id
+
     time.sleep(1)
 
-    m.client.send(Operation("login",
-                            Entity(username='whimsy',
-                                   password='foo'),
-                            from_=juncture.id))
+    rep=m.client.send_wait(Operation("login",
+                                     Entity(username='whimsy',
+                                            password='foo'),
+                                     from_=juncture.id))
 
-    peer = rep[0].id
-    time.sleep(2)
+    if not rep:
+        print "Login failed"
+        return
 
     settler=m.make('settler',pos=(1,1,0))
 
