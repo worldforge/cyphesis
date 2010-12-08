@@ -1,3 +1,7 @@
+Consider Entity:destroyed and Entity:containered to interrupt tasks
+
+Location doesn't need to be sigc::trackable any more
+
 Allow Admin to use an op - perhaps Login - to claim any object on the server.
 
 Having a Connection member in Juncture is common with Account, and there are
