@@ -48,8 +48,11 @@ void Juncture::onPeerLost()
     m_socket = 0;
 }
 
-void Juncture::onPeerReplied(const Operation &)
+void Juncture::onPeerReplied(const Operation & op)
 {
+    if (m_connection != 0) {
+        m_connection->m_commClient.send(op);
+    }
 }
 
 Juncture::Juncture(Connection * c,
@@ -121,6 +124,9 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
 
     Login l;
     l->setArgs1(account);
+    if (!op->isDefaultSerialno()) {
+        l->setSerialno(op->getSerialno());
+    }
     // Send the login op
     m_peer->m_commClient.send(l);
     m_peer->setAuthState(PEER_AUTHENTICATING);

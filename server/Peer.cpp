@@ -98,6 +98,10 @@ PeerAuthState Peer::getAuthState()
 /// \param res The result set of replies
 void Peer::operation(const Operation &op, OpVector &res)
 {
+    if (!op->isDefaultRefno()) {
+        replied.emit(op);
+    }
+
     const OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::INFO_NO:
