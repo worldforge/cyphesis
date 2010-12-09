@@ -27,15 +27,13 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <sigc++/trackable.h>
-
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 
 class LocatedEntity;
 
-class Location : virtual public sigc::trackable {
+class Location {
   protected:
     bool m_simple;
     bool m_solid;
