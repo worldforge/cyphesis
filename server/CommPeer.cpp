@@ -34,10 +34,7 @@
 /// @param svr Reference to the object that manages all socket communication.
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
-CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
-                   : CommClient(svr),
-                     m_username(username),
-                     m_password(password)
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
 {
 }
 

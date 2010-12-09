@@ -28,7 +28,6 @@
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
-#include "CommPeer.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
 #include "ArithmeticBuilder.h"
@@ -40,7 +39,6 @@
 #include "UpdateTester.h"
 #include "Admin.h"
 #include "ServerAccount.h"
-#include "Peer.h"
 #include "TeleportAuthenticator.h"
 
 #include "rulesets/Python_API.h"
@@ -359,67 +357,6 @@ int main(int argc, char ** argv)
     }
 
 #endif // defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
-
-
-    // Get the peer IP list from ~/.cyphesis.vconf
-    std::string peer_data_list = global_conf->getItem("cyphesis", "peers").as_string();
-    // Tokenize the list of IP addresses
-    std::vector<std::string> peer_list;
-    tokenize(peer_data_list, peer_list, " ");
-    
-    for(unsigned int i=0;i<peer_list.size();i++)
-    {
-        std::vector<std::string> peer_data;
-        tokenize(peer_list[i], peer_data, "|");
-        if(peer_data.size() != 4)
-        {
-            log(ERROR, "Peer configuration entry should be of the form ADDR|PORT|USERNAME|PASSWORD");
-            continue;
-        }
-        // Generate the ID for the socket object
-        std::string peer_id;
-        long peer_iid = newId(peer_id);
-        if (peer_iid < 0) {
-            log(CRITICAL, "Unable to get peer ID from Database");
-            continue;
-        }
-
-        std::string peer_host(peer_data[0]);
-        int peer_port;
-        from_string<int>(peer_port, peer_data[1], std::dec);
-        std::string peer_username(peer_data[2]);
-        std::string peer_password(peer_data[3]);
-        
-        CommPeer *peerConn = new CommPeer(commServer, peer_username, peer_password);
-        if (peerConn == NULL) {
-            log(ERROR, "Unable to allocate peer object");
-            continue;
-        }
-        if (peerConn->connect(peer_host, peer_port) != 0) {
-            log(ERROR, String::compose("Could not connect to cyphesis peer at \"%1:%2\"", peer_host, peer_port));
-            delete peerConn;
-            peerConn = NULL;
-            continue;
-        }
-        log(INFO, String::compose("Successfully connected to peer at \"%1:%2\"", peer_host, peer_port));
-        Peer *peer = new Peer(*peerConn,
-                              commServer.m_server,
-                              peer_host,
-                              peer_id,
-                              peer_iid);
-        if (peer == NULL) {
-            log(ERROR, "Unable to allocate peer object");
-            delete peerConn;
-            peerConn = NULL;
-            continue;
-        }
-        peerConn->setup(peer);
-        commServer.addSocket(peerConn);
-        commServer.addIdle(peerConn);
-        /// Add object to ServerRouting so we can find it
-        server.addObject(peer);
-        log(INFO, String::compose("Added new cyphesis peer at \"%1\" with ID \"%2\"", peer_host, peer_id));
-    }   
 
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.

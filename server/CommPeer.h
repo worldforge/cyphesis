@@ -30,13 +30,9 @@ class CommPeer : public CommClient {
     std::string m_host;
     /// \brief The port that this connection is on
     int m_port;
-    /// \brief The username of the account to authenticate with
-    std::string m_username;
-    /// \brief The password of the account to authenticate with
-    std::string m_password;
 
   public:
-    CommPeer(CommServer & svr, const std::string &, const std::string &);
+    CommPeer(CommServer & svr);
     virtual ~CommPeer();
 
     void idle(time_t t);
