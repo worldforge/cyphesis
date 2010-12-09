@@ -159,7 +159,7 @@ int main()
         Operation op;
         Atlas::Objects::Root arg;
         arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
-        arg->setAttr("password", 0xa12a2f3aL);
+        arg->setAttr("password", 0x12a2f3aL);
         op->setArgs1(arg);
         
         j->LoginOperation(op, res);
