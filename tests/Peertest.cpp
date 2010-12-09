@@ -295,7 +295,7 @@ int main()
 
     // Empty arg, made up refno
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
@@ -310,7 +310,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, not in world
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -331,7 +331,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, in world
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -356,7 +356,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, with mind
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "", "");
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -445,10 +445,7 @@ void TeleportState::setKey(const std::string & key)
     m_possessKey = key;
 }
 
-CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
-                   : CommClient(svr),
-                     m_username(username),
-                     m_password(password)
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
 {
 }
 

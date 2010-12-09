@@ -69,19 +69,8 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    TestCommPeer(CommServer & svr, const std::string &user = "test_username", const std::string &pass = "test_password")
-                                        : CommPeer(svr, user, pass)
+    TestCommPeer(CommServer & svr) : CommPeer(svr)
     {
-    }
-
-    const std::string &test_getUsername()
-    {
-        return m_username;
-    }
-
-    const std::string &test_getPassword()
-    {
-        return m_password;
     }
 
     void test_setNegotiateState(Atlas::Negotiate::State state)
@@ -136,17 +125,6 @@ int main()
 
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server, "test_username", "test_password");
-
-        const std::string & u = cs->test_getUsername();
-        assert(u == "test_username");
-        const std::string & p = cs->test_getPassword();
-        assert(p == "test_password");
 
         delete cs;
     }

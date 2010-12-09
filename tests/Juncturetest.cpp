@@ -174,7 +174,7 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs, "", "");
+        CommPeer * cp = new CommPeer(cs);
         j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
         j->test_addSocket(cp);
 
@@ -198,7 +198,7 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs, "", "");
+        CommPeer * cp = new CommPeer(cs);
         Peer * p = new Peer(*cp, sr, "", "4", 4);
         j->test_addPeer(p);
         j->test_addSocket(cp);
@@ -225,7 +225,7 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs, "", "");
+        CommPeer * cp = new CommPeer(cs);
         j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
         j->test_addSocket(cp);
 
@@ -456,10 +456,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 }
 
 
-CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
-                   : CommClient(svr),
-                     m_username(username),
-                     m_password(password)
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
 {
 }
 
