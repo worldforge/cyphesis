@@ -22,10 +22,7 @@
 #include "ServerRouting.h"
 #include "Connection.h"
 #include "Ruleset.h"
-#include "CommPeer.h"
-#include "CommServer.h"
 #include "Juncture.h"
-#include "Peer.h"
 
 #include "rulesets/Entity.h"
 
@@ -382,76 +379,6 @@ void Admin::OtherOperation(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Admin::customConnectOperation(const Operation & op, OpVector & res)
 {
-    if (m_connection == 0) {
-        log(ERROR, "Attempt to make peer connection from unconnected account");
-        return;
-    }
-
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        error(op, "No argument to connect op", res, getId());
-        return;
-    }
-    const Root & arg = args.front();
-    Element hostname_attr;
-    if (arg->copyAttr("hostname", hostname_attr) != 0 ||
-        !hostname_attr.isString()) {
-        error(op, "Argument to connect op has no hostname", res, getId());
-        return;
-    }
-    const std::string & hostname = hostname_attr.String();
-
-    Element port_attr;
-    if (arg->copyAttr("port", port_attr) != 0 || !port_attr.isInt()) {
-        error(op, "Argument to connect op has no port", res, getId());
-        return;
-    }
-    int port = port_attr.Int();
-
-    Element username_attr;
-    if (arg->copyAttr("username", username_attr) != 0 || !username_attr.isString()) {
-        error(op, "Argument to connect op has no username", res, getId());
-        return;
-    }
-    const std::string & username = username_attr.String();
-
-    Element password_attr;
-    if (arg->copyAttr("password", password_attr) != 0 || !password_attr.isString()) {
-        error(op, "Argument to connect op has no password", res, getId());
-        return;
-    }
-    const std::string & password = password_attr.String();
-
-    std::string peerId;
-    long peer_iid = newId(peerId);
-    if (peer_iid < 0) {
-        error(op, "Connection failed as no ID available", res, getId());
-        return;
-    }
-
-    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer,
-                                 username, password);
-    debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
-    if (cp->connect(hostname, port) != 0) {
-        error(op, "Connection failed", res, getId());
-        return;
-    }
-    log(INFO, String::compose("Connection succeeded %1", peerId));
-    Peer * peer = new Peer(*cp, m_connection->m_server,
-                           hostname, peerId, peer_iid);
-    cp->setup(peer);
-    m_connection->m_commClient.m_commServer.addSocket(cp);
-    m_connection->m_commClient.m_commServer.addIdle(cp);
-    m_connection->m_server.addObject(peer);
-    // Fix it up
-
-    Anonymous info_arg;
-    peer->addToEntity(info_arg);
-
-    Info info;
-    info->setTo(getId());
-    info->setArgs1(info_arg);
-    res.push_back(info);
 }
 
 /// \brief Process a Monitor operation
