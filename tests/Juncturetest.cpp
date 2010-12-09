@@ -19,11 +19,33 @@
 
 #include "server/Juncture.h"
 
+#include "server/CommPeer.h"
+#include "server/CommServer.h"
 #include "common/Connect.h"
+#include "server/Connection.h"
+#include "server/Peer.h"
+#include "server/ServerRouting.h"
 
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
+
+class BaseWorld;
+
+// Test class to expose protected methods.
+class TestJuncture : public Juncture
+{
+  public:
+    TestJuncture(Connection * c = 0) : Juncture(c, "1", 1) { }
+
+    void test_onPeerLost() { onPeerLost(); }
+    void test_onPeerReplied(const Operation & op) { onPeerReplied(op); }
+
+    void test_addPeer(Peer * p) { m_peer = p; }
+    void test_addSocket(CommPeer * cp) { m_socket = cp; }
+};
+
+int stub_CommPeer_connect_return = 0;
 
 int main()
 {
@@ -37,7 +59,7 @@ int main()
         Juncture * j = new Juncture(0, "1", 1);
 
         OpVector res;
-        Atlas::Objects::Operation::RootOperation op;
+        Operation op;
         j->operation(op, res);
 
         delete j;
@@ -53,11 +75,169 @@ int main()
         delete j;
     }
 
+    // Login op, no args
     {
         Juncture * j = new Juncture(0, "1", 1);
 
         OpVector res;
-        Atlas::Objects::Operation::RootOperation op;
+        Operation op;
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, empty arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, username in arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, bad username in arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", 0x69e362c6);
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, username & password in arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
+        arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, username & bad password in arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
+        arg->setAttr("password", 0xa12a2f3aL);
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, username & password in arg, connected
+    {
+        ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
+        CommServer cs(sr);
+
+        TestJuncture * j = new TestJuncture(0);
+
+        CommPeer * cp = new CommPeer(cs, "", "");
+        j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
+        j->test_addSocket(cp);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
+        arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, username & password in arg, connected already authenticating
+    {
+        ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
+        CommServer cs(sr);
+
+        TestJuncture * j = new TestJuncture(0);
+
+        CommPeer * cp = new CommPeer(cs, "", "");
+        Peer * p = new Peer(*cp, sr, "", "4", 4);
+        j->test_addPeer(p);
+        j->test_addSocket(cp);
+
+        p->setAuthState(PEER_AUTHENTICATING);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
+        arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
+        op->setArgs1(arg);
+        
+        j->LoginOperation(op, res);
+
+        delete j;
+    }
+
+    // Login op, username & password in arg, connected, with serialno
+    {
+        ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
+        CommServer cs(sr);
+
+        TestJuncture * j = new TestJuncture(0);
+
+        CommPeer * cp = new CommPeer(cs, "", "");
+        j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
+        j->test_addSocket(cp);
+
+        OpVector res;
+
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
+        arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
+        op->setArgs1(arg);
+        op->setSerialno(0x6dc5b5eaL);
+        
         j->LoginOperation(op, res);
 
         delete j;
@@ -67,7 +247,7 @@ int main()
         Juncture * j = new Juncture(0, "1", 1);
 
         OpVector res;
-        Atlas::Objects::Operation::RootOperation op;
+        Operation op;
         j->OtherOperation(op, res);
 
         delete j;
@@ -83,12 +263,156 @@ int main()
         delete j;
     }
 
+    // Connect op, no args
     {
         Juncture * j = new Juncture(0, "1", 1);
 
         OpVector res;
-        Atlas::Objects::Operation::RootOperation op;
+        Operation op;
         j->customConnectOperation(op, res);
+
+        delete j;
+    }
+
+    // Connect op, no args, already connected
+    {
+        TestJuncture * j = new TestJuncture(0);
+
+        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", "4", 4));
+
+        OpVector res;
+        Operation op;
+        j->customConnectOperation(op, res);
+
+        delete j;
+    }
+
+    // Connect op, hostname in arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("hostname", "3752ca4a-03a9-11e0-bd8a-001ec93e7c08");
+
+        op->setArgs1(arg);
+
+        j->customConnectOperation(op, res);
+
+        delete j;
+    }
+
+    // Connect op, bad hostname in arg
+    {
+        Juncture * j = new Juncture(0, "1", 1);
+
+        OpVector res;
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("hostname", 0x3752ca4aL);
+
+        op->setArgs1(arg);
+
+        j->customConnectOperation(op, res);
+
+        delete j;
+    }
+
+    // Connect op, hostname and port in arg, connected this end
+    {
+        ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
+        CommServer cs(sr);
+        CommClient * cc = new CommClient(cs, 23);
+        Connection * c = new Connection(*cc, sr, "", "4", 4);
+
+        Juncture * j = new Juncture(c, "1", 1);
+
+        OpVector res;
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("hostname", "3752ca4a-03a9-11e0-bd8a-001ec93e7c08");
+        arg->setAttr("port", 0x03a9);
+
+        op->setArgs1(arg);
+
+        j->customConnectOperation(op, res);
+
+        delete j;
+    }
+
+    // Connect op, hostname and port in arg, connected this end, connect fails
+    {
+        stub_CommPeer_connect_return = -1;
+
+        ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
+        CommServer cs(sr);
+        CommClient * cc = new CommClient(cs, 23);
+        Connection * c = new Connection(*cc, sr, "", "4", 4);
+
+        Juncture * j = new Juncture(c, "1", 1);
+
+        OpVector res;
+        Operation op;
+        Atlas::Objects::Root arg;
+        arg->setAttr("hostname", "3752ca4a-03a9-11e0-bd8a-001ec93e7c08");
+        arg->setAttr("port", 0x03a9);
+
+        op->setArgs1(arg);
+
+        j->customConnectOperation(op, res);
+
+        stub_CommPeer_connect_return = 0;
+
+        delete j;
+    }
+
+    // Teleport unconnected
+    {
+        TestJuncture * j = new TestJuncture(0);
+
+        j->teleportEntity(0);
+
+        delete j;
+    }
+
+    // Teleport connected
+    {
+        TestJuncture * j = new TestJuncture(0);
+
+        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", "4", 4));
+        j->teleportEntity(0);
+
+        delete j;
+    }
+
+    {
+        TestJuncture * j = new TestJuncture(0);
+
+        j->test_onPeerLost();
+
+        delete j;
+    }
+
+    // Peer replied, unconnected this end
+    {
+        TestJuncture * j = new TestJuncture(0);
+
+        Operation op;
+        j->test_onPeerReplied(op);
+
+        delete j;
+    }
+
+    // Peer replied, connected this end
+    {
+        Connection * c = new Connection(*(CommClient*)0,
+                                        *(ServerRouting*)0, "", "4", 4);
+
+        TestJuncture * j = new TestJuncture(c);
+
+        Operation op;
+        j->test_onPeerReplied(op);
 
         delete j;
     }
@@ -97,11 +421,6 @@ int main()
 }
 
 // stubs
-
-#include "server/CommPeer.h"
-#include "server/CommServer.h"
-#include "server/Connection.h"
-#include "server/Peer.h"
 
 #include "common/log.h"
 
@@ -112,6 +431,30 @@ namespace Atlas { namespace Objects { namespace Operation {
 int CONNECT_NO = 500;
 
 } } }
+
+ServerRouting::ServerRouting(BaseWorld & wrld,
+                             const std::string & ruleset,
+                             const std::string & name,
+                             const std::string & id, long intId,
+                             const std::string & lId, long lIntId) :
+        Router(id, intId),
+        m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
+{
+}
+
+ServerRouting::~ServerRouting()
+{
+}
+
+void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
 
 CommPeer::CommPeer(CommServer & svr, const std::string & username, const std::string & password)
                    : CommClient(svr),
@@ -130,7 +473,15 @@ void CommPeer::idle(time_t t)
 
 int CommPeer::connect(const std::string & host, int port)
 {
-    return 0;
+    return stub_CommPeer_connect_return;
+}
+
+CommClient::CommClient(CommServer &svr, int) : CommStreamClient(svr), 
+                                        Idle(svr), m_codec(NULL), 
+                                        m_encoder(NULL), m_connection(NULL),
+                                        m_connectTime(0)
+{
+    m_negotiate = NULL;
 }
 
 CommClient::CommClient(CommServer &svr) : CommStreamClient(svr), 
@@ -157,7 +508,7 @@ void CommClient::idle(time_t t)
 {
 }
 
-int CommClient::operation(const Atlas::Objects::Operation::RootOperation &op)
+int CommClient::operation(const Operation &op)
 {
     return 0;
 }
@@ -178,7 +529,7 @@ int CommClient::negotiate()
     return 0;
 }
 
-int CommClient::send(const Atlas::Objects::Operation::RootOperation &op)
+int CommClient::send(const Operation &op)
 {
     return 0;
 }
@@ -225,6 +576,16 @@ Idle::Idle(CommServer & svr) : m_idleManager(svr)
 }
 
 Idle::~Idle()
+{
+}
+
+CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
+                                              m_congested(false),
+                                              m_server(svr)
+{
+}
+
+CommServer::~CommServer()
 {
 }
 
