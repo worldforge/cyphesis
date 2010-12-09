@@ -366,19 +366,9 @@ void Admin::createObject(const std::string & type_str,
 void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
     const int op_type = op->getClassNo();
-    if (op_type == Atlas::Objects::Operation::CONNECT_NO) {
-        return customConnectOperation(op, res);
-    } else if (op_type == Atlas::Objects::Operation::MONITOR_NO) {
+    if (op_type == Atlas::Objects::Operation::MONITOR_NO) {
         return customMonitorOperation(op, res);
     }
-}
-
-/// \brief Process a Connect operation
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void Admin::customConnectOperation(const Operation & op, OpVector & res)
-{
 }
 
 /// \brief Process a Monitor operation
