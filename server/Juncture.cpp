@@ -203,6 +203,7 @@ int Juncture::teleportEntity(const Entity * ent)
 {
     if (m_peer == 0) {
         log(ERROR, "Attempt to teleport through disconnected juncture");
+        return -1;
     }
     return m_peer->teleportEntity(ent);
 }
