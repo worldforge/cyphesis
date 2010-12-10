@@ -13,6 +13,7 @@ autom4te.cache
 default.apspec
 configure
 cyphesis.spec
+cyphesis.iss
 depcomp
 install-sh
 missing
@@ -29,6 +30,7 @@ cydumprules
 cyloadrules
 cypasswd
 cypython
+man/manpage.*
 tests/*test
 tests/*test.log
 tests/*integration
