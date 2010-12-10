@@ -342,22 +342,6 @@ this is the case then the setting must be omitted from the config file.
      </listitem>
     </varlistentry>
     
-    <varlistentry>
-     <term>
-      <fieldsynopsis>
-       <varname>peers</varname>
-      </fieldsynopsis>
-     <listitem>
-      <para>
-This setting provides cyphesis with a list of peers to connect to during
-startup. The peers are connected to using special Server accounts that
-can be added using the cypasswd tool with the -s option. The format for
-this variables has the form "peer_host|port|server_acc_user|server_acc|pass".
-For multiple peers, entries should be separated by a space. eg.
-"Peer1Entry Peer2Entry ...".
-      </para>
-     </listitem>
-    </varlistentry>
    </variablelist>
   </refsect2>
  </refsect1>
