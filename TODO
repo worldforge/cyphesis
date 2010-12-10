@@ -5,10 +5,9 @@ Non blocking outgoing connect:
   Call poll a few times, until it connects.
   At which point, CommServer removes it without other syscalls.
   Probably CommClient::eof returns true, but it might be an epoll hup
+    Possible solution - flag for write access, and if we get POLLOUT we know connection has completed
 
 Consider Entity:destroyed and Entity:containered to interrupt tasks
-
-Location doesn't need to be sigc::trackable any more
 
 Allow Admin to use an op - perhaps Login - to claim any object on the server.
 
@@ -20,17 +19,6 @@ CorePropertyManager
 
 Segfault when Peer authentication fails. Fix segfault when peer disconnects.
 Probably the same thing.
-
-Generalize Account::CreateOp and use Root for arg as that would work.
-Remove smart_dynamic_cast in CreateOperation in Account and ServerAccount
-Then support creation of Junctures and other OOG objects
-
-Consider whether the connection which creates a Peer should own it for a bit.
-Perhaps an Admin account should keep ownership of a Peer it creates, so it
-can manage it? Should the connection get updates as things change on the
-Peer, especially authentication
-
-Add event logging for teleport
 
 It looks as though Look FROM account is required to activate a possess key,
 which I was not expecting. Are clients expecting this?
