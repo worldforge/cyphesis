@@ -101,7 +101,6 @@ static const usage_data usage[] = {
     { CYPHESIS, "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S|D },
     { CYPHESIS, "dbuser", "<dbusername>", "<username>", "Database user name for access", S|D },
     { CYPHESIS, "dbpasswd", "<dbusername>", "", "Database password for access", S|D },
-    { CYPHESIS, "peers", "<peer_host|port|username|password>*", "", "List of peers to connect to at startup", S },
     { SLAVE, "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
     { SLAVE, "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
     { 0, 0, 0, 0 }
