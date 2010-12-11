@@ -72,8 +72,7 @@ Peer::Peer(CommClient & client,
 
 Peer::~Peer()
 {
-    // FIXME Sometimes we need to be removed from ServerRouting
-    // m_server.delObject(this);
+    destroyed.emit();
 }
 
 /// \brief Set the authentication state of the peer connection
