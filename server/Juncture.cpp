@@ -40,7 +40,7 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Login;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 void Juncture::onPeerLost()
 {
