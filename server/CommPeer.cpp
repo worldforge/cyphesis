@@ -26,6 +26,7 @@
 #include "common/serialno.h"
 #include "common/log.h"
 
+#include <Atlas/Negotiate.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
@@ -51,11 +52,43 @@ int CommPeer::connect(const std::string & host, int port)
 {
     m_host = host;
     m_port = port;
-    m_clientIos.open(host, port);
+    m_clientIos.open(host, port, true);
     if (m_clientIos.is_open()) {
         return 0;
     }
     return -1;
+}
+
+void CommPeer::setup(Router * connection)
+{
+    m_connection = connection;
+
+    if (!m_clientIos.connect_pending()) {
+        m_negotiate->poll(false);
+        m_clientIos << std::flush;
+    }
+}
+
+bool CommPeer::eof()
+{
+    if (m_clientIos.connect_pending()) {
+        return false;
+    } else {
+        return CommStreamClient::eof();
+    }
+}
+
+int CommPeer::read()
+{
+    if (m_clientIos.connect_pending()) {
+        if (m_clientIos.isReady(0)) {
+            return 0;
+        } else {
+            return -1;
+        }
+    } else {
+        return CommClient::read();
+    }
 }
 
 /// \brief Called periodically by the server

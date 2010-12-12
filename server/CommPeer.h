@@ -35,9 +35,13 @@ class CommPeer : public CommClient {
     CommPeer(CommServer & svr);
     virtual ~CommPeer();
 
+    bool eof();
+    int read();
+
     void idle(time_t t);
 
     int connect(const std::string &, int);
+    void setup(Router *);
 
     /// \brief Get the hostname of the connected peer
     ///
