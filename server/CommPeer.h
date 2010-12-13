@@ -48,14 +48,14 @@ class CommPeer : public CommClient {
     /// \brief Get the hostname of the connected peer
     ///
     /// @return The hostname of the connected peer
-    const std::string & getHost() {
+    const std::string & getHost() const {
         return m_host;
     }
 
     /// \brief Get the port the peer is connected on
     ///
     /// @return The port the peer is connected on
-    int getPort() {
+    int getPort() const {
         return m_port;
     }
 
