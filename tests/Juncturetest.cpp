@@ -468,9 +468,23 @@ void CommPeer::idle(time_t t)
 {
 }
 
-int CommPeer::connect(const std::string & host, int port)
+bool CommPeer::eof()
+{
+    return false;
+}
+
+int CommPeer::read()
+{
+    return 0;
+}
+
+int CommPeer::connect(const std::string & host, int port, long)
 {
     return stub_CommPeer_connect_return;
+}
+
+void CommPeer::setup(Router * connection)
+{
 }
 
 CommClient::CommClient(CommServer &svr, int) : CommStreamClient(svr), 

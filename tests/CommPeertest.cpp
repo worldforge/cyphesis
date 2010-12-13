@@ -196,6 +196,8 @@ int main()
 
 // Stub functions
 
+#include <Atlas/Net/Stream.h>
+
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()
@@ -300,7 +302,7 @@ CommClient::CommClient(CommServer &svr) : CommStreamClient(svr),
                                         m_encoder(NULL), m_connection(NULL),
                                         m_connectTime(svr.time())
 {
-    m_negotiate = NULL;
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis_test", m_clientIos);
 }
 
 CommClient::~CommClient()
