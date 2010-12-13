@@ -37,6 +37,7 @@
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Login;
 
@@ -44,6 +45,20 @@ static const bool debug_flag = false;
 
 void Juncture::onPeerLost()
 {
+#if 0
+    // FIXME m_connection doesn't get zeroed yet
+    if (m_connection != 0) {
+        Anonymous error_arg;
+        error_arg->setAttr("message", "Connection lost");
+
+        Error error;
+        error->setArgs1(error_arg);
+        if (m_socket->getRef() != 0L) {
+            error->setRefno(m_socket->getRef());
+            m_connection->m_commClient.send(error);
+        }
+    }
+#endif
     m_peer = 0;
     m_socket = 0;
 }
