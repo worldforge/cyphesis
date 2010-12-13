@@ -33,6 +33,7 @@ class ConnectedRouter : public Router {
                              long intId,
                              Connection * c = 0);
   public:
+    /// \brief The network connection currently subscribed to this object
     Connection * m_connection;
 
     virtual ~ConnectedRouter();
