@@ -59,7 +59,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommClientFactorytest ServerRoutingtest Idletest \
                StorageManagertest HttpCachetest UpdateTestertest \
                ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
-               TeleportStatetest PendingTeleporttest Juncturetest
+               TeleportStatetest PendingTeleporttest Juncturetest \
+               ConnectedRoutertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest
@@ -1267,6 +1268,10 @@ Juncturetest_SOURCES = Juncturetest.cpp
 Juncturetest_LDADD = \
         $(top_builddir)/server/Juncture.o \
         $(NETWORK_LIBS)
+
+ConnectedRoutertest_SOURCES = ConnectedRoutertest.cpp
+ConnectedRoutertest_LDADD = \
+        $(top_builddir)/server/ConnectedRouter.o
 
 # SERVER_INTEGRATION_TESTS
 
