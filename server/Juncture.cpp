@@ -71,10 +71,10 @@ void Juncture::onPeerReplied(const Operation & op)
 }
 
 Juncture::Juncture(Connection * c,
-                   const std::string & id, long iid) : Router(id, iid),
+                   const std::string & id, long iid) :
+          ConnectedRouter(id, iid, c),
                                                        m_socket(0),
-                                                       m_peer(0),
-                                                       m_connection(c)
+                                                       m_peer(0)
 {
 }
 

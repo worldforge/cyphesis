@@ -20,7 +20,7 @@
 #ifndef SERVER_JUNCTURE_H
 #define SERVER_JUNCTURE_H
 
-#include "common/Router.h"
+#include "ConnectedRouter.h"
 
 #include <sigc++/trackable.h>
 
@@ -33,7 +33,7 @@ class Peer;
 ///
 /// This is the main point of dispatch for any operation from the manager of
 /// the peer connection
-class Juncture : public Router, virtual public sigc::trackable {
+class Juncture : public ConnectedRouter, virtual public sigc::trackable {
   protected:
     CommPeer * m_socket;
     Peer * m_peer;
@@ -41,8 +41,6 @@ class Juncture : public Router, virtual public sigc::trackable {
     void onPeerLost();
     void onPeerReplied(const Operation &);
   public:
-    Connection * m_connection;
-
     Juncture(Connection *, const std::string & id, long iid);
     virtual ~Juncture();
 
