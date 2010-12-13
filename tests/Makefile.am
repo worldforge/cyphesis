@@ -905,6 +905,7 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -950,6 +951,7 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -999,6 +1001,7 @@ Accounttest_LDADD = \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1044,6 +1047,7 @@ Admintest_LDADD = \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1089,6 +1093,7 @@ ServerAccounttest_LDADD = \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1134,6 +1139,7 @@ Playertest_LDADD = \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1310,6 +1316,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1351,6 +1358,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \

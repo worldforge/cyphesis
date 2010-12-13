@@ -285,8 +285,8 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         Router(id, intId),
-         m_username(uname), m_password(passwd), m_connection(conn)
+         ConnectedRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
 {
 }
 
@@ -351,6 +351,18 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 }
 
 void Account::OtherOperation(const Operation & op, OpVector & res)
+{
+}
+
+ConnectedRouter::ConnectedRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectedRouter::~ConnectedRouter()
 {
 }
 
