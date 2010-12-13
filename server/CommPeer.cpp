@@ -30,12 +30,15 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Info;
+
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr), m_ref(0)
 {
 }
 
@@ -48,10 +51,11 @@ CommPeer::~CommPeer()
 /// @param host The hostname of the peer to connect to
 /// @param port The port to connect on
 /// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host, int port)
+int CommPeer::connect(const std::string & host, int port, long ref)
 {
     m_host = host;
     m_port = port;
+    m_ref = ref;
     m_clientIos.open(host, port, true);
     if (m_clientIos.is_open()) {
         return 0;
@@ -87,10 +91,20 @@ int CommPeer::read()
             return -1;
         }
     } else {
-        Atlas::Negotiate * oneg = m_negotiate;
+        Atlas::Negotiate * old_neg = m_negotiate;
         int ret = CommClient::read();
-        if (oneg != m_negotiate) {
-            log(INFO, "Peer notification completed");
+        if (old_neg != m_negotiate) {
+            Anonymous info_arg;
+            m_connection->addToEntity(info_arg);
+
+            Info info;
+            if (m_ref) {
+                info->setRefno(m_ref);
+            }
+            info->setArgs1(info_arg);
+
+            OpVector res;
+            m_connection->operation(info, res);
         }
         return ret;
     }

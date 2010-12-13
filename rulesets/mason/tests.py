@@ -400,8 +400,6 @@ def test_teleport(host='', account='', password='', **args):
         return
     peer = rep[0].id
 
-    time.sleep(1)
-
     rep=m.client.send_wait(Operation("login",
                                      Entity(username='whimsy',
                                             password='foo'),

@@ -30,6 +30,8 @@ class CommPeer : public CommClient {
     std::string m_host;
     /// \brief The port that this connection is on
     int m_port;
+    /// \brief Serial number for referring to the connection attempt
+    long m_ref;
 
   public:
     CommPeer(CommServer & svr);
@@ -40,7 +42,7 @@ class CommPeer : public CommClient {
 
     void idle(time_t t);
 
-    int connect(const std::string &, int);
+    int connect(const std::string &, int, long);
     void setup(Router *);
 
     /// \brief Get the hostname of the connected peer

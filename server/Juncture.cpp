@@ -174,7 +174,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     m_socket = new CommPeer(m_connection->m_commClient.m_commServer);
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
-    if (m_socket->connect(hostname, port) != 0) {
+    if (m_socket->connect(hostname, port, op->getSerialno()) != 0) {
         error(op, "Connection failed", res, getId());
         delete m_socket;
         m_socket = 0;
@@ -189,14 +189,6 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
 
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
     m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
-
-    Anonymous info_arg;
-    m_peer->addToEntity(info_arg);
-
-    Info info;
-    info->setTo(getId());
-    info->setArgs1(info_arg);
-    res.push_back(info);
 }
 
 int Juncture::teleportEntity(const Entity * ent)
