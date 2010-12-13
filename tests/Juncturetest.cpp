@@ -693,6 +693,18 @@ void Connection::GetOperation(const Operation &, OpVector &)
 {
 }
 
+ConnectedRouter::ConnectedRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectedRouter::~ConnectedRouter()
+{
+}
+
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
 {
