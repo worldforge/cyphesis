@@ -133,13 +133,18 @@ Account * Connection::addAccount(const std::string & type,
 /// as an avatar. If it is an player or other account, a pointer is returned.
 Account * Connection::removeAccount(Router * obj, const std::string & event)
 {
-    Account * ac = dynamic_cast<Account *>(obj);
-    if (ac != 0) {
-        m_server.m_lobby.delAccount(ac);
-        ac->m_connection = 0;
-        logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
-                                         ac->getId(), ac->username(), event));
-        return ac;
+    ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(obj);
+    if (cr != 0) {
+        cr->m_connection = 0;
+        Account * ac = dynamic_cast<Account *>(cr);
+        if (ac != 0) {
+            m_server.m_lobby.delAccount(ac);
+            logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
+                                             ac->getId(), ac->username(),
+                                             event));
+            return ac;
+        }
+        return 0;
     }
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != 0) {
