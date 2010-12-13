@@ -95,6 +95,7 @@ cyphesis_SOURCES = \
 		EntityBuilder.cpp EntityBuilder.h \
 		ArithmeticBuilder.cpp ArithmeticBuilder.h \
 		Lobby.cpp Lobby.h \
+		ConnectedRouter.cpp ConnectedRouter.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
