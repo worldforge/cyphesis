@@ -1,11 +1,5 @@
 Non blocking outgoing connect:
-  Open socket, and make non-blocking (skstream)
-  Call connect, which return EINPROGRESS.
-  Add it to epoll/poll.
-  Call poll a few times, until it connects.
-  At which point, CommServer removes it without other syscalls.
-  Probably CommClient::eof returns true, but it might be an epoll hup
-    Possible solution - flag for write access, and if we get POLLOUT we know connection has completed
+  determine when Atlas neg is done, at which point reply to admin connection
 
 Consider Entity:destroyed and Entity:containered to interrupt tasks
 
