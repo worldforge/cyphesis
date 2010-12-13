@@ -58,6 +58,13 @@ class CommPeer : public CommClient {
     int getPort() {
         return m_port;
     }
+
+    /// \brief Accessor for connect reference
+    ///
+    /// @return The connect reference
+    long getRef() const {
+        return m_ref;
+    }
 };
 
 #endif // SERVER_COMM_PEER_H
