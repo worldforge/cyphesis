@@ -72,8 +72,8 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         Router(id, intId),
-         m_username(uname), m_password(passwd), m_connection(conn)
+         ConnectedRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
 {
 }
 
