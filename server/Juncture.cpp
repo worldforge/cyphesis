@@ -45,8 +45,6 @@ static const bool debug_flag = false;
 
 void Juncture::onPeerLost()
 {
-#if 0
-    // FIXME m_connection doesn't get zeroed yet
     if (m_connection != 0) {
         Anonymous error_arg;
         error_arg->setAttr("message", "Connection lost");
@@ -58,7 +56,6 @@ void Juncture::onPeerLost()
             m_connection->m_commClient.send(error);
         }
     }
-#endif
     m_peer = 0;
     m_socket = 0;
 }
