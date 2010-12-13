@@ -87,7 +87,12 @@ int CommPeer::read()
             return -1;
         }
     } else {
-        return CommClient::read();
+        Atlas::Negotiate * oneg = m_negotiate;
+        int ret = CommClient::read();
+        if (oneg != m_negotiate) {
+            log(INFO, "Peer notification completed");
+        }
+        return ret;
     }
 }
 
