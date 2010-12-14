@@ -1,18 +1,9 @@
-Non blocking outgoing connect:
-  determine when Atlas neg is done, at which point reply to admin connection
-
 Consider Entity:destroyed and Entity:containered to interrupt tasks
 
 Allow Admin to use an op - perhaps Login - to claim any object on the server.
 
-Having a Connection member in Juncture is common with Account, and there are
-possibly other similarities. Base class?
-
 Use Java object builder/aspect pattern for Property factories in
 CorePropertyManager
-
-Segfault when Peer authentication fails. Fix segfault when peer disconnects.
-Probably the same thing.
 
 It looks as though Look FROM account is required to activate a possess key,
 which I was not expecting. Are clients expecting this?
