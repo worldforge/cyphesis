@@ -200,10 +200,6 @@ Add a way to extend the terrain base on where someone is walking.
 Probably should sit on top of a general mechanism for modifying the
 world based on player activity.
 
-Rename files where classes have been renamed.
-CommAtlasListener
-EntityBuilder
-
 Fix out type updates in Eris. Need to be picked up in the special place
 where serverinfo updates are picked up no.
 
