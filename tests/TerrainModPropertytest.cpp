@@ -101,7 +101,7 @@ int main()
 
 // stubs
 
-#include "rulesets/TerrainMod.h"
+#include "rulesets/TerrainModTranslator.h"
 
 #include "modules/TerrainContext.h"
 

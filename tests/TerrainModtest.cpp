@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "rulesets/TerrainMod.h"
+#include "rulesets/TerrainModTranslator.h"
 
 #include <wfmath/quaternion.h>
 
