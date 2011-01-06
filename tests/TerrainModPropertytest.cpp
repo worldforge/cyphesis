@@ -120,22 +120,22 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-InnerTerrainMod::InnerTerrainMod()
+TerrainModTranslator::TerrainModTranslator()
 {
 }
 
-InnerTerrainMod::~InnerTerrainMod()
+TerrainModTranslator::~TerrainModTranslator()
 {
 }
 
-bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
-                                const WFMath::Quaternion & orientation,
-                                const MapType& modElement)
+bool TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
+                                     const WFMath::Quaternion & orientation,
+                                     const MapType& modElement)
 {
     return true;
 }
 
-Mercator::TerrainMod* InnerTerrainMod::getModifier()
+Mercator::TerrainMod* TerrainModTranslator::getModifier()
 {
     return 0;
 }

@@ -33,10 +33,10 @@ namespace Mercator {
 @brief Base class for all terrain mod specific classes.This is not meant to be used directly by anything else than the TerrainMod class.
 The TerrainMod class in itself doesn't hold the actual reference to the terrain mod, and doesn't handle the final parsing of Atlas data. This is instead handled by the different subclasses of this class. Since the different kinds of terrain mods found in Mercator behave differently depending on their type and the kind of shape used, we need to separate the code for handling them into different classes.
 */
-class InnerTerrainMod
+class TerrainModTranslator
 {
 public:
-    virtual ~InnerTerrainMod();
+    virtual ~TerrainModTranslator();
     
 protected:
     template <template <int> class Shape>
@@ -60,7 +60,7 @@ public:
      */
     Mercator::TerrainMod* getModifier();
 
-    InnerTerrainMod();
+    TerrainModTranslator();
     
 protected:
 

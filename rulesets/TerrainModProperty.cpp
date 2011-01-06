@@ -179,7 +179,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
                                                         const MapType & modMap)
 {
     if (m_innerMod == 0) {
-        m_innerMod = new InnerTerrainMod;
+        m_innerMod = new TerrainModTranslator;
     }
 
     if (m_innerMod->parseData(owner->m_location.pos(),

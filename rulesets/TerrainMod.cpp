@@ -35,26 +35,35 @@ using Atlas::Message::FloatType;
 
 /**
  * @brief Ctor.
- * This is protected to prevent any other class than subclasses of this to call it.
- * @param terrainMod The TerrainMod instance to which this instance belongs to.
- * @param typemod The type of terrainmod this handles, such as "cratermod" or "slopemod. This will be stored in mTypeName.
  */
-InnerTerrainMod::InnerTerrainMod() : m_mod(0)
+TerrainModTranslator::TerrainModTranslator() : m_mod(0)
 {
 }
 
-/// @brief Dtor.
-InnerTerrainMod::~InnerTerrainMod()
+/**
+ * @brief Dtor.
+ */
+TerrainModTranslator::~TerrainModTranslator()
 {
 }
 
+/**
+ * @brief Parse the shape data and create the terrain mod instance with it
+ * @param pos Position of the mod entity
+ * @param orientation Orientation of the mod entity
+ * @param modElement Atlas data describing the mod
+ * @param typeName Name of the type of mod from the Atlas data
+ * @param shape Reference to the shape object to be populated
+ * @param shapeMap Atlas data containing the shape parameters
+ */
 template <template <int> class Shape>
-bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
-                                 const WFMath::Quaternion & orientation,
-                                 const MapType& modElement,
-                                 const std::string & typeName,
-                                 Shape<2> & shape,
-                                 const Element & shapeMap)
+bool TerrainModTranslator::parseStuff(
+      const WFMath::Point<3> & pos,
+      const WFMath::Quaternion & orientation,
+      const MapType& modElement,
+      const std::string & typeName,
+      Shape<2> & shape,
+      const Element & shapeMap)
 {
     if (!parseShape(shapeMap, pos, orientation, shape)) {
         return false;
@@ -71,9 +80,17 @@ bool InnerTerrainMod::parseStuff(const WFMath::Point<3> & pos,
     return false;
 }
 
-bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
-                                const WFMath::Quaternion & orientation,
-                                const MapType& modElement)
+/** 
+ * @brief Parse the Atlas data and create the terrain mod instance with it
+ * @param pos Position of the mod entity
+ * @param orientation Orientation of the mod entity
+ * @param modElement Atlas data describing the mod
+ * @return true if translation succeeds
+ */
+bool TerrainModTranslator::parseData(
+      const WFMath::Point<3> & pos,
+      const WFMath::Quaternion & orientation,
+      const MapType& modElement)
 {
     MapType::const_iterator I = modElement.find("type");
     if (I == modElement.end() || !I->second.isString()) {
@@ -107,20 +124,25 @@ bool InnerTerrainMod::parseData(const WFMath::Point<3> & pos,
 }
 
 
-Mercator::TerrainMod* InnerTerrainMod::getModifier()
+Mercator::TerrainMod* TerrainModTranslator::getModifier()
 {
     return m_mod;
 }
 
 /**
- * @brief Parses the position of the mod.
- * If no height data is given the height of the entity the mod belongs to will be used.
- * If however a "height" value is set, that will be used instead.
- * If no "height" value is set, but a "heightoffset" is present, that value will be added to the height set by the position of the entity the mod belongs to.
- * @param modElement The top mod element.
- * @return The position of the mod, where the height has been adjusted.
+ * @brief Parses the changes to the position of the mod
+ * If no height data is given the height of the entity the mod belongs to will
+ * be used. If however a "height" value is set, that will be used instead.
+ * If no "height" value is set, but a "heightoffset" is present, that value
+ * will be added to the height set by the position of the entity the mod
+ * belongs to.
+ * @param pos Position of the mod entity
+ * @param modElement Atlas data describing the mod
+ * @return The adjusted height of the mod
  */
-float InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
+float TerrainModTranslator::parsePosition(
+      const WFMath::Point<3> & pos,
+      const MapType& modElement)
 {
     ///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
     MapType::const_iterator I = modElement.find("height");
@@ -162,10 +184,11 @@ float InnerTerrainMod::parsePosition(const WFMath::Point<3> & pos, const MapType
  * created.
  */
 template<template <int> class Shape>
-bool InnerTerrainMod::parseShape(const Element& shapeElement,
-                                 const WFMath::Point<3>& pos,
-                                 const WFMath::Quaternion& orientation,
-                                 Shape <2> & shape)
+bool TerrainModTranslator::parseShape(
+      const Element& shapeElement,
+      const WFMath::Point<3>& pos,
+      const WFMath::Quaternion& orientation,
+      Shape <2> & shape)
 {
     try {
         shape.fromAtlas(shapeElement);
@@ -192,15 +215,14 @@ bool InnerTerrainMod::parseShape(const Element& shapeElement,
 }
 
 /**
- * @brief Tries to create a new instance from the passes in atlas data.
- * @param shapeElement The atlas data containing shape information.
- * @param pos The position where the mod should be created, in world space.
- * @param height The height where the level should be created.
- * @return True if the atlas data could be successfully parsed an a mod cre
+ * @brief Create or update an instance from the passed in atlas data.
+ * @param shape The modified shape of the mod
+ * @param pos Position of the mod entity
+ * @return True if the atlas data could be successfully parsed
  */
 template <template <template <int> class Shape> class Mod,
           template <int> class Shape>
-bool InnerTerrainMod::createInstance(
+bool TerrainModTranslator::createInstance(
       Shape <2> & shape,
       const WFMath::Point<3>& pos,
       const MapType& modElement,
@@ -237,17 +259,14 @@ bool InnerTerrainMod::createInstance(
 }
 
 /**
- * @brief Tries to create a new instance from the passes in atlas data.
- * @param shapeElement The atlas data containing shape information.
- * @param pos The position where the mod should be created, in world space.
- * @param level The level where the slope should be created.
- * @param dx
- * @param dy
- * @return True if the atlas data could be successfully parsed an a mod cre
+ * @brief Create or update an instance from the passed in atlas data.
+ * @param shape The modified shape of the mod
+ * @param pos Position of the mod entity
+ * @return True if the atlas data could be successfully parsed
  */
 template <template <template <int> class S> class Mod,
           template <int> class Shape>
-bool InnerTerrainMod::createInstance(
+bool TerrainModTranslator::createInstance(
       Shape <2> & shape,
       const WFMath::Point<3>& pos,
       const MapType& modElement)

@@ -27,10 +27,10 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-class TestInnerTerrainMod : public InnerTerrainMod
+class TestTerrainModTranslator : public TerrainModTranslator
 {
   public:
-    TestInnerTerrainMod() : InnerTerrainMod() { }
+    TestTerrainModTranslator() : TerrainModTranslator() { }
 
     virtual Mercator::TerrainMod* getModifier()
     {
@@ -47,7 +47,7 @@ static int test_reparse()
 {
     // Call parseData with polygon shape and valid points
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
         bool ret;
@@ -99,7 +99,7 @@ static int test_reparse()
 int main()
 {
     {
-        InnerTerrainMod * titm = new TestInnerTerrainMod;
+        TerrainModTranslator * titm = new TestTerrainModTranslator;
         delete titm;
     }
 
@@ -108,7 +108,7 @@ int main()
         WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z < 0);
     }
 
@@ -118,7 +118,7 @@ int main()
 
         MapType data;
         data["height"] = 1;
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z > 0);
     }
 
@@ -128,7 +128,7 @@ int main()
 
         MapType data;
         data["height"] = 1.;
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z > 0);
     }
 
@@ -138,7 +138,7 @@ int main()
 
         MapType data;
         data["height"] = "1.";
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z < 0);
     }
 
@@ -148,7 +148,7 @@ int main()
 
         MapType data;
         data["heightoffset"] = 2;
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z > 0);
     }
 
@@ -158,7 +158,7 @@ int main()
 
         MapType data;
         data["heightoffset"] = 2.;
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z > 0);
     }
 
@@ -168,26 +168,26 @@ int main()
 
         MapType data;
         data["heightoffset"] = "1.";
-        float z = TestInnerTerrainMod::test_parsePosition(pos, data);
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
         assert(z < 0);
     }
 
     ////////////////////// Concrete classes ///////////////////////////
 
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         delete titm;
     }
 
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         assert(titm->getModifier() == 0);
         delete titm;
     }
 
     // Call parseData with empty map
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -200,7 +200,7 @@ int main()
 
     // Call parseData with unknown shape
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -217,7 +217,7 @@ int main()
 
     // Call parseData with ball shape
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -233,7 +233,7 @@ int main()
 
     // Call parseData with ball shape and valid ball params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -253,7 +253,7 @@ int main()
 
     // Call parseData with ball shape and valid ball and orientation
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation(0,0,0,1);
 
@@ -273,7 +273,7 @@ int main()
 
     // Call parseData with polygon shape and valid polygon params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -292,7 +292,7 @@ int main()
 
     // Call parseData with rotbox shape and valid rotbox params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
@@ -312,7 +312,7 @@ int main()
 
     // Call parseData with ball shape and invalid ball params
     {
-        InnerTerrainMod * titm = new InnerTerrainMod;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         WFMath::Point<3> pos(0,0,-1);
         WFMath::Quaternion orientation;
 
