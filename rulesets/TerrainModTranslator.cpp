@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "TerrainMod.h"
+#include "TerrainModTranslator.h"
 
 #include "common/log.h"
 #include "common/debug.h"

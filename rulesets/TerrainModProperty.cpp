@@ -20,7 +20,7 @@
 #include "TerrainModProperty.h"
 
 #include "Entity.h"
-#include "TerrainMod.h"
+#include "TerrainModTranslator.h"
 #include "TerrainProperty.h"
 
 #include "common/compose.hpp"
