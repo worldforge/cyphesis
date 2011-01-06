@@ -101,7 +101,7 @@ int main()
 
 // stubs
 
-#include "rulesets/TerrainMod.h"
+#include "rulesets/TerrainModTranslator.h"
 
 #include "modules/TerrainContext.h"
 
@@ -120,95 +120,24 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-InnerTerrainMod::InnerTerrainMod(const std::string& typemod)
+TerrainModTranslator::TerrainModTranslator()
 {
 }
 
-InnerTerrainMod::~InnerTerrainMod()
+TerrainModTranslator::~TerrainModTranslator()
 {
 }
 
-InnerTerrainModCrater::InnerTerrainModCrater()
-: InnerTerrainMod("cratermod")
-, mModifier(0)
-{
-}
-
-InnerTerrainModCrater::~InnerTerrainModCrater()
-{
-}
-
-Mercator::TerrainMod* InnerTerrainModCrater::getModifier()
-{
-    return 0;
-}
-
-
-bool InnerTerrainModCrater::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
+bool TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
+                                     const WFMath::Quaternion & orientation,
+                                     const MapType& modElement)
 {
     return true;
 }
 
-InnerTerrainModSlope::InnerTerrainModSlope()
-: InnerTerrainMod("slopemod")
-, mModifier_impl(0)
-{
-}
-
-InnerTerrainModSlope::~InnerTerrainModSlope()
-{
-}
-
-Mercator::TerrainMod* InnerTerrainModSlope::getModifier()
+Mercator::TerrainMod* TerrainModTranslator::getModifier()
 {
     return 0;
-}
-
-
-bool InnerTerrainModSlope::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
-{
-    return true;
-}
-
-InnerTerrainModLevel::InnerTerrainModLevel()
-: InnerTerrainMod("levelmod")
-, mModifier_impl(0)
-{
-}
-
-InnerTerrainModLevel::~InnerTerrainModLevel()
-{
-}
-
-Mercator::TerrainMod* InnerTerrainModLevel::getModifier()
-{
-    return 0;
-}
-
-bool InnerTerrainModLevel::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
-{
-    return true;
-}
-
-InnerTerrainModAdjust::InnerTerrainModAdjust()
-: InnerTerrainMod("adjustmod")
-, mModifier_impl(0)
-{
-}
-
-InnerTerrainModAdjust::~InnerTerrainModAdjust()
-{
-}
-
-Mercator::TerrainMod* InnerTerrainModAdjust::getModifier()
-{
-    return 0;
-}
-
-
-bool InnerTerrainModAdjust::parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
-{
-    return true;
 }
 
 TerrainContext::TerrainContext(Entity * e) : m_entity(e)

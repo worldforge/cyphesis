@@ -162,15 +162,21 @@ void TerrainProperty::set(const Element & ent)
 
 }
 
-Mercator::TerrainMod* TerrainProperty::setMod(Mercator::TerrainMod *mod) const
+void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
 {
-    return m_data.addMod(*mod);
+    m_data.addMod(mod);
 }
 
-void TerrainProperty::removeMod(Mercator::TerrainMod *mod) const
+void TerrainProperty::updateMod(const Mercator::TerrainMod *mod) const
+{
+    m_data.updateMod(mod);
+}
+
+void TerrainProperty::removeMod(const Mercator::TerrainMod *mod) const
 {
     m_data.removeMod(mod);
 }
+
 void TerrainProperty::clearMods(float x, float y)
 {
     Mercator::Segment *s = m_data.getSegment(x,y);
@@ -248,11 +254,11 @@ void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
     Mercator::ModList::const_iterator I = seg_mods.begin();
     Mercator::ModList::const_iterator Iend = seg_mods.end();
     for (; I != Iend; ++I) {
-        Mercator::TerrainMod * mod = *I;
+        const Mercator::TerrainMod * mod = *I;
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
             pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
-            Mercator::TerrainMod::Context * c = mod->context();
+            Mercator::Effector::Context * c = mod->context();
             if (c == 0) {
                 log(WARNING, "Terrrain mod with no context");
                 continue;
