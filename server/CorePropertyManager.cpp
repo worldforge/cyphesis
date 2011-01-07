@@ -38,6 +38,7 @@
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
+#include "rulesets/VisibilityProperty.h"
 #include "rulesets/Character.h"
 
 #include "common/Eat.h"
@@ -302,6 +303,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["statistics"] = new PropertyFactory<StatisticsProperty>;
     m_propertyFactories["spawn"] = new PropertyFactory<SpawnProperty>;
     m_propertyFactories["area"] = new PropertyFactory<AreaProperty>;
+    m_propertyFactories["visibility"] = new PropertyFactory<VisibilityProperty>;
     
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
