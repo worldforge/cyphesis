@@ -1324,6 +1324,7 @@ def create_large_empty_terrain(host='', account='', password='', **args):
     # print minx, ":", miny, ":", minz, ":", maxx, ":", maxy, ":", maxz
 
     m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+    m.look()
 
 def create_small_empty_terrain(host='', account='', password='', **args):
     
@@ -1376,3 +1377,4 @@ def create_small_empty_terrain(host='', account='', password='', **args):
     # print minx, ":", miny, ":", minz, ":", maxx, ":", maxy, ":", maxz
 
     m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+    m.look()
