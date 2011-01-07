@@ -11,6 +11,15 @@ which I was not expecting. Are clients expecting this?
 Add database stuff to store server metadata like version of server,
 (to detect rolling back to earlier versions).
 
+TerrainModProperty:
+Do the same for areas.
+We need op post-processing rather than pre-processing for move updates.
+
+Abstract entities for tracking non-physical concepts such as quests, trade
+transactions, entity recipes, contruction blueprints etc.
+See http://www.igda.org/newsletter/?p=483 for how to do trading.
+
+
 Extend Mercator to allow terrain mod volume calculations. Use these to work
 out when a quarry should work, and how much it should be extended.
 

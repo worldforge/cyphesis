@@ -17,9 +17,9 @@
 
 // $Id$
 
-#include "rulesets/TerrainMod.h"
+#include "rulesets/TerrainModTranslator.h"
 
-#include "rulesets/Entity.h"
+#include <wfmath/quaternion.h>
 
 #include <cassert>
 
@@ -27,305 +27,294 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-class TestInnerTerrainMod : public InnerTerrainMod
+class TestTerrainModTranslator : public TerrainModTranslator
 {
   public:
-    TestInnerTerrainMod() : InnerTerrainMod("test") { }
-
-    virtual bool parseAtlasData(Entity * owner, const Atlas::Message::MapType& modElement)
-    {
-        return true;
-    }
+    TestTerrainModTranslator() : TerrainModTranslator() { }
 
     virtual Mercator::TerrainMod* getModifier()
     {
         return 0;
     }
 
-    WFMath::Point<3> test_parsePosition(Entity * owner, const MapType& modElement)
+    static float test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
     {
-        return parsePosition(owner, modElement);
-    }
-
-    const std::string& test_parseShape(const Atlas::Message::MapType& modElement, Atlas::Message::Element& shapeMap)
-    {
-        return parseShape(modElement, shapeMap);
+        return parsePosition(pos, modElement);
     }
 };
+
+static int test_reparse()
+{
+    // Call parseData with polygon shape and valid points
+    {
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
+        bool ret;
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        shape_desc["points"] = ListType(3, ListType(2, 1.));
+        mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
+        ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        Mercator::TerrainMod * tm1 = titm->getModifier();
+        assert(tm1 != 0);
+
+        // Re-parse the same data. Should update the mod in place.
+        ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        Mercator::TerrainMod * tm2 = titm->getModifier();
+        assert(tm2 != 0);
+        assert(tm2 == tm1);
+
+        // Change it to 2D ball shape. This requires a new mod.
+        shape_desc["type"] = "ball";
+        shape_desc["radius"] = 1.f;
+        shape_desc["position"] = ListType(2, 1.);
+        mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
+        ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        Mercator::TerrainMod * tm3 = titm->getModifier();
+        assert(tm3 != 0);
+        assert(tm3 != tm1);
+
+        // Change it to an adjustmod. This requires a new mod
+        mod["type"] = "adjustmod";
+        ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        Mercator::TerrainMod * tm4 = titm->getModifier();
+        assert(tm4 != 0);
+        assert(tm4 != tm1);
+
+        delete titm;
+    }
+
+    return 0;
+}
 
 int main()
 {
     {
-        InnerTerrainMod * titm = new TestInnerTerrainMod;
-        delete titm;
-    }
-    {
-        InnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        const std::string & type = titm->getTypename();
-        assert(type == "test");
-
+        TerrainModTranslator * titm = new TestTerrainModTranslator;
         delete titm;
     }
 
     // Call parsePosition with empty height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() < 0);
-
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z < 0);
     }
 
     // Call parsePosition with int height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["height"] = 1;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
-
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z > 0);
     }
 
     // Call parsePosition with float height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["height"] = 1.;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
-
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z > 0);
     }
 
     // Call parsePosition with bad (string) height data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["height"] = "1.";
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() < 0);
-
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z < 0);
     }
 
     // Call parsePosition with int heightoffset data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["heightoffset"] = 2;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
-
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z > 0);
     }
 
     // Call parsePosition with float heightoffset data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["heightoffset"] = 2.;
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() > 0);
-
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z > 0);
     }
 
     // Call parsePosition with bad (string) heightoffset data
     {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        WFMath::Point<3> pos(0,0,-1);
 
         MapType data;
         data["heightoffset"] = "1.";
-        Point3D new_pos = titm->test_parsePosition(&e, data);
-        assert(new_pos.isValid());
-        assert(new_pos.z() < 0);
-
-        delete titm;
-    }
-
-    // Call parseShape with empty mod data
-    {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        Element e;
-        MapType mod;
-        const std::string & shape = titm->test_parseShape(mod, e);
-
-        assert(shape.empty());
-        assert(e.isNone());
-        delete titm;
-    }
-
-    // Call parseShape with invalid shape data
-    {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        Element e;
-        MapType mod;
-        mod["shape"] = "invalid_shape";
-        const std::string & shape = titm->test_parseShape(mod, e);
-
-        assert(shape.empty());
-        assert(e.isNone());
-        delete titm;
-    }
-
-    // Call parseShape with empty shape data
-    {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        Element e;
-        MapType mod;
-        mod["shape"] = MapType();
-        const std::string & shape = titm->test_parseShape(mod, e);
-
-        assert(shape.empty());
-        delete titm;
-    }
-
-    // Call parseShape with invalid shape type
-    {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        Element e;
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = 1;
-        mod["shape"] = shape_desc;
-        const std::string & shape = titm->test_parseShape(mod, e);
-
-        assert(shape.empty());
-        delete titm;
-    }
-
-    // Call parseShape with valid shape type
-    {
-        TestInnerTerrainMod * titm = new TestInnerTerrainMod;
-
-        Element e;
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "valid_shape";
-        mod["shape"] = shape_desc;
-        const std::string & shape = titm->test_parseShape(mod, e);
-
-        assert(shape == "valid_shape");
-        assert(e.isMap());
-        delete titm;
+        float z = TestTerrainModTranslator::test_parsePosition(pos, data);
+        assert(z < 0);
     }
 
     ////////////////////// Concrete classes ///////////////////////////
 
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         delete titm;
     }
 
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
+        TerrainModTranslator * titm = new TerrainModTranslator;
         assert(titm->getModifier() == 0);
         delete titm;
     }
 
-    // Call parseAtlasData with empty map
+    // Call parseData with empty map
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
 
         MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
+        bool ret = titm->parseData(pos, orientation, data);
         assert(!ret);
 
         delete titm;
     }
 
-    // Call parseAtlasData with unknown shape
+    // Call parseData with unknown shape
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
 
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = "unknown_shape";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseData(pos, orientation, mod);
         assert(!ret);
 
 
         delete titm;
     }
 
-    // Call parseAtlasData with ball shape
+    // Call parseData with ball shape
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
 
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = "ball";
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        bool ret = titm->parseData(pos, orientation, mod);
         assert(!ret);
 
         delete titm;
     }
 
-    // Call parseAtlasData with ball shape and valid ball params
+    // Call parseData with ball shape and valid ball params
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
 
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = "ball";
         shape_desc["radius"] = 1.f;
-        shape_desc["position"] = ListType(3, 1.);
+        shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        mod["type"] = "levelmod";
+        bool ret = titm->parseData(pos, orientation, mod);
         assert(ret);
         assert(titm->getModifier() != 0);
 
         delete titm;
     }
 
-    // Call parseAtlasData with ball shape and invalid ball params
+    // Call parseData with ball shape and valid ball and orientation
     {
-        InnerTerrainModCrater * titm = new InnerTerrainModCrater;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation(0,0,0,1);
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "ball";
+        shape_desc["radius"] = 1.f;
+        shape_desc["position"] = ListType(2, 1.);
+        mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
+        bool ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
+    // Call parseData with polygon shape and valid polygon params
+    {
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "polygon";
+        shape_desc["points"] = ListType(3, ListType(2, 1.));
+        mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
+        bool ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
+    // Call parseData with rotbox shape and valid rotbox params
+    {
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
+
+        MapType mod;
+        MapType shape_desc;
+        shape_desc["type"] = "rotbox";
+        shape_desc["point"] = ListType(2, 1.);
+        shape_desc["size"] = ListType(2, 1.);
+        mod["shape"] = shape_desc;
+        mod["type"] = "levelmod";
+        bool ret = titm->parseData(pos, orientation, mod);
+        assert(ret);
+        assert(titm->getModifier() != 0);
+
+        delete titm;
+    }
+
+    // Call parseData with ball shape and invalid ball params
+    {
+        TerrainModTranslator * titm = new TerrainModTranslator;
+        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Quaternion orientation;
 
         MapType mod;
         MapType shape_desc;
@@ -333,662 +322,20 @@ int main()
         shape_desc["radius"] = 1.f;
         shape_desc["position"] = ListType(3, "1");
         mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
+        mod["type"] = "levelmod";
+        bool ret = titm->parseData(pos, orientation, mod);
         assert(!ret);
         assert(titm->getModifier() == 0);
 
         delete titm;
     }
 
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        delete titm;
-    }
-
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        assert(titm->getModifier() == 0);
-        delete titm;
-    }
-
-    // Call parseAtlasData with empty map
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with malformed slope
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = 1;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with empty slope
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType();
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with non-numeric slope
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, "naughty_string");
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with valid slope
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, 2.);
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with unknown shape
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, 2.);
-        MapType shape_desc;
-        shape_desc["type"] = "unknown";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with ball shape
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, 2.);
-        MapType shape_desc;
-        shape_desc["type"] = "ball";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with rotbox shape
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, 2.);
-        MapType shape_desc;
-        shape_desc["type"] = "rotbox";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with polygon shape
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, 2.);
-        MapType shape_desc;
-        shape_desc["type"] = "polygon";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with polygon shape and valid polygon
-    {
-        InnerTerrainModSlope * titm = new InnerTerrainModSlope;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        mod["slopes"] = ListType(2, 2.);
-        MapType shape_desc;
-        shape_desc["type"] = "polygon";
-        shape_desc["points"] = ListType(3, ListType(2, 1.));
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(ret);
-        assert(titm->getModifier() != 0);
-
-        delete titm;
-    }
-
-
-
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        delete titm;
-    }
-
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        assert(titm->getModifier() == 0);
-        delete titm;
-    }
-
-    // Call parseAtlasData with empty map
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with unknown shape
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "unknown_shape";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with ball shape
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "ball";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with rotbox shape
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "rotbox";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with polygon shape
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "polygon";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with polygon shape and valid points
-    {
-        InnerTerrainModLevel * titm = new InnerTerrainModLevel;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "polygon";
-        shape_desc["points"] = ListType(3, ListType(2, 1.));
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(ret);
-        assert(titm->getModifier() != 0);
-
-        delete titm;
-    }
-
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        delete titm;
-    }
-
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        assert(titm->getModifier() == 0);
-        delete titm;
-    }
-
-    // Call parseAtlasData with empty map
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType data;
-        bool ret = titm->parseAtlasData(&e, data);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with unknown shape
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "unknown_shape";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with ball shape
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "ball";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with rotbox shape
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "rotbox";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with polygon shape
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "polygon";
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(!ret);
-
-        delete titm;
-    }
-
-    // Call parseAtlasData with polygon shape and valid points
-    {
-        InnerTerrainModAdjust * titm = new InnerTerrainModAdjust;
-        Entity e("1", 1);
-        e.m_location.m_pos = Point3D(0,0,-1);
-
-        MapType mod;
-        MapType shape_desc;
-        shape_desc["type"] = "polygon";
-        shape_desc["points"] = ListType(3, ListType(2, 1.));
-        mod["shape"] = shape_desc;
-        bool ret = titm->parseAtlasData(&e, mod);
-        assert(ret);
-        assert(titm->getModifier() != 0);
-
-        delete titm;
-    }
-
-    return 0;
+    return test_reparse();
 }
 
 // stubs
 
-#include "rulesets/Script.h"
-
 #include "common/log.h"
-
-Script noScript;
-
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Entity::setAttr(const std::string & name,
-                     const Atlas::Message::Element & attr)
-{
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-void Entity::onContainered()
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(&noScript), m_type(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
-{
-    return false;
-}
-
-bool LocatedEntity::getAttrType(const std::string & name,
-                                Atlas::Message::Element & attr,
-                                int type) const
-{
-    return false;
-}
-
-void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
-{
-    return;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-void LocatedEntity::onContainered()
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-void LocatedEntity::makeContainer()
-{
-    if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
-    }
-}
-
-void LocatedEntity::merge(const MapType & ent)
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
 
 void log(LogLevel lvl, const std::string & msg)
 {

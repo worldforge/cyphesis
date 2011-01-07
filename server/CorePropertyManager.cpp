@@ -210,10 +210,8 @@ HandlerResult terrainmod_moveHandler(Entity * e,
         return OPERATION_IGNORED;
     }
 
-    Point3D newPos(ent->getPos()[0], ent->getPos()[1], ent->getPos()[2]);
-
-    // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
-    mod_property->move(e, newPos);
+    // Update the modifier
+    mod_property->move(e);
     return OPERATION_IGNORED;
 }
 
