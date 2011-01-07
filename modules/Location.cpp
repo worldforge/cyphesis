@@ -181,6 +181,13 @@ void Location::modifyBBox()
     m_radius = sqrtf(m_squareRadius);
 }
 
+void Location::setVisibility(float v)
+{
+    m_boxSize = v;
+    m_squareBoxSize = v * v;
+    // TODO m_radius and m_squareRadius? Unused everywhere for now.
+}
+
 const Atlas::Objects::Root Location::asEntity() const
 {
     Anonymous ret;
