@@ -817,7 +817,7 @@ MindFactoryintegration_LDADD = \
 
 TerrainModtest_SOURCES = TerrainModtest.cpp
 TerrainModtest_LDADD = \
-        $(top_builddir)/rulesets/TerrainMod.o \
+        $(top_builddir)/rulesets/TerrainModTranslator.o \
         $(TERRAIN_LIBS)
 
 
