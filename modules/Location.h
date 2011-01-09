@@ -112,6 +112,7 @@ class Location {
     int readFromMessage(const Atlas::Message::MapType & ent);
     int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
     void modifyBBox();
+    void setVisibility(float v);
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };

@@ -415,3 +415,12 @@ def test_teleport(host='', account='', password='', **args):
 
     m.avatar.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
     settler=m.look(settler.id)
+
+def test_visibility(host='', account='', password='', **args):
+    #   general things
+
+    m=create_editor(host, account, password)
+
+    target=m.make('acorn',pos=(100,100,0), visibility=20.0)
+
+    m.look(target.id)
