@@ -424,3 +424,21 @@ def test_visibility(host='', account='', password='', **args):
     target=m.make('acorn',pos=(100,100,0), visibility=20.0)
 
     m.look(target.id)
+
+def test_heap(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('shovel',pos=(0,0,0),parent=settler.id)
+    world=m.look()
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("heap", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+    m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
+
