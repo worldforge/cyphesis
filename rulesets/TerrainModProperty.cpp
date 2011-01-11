@@ -132,8 +132,10 @@ void TerrainModProperty::apply(Entity * owner)
         // If the mod has changed then remove the old one and dlete it.
         terrain->removeMod(m_modptr);
         delete m_modptr;
-        m_modptr = mod;
     }
+
+    m_modptr = mod;
+
     // Apply the new mod to the terrain; retain the returned pointer
     terrain->addMod(m_modptr);
     m_modptr->setContext(new TerrainContext(owner));
