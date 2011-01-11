@@ -64,13 +64,14 @@ class Heaping(server.Task):
             mods = target.terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
-
+                z=self.character.location.coordinates.z + 1.0
+                print 'Initial z', z
                 motte_create=Operation("create",
                                        Entity(name="motte",
                                               type="path",
                                               location = chunk_loc,
                                               terrainmod = {
-                                                            'heightoffset': 1.0,
+                                                            'height': z,
                                                             'shape': {
                                                                       'points': [[ -1.0, -1.0 ],
                                                                                  [ -1.0, 1.0 ],
@@ -90,8 +91,11 @@ class Heaping(server.Task):
                         continue
                     print "%s(%s) looks good" % (mod.name, mod.id)
                     print mod.terrainmod
-                    mod.terrainmod.heightoffset = 1.0
-                    # We have modified the attribute in place, so must send an update op to propagate
+                    print mod.terrainmod.height
+                    mod.terrainmod.height += 1.0
+                    print mod.terrainmod.height
+                    # We have modified the attribute in place,
+                    # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
                     break
             # self.terrain_mod = "moddy_mod_mod"
