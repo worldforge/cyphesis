@@ -48,6 +48,10 @@ static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * 
         return NULL;
     }
 #endif // NDEBUG
+    Element val;
+    if (self->m_property->getAttr(name, val) == 0) {
+        return MessageElement_asPyObject(val);
+    }
     return Py_FindMethod(TerrainModProperty_methods, (PyObject *)self, name);
 }
 
@@ -61,7 +65,8 @@ static int TerrainModProperty_setattr(PyTerrainModProperty * self,
         return -1;
     }
 #endif // NDEBUG
-    if (strcmp(name, "heightoffset") == 0) {
+    Element val;
+    if (self->m_property->getAttr(name, val) == 0) {
         Element e;
         if (PyObject_asMessageElement(v, e, true) == 0) {
             self->m_property->setAttr(name, e);
