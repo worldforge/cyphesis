@@ -105,6 +105,8 @@ int main()
 
 #include "modules/TerrainContext.h"
 
+#include <Mercator/TerrainMod.h>
+
 PropertyBase * Entity::modProperty(const std::string & name)
 {
     return 0;
@@ -132,12 +134,15 @@ bool TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
                                      const WFMath::Quaternion & orientation,
                                      const MapType& modElement)
 {
+    WFMath::Polygon<2> p;
+    p.addCorner(0, WFMath::Point<2>(0., 0.));
+    m_mod = new Mercator::LevelTerrainMod<WFMath::Polygon>(1.f, p);
     return true;
 }
 
 Mercator::TerrainMod* TerrainModTranslator::getModifier()
 {
-    return 0;
+    return m_mod;
 }
 
 TerrainContext::TerrainContext(Entity * e) : m_entity(e)
