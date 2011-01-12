@@ -66,21 +66,22 @@ class Heaping(server.Task):
                 # There is no terrain mod where we are digging,
                 z=self.character.location.coordinates.z + 1.0
                 print 'Initial z', z
+                modmap = {
+                          'height': z,
+                          'shape': {
+                                    'points': [[ -1.0, -1.0 ],
+                                               [ -1.0, 1.0 ],
+                                               [ 1.0, 1.0 ],
+                                               [ 1.0, -1.0 ]],
+                                    'type': 'polygon'
+                                    },
+                          'type': 'levelmod'
+                         }
                 motte_create=Operation("create",
                                        Entity(name="motte",
                                               type="path",
                                               location = chunk_loc,
-                                              terrainmod = {
-                                                            'height': z,
-                                                            'shape': {
-                                                                      'points': [[ -1.0, -1.0 ],
-                                                                                 [ -1.0, 1.0 ],
-                                                                                 [ 1.0, 1.0 ],
-                                                                                 [ 1.0, -1.0 ]],
-                                                                      'type': 'polygon'
-                                                                      },
-                                                            'type': 'levelmod'
-                                                           }),
+                                              terrainmod = modmap),
                                        to=target)
                 res.append(motte_create)
             else:
