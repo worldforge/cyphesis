@@ -14,7 +14,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                ClientTasktest utilstest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
-                transformtest Collisiontest emergencetest distancetest
+                transformtest Collisiontest emergencetest distancetest \
+                Shapetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
                TerrainContexttest
@@ -271,6 +272,10 @@ distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = \
         $(top_builddir)/physics/Vector3D.o \
         $(top_builddir)/modules/Location.o
+
+Shapetest_SOURCES = Shapetest.cpp
+Shapetest_LDADD = \
+        $(top_builddir)/physics/Shape.o
 
 # MODULE_TESTS
 
