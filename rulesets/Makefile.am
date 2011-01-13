@@ -83,6 +83,7 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_World.cpp Py_World.h \
 			    Py_Location.cpp Py_Location.h \
 			    Py_Task.cpp Py_Task.h \
+			    Py_Shape.cpp Py_Shape.h \
 			    Py_Property.cpp Py_Property.h \
 			    Py_TerrainModProperty.cpp \
 			    Py_TerrainProperty.cpp \
