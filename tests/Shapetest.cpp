@@ -30,7 +30,7 @@ int main()
 
         Shape * s = Shape::newFromAtlas(m);
 
-        assert(s == 0);
+        assert(s != 0);
     }
 
     return 0;
