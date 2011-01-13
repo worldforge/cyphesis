@@ -22,4 +22,14 @@
 
 #include "Shape.h"
 
+template<template <int> class ShapeT, const int dim>
+MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> &)
+{
+}
+
+template<template <int> class ShapeT, const int dim>
+void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::MapType &)
+{
+}
+
 #endif // PHYSICS_SHAPE_IMPL_H

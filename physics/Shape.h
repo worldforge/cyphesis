@@ -45,4 +45,12 @@ class Shape {
     static Shape * newFromAtlas(const Atlas::Message::MapType &);
 };
 
+template<template <int> class ShapeT, const int dim = 2>
+class MathShape : public Shape {
+  public:
+    MathShape(const ShapeT<dim> &);
+
+    virtual void fromAtlas(const Atlas::Message::MapType &);
+};
+
 #endif // PHYSICS_SHAPE_H
