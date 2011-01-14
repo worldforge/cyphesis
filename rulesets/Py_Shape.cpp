@@ -81,6 +81,31 @@ static PyObject * Shape_new(PyTypeObject * type, PyObject *, PyObject *)
     return (PyObject *)self;
 }
 
+Py_ssize_t Shape_sq_length(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.copy");
+        return NULL;
+    }
+#endif // NDEBUG
+    return self->shape->size();
+}
+
+static PySequenceMethods Shape_sequence = {
+        (lenfunc)Shape_sq_length, // sq_length;
+        0, // sq_concat;
+        0, // sq_repeat;
+        0, // sq_item;
+        0, // sq_slice;
+        0, // sq_ass_item;
+        0, // sq_ass_slice;
+        0, // sq_contains;
+        /* Added in release 2.0 */
+        0, // sq_inplace_concat;
+        0, // sq_inplace_repeat;
+};
+
 PyTypeObject PyShape_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -95,7 +120,7 @@ PyTypeObject PyShape_Type = {
         0,                              /*tp_compare*/
         (reprfunc)Shape_repr,           /*tp_repr*/
         0,                              /*tp_as_number*/
-        0,                              /*tp_as_sequence*/
+        &Shape_sequence,                /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
         0,                              // tp_call
