@@ -22,6 +22,16 @@
 
 #include "Shape.h"
 
+#include <Atlas/Message/Element.h>
+
+#include <wfmath/atlasconv.h>
+
+template<template <int> class ShapeT, const int dim>
+void MathShape<ShapeT, dim>::addType(Atlas::Message::Element & elem) const
+{
+    elem = "unknown";
+}
+
 template<template <int> class ShapeT, const int dim>
 MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> &)
 {
@@ -31,6 +41,21 @@ template<template <int> class ShapeT, const int dim>
 size_t MathShape<ShapeT, dim>::size() const
 {
     return m_shape.numCorners();
+}
+
+template<template <int> class ShapeT, const int dim>
+void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
+{
+    addType(data["type"]);
+    int size = m_shape.numCorners();
+    if (size > 0) {
+        Atlas::Message::ListType points;
+        for (int i = 0; i < size; ++i) {
+            WFMath::Point<dim> corner = m_shape.getCorner(i);
+            points.push_back(corner.toAtlas());
+        }
+        data["points"] = points;
+    }
 }
 
 template<template <int> class ShapeT, const int dim>

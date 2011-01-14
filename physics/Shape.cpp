@@ -29,9 +29,27 @@ Shape::Shape()
 {
 }
 
-Shape * Shape::newFromAtlas(const MapType &)
+template<>
+void MathShape<WFMath::Polygon, 2>::addType(Atlas::Message::Element & elem) const
 {
-    return new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
+    elem = "polygon";
+}
+
+Shape * Shape::newFromAtlas(const MapType & data)
+{
+    MapType::const_iterator I = data.find("type");
+    if (I == data.end() || !I->second.isString()) {
+        return 0;
+    }
+    const std::string & type = I->second.String();
+    if (type == "polygon") {
+        return new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
+    } else if (type == "ball") {
+        return new MathShape<WFMath::Ball>(WFMath::Ball<2>());
+    } else if (type == "rotbox") {
+        return new MathShape<WFMath::RotBox>(WFMath::RotBox<2>());
+    }
+    return 0;
 }
 
 // template class MathShape<WFMath::Polygon>;
