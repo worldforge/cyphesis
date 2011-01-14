@@ -28,6 +28,12 @@ MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> &)
 }
 
 template<template <int> class ShapeT, const int dim>
+size_t MathShape<ShapeT, dim>::size() const
+{
+    return m_shape.numCorners();
+}
+
+template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::MapType &)
 {
 }

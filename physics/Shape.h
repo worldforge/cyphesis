@@ -40,6 +40,8 @@ class Shape {
   protected:
     Shape();
   public:
+    virtual size_t size() const = 0;
+
     virtual void fromAtlas(const Atlas::Message::MapType &) = 0;
 
     static Shape * newFromAtlas(const Atlas::Message::MapType &);
@@ -47,8 +49,12 @@ class Shape {
 
 template<template <int> class ShapeT, const int dim = 2>
 class MathShape : public Shape {
+  protected:
+    ShapeT<dim> m_shape;
   public:
     MathShape(const ShapeT<dim> &);
+
+    virtual size_t size() const;
 
     virtual void fromAtlas(const Atlas::Message::MapType &);
 };
