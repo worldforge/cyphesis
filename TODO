@@ -1,3 +1,6 @@
+We should say "circle" to reference WFMath::Ball in 2D. Pick a different name
+depending in dinension. "rectangle" instead of "box" perhaps.
+
 FIX FUCKING WFMATH ABORTING
 
 Consider Entity:destroyed and Entity:containered to interrupt tasks
