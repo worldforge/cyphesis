@@ -21,6 +21,7 @@
 
 #include "Py_Message.h"
 #include "Py_Point3D.h"
+#include "Py_Shape.h"
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
 
@@ -29,7 +30,10 @@
 
 #include "common/log.h"
 
+#include "physics/Shape.h"
+
 using Atlas::Message::Element;
+using Atlas::Message::MapType;
 
 static PyMethodDef TerrainModProperty_methods[] = {
     {NULL,           NULL}           /* sentinel */
@@ -50,6 +54,15 @@ static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * 
 #endif // NDEBUG
     Element val;
     if (self->m_property->getAttr(name, val) == 0) {
+        if (strcmp(name, "shape") == 0 && val.isMap()) {
+            log(INFO, "Getting shape.");
+            Shape * shape = Shape::newFromAtlas(val.Map());
+            if (shape != 0) {
+                PyShape * wrapper = newPyShape();
+                wrapper->shape = shape;
+                return (PyObject*)wrapper;
+            }
+        }
         return MessageElement_asPyObject(val);
     }
     return Py_FindMethod(TerrainModProperty_methods, (PyObject *)self, name);
@@ -70,6 +83,14 @@ static int TerrainModProperty_setattr(PyTerrainModProperty * self,
         Element e;
         if (PyObject_asMessageElement(v, e, true) == 0) {
             self->m_property->setAttr(name, e);
+            self->m_property->setFlags(flag_unsent);
+            return 0;
+        } else if (PyShape_Check(v)) {
+            log(INFO, "Its a shape.");
+            PyShape * ps = (PyShape*)v;
+            MapType map;
+            ps->shape->toAtlas(map);
+            self->m_property->setAttr(name, map);
             self->m_property->setFlags(flag_unsent);
             return 0;
         } else {
