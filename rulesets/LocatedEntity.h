@@ -26,6 +26,8 @@
 
 #include <set>
 
+#include <cassert>
+
 class LocatedEntity;
 class PropertyBase;
 class Script;

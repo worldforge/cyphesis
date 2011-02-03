@@ -26,6 +26,8 @@
 
 #include <iostream>
 
+#include <cassert>
+
 static const bool debug_flag = false;
 
 ////////////////////////// COLLISION //////////////////////////
