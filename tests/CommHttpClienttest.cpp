@@ -83,8 +83,8 @@ class TestCommHttpClient : public CommHttpClient
             exit(1);
         }
         if (p == 0) {
-            ::write(fds[1], &req_text[0], strlen(req_text));
-            exit(0);
+            ssize_t status = ::write(fds[1], &req_text[0], strlen(req_text));
+            exit(status > 0 ? 0 : 1);
         } else {
             m_clientIos.peek();
         }
