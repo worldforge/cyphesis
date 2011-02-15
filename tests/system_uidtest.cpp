@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif

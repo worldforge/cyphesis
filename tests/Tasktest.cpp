@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "Fell.h"
 
 #include "rulesets/Entity.h"

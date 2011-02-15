@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "rulesets/TaskScript.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"

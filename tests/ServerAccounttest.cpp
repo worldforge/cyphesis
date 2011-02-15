@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/ServerAccount.h"
 #include "server/CommServer.h"
 #include "server/ServerRouting.h"

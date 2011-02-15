@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "client/BaseClient.h"
 
 #include <Atlas/Objects/RootOperation.h>
