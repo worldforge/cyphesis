@@ -19,6 +19,8 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
 #endif
 #ifndef DEBUG
 #define DEBUG
@@ -40,15 +42,15 @@
 static PyObject * null_wrapper(PyObject * self, PyLocation * o)
 {
     if (PyLocation_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         o->location = NULL;
 #endif // NDEBUG
     } else if (PyMind_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         ((PyMind*)o)->m_mind = NULL;
 #endif // NDEBUG
     } else if (PyLocatedEntity_Check(o) || PyEntity_Check(o) || PyCharacter_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         ((PyEntity*)o)->m_entity.l = NULL;
 #endif // NDEBUG
     } else {
@@ -126,7 +128,7 @@ int main()
     run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
     run_python_string("l.parent");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("t=server.Thing('1')");

@@ -19,6 +19,8 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
 #endif
 #ifndef DEBUG
 #define DEBUG
@@ -39,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyWorldTime * o)
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return Py_True;
     }
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     o->time = NULL;
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -79,7 +81,7 @@ int main()
     fail_python_string("w.is_now(1)");
     run_python_string("w.seconds()");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("sabotage.null(w)");
     // Hit the assert checks.

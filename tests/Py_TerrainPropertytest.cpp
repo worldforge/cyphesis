@@ -19,6 +19,8 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
 #endif
 #ifndef DEBUG
 #define DEBUG
@@ -58,7 +60,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
 static PyObject * null_wrapper(PyObject * self, PyTerrainProperty * o)
 {
     if (PyTerrainProperty_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         o->m_property = NULL;
 #endif // NDEBUG
     } else {
@@ -123,7 +125,7 @@ int main()
 
     run_python_string("terrain.get_surface(Point3D(0,0,0))");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("method_get_height = terrain.get_height");

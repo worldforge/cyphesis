@@ -19,6 +19,8 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
 #endif
 #ifndef DEBUG
 #define DEBUG
@@ -75,7 +77,7 @@ void check_union()
 static PyObject * null_wrapper(PyObject * self, PyEntity * o)
 {
     if (PyLocatedEntity_Check(o) || PyEntity_Check(o) || PyCharacter_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         o->m_entity.l = NULL;
 #endif // NDEBUG
     } else {
@@ -222,7 +224,7 @@ int main()
     run_python_string("print c.location");
     run_python_string("print c.contains");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
 

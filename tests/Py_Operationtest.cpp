@@ -19,6 +19,8 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
 #endif
 #ifndef DEBUG
 #define DEBUG
@@ -39,19 +41,19 @@
 static PyObject * null_wrapper(PyObject * self, PyOperation * o)
 {
     if (PyOperation_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         o->operation = Atlas::Objects::Operation::RootOperation(0);
 #endif // NDEBUG
     } else if (PyOplist_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         ((PyOplist*)o)->ops = 0;
 #endif // NDEBUG
     } else if (PyRootEntity_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         ((PyRootEntity*)o)->entity = Atlas::Objects::Entity::RootEntity(0);
 #endif // NDEBUG
     } else if (PyMessage_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         ((PyMessage*)o)->m_obj = 0;
 #endif // NDEBUG
     } else {
@@ -174,7 +176,7 @@ int main()
     run_python_string("o.to=Message({'id': '1'})");
     fail_python_string("o.other=1");
     
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
 
     // Hit the assert checks.
