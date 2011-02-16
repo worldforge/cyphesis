@@ -45,5 +45,5 @@ fi
 
 # We could not find any useful build ID, so mark it clearly as an error.
 echo Unknown buildid >&2
-echo -1
+echo 1
 exit 0
