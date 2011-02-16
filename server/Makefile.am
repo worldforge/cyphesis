@@ -71,7 +71,7 @@ cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 
-cyphesis_SOURCES = \
+SERVER_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
 		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
@@ -123,8 +123,9 @@ cyphesis_SOURCES = \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
-		server.cpp server.h \
-		buildid.cpp
+		server.cpp server.h
+
+cyphesis_SOURCES = $(SERVER_SOURCES) buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
