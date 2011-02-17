@@ -1,3 +1,18 @@
+2011-02-17  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* Add support for connecting between servers, and moving entities
+	  between servers.
+
+	* Re-write terrain mod handling so it handles in place modification.
+
+	* Add a bunch of scripting API to allow task scripts to do more
+	  with terrain.
+
+	* Improve the test boilerplate so code is tested more thoroughly in
+	  non-debug builds.
+
+	* Lots of bug fixes.
+
 2010-11-16  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* server/ScriptFactory.h, server/TaskScriptFactory.h,
