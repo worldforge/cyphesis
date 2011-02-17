@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libcommon.a libtools.a
 
-INCLUDES = -I$(top_srcdir)  -I${top_builddir} $(BINRELOC_CFLAGS) \
+AM_CPPFLAGS = -I$(top_srcdir)  -I${top_builddir} $(BINRELOC_CFLAGS) \
            -DDATADIR=\"@datadir@\" \
            -DSYSCONFDIR=\"@sysconfdir@\" \
            -DLOCALSTATEDIR=\"@localstatedir@\"

@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir) -I${top_builddir}
+AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave
