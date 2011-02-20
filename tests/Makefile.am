@@ -73,7 +73,7 @@ TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest
 
 PYTHON_TESTS = python_class
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) \
            -DTESTDATADIR=\"$(abs_top_srcdir)/tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)

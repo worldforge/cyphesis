@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -33,7 +42,7 @@ static PyObject * null_wrapper(PyObject * self, PyLocation * o)
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return NULL;
     }
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     o->location = NULL;
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -100,7 +109,7 @@ int main()
     fail_python_string("physics.square_distance('1', l2)");
     fail_python_string("physics.square_horizontal_distance('1', l2)");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("sabotage.null(l1)");
     fail_python_string("physics.distance_to(l1, l2)");

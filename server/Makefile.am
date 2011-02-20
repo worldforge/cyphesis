@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir) -I${top_builddir}
+AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave
@@ -71,7 +71,7 @@ cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 
-cyphesis_SOURCES = \
+SERVER_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
 		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
@@ -123,14 +123,15 @@ cyphesis_SOURCES = \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
-		server.cpp server.h \
-		buildid.cpp
+		server.cpp server.h
+
+cyphesis_SOURCES = $(SERVER_SOURCES) buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
 buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
              $(top_srcdir)/scripts/gen_buildid.py $(top_srcdir)/ChangeLog
-	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` > buildid.cpp
+	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \

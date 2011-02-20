@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -32,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyRootEntity * o)
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return NULL;
     }
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     o->entity = Atlas::Objects::Entity::RootEntity(0);
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -93,7 +102,7 @@ int main()
     run_python_string("e.foo");
     run_python_string("e.ptr");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("get_name_methd=e.get_name");

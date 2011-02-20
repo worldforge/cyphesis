@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -32,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyMap * o)
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return NULL;
     }
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     o->m_map = NULL;
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -107,7 +116,7 @@ int main()
     fail_python_string("m.delete_hooks_append(1)");
     run_python_string("m.delete_hooks_append('delete_map')");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("sabotage.null(m)");
     // Hit the assert checks.

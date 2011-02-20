@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -29,7 +38,7 @@
 static PyObject * null_wrapper(PyObject * self, PyShape * o)
 {
     if (PyShape_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         o->shape = NULL;
 #endif // NDEBUG
     } else {
@@ -62,7 +71,7 @@ int main()
     run_python_string("import physics");
     run_python_string("physics.Shape()");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("s=physics.Shape()");
