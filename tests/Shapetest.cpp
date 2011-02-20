@@ -40,5 +40,32 @@ int main()
         assert(s == 0);
     }
 
+    {
+        Atlas::Message::MapType m;
+        m["type"] = "polygon";
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+    }
+
+    {
+        Atlas::Message::MapType m;
+        m["type"] = "ball";
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+    }
+
+    {
+        Atlas::Message::MapType m;
+        m["type"] = "rotbox";
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+    }
+
     return 0;
 }
