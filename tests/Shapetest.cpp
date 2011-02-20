@@ -86,5 +86,16 @@ int main()
         assert(s == 0);
     }
 
+    {
+        MapType m;
+        m["type"] = "rotbox";
+        m["point"] = ListType(2, 1.f);
+        m["size"] = ListType(2, 1.f);
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+    }
+
     return 0;
 }
