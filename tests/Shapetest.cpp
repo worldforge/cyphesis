@@ -30,10 +30,24 @@
 
 #include <cassert>
 
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
 int main()
 {
     {
-        Atlas::Message::MapType m;
+        MapType m;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s == 0);
+    }
+
+    // The Polygon conversion functions throw if there isn't complete valid
+    // polygon data
+    {
+        MapType m;
+        m["type"] = "polygon";
 
         Shape * s = Shape::newFromAtlas(m);
 
@@ -41,16 +55,19 @@ int main()
     }
 
     {
-        Atlas::Message::MapType m;
+        MapType m;
         m["type"] = "polygon";
+        m["points"] = ListType(3, ListType(2, 1.f));
 
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
     }
 
+    // The Ball conversion functions don't seem to require valid Atlas
+    // data
     {
-        Atlas::Message::MapType m;
+        MapType m;
         m["type"] = "ball";
 
         Shape * s = Shape::newFromAtlas(m);
@@ -58,13 +75,15 @@ int main()
         assert(s != 0);
     }
 
+    // The Polygon conversion functions throw if there isn't complete valid
+    // polygon data
     {
-        Atlas::Message::MapType m;
+        MapType m;
         m["type"] = "rotbox";
 
         Shape * s = Shape::newFromAtlas(m);
 
-        assert(s != 0);
+        assert(s == 0);
     }
 
     return 0;
