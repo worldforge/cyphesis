@@ -53,14 +53,18 @@ Shape * Shape::newFromAtlas(const MapType & data)
         return 0;
     }
     const std::string & type = I->second.String();
+    Shape * new_shape = 0;
     if (type == "polygon") {
-        return new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
+        new_shape = new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
+        new_shape->fromAtlas(data);
     } else if (type == "ball") {
-        return new MathShape<WFMath::Ball>(WFMath::Ball<2>());
+        new_shape = new MathShape<WFMath::Ball>(WFMath::Ball<2>());
+        new_shape->fromAtlas(data);
     } else if (type == "rotbox") {
-        return new MathShape<WFMath::RotBox>(WFMath::RotBox<2>());
+        new_shape = new MathShape<WFMath::RotBox>(WFMath::RotBox<2>());
+        new_shape->fromAtlas(data);
     }
-    return 0;
+    return new_shape;
 }
 
 // template class MathShape<WFMath::Polygon>;

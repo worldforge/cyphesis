@@ -64,8 +64,9 @@ void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 }
 
 template<template <int> class ShapeT, const int dim>
-void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::MapType &)
+void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::MapType & data)
 {
+    m_shape.fromAtlas(data);
 }
 
 template<template <int> class ShapeT, const int dim>
