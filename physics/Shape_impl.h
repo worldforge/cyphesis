@@ -44,6 +44,11 @@ size_t MathShape<ShapeT, dim>::size() const
 }
 
 template<template <int> class ShapeT, const int dim>
+void MathShape<ShapeT, dim>::scale(double factor)
+{
+}
+
+template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 {
     data["type"] = getType();

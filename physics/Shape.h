@@ -42,6 +42,8 @@ class Shape {
   public:
     virtual size_t size() const = 0;
 
+    virtual void scale(double factor) = 0;
+
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
     virtual void fromAtlas(const Atlas::Message::MapType &) = 0;
 
@@ -61,6 +63,8 @@ class MathShape : public Shape {
     MathShape(const ShapeT<dim> &);
 
     virtual size_t size() const;
+
+    virtual void scale(double factor);
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
     virtual void fromAtlas(const Atlas::Message::MapType &);
