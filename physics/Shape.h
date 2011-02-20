@@ -45,6 +45,8 @@ class Shape {
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
     virtual void fromAtlas(const Atlas::Message::MapType &) = 0;
 
+    virtual void stream(std::ostream &) const = 0;
+
     /// \brief Name constructor
     static Shape * newFromAtlas(const Atlas::Message::MapType &);
 };
@@ -54,7 +56,7 @@ class MathShape : public Shape {
   protected:
     ShapeT<dim> m_shape;
 
-    void addType(Atlas::Message::Element &) const;
+    const char * getType() const;
   public:
     MathShape(const ShapeT<dim> &);
 
@@ -62,6 +64,14 @@ class MathShape : public Shape {
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
     virtual void fromAtlas(const Atlas::Message::MapType &);
+
+    virtual void stream(std::ostream &) const;
 };
+
+inline std::ostream & operator<<(std::ostream& os, const Shape & s)
+{
+    s.stream(os);
+    return os;
+}
 
 #endif // PHYSICS_SHAPE_H

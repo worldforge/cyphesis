@@ -22,6 +22,7 @@
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/polygon.h>
+#include <wfmath/stream.h>
 
 using Atlas::Message::MapType;
 
@@ -30,9 +31,9 @@ Shape::Shape()
 }
 
 template<>
-void MathShape<WFMath::Polygon, 2>::addType(Atlas::Message::Element & elem) const
+const char * MathShape<WFMath::Polygon, 2>::getType() const
 {
-    elem = "polygon";
+    return "polygon";
 }
 
 Shape * Shape::newFromAtlas(const MapType & data)

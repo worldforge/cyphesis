@@ -27,9 +27,9 @@
 #include <wfmath/atlasconv.h>
 
 template<template <int> class ShapeT, const int dim>
-void MathShape<ShapeT, dim>::addType(Atlas::Message::Element & elem) const
+const char * MathShape<ShapeT, dim>::getType() const
 {
-    elem = "unknown";
+    return "unknown";
 }
 
 template<template <int> class ShapeT, const int dim>
@@ -46,7 +46,7 @@ size_t MathShape<ShapeT, dim>::size() const
 template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 {
-    addType(data["type"]);
+    data["type"] = getType();
     int size = m_shape.numCorners();
     if (size > 0) {
         Atlas::Message::ListType points;
@@ -61,6 +61,13 @@ void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::MapType &)
 {
+}
+
+template<template <int> class ShapeT, const int dim>
+void MathShape<ShapeT, dim>::stream(std::ostream & o) const
+{
+    o << getType() << ": ";
+    o << m_shape;
 }
 
 #endif // PHYSICS_SHAPE_IMPL_H
