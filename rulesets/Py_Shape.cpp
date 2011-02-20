@@ -22,6 +22,7 @@
 #include "physics/Shape.h"
 
 #include <sstream>
+#include <iostream>
 
 static PyMethodDef Shape_methods[] = {
     {NULL,              NULL}           /* sentinel */
@@ -61,8 +62,7 @@ static int Shape_setattr(PyShape *self, char *name, PyObject *v)
 static PyObject * Shape_repr(PyShape *self)
 {
     std::stringstream r;
-    r << "Shape repr";
-    // r << *self->shape;
+    r << *self->shape;
     return PyString_FromString(r.str().c_str());
 }
 
