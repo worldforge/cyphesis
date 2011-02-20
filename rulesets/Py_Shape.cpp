@@ -39,7 +39,7 @@ static PyObject * Shape_getattr(PyShape *self, char *name)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
         return NULL;
     }
 #endif // NDEBUG
@@ -50,7 +50,7 @@ static int Shape_setattr(PyShape *self, char *name, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.setattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -86,7 +86,7 @@ Py_ssize_t Shape_sq_length(PyShape * self)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.copy");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.copy");
         return NULL;
     }
 #endif // NDEBUG
@@ -110,7 +110,7 @@ static PySequenceMethods Shape_sequence = {
 PyTypeObject PyShape_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "atlas.Location",               /*tp_name*/
+        "atlas.Shape",                  /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
