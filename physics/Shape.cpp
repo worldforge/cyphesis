@@ -56,13 +56,19 @@ Shape * Shape::newFromAtlas(const MapType & data)
     Shape * new_shape = 0;
     if (type == "polygon") {
         new_shape = new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
-        new_shape->fromAtlas(data);
     } else if (type == "ball") {
         new_shape = new MathShape<WFMath::Ball>(WFMath::Ball<2>());
-        new_shape->fromAtlas(data);
     } else if (type == "rotbox") {
         new_shape = new MathShape<WFMath::RotBox>(WFMath::RotBox<2>());
-        new_shape->fromAtlas(data);
+    }
+    if (new_shape != 0) {
+        try {
+            new_shape->fromAtlas(data);
+        }
+        catch (Atlas::Message::WrongTypeException e) {
+            delete new_shape;
+            new_shape = 0;
+        }
     }
     return new_shape;
 }
