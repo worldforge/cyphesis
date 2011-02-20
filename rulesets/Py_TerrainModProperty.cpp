@@ -86,7 +86,7 @@ static int TerrainModProperty_setattr(PyTerrainModProperty * self,
             self->m_property->setFlags(flag_unsent);
             return 0;
         } else if (PyShape_Check(v)) {
-            log(INFO, "Its a shape.");
+            log(INFO, "Setting shape.");
             PyShape * ps = (PyShape*)v;
             MapType map;
             ps->shape->toAtlas(map);
