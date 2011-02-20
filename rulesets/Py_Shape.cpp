@@ -96,6 +96,12 @@ Py_ssize_t Shape_sq_length(PyShape * self)
 static PyObject * Shape_inplace_multiply(PyShape * self, PyObject * other)
 {
     std::cout << "inplace mult" << std::endl << std::flush;
+    if (!PyFloat_CheckExact(other)) {
+        PyErr_SetString(PyExc_TypeError, "Can only rotatey with a float");
+        return NULL;
+    }
+    double val = PyFloat_AsDouble(other);
+    self->shape->scale(val);
     Py_INCREF(self);
     return (PyObject*)self;
 }
