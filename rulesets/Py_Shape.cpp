@@ -130,7 +130,7 @@ PyTypeObject PyShape_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Location objects",             // tp_doc
+        "Shape objects",             // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
