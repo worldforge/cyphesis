@@ -36,6 +36,16 @@ const char * MathShape<WFMath::Polygon, 2>::getType() const
     return "polygon";
 }
 
+template<>
+void MathShape<WFMath::Polygon, 2>::scale(double factor)
+{
+    for (int i = 0; i < m_shape.numCorners(); ++i) {
+        WFMath::Point<2> corner = m_shape.getCorner(i);
+        m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
+                                               corner.y() * factor));
+    }
+}
+
 Shape * Shape::newFromAtlas(const MapType & data)
 {
     MapType::const_iterator I = data.find("type");
