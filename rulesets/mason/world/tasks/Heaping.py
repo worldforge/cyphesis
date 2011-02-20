@@ -92,9 +92,9 @@ class Heaping(server.Task):
                         continue
                     print "%s(%s) looks good" % (mod.name, mod.id)
                     print mod.terrainmod
-                    print mod.terrainmod.height
-                    mod.terrainmod.height += 1.0
-                    print mod.terrainmod.height
+                    print mod.terrainmod.shape
+                    mod.terrainmod.shape *= 1.1
+                    print mod.terrainmod.shape
                     # We have modified the attribute in place,
                     # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
