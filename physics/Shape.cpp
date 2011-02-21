@@ -37,7 +37,7 @@ const char * MathShape<WFMath::Polygon, 2>::getType() const
 }
 
 template<>
-double MathShape<WFMath::Polygon, 2>::getArea() const
+double MathShape<WFMath::Polygon, 2>::area() const
 {
     double area = 0;
 
