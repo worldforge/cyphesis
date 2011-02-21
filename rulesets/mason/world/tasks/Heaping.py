@@ -7,6 +7,8 @@ from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
 
+import math
+
 import server
 
 class Heaping(server.Task):
@@ -97,7 +99,10 @@ class Heaping(server.Task):
                     print "%s(%s) looks good" % (mod.name, mod.id)
                     print mod.terrainmod
                     print mod.terrainmod.shape
-                    mod.terrainmod.shape *= 1.1
+                    area = mod.terrainmod.shape.area()
+                    factor = math.sqrt((area + 1) / area)
+                    mod.terrainmod.shape *= factor
+                    mod.terrainmod.height += 1 / area
                     print mod.terrainmod.shape
                     # We have modified the attribute in place,
                     # so must send an update op to propagate
