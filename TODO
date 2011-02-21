@@ -1,3 +1,6 @@
+Add new kind of marker area, only used internally to track things about
+bits of terrain, like ownership. Requires new class in Mercator probably.
+
 We should say "circle" to reference WFMath::Ball in 2D. Pick a different name
 depending in dinension. "rectangle" instead of "box" perhaps.
 
