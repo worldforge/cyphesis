@@ -50,6 +50,12 @@ double MathShape<ShapeT, dim>::area() const
 }
 
 template<template <int> class ShapeT, const int dim>
+WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
+{
+    return WFMath::AxisBox<2>();
+}
+
+template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::scale(double factor)
 {
 }

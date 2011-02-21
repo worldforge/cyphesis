@@ -53,6 +53,12 @@ double MathShape<WFMath::Polygon, 2>::area() const
 }
 
 template<>
+WFMath::AxisBox<2> MathShape<WFMath::Polygon, 2>::footprint() const
+{
+    return m_shape.boundingBox();
+}
+
+template<>
 void MathShape<WFMath::Polygon, 2>::scale(double factor)
 {
     for (int i = 0; i < m_shape.numCorners(); ++i) {

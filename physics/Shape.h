@@ -43,6 +43,7 @@ class Shape {
     virtual size_t size() const = 0;
 
     virtual double area() const = 0;
+    virtual WFMath::AxisBox<2> footprint() const = 0;
     virtual void scale(double factor) = 0;
 
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
@@ -66,6 +67,7 @@ class MathShape : public Shape {
     virtual size_t size() const;
 
     virtual double area() const;
+    virtual WFMath::AxisBox<2> footprint() const;
     virtual void scale(double factor);
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
