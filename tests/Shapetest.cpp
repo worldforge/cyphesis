@@ -80,8 +80,8 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
-        assert(s->getArea() > 1.9);
-        assert(s->getArea() < 2.1);
+        assert(s->area() > 1.9);
+        assert(s->area() < 2.1);
     }
 
     {
@@ -98,9 +98,9 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
-        double area = s->getArea();
+        double area = s->area();
         s->scale(2);
-        assert(area < s->getArea());
+        assert(area < s->area());
     }
 
     // The Ball conversion functions don't seem to require valid Atlas
