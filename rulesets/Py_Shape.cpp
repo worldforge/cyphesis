@@ -24,7 +24,19 @@
 #include <sstream>
 #include <iostream>
 
+static PyObject * Shape_area(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyFloat_FromDouble(self->shape->getArea());
+}
+
 static PyMethodDef Shape_methods[] = {
+    {"area",     (PyCFunction)Shape_area,     METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
