@@ -28,6 +28,9 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <wfmath/axisbox.h>
+#include <wfmath/point.h>
+
 #include <iostream>
 
 #include <cassert>
@@ -101,6 +104,25 @@ int main()
         double area = s->area();
         s->scale(2);
         assert(area < s->area());
+    }
+
+    {
+        MapType m;
+        m["type"] = "polygon";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        WFMath::AxisBox<2> rect = s->footprint();
+        std::cout << rect << std::endl;
+        assert(rect.isValid());
     }
 
     // The Ball conversion functions don't seem to require valid Atlas
