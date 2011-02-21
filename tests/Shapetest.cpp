@@ -28,6 +28,8 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <iostream>
+
 #include <cassert>
 
 using Atlas::Message::ListType;
@@ -62,6 +64,43 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+    }
+
+    {
+        MapType m;
+        m["type"] = "polygon";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(s->getArea() > 1.9);
+        assert(s->getArea() < 2.1);
+    }
+
+    {
+        MapType m;
+        m["type"] = "polygon";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        double area = s->getArea();
+        s->scale(2);
+        assert(area < s->getArea());
     }
 
     // The Ball conversion functions don't seem to require valid Atlas
