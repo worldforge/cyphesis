@@ -44,6 +44,12 @@ size_t MathShape<ShapeT, dim>::size() const
 }
 
 template<template <int> class ShapeT, const int dim>
+double MathShape<ShapeT, dim>::getArea() const
+{
+    return 1.;
+}
+
+template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::scale(double factor)
 {
 }

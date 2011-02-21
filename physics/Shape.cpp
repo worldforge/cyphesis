@@ -37,6 +37,22 @@ const char * MathShape<WFMath::Polygon, 2>::getType() const
 }
 
 template<>
+double MathShape<WFMath::Polygon, 2>::getArea() const
+{
+    double area = 0;
+
+    int n = m_shape.numCorners();
+    for (int i = 0; i < n; ++i) {
+        WFMath::Point<2> corner = m_shape.getCorner(i);
+        WFMath::Point<2> corner2 = m_shape.getCorner((i + 1) % n);
+        area += corner.x() * corner2.y();
+        area -= corner.y() * corner2.x();
+    }
+
+   return fabs(area / 2.);
+}
+
+template<>
 void MathShape<WFMath::Polygon, 2>::scale(double factor)
 {
     for (int i = 0; i < m_shape.numCorners(); ++i) {
