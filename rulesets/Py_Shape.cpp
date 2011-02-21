@@ -32,7 +32,7 @@ static PyObject * Shape_area(PyShape * self)
         return NULL;
     }
 #endif // NDEBUG
-    return PyFloat_FromDouble(self->shape->getArea());
+    return PyFloat_FromDouble(self->shape->area());
 }
 
 static PyMethodDef Shape_methods[] = {
