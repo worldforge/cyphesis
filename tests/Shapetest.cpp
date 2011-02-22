@@ -48,6 +48,36 @@ int main()
         assert(s == 0);
     }
 
+    // The AxisBox conversion functions throw if there isn't complete valid
+    // polygon data
+    {
+        MapType m;
+        m["type"] = "axisbox";
+        m["points"] = ListType(2, 1.);
+
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        s->fromAtlas(m);
+
+        assert(s != 0);
+
+    }
+
+    {
+        MapType m;
+        m["type"] = "axisbox";
+        m["points"] = ListType(2, 1.);
+
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        s->fromAtlas(m);
+
+        assert(s != 0);
+
+        WFMath::Point<3> low = s->lowCorner();
+        WFMath::Point<3> high = s->highCorner();
+        assert(low.isValid());
+        assert(high.isValid());
+    }
+
     // The Polygon conversion functions throw if there isn't complete valid
     // polygon data
     {
@@ -125,6 +155,26 @@ int main()
         assert(rect.isValid());
     }
 
+    {
+        MapType m;
+        m["type"] = "polygon";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        WFMath::Point<3> low = s->lowCorner();
+        WFMath::Point<3> high = s->highCorner();
+        assert(low.isValid());
+        assert(high.isValid());
+    }
+
     // The Ball conversion functions don't seem to require valid Atlas
     // data
     {
@@ -136,7 +186,20 @@ int main()
         assert(s != 0);
     }
 
-    // The Polygon conversion functions throw if there isn't complete valid
+    {
+        MapType m;
+        m["type"] = "ball";
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        WFMath::Point<3> low = s->lowCorner();
+        WFMath::Point<3> high = s->highCorner();
+        assert(low.isValid());
+        assert(high.isValid());
+    }
+
+    // The RotBox conversion functions throw if there isn't complete valid
     // polygon data
     {
         MapType m;
@@ -156,6 +219,21 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+    }
+
+    {
+        MapType m;
+        m["type"] = "rotbox";
+        m["point"] = ListType(2, 1.f);
+        m["size"] = ListType(2, 1.f);
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        WFMath::Point<3> low = s->lowCorner();
+        WFMath::Point<3> high = s->highCorner();
+        assert(low.isValid());
+        assert(high.isValid());
     }
 
     return 0;
