@@ -48,8 +48,18 @@ int main()
         assert(s == 0);
     }
 
-    // The AxisBox conversion functions throw if there isn't complete valid
-    // polygon data
+    // The AxisBox is a little different, and is not covered by the
+    // name constructor
+    {
+        MapType m;
+
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        s->fromAtlas(m);
+
+        assert(s != 0);
+
+    }
+
     {
         MapType m;
         m["type"] = "axisbox";
@@ -60,6 +70,20 @@ int main()
 
         assert(s != 0);
 
+    }
+
+    {
+        MapType m;
+        m["type"] = "axisbox";
+        m["points"] = ListType(2, 1.);
+
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        s->fromAtlas(m);
+
+        assert(s != 0);
+
+        MapType dest;
+        s->toAtlas(dest);
     }
 
     {
@@ -97,6 +121,19 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+    }
+
+    {
+        MapType m;
+        m["type"] = "polygon";
+        m["points"] = ListType(3, ListType(2, 1.f));
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+
+        MapType dest;
+        s->toAtlas(dest);
     }
 
     {
@@ -193,6 +230,18 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+
+        MapType dest;
+        s->toAtlas(dest);
+    }
+
+    {
+        MapType m;
+        m["type"] = "ball";
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
         WFMath::Point<3> low = s->lowCorner();
         WFMath::Point<3> high = s->highCorner();
         assert(low.isValid());
@@ -219,6 +268,20 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+    }
+
+    {
+        MapType m;
+        m["type"] = "rotbox";
+        m["point"] = ListType(2, 1.f);
+        m["size"] = ListType(2, 1.f);
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+
+        MapType dest;
+        s->toAtlas(dest);
     }
 
     {
