@@ -56,6 +56,18 @@ WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
 }
 
 template<template <int> class ShapeT, const int dim>
+WFMath::Point<3> MathShape<ShapeT, dim>::lowCorner() const
+{
+    return m_shape.boundingBox().lowCorner();
+}
+
+template<template <int> class ShapeT, const int dim>
+WFMath::Point<3> MathShape<ShapeT, dim>::highCorner() const
+{
+    return m_shape.boundingBox().highCorner();
+}
+
+template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::scale(double factor)
 {
 }

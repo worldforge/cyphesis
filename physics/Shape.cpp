@@ -30,11 +30,55 @@ Shape::Shape()
 {
 }
 
+///////////////////////////////////////////////////////////////////////
+
 template<>
-const char * MathShape<WFMath::Polygon, 2>::getType() const
+WFMath::Point<3> MathShape<WFMath::AxisBox, 2>::lowCorner() const
+{
+    WFMath::Point<2> corner = m_shape.lowCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+WFMath::Point<3> MathShape<WFMath::AxisBox, 2>::highCorner() const
+{
+    WFMath::Point<2> corner = m_shape.highCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+void MathShape<WFMath::AxisBox, 2>::fromAtlas(const MapType & data)
+{
+    MapType::const_iterator I = data.find("points");
+    if (I == data.end() || !I->second.isList()) {
+        return;
+    }
+    m_shape.fromAtlas(I->second.List());
+}
+
+///////////////////////////////////////////////////////////////////////
+
+template<>
+WFMath::Point<3> MathShape<WFMath::Ball, 2>::lowCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+WFMath::Point<3> MathShape<WFMath::Ball, 2>::highCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+const char * MathShape<WFMath::Ball, 2>::getType() const
 {
     return "polygon";
 }
+
+///////////////////////////////////////////////////////////////////////
 
 template<>
 double MathShape<WFMath::Polygon, 2>::area() const
@@ -59,6 +103,20 @@ WFMath::AxisBox<2> MathShape<WFMath::Polygon, 2>::footprint() const
 }
 
 template<>
+WFMath::Point<3> MathShape<WFMath::Polygon, 2>::lowCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+WFMath::Point<3> MathShape<WFMath::Polygon, 2>::highCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
 void MathShape<WFMath::Polygon, 2>::scale(double factor)
 {
     for (int i = 0; i < m_shape.numCorners(); ++i) {
@@ -67,6 +125,24 @@ void MathShape<WFMath::Polygon, 2>::scale(double factor)
                                                corner.y() * factor));
     }
 }
+
+///////////////////////////////////////////////////////////////////////
+
+template<>
+WFMath::Point<3> MathShape<WFMath::RotBox, 2>::lowCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+WFMath::Point<3> MathShape<WFMath::RotBox, 2>::highCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+///////////////////////////////////////////////////////////////////////
 
 Shape * Shape::newFromAtlas(const MapType & data)
 {
@@ -95,4 +171,4 @@ Shape * Shape::newFromAtlas(const MapType & data)
     return new_shape;
 }
 
-// template class MathShape<WFMath::Polygon>;
+template class MathShape<WFMath::AxisBox, 2>;
