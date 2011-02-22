@@ -72,13 +72,13 @@ WFMath::Point<3> MathShape<WFMath::Ball, 2>::highCorner() const
     return WFMath::Point<3>(corner.x(), corner.y(), 0);
 }
 
+///////////////////////////////////////////////////////////////////////
+
 template<>
-const char * MathShape<WFMath::Ball, 2>::getType() const
+const char * MathShape<WFMath::Polygon, 2>::getType() const
 {
     return "polygon";
 }
-
-///////////////////////////////////////////////////////////////////////
 
 template<>
 double MathShape<WFMath::Polygon, 2>::area() const
