@@ -104,6 +104,8 @@ class Heaping(server.Task):
                     mod.terrainmod.shape *= factor
                     mod.terrainmod.height += 1 / area
                     print mod.terrainmod.shape
+                    box = mod.terrainmod.shape.footprint()
+                    mod.bbox = [0,0,0,1,1,1]
                     # We have modified the attribute in place,
                     # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))

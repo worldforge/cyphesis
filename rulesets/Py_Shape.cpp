@@ -19,7 +19,12 @@
 
 #include "Py_Shape.h"
 
+#include "Py_Point3D.h"
+
 #include "physics/Shape.h"
+
+#include <wfmath/axisbox.h>
+#include <wfmath/point.h>
 
 #include <sstream>
 #include <iostream>
@@ -35,8 +40,56 @@ static PyObject * Shape_area(PyShape * self)
     return PyFloat_FromDouble(self->shape->area());
 }
 
+static PyObject * Shape_footprint(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyShape * res = newPyShape();
+    if (res != 0) {
+        res->shape = new MathShape<WFMath::AxisBox, 2>(self->shape->footprint());
+    }
+    return (PyObject*)res;
+}
+
+static PyObject * Shape_low_corner(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyPoint3D * res = newPyPoint3D();
+    if (res != 0) {
+        res->coords = self->shape->lowCorner();
+    }
+    return (PyObject*)res;
+}
+
+static PyObject * Shape_high_corner(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyPoint3D * res = newPyPoint3D();
+    if (res != 0) {
+        res->coords = self->shape->highCorner();
+    }
+    return (PyObject*)res;
+}
+
 static PyMethodDef Shape_methods[] = {
-    {"area",     (PyCFunction)Shape_area,     METH_NOARGS},
+    {"area",               (PyCFunction)Shape_area,              METH_NOARGS},
+    {"footprint",          (PyCFunction)Shape_footprint,         METH_NOARGS},
+    {"low_corner",         (PyCFunction)Shape_low_corner,        METH_NOARGS},
+    {"high_corner",        (PyCFunction)Shape_high_corner,       METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
