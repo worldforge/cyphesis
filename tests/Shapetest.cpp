@@ -30,6 +30,7 @@
 
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
+#include <wfmath/polygon.h>
 
 #include <iostream>
 
@@ -50,6 +51,24 @@ int main()
 
     // The AxisBox is a little different, and is not covered by the
     // name constructor
+    {
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+
+        assert(s != 0);
+        assert(!s->isValid());
+
+    }
+
+    {
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(
+              WFMath::AxisBox<2>(WFMath::Point<2>(0,0),
+                                 WFMath::Point<2>(1,1)));
+
+        assert(s != 0);
+        assert(s->isValid());
+
+    }
+
     {
         MapType m;
 
@@ -108,6 +127,24 @@ int main()
 
     // The Polygon conversion functions throw if there isn't complete valid
     // polygon data
+    {
+        Shape * s = new MathShape<WFMath::Polygon, 2>(WFMath::Polygon<2>());
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
+    {
+        WFMath::Polygon<2> p;
+        p.addCorner(0, WFMath::Point<2>(1,1));
+        p.addCorner(0, WFMath::Point<2>(1,0));
+        p.addCorner(0, WFMath::Point<2>(0,0));
+        Shape * s = new MathShape<WFMath::Polygon, 2>(WFMath::Polygon<2>());
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
     {
         MapType m;
         m["type"] = "polygon";
@@ -225,6 +262,21 @@ int main()
     // The Ball conversion functions don't seem to require valid Atlas
     // data
     {
+        Shape * s = new MathShape<WFMath::Ball, 2>(WFMath::Ball<2>());
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
+        Shape * s = new MathShape<WFMath::Ball, 2>(
+              WFMath::Ball<2>(WFMath::Point<2>(1,1), 23.f));
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
+    {
         MapType m;
         m["type"] = "ball";
 
@@ -277,6 +329,23 @@ int main()
 
     // The RotBox conversion functions throw if there isn't complete valid
     // polygon data
+    {
+        Shape * s = new MathShape<WFMath::RotBox, 2>(WFMath::RotBox<2>());
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
+        Shape * s = new MathShape<WFMath::RotBox, 2>(
+            WFMath::RotBox<2>(WFMath::Point<2>(0,0),
+                              WFMath::Vector<2>(1,1),
+                              WFMath::RotMatrix<2>().identity()));
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
     {
         MapType m;
         m["type"] = "rotbox";
