@@ -321,9 +321,6 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         if (obj.isMap()) {
             log(NOTICE, "Setting a map attribute on an entity from a script");
         }
-        if (obj.isList()) {
-            log(NOTICE, "Setting a list attribute on an entity from a script");
-        }
         entity->setAttr(name, obj);
         return 0;
     }
