@@ -67,7 +67,6 @@ class Heaping(server.Task):
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
                 z=self.character.location.coordinates.z + 1.0
-                print 'Initial z', z
                 modmap = {
                           'height': z,
                           'shape': {
@@ -91,27 +90,20 @@ class Heaping(server.Task):
                                        to=target)
                 res.append(motte_create)
             else:
-                print mods
                 for mod in mods:
                     if not hasattr(mod, 'name') or mod.name != 'motte':
-                        print "%s is no good" % mod.id
                         continue
-                    print "%s(%s) looks good" % (mod.name, mod.id)
-                    print mod.terrainmod
-                    print mod.terrainmod.shape
                     area = mod.terrainmod.shape.area()
                     factor = math.sqrt((area + 1) / area)
                     mod.terrainmod.shape *= factor
                     mod.terrainmod.height += 1 / area
-                    print mod.terrainmod.shape
                     box = mod.terrainmod.shape.footprint()
-                    print box, box.low_corner(), box.high_corner()
                     mod.bbox = [box.low_corner().x,
                                 box.low_corner().y,
                                 0,
                                 box.high_corner().x,
                                 box.high_corner().y,
-                                1]
+                                mod.terrainmod.height]
                     # We have modified the attribute in place,
                     # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
