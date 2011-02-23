@@ -44,6 +44,12 @@ size_t MathShape<ShapeT, dim>::size() const
 }
 
 template<template <int> class ShapeT, const int dim>
+bool MathShape<ShapeT, dim>::isValid() const
+{
+    return m_shape.isValid();
+}
+
+template<template <int> class ShapeT, const int dim>
 double MathShape<ShapeT, dim>::area() const
 {
     return 1.;

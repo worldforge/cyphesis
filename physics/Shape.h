@@ -41,7 +41,7 @@ class Shape {
     Shape();
   public:
     virtual size_t size() const = 0;
-
+    virtual bool isValid() const = 0;
     virtual double area() const = 0;
     virtual WFMath::AxisBox<2> footprint() const = 0;
     virtual WFMath::Point<3> lowCorner() const = 0;
@@ -67,7 +67,7 @@ class MathShape : public Shape {
     MathShape(const ShapeT<dim> &);
 
     virtual size_t size() const;
-
+    virtual bool isValid() const;
     virtual double area() const;
     virtual WFMath::AxisBox<2> footprint() const;
     virtual WFMath::Point<3> lowCorner() const;
