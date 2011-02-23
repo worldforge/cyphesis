@@ -33,7 +33,7 @@ const char * MathShape<ShapeT, dim>::getType() const
 }
 
 template<template <int> class ShapeT, const int dim>
-MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> &)
+MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> & s) : m_shape(s)
 {
 }
 
