@@ -57,6 +57,7 @@ int main()
         s->fromAtlas(m);
 
         assert(s != 0);
+        assert(!s->isValid());
 
     }
 
@@ -69,6 +70,7 @@ int main()
         s->fromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
 
     }
 
@@ -81,6 +83,7 @@ int main()
         s->fromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
 
         MapType dest;
         s->toAtlas(dest);
@@ -95,6 +98,7 @@ int main()
         s->fromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
 
         WFMath::Point<3> low = s->lowCorner();
         WFMath::Point<3> high = s->highCorner();
@@ -121,6 +125,7 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
     }
 
     {
@@ -131,6 +136,7 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
 
         MapType dest;
         s->toAtlas(dest);
@@ -150,6 +156,7 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
         assert(s->area() > 1.9);
         assert(s->area() < 2.1);
     }
@@ -168,8 +175,10 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
         double area = s->area();
         s->scale(2);
+        assert(s->isValid());
         assert(area < s->area());
     }
 
@@ -187,6 +196,7 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
         WFMath::AxisBox<2> rect = s->footprint();
         std::cout << rect << std::endl;
         assert(rect.isValid());
@@ -221,11 +231,26 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(!s->isValid());
     }
 
     {
         MapType m;
         m["type"] = "ball";
+        m["radius"] = 23.9;
+        m["position"] = ListType(2, 1.f);
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
+    {
+        MapType m;
+        m["type"] = "ball";
+        m["radius"] = 23.9;
+        m["position"] = ListType(2, 1.f);
 
         Shape * s = Shape::newFromAtlas(m);
 
@@ -238,6 +263,8 @@ int main()
     {
         MapType m;
         m["type"] = "ball";
+        m["radius"] = 23.9;
+        m["position"] = ListType(2, 1.f);
 
         Shape * s = Shape::newFromAtlas(m);
 
@@ -268,6 +295,7 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
     }
 
     {
@@ -279,6 +307,7 @@ int main()
         Shape * s = Shape::newFromAtlas(m);
 
         assert(s != 0);
+        assert(s->isValid());
 
         MapType dest;
         s->toAtlas(dest);
