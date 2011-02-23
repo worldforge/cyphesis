@@ -55,7 +55,6 @@ static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * 
     Element val;
     if (self->m_property->getAttr(name, val) == 0) {
         if (strcmp(name, "shape") == 0 && val.isMap()) {
-            log(INFO, "Getting shape.");
             Shape * shape = Shape::newFromAtlas(val.Map());
             if (shape != 0) {
                 PyShape * wrapper = newPyShape();
@@ -86,7 +85,6 @@ static int TerrainModProperty_setattr(PyTerrainModProperty * self,
             self->m_property->setFlags(flag_unsent);
             return 0;
         } else if (PyShape_Check(v)) {
-            log(INFO, "Setting shape.");
             PyShape * ps = (PyShape*)v;
             MapType map;
             ps->shape->toAtlas(map);
