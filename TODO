@@ -1,3 +1,6 @@
+Harmonize Atlas repr of Areas with mods, and also fix bindings and properties
+to make exchanging data easier.
+
 Add new kind of marker area, only used internally to track things about
 bits of terrain, like ownership. Requires new class in Mercator probably.
 
