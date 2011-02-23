@@ -107,6 +107,13 @@ class Heaping(server.Task):
                                 box.high_corner().x,
                                 box.high_corner().y,
                                 mod.terrainmod.height]
+
+                    area_shape = mod.terrainmod.shape.as_data()
+                    area_map = {'points': area_shape['points'],
+                                'layer': 7,
+                                'type': 'polygon'}
+                    # FIXME This area is not getting broadcast
+                    mod.area = area_map
                     # We have modified the attribute in place,
                     # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
