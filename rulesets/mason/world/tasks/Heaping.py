@@ -67,8 +67,7 @@ class Heaping(server.Task):
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
                 z=self.character.location.coordinates.z + 1.0
-                modmap = {
-                          'height': z,
+                modmap = {'height': z,
                           'shape': {
                                     'points': [[ -0.7, -0.7 ],
                                                [ -1.0, 0.0 ],
@@ -80,13 +79,17 @@ class Heaping(server.Task):
                                                [ 0.0, -1.0 ]],
                                     'type': 'polygon'
                                     },
-                          'type': 'levelmod'
-                         }
+                          'type': 'levelmod' }
+                area_map = {'points': modmap['shape']['points'],
+                            'layer': 7,
+                            'type': 'polygon'}
+                            
                 motte_create=Operation("create",
                                        Entity(name="motte",
                                               type="path",
                                               location = chunk_loc,
-                                              terrainmod = modmap),
+                                              terrainmod = modmap,
+                                              area = area_map),
                                        to=target)
                 res.append(motte_create)
             else:
