@@ -263,13 +263,14 @@ void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
                 log(WARNING, "Terrrain mod with no context");
                 continue;
             }
-            std::cout << "Context has id" << c->id() << std::endl;
+            debug(std::cout << "Context has id" << c->id() << std::endl;);
             TerrainContext * tc = dynamic_cast<TerrainContext *>(c);
             if (tc == 0) {
                 log(WARNING, "Terrrain mod with non Cyphesis context");
                 continue;
             }
-            std::cout << "Context has pointer " << tc->entity().get() << std::endl;
+            debug(std::cout << "Context has pointer " << tc->entity().get()
+                            << std::endl;);
             ret.push_back(tc->entity().get());
         }
     }
