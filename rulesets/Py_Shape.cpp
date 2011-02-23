@@ -19,15 +19,20 @@
 
 #include "Py_Shape.h"
 
+#include "Py_Message.h"
 #include "Py_Point3D.h"
 
 #include "physics/Shape.h"
+
+#include <Atlas/Message/Element.h>
 
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 
 #include <sstream>
 #include <iostream>
+
+using Atlas::Message::MapType;
 
 static PyObject * Shape_area(PyShape * self)
 {
@@ -85,11 +90,25 @@ static PyObject * Shape_high_corner(PyShape * self)
     return (PyObject*)res;
 }
 
+static PyObject * Shape_as_data(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    MapType atlas_data;
+    self->shape->toAtlas(atlas_data);
+    return MessageElement_asPyObject(atlas_data);
+}
+
 static PyMethodDef Shape_methods[] = {
     {"area",               (PyCFunction)Shape_area,              METH_NOARGS},
     {"footprint",          (PyCFunction)Shape_footprint,         METH_NOARGS},
     {"low_corner",         (PyCFunction)Shape_low_corner,        METH_NOARGS},
     {"high_corner",        (PyCFunction)Shape_high_corner,       METH_NOARGS},
+    {"as_data",            (PyCFunction)Shape_as_data,           METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
