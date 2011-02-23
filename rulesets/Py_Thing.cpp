@@ -318,9 +318,6 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     }
     Element obj;
     if (PyObject_asMessageElement(v, obj) == 0) {
-        if (obj.isMap()) {
-            log(NOTICE, "Setting a map attribute on an entity from a script");
-        }
         entity->setAttr(name, obj);
         return 0;
     }
