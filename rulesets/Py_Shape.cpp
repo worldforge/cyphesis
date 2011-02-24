@@ -171,7 +171,7 @@ Py_ssize_t Shape_sq_length(PyShape * self)
 #ifndef NDEBUG
     if (self->shape == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.copy");
-        return NULL;
+        return 0;
     }
 #endif // NDEBUG
     return self->shape->size();
