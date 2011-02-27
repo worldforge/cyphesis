@@ -318,7 +318,10 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     }
     Element obj;
     if (PyObject_asMessageElement(v, obj) == 0) {
-        entity->setAttr(name, obj);
+        PropertyBase * p = entity->setAttr(name, obj);
+        if (p != 0) {
+            p->setFlags(flag_unsent);
+        }
         return 0;
     }
     // FIXME In fact it seems that nothing currently hits this bit, so
