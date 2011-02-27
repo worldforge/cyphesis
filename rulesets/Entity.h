@@ -106,8 +106,8 @@ class Entity : public LocatedEntity {
 
     void resetFlags(unsigned int flags) { m_flags &= ~flags; }
 
-    virtual void setAttr(const std::string & name,
-                         const Atlas::Message::Element &);
+    virtual PropertyBase * setAttr(const std::string & name,
+                                   const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;
 
     PropertyBase * modProperty(const std::string & name);

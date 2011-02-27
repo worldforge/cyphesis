@@ -148,15 +148,15 @@ bool LocatedEntity::getAttrType(const std::string & name,
 ///
 /// @param name Name of attribute to be changed
 /// @param attr Value to be stored
-void LocatedEntity::setAttr(const std::string & name, const Element & attr)
+PropertyBase * LocatedEntity::setAttr(const std::string & name,
+                                      const Element & attr)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->set(attr);
-        return;
+        return I->second;
     }
-    m_properties[name] = new SoftProperty(attr);
-    return;
+    return m_properties[name] = new SoftProperty(attr);
 }
 
 /// \brief Get the property object for a given attribute

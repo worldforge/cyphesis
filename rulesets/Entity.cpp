@@ -78,7 +78,7 @@ Entity::~Entity()
 {
 }
 
-void Entity::setAttr(const std::string & name, const Element & attr)
+PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
 {
     PropertyBase * prop;
     // If it is an existing property, just update the value.
@@ -91,7 +91,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
         // Mark it as unclean and the Entity as unclean
         prop->resetFlags(per_clean);
         resetFlags(entity_clean);
-        return;
+        return prop;
     }
     prop = PropertyManager::instance()->addProperty(name, attr.getType());
     assert(prop != 0);
@@ -105,7 +105,7 @@ void Entity::setAttr(const std::string & name, const Element & attr)
     // Allow the value to take effect.
     prop->apply(this);
     resetFlags(entity_clean);
-    return;
+    return prop;
 }
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
