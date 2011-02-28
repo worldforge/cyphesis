@@ -1,3 +1,12 @@
+2011-02-28  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* Update the shape classes and wrappers to allow scaling and other
+	  math operations.
+
+	* Add terrain areas to mods created in tasks for better visualisation.
+
+	* Modify the attribute API to allow properties to be handled better.
+
 2011-02-17  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* Add support for connecting between servers, and moving entities
