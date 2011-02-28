@@ -305,9 +305,10 @@ void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-void Entity::setAttr(const std::string & name,
-                     const Atlas::Message::Element & attr)
+PropertyBase * Entity::setAttr(const std::string & name,
+                               const Atlas::Message::Element & attr)
 {
+    return 0;
 }
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
@@ -361,9 +362,10 @@ bool LocatedEntity::getAttrType(const std::string & name,
     return false;
 }
 
-void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+PropertyBase * LocatedEntity::setAttr(const std::string & name,
+                                      const Atlas::Message::Element & attr)
 {
-    return;
+    return 0;
 }
 
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
