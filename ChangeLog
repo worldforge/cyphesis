@@ -1,3 +1,9 @@
+2011-03-01  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.5.26
+
 2011-02-28  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* Update the shape classes and wrappers to allow scaling and other
