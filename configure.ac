@@ -321,7 +321,7 @@ Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
 libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(MERCATOR, mercator-0.3 >= 0.2.6,
+PKG_CHECK_MODULES(MERCATOR, mercator-0.3 >= 0.3.0,
     [
         CPPFLAGS="$CPPFLAGS $MERCATOR_CFLAGS"
         TERRAIN_LIBS="$TERRAIN_LIBS $MERCATOR_LIBS"
@@ -337,7 +337,7 @@ Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
 libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.3,
+PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.6,
     [
         CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"
         NETWORK_LIBS="$NETWORK_LIBS $SKSTREAM_LIBS"
