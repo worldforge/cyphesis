@@ -1,3 +1,6 @@
+If we want to support loading data and config over network, make the loader
+classes abstract so the underlying implementation for getting data can vary.
+
 Add config option which allows server owner to control the type of account
 created by default. If they want "admin"/"builder" then they should have it.
 In fact "builder" is a smashing idea for a new account type.
