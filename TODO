@@ -1,3 +1,7 @@
+Character should inherit from and implement the Agent interface, which
+the server code uses when talking to it. This de-couples server from most
+of the rulesets directory.
+
 If we want to support loading data and config over network, make the loader
 classes abstract so the underlying implementation for getting data can vary.
 
