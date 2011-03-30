@@ -1,3 +1,7 @@
+Use 64bit milliseconds everywhere. Merge SECONDS and STAMP into a single
+attribute. Get rid of FUTURE_SECONDS in favor of things being able to set
+STAMP/SECONDS in advance. Use time for STAMP instead of incrementing integer.
+
 Character should inherit from and implement the Agent interface, which
 the server code uses when talking to it. This de-couples server from most
 of the rulesets directory.
