@@ -84,6 +84,19 @@ class TestWorld : public BaseWorld {
     virtual void addPerceptive(Entity *) { }
 };
 
+class TestPeer : public Peer {
+public:
+    TestPeer(CommClient & client, ServerRouting & svr,
+         const std::string & addr, const std::string & id, long iid)
+    : Peer(client, svr, addr, id, iid)
+    {
+    }
+
+    const std::string& getAccountType() const {
+        return m_accountType;
+    }
+};
+
 Atlas::Objects::Operation::RootOperation stub_CommClient_sent_op(0);
 
 int main()
@@ -150,16 +163,20 @@ int main()
 
     // Authenticating (full arg)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        TestPeer *p = new TestPeer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
         Atlas::Objects::Operation::Info op;
         Atlas::Objects::Root arg;
         arg->setId("2");
+        std::list<std::string> parents;
+        parents.push_back("server");
+        arg->setParents(parents);
         op->setArgs1(arg);
         OpVector res;
         p->operation(op, res);
+        assert(p->getAccountType() == "server");
     }
 
     // Authenticated (no args)
