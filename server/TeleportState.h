@@ -15,8 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef SERVER_TELEPORTSTATE_H
-#define SERVER_TELEPORTSTATE_H
+#ifndef SERVER_TELEPORT_STATE_H
+#define SERVER_TELEPORT_STATE_H
 
 #include <string>
 
@@ -88,4 +88,4 @@ inline time_t TeleportState::getCreateTime() const
     return m_teleportTime;
 }
 
-#endif
+#endif // SERVER_TELEPORT_STATE_H
