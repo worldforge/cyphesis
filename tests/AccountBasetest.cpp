@@ -35,17 +35,17 @@ bool test_newid_fail = false;
 int main()
 {
     {
-        AccountBase a;
+        Storage a;
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         delete a;
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         a->init();
 
@@ -53,7 +53,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         a->putAccount(acc);
@@ -62,7 +62,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = 1;
@@ -72,7 +72,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -82,7 +82,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -93,7 +93,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -104,7 +104,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -117,7 +117,7 @@ int main()
 
     test_newid_fail = true;
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -129,7 +129,7 @@ int main()
     test_newid_fail = false;
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         a->modAccount(acc, "1");
@@ -138,7 +138,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["type"] = 1;
@@ -148,7 +148,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["type"] = "admin";
@@ -158,7 +158,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["password"] = 1;
@@ -168,7 +168,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["password"] = "bill";
@@ -177,7 +177,7 @@ int main()
         delete a;
     }
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["password"] = "bill";
@@ -188,7 +188,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         a->delAccount("1");
 
@@ -196,7 +196,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         a->getAccount("1", acc);

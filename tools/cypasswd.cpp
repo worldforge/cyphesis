@@ -201,7 +201,7 @@ int main(int argc, char ** argv)
         return EXIT_SECURITY_ERROR;
     }
 
-    AccountBase db;
+    Storage db;
 
     if (db.init() != 0) {
         std::cerr << "Unable to connect to database" << std::endl << std::flush;

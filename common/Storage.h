@@ -24,14 +24,14 @@
 
 /// \brief Class to handle connecting to the cyphesis database in order to
 /// access the account table
-class AccountBase {
+class Storage {
   protected:
     /// \brief Database connection used to change the accounts table
     Database & m_connection;
   public:
-    AccountBase() : m_connection(*Database::instance()) { }
+    Storage() : m_connection(*Database::instance()) { }
 
-    ~AccountBase() {
+    ~Storage() {
         if (m_connection.getConnection() != 0) {
             m_connection.shutdownConnection();
         }
