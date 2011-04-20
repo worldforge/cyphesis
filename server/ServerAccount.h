@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_SERVERACCOUNT_H
-#define SERVER_SERVERACCOUNT_H
+#ifndef SERVER_SERVER_ACCOUNT_H
+#define SERVER_SERVER_ACCOUNT_H
 
 #include "Account.h"
 
@@ -50,4 +50,4 @@ class ServerAccount : public Account {
     virtual const char * getType() const;
 };
 
-#endif // SERVER_ADMIN_H
+#endif // SERVER_SERVER_ACCOUNT_H
