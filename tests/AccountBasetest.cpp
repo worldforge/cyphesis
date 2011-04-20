@@ -271,6 +271,29 @@ bool Database::createSimpleRow(const std::string & name,
     return true;
 }
 
+bool Database::clearTable(const std::string & table)
+{
+    return true;
+}
+
+bool Database::clearPendingQuery()
+{
+    return true;
+}
+
+bool Database::hasKey(const std::string & table, const std::string & key)
+{
+    return false;
+}
+
+bool Database::putObject(const std::string & table,
+                         const std::string & key,
+                         const Atlas::Message::MapType & o,
+                         const StringVector & c)
+{
+    return true;
+}
+
 const char * DatabaseResult::field(const char * column, int row) const
 {
     return "";
