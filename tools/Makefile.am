@@ -157,7 +157,7 @@ cydumprules_LDADD = $(top_builddir)/common/Database.o \
 cypasswd_SOURCES = cypasswd.cpp
 
 cypasswd_LDADD = $(top_builddir)/common/Database.o \
-                 $(top_builddir)/common/AccountBase.o \
+                 $(top_builddir)/common/Storage.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/system_prefix.o \
                  $(top_builddir)/common/binreloc.o \
@@ -172,7 +172,7 @@ cypasswd_LDADD = $(top_builddir)/common/Database.o \
 cydb_SOURCES = cydb.cpp
 
 cydb_LDADD = $(top_builddir)/common/Database.o \
-             $(top_builddir)/common/AccountBase.o \
+             $(top_builddir)/common/Storage.o \
              $(top_builddir)/common/globals.o \
              $(top_builddir)/common/system_prefix.o \
              $(top_builddir)/common/binreloc.o \
