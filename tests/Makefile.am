@@ -5,7 +5,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                Connecttest Droptest Eattest \
                Monitortest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
-               BaseWorldtest Databasetest idtest AccountBasetest \
+               BaseWorldtest Databasetest idtest Storagetest \
                debugtest globalstest OperationRoutertest Routertest \
                client_sockettest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
@@ -167,8 +167,8 @@ idtest_SOURCES = idtest.cpp
 idtest_LDADD = \
         $(top_builddir)/common/id.o
 
-AccountBasetest_SOURCES = AccountBasetest.cpp
-AccountBasetest_LDADD = \
+Storagetest_SOURCES = Storagetest.cpp
+Storagetest_LDADD = \
         $(top_builddir)/common/Storage.o
 
 debugtest_SOURCES = debugtest.cpp
