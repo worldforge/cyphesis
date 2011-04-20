@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "common/AccountBase.h"
+#include "common/Storage.h"
 
 #include "common/log.h"
 

@@ -33,7 +33,7 @@
 #include "common/log.h"
 #include "common/globals.h"
 #include "common/system.h"
-#include "common/AccountBase.h"
+#include "common/Storage.h"
 
 #include <varconf/config.h>
 
