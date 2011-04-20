@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef TOOLS_ADMIN_TASK_H
-#define TOOLS_ADMIN_TASK_H
+#ifndef COMMON_CLIENT_TASK_H
+#define COMMON_CLIENT_TASK_H
 
 #include "common/OperationRouter.h"
 
@@ -55,4 +55,4 @@ class ClientTask {
     const std::string & description() { return m_description; }
 };
 
-#endif // TOOLS_ADMIN_TASK_H
+#endif // COMMON_CLIENT_TASK_H
