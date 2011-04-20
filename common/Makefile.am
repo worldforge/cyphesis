@@ -14,7 +14,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      compose.hpp \
 		      types.h op_switch.h \
 		      type_utils.cpp type_utils.h \
-              utils.cpp utils.h \
+		      utils.cpp utils.h \
 		      type_utils_impl.h \
 		      operations.cpp \
 		      custom.cpp custom.h \
