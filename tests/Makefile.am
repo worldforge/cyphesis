@@ -169,7 +169,7 @@ idtest_LDADD = \
 
 AccountBasetest_SOURCES = AccountBasetest.cpp
 AccountBasetest_LDADD = \
-        $(top_builddir)/common/AccountBase.o
+        $(top_builddir)/common/Storage.o
 
 debugtest_SOURCES = debugtest.cpp
 debugtest_LDADD = $(top_builddir)/common/debug.o

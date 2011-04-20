@@ -17,14 +17,16 @@
 
 // $Id$
 
-#include "AccountBase.h"
+#include "Storage.h"
 
 #include "system.h"
 
 #include <Atlas/Message/Element.h>
 
+#include <iostream>
+
 /// \brief Initialise a connection to the accounts database
-int AccountBase::init()
+int Storage::init()
 {
     return m_connection.initConnection();
 }
@@ -32,7 +34,7 @@ int AccountBase::init()
 /// \brief Store a new Account in the database
 ///
 /// @param account Atlas description of Account to be stored
-bool AccountBase::putAccount(const Atlas::Message::MapType & account)
+bool Storage::putAccount(const Atlas::Message::MapType & account)
 {
     Atlas::Message::MapType::const_iterator I = account.find("username");
     if (I == account.end() || !I->second.isString()) {
@@ -74,8 +76,8 @@ bool AccountBase::putAccount(const Atlas::Message::MapType & account)
 ///
 /// @param account Atlas description of the Account to be modified
 /// @param accountId String identifier of the Account to be modified
-bool AccountBase::modAccount(const Atlas::Message::MapType & account,
-                             const std::string & accountId)
+bool Storage::modAccount(const Atlas::Message::MapType & account,
+                         const std::string & accountId)
 {
     std::string columns;
     bool empty = true;
@@ -104,7 +106,7 @@ bool AccountBase::modAccount(const Atlas::Message::MapType & account,
 /// \brief Remove an Account from the accounts database
 ///
 /// @param account String identifier of the Account to be removed.
-bool AccountBase::delAccount(const std::string & account)
+bool Storage::delAccount(const std::string & account)
 {
     return false;
 }
@@ -113,8 +115,8 @@ bool AccountBase::delAccount(const std::string & account)
 ///
 /// @param username Username of the Account to be found
 /// @param account Account description returned here
-bool AccountBase::getAccount(const std::string & username,
-                             Atlas::Message::MapType & account)
+bool Storage::getAccount(const std::string & username,
+                         Atlas::Message::MapType & account)
 {
     std::string namestr = "'" + username + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
@@ -157,4 +159,22 @@ bool AccountBase::getAccount(const std::string & username,
     account["type"] = type;
 
     return true;
+}
+
+void Storage::storeInRules(const Atlas::Message::MapType & rule,
+                           const std::string & key)
+{
+    if (m_connection.hasKey(m_connection.rule(), key)) {
+        return;
+    }
+    m_connection.putObject(m_connection.rule(), key, rule, StringVector(1, m_rulesetName));
+    if (!m_connection.clearPendingQuery()) {
+        std::cerr << "Failed" << std::endl << std::flush;
+    }
+}
+
+bool Storage::clearRules()
+{
+    return (m_connection.clearTable(m_connection.rule()) &&
+            m_connection.clearPendingQuery());
 }

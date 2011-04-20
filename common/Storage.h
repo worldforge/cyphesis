@@ -24,14 +24,17 @@
 
 /// \brief Class to handle connecting to the cyphesis database in order to
 /// access the account table
-class AccountBase {
+class Storage {
   protected:
     /// \brief Database connection used to change the accounts table
     Database & m_connection;
-  public:
-    AccountBase() : m_connection(*Database::instance()) { }
 
-    ~AccountBase() {
+    /// \brief Name of the ruleset to be read from file
+    std::string m_rulesetName;
+  public:
+    Storage() : m_connection(*Database::instance()) { }
+
+    ~Storage() {
         if (m_connection.getConnection() != 0) {
             m_connection.shutdownConnection();
         }
@@ -45,6 +48,11 @@ class AccountBase {
     bool delAccount(const std::string & account);
     bool getAccount(const std::string & username,
                     Atlas::Message::MapType & o);
+
+    void storeInRules(const Atlas::Message::MapType & rule,
+                      const std::string & key);
+    bool clearRules();
+    void setRuleset(const std::string & n);
 
 };
 

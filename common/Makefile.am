@@ -14,7 +14,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      compose.hpp \
 		      types.h op_switch.h \
 		      type_utils.cpp type_utils.h \
-              utils.cpp utils.h \
+		      utils.cpp utils.h \
 		      type_utils_impl.h \
 		      operations.cpp \
 		      custom.cpp custom.h \
@@ -43,5 +43,5 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h Teleport.h
 
-libtools_a_SOURCES = AccountBase.cpp AccountBase.h \
+libtools_a_SOURCES = Storage.cpp Storage.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h
