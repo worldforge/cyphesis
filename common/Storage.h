@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef COMMON_ACCOUNT_BASE_H
-#define COMMON_ACCOUNT_BASE_H
+#ifndef COMMON_STORAGE_H
+#define COMMON_STORAGE_H
 
 #include "Database.h"
 
@@ -56,4 +56,4 @@ class Storage {
 
 };
 
-#endif // COMMON_ACCOUNT_BASE_H
+#endif // COMMON_STORAGE_H

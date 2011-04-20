@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef RULESETS_TERRAIN_MOD_H
-#define RULESETS_TERRAIN_MOD_H
+#ifndef RULESETS_TERRAIN_MOD_TRANSLATOR_H
+#define RULESETS_TERRAIN_MOD_TRANSLATOR_H
 
 #include <Atlas/Message/Element.h>
 
@@ -89,4 +89,4 @@ protected:
     Mercator::TerrainMod * m_mod;
 };
 
-#endif // RULESETS_TERRAIN_MOD_H
+#endif // RULESETS_TERRAIN_MOD_TRANSLATOR_H
