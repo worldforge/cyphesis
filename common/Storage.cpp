@@ -23,6 +23,8 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <iostream>
+
 /// \brief Initialise a connection to the accounts database
 int Storage::init()
 {
@@ -157,4 +159,22 @@ bool Storage::getAccount(const std::string & username,
     account["type"] = type;
 
     return true;
+}
+
+void Storage::storeInRules(const Atlas::Message::MapType & rule,
+                           const std::string & key)
+{
+    if (m_connection.hasKey(m_connection.rule(), key)) {
+        return;
+    }
+    m_connection.putObject(m_connection.rule(), key, rule, StringVector(1, m_rulesetName));
+    if (!m_connection.clearPendingQuery()) {
+        std::cerr << "Failed" << std::endl << std::flush;
+    }
+}
+
+bool Storage::clearRules()
+{
+    return (m_connection.clearTable(m_connection.rule()) &&
+            m_connection.clearPendingQuery());
 }
