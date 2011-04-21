@@ -46,74 +46,6 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-/// \brief Handle the database access to the rules table only.
-class RuleBase {
-  protected:
-    /// \brief RuleBase constructor
-    RuleBase() : m_connection(*Database::instance()) { }
-
-    /// \brief Connection to the Database
-    Database & m_connection;
-
-    /// \brief Singleton instance of RuleBase
-    static RuleBase * m_instance;
-
-    /// \brief Name of the ruleset to be read from file
-    std::string m_rulesetName;
-  public:
-    ~RuleBase() {
-        m_connection.shutdownConnection();
-    }
-
-    /// \brief Return a singleton instance of RuleBase
-    static RuleBase * instance() {
-        if (m_instance == NULL) {
-            m_instance = new RuleBase();
-            if (m_instance->m_connection.initConnection() != 0) {
-                delete m_instance;
-                m_instance = 0;
-            } else if (!m_instance->m_connection.initRule(true)) {
-                delete m_instance;
-                m_instance = 0;
-            }
-        }
-        return m_instance;
-    }
-
-    /// \brief Store a rule in the database
-    ///
-    /// Check if the rules table contains a rule which this name, identifier.
-    /// If so return without doing anything, otherwise install the rule
-    /// into the database.
-    /// @param rule Atlas message data describing the rule to be stored
-    /// @param key identifier or name of the rule to be stored
-    void storeInRules(const MapType & rule, const std::string & key) {
-        if (m_connection.hasKey(m_connection.rule(), key)) {
-            return;
-        }
-        m_connection.putObject(m_connection.rule(), key, rule, StringVector(1, m_rulesetName));
-        if (!m_connection.clearPendingQuery()) {
-            std::cerr << "Failed" << std::endl << std::flush;
-        }
-    }
-
-    /// \brief Clear the rules table in the database, leaving it empty.
-    bool clearRules() {
-        return (m_connection.clearTable(m_connection.rule()) &&
-                m_connection.clearPendingQuery());
-    }
-
-    /// \brief Set the ruleset name to be used when installing rules in
-    /// the database.
-    ///
-    /// @param n name to be set.
-    void setRuleset(const std::string & n) {
-        m_rulesetName = n;
-    }
-};
-
-RuleBase * RuleBase::m_instance = NULL;
-
 /// \brief Class that handles reading in an Atlas file, and loading the
 /// contents into the rules database.
 class DatabaseFileLoader : public Atlas::Message::DecoderBase {
@@ -183,7 +115,6 @@ int main(int argc, char ** argv)
 
     int optind = config_status;
 
-    // RuleBase * db = RuleBase::instance();
     Storage * storage = new Storage;
 
     if (storage->init() != 0) {
