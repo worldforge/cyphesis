@@ -690,6 +690,7 @@ int main(int argc, char ** argv)
     Storage ab;
 
     if (ab.init() != 0) {
+        log(ERROR, "Database setup failed.");
         return 1;
     }
 
