@@ -33,8 +33,7 @@ class OperationExerciser {
         }
 
         {
-            Op * op = new Op;
-            op = 0;
+            new Op;
         }
     }
 
