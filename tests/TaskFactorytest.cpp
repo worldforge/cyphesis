@@ -55,12 +55,14 @@ int main()
     ek = new TaskFactory("test1");
 
     e = ek->newTask(*chr);
+    assert(e);
 
     delete ek;
 
     ek = new TaskFactory("test2");
 
     e = ek->newTask(*chr);
+    assert(e);
 
     ek->m_scriptFactory = new TestTaskScriptFactory;
 

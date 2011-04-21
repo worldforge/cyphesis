@@ -56,12 +56,14 @@ int main()
     ek = new EntityFactory<Thing>;
 
     e = ek->newEntity("1", 1);
+    assert(e);
 
     delete ek;
 
     ek = new EntityFactory<World>;
 
     e = ek->newEntity("1", 1);
+    assert(!e);
 
     ek->m_scriptFactory = new TestScriptFactory;
 
