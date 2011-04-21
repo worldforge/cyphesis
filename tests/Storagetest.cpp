@@ -236,6 +236,11 @@ int Database::initConnection()
     return 0;
 }
 
+bool Database::initRule(bool)
+{
+    return true;
+}
+
 void Database::shutdownConnection()
 {
 }

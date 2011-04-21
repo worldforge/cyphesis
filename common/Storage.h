@@ -56,4 +56,9 @@ class Storage {
 
 };
 
+inline void Storage::setRuleset(const std::string & n)
+{
+    m_rulesetName = n;
+}
+
 #endif // COMMON_STORAGE_H
