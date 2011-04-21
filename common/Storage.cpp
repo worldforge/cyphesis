@@ -28,7 +28,13 @@
 /// \brief Initialise a connection to the accounts database
 int Storage::init()
 {
-    return m_connection.initConnection();
+    if (m_connection.initConnection() != 0) {
+        return -1;
+    }
+    if (!m_connection.initRule(true)) {
+        return -1;
+    }
+    return 0;
 }
 
 /// \brief Store a new Account in the database
