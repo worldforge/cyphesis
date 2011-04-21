@@ -27,7 +27,7 @@
 /// also be converted into other formats.
 
 
-#include "common/Database.h"
+#include "common/Storage.h"
 #include "common/globals.h"
 #include "common/log.h"
 
@@ -118,7 +118,7 @@ RuleBase * RuleBase::m_instance = NULL;
 /// contents into the rules database.
 class DatabaseFileLoader : public Atlas::Message::DecoderBase {
     std::fstream m_file;
-    RuleBase & m_db;
+    Storage & m_db;
     Atlas::Codecs::XML m_codec;
     int m_count;
 
@@ -136,7 +136,7 @@ class DatabaseFileLoader : public Atlas::Message::DecoderBase {
         m_db.storeInRules(omap, I->second.asString());
     }
   public:
-    DatabaseFileLoader(const std::string & filename, RuleBase & db) :
+    DatabaseFileLoader(const std::string & filename, Storage & db) :
                 m_file(filename.c_str(), std::ios::in), m_db(db),
                 m_codec(m_file, *this), m_count(0)
     {
@@ -183,26 +183,27 @@ int main(int argc, char ** argv)
 
     int optind = config_status;
 
-    RuleBase * db = RuleBase::instance();
+    // RuleBase * db = RuleBase::instance();
+    Storage * storage = new Storage;
 
-    if (db == 0) {
+    if (storage->init() != 0) {
         std::cerr << argv[0] << ": Could not make database connection."
                   << std::endl << std::flush;
         return 1;
     }
 
     if (optind == (argc - 2)) {
-        DatabaseFileLoader f(argv[optind + 1], *db);
+        DatabaseFileLoader f(argv[optind + 1], *storage);
         if (!f.isOpen()) {
             std::cerr << "ERROR: Unable to open file " << argv[optind + 1]
                       << std::endl << std::flush;
             return 1;
         }
-        db->setRuleset(argv[optind]);
+        storage->setRuleset(argv[optind]);
         f.read();
         f.report(argv[optind]);
     } else if (optind == argc) {
-        db->clearRules();
+        storage->clearRules();
         std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
         std::string filename;
 
@@ -210,12 +211,12 @@ int main(int argc, char ** argv)
         DIR * rules_dir = ::opendir(dirname.c_str());
         if (rules_dir == 0) {
             filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
-            DatabaseFileLoader f(filename, *db);
+            DatabaseFileLoader f(filename, *storage);
             if (f.isOpen()) {
                 std::cerr << "WARNING: Reading legacy rule data from \""
                           << filename << "\""
                           << std::endl << std::flush;
-                db->setRuleset(ruleset);
+                storage->setRuleset(ruleset);
                 f.read();
                 f.report(ruleset);
             }
@@ -226,12 +227,12 @@ int main(int argc, char ** argv)
                 }
                 filename = dirname + "/" + rules_entry->d_name;
             
-                DatabaseFileLoader f(filename, *db);
+                DatabaseFileLoader f(filename, *storage);
                 if (!f.isOpen()) {
                     std::cerr << "ERROR: Unable to open file " << filename
                               << std::endl << std::flush;
                 } else {
-                    db->setRuleset(rules_entry->d_name);
+                    storage->setRuleset(rules_entry->d_name);
                     f.read();
                     f.report(rules_entry->d_name);
                 }
@@ -242,5 +243,5 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    delete db;
+    delete storage;
 }

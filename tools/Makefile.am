@@ -133,14 +133,18 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
 
 cyloadrules_SOURCES = cyloadrules.cpp
 
-cyloadrules_LDADD = $(top_builddir)/common/Database.o \
-                    $(top_builddir)/common/globals.o \
-                    $(top_builddir)/common/system_prefix.o \
-                    $(top_builddir)/common/binreloc.o \
-                    $(top_builddir)/common/const.o \
-                    $(top_builddir)/common/log.o \
-                    $(top_builddir)/common/id.o \
-                    $(DBTOOL_LIBS)
+cyloadrules_LDADD = \
+    $(top_builddir)/common/Storage.o \
+    $(top_builddir)/common/Database.o \
+    $(top_builddir)/common/globals.o \
+    $(top_builddir)/common/system.o \
+    $(top_builddir)/common/system_prefix.o \
+    $(top_builddir)/common/binreloc.o \
+    $(top_builddir)/common/const.o \
+    $(top_builddir)/common/log.o \
+    $(top_builddir)/common/id.o \
+    $(MATHTOOL_LIBS) \
+    $(DBTOOL_LIBS)
 
 cydumprules_SOURCES = cydumprules.cpp \
         MultiLineListFormatter.cpp MultiLineListFormatter.h
