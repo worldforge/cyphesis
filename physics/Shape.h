@@ -42,11 +42,11 @@ class Shape {
   public:
     virtual size_t size() const = 0;
     virtual bool isValid() const = 0;
-    virtual double area() const = 0;
+    virtual WFMath::CoordType area() const = 0;
     virtual WFMath::AxisBox<2> footprint() const = 0;
     virtual WFMath::Point<3> lowCorner() const = 0;
     virtual WFMath::Point<3> highCorner() const = 0;
-    virtual void scale(double factor) = 0;
+    virtual void scale(WFMath::CoordType factor) = 0;
 
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
     virtual void fromAtlas(const Atlas::Message::MapType &) = 0;
@@ -68,11 +68,11 @@ class MathShape : public Shape {
 
     virtual size_t size() const;
     virtual bool isValid() const;
-    virtual double area() const;
+    virtual WFMath::CoordType area() const;
     virtual WFMath::AxisBox<2> footprint() const;
     virtual WFMath::Point<3> lowCorner() const;
     virtual WFMath::Point<3> highCorner() const;
-    virtual void scale(double factor);
+    virtual void scale(WFMath::CoordType factor);
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
     virtual void fromAtlas(const Atlas::Message::MapType &);

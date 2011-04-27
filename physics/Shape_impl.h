@@ -50,7 +50,7 @@ bool MathShape<ShapeT, dim>::isValid() const
 }
 
 template<template <int> class ShapeT, const int dim>
-double MathShape<ShapeT, dim>::area() const
+WFMath::CoordType MathShape<ShapeT, dim>::area() const
 {
     return 1.;
 }
@@ -74,7 +74,7 @@ WFMath::Point<3> MathShape<ShapeT, dim>::highCorner() const
 }
 
 template<template <int> class ShapeT, const int dim>
-void MathShape<ShapeT, dim>::scale(double factor)
+void MathShape<ShapeT, dim>::scale(WFMath::CoordType factor)
 {
 }
 
