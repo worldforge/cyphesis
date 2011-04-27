@@ -26,7 +26,7 @@
 
 static PyObject * Point3D_mag(PyPoint3D * self)
 {
-    return PyFloat_FromDouble(sqrt(sqrMag(self->coords)));
+    return PyFloat_FromDouble(std::sqrt(sqrMag(self->coords)));
 }
 
 static PyObject *Point3D_unit_vector_to(PyPoint3D * self, PyPoint3D * other)

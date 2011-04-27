@@ -67,7 +67,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
                          << std::flush;);
         if (basic_square_distance > square_distance) {
             debug( std::cout << "\tshortened tick" << std::endl << std::flush;);
-            return sqrt(square_distance / basic_square_distance)
+            return std::sqrt(square_distance / basic_square_distance)
                         * consts::basic_tick;
         }
     }

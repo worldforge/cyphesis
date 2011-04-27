@@ -49,12 +49,12 @@ const Quaternion quaternionFromTo(const V & from, const V & to)
 
     t.normalize();
 
-    float ss = sqrtf(0.5 * (1.0 - cosT));
+    float ss = std::sqrt(0.5f * (1.0f - cosT));
 
     float x = t.x() * ss;
     float y = t.y() * ss;
     float z = t.z() * ss;
-    float w = std::sqrt(0.5 * (1.0 + cosT));
+    float w = std::sqrt(0.5f * (1.0f + cosT));
     return Quaternion(w, x, y, z);
 }
 
