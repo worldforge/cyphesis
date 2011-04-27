@@ -172,3 +172,6 @@ Shape * Shape::newFromAtlas(const MapType & data)
 }
 
 template class MathShape<WFMath::AxisBox, 2>;
+template class MathShape<WFMath::Ball, 2>;
+template class MathShape<WFMath::Polygon, 2>;
+template class MathShape<WFMath::RotBox, 2>;

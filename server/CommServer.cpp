@@ -77,7 +77,7 @@ int CommServer::setup()
     // a good choice here.
     m_epollFd = epoll_create(64);
     if (m_epollFd < 0) {
-        log(CRITICAL, String::compose("epoll_create: %s", strerror(errno)));
+        log(CRITICAL, String::compose("epoll_create: %1", strerror(errno)));
         return -1;
     }
 #endif // HAVE_EPOLL_CREATE

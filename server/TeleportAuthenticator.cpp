@@ -95,7 +95,7 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
 {
     PendingTeleportMap::iterator I = m_teleports.find(entity_id);
     if (I == m_teleports.end()) {
-        log(ERROR, String::compose("Unable to find teleported entity with ID %s", 
+        log(ERROR, String::compose("Unable to find teleported entity with ID %1",
                                                                     entity_id));
         return NULL;
     }
@@ -105,7 +105,7 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
         Entity * entity = BaseWorld::instance().getEntity(entity_id);
         if (entity == 0) {
             // This means the authentication entry itself is invalid. Remove it.
-            log(ERROR, String::compose("Unable to find teleported entity with ID %s", 
+            log(ERROR, String::compose("Unable to find teleported entity with ID %1",
                                                                         entity_id));
             removeTeleport(I);
             return NULL;

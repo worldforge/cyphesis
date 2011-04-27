@@ -44,6 +44,7 @@ int main()
         float time = 0;
 
         bool res = predictEmergence(coords, velocity, container, time);
+        assert(res);
 
         std::cout << "Vertex emergence predicted after " << time
                   << " seconds" << std::endl << std::flush;
@@ -52,6 +53,7 @@ int main()
         time = 0;
 
         res = predictEmergence(coords, velocity, container, time);
+        assert(res);
 
         std::cout << "Vertex emergence predicted after " << time
                   << " seconds" << std::endl << std::flush;
@@ -60,6 +62,7 @@ int main()
         time = 0;
 
         res = predictEmergence(coords, velocity, container, time);
+        assert(res);
 
         std::cout << "Vertex emergence predicted after " << time
                   << " seconds" << std::endl << std::flush;
