@@ -34,14 +34,14 @@ WFMath::CoordType boxSquareSize(const BBox & box);
 
 inline WFMath::CoordType boxSize(const BBox & box)
 {
-    return sqrtf(boxSquareSize(box));
+    return std::sqrt(boxSquareSize(box));
 }
 
 WFMath::CoordType boxSquareBoundingRadius(const BBox & box);
 
 inline WFMath::CoordType boxBoundingRadius(const BBox & box)
 {
-    return sqrtf(boxSquareBoundingRadius(box));
+    return std::sqrt(boxSquareBoundingRadius(box));
 }
 
 #endif // PHYSICS_B_BOX_H

@@ -127,7 +127,7 @@ const float squareHorizontalDistance(const Location & self,
 
 inline const float distance(const Location & self, const Location & other)
 {
-    return sqrt(squareDistance(self, other));
+    return std::sqrt(squareDistance(self, other));
 }
 
 #endif // MODULES_LOCATION_H
