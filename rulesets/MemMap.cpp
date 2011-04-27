@@ -344,7 +344,8 @@ MemEntityVector MemMap::findByType(const std::string & what)
     return res;
 }
 
-MemEntityVector MemMap::findByLocation(const Location & loc, double radius,
+MemEntityVector MemMap::findByLocation(const Location & loc,
+                                       WFMath::CoordType radius,
                                        const std::string & what)
 // Find an entity in our memory in a certain place
 // FIXME Don't return by value
