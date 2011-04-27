@@ -93,7 +93,7 @@ WFMath::CoordType MathShape<WFMath::Polygon, 2>::area() const
         area -= corner.y() * corner2.x();
     }
 
-   return fabs(area / 2.f);
+   return std::fabs(area / 2.f);
 }
 
 template<>
