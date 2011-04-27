@@ -127,7 +127,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                     << std::endl << std::flush;);
     // Use a value seeded from the ID, so it's always the same.
     WFMath::MTRand::instance.seed(getIntId());
-    float jitter = WFMath::MTRand::instance.rand() * 10;
+    double jitter = WFMath::MTRand::instance.rand() * 10.;
 
     Tick tick_op;
     tick_op->setTo(getId());
@@ -180,8 +180,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         BBox & bbox = m_location.m_bBox;
         // FIXME Handle the bbox without needing the Set operation.
         if (old_mass != 0 && bbox.isValid()) {
-            double scale = mass / old_mass;
-            double height_scale = pow(scale, 0.33333f);
+            float scale = (float)(mass / old_mass);
+            float height_scale = std::pow(scale, 0.33333f);
             debug(std::cout << "scale " << scale << ", " << height_scale
                             << std::endl << std::flush;);
             debug(std::cout << "Old " << bbox << std::endl << std::flush;);
