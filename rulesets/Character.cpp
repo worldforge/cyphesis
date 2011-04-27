@@ -1191,7 +1191,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         }
     }
 
-    double vel_mag;
+    WFMath::CoordType vel_mag;
     if (new_velocity.isValid()) {
         vel_mag = std::min(new_velocity.mag(), consts::base_velocity);
     } else {
