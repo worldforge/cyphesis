@@ -83,8 +83,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
 /// @return 1 if no update was made, or 0 otherwise
 int Pedestrian::getUpdatedLocation(Location & return_location)
 {
-    double current_time = BaseWorld::instance().getTime();
-    double time_diff = current_time - m_body.m_location.timeStamp();
+    WFMath::CoordType time_diff = (WFMath::CoordType)(BaseWorld::instance().getTime() - m_body.m_location.timeStamp());
 
     if (!updateNeeded(m_body.m_location)) {
         debug( std::cout << "No update" << std::endl << std::flush;);
@@ -98,7 +97,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     new_coords += (m_body.m_location.velocity() * time_diff);
     if (m_targetPos.isValid()) {
         Point3D new_coords2 = new_coords;
-        new_coords2 += (m_body.m_location.velocity() * (consts::basic_tick / 10.0));
+        new_coords2 += (m_body.m_location.velocity() * (consts::basic_tick / 10.f));
         // The values returned by squareDistance are squares, so
         // cannot be used except for comparison
         double dist = squareDistance(m_targetPos, new_coords);

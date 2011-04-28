@@ -205,7 +205,7 @@ bool TerrainModTranslator::parseShape(
     if (orientation.isValid()) {
         /// rotation about Z axis
         WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-        double theta = atan2(xVec.y(), xVec.x());
+        WFMath::CoordType theta = std::atan2(xVec.y(), xVec.x());
         WFMath::RotMatrix<2> rm;
         shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
     }
