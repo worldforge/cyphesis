@@ -25,12 +25,12 @@
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
 
-static inline float sqr(float x)
+static inline WFMath::CoordType sqr(WFMath::CoordType x)
 {
     return x * x;
 }
 
-float squareDistance(const Point3D & u, const Point3D & v)
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
@@ -83,7 +83,7 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
 template
 int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
-float sqrMag(const Point3D & p)
+WFMath::CoordType sqrMag(const Point3D & p)
 {
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
 }
