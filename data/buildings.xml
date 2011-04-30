@@ -865,6 +865,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-2</float>
+          <float>-2</float>
+          <float>-0.5</float>
+          <float>2</float>
+          <float>2</float>
+          <float>5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">tent</string>
     <string name="objtype">class</string>
