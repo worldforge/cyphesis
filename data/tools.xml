@@ -127,6 +127,17 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+	  <float>-0.01</float>
+	  <float>-0.1</float>
+	  <float>-0.01</float>
+	  <float>0.1</float>
+	  <float>0.1</float>
+	  <float>0.15</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">0.05</float>
         <string name="visibility">public</string>
@@ -158,6 +169,31 @@
       </map>
     </map>
     <string name="id">knife</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.01</float>
+          <float>-0.1</float>
+          <float>-0.01</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.15</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">0.15</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">lure</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
