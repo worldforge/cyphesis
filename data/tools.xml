@@ -129,12 +129,12 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-	  <float>-0.01</float>
-	  <float>-0.1</float>
-	  <float>-0.01</float>
-	  <float>0.1</float>
-	  <float>0.1</float>
-	  <float>0.15</float>
+          <float>-0.01</float>
+          <float>-0.1</float>
+          <float>-0.01</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.15</float>
         </list>
         <string name="visibility">public</string>
       </map>
