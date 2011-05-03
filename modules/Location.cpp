@@ -170,7 +170,7 @@ void Location::modifyBBox()
     m_squareBoxSize = square(m_bBox.highCorner().x() - m_bBox.lowCorner().x()) +
                       square(m_bBox.highCorner().y() - m_bBox.lowCorner().y()) +
                       square(m_bBox.highCorner().z() - m_bBox.lowCorner().z());
-    m_boxSize = sqrtf(m_squareBoxSize);
+    m_boxSize = std::sqrt(m_squareBoxSize);
 
     m_squareRadius = std::max(square(m_bBox.lowCorner().x()) +  
                               square(m_bBox.lowCorner().y()) +  
@@ -178,7 +178,14 @@ void Location::modifyBBox()
                               square(m_bBox.highCorner().x()) +  
                               square(m_bBox.highCorner().y()) +  
                               square(m_bBox.highCorner().z()));
-    m_radius = sqrtf(m_squareRadius);
+    m_radius = std::sqrt(m_squareRadius);
+}
+
+void Location::setVisibility(float v)
+{
+    m_boxSize = v;
+    m_squareBoxSize = v * v;
+    // TODO m_radius and m_squareRadius? Unused everywhere for now.
 }
 
 const Atlas::Objects::Root Location::asEntity() const

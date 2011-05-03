@@ -22,6 +22,7 @@
 
 #include "physics/Vector3D.h"
 
+#include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
 #include <map>

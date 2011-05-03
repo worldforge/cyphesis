@@ -1,6 +1,6 @@
 # SUBDIRS = astronomy skills
 
-INCLUDES = -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_srcdir)
 
 RULESETS = basic/mind mason
 
@@ -41,8 +41,7 @@ librulesetentity_a_SOURCES = \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     TerrainModProperty.cpp TerrainModProperty.h \
-			     TerrainMod.cpp TerrainMod.h \
-			     InnerTerrainMod_impl.h \
+			     TerrainModTranslator.cpp TerrainModTranslator.h \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \
@@ -57,6 +56,7 @@ librulesetentity_a_SOURCES = \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     TasksProperty.cpp TasksProperty.h \
 			     SpawnProperty.cpp SpawnProperty.h \
+			     VisibilityProperty.cpp VisibilityProperty.h \
 			     Task.cpp Task.h \
 			     TaskScript.cpp TaskScript.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
@@ -84,6 +84,7 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_World.cpp Py_World.h \
 			    Py_Location.cpp Py_Location.h \
 			    Py_Task.cpp Py_Task.h \
+			    Py_Shape.cpp Py_Shape.h \
 			    Py_Property.cpp Py_Property.h \
 			    Py_TerrainModProperty.cpp \
 			    Py_TerrainProperty.cpp \

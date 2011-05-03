@@ -33,7 +33,7 @@
 #include "common/log.h"
 #include "common/globals.h"
 #include "common/system.h"
-#include "common/AccountBase.h"
+#include "common/Storage.h"
 
 #include <varconf/config.h>
 
@@ -54,7 +54,7 @@ extern "C" {
 }
 #endif
 
-typedef int (*dbcmd_function)(AccountBase & ab, struct dbsys * system,
+typedef int (*dbcmd_function)(Storage & ab, struct dbsys * system,
                               int argc, char ** argv);
 
 /// \brief Entry in the global command table for cycmd
@@ -65,7 +65,7 @@ struct dbsys {
     struct dbsys * sys_subsys;
 };
 
-int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
+int dbs_help(Storage & ab, struct dbsys * system, int argc, char ** argv)
 {
     size_t max_length = 0;
 
@@ -88,7 +88,7 @@ int dbs_help(AccountBase & ab, struct dbsys * system, int argc, char ** argv)
 }
 
 
-static int world_purge(AccountBase & ab, struct dbsys * system,
+static int world_purge(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "DELETE FROM entities WHERE loc IS NOT null";
@@ -104,7 +104,7 @@ static int world_purge(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-static int users_purge(AccountBase & ab, struct dbsys * system,
+static int users_purge(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "DELETE FROM accounts WHERE username != 'admin'";
@@ -115,7 +115,7 @@ static int users_purge(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-static int users_list(AccountBase & ab, struct dbsys * system,
+static int users_list(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "SELECT username, type FROM accounts";
@@ -132,7 +132,7 @@ static int users_list(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-static int users_del(AccountBase & ab, struct dbsys * system,
+static int users_del(Storage & ab, struct dbsys * system,
                      int argc, char ** argv)
 {
     if (argc != 2) {
@@ -164,7 +164,7 @@ static int users_del(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-static int users_mod(AccountBase & ab, struct dbsys * system,
+static int users_mod(Storage & ab, struct dbsys * system,
                      int argc, char ** argv)
 {
     int opt;
@@ -240,7 +240,7 @@ static int users_mod(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-static int rules_purge(AccountBase & ab, struct dbsys * system,
+static int rules_purge(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "DELETE FROM rules";
@@ -251,7 +251,7 @@ static int rules_purge(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-static int rules_list(AccountBase & ab, struct dbsys * system,
+static int rules_list(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "SELECT id FROM rules";
@@ -266,7 +266,7 @@ static int rules_list(AccountBase & ab, struct dbsys * system,
     return 0;
 }
 
-int dbs_generic(AccountBase & ab, struct dbsys * system,
+int dbs_generic(Storage & ab, struct dbsys * system,
                 int argc, char ** argv)
 {
     struct dbsys * subsyss = system->sys_subsys;
@@ -647,7 +647,7 @@ void exec(const std::string & cmd, const std::string & arg)
 }
 #endif
 
-static int run_command(AccountBase & ab, int argc, char ** argv)
+static int run_command(Storage & ab, int argc, char ** argv)
 {
     for (struct dbsys * I = &systems[0]; I->sys_name != NULL; ++I) {
         if (strcmp(argv[0], I->sys_name) == 0) {
@@ -687,9 +687,10 @@ int main(int argc, char ** argv)
         interactive = false;
     }
 
-    AccountBase ab;
+    Storage ab;
 
     if (ab.init() != 0) {
+        log(ERROR, "Database setup failed.");
         return 1;
     }
 

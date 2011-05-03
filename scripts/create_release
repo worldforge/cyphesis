@@ -233,6 +233,7 @@ package_autopackage() {
     if [ $(cat /proc/sys/kernel/randomize_va_space) -ne 0 ]
     then
         echo EEEEE stack randomization is enabled, which will break statifier
+        echo EEEEE try: sysctl -w kernel.randomize_va_space=0
         exit 1
     fi
     
@@ -305,7 +306,7 @@ package_sources
 
 package_rpms
 
-package_autopackage
+# package_autopackage
 
 echo NATURAL END
 

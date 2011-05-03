@@ -28,7 +28,6 @@
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
-#include "CommPeer.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
 #include "ArithmeticBuilder.h"
@@ -39,7 +38,8 @@
 #include "IdleConnector.h"
 #include "UpdateTester.h"
 #include "Admin.h"
-#include "Admin.h"
+#include "ServerAccount.h"
+#include "TeleportAuthenticator.h"
 
 #include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"
@@ -56,10 +56,15 @@
 #include "common/system.h"
 #include "common/nls.h"
 #include "common/sockets.h"
+#include "common/utils.h"
+#include "common/serialno.h"
 
 #include <varconf/config.h>
 
 #include <sigc++/functors/mem_fun.h>
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <sstream>
 
@@ -189,6 +194,8 @@ int main(int argc, char ** argv)
 
     Ruleset::init();
 
+    TeleportAuthenticator::init();
+
     StorageManager store(world);
 
     // This ID is currently generated every time, but should perhaps be
@@ -287,16 +294,6 @@ int main(int argc, char ** argv)
         }
     }
     commServer.addSocket(listener);
-
-    CommTCPListener * peerListener = new CommTCPListener(commServer,
-          *new CommClientFactory<Peer>());
-    if (peerListener->setup(peer_port_num) != 0) {
-        log(ERROR, String::compose("Could not create peer listen socket "
-                                   "on port %1.", peer_port_num));
-        delete peerListener;
-    } else {
-        commServer.addSocket(peerListener);
-    }
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(commServer,
@@ -402,6 +399,7 @@ int main(int argc, char ** argv)
     EntityBuilder::del();
     ArithmeticBuilder::del();
     MindFactory::del();
+    TeleportAuthenticator::del();
 
     Inheritance::clear();
 

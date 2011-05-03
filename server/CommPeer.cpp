@@ -23,27 +23,120 @@
 #include "CommServer.h"
 
 #include "common/globals.h"
+#include "common/serialno.h"
+#include "common/log.h"
 
-INT_OPTION(peer_port_num, 6769, CYPHESIS, "peerport",
-           "Network listen port for peer server connections");
+#include <Atlas/Negotiate.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
+
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Info;
 
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
+/// @param username Username to login with on peer
+/// @param password Password to login with on peer
+CommPeer::CommPeer(CommServer & svr) : CommClient(svr), m_ref(0)
 {
-    std::cout << "Outgoing peer connection." << std::endl << std::flush;
 }
 
 CommPeer::~CommPeer()
 {
 }
 
-int CommPeer::connect(const std::string & host)
+/// \brief Connect to a remote peer on a specific port
+///
+/// @param host The hostname of the peer to connect to
+/// @param port The port to connect on
+/// @return Returns 0 on success and -1 on failure.
+int CommPeer::connect(const std::string & host, int port, long ref)
 {
-    m_clientIos.open(host, peer_port_num);
+    m_host = host;
+    m_port = port;
+    m_ref = ref;
+    m_clientIos.open(host, port, true);
     if (m_clientIos.is_open()) {
         return 0;
     }
     return -1;
+}
+
+void CommPeer::setup(Router * connection)
+{
+    m_connection = connection;
+
+    if (!m_clientIos.connect_pending()) {
+        m_negotiate->poll(false);
+        m_clientIos << std::flush;
+    }
+}
+
+bool CommPeer::eof()
+{
+    if (m_clientIos.connect_pending()) {
+        return false;
+    } else {
+        return CommStreamClient::eof();
+    }
+}
+
+int CommPeer::read()
+{
+    if (m_clientIos.connect_pending()) {
+        if (m_clientIos.isReady(0)) {
+            return 0;
+        } else {
+            return -1;
+        }
+    } else {
+        Atlas::Negotiate * old_neg = m_negotiate;
+        int ret = CommClient::read();
+        if (old_neg != m_negotiate) {
+            Anonymous info_arg;
+            m_connection->addToEntity(info_arg);
+
+            Info info;
+            if (m_ref) {
+                info->setRefno(m_ref);
+            }
+            info->setArgs1(info_arg);
+
+            OpVector res;
+            m_connection->operation(info, res);
+        }
+        return ret;
+    }
+}
+
+/// \brief Called periodically by the server
+///
+/// \param t The current time at the time of calling
+void CommPeer::idle(time_t t)
+{
+    // Wait for the negotiation to finish with the peer
+    if (m_negotiate != 0) {
+        if ((t - m_connectTime) > 10) {
+            log(NOTICE, "Client disconnected because of negotiation timeout.");
+            m_clientIos.shutdown();
+        }
+    } else {
+        Peer *peer = dynamic_cast<Peer*>(m_connection);
+        if (peer == NULL) {
+            log(WARNING, "Casting CommPeer connection to Peer failed");
+            return;
+        }
+        // Check if we have been stuck in a state of authentication in-progress
+        // for over 20 seconds. If so, disconnect from and remove peer.
+        if ((t - m_connectTime) > 20) {
+            if (peer->getAuthState() == PEER_AUTHENTICATING) {
+                log(NOTICE, "Peer disconnected because authentication timed out.");
+                m_clientIos.shutdown();
+            }
+        }
+        if (peer->getAuthState() == PEER_AUTHENTICATED) {
+            peer->cleanTeleports();
+        }
+    }
 }

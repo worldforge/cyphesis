@@ -83,6 +83,34 @@ int ClientConnection::wait()
    return error_flag ? -1 : 0;
 }
 
+int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
+{
+    long no = newSerialNo();
+    op->setSerialno(no);
+    send(op);
+    debug(std::cout << "Waiting for reply to " << op->getParents().front()
+                    << std::endl << std::flush;);
+    while (true) {
+        if (pending()) {
+            Operation input = pop();
+            assert(input.isValid());
+            if (input.isValid()) {
+                if (input->getRefno() == no) {
+                    debug(std::cout << "Got reply" << std::endl << std::flush;);
+                    res.push_back(input);
+                    return 0;
+                } else {
+                    debug(std::cout << "Not reply" << std::endl << std::flush;);
+                }
+            } else {
+                debug(std::cout << "Not op" << std::endl << std::flush;);
+            }
+        } else if (wait() != 0) {
+            return -1;
+        }
+    }
+}
+
 RootOperation ClientConnection::pop()
 {
     poll();

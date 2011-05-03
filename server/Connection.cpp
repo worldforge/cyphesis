@@ -60,8 +60,8 @@ static const bool debug_flag = false;
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, forceIntegerId(id)), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
@@ -133,13 +133,18 @@ Account * Connection::addAccount(const std::string & type,
 /// as an avatar. If it is an player or other account, a pointer is returned.
 Account * Connection::removeAccount(Router * obj, const std::string & event)
 {
-    Account * ac = dynamic_cast<Account *>(obj);
-    if (ac != 0) {
-        m_server.m_lobby.delAccount(ac);
-        ac->m_connection = 0;
-        logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
-                                         ac->getId(), ac->username(), event));
-        return ac;
+    ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(obj);
+    if (cr != 0) {
+        cr->m_connection = 0;
+        Account * ac = dynamic_cast<Account *>(cr);
+        if (ac != 0) {
+            m_server.m_lobby.delAccount(ac);
+            logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
+                                             ac->getId(), ac->username(),
+                                             event));
+            return ac;
+        }
+        return 0;
     }
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != 0) {
@@ -387,8 +392,9 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good login" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("%1 %2 - Login account %3",
-                                    getId(), account->getId(), username));
+    logEvent(LOGIN, String::compose("%1 %2 - Login account %3 (%4)",
+                                    getId(), account->getId(), username,
+                                    account->getType()));
 }
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
@@ -451,8 +457,11 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Good create" << std::endl << std::flush;);
     res.push_back(info);
 
-    logEvent(LOGIN, String::compose("%1 %2 - Create account %3", getId(),
-                                    account->getId(), username));
+    logEvent(LOGIN, String::compose("%1 %2 - Create account %3 (%4)",
+                                    getId(),
+                                    account->getId(),
+                                    username,
+                                    account->getType()));
 }
 
 void Connection::LogoutOperation(const Operation & op, OpVector & res)

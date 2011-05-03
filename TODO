@@ -19,6 +19,57 @@ Bullet Physics Ideas:
   tricky we can use the bit field and matric features to define what collides
   with what, all under the control of the designer/builder.
 
+Frontends, backends, routers based architecture
+
+Use 64bit milliseconds everywhere. Merge SECONDS and STAMP into a single
+attribute. Get rid of FUTURE_SECONDS in favor of things being able to set
+STAMP/SECONDS in advance. Use time for STAMP instead of incrementing integer.
+
+Character should inherit from and implement the Agent interface, which
+the server code uses when talking to it. This de-couples server from most
+of the rulesets directory.
+
+If we want to support loading data and config over network, make the loader
+classes abstract so the underlying implementation for getting data can vary.
+
+Add config option which allows server owner to control the type of account
+created by default. If they want "admin"/"builder" then they should have it.
+In fact "builder" is a smashing idea for a new account type.
+
+Use weak references to allow players to assist other players. Activating some
+kind of assist task installs a reference in the other task, which breaks
+automatically when the task breaks.
+
+Harmonize Atlas repr of Areas with mods, and also fix bindings and properties
+to make exchanging data easier.
+
+Add new kind of marker area, only used internally to track things about
+bits of terrain, like ownership. Requires new class in Mercator probably.
+
+We should say "circle" to reference WFMath::Ball in 2D. Pick a different name
+depending in dinension. "rectangle" instead of "box" perhaps.
+
+Consider Entity:destroyed and Entity:containered to interrupt tasks
+
+Allow Admin to use an op - perhaps Login - to claim any object on the server.
+
+Use Java object builder/aspect pattern for Property factories in
+CorePropertyManager
+
+It looks as though Look FROM account is required to activate a possess key,
+which I was not expecting. Are clients expecting this?
+
+Add database stuff to store server metadata like version of server,
+(to detect rolling back to earlier versions).
+
+TerrainModProperty:
+Do the same for areas.
+We need op post-processing rather than pre-processing for move updates.
+
+Abstract entities for tracking non-physical concepts such as quests, trade
+transactions, entity recipes, contruction blueprints etc.
+See http://www.igda.org/newsletter/?p=483 for how to do trading.
+
 Extend Mercator to allow terrain mod volume calculations. Use these to work
 out when a quarry should work, and how much it should be extended.
 
@@ -31,12 +82,6 @@ Delve goal established pattern for picking up existing terrin mods.
   Returning the entities will be vastly more useful, so do that.
 
 CommPythonClient should probably execute python in dispath rather than read()
-
-Make cyclient a bunch more Python driven, with a default Python class which
-handles much of the current automated login stuffs.
-
-Once we can switch to automake 1.11, support color tests results, and
-parallel-tests.
 
 Rename ArithmeticScript as Arithmetic
 
@@ -66,8 +111,6 @@ score.
 Constrain movement if not directly in a movement domain.
 
 Tower defense game.
-
-Implement configurable spawn points.
 
 Use PGconnectStart for async db stuff.
 
@@ -215,10 +258,6 @@ connected to a client to a child class UserConnection.
 Add a way to extend the terrain base on where someone is walking.
 Probably should sit on top of a general mechanism for modifying the
 world based on player activity.
-
-Rename files where classes have been renamed.
-CommAtlasListener
-EntityBuilder
 
 Fix out type updates in Eris. Need to be picked up in the special place
 where serverinfo updates are picked up no.

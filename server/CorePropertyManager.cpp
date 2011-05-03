@@ -19,6 +19,10 @@
 
 #include "CorePropertyManager.h"
 
+#include "ExternalMind.h"
+#include "Juncture.h"
+#include "ServerRouting.h"
+
 #include "rulesets/ActivePropertyFactory_impl.h"
 
 #include "rulesets/LineProperty.h"
@@ -34,21 +38,28 @@
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
+#include "rulesets/VisibilityProperty.h"
+#include "rulesets/Character.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
 #include "common/Nourish.h"
 #include "common/Update.h"
+#include "common/Teleport.h"
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
 
+#include "common/id.h"
+#include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <wfmath/atlasconv.h>
+#include <wfmath/MersenneTwister.h>
 
 #include <iostream>
 
@@ -57,6 +68,8 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Burn;
 using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::RootEntity;
@@ -198,10 +211,8 @@ HandlerResult terrainmod_moveHandler(Entity * e,
         return OPERATION_IGNORED;
     }
 
-    Point3D newPos(ent->getPos()[0], ent->getPos()[1], ent->getPos()[2]);
-
-    // If we have any terrain mods applied, remove them from the previous pos and apply them to the new one
-    mod_property->move(e, newPos);
+    // Update the modifier
+    mod_property->move(e);
     return OPERATION_IGNORED;
 }
 
@@ -216,6 +227,54 @@ HandlerResult terrainmod_deleteHandler(Entity * e,
 
     mod_property->remove(e);
 
+    return OPERATION_IGNORED;
+}
+
+HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
+{
+    // Get the teleport property value (in our case, the IP to teleport to)
+    const Property<std::string> * pb = e->getPropertyType<std::string>("teleport");
+    if (pb == NULL) {
+        debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
+                        << std::flush;);
+        return OPERATION_IGNORED;
+    }
+
+    ServerRouting *svr = ServerRouting::instance();
+    if(svr == NULL) {
+        log(ERROR, "Unable to access ServerRouting object");
+        return OPERATION_IGNORED;
+    }
+    Router * obj = svr->getObject(pb->data());
+    if(obj == NULL) {
+        log(ERROR, "Unknown peer ID specified");
+        return OPERATION_IGNORED;
+    }
+    Juncture * link = dynamic_cast<Juncture *>(obj);
+    if(link == NULL) {
+        log(ERROR, "Non Peer ID specified");
+        return OPERATION_IGNORED;
+    }
+
+    // Get the ID of the sender
+    if (op->isDefaultFrom()) {
+        debug(std::cout << "ERROR: Operation with no entity to be teleported" 
+                        << std::endl << std::flush;);
+        return OPERATION_IGNORED;
+    }
+    log(INFO, String::compose("Teleport request sender has ID %1",
+                              op->getFrom()));
+
+    // This is the sender entity
+    Entity * entity = BaseWorld::instance().getEntity(op->getFrom());
+    if (entity == 0) {
+        debug(std::cout << "No entity found with the specified ID: "
+                        << op->getFrom(););
+        return OPERATION_IGNORED;
+    }
+
+    // Inject the entity into remote server
+    link->teleportEntity(entity);
     return OPERATION_IGNORED;
 }
 
@@ -244,11 +303,14 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["statistics"] = new PropertyFactory<StatisticsProperty>;
     m_propertyFactories["spawn"] = new PropertyFactory<SpawnProperty>;
     m_propertyFactories["area"] = new PropertyFactory<AreaProperty>;
+    m_propertyFactories["visibility"] = new PropertyFactory<VisibilityProperty>;
     
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
     terrainModHandles[Atlas::Objects::Operation::DELETE_NO] = terrainmod_deleteHandler;
     m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
+
+    m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, teleport_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()

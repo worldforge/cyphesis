@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir) -I${top_builddir}
+AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cycmd cyconfig cyaddrules cyconvertrules cyloadrules \
                cydumprules cypasswd cydb cypython
@@ -96,6 +96,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/AtlasFileLoader.o \
               $(top_builddir)/common/system_uid.o \
               $(top_builddir)/common/id.o \
+              $(top_builddir)/common/utils.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)
@@ -132,14 +133,18 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
 
 cyloadrules_SOURCES = cyloadrules.cpp
 
-cyloadrules_LDADD = $(top_builddir)/common/Database.o \
-                    $(top_builddir)/common/globals.o \
-                    $(top_builddir)/common/system_prefix.o \
-                    $(top_builddir)/common/binreloc.o \
-                    $(top_builddir)/common/const.o \
-                    $(top_builddir)/common/log.o \
-                    $(top_builddir)/common/id.o \
-                    $(DBTOOL_LIBS)
+cyloadrules_LDADD = \
+    $(top_builddir)/common/Storage.o \
+    $(top_builddir)/common/Database.o \
+    $(top_builddir)/common/globals.o \
+    $(top_builddir)/common/system.o \
+    $(top_builddir)/common/system_prefix.o \
+    $(top_builddir)/common/binreloc.o \
+    $(top_builddir)/common/const.o \
+    $(top_builddir)/common/log.o \
+    $(top_builddir)/common/id.o \
+    $(MATHTOOL_LIBS) \
+    $(DBTOOL_LIBS)
 
 cydumprules_SOURCES = cydumprules.cpp \
         MultiLineListFormatter.cpp MultiLineListFormatter.h
@@ -156,7 +161,7 @@ cydumprules_LDADD = $(top_builddir)/common/Database.o \
 cypasswd_SOURCES = cypasswd.cpp
 
 cypasswd_LDADD = $(top_builddir)/common/Database.o \
-                 $(top_builddir)/common/AccountBase.o \
+                 $(top_builddir)/common/Storage.o \
                  $(top_builddir)/common/globals.o \
                  $(top_builddir)/common/system_prefix.o \
                  $(top_builddir)/common/binreloc.o \
@@ -171,7 +176,7 @@ cypasswd_LDADD = $(top_builddir)/common/Database.o \
 cydb_SOURCES = cydb.cpp
 
 cydb_LDADD = $(top_builddir)/common/Database.o \
-             $(top_builddir)/common/AccountBase.o \
+             $(top_builddir)/common/Storage.o \
              $(top_builddir)/common/globals.o \
              $(top_builddir)/common/system_prefix.o \
              $(top_builddir)/common/binreloc.o \

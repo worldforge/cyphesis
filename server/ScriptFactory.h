@@ -63,6 +63,9 @@ class PythonScriptFactory : public ScriptKit {
     int addScript(Entity * entity);
     int refreshClass();
 
+    bool isOkay() const {
+        return m_class != 0;
+    }
 };
 
 #endif // SERVER_SCRIPT_FACTORY_H

@@ -24,6 +24,7 @@
 #include "Lobby.h"
 #include "ExternalMind.h"
 #include "Persistence.h"
+#include "TeleportAuthenticator.h"
 
 #include "rulesets/Character.h"
 
@@ -71,8 +72,8 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         Router(id, intId),
-         m_username(uname), m_password(passwd), m_connection(conn)
+         ConnectedRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
 {
 }
 
@@ -89,6 +90,29 @@ void Account::characterDestroyed(long id)
     if (consts::enable_persistence) {
         Persistence::instance()->delCharacter(String::compose("%1", id));
     }
+}
+
+/// \brief Connect an existing character to this account
+///
+/// \brief chr The character to connect to this account
+/// \return Returns 0 on success and -1 on failure.
+int Account::connectCharacter(Entity *chr)
+{
+    Character * character = dynamic_cast<Character *>(chr);
+    if (character != 0) {
+        m_connection->connectAvatar(character);
+        // Only genuinely playable characters should go in here. Otherwise
+        // if a normal entity gets into the account, and connection, it
+        // starts getting hard to tell whether or not they exist.
+        m_charactersDict[chr->getIntId()] = chr;
+        chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
+        m_connection->addEntity(chr);
+        if (consts::enable_persistence) {
+            Persistence::instance()->addCharacter(*this, *chr);
+        }
+        return 0;
+    }
+    return -1;
 }
 
 /// \brief Add a Character to those that belong to this Account
@@ -110,7 +134,7 @@ void Account::addCharacter(Entity * chr)
 /// @param ent Atlas description of the Character to be created
 Entity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
-                                  const RootEntity & arg)
+                                  const Root & arg)
 {
     if (m_connection == 0) {
         return 0;
@@ -130,19 +154,7 @@ Entity * Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
-    Character * character = dynamic_cast<Character *>(chr);
-    if (character != 0) {
-        m_connection->connectAvatar(character);
-        // Only genuinely playable characters should go in here. Otherwise
-        // if a normal entity gets into the account, and connection, it
-        // starts getting hard to tell whether or not they exist.
-        m_charactersDict[chr->getIntId()] = chr;
-        chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
-        m_connection->addEntity(chr);
-        if (consts::enable_persistence) {
-            Persistence::instance()->addCharacter(*this, *chr);
-        }
-    }
+    connectCharacter(chr);
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
                                         "by account %5",
@@ -273,48 +285,43 @@ void Account::operation(const Operation & op, OpVector & res)
 
 void Account::CreateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Account::Operation(create)" << std::endl << std::flush;);
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         return;
     }
 
-    RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-
-    if (!arg.isValid()) {
-        error(op, "Character creation arg is malformed", res, getId());
+    const Root & arg = args.front();
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
+        arg->getParents().empty()) {
+        error(op, "Object to be created has no type", res, getId());
         return;
     }
+    const std::string & type_str = arg->getParents().front();
 
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        error(op, "Entity has no type", res, getId());
-        return;
-    }
+    createObject(type_str, arg, op, res);
+}
 
-    const std::list<std::string> & parents = arg->getParents();
-    if (parents.empty()) {
-        error(op, "Entity has empty type list.", res, getId());
-        return;
-    }
-    
-    const std::string & typestr = parents.front();
-
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
     if (characterError(op, arg, res)) {
         return;
     }
 
-    debug( std::cout << "Account creating a " << typestr << " object"
+    debug( std::cout << "Account creating a " << type_str << " object"
                      << std::endl << std::flush; );
 
     Anonymous new_character;
-    new_character->setParents(std::list<std::string>(1, typestr));
+    new_character->setParents(std::list<std::string>(1, type_str));
     new_character->setAttr("status", 0.024);
     new_character->setAttr("mind", "");
     if (!arg->isDefaultName()) {
         new_character->setName(arg->getName());
     }
 
-    Entity * entity = addNewCharacter(typestr, new_character, arg);
+    Entity * entity = addNewCharacter(type_str, new_character, arg);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
@@ -536,6 +543,30 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     const std::string & to = arg->getId();
 
     long intId = integerId(to);
+
+    // Check for a possess key attached to the argument of the Look op. If 
+    // we have one, this is a request to transfer a character to this account.
+    // Authenticate the requested character with the possess key found and if
+    // successful, add the character to this account.
+    Element key;
+    if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
+        const std::string & key_str = key.String();
+        Entity *character;
+        character = TeleportAuthenticator::instance()->authenticateTeleport(to, key_str);
+        if (character) {
+            if (connectCharacter(character) == 0) {
+                TeleportAuthenticator::instance()->removeTeleport(to);
+                logEvent(POSSESS_CHAR,
+                         String::compose("%1 %2 %3 Claimed character (%4) "
+                                         "by account %5",
+                                         m_connection->getId(),
+                                         getId(),
+                                         character->getId(),
+                                         character->getType(),
+                                         m_username));
+            }
+        }
+    }
 
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {

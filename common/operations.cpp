@@ -42,5 +42,6 @@ int SETUP_NO = -1;
 int TICK_NO = -1;
 int THOUGHT_NO = -1;
 int GOAL_INFO_NO = -1;
+int TELEPORT_NO = -1;
 
 } } }

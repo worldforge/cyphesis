@@ -54,7 +54,7 @@ namespace consts {
   static const float square_base_velocity = base_velocity * base_velocity;
 
   /// \brief sin() of minimum angle subtended by visible object
-  static const float sight_factor = 0.06;
+  static const float sight_factor = 0.06f;
   static const float square_sight_factor = (sight_factor * sight_factor);
   /// \brief What is the minimum size of an object when calculating visibility
   static const float minSqrBoxSize = 0.25f;

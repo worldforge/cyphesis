@@ -29,6 +29,7 @@ std::set<std::string> Player::playableTypes;
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 /// \brief Constructor
@@ -78,9 +79,9 @@ void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 int Player::characterError(const Operation & op,
-                           const RootEntity & ent, OpVector & res) const
+                           const Root & ent, OpVector & res) const
 {
-    if (!ent->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
+    if (ent->isDefaultName()) {
         error(op, "Entity to be created has no name", res, getId());
         return true;
     }

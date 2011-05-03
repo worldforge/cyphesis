@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/Player.h"
 #include "server/CommServer.h"
 #include "server/ServerRouting.h"
@@ -64,7 +71,7 @@ class TestPlayer : public Player {
     }
 
     virtual int testCharacterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const {
         return characterError(op, ent, res);
     }
@@ -92,7 +99,7 @@ int main()
     CommServer commServer(server);
 
     TestCommClient * tc = new TestCommClient(commServer);
-    Connection * c = new Connection(*tc, server, "addr", "3");
+    Connection * c = new Connection(*tc, server, "addr", "3", 3);
     TestPlayer * ac = new TestPlayer(c, "user", "password", "4", 4);
     Entity * chr;
 

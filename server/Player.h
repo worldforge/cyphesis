@@ -28,7 +28,7 @@
 class Player : public Account {
   protected:
     virtual int characterError(const Operation &,
-                               const Atlas::Objects::Entity::RootEntity &,
+                               const Atlas::Objects::Root &,
                                OpVector &) const;
   public:
     Player(Connection * conn, const std::string & username,

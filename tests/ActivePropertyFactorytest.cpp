@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "rulesets/ActivePropertyFactory_impl.h"
 
 #include "rulesets/HandlerProperty_impl.h"

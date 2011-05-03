@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -32,11 +41,11 @@
 static PyObject * null_wrapper(PyObject * self, PyTask * o)
 {
     if (PyTask_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         o->m_task = NULL;
 #endif // NDEBUG
     } else if (PyCharacter_Check(o)) {
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
         ((PyEntity*)o)->m_entity.c = 0;
 #endif // NDEBUG
     } else {
@@ -99,7 +108,7 @@ int main()
     run_python_string("t.irrelevant()");
     run_python_string("print t.obsolete()");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("irrelevant_methd=t.irrelevant");

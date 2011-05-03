@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/ExternalMind.h"
 
 #include "server/Connection.h"
@@ -141,7 +148,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
     }
 
     // Connect to something, then disconnect
@@ -152,7 +159,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
         em.connect(0);
     }
 
@@ -164,7 +171,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
         const std::string & id = em.connectionId();
         assert(id == "4");
     }
@@ -246,7 +253,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -264,7 +271,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -282,7 +289,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -311,7 +318,7 @@ int main()
 
         em.connect(new Connection(*(CommClient*)0,
                                   *(ServerRouting*)0,
-                                  "addr", "4"));
+                                  "addr", "4", 4));
 
         stub_connection_send_op = -1;
         stub_connection_send_count = 0;
@@ -353,8 +360,8 @@ int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
@@ -518,9 +525,10 @@ void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-void Entity::setAttr(const std::string & name,
-                     const Atlas::Message::Element & attr)
+PropertyBase * Entity::setAttr(const std::string & name,
+                               const Atlas::Message::Element & attr)
 {
+    return 0;
 }
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
@@ -571,9 +579,10 @@ bool LocatedEntity::getAttrType(const std::string & name,
     return false;
 }
 
-void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+PropertyBase * LocatedEntity::setAttr(const std::string & name,
+                                      const Atlas::Message::Element & attr)
 {
-    return;
+    return 0;
 }
 
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const

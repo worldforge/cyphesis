@@ -41,7 +41,8 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
                                                   const std::string & address)
 {
     std::string connection_id;
-    if (newId(connection_id) < 0) {
+    long c_iid = newId(connection_id);
+    if (c_iid < 0) {
         log(ERROR, "Unable to accept connection as no ID available");
         closesocket(asockfd);
         return -1;
@@ -49,7 +50,10 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
 
     CommClient * newcli = new CommClient(svr, asockfd);
 
-    newcli->setup(new ConnectionT(*newcli, svr.m_server, address, connection_id));
+    newcli->setup(new ConnectionT(*newcli,
+                                  svr.m_server,
+                                  address,
+                                  connection_id, c_iid));
 
     // Add this new client to the list.
     svr.addSocket(newcli);

@@ -58,16 +58,16 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
     // reduce the number of square roots that have to be calculated. In
     // this case only one is required.
     if (m_targetPos.isValid()) {
-        double basic_square_distance = velocity.sqrMag()
-                                       * consts::square_basic_tick;
-        double square_distance = squareDistance(coordinates, m_targetPos);
+        WFMath::CoordType basic_square_distance = velocity.sqrMag()
+                                                  * consts::square_basic_tick;
+        WFMath::CoordType square_distance = squareDistance(coordinates, m_targetPos);
         debug( std::cout << "basic_distance: " << basic_square_distance
                          << std::endl << std::flush;);
         debug( std::cout << "distance: " << square_distance << std::endl
                          << std::flush;);
         if (basic_square_distance > square_distance) {
             debug( std::cout << "\tshortened tick" << std::endl << std::flush;);
-            return sqrt(square_distance / basic_square_distance)
+            return std::sqrt(square_distance / basic_square_distance)
                         * consts::basic_tick;
         }
     }
@@ -83,8 +83,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
 /// @return 1 if no update was made, or 0 otherwise
 int Pedestrian::getUpdatedLocation(Location & return_location)
 {
-    double current_time = BaseWorld::instance().getTime();
-    double time_diff = current_time - m_body.m_location.timeStamp();
+    WFMath::CoordType time_diff = (WFMath::CoordType)(BaseWorld::instance().getTime() - m_body.m_location.timeStamp());
 
     if (!updateNeeded(m_body.m_location)) {
         debug( std::cout << "No update" << std::endl << std::flush;);
@@ -98,11 +97,11 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     new_coords += (m_body.m_location.velocity() * time_diff);
     if (m_targetPos.isValid()) {
         Point3D new_coords2 = new_coords;
-        new_coords2 += (m_body.m_location.velocity() * (consts::basic_tick / 10.0));
+        new_coords2 += (m_body.m_location.velocity() * (consts::basic_tick / 10.f));
         // The values returned by squareDistance are squares, so
         // cannot be used except for comparison
-        double dist = squareDistance(m_targetPos, new_coords);
-        double dist2 = squareDistance(m_targetPos, new_coords2);
+        WFMath::CoordType dist = squareDistance(m_targetPos, new_coords);
+        WFMath::CoordType dist2 = squareDistance(m_targetPos, new_coords2);
         debug( std::cout << "dist: " << dist << "," << dist2 << std::endl
                          << std::flush;);
         if (dist2 > dist) {

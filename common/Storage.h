@@ -17,21 +17,24 @@
 
 // $Id$
 
-#ifndef COMMON_ACCOUNT_BASE_H
-#define COMMON_ACCOUNT_BASE_H
+#ifndef COMMON_STORAGE_H
+#define COMMON_STORAGE_H
 
 #include "Database.h"
 
 /// \brief Class to handle connecting to the cyphesis database in order to
 /// access the account table
-class AccountBase {
+class Storage {
   protected:
     /// \brief Database connection used to change the accounts table
     Database & m_connection;
-  public:
-    AccountBase() : m_connection(*Database::instance()) { }
 
-    ~AccountBase() {
+    /// \brief Name of the ruleset to be read from file
+    std::string m_rulesetName;
+  public:
+    Storage() : m_connection(*Database::instance()) { }
+
+    ~Storage() {
         if (m_connection.getConnection() != 0) {
             m_connection.shutdownConnection();
         }
@@ -46,6 +49,16 @@ class AccountBase {
     bool getAccount(const std::string & username,
                     Atlas::Message::MapType & o);
 
+    void storeInRules(const Atlas::Message::MapType & rule,
+                      const std::string & key);
+    bool clearRules();
+    void setRuleset(const std::string & n);
+
 };
 
-#endif // COMMON_ACCOUNT_BASE_H
+inline void Storage::setRuleset(const std::string & n)
+{
+    m_rulesetName = n;
+}
+
+#endif // COMMON_STORAGE_H

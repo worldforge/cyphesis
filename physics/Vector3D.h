@@ -52,7 +52,7 @@ float squareDistance(const Point3D & u, const Point3D & v);
 /// Find the distance between two points
 inline float distance(const Point3D & u, const Point3D & v)
 {
-    return sqrtf(squareDistance(u, v));
+    return std::sqrt(squareDistance(u, v));
 }
 
 typedef std::vector<Point3D> CoordList;

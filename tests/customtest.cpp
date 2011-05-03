@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -93,5 +100,6 @@ int SETUP_NO = -1;
 int TICK_NO = -1;
 int THOUGHT_NO = -1;
 int GOAL_INFO_NO = -1;
+int TELEPORT_NO = -1;
 
 } } }

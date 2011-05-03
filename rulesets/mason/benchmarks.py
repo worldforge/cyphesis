@@ -3,17 +3,17 @@
 
 from atlas import *
 from random import *
-from cyphesis.editor import editor
+from cyphesis.editor import create_editor
 from physics import Quaternion
 from physics import Vector3D
 from math import *
 
 import time
 
-def default(mapeditor):
+def default(host='', account='', password='', **args):
     # Spray the world with rubbish
 
-    m=editor(mapeditor)
+    m=create_editor(host, account, password)
 
     for i in range(10000):
         m.make('oak', pos=(uniform(-500, 300), uniform(-500, 300), 0))

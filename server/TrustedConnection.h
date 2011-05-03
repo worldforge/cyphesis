@@ -39,7 +39,7 @@ class TrustedConnection : public Connection {
     TrustedConnection(CommClient & client,
                       ServerRouting & svr,
                       const std::string & addr,
-                      const std::string & id);
+                      const std::string & id, long iid);
 };
 
 #endif // SERVER_TRUSTED_CONNECTION_H

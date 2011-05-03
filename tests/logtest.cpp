@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "common/log.h"
 #include "common/globals.h"
 
@@ -74,6 +81,9 @@ int main()
     logEvent(LOGOUT, "Test logout event log message");
     logEvent(TAKE_CHAR, "Test take character event log message");
     logEvent(DROP_CHAR, "Test drop character event log message");
+    logEvent(EXPORT_ENT, "Test export entity event log message");
+    logEvent(IMPORT_ENT, "Test import entity event log message");
+    logEvent(POSSESS_CHAR, "Test possess character event log message");
     
     return 0;
 }

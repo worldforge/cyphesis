@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/ServerRouting.h"
 
 #include "server/Account.h"
@@ -86,7 +93,7 @@ class TestAccount : public Account {
     }
 
     virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const {
         return 0;
     }
@@ -285,8 +292,8 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         Router(id, intId),
-         m_username(uname), m_password(passwd), m_connection(conn)
+         ConnectedRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
 {
 }
 
@@ -308,6 +315,13 @@ void Account::addToMessage(Atlas::Message::MapType & omap) const
 }
 
 void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Account::createObject(const std::string & type_str,
+                           const Atlas::Objects::Root & arg,
+                           const Operation & op,
+                           OpVector & res)
 {
 }
 
@@ -344,6 +358,18 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 }
 
 void Account::OtherOperation(const Operation & op, OpVector & res)
+{
+}
+
+ConnectedRouter::ConnectedRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectedRouter::~ConnectedRouter()
 {
 }
 

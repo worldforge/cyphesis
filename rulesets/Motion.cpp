@@ -200,7 +200,7 @@ bool Motion::resolveCollision()
         if (location.m_velocity.mag() / consts::base_velocity > 0.05) {
             m_collEntity = NULL;
             location.m_velocity.normalize();
-            location.m_velocity *= sqrt(vel_square_mag);
+            location.m_velocity *= std::sqrt(vel_square_mag);
         } else {
             // reset();
             location.m_velocity = Vector3D(0,0,0);

@@ -17,7 +17,14 @@
 
 // $Id$
 
-#include "common/AccountBase.h"
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
+#include "common/Storage.h"
 
 #include "common/log.h"
 
@@ -28,17 +35,17 @@ bool test_newid_fail = false;
 int main()
 {
     {
-        AccountBase a;
+        Storage a;
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         delete a;
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         a->init();
 
@@ -46,7 +53,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         a->putAccount(acc);
@@ -55,7 +62,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = 1;
@@ -65,7 +72,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -75,7 +82,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -86,7 +93,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -97,7 +104,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -110,7 +117,7 @@ int main()
 
     test_newid_fail = true;
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -122,7 +129,7 @@ int main()
     test_newid_fail = false;
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         a->modAccount(acc, "1");
@@ -131,7 +138,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["type"] = 1;
@@ -141,7 +148,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["type"] = "admin";
@@ -151,7 +158,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["password"] = 1;
@@ -161,7 +168,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["password"] = "bill";
@@ -170,7 +177,7 @@ int main()
         delete a;
     }
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         acc["password"] = "bill";
@@ -181,7 +188,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         a->delAccount("1");
 
@@ -189,7 +196,7 @@ int main()
     }
 
     {
-        AccountBase * a = new AccountBase;
+        Storage * a = new Storage;
 
         Atlas::Message::MapType acc;
         a->getAccount("1", acc);
@@ -229,6 +236,11 @@ int Database::initConnection()
     return 0;
 }
 
+bool Database::initRule(bool)
+{
+    return true;
+}
+
 void Database::shutdownConnection()
 {
 }
@@ -260,6 +272,29 @@ bool Database::createSimpleRow(const std::string & name,
                                const std::string & id,
                                const std::string & columns,
                                const std::string & values)
+{
+    return true;
+}
+
+bool Database::clearTable(const std::string & table)
+{
+    return true;
+}
+
+bool Database::clearPendingQuery()
+{
+    return true;
+}
+
+bool Database::hasKey(const std::string & table, const std::string & key)
+{
+    return false;
+}
+
+bool Database::putObject(const std::string & table,
+                         const std::string & key,
+                         const Atlas::Message::MapType & o,
+                         const StringVector & c)
 {
     return true;
 }

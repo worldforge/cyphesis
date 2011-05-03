@@ -27,15 +27,13 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <sigc++/trackable.h>
-
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 
 class LocatedEntity;
 
-class Location : virtual public sigc::trackable {
+class Location {
   protected:
     bool m_simple;
     bool m_solid;
@@ -114,6 +112,7 @@ class Location : virtual public sigc::trackable {
     int readFromMessage(const Atlas::Message::MapType & ent);
     int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
     void modifyBBox();
+    void setVisibility(float v);
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
@@ -128,7 +127,7 @@ const float squareHorizontalDistance(const Location & self,
 
 inline const float distance(const Location & self, const Location & other)
 {
-    return sqrt(squareDistance(self, other));
+    return std::sqrt(squareDistance(self, other));
 }
 
 #endif // MODULES_LOCATION_H

@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir) -I${top_builddir}
+AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave
@@ -71,13 +71,14 @@ cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 endif
 
-cyphesis_SOURCES = \
+SERVER_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
 		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
 		SystemAccount.cpp SystemAccount.h \
+		ServerAccount.cpp ServerAccount.h \
 		Persistence.cpp Persistence.h \
 		EntityFactory.cpp EntityFactory.h \
 		EntityFactory_impl.h \
@@ -94,10 +95,12 @@ cyphesis_SOURCES = \
 		EntityBuilder.cpp EntityBuilder.h \
 		ArithmeticBuilder.cpp ArithmeticBuilder.h \
 		Lobby.cpp Lobby.h \
+		ConnectedRouter.cpp ConnectedRouter.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
+		Juncture.cpp Juncture.h \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h \
 		UpdateTester.cpp UpdateTester.h \
@@ -117,14 +120,18 @@ cyphesis_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
-		server.cpp server.h \
-		buildid.cpp
+		TeleportState.cpp TeleportState.h \
+		TeleportAuthenticator.cpp TeleportAuthenticator.h \
+		PendingTeleport.cpp PendingTeleport.h \
+		server.cpp server.h
+
+cyphesis_SOURCES = $(SERVER_SOURCES) buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
 buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
              $(top_srcdir)/scripts/gen_buildid.py $(top_srcdir)/ChangeLog
-	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` > buildid.cpp
+	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 
 cyslave_SOURCES = \
 		ExternalMind.cpp ExternalMind.h \
@@ -159,6 +166,7 @@ cyslave_SOURCES = \
 		CommMaster.cpp CommMaster.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
+        TeleportState.cpp TeleportState.h \
 		slave.cpp
 
 nodist_cyslave_SOURCES = \

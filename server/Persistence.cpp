@@ -21,6 +21,7 @@
 
 #include "Admin.h"
 #include "Player.h"
+#include "ServerAccount.h"
 
 #include "rulesets/Entity.h"
 
@@ -191,6 +192,8 @@ Account * Persistence::getAccount(const std::string & name)
     dr.clear();
     if (type == "admin") {
         return new Admin(0, name, passwd, id, intId);
+    } else if (type == "server") {
+        return new ServerAccount(0, name, passwd, id, intId);
     } else {
         return new Player(0, name, passwd, id, intId);
     }

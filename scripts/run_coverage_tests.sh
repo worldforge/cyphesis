@@ -75,7 +75,7 @@ check_coverage() {
           grep -A 1 "^File '${base_file}.cpp" | \
           grep ^Lines | \
           head -n 1 | \
-          sed "s/^Lines executed:\([0-9]\+\)\.[0-9]\+% of .*$/\1/")
+          sed "s/^Lines executed:\([0-9]\+\.[0-9]\+\)% of .*$/\1/")
 
     echo ${source_file} ${coverage_percent}
 }

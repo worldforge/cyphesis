@@ -233,13 +233,23 @@ void logEvent(LogEvent lev, const std::string & msg)
         case DROP_CHAR:
             type = "DROP_CHAR";
             break;
+        case EXPORT_ENT:
+            type = "EXPORT_ENT";
+            break;
+        case IMPORT_ENT:
+            type = "IMPORT_ENT";
+            break;
+        case POSSESS_CHAR:
+            type = "POSSESS_CHAR";
+            break;
         default:
             type = "UNKNOWN";
             break;
     };
 
     logDate(event_log);
-    event_log << " " << type << " " << msg << std::endl << std::flush;
+    event_log << " " << instance << " " << type << " " << msg
+              << std::endl << std::flush;
 }
 
 void logSysError(LogLevel lvl)

@@ -75,21 +75,23 @@ class Delve(server.Task):
                     return
                 self.surface = surface
 
+                z=self.character.location.coordinates.z + 1.0
+                modmap = {
+                          'height': z,
+                          'shape': {
+                                    'points': [[ -1.0, -1.0 ],
+                                               [ -1.0, 1.0 ],
+                                               [ 1.0, 1.0 ],
+                                               [ 1.0, -1.0 ]],
+                                    'type': 'polygon'
+                                    },
+                          'type': 'levelmod'                                    
+                          }
                 quarry_create=Operation("create",
                                         Entity(name="quarry",
                                                type="path",
                                                location = chunk_loc,
-                                               terrainmod = {
-                                                             'heightoffset': -1.0,
-                                                             'shape': {
-                                                                       'points': [[ -1.0, -1.0 ],
-                                                                                  [ -1.0, 1.0 ],
-                                                                                  [ 1.0, 1.0 ],
-                                                                                  [ 1.0, -1.0 ]],
-                                                                       'type': 'polygon'
-                                                                       },
-                                                             'type': 'levelmod'                                    
-                                                             }),
+                                               terrainmod = modmap),
                                         to=target)
                 res.append(quarry_create)
             else:
@@ -100,7 +102,7 @@ class Delve(server.Task):
                         continue
                     print "%s looks good" % mod.id
                     print mod.terrainmod
-                    mod.terrainmod.heightoffset = -2.0
+                    mod.terrainmod.height -= 2.0
                     # We have modified the attribute in place, so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
                     break

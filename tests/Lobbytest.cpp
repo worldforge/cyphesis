@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/Lobby.h"
 
 #include "server/CommClient.h"
@@ -35,7 +42,7 @@ class TestAccount : public Account
     TestAccount() : Account(0, "bob", "foo", "2", 2) { }
 
     virtual int characterError(const Operation &,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const
     {
         return false;
@@ -108,7 +115,7 @@ int main()
 
         tac->m_connection = new Connection(*(CommClient*)0,
                                            *(ServerRouting*)0,
-                                           "foo", "3");
+                                           "foo", "3", 3);
 
         l->addAccount(tac);
 
@@ -126,7 +133,7 @@ int main()
 
         tac->m_connection = new Connection(*(CommClient*)0,
                                            *(ServerRouting*)0,
-                                           "foo", "3");
+                                           "foo", "3", 3);
 
         l->addAccount(tac);
 
@@ -145,7 +152,7 @@ int main()
 
         tac->m_connection = new Connection(*(CommClient*)0,
                                            *(ServerRouting*)0,
-                                           "foo", "3");
+                                           "foo", "3", 3);
 
         l->addAccount(tac);
 
@@ -210,8 +217,8 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         Router(id, intId),
-         m_username(uname), m_password(passwd), m_connection(conn)
+         ConnectedRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
 {
 }
 
@@ -241,6 +248,12 @@ void Account::operation(const Operation &, OpVector &)
 {
 }
 
+void Account::createObject(const std::string & type_str,
+                           const Atlas::Objects::Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
 
 void Account::LogoutOperation(const Operation &, OpVector &)
 {
@@ -274,11 +287,23 @@ void Account::OtherOperation(const Operation &, OpVector &)
 {
 }
 
+ConnectedRouter::ConnectedRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectedRouter::~ConnectedRouter()
+{
+}
+
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {

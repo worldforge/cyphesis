@@ -514,7 +514,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // of object which will handle the specifics.
 
     const double & current_time = BaseWorld::instance().getTime();
-    double time_diff = current_time - m_location.timeStamp();
+    float time_diff = (float)(current_time - m_location.timeStamp());
 
     std::string mode;
 
@@ -537,7 +537,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // Check if a predicted collision is due.
     if (m_motion->collision()) {
         if (current_time >= m_motion->m_collisionTime) {
-            time_diff = m_motion->m_collisionTime - m_location.timeStamp();
+            time_diff = (float)(m_motion->m_collisionTime - m_location.timeStamp());
             // This flag signals that collision resolution is required later.
             // Whether or not we are actually moving is determined by the
             // collision resolution.

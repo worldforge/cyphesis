@@ -63,6 +63,9 @@ class PythonTaskScriptFactory : public TaskScriptKit {
     int addScript(TaskScript * task);
     int refreshClass();
 
+    bool isOkay() const {
+        return m_class != 0;
+    }
 };
 
 #endif // SERVER_TASK_SCRIPT_FACTORY_H

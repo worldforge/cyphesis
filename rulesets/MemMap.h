@@ -24,6 +24,8 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <wfmath/const.h>
+
 #include <string>
 #include <list>
 
@@ -77,7 +79,8 @@ class MemMap {
     MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
 
     MemEntityVector findByType(const std::string & what);
-    MemEntityVector findByLocation(const Location & where, double radius,
+    MemEntityVector findByLocation(const Location & where,
+                                   WFMath::CoordType radius,
                                    const std::string & what);
 
     void check(const double &);

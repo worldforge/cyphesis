@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/WorldRouter.h"
 
 #include "server/EntityBuilder.h"
@@ -375,9 +382,10 @@ void Entity::addToEntity(const RootEntity & ent) const
 {
 }
 
-void Entity::setAttr(const std::string & name,
-                     const Atlas::Message::Element & attr)
+PropertyBase * Entity::setAttr(const std::string & name,
+                               const Atlas::Message::Element & attr)
 {
+    return 0;
 }
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
@@ -428,9 +436,10 @@ bool LocatedEntity::getAttrType(const std::string & name,
     return false;
 }
 
-void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+PropertyBase * LocatedEntity::setAttr(const std::string & name,
+                                      const Atlas::Message::Element & attr)
 {
-    return;
+    return 0;
 }
 
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const

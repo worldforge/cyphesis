@@ -22,8 +22,20 @@
 
 #include "common/Router.h"
 
+#include <sigc++/signal.h>
+
 class CommClient;
 class ServerRouting;
+class TeleportState;
+
+enum PeerAuthState {
+    PEER_INIT,            /// \brief Peer has just been connected to
+    PEER_AUTHENTICATING,  /// \brief Peer is currently authenticating us
+    PEER_AUTHENTICATED,   /// \brief We are authenticated and ready on the peer
+    PEER_FAILED,          /// \brief We have failed to authenticate
+};
+
+typedef std::map<long, TeleportState *> TeleportMap;
 
 /// \brief Class represening connections from another server that is peered to
 /// to this one
@@ -31,6 +43,14 @@ class ServerRouting;
 /// This is the main point of dispatch for any operation from the peer.
 class Peer : public Router {
   protected:
+    /// \brief Account identifier returned after successful login
+    std::string m_accountId;
+    /// \brief Account type returned after login
+    std::string m_accountType;
+    /// The authentication state of the peer object
+    PeerAuthState m_state;
+    /// The states of the various active teleports
+    TeleportMap m_teleports;
     
   public:
     /// The client socket used to connect to the peer.
@@ -39,10 +59,22 @@ class Peer : public Router {
     ServerRouting & m_server;
 
     Peer(CommClient & client, ServerRouting & svr,
-         const std::string & addr, const std::string & id);
+         const std::string & addr, const std::string & id, long iid);
     virtual ~Peer();
 
+    void setAuthState(PeerAuthState state);
+    PeerAuthState getAuthState();
+
     virtual void operation(const Operation &, OpVector &);
+    
+    int teleportEntity(const Entity *);
+    TeleportState *getTeleportState(const std::string & id);
+    void peerTeleportResponse(const Operation &op, OpVector &res);
+
+    void cleanTeleports();
+
+    sigc::signal<void> destroyed;
+    sigc::signal<void, const Operation &> replied;
 };
 
 #endif // SERVER_PEER_H

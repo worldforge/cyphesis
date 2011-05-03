@@ -5,16 +5,17 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                Connecttest Droptest Eattest \
                Monitortest Nourishtest Pickuptest Setuptest \
                Ticktest Unseentest Updatetest AtlasFileLoadertest \
-               BaseWorldtest Databasetest idtest AccountBasetest \
+               BaseWorldtest Databasetest idtest Storagetest \
                debugtest globalstest OperationRoutertest Routertest \
                client_sockettest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
                FormattedXMLWritertest PropertyFactorytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
-               ClientTasktest
+               ClientTasktest utilstest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
-                transformtest Collisiontest emergencetest distancetest
+                transformtest Collisiontest emergencetest distancetest \
+                Shapetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
                TerrainContexttest
@@ -32,7 +33,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TransientPropertytest TasksPropertytest \
                  HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
-                 SpawnPropertytest \
+                 SpawnPropertytest VisibilityPropertytest \
                  Domaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest ActivePropertyFactorytest \
@@ -42,6 +43,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Thingtest Py_Maptest Py_Mindtest Py_Tasktest \
                  Py_Worldtest Py_Messagetest Py_WorldTimetest \
                  Py_Propertytest Py_TerrainPropertytest \
+                 Py_Shapetest \
                  PythonWrappertest PythonEntityScripttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
@@ -51,7 +53,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
 RULESETS_INTEGRATION_TESTS = MindFactoryintegration BulletDomainintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
-               ClientConnectiontest
+               ClientConnectiontest BaseClienttest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
@@ -60,10 +62,12 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
                CommClientFactorytest ServerRoutingtest Idletest \
                StorageManagertest HttpCachetest UpdateTestertest \
-               ExternalMindtest
+               ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
+               TeleportStatetest PendingTeleporttest Juncturetest \
+               ConnectedRoutertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
-                    CommHttpClienttest CommStreamListenertest
+                    CommHttpClienttest CommStreamListenertest CommPeertest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration
 
@@ -71,7 +75,7 @@ TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest
 
 PYTHON_TESTS = python_class
 
-INCLUDES = -I$(top_srcdir) -I$(top_builddir) \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) \
            -DTESTDATADIR=\"$(abs_top_srcdir)/tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
@@ -165,9 +169,9 @@ idtest_SOURCES = idtest.cpp
 idtest_LDADD = \
         $(top_builddir)/common/id.o
 
-AccountBasetest_SOURCES = AccountBasetest.cpp
-AccountBasetest_LDADD = \
-        $(top_builddir)/common/AccountBase.o
+Storagetest_SOURCES = Storagetest.cpp
+Storagetest_LDADD = \
+        $(top_builddir)/common/Storage.o
 
 debugtest_SOURCES = debugtest.cpp
 debugtest_LDADD = $(top_builddir)/common/debug.o
@@ -234,6 +238,10 @@ ClientTasktest_SOURCES = ClientTasktest.cpp
 ClientTasktest_LDADD = \
         $(top_builddir)/common/ClientTask.o
 
+utilstest_SOURCES = utilstest.cpp
+utilstest_LDADD = \
+        $(top_builddir)/common/utils.o
+
 # PHYSICS_TESTS
 
 BBoxtest_SOURCES = BBoxtest.cpp
@@ -267,6 +275,10 @@ distancetest_SOURCES = distancetest.cpp
 distancetest_LDADD = \
         $(top_builddir)/physics/Vector3D.o \
         $(top_builddir)/modules/Location.o
+
+Shapetest_SOURCES = Shapetest.cpp
+Shapetest_LDADD = \
+        $(top_builddir)/physics/Shape.o
 
 # MODULE_TESTS
 
@@ -523,6 +535,12 @@ SpawnPropertytest_LDADD = \
         $(top_builddir)/rulesets/SpawnProperty.o \
         $(top_builddir)/common/Property.o
 
+VisibilityPropertytest_SOURCES = VisibilityPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+VisibilityPropertytest_LDADD = \
+        $(top_builddir)/rulesets/VisibilityProperty.o \
+        $(top_builddir)/common/Property.o
+
 Domaintest_SOURCES = Domaintest.cpp
 Domaintest_LDADD = \
         $(top_builddir)/rulesets/Domain.o
@@ -756,6 +774,17 @@ Py_TerrainPropertytest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS)
 
+Py_Shapetest_SOURCES = Py_Shapetest.cpp python_testers.h
+Py_Shapetest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
 PythonWrappertest_SOURCES = PythonWrappertest.cpp
 PythonWrappertest_LDADD = \
         $(top_builddir)/rulesets/PythonWrapper.o
@@ -819,7 +848,7 @@ BulletDomainintegration_LDADD = \
 
 TerrainModtest_SOURCES = TerrainModtest.cpp
 TerrainModtest_LDADD = \
-        $(top_builddir)/rulesets/TerrainMod.o \
+        $(top_builddir)/rulesets/TerrainModTranslator.o \
         $(TERRAIN_LIBS)
 
 
@@ -870,6 +899,9 @@ ClientConnectiontest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(NETWORK_LIBS)
 
+BaseClienttest_SOURCES = BaseClienttest.cpp
+BaseClienttest_LDADD = \
+        $(top_builddir)/client/BaseClient.o
 
 # SERVER_TESTS
 
@@ -882,6 +914,7 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -895,10 +928,15 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -924,6 +962,9 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/buildid.o \
         $(top_builddir)/server/ExternalMind.o \
@@ -935,10 +976,13 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -969,6 +1013,7 @@ Accounttest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
@@ -977,12 +1022,17 @@ Accounttest_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1009,20 +1059,26 @@ Admintest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1032,6 +1088,52 @@ Admintest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 Admintest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+ServerAccounttest_SOURCES = ServerAccounttest.cpp
+ServerAccounttest_LDADD = \
+        $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/CorePropertyManager.o \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/buildid.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Persistence.o \
+        $(top_builddir)/server/Ruleset.o \
+        $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/server/SpawnEntity.o \
+        $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+ServerAccounttest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 Playertest_SOURCES = Playertest.cpp
 Playertest_LDADD = \
@@ -1049,20 +1151,26 @@ Playertest_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1102,7 +1210,7 @@ WorldRoutertest_LDADD = \
 Peertest_SOURCES = Peertest.cpp
 Peertest_LDADD = \
         $(top_builddir)/server/Peer.o \
-        $(top_builddir)/common/libcommon.a
+        $(NETWORK_LIBS)
 
 Lobbytest_SOURCES = Lobbytest.cpp
 Lobbytest_LDADD = \
@@ -1166,6 +1274,11 @@ CommClienttest_LDADD = \
         $(top_builddir)/server/CommClient.o \
         $(NETWORK_LIBS)
 
+CommPeertest_SOURCES = CommPeertest.cpp
+CommPeertest_LDADD = \
+        $(top_builddir)/server/CommPeer.o \
+        $(NETWORK_LIBS)
+
 CommHttpClienttest_SOURCES = CommHttpClienttest.cpp
 CommHttpClienttest_LDADD = \
         $(top_builddir)/server/CommHttpClient.o \
@@ -1176,18 +1289,65 @@ CommStreamListenertest_LDADD = \
         $(top_builddir)/server/CommStreamListener.o \
         $(NETWORK_LIBS)
 
+TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
+TeleportAuthenticatortest_LDADD = \
+        $(top_builddir)/server/TeleportAuthenticator.o
+
+TeleportStatetest_SOURCES = TeleportStatetest.cpp
+TeleportStatetest_LDADD = \
+        $(top_builddir)/server/TeleportState.o
+
+PendingTeleporttest_SOURCES = PendingTeleporttest.cpp
+PendingTeleporttest_LDADD = \
+        $(top_builddir)/server/PendingTeleport.o
+
+Juncturetest_SOURCES = Juncturetest.cpp
+Juncturetest_LDADD = \
+        $(top_builddir)/server/Juncture.o \
+        $(NETWORK_LIBS)
+
+ConnectedRoutertest_SOURCES = ConnectedRoutertest.cpp
+ConnectedRoutertest_LDADD = \
+        $(top_builddir)/server/ConnectedRouter.o
+
 # SERVER_INTEGRATION_TESTS
 
 WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
 WorldRouterintegration_LDADD = \
+        $(top_builddir)/server/buildid.o \
         $(top_builddir)/server/WorldRouter.o \
+        $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/CorePropertyManager.o \
-        $(top_builddir)/server/SpawnEntity.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/CommServer.o \
+        $(top_builddir)/server/CommStreamClient.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/ScriptFactory.o \
+        $(top_builddir)/server/TaskFactory.o \
+        $(top_builddir)/server/CommClient.o \
+        $(top_builddir)/server/CommPeer.o \
+        $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
+        $(top_builddir)/server/Idle.o \
+        $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Spawn.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/server/ExternalMind.o \
+        $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/SpawnEntity.o \
+        $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1207,6 +1367,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1220,10 +1381,15 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/CommSocket.o \
         $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
+        $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TaskScriptFactory.o \
+        $(top_builddir)/server/TeleportAuthenticator.o \
+        $(top_builddir)/server/TeleportState.o \
+        $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1274,3 +1440,4 @@ python_class_LDADD = \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a
+

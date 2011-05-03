@@ -22,9 +22,7 @@
 #include "ServerRouting.h"
 #include "Connection.h"
 #include "Ruleset.h"
-#include "CommPeer.h"
-#include "CommServer.h"
-#include "Peer.h"
+#include "Juncture.h"
 
 #include "rulesets/Entity.h"
 
@@ -143,7 +141,7 @@ void Admin::opDispatched(Operation op)
 }
 
 int Admin::characterError(const Operation & op,
-                          const RootEntity & ent, OpVector & res) const
+                          const Root & ent, OpVector & res) const
 {
     if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         error(op, "You cannot create a character with no type.", res, getId());
@@ -304,25 +302,11 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
 }
 
-void Admin::CreateOperation(const Operation & op, OpVector & res)
+void Admin::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
 {
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return;
-    }
-
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-        arg->getParents().empty()) {
-        error(op, "Object to be created has no type", res, getId());
-        return;
-    }
-    const std::string & parent = arg->getParents().front();
-
-    if (!arg->hasAttrFlag(Atlas::Objects::OBJTYPE_FLAG)) {
-        error(op, "Object to be created has no objtype", res, getId());
-        return;
-    }
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
         // New entity type
@@ -332,20 +316,15 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         }
         const std::string & id = arg->getId();
 
-        if (parent.empty()) {
-            error(op, "Attempt to install type with empty parent", res,
-                  getId());
-            return;
-        }
         if (Inheritance::instance().hasClass(id)) {
             error(op, "Attempt to install type that already exists", res,
                   getId());
             return;
         }
-        const Root & o = Inheritance::instance().getClass(parent);
+        const Root & o = Inheritance::instance().getClass(type_str);
         if (!o.isValid()) {
             error(op, compose("Attempt to install type with non-existant "
-                              "parent \"%1\"", parent), res, getId());
+                              "parent \"%1\"", type_str), res, getId());
             return;
         }
         if (Ruleset::instance()->installRule(id, arg) == 0) {
@@ -356,65 +335,40 @@ void Admin::CreateOperation(const Operation & op, OpVector & res)
         } else {
             error(op, "Installing new type failed", res, getId());
         }
+    } else if (type_str == "juncture") {
+        std::string junc_id;
+        long junc_iid = newId(junc_id);
+        if (junc_iid < 0) {
+            error(op, "Juncture failed as no ID available", res, getId());
+            return;
+        }
+
+        Juncture * j = new Juncture(m_connection, junc_id, junc_iid);
+
+        m_connection->addObject(j);
+        m_connection->m_server.addObject(j);
+
+        Anonymous info_arg;
+        j->addToEntity(info_arg);
+
+        Info info;
+        info->setTo(getId());
+        info->setArgs1(info_arg);
+        if (!op->isDefaultSerialno()) {
+            info->setRefno(op->getSerialno());
+        }
+        res.push_back(info);
     } else {
-        Account::CreateOperation(op, res);
+        Account::createObject(type_str, arg, op, res);
     }
 }
 
 void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
     const int op_type = op->getClassNo();
-    if (op_type == Atlas::Objects::Operation::CONNECT_NO) {
-        return customConnectOperation(op, res);
-    } else if (op_type == Atlas::Objects::Operation::MONITOR_NO) {
+    if (op_type == Atlas::Objects::Operation::MONITOR_NO) {
         return customMonitorOperation(op, res);
     }
-}
-
-/// \brief Process a Connect operation
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void Admin::customConnectOperation(const Operation & op, OpVector & res)
-{
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        error(op, "No argument to connect op", res, getId());
-        return;
-    }
-    const Root & arg = args.front();
-    Element hostname_attr;
-    if (arg->copyAttr("hostname", hostname_attr) != 0) {
-        error(op, "Argument to connect op has no hostname", res, getId());
-        return;
-    }
-    if (!hostname_attr.isString()) {
-        error(op, "Argument to connect op has non string hostname", res, getId());
-        return;
-    }
-    if (m_connection == 0) {
-        log(ERROR, "Attempt to make peer connection from unconnected account");
-        return;
-    }
-    const std::string & hostname = hostname_attr.String();
-
-    std::string peerId;
-    if (newId(peerId) < 0) {
-        error(op, "Connection failed as no ID available", res, getId());
-        return;
-    }
-
-    CommPeer * cp = new CommPeer(m_connection->m_commClient.m_commServer);
-    std::cout << "Connecting to " << hostname << std::endl << std::flush;
-    if (cp->connect(hostname) != 0) {
-        error(op, "Connection failed", res, getId());
-        return;
-    }
-    log(INFO, "Connection succeeded");
-    cp->setup(new Peer(*cp, m_connection->m_server,
-                       hostname, peerId));
-    m_connection->m_commClient.m_commServer.addSocket(cp);
-    // Fix it up
 }
 
 /// \brief Process a Monitor operation

@@ -47,6 +47,10 @@ class BaseClient {
         return m_character;
     }
 
+    const std::string & id() const {
+        return m_playerId;
+    }
+
     Atlas::Objects::Root createSystemAccount();
     Atlas::Objects::Root createAccount(const std::string & name,
                                        const std::string & pword);
@@ -70,6 +74,14 @@ class BaseClient {
     /// \brief Send an operation to the server
     void send(const Atlas::Objects::Operation::RootOperation & op) {
         m_connection.send(op);
+    }
+
+    int wait() {
+        return m_connection.wait();
+    }
+
+    int sendAndWaitReply(const Operation & op, OpVector & res) {
+        return m_connection.sendAndWaitReply(op, res);
     }
 
     /// \brief Default client main loop

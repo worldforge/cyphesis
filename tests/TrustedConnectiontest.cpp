@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/TrustedConnection.h"
 
 #include "server/Account.h"
@@ -65,8 +72,8 @@ class TestCommClient : public CommClient {
 class TestConnection : public TrustedConnection {
   public:
     TestConnection(CommClient & cc, ServerRouting & svr,
-                   const std::string & addr, const std::string & id) :
-        TrustedConnection(cc, svr, addr, id) {
+                   const std::string & addr, const std::string & id, long iid) :
+        TrustedConnection(cc, svr, addr, id, iid) {
       
     }
 
@@ -111,7 +118,7 @@ int main()
     CommServer commServer(server);
 
     TestCommClient * tcc = new TestCommClient(commServer);
-    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3");
+    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
 
     {
         Account * ac = tc->test_newAccount("_non_type_",
@@ -278,9 +285,16 @@ void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 int Admin::characterError(const Operation & op,
-                          const RootEntity & ent, OpVector & res) const
+                          const Root & ent, OpVector & res) const
 {
     return 0;
+}
+
+void Admin::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
 }
 
 void Admin::LogoutOperation(const Operation & op, OpVector & res)
@@ -292,10 +306,6 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
 }
 
 void Admin::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Admin::CreateOperation(const Operation & op, OpVector & res)
 {
 }
 
@@ -328,7 +338,7 @@ void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 int Player::characterError(const Operation & op,
-                           const RootEntity & ent, OpVector & res) const
+                           const Root & ent, OpVector & res) const
 {
     return 0;
 }
@@ -355,8 +365,8 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         Router(id, intId),
-         m_username(uname), m_password(passwd), m_connection(conn)
+         ConnectedRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
 {
 }
 
@@ -381,6 +391,12 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
 {
 }
 
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
 
 void Account::operation(const Operation &, OpVector &)
 {
@@ -419,11 +435,23 @@ void Account::OtherOperation(const Operation &, OpVector &)
 {
 }
 
+ConnectedRouter::ConnectedRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectedRouter::~ConnectedRouter()
+{
+}
+
 Connection::Connection(CommClient & client,
                        ServerRouting & svr,
                        const std::string & addr,
-                       const std::string & id) :
-            Router(id, 3), m_obsolete(false),
+                       const std::string & id, long iid) :
+            Router(id, iid), m_obsolete(false),
                                                 m_commClient(client),
                                                 m_server(svr)
 {
@@ -638,6 +666,9 @@ void Character::AttackOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::ActuateOperation(const Operation & op, OpVector &)
+{
+}
 
 void Character::mindActuateOperation(const Operation &, OpVector &)
 {
@@ -876,9 +907,10 @@ void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-void Entity::setAttr(const std::string & name,
-                     const Atlas::Message::Element & attr)
+PropertyBase * Entity::setAttr(const std::string & name,
+                               const Atlas::Message::Element & attr)
 {
+    return 0;
 }
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
@@ -928,9 +960,10 @@ bool LocatedEntity::getAttrType(const std::string & name,
     return false;
 }
 
-void LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+PropertyBase * LocatedEntity::setAttr(const std::string & name,
+                                      const Atlas::Message::Element & attr)
 {
-    return;
+    return 0;
 }
 
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
@@ -1072,17 +1105,6 @@ long integerId(const std::string & id)
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
         intId = -1L;
-    }
-
-    return intId;
-}
-
-long forceIntegerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        log(CRITICAL, String::compose("Unable to convert ID \"%1\" to an integer", id));
-        abort();
     }
 
     return intId;

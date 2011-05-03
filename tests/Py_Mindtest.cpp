@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -32,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyMind * o)
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return NULL;
     }
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     o->m_mind = NULL;
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -88,7 +97,7 @@ int main()
     run_python_string("m2.mind=m");
     
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("as_entity_methd=m.as_entity");

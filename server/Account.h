@@ -20,7 +20,7 @@
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
 
-#include "common/Router.h"
+#include "ConnectedRouter.h"
 
 #include <vector>
 
@@ -41,7 +41,7 @@ typedef std::map<long, Entity *> EntityDict;
 /// The majority of functionality relating to user accounts is encapsulated
 /// here. Sub-classes control privilege levels by implementing
 /// characterError().
-class Account : public Router {
+class Account : public ConnectedRouter {
   protected:
     /// \brief A store of Character entities belonging to this account
     EntityDict m_charactersDict;
@@ -52,7 +52,7 @@ class Account : public Router {
 
     Entity * addNewCharacter(const std::string &,
                              const Atlas::Objects::Entity::RootEntity &,
-                             const Atlas::Objects::Entity::RootEntity &);
+                             const Atlas::Objects::Root &);
     void characterDestroyed(long);
 
     /// \brief Check a character creation op is within the privelege levels
@@ -62,15 +62,20 @@ class Account : public Router {
     /// @param ent A RootEntity representing the character to be created
     /// @param res Any resulting error is returned here
     virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const = 0;
+
+    virtual void createObject(const std::string &,
+                              const Atlas::Objects::Root &,
+                              const Operation &,
+                              OpVector &);
 
     int filterTasks(const Atlas::Message::ListType & tasks,
                     const Atlas::Objects::Entity::RootEntity &) const;
 
   public:
-    /// \brief The network connection currently subscribed to this account
-    Connection * m_connection;
+    /// \brief Connect and add a character to this account
+    int connectCharacter(Entity *chr);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,

@@ -17,6 +17,13 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "server/Account.h"
 #include "server/CommServer.h"
 #include "server/ServerRouting.h"
@@ -64,7 +71,7 @@ class TestAccount : public Account {
     }
 
     virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Entity::RootEntity & ent,
+                               const Atlas::Objects::Root & ent,
                                OpVector & res) const {
         return 0;
     }
@@ -92,7 +99,7 @@ int main()
     CommServer commServer(server);
 
     TestCommClient * tc = new TestCommClient(commServer);
-    Connection * c = new Connection(*tc, server, "addr", "3");
+    Connection * c = new Connection(*tc, server, "addr", "3", 3);
     TestAccount * ac = new TestAccount(c, "user", "password", "4", 4);
     Entity * chr;
 
@@ -281,6 +288,20 @@ int main()
         ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
         ac->operation(op, res);
+    }
+
+    {
+        Entity e("7", 7);
+
+        int ret = ac->connectCharacter(&e);
+        assert(ret == -1);
+    }
+
+    {
+        Character e("8", 8);
+
+        int ret = ac->connectCharacter(&e);
+        assert(ret == 0);
     }
 
     delete ac;

@@ -17,6 +17,15 @@
 
 // $Id$
 
+#ifdef NDEBUG
+#undef NDEBUG
+#else
+#define CYPHESIS_DEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include <Python.h>
 
 #include "python_testers.h"
@@ -32,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyMessage * o)
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return NULL;
     }
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     o->m_obj = NULL;
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -98,7 +107,7 @@ int main()
     run_python_string("m.foo = {'foo': 1}");
     run_python_string("print m.foo");
 
-#ifndef NDEBUG
+#ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("get_name_method=m.get_name");
     run_python_string("sabotage.null(m)");
