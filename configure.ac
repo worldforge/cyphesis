@@ -337,7 +337,7 @@ Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
 libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(BULLET, bullet >= 2.75,
+PKG_CHECK_MODULES(BULLET, bullet >= 2.77,
     [
         CPPFLAGS="$CPPFLAGS $BULLET_CFLAGS"
         TERRAIN_LIBS="$TERRAIN_LIBS $BULLET_LIBS"
