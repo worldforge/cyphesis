@@ -21,7 +21,7 @@
 
 #include "common/debug.h"
 
-#include "BulletCollision/btBulletCollisionCommon.h"
+#include "btBulletCollisionCommon.h"
 
 #include <cassert>
 
