@@ -36,6 +36,7 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
+#include "rulesets/Domain.h"
 #include "rulesets/World.h"
 
 #include "common/Monitor.h"
@@ -140,6 +141,8 @@ void run_operation_checks(TestServerAccount * ac, Entity * chr, WorldRouter & wo
 int main()
 {
     database_flag = false;
+
+    (void)new Domain;
 
     init_python_api();
 
