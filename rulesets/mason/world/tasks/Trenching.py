@@ -31,6 +31,7 @@ class Trenching(server.Task):
         # print "Trenching.tick"
 
         target=server.world.get_object(self.target)
+        self.pos = self.character.location.coordinates
         if not target:
             # print "Target is no more"
             self.irrelevant()
@@ -75,7 +76,7 @@ class Trenching(server.Task):
                     return
                 self.surface = surface
 
-                z=self.character.location.coordinates.z + 1.0
+                z=self.character.location.coordinates.z - 1.0
                 modmap = {
                           'height': z,
                           'shape': {
@@ -102,7 +103,7 @@ class Trenching(server.Task):
                         continue
                     print "%s looks good" % mod.id
                     print mod.terrainmod
-                    mod.terrainmod.height -= 2.0
+                    mod.terrainmod.height -= 1.0
                     # We have modified the attribute in place, so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
                     break
