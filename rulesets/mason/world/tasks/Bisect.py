@@ -10,9 +10,9 @@ import server
 
 class Bisect(server.Task):
     """ A task for cutting a section of material in two."""
-    def cut_operation(self, op):
+    def bicut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        # print "Bisect.cut"
+        # print "Bisect.bicut"
 
         if len(op) < 1:
             sys.stderr.write("Bisect task has no target in cut op")
@@ -21,7 +21,6 @@ class Bisect(server.Task):
         self.target = op[0].id
         self.tool = op.to
 
-        self.width = 0.2
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
@@ -46,8 +45,10 @@ class Bisect(server.Task):
             # print "Not done yet"
             return self.next_tick(1.75)
 
-        width = target.location.bbox.far_point.x - target.location.bbox.near_point.x
-        if width <= self.width:
+        length = target.location.bbox.far_point.z - target.location.bbox.near_point.z
+        mid = length/2
+
+        if mid <= 4:
             # print "Nothing more to cut"
             self.irrelevant()
             return
@@ -57,33 +58,32 @@ class Bisect(server.Task):
         new_bbox = [target.location.bbox.near_point.x,
                     target.location.bbox.near_point.y,
                     target.location.bbox.near_point.z,
-                    target.location.bbox.far_point.x - self.width,
+                    target.location.bbox.far_point.x ,
                     target.location.bbox.far_point.y,
-                    target.location.bbox.far_point.z]
+                    target.location.bbox.far_point.z - mid ]
 
         set=Operation("set", Entity(target.id, bbox=new_bbox), to=target)
         res.append(set)
 
         slice_loc = target.location.copy()
 
-        pos_offset = Vector3D(target.location.bbox.far_point.x, 0, 0)
+        pos_offset = Vector3D(0, 0, target.location.bbox.far_point.z)
         pos_offset.rotate(target.location.orientation)
 
         slice_loc.coordinates = target.location.coordinates + pos_offset
 
-        slice_bbox = [0,
+        slice_bbox = [target.location.bbox.near_point.x,
                       target.location.bbox.near_point.y,
-                      target.location.bbox.near_point.z,
-                      self.width,
+                      0,
+                      target.location.bbox.far_point.x,
                       target.location.bbox.far_point.y,
-                      target.location.bbox.far_point.z]
-
+                      mid]
         slice_loc.orientation = target.location.orientation
 
         create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 
-        if width - self.width > self.width:
+        if mid - 4 > 4:
             self.progress = 0
         else:
             # FIXME Integrate with other set op.

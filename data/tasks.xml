@@ -2,6 +2,25 @@
 
   <map>
     <map name="activation">
+      <string name="operation">bicut</string>
+      <string name="target">wood</string>
+      <string name="tool">bucksaw</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">bisect</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Bisect.Bisect</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">attack</string>
       <string name="tool">sword</string>
     </map>
