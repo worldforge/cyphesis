@@ -49,22 +49,6 @@
   </map>
 
   <map>
-    <string name="id">walls</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
-  </map>
-
-  <map>
-    <string name="id">trench</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
-  </map>
-
-  <map>
     <string name="id">ignite</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -101,6 +85,22 @@
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">trench</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">walls</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
     </list>
   </map>
 
