@@ -96,6 +96,25 @@
 
   <map>
     <map name="activation">
+      <string name="operation">cut</string>
+      <string name="target">grass</string>
+      <string name="tool">peg</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">drying</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Drying.Drying</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">walls</string>
       <string name="target">world</string>
       <string name="tool">shovel</string>
