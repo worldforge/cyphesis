@@ -32,7 +32,7 @@ class Drying(server.Task):
             self.irrelevant()
             return
 
-        self.rate = 0.5 / 0.75
+        self.rate = 0.2 / 0.75
         self.progress += 0.5
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
