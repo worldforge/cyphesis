@@ -164,15 +164,15 @@ vspo_pattern=re.compile(r"(\w+)\s+(the\s+)?(a\s+)?((\w+)|(\(.+?\)))\s+(the\s+)?(
 def match_verb_subject_object_string(say):
     m=vso_pattern.match(say)
     if m:
-        verb=m.group(1)
+        verb=m.group(1).lower()
         if vso_dict.has_key(verb):
-            subject,object=m.group(4),m.group(10)
+            subject,object=m.group(4),m.group(10).rstrip('.!')
             return verb_subject_object(verb,subject,object)
     m=vspo_pattern.match(say)
     if m:
-        verb=m.group(1)
+        verb=m.group(1).lower()
         if vspo_dict.has_key(verb):
-            subject,predicate,object=m.group(4),m.group(10),m.group(12)
+            subject,predicate,object=m.group(4),m.group(10),m.group(12).rstrip('.!')
             return verb_subject_predicate_object(verb,subject,predicate,object)
     return None
 
