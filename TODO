@@ -1,3 +1,9 @@
+Protocol revision:
+  Stop announcing by server, request at client instead
+  Consolidate negotiation, and allow other undefined headers
+  Allow for multiple exchanges during negotiation
+  Put Unseen and other common ops (between Eris/cuphesis) into the spec
+
 Frontends, backends, routers based architecture
 
 Use 64bit milliseconds everywhere. Merge SECONDS and STAMP into a single
