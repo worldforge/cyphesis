@@ -264,8 +264,10 @@ class NPCMind(server.Mind):
 
         Accept queries about what we know. Mostly this is for debugging
         and for the time being it is useful to answer these queries no matter
-        who hasks."""
-        
+        who asks.
+        Querying for "all knowledge" will list all knowledge.
+        """
+
         # Ignore messages addressed to others
         if not self.is_talk_op_addressed_to_me_or_none(op):
             return None
@@ -274,15 +276,27 @@ class NPCMind(server.Mind):
         # We are being liberal with interpretation of "subject" and "object"
         subject=say[1].word
         predicate=say[2].word
-        if not hasattr(self.knowledge, predicate):
-            return None
-        d=getattr(self.knowledge, predicate)
-        res = Oplist()
-        res = res + self.face(self.map.get(op.to))
-        for key in d:
-            res = res + self.address(op.to, "The " + predicate + " of " + 
-                                     key + " is " + str(d[key]))
-        return res
+        if predicate == 'all knowledge':
+            res = Oplist()
+            res = res + self.face(self.map.get(op.to))
+            for attr in dir(self.knowledge):
+                d=getattr(self.knowledge, attr)
+                if getattr(d, '__iter__', False):
+                    for key in d:
+                        #print attr + " of "+key+": " +str(d[key])
+                        res = res + self.address(op.to, "The " + attr + " of " + 
+                                                 key + " is " + str(d[key]))
+            return res
+        else:
+            if not hasattr(self.knowledge, predicate):
+                return None
+            d=getattr(self.knowledge, predicate)
+            res = Oplist()
+            res = res + self.face(self.map.get(op.to))
+            for key in d:
+                res = res + self.address(op.to, "The " + predicate + " of " + 
+                                         key + " is " + str(d[key]))
+            return res
     def interlinguish_learn_verb1_operation(self, op, say):
         """Handle a sentence of the form 'learn ....'
 
