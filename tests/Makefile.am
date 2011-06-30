@@ -34,7 +34,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
-                 Domaintest AtlasPropertiestest \
+                 Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest ActivePropertyFactorytest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
@@ -544,6 +544,11 @@ VisibilityPropertytest_LDADD = \
 Domaintest_SOURCES = Domaintest.cpp
 Domaintest_LDADD = \
         $(top_builddir)/rulesets/Domain.o
+
+BulletDomaintest_SOURCES = BulletDomaintest.cpp
+BulletDomaintest_LDADD = \
+        $(top_builddir)/rulesets/BulletDomain.o \
+        $(TERRAIN_LIBS)
 
 BaseMindtest_SOURCES = BaseMindtest.cpp
 BaseMindtest_LDADD = \
