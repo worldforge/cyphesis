@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Copyright (C) 2000-2008 Alistair Riddoch
@@ -301,7 +302,8 @@ def default(host='', account='', password='', **args):
         m.learn(butcher,(il.help,"add_help(['"
               "I need live pigs to restock my butcher stall.',"
               "'Do you have any pigs for sale?',"
-              "'I prefer pigs that have grown to more than 20kg.'])"))
+              "'I prefer pigs that have grown to more than 20kg.'],"
+              "['I would like to sell a pig'])"))
         m.know(butcher,bknowledge)
         m.know(butcher,bprices)
 
