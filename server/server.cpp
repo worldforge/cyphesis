@@ -41,6 +41,7 @@
 #include "ServerAccount.h"
 #include "TeleportAuthenticator.h"
 
+#include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
 #include "rulesets/Entity.h"
@@ -187,6 +188,7 @@ int main(int argc, char ** argv)
     // account. The primary ruleset name is passed in so it
     // can be stored and queried by clients.
     Inheritance::instance();
+    new BulletDomain;
 
     WorldRouter world;
 

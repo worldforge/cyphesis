@@ -337,6 +337,22 @@ Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
 libraries required and where to obtain them.])
     ])
 
+PKG_CHECK_MODULES(BULLET, bullet >= 2.77,
+    [
+        CPPFLAGS="$CPPFLAGS $BULLET_CFLAGS"
+        TERRAIN_LIBS="$TERRAIN_LIBS $BULLET_LIBS"
+    ],
+    [
+        AC_MSG_RESULT([no])
+        AC_MSG_WARN([
+Cannot find valid versions of required physics library, bullet:
+$BULLET_PKG_ERRORS
+Perhaps you should add the directory containing the missing libraries to the
+PKG_CONFIG_PATH environment variable.
+Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
+libraries required and where to obtain them.])
+    ])
+
 PKG_CHECK_MODULES(SKSTREAM, skstream-0.3 >= 0.3.6,
     [
         CPPFLAGS="$CPPFLAGS $SKSTREAM_CFLAGS"

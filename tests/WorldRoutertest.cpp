@@ -379,6 +379,11 @@ float Domain::constrainHeight(LocatedEntity * parent,
     return 0.f;
 }
 
+void Domain::tick(double t)
+{
+    
+}
+
 void Entity::ActuateOperation(const Operation &, OpVector &)
 {
 }

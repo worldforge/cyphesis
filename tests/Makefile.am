@@ -34,7 +34,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
-                 Domaintest AtlasPropertiestest \
+                 Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest ActivePropertyFactorytest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
@@ -48,7 +48,9 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  MindFactorytest TaskScripttest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
-                 MindFactoryintegration TerrainModtest
+                 TerrainModtest
+
+RULESETS_INTEGRATION_TESTS = MindFactoryintegration BulletDomainintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest
@@ -80,7 +82,7 @@ LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LI
 
 TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
         $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS) \
-        $(SERVER_INTEGRATION_TESTS)
+        $(RULESETS_INTEGRATION_TESTS) $(SERVER_INTEGRATION_TESTS)
 
 RECHECK_LOGS =
 
@@ -543,6 +545,11 @@ Domaintest_SOURCES = Domaintest.cpp
 Domaintest_LDADD = \
         $(top_builddir)/rulesets/Domain.o
 
+BulletDomaintest_SOURCES = BulletDomaintest.cpp
+BulletDomaintest_LDADD = \
+        $(top_builddir)/rulesets/BulletDomain.o \
+        $(TERRAIN_LIBS)
+
 BaseMindtest_SOURCES = BaseMindtest.cpp
 BaseMindtest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -836,6 +843,12 @@ MindFactoryintegration_LDADD = \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
+BulletDomainintegration_LDADD = \
+        $(top_builddir)/rulesets/BulletDomain.o \
+        $(top_builddir)/rulesets/Domain.o \
         $(TERRAIN_LIBS)
 
 TerrainModtest_SOURCES = TerrainModtest.cpp

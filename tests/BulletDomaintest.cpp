@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2010 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,29 +17,76 @@
 
 // $Id$
 
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
-#ifndef DEBUG
-#define DEBUG
-#endif
-
-#include "rulesets/Domain.h"
+#include "rulesets/BulletDomain.h"
 
 #include "rulesets/TerrainProperty.h"
 
+#include "btBulletCollisionCommon.h"
+
+#include <cassert>
+
+class TestBulletDomain : public BulletDomain
+{
+  public:
+    btCollisionWorld * test_getCollisionWorld() const
+    {
+        return m_collisionWorld;
+    }
+};
+
 int main()
 {
-    Domain * d = new Domain;
+    {
+        BulletDomain * bd = new BulletDomain;
+        delete bd;
+    }
 
-    d->incRef();
-    d->decRef();
+    {
+        BulletDomain * bd = new BulletDomain;
+        delete bd;
+    }
 
-    // The is no code in operations.cpp to execute, but we need coverage.
+    {
+        TestBulletDomain * bd = new TestBulletDomain;
+        assert(bd->test_getCollisionWorld() != 0);
+
+        btCollisionObject * obj = new btCollisionObject;
+
+        btMatrix3x3 basis;
+        basis.setIdentity();
+        obj->getWorldTransform().setBasis(basis);
+
+        btBoxShape* box = new btBoxShape(btVector3(1,1,1));
+        obj->setCollisionShape(box);
+
+        bd->test_getCollisionWorld()->addCollisionObject(obj);
+
+        delete bd;
+    }
+
     return 0;
 }
 
 // stubs
+
+Domain::Domain() : m_refCount(0)
+{
+}
+
+Domain::~Domain()
+{
+}
+
+float Domain::constrainHeight(LocatedEntity * parent,
+                              const Point3D & pos,
+                              const std::string & mode)
+{
+    return 0.f;
+}
+
+void Domain::tick(double t)
+{
+}
 
 TerrainProperty::TerrainProperty() :
     m_data(*(Mercator::Terrain*)0),

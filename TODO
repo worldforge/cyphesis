@@ -4,6 +4,27 @@ Protocol revision:
   Allow for multiple exchanges during negotiation
   Put Unseen and other common ops (between Eris/cuphesis) into the spec
 
+Use SCMS like scheme to ensure no grey goo. entities cannot create other
+entities which can create further persistent entities.
+
+Bullet Physics Ideas:
+  There are two suitable bullet world objects for us to use:
+    btCollisionWorld and btDynamicsWorld
+
+  The former should be pretty simple to use, the latter gives way more.
+
+  The former we can use by adding collision objects for the static world
+  content, then use convexSweepTest to calculate collisions for single
+  moving avatars which themselves do not need to be in the collisionWorld.
+  It can also be used to avoid object intersection at movement and creation
+  time if desirable.
+
+  In a more advanced implementation, perhaps using btDynamicsWorld a bunch
+  of interesting stuff can be simulated without us having to change the
+  way we handle basic avatar collisions. In addition as things get more
+  tricky we can use the bit field and matric features to define what collides
+  with what, all under the control of the designer/builder.
+
 Frontends, backends, routers based architecture
 
 Use 64bit milliseconds everywhere. Merge SECONDS and STAMP into a single
@@ -54,7 +75,6 @@ We need op post-processing rather than pre-processing for move updates.
 Abstract entities for tracking non-physical concepts such as quests, trade
 transactions, entity recipes, contruction blueprints etc.
 See http://www.igda.org/newsletter/?p=483 for how to do trading.
-
 
 Extend Mercator to allow terrain mod volume calculations. Use these to work
 out when a quarry should work, and how much it should be extended.
