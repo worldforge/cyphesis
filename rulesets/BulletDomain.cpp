@@ -17,11 +17,17 @@
 
 // $Id$
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "BulletDomain.h"
 
 #include "common/debug.h"
 
-// #include "btBulletCollisionCommon.h"
+#ifdef HAVE_BULLET
+#include "btBulletCollisionCommon.h"
+#endif // HAVE_BULLET
 
 #include <cassert>
 
@@ -29,7 +35,7 @@ static const bool debug_flag = false;
 
 BulletDomain::BulletDomain()
 {
-#if 0
+#ifdef HAVE_BULLET
         ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
         m_collisionConfiguration = new btDefaultCollisionConfiguration();
 
@@ -51,7 +57,7 @@ BulletDomain::BulletDomain()
 
         // No gravity in collision world
         //collisionWorld->setGravity(btVector3(0,-10,0));
-#endif
+#endif // HAVE_BULLET
 }
 
 BulletDomain::~BulletDomain()
