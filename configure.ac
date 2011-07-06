@@ -344,7 +344,7 @@ PKG_CHECK_MODULES(BULLET, bullet >= 2.77,
     ],
     [
         AC_MSG_RESULT([no])
-        AC_MSG_ERROR([
+        AC_MSG_WARN([
 Cannot find valid versions of required physics library, bullet:
 $BULLET_PKG_ERRORS
 Perhaps you should add the directory containing the missing libraries to the
