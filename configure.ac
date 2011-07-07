@@ -325,7 +325,6 @@ PKG_CHECK_MODULES(MERCATOR, mercator-0.3 >= 0.3.0,
     [
         CPPFLAGS="$CPPFLAGS $MERCATOR_CFLAGS"
         TERRAIN_LIBS="$TERRAIN_LIBS $MERCATOR_LIBS"
-        AC_DEFINE([HAVE_BULLET], [1], [Define to 1 if using bullet])
     ],
     [
         AC_MSG_RESULT([no])
@@ -342,6 +341,7 @@ PKG_CHECK_MODULES(BULLET, bullet >= 2.77,
     [
         CPPFLAGS="$CPPFLAGS $BULLET_CFLAGS"
         TERRAIN_LIBS="$TERRAIN_LIBS $BULLET_LIBS"
+        AC_DEFINE([HAVE_BULLET], [1], [Define to 1 if using bullet])
     ],
     [
         AC_MSG_RESULT([no])
