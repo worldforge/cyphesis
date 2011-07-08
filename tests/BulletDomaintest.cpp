@@ -21,7 +21,9 @@
 
 #include "rulesets/TerrainProperty.h"
 
+#ifdef HAVE_BULLET
 #include "btBulletCollisionCommon.h"
+#endif // HAVE_BULLET
 
 #include <cassert>
 
@@ -36,6 +38,7 @@ class TestBulletDomain : public BulletDomain
 
 int main()
 {
+#ifdef HAVE_BULLET
     {
         BulletDomain * bd = new BulletDomain;
         delete bd;
@@ -65,6 +68,7 @@ int main()
     }
 
     return 0;
+#endif // HAVE_BULLET
 }
 
 // stubs
