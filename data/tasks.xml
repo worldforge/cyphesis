@@ -378,4 +378,23 @@
     </map>
   </map>
 
+  <map>
+    <map name="activation">
+      <string name="operation">walls</string>
+      <string name="target">lumber</string>
+      <string name="tool">rope</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">woodenwall</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Woodenwall.Woodenwall</string>
+    </map>
+  </map>
+
 </atlas>
