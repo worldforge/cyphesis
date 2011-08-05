@@ -35,15 +35,15 @@ class Bisect(server.Task):
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
             # print "Too far away"
-            return self.next_tick(1.75)
+            return self.next_tick(0.75)
         else:
-            self.progress += self.rate * 1.75
+            self.progress += 1
 
-        self.rate = 0.1 / 1.75
+        self.rate = 0.5 / 0.75
 
         if self.progress < 1:
             # print "Not done yet"
-            return self.next_tick(1.75)
+            return self.next_tick(0.75)
 
         length = target.location.bbox.far_point.z - target.location.bbox.near_point.z
         mid = length/2
@@ -84,6 +84,6 @@ class Bisect(server.Task):
         if mid - 4 > 4:
             self.progress = 0
 
-        res.append(self.next_tick(1.75))
+        res.append(self.next_tick(0.75))
 
         return res
