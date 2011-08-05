@@ -25,9 +25,6 @@ class Woodenwall(server.Task):
 
         self.pos = Point3D(op[0].pos)
         
-	print self.target , self.tool , self.pos
-	print "start"
-
     def tick_operation(self, op):
 
         """ Op handler for regular tick op """
@@ -39,7 +36,6 @@ class Woodenwall(server.Task):
 
         self.rate = 0.5 / 0.75
         self.progress += 1
-	print "2"
 
         if not target:
             print "Target is no more"
@@ -57,13 +53,10 @@ class Woodenwall(server.Task):
 
         while count < 2 :
             raw_lumber = []
-	    print "1"
 
             for item in self.character.contains:
                 if item.type[0] in self.materials:
-		    print item.id
                     raw_lumber.append(item.id)
-	    	    print count
                     self.character.contains.remove(item)
                     break
             else:
@@ -71,7 +64,6 @@ class Woodenwall(server.Task):
                 self.irrelevant()
                 return
 
-  	    print "2"
             chunk_loc = target.location.copy()
             chunk_loc.coordinates = target.location.coordinates
             chunk_loc.orientation = target.location.orientation
@@ -83,5 +75,4 @@ class Woodenwall(server.Task):
         res.append(create)
         self.progress = 1
         self.irrelevant()
-	print "end"
         return res
