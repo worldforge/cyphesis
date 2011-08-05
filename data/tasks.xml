@@ -381,7 +381,7 @@
   <map>
     <map name="activation">
       <string name="operation">walls</string>
-      <string name="target">lumber</string>
+      <string name="target">world</string>
       <string name="tool">rope</string>
     </map>
     <map name="attributes">

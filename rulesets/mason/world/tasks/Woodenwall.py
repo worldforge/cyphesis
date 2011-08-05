@@ -12,7 +12,7 @@ import server
 class Woodenwall(server.Task):
     """A task for creating a Woodenwall by consuming 2 lumber boards and a rope"""
     
-    materials = ["lumber"]
+    materials = ["lumber" , "wood" ]
     def walls_operation(self, op):
         """ Op handler for walls op which activates this task """
 
