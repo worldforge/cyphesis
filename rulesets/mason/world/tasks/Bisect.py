@@ -67,10 +67,7 @@ class Bisect(server.Task):
 
         slice_loc = target.location.copy()
 
-        pos_offset = Vector3D(0, 0, target.location.bbox.far_point.z)
-        pos_offset.rotate(target.location.orientation)
-
-        slice_loc.coordinates = target.location.coordinates + pos_offset
+        slice_loc.coordinates = target.location.coordinates
 
         slice_bbox = [target.location.bbox.near_point.x,
                       target.location.bbox.near_point.y,
@@ -79,17 +76,13 @@ class Bisect(server.Task):
                       target.location.bbox.far_point.y,
                       mid]
         slice_loc.orientation = target.location.orientation
-
+        
+        # create to convert remaining fragment into a wood board
         create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 
         if mid - 4 > 4:
             self.progress = 0
-        else:
-            # FIXME Integrate with other set op.
-            # Add create to convert remaining fragment into a board
-            set=Operation("set", Entity(target.id, status=-1), to=target)
-            res.append(set)
 
         res.append(self.next_tick(1.75))
 
