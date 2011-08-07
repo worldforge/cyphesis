@@ -1,3 +1,5 @@
+Check out _GLIBCX_DEBUG
+
 Protocol revision:
   Stop announcing by server, request at client instead
   Consolidate negotiation, and allow other undefined headers
