@@ -1,5 +1,10 @@
 Check out _GLIBCX_DEBUG
 
+Macro todo list
+  Get server physics kicked off
+  Re-work Atlas to be more secure, client driven encrypted
+  Make server more modular, scalable
+
 Protocol revision:
   Stop announcing by server, request at client instead
   Consolidate negotiation, and allow other undefined headers
