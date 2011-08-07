@@ -113,7 +113,8 @@ class Trenching(server.Task):
 
         create=Operation("create",
                          Entity(name = Trenching.materials[self.surface],
-                                type = Trenching.materials[self.surface],
+                                type = "pile",
+                                material = Trenching.materials[self.surface],
                                 location = chunk_loc), to = target)
         res.append(create)
 
