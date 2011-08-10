@@ -153,6 +153,25 @@
 
   <map>
     <map name="activation">
+      <string name="operation">walls</string>
+      <string name="target">boulder</string>
+      <string name="tool">pickaxe</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">earthwall</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Earthwall.Earthwall</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">sow</string>
       <string name="target">ocean</string>
       <string name="tool">fishingrod</string>
