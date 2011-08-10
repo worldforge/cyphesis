@@ -10,16 +10,16 @@ from physics import Vector3D
 
 import server
 
-class Earthwall(server.Task):
-    """ A task for creating Earthwall with a shovel."""
+class Earthbarrier(server.Task):
+    """ A task for creating Earthbarrier with a shovel."""
 
     materials = { 0: 'boulder', 1: 'sand', 2: 'earth', 3: 'silt', 4: 'ice' }
     def walls_operation(self, op):
         """ Op handler for cut op which activates this task """
-        # print "Earthwall.walls"
+        # print "Earthbarrier.walls"
 
         if len(op) < 1:
-            sys.stderr.write("Earthwall task has no target in earthwall op")
+            sys.stderr.write("Earthbarrier task has no target in Earthbarrier op")
 
         # FIXME Use weak references, once we have them
         self.target = op[0].id
@@ -29,7 +29,7 @@ class Earthwall(server.Task):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        # print "Earthwall.tick"
+        # print "Earthbarrier.tick"
 
         target=server.world.get_object(self.target)
         self.pos = self.character.location.coordinates
@@ -71,7 +71,7 @@ class Earthwall(server.Task):
                 # a wall
                 surface = target.terrain.get_surface(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
-                if surface not in Earthwall.materials:
+                if surface not in Earthbarrier.materials:
                     print "Not in material"
                     self.irrelevant()
                     return
@@ -113,8 +113,8 @@ class Earthwall(server.Task):
 
 
         create=Operation("create",
-                         Entity(name = Earthwall.materials[self.surface],
-                                type = Earthwall.materials[self.surface],
+                         Entity(name = Earthbarrier.materials[self.surface],
+                                type = Earthbarrier.materials[self.surface],
                                 location = chunk_loc), to = target)
         res.append(create)
 
