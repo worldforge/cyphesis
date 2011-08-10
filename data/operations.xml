@@ -41,6 +41,14 @@
   </map>
 
   <map>
+    <string name="id">drag</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">extinguish</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
