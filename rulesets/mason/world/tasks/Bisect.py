@@ -81,7 +81,7 @@ class Bisect(server.Task):
             nam = typ
         
         # create to convert remaining fragment into a wood board
-        create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
+        create=Operation("create", Entity(name=nam, type=typ, location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 
         self.progress = 1
