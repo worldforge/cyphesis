@@ -3,7 +3,7 @@
   <map>
     <map name="activation">
       <string name="operation">bicut</string>
-      <string name="target">wood</string>
+      <string name="target">game_entity</string>
       <string name="tool">bucksaw</string>
     </map>
     <map name="attributes">
@@ -97,7 +97,7 @@
   <map>
     <map name="activation">
       <string name="operation">drag</string>
-      <string name="target">lumber</string>
+      <string name="target">game_entity</string>
       <string name="tool">sledge</string>
     </map>
     <map name="attributes">
