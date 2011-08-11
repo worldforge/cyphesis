@@ -39,12 +39,7 @@ class Pulling(server.Task):
             return
 
         target_location = Location(target.location.parent, target.location.coordinates)
-	print target.location.parent
-	print target.location.coordinates
-	print target_location
         target_location.velocity=Vector3D(0,0,-0.5)
-	print "self"
-	print self.character.location.coordinates
         new_loc = self.character.location.coordinates
         origin = self.points[0]
         diff = origin.x - new_loc.x
