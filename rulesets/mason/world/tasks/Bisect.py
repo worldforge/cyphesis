@@ -49,11 +49,6 @@ class Bisect(server.Task):
         length = target.location.bbox.far_point.z - target.location.bbox.near_point.z
         mid = length/2
 
-        if mid <= 4:
-            # print "Nothing more to cut"
-            self.irrelevant()
-            return
-
         res=Oplist()
 
         new_bbox = [target.location.bbox.near_point.x,
@@ -77,14 +72,19 @@ class Bisect(server.Task):
                       target.location.bbox.far_point.y,
                       mid]
         slice_loc.orientation = target.location.orientation
+
+        typ = str(target.type[0])
+
+        if hasattr ( target, 'name' ) : 
+            nam = str(target.name)
+        else : 
+            nam = typ
         
         # create to convert remaining fragment into a wood board
         create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 
-        if mid - 4 > 4:
-            self.progress = 0
-
-        res.append(self.next_tick(0.75))
+        self.progress = 1
+        self.irrelevant()
 
         return res
