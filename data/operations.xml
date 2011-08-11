@@ -81,6 +81,14 @@
   </map>
 
   <map>
+    <string name="id">pull</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">shoot</string>
     <string name="objtype">op_definition</string>
     <list name="parents">

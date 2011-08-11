@@ -229,6 +229,25 @@
 
   <map>
     <map name="activation">
+      <string name="operation">pull</string>
+      <string name="target">game_entity</string>
+      <string name="tool">rope</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">pulling</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Pulling.Pulling</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">lever</string>
       <string name="target">game_entity</string>
       <string name="tool">pole</string>
