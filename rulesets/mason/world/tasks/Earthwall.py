@@ -56,24 +56,19 @@ class Earthwall(server.Task):
         raw_materials = []
 
         for item in self.character.contains:
-            print item.type[0]
             if item.type[0] == str(self.materials[0]):
                 if item.name == "earth" :
-		    print "earth"
                     if ecount == 0 : 
                         raw_materials.append(item)
                         ecount = ecount + 1
                 if item.name == "sand" :
-		    print "sand"
                     if scount == 0 : 
                         raw_materials.append(item)
                         scount = scount + 1
-
             if item.type[0] == str(self.materials[1]):
                 if bcount == 0 :
                     raw_materials.append(item)
                     bcount = bcount + 1
-
             if (ecount+scount+bcount) == 3 :
                 break
         else:

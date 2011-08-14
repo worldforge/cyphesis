@@ -50,29 +50,39 @@ class Woodenwall(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
+        lcount = 0
+        wcount = 0
         count = 0
+        raw_materials = []
 
-        while count < 2 :
-            raw_lumber = []
+        for item in self.character.contains:
+        if item.type[0] == str(self.materials[0]):
+            if lcount == 0 :
+                raw_materials.append(item)
+                lcount = lcount + 1
+        if item.type[0] == str(self.materials[1]):
+           if wcount == 0 :
+                raw_materials.append(item)
+                wcount = wcount + 1
+        if (lcount+wcount) == 2 :
+            break
+        else:
+            print "No lumber in inventory"
+            self.irrelevant()
+            return
 
-            for item in self.character.contains:
-                if item.type[0] in self.materials:
-                    raw_lumber.append(item.id)
-                    self.character.contains.remove(item)
-                    break
-            else:
-                print "No lumber in inventory"
-                self.irrelevant()
-                return
+        chunk_loc = target.location.copy()
+        chunk_loc.coordinates = target.location.coordinates
+        chunk_loc.orientation = target.location.orientation
 
-            chunk_loc = target.location.copy()
-            chunk_loc.coordinates = target.location.coordinates
-            chunk_loc.orientation = target.location.orientation
-            set = Operation("set", Entity(raw_lumber.pop(), status = -1), to = target)
+        count = lcount + wcount
+        while (count > 0) : 
+            tar = raw_materials.pop()
+            set = Operation("set", Entity(tar.id, status = -1), to = tar)
             res.append(set)
-            count = count + 1
+            count = count - 1
 
-        create=Operation("create", Entity(name = "wall", type = "wall", location = chunk_loc), to = target)
+        create=Operation("create", Entity(name = "board_wall", type = "board_wall", location = chunk_loc), to = target)
         res.append(create)
         self.progress = 1
         self.irrelevant()

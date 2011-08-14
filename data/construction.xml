@@ -50,6 +50,31 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.266187</float>
+          <float>-0.028674</float>
+          <float>0.000277</float>
+          <float>0.265875</float>
+          <float>0.028776</float>
+          <float>2.00028</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">20</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">board_wall</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="mass">
         <float name="default">1</float>
         <string name="visibility">public</string>
