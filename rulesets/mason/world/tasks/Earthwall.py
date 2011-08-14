@@ -10,9 +10,9 @@ from physics import Vector3D
 import server
 
 class Earthwall(server.Task):
-    """A task for creating a Earthwall by consuming one part boulder , 2 part earth and 3 part sand """
+    """A task for creating a Earthwall by consuming one part boulder , 1 part earth and 1 part sand """
     
-    materials = ["pile"]
+    materials = ["pile", "boulder"]
     def walls_operation(self, op):
         """ Op handler for walls op which activates this task """
 
@@ -49,13 +49,32 @@ class Earthwall(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
-
-
+        ecount = 0
+        scount = 0
+        bcount = 0
+        count = 0
         raw_materials = []
 
         for item in self.character.contains:
-            if item.type[0] in self.materials:
-                raw_materials.append(item.id)
+            print item.type[0]
+            if item.type[0] == str(self.materials[0]):
+                if item.name == "earth" :
+		    print "earth"
+                    if ecount == 0 : 
+                        raw_materials.append(item)
+                        ecount = ecount + 1
+                if item.name == "sand" :
+		    print "sand"
+                    if scount == 0 : 
+                        raw_materials.append(item)
+                        scount = scount + 1
+
+            if item.type[0] == str(self.materials[1]):
+                if bcount == 0 :
+                    raw_materials.append(item)
+                    bcount = bcount + 1
+
+            if (ecount+scount+bcount) == 3 :
                 break
         else:
             print "No materials in inventory"
@@ -65,11 +84,13 @@ class Earthwall(server.Task):
         chunk_loc = target.location.copy()
         chunk_loc.coordinates = target.location.coordinates
         chunk_loc.orientation = target.location.orientation
-        set = Operation("set", Entity(raw_materials.pop(), status = -1), to = target)
-        res.append(set)
-
-        set = Operation("set", Entity(target.id, status = -1), to = target)
-        res.append(set)
+        
+        count = ecount + scount + bcount        
+        while (count > 0) : 
+            tar = raw_materials.pop()
+            set = Operation("set", Entity(tar.id, status = -1), to = tar)
+            res.append(set)
+            count = count - 1
 
         create=Operation("create", Entity(name = "wall", type = "wall", location = chunk_loc), to = target)
         res.append(create)
