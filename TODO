@@ -1,3 +1,5 @@
+use boost intrusive containers for op queues
+
 Check out _GLIBCX_DEBUG
 
 Macro todo list
