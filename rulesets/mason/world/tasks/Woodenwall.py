@@ -56,16 +56,16 @@ class Woodenwall(server.Task):
         raw_materials = []
 
         for item in self.character.contains:
-        if item.type[0] == str(self.materials[0]):
-            if lcount == 0 :
-                raw_materials.append(item)
-                lcount = lcount + 1
-        if item.type[0] == str(self.materials[1]):
-           if wcount == 0 :
-                raw_materials.append(item)
-                wcount = wcount + 1
-        if (lcount+wcount) == 2 :
-            break
+            if item.type[0] == str(self.materials[0]):
+                if lcount == 0 :
+                    raw_materials.append(item)
+                    lcount = lcount + 1
+            if item.type[0] == str(self.materials[1]):
+               if wcount == 0 :
+                    raw_materials.append(item)
+                    wcount = wcount + 1
+            if (lcount+wcount) == 2 :
+                break
         else:
             print "No lumber in inventory"
             self.irrelevant()

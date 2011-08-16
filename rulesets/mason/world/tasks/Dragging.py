@@ -25,12 +25,10 @@ class Dragging(server.Task):
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
-	print "start"
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dragging.tick"
-	print "1"
         target=server.world.get_object(self.target)
         self.pos = self.character.location.coordinates
         if not target:
@@ -61,10 +59,8 @@ class Dragging(server.Task):
         chunk_loc.velocity = Vector3D()
 
         chunk_loc.coordinates = self.pos
-	print chunk_loc
 
         res = res + Operation("move", Entity(target.id, location = chunk_loc), to = target)
-	print "end"
         res.append(self.next_tick(0.75))
 
         return res
