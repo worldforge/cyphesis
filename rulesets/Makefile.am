@@ -1,6 +1,6 @@
 # SUBDIRS = astronomy skills
 
-AM_CPPFLAGS = -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 RULESETS = basic/mind mason
 
