@@ -442,3 +442,77 @@ def test_heap(host='', account='', password='', **args):
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
 
+def test_earthbarrier(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('shovel',pos=(0,0,0),parent=settler.id)
+    world=m.look()
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("walls", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+def test_trenching(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('pickaxe',pos=(0,0,0),parent=settler.id)
+    world=m.look()
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("trench", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+def test_bisect(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('bucksaw',pos=(0,0,0),parent=settler.id)
+    material=m.make('wood', pos=(2,1,0))
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("bicut", Entity(material.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+def test_dragging(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('sledge',pos=(0,0,0),parent=settler.id)
+    material=m.make('wood', pos=(2,1,0))
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("drag", Entity(material.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+def test_pulling(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('rope',pos=(0,0,0),parent=settler.id)
+    material=m.make('wood', pos=(2,1,0))
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("pull", Entity(material.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
