@@ -72,7 +72,7 @@ class Earthbarrier(server.Task):
                 surface = target.terrain.get_surface(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
                 if surface not in Earthbarrier.materials:
-                    print "Not in material"
+                    # print "Not in material"
                     self.irrelevant()
                     return
                 self.surface = surface
@@ -97,26 +97,16 @@ class Earthbarrier(server.Task):
                                         to=target)
                 res.append(walls_create)
             else:
-                print mods
                 for mod in mods:
                     if not hasattr(mod, 'name') or mod.name != 'walls':
-                        print "%s is no good" % mod.id
+                        # print "%s is no good" % mod.id
                         continue
-                    print "%s looks good" % mod.id
-                    print mod.terrainmod
+                    # print "%s looks good" % mod.id
                     mod.terrainmod.height += 1.0
                     # We have modified the attribute in place, so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
                     break
             # self.terrain_mod = "moddy_mod_mod"
-
-
-
-        create=Operation("create",
-                         Entity(name = Earthbarrier.materials[self.surface],
-                                type = Earthbarrier.materials[self.surface],
-                                location = chunk_loc), to = target)
-        res.append(create)
 
         res.append(self.next_tick(0.75))
 
