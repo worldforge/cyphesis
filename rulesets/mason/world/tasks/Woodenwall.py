@@ -1,5 +1,4 @@
 #This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 #Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
