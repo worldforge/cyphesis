@@ -36,6 +36,10 @@ class Dragging(server.Task):
             self.irrelevant()
             return
 
+        if not target.location.parent:
+            # Make sure the user dosen't use dragging on the world entity..
+            self.irrelevant()
+            return
 
         old_rate = self.rate
 
