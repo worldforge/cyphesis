@@ -25,6 +25,14 @@
   </map>
 
   <map>
+    <string name="id">crafting</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">cut</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
