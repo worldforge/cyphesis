@@ -83,6 +83,36 @@ class Pioneering(server.Task):
                 create=Operation("create", Entity(name = "board_wall", type = "board_wall", location = chunk_loc), to = target)
                 res.append(create)
 
+            if wcount == 0 and lcount == 2:
+                create=Operation("create", Entity(name = "palissade unit", type = "palissade unit", location = chunk_loc), to = target)
+                res.append(create)
+
+            #if wcount == 2 and lcount == 1:
+             #   create=Operation("create", Entity(name = "wooden_gate", type = "wooden_gate", location = chunk_loc), to = target)
+              #  res.append(create)
+
+        if rcount == 2 :
+            if wcount == 1 and lcount == 0:
+                create=Operation("create", Entity(name = "fence section", type = "fence section", location = chunk_loc), to = target)
+                res.append(create)
+
+            if wcount == 0 and lcount == 3:
+                create=Operation("create", Entity(name = "palissade entry", type = "palissade entry", location = chunk_loc), to = target)
+                res.append(create)
+
+        if rcount == 3 :
+            if wcount == 1 and lcount == 0:
+                create=Operation("create", Entity(name = "fence_gate", type = "fence_gate", location = chunk_loc), to = target)
+                res.append(create)
+
+#            if wcount == 3 and lcount == 0:
+#                create=Operation("create", Entity(name = "draw_bridge", type = "draw_bridge", location = chunk_loc), to = target)
+ #               res.append(create)
+
+            if wcount == 0 and lcount == 5:
+                create=Operation("create", Entity(name = "palissade_circle", type = "palissade_circle", location = chunk_loc), to = target)
+                res.append(create)
+
         while (count > 0) : 
             tar = raw_materials.pop()
             set = Operation("set", Entity(tar.id, status = -1), to = tar)
