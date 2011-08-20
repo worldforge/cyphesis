@@ -84,7 +84,7 @@ class Pioneering(server.Task):
                 res.append(create)
 
             if wcount == 0 and lcount == 2:
-                create=Operation("create", Entity(name = "palissade unit", type = "palissade unit", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "palissade_unit", type = "palissade_unit", location = chunk_loc), to = target)
                 res.append(create)
 
             #if wcount == 2 and lcount == 1:
@@ -93,11 +93,11 @@ class Pioneering(server.Task):
 
         if rcount == 2 :
             if wcount == 1 and lcount == 0:
-                create=Operation("create", Entity(name = "fence section", type = "fence section", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "fence_section", type = "fence_section", location = chunk_loc), to = target)
                 res.append(create)
 
             if wcount == 0 and lcount == 3:
-                create=Operation("create", Entity(name = "palissade entry", type = "palissade entry", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "palissade_entry", type = "palissade_entry", location = chunk_loc), to = target)
                 res.append(create)
 
         if rcount == 3 :
