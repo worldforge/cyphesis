@@ -2,6 +2,25 @@
 
   <map>
     <map name="activation">
+      <string name="operation">crafting</string>
+      <string name="target">boulder</string>
+      <string name="tool">pickaxe</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">baking</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Baking.Baking</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">bicut</string>
       <string name="target">game_entity</string>
       <string name="tool">bucksaw</string>
