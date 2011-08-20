@@ -109,56 +109,6 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.5</float>
-          <float>0.02</float>
-          <float>0.0</float>
-          <float>0.5</float>
-          <float>0.02</float>
-          <float>2.0</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">fence_section</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.5</float>
-          <float>0.02</float>
-          <float>0.0</float>
-          <float>0.5</float>
-          <float>0.02</float>
-          <float>2.0</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">fence_gate</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
           <float>-0.1</float>
           <float>-0.1</float>
           <float>0</float>
@@ -222,81 +172,6 @@
     </map>
     <string name="description">base class for solid materials</string>
     <string name="id">material</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.12</float>
-          <float>-0.1</float>
-          <float>-0.15</float>
-          <float>4.5</float>
-          <float>4.5</float>
-          <float>2.2</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">palissade_circle</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.02</float>
-          <float>-0.17</float>
-          <float>-0.23</float>
-          <float>5.2</float>
-          <float>5.2</float>
-          <float>3.7</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">palissade_entry</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.25</float>
-          <float>-1.0</float>
-          <float>-0.13</float>
-          <float>1.0</float>
-          <float>1.0</float>
-          <float>2.2</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">palissade_unit</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
