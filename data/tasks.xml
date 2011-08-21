@@ -96,6 +96,25 @@
 
   <map>
     <map name="activation">
+      <string name="operation">attack</string>
+      <string name="target">game_entity</string>
+      <string name="tool">hammer</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">destroying</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Destroying.Destroying</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
       <string name="operation">cut</string>
       <string name="target">world</string>
       <string name="tool">shovel</string>
@@ -338,6 +357,25 @@
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Reap.Reap</string>
+    </map>
+  </map>
+
+  <map>
+    <map name="activation">
+      <string name="operation">repair</string>
+      <string name="target">game_entity</string>
+      <string name="tool">hammer</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">repairing</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Repairing.Repairing</string>
     </map>
   </map>
 
