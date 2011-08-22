@@ -3,7 +3,7 @@
   <map>
     <map name="activation">
       <string name="operation">crafting</string>
-      <string name="target">boulder</string>
+      <string name="target">board_wall</string>
       <string name="tool">pickaxe</string>
     </map>
     <map name="attributes">
