@@ -38,7 +38,14 @@ class Repairing(server.Task):
             self.irrelevant()
             return
 
-        current_status = target.status
+        if hasattr ( target, 'status' ) : 
+            current_status = target.status
+
+        else:
+            set = Operation("set", Entity(self.target, status = 1),
+                            to = self.target)
+            res.append(set)
+            current_status = 1.0
 
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.progress = current_status
@@ -54,6 +61,7 @@ class Repairing(server.Task):
             set = Operation("set", Entity(self.target, status = 1),
                             to = self.target)
             res.append(set)
+            self.irrelevant()
 
         self.progress = current_status
         self.rate = 0.1 / 1.75
