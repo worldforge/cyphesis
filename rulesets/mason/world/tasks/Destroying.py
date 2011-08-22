@@ -39,6 +39,9 @@ class Destroying(server.Task):
             return
 
         res=Oplist()
+        chunk_loc = target.location.copy()
+        chunk_loc.coordinates = target.location.coordinates
+        chunk_loc.orientation = target.location.orientation
 
         if hasattr ( target, 'status' ) : 
             current_status = target.status
@@ -59,6 +62,10 @@ class Destroying(server.Task):
             res.append(set)
 
         else:
+            if target.type[0] == "castle_house_a" :
+                create=Operation("create", Entity(name = "castle_house_ruin", type = "castle_house_ruin", location = chunk_loc), to = target)
+                res.append(create)
+
             set = Operation("set", Entity(self.target, status = -1),
                             to = self.target)
             res.append(set)

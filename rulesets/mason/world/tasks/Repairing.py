@@ -10,6 +10,18 @@ import server
 
 class Repairing(server.Task):
     """A very simple Repair system for Repairing structures."""
+
+    materials = ["wood"]
+
+    def consume_materials (self) :
+        for item in self.character.contains:
+            if item.type[0] == str(self.materials[0]):
+                set = Operation("set", Entity(item.id, status = -1), to = item)
+                return set
+        else : 
+            print "No Wooden wall in inventory"
+            return 0
+
     def repair_operation(self, op):
         """ The repair op is FROM the the character,
             TO the structure that is getting Repaired which we
@@ -28,6 +40,8 @@ class Repairing(server.Task):
         # print "Repair.tick" 
 
         target=server.world.get_object(self.target)
+        res=Oplist()
+        current_status = 0
         if not target:
             # print "Target is no more"
             self.irrelevant()
@@ -38,25 +52,29 @@ class Repairing(server.Task):
             self.irrelevant()
             return
 
-        if hasattr ( target, 'status' ) : 
-            current_status = target.status
-
-        else:
-            set = Operation("set", Entity(self.target, status = 1),
-                            to = self.target)
-            res.append(set)
-            current_status = 1.0
-
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.progress = current_status
             self.rate = 0
             return self.next_tick(1.75)
 
-        res=Oplist()
+        if hasattr ( target, 'status' ) : 
+            current_status = target.status
+        else:
+            set = Operation("set", Entity(self.target, status = 1),
+                            to = self.target)
+            res.append(set)
+            current_status = 1.0
+            self.irrelevant()
 
         if current_status < 0.9:
             set=Operation("set", Entity(self.target, status=current_status+0.1), to=self.target)
             res.append(set)
+            consume =  self.consume_materials ()
+            if consume : 
+                res.append(consume)
+            else : 
+                self.irrelevant()
+
         else:
             set = Operation("set", Entity(self.target, status = 1),
                             to = self.target)
