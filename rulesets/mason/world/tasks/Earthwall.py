@@ -49,12 +49,14 @@ class Earthwall(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
+        # counter for Earth , sand , boulder entity and total of previous one 
         ecount = 0
         scount = 0
         bcount = 0
         count = 0
+        # List which stores the to be consumed entity  
         raw_materials = []
-
+        # Make sure only 1 part of each attribute is being consumed as per the recipe. 
         for item in self.character.contains:
             if item.type[0] == str(self.materials[0]):
                 if item.name == "earth" :
@@ -80,7 +82,8 @@ class Earthwall(server.Task):
         chunk_loc.coordinates = target.location.coordinates
         chunk_loc.orientation = target.location.orientation
         
-        count = ecount + scount + bcount        
+        count = ecount + scount + bcount
+        # consume the materials stores in the list raw_materials
         while (count > 0) : 
             tar = raw_materials.pop()
             set = Operation("set", Entity(tar.id, status = -1), to = tar)

@@ -63,7 +63,7 @@ class Dragging(server.Task):
         chunk_loc.velocity = Vector3D()
 
         chunk_loc.coordinates = self.pos
-
+        # Move the entity to user's position.
         res = res + Operation("move", Entity(target.id, location = chunk_loc), to = target)
         res.append(self.next_tick(0.75))
 

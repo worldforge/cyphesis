@@ -49,7 +49,7 @@ class Bisect(server.Task):
         mid = length/2
 
         res=Oplist()
-
+        # A new BBox which changes the size of original entity
         new_bbox = [target.location.bbox.near_point.x,
                     target.location.bbox.near_point.y,
                     target.location.bbox.near_point.z,
@@ -73,13 +73,13 @@ class Bisect(server.Task):
         slice_loc.orientation = target.location.orientation
 
         typ = str(target.type[0])
-
+        # Some entity do not have name attribute defined. If name not present assign the same name as type.
         if hasattr ( target, 'name' ) : 
             nam = str(target.name)
         else : 
             nam = typ
         
-        # create to convert remaining fragment into a wood board
+        # create a new fragment of the remaining dimensions 
         create=Operation("create", Entity(name=nam, type=typ, location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 

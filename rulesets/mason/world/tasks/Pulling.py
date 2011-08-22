@@ -42,13 +42,16 @@ class Pulling(server.Task):
         target_location.velocity=Vector3D(0,0,-0.5)
         new_loc = self.character.location.coordinates
         origin = self.points[0]
+        # Get the diffrence in the location of user at current time to the time when he started the task
         diff = origin.x - new_loc.x
         target_entity_moving = Entity(self.target, location = target_location)
 
+        # Replicate the diffrence in position to the corresponding change in height.
         target_location = Location(target.location.parent, Point3D(target.location.coordinates.x, target.location.coordinates.y, target.location.coordinates.z + diff))
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target, location = target_location)
 
+        # Make the mode fixed to remove the height constraint on entity. 
         if not hasattr(target, 'mode') or target.mode != 'fixed':
             target_entity.mode = 'fixed'
 

@@ -13,7 +13,9 @@ class Repairing(server.Task):
 
     materials = ["wood"]
 
+
     def consume_materials (self) :
+    """ A method which gets the material to be consumed from the inventory & returns the consume operation """
         for item in self.character.contains:
             if item.type[0] == str(self.materials[0]):
                 set = Operation("set", Entity(item.id, status = -1), to = item)
@@ -57,6 +59,7 @@ class Repairing(server.Task):
             self.rate = 0
             return self.next_tick(1.75)
 
+        # Some entity do not have status defined. If not present we assume that the entity is unharmed & stop the task
         if hasattr ( target, 'status' ) : 
             current_status = target.status
         else:

@@ -49,9 +49,11 @@ class Baking(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
-        ecount = 0
+        # counter for Earthwall , board_wall & total count of entity.
+        ecount = 0  
         bcount = 0
         count = 0
+        # List which stores the to be consumed entity  
         raw_materials = []
 
         for item in self.character.contains:
@@ -70,6 +72,7 @@ class Baking(server.Task):
         chunk_loc.coordinates = target.location.coordinates
         chunk_loc.orientation = target.location.orientation
 
+        # Select which structure to produce depending on the recipe present in inventory
         if ecount == 1 :
             if bcount == 1 :
                 create=Operation("create", Entity(name = "castle_wall_run", type = "castle_wall_run", location = chunk_loc), to = target)
@@ -94,7 +97,7 @@ class Baking(server.Task):
                 create=Operation("create", Entity(name = "castle_house_a", type = "castle_house_a", location = chunk_loc), to = target)
                 res.append(create)
 
-
+        # Consume the materials according to the recipe
         while (count > 0) : 
             tar = raw_materials.pop()
             set = Operation("set", Entity(tar.id, status = -1), to = tar)

@@ -10,7 +10,7 @@ from physics import Vector3D
 import server
 
 class Woodenwall(server.Task):
-    """A task for creating a Woodenwall by consuming 2 lumber boards and a rope"""
+    """A task for creating a Woodenwall by consuming 1 lumber , 1 wooden board and a rope"""
     
     materials = ["lumber" , "wood" ]
     def walls_operation(self, op):
@@ -49,11 +49,14 @@ class Woodenwall(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
+        # counter for lumber, wood entity and total of previous one 
         lcount = 0
         wcount = 0
         count = 0
+        # List which stores the to be consumed entity  
         raw_materials = []
 
+        # Make sure only 1 part of each attribute is being consumed as per the recipe. 
         for item in self.character.contains:
             if item.type[0] == str(self.materials[0]):
                 if lcount == 0 :
@@ -66,7 +69,7 @@ class Woodenwall(server.Task):
             if (lcount+wcount) == 2 :
                 break
         else:
-            print "No lumber in inventory"
+            print "No materials in inventory"
             self.irrelevant()
             return
 
@@ -75,6 +78,8 @@ class Woodenwall(server.Task):
         chunk_loc.orientation = target.location.orientation
 
         count = lcount + wcount
+
+        # consume the materials stores in the list raw_materials
         while (count > 0) : 
             tar = raw_materials.pop()
             set = Operation("set", Entity(tar.id, status = -1), to = tar)

@@ -37,11 +37,6 @@ class Pioneering(server.Task):
         self.rate = 0.5 / 0.75
         self.progress += 1
 
-        if not target:
-            print "Target is no more"
-            self.irrelevant()
-            return
-
         res=Oplist()
 
         if self.progress < 1:
@@ -49,10 +44,12 @@ class Pioneering(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
+        # counter for rope , wood , lumber & total count of entity.
         rcount = 0
         wcount = 0
         lcount = 0
         count = 0
+        # List which stores the to be consumed entity  
         raw_materials = []
 
         for item in self.character.contains:
@@ -69,11 +66,12 @@ class Pioneering(server.Task):
             print item, "Not suffcient material in inventory"
 
         count = rcount + wcount + lcount
-	print rcount ,"w ", wcount ,"l ", lcount
+
         chunk_loc = target.location.copy()
         chunk_loc.coordinates = target.location.coordinates
         chunk_loc.orientation = target.location.orientation
 
+        # Select which structure to produce depending on the recipe present in inventory
         if rcount == 1 :
             if wcount == 1 and lcount == 0:
                 create=Operation("create", Entity(name = "sledge", type = "sledge", location = chunk_loc), to = target)
@@ -113,6 +111,7 @@ class Pioneering(server.Task):
                 create=Operation("create", Entity(name = "palissade_circle", type = "palissade_circle", location = chunk_loc), to = target)
                 res.append(create)
 
+        # Consume the materials according to the recipe
         while (count > 0) : 
             tar = raw_materials.pop()
             set = Operation("set", Entity(tar.id, status = -1), to = tar)

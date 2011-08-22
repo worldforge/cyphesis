@@ -37,9 +37,7 @@ class Trenching(server.Task):
             self.irrelevant()
             return
 
-
         old_rate = self.rate
-
         self.rate = 0.5 / 0.75
         self.progress += 0.5
 
