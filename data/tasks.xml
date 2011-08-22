@@ -22,7 +22,7 @@
   <map>
     <map name="activation">
       <string name="operation">bicut</string>
-      <string name="target">game_entity</string>
+      <string name="target">material</string>
       <string name="tool">bucksaw</string>
     </map>
     <map name="attributes">
