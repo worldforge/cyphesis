@@ -12,7 +12,6 @@ import server
 class Dragging(server.Task):
     """ A task for dragging heavy objects by using a pulley ."""
 
-    materials = { 0: 'wood' }
     def drag_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Dragging.drag"
