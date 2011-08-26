@@ -1,3 +1,5 @@
+Allow long cut and cross cut with saws. Long cut is along grain, bisecting by longest dimension. cross cut is across both grains
+
 use boost intrusive containers for op queues
 
 Check out _GLIBCX_DEBUG
