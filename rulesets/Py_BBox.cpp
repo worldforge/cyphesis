@@ -77,12 +77,11 @@ static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
         return -1;
     }
     const Point3D & point = pt->coords;
-    // FIXME Brutal ugly casts which can go away once wfmath is updated.
     if (strcmp(name, "near_point") == 0) {
-        (WFMath::Point<3>&)self->box.lowCorner() = point;
+        self->box.lowCorner() = point;
         return 0;
     } else if (strcmp(name, "far_point") == 0) {
-        (WFMath::Point<3>&)self->box.highCorner()= point;
+        self->box.highCorner()= point;
         return 0;
     }
 
