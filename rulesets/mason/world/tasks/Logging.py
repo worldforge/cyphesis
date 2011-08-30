@@ -16,7 +16,7 @@ class Logging(server.Task):
     """ A proof of concept task for logging."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        print "Logging.cut"
+        # print "Logging.cut"
 
         if len(op) < 1:
             sys.stderr.write("Logging task has no target in cut op")
@@ -27,11 +27,11 @@ class Logging(server.Task):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Logging.tick"
+        # print "Logging.tick"
 
         target=server.world.get_object(self.target)
         if not target:
-            print "Target is no more"
+            # print "Target is no more"
             self.irrelevant()
             return
 
@@ -58,7 +58,7 @@ class Logging(server.Task):
                 # axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
                 axis = distance_to(self.character.location, target.location).cross(Vector3D(0,0,1))
                 axis = axis.unit_vector()
-                print "axis ", axis
+                # print "axis ", axis
                 orient = Quaternion(axis, math.pi / -2.0)
                 if target.location.orientation.is_valid():
                     orient = target.location.orientation * orient
