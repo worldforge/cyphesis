@@ -123,6 +123,22 @@ static PyObject * Point3D_seq_item(PyPoint3D * self, Py_ssize_t item)
     return PyFloat_FromDouble(self->coords[item]);
 }
 
+static int Point3D_seq_ass_item(PyPoint3D * self,
+                                Py_ssize_t item,
+                                PyObject * val)
+{
+    if (item < 0 || item >= 3) {
+        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Index out of range.");
+        return -1;
+    }
+    if (!PyFloat_Check(val)) {
+        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Value must be float.");
+        return -1;
+    }
+    self->coords[item] = PyFloat_AsDouble(val);
+    return 0;
+}
+
 static PyPoint3D * Point3D_num_add(PyPoint3D * self, PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
@@ -233,13 +249,13 @@ PyObject * Point3D_new(PyTypeObject * type, PyObject *, PyObject *)
 }
 
 static PySequenceMethods Point3D_seq = {
-    (lenfunc)Point3D_seq_length,        /* sq_length */
-    NULL,                               /* sq_concat */
-    NULL,                               /* sq_repeat */
-    (ssizeargfunc)Point3D_seq_item,     /* sq_item */
-    NULL,                               /* sq_slice */
-    NULL,                               /* sq_ass_item */
-    NULL                                /* sq_ass_slice */
+    (lenfunc)Point3D_seq_length,              /* sq_length */
+    NULL,                                     /* sq_concat */
+    NULL,                                     /* sq_repeat */
+    (ssizeargfunc)Point3D_seq_item,           /* sq_item */
+    NULL,                                     /* sq_slice */
+    (ssizeobjargproc)Point3D_seq_ass_item,    /* sq_ass_item */
+    NULL                                      /* sq_ass_slice */
 };
 
 static PyNumberMethods Point3D_num = {
