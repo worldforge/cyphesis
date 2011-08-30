@@ -59,7 +59,7 @@ class Logging(server.Task):
                 axis = distance_to(self.character.location, target.location).cross(Vector3D(0,0,1))
                 axis = axis.unit_vector()
                 print "axis ", axis
-                orient = Quaternion(axis, math.pi / 2)
+                orient = Quaternion(axis, math.pi / -2.0)
                 if target.location.orientation.is_valid():
                     orient = target.location.orientation * orient
 
