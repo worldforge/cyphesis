@@ -477,7 +477,7 @@ def test_bisect(host='', account='', password='', **args):
     m=create_editor(host, account, password)
     settler=m.make('settler',pos=(1,1,0))
     axe=m.make('bucksaw',pos=(0,0,0),parent=settler.id)
-    material=m.make('wood', pos=(2,1,0))
+    material=m.make('wood', pos=(1.1,1,0))
 
     m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
     m.avatar.send(Operation("use", Operation("bicut", Entity(material.id)), to=settler))
