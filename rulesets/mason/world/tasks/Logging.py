@@ -50,16 +50,25 @@ class Logging(server.Task):
 
             normal=Vector3D(0,0,1)
             # print "LOC.ori ", target.location.orientation
+            # calculate how tilted the tree is already
             if target.location.orientation.is_valid():
                 normal.rotate(target.location.orientation)
             # print "Normal ", normal, normal.dot(Vector3D(0,0,1))
+            # if the tree is standing, and it's already half cut down, rotate
+            # it to be horizontal, away from the character
             if normal.dot(Vector3D(0,0,1)) > 0.8 and current_status < 0.5:
                 # print "Fall down"
-                # axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
-                axis = distance_to(self.character.location, target.location).cross(Vector3D(0,0,1))
+                # determine the axis of rotation by cross product of the vector
+                # from character to tree, and vertically upward vector
+                axis = distance_to(self.character.location,
+                                   target.location).cross(Vector3D(0,0,1))
+                # the axis must be a unit vector
                 axis = axis.unit_vector()
                 # print "axis ", axis
+                # create a rotation of 90 degrees around this axis
                 orient = Quaternion(axis, math.pi / -2.0)
+
+                # if the tree is rotated, apply this too
                 if target.location.orientation.is_valid():
                     orient = target.location.orientation * orient
 
