@@ -15,7 +15,7 @@ class Repairing(server.Task):
 
 
     def consume_materials (self) :
-    """ A method which gets the material to be consumed from the inventory & returns the consume operation """
+        """ A method which gets the material to be consumed from the inventory & returns the consume operation """
         for item in self.character.contains:
             if item.type[0] == str(self.materials[0]):
                 set = Operation("set", Entity(item.id, status = -1), to = item)
