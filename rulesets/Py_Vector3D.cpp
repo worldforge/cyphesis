@@ -251,6 +251,22 @@ static PyObject * Vector3D_seq_item(PyVector3D * self, Py_ssize_t item)
     return PyFloat_FromDouble(self->coords[item]);
 }
 
+static int Vector3D_seq_ass_item(PyVector3D * self,
+                                 Py_ssize_t item,
+                                 PyObject * val)
+{
+    if (item < 0 || item >= 3) {
+        PyErr_SetString(PyExc_TypeError,"Vector3D.[]: Index out of range.");
+        return -1;
+    }
+    if (!PyFloat_Check(val)) {
+        PyErr_SetString(PyExc_TypeError,"Vector3D.[]: Value must be float.");
+        return -1;
+    }
+    self->coords[item] = PyFloat_AsDouble(val);
+    return 0;
+}
+
 static PyVector3D*Vector3D_num_add(PyVector3D*self,PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
@@ -387,13 +403,13 @@ static PyObject * Vector3D_new(PyTypeObject * type, PyObject *, PyObject *)
 }
 
 static PySequenceMethods Vector3D_seq = {
-    (lenfunc)Vector3D_seq_length,        /* sq_length */
-    NULL,                               /* sq_concat */
-    NULL,                               /* sq_repeat */
-    (ssizeargfunc)Vector3D_seq_item,     /* sq_item */
-    NULL,                               /* sq_slice */
-    NULL,                               /* sq_ass_item */
-    NULL                                /* sq_ass_slice */
+    (lenfunc)Vector3D_seq_length,              /* sq_length */
+    NULL,                                      /* sq_concat */
+    NULL,                                      /* sq_repeat */
+    (ssizeargfunc)Vector3D_seq_item,           /* sq_item */
+    NULL,                                      /* sq_slice */
+    (ssizeobjargproc)Vector3D_seq_ass_item,    /* sq_ass_item */
+    NULL                                       /* sq_ass_slice */
 };
 
 static PyNumberMethods Vector3D_num = {
