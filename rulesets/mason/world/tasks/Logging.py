@@ -61,7 +61,7 @@ class Logging(server.Task):
                 print "axis ", axis
                 orient = Quaternion(axis, math.pi / 2)
                 if target.location.orientation.is_valid():
-                    orient *= target.location.orientation
+                    orient = target.location.orientation * orient
 
                 move_location = target.location.copy()
                 move_location.orientation = orient
