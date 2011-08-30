@@ -57,7 +57,11 @@ class Logging(server.Task):
                 # print "Fall down"
                 axis = Vector3D(uniform(-1,1), uniform(-1,1), 0)
                 axis = axis.unit_vector()
-                orient = target.location.orientation
+                orient = Quaternion()
+                if target.location.orientation.is_valid():
+                    orient = target.location.orientation
+                else:
+                    orient = Quaternion(1,0,0,0)
                 orient.rotation(axis, math.pi / 2)
 
                 move_location = target.location.copy()
