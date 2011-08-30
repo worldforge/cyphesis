@@ -561,3 +561,19 @@ def test_twirling(host='', account='', password='', **args):
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
         print "Task start failed"
         return
+
+def test_logging(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    axe=m.make('axe',pos=(0,0,0),parent=settler.id)
+    material=m.make('oak', pos=(1.1,1,0))
+
+    m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
+    m.avatar.send(Operation("use", Operation("cut", Entity(material.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
