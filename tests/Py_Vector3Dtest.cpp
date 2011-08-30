@@ -79,6 +79,14 @@ int main()
     fail_python_string("v.unit_vector_to(v)");
     fail_python_string("v.unit_vector_to(q)");
     run_python_string("print v");
+    run_python_string("print v.x");
+    run_python_string("print v.y");
+    run_python_string("print v.z");
+    run_python_string("print v[0]");
+    run_python_string("print v[1]");
+    run_python_string("print v[2]");
+    run_python_string("print v[-1]");
+    fail_python_string("print v[3]");
     run_python_string("v.x=1");
     run_python_string("v.y=1");
     run_python_string("v.z=1");

@@ -229,6 +229,28 @@ static int Vector3D_compare(PyVector3D * self, PyVector3D * other)
     return 1;
 }
 
+/*
+ * Vector3D sequence methods.
+ */
+
+#if PY_VERSION_HEX < 0x02050000
+typedef int Py_ssize_t;
+#endif
+
+static Py_ssize_t Vector3D_seq_length(PyVector3D * self)
+{
+    return 3;
+}
+
+static PyObject * Vector3D_seq_item(PyVector3D * self, Py_ssize_t item)
+{
+    if (item < 0 || item >= 3) {
+        PyErr_SetString(PyExc_TypeError,"Vector3D.[]: Index out of range.");
+        return 0;
+    }
+    return PyFloat_FromDouble(self->coords[item]);
+}
+
 static PyVector3D*Vector3D_num_add(PyVector3D*self,PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
@@ -364,6 +386,16 @@ static PyObject * Vector3D_new(PyTypeObject * type, PyObject *, PyObject *)
     return (PyObject *)self;
 }
 
+static PySequenceMethods Vector3D_seq = {
+    (lenfunc)Vector3D_seq_length,        /* sq_length */
+    NULL,                               /* sq_concat */
+    NULL,                               /* sq_repeat */
+    (ssizeargfunc)Vector3D_seq_item,     /* sq_item */
+    NULL,                               /* sq_slice */
+    NULL,                               /* sq_ass_item */
+    NULL                                /* sq_ass_slice */
+};
+
 static PyNumberMethods Vector3D_num = {
         (binaryfunc)Vector3D_num_add,   /* nb_add */
         (binaryfunc)Vector3D_num_sub,   /* nb_subtract */
@@ -404,7 +436,7 @@ PyTypeObject PyVector3D_Type = {
         (cmpfunc)Vector3D_compare,      // tp_compare
         (reprfunc)Vector3D_repr,        // tp_repr
         &Vector3D_num,                  // tp_as_number
-        0,                              // tp_as_sequence
+        &Vector3D_seq,                  // tp_as_sequence
         0,                              // tp_as_mapping
         0,                              // tp_hash
         0,                              // tp_call
