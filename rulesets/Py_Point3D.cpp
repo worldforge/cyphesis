@@ -102,7 +102,7 @@ static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
 }
 
 /*
- * Operation sequence methods.
+ * Point3D sequence methods.
  */
 
 #if PY_VERSION_HEX < 0x02050000
