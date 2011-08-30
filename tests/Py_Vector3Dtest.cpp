@@ -90,6 +90,10 @@ int main()
     run_python_string("v.x=1");
     run_python_string("v.y=1");
     run_python_string("v.z=1");
+    run_python_string("v[0]=1.0");
+    run_python_string("v[1]=1.0");
+    run_python_string("v[2]=1.0");
+    fail_python_string("v[3]=1");
     run_python_string("v.z=1.9");
     fail_python_string("v.z='1'");
     fail_python_string("v.w=1");
