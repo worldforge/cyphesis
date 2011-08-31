@@ -63,7 +63,11 @@ class Logging(server.Task):
                 axis = distance_to(self.character.location,
                                    target.location).cross(Vector3D(0,0,1))
                 # the axis must be a unit vector
-                axis = axis.unit_vector()
+                try:
+                    axis = axis.unit_vector()
+                except ZeroDivisionError:
+                    print "caught"
+                    axis = Vector3D(1,0,0)
                 # print "axis ", axis
                 # create a rotation of 90 degrees around this axis
                 orient = Quaternion(axis, math.pi / -2.0)
