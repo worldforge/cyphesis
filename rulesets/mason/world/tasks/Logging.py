@@ -66,7 +66,6 @@ class Logging(server.Task):
                 try:
                     axis = axis.unit_vector()
                 except ZeroDivisionError:
-                    print "caught"
                     axis = Vector3D(1,0,0)
                 # print "axis ", axis
                 # create a rotation of 90 degrees around this axis
