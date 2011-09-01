@@ -2,7 +2,7 @@
 
   <map>
     <map name="activation">
-      <string name="operation">crafting</string>
+      <string name="operation">craft</string>
       <string name="target">board_wall</string>
       <string name="tool">pickaxe</string>
     </map>
@@ -267,7 +267,7 @@
 
   <map>
     <map name="activation">
-      <string name="operation">crafting</string>
+      <string name="operation">craft</string>
       <string name="target">wood</string>
       <string name="tool">rope</string>
     </map>

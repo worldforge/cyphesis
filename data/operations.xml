@@ -25,7 +25,7 @@
   </map>
 
   <map>
-    <string name="id">crafting</string>
+    <string name="id">craft</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>root_operation</string>
