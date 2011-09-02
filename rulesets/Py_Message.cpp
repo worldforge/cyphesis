@@ -123,6 +123,7 @@ PyObject * Message_richcompare(PyMessage * self, PyObject * other, int op)
         return 0;
     }
 #endif // NDEBUG
+    bool equal = false;
     if ((op != Py_EQ) && (op != Py_NE)) {
         PyErr_SetString(PyExc_TypeError,
                         "MessageElement object can only be check for == or !=");
@@ -131,23 +132,24 @@ PyObject * Message_richcompare(PyMessage * self, PyObject * other, int op)
     if (self->m_obj->isString()) {
         if (PyString_Check(other) &&
             self->m_obj->asString() == PyString_AsString(other)) {
-            Py_INCREF(Py_True);
-            return Py_True;
+            equal = true;
         }
     } else if (self->m_obj->isInt()) {
         if (PyInt_Check(other) &&
             self->m_obj->asInt() == PyInt_AsLong(other)) {
-            Py_INCREF(Py_True);
-            return Py_True;
+            equal = true;
         }
     } else if (self->m_obj->isFloat()) {
         if (PyFloat_Check(other)
             && self->m_obj->asFloat() == PyFloat_AsDouble(other)) {
-            Py_INCREF(Py_True);
-            return Py_True;
+            equal = true;
         }
     }
 
+    if (equal && op == Py_EQ || !equal && op == Py_NE) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
     Py_INCREF(Py_False);
     return Py_False;
 }
