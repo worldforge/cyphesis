@@ -43,6 +43,8 @@ int main()
 
 // stubs
 
+#include "common/log.h"
+
 Script::Script()
 {
 }
@@ -59,5 +61,9 @@ bool Script::operation(const std::string & opname,
 }
 
 void Script::hook(const std::string & function, LocatedEntity * entity)
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
 {
 }
