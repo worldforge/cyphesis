@@ -256,11 +256,9 @@ class NPCMind(server.Mind):
             elif k_type!=StringType:
                 k='difficult to explain'
             elif predicate=='about':
-                return Operation('talk', Entity(say=k)) + \
-                       self.face(self.map.get(op.to))
-            return Operation('talk', Entity(say="The " + predicate + " of " +
-                                                object + " is " + k)) + \
-                   self.face(self.map.get(op.to))
+                return self.face_and_address(op.to, k)
+            return self.face_and_address(op.to, "The " + predicate + " of " +
+                                        object + " is " + k)
     def interlinguish_list_verb1_operation(self, op, say):
         """Handle a sentence of the form 'List (me) ....'
 
@@ -282,9 +280,8 @@ class NPCMind(server.Mind):
         res = Oplist()
         res = res + self.face(self.map.get(op.to))
         for key in d:
-            res = res + Operation('talk',
-                                  Entity(say="The " + predicate + " of " + key +
-                                             " is " + str(d[key])))
+            res = res + self.address(op.to, "The " + predicate + " of " + 
+                                     key + " is " + str(d[key]))
         return res
     def interlinguish_learn_verb1_operation(self, op, say):
         """Handle a sentence of the form 'learn ....'
@@ -534,3 +531,13 @@ class NPCMind(server.Mind):
         newloc = Location(self.location.parent)
         newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
         return Operation("move", Entity(self.id, location=newloc))
+    def address(self, entity_id, message):
+        """Creates a new Talk op which is addressed to an entity"""
+        return Operation('talk', Entity(say=message, address=[entity_id]))
+    def face_and_address(self, entity_id, message):
+        """Utility method for generating ops for both letting the NPC face
+        as well as address another entity. In most cases this is what you
+        want to do when conversating."""
+        return self.address(entity_id, message) + \
+            self.face(self.map.get(entity_id))
+    
