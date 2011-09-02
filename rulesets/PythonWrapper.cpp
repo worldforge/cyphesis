@@ -21,6 +21,9 @@
 
 #include "PythonWrapper.h"
 
+#include "common/compose.hpp"
+#include "common/log.h"
+
 /// \brief PythonWrapper constructor
 PythonWrapper::PythonWrapper(PyObject * wrapper) : m_wrapper(wrapper)
 {
@@ -29,5 +32,8 @@ PythonWrapper::PythonWrapper(PyObject * wrapper) : m_wrapper(wrapper)
 
 PythonWrapper::~PythonWrapper()
 {
+    if (m_wrapper->ob_refcnt != 1) {
+        log(WARNING, String::compose("Deleting entity with %1 > 1 refs to it's wrapper/script", m_wrapper->ob_refcnt));
+    }
     Py_DECREF(m_wrapper);
 }
