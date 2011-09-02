@@ -114,6 +114,44 @@ static int Message_setattr( PyMessage *self, char *name, PyObject *v)
     return -1;
 }
 
+PyObject * Message_richcompare(PyMessage * self, PyObject * other, int op)
+{
+#ifndef NDEBUG
+    if (self->m_obj == NULL) {
+        PyErr_SetString(PyExc_AssertionError,
+                        "NULL MessageElement in MessageElement.richcompare");
+        return 0;
+    }
+#endif // NDEBUG
+    if ((op != Py_EQ) && (op != Py_NE)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "MessageElement object can only be check for == or !=");
+        return 0;
+    }
+    if (self->m_obj->isString()) {
+        if (PyString_Check(other) &&
+            self->m_obj->asString() == PyString_AsString(other)) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        }
+    } else if (self->m_obj->isInt()) {
+        if (PyInt_Check(other) &&
+            self->m_obj->asInt() == PyInt_AsLong(other)) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        }
+    } else if (self->m_obj->isFloat()) {
+        if (PyFloat_Check(other)
+            && self->m_obj->asFloat() == PyFloat_AsDouble(other)) {
+            Py_INCREF(Py_True);
+            return Py_True;
+        }
+    }
+
+    Py_INCREF(Py_False);
+    return Py_False;
+}
+
 static int Message_init(PyMessage * self, PyObject * args, PyObject * kwds)
 {
     PyObject * arg = 0;
@@ -157,7 +195,7 @@ PyTypeObject PyMessage_Type = {
         "Message objects",              // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Message_richcompare,// tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext

@@ -106,6 +106,26 @@ int main()
     run_python_string("print m.foo");
     run_python_string("m.foo = {'foo': 1}");
     run_python_string("print m.foo");
+    run_python_string("m=Message(1)");
+    run_python_string("m == 1");
+    run_python_string("m == 1.0");
+    run_python_string("m == '1'");
+    run_python_string("m=Message(1.0)");
+    run_python_string("m == 1");
+    run_python_string("m == 1.0");
+    run_python_string("m == '1'");
+    run_python_string("m=Message('1')");
+    run_python_string("m == 1");
+    run_python_string("m == 1.0");
+    run_python_string("m == '1'");
+    run_python_string("m=Message([])");
+    run_python_string("m == 1");
+    run_python_string("m == 1.0");
+    run_python_string("m == '1'");
+    run_python_string("m=Message({})");
+    run_python_string("m == 1");
+    run_python_string("m == 1.0");
+    run_python_string("m == '1'");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
