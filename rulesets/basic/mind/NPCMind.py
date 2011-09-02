@@ -87,6 +87,17 @@ class NPCMind(server.Mind):
             sub_op = sub_op[0]
             event_name = event_name + "_" + sub_op.id
         return event_name, sub_op
+    def is_talk_op_addressed_to_me_or_none(self, op):
+        """Checks whether a Talk op is addressed either to none or to me.
+            This is useful is we want to avoid replying to queries addressed
+            to other entities."""
+        talk_entity=op[0]
+        if hasattr(talk_entity, "address"):
+            addressElement = talk_entity.address
+            if len(addressElement) == 0:
+                return True
+            return self.id in addressElement
+        return True
     ########## Map updates
     def add_map(self, obj):
         """Hook called by underlying map code when an entity is added."""
@@ -218,6 +229,11 @@ class NPCMind(server.Mind):
         Accept queries about what we know. Mostly this is for debugging
         and for the time being it is useful to answer these queries no matter
         who hasks."""
+        
+        # Ignore messages addressed to others
+        if not self.is_talk_op_addressed_to_me_or_none(op):
+            return None
+
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
         subject=say[1].word
@@ -251,6 +267,11 @@ class NPCMind(server.Mind):
         Accept queries about what we know. Mostly this is for debugging
         and for the time being it is useful to answer these queries no matter
         who hasks."""
+        
+        # Ignore messages addressed to others
+        if not self.is_talk_op_addressed_to_me_or_none(op):
+            return None
+        
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
         subject=say[1].word
