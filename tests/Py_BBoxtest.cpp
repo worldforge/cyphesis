@@ -68,11 +68,11 @@ int main()
     fail_python_string("b.other=Point3D(0,0,0)");
     run_python_string("print b.square_bounding_radius()");
     run_python_string("b2=BBox()");
-    run_python_string("print b == b2");
+    run_python_string("assert not b == b2");
     run_python_string("b2.near_point=Point3D(0,0,0)");
     run_python_string("b2.far_point=Point3D(1,1,1)");
-    run_python_string("print b == b2");
-    run_python_string("print b == '0'");
+    run_python_string("assert b == b2");
+    run_python_string("assert not b == '0'");
     
 
     shutdown_python_api();
