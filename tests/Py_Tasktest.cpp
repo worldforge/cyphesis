@@ -85,7 +85,7 @@ int main()
     run_python_string("t=Task(c)");
     run_python_string("Task(t)");
     run_python_string("t==Task(c)");
-    run_python_string("print t.character");
+    run_python_string("assert t.character == c");
     run_python_string("print t.progress");
     run_python_string("print t.rate");
     fail_python_string("print t.foo");
@@ -98,15 +98,15 @@ int main()
     run_python_string("t.foo = 1");
     run_python_string("t.foo = 1.1");
     run_python_string("t.foo = 'foois1'");
-    run_python_string("print t.foo");
-    run_python_string("print t.obsolete()");
+    run_python_string("assert t.foo == 'foois1'");
+    run_python_string("assert not t.obsolete()");
     run_python_string("print t.count()");
     run_python_string("print t.new_tick()");
     run_python_string("print t.next_tick(1)");
     run_python_string("print t.next_tick(1.1)");
     fail_python_string("print t.next_tick('1')");
     run_python_string("t.irrelevant()");
-    run_python_string("print t.obsolete()");
+    run_python_string("assert t.obsolete()");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
