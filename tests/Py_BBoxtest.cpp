@@ -54,25 +54,28 @@ int main()
     fail_python_string("b=BBox(1,1)");
     run_python_string("b=BBox(1,1,1)");
     run_python_string("b=BBox(1.0,1.0,1.0)");
-    run_python_string("b=BBox(1.0,1.0,1.0,1.0,1.0,1.0)");
     fail_python_string("b=BBox('1','1','1')");
-    run_python_string("print b.near_point");
-    run_python_string("print b.far_point");
-    run_python_string("print b.square_bounding_radius()");
+    run_python_string("b=BBox(0.0,0.0,0.0,1.0,1.0,1.0)");
     run_python_string("from physics import Point3D");
+    run_python_string("assert b.near_point == Point3D(0.0,0.0,0.0)");
+    run_python_string("assert b.far_point == Point3D(1.0,1.0,1.0)");
+    run_python_string("assert b.square_bounding_radius() > 1");
     fail_python_string("b.near_point=1");
     fail_python_string("b.near_point=Point3D()");
     fail_python_string("b.far_point=Point3D()");
     run_python_string("b.near_point=Point3D(0,0,0)");
-    run_python_string("b.far_point=Point3D(1,1,1)");
+    run_python_string("b.far_point=Point3D(2,2,2)");
     fail_python_string("b.other=Point3D(0,0,0)");
-    run_python_string("print b.square_bounding_radius()");
+    run_python_string("assert b.far_point == Point3D(2,2,2)");
+    run_python_string("assert b.square_bounding_radius() > 2");
     run_python_string("b2=BBox()");
-    run_python_string("print b == b2");
+    run_python_string("assert not b == b2");
+    run_python_string("assert b != b2");
     run_python_string("b2.near_point=Point3D(0,0,0)");
-    run_python_string("b2.far_point=Point3D(1,1,1)");
-    run_python_string("print b == b2");
-    run_python_string("print b == '0'");
+    run_python_string("b2.far_point=Point3D(2,2,2)");
+    run_python_string("assert b == b2");
+    run_python_string("assert not b != b2");
+    run_python_string("assert not b == '0'");
     
 
     shutdown_python_api();
