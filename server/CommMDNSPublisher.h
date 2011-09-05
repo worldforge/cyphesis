@@ -31,12 +31,6 @@
 /// \ingroup ServerSockets
 class CommMDNSPublisher : public CommSocket, virtual public Idle {
   private:
-    // Howl data
-    /// Discovery session identifier.
-    uint32_t m_oid;
-    ///
-    struct _sw_discovery * m_session;
-
     // Avahi data
     ///
     struct AvahiClient * m_avahiClient;

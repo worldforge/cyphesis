@@ -43,105 +43,7 @@
 
 #include <iostream>
 
-#if defined(HAVE_LIBHOWL)
-
-#include <discovery/discovery.h>
-
-#include <cassert>
-
-static const bool debug_flag = false;
-
-static sw_result reply_callback(sw_discovery,
-                                sw_discovery_oid,
-                                sw_discovery_publish_status status,
-                                sw_opaque)
-{
-    if (status == SW_DISCOVERY_PUBLISH_STARTED) {
-        // log(NOTICE, "Started publishing using MDNS");
-    } else if (status == SW_DISCOVERY_PUBLISH_STOPPED) {
-        // log(NOTICE, "Stopped publishing using MDNS");
-    } else if (status == SW_DISCOVERY_PUBLISH_NAME_COLLISION) {
-        log(WARNING, "Name collision publishing using howl MDNS");
-    } else if (status == SW_DISCOVERY_PUBLISH_INVALID) {
-        log(WARNING, "Invalid error publishing using howl MDNS");
-    } else {
-        log(ERROR, "Unknown error code using howl MDNS");
-    }
-    return SW_OKAY;
-}
-
-CommMDNSPublisher::CommMDNSPublisher(CommServer & svr) : Idle(svr),
-                                                         CommSocket(svr),
-                                                         m_session(0)
-{
-}
-
-CommMDNSPublisher::~CommMDNSPublisher()
-{
-    if (m_session != 0) {
-        sw_discovery_fina(m_session);
-        m_session = 0;
-    }
-}
-
-int CommMDNSPublisher::setup()
-{
-    if (sw_discovery_init(&m_session) != SW_OKAY) {
-        log(WARNING, "Unable to create MDNS publisher session");
-        return -1;
-    }
-
-    if (sw_discovery_publish(m_session, 0,
-                             m_commServer.m_server.getName().c_str(),
-                             "_worldforge._tcp.", NULL, NULL,
-                             client_port_num, NULL, 0,
-                             reply_callback, this, &m_oid) != SW_OKAY) {
-        log(WARNING, "Unable to publish our presence using MDNS");
-        return -1;
-    }
-    return 0;
-}
-
-void CommMDNSPublisher::idle(time_t t)
-{
-}
-
-int CommMDNSPublisher::getFd() const
-{
-    assert(m_session != 0);
-
-    return sw_discovery_socket(m_session);
-}
-
-bool CommMDNSPublisher::isOpen() const
-{
-    assert(m_session != 0);
-
-    return sw_discovery_socket(m_session) != -1;
-}
-
-bool CommMDNSPublisher::eof()
-{
-    return false;
-}
-
-int CommMDNSPublisher::read()
-{
-    assert(m_session != 0);
-
-    if (sw_discovery_read_socket(m_session) != SW_OKAY) {
-        log(WARNING, "Error publishing our presence using MDNS. Disabled.");
-        return -1;
-    }
-
-    return 0;
-}
-
-void CommMDNSPublisher::dispatch()
-{
-}
-
-#elif defined(HAVE_AVAHI)
+#if defined(HAVE_AVAHI)
 
 #include <avahi-client/client.h>
 #include <avahi-client/publish.h>
@@ -455,4 +357,4 @@ void CommMDNSPublisher::dispatch()
 {
 }
 
-#endif // defined(HAVE_LIBHOWL)
+#endif // defined(HAVE_AVAHI)
