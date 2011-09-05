@@ -146,7 +146,7 @@ PyObject * Message_richcompare(PyMessage * self, PyObject * other, int op)
         }
     }
 
-    if (equal && op == Py_EQ || !equal && op == Py_NE) {
+    if ((equal && op == Py_EQ) || (!equal && op == Py_NE)) {
         Py_INCREF(Py_True);
         return Py_True;
     }
