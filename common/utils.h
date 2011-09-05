@@ -36,4 +36,4 @@ bool from_string(T& t, const std::string& s, std::ios_base& (*f)(std::ios_base&)
 }
 
 
-#endif
+#endif // COMMON_UTILS_H
