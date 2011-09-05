@@ -70,4 +70,4 @@ class TeleportAuthenticator
     Entity *authenticateTeleport(const std::string &, const std::string &);
 };
 
-#endif
+#endif // SERVER_TELEPORT_AUTHENTICATOR_H

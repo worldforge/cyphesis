@@ -68,4 +68,4 @@ inline bool PendingTeleport::isValidated() const
     return m_valid;
 }
 
-#endif
+#endif // SERVER_PENDING_TELEPORT_H
