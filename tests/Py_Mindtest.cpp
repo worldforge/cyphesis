@@ -73,28 +73,33 @@ int main()
     fail_python_string("Mind(1)");
     fail_python_string("Mind('s')");
     run_python_string("m=Mind('1')");
-    run_python_string("print m.as_entity()");
-    fail_python_string("print m.foo_operation()");
-    run_python_string("print m.id");
+    run_python_string("import atlas");
+    run_python_string("import server");
+    run_python_string("import types");
+    run_python_string("assert type(m.as_entity()) == atlas.Message");
+    fail_python_string("m.foo_operation()");
+    run_python_string("assert type(m.id) == types.StringType");
     fail_python_string("print m.type");
-    run_python_string("print m.map");
-    run_python_string("print m.location");
-    run_python_string("print m.time");
-    run_python_string("print m.contains");
+    run_python_string("assert type(m.map) == server.Map");
+    run_python_string("assert type(m.location) == atlas.Location");
+    run_python_string("assert type(m.time) == server.WorldTime");
+    run_python_string("assert m.contains == None");
     fail_python_string("print m.foo");
     fail_python_string("m.map=1");
     run_python_string("m.foo=1");
     run_python_string("m.foo=1.1");
     run_python_string("m.foo='1'");
-    run_python_string("print m.foo");
+    run_python_string("assert m.foo == '1'");
     run_python_string("m.bar=[1]");
     run_python_string("m.baz={'foo': 1}");
     fail_python_string("print m.qux");
-    run_python_string("print m.baz");
-    run_python_string("m==m");
+    run_python_string("assert m.baz == {'foo': 1}");
+    run_python_string("assert m==m");
     run_python_string("m2=Mind('2')");
     fail_python_string("m2.mind=1");
+    run_python_string("assert not m2==m");
     run_python_string("m2.mind=m");
+    run_python_string("assert m2==m");
     
 
 #ifdef CYPHESIS_DEBUG
