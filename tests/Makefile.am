@@ -67,7 +67,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                ConnectedRoutertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
-                    CommHttpClienttest CommStreamListenertest CommPeertest
+                    CommHttpClienttest CommStreamListenertest CommPeertest \
+                    CommMDNSPublishertest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration
 
@@ -1293,6 +1294,12 @@ CommStreamListenertest_SOURCES = CommStreamListenertest.cpp
 CommStreamListenertest_LDADD = \
         $(top_builddir)/server/CommStreamListener.o \
         $(NETWORK_LIBS)
+
+CommMDNSPublishertest_SOURCES = CommMDNSPublishertest.cpp
+CommMDNSPublishertest_LDADD = \
+        $(top_builddir)/server/CommMDNSPublisher.o \
+        $(top_builddir)/server/CommSocket.o \
+        $(top_builddir)/server/Idle.o
 
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
