@@ -91,6 +91,7 @@ void group_callback(AvahiEntryGroup * g,
 {
      switch (state) {
          case AVAHI_ENTRY_GROUP_ESTABLISHED :
+             log(NOTICE, "Avahi callback reported group established");
              /* The entry group has been established successfully */
 
              break;
@@ -227,7 +228,8 @@ static void timeout_update(AvahiTimeout * at, const struct timeval *tv)
 
 static void timeout_free(AvahiTimeout * at)
 {
-    debug(std::cout << "avahi_timeout_free " << at << std::endl << std::endl << std::flush;);
+    debug(std::cout << "avahi_timeout_free " << at
+                    << std::endl << std::endl << std::flush;);
     at->m_publisher->m_avahiTimeouts.erase(at);
     delete at;
 }
@@ -256,7 +258,11 @@ int CommMDNSPublisher::setup()
                        timeout_free
                      };
 
-    m_avahiClient = avahi_client_new(&poll, (AvahiClientFlags)0, &avahi_client_callback, this, &m_avahiError);
+    m_avahiClient = avahi_client_new(&poll,
+                                     (AvahiClientFlags)0,
+                                     &avahi_client_callback,
+                                     this,
+                                     &m_avahiError);
 
     if (m_avahiClient == 0) {
         log(ERROR, "Avahi client creation failed");
@@ -284,22 +290,28 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
     }
 
     AvahiStringList * txt;
-    txt = avahi_string_list_new(String::compose("builddate=%1", std::string(consts::buildTime)+", "+std::string(consts::buildDate)).c_str(),
-                                String::compose("clients=%1", m_commServer.m_server.getClients()).c_str(),
-                                String::compose("ruleset=%1", m_commServer.m_server.getRuleset()).c_str(),
-                                String::compose("server=%1", "cyphesis").c_str(),
-                                String::compose("uptime=%1", m_commServer.m_server.m_world.upTime()).c_str(),
-                                String::compose("version=%1", std::string(consts::version)).c_str(),
-                                NULL);
+    txt = avahi_string_list_new(
+      String::compose("builddate=%1",
+                      std::string(consts::buildTime) + ", " +
+                      std::string(consts::buildDate)).c_str(),
+      String::compose("clients=%1", m_commServer.m_server.getClients()).c_str(),
+      String::compose("ruleset=%1", m_commServer.m_server.getRuleset()).c_str(),
+      String::compose("server=%1", "cyphesis").c_str(),
+      String::compose("uptime=%1",
+                      m_commServer.m_server.m_world.upTime()).c_str(),
+      String::compose("version=%1", std::string(consts::version)).c_str(),
+      NULL);
 
     int ret;
-    ret = avahi_entry_group_add_service_strlst(m_group,
-                                               AVAHI_IF_UNSPEC,
-                                               AVAHI_PROTO_UNSPEC,
-                                               (AvahiPublishFlags)0,
-                                               m_commServer.m_server.getName().c_str(),
-                                               "_worldforge._tcp", NULL, NULL,
-                                               client_port_num, txt);
+    ret = avahi_entry_group_add_service_strlst(
+      m_group,
+      AVAHI_IF_UNSPEC,
+      AVAHI_PROTO_UNSPEC,
+      (AvahiPublishFlags)0,
+      m_commServer.m_server.getName().c_str(),
+      "_worldforge._tcp", NULL, NULL,
+      client_port_num, txt);
+
     avahi_string_list_free(txt);
     if (ret < 0) {
         log(ERROR, "Avahi service publish failed");
@@ -322,7 +334,8 @@ void CommMDNSPublisher::idle(time_t t)
             continue;
         }
         if ((*I)->m_tv.tv_sec <= t) {
-            debug(std::cout << "TImeout " << (*I) << " is now due" << std::endl << std::flush;);
+            debug(std::cout << "TImeout " << (*I) << " is now due"
+                            << std::endl << std::flush;);
             (*I)->m_callback(*I, (*I)->m_userdata);
             (*I)->m_tv.tv_sec = 0;
         }
@@ -348,7 +361,10 @@ int CommMDNSPublisher::read()
 {
     assert(m_avahiWatch != 0);
     m_avahiWatch->m_events = AVAHI_WATCH_IN;
-    m_avahiWatch->m_callback(m_avahiWatch, m_avahiFd, AVAHI_WATCH_IN, m_avahiWatch->m_userdata);
+    m_avahiWatch->m_callback(m_avahiWatch,
+                             m_avahiFd,
+                             AVAHI_WATCH_IN,
+                             m_avahiWatch->m_userdata);
     m_avahiWatch->m_events = (AvahiWatchEvent)0;
     return 0;
 }
