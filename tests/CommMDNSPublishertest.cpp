@@ -25,17 +25,88 @@
 #endif
 
 #include "server/CommMDNSPublisher.h"
+#include "server/CommServer.h"
+#include "server/ServerRouting.h"
 
 #include <cassert>
 
 int main()
 {
+    ServerRouting test_server(*(BaseWorld*)0, "", "", "1", 1, "2", 2);
+    CommServer test_comm_server(test_server);
+
+    {
+
+    }
+
     return 0;
 }
 
-// stubs
+// Stub functions
 
 #include "common/log.h"
+
+ServerRouting::ServerRouting(BaseWorld & wrld,
+                             const std::string & ruleset,
+                             const std::string & name,
+                             const std::string & id, long intId,
+                             const std::string & lId, long lIntId) :
+        Router(id, intId),
+        m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
+{
+}
+
+ServerRouting::~ServerRouting()
+{
+}
+
+void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                     m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+{
+}
+
+CommServer::~CommServer()
+{
+}
+
+CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+
+CommSocket::~CommSocket()
+{
+}
+
+Idle::Idle(CommServer & svr) : m_idleManager(svr)
+{
+}
+
+Idle::~Idle()
+{
+}
 
 void log(LogLevel lvl, const std::string & msg)
 {

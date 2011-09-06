@@ -1297,9 +1297,7 @@ CommStreamListenertest_LDADD = \
 
 CommMDNSPublishertest_SOURCES = CommMDNSPublishertest.cpp
 CommMDNSPublishertest_LDADD = \
-        $(top_builddir)/server/CommMDNSPublisher.o \
-        $(top_builddir)/server/CommSocket.o \
-        $(top_builddir)/server/Idle.o
+        $(top_builddir)/server/CommMDNSPublisher.o
 
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
