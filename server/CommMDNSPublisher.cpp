@@ -85,9 +85,9 @@ static void client_callback(AvahiClient * s,
     }
 }
 
-void group_callback(AvahiEntryGroup * g,
-                    AvahiEntryGroupState state,
-                    void * userdata)
+static void group_callback(AvahiEntryGroup * g,
+                           AvahiEntryGroupState state,
+                           void * userdata)
 {
      switch (state) {
          case AVAHI_ENTRY_GROUP_ESTABLISHED :
