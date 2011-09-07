@@ -54,9 +54,9 @@
 
 static const bool debug_flag = false;
 
-static void avahi_client_callback(AvahiClient * s,
-                                  AvahiClientState state,
-                                  void * userdata)
+static void client_callback(AvahiClient * s,
+                            AvahiClientState state,
+                            void * userdata)
 {
     CommMDNSPublisher * cmp = (CommMDNSPublisher*)userdata;
 
@@ -260,7 +260,7 @@ int CommMDNSPublisher::setup()
 
     m_avahiClient = avahi_client_new(&poll,
                                      (AvahiClientFlags)0,
-                                     &avahi_client_callback,
+                                     &client_callback,
                                      this,
                                      &m_avahiError);
 
