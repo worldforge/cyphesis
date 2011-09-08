@@ -119,7 +119,8 @@ static void group_callback(AvahiEntryGroup * g,
              break;
  
          case AVAHI_ENTRY_GROUP_UNCOMMITED:
-             log(NOTICE, "Avahi callback reported group uncommited");
+             // This will happen when the group is created,
+             // and is not noteworthy
              break;
          case AVAHI_ENTRY_GROUP_REGISTERING:
              log(NOTICE, "Avahi callback reported group registering");
