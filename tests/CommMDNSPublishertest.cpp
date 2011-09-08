@@ -24,6 +24,10 @@
 #define DEBUG
 #endif
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "server/CommMDNSPublisher.h"
 #include "server/CommServer.h"
 #include "server/ServerRouting.h"
@@ -32,6 +36,9 @@
 
 int main()
 {
+#ifndef HAVE_AVAHI
+}
+#else // HAVE_AVAHI
     ServerRouting test_server(*(BaseWorld*)0, "", "", "1", 1, "2", 2);
     CommServer test_comm_server(test_server);
 
@@ -187,3 +194,4 @@ int avahi_client_errno(AvahiClient *)
 {
     return 0;
 }
+#endif // HAVE_AVAHI
