@@ -78,7 +78,7 @@ static void client_callback(AvahiClient * s,
             break;
 
         case AVAHI_CLIENT_CONNECTING:
-            log(ERROR, "Avahi returned connecting, but we did not specify NO_FAIL");
+            log(NOTICE, "Avahi returned connecting");
             break;
 
         case AVAHI_CLIENT_S_REGISTERING:
