@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2004 Alistair Riddoch
+// Copyright (C) 2004-2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -124,7 +124,8 @@ static void group_callback(AvahiEntryGroup * g,
              break;
  
          case AVAHI_ENTRY_GROUP_UNCOMMITED:
-             log(NOTICE, "Avahi callback reported group uncommited");
+             // This will happen when the group is created,
+             // and is not noteworthy
              break;
          case AVAHI_ENTRY_GROUP_REGISTERING:
              log(NOTICE, "Avahi callback reported group registering");
@@ -146,7 +147,8 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
                              AvahiWatchCallback callback,
                              void *userdata)
 {
-    debug(std::cout << "avahi_watch_new " << fd << std::endl << std::flush;);
+    debug(std::cout << "avahi_watch_new " << fd << " " << callback
+                    << std::endl << std::flush;);
     CommMDNSPublisher * cmp = (CommMDNSPublisher*)api->userdata;
     if (cmp->getFd() != -1) {
         log(ERROR, "Avahi asked for multiple fds. Unable to comply.");
@@ -154,7 +156,7 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
         cmp->m_avahiFd = fd;
     }
 
-    if (!event & AVAHI_WATCH_IN) {
+    if (~event & AVAHI_WATCH_IN) {
         log(ERROR, "Avahi watcher does not require read events.");
     }
     if (event & ~AVAHI_WATCH_IN) {
