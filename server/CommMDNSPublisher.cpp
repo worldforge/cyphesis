@@ -69,11 +69,11 @@ static void client_callback(AvahiClient * s,
             break;
 
         case AVAHI_CLIENT_S_COLLISION:
-            log(WARNING, "Name collision while publishing using howl MDNS");
+            log(WARNING, "Name collision while publishing using avahi MDNS");
             break;
 
         case AVAHI_CLIENT_FAILURE:
-            log(WARNING, "Failure while publishing using howl MDNS");
+            log(WARNING, "Failure while publishing using avahi MDNS");
             break;
 
         case AVAHI_CLIENT_CONNECTING:
@@ -81,6 +81,11 @@ static void client_callback(AvahiClient * s,
             break;
 
         case AVAHI_CLIENT_S_REGISTERING:
+            log(WARNING, "Avahi registering");
+            break;
+
+        default:
+            log(WARNING, "Unknown state");
             break;
     }
 }
