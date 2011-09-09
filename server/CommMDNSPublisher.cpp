@@ -63,6 +63,7 @@ static void client_callback(AvahiClient * s,
     switch (state) {
         case AVAHI_CLIENT_S_RUNNING:
             // Check we have not already started them
+            log(WARNING, "Avahi now running");
             if (cmp->m_group == 0) {
                 cmp->setup_service(s);
             }
@@ -261,7 +262,7 @@ int CommMDNSPublisher::setup()
                      };
 
     m_avahiClient = avahi_client_new(&poll,
-                                     (AvahiClientFlags)0,
+                                     (AvahiClientFlags)AVAHI_CLIENT_NO_FAIL,
                                      &client_callback,
                                      this,
                                      &m_avahiError);
