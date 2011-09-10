@@ -237,7 +237,7 @@ static void timeout_update(AvahiTimeout * at, const struct timeval *tv)
 static void timeout_free(AvahiTimeout * at)
 {
     debug(std::cout << "avahi_timeout_free " << at
-                    << std::endl << std::endl << std::flush;);
+                    << std::endl << std::flush;);
     at->m_publisher->m_avahiTimeouts.erase(at);
     delete at;
 }
