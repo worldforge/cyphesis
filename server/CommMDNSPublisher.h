@@ -30,13 +30,16 @@
 /// \brief Handle a socket used to communicate with the MDNS responder daemon.
 /// \ingroup ServerSockets
 class CommMDNSPublisher : public CommSocket, virtual public Idle {
-  private:
+  protected:
     // Avahi data
     ///
     struct AvahiClient * m_avahiClient;
     ///
     int m_avahiError;
 
+    bool m_immediate;
+    /// Check and expire timers
+    void checkTimers(time_t);
   public:
     ///
     int m_avahiFd;
@@ -50,6 +53,10 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     explicit CommMDNSPublisher(CommServer & svr);
 
     virtual ~CommMDNSPublisher();
+
+    void setImmediate() {
+        m_immediate = true;
+    }
 
     int setup();
     void setup_service(struct AvahiClient * );
