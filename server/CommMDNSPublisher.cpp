@@ -58,6 +58,7 @@ static void client_callback(AvahiClient * s,
                             AvahiClientState state,
                             void * userdata)
 {
+    log(WARNING, "Client callback");
     CommMDNSPublisher * cmp = (CommMDNSPublisher*)userdata;
 
     switch (state) {
@@ -195,7 +196,8 @@ static void watch_free(AvahiWatch *w)
 
 struct AvahiTimeout {
     CommMDNSPublisher * m_publisher;
-    struct timeval m_tv;
+    struct timeval m_expiry;
+    enum { NEW = 0, ENABLED, EXPIRED, DEAD } m_state;
     AvahiTimeoutCallback m_callback;
     void * m_userdata;
 };
@@ -205,15 +207,18 @@ static AvahiTimeout* timeout_new(const AvahiPoll * api,
                                  AvahiTimeoutCallback callback,
                                  void *userdata)
 {
-    debug(std::cout << "avahi_timeout_new " << tv << " " << callback << std::endl << std::flush;);
     CommMDNSPublisher * cmp = (CommMDNSPublisher*)api->userdata;
 
     AvahiTimeout * at = new AvahiTimeout;
+    debug(std::cout << "avahi_timeout_new " << at << " "
+                    << (tv ? tv->tv_sec : -1)  << " " << callback
+                    << std::endl << std::flush;);
     at->m_publisher = cmp;
     if (tv != 0) {
-        at->m_tv = *tv;
+        at->m_expiry = *tv;
+        at->m_state = AvahiTimeout::ENABLED;
     } else {
-        at->m_tv.tv_sec = 0;
+        at->m_state = AvahiTimeout::NEW;
     }
     at->m_callback = callback;
     at->m_userdata = userdata;
@@ -225,12 +230,13 @@ static AvahiTimeout* timeout_new(const AvahiPoll * api,
 
 static void timeout_update(AvahiTimeout * at, const struct timeval *tv)
 {
-    debug(std::cout << "avahi_timeout_update " << at << std::endl << std::flush;);
+    debug(std::cout << "avahi_timeout_update " << at << " " << (tv ? tv->tv_sec : -1) << std::endl << std::flush;);
 
     if (tv != 0) {
-        at->m_tv = *tv;
+        at->m_expiry = *tv;
+        at->m_state = AvahiTimeout::ENABLED;
     } else {
-        at->m_tv.tv_sec = 0;
+        at->m_state = AvahiTimeout::NEW; // FIXME Really, new again?
     }
 }
 
@@ -238,6 +244,7 @@ static void timeout_free(AvahiTimeout * at)
 {
     debug(std::cout << "avahi_timeout_free " << at
                     << std::endl << std::flush;);
+    at->m_state = AvahiTimeout::DEAD;
     at->m_publisher->m_avahiTimeouts.erase(at);
     delete at;
 }
@@ -335,17 +342,20 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
 
 void CommMDNSPublisher::idle(time_t t)
 {
+    debug(std::cout << "idle " << t << std::endl;);
     std::set<AvahiTimeout *>::const_iterator I = m_avahiTimeouts.begin();
     std::set<AvahiTimeout *>::const_iterator Iend = m_avahiTimeouts.end();
     for (; I != Iend; ++I) {
-        if ((*I)->m_tv.tv_sec == 0) {
+        if ((*I)->m_state != AvahiTimeout::ENABLED) {
+            debug(std::cout << "TImeout " << (*I) << " is dissed"
+                            << std::endl << std::flush;);
             continue;
         }
-        if ((*I)->m_tv.tv_sec <= t) {
+        if ((*I)->m_expiry.tv_sec <= t) {
             debug(std::cout << "TImeout " << (*I) << " is now due"
                             << std::endl << std::flush;);
-            (*I)->m_callback(*I, (*I)->m_userdata);
-            (*I)->m_tv.tv_sec = 0;
+            (*I)->m_state = AvahiTimeout::EXPIRED;
+            // (*I)->m_callback(*I, (*I)->m_userdata);
         }
     }
 }
