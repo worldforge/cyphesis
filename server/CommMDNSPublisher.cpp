@@ -290,7 +290,8 @@ int CommMDNSPublisher::setup()
                                      &m_avahiError);
 
     if (m_avahiClient == 0) {
-        log(ERROR, "Avahi client creation failed");
+        log(ERROR, String::compose("Avahi client creation failed: %1",
+                                   avahi_strerror(m_avahiError)));
         return -1;
     }
 
