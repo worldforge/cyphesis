@@ -58,13 +58,11 @@ static void client_callback(AvahiClient * s,
                             AvahiClientState state,
                             void * userdata)
 {
-    log(WARNING, "Client callback");
     CommMDNSPublisher * cmp = (CommMDNSPublisher*)userdata;
 
     switch (state) {
         case AVAHI_CLIENT_S_RUNNING:
             // Check we have not already started them
-            log(WARNING, "Avahi now running");
             if (cmp->m_group == 0) {
                 cmp->setup_service(s);
             }
@@ -98,7 +96,6 @@ static void group_callback(AvahiEntryGroup * g,
 {
      switch (state) {
          case AVAHI_ENTRY_GROUP_ESTABLISHED :
-             log(NOTICE, "Avahi callback reported group established");
              /* The entry group has been established successfully */
 
              break;
@@ -126,11 +123,9 @@ static void group_callback(AvahiEntryGroup * g,
              break;
  
          case AVAHI_ENTRY_GROUP_UNCOMMITED:
-             // This will happen when the group is created,
-             // and is not noteworthy
-             break;
          case AVAHI_ENTRY_GROUP_REGISTERING:
-             log(NOTICE, "Avahi callback reported group registering");
+             // This will happen when the group is created or registering,
+             // and is not noteworthy
              break;
      }
 }
@@ -273,15 +268,15 @@ CommMDNSPublisher::~CommMDNSPublisher()
 
 int CommMDNSPublisher::setup()
 {
-    AvahiPoll poll = { this,
-                       watch_new,
-                       watch_update,
-                       watch_get_events,
-                       watch_free,
-                       timeout_new,
-                       timeout_update,
-                       timeout_free
-                     };
+    static AvahiPoll poll = { this,
+                              watch_new,
+                              watch_update,
+                              watch_get_events,
+                              watch_free,
+                              timeout_new,
+                              timeout_update,
+                              timeout_free
+                            };
 
     m_avahiClient = avahi_client_new(&poll,
                                      (AvahiClientFlags)AVAHI_CLIENT_NO_FAIL,
