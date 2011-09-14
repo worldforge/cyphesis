@@ -87,6 +87,17 @@ class NPCMind(server.Mind):
             sub_op = sub_op[0]
             event_name = event_name + "_" + sub_op.id
         return event_name, sub_op
+    def is_talk_op_addressed_to_me_or_none(self, op):
+        """Checks whether a Talk op is addressed either to none or to me.
+           This is useful is we want to avoid replying to queries addressed
+           to other entities."""
+        talk_entity=op[0]
+        if hasattr(talk_entity, "address"):
+            addressElement = talk_entity.address
+            if len(addressElement) == 0:
+                return True
+            return self.id in addressElement
+        return True
     ########## Map updates
     def add_map(self, obj):
         """Hook called by underlying map code when an entity is added."""
@@ -218,6 +229,11 @@ class NPCMind(server.Mind):
         Accept queries about what we know. Mostly this is for debugging
         and for the time being it is useful to answer these queries no matter
         who hasks."""
+        
+        # Ignore messages addressed to others
+        if not self.is_talk_op_addressed_to_me_or_none(op):
+            return None
+
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
         subject=say[1].word
@@ -240,17 +256,20 @@ class NPCMind(server.Mind):
             elif k_type!=StringType:
                 k='difficult to explain'
             elif predicate=='about':
-                return Operation('talk', Entity(say=k)) + \
-                       self.face(self.map.get(op.to))
-            return Operation('talk', Entity(say="The " + predicate + " of " +
-                                                object + " is " + k)) + \
-                   self.face(self.map.get(op.to))
+                return self.face_and_address(op.to, k)
+            return self.face_and_address(op.to, "The " + predicate + " of " +
+                                        object + " is " + k)
     def interlinguish_list_verb1_operation(self, op, say):
         """Handle a sentence of the form 'List (me) ....'
 
         Accept queries about what we know. Mostly this is for debugging
         and for the time being it is useful to answer these queries no matter
         who hasks."""
+        
+        # Ignore messages addressed to others
+        if not self.is_talk_op_addressed_to_me_or_none(op):
+            return None
+        
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
         subject=say[1].word
@@ -261,9 +280,8 @@ class NPCMind(server.Mind):
         res = Oplist()
         res = res + self.face(self.map.get(op.to))
         for key in d:
-            res = res + Operation('talk',
-                                  Entity(say="The " + predicate + " of " + key +
-                                             " is " + str(d[key])))
+            res = res + self.address(op.to, "The " + predicate + " of " + 
+                                     key + " is " + str(d[key]))
         return res
     def interlinguish_learn_verb1_operation(self, op, say):
         """Handle a sentence of the form 'learn ....'
@@ -513,3 +531,13 @@ class NPCMind(server.Mind):
         newloc = Location(self.location.parent)
         newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
         return Operation("move", Entity(self.id, location=newloc))
+    def address(self, entity_id, message):
+        """Creates a new Talk op which is addressed to an entity"""
+        return Operation('talk', Entity(say=message, address=[entity_id]))
+    def face_and_address(self, entity_id, message):
+        """Utility method for generating ops for both letting the NPC face
+           as well as address another entity. In most cases this is what you
+           want to do when conversing."""
+        return self.address(entity_id, message) + \
+               self.face(self.map.get(entity_id))
+    
