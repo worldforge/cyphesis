@@ -539,5 +539,5 @@ class NPCMind(server.Mind):
            as well as address another entity. In most cases this is what you
            want to do when conversing."""
         return self.address(entity_id, message) + \
-            self.face(self.map.get(entity_id))
+               self.face(self.map.get(entity_id))
     
