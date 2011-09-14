@@ -62,6 +62,7 @@ void TaskScript::irrelevant()
 
 void TaskScript::initTask(const Operation & op, OpVector & res)
 {
+    assert(!op->getParents().empty());
     if (m_script == 0) {
         log(WARNING, "Task script failed");
         irrelevant();
