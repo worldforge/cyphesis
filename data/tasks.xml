@@ -21,7 +21,7 @@
 
   <map>
     <map name="activation">
-      <string name="operation">bicut</string>
+      <string name="operation">cut</string>
       <string name="target">material</string>
       <string name="tool">bucksaw</string>
     </map>
