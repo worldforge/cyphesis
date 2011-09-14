@@ -536,8 +536,8 @@ class NPCMind(server.Mind):
         return Operation('talk', Entity(say=message, address=[entity_id]))
     def face_and_address(self, entity_id, message):
         """Utility method for generating ops for both letting the NPC face
-        as well as address another entity. In most cases this is what you
-        want to do when conversating."""
+           as well as address another entity. In most cases this is what you
+           want to do when conversing."""
         return self.address(entity_id, message) + \
             self.face(self.map.get(entity_id))
     
