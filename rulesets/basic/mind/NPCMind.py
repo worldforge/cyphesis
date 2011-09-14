@@ -89,8 +89,8 @@ class NPCMind(server.Mind):
         return event_name, sub_op
     def is_talk_op_addressed_to_me_or_none(self, op):
         """Checks whether a Talk op is addressed either to none or to me.
-            This is useful is we want to avoid replying to queries addressed
-            to other entities."""
+           This is useful is we want to avoid replying to queries addressed
+           to other entities."""
         talk_entity=op[0]
         if hasattr(talk_entity, "address"):
             addressElement = talk_entity.address
