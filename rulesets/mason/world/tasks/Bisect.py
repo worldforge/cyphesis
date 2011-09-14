@@ -11,9 +11,9 @@ import server
 
 class Bisect(server.Task):
     """ A task for cutting a section of material in two."""
-    def bicut_operation(self, op):
+    def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
-        # print "Bisect.bicut"
+        # print "Bisect.cut"
 
         if len(op) < 1:
             sys.stderr.write("Bisect task has no target in cut op")

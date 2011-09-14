@@ -480,7 +480,7 @@ def test_bisect(host='', account='', password='', **args):
     material=m.make('wood', pos=(1.1,1,0),bbox=[1,1,1,5,8,6])
 
     m.avatar.send(Operation("wield", Entity(axe.id), to=settler))
-    m.avatar.send(Operation("use", Operation("bicut", Entity(material.id)), to=settler))
+    m.avatar.send(Operation("use", Operation("cut", Entity(material.id)), to=settler))
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
