@@ -104,11 +104,11 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.04</float>
-          <float>-0.04</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
           <float>0</float>
-          <float>0.04</float>
-          <float>0.04</float>
+          <float>0.1</float>
+          <float>0.1</float>
           <float>1</float>
         </list>
         <string name="visibility">public</string>
@@ -202,6 +202,31 @@
 
   <map>
     <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0.3</float>
+          <float>0.3</float>
+          <float>0.35</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">peg</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="mass">
         <float name="default">5</float>
         <string name="visibility">public</string>
@@ -243,12 +268,12 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.5</float>
-          <float>-0.5</float>
-          <float>0</float>
-          <float>0.5</float>
-          <float>0.5</float>
-          <float>0.1</float>
+          <float>-0.2</float>
+          <float>-0.2</float>
+          <float>9.6e-05</float>
+          <float>0.2</float>
+          <float>0.2</float>
+          <float>0.2</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -300,6 +325,56 @@
       </map>
     </map>
     <string name="id">sieve</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.5</float>
+          <float>0.7</float>
+          <float>-0.07</float>
+          <float>0.5</float>
+          <float>-0.7</float>
+          <float>0.07</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">sledge</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
+      <map name="bbox">
+        <list name="default">
+          <float>-0.15</float>
+          <float>-0.15</float>
+          <float>-0</float>
+          <float>0.15</float>
+          <float>0.15</float>
+          <float>0.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">spindle</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>

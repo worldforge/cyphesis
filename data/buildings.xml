@@ -96,7 +96,7 @@
     <string name="id">block_house</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>structure</string>
     </list>
   </map>
 
@@ -121,7 +121,7 @@
     <string name="id">butcher_house</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>structure</string>
     </list>
   </map>
 
@@ -483,12 +483,12 @@
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.088465</float>
-          <float>-3.16088</float>
-          <float>-0.0409198</float>
-          <float>0.0884646</float>
-          <float>0.14511</float>
-          <float>1.43494</float>
+          <float>-1.7</float>
+          <float>-3.16</float>
+          <float>-0.04</float>
+          <float>1.7</float>
+          <float>0.2</float>
+          <float>1.44</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -553,7 +553,7 @@
     <string name="id">house</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>structure</string>
     </list>
   </map>
 
@@ -669,7 +669,7 @@
     <string name="id">mausoleum</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>structure</string>
     </list>
   </map>
 
@@ -901,7 +901,7 @@
     <string name="id">tower</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>structure</string>
     </list>
   </map>
 
