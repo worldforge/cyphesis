@@ -59,6 +59,7 @@ int main()
 
         OpVector res;
         Atlas::Objects::Operation::Generic c;
+        c->setParents(std::list<std::string>(1, "generic"));
 
         // It has no script, so init will fail, and it will be irrelevant
         ts.initTask(c, res);
@@ -79,6 +80,7 @@ int main()
 
         OpVector res;
         Atlas::Objects::Operation::Generic c;
+        c->setParents(std::list<std::string>(1, "generic"));
 
         ts.initTask(c, res);
 
@@ -99,6 +101,7 @@ int main()
 
         OpVector res;
         Atlas::Objects::Operation::Generic c;
+        c->setParents(std::list<std::string>(1, "generic"));
 
         assert(res.empty());
 
