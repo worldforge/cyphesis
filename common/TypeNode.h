@@ -47,6 +47,9 @@ class TypeNode {
     TypeNode();
     ~TypeNode();
 
+    /// \brief update the class properties for this type from Atlas attributes
+    void updateProperties(const Atlas::Message::MapType & attributes);
+
     /// \brief const accessor for name
     const std::string & name() const {
         return m_name;

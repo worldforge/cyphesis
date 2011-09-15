@@ -19,7 +19,15 @@
 
 #include "TypeNode.h"
 
+#include "debug.h"
 #include "Property.h"
+#include "PropertyManager.h"
+
+#include <set>
+
+static const bool debug_flag = false;
+
+using Atlas::Message::MapType;
 
 TypeNode::TypeNode() : m_parent(0)
 {
@@ -31,5 +39,49 @@ TypeNode::~TypeNode()
     PropertyDict::const_iterator Iend = m_defaults.end();
     for (; I != Iend; ++I) {
         delete I->second;
+    }
+}
+
+void TypeNode::updateProperties(const MapType & attributes)
+{
+    // Discover the default attributes which are no longer
+    // present after the update.
+    std::set<std::string> removed_properties;
+    PropertyDict::const_iterator I = m_defaults.begin();
+    PropertyDict::const_iterator Iend = m_defaults.end();
+    MapType::const_iterator Jend = attributes.end();
+    for (; I != Iend; ++I) {
+        if (attributes.find(I->first) == Jend) {
+            debug( std::cout << I->first << " removed" << std::endl; );
+            removed_properties.insert(I->first);
+        }
+    }
+
+    // Remove the class properties for the default attributes that
+    // no longer exist
+    std::set<std::string>::const_iterator L = removed_properties.begin();
+    std::set<std::string>::const_iterator Lend = removed_properties.end();
+    for (; L != Lend; ++L) {
+        PropertyDict::iterator M = m_defaults.find(*L);
+        delete M->second;
+        m_defaults.erase(M);
+    }
+
+    // Update the values of existing class properties, and add new class
+    // properties for added default attributes.
+    MapType::const_iterator J = attributes.begin();
+    PropertyBase * p;
+    for (; J != Jend; ++J) {
+        PropertyDict::const_iterator I = m_defaults.find(J->first);
+        if (I == Iend) {
+            p = PropertyManager::instance()->addProperty(J->first,
+                                                         J->second.getType());
+            assert(p != 0);
+            p->setFlags(flag_class);
+            m_defaults[J->first] = p;
+        } else {
+            p = I->second;
+        }
+        p->set(J->second);
     }
 }

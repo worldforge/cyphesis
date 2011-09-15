@@ -25,7 +25,9 @@
 #endif
 
 #include "common/TypeNode.h"
+
 #include "common/Property.h"
+#include "common/PropertyManager.h"
 
 int main()
 {
@@ -35,3 +37,7 @@ int main()
     foo.defaults().insert(std::make_pair("test_name", bar));
     return 0;
 }
+
+// stub functions
+
+PropertyManager * PropertyManager::m_instance = 0;
