@@ -64,6 +64,7 @@ class EntityKit {
     virtual ~EntityKit();
 
     void updateChildren();
+    void updateChildrenProperties();
 
     /// \brief Create a new Entity and make it persistent.
     ///

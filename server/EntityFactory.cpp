@@ -31,6 +31,7 @@
 #include "rulesets/World.h"
 
 #include "common/log.h"
+#include "common/TypeNode.h"
 
 using Atlas::Message::MapType;
 
@@ -58,6 +59,19 @@ void EntityKit::updateChildren()
             child_factory->m_attributes[J->first] = J->second;
         }
         child_factory->updateChildren();
+    }
+}
+
+void EntityKit::updateChildrenProperties()
+{
+    m_type->updateProperties(m_attributes);
+
+    // Propagate the changes to all child factories
+    std::set<EntityKit *>::const_iterator K = m_children.begin();
+    std::set<EntityKit *>::const_iterator Kend = m_children.end();
+    for (; K != Kend; ++K) {
+        EntityKit * child_factory = *K;
+        child_factory->updateChildrenProperties();
     }
 }
 

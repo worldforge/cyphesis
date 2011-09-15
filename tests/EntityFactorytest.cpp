@@ -32,6 +32,8 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+#include "common/TypeNode.h"
+
 #include <cassert>
 
 class TestScriptFactory : public ScriptKit {
@@ -538,5 +540,9 @@ void Router::clientError(const Operation & op,
 }
 
 Location::Location() : m_loc(0)
+{
+}
+
+void TypeNode::updateProperties(const Atlas::Message::MapType &)
 {
 }
