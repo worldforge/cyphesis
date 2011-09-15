@@ -65,19 +65,6 @@ static const bool debug_flag = false;
 
 Ruleset * Ruleset::m_instance = NULL;
 
-static void updateChildrenProperties(EntityKit * factory)
-{
-    factory->m_type->updateProperties(factory->m_attributes);
-
-    // Propagate the changes to all child factories
-    std::set<EntityKit *>::const_iterator K = factory->m_children.begin();
-    std::set<EntityKit *>::const_iterator Kend = factory->m_children.end();
-    for (; K != Kend; ++K) {
-        EntityKit * child_factory = *K;
-        updateChildrenProperties(child_factory);
-    }
-}
-
 void Ruleset::init()
 {
     m_instance = new Ruleset(EntityBuilder::instance());
@@ -337,7 +324,7 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
         tool_factory->m_attributes["operations"] = ListType(1, activation_op);
         tool_factory->updateChildren();
-        updateChildrenProperties(tool_factory);
+        tool_factory->updateChildrenProperties();
     } else {
         if (L->second.isList()) {
             ListType::const_iterator M = L->second.List().begin();
@@ -346,7 +333,7 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
                 L->second.List().push_back(activation_op);
                 tool_factory->m_attributes[L->first] = L->second.List();
                 tool_factory->updateChildren();
-                updateChildrenProperties(tool_factory);
+                tool_factory->updateChildrenProperties();
             }
         }
     }
@@ -621,7 +608,7 @@ int Ruleset::modifyEntityClass(const std::string & class_name,
     }
 
     factory->updateChildren();
-    updateChildrenProperties(factory);
+    factory->updateChildrenProperties();
 
     return 0;
 }
