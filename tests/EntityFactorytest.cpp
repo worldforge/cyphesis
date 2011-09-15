@@ -69,6 +69,12 @@ int main()
 
     delete ek;
 
+    ek = new EntityFactory<Thing>;
+
+    ek->updateChildren();
+
+    delete ek;
+
     return 0;
 }
 

@@ -63,6 +63,8 @@ class EntityKit {
 
     virtual ~EntityKit();
 
+    void updateChildren();
+
     /// \brief Create a new Entity and make it persistent.
     ///
     /// @param id a string giving the identifier of the Entity.
