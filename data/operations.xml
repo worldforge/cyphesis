@@ -17,6 +17,14 @@
   </map>
 
   <map>
+    <string name="id">craft</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">cut</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -26,6 +34,14 @@
 
   <map>
     <string name="id">disperse</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">drag</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>root_operation</string>
@@ -65,6 +81,22 @@
   </map>
 
   <map>
+    <string name="id">pull</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">repair</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">shoot</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -85,6 +117,22 @@
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">trench</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">walls</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
     </list>
   </map>
 

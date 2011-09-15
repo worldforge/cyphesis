@@ -60,6 +60,18 @@ int main()
     fail_python_string("print p.distance(1.0)");
     run_python_string("print p.is_valid()");
     run_python_string("print p");
+    run_python_string("print p.x");
+    run_python_string("print p.y");
+    run_python_string("print p.z");
+    run_python_string("print p[0]");
+    run_python_string("print p[1]");
+    run_python_string("print p[2]");
+    run_python_string("print p[-1]");
+    fail_python_string("print p[3]");
+    run_python_string("p[0]=1.0");
+    run_python_string("p[1]=1.0");
+    run_python_string("p[2]=1.0");
+    fail_python_string("p[3]=1");
     run_python_string("print p == p1");
     run_python_string("print p1 == p2");
     run_python_string("from physics import Vector3D");

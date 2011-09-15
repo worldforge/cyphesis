@@ -1,5 +1,10 @@
 Allow long cut and cross cut with saws. Long cut is along grain, bisecting by longest dimension. cross cut is across both grains
 
+Sort out a better way to handle materials. We shouldn't have a base class
+the same as an attribute without the entity hierarchy, but being able to
+declare attributes, and have definition data would be necessary. Good sample
+case for having proper data driven, scriptable properties.
+
 use boost intrusive containers for op queues
 
 Check out _GLIBCXX_DEBUG

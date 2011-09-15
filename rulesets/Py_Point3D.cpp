@@ -101,6 +101,44 @@ static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
     return 1;
 }
 
+/*
+ * Point3D sequence methods.
+ */
+
+#if PY_VERSION_HEX < 0x02050000
+typedef int Py_ssize_t;
+#endif
+
+static Py_ssize_t Point3D_seq_length(PyPoint3D * self)
+{
+    return 3;
+}
+
+static PyObject * Point3D_seq_item(PyPoint3D * self, Py_ssize_t item)
+{
+    if (item < 0 || item >= 3) {
+        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Index out of range.");
+        return 0;
+    }
+    return PyFloat_FromDouble(self->coords[item]);
+}
+
+static int Point3D_seq_ass_item(PyPoint3D * self,
+                                Py_ssize_t item,
+                                PyObject * val)
+{
+    if (item < 0 || item >= 3) {
+        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Index out of range.");
+        return -1;
+    }
+    if (!PyFloat_Check(val)) {
+        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Value must be float.");
+        return -1;
+    }
+    self->coords[item] = PyFloat_AsDouble(val);
+    return 0;
+}
+
 static PyPoint3D * Point3D_num_add(PyPoint3D * self, PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
@@ -210,6 +248,16 @@ PyObject * Point3D_new(PyTypeObject * type, PyObject *, PyObject *)
     return (PyObject *)self;
 }
 
+static PySequenceMethods Point3D_seq = {
+    (lenfunc)Point3D_seq_length,              /* sq_length */
+    NULL,                                     /* sq_concat */
+    NULL,                                     /* sq_repeat */
+    (ssizeargfunc)Point3D_seq_item,           /* sq_item */
+    NULL,                                     /* sq_slice */
+    (ssizeobjargproc)Point3D_seq_ass_item,    /* sq_ass_item */
+    NULL                                      /* sq_ass_slice */
+};
+
 static PyNumberMethods Point3D_num = {
         (binaryfunc)Point3D_num_add,    /* nb_add */
         (binaryfunc)Point3D_num_sub,    /* nb_subtract */
@@ -250,7 +298,7 @@ PyTypeObject PyPoint3D_Type = {
         (cmpfunc)Point3D_compare,       // tp_compare
         (reprfunc)Point3D_repr,         // tp_repr
         &Point3D_num,                   // tp_as_number
-        0,                              // tp_as_sequence
+        &Point3D_seq,                   // tp_as_sequence
         0,                              // tp_as_mapping
         0,                              // tp_hash
         0,                              // tp_call

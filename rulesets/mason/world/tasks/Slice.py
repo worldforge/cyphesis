@@ -36,15 +36,15 @@ class Slice(server.Task):
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
             # print "Too far away"
-            return self.next_tick(1.75)
+            return self.next_tick(0.75)
         else:
-            self.progress += self.rate * 1.75
+            self.progress += 0.5
 
-        self.rate = 0.1 / 1.75
+        self.rate = 0.5 / 0.75
 
         if self.progress < 1:
             # print "Not done yet"
-            return self.next_tick(1.75)
+            return self.next_tick(0.75)
 
         width = target.location.bbox.far_point.x - target.location.bbox.near_point.x
         if width <= self.width:
@@ -91,6 +91,6 @@ class Slice(server.Task):
             set=Operation("set", Entity(target.id, status=-1), to=target)
             res.append(set)
 
-        res.append(self.next_tick(1.75))
+        res.append(self.next_tick(0.75))
 
         return res

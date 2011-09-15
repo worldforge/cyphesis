@@ -38,7 +38,7 @@ class Reap(server.Task):
 
         if not self.character.location.velocity.is_valid() or \
            self.character.location.velocity.square_mag() < 1 or \
-           self.character.location.velocity.square_mag() > 5:
+           self.character.location.velocity.square_mag() > 10:
             self.rate = 0
             self.progress = 0
             # print "Not moving the right speed"
