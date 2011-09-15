@@ -65,22 +65,6 @@ static const bool debug_flag = false;
 
 Ruleset * Ruleset::m_instance = NULL;
 
-static void updateChildren(EntityKit * factory)
-{
-    std::set<EntityKit *>::const_iterator I = factory->m_children.begin();
-    std::set<EntityKit *>::const_iterator Iend = factory->m_children.end();
-    for (; I != Iend; ++I) {
-        EntityKit * child_factory = *I;
-        child_factory->m_attributes = factory->m_attributes;
-        MapType::const_iterator J = child_factory->m_classAttributes.begin();
-        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
-        for (; J != Jend; ++J) {
-            child_factory->m_attributes[J->first] = J->second;
-        }
-        updateChildren(child_factory);
-    }
-}
-
 static void updateChildrenProperties(EntityKit * factory)
 {
     // Discover the default attributes which are no longer
@@ -392,7 +376,7 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
     if (L == tool_factory->m_classAttributes.end()) {
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
         tool_factory->m_attributes["operations"] = ListType(1, activation_op);
-        updateChildren(tool_factory);
+        tool_factory->updateChildren();
         updateChildrenProperties(tool_factory);
     } else {
         if (L->second.isList()) {
@@ -401,7 +385,7 @@ int Ruleset::populateTaskFactory(const std::string & class_name,
             if (M == L->second.List().end()) {
                 L->second.List().push_back(activation_op);
                 tool_factory->m_attributes[L->first] = L->second.List();
-                updateChildren(tool_factory);
+                tool_factory->updateChildren();
                 updateChildrenProperties(tool_factory);
             }
         }
@@ -676,7 +660,7 @@ int Ruleset::modifyEntityClass(const std::string & class_name,
         return -1;
     }
 
-    updateChildren(factory);
+    factory->updateChildren();
     updateChildrenProperties(factory);
 
     return 0;
