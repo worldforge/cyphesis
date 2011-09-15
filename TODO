@@ -2,7 +2,9 @@ Allow long cut and cross cut with saws. Long cut is along grain, bisecting by lo
 
 use boost intrusive containers for op queues
 
-Check out _GLIBCX_DEBUG
+Check out _GLIBCXX_DEBUG
+  Turns out to be useful to detect usage issues with STL, but requires full
+  rebuild of everything that uses stdc++, including non WF deps.
 
 Macro todo list
   Get server physics kicked off
