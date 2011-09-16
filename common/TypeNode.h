@@ -68,11 +68,6 @@ class TypeNode {
         return m_defaults;
     }
 
-    /// \brief accessor for property defaults
-    PropertyDict & defaults() {
-        return m_defaults;
-    }
-
     /// \brief accessor for type description
     Atlas::Objects::Root & description() {
         return m_description;
