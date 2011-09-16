@@ -63,6 +63,8 @@ class EntityKit {
 
     virtual ~EntityKit();
 
+    void addProperties();
+
     void updateChildren();
     void updateChildrenProperties();
 

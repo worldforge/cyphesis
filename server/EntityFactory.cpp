@@ -46,6 +46,11 @@ EntityKit::~EntityKit()
     }
 }
 
+void EntityKit::addProperties()
+{
+    m_type->addProperties(m_attributes);
+}
+
 void EntityKit::updateChildren()
 {
     std::set<EntityKit *>::const_iterator I = m_children.begin();

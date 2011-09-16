@@ -41,11 +41,11 @@
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
 #include "common/Property.h"
-#include "common/TypeNode.h"
-#include "common/PropertyManager.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/objectFactory.h>
+
+#include <iostream>
 
 #include <sys/types.h>
 #ifdef HAVE_DIRENT_H
@@ -417,7 +417,7 @@ int Ruleset::installEntityClass(const std::string & class_name,
     // Install the factory in place.
     m_builder->installFactory(class_name, parent, factory, class_desc);
 
-    factory->m_type->addProperties(factory->m_attributes);
+    factory->addProperties();
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factory);
