@@ -44,8 +44,6 @@ int main()
 
     mf->newMind("1", 1, tn);
 
-    tn->name() = etype;
-
     mf->newMind("2", 2, tn);
 
     return 0;

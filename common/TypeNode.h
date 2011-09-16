@@ -33,7 +33,7 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 class TypeNode {
   protected:
     /// \brief name
-    std::string m_name;
+    const std::string m_name;
 
     /// \brief property defaults
     PropertyDict m_defaults;
@@ -57,11 +57,6 @@ class TypeNode {
 
     /// \brief const accessor for name
     const std::string & name() const {
-        return m_name;
-    }
-
-    /// \brief accessor for name
-    std::string & name() {
         return m_name;
     }
 
