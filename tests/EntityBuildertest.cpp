@@ -217,9 +217,9 @@ int main(int argc, char ** argv)
                                           custom_type_factory, custom_type_desc);
         }
 
-        custom_type_factory->m_type->defaults()["test_custom_type_attr"] = 
-              new Property<std::string>; 
-        custom_type_factory->m_type->defaults()["test_custom_type_attr"]->set("test_value");
+        PropertyBase * p = new Property<std::string>; 
+        custom_type_factory->m_type->addProperty("test_custom_type_attr", p);
+        p->set("test_value");
 
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
@@ -661,8 +661,7 @@ bool Inheritance::isTypeOf(const std::string & instance,
     return false;
 }
 
-TypeNode * Inheritance::addChild(const Root & obj,
-                                 const PropertyDict & defaults)
+TypeNode * Inheritance::addChild(const Root & obj)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
@@ -689,7 +688,6 @@ TypeNode * Inheritance::addChild(const Root & obj,
     TypeNode * type = new TypeNode;
     type->name() = child;
     type->description() = obj;
-    type->defaults() = defaults;
     type->setParent(I->second);
 
     atlasObjects[child] = type;
@@ -711,6 +709,12 @@ TypeNode::TypeNode() : m_parent(0)
 
 TypeNode::~TypeNode()
 {
+}
+
+void TypeNode::addProperty(const std::string & name,
+                           PropertyBase * p)
+{
+    m_defaults[name] = p;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
