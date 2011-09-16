@@ -417,17 +417,7 @@ int Ruleset::installEntityClass(const std::string & class_name,
     // Install the factory in place.
     m_builder->installFactory(class_name, parent, factory, class_desc);
 
-    MapType::const_iterator J = factory->m_attributes.begin();
-    MapType::const_iterator Jend = factory->m_attributes.end();
-    PropertyBase * p;
-    for (; J != Jend; ++J) {
-        p = PropertyManager::instance()->addProperty(J->first,
-                                                     J->second.getType());
-        assert(p != 0);
-        p->set(J->second);
-        p->setFlags(flag_class);
-        factory->m_type->defaults()[J->first] = p;
-    }
+    factory->m_type->addProperties(factory->m_attributes);
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factory);
