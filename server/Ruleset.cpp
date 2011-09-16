@@ -40,7 +40,6 @@
 #include "common/Inheritance.h"
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
-#include "common/Property.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/objectFactory.h>
