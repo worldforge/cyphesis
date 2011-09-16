@@ -52,8 +52,7 @@ using Atlas::Objects::Entity::RootEntity;
 int main()
 {
     Stackable e("1", 1);
-    TypeNode type;
-    type.name() = "stackable";
+    TypeNode type("stackable");
     e.setType(&type);
 
     IGEntityExerciser ee(e);
@@ -444,7 +443,7 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-TypeNode::TypeNode() : m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

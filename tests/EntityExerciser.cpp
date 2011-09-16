@@ -60,8 +60,7 @@ EntityExerciser::EntityExerciser(LocatedEntity & e) : m_ent(e)
         e.m_location.m_loc->m_contains->insert(&e);
     }
     if (e.getType() == 0) {
-        TypeNode * test_type = new TypeNode;
-        test_type->name() = "test_type";
+        TypeNode * test_type = new TypeNode("test_type");
         test_type->addProperty("test_default", new SoftProperty);
         e.setType(test_type);
     }

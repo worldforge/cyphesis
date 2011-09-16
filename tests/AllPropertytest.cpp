@@ -186,7 +186,7 @@ Entity * BaseWorld::getEntity(long id) const
     return 0;
 }
 
-TypeNode::TypeNode() : m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

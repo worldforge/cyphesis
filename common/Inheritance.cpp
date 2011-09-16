@@ -91,8 +91,7 @@ Inheritance::Inheritance() : noClass(0)
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
-    TypeNode * root = new TypeNode;
-    root->name() = "root";
+    TypeNode * root = new TypeNode("root");
     root->description() = root_desc;
 
     atlasObjects["root"] = root;
@@ -207,8 +206,7 @@ TypeNode * Inheritance::addChild(const Root & obj)
     }
     I->second->description()->setAttr("children", children);
 
-    TypeNode * type = new TypeNode;
-    type->name() = child;
+    TypeNode * type = new TypeNode(child);
     type->description() = obj;
     type->setParent(I->second);
 

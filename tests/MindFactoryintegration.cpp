@@ -58,8 +58,7 @@ int main()
                      );
     run_python_string("testmod.settlerMind=settlerMind");
 
-    TypeNode * tn = new TypeNode();
-    tn->name() = etype;
+    TypeNode * tn = new TypeNode(etype);
 
     MindFactory * mf = MindFactory::instance();
 

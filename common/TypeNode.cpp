@@ -29,7 +29,7 @@ static const bool debug_flag = false;
 
 using Atlas::Message::MapType;
 
-TypeNode::TypeNode() : m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

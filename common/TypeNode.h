@@ -44,7 +44,7 @@ class TypeNode {
     /// \brief parent node
     const TypeNode * m_parent;
   public:
-    TypeNode();
+    TypeNode(const std::string &);
     ~TypeNode();
 
     void addProperty(const std::string &, PropertyBase *);

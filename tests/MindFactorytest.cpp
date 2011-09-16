@@ -36,8 +36,7 @@ static const char * etype = "settler";
 
 int main()
 {
-    TypeNode * tn = new TypeNode();
-    tn->name() = etype;
+    TypeNode * tn = new TypeNode(etype);
 
     MindFactory * mf = MindFactory::instance();
 
@@ -185,7 +184,7 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
 {
 }
 
-TypeNode::TypeNode() : m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

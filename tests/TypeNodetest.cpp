@@ -31,7 +31,7 @@
 
 int main()
 {
-    TypeNode foo;
+    TypeNode foo("thing");
 
     foo.defaults();
     return 0;

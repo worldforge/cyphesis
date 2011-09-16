@@ -39,8 +39,7 @@ using Atlas::Message::ListType;
 int main()
 {
     Structure e("1", 1);
-    TypeNode type;
-    type.name() = "structure";
+    TypeNode type("structure");
     e.setType(&type);
 
     IGEntityExerciser<Structure> ee(e);

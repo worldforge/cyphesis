@@ -56,8 +56,7 @@ using Atlas::Objects::Entity::RootEntity;
 int main()
 {
     World e("0", 0);
-    TypeNode type;
-    type.name() = "world";
+    TypeNode type("world");
     e.setType(&type);
 
     IGEntityExerciser ee(e);
@@ -479,7 +478,7 @@ bool Inheritance::isTypeOf(const TypeNode * instance,
     return false;
 }
 
-TypeNode::TypeNode() : m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

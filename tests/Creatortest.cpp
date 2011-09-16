@@ -49,8 +49,7 @@ using Atlas::Message::ListType;
 int main(int argc, char ** argv)
 {
     Creator e("1", 1);
-    TypeNode type;
-    type.name() = "creator";
+    TypeNode type("creator");
     e.setType(&type);
 
     IGEntityExerciser ee(e);
@@ -559,7 +558,7 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-TypeNode::TypeNode() : m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 
