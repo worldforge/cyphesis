@@ -53,8 +53,7 @@ Inheritance & Inheritance::instance()
     return *m_instance;
 }
 
-TypeNode * Inheritance::addChild(const Root & obj,
-                                 const PropertyDict & defaults)
+TypeNode * Inheritance::addChild(const Root & obj)
 {
     return 0;
 }
