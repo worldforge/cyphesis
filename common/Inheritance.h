@@ -67,8 +67,7 @@ class Inheritance {
                     const Atlas::Objects::Root & obj);
     const TypeNode * getType(const std::string & parent);
     bool hasClass(const std::string & parent);
-    TypeNode * addChild(const Atlas::Objects::Root & obj,
-                        const PropertyDict & defaults = PropertyDict());
+    TypeNode * addChild(const Atlas::Objects::Root & obj);
     bool isTypeOf(const std::string & instance,
                   const std::string & base_type) const;
     bool isTypeOf(const TypeNode * instance,

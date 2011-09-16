@@ -183,8 +183,7 @@ bool Inheritance::hasClass(const std::string & parent)
     return true;
 }
 
-TypeNode * Inheritance::addChild(const Root & obj,
-                                 const PropertyDict & defaults)
+TypeNode * Inheritance::addChild(const Root & obj)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
@@ -211,7 +210,6 @@ TypeNode * Inheritance::addChild(const Root & obj,
     TypeNode * type = new TypeNode;
     type->name() = child;
     type->description() = obj;
-    type->defaults() = defaults;
     type->setParent(I->second);
 
     atlasObjects[child] = type;
