@@ -543,6 +543,10 @@ Location::Location() : m_loc(0)
 {
 }
 
+void TypeNode::addProperties(const Atlas::Message::MapType &)
+{
+}
+
 void TypeNode::updateProperties(const Atlas::Message::MapType &)
 {
 }
