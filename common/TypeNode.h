@@ -47,6 +47,8 @@ class TypeNode {
     TypeNode();
     ~TypeNode();
 
+    void addProperty(const std::string &, PropertyBase *);
+
     /// \brief add the class properties for this type from Atlas attributes
     void addProperties(const Atlas::Message::MapType & attributes);
 

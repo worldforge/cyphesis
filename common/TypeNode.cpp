@@ -42,6 +42,12 @@ TypeNode::~TypeNode()
     }
 }
 
+void TypeNode::addProperty(const std::string & name,
+                           PropertyBase * p)
+{
+    m_defaults[name] = p;
+}
+
 void TypeNode::addProperties(const MapType & attributes)
 {
     MapType::const_iterator J = attributes.begin();
