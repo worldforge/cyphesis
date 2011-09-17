@@ -244,6 +244,13 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 
+TypeNode::TypeNode(const std::string & name,
+                   const Atlas::Objects::Root & d) : m_name(name),
+                                                     m_description(d),
+                                                     m_parent(0)
+{
+}
+
 TypeNode::~TypeNode()
 {
 }
