@@ -672,7 +672,7 @@ int Ruleset::modifyRule(const std::string & class_name,
         return -1;
     }
     int ret;
-    if (o->getParents().front() == "task") {
+    if (m_builder->isTask(o->getParents().front())) {
         ret = modifyTaskClass(class_name, class_desc);
     } else if (class_desc->getObjtype() == "op_definition") {
         ret = modifyOpDefinition(class_name, class_desc);
