@@ -48,11 +48,6 @@ class TaskRuleHandler : public RuleHandler {
 
     int modifyTaskClass(const std::string & class_name,
                         const Atlas::Objects::Root & class_desc);
-
-    void waitForRule(const std::string & class_name,
-                     const Atlas::Objects::Root & class_desc,
-                     const std::string & dependent,
-                     const std::string & reason);
   public:
     TaskRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
