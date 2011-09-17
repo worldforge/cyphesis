@@ -45,6 +45,7 @@ class TypeNode {
     const TypeNode * m_parent;
   public:
     TypeNode(const std::string &);
+    TypeNode(const std::string &, const Atlas::Objects::Root &);
     ~TypeNode();
 
     void addProperty(const std::string &, PropertyBase *);
