@@ -20,6 +20,8 @@
 #ifndef SERVER_TASK_RULE_HANDLER_H
 #define SERVER_TASK_RULE_HANDLER_H
 
+#include "RuleHandler.h"
+
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -27,21 +29,8 @@
 class EntityBuilder;
 class TaskKit;
 
-/// \brief Class to handle rules that cannot yet be installed, and the reason
-class RuleWaiting {
-  public:
-    /// Name of the rule.
-    std::string name;
-    /// Complete description of the rule.
-    Atlas::Objects::Root desc;
-    /// Message giving a description of why this rule has not been installed.
-    std::string reason;
-};
-
-typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
-
 /// \brief Handle processing and updating of task ruless
-class TaskRuleHandler {
+class TaskRuleHandler : public RuleHandler {
   protected:
     EntityBuilder * const m_builder;
 

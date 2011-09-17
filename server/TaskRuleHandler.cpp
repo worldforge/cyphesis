@@ -31,8 +31,6 @@
 #include "Persistence.h"
 #include "Player.h"
 
-#include "rulesets/MindFactory.h"
-
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
@@ -40,9 +38,6 @@
 #include "common/Inheritance.h"
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
-#include "common/Property.h"
-#include "common/TypeNode.h"
-#include "common/PropertyManager.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/objectFactory.h>
