@@ -55,6 +55,16 @@ class TaskRuleHandler : public RuleHandler {
                      const std::string & reason);
   public:
     TaskRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
+
+    virtual int check(const Atlas::Objects::Root & desc);
+    virtual int install(const std::string &,
+                        const std::string &,
+                        const Atlas::Objects::Root & desc,
+                        std::string &,
+                        std::string &);
+    virtual int update(const std::string &,
+                       const Atlas::Objects::Root & desc);
 };
 
 #endif // SERVER_TASK_RULE_HANDLER_H
+

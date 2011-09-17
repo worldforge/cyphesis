@@ -26,6 +26,7 @@
 
 class EntityBuilder;
 class EntityKit;
+class RuleHandler;
 class TaskKit;
 
 /// \brief Class to handle rules that cannot yet be installed, and the reason
@@ -51,6 +52,7 @@ class Ruleset {
     ~Ruleset();
     static Ruleset * m_instance;
     EntityBuilder * const m_builder;
+    RuleHandler * const m_taskHandler;
 
     RuleWaitList m_waitingRules;
 

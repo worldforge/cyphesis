@@ -27,6 +27,7 @@
 #include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
+#include "TaskRuleHandler.h"
 #include "TaskScriptFactory.h"
 #include "Persistence.h"
 #include "Player.h"
@@ -71,7 +72,8 @@ void Ruleset::init()
 }
 
 
-Ruleset::Ruleset(EntityBuilder * eb) : m_builder(eb)
+Ruleset::Ruleset(EntityBuilder * eb) : m_builder(eb),
+                                       m_taskHandler(new TaskRuleHandler(eb))
 {
 }
 
@@ -484,9 +486,9 @@ int Ruleset::installRuleInner(const std::string & class_name,
     }
     int ret;
     if (objtype == "class") {
-        if (m_builder->isTask(parent)) {
-            ret = installTaskClass(class_name, parent, class_desc,
-                                   dependent, reason);
+        if (m_taskHandler->check(class_desc) == 0) {
+            ret = m_taskHandler->install(class_name, parent, class_desc,
+                                         dependent, reason);
         } else {
             ret = installEntityClass(class_name, parent, class_desc,
                                      dependent, reason);
@@ -672,8 +674,8 @@ int Ruleset::modifyRule(const std::string & class_name,
         return -1;
     }
     int ret;
-    if (m_builder->isTask(o->getParents().front())) {
-        ret = modifyTaskClass(class_name, class_desc);
+    if (m_taskHandler->check(o) == 0) {
+        ret = m_taskHandler->update(class_name, class_desc);
     } else if (class_desc->getObjtype() == "op_definition") {
         ret = modifyOpDefinition(class_name, class_desc);
     } else {

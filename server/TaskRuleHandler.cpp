@@ -270,3 +270,23 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
 
     return 0;
 }
+
+int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
+{
+    return m_builder->isTask(desc->getParents().front()) ? 0 : -1;
+}
+
+int TaskRuleHandler::install(const std::string & name,
+                             const std::string & parent,
+                             const Atlas::Objects::Root & description,
+                             std::string & dependent,
+                             std::string & reason)
+{
+    return installTaskClass(name, parent, description, dependent, reason);
+}
+
+int TaskRuleHandler::update(const std::string & name,
+                            const Atlas::Objects::Root & desc)
+{
+    return modifyTaskClass(name, desc);
+}
