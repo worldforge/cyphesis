@@ -17,30 +17,19 @@
 
 // $Id$
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "TaskRuleHandler.h"
 
 #include "EntityBuilder.h"
 #include "EntityFactory.h"
-#include "ScriptFactory.h"
 #include "TaskFactory.h"
 #include "TaskScriptFactory.h"
 #include "Persistence.h"
-#include "Player.h"
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/globals.h"
-#include "common/const.h"
 #include "common/Inheritance.h"
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
-
-#include <Atlas/Message/Element.h>
-#include <Atlas/Objects/objectFactory.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

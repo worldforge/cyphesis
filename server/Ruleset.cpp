@@ -24,15 +24,10 @@
 #include "Ruleset.h"
 
 #include "EntityBuilder.h"
-#include "EntityFactory.h"
 #include "EntityRuleHandler.h"
 #include "OpRuleHandler.h"
-#include "ScriptFactory.h"
-#include "TaskFactory.h"
 #include "TaskRuleHandler.h"
-#include "TaskScriptFactory.h"
 #include "Persistence.h"
-#include "Player.h"
 
 #include "rulesets/MindFactory.h"
 
