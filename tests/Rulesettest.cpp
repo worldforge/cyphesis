@@ -50,26 +50,24 @@ class ExposedRuleset : public Ruleset {
     void getRulesFromFiles(std::map<std::string, Root> & rules) {
         Ruleset::getRulesFromFiles(rules);
     }
+    // TODO(alriddoch): Remove these, and clean up
     void populateEntityFactory(const std::string & class_name,
                                EntityKit * factory,
                                const MapType & class_desc) {
-        Ruleset::populateEntityFactory(class_name, factory, class_desc);
     }
     int installEntityClass(const std::string & class_name,
                            const std::string & parent,
                            const Root & class_desc,
                            std::string & dependent,
                            std::string & reason) {
-        return Ruleset::installEntityClass(class_name, parent, class_desc,
-                                            dependent, reason);
+        return 0;
     }
     int installOpDefinition(const std::string & op_def_name,
                             const std::string & parent,
                             const Root & op_def_desc,
                             std::string & dependent,
                             std::string & reason) {
-        return Ruleset::installOpDefinition(op_def_name, parent, op_def_desc,
-                                            dependent, reason);
+        return 0;
     }
 
 };

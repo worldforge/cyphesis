@@ -67,38 +67,6 @@ class Ruleset {
     void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
     void loadRules();
 
-    int populateEntityFactory(const std::string & class_name,
-                              EntityKit * factory,
-                              const Atlas::Message::MapType & class_desc);
-    int populateTaskFactory(const std::string & class_name,
-                            TaskKit * factory,
-                            const Atlas::Objects::Root & class_desc,
-                            std::string & dependent,
-                            std::string & reason);
-
-    int installTaskClass(const std::string & class_name,
-                         const std::string & parent,
-                         const Atlas::Objects::Root & class_desc,
-                         std::string & dependent,
-                         std::string & reason);
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root & class_desc,
-                           std::string & dependent,
-                           std::string & reason);
-    int installOpDefinition(const std::string & class_name,
-                            const std::string & parent,
-                            const Atlas::Objects::Root & class_desc,
-                            std::string & dependent,
-                            std::string & reason);
-
-    int modifyTaskClass(const std::string & class_name,
-                        const Atlas::Objects::Root & class_desc);
-    int modifyEntityClass(const std::string & class_name,
-                          const Atlas::Objects::Root & class_desc);
-    int modifyOpDefinition(const std::string & class_name,
-                           const Atlas::Objects::Root & class_desc);
-
     void waitForRule(const std::string & class_name,
                      const Atlas::Objects::Root & class_desc,
                      const std::string & dependent,
