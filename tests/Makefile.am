@@ -64,7 +64,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                StorageManagertest HttpCachetest UpdateTestertest \
                ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
-               ConnectedRoutertest
+               ConnectedRoutertest RuleHandlertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1301,6 +1301,10 @@ Juncturetest_LDADD = \
 ConnectedRoutertest_SOURCES = ConnectedRoutertest.cpp
 ConnectedRoutertest_LDADD = \
         $(top_builddir)/server/ConnectedRouter.o
+
+RuleHandlertest_SOURCES = RuleHandlertest.cpp
+RuleHandlertest_LDADD = \
+        $(top_builddir)/server/RuleHandler.o
 
 # SERVER_INTEGRATION_TESTS
 
