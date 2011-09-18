@@ -93,6 +93,7 @@ SERVER_SOURCES = \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		Ruleset.cpp Ruleset.h \
 		RuleHandler.h \
+		EntityRuleHandler.cpp EntityRuleHandler.h \
 		TaskRuleHandler.cpp TaskRuleHandler.h \
 		EntityBuilder.cpp EntityBuilder.h \
 		ArithmeticBuilder.cpp ArithmeticBuilder.h \
