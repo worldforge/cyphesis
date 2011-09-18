@@ -20,7 +20,6 @@
 #ifndef SERVER_RULESET_H
 #define SERVER_RULESET_H
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 

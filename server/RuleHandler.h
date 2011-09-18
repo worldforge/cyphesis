@@ -20,9 +20,7 @@
 #ifndef SERVER_RULE_HANDLER_H
 #define SERVER_RULE_HANDLER_H
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 /// \brief Handle processing and updating of task ruless
 class RuleHandler {
