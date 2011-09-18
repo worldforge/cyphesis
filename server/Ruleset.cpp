@@ -490,8 +490,8 @@ int Ruleset::installRuleInner(const std::string & class_name,
     }
     int ret = -1;
     if (m_opHandler->check(class_desc) == 0) {
-        ret = installOpDefinition(class_name, parent, class_desc,
-                                  dependent, reason);
+        ret = m_opHandler->install(class_name, parent, class_desc,
+                                   dependent, reason);
     } else if (m_taskHandler->check(class_desc) == 0) {
         ret = m_taskHandler->install(class_name, parent, class_desc,
                                      dependent, reason);
@@ -675,13 +675,13 @@ int Ruleset::modifyRule(const std::string & class_name,
                            o->getParents().front(), class_parents.front()));
         return -1;
     }
-    int ret;
-    if (m_taskHandler->check(o) == 0) {
+    int ret = -1;
+    if (m_opHandler->check(class_desc) == 0) {
+        ret = m_opHandler->update(class_name, class_desc);
+    } else if (m_taskHandler->check(o) == 0) {
         ret = m_taskHandler->update(class_name, class_desc);
-    } else if (class_desc->getObjtype() == "op_definition") {
-        ret = modifyOpDefinition(class_name, class_desc);
-    } else {
-        ret = modifyEntityClass(class_name, class_desc);
+    } else if (m_entityHandler->check(class_desc) == 0) {
+        ret = m_entityHandler->update(class_name, class_desc);
     }
     if (ret == 0) {
         Inheritance::instance().updateClass(class_name, class_desc);
