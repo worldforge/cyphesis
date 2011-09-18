@@ -63,13 +63,13 @@ EntityBuilder * EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
 {
-    installFactory("world", "game_entity", new EntityFactory<World>());
+    installBaseFactory("world", "game_entity", new EntityFactory<World>());
     EntityFactory<Thing> * tft = new EntityFactory<Thing>();
-    installFactory("thing", "game_entity", tft);
-    installFactory("character", "thing", new EntityFactory<Character>());
-    installFactory("creator", "character", new EntityFactory<Creator>());
-    installFactory("plant", "thing", new EntityFactory<Plant>());
-    installFactory("stackable", "thing", new EntityFactory<Stackable>());
+    installBaseFactory("thing", "game_entity", tft);
+    installBaseFactory("character", "thing", new EntityFactory<Character>());
+    installBaseFactory("creator", "character", new EntityFactory<Creator>());
+    installBaseFactory("plant", "thing", new EntityFactory<Plant>());
+    installBaseFactory("stackable", "thing", new EntityFactory<Stackable>());
 
     // The property manager instance installs itself at construction time.
     new CorePropertyManager();
@@ -289,26 +289,24 @@ bool EntityBuilder::hasTask(const std::string & class_name)
     return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
+void EntityBuilder::installBaseFactory(const std::string & class_name,
+                                       const std::string & parent,
+                                       EntityKit * factory)
+{
+    installFactory(class_name, parent, factory);
+    Inheritance & i = Inheritance::instance();
+    factory->m_type = i.addChild(atlasClass(class_name, parent));
+}
+
 void EntityBuilder::installFactory(const std::string & class_name,
                                    const std::string & parent,
-                                   EntityKit * factory,
-                                   Root class_desc)
+                                   EntityKit * factory)
 {
     assert(factory != 0);
 
     m_entityFactories[class_name] = factory;
     Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
                                 new Variable<int>(factory->m_createdCount));
-
-    Inheritance & i = Inheritance::instance();
-
-    if (class_desc.isValid()) {
-        assert(class_desc->getId() == class_name);
-        assert(class_desc->getParents().front() == parent);
-        factory->m_type = i.addChild(class_desc);
-    } else {
-        factory->m_type = i.addChild(atlasClass(class_name, parent));
-    }
 }
 
 EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)

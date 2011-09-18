@@ -51,7 +51,6 @@ class Ruleset {
     explicit Ruleset(EntityBuilder * eb);
     ~Ruleset();
     static Ruleset * m_instance;
-    EntityBuilder * const m_builder;
     RuleHandler * const m_taskHandler;
     RuleHandler * const m_entityHandler;
     RuleHandler * const m_opHandler;

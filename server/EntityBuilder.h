@@ -53,6 +53,9 @@ class EntityBuilder {
     BaseWorld & m_world;
 
     EntityKit * getNewFactory(const std::string & parent);
+    void installBaseFactory(const std::string & class_name,
+                            const std::string & parent,
+                            EntityKit * factory);
 
   public:
     static void init(BaseWorld & w) {
@@ -70,8 +73,7 @@ class EntityBuilder {
 
     void installFactory(const std::string & class_name,
                         const std::string & parent,
-                        EntityKit * factory,
-                        Atlas::Objects::Root classDesc = 0);
+                        EntityKit * factory);
     EntityKit * getClassFactory(const std::string & class_name);
     Entity * newEntity(const std::string & id,
                        long intId,

@@ -210,11 +210,9 @@ int main(int argc, char ** argv)
         custom_type_factory->m_attributes["test_custom_type_attr"] =
               "test_value";
         {
-            Anonymous custom_type_desc;
-            custom_type_desc->setId("custom_type");
-            custom_type_desc->setParents(std::list<std::string>(1, "thing"));
             entity_factory.installFactory("custom_type", "thing",
-                                          custom_type_factory, custom_type_desc);
+                                          custom_type_factory);
+            custom_type_factory->m_type = new TypeNode("custom_type");
         }
 
         PropertyBase * p = new Property<std::string>; 
@@ -275,11 +273,9 @@ int main(int argc, char ** argv)
         custom_type_factory->m_scriptFactory = new TestScriptFactory();
 
         {
-            Anonymous custom_type_desc;
-            custom_type_desc->setId("custom_scripted_type");
-            custom_type_desc->setParents(std::list<std::string>(1, "thing"));
             entity_factory.installFactory("custom_scripted_type", "thing",
-                                          custom_type_factory, custom_type_desc);
+                                          custom_type_factory);
+            custom_type_factory->m_type = new TypeNode("custom_scripted_type");
         }
 
         // Check that the factory dictionary now contains a factory for

@@ -33,6 +33,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
+#include "common/Inheritance.h"
 #include "common/const.h"
 #include "common/compose.hpp"
 
@@ -92,7 +93,11 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
                     << std::endl << std::flush;);
 
     // Install the factory in place.
-    m_builder->installFactory(class_name, parent, factory, class_desc);
+    m_builder->installFactory(class_name, parent, factory);
+
+    Inheritance & i = Inheritance::instance();
+
+    factory->m_type = i.addChild(class_desc);
 
     factory->addProperties();
 

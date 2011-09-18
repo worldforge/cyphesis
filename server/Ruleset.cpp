@@ -74,10 +74,10 @@ void Ruleset::init()
 }
 
 
-Ruleset::Ruleset(EntityBuilder * eb) : m_builder(eb),
-                                       m_taskHandler(new TaskRuleHandler(eb)),
-                                       m_entityHandler(new EntityRuleHandler(eb)),
-                                       m_opHandler(new OpRuleHandler(eb))
+Ruleset::Ruleset(EntityBuilder * eb) : 
+      m_taskHandler(new TaskRuleHandler(eb)),
+      m_entityHandler(new EntityRuleHandler(eb)),
+      m_opHandler(new OpRuleHandler(eb))
 {
 }
 
