@@ -54,6 +54,7 @@ class Ruleset {
     EntityBuilder * const m_builder;
     RuleHandler * const m_taskHandler;
     RuleHandler * const m_entityHandler;
+    RuleHandler * const m_opHandler;
 
     RuleWaitList m_waitingRules;
 

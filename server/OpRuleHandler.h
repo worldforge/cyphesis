@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_ENTITY_RULE_HANDLER_H
-#define SERVER_ENTITY_RULE_HANDLER_H
+#ifndef SERVER_OP_RULE_HANDLER_H
+#define SERVER_OP_RULE_HANDLER_H
 
 #include "RuleHandler.h"
 
@@ -52,4 +52,4 @@ class OpRuleHandler : public RuleHandler {
                        const Atlas::Objects::Root & desc);
 };
 
-#endif // SERVER_ENTITY_RULE_HANDLER_H
+#endif // SERVER_OP_RULE_HANDLER_H

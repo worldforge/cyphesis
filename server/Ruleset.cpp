@@ -26,6 +26,7 @@
 #include "EntityBuilder.h"
 #include "EntityFactory.h"
 #include "EntityRuleHandler.h"
+#include "OpRuleHandler.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
 #include "TaskRuleHandler.h"
@@ -75,7 +76,8 @@ void Ruleset::init()
 
 Ruleset::Ruleset(EntityBuilder * eb) : m_builder(eb),
                                        m_taskHandler(new TaskRuleHandler(eb)),
-                                       m_entityHandler(new EntityRuleHandler(eb))
+                                       m_entityHandler(new EntityRuleHandler(eb)),
+                                       m_opHandler(new OpRuleHandler(eb))
 {
 }
 
@@ -487,17 +489,15 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
     int ret = -1;
-    if (objtype == "class") {
-        if (m_taskHandler->check(class_desc) == 0) {
-            ret = m_taskHandler->install(class_name, parent, class_desc,
-                                         dependent, reason);
-        } else if (m_entityHandler->check(class_desc) == 0) {
-            ret = m_entityHandler->install(class_name, parent, class_desc,
-                                           dependent, reason);
-        }
-    } else if (objtype == "op_definition") {
+    if (m_opHandler->check(class_desc) == 0) {
         ret = installOpDefinition(class_name, parent, class_desc,
                                   dependent, reason);
+    } else if (m_taskHandler->check(class_desc) == 0) {
+        ret = m_taskHandler->install(class_name, parent, class_desc,
+                                     dependent, reason);
+    } else if (m_entityHandler->check(class_desc) == 0) {
+        ret = m_entityHandler->install(class_name, parent, class_desc,
+                                       dependent, reason);
     } else {
         log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",
                            class_name, objtype));
