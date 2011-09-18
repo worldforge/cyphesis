@@ -916,6 +916,7 @@ Rulesettest_LDADD = \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/Account.o \
@@ -962,6 +963,7 @@ PropertyFlagtest_SOURCES = PropertyFlagtest.cpp
 PropertyFlagtest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
@@ -1009,6 +1011,7 @@ Accounttest_SOURCES = Accounttest.cpp
 Accounttest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1056,6 +1059,7 @@ Admintest_SOURCES = Admintest.cpp
 Admintest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1103,6 +1107,7 @@ ServerAccounttest_SOURCES = ServerAccounttest.cpp
 ServerAccounttest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
@@ -1150,6 +1155,7 @@ Playertest_SOURCES = Playertest.cpp
 Playertest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1335,6 +1341,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/CommServer.o \
@@ -1380,6 +1387,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/Account.o \

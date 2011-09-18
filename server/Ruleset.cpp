@@ -25,6 +25,7 @@
 
 #include "EntityBuilder.h"
 #include "EntityFactory.h"
+#include "EntityRuleHandler.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
 #include "TaskRuleHandler.h"
@@ -73,7 +74,8 @@ void Ruleset::init()
 
 
 Ruleset::Ruleset(EntityBuilder * eb) : m_builder(eb),
-                                       m_taskHandler(new TaskRuleHandler(eb))
+                                       m_taskHandler(new TaskRuleHandler(eb)),
+                                       m_entityHandler(new EntityRuleHandler(eb))
 {
 }
 
@@ -484,14 +486,14 @@ int Ruleset::installRuleInner(const std::string & class_name,
                            class_name));
         return -1;
     }
-    int ret;
+    int ret = -1;
     if (objtype == "class") {
         if (m_taskHandler->check(class_desc) == 0) {
             ret = m_taskHandler->install(class_name, parent, class_desc,
                                          dependent, reason);
-        } else {
-            ret = installEntityClass(class_name, parent, class_desc,
-                                     dependent, reason);
+        } else if (m_entityHandler->check(class_desc) == 0) {
+            ret = m_entityHandler->install(class_name, parent, class_desc,
+                                           dependent, reason);
         }
     } else if (objtype == "op_definition") {
         ret = installOpDefinition(class_name, parent, class_desc,
