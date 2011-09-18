@@ -44,11 +44,6 @@ class EntityRuleHandler : public RuleHandler {
 
     int modifyEntityClass(const std::string & class_name,
                           const Atlas::Objects::Root & class_desc);
-
-    void waitForRule(const std::string & class_name,
-                     const Atlas::Objects::Root & class_desc,
-                     const std::string & dependent,
-                     const std::string & reason);
   public:
     EntityRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
