@@ -1,3 +1,7 @@
+Re-work the way default types are installed so that addChild can be called from
+Ruleset, or related areas. Current logic is messy, and is this way because
+factories are added at initialisation for some base classes.
+
 Allow long cut and cross cut with saws. Long cut is along grain, bisecting by longest dimension. cross cut is across both grains
 
 Sort out a better way to handle materials. We shouldn't have a base class
