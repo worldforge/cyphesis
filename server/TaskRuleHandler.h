@@ -22,10 +22,6 @@
 
 #include "RuleHandler.h"
 
-#include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Root.h>
-#include <Atlas/Objects/SmartPtr.h>
-
 class EntityBuilder;
 class TaskKit;
 

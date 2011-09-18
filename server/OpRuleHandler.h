@@ -23,7 +23,6 @@
 #include "RuleHandler.h"
 
 class EntityBuilder;
-class EntityKit;
 
 /// \brief Handle processing and updating of task ruless
 class OpRuleHandler : public RuleHandler {
