@@ -92,7 +92,7 @@ SERVER_SOURCES = \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		Ruleset.cpp Ruleset.h \
-		RuleHandler.h \
+		RuleHandler.cpp RuleHandler.h \
 		EntityRuleHandler.cpp EntityRuleHandler.h \
 		OpRuleHandler.cpp OpRuleHandler.h \
 		TaskRuleHandler.cpp TaskRuleHandler.h \

@@ -33,6 +33,12 @@ class RuleHandler {
                         std::string &) = 0;
     virtual int update(const std::string &,
                        const Atlas::Objects::Root & desc) = 0;
+
+    static int getScriptDetails(const Atlas::Message::MapType &,
+                                const std::string &,
+                                const std::string &,
+                                std::string &,
+                                std::string &);
 };
 
 #endif // SERVER_RULE_HANDLER_H

@@ -925,6 +925,7 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
@@ -974,6 +975,7 @@ Accounttest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1023,6 +1025,7 @@ Admintest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1072,6 +1075,7 @@ ServerAccounttest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
@@ -1121,6 +1125,7 @@ Playertest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1308,6 +1313,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/CommServer.o \
@@ -1355,6 +1361,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/Account.o \

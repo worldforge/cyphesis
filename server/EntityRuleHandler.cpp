@@ -166,33 +166,12 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
     MapType::const_iterator Jend = class_desc.end();
     if (J != Jend && J->second.isMap()) {
         const MapType & script = J->second.asMap();
-        J = script.find("name");
-        if (J == script.end() || !J->second.isString()) {
-            log(ERROR, compose("Entity \"%1\" script has no name.",
-                               class_name));
+        std::string script_package;
+        std::string script_class;
+        if (getScriptDetails(script, class_name, "Entity",
+                             script_package, script_class) != 0) {
             return -1;
         }
-        const std::string & script_name = J->second.String();
-        J = script.find("language");
-        if (J == script.end() || !J->second.isString()) {
-            log(ERROR, compose("Entity \"%1\" script has no language.",
-                               class_name));
-            return -1;
-        }
-        const std::string & script_language = J->second.String();
-        if (script_language != "python") {
-            log(ERROR, compose("Entity \"%1\" script has unknown language "
-                               "\"%2\".", class_name, script_language));
-            return -1;
-        }
-        std::string::size_type ptr = script_name.rfind(".");
-        if (ptr == std::string::npos) {
-            log(ERROR, compose("Entity \"%1\" python script has a bad class "
-                               "name \"%2\".", class_name, script_name));
-            return -1;
-        }
-        std::string script_package = script_name.substr(0, ptr);
-        std::string script_class = script_name.substr(ptr + 1);
         if (factory->m_scriptFactory != 0) {
             if (factory->m_scriptFactory->package() != script_package) {
                 delete factory->m_scriptFactory;

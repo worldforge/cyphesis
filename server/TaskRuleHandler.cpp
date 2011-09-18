@@ -56,35 +56,13 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
         return -1;
     }
     const MapType & script = script_attr.Map();
+    std::string script_package;
+    std::string script_class;
 
-    MapType::const_iterator J = script.find("name");
-    MapType::const_iterator script_end = script.end();
-    if (J == script_end || !J->second.isString()) {
-        log(ERROR, compose("Task \"%1\" script has no name.", class_name));
+    if (getScriptDetails(script, class_name, "Task",
+                         script_package, script_class) != 0) {
         return -1;
     }
-    const std::string & script_name = J->second.String();
-
-    J = script.find("language");
-    if (J == script_end || !J->second.isString()) {
-        log(ERROR, compose("Task \"%1\" script has no language.", class_name));
-        return -1;
-    }
-    const std::string & script_language = J->second.String();
-
-    if (script_language != "python") {
-        log(ERROR, compose("Task \"%1\" script has unknown language \"%2\".",
-                           class_name, script_language));
-        return -1;
-    }
-    std::string::size_type ptr = script_name.rfind(".");
-    if (ptr == std::string::npos) {
-        log(ERROR, compose("Task \"%1\" python script has a bad class "
-                           "name \"%2\".", class_name, script_name));
-        return -1;
-    }
-    std::string script_package = script_name.substr(0, ptr);
-    std::string script_class = script_name.substr(ptr + 1);
 
     Element activation_attr;
     if (class_desc->copyAttr("activation", activation_attr) != 0 ||
@@ -95,7 +73,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     const MapType & activation = activation_attr.Map();
 
     MapType::const_iterator act_end = activation.end();
-    J = activation.find("tool");
+    MapType::const_iterator J = activation.find("tool");
     if (J == act_end || !J->second.isString()) {
         log(ERROR, compose("Task \"%1\" activation has no tool.", class_name));
         return -1;
