@@ -28,7 +28,6 @@
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/Inheritance.h"
-#include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/objectFactory.h>
