@@ -50,25 +50,6 @@ class ExposedRuleset : public Ruleset {
     void getRulesFromFiles(std::map<std::string, Root> & rules) {
         Ruleset::getRulesFromFiles(rules);
     }
-    void populateEntityFactory(const std::string & class_name,
-                               EntityKit * factory,
-                               const MapType & class_desc) {
-    }
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Root & class_desc,
-                           std::string & dependent,
-                           std::string & reason) {
-        return 0;
-    }
-    int installOpDefinition(const std::string & op_def_name,
-                            const std::string & parent,
-                            const Root & op_def_desc,
-                            std::string & dependent,
-                            std::string & reason) {
-        return 0;
-    }
-
 };
 
 class ExposedEntityBuilder : public EntityBuilder {
@@ -201,13 +182,11 @@ int main(int argc, char ** argv)
             custom_type_description->setAttr("attributes", attrs);
             custom_type_description->setId("custom_type");
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            custom_type_description->setObjtype("class");
 
-            std::string dependent, reason;
-            ret = test_ruleset.installEntityClass("custom_type", "thing", custom_type_description, dependent, reason);
+            ret = test_ruleset.installRule("custom_type", custom_type_description);
 
             assert(ret == 0);
-            assert(dependent.empty());
-            assert(reason.empty());
         }
 
         // Check that the factory dictionary now contains a factory for
@@ -262,9 +241,10 @@ int main(int argc, char ** argv)
             custom_inherited_type_description->setAttr("attributes", attrs);
             custom_inherited_type_description->setId("custom_inherited_type");
             custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            custom_inherited_type_description->setObjtype("class");
 
             std::string dependent, reason;
-            ret = test_ruleset.installEntityClass("custom_inherited_type", "custom_type", custom_inherited_type_description, dependent, reason);
+            ret = test_ruleset.installRule("custom_inherited_type", custom_inherited_type_description);
 
             assert(ret == 0);
             assert(dependent.empty());
