@@ -333,6 +333,7 @@ int main(int argc, char ** argv)
         // Modify the second custom type removing its custom attribute
         {
             Anonymous new_custom_inherited_type_description;
+            new_custom_inherited_type_description->setObjtype("class");
             new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
 
@@ -423,6 +424,7 @@ int main(int argc, char ** argv)
         // Modify the first custom type removing its custom attribute
         {
             Anonymous new_custom_type_description;
+            new_custom_type_description->setObjtype("class");
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", MapType());
             new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
@@ -519,6 +521,7 @@ int main(int argc, char ** argv)
         // Add more custom attributes to the first type
         {
             Anonymous new_custom_type_description;
+            new_custom_type_description->setObjtype("class");
             MapType attrs;
             MapType test_custom_type_attr;
 
