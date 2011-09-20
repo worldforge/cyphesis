@@ -30,6 +30,8 @@
 
 #include <Atlas/Objects/Anonymous.h>
 
+#include <cstdlib>
+
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
