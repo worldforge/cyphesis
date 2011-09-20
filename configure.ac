@@ -87,7 +87,7 @@ AC_ARG_ENABLE(debug,
     [  --enable-debug          enable debug information [default=no]],
     [
         if test "$enableval" = "yes"; then
-            CXXFLAGS="$CXXFLAGS $GCC_EXTRA_OPT -Wall -DDEBUG"
+            CXXFLAGS="$CXXFLAGS $GCC_EXTRA_OPT -Wall -DDEBUG -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC"
         else
             CXXFLAGS="$CXXFLAGS $GCC_EXTRA_OPT -Wall -DNDEBUG"
         fi
