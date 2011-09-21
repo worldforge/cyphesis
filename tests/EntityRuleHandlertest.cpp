@@ -43,7 +43,7 @@ static bool stub_isTask_result = false;
 
 int main()
 {
-    EntityBuilder::init(*(BaseWorld*)0);
+    EntityBuilder::init();
 
     {
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
@@ -161,7 +161,7 @@ std::set<std::string> Player::playableTypes;
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
-EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
+EntityBuilder::EntityBuilder()
 {
 }
 

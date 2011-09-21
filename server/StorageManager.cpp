@@ -285,7 +285,7 @@ void StorageManager::restoreChildren(Entity * parent)
         const int int_id = forceIntegerId(id);
         const std::string type = I.column("type");
         Atlas::Objects::Entity::Anonymous attrs;
-        Entity * child = eb->newEntity(id, int_id, type, attrs);
+        Entity * child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
                     ", most likely caused by this type missing.",

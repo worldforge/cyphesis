@@ -115,7 +115,7 @@ WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
     m_initTime = tv.tv_sec;
     updateTime(tv.tv_sec, tv.tv_usec);
     m_gameWorld.incRef();
-    EntityBuilder::init(*this);
+    EntityBuilder::init();
     m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     m_perceptives.insert(&m_gameWorld);
@@ -270,7 +270,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
         return 0;
     }
 
-    Entity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs);
+    Entity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
     if (ent == 0) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",

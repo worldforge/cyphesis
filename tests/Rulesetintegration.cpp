@@ -54,7 +54,7 @@ class ExposedRuleset : public Ruleset {
 
 class ExposedEntityBuilder : public EntityBuilder {
   public:
-    explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder(w) {
+    explicit ExposedEntityBuilder() : EntityBuilder() {
         m_instance = this;
     }
 
@@ -81,16 +81,16 @@ int main(int argc, char ** argv)
         TestWorld test_world(e);
         Anonymous attributes;
 
-        EntityBuilder::init(test_world);
+        EntityBuilder::init();
         Ruleset::init();
 
         assert(Ruleset::instance() != 0);
 
         assert(EntityBuilder::instance() != 0);
 
-        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes) != 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, test_world) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, test_world) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world) != 0);
 
         Ruleset::del();
         assert(Ruleset::instance() == 0);
@@ -105,19 +105,19 @@ int main(int argc, char ** argv)
         Anonymous attributes;
         Atlas::Message::Element val;
 
-        EntityBuilder::init(test_world);
+        EntityBuilder::init();
         Ruleset::init();
 
         assert(Ruleset::instance() != 0);
 
-        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
         assert(!test_ent->getAttr("funky", val));
         assert(val.isNone());
 
         attributes->setAttr("funky", "true");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
         assert(test_ent->getAttr("funky", val));
         assert(val.isString());
@@ -138,7 +138,7 @@ int main(int argc, char ** argv)
 
         // Instance of EntityBuilder with all protected methods exposed
         // for testing
-        ExposedEntityBuilder * entity_factory = new ExposedEntityBuilder(test_world);
+        ExposedEntityBuilder * entity_factory = new ExposedEntityBuilder();
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instance();
@@ -149,7 +149,7 @@ int main(int argc, char ** argv)
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes);
+        Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
         // Check the created entity does not have the attribute values we
         // will be testing later
@@ -161,7 +161,7 @@ int main(int argc, char ** argv)
 
         // Create another entity, and check that it has picked up the new
         // attribute value
-        test_ent = test_eb->newEntity("1", 1, "thing", attributes);
+        test_ent = test_eb->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
         assert(test_ent->getAttr("funky", val));
         assert(val.isString());
@@ -169,7 +169,7 @@ int main(int argc, char ** argv)
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(test_eb->newEntity("1", 1, "custom_type", attributes) == 0);
+        assert(test_eb->newEntity("1", 1, "custom_type", attributes, test_world) == 0);
 
         // Set up a type description for a new type, and install it.
         {
@@ -202,7 +202,7 @@ int main(int argc, char ** argv)
         assert(J->second.String() == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -227,7 +227,7 @@ int main(int argc, char ** argv)
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(test_eb->newEntity("1", 1, "custom_inherited_type", attributes) == 0);
+        assert(test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world) == 0);
 
         // Set up a type description for a second new type which inherits
         // from the first, and install it.
@@ -271,7 +271,7 @@ int main(int argc, char ** argv)
         assert(J->second.String() == "test_inherited_value");
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -375,7 +375,7 @@ int main(int argc, char ** argv)
         assert(J == custom_inherited_type_factory->m_attributes.end());
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -439,7 +439,7 @@ int main(int argc, char ** argv)
         assert(J == custom_type_factory->m_attributes.end());
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -474,7 +474,7 @@ int main(int argc, char ** argv)
         assert(J == custom_inherited_type_factory->m_attributes.end());
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -556,7 +556,7 @@ int main(int argc, char ** argv)
         assert(J->second.String() == "new_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -604,7 +604,7 @@ int main(int argc, char ** argv)
         assert(J == custom_inherited_type_factory->m_attributes.end());
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
         assert(test_ent != 0);
 
         // Reset val.

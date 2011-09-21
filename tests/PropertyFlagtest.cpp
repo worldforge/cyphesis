@@ -40,9 +40,7 @@ int main(int argc, char ** argv)
 
     init_python_api();
 
-    World e("0", 0);
-    TestWorld test_world(e);
-    EntityBuilder::init(test_world);
+    EntityBuilder::init();
 
     Entity * thing = new Thing("1", 1);
 

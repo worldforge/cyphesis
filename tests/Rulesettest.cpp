@@ -60,7 +60,7 @@ int main(int argc, char ** argv)
     {
         Anonymous attributes;
 
-        EntityBuilder::init(*(BaseWorld*)0);
+        EntityBuilder::init();
         Ruleset::init();
 
         assert(Ruleset::instance() != 0);
@@ -78,7 +78,7 @@ int main(int argc, char ** argv)
         Anonymous attributes;
         Atlas::Message::Element val;
 
-        EntityBuilder::init(*(BaseWorld*)0);
+        EntityBuilder::init();
         Ruleset::init();
 
         assert(Ruleset::instance() != 0);
@@ -96,7 +96,7 @@ int main(int argc, char ** argv)
 
         // Instance of Ruleset with all protected methods exposed
         // for testing
-        EntityBuilder::init(*(BaseWorld*)0);
+        EntityBuilder::init();
         EntityBuilder * test_eb = EntityBuilder::instance();
         ExposedRuleset test_ruleset(test_eb);
 
@@ -319,7 +319,7 @@ int TaskRuleHandler::update(const std::string & name,
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
-EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
+EntityBuilder::EntityBuilder()
 {
 }
 

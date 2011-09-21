@@ -302,7 +302,7 @@ void WorldRouter::addPerceptive(Entity * perceptive)
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
-EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
+EntityBuilder::EntityBuilder()
 {
 }
 
@@ -312,7 +312,8 @@ EntityBuilder::~EntityBuilder()
 
 Entity * EntityBuilder::newEntity(const std::string & id, long intId,
                                   const std::string & type,
-                                  const RootEntity & attributes) const
+                                  const RootEntity & attributes,
+                                  const BaseWorld &) const
 {
     return 0;
 }

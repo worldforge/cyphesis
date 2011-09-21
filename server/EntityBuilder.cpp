@@ -61,7 +61,7 @@ static const bool debug_flag = false;
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
-EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
+EntityBuilder::EntityBuilder()
 {
     installBaseFactory("world", "game_entity", new EntityFactory<World>());
     EntityFactory<Thing> * tft = new EntityFactory<Thing>();
@@ -96,7 +96,8 @@ EntityBuilder::~EntityBuilder()
 /// @param attributes A mapping of attribute values to set on the entity.
 Entity * EntityBuilder::newEntity(const std::string & id, long intId,
                                   const std::string & type,
-                                  const RootEntity & attributes) const
+                                  const RootEntity & attributes,
+                                  const BaseWorld & world) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     Entity * thing = 0;
@@ -125,11 +126,11 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     // The default attributes cannot contain info on location
     if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string & loc_id = attributes->getLoc();
-        thing->m_location.m_loc = m_world.getEntity(loc_id);
+        thing->m_location.m_loc = world.getEntity(loc_id);
     }
     if (thing->m_location.m_loc == 0) {
         // If no info was provided, put the entity in the game world
-        thing->m_location.m_loc = &m_world.m_gameWorld;
+        thing->m_location.m_loc = &world.m_gameWorld;
     }
     thing->m_location.readFromEntity(attributes);
     if (!thing->m_location.pos().isValid()) {

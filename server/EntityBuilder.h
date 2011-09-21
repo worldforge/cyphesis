@@ -42,7 +42,7 @@ typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
 /// create them. Handles connecting entities to their persistor as required.
 class EntityBuilder {
   protected:
-    explicit EntityBuilder(BaseWorld & w);
+    explicit EntityBuilder();
     ~EntityBuilder();
     static EntityBuilder * m_instance;
 
@@ -50,16 +50,14 @@ class EntityBuilder {
     TaskFactoryDict m_taskFactories;
     TaskFactoryActivationDict m_taskActivations;
 
-    BaseWorld & m_world;
-
     EntityKit * getNewFactory(const std::string & parent);
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,
                             EntityKit * factory);
 
   public:
-    static void init(BaseWorld & w) {
-        m_instance = new EntityBuilder(w);
+    static void init() {
+        m_instance = new EntityBuilder();
     }
     static EntityBuilder * instance() {
         return m_instance;
@@ -78,7 +76,8 @@ class EntityBuilder {
     Entity * newEntity(const std::string & id,
                        long intId,
                        const std::string & type,
-                       const Atlas::Objects::Entity::RootEntity & attrs) const;
+                       const Atlas::Objects::Entity::RootEntity & attrs,
+                       const BaseWorld & world) const;
     void flushFactories();
 
     bool isTask(const std::string & class_name);

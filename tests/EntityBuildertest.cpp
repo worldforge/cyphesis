@@ -62,7 +62,7 @@ using Atlas::Objects::Root;
 
 class ExposedEntityBuilder : public EntityBuilder {
   public:
-    explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder(w) { }
+    explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder() { }
 
     EntityKit * getNewFactory(const std::string & clss) {
         return EntityBuilder::getNewFactory(clss);
@@ -92,13 +92,13 @@ int main(int argc, char ** argv)
         TestWorld test_world(e);
         Anonymous attributes;
 
-        EntityBuilder::init(test_world);
+        EntityBuilder::init();
 
         assert(EntityBuilder::instance() != 0);
 
-        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes) != 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, test_world) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, test_world) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world) != 0);
 
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
@@ -110,18 +110,18 @@ int main(int argc, char ** argv)
         TestWorld test_world(e);
         Anonymous attributes;
 
-        EntityBuilder::init(test_world);
+        EntityBuilder::init();
 
         assert(EntityBuilder::instance() != 0);
 
         // Create a normal Entity
-        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         // Create an entity specifying an attrbute
         attributes->setAttr("funky", "true");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         // Create an entity causing VELOCITY to be set
@@ -131,7 +131,7 @@ int main(int argc, char ** argv)
 
         LocatedEntity_merge_action = SET_VELOCITY;
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         LocatedEntity_merge_action = DO_NOTHING;
@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
 
         LocatedEntity_merge_action = SET_VELOCITY;
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         LocatedEntity_merge_action = DO_NOTHING;
@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
 
         attributes->setLoc("1");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         EntityBuilder::del();
@@ -172,7 +172,7 @@ int main(int argc, char ** argv)
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        Entity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes);
+        Entity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         Inheritance::clear();
@@ -193,7 +193,7 @@ int main(int argc, char ** argv)
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(entity_factory.newEntity("1", 1, "custom_type", attributes) == 0);
+        assert(entity_factory.newEntity("1", 1, "custom_type", attributes, test_world) == 0);
 
         // Get a reference to the internal dictionary of entity factories.
         const FactoryDict & factory_dict = entity_factory.factoryDict();
@@ -234,14 +234,14 @@ int main(int argc, char ** argv)
         assert(J->second.String() == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes);
+        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, test_world);
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes) == 0);
+        assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, test_world) == 0);
 
         // Assert the dictionary does not contain the factory we know we have
         // have not yet installed.
@@ -285,7 +285,7 @@ int main(int argc, char ** argv)
         assert(custom_type_factory == I->second);
 
         // Create an instance of our custom type, ensuring that it works.
-        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes);
+        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, test_world);
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);

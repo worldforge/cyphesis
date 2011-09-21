@@ -675,7 +675,7 @@ void Monitors::watch(const::std::string & name, VariableBase * monitor)
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
-EntityBuilder::EntityBuilder(BaseWorld & w) : m_world(w)
+EntityBuilder::EntityBuilder()
 {
 }
 
@@ -685,11 +685,12 @@ EntityBuilder::~EntityBuilder()
 
 Entity * EntityBuilder::newEntity(const std::string & id, long intId,
                                   const std::string & type,
-                                  const RootEntity & attributes) const
+                                  const RootEntity & attributes,
+                                  const BaseWorld & world) const
 {
     if (type == "thing") {
         Entity * e = new Entity(id, intId);
-        e->m_location.m_loc = &m_world.m_gameWorld;
+        e->m_location.m_loc = &world.m_gameWorld;
         e->m_location.m_pos = Point3D(0,0,0);
         return e;
     }
