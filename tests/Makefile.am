@@ -64,7 +64,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                StorageManagertest HttpCachetest UpdateTestertest \
                ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
-               ConnectedRoutertest RuleHandlertest OpRuleHandlertest
+               ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
+               EntityRuleHandlertest TaskRuleHandlertest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1309,6 +1310,16 @@ RuleHandlertest_LDADD = \
 OpRuleHandlertest_SOURCES = OpRuleHandlertest.cpp
 OpRuleHandlertest_LDADD = \
         $(top_builddir)/server/OpRuleHandler.o
+
+EntityRuleHandlertest_SOURCES = EntityRuleHandlertest.cpp
+EntityRuleHandlertest_LDADD = \
+        $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o
+
+TaskRuleHandlertest_SOURCES = TaskRuleHandlertest.cpp
+TaskRuleHandlertest_LDADD = \
+        $(top_builddir)/server/TaskRuleHandler.o \
+        $(top_builddir)/server/RuleHandler.o
 
 # SERVER_INTEGRATION_TESTS
 

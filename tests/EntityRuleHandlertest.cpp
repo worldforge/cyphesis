@@ -50,11 +50,12 @@ int main()
         delete rh;
     }
 
-    // check() stub says no
+    // check() not a class
     {
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
 
         Anonymous description;
+        description->setParents(std::list<std::string>(1, "foo"));
         int ret = rh->check(description);
 
         assert(ret == -1);
@@ -62,18 +63,34 @@ int main()
         delete rh;
     }
 
-    // check() stub says yes
+    // check() stub says it's a task
     {
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
 
         stub_isTask_result = true;
 
         Anonymous description;
+        description->setObjtype("class");
+        description->setParents(std::list<std::string>(1, "foo"));
+        int ret = rh->check(description);
+
+        assert(ret == -1);
+
+        stub_isTask_result = false;
+
+        delete rh;
+    }
+
+    // check() stub says it's not a task
+    {
+        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+
+        Anonymous description;
+        description->setObjtype("class");
+        description->setParents(std::list<std::string>(1, "foo"));
         int ret = rh->check(description);
 
         assert(ret == 0);
-
-        stub_isTask_result = false;
 
         delete rh;
     }
@@ -82,10 +99,14 @@ int main()
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
 
         Anonymous description;
+        description->setId("class_name");
         std::string dependent, reason;
-        int ret = rh->install("", "", description, dependent, reason);
 
-        assert(ret == -1);
+        int ret = rh->install("class_name", "parent_name",
+                              description, dependent, reason);
+
+        assert(ret == 1);
+        assert(dependent == "parent_name");
 
         delete rh;
     }
@@ -95,12 +116,15 @@ int main()
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
 
         Anonymous description;
+        description->setId("class_name");
         std::string dependent, reason;
 
         stub_addChild_result = (TypeNode *) malloc(sizeof(TypeNode));
-        int ret = rh->install("", "", description, dependent, reason);
+        int ret = rh->install("class_name", "parent_name",
+                              description, dependent, reason);
 
-        assert(ret == -1);
+        assert(ret == 1);
+        assert(dependent == "parent_name");
 
         free(stub_addChild_result);
         stub_addChild_result = 0;
@@ -125,9 +149,15 @@ int main()
 // stubs
 
 #include "server/EntityFactory.h"
+#include "server/Player.h"
+#include "server/ScriptFactory.h"
+
+#include "rulesets/MindFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"
+
+std::set<std::string> Player::playableTypes;
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
@@ -145,11 +175,58 @@ EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
     return 0;
 }
 
+void EntityBuilder::installFactory(const std::string & class_name,
+                                   const std::string & parent,
+                                   EntityKit * factory)
+{
+}
+
+ScriptKit::ScriptKit(const std::string & package,
+                     const std::string & type) : m_package(package),
+                                                 m_type(type)
+{
+}
+
+ScriptKit::~ScriptKit()
+{
+}
+
+PythonScriptFactory::PythonScriptFactory(const std::string & package,
+                                         const std::string & type) :
+                                         ScriptKit(package, type),
+                                         m_module(0), m_class(0)
+{
+}
+
+PythonScriptFactory::~PythonScriptFactory()
+{
+}
+
+int PythonScriptFactory::addScript(Entity * entity)
+{
+    return 0;
+}
+
+int PythonScriptFactory::refreshClass()
+{
+    return 0;
+}
+
 void EntityKit::updateChildren()
 {
 }
 
 void EntityKit::updateChildrenProperties()
+{
+}
+
+void EntityKit::addProperties()
+{
+}
+
+MindFactory * MindFactory::m_instance = NULL;
+
+MindFactory::MindFactory()
 {
 }
 
@@ -185,3 +262,5 @@ Root atlasOpDefinition(const std::string & name, const std::string & parent)
 void log(LogLevel lvl, const std::string & msg)
 {
 }
+
+

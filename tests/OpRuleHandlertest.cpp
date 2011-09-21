@@ -50,6 +50,7 @@ int main()
         RuleHandler * rh = new OpRuleHandler(0);
 
         Anonymous description;
+        description->setParents(std::list<std::string>(1, "foo"));
         int ret = rh->check(description);
 
         assert(ret == -1);
@@ -63,6 +64,7 @@ int main()
 
         Anonymous description;
         description->setObjtype("op_definition");
+        description->setParents(std::list<std::string>(1, "foo"));
         int ret = rh->check(description);
 
         assert(ret == 0);
