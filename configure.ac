@@ -10,8 +10,8 @@ AC_CANONICAL_HOST
 
 dnl Initialise automake
 
-AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news color-tests parallel-tests])
-
+AM_INIT_AUTOMAKE([nostdinc dist-bzip2 check-news color-tests parallel-tests no-define silent-rules])
+AM_SILENT_RULES([yes])
 AM_BINRELOC
 
 dnl Do not need libtool
