@@ -240,6 +240,7 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
 
 int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
 {
+    assert(!desc->getParents().empty());
     if (desc->getObjtype() != "class") {
         return -1;
     }

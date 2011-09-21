@@ -78,6 +78,7 @@ int OpRuleHandler::modifyOpDefinition(const std::string & class_name,
 
 int OpRuleHandler::check(const Atlas::Objects::Root & desc)
 {
+    assert(!desc->getParents().empty());
     if (desc->getObjtype() != "op_definition") {
         return -1;
     }

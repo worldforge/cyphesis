@@ -240,6 +240,7 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
 
 int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
 {
+    assert(!desc->getParents().empty());
     return m_builder->isTask(desc->getParents().front()) ? 0 : -1;
 }
 
