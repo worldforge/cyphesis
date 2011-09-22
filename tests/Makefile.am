@@ -65,7 +65,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
-               EntityRuleHandlertest TaskRuleHandlertest
+               EntityRuleHandlertest TaskRuleHandlertest \
+               IdleConnectortest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1320,6 +1321,10 @@ TaskRuleHandlertest_SOURCES = TaskRuleHandlertest.cpp
 TaskRuleHandlertest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o
+
+IdleConnectortest_SOURCES = IdleConnectortest.cpp
+IdleConnectortest_LDADD = \
+        $(top_builddir)/server/IdleConnector.o
 
 # SERVER_INTEGRATION_TESTS
 
