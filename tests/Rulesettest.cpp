@@ -24,15 +24,10 @@
 #define DEBUG
 #endif
 
-#include "TestWorld.h"
-
-#include "rulesets/World.h"
-#include "rulesets/Python_API.h"
-
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
-#include "server/EntityFactory.h"
 
+#include "common/const.h"
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -58,8 +53,6 @@ int main(int argc, char ** argv)
     int ret;
 
     {
-        Anonymous attributes;
-
         EntityBuilder::init();
         Ruleset::init();
 
@@ -75,24 +68,7 @@ int main(int argc, char ** argv)
     }
 
     {
-        Anonymous attributes;
-        Atlas::Message::Element val;
-
-        EntityBuilder::init();
-        Ruleset::init();
-
-        assert(Ruleset::instance() != 0);
-
-        Ruleset::del();
-        assert(Ruleset::instance() == 0);
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
-    }
-
-    {
         // Create a test world.
-        Atlas::Message::Element val;
 
         // Instance of Ruleset with all protected methods exposed
         // for testing
@@ -102,6 +78,108 @@ int main(int argc, char ** argv)
 
         // Attributes for test entities being created
         Anonymous attributes;
+
+        // Set up a simple class description for a new type, and install it.
+        {
+            Root custom_type_description;
+            custom_type_description->setObjtype("class");
+            custom_type_description->setId("f134c3e0");
+            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+
+            ret = test_ruleset.installRule("f134c3e0", custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == 0);
+        }
+
+        // Set up a simple class description for a new type, and install it.
+        {
+            Root custom_type_description;
+            custom_type_description->setObjtype("class");
+            custom_type_description->setId("667aa324");
+            custom_type_description->setParents(std::list<std::string>(1, "task"));
+
+            ret = test_ruleset.installRule("667aa324", custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == 0);
+        }
+
+        // Set up a simple class description for a new type, and install it.
+        {
+            Root custom_type_description;
+            custom_type_description->setObjtype("op_definition");
+            custom_type_description->setId("17c4e87e");
+            custom_type_description->setParents(std::list<std::string>(1, "get"));
+
+            ret = test_ruleset.installRule("17c4e87e", custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == 0);
+        }
+
+        // Overlength name
+        {
+            std::string class_name(consts::id_len * 2, 'f');
+            Root custom_type_description;
+            custom_type_description->setObjtype("class");
+            custom_type_description->setId(class_name);
+            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+
+            ret = test_ruleset.installRule(class_name, custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == -1);
+        }
+
+        // Empty parents list
+        {
+            std::string class_name("2cde57d0");
+            Root custom_type_description;
+            custom_type_description->setObjtype("class");
+            custom_type_description->setId(class_name);
+            custom_type_description->setParents(std::list<std::string>());
+
+            ret = test_ruleset.installRule(class_name, custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == -1);
+        }
+
+        // Empty parent string
+        {
+            std::string class_name("beb29f55");
+            Root custom_type_description;
+            custom_type_description->setObjtype("class");
+            custom_type_description->setId(class_name);
+            custom_type_description->setParents(std::list<std::string>(1, ""));
+
+            ret = test_ruleset.installRule(class_name, custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == -1);
+        }
+
+        // Unknown kind of rule
+        {
+            std::string class_name("9394c6dd");
+            Root custom_type_description;
+            custom_type_description->setObjtype("481c53630c98");
+            custom_type_description->setId(class_name);
+            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+
+            ret = test_ruleset.installRule(class_name, custom_type_description);
+            // Add this to inheritance, so future tests work
+            Inheritance::instance().addChild(custom_type_description);
+
+            assert(ret == -1);
+        }
 
         // Set up a type description for a new type, and install it.
         {
@@ -444,5 +522,5 @@ void log(LogLevel lvl, const std::string & msg)
 
 std::string etc_directory;
 std::string ruleset;
-bool database_flag = false;
+bool database_flag = true;
 
