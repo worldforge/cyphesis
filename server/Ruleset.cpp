@@ -93,7 +93,6 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
 
-    const std::string & objtype = class_desc->getObjtype();
     const std::list<std::string> & parents = class_desc->getParents();
     if (parents.empty()) {
         log(ERROR, compose("Rule \"%1\" has empty parents. Skipping.",
@@ -118,7 +117,7 @@ int Ruleset::installRuleInner(const std::string & class_name,
                                        dependent, reason);
     } else {
         log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",
-                           class_name, objtype));
+                           class_name, class_desc->getObjtype()));
         return -1;
     }
 
