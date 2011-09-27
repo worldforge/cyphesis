@@ -973,6 +973,8 @@ CommServertest_LDADD = \
         $(top_builddir)/server/CommServer.o
 
 Accounttest_SOURCES = Accounttest.cpp
+Accounttest_LDADD = \
+        $(top_builddir)/server/Account.o
 
 Admintest_SOURCES = Admintest.cpp
 Admintest_LDADD = \
