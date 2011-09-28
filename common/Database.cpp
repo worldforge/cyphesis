@@ -64,6 +64,11 @@ Database::Database() : m_rule_db("rules"),
 
 Database::~Database()
 {
+    if (pendingQueries.size() != 0) {
+        log(ERROR, compose("Database delete with %1 queries pending",
+                           pendingQueries.size()));
+    
+    }
 }
 
 bool Database::tuplesOk()
