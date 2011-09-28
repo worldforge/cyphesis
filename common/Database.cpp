@@ -326,8 +326,8 @@ int Database::decodeMessage(const std::string & data,
     return 0;
 }
 
-bool Database::encodeObject(const MapType & o,
-                            std::string & data)
+int Database::encodeObject(const MapType & o,
+                           std::string & data)
 {
     std::stringstream str;
 
@@ -350,7 +350,7 @@ bool Database::encodeObject(const MapType & o,
 
     data = safe;
 
-    return true;
+    return 0;
 }
 
 bool Database::getObject(const std::string & table, const std::string & key,

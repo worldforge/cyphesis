@@ -649,10 +649,10 @@ const DatabaseResult Database::selectEntities(const std::string & loc)
     return DatabaseResult(0);
 }
 
-bool Database::encodeObject(const MapType & o,
-                            std::string & data)
+int Database::encodeObject(const MapType & o,
+                           std::string & data)
 {
-    return true;
+    return 0;
 }
 
 int Database::decodeMessage(const std::string & data,
