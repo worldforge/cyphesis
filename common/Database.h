@@ -105,6 +105,7 @@ class Database {
     PGconn * m_connection;
 
     Database();
+    ~Database();
 
     // bool command(const std::string & cmd);
 

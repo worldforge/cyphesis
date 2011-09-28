@@ -62,6 +62,10 @@ Database::Database() : m_rule_db("rules"),
 {
 }
 
+Database::~Database()
+{
+}
+
 bool Database::tuplesOk()
 {
     assert(m_connection != 0);

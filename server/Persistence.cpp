@@ -122,7 +122,7 @@ int Persistence::init()
 void Persistence::shutdown()
 {
     m_connection.shutdownConnection();
-    delete &m_connection;
+    Database::cleanup();
     assert(this == m_instance);
     delete m_instance;
     m_instance = NULL;
