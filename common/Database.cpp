@@ -1401,19 +1401,19 @@ void Database::queryComplete()
     m_queryInProgress = false;
 }
 
-bool Database::launchNewQuery()
+int Database::launchNewQuery()
 {
     if (m_connection == 0) {
         log(ERROR, "Can't launch new query while database is offline.");
-        return false;
+        return -1;
     }
     if (m_queryInProgress) {
         log(ERROR, "Launching new query when query is in progress");
-        return false;
+        return -1;
     }
     if (pendingQueries.empty()) {
         debug(std::cout << "No queries to launch" << std::endl << std::flush;);
-        return false;
+        return -1;
     }
     debug(std::cout << pendingQueries.size() << " queries pending"
                     << std::endl << std::flush;);
@@ -1424,11 +1424,11 @@ bool Database::launchNewQuery()
     if (!status) {
         log(ERROR, "Database query error when launching.");
         reportError();
-        return false;
+        return -1;
     } else {
         m_queryInProgress = true;
         PQflush(m_connection);
-        return true;
+        return 0;
     }
 }
 
@@ -1438,7 +1438,7 @@ bool Database::scheduleCommand(const std::string & query)
     if (!m_queryInProgress) {
         debug(std::cout << "Query: " << query << " launched"
                         << std::endl << std::flush;);
-        return launchNewQuery();
+        return launchNewQuery() == 0;
     } else {
         debug(std::cout << "Query: " << query << " scheduled"
                         << std::endl << std::flush;);

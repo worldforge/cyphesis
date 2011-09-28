@@ -232,7 +232,7 @@ class Database {
     
     void queryResult(ExecStatusType);
     void queryComplete();
-    bool launchNewQuery();
+    int launchNewQuery();
     bool scheduleCommand(const std::string & query);
     int clearPendingQuery();
     int runMaintainance(int command = MAINTAIN_VACUUM);
