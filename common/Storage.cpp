@@ -31,7 +31,7 @@ int Storage::init()
     if (m_connection.initConnection() != 0) {
         return -1;
     }
-    if (!m_connection.initRule(true)) {
+    if (m_connection.initRule(true) != 0) {
         return -1;
     }
     return 0;

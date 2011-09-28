@@ -161,7 +161,7 @@ class Database {
 
     int initConnection();
     int createInstanceDatabase();
-    bool initRule(bool createTables = false);
+    int initRule(bool createTables = false);
 
     void shutdownConnection();
 

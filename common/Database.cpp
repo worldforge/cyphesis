@@ -198,7 +198,7 @@ int Database::initConnection()
     return 0;
 }
 
-bool Database::initRule(bool createTables)
+int Database::initRule(bool createTables)
 {
     assert(m_connection != 0);
 
@@ -208,7 +208,7 @@ bool Database::initRule(bool createTables)
                                        "id = 'test' AND contents = 'test'");
     if (!status) {
         reportError();
-        return false;
+        return -1;
     }
 
     if (!tuplesOk()) {
@@ -223,21 +223,21 @@ bool Database::initRule(bool createTables)
             status = PQsendQuery(m_connection, query.c_str());
             if (!status) {
                 reportError();
-                return false;
+                return -1;
             }
             if (commandOk() != 0) {
                 log(ERROR, "Error creating rules table in database");
                 reportError();
-                return false;
+                return -1;
             }
             allTables.insert("rules");
         } else {
             log(ERROR, "Server table does not exist in database");
-            return false;
+            return -1;
         }
     }
     allTables.insert("rules");
-    return true;
+    return 0;
 }
 
 void Database::shutdownConnection()

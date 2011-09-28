@@ -69,7 +69,7 @@ class RuleReader {
             if (m_instance->m_connection.initConnection() != 0) {
                 delete m_instance;
                 m_instance = 0;
-            } else if (!m_instance->m_connection.initRule(true)) {
+            } else if (m_instance->m_connection.initRule(false) != 0) {
                 delete m_instance;
                 m_instance = 0;
             }

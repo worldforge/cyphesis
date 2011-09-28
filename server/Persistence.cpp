@@ -89,7 +89,7 @@ int Persistence::init()
         return DATABASE_TABERR;
     }
 
-    bool i = m_connection.initRule(true);
+    bool i = (m_connection.initRule(true) == 0);
 
     MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
