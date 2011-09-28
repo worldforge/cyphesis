@@ -353,8 +353,9 @@ int Database::encodeObject(const MapType & o,
     return 0;
 }
 
-bool Database::getObject(const std::string & table, const std::string & key,
-                         MapType & o)
+int Database::getObject(const std::string & table,
+                        const std::string & key,
+                        MapType & o)
 {
     assert(m_connection != 0);
 
@@ -366,14 +367,14 @@ bool Database::getObject(const std::string & table, const std::string & key,
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
         reportError();
-        return false;
+        return -1;
     }
 
     PGresult * res;
     if ((res = PQgetResult(m_connection)) == NULL) {
         debug(std::cout << "Error accessing " << key << " in " << table
                         << " table" << std::endl << std::flush;);
-        return false;
+        return -1;
     }
     if (PQntuples(res) < 1 || PQnfields(res) < 2) {
         debug(std::cout << "No entry for " << key << " in " << table
@@ -382,7 +383,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
         while ((res = PQgetResult(m_connection)) != NULL) {
             PQclear(res);
         }
-        return false;
+        return -1;
     }
     const char * data = PQgetvalue(res, 0, 1);
     debug(std::cout << "Got record " << key << " from database, value " << data
@@ -396,13 +397,13 @@ bool Database::getObject(const std::string & table, const std::string & key,
         log(ERROR, "Extra database result to simple query.");
     };
 
-    return ret == 0;
+    return ret;
 }
 
-bool Database::putObject(const std::string & table,
-                         const std::string & key,
-                         const MapType & o,
-                         const StringVector & c)
+int Database::putObject(const std::string & table,
+                        const std::string & key,
+                        const MapType & o,
+                        const StringVector & c)
 {
     debug(std::cout << "Database::putObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -426,12 +427,12 @@ bool Database::putObject(const std::string & table,
     query += "', '";
     query += str.str();
     query +=  "')";
-    return scheduleCommand(query);
+    return scheduleCommand(query) ? 0 : -1;
 }
 
-bool Database::updateObject(const std::string & table,
-                            const std::string & key,
-                            const MapType & o)
+int Database::updateObject(const std::string & table,
+                           const std::string & key,
+                           const MapType & o)
 {
     debug(std::cout << "Database::updateObject() " << table << "." << key
                     << std::endl << std::flush;);
@@ -446,10 +447,10 @@ bool Database::updateObject(const std::string & table,
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
                         str.str() + "' WHERE id='" + key + "'";
-    return scheduleCommand(query);
+    return scheduleCommand(query) ? 0 : -1;
 }
 
-bool Database::delObject(const std::string & table, const std::string & key)
+int Database::delObject(const std::string & table, const std::string & key)
 {
 #if 0
     Dbt key, data;
@@ -464,7 +465,7 @@ bool Database::delObject(const std::string & table, const std::string & key)
     }
     return true;
 #endif
-    return true;
+    return 0;
 }
 
 bool Database::hasKey(const std::string & table, const std::string & key)

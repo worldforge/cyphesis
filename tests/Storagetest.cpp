@@ -291,12 +291,12 @@ bool Database::hasKey(const std::string & table, const std::string & key)
     return false;
 }
 
-bool Database::putObject(const std::string & table,
+int Database::putObject(const std::string & table,
                          const std::string & key,
                          const Atlas::Message::MapType & o,
                          const StringVector & c)
 {
-    return true;
+    return 0;
 }
 
 const char * DatabaseResult::field(const char * column, int row) const

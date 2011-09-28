@@ -137,17 +137,17 @@ class Database {
                       Atlas::Message::MapType &);
     int encodeObject(const Atlas::Message::MapType &,
                      std::string &);
-    bool putObject(const std::string & table,
-                   const std::string &,
-                   const Atlas::Message::MapType &,
-                   const StringVector & = StringVector());
-    bool getObject(const std::string & table,
-                   const std::string & key,
-                   Atlas::Message::MapType &);
-    bool updateObject(const std::string & table,
-                      const std::string & key,
-                      const Atlas::Message::MapType&);
-    bool delObject(const std::string &, const std::string & key);
+    int putObject(const std::string & table,
+                  const std::string &,
+                  const Atlas::Message::MapType &,
+                  const StringVector & = StringVector());
+    int getObject(const std::string & table,
+                  const std::string & key,
+                  Atlas::Message::MapType &);
+    int updateObject(const std::string & table,
+                     const std::string & key,
+                     const Atlas::Message::MapType&);
+    int delObject(const std::string &, const std::string & key);
     bool hasKey(const std::string &, const std::string & key);
     bool getTable(const std::string & table,
                   std::map<std::string, Atlas::Objects::Root> &);
