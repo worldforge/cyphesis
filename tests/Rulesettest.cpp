@@ -427,10 +427,10 @@ Persistence * Persistence::instance()
     return m_instance;
 }
 
-bool Persistence::updateRule(const Atlas::Objects::Root & rule,
-                             const std::string & key)
+int Persistence::updateRule(const Atlas::Objects::Root & rule,
+                            const std::string & key)
 {
-    return true;
+    return 0;
 }
 
 bool Persistence::getRules(std::map<std::string, Root> & t)
@@ -438,10 +438,10 @@ bool Persistence::getRules(std::map<std::string, Root> & t)
     return true;
 }
 
-bool Persistence::storeRule(const Atlas::Objects::Root & rule,
-                            const std::string & key)
+int Persistence::storeRule(const Atlas::Objects::Root & rule,
+                           const std::string & key)
 {
-    return true;
+    return 0;
 }
 
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,

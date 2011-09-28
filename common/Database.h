@@ -235,7 +235,7 @@ class Database {
     bool launchNewQuery();
     bool scheduleCommand(const std::string & query);
     bool clearPendingQuery();
-    bool runMaintainance(int command = MAINTAIN_VACUUM);
+    int runMaintainance(int command = MAINTAIN_VACUUM);
 
 };
 

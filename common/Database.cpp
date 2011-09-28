@@ -1466,7 +1466,7 @@ bool Database::clearPendingQuery()
     }
 }
 
-bool Database::runMaintainance(int command)
+int Database::runMaintainance(int command)
 {
     // VACUUM and REINDEX tables from a common store
     if ((command & MAINTAIN_REINDEX) == MAINTAIN_REINDEX) {
@@ -1489,7 +1489,7 @@ bool Database::runMaintainance(int command)
             scheduleCommand(query + *I);
         }
     }
-    return true;
+    return 0;
 }
 
 const char * DatabaseResult::field(const char * column, int row) const

@@ -116,7 +116,7 @@ int Persistence::init()
         putAccount(dummyAdminAccount);
     }
 
-    return (i && j && k) ? 0 : -2;
+    return (i && j && k) ? 0 : DATABASE_TABERR;
 }
 
 void Persistence::shutdown()
@@ -257,12 +257,12 @@ bool Persistence::getRules(std::map<std::string, Root> & t)
     return m_connection.getTable(m_connection.rule(), t);
 }
 
-bool Persistence::storeRule(const Atlas::Objects::Root & rule,
-                            const std::string & key)
+int Persistence::storeRule(const Atlas::Objects::Root & rule,
+                           const std::string & key)
 {
     const std::string & table = m_connection.rule();
     if (m_connection.hasKey(table, key)) {
-        return false;
+        return -1;
     }
     MapType rule_msg = rule->asMessage();
 
@@ -283,19 +283,20 @@ bool Persistence::storeRule(const Atlas::Objects::Root & rule,
 
     m_connection.putObject(table, key, rule_msg, StringVector(1, file));
     if (!m_connection.clearPendingQuery()) {
+        // FIXME No writing to stderr here!
         std::cerr << "Failed" << std::endl << std::flush;
-        return false;
+        return -1;
     }
-    return true;
+    return 0;
 }
 
-bool Persistence::updateRule(const Atlas::Objects::Root & rule,
+int Persistence::updateRule(const Atlas::Objects::Root & rule,
                              const std::string & key)
 {
     const std::string & table = m_connection.rule();
     if (!m_connection.hasKey(table, key)) {
         std::cout << "Existing rule" << std::endl << std::flush;
-        return false;
+        return -1;
     }
     MapType rule_msg = rule->asMessage();
 
@@ -308,9 +309,9 @@ bool Persistence::updateRule(const Atlas::Objects::Root & rule,
     m_connection.updateObject(table, key, rule_msg);
     if (!m_connection.clearPendingQuery()) {
         std::cerr << "Failed" << std::endl << std::flush;
-        return false;
+        return -1;
     }
-    return true;
+    return 0;
 }
 
 bool Persistence::clearRules()
