@@ -281,9 +281,9 @@ bool Database::clearTable(const std::string & table)
     return true;
 }
 
-bool Database::clearPendingQuery()
+int Database::clearPendingQuery()
 {
-    return true;
+    return 0;
 }
 
 bool Database::hasKey(const std::string & table, const std::string & key)

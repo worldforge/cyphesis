@@ -78,16 +78,16 @@ bool Database::tuplesOk()
     return status;
 }
 
-bool Database::commandOk()
+int Database::commandOk()
 {
     assert(m_connection != 0);
 
-    bool status = false;
+    int status = -1;
 
     PGresult * res;
     while ((res = PQgetResult(m_connection)) != NULL) {
         if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-            status = true;
+            status = 0;
         } else {
             reportError();
         }
@@ -225,7 +225,7 @@ bool Database::initRule(bool createTables)
                 reportError();
                 return false;
             }
-            if (!commandOk()) {
+            if (commandOk() != 0) {
                 log(ERROR, "Error creating rules table in database");
                 reportError();
                 return false;
@@ -623,7 +623,7 @@ bool Database::runCommandQuery(const std::string & query)
         reportError();
         return false;
     }
-    if (!commandOk()) {
+    if (commandOk() != 0) {
         log(ERROR, "Error running command query row.");
         log(NOTICE, query);
         reportError();
@@ -1446,10 +1446,10 @@ bool Database::scheduleCommand(const std::string & query)
     }
 }
 
-bool Database::clearPendingQuery()
+int Database::clearPendingQuery()
 {
     if (!m_queryInProgress) {
-        return true;
+        return 0;
     }
 
     assert(!pendingQueries.empty());
@@ -1462,7 +1462,7 @@ bool Database::clearPendingQuery()
         return commandOk();
     } else {
         log(ERROR, "Pending query wants unknown status");
-        return false;
+        return -1;
     }
 }
 

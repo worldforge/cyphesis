@@ -109,7 +109,7 @@ class Database {
     // bool command(const std::string & cmd);
 
     bool tuplesOk();
-    bool commandOk();
+    int commandOk();
 
   public:
     static const int MAINTAIN_VACUUM = 0x0100;
@@ -234,7 +234,7 @@ class Database {
     void queryComplete();
     bool launchNewQuery();
     bool scheduleCommand(const std::string & query);
-    bool clearPendingQuery();
+    int clearPendingQuery();
     int runMaintainance(int command = MAINTAIN_VACUUM);
 
 };

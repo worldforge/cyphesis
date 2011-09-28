@@ -282,7 +282,7 @@ int Persistence::storeRule(const Atlas::Objects::Root & rule,
     }
 
     m_connection.putObject(table, key, rule_msg, StringVector(1, file));
-    if (!m_connection.clearPendingQuery()) {
+    if (m_connection.clearPendingQuery() != 0) {
         // FIXME No writing to stderr here!
         std::cerr << "Failed" << std::endl << std::flush;
         return -1;
@@ -307,7 +307,8 @@ int Persistence::updateRule(const Atlas::Objects::Root & rule,
     }
 
     m_connection.updateObject(table, key, rule_msg);
-    if (!m_connection.clearPendingQuery()) {
+    if (m_connection.clearPendingQuery() != 0) {
+        // FIXME No writing to stderr here!
         std::cerr << "Failed" << std::endl << std::flush;
         return -1;
     }

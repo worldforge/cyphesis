@@ -174,7 +174,8 @@ void Storage::storeInRules(const Atlas::Message::MapType & rule,
         return;
     }
     m_connection.putObject(m_connection.rule(), key, rule, StringVector(1, m_rulesetName));
-    if (!m_connection.clearPendingQuery()) {
+    if (m_connection.clearPendingQuery() != 0) {
+        // FIXME NO cerr
         std::cerr << "Failed" << std::endl << std::flush;
     }
 }
@@ -182,5 +183,5 @@ void Storage::storeInRules(const Atlas::Message::MapType & rule,
 bool Storage::clearRules()
 {
     return (m_connection.clearTable(m_connection.rule()) &&
-            m_connection.clearPendingQuery());
+            m_connection.clearPendingQuery() == 0);
 }
