@@ -291,11 +291,11 @@ int Database::decodeObject(const std::string & data,
     return 0;
 }
 
-bool Database::decodeMessage(const std::string & data,
-                             MapType &o)
+int Database::decodeMessage(const std::string & data,
+                            MapType &o)
 {
     if (data.empty()) {
-        return true;
+        return 0;
     }
 
     std::stringstream str(data, std::ios::in);
@@ -310,11 +310,11 @@ bool Database::decodeMessage(const std::string & data,
 
     if (!m_d.check()) {
         log(WARNING, "Database entry does not appear to be decodable");
-        return false;
+        return -1;
     }
 
     o = m_d.get();
-    return true;
+    return 0;
 }
 
 bool Database::encodeObject(const MapType & o,
@@ -379,7 +379,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
     debug(std::cout << "Got record " << key << " from database, value " << data
                     << std::endl << std::flush;);
 
-    bool ret = decodeMessage(data, o);
+    int ret = decodeMessage(data, o);
     PQclear(res);
 
     while ((res = PQgetResult(m_connection)) != NULL) {
@@ -387,7 +387,7 @@ bool Database::getObject(const std::string & table, const std::string & key,
         log(ERROR, "Extra database result to simple query.");
     };
 
-    return ret;
+    return ret == 0;
 }
 
 bool Database::putObject(const std::string & table,

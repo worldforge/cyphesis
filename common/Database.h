@@ -132,8 +132,8 @@ class Database {
     int decodeObject(const std::string & data,
                      Atlas::Objects::Root &);
 
-    bool decodeMessage(const std::string & data,
-                       Atlas::Message::MapType &);
+    int decodeMessage(const std::string & data,
+                      Atlas::Message::MapType &);
     bool encodeObject(const Atlas::Message::MapType &,
                       std::string &);
     bool putObject(const std::string & table,

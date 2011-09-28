@@ -655,10 +655,10 @@ bool Database::encodeObject(const MapType & o,
     return true;
 }
 
-bool Database::decodeMessage(const std::string & data,
-                             MapType &o)
+int Database::decodeMessage(const std::string & data,
+                            MapType &o)
 {
-    return true;
+    return 0;
 }
 
 int Database::insertEntity(const std::string & id,
