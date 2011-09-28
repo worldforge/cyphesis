@@ -92,12 +92,12 @@ static int world_purge(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "DELETE FROM entities WHERE loc IS NOT null";
-    if (!Database::instance()->runCommandQuery(cmd)) {
+    if (Database::instance()->runCommandQuery(cmd) != 0) {
         std::cout << "Entity purge fail" << std::endl << std::flush;
         return 1;
     }
     cmd = "DELETE FROM properties";
-    if (!Database::instance()->runCommandQuery(cmd)) {
+    if (Database::instance()->runCommandQuery(cmd) != 0) {
         std::cout << "Property purge fail" << std::endl << std::flush;
         return 1;
     }
@@ -108,7 +108,7 @@ static int users_purge(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "DELETE FROM accounts WHERE username != 'admin'";
-    if (!Database::instance()->runCommandQuery(cmd)) {
+    if (Database::instance()->runCommandQuery(cmd) != 0) {
         std::cout << "User purge fail" << std::endl << std::flush;
         return 1;
     }
@@ -156,7 +156,7 @@ static int users_del(Storage & ab, struct dbsys * system,
     }
     cmd = String::compose("DELETE FROM accounts WHERE "
                           "username = '%1'", id);
-    if (!Database::instance()->runCommandQuery(cmd)) {
+    if (Database::instance()->runCommandQuery(cmd) != 0) {
         std::cout << "User delete fail" << std::endl << std::flush;
         return 1;
     }
@@ -217,7 +217,7 @@ static int users_mod(Storage & ab, struct dbsys * system,
         // FIXME Verify the account exists.
         cmd = String::compose("UPDATE accounts SET type = '%1' WHERE "
                               "username = '%2'", new_type, id);
-        if (!Database::instance()->runCommandQuery(cmd)) {
+        if (Database::instance()->runCommandQuery(cmd) != 0) {
             std::cout << "User mod type fail" << std::endl << std::flush;
             return 1;
         }
@@ -229,7 +229,7 @@ static int users_mod(Storage & ab, struct dbsys * system,
         encrypt_password(password, new_pass);
         cmd = String::compose("UPDATE accounts SET password = '%1' WHERE "
                               "username = '%2'", new_pass, id);
-        if (!Database::instance()->runCommandQuery(cmd)) {
+        if (Database::instance()->runCommandQuery(cmd) != 0) {
             std::cout << "User mod password fail" << std::endl << std::flush;
             return 1;
         }
@@ -244,7 +244,7 @@ static int rules_purge(Storage & ab, struct dbsys * system,
                       int argc, char ** argv)
 {
     std::string cmd = "DELETE FROM rules";
-    if (!Database::instance()->runCommandQuery(cmd)) {
+    if (Database::instance()->runCommandQuery(cmd) != 0) {
         std::cout << "Rule purge fail" << std::endl << std::flush;
         return 1;
     }

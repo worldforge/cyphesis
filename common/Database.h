@@ -166,7 +166,7 @@ class Database {
     void shutdownConnection();
 
     const DatabaseResult runSimpleSelectQuery(const std::string & query);
-    bool runCommandQuery(const std::string & query);
+    int runCommandQuery(const std::string & query);
 
     // Interface for relations between tables.
 

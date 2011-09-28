@@ -116,7 +116,7 @@ int Database::createInstanceDatabase()
     }
     readConfigItem(::instance, "dbname", dbname);
 
-    if (!runCommandQuery(compose("CREATE DATABASE %1", dbname))) {
+    if (runCommandQuery(compose("CREATE DATABASE %1", dbname)) != 0) {
         shutdownConnection();
         return -1;
     }
@@ -612,7 +612,7 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
     return DatabaseResult(res);
 }
 
-bool Database::runCommandQuery(const std::string & query)
+int Database::runCommandQuery(const std::string & query)
 {
     assert(m_connection != 0);
 
@@ -621,7 +621,7 @@ bool Database::runCommandQuery(const std::string & query)
     if (!status) {
         log(ERROR, "runCommandQuery(): Database query error.");
         reportError();
-        return false;
+        return -1;
     }
     if (commandOk() != 0) {
         log(ERROR, "Error running command query row.");
@@ -631,9 +631,9 @@ bool Database::runCommandQuery(const std::string & query)
                         << std::endl << std::flush;);
     } else {
         debug(std::cout << "Query worked" << std::endl << std::flush;);
-        return true;
+        return 0;
     }
-    return false;
+    return -1;
 }
 
 bool Database::registerRelation(std::string & tablename,
@@ -684,7 +684,7 @@ bool Database::registerRelation(std::string & tablename,
 
     debug(std::cout << "CREATE QUERY: " << query
                     << std::endl << std::flush;);
-    if (!runCommandQuery(query)) {
+    if (runCommandQuery(query) != 0) {
         return false;
     }
     allTables.insert(tablename);
@@ -697,7 +697,7 @@ bool Database::registerRelation(std::string & tablename,
         indexQuery += "_source_idx ON ";
         indexQuery += tablename;
         indexQuery += " (source)";
-        return runCommandQuery(indexQuery);
+        return runCommandQuery(indexQuery) == 0;
     }
 #else
     return true;
@@ -751,7 +751,6 @@ bool Database::removeRelationRowByOther(const std::string & name,
     query += " WHERE target = ";
     query += other;
 
-    // return runCommandQuery(query);
     return scheduleCommand(query);
 }
 
@@ -822,11 +821,11 @@ bool Database::registerSimpleTable(const std::string & name,
     createquery += ") WITHOUT OIDS";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
-    bool ret = runCommandQuery(createquery);
-    if (ret) {
+    int ret = runCommandQuery(createquery);
+    if (ret == 0) {
         allTables.insert(name);
     }
-    return ret;
+    return ret == 0;
 }
 
 const DatabaseResult Database::selectSimpleRow(const std::string & id,
@@ -874,7 +873,6 @@ bool Database::createSimpleRow(const std::string & name,
     query += values;
     query += ")";
 
-    // return runCommandQuery(query);
     return scheduleCommand(query);
 }
 
@@ -893,7 +891,6 @@ bool Database::updateSimpleRow(const std::string & name,
     query += value;
     query += "'";
 
-    // return runCommandQuery(query);
     return scheduleCommand(query);
 }
 
@@ -916,7 +913,7 @@ int Database::registerEntityIdGenerator()
         debug(std::cout << "Sequence exists" << std::endl << std::flush;);
         return 0;
     }
-    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq") ? 0 : -1;
+    return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq");
 }
 
 long Database::newId(std::string & id)
@@ -987,13 +984,13 @@ int Database::registerEntityTable(const std::map<std::string, int> & chunks)
         query += compose(", %1 varchar(1024)", I->first);
     }
     query += ")";
-    if (!runCommandQuery(query)) {
+    if (runCommandQuery(query) != 0) {
         return -1;
     }
     allTables.insert("entities");
     query = compose("INSERT INTO entities VALUES (%1, null, 'world')",
                     consts::rootWorldIntId);
-    if (!runCommandQuery(query)) {
+    if (runCommandQuery(query) != 0) {
         return -1;
     }
     return 0;
@@ -1069,12 +1066,12 @@ int Database::registerPropertyTable()
                                 "ON DELETE CASCADE, "
                                 "name varchar(%1), "
                                 "value text)", consts::id_len);
-    if (!runCommandQuery(query)) {
+    if (runCommandQuery(query) != 0) {
         reportError();
         return -1;
     }
     query = "CREATE INDEX property_names on properties (name)";
-    if (!runCommandQuery(query)) {
+    if (runCommandQuery(query) != 0) {
         reportError();
         return -1;
     }
@@ -1230,15 +1227,15 @@ bool Database::registerArrayTable(const std::string & name,
     createquery += ") WITHOUT OIDS";
     debug(std::cout << "CREATE QUERY: " << createquery
                     << std::endl << std::flush;);
-    bool ret = runCommandQuery(createquery);
-    if (!ret) {
+    int ret = runCommandQuery(createquery);
+    if (ret != 0) {
         return false;
     }
     indexquery += ")";
     debug(std::cout << "INDEX QUERY: " << indexquery
                     << std::endl << std::flush;);
     ret = runCommandQuery(indexquery);
-    if (!ret) {
+    if (ret != 0) {
         return false;
     }
     allTables.insert(name);
