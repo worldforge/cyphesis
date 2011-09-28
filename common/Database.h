@@ -129,8 +129,8 @@ class Database {
         return pendingQueries.size();
     }
 
-    bool decodeObject(const std::string & data,
-                      Atlas::Objects::Root &);
+    int decodeObject(const std::string & data,
+                     Atlas::Objects::Root &);
 
     bool decodeMessage(const std::string & data,
                        Atlas::Message::MapType &);

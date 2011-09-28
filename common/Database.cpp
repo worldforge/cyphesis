@@ -265,11 +265,11 @@ void Database::cleanup()
     m_instance = 0;
 }
 
-bool Database::decodeObject(const std::string & data,
-                            Root &o)
+int Database::decodeObject(const std::string & data,
+                           Root &o)
 {
     if (data.empty()) {
-        return true;
+        return 0;
     }
 
     std::stringstream str(data, std::ios::in);
@@ -284,11 +284,11 @@ bool Database::decodeObject(const std::string & data,
 
     if (!m_od.check()) {
         log(WARNING, "Database entry does not appear to be decodable");
-        return false;
+        return -1;
     }
 
     o = m_od.get();
-    return true;
+    return 0;
 }
 
 bool Database::decodeMessage(const std::string & data,
@@ -540,7 +540,7 @@ bool Database::getTable(const std::string & table,
         debug(std::cout << "Got record " << key << " from database, value "
                    << data << std::endl << std::flush;);
 
-        if (decodeObject(data, t)) {
+        if (decodeObject(data, t) == 0) {
             contents[key] = t;
         }
 
