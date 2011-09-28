@@ -278,7 +278,7 @@ bool Database::decodeObject(const std::string & data,
     Atlas::Message::Encoder enc(codec);
 
     // Clear the decoder
-    m_d.get();
+    m_od.get();
 
     codec.poll();
 
