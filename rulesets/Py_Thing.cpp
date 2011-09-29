@@ -270,7 +270,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         }
         Element attr;
         // If this property is not set with a value, return none.
-        if (prop->get(attr)) {
+        if (prop->get(attr) == 0) {
             return MessageElement_asPyObject(attr);
         } else {
             Py_INCREF(Py_None);
