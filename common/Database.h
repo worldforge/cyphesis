@@ -171,10 +171,10 @@ class Database {
 
     // Interface for relations between tables.
 
-    bool registerRelation(std::string & tablename,
-                          const std::string & sourcetable,
-                          const std::string & targettable,
-                          RelationType kind = OneToMany);
+    int registerRelation(std::string & tablename,
+                         const std::string & sourcetable,
+                         const std::string & targettable,
+                         RelationType kind = OneToMany);
     const DatabaseResult selectRelation(const std::string & name,
                                         const std::string & id);
     int createRelationRow(const std::string & name,
@@ -187,8 +187,8 @@ class Database {
 
     // Interface for simple tables that mainly just store Atlasish data.
 
-    bool registerSimpleTable(const std::string & name,
-                             const Atlas::Message::MapType & row);
+    int registerSimpleTable(const std::string & name,
+                            const Atlas::Message::MapType & row);
     const DatabaseResult selectSimpleRow(const std::string & name,
                                          const std::string & id);
     const DatabaseResult selectSimpleRowBy(const std::string & name,

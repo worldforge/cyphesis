@@ -646,10 +646,10 @@ int Database::runCommandQuery(const std::string & query)
     return -1;
 }
 
-bool Database::registerRelation(std::string & tablename,
-                                const std::string & sourcetable,
-                                const std::string & targettable,
-                                RelationType kind)
+int Database::registerRelation(std::string & tablename,
+                               const std::string & sourcetable,
+                               const std::string & targettable,
+                               RelationType kind)
 {
     assert(m_connection != 0);
 
@@ -664,7 +664,7 @@ bool Database::registerRelation(std::string & tablename,
     if (!status) {
         log(ERROR, "registerRelation(): Database query error.");
         reportError();
-        return false;
+        return -1;
     }
     if (!tuplesOk()) {
         debug(reportError(););
@@ -673,7 +673,7 @@ bool Database::registerRelation(std::string & tablename,
     } else {
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         allTables.insert(tablename);
-        return true;
+        return 0;
     }
 
     query = "CREATE TABLE ";
@@ -695,7 +695,7 @@ bool Database::registerRelation(std::string & tablename,
     debug(std::cout << "CREATE QUERY: " << query
                     << std::endl << std::flush;);
     if (runCommandQuery(query) != 0) {
-        return false;
+        return -1;
     }
     allTables.insert(tablename);
 #if 0
@@ -710,7 +710,7 @@ bool Database::registerRelation(std::string & tablename,
         return runCommandQuery(indexQuery) == 0;
     }
 #else
-    return true;
+    return 0;
 #endif
 }
 
@@ -764,8 +764,8 @@ int Database::removeRelationRowByOther(const std::string & name,
     return scheduleCommand(query);
 }
 
-bool Database::registerSimpleTable(const std::string & name,
-                                   const MapType & row)
+int Database::registerSimpleTable(const std::string & name,
+                                  const MapType & row)
 {
     assert(m_connection != 0);
 
@@ -816,7 +816,7 @@ bool Database::registerSimpleTable(const std::string & name,
     if (!status) {
         log(ERROR, "registerSimpleTable(): Database query error.");
         reportError();
-        return false;
+        return -1;
     }
     if (!tuplesOk()) {
         debug(reportError(););
@@ -825,7 +825,7 @@ bool Database::registerSimpleTable(const std::string & name,
     } else {
         debug(std::cout << "Table exists" << std::endl << std::flush;);
         allTables.insert(name);
-        return true;
+        return 0;
     }
 
     createquery += ") WITHOUT OIDS";
@@ -835,7 +835,7 @@ bool Database::registerSimpleTable(const std::string & name,
     if (ret == 0) {
         allTables.insert(name);
     }
-    return ret == 0;
+    return ret;
 }
 
 const DatabaseResult Database::selectSimpleRow(const std::string & id,
