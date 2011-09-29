@@ -134,7 +134,7 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
         return PyFloat_FromDouble(self->m_task->rate());
     }
     Atlas::Message::Element val;
-    if (self->m_task->getAttr(name, val)) {
+    if (self->m_task->getAttr(name, val) == 0) {
         return MessageElement_asPyObject(val);
     }
     if (self->Task_attr != NULL) {

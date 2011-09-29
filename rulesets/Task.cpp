@@ -66,15 +66,15 @@ Operation Task::nextTick(double interval)
 }
 
 /// \brief Retrieve additional attribute values
-bool Task::getAttr(const std::string & attr,
-                   Atlas::Message::Element & val) const
+int Task::getAttr(const std::string & attr,
+                  Atlas::Message::Element & val) const
 {
     MapType::const_iterator I = m_attr.find(attr);
     if (I == m_attr.end()) {
-        return false;
+        return -1;
     }
     val = I->second;
-    return true;
+    return 0;
 }
 
 /// \brief Set additional attributes

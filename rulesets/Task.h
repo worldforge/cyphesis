@@ -139,7 +139,7 @@ class Task {
     float & rate() { return m_rate; }
 
     /// \brief Accessor for additional attributes
-    bool getAttr(const std::string & attr, Atlas::Message::Element & val) const;
+    int getAttr(const std::string & attr, Atlas::Message::Element & val) const;
 
     /// \brief Sets additional attribute
     void setAttr(const std::string & attr, const Atlas::Message::Element & val);

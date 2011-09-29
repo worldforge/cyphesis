@@ -141,10 +141,10 @@ Operation Task::nextTick(double interval)
     return Operation();
 }
 
-bool Task::getAttr(const std::string & attr,
-                   Atlas::Message::Element & val) const
+int Task::getAttr(const std::string & attr,
+                  Atlas::Message::Element & val) const
 {
-    return false;
+    return -1;
 }
 
 void Task::setAttr(const std::string & attr,
