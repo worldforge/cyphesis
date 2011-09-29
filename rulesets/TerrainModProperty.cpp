@@ -58,11 +58,11 @@ TerrainModProperty::~TerrainModProperty()
     delete m_innerMod;
 }
 
-bool TerrainModProperty::get(Element & ent) const
+int TerrainModProperty::get(Element & ent) const
 {
     MapType & mod = (ent = MapType()).Map();
     mod = m_data;
-    return true;
+    return 0;
 }
 
 void TerrainModProperty::set(const Element & ent)

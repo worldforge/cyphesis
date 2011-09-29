@@ -90,7 +90,7 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
     std::set<std::string>::const_iterator I = attr_names.begin();
     std::set<std::string>::const_iterator Iend = attr_names.end();
     for (; I != Iend; ++I) {
-        if (!this->m_ent.getAttr(*I, null)) {
+        if (this->m_ent.getAttr(*I, null) != 0) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
                       << std::endl << std::flush;
             res = false;

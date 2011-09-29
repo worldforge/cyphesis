@@ -27,10 +27,10 @@ ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
 {
 }
 
-bool ExternalProperty::get(Atlas::Message::Element & val) const
+int ExternalProperty::get(Atlas::Message::Element & val) const
 {
     val = (m_data == 0) ? 0 : 1;
-    return true;
+    return 0;
 }
 
 void ExternalProperty::set(const Atlas::Message::Element & val)

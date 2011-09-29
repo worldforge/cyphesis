@@ -36,10 +36,10 @@ SolidProperty::SolidProperty()
 {
 }
 
-bool SolidProperty::get(Element & ent) const
+int SolidProperty::get(Element & ent) const
 {
     ent = (flags() & flag_bool) ? 1 : 0;
-    return true;
+    return 0;
 }
 
 void SolidProperty::set(const Element & ent)

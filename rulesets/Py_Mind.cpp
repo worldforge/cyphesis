@@ -145,7 +145,7 @@ static PyObject * Mind_getattro(PyMind *self, PyObject *oname)
     }
     LocatedEntity * mind = self->m_mind;
     Element attr;
-    if (mind->getAttr(name, attr)) {
+    if (mind->getAttr(name, attr) == 0) {
         return MessageElement_asPyObject(attr);
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);

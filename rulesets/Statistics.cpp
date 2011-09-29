@@ -64,7 +64,7 @@ float Statistics::get_default(const std::string & name)
 {
     if (name == "strength") {
         Element mass_attr;
-        if (m_character.getAttr("mass", mass_attr) && mass_attr.isFloat()) {
+        if (m_character.getAttr("mass", mass_attr) == 0 && mass_attr.isFloat()) {
             return mass_attr.Float();
         } else {
             return 0.f;

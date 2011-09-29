@@ -39,11 +39,11 @@ LineProperty::LineProperty()
 {
 }
 
-bool LineProperty::get(Element & ent) const
+int LineProperty::get(Element & ent) const
 {
     ent = ListType();
     objectListAsMessage(m_data, ent.asList());
-    return true;
+    return 0;
 }
 
 void LineProperty::set(const Element & ent)

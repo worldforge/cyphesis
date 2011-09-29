@@ -39,7 +39,7 @@ class BBoxProperty : public PropertyBase {
     BBox & data() { return m_data; }
 
     virtual void apply(Entity *);
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key,
                      Atlas::Message::MapType & map) const;

@@ -155,7 +155,7 @@ void Character::metabolise(OpVector & res, double ammount)
             mass += weightGain;
             mass_prop->setFlags(flag_unsent);
             Element maxmass_attr;
-            if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT)) {
+            if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
                 mass = std::min(mass, maxmass_attr.Float());
             }
         }
@@ -489,7 +489,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     std::string op_type;
 
     // Determine the operations this tool supports
-    if (!tool->getAttr("operations", toolOpAttr)) {
+    if (tool->getAttr("operations", toolOpAttr) != 0) {
         log(NOTICE, "Character::UseOp Attempt to use something not a tool");
         return;
     }
@@ -700,7 +700,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     }
 
     Element worn_attr;
-    if (item->getAttr("worn", worn_attr)) {
+    if (item->getAttr("worn", worn_attr) == 0) {
         debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
 
         if (worn_attr.isString()) {
@@ -880,7 +880,7 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
     std::set<std::string> deviceOps;
 
     // Determine the actions this device supports
-    if (!device->getAttr("actions", deviceOpAttr)) {
+    if (device->getAttr("actions", deviceOpAttr) != 0) {
         log(NOTICE, "Character::mindActuateOp Attempt to actuate something not a device");
         return;
     }
@@ -1057,7 +1057,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
     Element stamina_attr;
-    if (getAttrType(STAMINA, stamina_attr, Element::TYPE_FLOAT)) {
+    if (getAttrType(STAMINA, stamina_attr, Element::TYPE_FLOAT) == 0) {
         if (stamina_attr.Float() <= 0.f) {
             // Character is immobilised.
             return;
@@ -1079,7 +1079,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             return;
         }
         Element mass;
-        if (!other->getAttr(MASS, mass) || !mass.isFloat()) {
+        if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
             // FIXME Check against strength
             // || mass.Float() > m_statistics.get("strength"));
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);

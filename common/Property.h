@@ -55,7 +55,7 @@ class PropertyBase {
     virtual void apply(Entity *);
 
     /// \brief Copy the value of the property into an Atlas Message
-    virtual bool get(Atlas::Message::Element & val) const = 0;
+    virtual int get(Atlas::Message::Element & val) const = 0;
     /// \brief Read the value of the property from an Atlas Message
     virtual void set(const Atlas::Message::Element & val) = 0;
     /// \brief Add the value as an attribute to an Atlas map
@@ -120,7 +120,7 @@ class Property : public PropertyBase {
     const T & data() const { return this->m_data; }
     T & data() { return this->m_data; }
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
@@ -135,7 +135,7 @@ class SoftProperty : public PropertyBase {
     SoftProperty();
     explicit SoftProperty(const Atlas::Message::Element & data);
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
 };
 

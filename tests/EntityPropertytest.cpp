@@ -58,7 +58,7 @@ int main()
         Element val;
 
         PropertyBase * pb = new EntityProperty;
-        assert(pb->get(val) == false);
+        assert(pb->get(val) == -1);
         delete pb;
     }
 
@@ -78,7 +78,7 @@ int main()
 
         PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
-        assert(pb->get(val) == true);
+        assert(pb->get(val) == 0);
         assert(val.isString());
         assert(val.String() == ent.getId());
         delete pb;
@@ -372,16 +372,17 @@ bool LocatedEntity::hasAttr(const std::string & name) const
     return false;
 }
 
-bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
 {
-    return false;
+    return -1;
 }
 
-bool LocatedEntity::getAttrType(const std::string & name,
-                                Atlas::Message::Element & attr,
-                                int type) const
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
 {
-    return false;
+    return -1;
 }
 
 PropertyBase * LocatedEntity::setAttr(const std::string & name,

@@ -41,10 +41,10 @@ IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
 {
 }
 
-bool IdProperty::get(Atlas::Message::Element & e) const
+int IdProperty::get(Atlas::Message::Element & e) const
 {
     e = m_data;
-    return true;
+    return 0;
 }
 
 void IdProperty::set(const Atlas::Message::Element & e)
@@ -76,7 +76,7 @@ ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
 {
 }
 
-bool ContainsProperty::get(Element & e) const
+int ContainsProperty::get(Element & e) const
 {
     // FIXME Not sure if this is best. Why did we bother to virtualise
     // addToMessage() if we have to do this here?
@@ -86,7 +86,7 @@ bool ContainsProperty::get(Element & e) const
     for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contlist.push_back((*I)->getId());
     }
-    return true;
+    return 0;
 }
 
 void ContainsProperty::set(const Element & e)

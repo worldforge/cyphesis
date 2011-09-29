@@ -115,11 +115,11 @@ class LocatedEntity : public Router {
     }
 
     virtual bool hasAttr(const std::string & name) const;
-    virtual bool getAttr(const std::string & name,
-                         Atlas::Message::Element &) const;
-    virtual bool getAttrType(const std::string & name,
-                             Atlas::Message::Element &,
-                             int type) const;
+    virtual int getAttr(const std::string & name,
+                        Atlas::Message::Element &) const;
+    virtual int getAttrType(const std::string & name,
+                            Atlas::Message::Element &,
+                            int type) const;
     virtual PropertyBase* setAttr(const std::string & name,
                                   const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;

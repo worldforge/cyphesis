@@ -260,7 +260,7 @@ static PyObject * CreatorClient_getattr(PyCreatorClient *self, char *name)
     }
     LocatedEntity * thing = self->m_mind;
     Element attr;
-    if (!thing->getAttr(name, attr)) {
+    if (thing->getAttr(name, attr) != 0) {
         return Py_FindMethod(CreatorClient_methods, (PyObject *)self, name);
     }
     PyObject * ret = MessageElement_asPyObject(attr);

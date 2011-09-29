@@ -121,9 +121,9 @@ AreaProperty::~AreaProperty()
 {
 }
 
-bool AreaProperty::get(Atlas::Message::Element & ent) const
+int AreaProperty::get(Atlas::Message::Element & ent) const
 {
-    return true;
+    return 0;
 
 }
 

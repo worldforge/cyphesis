@@ -281,16 +281,17 @@ bool LocatedEntity::hasAttr(const std::string & name) const
     return false;
 }
 
-bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
 {
-    return false;
+    return -1;
 }
 
-bool LocatedEntity::getAttrType(const std::string & name,
-                                Atlas::Message::Element & attr,
-                                int type) const
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
 {
-    return false;
+    return -1;
 }
 
 PropertyBase * LocatedEntity::setAttr(const std::string & name,
@@ -496,9 +497,9 @@ TerrainProperty::~TerrainProperty()
 {
 }
 
-bool TerrainProperty::get(Element & ent) const
+int TerrainProperty::get(Element & ent) const
 {
-    return true;
+    return 0;
 }
 
 void TerrainProperty::set(const Element & ent)
@@ -514,9 +515,9 @@ CalendarProperty::CalendarProperty()
 {
 }
 
-bool CalendarProperty::get(Element & ent) const
+int CalendarProperty::get(Element & ent) const
 {
-    return true;
+    return 0;
 }
 
 void CalendarProperty::set(const Element & ent)
@@ -587,10 +588,10 @@ SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
 {
 }
 
-bool SoftProperty::get(Atlas::Message::Element & val) const
+int SoftProperty::get(Atlas::Message::Element & val) const
 {
     val = m_data;
-    return true;
+    return 0;
 }
 
 void SoftProperty::set(const Atlas::Message::Element & val)
@@ -602,9 +603,9 @@ ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
 {
 }
 
-bool ContainsProperty::get(Atlas::Message::Element & e) const
+int ContainsProperty::get(Atlas::Message::Element & e) const
 {
-    return true;
+    return 0;
 }
 
 void ContainsProperty::set(const Atlas::Message::Element & e)
@@ -632,9 +633,9 @@ void BBoxProperty::apply(Entity * ent)
 {
 }
 
-bool BBoxProperty::get(Element & val) const
+int BBoxProperty::get(Element & val) const
 {
-    return false;
+    return -1;
 }
 
 void BBoxProperty::set(const Element & val)

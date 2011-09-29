@@ -32,7 +32,7 @@ class ExternalProperty : public PropertyBase {
   public:
     explicit ExternalProperty(Router * & data);
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & val,
                      Atlas::Message::MapType & map) const;

@@ -171,7 +171,7 @@ HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
     double & status = status_prop->data();
 
     Element mass_attr;
-    if (!e->getAttrType("mass", mass_attr, Element::TYPE_FLOAT)) {
+    if (e->getAttrType("mass", mass_attr, Element::TYPE_FLOAT) != 0) {
         mass_attr = 1.f;
     }
     status -= (consumed / mass_attr.Float());

@@ -222,7 +222,7 @@ Entity * WorldRouter::addEntity(Entity * ent)
     // FIXME
     std::string mode;
     Element mode_attr;
-    if (ent->getAttrType("mode", mode_attr, Element::TYPE_STRING)) {
+    if (ent->getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0) {
         mode = mode_attr.String();
     }
     ent->m_location.m_pos.z() = ent->getMovementDomain()->
@@ -633,7 +633,7 @@ Entity * WorldRouter::findByName(const std::string & name)
     Element name_attr;
     EntityDict::const_iterator Iend = m_eobjects.end();
     for (EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
-        if (I->second->getAttr("name", name_attr)) {
+        if (I->second->getAttr("name", name_attr) == 0) {
             if (name_attr == name) {
                 return I->second;
             }

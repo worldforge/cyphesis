@@ -34,7 +34,7 @@ class LineProperty : public PropertyBase {
   public:
     explicit LineProperty();
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
 };

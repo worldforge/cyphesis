@@ -324,7 +324,7 @@ void PropertyExerciser::testGet(PropertyBase & property,
                                 Element::Type element_type)
 {
     Element get_target;
-    if (property.get(get_target)) {
+    if (property.get(get_target) == 0) {
         assert(get_target.getType() == element_type);
     } else {
         assert(get_target.getType() == Element::TYPE_NONE);

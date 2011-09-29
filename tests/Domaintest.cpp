@@ -51,9 +51,9 @@ TerrainProperty::~TerrainProperty()
 {
 }
 
-bool TerrainProperty::get(Atlas::Message::Element & ent) const
+int TerrainProperty::get(Atlas::Message::Element & ent) const
 {
-    return true;
+    return 0;
 }
 
 void TerrainProperty::set(const Atlas::Message::Element & ent)

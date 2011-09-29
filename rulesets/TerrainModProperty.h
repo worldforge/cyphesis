@@ -59,7 +59,7 @@ class TerrainModProperty : public PropertyBase {
     explicit TerrainModProperty(const HandlerMap &);
     ~TerrainModProperty();
 
-    virtual bool get(Atlas::Message::Element &) const;
+    virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string & key,
                      Atlas::Message::MapType & map) const;

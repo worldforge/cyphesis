@@ -420,16 +420,17 @@ bool LocatedEntity::hasAttr(const std::string & name) const
     return false;
 }
 
-bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
 {
-    return false;
+    return -1;
 }
 
-bool LocatedEntity::getAttrType(const std::string & name,
-                                Atlas::Message::Element & attr,
-                                int type) const
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
 {
-    return false;
+    return -1;
 }
 
 PropertyBase * LocatedEntity::setAttr(const std::string & name,
@@ -630,10 +631,10 @@ SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
 {
 }
 
-bool SoftProperty::get(Atlas::Message::Element & val) const
+int SoftProperty::get(Atlas::Message::Element & val) const
 {
     val = m_data;
-    return true;
+    return 0;
 }
 
 void SoftProperty::set(const Atlas::Message::Element & val)

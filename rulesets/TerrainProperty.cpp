@@ -79,7 +79,7 @@ TerrainProperty::~TerrainProperty()
     delete &m_tileShader;
 }
 
-bool TerrainProperty::get(Element & ent) const
+int TerrainProperty::get(Element & ent) const
 {
     MapType & t = (ent = MapType()).asMap();
     MapType & terrain = (t["points"] = MapType()).asMap();
@@ -101,7 +101,7 @@ bool TerrainProperty::get(Element & ent) const
     }
 
     t["surfaces"] = m_surfaces;
-    return true;
+    return 0;
 }
 
 void TerrainProperty::set(const Element & ent)

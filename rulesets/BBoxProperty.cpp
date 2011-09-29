@@ -42,13 +42,13 @@ void BBoxProperty::apply(Entity * ent)
     ent->m_location.modifyBBox();
 }
 
-bool BBoxProperty::get(Element & val) const
+int BBoxProperty::get(Element & val) const
 {
     if (m_data.isValid()) {
         val = m_data.toAtlas();
-        return true;
+        return 0;
     }
-    return false;
+    return -1;
 }
 
 void BBoxProperty::set(const Element & val)

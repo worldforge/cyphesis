@@ -326,16 +326,17 @@ bool LocatedEntity::hasAttr(const std::string & name) const
     return false;
 }
 
-bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
 {
-    return false;
+    return -1;
 }
 
-bool LocatedEntity::getAttrType(const std::string & name,
-                                Atlas::Message::Element & attr,
-                                int type) const
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
 {
-    return false;
+    return -1;
 }
 
 PropertyBase * LocatedEntity::setAttr(const std::string & name,
@@ -506,9 +507,9 @@ EntityProperty::EntityProperty()
 {
 }
 
-bool EntityProperty::get(Atlas::Message::Element & val) const
+int EntityProperty::get(Atlas::Message::Element & val) const
 {
-    return true;
+    return 0;
 }
 
 void EntityProperty::set(const Atlas::Message::Element & val)
@@ -533,9 +534,9 @@ OutfitProperty::~OutfitProperty()
 {
 }
 
-bool OutfitProperty::get(Atlas::Message::Element & val) const
+int OutfitProperty::get(Atlas::Message::Element & val) const
 {
-    return true;
+    return 0;
 }
 
 void OutfitProperty::set(const Atlas::Message::Element & val)
@@ -570,9 +571,9 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
 }
 
-bool TasksProperty::get(Atlas::Message::Element & val) const
+int TasksProperty::get(Atlas::Message::Element & val) const
 {
-    return true;
+    return 0;
 }
 
 void TasksProperty::set(const Atlas::Message::Element & val)
@@ -651,10 +652,10 @@ SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
 {
 }
 
-bool SoftProperty::get(Atlas::Message::Element & val) const
+int SoftProperty::get(Atlas::Message::Element & val) const
 {
     val = m_data;
-    return true;
+    return 0;
 }
 
 void SoftProperty::set(const Atlas::Message::Element & val)
@@ -666,9 +667,9 @@ ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
 {
 }
 
-bool ContainsProperty::get(Atlas::Message::Element & e) const
+int ContainsProperty::get(Atlas::Message::Element & e) const
 {
-    return true;
+    return 0;
 }
 
 void ContainsProperty::set(const Atlas::Message::Element & e)
@@ -696,9 +697,9 @@ void BBoxProperty::apply(Entity * ent)
 {
 }
 
-bool BBoxProperty::get(Element & val) const
+int BBoxProperty::get(Element & val) const
 {
-    return false;
+    return -1;
 }
 
 void BBoxProperty::set(const Element & val)

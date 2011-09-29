@@ -59,10 +59,10 @@ SimpleProperty::SimpleProperty()
 {
 }
 
-bool SimpleProperty::get(Element & ent) const
+int SimpleProperty::get(Element & ent) const
 {
     ent = (flags() & flag_bool) ? 1 : 0;
-    return true;
+    return 0;
 }
 
 void SimpleProperty::set(const Element & ent)

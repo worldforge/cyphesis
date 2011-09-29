@@ -66,7 +66,7 @@ void StatisticsProperty::apply(Entity * ent)
     }
 }
 
-bool StatisticsProperty::get(Element & val) const
+int StatisticsProperty::get(Element & val) const
 {
     val = MapType();
     MapType & val_map = val.Map();
@@ -76,7 +76,7 @@ bool StatisticsProperty::get(Element & val) const
     for (; I != Iend; ++I) {
         val_map[I->first] = I->second;
     }
-    return true;
+    return 0;
 }
 
 void StatisticsProperty::set(const Element & ent)

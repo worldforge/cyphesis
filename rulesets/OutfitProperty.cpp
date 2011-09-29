@@ -46,7 +46,7 @@ OutfitProperty::~OutfitProperty()
 {
 }
 
-bool OutfitProperty::get(Atlas::Message::Element & val) const
+int OutfitProperty::get(Atlas::Message::Element & val) const
 {
     val = MapType();
     MapType & val_map = val.Map();
@@ -62,7 +62,7 @@ bool OutfitProperty::get(Atlas::Message::Element & val) const
         }
     }
 
-    return true;
+    return 0;
 }
 
 void OutfitProperty::set(const Atlas::Message::Element & val)
@@ -184,7 +184,7 @@ void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
 {
     Element worn_attr;
     std::string key;
-    if (garment->getAttr("worn", worn_attr)) {
+    if (garment->getAttr("worn", worn_attr) == 0) {
         if (worn_attr.isString()) {
             key = worn_attr.String();
             assert(!key.empty());

@@ -502,9 +502,9 @@ ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
 {
 }
 
-bool ExternalProperty::get(Atlas::Message::Element & val) const
+int ExternalProperty::get(Atlas::Message::Element & val) const
 {
-    return true;
+    return 0;
 }
 
 void ExternalProperty::set(const Atlas::Message::Element & val)
@@ -862,16 +862,17 @@ bool LocatedEntity::hasAttr(const std::string & name) const
     return false;
 }
 
-bool LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element & attr) const
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
 {
-    return false;
+    return -1;
 }
 
-bool LocatedEntity::getAttrType(const std::string & name,
-                                Atlas::Message::Element & attr,
-                                int type) const
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
 {
-    return false;
+    return -1;
 }
 
 PropertyBase * LocatedEntity::setAttr(const std::string & name,

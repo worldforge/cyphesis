@@ -36,7 +36,7 @@ CalendarProperty::CalendarProperty()
 {
 }
 
-bool CalendarProperty::get(Element & ent) const
+int CalendarProperty::get(Element & ent) const
 {
     MapType & c = (ent = MapType()).asMap();
     c["seconds_per_minute"] = (int)DateTime::spm();
@@ -44,7 +44,7 @@ bool CalendarProperty::get(Element & ent) const
     c["hours_per_day"] = (int)DateTime::hpd();
     c["days_per_month"] = (int)DateTime::dpm();
     c["months_per_year"] = (int)DateTime::mpy();
-    return true;
+    return 0;
 }
 
 void CalendarProperty::set(const Element & ent)

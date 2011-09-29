@@ -32,10 +32,10 @@ Property<T>::Property(unsigned int flags) :
 }
 
 template <typename T>
-bool Property<T>::get(Atlas::Message::Element & e) const
+int Property<T>::get(Atlas::Message::Element & e) const
 {
     e = m_data;
-    return true;
+    return 0;
 }
 
 // The following two are obsolete.

@@ -50,14 +50,14 @@ AreaProperty::~AreaProperty()
 }
 
 
-bool AreaProperty::get(Element & ent) const
+int AreaProperty::get(Element & ent) const
 {
     MapType & area = (ent = MapType()).Map();
     objectListAsMessage(m_data, (area["points"] = ListType()).List());
     if (m_layer) {
         area["layer"] = *m_layer;
     }
-    return true;
+    return 0;
 
 }
 

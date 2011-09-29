@@ -36,15 +36,15 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
 }
 
-bool TasksProperty::get(Atlas::Message::Element & val) const
+int TasksProperty::get(Atlas::Message::Element & val) const
 {
     if (m_task == 0) {
         log(ERROR, "No task pointer in ::get");
-        return false;
+        return -1;
     }
     if (*m_task == 0) {
         val = ListType();
-        return true;
+        return 0;
     }
     MapType task;
     task["name"] = (*m_task)->name();
@@ -57,7 +57,7 @@ bool TasksProperty::get(Atlas::Message::Element & val) const
         task["rate"] = rate;
     }
     val = ListType(1, task);
-    return true;
+    return 0;
 }
 
 void TasksProperty::set(const Atlas::Message::Element & val)

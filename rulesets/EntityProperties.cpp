@@ -34,11 +34,11 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
 
 template<>
-bool Property<IdList>::get(Element & e) const
+int Property<IdList>::get(Element & e) const
 {
     e = Atlas::Message::ListType();
     idListasObject(m_data, e.asList());
-    return true;
+    return 0;
 }
 
 template<>

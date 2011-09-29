@@ -33,7 +33,7 @@ class TasksProperty : public PropertyBase {
     /// \brief Constructor
     explicit TasksProperty();
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
 
     virtual void install(Entity *);

@@ -140,10 +140,10 @@ SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
 {
 }
 
-bool SoftProperty::get(Atlas::Message::Element & val) const
+int SoftProperty::get(Atlas::Message::Element & val) const
 {
     val = m_data;
-    return true;
+    return 0;
 }
 
 void SoftProperty::set(const Atlas::Message::Element & val)

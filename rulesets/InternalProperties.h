@@ -49,7 +49,7 @@ class SimpleProperty : public PropertyBase {
     /// @param owner the owner of the property.
     explicit SimpleProperty();
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
 
     virtual void apply(Entity *);

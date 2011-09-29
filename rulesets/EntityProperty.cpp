@@ -31,13 +31,13 @@ EntityProperty::EntityProperty()
 {
 }
 
-bool EntityProperty::get(Atlas::Message::Element & val) const
+int EntityProperty::get(Atlas::Message::Element & val) const
 {
     if (m_data.get() != 0) {
         val = m_data->getId();
-        return true;
+        return 0;
     } else {
-        return false;
+        return -1;
     }
 }
 

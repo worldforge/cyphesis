@@ -34,7 +34,7 @@ class EntityProperty : public PropertyBase {
 
     EntityRef & data() { return m_data; }
 
-    virtual bool get(Atlas::Message::Element & val) const;
+    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & val, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & val, const Atlas::Objects::Entity::RootEntity & ent) const;
