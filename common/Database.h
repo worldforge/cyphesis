@@ -151,7 +151,7 @@ class Database {
     bool hasKey(const std::string &, const std::string & key);
     int getTable(const std::string & table,
                   std::map<std::string, Atlas::Objects::Root> &);
-    bool clearTable(const std::string & table);
+    int clearTable(const std::string & table);
 
     void reportError();
 

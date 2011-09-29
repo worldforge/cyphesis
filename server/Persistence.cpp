@@ -315,7 +315,7 @@ int Persistence::updateRule(const Atlas::Objects::Root & rule,
     return 0;
 }
 
-bool Persistence::clearRules()
+int Persistence::clearRules()
 {
     return m_connection.clearTable(m_connection.rule());
 }

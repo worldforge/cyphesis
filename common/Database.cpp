@@ -565,10 +565,10 @@ int Database::getTable(const std::string & table,
     return 0;
 }
 
-bool Database::clearTable(const std::string & table)
+int Database::clearTable(const std::string & table)
 {
     std::string query = std::string("DELETE FROM ") + table;
-    return scheduleCommand(query);
+    return scheduleCommand(query) ? 0 : 1;
 }
 
 void Database::reportError()

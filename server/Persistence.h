@@ -59,7 +59,7 @@ class Persistence {
                   const std::string & key);
     int updateRule(const Atlas::Objects::Root & rule,
                    const std::string & key);
-    bool clearRules();
+    int clearRules();
 };
 
 #endif // SERVER_PERSISTENCE_H

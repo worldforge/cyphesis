@@ -180,8 +180,8 @@ void Storage::storeInRules(const Atlas::Message::MapType & rule,
     }
 }
 
-bool Storage::clearRules()
+int Storage::clearRules()
 {
-    return (m_connection.clearTable(m_connection.rule()) &&
-            m_connection.clearPendingQuery() == 0);
+    return m_connection.clearTable(m_connection.rule()) ||
+           m_connection.clearPendingQuery();
 }

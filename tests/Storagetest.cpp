@@ -276,9 +276,9 @@ bool Database::createSimpleRow(const std::string & name,
     return true;
 }
 
-bool Database::clearTable(const std::string & table)
+int Database::clearTable(const std::string & table)
 {
-    return true;
+    return 0;
 }
 
 int Database::clearPendingQuery()

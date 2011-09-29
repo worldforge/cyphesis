@@ -51,7 +51,7 @@ class Storage {
 
     void storeInRules(const Atlas::Message::MapType & rule,
                       const std::string & key);
-    bool clearRules();
+    int clearRules();
     void setRuleset(const std::string & n);
 
 };
