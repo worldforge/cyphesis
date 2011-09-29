@@ -33,8 +33,9 @@
 
 #include <cassert>
 
-using Atlas::Message::MapType;
+using Atlas::Message::Element;
 using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 
 void runCoverageTest()
 {
@@ -190,6 +191,39 @@ int main()
         e->decRef();
     }
 
+    // Test getAttrType()
+    {
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        Atlas::Message::Element val;
+
+        int ret = e->getAttrType("foo", val, Element::TYPE_STRING);
+        assert(ret == -1);
+        assert(val.isNone());
+        e->decRef();
+    }
+
+    // Test getAttrType()
+    {
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        Atlas::Message::Element val;
+
+        int ret = e->getAttrType("id", val, Element::TYPE_STRING);
+        assert(ret == 0);
+        assert(val.isString());
+        e->decRef();
+    }
+
+    // Test getAttrType()
+    {
+        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        Atlas::Message::Element val;
+
+        int ret = e->getAttrType("id", val, Element::TYPE_FLOAT);
+        assert(ret != 0);
+        assert(val.isString());
+        e->decRef();
+    }
+
     // Test hasAttr()
     {
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
@@ -279,6 +313,7 @@ IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
 
 int IdProperty::get(Atlas::Message::Element & e) const
 {
+    e = m_data;
     return 0;
 }
 

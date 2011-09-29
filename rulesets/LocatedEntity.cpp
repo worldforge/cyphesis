@@ -134,12 +134,12 @@ int LocatedEntity::getAttrType(const std::string & name,
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second->get(attr) && attr.getType() == type;
+        return I->second->get(attr) || (attr.getType() == type ? 0 : 1);
     }
     if (m_type != 0) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
-            return I->second->get(attr) && attr.getType() == type;
+            return I->second->get(attr) || (attr.getType() == type ? 0 : 1);
         }
     }
     return -1;
