@@ -258,7 +258,7 @@ int main(int argc, char ** argv)
         amap["password"] = password;
     }
 
-    bool res;
+    int res;
     if (action == ADD) {
         amap["username"] = acname;
         if (actype == SERVER) {
@@ -269,7 +269,7 @@ int main(int argc, char ** argv)
     } else {
         res = db.modAccount(amap, acname);
     }
-    if (res) {
+    if (res == 0) {
         std::cout << "Account changed." << std::endl << std::flush;
         return 0;
     }

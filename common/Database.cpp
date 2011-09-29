@@ -427,7 +427,7 @@ int Database::putObject(const std::string & table,
     query += "', '";
     query += str.str();
     query +=  "')";
-    return scheduleCommand(query) ? 0 : -1;
+    return scheduleCommand(query);
 }
 
 int Database::updateObject(const std::string & table,
@@ -447,7 +447,7 @@ int Database::updateObject(const std::string & table,
 
     std::string query = std::string("UPDATE ") + table + " SET contents = '" +
                         str.str() + "' WHERE id='" + key + "'";
-    return scheduleCommand(query) ? 0 : -1;
+    return scheduleCommand(query);
 }
 
 int Database::delObject(const std::string & table, const std::string & key)
@@ -568,7 +568,7 @@ int Database::getTable(const std::string & table,
 int Database::clearTable(const std::string & table)
 {
     std::string query = std::string("DELETE FROM ") + table;
-    return scheduleCommand(query) ? 0 : 1;
+    return scheduleCommand(query);
 }
 
 void Database::reportError()
@@ -727,9 +727,9 @@ const DatabaseResult Database::selectRelation(const std::string & name,
     return runSimpleSelectQuery(query);
 }
 
-bool Database::createRelationRow(const std::string & name,
-                                 const std::string & id,
-                                 const std::string & other)
+int Database::createRelationRow(const std::string & name,
+                                const std::string & id,
+                                const std::string & other)
 {
     std::string query = "INSERT INTO ";
     query += name;
@@ -742,8 +742,8 @@ bool Database::createRelationRow(const std::string & name,
     return scheduleCommand(query);
 }
 
-bool Database::removeRelationRow(const std::string & name,
-                                 const std::string & id)
+int Database::removeRelationRow(const std::string & name,
+                                const std::string & id)
 {
     std::string query = "DELETE FROM ";
     query += name;
@@ -753,8 +753,8 @@ bool Database::removeRelationRow(const std::string & name,
     return scheduleCommand(query);
 }
 
-bool Database::removeRelationRowByOther(const std::string & name,
-                                        const std::string & other)
+int Database::removeRelationRowByOther(const std::string & name,
+                                       const std::string & other)
 {
     std::string query = "DELETE FROM ";
     query += name;
@@ -868,7 +868,7 @@ const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
     return runSimpleSelectQuery(query);
 }
 
-bool Database::createSimpleRow(const std::string & name,
+int Database::createSimpleRow(const std::string & name,
                                const std::string & id,
                                const std::string & columns,
                                const std::string & values)
@@ -886,10 +886,10 @@ bool Database::createSimpleRow(const std::string & name,
     return scheduleCommand(query);
 }
 
-bool Database::updateSimpleRow(const std::string & name,
-                               const std::string & key,
-                               const std::string & value,
-                               const std::string & columns)
+int Database::updateSimpleRow(const std::string & name,
+                              const std::string & key,
+                              const std::string & value,
+                              const std::string & columns)
 {
     std::string query = "UPDATE ";
     query += name;
@@ -1265,10 +1265,10 @@ const DatabaseResult Database::selectArrayRows(const std::string & name,
     return runSimpleSelectQuery(query);
 }
 
-bool Database::createArrayRow(const std::string & name,
-                              const std::string & id,
-                              const std::vector<int> & key,
-                              const MapType & data)
+int Database::createArrayRow(const std::string & name,
+                             const std::string & id,
+                             const std::vector<int> & key,
+                             const MapType & data)
 {
     assert(key.size() > 0);
     assert(key.size() <= 5);
@@ -1313,10 +1313,10 @@ bool Database::createArrayRow(const std::string & name,
     return scheduleCommand(qstr);
 }
 
-bool Database::updateArrayRow(const std::string & name,
-                              const std::string & id,
-                              const std::vector<int> & key,
-                              const Atlas::Message::MapType & data)
+int Database::updateArrayRow(const std::string & name,
+                             const std::string & id,
+                             const std::vector<int> & key,
+                             const Atlas::Message::MapType & data)
 {
     assert(key.size() > 0);
     assert(key.size() <= 5);
@@ -1357,12 +1357,12 @@ bool Database::updateArrayRow(const std::string & name,
     return scheduleCommand(qstr);
 }
 
-bool Database::removeArrayRow(const std::string & name,
-                              const std::string & id,
-                              const std::vector<int> & key)
+int Database::removeArrayRow(const std::string & name,
+                             const std::string & id,
+                             const std::vector<int> & key)
 {
     /// Not sure we need this one yet, so lets no bother for now ;)
-    return false;
+    return -1;
 }
 #endif // 0
 
@@ -1439,17 +1439,17 @@ int Database::launchNewQuery()
     }
 }
 
-bool Database::scheduleCommand(const std::string & query)
+int Database::scheduleCommand(const std::string & query)
 {
     pendingQueries.push_back(std::make_pair(query, PGRES_COMMAND_OK));
     if (!m_queryInProgress) {
         debug(std::cout << "Query: " << query << " launched"
                         << std::endl << std::flush;);
-        return launchNewQuery() == 0;
+        return launchNewQuery();
     } else {
         debug(std::cout << "Query: " << query << " scheduled"
                         << std::endl << std::flush;);
-        return true;
+        return 0;
     }
 }
 

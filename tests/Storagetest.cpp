@@ -260,20 +260,20 @@ const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
     return DatabaseResult(0);
 }
 
-bool Database::updateSimpleRow(const std::string & name,
+int Database::updateSimpleRow(const std::string & name,
                                const std::string & key,
                                const std::string & value,
                                const std::string & columns)
 {
-    return true;
+    return 0;
 }
 
-bool Database::createSimpleRow(const std::string & name,
+int Database::createSimpleRow(const std::string & name,
                                const std::string & id,
                                const std::string & columns,
                                const std::string & values)
 {
-    return true;
+    return 0;
 }
 
 int Database::clearTable(const std::string & table)

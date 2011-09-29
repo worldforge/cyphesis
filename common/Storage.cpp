@@ -40,17 +40,17 @@ int Storage::init()
 /// \brief Store a new Account in the database
 ///
 /// @param account Atlas description of Account to be stored
-bool Storage::putAccount(const Atlas::Message::MapType & account)
+int Storage::putAccount(const Atlas::Message::MapType & account)
 {
     Atlas::Message::MapType::const_iterator I = account.find("username");
     if (I == account.end() || !I->second.isString()) {
-        return false;
+        return -1;
     }
     const std::string & username = I->second.String();
     
     I = account.find("password");
     if (I == account.end() || !I->second.isString()) {
-        return false;
+        return -1;
     }
     const std::string & password = I->second.String();
     std::string hash;
@@ -73,7 +73,7 @@ bool Storage::putAccount(const Atlas::Message::MapType & account)
 
     std::string id;
     if (m_connection.newId(id) < 0) {
-        return false;
+        return -1;
     }
     return m_connection.createSimpleRow("accounts", id, columns, values);
 }
@@ -82,8 +82,8 @@ bool Storage::putAccount(const Atlas::Message::MapType & account)
 ///
 /// @param account Atlas description of the Account to be modified
 /// @param accountId String identifier of the Account to be modified
-bool Storage::modAccount(const Atlas::Message::MapType & account,
-                         const std::string & accountId)
+int Storage::modAccount(const Atlas::Message::MapType & account,
+                        const std::string & accountId)
 {
     std::string columns;
     bool empty = true;

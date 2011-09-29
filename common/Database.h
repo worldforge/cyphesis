@@ -177,13 +177,13 @@ class Database {
                           RelationType kind = OneToMany);
     const DatabaseResult selectRelation(const std::string & name,
                                         const std::string & id);
-    bool createRelationRow(const std::string & name,
-                           const std::string & id,
-                           const std::string & other);
-    bool removeRelationRow(const std::string & name,
-                           const std::string & id);
-    bool removeRelationRowByOther(const std::string & name,
-                                  const std::string & other);
+    int createRelationRow(const std::string & name,
+                          const std::string & id,
+                          const std::string & other);
+    int removeRelationRow(const std::string & name,
+                          const std::string & id);
+    int removeRelationRowByOther(const std::string & name,
+                                 const std::string & other);
 
     // Interface for simple tables that mainly just store Atlasish data.
 
@@ -194,14 +194,14 @@ class Database {
     const DatabaseResult selectSimpleRowBy(const std::string & name,
                                            const std::string & column,
                                            const std::string & value);
-    bool createSimpleRow(const std::string & name,
-                         const std::string & id,
-                         const std::string & columns,
-                         const std::string & values);
-    bool updateSimpleRow(const std::string & name,
-                         const std::string & key,
-                         const std::string & value,
-                         const std::string & columns);
+    int createSimpleRow(const std::string & name,
+                        const std::string & id,
+                        const std::string & columns,
+                        const std::string & values);
+    int updateSimpleRow(const std::string & name,
+                        const std::string & key,
+                        const std::string & value,
+                        const std::string & columns);
 
     // Interface for the ID generation sequence.
 
@@ -234,7 +234,7 @@ class Database {
     void queryResult(ExecStatusType);
     void queryComplete();
     int launchNewQuery();
-    bool scheduleCommand(const std::string & query);
+    int scheduleCommand(const std::string & query);
     int clearPendingQuery();
     int runMaintainance(int command = MAINTAIN_VACUUM);
 

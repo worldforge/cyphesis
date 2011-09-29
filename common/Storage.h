@@ -42,9 +42,9 @@ class Storage {
 
     int init();
 
-    bool putAccount(const Atlas::Message::MapType & o);
-    bool modAccount(const Atlas::Message::MapType & o,
-                    const std::string & accountId);
+    int putAccount(const Atlas::Message::MapType & o);
+    int modAccount(const Atlas::Message::MapType & o,
+                   const std::string & accountId);
     bool delAccount(const std::string & account);
     bool getAccount(const std::string & username,
                     Atlas::Message::MapType & o);
