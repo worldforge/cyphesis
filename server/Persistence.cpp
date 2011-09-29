@@ -252,7 +252,7 @@ void Persistence::delCharacter(const std::string & id)
     m_connection.removeRelationRowByOther(m_characterRelation, id);
 }
 
-bool Persistence::getRules(std::map<std::string, Root> & t)
+int Persistence::getRules(std::map<std::string, Root> & t)
 {
     return m_connection.getTable(m_connection.rule(), t);
 }

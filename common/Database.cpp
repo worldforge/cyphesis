@@ -501,12 +501,12 @@ bool Database::hasKey(const std::string & table, const std::string & key)
     return ret;
 }
 
-bool Database::getTable(const std::string & table,
-                        std::map<std::string, Root> & contents)
+int Database::getTable(const std::string & table,
+                       std::map<std::string, Root> & contents)
 {
     if (m_connection == 0) {
         log(CRITICAL, "Database connection is down. This is okay during tests");
-        return false;
+        return -1;
     }
 
     std::string query = std::string("SELECT * FROM ") + table;
@@ -516,14 +516,14 @@ bool Database::getTable(const std::string & table,
 
     if (!status) {
         reportError();
-        return false;
+        return -1;
     }
 
     PGresult * res;
     if ((res = PQgetResult(m_connection)) == NULL) {
         debug(std::cout << "Error accessing " << table
                         << " table" << std::endl << std::flush;);
-        return false;
+        return -1;
     }
     int results = PQntuples(res);
     if (results < 1 || PQnfields(res) < 2) {
@@ -533,14 +533,14 @@ bool Database::getTable(const std::string & table,
         while ((res = PQgetResult(m_connection)) != NULL) {
             PQclear(res);
         }
-        return false;
+        return -1;
     }
     int id_column = PQfnumber(res, "id"),
         contents_column = PQfnumber(res, "contents");
 
     if (id_column == -1 || contents_column == -1) {
         log(ERROR, "Could not find 'id' and 'contents' columns in database result");
-        return false;
+        return -1;
     }
 
     Root t;
@@ -562,7 +562,7 @@ bool Database::getTable(const std::string & table,
         log(ERROR, "Extra database result to simple query.");
     };
 
-    return true;
+    return 0;
 }
 
 bool Database::clearTable(const std::string & table)

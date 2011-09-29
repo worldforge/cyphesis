@@ -54,7 +54,7 @@ class Persistence {
     void addCharacter(const Account &, const Entity &);
     void delCharacter(const std::string &);
     
-    bool getRules(std::map<std::string, Atlas::Objects::Root> & m);
+    int getRules(std::map<std::string, Atlas::Objects::Root> & m);
     int storeRule(const Atlas::Objects::Root & rule,
                   const std::string & key);
     int updateRule(const Atlas::Objects::Root & rule,

@@ -433,9 +433,9 @@ int Persistence::updateRule(const Atlas::Objects::Root & rule,
     return 0;
 }
 
-bool Persistence::getRules(std::map<std::string, Root> & t)
+int Persistence::getRules(std::map<std::string, Root> & t)
 {
-    return true;
+    return 0;
 }
 
 int Persistence::storeRule(const Atlas::Objects::Root & rule,

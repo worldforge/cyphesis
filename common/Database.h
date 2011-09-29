@@ -149,7 +149,7 @@ class Database {
                      const Atlas::Message::MapType&);
     int delObject(const std::string &, const std::string & key);
     bool hasKey(const std::string &, const std::string & key);
-    bool getTable(const std::string & table,
+    int getTable(const std::string & table,
                   std::map<std::string, Atlas::Objects::Root> &);
     bool clearTable(const std::string & table);
 
