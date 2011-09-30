@@ -267,7 +267,6 @@ int CommServer::addSocket(CommSocket * cs)
         logSysError(CYLOG_ERROR);
         return -1;
     }
-    return 0;
 #endif // HAVE_EPOLL_CREATE
     m_sockets.insert(cs);
     return 0;
