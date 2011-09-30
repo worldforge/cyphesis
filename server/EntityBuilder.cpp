@@ -77,6 +77,18 @@ EntityBuilder::EntityBuilder()
 
 EntityBuilder::~EntityBuilder()
 {
+    FactoryDict::const_iterator I = m_entityFactories.begin();
+    FactoryDict::const_iterator Iend = m_entityFactories.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
+
+    TaskFactoryDict::const_iterator J = m_taskFactories.begin();
+    TaskFactoryDict::const_iterator Jend = m_taskFactories.end();
+    for (; J != Jend; ++J) {
+        delete J->second;
+    }
+
     delete PropertyManager::instance();
 }
 
