@@ -19,6 +19,8 @@
 
 #include "server/TaskFactory.h"
 
+#include "server/TaskScriptFactory.h"
+
 #include "rulesets/TaskScript.h"
 
 TaskKit::TaskKit() : m_scriptFactory(0)
@@ -27,6 +29,7 @@ TaskKit::TaskKit() : m_scriptFactory(0)
 
 TaskKit::~TaskKit()
 {
+    delete m_scriptFactory;
 }
 
 /// \brief TaskFactory constructor
