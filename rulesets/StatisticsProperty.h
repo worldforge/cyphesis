@@ -35,6 +35,7 @@ class StatisticsProperty : public PropertyBase {
     ArithmeticScript * m_script;
   public:
     explicit StatisticsProperty();
+    virtual ~StatisticsProperty();
 
     ArithmeticScript * script() { return m_script; }
 

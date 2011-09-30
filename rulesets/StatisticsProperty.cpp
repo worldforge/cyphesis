@@ -41,6 +41,11 @@ StatisticsProperty::StatisticsProperty() : m_script(0)
 {
 }
 
+StatisticsProperty::~StatisticsProperty()
+{
+    delete m_script;
+}
+
 void StatisticsProperty::install(Entity * ent)
 {
 }
