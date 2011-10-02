@@ -180,8 +180,6 @@ int main(int argc, char ** argv)
     // Start up the python subsystem.
     init_python_api();
 
-    { // scope for CommServer
-
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
     // world object pair (World + WorldRouter), and initialise the admin
@@ -190,13 +188,13 @@ int main(int argc, char ** argv)
     Inheritance::instance();
     new BulletDomain;
 
-    WorldRouter world;
+    WorldRouter * world = new WorldRouter;
 
     Ruleset::init();
 
     TeleportAuthenticator::init();
 
-    StorageManager store(world);
+    StorageManager * store = new StorageManager(*world);
 
     // This ID is currently generated every time, but should perhaps be
     // persistent in future.
@@ -209,13 +207,13 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
-    ServerRouting server(world, ruleset, server_name,
-                         server_id, int_id,
-                         lobby_id, lobby_int_id);
+    ServerRouting * server = new ServerRouting(*world, ruleset, server_name,
+                                               server_id, int_id,
+                                               lobby_id, lobby_int_id);
 
-    CommServer commServer(server);
+    CommServer * commServer = new CommServer(*server);
 
-    if (commServer.setup() != 0) {
+    if (commServer->setup() != 0) {
         log(CRITICAL, "Internal error setting up server infrastructure");
         return EXIT_SOCKET_ERROR;
     }
@@ -229,37 +227,37 @@ int main(int argc, char ** argv)
     if (database_flag) {
         // log(INFO, _("Restoring world from database..."));
 
-        store.restoreWorld();
+        store->restoreWorld();
         // FIXME Do the following steps.
         // Read the world entity if any from the database, or set it up.
         // If it was there, make sure it did not get any of the wrong
         // position or orientation data.
-        store.initWorld();
+        store->initWorld();
 
         // log(INFO, _("Restored world."));
 
-        CommPSQLSocket * dbsocket = new CommPSQLSocket(commServer,
+        CommPSQLSocket * dbsocket = new CommPSQLSocket(*commServer,
                                         Persistence::instance()->m_connection);
-        commServer.addSocket(dbsocket);
-        commServer.addIdle(dbsocket);
+        commServer->addSocket(dbsocket);
+        commServer->addIdle(dbsocket);
 
-        IdleConnector * storage_idle = new IdleConnector(commServer);
-        storage_idle->idling.connect(sigc::mem_fun(&store, &StorageManager::tick));
-        commServer.addIdle(storage_idle);
+        IdleConnector * storage_idle = new IdleConnector(*commServer);
+        storage_idle->idling.connect(sigc::mem_fun(store, &StorageManager::tick));
+        commServer->addIdle(storage_idle);
     } else {
         std::string adminId;
         long intId = newId(adminId);
         assert(intId >= 0);
 
         Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
-        server.addAccount(admin);
+        server->addAccount(admin);
     }
 
     // Add the test object, and call it regularly so it can do what it does.
-    // UpdateTester * update_tester = new UpdateTester(commServer);
-    // commServer.addIdle(update_tester);
+    // UpdateTester * update_tester = new UpdateTester(*commServer);
+    // commServer->addIdle(update_tester);
 
-    CommTCPListener * listener = new CommTCPListener(commServer,
+    CommTCPListener * listener = new CommTCPListener(*commServer,
           *new CommClientFactory<Connection>());
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
@@ -293,10 +291,10 @@ int main(int argc, char ** argv)
             return EXIT_SOCKET_ERROR;
         }
     }
-    commServer.addSocket(listener);
+    commServer->addSocket(listener);
 
 #ifdef HAVE_SYS_UN_H
-    CommUnixListener * localListener = new CommUnixListener(commServer,
+    CommUnixListener * localListener = new CommUnixListener(*commServer,
           *new CommClientFactory<TrustedConnection>());
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
@@ -304,10 +302,10 @@ int main(int argc, char ** argv)
                                    localListener->getPath()));
         delete localListener;
     } else {
-        commServer.addSocket(localListener);
+        commServer->addSocket(localListener);
     }
 
-    CommUnixListener * pythonListener = new CommUnixListener(commServer,
+    CommUnixListener * pythonListener = new CommUnixListener(*commServer,
           *new CommPythonClientFactory());
     if (pythonListener->setup(python_socket_name) != 0) {
         log(ERROR, String::compose("Could not create python listen socket "
@@ -315,24 +313,24 @@ int main(int argc, char ** argv)
                                    pythonListener->getPath()));
         delete pythonListener;
     } else {
-        commServer.addSocket(pythonListener);
+        commServer->addSocket(pythonListener);
     }
 #endif
 
-    CommTCPListener * httpListener = new CommTCPListener(commServer,
+    CommTCPListener * httpListener = new CommTCPListener(*commServer,
           *new CommHttpClientFactory());
     if (httpListener->setup(http_port_num) != 0) {
         log(ERROR, String::compose("Could not create http listen socket on "
                                    "port %1.", http_port_num));
         delete httpListener;
     } else {
-        commServer.addSocket(httpListener);
+        commServer->addSocket(httpListener);
     }
 
     if (useMetaserver) {
-        CommMetaClient * cmc = new CommMetaClient(commServer);
+        CommMetaClient * cmc = new CommMetaClient(*commServer);
         if (cmc->setup(mserver) == 0) {
-            commServer.addIdle(cmc);
+            commServer->addIdle(cmc);
         } else {
             log(ERROR, "Error creating metaserver comm channel.");
             delete cmc;
@@ -341,10 +339,10 @@ int main(int argc, char ** argv)
 
 #if defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
 
-    CommMDNSPublisher * cmdns = new CommMDNSPublisher(commServer);
+    CommMDNSPublisher * cmdns = new CommMDNSPublisher(*commServer);
     if (cmdns->setup() == 0) {
-        commServer.addSocket(cmdns);
-        commServer.addIdle(cmdns);
+        commServer->addSocket(cmdns);
+        commServer->addIdle(cmdns);
     } else {
         log(ERROR, "Unable to register service with MDNS daemon.");
         delete cmdns;
@@ -373,7 +371,7 @@ int main(int argc, char ** argv)
     // the code easily.
     while (!exit_flag) {
         try {
-            commServer.poll();
+            commServer->poll();
         }
         catch (...) {
             // It is hoped that commonly thrown exception, particularly
@@ -389,9 +387,13 @@ int main(int argc, char ** argv)
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
 
-    } // close scope of CommServer, WorldRouter, and ServerRouting, which
-      // cause the destruction of the server and world objects, and the entire
-      // world contents
+    delete commServer;
+
+    delete server;
+
+    delete store;
+
+    delete world;
 
     Persistence::instance()->shutdown();
 
