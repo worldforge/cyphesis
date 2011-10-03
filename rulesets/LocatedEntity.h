@@ -84,11 +84,9 @@ class LocatedEntity : public Router {
 
     /// \brief Decrement the reference count on this entity
     void decRef() {
-        if (m_refCount <= 0) {
-            assert(m_refCount == 0);
+        if (--m_refCount < 0) {
+            assert(m_refCount == -1);
             delete this;
-        } else {
-            --m_refCount;
         }
     }
 
