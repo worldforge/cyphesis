@@ -40,6 +40,7 @@ TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
 
 TaskScript::~TaskScript()
 {
+    delete m_script;
 }
 
 /// \brief Assign a script to this scripted task
