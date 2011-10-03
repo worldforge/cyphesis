@@ -35,9 +35,6 @@ The TerrainMod class in itself doesn't hold the actual reference to the terrain 
 */
 class TerrainModTranslator
 {
-public:
-    virtual ~TerrainModTranslator();
-    
 protected:
     template <template <int> class Shape>
     bool parseStuff(const WFMath::Point<3> & pos,

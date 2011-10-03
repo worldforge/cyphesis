@@ -39,12 +39,8 @@ class TestTerrainModTranslator : public TerrainModTranslator
   public:
     TestTerrainModTranslator() : TerrainModTranslator() { }
 
-    virtual Mercator::TerrainMod* getModifier()
-    {
-        return 0;
-    }
-
-    static float test_parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
+    static float test_parsePosition(const WFMath::Point<3> & pos,
+                                    const MapType& modElement)
     {
         return parsePosition(pos, modElement);
     }

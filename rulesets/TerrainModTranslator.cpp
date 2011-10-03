@@ -41,13 +41,6 @@ TerrainModTranslator::TerrainModTranslator() : m_mod(0)
 }
 
 /**
- * @brief Dtor.
- */
-TerrainModTranslator::~TerrainModTranslator()
-{
-}
-
-/**
  * @brief Parse the shape data and create the terrain mod instance with it
  * @param pos Position of the mod entity
  * @param orientation Orientation of the mod entity

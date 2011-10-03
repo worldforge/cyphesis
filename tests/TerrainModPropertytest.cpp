@@ -133,10 +133,6 @@ TerrainModTranslator::TerrainModTranslator()
 {
 }
 
-TerrainModTranslator::~TerrainModTranslator()
-{
-}
-
 bool TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
                                      const WFMath::Quaternion & orientation,
                                      const MapType& modElement)
