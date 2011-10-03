@@ -219,15 +219,15 @@ int main(int argc, char ** argv)
     // }
     if (action != ADD) {
         MapType o;
-        bool res = db.getAccount(acname, o);
-        if (!res) {
+        int res = db.getAccount(acname, o);
+        if (res != 0) {
             std::cout<<"Account "<<acname<<" does not yet exist"<<std::endl<<std::flush;
             return 1;
         }
     }
     if (action == DEL) {
-        bool res = db.delAccount(acname);
-        if (res) {
+        int res = db.delAccount(acname);
+        if (res == 0) {
             std::cout << "Account " << acname << " removed." << std::endl << std::flush;
         }
         return 0;

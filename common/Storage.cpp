@@ -112,48 +112,48 @@ int Storage::modAccount(const Atlas::Message::MapType & account,
 /// \brief Remove an Account from the accounts database
 ///
 /// @param account String identifier of the Account to be removed.
-bool Storage::delAccount(const std::string & account)
+int Storage::delAccount(const std::string & account)
 {
-    return false;
+    return -1;
 }
 
 /// \brief Retrieve an Account from the accounts database
 ///
 /// @param username Username of the Account to be found
 /// @param account Account description returned here
-bool Storage::getAccount(const std::string & username,
-                         Atlas::Message::MapType & account)
+int Storage::getAccount(const std::string & username,
+                        Atlas::Message::MapType & account)
 {
     std::string namestr = "'" + username + "'";
     DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
-        return false;
+        return -1;
     }
     if (dr.empty()) {
         dr.clear();
-        return false;
+        return -1;
     }
     if (dr.size() > 1) {
-        return false;
+        return -1;
     }
     const char * c = dr.field("id");
     if (c == 0) {
         dr.clear();
-        return false;
+        return -1;
     }
     std::string id = c;
 
     c = dr.field("password");
     if (c == 0) {
         dr.clear();
-        return false;
+        return -1;
     }
     std::string password = c;
 
     c = dr.field("type");
     if (c == 0) {
         dr.clear();
-        return false;
+        return -1;
     }
     std::string type = c;
 
@@ -164,7 +164,7 @@ bool Storage::getAccount(const std::string & username,
     account["password"] = password;
     account["type"] = type;
 
-    return true;
+    return 0;
 }
 
 void Storage::storeInRules(const Atlas::Message::MapType & rule,

@@ -45,9 +45,9 @@ class Storage {
     int putAccount(const Atlas::Message::MapType & o);
     int modAccount(const Atlas::Message::MapType & o,
                    const std::string & accountId);
-    bool delAccount(const std::string & account);
-    bool getAccount(const std::string & username,
-                    Atlas::Message::MapType & o);
+    int delAccount(const std::string & account);
+    int getAccount(const std::string & username,
+                   Atlas::Message::MapType & o);
 
     void storeInRules(const Atlas::Message::MapType & rule,
                       const std::string & key);
