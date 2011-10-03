@@ -100,11 +100,9 @@ class Task {
 
     /// \brief Decrement the reference count on this task
     void decRef() {
-        if (m_refCount <= 1) {
-            assert(m_refCount == 1);
+        if (--m_refCount < 1) {
+            assert(m_refCount == 0);
             delete this;
-        } else {
-            --m_refCount;
         }
     }
 
