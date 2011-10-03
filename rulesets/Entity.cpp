@@ -263,6 +263,8 @@ void Entity::destroy()
     // We don't call decRef() on our parent, because we may not get deleted
     // yet, and we need to keep a reference to our parent in case there
     // are broadcast ops left that we have not yet sent.
+    // It will be decRef()ed automatically from our (LocatedEntity)
+    // destructor
 
     if (loc_contains.empty()) {
         // FIXME Do we need to call onUpdated() on the parent entity?
