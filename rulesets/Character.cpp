@@ -52,6 +52,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <sigc++/functors/mem_fun.h>
+
 #include <cassert>
 
 using Atlas::Message::Element;
@@ -253,6 +255,7 @@ Character::Character(const std::string & id, long intId) :
                m_movement(*new Pedestrian(*this)),
                m_task(0), m_mind(0), m_externalMind(0)
 {
+    destroyed.connect(sigc::mem_fun(this, &Character::clearTask));
 }
 
 Character::~Character()
@@ -263,6 +266,11 @@ Character::~Character()
     }
     if (m_externalMind != 0) {
         delete m_externalMind;
+    }
+    // This should only ever happen on shutdown. During normal running
+    // the task gets cleared from Entity::destroy.
+    if (m_task != 0) {
+        m_task->decRef();
     }
 }
 
@@ -322,9 +330,14 @@ void Character::updateTask()
 void Character::clearTask()
 {
     if (m_task == 0) {
-        log(ERROR, "Character.clearTask: No task currently set");
+        // This function should never be called when there is no task,
+        // except during Entity destruction
+        assert(m_flags & entity_destroyed);
         return;
     }
+    // Thus far a task can only have one reference legally, so if we
+    // have a task it's count must be 1
+    assert(m_task->count() == 1);
     m_task->decRef();
     m_task = 0;
 
