@@ -146,7 +146,9 @@ static PyObject * Character_clear_task(PyEntity * self)
         return NULL;
     }
 #endif // NDEBUG
-    self->m_entity.c->clearTask();
+    if (self->m_entity.c->task() != 0) {
+        self->m_entity.c->clearTask();
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
