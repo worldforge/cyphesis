@@ -7,11 +7,25 @@ set -e
 #    src/interfaces/libpq
 #    src/bin/pg_config
 
-sudo true
+cross_target=$(ls /usr/bin/i?86-*-gcc | sed "s/^\/usr\/bin\/\(.*\)-gcc\$/\1/")
 
-export PKG_CONFIG_LIBDIR=/usr/i686-pc-mingw32/sys-root/mingw/lib/pkgconfig
+cross_root=/usr/${cross_target}
 
-./configure --with-system-tzdata=/usr/share/zoneinfo --host=i686-pc-mingw32 --build=i686-pc-linux-gnu --target=i686-pc-mingw32 --prefix=/usr/i686-pc-mingw32/sys-root/mingw # --enable-binreloc=no --with-python=/usr/i686-pc-mingw32/sys-root/mingw --with-psql-prefix=/usr/i686-pc-mingw32/sys-root/mingw --with-libgcrypt-prefix=/usr/i686-pc-mingw32/sys-root/mingw
+if [ ! -d ${cross_root} ] ; then
+  echo "Unable to find cross compiler root ${cross_root}"
+  exit 1
+fi
+
+cross_sysroot=${cross_root}
+if [ -d ${cross_root}/sys-root/mingw ] ; then
+  cross_sysroot=${cross_root}/sys-root/mingw
+fi
+
+sudo -p "Please enter your password for sudo access or hit ctrl-c to abort:" true
+
+export PKG_CONFIG_LIBDIR=${cross_sysroot}/lib/pkgconfig
+
+./configure --with-system-tzdata=/usr/share/zoneinfo --host=${cross_target} --build=i686-pc-linux-gnu --target=${cross_target} --prefix=${cross_sysroot}
 
 pushd src/include
 touch utils/fmgroids.h
