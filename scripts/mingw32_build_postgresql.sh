@@ -15,15 +15,15 @@ export PKG_CONFIG_LIBDIR=/usr/i686-pc-mingw32/sys-root/mingw/lib/pkgconfig
 
 pushd src/include
 touch utils/fmgroids.h
-sudo make install
+sudo -n make install
 popd
 
 pushd src/interfaces/libpq
 make
-sudo make install
+sudo -n make install
 popd
 
 pushd src/bin/pg_config
 make
-sudo make install
+sudo -n make install
 popd
