@@ -11,10 +11,30 @@
 # 4. Make a wine wrapper for pg_config
 
 set -u
+set -e
 
-MINGW=/usr/i686-pc-mingw32/sys-root/mingw
+cross_target=$(ls /usr/bin/i?86-*-gcc | sed "s/^\/usr\/bin\/\(.*\)-gcc\$/\1/")
+cross_root=/usr/${cross_target}
 
-export PKG_CONFIG_LIBDIR=${MINGW}/lib/pkgconfig
+if [ ! -d ${cross_root} ] ; then
+  echo "Unable to find cross compiler root ${cross_root}"
+  exit 1
+fi
+
+cross_sysroot=${cross_root}
+if [ -d ${cross_root}/sys-root/mingw ] ; then
+  cross_sysroot=${cross_root}/sys-root/mingw
+fi
+
+configure_flags=
+if [ -f ./cyphesis.spec ]
+then
+  configure_flags="${configure_flags} --enable-binreloc=no --with-python=${cross_sysroot} --with-psql-prefix=${cross_sysroot} --with-libgcrypt-prefix=${cross_sysroot}"
+fi
+
+export PKG_CONFIG_LIBDIR=${cross_sysroot}/lib/pkgconfig
+
+./configure --host=${cross_target} --build=i686-pc-linux-gnu --target=${cross_target} --prefix=${cross_sysroot} ${configure_flags}
 
 DLLS="
 libgcc_s_sjlj-1.dll \
@@ -24,19 +44,20 @@ libpq.dll \
 libsigc-2.0-0.dll \
 "
 
-./configure --host=i686-pc-mingw32 --build=i686-pc-linux-gnu --target=i686-pc-mingw32 --prefix=/usr/i686-pc-mingw32/sys-root/mingw --enable-binreloc=no --with-python=/usr/i686-pc-mingw32/sys-root/mingw --with-psql-prefix=/usr/i686-pc-mingw32/sys-root/mingw --with-libgcrypt-prefix=/usr/i686-pc-mingw32/sys-root/mingw
-
-for dll in ${DLLS}
-do
-  if [ -f ${MINGW}/bin/${dll} ]
-  then
-    echo Found bin/${dll}
-    cp ${MINGW}/bin/${dll} ./server
-  elif [ -f ${MINGW}/lib/${dll} ]
-  then
-    echo Found lib/${dll}
-    cp ${MINGW}/lib/${dll} ./server
-  else
-    echo Unable to find ${dll}
-  fi
-done
+if [ -f ./cyphesis.spec ]
+then
+  for dll in ${DLLS}
+  do
+    if [ -f ${cross_sysroot}/bin/${dll} ]
+    then
+      echo Found bin/${dll}
+      cp ${cross_sysroot}/bin/${dll} ./server
+    elif [ -f ${cross_sysroot}/lib/${dll} ]
+    then
+      echo Found lib/${dll}
+      cp ${cross_sysroot}/lib/${dll} ./server
+    else
+      echo Unable to find ${dll}
+    fi
+  done
+fi
