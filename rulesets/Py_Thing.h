@@ -38,6 +38,8 @@ typedef struct {
         Entity * e;
         Character * c;
     } m_entity;
+    /// \brief List of weak references
+    PyObject * m_weakreflist;
 } PyEntity;
 
 extern PyTypeObject PyLocatedEntity_Type;

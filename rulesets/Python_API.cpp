@@ -732,19 +732,16 @@ void init_python_api(bool log_stdout)
         return;
     }
     PyModule_AddObject(server, "Task", (PyObject *)&PyTask_Type);
-    PyLocatedEntity_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyLocatedEntity_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Entity wrapper type");
         return;
     }
     PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyLocatedEntity_Type);
-    PyEntity_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyEntity_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Thing wrapper type");
         return;
     }
     PyModule_AddObject(server, "Thing", (PyObject *)&PyEntity_Type);
-    PyCharacter_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyCharacter_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Character wrapper type");
         return;

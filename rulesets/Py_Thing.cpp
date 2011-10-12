@@ -195,8 +195,23 @@ static PyMethodDef Character_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
+static PyEntity * Entity_new(PyTypeObject * type,
+                             PyObject * args,
+                             PyObject * kwds)
+{
+    PyEntity * self = (PyEntity *)type->tp_alloc(type, 0);
+    if (self != NULL) {
+        self->m_weakreflist = NULL;
+    }
+    return self;
+}
+
 static void Entity_dealloc(PyEntity *self)
 {
+    if (self->m_weakreflist != NULL) {
+        PyObject_ClearWeakRefs((PyObject *) self);
+    }
+
     Py_XDECREF(self->Entity_attr);
     self->ob_type->tp_free((PyObject*)self);
 }
@@ -455,7 +470,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
+        offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
         LocatedEntity_methods,          // tp_methods
@@ -468,7 +483,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              // tp_dictoffset
         (initproc)LocatedEntity_init,   // tp_init
         0,                              // tp_alloc
-        0,                              // tp_new
+        (newfunc)Entity_new,            // tp_new
 };
 
 PyTypeObject PyEntity_Type = {
@@ -498,7 +513,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
+        offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
         Entity_methods,                 // tp_methods
@@ -511,7 +526,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_dictoffset
         (initproc)Entity_init,          // tp_init
         0,                              // tp_alloc
-        0,                              // tp_new
+        (newfunc)Entity_new,            // tp_new
 };
 
 PyTypeObject PyCharacter_Type = {
@@ -541,7 +556,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
+        offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
         Character_methods,              // tp_methods
@@ -554,7 +569,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              // tp_dictoffset
         (initproc)Character_init,       // tp_init
         0,                              // tp_alloc
-        0,                              // tp_new
+        (newfunc)Entity_new,            // tp_new
 };
 
 PyObject * wrapEntity(LocatedEntity * le)
