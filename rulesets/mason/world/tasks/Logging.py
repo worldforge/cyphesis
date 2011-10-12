@@ -48,7 +48,7 @@ class Logging(server.Task):
             # print "CHOP",current_status
 
             normal=Vector3D(0,0,1)
-            # print "LOC.ori ", target.location.orientation
+            # print "LOC.ori ", self.target().location.orientation
             # calculate how tilted the tree is already
             if self.target().location.orientation.is_valid():
                 normal.rotate(self.target().location.orientation)
