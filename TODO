@@ -1,3 +1,7 @@
+It looks like weak reference is being broken way late in Logging. Probably
+because the op queue is holding a reference to the tree, and so deleting 
+the tree wrapper is being delayed. Need to look into when we delete that.
+
 EntityBuilder shouldn't need a permenent reference to the world.
 
 Allow long cut and cross cut with saws. Long cut is along grain, bisecting by longest dimension. cross cut is across both grains
