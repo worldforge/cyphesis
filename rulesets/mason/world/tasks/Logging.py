@@ -7,6 +7,7 @@ from physics import Quaternion
 from physics import Vector3D
 
 import math
+import weakref
 
 from random import *
 
@@ -21,38 +22,36 @@ class Logging(server.Task):
         if len(op) < 1:
             sys.stderr.write("Logging task has no target in cut op")
 
-        # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = weakref.ref(server.world.get_object(op[0].id))
         self.tool = op.to
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Logging.tick"
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
-        current_status = target.status
+        current_status = self.target().status
 
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
             self.progress = 1 - current_status
             self.rate = 0
             return self.next_tick(1.75)
 
         res=Oplist()
         if current_status > 0.11:
-            set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
+            set=Operation("set", Entity(self.target().id, status=current_status-0.1), to=self.target())
             res.append(set)
             # print "CHOP",current_status
 
             normal=Vector3D(0,0,1)
             # print "LOC.ori ", target.location.orientation
             # calculate how tilted the tree is already
-            if target.location.orientation.is_valid():
-                normal.rotate(target.location.orientation)
+            if self.target().location.orientation.is_valid():
+                normal.rotate(self.target().location.orientation)
             # print "Normal ", normal, normal.dot(Vector3D(0,0,1))
             # if the tree is standing, and it's already half cut down, rotate
             # it to be horizontal, away from the character
@@ -61,7 +60,7 @@ class Logging(server.Task):
                 # determine the axis of rotation by cross product of the vector
                 # from character to tree, and vertically upward vector
                 axis = distance_to(self.character.location,
-                                   target.location).cross(Vector3D(0,0,1))
+                                   self.target().location).cross(Vector3D(0,0,1))
                 # the axis must be a unit vector
                 try:
                     axis = axis.unit_vector()
@@ -72,29 +71,29 @@ class Logging(server.Task):
                 orient = Quaternion(axis, math.pi / -2.0)
 
                 # if the tree is rotated, apply this too
-                if target.location.orientation.is_valid():
-                    orient = target.location.orientation * orient
+                if self.target().location.orientation.is_valid():
+                    orient = self.target().location.orientation * orient
 
-                move_location = target.location.copy()
+                move_location = self.target().location.copy()
                 move_location.orientation = orient
 
-                move = Operation("move", Entity(self.target, mode='felled',
+                move = Operation("move", Entity(self.target().id, mode='felled',
                                                 location=move_location),
-                                 to = self.target)
+                                 to = self.target())
                 res.append(move)
         else:
             # print "become log"
-            set = Operation("set", Entity(self.target, status = -1),
-                            to = self.target)
+            set = Operation("set", Entity(self.target().id, status = -1),
+                            to = self.target())
             res.append(set)
-            create_loc = target.location.copy()
-            create_loc.orientation = target.location.orientation
+            create_loc = self.target().location.copy()
+            create_loc.orientation = self.target().location.orientation
             create = Operation("create",
                                Entity(parents = ["lumber"],
-                                      mass = target.mass, 
+                                      mass = self.target().mass, 
                                       location = create_loc,
-                                      bbox = target.bbox),
-                               to = self.target)
+                                      bbox = self.target().bbox),
+                               to = self.target())
             res.append(create)
                                             
         self.progress = 1 - current_status
