@@ -292,7 +292,7 @@ static PyMethodDef Map_methods[] = {
 static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
 {
     Script ** s = new Script*;
-    *s = &noScript;
+    *s = 0;
     self->m_map = new MemMap(*s);
     return 0;
 }

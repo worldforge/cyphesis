@@ -574,45 +574,43 @@ PyTypeObject PyCharacter_Type = {
 
 PyObject * wrapEntity(LocatedEntity * le)
 {
-    PyObject * wrapper;
-    PythonWrapper * pw = dynamic_cast<PythonWrapper *>(le->script());
-    if (pw == 0) {
+    PyObject * wrapper = 0;
+    if (le->script() == 0) {
+        PyEntity * pe = 0;
         Entity * entity = dynamic_cast<Entity *>(le);
         if (entity != 0) {
           Character * ch_entity = dynamic_cast<Character *>(entity);
           if (ch_entity != 0) {
-              PyEntity * pc = newPyCharacter();
-              if (pc == NULL) {
+              pe = newPyCharacter();
+              if (pe == NULL) {
                   return NULL;
               }
-              pc->m_entity.c = ch_entity;
-              wrapper = (PyObject *)pc;
+              pe->m_entity.c = ch_entity;
           } else {
-              PyEntity * pe = newPyEntity();
+              pe = newPyEntity();
               if (pe == NULL) {
                   return NULL;
               }
               pe->m_entity.e = entity;
-              wrapper = (PyObject *)pe;
           }
         } else {
-          PyEntity * pe = newPyLocatedEntity();
+          pe = newPyLocatedEntity();
           if (pe == NULL) {
               return NULL;
           }
           pe->m_entity.l = le;
-          wrapper = (PyObject *)pe;
         }
-        if (le->script() == &noScript) {
-            pw = new PythonWrapper(wrapper);
-            le->setScript(pw);
-        } else {
-            log(WARNING, "Entity has script of unknown type");
-        }
+        wrapper = (PyObject *)pe;
+        le->setScript(new PythonWrapper(wrapper));
     } else {
-        wrapper = pw->wrapper();
-        assert(wrapper != NULL);
-        Py_INCREF(wrapper);
+        PythonWrapper * pw = dynamic_cast<PythonWrapper *>(le->script());
+        if (pw == 0) {
+            log(WARNING, "Entity has script of unknown type");
+        } else {
+            wrapper = pw->wrapper();
+            assert(wrapper != NULL);
+            Py_INCREF(wrapper);
+        }
     }
     return wrapper;
 }

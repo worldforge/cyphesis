@@ -166,7 +166,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
         std::string event_name("sound_");
         event_name += op2->getParents().front();
 
-        if (m_script->operation(event_name, op2, res) == 0) {
+        if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
             callSoundOperation(op2, res);
         }
     }
@@ -189,7 +189,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         std::string event_name("sight_");
         event_name += op2->getParents().front();
 
-        if (m_script->operation(event_name, op2, res) == 0) {
+        if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
             callSightOperation(op2, res);
         }
     } else /* if (op2->getObjtype() == "object") */ {
@@ -282,9 +282,11 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     m_map.check(op->getSeconds());
     m_map.getAdd(op->getFrom());
     m_map.sendLooks(res);
-    m_script->operation("call_triggers", op, res);
-    if (m_script->operation(op->getParents().front(), op, res) != 0) {
-        return;
+    if (m_script != 0) {
+        m_script->operation("call_triggers", op, res);
+        if (m_script->operation(op->getParents().front(), op, res) != 0) {
+            return;
+        }
     }
     const OpNo op_no = op->getClassNo();
     switch (op_no) {

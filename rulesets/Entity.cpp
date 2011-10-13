@@ -411,7 +411,8 @@ void Entity::externalOperation(const Operation & op)
 
 void Entity::operation(const Operation & op, OpVector & res)
 {
-    if (m_script->operation(op->getParents().front(), op, res) != 0) {
+    if (m_script != 0 &&
+        m_script->operation(op->getParents().front(), op, res) != 0) {
         return;
     }
     HandlerMap::const_iterator I = m_operationHandlers.find(op->getClassNo());

@@ -58,11 +58,13 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     m_entities[entity->getIntId()] = entity;
     m_checkIterator = m_entities.find(next);
 
-    debug( std::cout << this << std::endl << std::flush;);
-    std::vector<std::string>::const_iterator I = m_addHooks.begin();
-    std::vector<std::string>::const_iterator Iend = m_addHooks.end();
-    for (; I != Iend; ++I) {
-        m_script->hook(*I, entity);
+    if (m_script != 0) {
+        debug( std::cout << this << std::endl << std::flush;);
+        std::vector<std::string>::const_iterator I = m_addHooks.begin();
+        std::vector<std::string>::const_iterator Iend = m_addHooks.end();
+        for (; I != Iend; ++I) {
+            m_script->hook(*I, entity);
+        }
     }
     return entity;
 }
@@ -117,10 +119,12 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
 
     readEntity(entity, ent);
 
-    std::vector<std::string>::const_iterator K = m_updateHooks.begin();
-    std::vector<std::string>::const_iterator Kend = m_updateHooks.end();
-    for (; K != Kend; ++K) {
-        m_script->hook(*K, entity);
+    if (m_script != 0) {
+        std::vector<std::string>::const_iterator K = m_updateHooks.begin();
+        std::vector<std::string>::const_iterator Kend = m_updateHooks.end();
+        for (; K != Kend; ++K) {
+            m_script->hook(*K, entity);
+        }
     }
 }
 
@@ -225,10 +229,12 @@ void MemMap::del(const std::string & id)
             m_checkIterator = m_entities.begin();
         }
 
-        std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
-        std::vector<std::string>::const_iterator Jend = m_deleteHooks.end();
-        for(; J != Jend; ++J) {
-            m_script->hook(*J, ent);
+        if (m_script != 0) {
+            std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
+            std::vector<std::string>::const_iterator Jend = m_deleteHooks.end();
+            for(; J != Jend; ++J) {
+                m_script->hook(*J, ent);
+            }
         }
         ent->decRef();
     }

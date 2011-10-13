@@ -57,7 +57,7 @@ const std::set<std::string> & LocatedEntity::immutables()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(&noScript), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());
 }
@@ -69,9 +69,7 @@ LocatedEntity::~LocatedEntity()
     for (; I != Iend; ++I) {
         delete I->second;
     }
-    if (m_script != NULL && m_script != &noScript) {
-        delete m_script;
-    }
+    delete m_script;
     if (m_location.m_loc != 0) {
         m_location.m_loc->decRef();
     }
@@ -192,9 +190,7 @@ void LocatedEntity::onUpdated()
 /// @param scrpt Pointer to the script to be associated with this entity
 void LocatedEntity::setScript(Script * scrpt)
 {
-    if (m_script != NULL && m_script != &noScript) {
-        delete m_script;
-    }
+    delete m_script;
     m_script = scrpt;
 }
 
