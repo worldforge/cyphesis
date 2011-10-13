@@ -318,8 +318,6 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     return 0;
 }
 
-Script noScript;
-
 Entity::Entity(const std::string & id, long intId) :
         LocatedEntity(id, intId), m_motion(0), m_flags(0)
 {
@@ -471,7 +469,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(&noScript), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_contains(0)
 {
 }
 

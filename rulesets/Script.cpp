@@ -55,6 +55,3 @@ bool Script::operation(const std::string & opname,
 void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
-
-/// \brief Default object available for entities that don't have a script.
-Script noScript;

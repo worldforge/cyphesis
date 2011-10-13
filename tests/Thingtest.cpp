@@ -73,8 +73,6 @@ int main()
 
 //stubs
 
-Script noScript;
-
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
 int ATTACK_NO = -1;
@@ -274,7 +272,7 @@ Domain * Entity::getMovementDomain()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(&noScript), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_contains(0)
 {
 }
 

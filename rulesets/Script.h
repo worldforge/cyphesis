@@ -48,6 +48,4 @@ class Script {
     virtual void hook(const std::string & function, LocatedEntity * entity);
 };
 
-extern Script noScript;
-
 #endif // RULESETS_SCRIPT_H

@@ -447,8 +447,6 @@ int main()
 
 using Atlas::Message::MapType;
 
-Script noScript;
-
 TeleportState::TeleportState(time_t time) : m_state(TELEPORT_NONE),
                                             m_teleportTime(time)
 {
@@ -928,7 +926,7 @@ void Entity::callOperation(const Operation & op, OpVector & res)
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(&noScript), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_contains(0)
 {
 }
 

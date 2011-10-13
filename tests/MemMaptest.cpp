@@ -51,7 +51,7 @@ class TestMemMap : public MemMap {
 
 int main()
 {
-    Script * s = &noScript;
+    Script * s = 0;
     TestMemMap * mm = new TestMemMap(s);
 
     mm->test_addId("2", 2);
@@ -67,8 +67,6 @@ int main()
 }
 
 // stubs
-
-Script noScript;
 
 MemEntity::MemEntity(const std::string & id, long intId) :
            LocatedEntity(id, intId), m_visible(false), m_lastSeen(0.)

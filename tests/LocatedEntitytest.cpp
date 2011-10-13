@@ -252,8 +252,6 @@ int main()
 
 // stubs
 
-Script noScript;
-
 namespace Atlas { namespace Objects { namespace Operation {
 int EAT_NO = -1;
 int NOURISH_NO = -1;

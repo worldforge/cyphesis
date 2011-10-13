@@ -102,7 +102,6 @@ int main()
 
     Script * script = e->script();
     assert(script != 0);
-    assert(script != &noScript);
 
     script->hook("nohookfunction", e);
     script->hook("test_hook", e);
