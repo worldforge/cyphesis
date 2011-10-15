@@ -260,6 +260,9 @@ void Entity::destroy()
     }
     loc_contains.erase(this);
 
+    delete m_script;
+    m_script = 0;
+
     // We don't call decRef() on our parent, because we may not get deleted
     // yet, and we need to keep a reference to our parent in case there
     // are broadcast ops left that we have not yet sent.
