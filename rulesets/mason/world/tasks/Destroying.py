@@ -19,7 +19,7 @@ class Destroying(server.Task):
             sys.stderr.write("Destroy task has no target in attack op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -27,8 +27,7 @@ class Destroying(server.Task):
             In this example the interval is fixed, but it can be varied. """
         # print "Destroy.tick" 
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -39,36 +38,36 @@ class Destroying(server.Task):
             return
 
         res=Oplist()
-        chunk_loc = target.location.copy()
-        chunk_loc.coordinates = target.location.coordinates
-        chunk_loc.orientation = target.location.orientation
+        chunk_loc = self.target().location.copy()
+        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.orientation = self.target().location.orientation
         # Some entity do not have status defined. If not present we assume that the entity is unharmed 
-        if hasattr ( target, 'status' ) : 
-            current_status = target.status
+        if hasattr ( self.target(), 'status' ) : 
+            current_status = self.target().status
 
         else:
-            set = Operation("set", Entity(self.target, status = 1),
-                            to = self.target)
+            set = Operation("set", Entity(self.target().id, status = 1),
+                            to = self.target())
             res.append(set)
             current_status = 1.0
 
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
             self.progress = 1 - current_status
             self.rate = 0
             return self.next_tick(1.75)
 
         if current_status > 0.11:
-            set=Operation("set", Entity(self.target, status=current_status-0.1), to=self.target)
+            set=Operation("set", Entity(self.target().id, status=current_status-0.1), to=self.target())
             res.append(set)
 
         else:
             # Creating ruins when a particular entity gets destroyed. 
-            if target.type[0] == "castle_house_a" :
-                create=Operation("create", Entity(name = "castle_house_ruin", type = "castle_house_ruin", location = chunk_loc), to = target)
+            if self.target().type[0] == "castle_house_a" :
+                create=Operation("create", Entity(name = "castle_house_ruin", type = "castle_house_ruin", location = chunk_loc), to = self.target())
                 res.append(create)
 
-            set = Operation("set", Entity(self.target, status = -1),
-                            to = self.target)
+            set = Operation("set", Entity(self.target().id, status = -1),
+                            to = self.target())
             res.append(set)
             self.irrelevant()
 

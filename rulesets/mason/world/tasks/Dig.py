@@ -21,7 +21,7 @@ class Dig(server.Task):
             sys.stderr.write("Dig task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -30,8 +30,7 @@ class Dig(server.Task):
         """ Op handler for regular tick op """
         # print "Dig.tick"
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -52,7 +51,7 @@ class Dig(server.Task):
 
         self.progress = 0
 
-        surface = target.terrain.get_surface(self.pos)
+        surface = self.target().terrain.get_surface(self.pos)
         # print "SURFACE %d at %s" % (surface, self.pos)
         if surface not in Dig.materials:
             print "Not right"
@@ -70,7 +69,7 @@ class Dig(server.Task):
                          Entity(name = Dig.materials[surface],
                                 type = "pile",
                                 material = Dig.materials[surface],
-                                location = chunk_loc), to = target)
+                                location = chunk_loc), to = self.target())
         res.append(create)
 
         res.append(self.next_tick(1.75))
