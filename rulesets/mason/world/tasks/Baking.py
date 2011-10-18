@@ -13,14 +13,14 @@ class Baking(server.Task):
     """A task for making various structures using skills with pickaxe"""
     
     materials = ["earth_wall" , "board_wall" ]
-    def crafting_operation(self, op):
+    def craft_operation(self, op):
         """ Op handler for crafting op which activates this task """
 
         if len(op) < 1:
             sys.stderr.write("Baking task has no target in crafting op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -28,19 +28,13 @@ class Baking(server.Task):
     def tick_operation(self, op):
 
         """ Op handler for regular tick op """
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
         self.rate = 0.5 / 0.75
         self.progress += 1
-
-        if not target:
-            print "Target is no more"
-            self.irrelevant()
-            return
 
         res=Oplist()
 
@@ -68,33 +62,33 @@ class Baking(server.Task):
 
         count = ecount + bcount 
 
-        chunk_loc = target.location.copy()
-        chunk_loc.coordinates = target.location.coordinates
-        chunk_loc.orientation = target.location.orientation
+        chunk_loc = self.target().location.copy()
+        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.orientation = self.target().location.orientation
 
         # Select which structure to produce depending on the recipe present in inventory
         if ecount == 1 :
             if bcount == 1 :
-                create=Operation("create", Entity(name = "castle_wall_run", type = "castle_wall_run", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "castle_wall_run", type = "castle_wall_run", location = chunk_loc), to = self.target())
                 res.append(create)
 
         if ecount == 2 :
             if bcount == 4 :
-                create=Operation("create", Entity(name = "castle_wall_corner", type = "castle_wall_corner", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "castle_wall_corner", type = "castle_wall_corner", location = chunk_loc), to = self.target())
                 res.append(create)
 
         if ecount == 3 :
             if bcount == 2 :
-                create=Operation("create", Entity(name = "castle_wall_stairs", type = "castle_wall_stairs", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "castle_wall_stairs", type = "castle_wall_stairs", location = chunk_loc), to = self.target())
                 res.append(create)
 
             if bcount == 3 :
-                create=Operation("create", Entity(name = "castle_wall_gate", type = "castle_wall_gate", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "castle_wall_gate", type = "castle_wall_gate", location = chunk_loc), to = self.target())
                 res.append(create)
 
         if ecount == 4 :
             if bcount == 3 :
-                create=Operation("create", Entity(name = "castle_house_a", type = "castle_house_a", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "castle_house_a", type = "castle_house_a", location = chunk_loc), to = self.target())
                 res.append(create)
 
         # Consume the materials according to the recipe
