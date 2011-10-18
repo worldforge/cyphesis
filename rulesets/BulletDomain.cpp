@@ -36,27 +36,32 @@ static const bool debug_flag = false;
 BulletDomain::BulletDomain()
 {
 #ifdef HAVE_BULLET
-        ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-        m_collisionConfiguration = new btDefaultCollisionConfiguration();
+    // collision configuration contains default setup for memory,
+    // collision setup. Advanced users can create their own configuration.
+    m_collisionConfiguration = new btDefaultCollisionConfiguration();
 
-        ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-        m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
+    // use the default collision dispatcher. For parallel processing you can
+    // use a diffent dispatcher (see Extras/BulletMultiThreaded)
+    m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
 
-        ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-        btVector3       worldAabbMin(-1000,-1000,-1000);
-        btVector3       worldAabbMax(1000,1000,1000);
-        m_overlappingPairCache = new btAxisSweep3(worldAabbMin, worldAabbMax);
+    // btDbvtBroadphase is a good general purpose broadphase.
+    // You can also try out btAxis3Sweep.
+    btVector3       worldAabbMin(-1000,-1000,-1000);
+    btVector3       worldAabbMax(1000,1000,1000);
+    m_overlappingPairCache = new btAxisSweep3(worldAabbMin, worldAabbMax);
 
-        ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-        // No need for constraint solver without dynamics
-        // btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+    // the default constraint solver. For parallel processing you can use a
+    // different solver (see Extras/BulletMultiThreaded)
+    // No need for constraint solver without dynamics
+    // btSequentialImpulseConstraintSolver* solver =
+    //       new btSequentialImpulseConstraintSolver;
 
-        m_collisionWorld = new btCollisionWorld(m_dispatcher,
-                                                m_overlappingPairCache,
-                                                m_collisionConfiguration);
+    m_collisionWorld = new btCollisionWorld(m_dispatcher,
+                                            m_overlappingPairCache,
+                                            m_collisionConfiguration);
 
-        // No gravity in collision world
-        //collisionWorld->setGravity(btVector3(0,-10,0));
+    // No gravity in collision world
+    // collisionWorld->setGravity(btVector3(0,-10,0));
 #endif // HAVE_BULLET
 }
 
