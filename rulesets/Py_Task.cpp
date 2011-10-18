@@ -180,6 +180,10 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
         self->m_task->rate() = rate;
         return 0;
     }
+    if (PyWeakref_CheckProxy(v)) {
+        PyErr_SetString(PyExc_TypeError, "don't store proxy objects as attributes");
+        return -1;
+    }
     // FIXME Something may be required here long term, for task attributes.
     if (self->Task_attr == NULL) {
         self->Task_attr = PyDict_New();
