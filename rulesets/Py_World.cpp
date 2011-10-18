@@ -47,12 +47,40 @@ static PyObject * World_get_object(PyWorld *self, PyObject * id)
         return Py_None;
     }
     PyObject * wrapper = wrapEntity(ent);
-    return wrapper;
+    if (wrapper == NULL) {
+        return NULL;
+    }
+    PyObject * wrapper_proxy = PyWeakref_NewProxy(wrapper, NULL);
+    // FIXME Have wrapEntity return a borrowed reference
+    Py_DECREF(wrapper);
+    return wrapper_proxy;
+}
+
+static PyObject * World_get_object_ref(PyWorld *self, PyObject * id)
+{
+    if (!PyString_CheckExact(id)) {
+        PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
+        return NULL;
+    }
+    Entity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
+    if (ent == NULL) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    PyObject * wrapper = wrapEntity(ent);
+    if (wrapper == NULL) {
+        return NULL;
+    }
+    PyObject * wrapper_ref = PyWeakref_NewRef(wrapper, NULL);
+    // FIXME Have wrapEntity return a borrowed reference
+    Py_DECREF(wrapper);
+    return wrapper_ref;
 }
 
 static PyMethodDef World_methods[] = {
-    {"get_time",        (PyCFunction)World_get_time,    METH_NOARGS},
-    {"get_object",      (PyCFunction)World_get_object,  METH_O},
+    {"get_time",        (PyCFunction)World_get_time,        METH_NOARGS},
+    {"get_object",      (PyCFunction)World_get_object,      METH_O},
+    {"get_object_ref",  (PyCFunction)World_get_object_ref,  METH_O},
     {NULL,              NULL}           // sentinel
 };
 

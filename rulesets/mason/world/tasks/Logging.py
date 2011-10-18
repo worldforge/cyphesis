@@ -7,7 +7,6 @@ from physics import Quaternion
 from physics import Vector3D
 
 import math
-import weakref
 
 from random import *
 
@@ -22,7 +21,7 @@ class Logging(server.Task):
         if len(op) < 1:
             sys.stderr.write("Logging task has no target in cut op")
 
-        self.target = weakref.ref(server.world.get_object(op[0].id))
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
