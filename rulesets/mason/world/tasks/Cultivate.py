@@ -20,7 +20,7 @@ class Cultivate(server.Task):
             sys.stderr.write("Cultivate task has no target in sow op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -28,13 +28,12 @@ class Cultivate(server.Task):
         # print "Cultivate.tick"
         res=Oplist()
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
-        if square_distance(self.character.location, target.location) > \
+        if square_distance(self.character.location, self.target().location) > \
            self.character.location.bbox.square_bounding_radius():
             self.progress = 0
             self.rate = 0
@@ -45,16 +44,16 @@ class Cultivate(server.Task):
             self.rate = 1 / 1.75
             return self.next_tick(1.75)
 
-        new_loc = target.location.copy()
-        new_loc.orientation = target.location.orientation
-        create=Operation("create", Entity(type = target.germinates,
-                                          mass = target.mass,
+        new_loc = self.target().location.copy()
+        new_loc.orientation = self.target().location.orientation
+        create=Operation("create", Entity(type = self.target().germinates,
+                                          mass = self.target().mass,
                                           bbox = [-0.02, -0.02, 0,
                                                   0.02, 0.02, 0.12],
-                                          location = new_loc), to = target)
+                                          location = new_loc), to = self.target())
         res.append(create)
 
-        set=Operation("set", Entity(self.target, status=-1), to=target)
+        set=Operation("set", Entity(self.target().id, status=-1), to=self.target())
         res.append(set)
 
         self.progress = 1
