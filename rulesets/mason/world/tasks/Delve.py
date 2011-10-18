@@ -21,7 +21,7 @@ class Delve(server.Task):
             sys.stderr.write("Delve task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object(op[0].id)
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
