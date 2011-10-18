@@ -21,7 +21,7 @@ class Delve(server.Task):
             sys.stderr.write("Delve task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -30,8 +30,7 @@ class Delve(server.Task):
         """ Op handler for regular tick op """
         # print "Delve.tick"
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -62,12 +61,12 @@ class Delve(server.Task):
         chunk_loc.coordinates = self.pos
 
         if not hasattr(self, 'terrain_mod'):
-            mods = target.terrain.find_mods(self.pos)
+            mods = self.target().terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
                 # so we check if it is rock, and if so create
                 # a quarry
-                surface = target.terrain.get_surface(self.pos)
+                surface = self.target().terrain.get_surface(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
                 if surface not in Delve.materials:
                     print "Not rock"
@@ -92,7 +91,7 @@ class Delve(server.Task):
                                                type="path",
                                                location = chunk_loc,
                                                terrainmod = modmap),
-                                        to=target)
+                                        to=self.target())
                 res.append(quarry_create)
             else:
                 print mods
@@ -113,7 +112,7 @@ class Delve(server.Task):
         create=Operation("create",
                          Entity(name = Delve.materials[self.surface],
                                 type = Delve.materials[self.surface],
-                                location = chunk_loc), to = target)
+                                location = chunk_loc), to = self.target())
         res.append(create)
 
         res.append(self.next_tick(0.75))
