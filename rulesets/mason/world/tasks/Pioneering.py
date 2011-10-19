@@ -20,7 +20,7 @@ class Pioneering(server.Task):
             sys.stderr.write("Pioneering task has no target in crafting op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -28,8 +28,7 @@ class Pioneering(server.Task):
     def tick_operation(self, op):
 
         """ Op handler for regular tick op """
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -67,48 +66,48 @@ class Pioneering(server.Task):
 
         count = rcount + wcount + lcount
 
-        chunk_loc = target.location.copy()
-        chunk_loc.coordinates = target.location.coordinates
-        chunk_loc.orientation = target.location.orientation
+        chunk_loc = self.target().location.copy()
+        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.orientation = self.target().location.orientation
 
         # Select which structure to produce depending on the recipe present in inventory
         if rcount == 1 :
             if wcount == 1 and lcount == 0:
-                create=Operation("create", Entity(name = "sledge", type = "sledge", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "sledge", type = "sledge", location = chunk_loc), to = self.target())
                 res.append(create)
 
             if wcount == 1 and lcount == 1:
-                create=Operation("create", Entity(name = "board_wall", type = "board_wall", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "board_wall", type = "board_wall", location = chunk_loc), to = self.target())
                 res.append(create)
 
             if wcount == 0 and lcount == 2:
-                create=Operation("create", Entity(name = "palissade_unit", type = "palissade_unit", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "palissade_unit", type = "palissade_unit", location = chunk_loc), to = self.target())
                 res.append(create)
 
             #if wcount == 2 and lcount == 1:
-             #   create=Operation("create", Entity(name = "wooden_gate", type = "wooden_gate", location = chunk_loc), to = target)
+             #   create=Operation("create", Entity(name = "wooden_gate", type = "wooden_gate", location = chunk_loc), to = self.target())
               #  res.append(create)
 
         if rcount == 2 :
             if wcount == 1 and lcount == 0:
-                create=Operation("create", Entity(name = "fence_section", type = "fence_section", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "fence_section", type = "fence_section", location = chunk_loc), to = self.target())
                 res.append(create)
 
             if wcount == 0 and lcount == 3:
-                create=Operation("create", Entity(name = "palissade_entry", type = "palissade_entry", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "palissade_entry", type = "palissade_entry", location = chunk_loc), to = self.target())
                 res.append(create)
 
         if rcount == 3 :
             if wcount == 1 and lcount == 0:
-                create=Operation("create", Entity(name = "fence_gate", type = "fence_gate", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "fence_gate", type = "fence_gate", location = chunk_loc), to = self.target())
                 res.append(create)
 
 #            if wcount == 3 and lcount == 0:
-#                create=Operation("create", Entity(name = "draw_bridge", type = "draw_bridge", location = chunk_loc), to = target)
+#                create=Operation("create", Entity(name = "draw_bridge", type = "draw_bridge", location = chunk_loc), to = self.target())
  #               res.append(create)
 
             if wcount == 0 and lcount == 5:
-                create=Operation("create", Entity(name = "palissade_circle", type = "palissade_circle", location = chunk_loc), to = target)
+                create=Operation("create", Entity(name = "palissade_circle", type = "palissade_circle", location = chunk_loc), to = self.target())
                 res.append(create)
 
         # Consume the materials according to the recipe

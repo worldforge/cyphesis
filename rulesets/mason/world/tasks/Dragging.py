@@ -20,7 +20,7 @@ class Dragging(server.Task):
             sys.stderr.write("Dragging task has no target in drag op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -28,14 +28,13 @@ class Dragging(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dragging.tick"
-        target=server.world.get_object(self.target)
         self.pos = self.character.location.coordinates
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
-        if not target.location.parent:
+        if not self.target().location.parent:
             # Make sure the user dosen't use dragging on the world entity..
             self.irrelevant()
             return
@@ -63,7 +62,7 @@ class Dragging(server.Task):
 
         chunk_loc.coordinates = self.pos
         # Move the entity to user's position.
-        res = res + Operation("move", Entity(target.id, location = chunk_loc), to = target)
+        res = res + Operation("move", Entity(self.target().id, location = chunk_loc), to = self.target())
         res.append(self.next_tick(0.75))
 
         return res

@@ -21,7 +21,7 @@ class Earthbarrier(server.Task):
             sys.stderr.write("Earthbarrier task has no target in Earthbarrier op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -30,9 +30,8 @@ class Earthbarrier(server.Task):
         """ Op handler for regular tick op """
         # print "Earthbarrier.tick"
 
-        target=server.world.get_object(self.target)
         self.pos = self.character.location.coordinates
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -63,12 +62,12 @@ class Earthbarrier(server.Task):
         chunk_loc.coordinates = self.pos
 
         if not hasattr(self, 'terrain_mod'):
-            mods = target.terrain.find_mods(self.pos)
+            mods = self.target().terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are making wall,
                 # so we check if it is in the materials , and if so create
                 # a wall
-                surface = target.terrain.get_surface(self.pos)
+                surface = self.target().terrain.get_surface(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
                 if surface not in Earthbarrier.materials:
                     # print "Not in material"
@@ -93,7 +92,7 @@ class Earthbarrier(server.Task):
                                                type="path",
                                                location = chunk_loc,
                                                terrainmod = modmap),
-                                        to=target)
+                                        to=self.target())
                 res.append(walls_create)
             else:
                 for mod in mods:

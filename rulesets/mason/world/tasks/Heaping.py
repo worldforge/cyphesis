@@ -22,7 +22,7 @@ class Heaping(server.Task):
             sys.stderr.write("Heaping task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -31,8 +31,7 @@ class Heaping(server.Task):
         """ Op handler for regular tick op """
         # print "Heaping.tick"
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -63,7 +62,7 @@ class Heaping(server.Task):
         chunk_loc.coordinates = self.pos
 
         if not hasattr(self, 'terrain_mod'):
-            mods = target.terrain.find_mods(self.pos)
+            mods = self.target().terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
                 z=self.character.location.coordinates.z + 1.0
@@ -90,7 +89,7 @@ class Heaping(server.Task):
                                               location = chunk_loc,
                                               terrainmod = modmap,
                                               area = area_map),
-                                       to=target)
+                                       to=self.target())
                 res.append(motte_create)
             else:
                 for mod in mods:

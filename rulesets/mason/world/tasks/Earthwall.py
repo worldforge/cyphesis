@@ -20,7 +20,7 @@ class Earthwall(server.Task):
             sys.stderr.write("Earthwall task has no target in walls op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -28,19 +28,13 @@ class Earthwall(server.Task):
     def tick_operation(self, op):
 
         """ Op handler for regular tick op """
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
         self.rate = 0.5 / 0.75
         self.progress += 1
-
-        if not target:
-            print "Target is no more"
-            self.irrelevant()
-            return
 
         res=Oplist()
 
@@ -78,9 +72,9 @@ class Earthwall(server.Task):
             self.irrelevant()
             return
 
-        chunk_loc = target.location.copy()
-        chunk_loc.coordinates = target.location.coordinates
-        chunk_loc.orientation = target.location.orientation
+        chunk_loc = self.target().location.copy()
+        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.orientation = self.target().location.orientation
         
         count = ecount + scount + bcount
         # consume the materials stores in the list raw_materials
@@ -90,7 +84,7 @@ class Earthwall(server.Task):
             res.append(set)
             count = count - 1
 
-        create=Operation("create", Entity(name = "earth_wall", type = "earth_wall", location = chunk_loc), to = target)
+        create=Operation("create", Entity(name = "earth_wall", type = "earth_wall", location = chunk_loc), to = self.target())
         res.append(create)
         self.progress = 1
         self.irrelevant()
