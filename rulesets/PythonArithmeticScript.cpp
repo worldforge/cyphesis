@@ -22,6 +22,7 @@
 #include "PythonArithmeticScript.h"
 
 #include "common/log.h"
+#include "common/compose.hpp"
 
 #include <iostream>
 
@@ -35,6 +36,9 @@ PythonArithmeticScript::PythonArithmeticScript(PyObject * script) :
 
 PythonArithmeticScript::~PythonArithmeticScript()
 {
+    if (m_script->ob_refcnt != 1) {
+        log(WARNING, String::compose("Deleting arithmetic script with %1 > 1 refs to its script", m_script->ob_refcnt));
+    }
     Py_DECREF(m_script);
 }
 
