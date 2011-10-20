@@ -33,7 +33,7 @@ class Repairing(server.Task):
             sys.stderr.write("Repair task has no target in repair op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -41,10 +41,9 @@ class Repairing(server.Task):
             In this example the interval is fixed, but it can be varied. """
         # print "Repair.tick" 
 
-        target=server.world.get_object(self.target)
         res=Oplist()
         current_status = 0
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
@@ -54,23 +53,23 @@ class Repairing(server.Task):
             self.irrelevant()
             return
 
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
             self.progress = current_status
             self.rate = 0
             return self.next_tick(1.75)
 
         # Some entity do not have status defined. If not present we assume that the entity is unharmed & stop the task
-        if hasattr ( target, 'status' ) : 
-            current_status = target.status
+        if hasattr ( self.target(), 'status' ) : 
+            current_status = self.target().status
         else:
-            set = Operation("set", Entity(self.target, status = 1),
+            set = Operation("set", Entity(self.self.target(), status = 1),
                             to = self.target)
             res.append(set)
             current_status = 1.0
             self.irrelevant()
 
         if current_status < 0.9:
-            set=Operation("set", Entity(self.target, status=current_status+0.1), to=self.target)
+            set=Operation("set", Entity(self.target().id, status=current_status+0.1), to=self.target())
             res.append(set)
             consume =  self.consume_materials ()
             if consume : 
@@ -79,8 +78,8 @@ class Repairing(server.Task):
                 self.irrelevant()
 
         else:
-            set = Operation("set", Entity(self.target, status = 1),
-                            to = self.target)
+            set = Operation("set", Entity(self.target().id, status = 1),
+                            to = self.target())
             res.append(set)
             self.irrelevant()
 
