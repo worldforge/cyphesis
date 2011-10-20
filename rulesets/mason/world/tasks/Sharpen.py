@@ -20,7 +20,7 @@ class Sharpen(server.Task):
             sys.stderr.write("Sharpen task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -28,30 +28,29 @@ class Sharpen(server.Task):
         # print "Sharpen.tick"
         res=Oplist()
 
-        target=server.world.get_object(self.target)
-        if not target:
+        if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
         new_status = 1
-        if hasattr(target, 'status'):
-            new_status = target.status - 0.1
+        if hasattr(self.target(), 'status'):
+            new_status = self.target().status - 0.1
 
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
             self.progress = 1 - new_status
             self.rate = 0
             return self.next_tick(1.75)
 
         if new_status < 0.1:
             new_status = -1
-            new_loc = target.location.copy()
-            new_loc.bbox = target.location.bbox
-            new_loc.orientation = target.location.orientation
-            create=Operation("create", Entity(name='stake',type='stake',location=new_loc), to=target)
+            new_loc = self.target().location.copy()
+            new_loc.bbox = self.target().location.bbox
+            new_loc.orientation = self.target().location.orientation
+            create=Operation("create", Entity(name='stake',type='stake',location=new_loc), to=self.target())
             res.append(create)
         
-        set=Operation("set", Entity(self.target, status=new_status), to=target)
+        set=Operation("set", Entity(self.target().id, status=new_status), to=self.target())
         res.append(set)
         
         self.progress = 1 - new_status
