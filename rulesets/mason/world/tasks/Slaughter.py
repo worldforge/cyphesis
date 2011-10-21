@@ -9,7 +9,7 @@ from physics import Vector3D
 import server
 
 class Slaughter(server.Task):
-    """ A task for cutting a log into boards."""
+    """ A task for killing livestock for food."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Slaughter.cut"
@@ -18,7 +18,7 @@ class Slaughter(server.Task):
             sys.stderr.write("Slaughter task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.count = 0
@@ -27,8 +27,9 @@ class Slaughter(server.Task):
         """ Op handler for regular tick op """
         # print "Slaughter.tick"
 
-        target=server.world.get_object(self.target)
-        if not target:
+        target = self.target()
+
+        if target is None:
             # print "Target is no more"
             self.irrelevant()
             return
