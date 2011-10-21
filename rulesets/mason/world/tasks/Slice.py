@@ -18,7 +18,7 @@ class Slice(server.Task):
             sys.stderr.write("Slice task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.width = 0.2
@@ -27,8 +27,8 @@ class Slice(server.Task):
         """ Op handler for regular tick op """
         # print "Slice.tick"
 
-        target=server.world.get_object(self.target)
-        if not target:
+        target=self.target()
+        if target is None:
             # print "Target is no more"
             self.irrelevant()
             return

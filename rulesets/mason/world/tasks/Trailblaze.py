@@ -20,7 +20,7 @@ class Trailblaze(server.Task):
             sys.stderr.write("Trailblaze task has no target in strike op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.stuff = 'stuff'
@@ -32,7 +32,7 @@ class Trailblaze(server.Task):
         # print "Trailblaze.tick"
         res=Oplist()
 
-        target=server.world.get_object(self.target)
+        target=self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()

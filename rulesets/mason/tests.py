@@ -681,3 +681,33 @@ def test_slaughter(host='', account='', password='', **args):
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
         print "Task start failed"
         return
+
+def test_trailblaze(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    world=m.look()
+    settler=m.make('settler',pos=(1,1,0))
+    tool=m.make('theodolite',pos=(0,0,0),parent=settler.id)
+
+    m.avatar.send(Operation("wield", Entity(tool.id), to=settler))
+    m.avatar.send(Operation("use", Operation("strike", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+def test_slice(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    settler=m.make('settler',pos=(1,1,0))
+    tool=m.make('bucksaw',pos=(0,0,0),parent=settler.id)
+    material=m.make('lumber', pos=(1.1,1,0))
+
+    m.avatar.send(Operation("wield", Entity(tool.id), to=settler))
+    m.avatar.send(Operation("use", Operation("cut", Entity(material.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
