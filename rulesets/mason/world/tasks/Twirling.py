@@ -18,7 +18,7 @@ class Twirling(server.Task):
             sys.stderr.write("Twirling task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
 
@@ -26,7 +26,7 @@ class Twirling(server.Task):
         """ Op handler for regular tick op """
         # print "Twirling.tick"
 
-        target=server.world.get_object(self.target)
+        target=self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()
