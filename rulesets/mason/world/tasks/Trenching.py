@@ -21,7 +21,7 @@ class Trenching(server.Task):
             sys.stderr.write("Trenching task has no target in trench op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -30,12 +30,14 @@ class Trenching(server.Task):
         """ Op handler for regular tick op """
         # print "Trenching.tick"
 
-        target=server.world.get_object(self.target)
-        self.pos = self.character.location.coordinates
+        target=self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()
             return
+
+        # FIXME We are overriding the position specified above?
+        self.pos = self.character.location.coordinates
 
         old_rate = self.rate
         self.rate = 0.5 / 0.75
