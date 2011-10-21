@@ -20,7 +20,7 @@ class Woodenwall(server.Task):
             sys.stderr.write("Woodenwall task has no target in walls op")
 
         # FIXME Use weak references, once we have them
-        self.target = op[0].id
+        self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -28,7 +28,7 @@ class Woodenwall(server.Task):
     def tick_operation(self, op):
 
         """ Op handler for regular tick op """
-        target=server.world.get_object(self.target)
+        target=self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()
