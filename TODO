@@ -1,3 +1,5 @@
+Make it possible to forget
+
 Allow target to be "foo.bar" where foo is the entity type, and bar is property
 name, allowing either to be unspecified. That way activation can be constrained
 to a particular entity, a paricular property or both.
