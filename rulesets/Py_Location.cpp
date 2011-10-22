@@ -230,8 +230,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
             !PyWorld_Check(refO) &&
             !PyMind_Check(refO)) {
             // FIXME This is odd. Should be wrapped into the above check
-            if (!PyObject_IsInstance(refO, (PyObject *)&PyMind_Type) &&
-                !PyObject_IsInstance(refO, (PyObject *)&PyEntity_Type)) {
+            if (!PyObject_IsInstance(refO, (PyObject *)&PyEntity_Type)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
                 return -1;
             }

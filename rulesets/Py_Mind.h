@@ -36,7 +36,8 @@ typedef struct {
 
 extern PyTypeObject PyMind_Type;
 
-#define PyMind_Check(_o) ((_o)->ob_type == &PyMind_Type)
+#define PyMind_Check(_o) PyObject_TypeCheck(_o, &PyMind_Type)
+#define PyMind_CheckExact(_o) (Py_TYPE(_o) == &PyMind_Type)
 
 PyMind * newPyMind();
 
