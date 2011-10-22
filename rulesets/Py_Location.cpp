@@ -74,7 +74,14 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
             Py_INCREF(Py_None);
             return Py_None;
         }
-        return wrapEntity(self->location->m_loc);
+        PyObject * wrapper = wrapEntity(self->location->m_loc);
+        if (wrapper == NULL) {
+            return NULL;
+        }
+        PyObject * wrapper_proxy = PyWeakref_NewProxy(wrapper, NULL);
+        // FIXME Have wrapEntity return a borrowed reference
+        Py_DECREF(wrapper);
+        return wrapper_proxy;
     }
     if (strcmp(name, "coordinates") == 0) {
         PyPoint3D * v = newPyPoint3D();
@@ -214,6 +221,9 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
         return -1;
     }
     if (refO != NULL) {
+        if (PyWeakref_CheckProxy(refO)) {
+            refO = PyWeakref_GET_OBJECT(refO);
+        }
         if (!PyLocatedEntity_Check(refO) &&
             !PyEntity_Check(refO) &&
             !PyCharacter_Check(refO) &&
