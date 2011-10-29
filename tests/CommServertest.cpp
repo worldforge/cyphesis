@@ -123,6 +123,7 @@ int main(int argc, char ** argv)
 
     commServer.poll(true);
 
+    commServer.idle();
 }
 
 // Stub functions
