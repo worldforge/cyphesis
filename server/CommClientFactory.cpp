@@ -26,6 +26,7 @@
 #include "TrustedConnection.h"
 #include "SlaveClientConnection.h"
 #include "Peer.h"
+#include "ServerRouting.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -48,7 +49,9 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
         return -1;
     }
 
-    CommClient * newcli = new CommClient(svr, asockfd);
+    CommClient * newcli = new CommClient(svr,
+                                         svr.m_server.getName(),
+                                         asockfd);
 
     newcli->setup(new ConnectionT(*newcli,
                                   svr.m_server,

@@ -36,24 +36,24 @@
 
 static const bool debug_flag = false;
 
-CommClient::CommClient(CommServer & svr, int fd) :
+CommClient::CommClient(CommServer & svr, const std::string & name, int fd) :
             CommStreamClient(svr, fd), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
 
-    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + m_commServer.m_server.getName(), m_clientIos);
+    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + name, m_clientIos);
 }
 
-CommClient::CommClient(CommServer & svr) :
+CommClient::CommClient(CommServer & svr, const std::string & name) :
             CommStreamClient(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
     m_clientIos.setTimeout(0,1000);
 
-    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + m_commServer.m_server.getName(), m_clientIos);
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + name, m_clientIos);
 }
 
 CommClient::~CommClient()

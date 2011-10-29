@@ -38,7 +38,9 @@ using Atlas::Objects::Operation::Info;
 /// @param svr Reference to the object that manages all socket communication.
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr), m_ref(0)
+CommPeer::CommPeer(CommServer & svr,
+                   const std::string & name) : CommClient(svr, name),
+                                               m_ref(0)
 {
 }
 

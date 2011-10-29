@@ -23,6 +23,7 @@
 #include "CommServer.h"
 #include "Connection.h"
 #include "Peer.h"
+#include "ServerRouting.h"
 
 #include "common/Connect.h"
 
@@ -183,7 +184,8 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     }
     int port = port_attr.Int();
 
-    m_socket = new CommPeer(m_connection->m_commClient.m_commServer);
+    m_socket = new CommPeer(m_connection->m_commClient.m_commServer,
+                            m_connection->m_server.getName());
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     if (m_socket->connect(hostname, port, op->getSerialno()) != 0) {

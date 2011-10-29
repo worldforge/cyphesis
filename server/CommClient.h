@@ -77,8 +77,8 @@ class CommClient : public Atlas::Objects::ObjectsDecoder,
 
     virtual void idle(time_t t);
   public:
-    CommClient(CommServer &, int fd);
-    CommClient(CommServer &);
+    CommClient(CommServer &, const std::string &, int fd);
+    CommClient(CommServer &, const std::string &);
     virtual ~CommClient();
 
     void disconnect() { m_clientIos.shutdown(); }

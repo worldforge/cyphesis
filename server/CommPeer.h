@@ -34,7 +34,7 @@ class CommPeer : public CommClient {
     long m_ref;
 
   public:
-    CommPeer(CommServer & svr);
+    CommPeer(CommServer & svr, const std::string &);
     virtual ~CommPeer();
 
     bool eof();
