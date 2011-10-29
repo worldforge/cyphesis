@@ -28,6 +28,9 @@
 #include <stdint.h>
 
 /// \brief Handle a socket used to communicate with the MDNS responder daemon.
+
+class ServerRouting;
+
 /// \ingroup ServerSockets
 class CommMDNSPublisher : public CommSocket, virtual public Idle {
   protected:
@@ -36,6 +39,8 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     struct AvahiClient * m_avahiClient;
     ///
     int m_avahiError;
+    ///
+    ServerRouting & m_server;
 
     bool m_immediate;
     /// Check and expire timers
@@ -50,7 +55,7 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     ///
     std::set<struct AvahiTimeout *> m_avahiTimeouts;
 
-    explicit CommMDNSPublisher(CommServer & svr);
+    explicit CommMDNSPublisher(CommServer & svr, ServerRouting & s);
 
     virtual ~CommMDNSPublisher();
 

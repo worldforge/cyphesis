@@ -253,8 +253,10 @@ static void timeout_free(AvahiTimeout * at)
     delete at;
 }
 
-CommMDNSPublisher::CommMDNSPublisher(CommServer & svr) : Idle(svr),
+CommMDNSPublisher::CommMDNSPublisher(CommServer & svr,
+                                     ServerRouting & s) : Idle(svr),
                                                          CommSocket(svr),
+                                                         m_server(s),
                                                          m_immediate(false),
                                                          m_avahiFd(-1),
                                                          m_group(0)
@@ -320,11 +322,10 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
       String::compose("builddate=%1",
                       std::string(consts::buildTime) + ", " +
                       std::string(consts::buildDate)).c_str(),
-      String::compose("clients=%1", m_commServer.m_server.getClients()).c_str(),
-      String::compose("ruleset=%1", m_commServer.m_server.getRuleset()).c_str(),
+      String::compose("clients=%1", m_server.getClients()).c_str(),
+      String::compose("ruleset=%1", m_server.getRuleset()).c_str(),
       String::compose("server=%1", "cyphesis").c_str(),
-      String::compose("uptime=%1",
-                      m_commServer.m_server.m_world.upTime()).c_str(),
+      String::compose("uptime=%1", m_server.m_world.upTime()).c_str(),
       String::compose("version=%1", std::string(consts::version)).c_str(),
       NULL);
 
@@ -334,7 +335,7 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
       AVAHI_IF_UNSPEC,
       AVAHI_PROTO_UNSPEC,
       (AvahiPublishFlags)0,
-      m_commServer.m_server.getName().c_str(),
+      m_server.getName().c_str(),
       "_worldforge._tcp", NULL, NULL,
       client_port_num, txt);
 
