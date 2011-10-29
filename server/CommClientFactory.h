@@ -33,10 +33,16 @@ class CommClientKit {
     virtual int newCommClient(CommServer &, int, const std::string &) = 0;
 };
 
+class ServerRouting;
+
 /// \brief Concrete factory for createing CommClient objects
 template <class ConnectionT>
 class CommClientFactory : public CommClientKit {
+  protected:
+    ServerRouting & m_server;
   public:
+    explicit CommClientFactory(ServerRouting  & s) : m_server(s) { }
+
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
 

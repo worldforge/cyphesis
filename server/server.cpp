@@ -258,7 +258,7 @@ int main(int argc, char ** argv)
     // commServer->addIdle(update_tester);
 
     CommTCPListener * listener = new CommTCPListener(*commServer,
-          *new CommClientFactory<Connection>());
+          *new CommClientFactory<Connection>(*server));
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
@@ -295,7 +295,7 @@ int main(int argc, char ** argv)
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
-          *new CommClientFactory<TrustedConnection>());
+          *new CommClientFactory<TrustedConnection>(*server));
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
                                    "with address \"%1\"",
