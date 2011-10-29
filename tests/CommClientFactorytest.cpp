@@ -59,7 +59,7 @@ int main()
 
     {
         test_newid_fail = false;
-        CommClientFactory<Connection> ccf_c;
+        CommClientFactory<Connection> ccf_c(*(ServerRouting*)0);
 
         int res = ccf_c.newCommClient(comm_server, -1, "");
         assert(res == 0);
@@ -67,7 +67,7 @@ int main()
 
     {
         test_newid_fail = true;
-        CommClientFactory<Connection> ccf_c;
+        CommClientFactory<Connection> ccf_c(*(ServerRouting*)0);
 
         int res = ccf_c.newCommClient(comm_server, -1, "");
         assert(res != 0);
@@ -75,7 +75,7 @@ int main()
 
     {
         test_newid_fail = false;
-        CommClientFactory<SlaveClientConnection> ccf_scc;
+        CommClientFactory<SlaveClientConnection> ccf_scc(*(ServerRouting*)0);
 
         int res = ccf_scc.newCommClient(comm_server, -1, "");
         assert(res == 0);
@@ -83,7 +83,7 @@ int main()
 
     {
         test_newid_fail = true;
-        CommClientFactory<SlaveClientConnection> ccf_scc;
+        CommClientFactory<SlaveClientConnection> ccf_scc(*(ServerRouting*)0);
 
         int res = ccf_scc.newCommClient(comm_server, -1, "");
         assert(res != 0);
@@ -91,7 +91,7 @@ int main()
 
     {
         test_newid_fail = false;
-        CommClientFactory<TrustedConnection> ccf_tc;
+        CommClientFactory<TrustedConnection> ccf_tc(*(ServerRouting*)0);
 
         int res = ccf_tc.newCommClient(comm_server, -1, "");
         assert(res == 0);
@@ -99,7 +99,7 @@ int main()
 
     {
         test_newid_fail = true;
-        CommClientFactory<TrustedConnection> ccf_tc;
+        CommClientFactory<TrustedConnection> ccf_tc(*(ServerRouting*)0);
 
         int res = ccf_tc.newCommClient(comm_server, -1, "");
         assert(res != 0);
@@ -107,7 +107,7 @@ int main()
 
     {
         test_newid_fail = false;
-        CommClientFactory<Peer> ccf_p;
+        CommClientFactory<Peer> ccf_p(*(ServerRouting*)0);
 
         int res = ccf_p.newCommClient(comm_server, -1, "");
         assert(res == 0);
@@ -115,7 +115,7 @@ int main()
 
     {
         test_newid_fail = true;
-        CommClientFactory<Peer> ccf_p;
+        CommClientFactory<Peer> ccf_p(*(ServerRouting*)0);
 
         int res = ccf_p.newCommClient(comm_server, -1, "");
         assert(res != 0);
@@ -286,7 +286,7 @@ int CommPythonClient::read()
     return 0;
 }
 
-CommClient::CommClient(CommServer & svr, int fd) :
+CommClient::CommClient(CommServer & svr, const std::string &, int fd) :
             CommStreamClient(svr, fd), Idle(svr)
 {
 }

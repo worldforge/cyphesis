@@ -76,7 +76,7 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    TestCommPeer(CommServer & svr) : CommPeer(svr)
+    TestCommPeer(CommServer & svr) : CommPeer(svr, "")
     {
     }
 
@@ -304,7 +304,8 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-CommClient::CommClient(CommServer &svr) : CommStreamClient(svr), 
+CommClient::CommClient(CommServer &svr, const std::string &) :
+                                        CommStreamClient(svr), 
                                         Idle(svr), m_codec(NULL), 
                                         m_encoder(NULL), m_connection(NULL),
                                         m_connectTime(svr.time())

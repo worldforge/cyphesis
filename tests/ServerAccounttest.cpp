@@ -61,7 +61,7 @@ using Atlas::Objects::Operation::Connect;
 
 class TestCommClient : public CommClient {
   public:
-    TestCommClient(CommServer & cs) : CommClient(cs) { }
+    TestCommClient(CommServer & cs) : CommClient(cs, "") { }
 };
 
 class TestServerAccount : public ServerAccount {

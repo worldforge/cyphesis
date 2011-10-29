@@ -137,11 +137,11 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommClient : public CommClient
 {
   public:
-    TestCommClient(CommServer & svr, int fd) : CommClient(svr, fd)
+    TestCommClient(CommServer & svr, int fd) : CommClient(svr, "", fd)
     {
     }
 
-    TestCommClient(CommServer & svr) : CommClient(svr)
+    TestCommClient(CommServer & svr) : CommClient(svr, "")
     {
     }
 

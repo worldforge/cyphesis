@@ -66,7 +66,7 @@ using Atlas::Objects::Operation::Move;
 
 class TestCommClient : public CommClient {
   public:
-    TestCommClient(CommServer & cs) : CommClient(cs) { }
+    TestCommClient(CommServer & cs) : CommClient(cs, "") { }
 };
 
 class TestConnection : public TrustedConnection {
@@ -225,7 +225,7 @@ bool CommStreamClient::eof()
             m_clientIos.peek() == std::iostream::traits_type::eof());
 }
 
-CommClient::CommClient(CommServer & svr) :
+CommClient::CommClient(CommServer & svr, const std::string &) :
             CommStreamClient(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())

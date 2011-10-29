@@ -181,7 +181,7 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs);
+        CommPeer * cp = new CommPeer(cs, "");
         j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
         j->test_addSocket(cp);
 
@@ -205,7 +205,7 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs);
+        CommPeer * cp = new CommPeer(cs, "");
         Peer * p = new Peer(*cp, sr, "", "4", 4);
         j->test_addPeer(p);
         j->test_addSocket(cp);
@@ -232,7 +232,7 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs);
+        CommPeer * cp = new CommPeer(cs, "");
         j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
         j->test_addSocket(cp);
 
@@ -330,7 +330,7 @@ int main()
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         CommServer cs(sr);
-        CommClient * cc = new CommClient(cs, 23);
+        CommClient * cc = new CommClient(cs, "", 23);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -354,7 +354,7 @@ int main()
 
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         CommServer cs(sr);
-        CommClient * cc = new CommClient(cs, 23);
+        CommClient * cc = new CommClient(cs, "", 23);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -463,7 +463,8 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 }
 
 
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
+CommPeer::CommPeer(CommServer & svr, const std::string & n) :
+      CommClient(svr, n)
 {
 }
 
@@ -494,7 +495,8 @@ void CommPeer::setup(Router * connection)
 {
 }
 
-CommClient::CommClient(CommServer &svr, int) : CommStreamClient(svr), 
+CommClient::CommClient(CommServer &svr, const std::string &, int) :
+                                        CommStreamClient(svr), 
                                         Idle(svr), m_codec(NULL), 
                                         m_encoder(NULL), m_connection(NULL),
                                         m_connectTime(0)
@@ -502,7 +504,8 @@ CommClient::CommClient(CommServer &svr, int) : CommStreamClient(svr),
     m_negotiate = NULL;
 }
 
-CommClient::CommClient(CommServer &svr) : CommStreamClient(svr), 
+CommClient::CommClient(CommServer &svr, const std::string & n) :
+                                        CommStreamClient(svr), 
                                         Idle(svr), m_codec(NULL), 
                                         m_encoder(NULL), m_connection(NULL),
                                         m_connectTime(0)

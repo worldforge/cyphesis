@@ -304,7 +304,7 @@ int main()
 
     // Empty arg, made up refno, not CommPeer
     {
-        CommClient *peerConn = new CommClient(*(CommServer*)0);
+        CommClient *peerConn = new CommClient(*(CommServer*)0, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
@@ -319,7 +319,7 @@ int main()
 
     // Empty arg, made up refno
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         Atlas::Objects::Operation::Info op;
@@ -334,7 +334,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, not in world
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -355,7 +355,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, in world
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -380,7 +380,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, with mind
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0);
+        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -467,7 +467,8 @@ void TeleportState::setKey(const std::string & key)
     m_possessKey = key;
 }
 
-CommPeer::CommPeer(CommServer & svr) : CommClient(svr)
+CommPeer::CommPeer(CommServer & svr, const std::string & n) :
+      CommClient(svr, n)
 {
 }
 
@@ -489,7 +490,8 @@ void CommPeer::idle(time_t t)
 {
 }
 
-CommClient::CommClient(CommServer &svr) : CommStreamClient(svr), 
+CommClient::CommClient(CommServer &svr, const std::string &) :
+                                        CommStreamClient(svr), 
                                         Idle(svr), m_codec(NULL), 
                                         m_encoder(NULL), m_connection(NULL),
                                         m_connectTime(0)

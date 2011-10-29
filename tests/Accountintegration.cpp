@@ -59,7 +59,7 @@ using Atlas::Objects::Operation::Move;
 
 class TestCommClient : public CommClient {
   public:
-    TestCommClient(CommServer & cs) : CommClient(cs) { }
+    TestCommClient(CommServer & cs) : CommClient(cs, "") { }
 };
 
 class TestAccount : public Account {
