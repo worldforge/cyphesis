@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
     int ret = commServer.setup();
     assert(ret == 0);
 
-    commServer.poll();
+    commServer.poll(true);
 
     CommFakeSocket * cfs = new CommFakeSocket(commServer);
 
@@ -121,7 +121,7 @@ int main(int argc, char ** argv)
         commServer.removeSocket(cfs);
     }
 
-    commServer.poll();
+    commServer.poll(true);
 
 }
 
