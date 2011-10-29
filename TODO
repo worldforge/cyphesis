@@ -1,3 +1,5 @@
+De-dup code in Py_Thing and Py_Mind
+
 Make it possible to forget
 
 Allow target to be "foo.bar" where foo is the entity type, and bar is property
