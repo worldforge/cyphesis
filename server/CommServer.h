@@ -50,8 +50,6 @@ class CommServer {
     /// Flag indicating whether we had network traffic last tick
     bool m_congested;
 
-    bool idle();
-
     /// Private and unimplemented to prevent copying.
     CommServer(const CommServer &);
     /// Private and unimplemented to prevent copying.
@@ -64,7 +62,8 @@ class CommServer {
     ~CommServer();
 
     int setup();
-    void poll();
+    void poll(bool);
+    bool idle();
     int addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
 

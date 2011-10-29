@@ -125,14 +125,14 @@ bool CommServer::idle()
 /// If the server is idle, use select() to sleep on the sockets for
 /// a short period of time. If any sockets get broken or disconnected,
 /// they are noted and closed down at the end of the process.
-void CommServer::poll()
+void CommServer::poll(bool busy)
 {
     // This is the main code loop.
     // Classic select code for checking incoming data on sockets.
 
     // It would be useful to let idle know if we are currently dealing with
     // traffic
-    bool busy = idle();
+    // bool busy = idle();
 
 #ifdef HAVE_EPOLL_CREATE
     static const int max_events = 16;

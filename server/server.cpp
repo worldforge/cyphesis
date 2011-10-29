@@ -371,7 +371,8 @@ int main(int argc, char ** argv)
     // the code easily.
     while (!exit_flag) {
         try {
-            commServer->poll();
+            bool busy = commServer->idle();
+            commServer->poll(busy);
         }
         catch (...) {
             // It is hoped that commonly thrown exception, particularly
