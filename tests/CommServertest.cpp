@@ -31,6 +31,7 @@
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
+#include "common/SystemTime.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -68,7 +69,7 @@ class TestWorld : public BaseWorld {
     explicit TestWorld() : BaseWorld(*(Entity*)0) {
     }
 
-    virtual bool idle(int, int) { return false; }
+    virtual bool idle(const SystemTime &) { return false; }
     virtual Entity * addEntity(Entity * ent) { 
         return 0;
     }
@@ -123,7 +124,7 @@ int main(int argc, char ** argv)
 
     commServer.poll(true);
 
-    commServer.idle();
+    commServer.idle(SystemTime(), false);
 }
 
 // Stub functions

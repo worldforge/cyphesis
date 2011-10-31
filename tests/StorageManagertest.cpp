@@ -30,6 +30,8 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/SystemTime.h"
+
 #include <cassert>
 
 class TestStorageManager : public StorageManager
@@ -68,13 +70,15 @@ class TestStorageManager : public StorageManager
 int main()
 {
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         StorageManager store(world);
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         StorageManager store(world);
 
@@ -82,7 +86,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         StorageManager store(world);
 
@@ -90,7 +95,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         StorageManager store(world);
 
@@ -98,7 +104,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -106,7 +113,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -114,7 +122,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -124,7 +133,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -132,7 +142,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -140,7 +151,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -148,7 +160,8 @@ int main()
     }
 
     {
-        WorldRouter world;
+        SystemTime time;
+        WorldRouter world(time);
 
         TestStorageManager store(world);
 
@@ -175,6 +188,7 @@ int main()
 #include "common/log.h"
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
+#include "common/SystemTime.h"
 #include "common/Variable.h"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -219,9 +233,9 @@ OpQueEntry::~OpQueEntry()
     from.decRef();
 }
 
-WorldRouter::WorldRouter() : BaseWorld(*new Entity(consts::rootWorldId,
-                                                   consts::rootWorldIntId)),
-                             m_entityCount(1)
+WorldRouter::WorldRouter(const SystemTime &) :
+      BaseWorld(*new Entity(consts::rootWorldId, consts::rootWorldIntId)),
+      m_entityCount(1)
           
 {
 }
@@ -275,7 +289,7 @@ void WorldRouter::message(const Operation & op, Entity & ent)
 {
 }
 
-bool WorldRouter::idle(int sec, int usec)
+bool WorldRouter::idle(const SystemTime &)
 {
     return false;
 }

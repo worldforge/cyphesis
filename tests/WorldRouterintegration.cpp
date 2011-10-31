@@ -38,6 +38,7 @@
 #include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/Monitors.h"
+#include "common/SystemTime.h"
 #include "common/Tick.h"
 #include "common/Variable.h"
 
@@ -56,6 +57,8 @@ using Atlas::Objects::Operation::Tick;
 class TestWorldRouter : public WorldRouter
 {
   public:
+    TestWorldRouter() : WorldRouter(SystemTime()) { }
+
     Operation test_getOperationFromQueue() {
         return getOperationFromQueue();
     }

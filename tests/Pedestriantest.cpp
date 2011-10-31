@@ -40,7 +40,7 @@ class TestWorld : public BaseWorld {
     explicit TestWorld(Entity & w) : BaseWorld(w) {
     }
 
-    virtual bool idle(int, int) { return false; }
+    virtual bool idle(const SystemTime &) { return false; }
     virtual Entity * addEntity(Entity * ent) { 
         return 0;
     }

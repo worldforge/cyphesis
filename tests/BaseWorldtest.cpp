@@ -62,7 +62,7 @@ class TestWorld : public BaseWorld {
         m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     }
 
-    virtual bool idle(int, int) { return false; }
+    virtual bool idle(const SystemTime &) { return false; }
     virtual Entity * addEntity(Entity * ent) { 
         m_eobjects[ent->getIntId()] = ent;
         return 0;

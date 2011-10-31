@@ -42,6 +42,7 @@
 
 #include "common/compose.hpp"
 #include "common/Inheritance.h"
+#include "common/SystemTime.h"
 #include "common/log.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -109,7 +110,7 @@ class TestConnection : public TrustedConnection {
 
 int main()
 {
-    // WorldRouter world;
+    // WorldRouter world(SystemTime());
     // Entity & e = world.m_gameWorld;
 
     ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",

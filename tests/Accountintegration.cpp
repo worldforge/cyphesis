@@ -35,6 +35,8 @@
 #include "rulesets/Domain.h"
 #include "rulesets/Entity.h"
 
+#include "common/SystemTime.h"
+
 #include "TestWorld.h"
 
 #include <Atlas/Objects/SmartPtr.h>
@@ -90,7 +92,8 @@ int main()
 
     (void)new Domain;
 
-    WorldRouter world;
+    SystemTime time;
+    WorldRouter world(time);
     Entity & e = world.m_gameWorld;
 
     ServerRouting server(world, "noruleset", "unittesting",

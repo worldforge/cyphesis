@@ -41,6 +41,7 @@
 
 #include "common/Monitor.h"
 #include "common/Connect.h"
+#include "common/SystemTime.h"
 
 #include "TestWorld.h"
 
@@ -146,7 +147,8 @@ int main()
 
     init_python_api();
 
-    WorldRouter world;
+    SystemTime time;
+    WorldRouter world(time);
     Entity & e = world.m_gameWorld;
 
     Ruleset::init();
