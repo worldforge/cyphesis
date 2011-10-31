@@ -25,9 +25,7 @@
 #include <list>
 #include <set>
 
-extern "C" {
-    #include <sys/time.h>
-}
+#include <ctime>
 
 class Entity;
 class Spawn;
@@ -50,7 +48,7 @@ class WorldRouter : public BaseWorld {
     /// An ordered queue of operations to be dispatched now
     OpQueue m_immediateQueue;
     /// The system time when the server was started.
-    time_t m_initTime;
+    std::time_t m_initTime;
     /// List of perceptive entities.
     EntitySet m_perceptives;
     /// Count of in world entities
