@@ -46,7 +46,6 @@ class CommServer {
     IdleSet m_idlers;
     /// File descriptor used as handle for Linux epoll.
     int m_epollFd;
-    struct timeval m_timeVal;
     /// Flag indicating whether we had network traffic last tick
     bool m_congested;
     /// Seconds when we last called idlers
