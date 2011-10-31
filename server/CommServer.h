@@ -57,9 +57,6 @@ class CommServer {
     /// Private and unimplemented to prevent copying.
     CommServer & operator=(const CommServer &);
   public:
-    /// Reference to the core ServerRouting object.
-    ServerRouting & m_server;
-
     explicit CommServer(ServerRouting & srv);
     ~CommServer();
 

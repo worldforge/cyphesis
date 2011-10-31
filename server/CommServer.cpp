@@ -51,8 +51,7 @@ static const bool debug_flag = false;
 /// server object.
 CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
                                               m_congested(false),
-                                              m_tick(0),
-                                              m_server(svr)
+                                              m_tick(0)
 {
 }
 

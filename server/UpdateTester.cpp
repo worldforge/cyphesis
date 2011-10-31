@@ -55,6 +55,7 @@ void UpdateTester::idle(time_t t)
     Info info;
     info->setArgs1(o);
 
+#if 0
     ServerRouting & svr = m_idleManager.m_server;
 
     AccountDict::const_iterator I = svr.m_lobby.getAccounts().begin();
@@ -65,5 +66,5 @@ void UpdateTester::idle(time_t t)
             c->send(info);
         }
     }
-
+#endif
 }
