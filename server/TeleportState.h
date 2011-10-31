@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include <sys/time.h>
+#include <ctime>
 
 class TeleportState
 {
@@ -33,10 +33,10 @@ class TeleportState
         TELEPORT_CREATED    /// \brief Teleport has succeeded
     } m_state;
 
-    time_t m_teleportTime;  /// \brief The time the teleport took place
+    std::time_t m_teleportTime;  /// \brief The time the teleport took place
 
   public:
-    TeleportState(time_t time);
+    TeleportState(std::time_t time);
     
     void setRequested();
     void setCreated();
@@ -48,7 +48,7 @@ class TeleportState
     bool isMind() const;
     const std::string & getPossessKey() const;
 
-    time_t getCreateTime() const;
+    std::time_t getCreateTime() const;
 };
 
 /// \brief Check if the teleported entity has been create on the remote end

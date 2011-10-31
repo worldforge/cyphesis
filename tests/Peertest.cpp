@@ -27,6 +27,7 @@
 #include "server/Peer.h"
 
 #include "server/CommPeer.h"
+#include "server/CommServer.h"
 #include "server/ExternalMind.h"
 
 #include "common/BaseWorld.h"
@@ -102,6 +103,7 @@ Atlas::Objects::Operation::RootOperation stub_CommClient_sent_op(0);
 int main()
 {
     TestWorld world;
+    CommServer server;
 
     {
         Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
@@ -209,7 +211,8 @@ int main()
 
     // Authenticated
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        CommClient client(server, "");
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -222,7 +225,8 @@ int main()
 
     // Re-teleport same entity
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        CommClient client(server, "");
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -238,7 +242,8 @@ int main()
 
     // Character (no mind)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        CommClient client(server, "");
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -251,7 +256,8 @@ int main()
 
     // Character (externl mind, unconnected)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        CommClient client(server, "");
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -265,7 +271,8 @@ int main()
 
     // Character (externl mind, connected)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        CommClient client(server, "");
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -334,7 +341,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, not in world
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
+        CommPeer *peerConn = new CommPeer(server, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -355,7 +362,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, in world
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
+        CommPeer *peerConn = new CommPeer(server, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -380,7 +387,7 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, with mind
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
+        CommPeer *peerConn = new CommPeer(server, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -415,7 +422,8 @@ int main()
 
     // One teleport to clear
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        CommClient client(server, "");
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -465,6 +473,14 @@ void TeleportState::setCreated()
 void TeleportState::setKey(const std::string & key)
 {
     m_possessKey = key;
+}
+
+CommServer::CommServer() : m_congested(false)
+{
+}
+
+CommServer::~CommServer()
+{
 }
 
 CommPeer::CommPeer(CommServer & svr, const std::string & n) :
