@@ -22,8 +22,6 @@
 
 #include <set>
 
-#include <sys/time.h>
-
 class CommSocket;
 class Idle;
 class ServerRouting;
