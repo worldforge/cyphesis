@@ -24,14 +24,10 @@
 
 #include <iostream>
 
-#include <sys/time.h>
-
 void OperationMonitor::setup(const std::string & arg, OpVector &)
 {
-    struct timeval tv;
+    start_time.update();
 
-    gettimeofday(&tv, NULL);
-    start_time = tv.tv_sec;
     op_count = 0;
 
     m_description = "monitoring";

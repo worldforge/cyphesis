@@ -21,19 +21,20 @@
 #define TOOLS_OPERATION_MONITOR_H
 
 #include "common/ClientTask.h"
+#include "common/SystemTime.h"
 
 /// \brief Task class for monitoring all in-game operations occuring.
 class OperationMonitor : public ClientTask {
   protected:
     int op_count;
-    int start_time;
+    SystemTime start_time;
   public:
     int count() {
         return op_count;
     }
 
-    int startTime() {
-        return start_time;
+    time_t startTime() {
+        return start_time.seconds();
     }
 
     virtual void setup(const std::string & arg, OpVector &);

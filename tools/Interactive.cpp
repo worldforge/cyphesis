@@ -68,7 +68,6 @@ extern "C" {
 #include <algorithm>
 
 #include <cstdio>
-#include <sys/time.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -638,9 +637,10 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             reply_expected = false;
 
-            struct timeval tv;
-            gettimeofday(&tv, NULL);
-            int monitor_time = tv.tv_sec - om->startTime();
+            SystemTime now;
+            now.update();
+
+            int monitor_time = now.seconds() - om->startTime();
 
             std::cout << om->count() << " operations monitored in "
                       << monitor_time << " seconds = "
