@@ -62,14 +62,14 @@ class WorldRouter : public BaseWorld {
     void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &, Entity &);
     Atlas::Objects::Operation::RootOperation getOperationFromQueue();
     bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
-    void updateTime(int sec, int usec);
+    void updateTime(const SystemTime &);
     void deliverTo(const Atlas::Objects::Operation::RootOperation &, Entity &);
     void delEntity(Entity * obj);
   public:
-    explicit WorldRouter();
+    explicit WorldRouter(const SystemTime &);
     virtual ~WorldRouter();
 
-    bool idle(int, int);
+    bool idle(const SystemTime &);
     Entity * addEntity(Entity * obj);
     Entity * addNewEntity(const std::string & type,
                           const Atlas::Objects::Entity::RootEntity &);

@@ -30,6 +30,7 @@
 class ArithmeticScript;
 class Character;
 class Entity;
+class SystemTime;
 class Task;
 
 typedef std::map<long, Entity *> EntityDict;
@@ -93,7 +94,7 @@ class BaseWorld {
     }
 
     /// \brief Main world loop function.
-    virtual bool idle(int, int) = 0;
+    virtual bool idle(const SystemTime &) = 0;
 
     /// \brief Add a new entity to the world.
     virtual Entity * addEntity(Entity * obj) = 0;

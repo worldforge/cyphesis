@@ -38,6 +38,7 @@
 #include "common/compose.hpp"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
+#include "common/SystemTime.h"
 #include "common/Variable.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -93,9 +94,9 @@ inline OpQueEntry::~OpQueEntry()
 ///
 /// Reads the system time, and applies the necessary offsets to calculate
 /// the in-game time. This is the stored, and can be accessed using getTime().
-void WorldRouter::updateTime(int sec, int usec)
+void WorldRouter::updateTime(const SystemTime & time)
 {
-    double tmp_time = (double)(sec + timeoffset - m_initTime) + (double)usec/1000000;
+    double tmp_time = (double)(time.seconds() + timeoffset - m_initTime) + (double)time.microseconds()/1000000;
     m_realTime = tmp_time;
 }
 
@@ -105,15 +106,13 @@ void WorldRouter::updateTime(int sec, int usec)
 /// The Entity representing the world is implicity constructed.
 /// Currently the world entity is included in the perceptives list,
 /// but I am not clear why. Need to look into why.
-WorldRouter::WorldRouter() : BaseWorld(*new World(consts::rootWorldId,
-                                                  consts::rootWorldIntId)),
-                             m_entityCount(1)
+WorldRouter::WorldRouter(const SystemTime & time) :
+      BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId)),
+      m_entityCount(1)
           
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    m_initTime = tv.tv_sec;
-    updateTime(tv.tv_sec, tv.tv_usec);
+    m_initTime = time.seconds();
+    updateTime(time);
     m_gameWorld.incRef();
     EntityBuilder::init();
     m_gameWorld.setType(Inheritance::instance().getType("world"));
@@ -562,9 +561,9 @@ void WorldRouter::addPerceptive(Entity * perceptive)
 /// without becoming unresponsive to client communications traffic.
 /// @param sec world time seconds component
 /// @param usec world time microseconds component
-bool WorldRouter::idle(int sec, int usec)
+bool WorldRouter::idle(const SystemTime & time)
 {
-    updateTime(sec, usec);
+    updateTime(time);
     unsigned int op_count = 0;
     OpQueue::iterator I = m_operationQueue.begin();
     OpQueue::iterator Iend = m_operationQueue.end();

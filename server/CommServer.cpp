@@ -25,13 +25,12 @@
 
 #include "CommSocket.h"
 #include "Idle.h"
-#include "ServerRouting.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/system.h"
 #include "common/compose.hpp"
-#include "common/BaseWorld.h"
+#include "common/SystemTime.h"
 
 #include <skstream/sksocket.h>
 
@@ -52,6 +51,7 @@ static const bool debug_flag = false;
 /// server object.
 CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
                                               m_congested(false),
+                                              m_idle_tick(0),
                                               m_server(svr)
 {
 }
@@ -92,19 +92,13 @@ int CommServer::setup()
 /// Call the core server object idle function.
 /// @return true if the core server wants to be called again as soon as
 /// possible.
-bool CommServer::idle()
+bool CommServer::idle(const SystemTime & time, bool busy)
 {
-    // Update the time, and get the core server object to process
-    // stuff.
-    time_t old_seconds = m_timeVal.tv_sec;
-    gettimeofday(&m_timeVal, NULL);
-
-    bool busy = m_server.m_world.idle(m_timeVal.tv_sec, m_timeVal.tv_usec);
-
     // We only call the idlers if the world has returned that it is not busy,
     // and the last call to select/poll with a sleep time provided did not
     // return any traffic.
-    if (!busy && !m_congested && old_seconds != m_timeVal.tv_sec) {
+    if (!busy && !m_congested && m_idle_tick != time.seconds()) {
+        m_idle_tick = time.seconds();
         IdleSet::const_iterator I = m_idlers.begin();
         IdleSet::const_iterator Iend = m_idlers.end();
         for (; I != Iend; ++I) {

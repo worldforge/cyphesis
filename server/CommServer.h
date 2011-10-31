@@ -27,6 +27,7 @@
 class CommSocket;
 class Idle;
 class ServerRouting;
+class SystemTime;
 
 typedef std::set<CommSocket *> CommSocketSet;
 typedef std::set<Idle *> IdleSet;
@@ -49,6 +50,8 @@ class CommServer {
     struct timeval m_timeVal;
     /// Flag indicating whether we had network traffic last tick
     bool m_congested;
+    /// Seconds when we last called idlers
+    int m_idle_tick;
 
     /// Private and unimplemented to prevent copying.
     CommServer(const CommServer &);
@@ -63,7 +66,7 @@ class CommServer {
 
     int setup();
     void poll(bool);
-    bool idle();
+    bool idle(const SystemTime &, bool);
     int addSocket(CommSocket * cs);
     void removeSocket(CommSocket * client);
 

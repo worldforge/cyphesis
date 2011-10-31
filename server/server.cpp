@@ -57,6 +57,7 @@
 #include "common/sockets.h"
 #include "common/utils.h"
 #include "common/serialno.h"
+#include "common/SystemTime.h"
 
 #include <varconf/config.h>
 
@@ -187,7 +188,10 @@ int main(int argc, char ** argv)
     Inheritance::instance();
     new BulletDomain;
 
-    WorldRouter * world = new WorldRouter;
+    SystemTime time;
+    time.update();
+
+    WorldRouter * world = new WorldRouter(time);
 
     Ruleset::init();
 
@@ -371,9 +375,9 @@ int main(int argc, char ** argv)
     // the code easily.
     while (!exit_flag) {
         try {
-            // TIME - system time object, created earlier
-            // WORLD POLL
-            bool busy = commServer->idle(/*TIME*/);
+            time.update();
+            bool busy = world->idle(time);
+            commServer->idle(time, busy);
             commServer->poll(busy);
         }
         catch (...) {
