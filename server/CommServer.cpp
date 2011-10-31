@@ -51,7 +51,7 @@ static const bool debug_flag = false;
 /// server object.
 CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
                                               m_congested(false),
-                                              m_idle_tick(0),
+                                              m_tick(0),
                                               m_server(svr)
 {
 }
@@ -81,8 +81,6 @@ int CommServer::setup()
         return -1;
     }
 #endif // HAVE_EPOLL_CREATE
-    // Initialise the time
-    gettimeofday(&m_timeVal, NULL);
     return 0;
 }
 
@@ -97,8 +95,7 @@ bool CommServer::idle(const SystemTime & time, bool busy)
     // We only call the idlers if the world has returned that it is not busy,
     // and the last call to select/poll with a sleep time provided did not
     // return any traffic.
-    if (!busy && !m_congested && m_idle_tick != time.seconds()) {
-        m_idle_tick = time.seconds();
+    if (!busy && !m_congested && m_tick != time.seconds()) {
         IdleSet::const_iterator I = m_idlers.begin();
         IdleSet::const_iterator Iend = m_idlers.end();
         for (; I != Iend; ++I) {
@@ -108,6 +105,7 @@ bool CommServer::idle(const SystemTime & time, bool busy)
         // if (busy) { std::cout << "No idle because server busy" << std::endl << std::flush; }
         // if (m_congested) { std::cout << "No idle because clients busy" << std::endl << std::flush; }
     }
+    m_tick = time.seconds();
 
     return busy;
 }

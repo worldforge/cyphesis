@@ -46,12 +46,11 @@ class CommServer {
     IdleSet m_idlers;
     /// File descriptor used as handle for Linux epoll.
     int m_epollFd;
-    /// Current time
     struct timeval m_timeVal;
     /// Flag indicating whether we had network traffic last tick
     bool m_congested;
     /// Seconds when we last called idlers
-    int m_idle_tick;
+    int m_tick;
 
     /// Private and unimplemented to prevent copying.
     CommServer(const CommServer &);
@@ -71,8 +70,8 @@ class CommServer {
     void removeSocket(CommSocket * client);
 
     /// \brief Accessor for the current time in seconds.
-    long time() {
-        return m_timeVal.tv_sec;
+    long time() const {
+        return m_tick;
     }
 
     /// \brief Add a new Idle object to the manager.
