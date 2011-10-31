@@ -640,7 +640,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             SystemTime now;
             now.update();
 
-            int monitor_time = now.seconds() - om->startTime();
+            time_t monitor_time = now.seconds() - om->startTime();
 
             std::cout << om->count() << " operations monitored in "
                       << monitor_time << " seconds = "
