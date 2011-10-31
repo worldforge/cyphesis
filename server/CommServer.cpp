@@ -102,7 +102,7 @@ bool CommServer::idle(const SystemTime & time, bool busy)
         IdleSet::const_iterator I = m_idlers.begin();
         IdleSet::const_iterator Iend = m_idlers.end();
         for (; I != Iend; ++I) {
-            (*I)->idle(m_timeVal.tv_sec);
+            (*I)->idle(time.seconds());
         }
     } else {
         // if (busy) { std::cout << "No idle because server busy" << std::endl << std::flush; }
