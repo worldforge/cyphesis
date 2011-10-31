@@ -214,7 +214,7 @@ int main(int argc, char ** argv)
                                                server_id, int_id,
                                                lobby_id, lobby_int_id);
 
-    CommServer * commServer = new CommServer(*server);
+    CommServer * commServer = new CommServer;
 
     if (commServer->setup() != 0) {
         log(CRITICAL, "Internal error setting up server infrastructure");

@@ -49,9 +49,9 @@ static const bool debug_flag = false;
 
 /// \brief Construct a new CommServer object, storing a reference to the core
 /// server object.
-CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
-                                              m_congested(false),
-                                              m_tick(0)
+CommServer::CommServer() : m_epollFd(-1),
+                           m_congested(false),
+                           m_tick(0)
 {
 }
 
