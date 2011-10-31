@@ -38,7 +38,6 @@
 #include "IdleConnector.h"
 #include "UpdateTester.h"
 #include "Admin.h"
-#include "ServerAccount.h"
 #include "TeleportAuthenticator.h"
 
 #include "rulesets/BulletDomain.h"
