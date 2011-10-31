@@ -372,7 +372,9 @@ int main(int argc, char ** argv)
     // the code easily.
     while (!exit_flag) {
         try {
-            bool busy = commServer->idle();
+            // TIME - system time object, created earlier
+            // WORLD POLL
+            bool busy = commServer->idle(/*TIME*/);
             commServer->poll(busy);
         }
         catch (...) {
