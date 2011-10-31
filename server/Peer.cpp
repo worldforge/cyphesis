@@ -23,6 +23,7 @@
 #include "Lobby.h"
 #include "CommClient.h"
 #include "CommPeer.h"
+#include "CommServer.h"
 #include "TeleportState.h"
 #include "ExternalMind.h"
 
@@ -41,7 +42,7 @@
 
 #include <iostream>
 
-#include <sys/time.h>
+#include <ctime>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -154,9 +155,7 @@ int Peer::teleportEntity(const Entity * ent)
         return -1;
     }
 
-    struct timeval timeVal;
-    gettimeofday(&timeVal, NULL);
-    time_t teleport_time = timeVal.tv_sec;
+    std::time_t teleport_time = m_commClient.m_commServer.time();
 
     // Add a teleport state object to identify this teleport request
     TeleportState * s = new TeleportState(teleport_time);
@@ -324,9 +323,7 @@ void Peer::cleanTeleports()
         return;
     }
     // Get the current time
-    struct timeval timeVal;
-    gettimeofday(&timeVal, NULL);
-    time_t curr_time = timeVal.tv_sec;
+    std::time_t curr_time = m_commClient.m_commServer.time();
 
     TeleportMap::iterator I = m_teleports.begin();
     for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {
