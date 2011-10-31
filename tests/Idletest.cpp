@@ -42,7 +42,7 @@ class TestIdler : public Idle
 int main()
 {
     {
-        CommServer cs(*(ServerRouting*)0);
+        CommServer cs;
 
         TestIdler ti(cs);
     }
@@ -52,7 +52,7 @@ int main()
 
 // stubs
 
-CommServer::CommServer(ServerRouting&sr) : m_server(sr)
+CommServer::CommServer()
 {
 }
 

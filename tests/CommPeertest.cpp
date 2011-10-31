@@ -128,7 +128,7 @@ int main()
                          "1", 1,
                          "2", 2);
 
-    CommServer comm_server(server);
+    CommServer comm_server;
 
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
@@ -277,10 +277,8 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
-    m_timeVal.tv_sec = 0;
-    m_timeVal.tv_usec = 0;
 }
 
 CommServer::~CommServer()

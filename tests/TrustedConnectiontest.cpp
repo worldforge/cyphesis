@@ -116,7 +116,7 @@ int main()
     ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",
                          "1", 1, "2", 2);
 
-    CommServer commServer(server);
+    CommServer commServer;
 
     TestCommClient * tcc = new TestCommClient(commServer);
     TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
@@ -179,7 +179,7 @@ int UPDATE_NO = -1;
 } } }
 
 
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
 }
 

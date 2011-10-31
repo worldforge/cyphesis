@@ -101,11 +101,7 @@ class TestCommHttpClient : public CommHttpClient
 
 int main()
 {
-    ServerRouting server(*(BaseWorld*)0, "mason", "test_server",
-                         "1", 1,
-                         "2", 2);
-
-    CommServer comm_server(server);
+    CommServer comm_server;
 
     {
         new TestCommHttpClient(comm_server, 0);
@@ -210,30 +206,7 @@ void log(LogLevel, const std::string & msg)
 {
 }
 
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
-{
-}
-
-ServerRouting::~ServerRouting()
-{
-}
-
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
 }
 

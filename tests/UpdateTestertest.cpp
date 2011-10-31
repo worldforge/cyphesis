@@ -29,7 +29,6 @@
 #include "server/CommServer.h"
 #include "server/Connection.h"
 #include "server/Lobby.h"
-#include "server/ServerRouting.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"
@@ -40,11 +39,7 @@ enum test_type { NOCLASS, NULLCLASS, OAKCLASS } stub_getclass_returns;
 
 int main()
 {
-    ServerRouting server(*(BaseWorld*)0, "mason", "test_server",
-                         "1", 1,
-                         "2", 2);
-
-    CommServer comm_server(server);
+    CommServer comm_server;
 
     {
         UpdateTester ut(comm_server);
@@ -89,29 +84,6 @@ Idle::~Idle()
 {
 }
 
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
-{
-}
-
-ServerRouting::~ServerRouting()
-{
-}
-
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),
        m_server(s)
@@ -134,7 +106,7 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
 }
 

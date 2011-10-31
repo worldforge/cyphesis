@@ -40,7 +40,7 @@ int main()
 }
 #else // HAVE_AVAHI
     ServerRouting test_server(*(BaseWorld*)0, "", "", "1", 1, "2", 2);
-    CommServer test_comm_server(test_server);
+    CommServer test_comm_server;
 
     {
 
@@ -93,7 +93,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
 }
 

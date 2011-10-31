@@ -177,7 +177,7 @@ int main()
     // Login op, username & password in arg, connected
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs(sr);
+        CommServer cs;
 
         TestJuncture * j = new TestJuncture(0);
 
@@ -201,7 +201,7 @@ int main()
     // Login op, username & password in arg, connected already authenticating
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs(sr);
+        CommServer cs;
 
         TestJuncture * j = new TestJuncture(0);
 
@@ -228,7 +228,7 @@ int main()
     // Login op, username & password in arg, connected, with serialno
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs(sr);
+        CommServer cs;
 
         TestJuncture * j = new TestJuncture(0);
 
@@ -329,7 +329,7 @@ int main()
     // Connect op, hostname and port in arg, connected this end
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs(sr);
+        CommServer cs;
         CommClient * cc = new CommClient(cs, "", 23);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
@@ -353,7 +353,7 @@ int main()
         stub_CommPeer_connect_return = -1;
 
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs(sr);
+        CommServer cs;
         CommClient * cc = new CommClient(cs, "", 23);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
@@ -600,9 +600,7 @@ Idle::~Idle()
 {
 }
 
-CommServer::CommServer(ServerRouting & svr) : m_epollFd(-1),
-                                              m_congested(false),
-                                              m_server(svr)
+CommServer::CommServer() : m_epollFd(-1), m_congested(false)
 {
 }
 

@@ -51,7 +51,7 @@ class TestCommClientKit : public CommClientKit
 
 int main()
 {
-    CommServer comm_server(*(ServerRouting*)0);
+    CommServer comm_server;
 
     {
         TestCommClientKit tcck;
@@ -354,7 +354,7 @@ Idle::~Idle()
 {
 }
 
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
 }
 

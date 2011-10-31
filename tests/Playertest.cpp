@@ -99,7 +99,7 @@ int main()
     ServerRouting server(world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
 
-    CommServer commServer(server);
+    CommServer commServer;
 
     TestCommClient * tc = new TestCommClient(commServer);
     Connection * c = new Connection(*tc, server, "addr", "3", 3);

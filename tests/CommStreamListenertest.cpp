@@ -185,7 +185,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-CommServer::CommServer(ServerRouting & svr) : m_congested(false), m_server(svr)
+CommServer::CommServer() : m_congested(false)
 {
 }
 
