@@ -217,7 +217,7 @@ int main(int argc, char ** argv)
     CommServer * commServer = new CommServer;
 
     if (commServer->setup() != 0) {
-        log(CRITICAL, "Internal error setting up server infrastructure");
+        log(CRITICAL, "Internal error setting up network infrastructure");
         return EXIT_SOCKET_ERROR;
     }
 
