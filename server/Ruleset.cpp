@@ -29,8 +29,6 @@
 #include "TaskRuleHandler.h"
 #include "Persistence.h"
 
-#include "rulesets/MindFactory.h"
-
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
