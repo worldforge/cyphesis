@@ -37,6 +37,7 @@
 #include "rulesets/Pedestrian.h"
 #include "rulesets/Script.h"
 #include "rulesets/StatusProperty.h"
+#include "rulesets/Task.h"
 #include "rulesets/TasksProperty.h"
 
 #include "common/const.h"
@@ -562,6 +563,10 @@ void OutfitProperty::wear(Entity * wearer,
 }
 
 void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+{
+}
+
+void Task::irrelevant()
 {
 }
 

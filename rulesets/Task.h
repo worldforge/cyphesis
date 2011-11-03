@@ -74,7 +74,7 @@ class Task {
     virtual ~Task();
 
     /// \brief Flag this task as obsolete
-    virtual void irrelevant();
+    void irrelevant();
 
     /// \brief Handle the operation that instigates the task
     ///
