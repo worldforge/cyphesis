@@ -29,6 +29,7 @@
 #include <cassert>
 
 class Character;
+class Script;
 
 /// \brief Interface class for handling tasks which take a short while to
 /// complete
@@ -62,6 +63,9 @@ class Task {
 
     /// \brief Name of task presented to client
     std::string m_name;
+
+    /// \brief The language script that will handle this task
+    Script * m_script;
 
     /// \brief Protected constructor to be called by classes which inherit
     explicit Task(Character & chr);
@@ -120,6 +124,13 @@ class Task {
     int newTick() {
         return ++m_serialno;
     }
+
+    /// \brief Accessor for the script that handles this task
+    Script * script() const {
+        return m_script;
+    }
+
+    void setScript(Script * scrpt);
 
     /// \brief Accessor to determine if this Task is obsolete
     const bool obsolete() { return m_obsolete; }

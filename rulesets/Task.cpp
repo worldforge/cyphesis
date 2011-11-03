@@ -20,7 +20,9 @@
 #include "Task.h"
 
 #include "Character.h"
+#include "Script.h"
 
+#include "common/log.h"
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -31,13 +33,14 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr)
+Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr), m_script(0)
 {
 }
 
 /// \brief Task destructor
 Task::~Task()
 {
+    delete m_script;
 }
 
 /// \brief Set the obsolete flag indicating that this task is obsolete
@@ -84,3 +87,49 @@ void Task::setAttr(const std::string & attr,
     m_attr[attr] = val;
 }
 
+
+/// \brief Assign a script to this scripted task
+///
+/// @param scrpt the language script object handle this task
+void Task::setScript(Script * scrpt)
+{
+    if (m_script != 0) {
+        log(WARNING, "Installing a new task script over an existing script");
+        delete m_script;
+    }
+    m_script = scrpt;
+}
+
+#if 0
+
+void TaskScript::initTask(const Operation & op, OpVector & res)
+{
+    assert(!op->getParents().empty());
+    if (m_script == 0) {
+        log(WARNING, "Task script failed");
+        irrelevant();
+    } else if (!m_script->operation(op->getParents().front(), op, res)) {
+        log(WARNING, "Task init failed");
+        irrelevant();
+    }
+
+    if (obsolete()) {
+        return;
+    }
+
+    Anonymous tick_arg;
+    tick_arg->setName("task");
+    tick_arg->setAttr("serialno", 0);
+    Tick tick;
+    tick->setArgs1(tick_arg);
+    tick->setTo(m_character.getId());
+
+    res.push_back(tick);
+}
+
+void TaskScript::TickOperation(const Operation & op, OpVector & res)
+{
+    assert(m_script != 0);
+    m_script->operation("tick", op, res);
+}
+#endif

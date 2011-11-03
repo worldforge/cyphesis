@@ -45,7 +45,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Propertytest Py_TerrainPropertytest \
                  Py_Shapetest \
                  PythonWrappertest PythonEntityScripttest \
-                 MindFactorytest TaskScripttest PythonContexttest \
+                 MindFactorytest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
                  TerrainModtest
@@ -817,10 +817,6 @@ PythonEntityScripttest_LDADD = \
 MindFactorytest_SOURCES = MindFactorytest.cpp
 MindFactorytest_LDADD = \
         $(top_builddir)/rulesets/MindFactory.o
-
-TaskScripttest_SOURCES = TaskScripttest.cpp
-TaskScripttest_LDADD = \
-        $(top_builddir)/rulesets/TaskScript.o
 
 PythonContexttest_SOURCES = PythonContexttest.cpp
 PythonContexttest_LDADD = \

@@ -835,15 +835,11 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
     return 0;
 }
 
-TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
+TaskScript::TaskScript(Character & chr) : Task(chr)
 {
 }
 
 TaskScript::~TaskScript()
-{
-}
-
-void TaskScript::setScript(Script * scrpt)
 {
 }
 
@@ -864,6 +860,10 @@ Task::~Task()
 }
 
 void Task::irrelevant()
+{
+}
+
+void Task::setScript(Script*)
 {
 }
 

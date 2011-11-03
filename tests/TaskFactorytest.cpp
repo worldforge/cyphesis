@@ -83,7 +83,7 @@ TaskScriptKit::~TaskScriptKit()
 {
 }
 
-TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
+TaskScript::TaskScript(Character & chr) : Task(chr)
 {
 }
 

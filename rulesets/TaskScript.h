@@ -26,9 +26,6 @@ class Script;
 
 /// \brief Class for handling tasks which are implemented as scripts
 class TaskScript : public Task {
-  protected:
-    /// \brief The language script that will handle this task
-    Script * m_script;
   private:
     /// \brief Private and un-implemented, to make sure slicing is impossible
     TaskScript(const TaskScript & t);
@@ -37,13 +34,6 @@ class TaskScript : public Task {
   public:
     explicit TaskScript(Character & chr);
     virtual ~TaskScript();
-
-    /// \brief Accessor for the script that handles this task
-    Script * script() const {
-        return m_script;
-    }
-
-    void setScript(Script * scrpt);
 
     virtual void initTask(const Operation & op, OpVector & res);
     virtual void TickOperation(const Operation & op, OpVector & res);

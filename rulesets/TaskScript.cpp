@@ -34,25 +34,12 @@ using Atlas::Objects::Entity::Anonymous;
 /// \brief TaskScript constructor
 ///
 /// @param chr Character that is performing the task
-TaskScript::TaskScript(Character & chr) : Task(chr), m_script(0)
+TaskScript::TaskScript(Character & chr) : Task(chr)
 {
 }
 
 TaskScript::~TaskScript()
 {
-    delete m_script;
-}
-
-/// \brief Assign a script to this scripted task
-///
-/// @param scrpt the language script object handle this task
-void TaskScript::setScript(Script * scrpt)
-{
-    if (m_script != 0) {
-        log(WARNING, "Installing a new task script over an existing script");
-        delete m_script;
-    }
-    m_script = scrpt;
 }
 
 void TaskScript::initTask(const Operation & op, OpVector & res)

@@ -90,6 +90,8 @@ int main()
 
 // stubs
 
+#include "common/log.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = -1;
 } } }
@@ -466,5 +468,9 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 Location::Location() : m_loc(0)
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
 {
 }
