@@ -91,10 +91,6 @@ TaskScript::~TaskScript()
 {
 }
 
-void TaskScript::irrelevant()
-{
-}
-
 void TaskScript::initTask(const Operation & op, OpVector & res)
 {
 }

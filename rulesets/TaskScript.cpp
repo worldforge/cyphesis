@@ -55,12 +55,6 @@ void TaskScript::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
-/// \brief Mark this task as no longer relevant
-void TaskScript::irrelevant()
-{
-    Task::irrelevant();
-}
-
 void TaskScript::initTask(const Operation & op, OpVector & res)
 {
     assert(!op->getParents().empty());

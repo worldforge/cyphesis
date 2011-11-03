@@ -847,10 +847,6 @@ void TaskScript::setScript(Script * scrpt)
 {
 }
 
-void TaskScript::irrelevant()
-{
-}
-
 void TaskScript::initTask(const Operation & op, OpVector & res)
 {
 }
