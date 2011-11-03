@@ -41,34 +41,3 @@ TaskScript::TaskScript(Character & chr) : Task(chr)
 TaskScript::~TaskScript()
 {
 }
-
-void TaskScript::initTask(const Operation & op, OpVector & res)
-{
-    assert(!op->getParents().empty());
-    if (m_script == 0) {
-        log(WARNING, "Task script failed");
-        irrelevant();
-    } else if (!m_script->operation(op->getParents().front(), op, res)) {
-        log(WARNING, "Task init failed");
-        irrelevant();
-    }
-
-    if (obsolete()) {
-        return;
-    }
-
-    Anonymous tick_arg;
-    tick_arg->setName("task");
-    tick_arg->setAttr("serialno", 0);
-    Tick tick;
-    tick->setArgs1(tick_arg);
-    tick->setTo(m_character.getId());
-
-    res.push_back(tick);
-}
-
-void TaskScript::TickOperation(const Operation & op, OpVector & res)
-{
-    assert(m_script != 0);
-    m_script->operation("tick", op, res);
-}

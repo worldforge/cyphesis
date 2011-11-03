@@ -34,9 +34,6 @@ class TaskScript : public Task {
   public:
     explicit TaskScript(Character & chr);
     virtual ~TaskScript();
-
-    virtual void initTask(const Operation & op, OpVector & res);
-    virtual void TickOperation(const Operation & op, OpVector & res);
 };
 
 #endif // RULESETS_TASK_SCRIPT_H

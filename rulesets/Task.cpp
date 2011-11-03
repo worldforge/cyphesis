@@ -100,9 +100,7 @@ void Task::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
-#if 0
-
-void TaskScript::initTask(const Operation & op, OpVector & res)
+void Task::initTask(const Operation & op, OpVector & res)
 {
     assert(!op->getParents().empty());
     if (m_script == 0) {
@@ -127,9 +125,8 @@ void TaskScript::initTask(const Operation & op, OpVector & res)
     res.push_back(tick);
 }
 
-void TaskScript::TickOperation(const Operation & op, OpVector & res)
+void Task::TickOperation(const Operation & op, OpVector & res)
 {
     assert(m_script != 0);
     m_script->operation("tick", op, res);
 }
-#endif

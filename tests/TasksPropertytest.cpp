@@ -100,10 +100,10 @@ TaskScript::~TaskScript()
 {
 }
 
-void TaskScript::initTask(const Operation & op, OpVector & res)
+void Task::initTask(const Operation & op, OpVector & res)
 {
 }
 
-void TaskScript::TickOperation(const Operation & op, OpVector & res)
+void Task::TickOperation(const Operation & op, OpVector & res)
 {
 }

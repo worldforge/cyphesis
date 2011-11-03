@@ -84,7 +84,7 @@ class Task {
     ///
     /// @param op The operation to be processed
     /// @param res The result of the operation is returned here.
-    virtual void initTask(const Operation & op, OpVector & res) = 0;
+    virtual void initTask(const Operation & op, OpVector & res);
 
     /// \brief Handle a tick operation to perform the task
     ///
@@ -92,7 +92,7 @@ class Task {
     /// Task involves to be returned.
     /// @param op The operation to be processed
     /// @param res The result of the operation is returned here.
-    virtual void TickOperation(const Operation & op, OpVector & res) = 0;
+    virtual void TickOperation(const Operation & op, OpVector & res);
 
     /// \brief Create a new tick op for the next iteration of this task
     Operation nextTick(double interval);
