@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 #include "rulesets/Script.h"
@@ -55,7 +55,7 @@ int main()
     Character chr("3", 3);
 
     {
-        TaskScript ts(chr);
+        Task ts(chr);
 
         OpVector res;
         Atlas::Objects::Operation::Generic c;
@@ -68,7 +68,7 @@ int main()
     }
 
     {
-        TaskScript ts(chr);
+        Task ts(chr);
 
         Script * script1 = new Script;
         Script * script2 = new Script;
@@ -91,7 +91,7 @@ int main()
     }
 
     {
-        TaskScript ts(chr);
+        Task ts(chr);
 
         Script * script1 = new TestScript;
 

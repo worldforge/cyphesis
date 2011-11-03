@@ -26,7 +26,7 @@
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonEntityScript.h"
 
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"
@@ -92,7 +92,7 @@ PythonTaskScriptFactory::~PythonTaskScriptFactory()
     }
 }
 
-int PythonTaskScriptFactory::addScript(TaskScript * entity)
+int PythonTaskScriptFactory::addScript(Task * entity)
 {
     if (m_class == 0) {
         return -1;

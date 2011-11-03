@@ -22,7 +22,7 @@
 
 #include <string>
 
-class TaskScript;
+class Task;
 
 /// \brief Factory interface for creating scripts to attach to in game
 /// task objects.
@@ -41,7 +41,7 @@ class TaskScriptKit {
     const std::string & package() { return m_package; }
 
     /// \brief Add a script to an task
-    virtual int addScript(TaskScript * task) = 0;
+    virtual int addScript(Task * task) = 0;
     /// \brief Reload the underlying class object from the script on disk
     virtual int refreshClass() = 0;
 };
@@ -60,7 +60,7 @@ class PythonTaskScriptFactory : public TaskScriptKit {
     PythonTaskScriptFactory(const std::string & package, const std::string & type);
     ~PythonTaskScriptFactory();
 
-    int addScript(TaskScript * task);
+    int addScript(Task * task);
     int refreshClass();
 
     bool isOkay() const {

@@ -24,7 +24,7 @@
 #include "Py_Thing.h"
 #include "PythonWrapper.h"
 
-#include "TaskScript.h"
+#include "Task.h"
 #include "Character.h"
 
 static PyObject * Task_irrelevant(PyTask * self)
@@ -234,7 +234,7 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
             return -1;
         }
 #endif // NDEBUG
-        self->m_task = new TaskScript(*character->m_entity.c);
+        self->m_task = new Task(*character->m_entity.c);
         return 0;
     }
     PyErr_SetString(PyExc_TypeError, "Task requires a Task, or Character");
@@ -288,7 +288,7 @@ PyTypeObject PyTask_Type = {
 PyObject * wrapTask(Task * task)
 {
     PyObject * wrapper;
-    TaskScript * ts = dynamic_cast<TaskScript *>(task);
+    Task * ts = dynamic_cast<Task *>(task);
     PythonWrapper * pw;
     if (ts == 0 || ((pw = dynamic_cast<PythonWrapper *>(ts->script())) == 0)) {
         PyTask * pt = newPyTask();

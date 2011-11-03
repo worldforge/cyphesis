@@ -566,6 +566,18 @@ void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
 {
 }
 
+Task::~Task()
+{
+}
+
+void Task::initTask(const Operation & op, OpVector & res)
+{
+}
+
+void Task::TickOperation(const Operation & op, OpVector & res)
+{
+}
+
 void Task::irrelevant()
 {
 }

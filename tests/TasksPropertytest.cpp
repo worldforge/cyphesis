@@ -30,7 +30,7 @@
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 #include "rulesets/TasksProperty.h"
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -48,7 +48,7 @@ int main()
 
     OpVector res;
     Character * chr = pc.createCharacterEntity();
-    Task * task = new TaskScript(*chr);
+    Task * task = new Task(*chr);
     task->progress() = .1;
     task->rate() = .1;
     chr->startTask(task, Atlas::Objects::Operation::Action(), res);
@@ -89,14 +89,6 @@ void Task::irrelevant()
 
 void Task::setAttr(const std::string & attr,
                    const Atlas::Message::Element & val)
-{
-}
-
-TaskScript::TaskScript(Character & chr) : Task(chr)
-{
-}
-
-TaskScript::~TaskScript()
 {
 }
 

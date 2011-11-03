@@ -34,7 +34,7 @@
 #include "rulesets/Py_Task.h"
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Character.h"
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 #include <cassert>
 

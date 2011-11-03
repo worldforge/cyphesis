@@ -32,7 +32,7 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -188,7 +188,7 @@ Task * EntityBuilder::buildTask(TaskKit * factory, Character & owner) const
     if (task == 0) {
         return 0;
     }
-    TaskScript * task_script = dynamic_cast<TaskScript *>(task);
+    Task * task_script = dynamic_cast<Task *>(task);
 
     if (task_script != 0 && factory->m_scriptFactory != 0) {
         if (factory->m_scriptFactory->addScript(task_script) != 0) {

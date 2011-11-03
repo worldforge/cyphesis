@@ -175,7 +175,7 @@ PythonTaskScriptFactory::~PythonTaskScriptFactory()
 {
 }
 
-int PythonTaskScriptFactory::addScript(TaskScript * entity)
+int PythonTaskScriptFactory::addScript(Task * entity)
 {
     return 0;
 }

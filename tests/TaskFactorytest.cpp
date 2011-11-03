@@ -28,7 +28,7 @@
 #include "server/TaskScriptFactory.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 #include <cassert>
 
@@ -36,7 +36,7 @@ class TestTaskScriptFactory : public TaskScriptKit {
   public:
     TestTaskScriptFactory() : TaskScriptKit("pkg", "type") { }
 
-    virtual int addScript(TaskScript * task) {
+    virtual int addScript(Task * task) {
         return 0;
     }
 
@@ -80,14 +80,6 @@ TaskScriptKit::TaskScriptKit(const std::string & package,
 }
 
 TaskScriptKit::~TaskScriptKit()
-{
-}
-
-TaskScript::TaskScript(Character & chr) : Task(chr)
-{
-}
-
-TaskScript::~TaskScript()
 {
 }
 

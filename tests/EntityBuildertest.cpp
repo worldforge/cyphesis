@@ -36,7 +36,7 @@
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/Script.h"
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 #include "common/compose.hpp"
 #include "common/id.h"
@@ -833,14 +833,6 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     return 0;
-}
-
-TaskScript::TaskScript(Character & chr) : Task(chr)
-{
-}
-
-TaskScript::~TaskScript()
-{
 }
 
 void Task::initTask(const Operation & op, OpVector & res)

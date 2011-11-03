@@ -21,7 +21,7 @@
 
 #include "server/TaskScriptFactory.h"
 
-#include "rulesets/TaskScript.h"
+#include "rulesets/Task.h"
 
 TaskKit::TaskKit() : m_scriptFactory(0)
 {
@@ -48,7 +48,7 @@ Task * TaskFactory::newTask(Character & chr)
 {
     // Create the task, and use its script to add a script
 
-    TaskScript * task = new TaskScript(chr);
+    Task * task = new Task(chr);
     task->name() = m_name;
     assert(task != 0);
 

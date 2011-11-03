@@ -67,15 +67,16 @@ class Task {
     /// \brief The language script that will handle this task
     Script * m_script;
 
-    /// \brief Protected constructor to be called by classes which inherit
-    explicit Task(Character & chr);
   private:
     /// \brief Private and un-implemented, to make sure slicing is impossible
     Task(const Task & t);
     /// \brief Private and un-implemented, to make sure slicing is impossible
     const Task & operator=(const Task &);
   public:
-    virtual ~Task();
+    /// \brief Constructor
+    explicit Task(Character & chr);
+
+    ~Task();
 
     /// \brief Flag this task as obsolete
     void irrelevant();
@@ -84,7 +85,7 @@ class Task {
     ///
     /// @param op The operation to be processed
     /// @param res The result of the operation is returned here.
-    virtual void initTask(const Operation & op, OpVector & res);
+    void initTask(const Operation & op, OpVector & res);
 
     /// \brief Handle a tick operation to perform the task
     ///
@@ -92,7 +93,7 @@ class Task {
     /// Task involves to be returned.
     /// @param op The operation to be processed
     /// @param res The result of the operation is returned here.
-    virtual void TickOperation(const Operation & op, OpVector & res);
+    void TickOperation(const Operation & op, OpVector & res);
 
     /// \brief Create a new tick op for the next iteration of this task
     Operation nextTick(double interval);
