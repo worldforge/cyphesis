@@ -22,6 +22,7 @@
 
 #include <Python.h>
 
+class BaseMind;
 class Character;
 class Entity;
 class LocatedEntity;
@@ -37,6 +38,7 @@ typedef struct {
         LocatedEntity * l;
         Entity * e;
         Character * c;
+        BaseMind * m;
     } m_entity;
     /// \brief List of weak references
     PyObject * m_weakreflist;
@@ -45,14 +47,17 @@ typedef struct {
 extern PyTypeObject PyLocatedEntity_Type;
 extern PyTypeObject PyEntity_Type;
 extern PyTypeObject PyCharacter_Type;
+extern PyTypeObject PyMind_Type;
 
 #define PyLocatedEntity_Check(_o) ((_o)->ob_type == &PyLocatedEntity_Type)
 #define PyEntity_Check(_o) ((_o)->ob_type == &PyEntity_Type)
 #define PyCharacter_Check(_o) ((_o)->ob_type == &PyCharacter_Type)
+#define PyMind_Check(_o) ((_o)->ob_type == &PyMind_Type)
 
 PyObject * wrapEntity(LocatedEntity * entity);
 PyEntity * newPyLocatedEntity();
 PyEntity * newPyEntity();
 PyEntity * newPyCharacter();
+PyEntity * newPyMind();
 
 #endif // RULESETS_PY_THING_H

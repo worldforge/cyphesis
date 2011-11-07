@@ -25,7 +25,6 @@
 #include "Py_BBox.h"
 #include "Py_Message.h"
 #include "Py_Thing.h"
-#include "Py_Mind.h"
 #include "Py_Map.h"
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
@@ -407,11 +406,11 @@ void Create_PyMind(BaseMind * mind, const std::string & package,
     if (py_class == NULL) {
         return;
     }
-    PyMind * wrapper = newPyMind();
+    PyEntity * wrapper = newPyMind();
     if (wrapper == NULL) {
         return;
     }
-    wrapper->m_mind = mind;
+    wrapper->m_entity.m = mind;
 
     PyObject * script = Create_PyScript((PyObject *)wrapper, py_class);
 
@@ -720,12 +719,6 @@ void init_python_api(bool log_stdout)
         return;
     }
     PyModule_AddObject(server, "Map", (PyObject *)&PyMap_Type);
-    PyMind_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyMind_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Mind wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "Mind", (PyObject *)&PyMind_Type);
     PyTask_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyTask_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Task wrapper type");
@@ -753,6 +746,11 @@ void init_python_api(bool log_stdout)
         return;
     }
     PyModule_AddObject(server, "World", (PyObject *)&PyWorld_Type);
+    if (PyType_Ready(&PyMind_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Mind wrapper type");
+        return;
+    }
+    PyModule_AddObject(server, "Mind", (PyObject *)&PyMind_Type);
 
     // PyWorldTime_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyWorldTime_Type) < 0) {

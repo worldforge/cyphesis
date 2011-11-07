@@ -18,6 +18,8 @@
 // $Id$
 
 #include "Py_Thing.h"
+
+#include "Py_Map.h"
 #include "Py_Message.h"
 #include "Py_Vector3D.h"
 #include "Py_Point3D.h"
@@ -27,7 +29,10 @@
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
 #include "Py_Task.h"
+#include "Py_WorldTime.h"
 #include "PythonWrapper.h"
+
+#include "BaseMind.h"
 #include "Character.h"
 
 #include "common/id.h"
@@ -443,6 +448,174 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
     
 }
 
+static PyMethodDef Mind_methods[] = {
+    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
+    {NULL,              NULL}           // sentinel
+};
+
+static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
+{
+#ifndef NDEBUG
+    if (self->m_entity.m == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.getattr");
+        return NULL;
+    }
+#endif // NDEBUG
+    char * name = PyString_AsString(oname);
+    if (strcmp(name, "id") == 0) {
+        return (PyObject *)PyString_FromString(self->m_entity.m->getId().c_str());
+    }
+    if (strcmp(name, "type") == 0) {
+        if (self->m_entity.m->getType() == NULL) {
+            PyErr_SetString(PyExc_AttributeError, name);
+            return NULL;
+        }
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+        PyObject * ent = PyString_FromString(self->m_entity.m->getType()->name().c_str());
+        PyList_Append(list, ent);
+        Py_DECREF(ent);
+        return list;
+    }
+    if (strcmp(name, "map") == 0) {
+        PyMap * map = newPyMap();
+        if (map != NULL) {
+            map->m_map = self->m_entity.m->getMap();
+        }
+        return (PyObject *)map;
+    }
+    if (strcmp(name, "location") == 0) {
+        PyLocation * loc = newPyLocation();
+        if (loc != NULL) {
+            loc->location = &self->m_entity.m->m_location;
+            loc->owner = self->m_entity.m;
+        }
+        return (PyObject *)loc;
+    }
+    if (strcmp(name, "time") == 0) {
+        PyWorldTime * worldtime = newPyWorldTime();
+        if (worldtime != NULL) {
+            worldtime->time = self->m_entity.m->getTime();
+        }
+        return (PyObject *)worldtime;
+    }
+    if (strcmp(name, "contains") == 0) {
+        if (self->m_entity.m->m_contains == 0) {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+        LocatedEntitySet::const_iterator I = self->m_entity.m->m_contains->begin();
+        LocatedEntitySet::const_iterator Iend = self->m_entity.m->m_contains->end();
+        for (; I != Iend; ++I) {
+            LocatedEntity * child = *I;
+            PyObject * wrapper = wrapEntity(child);
+            if (wrapper == NULL) {
+                Py_DECREF(list);
+                return NULL;
+            }
+            PyList_Append(list, wrapper);
+            Py_DECREF(wrapper);
+        }
+        return list;
+    }
+    if (self->Entity_attr != NULL) {
+        PyObject *v = PyDict_GetItemString(self->Entity_attr, name);
+        if (v != NULL) {
+            Py_INCREF(v);
+            return v;
+        }
+    }
+    LocatedEntity * mind = self->m_entity.m;
+    Element attr;
+    if (mind->getAttr(name, attr) == 0) {
+        return MessageElement_asPyObject(attr);
+    }
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
+}
+
+static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
+{
+    char * name = PyString_AsString(oname);
+    if (strcmp(name, "mind") == 0) {
+        if (!PyMind_Check(v)) {
+            PyErr_SetString(PyExc_TypeError, "Mind.mind requires Mind");
+            return -1;
+        }
+        self->m_entity.m = ((PyEntity*)v)->m_entity.m;
+        return 0;
+    }
+#ifndef NDEBUG
+    if (self->m_entity.m == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.setattr");
+        return -1;
+    }
+#endif // NDEBUG
+    if (strcmp(name, "map") == 0) {
+        PyErr_SetString(PyExc_RuntimeError, "Setting map on mind is forbidden");
+        return -1;
+    }
+    LocatedEntity * entity = self->m_entity.m;
+    // Should we support removal of attributes?
+    //std::string attr(name);
+    //if (v == NULL) {
+        //entity->attributes.erase(attr);
+        //return 0;
+    //}
+    Element obj;
+    if (PyObject_asMessageElement(v, obj, true) == 0) {
+        assert(!obj.isMap() && !obj.isList());
+        // In the Python wrapper for Entity in Py_Thing.cpp notices are issued
+        // for some types.
+        entity->setAttr(name, obj);
+        return 0;
+    }
+    // Minds set a number of native Python members on themselves to store
+    // important state information, which seems to be lost if we munge them
+    // into Atlas data, probably because of the weird stuff that happens
+    // in the wrappers when scripts manipulate complex attributes. They
+    // are copied on getattr, rather than referenced.
+    // If we get here, then the attribute is not Atlas compatable, so we
+    // need to store it in a python dictionary
+    if (self->Entity_attr == NULL) {
+        self->Entity_attr = PyDict_New();
+        if (self->Entity_attr == NULL) {
+            return -1;
+        }
+    }
+    return PyDict_SetItemString(self->Entity_attr, name, v);
+}
+
+static int Mind_compare(PyEntity *self, PyEntity *other)
+{
+    if (self->m_entity.m == NULL || other->m_entity.m == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.compare");
+        return -1;
+    }
+    return (self->m_entity.m == other->m_entity.m) ? 0 : 1;
+}
+
+static int Mind_init(PyEntity * self, PyObject * args, PyObject * kwds)
+{
+    char * id = NULL;
+
+    if (!PyArg_ParseTuple(args, "s", &id)) {
+        return -1;
+    }
+    long intId = integerId(id);
+    if (intId == -1L) {
+        PyErr_SetString(PyExc_TypeError, "Mind() requires string/int ID");
+        return -1;
+    }
+    self->m_entity.m = new BaseMind(id, intId);
+    return 0;
+}
+
 PyTypeObject PyLocatedEntity_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -572,6 +745,49 @@ PyTypeObject PyCharacter_Type = {
         (newfunc)Entity_new,            // tp_new
 };
 
+PyTypeObject PyMind_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              // ob_size
+        "server.Mind",                  // tp_name
+        sizeof(PyEntity),               // tp_basicsize
+        0,                              // tp_itemsize
+        // methods 
+        (destructor)Entity_dealloc,     // tp_dealloc
+        0,                              // tp_print
+        0,                              // tp_getattr
+        0,                              // tp_setattr
+        (cmpfunc)Mind_compare,          // tp_compare
+        0,                              // tp_repr
+        0,                              // tp_as_number
+        0,                              // tp_as_sequence
+        0,                              // tp_as_mapping
+        0,                              // tp_hash
+        0,                              // tp_call
+        0,                              // tp_str
+        (getattrofunc)Mind_getattro,    // tp_getattro
+        (setattrofunc)Mind_setattro,    // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
+        "Mind objects",                 // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        Mind_methods,                   // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        0,                              // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Mind_init,            // tp_init
+        0,                              // tp_alloc
+        (newfunc)Entity_new,            // tp_new
+};
+
 PyObject * wrapEntity(LocatedEntity * le)
 {
     PyObject * wrapper = 0;
@@ -632,4 +848,9 @@ PyEntity * newPyEntity()
 PyEntity * newPyCharacter()
 {
     return (PyEntity *)PyCharacter_Type.tp_new(&PyCharacter_Type, 0, 0);
+}
+
+PyEntity * newPyMind()
+{
+    return (PyEntity *)PyMind_Type.tp_new(&PyMind_Type, 0, 0);
 }

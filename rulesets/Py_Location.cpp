@@ -24,7 +24,6 @@
 #include "Py_Quaternion.h"
 #include "Py_BBox.h"
 #include "Py_World.h"
-#include "Py_Mind.h"
 
 #include "Entity.h"
 #include "BaseMind.h"
@@ -242,15 +241,6 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
     
         if (PyWorld_Check(refO)) {
             ref_ent = &BaseWorld::instance().m_gameWorld;
-        } else if (PyMind_Check(refO)) {
-            PyMind * ref = (PyMind*)refO;
-#ifndef NDEBUG
-            if (ref->m_mind == NULL) {
-                PyErr_SetString(PyExc_AssertionError, "Parent mind is invalid");
-                return -1;
-            }
-#endif // NDEBUG
-            ref_ent = ref->m_mind;
         } else {
             PyEntity * ref = (PyEntity*)refO;
 #ifndef NDEBUG

@@ -35,7 +35,6 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Location.h"
 #include "rulesets/Py_Thing.h"
-#include "rulesets/Py_Mind.h"
 
 #include <cassert>
 
@@ -45,11 +44,8 @@ static PyObject * null_wrapper(PyObject * self, PyLocation * o)
 #ifdef CYPHESIS_DEBUG
         o->location = NULL;
 #endif // NDEBUG
-    } else if (PyMind_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyMind*)o)->m_mind = NULL;
-#endif // NDEBUG
-    } else if (PyLocatedEntity_Check(o) || PyEntity_Check(o) || PyCharacter_Check(o)) {
+    } else if (PyLocatedEntity_Check(o) || PyEntity_Check(o) ||
+               PyCharacter_Check(o) || PyMind_Check(o)) {
 #ifdef CYPHESIS_DEBUG
         ((PyEntity*)o)->m_entity.l = NULL;
 #endif // NDEBUG
