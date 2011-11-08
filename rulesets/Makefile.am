@@ -88,6 +88,7 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_TerrainProperty.cpp \
 			    Python_API.cpp Python_API.h \
 			    Python_Script_Utils.h \
+			    PythonClass.cpp PythonClass.h \
 			    PythonContext.cpp PythonContext.h \
 			    PythonWrapper.cpp PythonWrapper.h \
 			    PythonEntityScript.cpp PythonEntityScript.h \
