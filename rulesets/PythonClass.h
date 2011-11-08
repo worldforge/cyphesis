@@ -46,10 +46,6 @@ class PythonClass {
 
   public:
     virtual ~PythonClass();
-
-    bool isOkay() const {
-        return m_class != 0;
-    }
 };
 
 #endif // RULESETS_PYTHON_CLASS_H
