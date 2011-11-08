@@ -147,7 +147,7 @@ MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
     if (m_entity_type == 0) {
         // m_entity_type = Inheritance::instance().getType("game_entity");
         // FIXME What to do with this?
-        m_entity_type = new TypeNode("d45a0b74-326c-4ac6-8d4d-a44b9cce0671");
+        m_entity_type = new TypeNode("");
         assert(m_entity_type != 0);
     }
 }
