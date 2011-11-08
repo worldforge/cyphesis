@@ -31,7 +31,7 @@ class SystemTime {
     }
 
     time_t microseconds() const {
-        return m_timeVal.tv_sec;
+        return m_timeVal.tv_usec;
     }
     void update() {
         gettimeofday(&m_timeVal, 0);
