@@ -141,9 +141,11 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     if (factory->m_scriptFactory == 0) {
         PythonTaskScriptFactory * ptsf = new PythonTaskScriptFactory(script_package,
                                                                      script_class);
-        if (ptsf->isOkay()) {
+        if (ptsf->setup() == 0) {
             factory->m_scriptFactory = ptsf;
         } else {
+            log(ERROR, compose("Python class \"%1.%2\" failed to load",
+                               script_package, script_class));
             delete ptsf;
             return -1;
         }

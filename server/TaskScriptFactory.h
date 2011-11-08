@@ -20,26 +20,18 @@
 #ifndef SERVER_TASK_SCRIPT_FACTORY_H
 #define SERVER_TASK_SCRIPT_FACTORY_H
 
-#include <string>
+#include "rulesets/PythonClass.h"
 
 class Task;
 
 /// \brief Factory interface for creating scripts to attach to in game
 /// task objects.
 class TaskScriptKit {
-  protected:
-    /// \brief Name of the script package where the script type is
-    std::string m_package;
-    /// \brief Name of the script type instanced by this factory
-    std::string m_type;
-
-    TaskScriptKit(const std::string & package, const std::string & type);
   public:
     virtual ~TaskScriptKit();
 
     /// \brief Accessor for package name
-    const std::string & package() { return m_package; }
-
+    virtual const std::string & package() const = 0;
     /// \brief Add a script to an task
     virtual int addScript(Task * task) = 0;
     /// \brief Reload the underlying class object from the script on disk
@@ -48,24 +40,18 @@ class TaskScriptKit {
 
 /// \brief Factory implementation for creating python script objects to attach
 /// to in game task objects.
-class PythonTaskScriptFactory : public TaskScriptKit {
+class PythonTaskScriptFactory : public TaskScriptKit, public PythonClass {
   protected:
-    /// \brief Module object which contains the script class
-    struct _object * m_module;
-    /// \brief Class object to be instanced when creating scripts
-    struct _object * m_class;
-
-    int getClass();
+    int check();
   public:
     PythonTaskScriptFactory(const std::string & package, const std::string & type);
     ~PythonTaskScriptFactory();
 
+    int setup();
+
+    const std::string & package() const;
     int addScript(Task * task);
     int refreshClass();
-
-    bool isOkay() const {
-        return m_class != 0;
-    }
 };
 
 #endif // SERVER_TASK_SCRIPT_FACTORY_H

@@ -27,42 +27,8 @@
 
 #include "rulesets/Entity.h"
 
-#include "common/log.h"
-#include "common/compose.hpp"
-
-/// \brief ScriptKit constructor
-/// 
-/// @param package name of the script package scripts are to be created from
-/// @param type name of the type instanced to create scripts
-ScriptKit::ScriptKit(const std::string & package,
-                     const std::string & type) : m_package(package),
-                                                 m_type(type)
-{
-}
-
 ScriptKit::~ScriptKit()
 {
-}
-
-/// \brief Retrieve the pythonclass object from the module which has
-/// already been loaded.
-int PythonScriptFactory::getClass()
-{
-    m_class = Get_PyClass(m_module, m_package, m_type);
-    if (m_class == 0) {
-        return -1;
-    }
-    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
-        !PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
-        log(ERROR, String::compose("Python class does not inherit from "
-                                   "a core server type. \"%1.%2\"",
-                                   m_package, m_type));
-        Py_DECREF(m_class);
-        m_class = 0;
-        return -1;
-    }
-
-    return 0;
 }
 
 /// \brief PythonScriptFactory constructor
@@ -71,25 +37,31 @@ int PythonScriptFactory::getClass()
 /// @param type Name of the scrpt types instanced by this factory
 PythonScriptFactory::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
-                                         ScriptKit(package, type),
-                                         m_module(0), m_class(0)
+                                         PythonClass(package, type)
 {
-    // FIXME #4 This sort of code should not be in the constructor
-    m_module = Get_PyModule(m_package);
-    if (m_module == NULL) {
-        return;
-    }
-    getClass();
 }
 
 PythonScriptFactory::~PythonScriptFactory()
 {
-    if (m_class != 0) {
-        Py_DECREF(m_class);
+}
+
+int PythonScriptFactory::setup()
+{
+    return load();
+}
+
+int PythonScriptFactory::check()
+{
+    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
+-       !PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
+        return -1;
     }
-    if (m_module != 0) {
-        Py_DECREF(m_module);
-    }
+    return 0;
+}
+
+const std::string & PythonScriptFactory::package() const
+{
+    return m_package;
 }
 
 int PythonScriptFactory::addScript(Entity * entity)
@@ -115,17 +87,5 @@ int PythonScriptFactory::addScript(Entity * entity)
 
 int PythonScriptFactory::refreshClass()
 {
-    if (m_module == 0) {
-        return -1;
-    }
-    PyObject * new_module = PyImport_ReloadModule(m_module);
-    if (new_module == 0) {
-        log(ERROR, String::compose("Error reloading python module \"%1\"",
-                                   m_package));
-        PyErr_Clear();
-        return -1;
-    }
-    Py_DECREF(m_module);
-    m_module = new_module;
-    return getClass();
+    return refresh();
 }

@@ -20,26 +20,18 @@
 #ifndef SERVER_SCRIPT_FACTORY_H
 #define SERVER_SCRIPT_FACTORY_H
 
-#include <string>
+#include "rulesets/PythonClass.h"
 
 class Entity;
 
 /// \brief Factory interface for creating scripts to attach to in game
 /// entity objects.
 class ScriptKit {
-  protected:
-    /// \brief Name of the script package where the script type is
-    std::string m_package;
-    /// \brief Name of the script type instanced by this factory
-    std::string m_type;
-
-    ScriptKit(const std::string & package, const std::string & type);
   public:
-    virtual ~ScriptKit();
+    virtual ~ScriptKit() = 0;
 
     /// \brief Accessor for package name
-    const std::string & package() { return m_package; }
-
+    virtual const std::string & package() const = 0;
     /// \brief Add a script to an entity
     virtual int addScript(Entity * entity) = 0;
     /// \brief Reload the underlying class object from the script on disk
@@ -48,24 +40,18 @@ class ScriptKit {
 
 /// \brief Factory implementation for creating python script objects to attach
 /// to in game entity objects.
-class PythonScriptFactory : public ScriptKit {
+class PythonScriptFactory : public ScriptKit, public PythonClass {
   protected:
-    /// \brief Module object which contains the script class
-    struct _object * m_module;
-    /// \brief Class object to be instanced when creating scripts
-    struct _object * m_class;
-
-    int getClass();
+    int check();
   public:
     PythonScriptFactory(const std::string & package, const std::string & type);
     ~PythonScriptFactory();
 
+    int setup();
+
+    const std::string & package() const;
     int addScript(Entity * entity);
     int refreshClass();
-
-    bool isOkay() const {
-        return m_class != 0;
-    }
 };
 
 #endif // SERVER_SCRIPT_FACTORY_H
