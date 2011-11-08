@@ -39,6 +39,7 @@ int main()
         s.update();
         assert(s.seconds() > 0);
         assert(s.microseconds() > 0);
+        assert(s.seconds() != s.microseconds());
     }
     return 0;
 }
