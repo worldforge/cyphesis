@@ -40,7 +40,7 @@ class ScriptKit {
 
 /// \brief Factory implementation for creating python script objects to attach
 /// to in game entity objects.
-class PythonScriptFactory : public ScriptKit, public PythonClass {
+class PythonScriptFactory : public ScriptKit, private PythonClass {
   protected:
     int check();
   public:

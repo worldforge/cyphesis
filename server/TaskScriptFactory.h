@@ -40,7 +40,7 @@ class TaskScriptKit {
 
 /// \brief Factory implementation for creating python script objects to attach
 /// to in game task objects.
-class PythonTaskScriptFactory : public TaskScriptKit, public PythonClass {
+class PythonTaskScriptFactory : public TaskScriptKit, private PythonClass {
   protected:
     int check();
   public:
