@@ -36,12 +36,15 @@ PythonClass::PythonClass(const std::string & package,
                                                      m_module(0),
                                                      m_class(0)
 {
-    // FIXME #4 This sort of code should not be in the constructor
+}
+
+int PythonClass::load()
+{
     m_module = Get_PyModule(m_package);
     if (m_module == NULL) {
-        return;
+        return -1;
     }
-    getClass();
+    return getClass();
 }
 
 PythonClass::~PythonClass()

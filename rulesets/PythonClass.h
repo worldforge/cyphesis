@@ -39,6 +39,7 @@ class PythonClass {
     PythonClass(const std::string & package, const std::string & type);
 
     int getClass();
+    int load();
     int refresh();
 
     virtual int check() = 0;
