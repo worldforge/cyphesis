@@ -24,10 +24,48 @@
 #define DEBUG
 #endif
 
+#include "rulesets/PythonClass.h"
+
 #include <cassert>
+
+class TestPythonClass : public PythonClass {
+  public:
+    TestPythonClass(const std::string & p, const std::string & t) :
+          PythonClass(p, t) { }
+
+    virtual ~TestPythonClass() { }
+
+    virtual int check() const { return 0; }
+
+    int test_getClass() { return getClass(); }
+    int tet_load() { return load(); }
+    int test_refresh() { return refresh(); }
+
+    const std::string & access_package() { return m_package; }
+    const std::string & access_type() { return m_type; }
+
+    struct _object * access_module() { return m_module; }
+    struct _object * access_class() { return m_class; }
+};
 
 int main()
 {
+    {
+        const char * package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+        const char * type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+
+        TestPythonClass * pc = new TestPythonClass(package, type);
+
+        assert(pc != 0);
+
+        assert(pc->access_package() == package);
+        assert(pc->access_type() == type);
+
+        assert(pc->access_module() == 0);
+        assert(pc->access_class() == 0);
+
+        delete pc;
+    }
     return 0;
 }
 
