@@ -73,10 +73,13 @@ class ExposedEntityBuilder : public EntityBuilder {
 };
 
 class TestScriptFactory : public ScriptKit {
+  protected:
+    std::string m_package;
   public:
-    TestScriptFactory() : ScriptKit("foo", "bar") { }
+    TestScriptFactory() { }
 
-    int addScript(Entity * entity) { return 0; }
+    const std::string & package() const { return m_package; }
+    int addScript(Entity * entity) const { return 0; }
     int refreshClass() { return 0; }
 };
 
@@ -951,12 +954,6 @@ Root atlasClass(const std::string & name, const std::string & parent)
     r->setObjtype("class");
     r->setId(name);
     return r;
-}
-
-ScriptKit::ScriptKit(const std::string & package,
-                     const std::string & type) : m_package(package),
-                                                 m_type(type)
-{
 }
 
 ScriptKit::~ScriptKit()

@@ -33,10 +33,14 @@
 #include <cassert>
 
 class TestTaskScriptFactory : public TaskScriptKit {
+  protected:
+    std::string m_package;
   public:
-    TestTaskScriptFactory() : TaskScriptKit("pkg", "type") { }
+    virtual const std::string & package() const {
+        return m_package;
+    }
 
-    virtual int addScript(Task * task) {
+    virtual int addScript(Task * task) const {
         return 0;
     }
 
@@ -72,12 +76,6 @@ int main()
 }
 
 // stubs
-
-TaskScriptKit::TaskScriptKit(const std::string & package,
-                     const std::string & type) : m_package(package),
-                                                 m_type(type)
-{
-}
 
 TaskScriptKit::~TaskScriptKit()
 {

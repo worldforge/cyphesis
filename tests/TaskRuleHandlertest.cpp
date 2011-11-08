@@ -154,20 +154,13 @@ Task * TaskFactory::newTask(Character & chr)
     return 0;
 }
 
-TaskScriptKit::TaskScriptKit(const std::string & package,
-                     const std::string & type) : m_package(package),
-                                                 m_type(type)
-{
-}
-
 TaskScriptKit::~TaskScriptKit()
 {
 }
 
 PythonTaskScriptFactory::PythonTaskScriptFactory(const std::string & package,
                                                  const std::string & type) :
-                                                 TaskScriptKit(package, type),
-                                                 m_module(0), m_class(0)
+                                                 PythonClass(package, type)
 {
 }
 
@@ -175,12 +168,54 @@ PythonTaskScriptFactory::~PythonTaskScriptFactory()
 {
 }
 
-int PythonTaskScriptFactory::addScript(Task * entity)
+int PythonTaskScriptFactory::setup()
+{
+    return 0;
+}
+
+int PythonTaskScriptFactory::check() const
+{
+    return 0;
+}
+
+const std::string & PythonTaskScriptFactory::package() const
+{
+    return m_package;
+}
+
+int PythonTaskScriptFactory::addScript(Task * entity) const
 {
     return 0;
 }
 
 int PythonTaskScriptFactory::refreshClass()
+{
+    return 0;
+}
+
+PythonClass::PythonClass(const std::string & package,
+                         const std::string & type) : m_package(package),
+                                                     m_type(type),
+                                                     m_module(0),
+                                                     m_class(0)
+{
+}
+
+PythonClass::~PythonClass()
+{
+}
+
+int PythonClass::load()
+{
+    return 0;
+}
+
+int PythonClass::getClass()
+{
+    return 0;
+}
+
+int PythonClass::refresh()
 {
     return 0;
 }

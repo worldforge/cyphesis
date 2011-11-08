@@ -37,10 +37,14 @@
 #include <cassert>
 
 class TestScriptFactory : public ScriptKit {
+  protected:
+    std::string m_package;
   public:
-    TestScriptFactory() : ScriptKit("pkg", "type") { }
+    virtual const std::string & package() const {
+        return m_package;
+    }
 
-    virtual int addScript(Entity * entity) {
+    virtual int addScript(Entity * entity) const {
         return 0;
     }
 
@@ -81,12 +85,6 @@ int main()
 }
 
 // stubs
-
-ScriptKit::ScriptKit(const std::string & package,
-                     const std::string & type) : m_package(package),
-                                                 m_type(type)
-{
-}
 
 ScriptKit::~ScriptKit()
 {
