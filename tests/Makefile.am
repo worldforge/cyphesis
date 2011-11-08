@@ -48,7 +48,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  MindFactorytest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
-                 TerrainModtest
+                 TerrainModtest PythonClasstest
 
 RULESETS_INTEGRATION_TESTS = MindFactoryintegration BulletDomainintegration
 
@@ -487,6 +487,10 @@ TerrainModPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
+
+PythonClasstest_SOURCES = PythonClasstest.cpp
+PythonClasstest_LDADD = \
+        $(top_builddir)/rulesets/PythonClass.o
 
 TerrainPropertytest_SOURCES = TerrainPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
