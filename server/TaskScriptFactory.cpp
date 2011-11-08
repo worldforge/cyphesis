@@ -51,7 +51,7 @@ int PythonTaskScriptFactory::setup()
     return load();
 }
 
-int PythonTaskScriptFactory::check()
+int PythonTaskScriptFactory::check() const
 {
     if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
         return -1;
@@ -64,7 +64,7 @@ const std::string & PythonTaskScriptFactory::package() const
     return m_package;
 }
 
-int PythonTaskScriptFactory::addScript(Task * entity)
+int PythonTaskScriptFactory::addScript(Task * entity) const
 {
     if (m_class == 0) {
         return -1;

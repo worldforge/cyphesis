@@ -33,7 +33,7 @@ class ScriptKit {
     /// \brief Accessor for package name
     virtual const std::string & package() const = 0;
     /// \brief Add a script to an entity
-    virtual int addScript(Entity * entity) = 0;
+    virtual int addScript(Entity * entity) const = 0;
     /// \brief Reload the underlying class object from the script on disk
     virtual int refreshClass() = 0;
 };
@@ -42,7 +42,7 @@ class ScriptKit {
 /// to in game entity objects.
 class PythonScriptFactory : public ScriptKit, private PythonClass {
   protected:
-    int check();
+    int check() const;
   public:
     PythonScriptFactory(const std::string & package, const std::string & type);
     ~PythonScriptFactory();
@@ -50,7 +50,7 @@ class PythonScriptFactory : public ScriptKit, private PythonClass {
     int setup();
 
     const std::string & package() const;
-    int addScript(Entity * entity);
+    int addScript(Entity * entity) const;
     int refreshClass();
 };
 

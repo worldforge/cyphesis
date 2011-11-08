@@ -33,7 +33,7 @@ class TaskScriptKit {
     /// \brief Accessor for package name
     virtual const std::string & package() const = 0;
     /// \brief Add a script to an task
-    virtual int addScript(Task * task) = 0;
+    virtual int addScript(Task * task) const = 0;
     /// \brief Reload the underlying class object from the script on disk
     virtual int refreshClass() = 0;
 };
@@ -42,7 +42,7 @@ class TaskScriptKit {
 /// to in game task objects.
 class PythonTaskScriptFactory : public TaskScriptKit, private PythonClass {
   protected:
-    int check();
+    int check() const;
   public:
     PythonTaskScriptFactory(const std::string & package, const std::string & type);
     ~PythonTaskScriptFactory();
@@ -50,7 +50,7 @@ class PythonTaskScriptFactory : public TaskScriptKit, private PythonClass {
     int setup();
 
     const std::string & package() const;
-    int addScript(Task * task);
+    int addScript(Task * task) const;
     int refreshClass();
 };
 

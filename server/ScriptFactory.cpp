@@ -50,7 +50,7 @@ int PythonScriptFactory::setup()
     return load();
 }
 
-int PythonScriptFactory::check()
+int PythonScriptFactory::check() const
 {
     if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
 -       !PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
@@ -64,7 +64,7 @@ const std::string & PythonScriptFactory::package() const
     return m_package;
 }
 
-int PythonScriptFactory::addScript(Entity * entity)
+int PythonScriptFactory::addScript(Entity * entity) const
 {
     if (m_class == 0) {
         return -1;

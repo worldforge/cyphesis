@@ -42,7 +42,7 @@ class PythonClass {
     int load();
     int refresh();
 
-    virtual int check() = 0;
+    virtual int check() const = 0;
 
   public:
     virtual ~PythonClass();
