@@ -74,8 +74,10 @@ int main()
     // assert(testmod);
 
     PythonScriptFactory psf("testmod", "TestEntity");
+    int ret = psf.setup();
+    assert(ret == 0);
     Entity * e = new Entity("1", 1);
-    int ret = psf.addScript(e);
+    ret = psf.addScript(e);
     assert(ret == 0);
 
     OpVector res;
