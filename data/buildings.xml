@@ -106,10 +106,10 @@
         <list name="default">
           <float>-1.1575</float>
           <float>-1.1225</float>
-          <float>0</float>
+          <float>-0.99</float>
           <float>1.1575</float>
           <float>1.1225</float>
-          <float>1.71</float>
+          <float>1.749</float>
         </list>
         <string name="visibility">public</string>
       </map>
