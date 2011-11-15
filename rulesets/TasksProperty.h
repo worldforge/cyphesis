@@ -22,6 +22,8 @@
 
 #include "common/Property.h"
 
+#include "common/OperationRouter.h"
+
 class Task;
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
@@ -38,6 +40,9 @@ class TasksProperty : public PropertyBase {
 
     virtual void install(Entity *);
     virtual void apply(Entity *);
+
+    int updateTask();
+    int startTask(Task * task, const Operation & op, OpVector & res);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

@@ -104,3 +104,43 @@ void TasksProperty::install(Entity * owner)
 void TasksProperty::apply(Entity * owner)
 {
 }
+
+int TasksProperty::updateTask()
+{
+    setFlags(flag_unsent);
+
+    // FIXME Send update to generate visual broadcast
+    return 0;
+}
+
+int TasksProperty::startTask(Task * task, const Operation & op, OpVector & res)
+{
+    if (m_task == 0) {
+        log(ERROR, "Tasks property start when not installed");
+        return -1;
+    }
+
+    bool update_required = false;
+    if (*m_task != 0) {
+        update_required = true;
+        (*m_task)->decRef();
+    }
+    (*m_task) = task;
+    (*m_task)->incRef();
+
+    (*m_task)->initTask(op, res);
+
+    if ((*m_task)->obsolete()) {
+        (*m_task)->decRef();
+        *m_task = 0;
+    } else {
+        update_required = true;
+    }
+
+    if (update_required) {
+        updateTask();
+    }
+
+    return (m_task == 0) ? -1 : 0;
+
+}
