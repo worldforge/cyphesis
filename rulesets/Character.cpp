@@ -281,28 +281,9 @@ Character::~Character()
 /// @param res The result of the task startup.
 int Character::startTask(Task * task, const Operation & op, OpVector & res)
 {
-    bool update_required = false;
-    if (m_task != 0) {
-        update_required = true;
-        m_task->decRef();
-    }
-    m_task = task;
-    m_task->incRef();
+    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
 
-    m_task->initTask(op, res);
-
-    if (m_task->obsolete()) {
-        m_task->decRef();
-        m_task = 0;
-    } else {
-        update_required = true;
-    }
-
-    if (update_required) {
-        updateTask();
-    }
-
-    return (m_task == 0) ? -1 : 0;
+    return tp->startTask(task, this, op, res);
 }
 
 /// \brief Update the visible representation of the current task

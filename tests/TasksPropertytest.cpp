@@ -70,6 +70,10 @@ int main()
 
 // stubs
 
+namespace Atlas { namespace Objects { namespace Operation {
+int UPDATE_NO = -1;
+} } }
+
 int Character::startTask(Task * task, const Operation & op, OpVector & res)
 {
     return 0;

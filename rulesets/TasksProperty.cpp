@@ -26,11 +26,13 @@
 #include "common/debug.h"
 #include "common/log.h"
 #include "common/TypeNode.h"
+#include "common/Update.h"
 
 #include <iostream>
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
+using Atlas::Objects::Operation::Update;
 
 TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
@@ -105,15 +107,20 @@ void TasksProperty::apply(Entity * owner)
 {
 }
 
-int TasksProperty::updateTask()
+int TasksProperty::updateTask(Entity * owner, OpVector & res)
 {
     setFlags(flag_unsent);
 
-    // FIXME Send update to generate visual broadcast
+    Update update;
+    update->setTo(owner->getId());
+
     return 0;
 }
 
-int TasksProperty::startTask(Task * task, const Operation & op, OpVector & res)
+int TasksProperty::startTask(Task * task,
+                             Entity * owner,
+                             const Operation & op,
+                             OpVector & res)
 {
     if (m_task == 0) {
         log(ERROR, "Tasks property start when not installed");
@@ -138,7 +145,7 @@ int TasksProperty::startTask(Task * task, const Operation & op, OpVector & res)
     }
 
     if (update_required) {
-        updateTask();
+        updateTask(owner, res);
     }
 
     return (m_task == 0) ? -1 : 0;

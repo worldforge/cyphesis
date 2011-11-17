@@ -41,8 +41,11 @@ class TasksProperty : public PropertyBase {
     virtual void install(Entity *);
     virtual void apply(Entity *);
 
-    int updateTask();
-    int startTask(Task * task, const Operation & op, OpVector & res);
+    int updateTask(Entity * owner, OpVector & res);
+    int startTask(Task * task,
+                  Entity * owner,
+                  const Operation & op,
+                  OpVector & res);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

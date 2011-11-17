@@ -603,6 +603,16 @@ void TasksProperty::apply(Entity * owner)
 {
 }
 
+int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::updateTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
