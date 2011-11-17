@@ -114,6 +114,8 @@ int TasksProperty::updateTask(Entity * owner, OpVector & res)
     Update update;
     update->setTo(owner->getId());
 
+    res.push_back(update);
+
     return 0;
 }
 
