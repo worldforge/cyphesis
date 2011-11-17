@@ -143,21 +143,6 @@ static PyObject * Character_start_task(PyEntity * self, PyObject * args)
     return Py_None;
 }
 
-static PyObject * Character_clear_task(PyEntity * self)
-{
-#ifndef NDEBUG
-    if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.clear_task");
-        return NULL;
-    }
-#endif // NDEBUG
-    if (self->m_entity.c->task() != 0) {
-        self->m_entity.c->clearTask();
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
 static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
@@ -195,7 +180,6 @@ static PyMethodDef Character_methods[] = {
     {"send_world",      (PyCFunction)Entity_send_world,    METH_O},
     {"get_task",        (PyCFunction)Character_get_task,   METH_NOARGS},
     {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
-    {"clear_task",      (PyCFunction)Character_clear_task, METH_NOARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
     {NULL,              NULL}           /* sentinel */
 };

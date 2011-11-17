@@ -215,7 +215,6 @@ int main()
     fail_python_string("c.start_task(Task(c),Operation('cut'),1)");
     run_python_string("c.start_task(Task(c),Operation('cut'),Oplist())");
     run_python_string("c.get_task()");
-    run_python_string("c.clear_task()");
     fail_python_string("c.mind2body(1)");
     run_python_string("c.mind2body(Operation('update'))");
     run_python_string("c.mind2body(Operation('get'))");
@@ -249,12 +248,10 @@ int main()
 
     run_python_string("get_task_method=c.get_task");
     run_python_string("start_task_method=c.start_task");
-    run_python_string("clear_task_method=c.clear_task");
     run_python_string("mind2body_method=c.mind2body");
     run_python_string("sabotage.null(c)");
     fail_python_string("get_task_method()");
     fail_python_string("start_task_method(Task(Character('3')),Operation('cut'),Oplist())");
-    fail_python_string("clear_task_method()");
     fail_python_string("mind2body_method(Operation('update'))");
 
 #endif // NDEBUG
