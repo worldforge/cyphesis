@@ -613,6 +613,11 @@ int TasksProperty::updateTask(Entity *, OpVector &)
     return 0;
 }
 
+int TasksProperty::clearTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }

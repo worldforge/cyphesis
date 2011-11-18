@@ -78,8 +78,8 @@ class Character : public Character_parent {
     Task ** monitorTask() { return &m_task; }
 
     int startTask(Task *, const Operation & op, OpVector &);
-    void updateTask();
-    void clearTask();
+    void updateTask(OpVector &);
+    void clearTask(OpVector &);
 
     virtual void operation(const Operation & op, OpVector &);
     virtual void externalOperation(const Operation & op);

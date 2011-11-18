@@ -255,7 +255,11 @@ Character::Character(const std::string & id, long intId) :
                m_movement(*new Pedestrian(*this)),
                m_task(0), m_mind(0), m_externalMind(0)
 {
-    destroyed.connect(sigc::mem_fun(this, &Character::clearTask));
+    // FIXME Do we still need this?
+    // It is my hope that once the task object is fully held by the
+    // property, this will no longer be necessary. If it is we will
+    // need to find another way.
+    // destroyed.connect(sigc::mem_fun(this, &Character::clearTask));
 }
 
 Character::~Character()
@@ -290,39 +294,27 @@ int Character::startTask(Task * task, const Operation & op, OpVector & res)
 ///
 /// Generate a Set operation which modifies the Characters task property
 /// to reflect the current status of the task.
-void Character::updateTask()
+void Character::updateTask(OpVector & res)
 {
     TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
 
-    // Check if this flag is already set. If so, there may be no need
-    // to send the update op.
-    tp->setFlags(flag_unsent);
-
-    Update update;
-    update->setTo(getId());
-
-    sendWorld(update);
+    tp->updateTask(this, res);
 }
 
 /// \brief Clean up and remove the task currently being executed
 ///
 /// Remove the task, and send an operation indicating that no tasks
 /// are now present.
-void Character::clearTask()
+void Character::clearTask(OpVector & res)
 {
-    if (m_task == 0) {
-        // This function should never be called when there is no task,
-        // except during Entity destruction
-        assert(m_flags & entity_destroyed);
+    TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
+
+    if (tp == 0) {
+        log(NOTICE, "Clearing task when no property exists");
         return;
     }
-    // Thus far a task can only have one reference legally, so if we
-    // have a task it's count must be 1
-    assert(m_task->count() == 1);
-    m_task->decRef();
-    m_task = 0;
 
-    updateTask();
+    tp->clearTask(this, res);
 }
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
@@ -381,14 +373,14 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             m_task->TickOperation(op, res);
             assert(m_task != 0);
             if (m_task->obsolete()) {
-                clearTask();
+                clearTask(res);
             } else {
-                updateTask();
                 if (res.empty()) {
                     log(WARNING, String::compose("Character::%1: Task %2 has "
                                                  "stalled", __func__,
                                                  m_task->name()));
                 }
+                updateTask(res);
             }
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.
@@ -459,7 +451,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                 m_task->irrelevant();
             }
             assert(m_task->obsolete());
-            clearTask();
+            clearTask(res);
         }
         return;
     }
@@ -637,7 +629,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                                        " but it did not initialise",
                                        op_type, tool->getType()));
             m_task->irrelevant();
-            clearTask();
+            clearTask(res);
         }
         return;
     }
@@ -790,7 +782,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     }
 
     if (attacker->startTask(combat, op, res) != 0) {
-        clearTask();
+        clearTask(res);
         return;
     }
 }

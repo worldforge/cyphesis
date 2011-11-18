@@ -140,6 +140,9 @@ int TasksProperty::startTask(Task * task,
     (*m_task)->initTask(op, res);
 
     if ((*m_task)->obsolete()) {
+        // Thus far a task can only have one reference legally, so if we
+        // have a task it's count must be 1
+        assert((*m_task)->count() == 1);
         (*m_task)->decRef();
         *m_task = 0;
     } else {
@@ -152,4 +155,26 @@ int TasksProperty::startTask(Task * task,
 
     return (m_task == 0) ? -1 : 0;
 
+}
+
+int TasksProperty::clearTask(Entity * owner, OpVector & res)
+{
+    if (m_task == 0) {
+        log(ERROR, "Tasks property clear when not installed");
+        return -1;
+    }
+
+    if (*m_task == 0) {
+        // This function should never be called when there is no task,
+        // except during Entity destruction
+        assert(owner->getFlags() & entity_destroyed);
+        return -1;
+    }
+    // Thus far a task can only have one reference legally, so if we
+    // have a task it's count must be 1
+    assert((*m_task)->count() == 1);
+    (*m_task)->decRef();
+    *m_task = 0;
+
+    return updateTask(owner, res);
 }

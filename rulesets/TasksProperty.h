@@ -46,6 +46,7 @@ class TasksProperty : public PropertyBase {
                   Entity * owner,
                   const Operation & op,
                   OpVector & res);
+    int clearTask(Entity * owner, OpVector & res);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H
