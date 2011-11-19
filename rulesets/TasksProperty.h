@@ -37,7 +37,6 @@ class TasksProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
-
     virtual void install(Entity *);
     virtual void apply(Entity *);
 
@@ -47,6 +46,9 @@ class TasksProperty : public PropertyBase {
                   const Operation & op,
                   OpVector & res);
     int clearTask(Entity * owner, OpVector & res);
+
+    void TickOperation(Entity * owner, const Operation & op, OpVector &);
+    void UseOperation(Entity * owner, const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

@@ -30,9 +30,15 @@
 
 #include <iostream>
 
+using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Update;
+
+static const bool debug_flag = false;
+
+static const std::string SERIALNO = "serialno";
 
 TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
@@ -177,4 +183,53 @@ int TasksProperty::clearTask(Entity * owner, OpVector & res)
     *m_task = 0;
 
     return updateTask(owner, res);
+}
+
+void TasksProperty::TickOperation(Entity * owner,
+                                  const Operation & op,
+                                  OpVector & res)
+{
+    if (m_task == 0) {
+        log(ERROR, "Tasks property tick when not installed");
+        return;
+    }
+
+    if (*m_task == 0) {
+        return;
+    }
+
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return;
+    }
+
+    const Root & arg = args.front();
+
+    Element serialno;
+    if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
+        if (serialno.asInt() != (*m_task)->serialno()) {
+            debug(std::cout << "Old tick" << std::endl << std::flush;);
+            return;
+        }
+    } else {
+        log(ERROR, "Character::TickOperation: No serialno in tick arg");
+        return;
+    }
+    (*m_task)->TickOperation(op, res);
+    if ((*m_task)->obsolete()) {
+        clearTask(owner, res);
+    } else {
+        if (res.empty()) {
+            log(WARNING, String::compose("Character::%1: Task %2 has "
+                                         "stalled", __func__,
+                                         (*m_task)->name()));
+        }
+        updateTask(owner, res);
+    }
+}
+
+void TasksProperty::UseOperation(Entity * owner,
+                                 const Operation & op,
+                                 OpVector & res)
+{
 }

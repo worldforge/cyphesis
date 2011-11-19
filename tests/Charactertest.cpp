@@ -618,6 +618,14 @@ int TasksProperty::clearTask(Entity *, OpVector &)
     return 0;
 }
 
+void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }

@@ -356,32 +356,15 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             tickOp->setArgs1(tick_arg);
             res.push_back(tickOp);
         } else if (arg->getName() == "task") {
-            // Deal with task iteration
-            if (m_task == 0) {
+            TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
+
+            if (tp == 0) {
+                log(ERROR, "Tick for task, but not tasks property");
                 return;
             }
-            Element serialno;
-            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
-                if (serialno.asInt() != m_task->serialno()) {
-                    debug(std::cout << "Old tick" << std::endl << std::flush;);
-                    return;
-                }
-            } else {
-                log(ERROR, "Character::TickOperation: No serialno in tick arg");
-                return;
-            }
-            m_task->TickOperation(op, res);
-            assert(m_task != 0);
-            if (m_task->obsolete()) {
-                clearTask(res);
-            } else {
-                if (res.empty()) {
-                    log(WARNING, String::compose("Character::%1: Task %2 has "
-                                                 "stalled", __func__,
-                                                 m_task->name()));
-                }
-                updateTask(res);
-            }
+
+            tp->TickOperation(this, op, res);
+
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.
         } else {
