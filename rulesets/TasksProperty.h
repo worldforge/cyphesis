@@ -46,6 +46,7 @@ class TasksProperty : public PropertyBase {
                   const Operation & op,
                   OpVector & res);
     int clearTask(Entity * owner, OpVector & res);
+    void stopTask(Entity * owner, OpVector & res);
 
     void TickOperation(Entity * owner, const Operation & op, OpVector &);
     void UseOperation(Entity * owner, const Operation & op, OpVector &);

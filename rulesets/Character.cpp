@@ -427,14 +427,12 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op" << std::endl << std::flush;);
 
+    TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
+
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        if (m_task != 0) {
-            if (!m_task->obsolete()) {
-                m_task->irrelevant();
-            }
-            assert(m_task->obsolete());
-            clearTask(res);
+        if (tp != 0) {
+            tp->stopTask(this, res);
         }
         return;
     }

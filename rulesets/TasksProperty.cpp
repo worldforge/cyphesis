@@ -185,6 +185,26 @@ int TasksProperty::clearTask(Entity * owner, OpVector & res)
     return updateTask(owner, res);
 }
 
+void TasksProperty::stopTask(Entity * owner, OpVector & res)
+{
+    // This is just clearTask without an assert
+    if (m_task == 0) {
+        log(ERROR, "Tasks property clear when not installed");
+        return;
+    }
+    
+    if (*m_task == 0) {
+        log(ERROR, "Tasks property stop when no task");
+        return;
+    }
+
+    assert((*m_task)->count() == 1);
+    (*m_task)->decRef();
+    *m_task = 0;
+
+    updateTask(owner, res);
+}
+
 void TasksProperty::TickOperation(Entity * owner,
                                   const Operation & op,
                                   OpVector & res)
