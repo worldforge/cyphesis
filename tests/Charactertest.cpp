@@ -618,6 +618,10 @@ int TasksProperty::clearTask(Entity *, OpVector &)
     return 0;
 }
 
+void TasksProperty::stopTask(Entity *, OpVector &)
+{
+}
+
 void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
 {
 }
