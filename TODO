@@ -1,3 +1,5 @@
+Include doxygen docs in http self-served docs.
+
 Add Py_Thing checks which allow for inheritance, and macros with Exact suffix
 
 De-dup code in Py_Thing and Py_Mind
