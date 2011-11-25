@@ -609,9 +609,11 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                                        "\"%1\" of tool \"%2\" activated a task,"
                                        " but it did not initialise",
                                        op_type, tool->getType()));
-            m_task->irrelevant();
+            task->irrelevant();
             clearTask(res);
         }
+        // No cleanup is required if startTask() returned -1, as the task
+        // has already been decref()ed.
         return;
     }
 
