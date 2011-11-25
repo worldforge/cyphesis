@@ -159,7 +159,7 @@ int TasksProperty::startTask(Task * task,
         updateTask(owner, res);
     }
 
-    return (m_task == 0) ? -1 : 0;
+    return (*m_task == 0) ? -1 : 0;
 
 }
 
