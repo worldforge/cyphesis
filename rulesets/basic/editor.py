@@ -89,11 +89,11 @@ class editor:
         s,i=il.importance(sub,cmp,obj)
         self.tell(target,s,i)
 
-def create_editor(host, account, password):
+def create_editor(host, account, password, avatar='creator'):
     c=server.ObserverClient()
 
     c.server = host
 
-    c.setup(account, password)
+    c.setup(account, password, avatar)
 
     return editor(c)
