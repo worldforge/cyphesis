@@ -732,14 +732,16 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (attacker->m_task != 0) {
+    const TasksProperty * atp = attacker->getPropertyClass<TasksProperty>(TASKS);
+    if (atp != 0 && atp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
                                    "because attacker %1(%2) busy.",
                                    attacker->getId(), attacker->getType()));
         return;
     }
 
-    if (m_task != 0) {
+    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
+    if (tp != 0 && tp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
                                    "because defender %1(%2) busy.",
                                    getId(), getType()));
@@ -753,7 +755,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (startTask(combat, op, res) != 0) {
+    if (tp->startTask(combat, this, op, res) != 0) {
         return;
     }
 
