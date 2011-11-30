@@ -184,7 +184,7 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
             return Py_None;
         }
         PyCreatorClient * pcc = newPyCreatorClient();
-        pcc->m_mind = self->m_client->character();
+        pcc->m_mind.a = self->m_client->character();
         return (PyObject*)pcc;
     }
     if (strcmp(name, "id") == 0) {

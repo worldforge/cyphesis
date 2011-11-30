@@ -25,6 +25,7 @@
 #include <string>
 
 class CreatorClient;
+class CharacterClient;
 
 extern PyTypeObject PyCreatorClient_Type;
 
@@ -33,8 +34,11 @@ typedef struct {
     PyObject_HEAD
     /// \brief Storage for additional attributes
     PyObject         * CreatorClient_attr;    // Attributes dictionary
-    /// \brief CreateClient object handled by this wrapper
-    CreatorClient    * m_mind;
+    /// \brief CreatorClient object handled by this wrapper
+    union {
+        CharacterClient * c;
+        CreatorClient * a;
+    } m_mind;
 } PyCreatorClient;
 
 #define PyCreatorClient_Check(_o) ((_o)->ob_type == &PyCreatorClient_Type)
