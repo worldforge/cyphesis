@@ -39,7 +39,9 @@ class ObserverClient : public BaseClient {
         m_server = server;
     }
 
-    int setup(const std::string & account = "", const std::string & password = "");
+    int setup(const std::string & account = "",
+              const std::string & password = "",
+              const std::string & avatar = "creator");
     void idle();
 };
 

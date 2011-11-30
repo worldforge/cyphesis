@@ -43,8 +43,9 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
 #endif // NDEBUG
     char * username = NULL;
     char * password = NULL;
+    char * avatar = NULL;
     char empty[] = "";
-    if (!PyArg_ParseTuple(args, "|ss", &username, &password)) {
+    if (!PyArg_ParseTuple(args, "|sss", &username, &password, &avatar)) {
         return NULL;
     }
     if (username == NULL) {
@@ -53,10 +54,15 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
             password = &empty[0];
         }
     } else if (password == NULL) {
-        PyErr_SetString(PyExc_TypeError, "function takes 0 or 2 arguments (1 given)");
+        PyErr_SetString(PyExc_TypeError, "function takes 0 or 2, or 3 arguments (1 given)");
         return NULL;
     }
-    int res = self->m_client->setup(username, password);
+    int res;
+    if (avatar == NULL) {
+        res = self->m_client->setup(username, password);
+    } else {
+        res = self->m_client->setup(username, password, avatar);
+    }
     if (res != 0) {
         PyErr_SetString(PyExc_RuntimeError, "client setup failed");
         return NULL;

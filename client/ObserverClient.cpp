@@ -40,7 +40,8 @@ ObserverClient::~ObserverClient()
 }
 
 int ObserverClient::setup(const std::string & account,
-                          const std::string & password)
+                          const std::string & password,
+                          const std::string & avatar)
 {
     if (connectLocal(client_socket_name) != 0) {
         std::cerr << "WARNING: Could not make secure connection to:"
@@ -69,7 +70,7 @@ int ObserverClient::setup(const std::string & account,
     if (!m_player.isValid()) {
         return -1;
     }
-    m_character = createCharacter("creator");
+    m_character = createCharacter(avatar);
     if (m_character == NULL) {
         return -1;
     }
