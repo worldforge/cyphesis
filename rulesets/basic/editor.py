@@ -8,9 +8,9 @@ il=interlinguish
 import server
 
 class editor:
-    def __init__(self,c):
-        self.client=c
-        self.avatar=c.character
+    def __init__(self, client, avatar):
+        self.client=client
+        self.avatar=avatar
         self.list_call={"say":(self._say,1),
                         "own":(self._own,2),
                         "know":(self._know,2),
@@ -90,10 +90,12 @@ class editor:
         self.tell(target,s,i)
 
 def create_editor(host, account, password, avatar='creator'):
-    c=server.ObserverClient()
+    client=server.ObserverClient()
 
-    c.server = host
+    client.server = host
 
-    c.setup(account, password, avatar)
+    client.setup(account, password, avatar)
 
-    return editor(c)
+    avatar = client.character
+
+    return editor(client, avatar)
