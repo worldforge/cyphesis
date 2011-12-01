@@ -1,5 +1,5 @@
 <atlas>
-
+ 
   <map>
     <string name="id">chop</string>
     <string name="objtype">op_definition</string>
@@ -42,6 +42,14 @@
 
   <map>
     <string name="id">drag</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+ 
+  <map>
+    <string name="id">earthwork_bloomery</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>root_operation</string>
