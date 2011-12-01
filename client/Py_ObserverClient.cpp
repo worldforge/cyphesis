@@ -71,6 +71,29 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
     return Py_None;
 }
 
+static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
+                                               PyObject * arg)
+{
+#ifndef NDEBUG
+    if (self->m_client == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (!PyString_Check(arg)) {
+        return NULL;
+    }
+    char * avatar = PyString_AsString(arg);
+    CreatorClient * c = self->m_client->createCharacter(avatar);
+    if (c == 0) {
+        PyErr_SetString(PyExc_RuntimeError, "avatar creation failed");
+        return NULL;
+    }
+    PyCreatorClient * pcc = newPyCreatorClient();
+    pcc->m_mind.a = c;
+    return (PyObject*)pcc;
+}
+
 static PyObject * ObserverClient_run(PyObserverClient * self)
 {
 #ifndef NDEBUG
@@ -152,6 +175,7 @@ static PyObject * ObserverClient_wait(PyObserverClient * self)
 
 static PyMethodDef ObserverClient_methods[] = {
         {"setup",          (PyCFunction)ObserverClient_setup,     METH_VARARGS},
+        {"create_avatar",  (PyCFunction)ObserverClient_create_avatar, METH_O},
         {"run",            (PyCFunction)ObserverClient_run,       METH_NOARGS},
         {"send",           (PyCFunction)ObserverClient_send,      METH_O},
         {"send_wait",      (PyCFunction)ObserverClient_send_wait, METH_O},
