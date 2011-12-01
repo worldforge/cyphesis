@@ -10,12 +10,12 @@ if LINK_STATIC
 
 TOOL_LIBS = \
     /usr/lib/libvarconf-1.0.a \
-    /usr/lib/libAtlasObjects-0.6.a \
-    /usr/lib/libAtlasNet-0.6.a \
-    /usr/lib/libAtlasCodecs-0.6.a \
-    /usr/lib/libAtlasFilters-0.6.a \
-    /usr/lib/libAtlasMessage-0.6.a \
-    /usr/lib/libAtlas-0.6.a \
+    /usr/lib/libAtlasObjects-0.7.a \
+    /usr/lib/libAtlasNet-0.7.a \
+    /usr/lib/libAtlasCodecs-0.7.a \
+    /usr/lib/libAtlasFilters-0.7.a \
+    /usr/lib/libAtlasMessage-0.7.a \
+    /usr/lib/libAtlas-0.7.a \
     /usr/lib/libsigc-2.0.a \
     $(STATIC_LIBSTDCPP) \
     $(STATIC_LIBGCC) \
@@ -23,12 +23,12 @@ TOOL_LIBS = \
 
 DBTOOL_LIBS = \
     /usr/lib/libvarconf-1.0.a \
-    /usr/lib/libAtlasObjects-0.6.a \
-    /usr/lib/libAtlasNet-0.6.a \
-    /usr/lib/libAtlasCodecs-0.6.a \
-    /usr/lib/libAtlasFilters-0.6.a \
-    /usr/lib/libAtlasMessage-0.6.a \
-    /usr/lib/libAtlas-0.6.a \
+    /usr/lib/libAtlasObjects-0.7.a \
+    /usr/lib/libAtlasNet-0.7.a \
+    /usr/lib/libAtlasCodecs-0.7.a \
+    /usr/lib/libAtlasFilters-0.7.a \
+    /usr/lib/libAtlasMessage-0.7.a \
+    /usr/lib/libAtlas-0.7.a \
     /usr/lib/libsigc-2.0.a \
     /usr/lib/libpq.a \
     /usr/lib/libldap.a \

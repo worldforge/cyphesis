@@ -108,7 +108,7 @@ Inheritancetest::Inheritancetest()
 {
     if (SQUIGGLYMUFF_NO  == OP_INVALID) {
         SQUIGGLYMUFF_NO = Factories::instance()->addFactory("squigglymuff",
-                                                            &generic_factory);
+                                                            &generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
     }
 
     ADD_TEST(Inheritancetest::test_builtins);
