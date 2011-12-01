@@ -70,10 +70,6 @@ int ObserverClient::setup(const std::string & account,
     if (!m_player.isValid()) {
         return -1;
     }
-    m_character = createCharacter(avatar);
-    if (m_character == NULL) {
-        return -1;
-    }
     return 0;
 }
 

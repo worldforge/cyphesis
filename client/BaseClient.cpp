@@ -190,6 +190,9 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world
     // model here, or just in the minds (when we become an AI client
+    if (m_character == 0) {
+        m_character = obj;
+    }
     return obj;
 }
 

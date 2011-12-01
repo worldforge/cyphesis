@@ -96,6 +96,6 @@ def create_editor(host, account, password, avatar='creator'):
 
     client.setup(account, password, avatar)
 
-    avatar = client.character
+    avatar = client.create_avatar(avatar)
 
     return editor(client, avatar)
