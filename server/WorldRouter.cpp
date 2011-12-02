@@ -345,11 +345,11 @@ Entity * WorldRouter::spawnNewEntity(const std::string & name,
 
 /// \brief Create a new task
 ///
-/// Construct a new task linked to the Character provided.
+/// Construct a new task linked to the LocatedEntity provided.
 /// @param name the name of the task type to be instantiated
 /// @param owner the character who will own the task
 /// @return a pointer to the new task
-Task * WorldRouter::newTask(const std::string & name, Character & owner)
+Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 {
     Task * task = EntityBuilder::instance()->newTask(name, owner);
     if (task == 0) {
@@ -361,7 +361,7 @@ Task * WorldRouter::newTask(const std::string & name, Character & owner)
 
 /// \brief Activate a new task
 ///
-/// Construct a task linked to the Character provided, activated by the
+/// Construct a task linked to the LocatedEntity provided, activated by the
 /// tool and operation class given.
 /// @param tool the type of tool activating the task
 /// @param op the type of operation acitivating the task
@@ -371,7 +371,7 @@ Task * WorldRouter::newTask(const std::string & name, Character & owner)
 Task * WorldRouter::activateTask(const std::string & tool,
                                  const std::string & op,
                                  const std::string & target,
-                                 Character & owner)
+                                 LocatedEntity & owner)
 {
     return EntityBuilder::instance()->activateTask(tool, op, target, owner);
 }

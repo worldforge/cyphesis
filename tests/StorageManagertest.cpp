@@ -272,7 +272,7 @@ Entity * WorldRouter::spawnNewEntity(const std::string & name,
     return 0;
 }
 
-Task * WorldRouter::newTask(const std::string & name, Character & owner)
+Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 {
     return 0;
 }
@@ -280,7 +280,7 @@ Task * WorldRouter::newTask(const std::string & name, Character & owner)
 Task * WorldRouter::activateTask(const std::string & tool,
                                  const std::string & op,
                                  const std::string & target,
-                                 Character & owner)
+                                 LocatedEntity & owner)
 {
     return 0;
 }

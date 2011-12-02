@@ -25,7 +25,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 
 class BaseWorld;
-class Character;
+class LocatedEntity;
 class Entity;
 class EntityKit;
 class Task;
@@ -82,9 +82,9 @@ class EntityBuilder {
 
     bool isTask(const std::string & class_name);
     bool hasTask(const std::string & class_name);
-    Task * buildTask(TaskKit * factory, Character & owner) const;
+    Task * buildTask(TaskKit * factory, LocatedEntity & owner) const;
     Task * newTask(const std::string & class_name,
-                   Character & owner) const;
+                   LocatedEntity & owner) const;
     void installTaskFactory(const std::string & class_name,
                             TaskKit * factory);
     TaskKit * getTaskFactory(const std::string & class_name);
@@ -94,7 +94,7 @@ class EntityBuilder {
     Task * activateTask(const std::string & tool,
                         const std::string & op,
                         const std::string & target,
-                        Character & owner) const;
+                        LocatedEntity & owner) const;
 };
 
 #endif // SERVER_ENTITY_BUILDER_H

@@ -182,7 +182,7 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     return thing;
 }
 
-Task * EntityBuilder::buildTask(TaskKit * factory, Character & owner) const
+Task * EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
 {
     Task * task = factory->newTask(owner);
     if (task == 0) {
@@ -202,7 +202,7 @@ Task * EntityBuilder::buildTask(TaskKit * factory, Character & owner) const
 ///
 /// @param name The name of the task type.
 /// @param owner The character entity that owns the task.
-Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
+Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) const
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
     if (I == m_taskFactories.end()) {
@@ -248,7 +248,7 @@ void EntityBuilder::addTaskActivation(const std::string & tool,
 Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
                                    const std::string & target,
-                                   Character & owner) const
+                                   LocatedEntity & owner) const
 {
     TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
     if (I == m_taskActivations.end()) {

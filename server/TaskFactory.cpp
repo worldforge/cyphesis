@@ -22,7 +22,6 @@
 #include "server/TaskScriptFactory.h"
 
 #include "rulesets/Task.h"
-#include "rulesets/Character.h"
 
 TaskKit::TaskKit() : m_scriptFactory(0)
 {
@@ -45,7 +44,7 @@ TaskFactory::~TaskFactory()
 {
 }
 
-Task * TaskFactory::newTask(Character & chr)
+Task * TaskFactory::newTask(LocatedEntity & chr)
 {
     // Create the task, and use its script to add a script
 

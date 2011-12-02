@@ -823,7 +823,7 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
     return 0;
 }
 
-Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
+Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) const
 {
     return 0;
 }
@@ -831,7 +831,7 @@ Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
 Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
                                    const std::string & target,
-                                   Character & owner) const
+                                   LocatedEntity & owner) const
 {
     return 0;
 }

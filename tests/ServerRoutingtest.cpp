@@ -64,9 +64,9 @@ class TestWorld : public BaseWorld {
                             const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
-    virtual Task * newTask(const std::string &, Character &) { return 0; }
+    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
-                                const std::string &, Character &) { return 0; }
+                                const std::string &, LocatedEntity &) { return 0; }
     virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
         return 0;
     }
