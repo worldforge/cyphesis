@@ -179,7 +179,8 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
     // FIXME Stamina property?
-    if (m_task == 0 && !m_movement.updateNeeded(m_location)) {
+    const TasksProperty * tp = getPropertyClass<TasksProperty>(TASKS);
+    if ((tp == 0 || !tp->busy()) && !m_movement.updateNeeded(m_location)) {
 
         Property<double> * stamina_prop = modPropertyType<double>(STAMINA);
         if (stamina_prop != 0) {
