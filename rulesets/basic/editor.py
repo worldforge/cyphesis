@@ -36,6 +36,8 @@ class editor:
             #self.cl_depth=0
             return self.call_list_args
         raise AttributeError,name
+    def create(self, avatar_type):
+        return self.client.create_avatar(avatar_type)
     def make(self, type, **kw):
         kw['type']=type
         # if not kw.has_key('type'):

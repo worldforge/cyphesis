@@ -733,3 +733,18 @@ def test_task_stop(host='', account='', password='', **args):
     if not hasattr(settler, 'tasks') or len(settler.tasks) > 0:
         print "Task stop failed"
         return
+
+def test_combat(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+
+    actor=m.create('settler')
+    victim=m.make('settler',pos=(1,2,0))
+
+    actor.send(Operation("attack", Entity(victim.id)))
+    victim=m.look(victim.id)
+
+    if not hasattr(victim, 'tasks') or len(victim.tasks) < 1:
+        print "Attack failed on victim"
+        return
+
