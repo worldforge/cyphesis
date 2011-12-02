@@ -120,12 +120,14 @@ int TasksProperty::startTask(Task * task,
 
     task->initTask(op, res);
 
+    assert(task->count() == 0);
+
     if (task->obsolete()) {
         // Thus far a task can not legally have a reference, so we can't
         // decref it.
-        assert(task->count() == 0);
         delete task;
     } else {
+        assert(!res.empty());
         m_task = task;
         m_task->incRef();
         update_required = true;

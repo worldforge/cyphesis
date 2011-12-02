@@ -596,21 +596,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
                                                      target_ent->getType()->name(),
                                                      *this);
     if (task != NULL) {
-        assert(res.empty());
-        if (startTask(task, rop, res) == 0 && res.empty()) {
-            // If initialising the task did not result in any operation at all
-            // then the task cannot work correctly. In this case all we can
-            // do is flag an error, and get rid of the task.
-            log(ERROR, String::compose("Character::UseOperation Op type "
-                                       "\"%1\" of tool \"%2\" activated a task,"
-                                       " but it did not initialise",
-                                       op_type, tool->getType()));
-            task->irrelevant();
-            clearTask(res);
-        }
-        // No cleanup is required if startTask() returned -1, as the task
-        // has already been decref()ed.
-        return;
+        startTask(task, rop, res);
     }
 
     res.push_back(rop);
