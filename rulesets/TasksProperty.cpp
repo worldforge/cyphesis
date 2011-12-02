@@ -19,7 +19,7 @@
 
 #include "TasksProperty.h"
 
-#include "Character.h"
+#include "Entity.h"
 #include "Task.h"
 
 #include "common/compose.hpp"
@@ -47,20 +47,16 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 int TasksProperty::get(Atlas::Message::Element & val) const
 {
     if (m_task == 0) {
-        log(ERROR, "No task pointer in ::get");
-        return -1;
-    }
-    if (*m_task == 0) {
         val = ListType();
         return 0;
     }
     MapType task;
-    task["name"] = (*m_task)->name();
-    float progress = (*m_task)->progress();
+    task["name"] = m_task->name();
+    float progress = m_task->progress();
     if (progress > 0) {
         task["progress"] = progress;
     }
-    float rate = (*m_task)->rate();
+    float rate = m_task->rate();
     if (rate > 0) {
         task["rate"] = rate;
     }
@@ -76,7 +72,7 @@ void TasksProperty::set(const Atlas::Message::Element & val)
         return;
     }
 
-    if (m_task == 0 || *m_task == 0) {
+    if (m_task == 0) {
         log(ERROR, "No task in ::set");
         return;
     }
@@ -93,24 +89,9 @@ void TasksProperty::set(const Atlas::Message::Element & val)
         MapType::const_iterator J = task.begin();
         MapType::const_iterator Jend = task.end();
         for (J = task.begin(); J != Jend; ++J) {
-            (*m_task)->setAttr(J->first, J->second);
+            m_task->setAttr(J->first, J->second);
         }
     }
-}
-
-void TasksProperty::install(Entity * owner)
-{
-    if (flags() & flag_class) {
-        return;
-    }
-    Character * c = dynamic_cast<Character *>(owner);
-    if (c != 0) {
-        m_task = c->monitorTask();
-    }
-}
-
-void TasksProperty::apply(Entity * owner)
-{
 }
 
 int TasksProperty::updateTask(Entity * owner, OpVector & res)
@@ -130,28 +111,23 @@ int TasksProperty::startTask(Task * task,
                              const Operation & op,
                              OpVector & res)
 {
-    if (m_task == 0) {
-        log(ERROR, "Tasks property start when not installed");
-        return -1;
-    }
-
     bool update_required = false;
-    if (*m_task != 0) {
+    if (m_task != 0) {
         update_required = true;
-        (*m_task)->decRef();
+        m_task->decRef();
+        m_task = 0;
     }
-    (*m_task) = task;
-    (*m_task)->incRef();
 
-    (*m_task)->initTask(op, res);
+    task->initTask(op, res);
 
-    if ((*m_task)->obsolete()) {
-        // Thus far a task can only have one reference legally, so if we
-        // have a task it's count must be 1
-        assert((*m_task)->count() == 1);
-        (*m_task)->decRef();
-        *m_task = 0;
+    if (task->obsolete()) {
+        // Thus far a task can not legally have a reference, so we can't
+        // decref it.
+        assert(task->count() == 0);
+        delete task;
     } else {
+        m_task = task;
+        m_task->incRef();
         update_required = true;
     }
 
@@ -159,18 +135,13 @@ int TasksProperty::startTask(Task * task,
         updateTask(owner, res);
     }
 
-    return (*m_task == 0) ? -1 : 0;
+    return (m_task == 0) ? -1 : 0;
 
 }
 
 int TasksProperty::clearTask(Entity * owner, OpVector & res)
 {
     if (m_task == 0) {
-        log(ERROR, "Tasks property clear when not installed");
-        return -1;
-    }
-
-    if (*m_task == 0) {
         // This function should never be called when there is no task,
         // except during Entity destruction
         assert(owner->getFlags() & entity_destroyed);
@@ -178,9 +149,9 @@ int TasksProperty::clearTask(Entity * owner, OpVector & res)
     }
     // Thus far a task can only have one reference legally, so if we
     // have a task it's count must be 1
-    assert((*m_task)->count() == 1);
-    (*m_task)->decRef();
-    *m_task = 0;
+    assert(m_task->count() == 1);
+    m_task->decRef();
+    m_task = 0;
 
     return updateTask(owner, res);
 }
@@ -189,18 +160,13 @@ void TasksProperty::stopTask(Entity * owner, OpVector & res)
 {
     // This is just clearTask without an assert
     if (m_task == 0) {
-        log(ERROR, "Tasks property clear when not installed");
-        return;
-    }
-    
-    if (*m_task == 0) {
         log(ERROR, "Tasks property stop when no task");
         return;
     }
 
-    assert((*m_task)->count() == 1);
-    (*m_task)->decRef();
-    *m_task = 0;
+    assert(m_task->count() == 1);
+    m_task->decRef();
+    m_task = 0;
 
     updateTask(owner, res);
 }
@@ -210,11 +176,6 @@ void TasksProperty::TickOperation(Entity * owner,
                                   OpVector & res)
 {
     if (m_task == 0) {
-        log(ERROR, "Tasks property tick when not installed");
-        return;
-    }
-
-    if (*m_task == 0) {
         return;
     }
 
@@ -227,7 +188,7 @@ void TasksProperty::TickOperation(Entity * owner,
 
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
-        if (serialno.asInt() != (*m_task)->serialno()) {
+        if (serialno.asInt() != m_task->serialno()) {
             debug(std::cout << "Old tick" << std::endl << std::flush;);
             return;
         }
@@ -235,14 +196,14 @@ void TasksProperty::TickOperation(Entity * owner,
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return;
     }
-    (*m_task)->TickOperation(op, res);
-    if ((*m_task)->obsolete()) {
+    m_task->TickOperation(op, res);
+    if (m_task->obsolete()) {
         clearTask(owner, res);
     } else {
         if (res.empty()) {
             log(WARNING, String::compose("Character::%1: Task %2 has "
                                          "stalled", __func__,
-                                         (*m_task)->name()));
+                                         m_task->name()));
         }
         updateTask(owner, res);
     }

@@ -30,20 +30,18 @@ class Task;
 /// \ingroup PropertyClasses
 class TasksProperty : public PropertyBase {
   protected:
-    Task ** m_task;
+    Task * m_task;
   public:
     /// \brief Constructor
     explicit TasksProperty();
 
     bool busy() const
     {
-        return m_task != 0 && *m_task != 0;
+        return m_task != 0;
     }
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
-    virtual void install(Entity *);
-    virtual void apply(Entity *);
 
     int updateTask(Entity * owner, OpVector & res);
     int startTask(Task * task,

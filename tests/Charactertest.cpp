@@ -595,14 +595,6 @@ void TasksProperty::set(const Atlas::Message::Element & val)
 {
 }
 
-void TasksProperty::install(Entity * owner)
-{
-}
-
-void TasksProperty::apply(Entity * owner)
-{
-}
-
 int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
 {
     return 0;
