@@ -125,7 +125,7 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     if (strcmp(name, "character") == 0) {
-        return wrapEntity(&self->m_task->character());
+        return wrapEntity(&self->m_task->owner());
     }
     if (strcmp(name, "progress") == 0) {
         return PyFloat_FromDouble(self->m_task->progress());

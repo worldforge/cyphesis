@@ -22,6 +22,7 @@
 #include "server/TaskScriptFactory.h"
 
 #include "rulesets/Task.h"
+#include "rulesets/Character.h"
 
 TaskKit::TaskKit() : m_scriptFactory(0)
 {
