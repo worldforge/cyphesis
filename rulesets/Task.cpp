@@ -127,6 +127,7 @@ void Task::initTask(const Operation & op, OpVector & res)
 
 void Task::TickOperation(const Operation & op, OpVector & res)
 {
-    assert(m_script != 0);
-    m_script->operation("tick", op, res);
+    if (m_script != 0) {
+        m_script->operation("tick", op, res);
+    }
 }
