@@ -44,8 +44,6 @@ class Character : public Character_parent {
   protected:
     /// \brief Handler for simulating movement under direction from the mind
     Movement & m_movement;
-    /// \brief Handler for a medium term task being undertaken
-    Task * m_task;
 
     /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
@@ -72,10 +70,6 @@ class Character : public Character_parent {
 
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
-
-    /// \brief Accessor for medium term task
-    Task * task() { return m_task; }
-    Task ** monitorTask() { return &m_task; }
 
     int startTask(Task *, const Operation & op, OpVector &);
     void updateTask(OpVector &);

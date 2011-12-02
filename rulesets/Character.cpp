@@ -254,7 +254,7 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 Character::Character(const std::string & id, long intId) :
            Character_parent(id, intId),
                m_movement(*new Pedestrian(*this)),
-               m_task(0), m_mind(0), m_externalMind(0)
+               m_mind(0), m_externalMind(0)
 {
     // FIXME Do we still need this?
     // It is my hope that once the task object is fully held by the
@@ -271,11 +271,6 @@ Character::~Character()
     }
     if (m_externalMind != 0) {
         delete m_externalMind;
-    }
-    // This should only ever happen on shutdown. During normal running
-    // the task gets cleared from Entity::destroy.
-    if (m_task != 0) {
-        m_task->decRef();
     }
 }
 
