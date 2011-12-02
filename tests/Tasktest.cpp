@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "Fell.h"
+#include "rulesets/Task.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
@@ -55,7 +55,7 @@ int main()
     Character chr("3", 3);
 
     {
-        Fell fell(chr, ent1, ent2);
+        Task fell(chr);
 
         fell.nextTick(1.5);
 
@@ -73,10 +73,9 @@ int main()
         assert(res.empty());
 
         Atlas::Objects::Operation::Generic c;
+        c->setParents(std::list<std::string>(1, "generic"));
 
         fell.initTask(c, res);
-
-        assert(!res.empty());
 
         fell.TickOperation(op, res);
 
