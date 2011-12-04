@@ -28,7 +28,7 @@
 #include <sigc++/signal.h>
 
 class ArithmeticScript;
-class Character;
+class LocatedEntity;
 class Entity;
 class SystemTime;
 class Task;
@@ -113,11 +113,11 @@ class BaseWorld {
                                     const Atlas::Objects::Entity::RootEntity &) = 0;
 
     /// \brief Create a new task
-    virtual Task * newTask(const std::string &, Character &) = 0;
+    virtual Task * newTask(const std::string &, LocatedEntity &) = 0;
 
     /// \brief Activate a new tast
     virtual Task * activateTask(const std::string &, const std::string &,
-                                const std::string &, Character &) = 0;
+                                const std::string &, LocatedEntity &) = 0;
 
     /// \brief Create a new Arithmetic object
     virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) = 0;

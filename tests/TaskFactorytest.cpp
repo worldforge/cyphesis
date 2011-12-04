@@ -89,7 +89,7 @@ void Task::TickOperation(const Operation & op, OpVector & res)
 {
 }
 
-Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr)
+Task::Task(LocatedEntity & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_owner(chr)
 {
 }
 
@@ -104,7 +104,7 @@ void Task::irrelevant()
 Character::Character(const std::string & id, long intId) :
            Character_parent(id, intId),
                m_movement(*(Movement*)0),
-               m_task(0), m_mind(0), m_externalMind(0)
+               m_mind(0), m_externalMind(0)
 {
 }
 

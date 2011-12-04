@@ -595,11 +595,30 @@ void TasksProperty::set(const Atlas::Message::Element & val)
 {
 }
 
-void TasksProperty::install(Entity * owner)
+int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::updateTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::clearTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
+void TasksProperty::stopTask(Entity *, OpVector &)
 {
 }
 
-void TasksProperty::apply(Entity * owner)
+void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
 {
 }
 

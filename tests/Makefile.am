@@ -382,7 +382,7 @@ ThingupdatePropertiestest_LDADD = \
 Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
 
-Tasktest_SOURCES = Tasktest.cpp Fell.cpp Fell.h
+Tasktest_SOURCES = Tasktest.cpp
 Tasktest_LDADD = \
         $(top_builddir)/rulesets/Task.o
 

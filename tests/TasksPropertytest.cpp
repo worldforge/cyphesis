@@ -70,12 +70,16 @@ int main()
 
 // stubs
 
+namespace Atlas { namespace Objects { namespace Operation {
+int UPDATE_NO = -1;
+} } }
+
 int Character::startTask(Task * task, const Operation & op, OpVector & res)
 {
     return 0;
 }
 
-Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr)
+Task::Task(LocatedEntity & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_owner(chr)
 {
 }
 

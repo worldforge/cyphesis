@@ -28,7 +28,7 @@
 
 #include <cassert>
 
-class Character;
+class LocatedEntity;
 class Script;
 
 /// \brief Interface class for handling tasks which take a short while to
@@ -52,11 +52,11 @@ class Task {
     /// \brief Rate of progress towards task completion
     float m_rate;
 
-    /// \brief Character performing the task
+    /// \brief Entity owning the task
     ///
     /// This doesn't handle the idea that there might be multiple actors
     /// involved.
-    Character & m_character;
+    LocatedEntity & m_owner;
 
     /// \brief Additional task attributes
     Atlas::Message::MapType m_attr;
@@ -74,7 +74,7 @@ class Task {
     const Task & operator=(const Task &);
   public:
     /// \brief Constructor
-    explicit Task(Character & chr);
+    explicit Task(LocatedEntity & owner);
 
     ~Task();
 
@@ -137,7 +137,7 @@ class Task {
     const bool obsolete() { return m_obsolete; }
 
     /// \brief Accessor for character that owns this Task.
-    Character & character() const { return m_character; }
+    LocatedEntity & owner() const { return m_owner; }
 
     /// \brief Accessor for name of this task
     std::string & name() { return m_name; }

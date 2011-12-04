@@ -162,7 +162,6 @@ int main()
     run_python_string("le.as_entity()");
     fail_python_string("le.send_world(Operation('get'))");
     run_python_string("le==LocatedEntity('2')");
-    fail_python_string("print le.get_task()");
     fail_python_string("print le.type");
     fail_python_string("print le.foo_operation");
     run_python_string("print le.location");
@@ -194,7 +193,6 @@ int main()
     run_python_string("t.as_entity()");
     run_python_string("t.send_world(Operation('get'))");
     fail_python_string("t.send_world('get')");
-    fail_python_string("print t.get_task()");
     fail_python_string("print t.type");
     fail_python_string("print t.foo_operation");
     run_python_string("print t.location");
@@ -207,15 +205,12 @@ int main()
     run_python_string("Character(c)");
     run_python_string("c.as_entity()");
     run_python_string("c.send_world(Operation('get'))");
-    run_python_string("c.get_task()");
     fail_python_string("c.start_task()");
     fail_python_string("c.start_task(Task(c))");
     fail_python_string("c.start_task(1,Operation('cut'),Oplist())");
     fail_python_string("c.start_task(Task(c),1,Oplist())");
     fail_python_string("c.start_task(Task(c),Operation('cut'),1)");
     run_python_string("c.start_task(Task(c),Operation('cut'),Oplist())");
-    run_python_string("c.get_task()");
-    run_python_string("c.clear_task()");
     fail_python_string("c.mind2body(1)");
     run_python_string("c.mind2body(Operation('update'))");
     run_python_string("c.mind2body(Operation('get'))");
@@ -247,14 +242,10 @@ int main()
     fail_python_string("as_entity_method()");
     fail_python_string("send_world_method(Operation('get'))");
 
-    run_python_string("get_task_method=c.get_task");
     run_python_string("start_task_method=c.start_task");
-    run_python_string("clear_task_method=c.clear_task");
     run_python_string("mind2body_method=c.mind2body");
     run_python_string("sabotage.null(c)");
-    fail_python_string("get_task_method()");
     fail_python_string("start_task_method(Task(Character('3')),Operation('cut'),Oplist())");
-    fail_python_string("clear_task_method()");
     fail_python_string("mind2body_method(Operation('update'))");
 
 #endif // NDEBUG

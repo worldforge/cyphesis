@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "Fell.h"
+#include "rulesets/Task.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
@@ -55,7 +55,7 @@ int main()
     Character chr("3", 3);
 
     {
-        Fell fell(chr, ent1, ent2);
+        Task fell(chr);
 
         fell.nextTick(1.5);
 
@@ -73,10 +73,9 @@ int main()
         assert(res.empty());
 
         Atlas::Objects::Operation::Generic c;
+        c->setParents(std::list<std::string>(1, "generic"));
 
         fell.initTask(c, res);
-
-        assert(!res.empty());
 
         fell.TickOperation(op, res);
 
@@ -99,7 +98,7 @@ int TICK_NO = -1;
 Character::Character(const std::string & id, long intId) :
            Character_parent(id, intId),
                m_movement(*(Movement*)0),
-               m_task(0), m_mind(0), m_externalMind(0)
+               m_mind(0), m_externalMind(0)
 {
 }
 

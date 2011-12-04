@@ -8,9 +8,9 @@ il=interlinguish
 import server
 
 class editor:
-    def __init__(self,c):
-        self.client=c
-        self.avatar=c.character
+    def __init__(self, client, avatar):
+        self.client=client
+        self.avatar=avatar
         self.list_call={"say":(self._say,1),
                         "own":(self._own,2),
                         "know":(self._know,2),
@@ -36,6 +36,8 @@ class editor:
             #self.cl_depth=0
             return self.call_list_args
         raise AttributeError,name
+    def create(self, avatar_type):
+        return self.client.create_avatar(avatar_type)
     def make(self, type, **kw):
         kw['type']=type
         # if not kw.has_key('type'):
@@ -89,11 +91,13 @@ class editor:
         s,i=il.importance(sub,cmp,obj)
         self.tell(target,s,i)
 
-def create_editor(host, account, password):
-    c=server.ObserverClient()
+def create_editor(host, account, password, avatar='creator'):
+    client=server.ObserverClient()
 
-    c.server = host
+    client.server = host
 
-    c.setup(account, password)
+    client.setup(account, password, avatar)
 
-    return editor(c)
+    avatar = client.create_avatar(avatar)
+
+    return editor(client, avatar)

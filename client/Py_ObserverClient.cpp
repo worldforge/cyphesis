@@ -43,8 +43,9 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
 #endif // NDEBUG
     char * username = NULL;
     char * password = NULL;
+    char * avatar = NULL;
     char empty[] = "";
-    if (!PyArg_ParseTuple(args, "|ss", &username, &password)) {
+    if (!PyArg_ParseTuple(args, "|sss", &username, &password, &avatar)) {
         return NULL;
     }
     if (username == NULL) {
@@ -53,16 +54,44 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
             password = &empty[0];
         }
     } else if (password == NULL) {
-        PyErr_SetString(PyExc_TypeError, "function takes 0 or 2 arguments (1 given)");
+        PyErr_SetString(PyExc_TypeError, "function takes 0 or 2, or 3 arguments (1 given)");
         return NULL;
     }
-    int res = self->m_client->setup(username, password);
+    int res;
+    if (avatar == NULL) {
+        res = self->m_client->setup(username, password);
+    } else {
+        res = self->m_client->setup(username, password, avatar);
+    }
     if (res != 0) {
         PyErr_SetString(PyExc_RuntimeError, "client setup failed");
         return NULL;
     }
     Py_INCREF(Py_None);
     return Py_None;
+}
+
+static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
+                                               PyObject * arg)
+{
+#ifndef NDEBUG
+    if (self->m_client == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (!PyString_Check(arg)) {
+        return NULL;
+    }
+    char * avatar = PyString_AsString(arg);
+    CreatorClient * c = self->m_client->createCharacter(avatar);
+    if (c == 0) {
+        PyErr_SetString(PyExc_RuntimeError, "avatar creation failed");
+        return NULL;
+    }
+    PyCreatorClient * pcc = newPyCreatorClient();
+    pcc->m_mind.a = c;
+    return (PyObject*)pcc;
 }
 
 static PyObject * ObserverClient_run(PyObserverClient * self)
@@ -146,6 +175,7 @@ static PyObject * ObserverClient_wait(PyObserverClient * self)
 
 static PyMethodDef ObserverClient_methods[] = {
         {"setup",          (PyCFunction)ObserverClient_setup,     METH_VARARGS},
+        {"create_avatar",  (PyCFunction)ObserverClient_create_avatar, METH_O},
         {"run",            (PyCFunction)ObserverClient_run,       METH_NOARGS},
         {"send",           (PyCFunction)ObserverClient_send,      METH_O},
         {"send_wait",      (PyCFunction)ObserverClient_send_wait, METH_O},
@@ -178,7 +208,7 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
             return Py_None;
         }
         PyCreatorClient * pcc = newPyCreatorClient();
-        pcc->m_mind = self->m_client->character();
+        pcc->m_mind.a = self->m_client->character();
         return (PyObject*)pcc;
     }
     if (strcmp(name, "id") == 0) {

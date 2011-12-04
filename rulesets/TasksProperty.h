@@ -22,22 +22,37 @@
 
 #include "common/Property.h"
 
+#include "common/OperationRouter.h"
+
 class Task;
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
 /// \ingroup PropertyClasses
 class TasksProperty : public PropertyBase {
   protected:
-    Task ** m_task;
+    Task * m_task;
   public:
     /// \brief Constructor
     explicit TasksProperty();
 
+    bool busy() const
+    {
+        return m_task != 0;
+    }
+
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
 
-    virtual void install(Entity *);
-    virtual void apply(Entity *);
+    int updateTask(Entity * owner, OpVector & res);
+    int startTask(Task * task,
+                  Entity * owner,
+                  const Operation & op,
+                  OpVector & res);
+    int clearTask(Entity * owner, OpVector & res);
+    void stopTask(Entity * owner, OpVector & res);
+
+    void TickOperation(Entity * owner, const Operation & op, OpVector &);
+    void UseOperation(Entity * owner, const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

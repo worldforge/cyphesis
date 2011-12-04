@@ -71,9 +71,9 @@ class TestWorld : public BaseWorld {
                             const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
-    virtual Task * newTask(const std::string &, Character &) { return 0; }
+    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
-                                const std::string &, Character &) { return 0; }
+                                const std::string &, LocatedEntity &) { return 0; }
     virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
         return 0;
     }
@@ -624,7 +624,7 @@ void ExternalMind::connect(Connection * c)
 Character::Character(const std::string & id, long intId) :
            Character_parent(id, intId),
                m_movement(*(Movement*)0),
-               m_task(0), m_mind(0), m_externalMind(0)
+               m_mind(0), m_externalMind(0)
 {
 }
 

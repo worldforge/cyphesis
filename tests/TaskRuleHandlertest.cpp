@@ -149,7 +149,7 @@ TaskFactory::~TaskFactory()
 {
 }
 
-Task * TaskFactory::newTask(Character & chr)
+Task * TaskFactory::newTask(LocatedEntity & chr)
 {
     return 0;
 }

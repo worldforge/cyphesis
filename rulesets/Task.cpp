@@ -19,7 +19,7 @@
 
 #include "Task.h"
 
-#include "Character.h"
+#include "Entity.h"
 #include "Script.h"
 
 #include "common/log.h"
@@ -33,7 +33,10 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(Character & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_character(chr), m_script(0)
+Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
+                                    m_obsolete(false),
+                                    m_progress(-1), m_rate(-1),
+                                    m_owner(owner), m_script(0)
 {
 }
 
@@ -62,7 +65,7 @@ Operation Task::nextTick(double interval)
     tick_arg->setAttr("serialno", newTick());
     Tick tick;
     tick->setArgs1(tick_arg);
-    tick->setTo(m_character.getId());
+    tick->setTo(m_owner.getId());
     tick->setFutureSeconds(interval);
 
     return tick;
@@ -120,13 +123,14 @@ void Task::initTask(const Operation & op, OpVector & res)
     tick_arg->setAttr("serialno", 0);
     Tick tick;
     tick->setArgs1(tick_arg);
-    tick->setTo(m_character.getId());
+    tick->setTo(m_owner.getId());
 
     res.push_back(tick);
 }
 
 void Task::TickOperation(const Operation & op, OpVector & res)
 {
-    assert(m_script != 0);
-    m_script->operation("tick", op, res);
+    if (m_script != 0) {
+        m_script->operation("tick", op, res);
+    }
 }

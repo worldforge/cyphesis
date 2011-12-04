@@ -22,7 +22,7 @@
 
 #include <string>
 
-class Character;
+class LocatedEntity;
 class ScriptFactory;
 class Task;
 class TaskScriptKit;
@@ -45,7 +45,7 @@ class TaskKit {
     /// \brief Create a new task
     ///
     /// @param chr the character performing the task
-    virtual Task * newTask(Character & chr) = 0;
+    virtual Task * newTask(LocatedEntity & chr) = 0;
 };
 
 /// \brief Factory for creating tasks implemented as python scripts.
@@ -58,7 +58,7 @@ class TaskFactory : public TaskKit {
     TaskFactory(const std::string & name);
     virtual ~TaskFactory();
 
-    virtual Task * newTask(Character & chr);
+    virtual Task * newTask(LocatedEntity & chr);
 };
 
 #endif // SERVER_TASK_FACTORY_H
