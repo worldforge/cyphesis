@@ -35,12 +35,19 @@ class TaskScriptKit;
 class TaskKit {
   protected:
     TaskKit();
-  public:
-    TaskScriptKit * m_scriptFactory;
+
     /// \brief Type name of the base entity class this task works on
     std::string m_target;
+  public:
+    TaskScriptKit * m_scriptFactory;
 
     virtual ~TaskKit();
+
+    const std::string & setTarget(const std::string & s)
+    {
+        m_target = s;
+        return m_target;
+    }
 
     /// \brief Check target matches
     ///

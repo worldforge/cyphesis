@@ -107,7 +107,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
                              target_base);
             return 1;
         }
-        factory->m_target = target_base;
+        factory->setTarget(target_base);
     }
 
     if (!i.hasClass(activation_tool)) {
