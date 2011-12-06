@@ -78,7 +78,7 @@ class WorldRouter : public BaseWorld {
                             const Atlas::Objects::Entity::RootEntity & desc);
     Task * newTask(const std::string &, LocatedEntity &);
     Task * activateTask(const std::string &, const std::string &,
-                        const std::string &, LocatedEntity &);
+                        LocatedEntity *, LocatedEntity &);
 
     ArithmeticScript * newArithmetic(const std::string &, Entity *);
 

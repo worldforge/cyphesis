@@ -830,7 +830,7 @@ Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) c
 
 Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
-                                   const std::string & target,
+                                   LocatedEntity * target,
                                    LocatedEntity & owner) const
 {
     return 0;

@@ -76,7 +76,7 @@ class TestWorld : public BaseWorld {
     }
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
-                                const std::string &, LocatedEntity &) { return 0; }
+                                LocatedEntity *, LocatedEntity &) { return 0; }
     virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
         return 0;
     }

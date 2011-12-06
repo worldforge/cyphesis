@@ -42,6 +42,11 @@ class TaskKit {
 
     virtual ~TaskKit();
 
+    /// \brief Check target matches
+    ///
+    /// @param target the entity the task is to be performed on
+    virtual int checkTarget(LocatedEntity * target) = 0;
+
     /// \brief Create a new task
     ///
     /// @param chr the character performing the task
@@ -58,6 +63,7 @@ class TaskFactory : public TaskKit {
     TaskFactory(const std::string & name);
     virtual ~TaskFactory();
 
+    virtual int checkTarget(LocatedEntity * target);
     virtual Task * newTask(LocatedEntity & chr);
 };
 

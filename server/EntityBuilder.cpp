@@ -247,7 +247,7 @@ void EntityBuilder::addTaskActivation(const std::string & tool,
 /// @param owner The character entity activating the task.
 Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
-                                   const std::string & target,
+                                   LocatedEntity * target,
                                    LocatedEntity & owner) const
 {
     TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
@@ -261,12 +261,8 @@ Task * EntityBuilder::activateTask(const std::string & tool,
     }
     TaskFactoryMultimap::const_iterator Jend = dict.upper_bound(op);
     for (; J != Jend; ++J) {
-        if (!J->second->m_target.empty()) {
-            if (!Inheritance::instance().isTypeOf(target, J->second->m_target)) {
-                debug( std::cout << target << " is not a " << J->second->m_target
-                                 << std::endl << std::flush; );
-                continue;
-            }
+        if (J->second->checkTarget(target) == -1) {
+            continue;
         }
         return buildTask(J->second, owner);
     }

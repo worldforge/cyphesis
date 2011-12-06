@@ -591,7 +591,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
     Task * task = BaseWorld::instance().activateTask(tool->getType()->name(),
                                                      op_type,
-                                                     target_ent->getType()->name(),
+                                                     target_ent,
                                                      *this);
     if (task != NULL) {
         startTask(task, rop, res);

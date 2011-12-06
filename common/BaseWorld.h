@@ -117,7 +117,7 @@ class BaseWorld {
 
     /// \brief Activate a new tast
     virtual Task * activateTask(const std::string &, const std::string &,
-                                const std::string &, LocatedEntity &) = 0;
+                                LocatedEntity *, LocatedEntity &) = 0;
 
     /// \brief Create a new Arithmetic object
     virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) = 0;

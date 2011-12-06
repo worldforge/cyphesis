@@ -279,7 +279,7 @@ Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 
 Task * WorldRouter::activateTask(const std::string & tool,
                                  const std::string & op,
-                                 const std::string & target,
+                                 LocatedEntity * target,
                                  LocatedEntity & owner)
 {
     return 0;

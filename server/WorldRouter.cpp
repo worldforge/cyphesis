@@ -370,7 +370,7 @@ Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 /// @return a pointer to the new task
 Task * WorldRouter::activateTask(const std::string & tool,
                                  const std::string & op,
-                                 const std::string & target,
+                                 LocatedEntity * target,
                                  LocatedEntity & owner)
 {
     return EntityBuilder::instance()->activateTask(tool, op, target, owner);

@@ -77,6 +77,8 @@ int main()
 
 // stubs
 
+#include "common/Inheritance.h"
+
 TaskScriptKit::~TaskScriptKit()
 {
 }
@@ -453,6 +455,32 @@ void LocatedEntity::onContainered()
 
 void LocatedEntity::onUpdated()
 {
+}
+
+Inheritance * Inheritance::m_instance = NULL;
+
+Inheritance::Inheritance()
+{
+}
+
+Inheritance & Inheritance::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Inheritance();
+    }
+    return *m_instance;
+}
+
+bool Inheritance::isTypeOf(const TypeNode * instance,
+                           const std::string & base_type) const
+{
+    return false;
+}
+
+bool Inheritance::isTypeOf(const std::string & instance,
+                           const std::string & base_type) const
+{
+    return false;
 }
 
 Router::Router(const std::string & id, long intId) : m_id(id),

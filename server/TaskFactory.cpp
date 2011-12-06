@@ -22,6 +22,13 @@
 #include "server/TaskScriptFactory.h"
 
 #include "rulesets/Task.h"
+#include "rulesets/LocatedEntity.h"
+
+#include "common/debug.h"
+#include "common/Inheritance.h"
+#include "common/TypeNode.h"
+
+static const bool debug_flag = false;
 
 TaskKit::TaskKit() : m_scriptFactory(0)
 {
@@ -42,6 +49,19 @@ TaskFactory::TaskFactory(const std::string & name) : m_name(name)
 
 TaskFactory::~TaskFactory()
 {
+}
+
+int TaskFactory::checkTarget(LocatedEntity * target)
+{
+    if (m_target.empty() ||
+        Inheritance::instance().isTypeOf(target->getType()->name(),
+                                         m_target)) {
+        return 0;
+    }
+    debug( std::cout << target->getType()->name() << " is not a "
+                     << m_target
+                     << std::endl << std::flush; );
+    return -1;
 }
 
 Task * TaskFactory::newTask(LocatedEntity & chr)

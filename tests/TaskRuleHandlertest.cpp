@@ -149,6 +149,11 @@ TaskFactory::~TaskFactory()
 {
 }
 
+int TaskFactory::checkTarget(LocatedEntity *)
+{
+    return -1;
+}
+
 Task * TaskFactory::newTask(LocatedEntity & chr)
 {
     return 0;

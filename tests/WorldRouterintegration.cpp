@@ -708,7 +708,7 @@ Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
 
 Task * EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
-                                   const std::string & target,
+                                   LocatedEntity * target,
                                    Character & owner) const
 {
     return 0;

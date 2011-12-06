@@ -93,7 +93,7 @@ class EntityBuilder {
                            TaskKit * factory);
     Task * activateTask(const std::string & tool,
                         const std::string & op,
-                        const std::string & target,
+                        LocatedEntity * target,
                         LocatedEntity & owner) const;
 };
 
