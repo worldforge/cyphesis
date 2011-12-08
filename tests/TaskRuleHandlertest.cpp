@@ -289,6 +289,11 @@ TypeNode * Inheritance::addChild(const Root & obj)
     return stub_addChild_result;
 }
 
+const TypeNode * Inheritance::getType(const std::string & parent)
+{
+    return 0;
+}
+
 bool Inheritance::hasClass(const std::string & parent)
 {
     return true;

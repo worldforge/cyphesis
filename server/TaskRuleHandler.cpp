@@ -99,15 +99,28 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
                                Element::typeName(J->second.getType())));
             return -1;
         }
-        const std::string & target_base = J->second.String();
-        if (!i.hasClass(target_base)) {
-            dependent = target_base;
-            reason = compose("Task \"%1\" is activated on target \"%2\" "
-                             "which does not exist.", class_name,
-                             target_base);
-            return 1;
+        const std::string & target_desc = J->second.String();
+        std::string target_class;
+        std::string::size_type dot = target_desc.find('.');
+        if (dot != 0) {
+            // If there is no dot, or the dot is not the first character,
+            // then the first part of the string is the class to be matched
+            // This works if there is a dot, or if the search returned npos
+            target_class = target_desc.substr(0, dot);
+            if (i.getType(target_class) == 0) {
+                dependent = target_class;
+                reason = compose("Task \"%1\" is activated on target \"%2\" "
+                                 "which does not exist.", class_name,
+                                 target_class);
+                return 1;
+            }
+            factory->setTarget(target_class);
         }
-        factory->setTarget(target_base);
+        if (dot != std::string::npos) {
+            // if there is a dot, then the rest of the string is the
+            // property to be matched
+            // FIXME Install the property match
+        }
     }
 
     if (!i.hasClass(activation_tool)) {
