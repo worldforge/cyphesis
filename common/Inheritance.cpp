@@ -216,9 +216,6 @@ TypeNode * Inheritance::addChild(const Root & obj)
 bool Inheritance::isTypeOf(const std::string & instance,
                            const std::string & base_type) const
 {
-    if (instance == base_type) {
-        return true;
-    }
     TypeNodeDict::const_iterator I = atlasObjects.find(instance);
     TypeNodeDict::const_iterator Iend = atlasObjects.end();
     if (I == Iend) {
