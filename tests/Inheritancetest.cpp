@@ -182,6 +182,7 @@ int main()
     assert(i.addChild(r) == 0);
 
     assert(!i.isTypeOf("ludricous_test_parent", "root_operation"));
+    assert(i.isTypeOf("disappearance", "disappearance"));
     assert(i.isTypeOf("disappearance", "root_operation"));
     assert(i.isTypeOf("root_operation", "root_operation"));
     assert(!i.isTypeOf("root_operation", "talk"));
@@ -189,18 +190,22 @@ int main()
     const TypeNode * disappearance = i.getType("disappearance");
     assert(disappearance != 0);
     
-    assert(!i.isTypeOf(disappearance, "ludicrous_test_parent"));
-    assert(!i.isTypeOf(disappearance, "root_entity"));
-    assert(i.isTypeOf(disappearance, "root_operation"));
-
     const TypeNode * root_operation = i.getType("root_operation");
     assert(root_operation != 0);
     
+    assert(!i.isTypeOf(disappearance, "ludicrous_test_parent"));
+    assert(!i.isTypeOf(disappearance, "root_entity"));
+    assert(i.isTypeOf(disappearance, "root_operation"));
+    assert(i.isTypeOf(disappearance, "disappearance"));
+    assert(i.isTypeOf(root_operation, "root_operation"));
+
     const TypeNode * root_entity = i.getType("root_entity");
     assert(root_entity != 0);
     
     assert(!i.isTypeOf(disappearance, root_entity));
     assert(i.isTypeOf(disappearance, root_operation));
+    assert(i.isTypeOf(disappearance, disappearance));
+    assert(i.isTypeOf(root_operation, root_operation));
 
     // Make sure it clears out okay
     i.flush();
@@ -274,26 +279,24 @@ TypeNode::~TypeNode()
 bool TypeNode::isTypeOf(const std::string & base_type) const
 {
     const TypeNode * node = this;
-    for (; node->parent() != 0;) {
-        const TypeNode * parent = node->parent();
-        if (parent->name() == base_type) {
+    do {
+        if (node->name() == base_type) {
             return true;
         }
         node = node->parent();
-    }
+    } while (node != 0);
     return false;
 }
 
 bool TypeNode::isTypeOf(const TypeNode * base_type) const
 {
     const TypeNode * node = this;
-    for (; node->parent() != 0;) {
-        const TypeNode * parent = node->parent();
-        if (parent == base_type) {
+    do {
+        if (node == base_type) {
             return true;
         }
         node = node->parent();
-    }
+    } while (node != 0);
     return false;
 }
 

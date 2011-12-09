@@ -117,25 +117,23 @@ void TypeNode::updateProperties(const MapType & attributes)
 bool TypeNode::isTypeOf(const std::string & base_type) const
 {
     const TypeNode * node = this;
-    for (; node->parent() != 0;) {
-        const TypeNode * parent = node->parent();
-        if (parent->name() == base_type) {
+    do {
+        if (node->name() == base_type) {
             return true;
         }
         node = node->parent();
-    }
+    } while (node != 0);
     return false;
 }
 
 bool TypeNode::isTypeOf(const TypeNode * base_type) const
 {
     const TypeNode * node = this;
-    for (; node->parent() != 0;) {
-        const TypeNode * parent = node->parent();
-        if (parent == base_type) {
+    do {
+        if (node == base_type) {
             return true;
         }
         node = node->parent();
-    }
+    } while (node != 0);
     return false;
 }
