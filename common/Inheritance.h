@@ -72,6 +72,8 @@ class Inheritance {
                   const std::string & base_type) const;
     bool isTypeOf(const TypeNode * instance,
                   const std::string & base_type) const;
+    bool isTypeOf(const TypeNode * instance,
+                  const TypeNode * base_type) const;
     void flush();
 };
 

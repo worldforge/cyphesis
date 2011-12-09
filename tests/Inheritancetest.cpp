@@ -186,6 +186,22 @@ int main()
     assert(i.isTypeOf("root_operation", "root_operation"));
     assert(!i.isTypeOf("root_operation", "talk"));
 
+    const TypeNode * disappearance = i.getType("disappearance");
+    assert(disappearance != 0);
+    
+    assert(!i.isTypeOf(disappearance, "ludicrous_test_parent"));
+    assert(!i.isTypeOf(disappearance, "root_entity"));
+    assert(i.isTypeOf(disappearance, "root_operation"));
+
+    const TypeNode * root_operation = i.getType("root_operation");
+    assert(root_operation != 0);
+    
+    const TypeNode * root_entity = i.getType("root_entity");
+    assert(root_entity != 0);
+    
+    assert(!i.isTypeOf(disappearance, root_entity));
+    assert(i.isTypeOf(disappearance, root_operation));
+
     // Make sure it clears out okay
     i.flush();
     assert(i.opEnumerate("login") == OP_INVALID);

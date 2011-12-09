@@ -241,6 +241,20 @@ bool Inheritance::isTypeOf(const TypeNode * instance,
     return false;
 }
 
+bool Inheritance::isTypeOf(const TypeNode * instance,
+                           const TypeNode * base_type) const
+{
+    const TypeNode * node = instance;
+    for (; node->parent() != 0;) {
+        const TypeNode * parent = node->parent();
+        if (parent == base_type) {
+            return true;
+        }
+        node = node->parent();
+    }
+    return false;
+}
+
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Perception;
 using Atlas::Objects::Operation::Communicate;
