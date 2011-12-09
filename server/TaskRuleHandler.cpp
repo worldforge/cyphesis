@@ -107,14 +107,15 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             // then the first part of the string is the class to be matched
             // This works if there is a dot, or if the search returned npos
             target_class = target_desc.substr(0, dot);
-            if (i.getType(target_class) == 0) {
+            const TypeNode * target_type = i.getType(target_class);
+            if (target_type == 0) {
                 dependent = target_class;
                 reason = compose("Task \"%1\" is activated on target \"%2\" "
                                  "which does not exist.", class_name,
                                  target_class);
                 return 1;
             }
-            factory->setTarget(target_class);
+            factory->setTarget(target_type);
         }
         if (dot != std::string::npos) {
             // if there is a dot, then the rest of the string is the

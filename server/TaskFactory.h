@@ -26,6 +26,7 @@ class LocatedEntity;
 class ScriptFactory;
 class Task;
 class TaskScriptKit;
+class TypeNode;
 
 /// \brief Factory interface for for factories for creating tasks
 ///
@@ -37,15 +38,15 @@ class TaskKit {
     TaskKit();
 
     /// \brief Type name of the base entity class this task works on
-    std::string m_target;
+    const TypeNode * m_target;
   public:
     TaskScriptKit * m_scriptFactory;
 
     virtual ~TaskKit();
 
-    const std::string & setTarget(const std::string & s)
+    const TypeNode * setTarget(const TypeNode * t)
     {
-        m_target = s;
+        m_target = t;
         return m_target;
     }
 

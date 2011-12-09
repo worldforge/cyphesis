@@ -52,11 +52,11 @@ TaskFactory::~TaskFactory()
 
 int TaskFactory::checkTarget(LocatedEntity * target)
 {
-    if (m_target.empty() || target->getType()->isTypeOf(m_target)) {
+    if (m_target == 0 || target->getType()->isTypeOf(m_target)) {
         return 0;
     }
     debug( std::cout << target->getType()->name() << " is not a "
-                     << m_target
+                     << m_target->name()
                      << std::endl << std::flush; );
     return -1;
 }

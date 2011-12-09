@@ -457,7 +457,7 @@ void LocatedEntity::onUpdated()
 {
 }
 
-bool TypeNode::isTypeOf(const std::string & base_type) const
+bool TypeNode::isTypeOf(const TypeNode * base_type) const
 {
     return false;
 }
