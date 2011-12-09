@@ -1,3 +1,7 @@
+Double check that isTypeOf works on exact match, and cover in tests,
+the convert TaskFactory to use it more directly in TypeNode, removing
+dependency on Inheritance
+
 Make m_target private in TaskFactory, and change the sort function for the
 target map in activations to sort on how deep the target is in the
 type tree, so we can try and get the closest match first.
