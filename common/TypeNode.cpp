@@ -113,3 +113,29 @@ void TypeNode::updateProperties(const MapType & attributes)
         p->set(J->second);
     }
 }
+
+bool TypeNode::isTypeOf(const std::string & base_type) const
+{
+    const TypeNode * node = this;
+    for (; node->parent() != 0;) {
+        const TypeNode * parent = node->parent();
+        if (parent->name() == base_type) {
+            return true;
+        }
+        node = node->parent();
+    }
+    return false;
+}
+
+bool TypeNode::isTypeOf(const TypeNode * base_type) const
+{
+    const TypeNode * node = this;
+    for (; node->parent() != 0;) {
+        const TypeNode * parent = node->parent();
+        if (parent == base_type) {
+            return true;
+        }
+        node = node->parent();
+    }
+    return false;
+}

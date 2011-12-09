@@ -33,6 +33,16 @@ int main()
 {
     TypeNode foo("thing");
 
+    TypeNode bar("entity");
+
+    assert(!foo.isTypeOf(&bar));
+    assert(!bar.isTypeOf(&foo));
+
+    bar.setParent(&foo);
+
+    assert(!foo.isTypeOf(&bar));
+    assert(bar.isTypeOf(&foo));
+
     foo.defaults();
     return 0;
 }

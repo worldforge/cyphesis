@@ -56,6 +56,12 @@ class TypeNode {
     /// \brief update the class properties for this type from Atlas attributes
     void updateProperties(const Atlas::Message::MapType & attributes);
 
+    /// \brief check if this type inherits from another
+    bool isTypeOf(const std::string & base_type) const;
+
+    /// \brief check if this type inherits from another
+    bool isTypeOf(const TypeNode * base_type) const;
+
     /// \brief const accessor for name
     const std::string & name() const {
         return m_name;
