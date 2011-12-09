@@ -25,7 +25,6 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/debug.h"
-#include "common/Inheritance.h"
 #include "common/TypeNode.h"
 
 static const bool debug_flag = false;
@@ -53,9 +52,7 @@ TaskFactory::~TaskFactory()
 
 int TaskFactory::checkTarget(LocatedEntity * target)
 {
-    if (m_target.empty() ||
-        Inheritance::instance().isTypeOf(target->getType()->name(),
-                                         m_target)) {
+    if (m_target.empty() || target->getType()->isTypeOf(m_target)) {
         return 0;
     }
     debug( std::cout << target->getType()->name() << " is not a "
