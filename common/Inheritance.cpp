@@ -224,35 +224,19 @@ bool Inheritance::isTypeOf(const std::string & instance,
     if (I == Iend) {
         return false;
     }
-    return this->isTypeOf(I->second, base_type);
+    return I->second->isTypeOf(base_type);
 }
 
 bool Inheritance::isTypeOf(const TypeNode * instance,
                            const std::string & base_type) const
 {
-    const TypeNode * node = instance;
-    for (; node->parent() != 0;) {
-        const TypeNode * parent = node->parent();
-        if (parent->name() == base_type) {
-            return true;
-        }
-        node = node->parent();
-    }
-    return false;
+    return instance->isTypeOf(base_type);
 }
 
 bool Inheritance::isTypeOf(const TypeNode * instance,
                            const TypeNode * base_type) const
 {
-    const TypeNode * node = instance;
-    for (; node->parent() != 0;) {
-        const TypeNode * parent = node->parent();
-        if (parent == base_type) {
-            return true;
-        }
-        node = node->parent();
-    }
-    return false;
+    return instance->isTypeOf(base_type);
 }
 
 using Atlas::Objects::Operation::RootOperation;
