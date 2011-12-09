@@ -25,7 +25,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/Inheritance.h"
+#include "common/TypeNode.h"
 #include "common/compose.hpp"
 
 #include "common/Eat.h"
@@ -90,7 +90,7 @@ void World::EatOperation(const Operation & op, OpVector & res)
     }
    
     const TypeNode * from_type = from->getType();
-    if (Inheritance::instance().isTypeOf(from_type, "plant")) {
+    if (from_type->isTypeOf("plant")) {
         if (material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);
             Nourish nourish;
@@ -105,7 +105,7 @@ void World::EatOperation(const Operation & op, OpVector & res)
             nourish->setArgs1(nour_arg);
             res.push_back(nourish);
         }
-    } else if (Inheritance::instance().isTypeOf(from_type, "character")) {
+    } else if (from_type->isTypeOf("character")) {
         log(NOTICE, "Eat coming from an animal.");
         if (material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);

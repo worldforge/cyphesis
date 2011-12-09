@@ -448,41 +448,17 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-Inheritance * Inheritance::m_instance = NULL;
-
-Inheritance::Inheritance()
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return 0;
-    }
-    return I->second;
-}
-
-bool Inheritance::isTypeOf(const TypeNode * instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 
 TypeNode::~TypeNode()
 {
+}
+
+bool TypeNode::isTypeOf(const std::string & base_type) const
+{
+    return false;
 }
 
 TerrainProperty::TerrainProperty() :
