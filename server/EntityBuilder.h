@@ -50,7 +50,6 @@ class EntityBuilder {
     TaskFactoryDict m_taskFactories;
     TaskFactoryActivationDict m_taskActivations;
 
-    EntityKit * getNewFactory(const std::string & parent);
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,
                             EntityKit * factory);

@@ -326,12 +326,3 @@ EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
     }
     return I->second;
 }
-
-EntityKit * EntityBuilder::getNewFactory(const std::string & parent)
-{
-    FactoryDict::const_iterator I = m_entityFactories.find(parent);
-    if (I == m_entityFactories.end()) {
-        return 0;
-    }
-    return I->second->duplicateFactory();
-}

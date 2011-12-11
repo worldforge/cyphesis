@@ -64,10 +64,6 @@ class ExposedEntityBuilder : public EntityBuilder {
   public:
     explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder() { }
 
-    EntityKit * getNewFactory(const std::string & clss) {
-        return EntityBuilder::getNewFactory(clss);
-    }
-
     const FactoryDict & factoryDict() const { return m_entityFactories; }
 
 };
