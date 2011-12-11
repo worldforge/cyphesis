@@ -71,10 +71,6 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
 
     assert(factory->m_parent == parent_factory);
 
-    // Copy the defaults from the parent. In populateEntityFactory this may be
-    // overriden with the defaults for this class.
-    factory->m_attributes = parent_factory->m_attributes;
-
     if (populateEntityFactory(class_name, factory,
                               class_desc->asMessage(),
                               dependent,
