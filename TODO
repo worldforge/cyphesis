@@ -1,3 +1,7 @@
+Type checks in Py_Location.init seem to not work if "me" is passed in as ref
+in the mind code. Possibly the type check for mind PyMind_Check does not
+work for native Python types that inherit from a wrapper class.
+
 Add tests which trigger possible crash conditions in the script interface
 
 Make m_target private in TaskFactory, and change the sort function for the
