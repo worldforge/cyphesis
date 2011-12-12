@@ -17,9 +17,8 @@
 
 // $Id$
 
-#include <Python.h>
-
 #include "EntityFactory_impl.h"
+
 #include "ScriptFactory.h"
 
 #include "rulesets/Entity.h"
