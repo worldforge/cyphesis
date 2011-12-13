@@ -132,7 +132,6 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
         factory->m_scriptFactory->addScript(thing);
     }
     //
-    factory->populate(*thing);
 
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location

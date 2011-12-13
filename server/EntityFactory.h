@@ -74,8 +74,6 @@ class EntityKit {
     /// @param pb a pointer to the persistor object for the Entity.
     virtual Entity * newEntity(const std::string & id,
                                         long intId) = 0;
-    /// \brief Add anything required to the entity after it has been created.
-    virtual int populate(Entity &) = 0;
     /// \brief Create a copy of this factory.
     virtual EntityKit * duplicateFactory() = 0;
 };
@@ -90,7 +88,6 @@ class EntityFactory : public EntityKit {
     virtual ~EntityFactory();
 
     virtual Entity * newEntity(const std::string & id, long intId);
-    virtual int populate(Entity &);
     virtual EntityKit * duplicateFactory();
 };
 

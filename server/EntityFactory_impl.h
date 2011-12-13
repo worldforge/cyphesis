@@ -45,12 +45,6 @@ Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
 }
 
 template <class T>
-int EntityFactory<T>::populate(Entity &)
-{
-    return 0;
-}
-
-template <class T>
 EntityKit * EntityFactory<T>::duplicateFactory()
 {
     EntityKit * f = new EntityFactory<T>(*this);
