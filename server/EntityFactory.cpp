@@ -68,10 +68,6 @@ void EntityKit::updateChildren()
     }
 }
 
-void EntityKit::updateChildrenProperties()
-{
-}
-
 template <>
 Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
 {

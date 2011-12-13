@@ -266,10 +266,6 @@ void EntityKit::updateChildren()
 {
 }
 
-void EntityKit::updateChildrenProperties()
-{
-}
-
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance()

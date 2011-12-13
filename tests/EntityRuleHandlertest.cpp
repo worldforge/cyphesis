@@ -251,10 +251,6 @@ void EntityKit::updateChildren()
 {
 }
 
-void EntityKit::updateChildrenProperties()
-{
-}
-
 void EntityKit::addProperties()
 {
 }
