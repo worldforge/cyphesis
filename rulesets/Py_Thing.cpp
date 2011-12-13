@@ -628,7 +628,7 @@ PyTypeObject PyEntity_Type = {
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
-        (destructor)Entity_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_dealloc*/
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
@@ -640,21 +640,21 @@ PyTypeObject PyEntity_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        (getattrofunc)Entity_getattro,  // tp_getattro
-        (setattrofunc)Entity_setattro,  // tp_setattro
+        0,                              // tp_getattro
+        0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "Entity objects",               // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
-        offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
+        0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
         Entity_methods,                 // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
-        0,                              // tp_base
+        &PyLocatedEntity_Type,          // tp_base
         0,                              // tp_dict
         0,                              // tp_descr_get
         0,                              // tp_descr_set
@@ -671,7 +671,7 @@ PyTypeObject PyCharacter_Type = {
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
-        (destructor)Entity_dealloc,     /*tp_dealloc*/
+        0,                              /*tp_dealloc*/
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
@@ -683,21 +683,21 @@ PyTypeObject PyCharacter_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        (getattrofunc)Entity_getattro,  // tp_getattro
-        (setattrofunc)Entity_setattro,  // tp_setattro
+        0,                              // tp_getattro
+        0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "Character objects",            // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
-        offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
+        0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
         Character_methods,              // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
-        0,                              // tp_base
+        &PyEntity_Type,                 // tp_base
         0,                              // tp_dict
         0,                              // tp_descr_get
         0,                              // tp_descr_set
@@ -714,7 +714,7 @@ PyTypeObject PyMind_Type = {
         sizeof(PyEntity),               // tp_basicsize
         0,                              // tp_itemsize
         // methods 
-        (destructor)Entity_dealloc,     // tp_dealloc
+        0,                              // tp_dealloc
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
@@ -740,7 +740,7 @@ PyTypeObject PyMind_Type = {
         Mind_methods,                   // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
-        0,                              // tp_base
+        &PyLocatedEntity_Type,          // tp_base
         0,                              // tp_dict
         0,                              // tp_descr_get
         0,                              // tp_descr_set
