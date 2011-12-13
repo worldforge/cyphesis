@@ -97,6 +97,14 @@ int main()
     fail_python_string("t.rate = '1'");
     run_python_string("t.foo = 1");
     run_python_string("t.foo = 1.1");
+
+    // Tasks do not permit wrappers of core server objects
+    // to be stored directly.
+    fail_python_string("t.foo = Character('2')");
+    run_python_string("import server");
+    fail_python_string("t.foo = server.LocatedEntity('2')");
+    fail_python_string("t.foo = server.Thing('2')");
+
     run_python_string("t.foo = 'foois1'");
     run_python_string("assert t.foo == 'foois1'");
     run_python_string("assert not t.obsolete()");
