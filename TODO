@@ -1,6 +1,6 @@
-Type checks in Py_Location.init seem to not work if "me" is passed in as ref
-in the mind code. Possibly the type check for mind PyMind_Check does not
-work for native Python types that inherit from a wrapper class.
+Try using tp_base to ensure the 4 types in Py_Thing.h inherit from each other
+correctly. PyType_Ready() copies some of the fields in the type structure
+so it may simplify things greatly.
 
 Add tests which trigger possible crash conditions in the script interface
 
