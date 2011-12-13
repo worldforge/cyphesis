@@ -1,3 +1,7 @@
+Py_Task requires Character * which isn't a real constraint any more.
+Py_Tasktest is entirely in context of Character, which is no longer a
+constraint
+
 Try using tp_base to ensure the 4 types in Py_Thing.h inherit from each other
 correctly. PyType_Ready() copies some of the fields in the type structure
 so it may simplify things greatly.

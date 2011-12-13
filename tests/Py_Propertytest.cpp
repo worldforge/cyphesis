@@ -41,7 +41,7 @@
 
 static PyObject * add_properties(PyObject * self, PyEntity * o)
 {
-    if (!PyEntity_Check(o) && !PyCharacter_Check(o)) {
+    if (!PyEntity_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return NULL;
     }

@@ -184,7 +184,7 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
         PyErr_SetString(PyExc_TypeError, "don't store proxy objects as attributes");
         return -1;
     }
-    if (PyLocatedEntity_Check(v) || PyEntity_Check(v) || PyCharacter_Check(v)) {
+    if (PyLocatedEntity_Check(v)) {
         PyErr_SetString(PyExc_TypeError, "don't store server objects as attributes");
         return -1;
     }

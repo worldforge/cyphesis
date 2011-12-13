@@ -76,7 +76,7 @@ void check_union()
 
 static PyObject * null_wrapper(PyObject * self, PyEntity * o)
 {
-    if (PyLocatedEntity_Check(o) || PyEntity_Check(o) || PyCharacter_Check(o)) {
+    if (PyLocatedEntity_Check(o)) {
 #ifdef CYPHESIS_DEBUG
         o->m_entity.l = NULL;
 #endif // NDEBUG
@@ -188,8 +188,10 @@ int main()
     fail_python_string("Thing()");
     fail_python_string("Thing('s')");
     fail_python_string("Thing(1)");
+    fail_python_string("Thing(LocatedEntity('1'))");
     run_python_string("t=Thing('1')");
     run_python_string("Thing(t)");
+    run_python_string("Thing(Character('1'))");
     run_python_string("t.as_entity()");
     run_python_string("t.send_world(Operation('get'))");
     fail_python_string("t.send_world('get')");
@@ -201,6 +203,7 @@ int main()
     fail_python_string("Character()");
     fail_python_string("Character('s')");
     fail_python_string("Character(1)");
+    fail_python_string("Character(Thing('1'))");
     run_python_string("c=Character('1')");
     run_python_string("Character(c)");
     run_python_string("c.as_entity()");

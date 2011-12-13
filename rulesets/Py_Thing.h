@@ -49,9 +49,14 @@ extern PyTypeObject PyEntity_Type;
 extern PyTypeObject PyCharacter_Type;
 extern PyTypeObject PyMind_Type;
 
-#define PyLocatedEntity_Check(_o) ((_o)->ob_type == &PyLocatedEntity_Type)
-#define PyEntity_Check(_o) ((_o)->ob_type == &PyEntity_Type)
-#define PyCharacter_Check(_o) ((_o)->ob_type == &PyCharacter_Type)
+#define PyLocatedEntity_Check(_o) PyObject_TypeCheck(_o, &PyLocatedEntity_Type)
+#define PyLocatedEntity_CheckExact(_o) (Py_Type(_o) == &PyLocatedEntity_Type)
+
+#define PyEntity_Check(_o) PyObject_TypeCheck(_o, &PyEntity_Type)
+#define PyEntity_CheckExact(_o) (Py_Type(_o) == &PyEntity_Type)
+
+#define PyCharacter_Check(_o) PyObject_TypeCheck(_o, &PyCharacter_Type)
+#define PyCharacter_CheckExact(_o) (Py_Type(_o) == &PyCharacter_Type)
 
 #define PyMind_Check(_o) PyObject_TypeCheck(_o, &PyMind_Type)
 #define PyMind_CheckExact(_o) (Py_TYPE(_o) == &PyMind_Type)

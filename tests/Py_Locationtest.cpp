@@ -44,8 +44,7 @@ static PyObject * null_wrapper(PyObject * self, PyLocation * o)
 #ifdef CYPHESIS_DEBUG
         o->location = NULL;
 #endif // NDEBUG
-    } else if (PyLocatedEntity_Check(o) || PyEntity_Check(o) ||
-               PyCharacter_Check(o) || PyMind_Check(o)) {
+    } else if (PyLocatedEntity_Check(o)) {
 #ifdef CYPHESIS_DEBUG
         ((PyEntity*)o)->m_entity.l = NULL;
 #endif // NDEBUG

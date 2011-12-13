@@ -362,7 +362,7 @@ static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
         self->m_entity.e = new Entity(id, intId);
         return 0;
     }
-    if (PyEntity_Check(arg) || PyCharacter_Check(arg)) {
+    if (PyEntity_Check(arg)) {
         PyEntity * character = (PyEntity *)arg;
 #ifndef NDEBUG
         if (character->m_entity.c == NULL) {

@@ -122,8 +122,9 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
     }
 #endif // NDEBUG
     if (strcmp(name, "parent") == 0) {
-        if (!PyEntity_Check(v)) {
-            PyErr_SetString(PyExc_TypeError, "parent must be a thing");
+        // FIXME Support for weakrefs
+        if (!PyLocatedEntity_Check(v)) {
+            PyErr_SetString(PyExc_TypeError, "parent must be an entity");
             return -1;
         }
         PyEntity * thing = (PyEntity *)v;
@@ -223,11 +224,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
         if (PyWeakref_CheckProxy(refO)) {
             refO = PyWeakref_GET_OBJECT(refO);
         }
-        if (!PyLocatedEntity_Check(refO) &&
-            !PyEntity_Check(refO) &&
-            !PyCharacter_Check(refO) &&
-            !PyWorld_Check(refO) &&
-            !PyMind_Check(refO)) {
+        if (!PyLocatedEntity_Check(refO) && !PyWorld_Check(refO)) {
             // FIXME This is odd. Should be wrapped into the above check
             if (!PyObject_IsInstance(refO, (PyObject *)&PyEntity_Type)) {
                 PyErr_SetString(PyExc_TypeError, "Arg ref required");
