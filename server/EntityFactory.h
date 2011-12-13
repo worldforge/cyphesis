@@ -65,7 +65,7 @@ class EntityKit {
 
     void addProperties();
 
-    void updateChildren();
+    void updateProperties();
 
     /// \brief Create a new Entity and make it persistent.
     ///

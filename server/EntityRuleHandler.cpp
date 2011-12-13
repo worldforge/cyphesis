@@ -142,7 +142,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
         return -1;
     }
 
-    factory->updateChildren();
+    factory->updateProperties();
 
     return 0;
 }

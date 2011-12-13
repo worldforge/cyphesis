@@ -50,7 +50,7 @@ void EntityKit::addProperties()
     m_type->addProperties(m_attributes);
 }
 
-void EntityKit::updateChildren()
+void EntityKit::updateProperties()
 {
     m_type->updateProperties(m_attributes);
 
@@ -64,7 +64,7 @@ void EntityKit::updateChildren()
         for (; J != Jend; ++J) {
             child_factory->m_attributes[J->first] = J->second;
         }
-        child_factory->updateChildren();
+        child_factory->updateProperties();
     }
 }
 

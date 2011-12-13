@@ -247,7 +247,7 @@ int PythonClass::refresh()
     return 0;
 }
 
-void EntityKit::updateChildren()
+void EntityKit::updateProperties()
 {
 }
 

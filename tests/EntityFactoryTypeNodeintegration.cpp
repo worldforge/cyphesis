@@ -50,7 +50,7 @@ int main()
 
     assert(ek->m_type->defaults().empty());
 
-    ek->updateChildren();
+    ek->updateProperties();
 
     assert(ek->m_type->defaults().size() == 1);
 
@@ -67,11 +67,11 @@ int main()
 
     assert(subclass_ek->m_type->defaults().empty());
 
-    subclass_ek->updateChildren();
+    subclass_ek->updateProperties();
 
     assert(subclass_ek->m_type->defaults().size() == 1);
 
-    ek->updateChildren();
+    ek->updateProperties();
 
     assert(ek->m_type->defaults().size() == 1);
     assert(subclass_ek->m_type->defaults().size() == 2);
@@ -79,7 +79,7 @@ int main()
     subclass_ek->m_attributes["test1"] = Atlas::Message::StringType("bar");
     subclass_ek->m_classAttributes["test1"] = Atlas::Message::StringType("bar");
 
-    ek->updateChildren();
+    ek->updateProperties();
 
     assert(ek->m_type->defaults().size() == 1);
     assert(subclass_ek->m_type->defaults().size() == 2);

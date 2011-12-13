@@ -173,7 +173,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     if (L == tool_factory->m_classAttributes.end()) {
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
         tool_factory->m_attributes["operations"] = ListType(1, activation_op);
-        tool_factory->updateChildren();
+        tool_factory->updateProperties();
     } else {
         if (L->second.isList()) {
             ListType::const_iterator M = L->second.List().begin();
@@ -181,7 +181,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             if (M == L->second.List().end()) {
                 L->second.List().push_back(activation_op);
                 tool_factory->m_attributes[L->first] = L->second.List();
-                tool_factory->updateChildren();
+                tool_factory->updateProperties();
             }
         }
     }

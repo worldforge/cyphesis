@@ -262,7 +262,7 @@ TaskKit * EntityBuilder::getTaskFactory(const std::string & class_name)
     return 0;
 }
 
-void EntityKit::updateChildren()
+void EntityKit::updateProperties()
 {
 }
 

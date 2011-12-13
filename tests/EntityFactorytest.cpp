@@ -77,7 +77,7 @@ int main()
 
     ek = new EntityFactory<Thing>;
 
-    ek->updateChildren();
+    ek->updateProperties();
 
     delete ek;
 
