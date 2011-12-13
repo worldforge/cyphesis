@@ -73,7 +73,8 @@ SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommMDNSPublishertest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
-                           Accountintegration
+                           Accountintegration \
+                           EntityFactoryTypeNodeintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest
 
@@ -1421,6 +1422,15 @@ Accountintegration_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 Accountintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
+
+EntityFactoryTypeNodeintegration_SOURCES = \
+        EntityFactoryTypeNodeintegration.cpp \
+        TestPropertyManager.cpp
+EntityFactoryTypeNodeintegration_LDADD = \
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/common/TypeNode.o \
+        $(top_builddir)/common/PropertyManager.o \
+        $(top_builddir)/common/Property.o
 
 # Other TESTS
 
