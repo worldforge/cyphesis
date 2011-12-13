@@ -52,6 +52,8 @@ void EntityKit::addProperties()
 
 void EntityKit::updateChildren()
 {
+    m_type->updateProperties(m_attributes);
+
     std::set<EntityKit *>::const_iterator I = m_children.begin();
     std::set<EntityKit *>::const_iterator Iend = m_children.end();
     for (; I != Iend; ++I) {
@@ -68,15 +70,6 @@ void EntityKit::updateChildren()
 
 void EntityKit::updateChildrenProperties()
 {
-    m_type->updateProperties(m_attributes);
-
-    // Propagate the changes to all child factories
-    std::set<EntityKit *>::const_iterator K = m_children.begin();
-    std::set<EntityKit *>::const_iterator Kend = m_children.end();
-    for (; K != Kend; ++K) {
-        EntityKit * child_factory = *K;
-        child_factory->updateChildrenProperties();
-    }
 }
 
 template <>
