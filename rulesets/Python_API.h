@@ -23,4 +23,7 @@
 void init_python_api(bool log_stdout = true);
 void shutdown_python_api();
 
+template<class T>
+struct _object * wrapPython(T * entity);
+
 #endif // RULESETS_PYTHON_API_H

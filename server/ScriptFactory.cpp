@@ -24,6 +24,7 @@
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonEntityScript.h"
+#include "rulesets/Python_API.h"
 
 #include "rulesets/Entity.h"
 
@@ -65,7 +66,7 @@ int PythonScriptFactory::addScript(Entity * entity) const
     if (m_class == 0) {
         return -1;
     }
-    PyObject * wrapper = wrapNewEntity(entity);
+    PyObject * wrapper = wrapPython(entity);
     if (wrapper == 0) {
         return -1;
     }

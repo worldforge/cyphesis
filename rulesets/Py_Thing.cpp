@@ -31,6 +31,7 @@
 #include "Py_Task.h"
 #include "Py_WorldTime.h"
 #include "PythonWrapper.h"
+#include "Python_API.h"
 
 #include "BaseMind.h"
 #include "Character.h"
@@ -750,7 +751,8 @@ PyTypeObject PyMind_Type = {
         (newfunc)Entity_new,            // tp_new
 };
 
-PyObject * wrapNewEntity(LocatedEntity * le)
+template<>
+PyObject * wrapPython<LocatedEntity>(LocatedEntity * le)
 {
     PyEntity * pe;
     Entity * entity = dynamic_cast<Entity *>(le);
@@ -779,11 +781,17 @@ PyObject * wrapNewEntity(LocatedEntity * le)
     return (PyObject*)pe;
 }
 
+template<>
+PyObject * wrapPython<Entity>(Entity * e)
+{
+    return wrapPython<LocatedEntity>(e);
+}
+
 PyObject * wrapEntity(LocatedEntity * le)
 {
     PyObject * wrapper = 0;
     if (le->script() == 0) {
-        wrapper = wrapNewEntity(le);
+        wrapper = wrapPython(le);
         le->setScript(new PythonWrapper(wrapper));
     } else {
         PythonWrapper * pw = dynamic_cast<PythonWrapper *>(le->script());
