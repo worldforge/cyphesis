@@ -69,10 +69,12 @@ int PythonScriptFactory::addScript(Entity * entity) const
     if (m_class == 0) {
         return -1;
     }
-    PyEntity * wrapper = newPyEntity();
-    wrapper->m_entity.e = entity;
+    PyObject * wrapper = wrapNewEntity(entity);
+    if (wrapper == 0) {
+        return -1;
+    }
 
-    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
+    PyObject * script = Create_PyScript(wrapper, m_class);
 
     Py_DECREF(wrapper);
 
