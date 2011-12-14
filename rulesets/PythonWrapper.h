@@ -36,4 +36,7 @@ class PythonWrapper : public Script {
     struct _object * wrapper() const { return m_wrapper; }
 };
 
+template<class T>
+struct _object * wrapPython(T * entity);
+
 #endif // RULESETS_PYTHON_WRAPPER_H

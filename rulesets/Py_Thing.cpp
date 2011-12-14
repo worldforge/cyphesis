@@ -31,7 +31,6 @@
 #include "Py_Task.h"
 #include "Py_WorldTime.h"
 #include "PythonWrapper.h"
-#include "Python_API.h"
 
 #include "BaseMind.h"
 #include "Character.h"

@@ -307,6 +307,17 @@ PyObject * wrapTask(Task * task)
 }
 #endif
 
+template<>
+PyObject * wrapPython<Task>(Task * t)
+{
+    PyTask * pt = newPyTask();
+    if (pt == NULL) {
+        return NULL;
+    }
+    pt->m_task = t;
+}
+
+
 PyTask * newPyTask()
 {
     return (PyTask *)PyTask_Type.tp_new(&PyTask_Type, 0, 0);

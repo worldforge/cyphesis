@@ -64,13 +64,12 @@ int PythonTaskScriptFactory::addScript(Task * entity) const
     if (m_class == 0) {
         return -1;
     }
-    PyTask * wrapper = newPyTask();
+    PyObject * wrapper = wrapPython(entity);
     if (wrapper == 0) {
         return -1;
     }
-    wrapper->m_task = entity;
 
-    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
+    PyObject * script = Create_PyScript(wrapper, m_class);
 
     Py_DECREF(wrapper);
 

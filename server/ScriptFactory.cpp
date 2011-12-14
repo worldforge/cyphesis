@@ -24,7 +24,6 @@
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonEntityScript.h"
-#include "rulesets/Python_API.h"
 
 #include "rulesets/Entity.h"
 
