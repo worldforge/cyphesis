@@ -32,8 +32,10 @@ namespace Atlas {
 }
 
 class Entity;
-class ScriptKit;
 class TypeNode;
+
+template<class T>
+class ScriptKit;
 
 /// \brief Abstract factory for creating in-game entity objects.
 ///
@@ -44,7 +46,7 @@ class EntityKit {
   protected:
     EntityKit();
   public:
-    ScriptKit * m_scriptFactory;
+    ScriptKit<Entity> * m_scriptFactory;
     /// Default attribute values for this class
     Atlas::Message::MapType m_classAttributes;
     /// Default attribute values for instances of this class, including

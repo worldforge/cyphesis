@@ -25,8 +25,10 @@
 class LocatedEntity;
 class ScriptFactory;
 class Task;
-class TaskScriptKit;
 class TypeNode;
+
+template<class T>
+class ScriptKit;
 
 /// \brief Factory interface for for factories for creating tasks
 ///
@@ -40,7 +42,7 @@ class TaskKit {
     /// \brief Type name of the base entity class this task works on
     const TypeNode * m_target;
   public:
-    TaskScriptKit * m_scriptFactory;
+    ScriptKit<Task> * m_scriptFactory;
 
     virtual ~TaskKit();
 

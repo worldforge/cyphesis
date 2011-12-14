@@ -181,10 +181,6 @@ void EntityBuilder::installFactory(const std::string & class_name,
 {
 }
 
-ScriptKit::~ScriptKit()
-{
-}
-
 PythonScriptFactory::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
                                          PythonClass(package, type)

@@ -22,25 +22,13 @@
 
 #include "rulesets/PythonClass.h"
 
+#include "common/ScriptKit.h"
+
 class Task;
-
-/// \brief Factory interface for creating scripts to attach to in game
-/// task objects.
-class TaskScriptKit {
-  public:
-    virtual ~TaskScriptKit();
-
-    /// \brief Accessor for package name
-    virtual const std::string & package() const = 0;
-    /// \brief Add a script to an task
-    virtual int addScript(Task * task) const = 0;
-    /// \brief Reload the underlying class object from the script on disk
-    virtual int refreshClass() = 0;
-};
 
 /// \brief Factory implementation for creating python script objects to attach
 /// to in game task objects.
-class PythonTaskScriptFactory : public TaskScriptKit, private PythonClass {
+class PythonTaskScriptFactory : public ScriptKit<Task>, private PythonClass {
   protected:
     int check() const;
   public:

@@ -95,10 +95,6 @@ int main()
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 
-ScriptKit::~ScriptKit()
-{
-}
-
 Stackable::Stackable(const std::string & id, long intId) :
            Stackable_parent(id, intId), m_num(1)
 {

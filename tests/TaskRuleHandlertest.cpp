@@ -159,10 +159,6 @@ Task * TaskFactory::newTask(LocatedEntity & chr)
     return 0;
 }
 
-TaskScriptKit::~TaskScriptKit()
-{
-}
-
 PythonTaskScriptFactory::PythonTaskScriptFactory(const std::string & package,
                                                  const std::string & type) :
                                                  PythonClass(package, type)

@@ -40,6 +40,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      AtlasStreamClient.cpp AtlasStreamClient.h \
 		      ClientTask.cpp ClientTask.h \
 		      SystemTime.cpp SystemTime.h \
+		      ScriptKit.cpp ScriptKit.h \
 		      Actuate.h Add.h Affect.h Attack.h Burn.h Connect.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h Teleport.h

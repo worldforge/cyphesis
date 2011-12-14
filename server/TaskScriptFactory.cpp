@@ -1,4 +1,3 @@
-
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2005 Alistair Riddoch
 //
@@ -27,10 +26,6 @@
 #include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/Task.h"
-
-TaskScriptKit::~TaskScriptKit()
-{
-}
 
 /// \brief PythonTaskScriptFactory constructor
 ///

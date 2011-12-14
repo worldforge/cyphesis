@@ -68,7 +68,7 @@ class ExposedEntityBuilder : public EntityBuilder {
 
 };
 
-class TestScriptFactory : public ScriptKit {
+class TestScriptFactory : public ScriptKit<Entity> {
   protected:
     std::string m_package;
   public:
@@ -944,8 +944,4 @@ Root atlasClass(const std::string & name, const std::string & parent)
     r->setObjtype("class");
     r->setId(name);
     return r;
-}
-
-ScriptKit::~ScriptKit()
-{
 }

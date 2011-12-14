@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2005 Alistair Riddoch
+// Copyright (C) 2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,29 +17,31 @@
 
 // $Id$
 
-#ifndef SERVER_SCRIPT_FACTORY_H
-#define SERVER_SCRIPT_FACTORY_H
+#ifndef COMMON_SCRIPT_KIT_H
+#define COMMON_SCRIPT_KIT_H
 
-#include "rulesets/PythonClass.h"
-
-#include "common/ScriptKit.h"
+#include <string>
 
 class Entity;
 
-/// \brief Factory implementation for creating python script objects to attach
-/// to in game entity objects.
-class PythonScriptFactory : public ScriptKit<Entity>, private PythonClass {
-  protected:
-    int check() const;
+/// \brief Factory interface for creating scripts to attach to in game
+/// entity objects.
+template <class T>
+class ScriptKit {
   public:
-    PythonScriptFactory(const std::string & package, const std::string & type);
-    ~PythonScriptFactory();
+    virtual ~ScriptKit() = 0;
 
-    int setup();
-
-    const std::string & package() const;
-    int addScript(Entity * entity) const;
-    int refreshClass();
+    /// \brief Accessor for package name
+    virtual const std::string & package() const = 0;
+    /// \brief Add a script to an entity
+    virtual int addScript(T * entity) const = 0;
+    /// \brief Reload the underlying class object from the script on disk
+    virtual int refreshClass() = 0;
 };
 
-#endif // SERVER_SCRIPT_FACTORY_H
+template <class T>
+ScriptKit<T>::~ScriptKit()
+{
+}
+
+#endif // COMMON_SCRIPT_KIT_H

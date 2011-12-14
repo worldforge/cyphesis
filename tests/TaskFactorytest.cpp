@@ -32,7 +32,7 @@
 
 #include <cassert>
 
-class TestTaskScriptFactory : public TaskScriptKit {
+class TestTaskScriptFactory : public ScriptKit<Task> {
   protected:
     std::string m_package;
   public:
@@ -78,10 +78,6 @@ int main()
 // stubs
 
 #include "common/TypeNode.h"
-
-TaskScriptKit::~TaskScriptKit()
-{
-}
 
 void Task::initTask(const Operation & op, OpVector & res)
 {

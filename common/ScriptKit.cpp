@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2005 Alistair Riddoch
+// Copyright (C) 2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,29 +17,4 @@
 
 // $Id$
 
-#ifndef SERVER_SCRIPT_FACTORY_H
-#define SERVER_SCRIPT_FACTORY_H
-
-#include "rulesets/PythonClass.h"
-
-#include "common/ScriptKit.h"
-
-class Entity;
-
-/// \brief Factory implementation for creating python script objects to attach
-/// to in game entity objects.
-class PythonScriptFactory : public ScriptKit<Entity>, private PythonClass {
-  protected:
-    int check() const;
-  public:
-    PythonScriptFactory(const std::string & package, const std::string & type);
-    ~PythonScriptFactory();
-
-    int setup();
-
-    const std::string & package() const;
-    int addScript(Entity * entity) const;
-    int refreshClass();
-};
-
-#endif // SERVER_SCRIPT_FACTORY_H
+#include "ScriptKit.h"

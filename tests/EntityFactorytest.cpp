@@ -36,7 +36,7 @@
 
 #include <cassert>
 
-class TestScriptFactory : public ScriptKit {
+class TestScriptFactory : public ScriptKit<Entity> {
   protected:
     std::string m_package;
   public:
@@ -85,10 +85,6 @@ int main()
 }
 
 // stubs
-
-ScriptKit::~ScriptKit()
-{
-}
 
 Stackable::Stackable(const std::string & id, long intId) :
            Stackable_parent(id, intId), m_num(1)

@@ -110,7 +110,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
     }
     assert(factory != 0);
     
-    ScriptKit * script_factory = factory->m_scriptFactory;
+    ScriptKit<Entity> * script_factory = factory->m_scriptFactory;
     if (script_factory != 0) {
         script_factory->refreshClass();
     }

@@ -27,10 +27,6 @@
 
 #include "rulesets/Entity.h"
 
-ScriptKit::~ScriptKit()
-{
-}
-
 /// \brief PythonScriptFactory constructor
 ///
 /// @param package Name of the script package where the script type is

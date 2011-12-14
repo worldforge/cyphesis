@@ -234,7 +234,7 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
 
     assert(factory != 0);
 
-    TaskScriptKit * script_factory = factory->m_scriptFactory;
+    ScriptKit<Task> * script_factory = factory->m_scriptFactory;
     if (script_factory != 0) {
         script_factory->refreshClass();
     }
