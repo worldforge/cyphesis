@@ -226,18 +226,18 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
         self->m_task = wrap_task->m_task;
         return 0;
     }
-    if (PyCharacter_Check(arg)) {
-        PyEntity * character = (PyEntity *)arg;
+    if (PyLocatedEntity_Check(arg)) {
+        PyEntity * owner = (PyEntity *)arg;
 #ifndef NDEBUG
-        if (character->m_entity.c == NULL) {
-            PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+        if (owner->m_entity.l == NULL) {
+            PyErr_SetString(PyExc_AssertionError, "NULL owner Task.__init__");
             return -1;
         }
 #endif // NDEBUG
-        self->m_task = new Task(*character->m_entity.c);
+        self->m_task = new Task(*owner->m_entity.l);
         return 0;
     }
-    PyErr_SetString(PyExc_TypeError, "Task requires a Task, or Character");
+    PyErr_SetString(PyExc_TypeError, "Task requires a Task, or Entity");
     return -1;
 }
 
