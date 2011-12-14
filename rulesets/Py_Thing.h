@@ -61,6 +61,7 @@ extern PyTypeObject PyMind_Type;
 #define PyMind_Check(_o) PyObject_TypeCheck(_o, &PyMind_Type)
 #define PyMind_CheckExact(_o) (Py_TYPE(_o) == &PyMind_Type)
 
+PyObject * wrapNewEntity(LocatedEntity * entity);
 PyObject * wrapEntity(LocatedEntity * entity);
 PyEntity * newPyLocatedEntity();
 PyEntity * newPyEntity();

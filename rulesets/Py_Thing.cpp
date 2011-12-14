@@ -750,35 +750,40 @@ PyTypeObject PyMind_Type = {
         (newfunc)Entity_new,            // tp_new
 };
 
+PyObject * wrapNewEntity(LocatedEntity * le)
+{
+    PyEntity * pe;
+    Entity * entity = dynamic_cast<Entity *>(le);
+    if (entity != 0) {
+        Character * ch_entity = dynamic_cast<Character *>(entity);
+        if (ch_entity != 0) {
+            pe = newPyCharacter();
+            if (pe == NULL) {
+                return NULL;
+            }
+            pe->m_entity.c = ch_entity;
+        } else {
+            pe = newPyEntity();
+            if (pe == NULL) {
+                return NULL;
+            }
+            pe->m_entity.e = entity;
+        }
+    } else {
+        pe = newPyLocatedEntity();
+        if (pe == NULL) {
+            return NULL;
+        }
+        pe->m_entity.l = le;
+    }
+    return (PyObject*)pe;
+}
+
 PyObject * wrapEntity(LocatedEntity * le)
 {
     PyObject * wrapper = 0;
     if (le->script() == 0) {
-        PyEntity * pe = 0;
-        Entity * entity = dynamic_cast<Entity *>(le);
-        if (entity != 0) {
-          Character * ch_entity = dynamic_cast<Character *>(entity);
-          if (ch_entity != 0) {
-              pe = newPyCharacter();
-              if (pe == NULL) {
-                  return NULL;
-              }
-              pe->m_entity.c = ch_entity;
-          } else {
-              pe = newPyEntity();
-              if (pe == NULL) {
-                  return NULL;
-              }
-              pe->m_entity.e = entity;
-          }
-        } else {
-          pe = newPyLocatedEntity();
-          if (pe == NULL) {
-              return NULL;
-          }
-          pe->m_entity.l = le;
-        }
-        wrapper = (PyObject *)pe;
+        wrapper = wrapNewEntity(le);
         le->setScript(new PythonWrapper(wrapper));
     } else {
         PythonWrapper * pw = dynamic_cast<PythonWrapper *>(le->script());
