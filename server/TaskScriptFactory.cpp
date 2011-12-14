@@ -65,6 +65,9 @@ int PythonTaskScriptFactory::addScript(Task * entity) const
         return -1;
     }
     PyTask * wrapper = newPyTask();
+    if (wrapper == 0) {
+        return -1;
+    }
     wrapper->m_task = entity;
 
     PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
