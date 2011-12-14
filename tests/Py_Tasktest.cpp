@@ -44,9 +44,9 @@ static PyObject * null_wrapper(PyObject * self, PyTask * o)
 #ifdef CYPHESIS_DEBUG
         o->m_task = NULL;
 #endif // NDEBUG
-    } else if (PyCharacter_Check(o)) {
+    } else if (PyLocatedEntity_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        ((PyEntity*)o)->m_entity.c = 0;
+        ((PyEntity*)o)->m_entity.l = 0;
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
