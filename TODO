@@ -7,10 +7,6 @@ inherit from them
  - make properties scriptable and the move common code from Entity, Task
    and Property into Scriptable base class for multiple inheritance
 
-Py_Task requires Character * which isn't a real constraint any more.
-Py_Tasktest is entirely in context of Character, which is no longer a
-constraint
-
 Finalise using tp_base in Py_Thing.*, in particular migrate mind script
 creation to use wrapNewEntity, and finally converge that code.
 Using wrapNewEntity may not be required, but mind factory code should
