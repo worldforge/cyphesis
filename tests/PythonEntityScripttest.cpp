@@ -32,8 +32,8 @@
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Script.h"
+#include "rulesets/PythonScriptFactory.h"
 
-#include "server/ScriptFactory.h"
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Operation.h>

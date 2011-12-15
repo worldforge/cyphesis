@@ -798,7 +798,6 @@ PythonWrappertest_LDADD = \
 
 PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp python_testers.h
 PythonEntityScripttest_LDADD = \
-        $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
