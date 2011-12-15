@@ -946,7 +946,6 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/Peer.o \
         $(top_builddir)/server/Juncture.o \
         $(top_builddir)/server/CommServer.o \
-        $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/ConnectedRouter.o \
