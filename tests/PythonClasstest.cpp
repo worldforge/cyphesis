@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include <Python.h>
+
 #include "rulesets/PythonClass.h"
 
 #include <cassert>
@@ -31,7 +33,7 @@
 class TestPythonClass : public PythonClass {
   public:
     TestPythonClass(const std::string & p, const std::string & t) :
-          PythonClass(p, t) { }
+          PythonClass(p, t, &PyBaseObject_Type) { }
 
     virtual ~TestPythonClass() { }
 

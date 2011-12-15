@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include <Python.h>
+
 #include "server/EntityRuleHandler.h"
 
 #include "server/EntityBuilder.h"
@@ -184,7 +186,9 @@ void EntityBuilder::installFactory(const std::string & class_name,
 template <class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
-                                         PythonClass(package, type)
+                                         PythonClass(package,
+                                                     type,
+                                                     &PyBaseObject_Type)
 {
 }
 
@@ -195,12 +199,6 @@ PythonScriptFactory<T>::~PythonScriptFactory()
 
 template <class T>
 int PythonScriptFactory<T>::setup()
-{
-    return 0;
-}
-
-template <class T>
-int PythonScriptFactory<T>::check() const
 {
     return 0;
 }
@@ -226,10 +224,12 @@ int PythonScriptFactory<T>::refreshClass()
 }
 
 PythonClass::PythonClass(const std::string & package,
-                         const std::string & type) : m_package(package),
-                                                     m_type(type),
-                                                     m_module(0),
-                                                     m_class(0)
+                         const std::string & type,
+                         PyTypeObject * base) : m_package(package),
+                                                m_type(type),
+                                                m_base(base),
+                                                m_module(0),
+                                                m_class(0)
 {
 }
 
