@@ -786,6 +786,17 @@ PyObject * wrapPython<Entity>(Entity * e)
     return wrapPython<LocatedEntity>(e);
 }
 
+template<>
+PyObject * wrapPython<BaseMind>(BaseMind * t)
+{
+    PyEntity * pm = newPyMind();
+    if (pm == NULL) {
+        return NULL;
+    }
+    pm->m_entity.m = t;
+    return (PyObject*)pm;
+}
+
 PyObject * wrapEntity(LocatedEntity * le)
 {
     PyObject * wrapper = 0;

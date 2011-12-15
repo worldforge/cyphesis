@@ -26,6 +26,7 @@
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonEntityScript.h"
 
+#include "rulesets/BaseMind.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Task.h"
 
@@ -47,5 +48,15 @@ PythonScriptFactory<Task>::PythonScriptFactory(const std::string & package,
 {
 }
 
+template<>
+PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
+                                                   const std::string & type) :
+                                                   PythonClass(package,
+                                                               type,
+                                                               &PyMind_Type)
+{
+}
+
 template class PythonScriptFactory<Entity>;
 template class PythonScriptFactory<Task>;
+template class PythonScriptFactory<BaseMind>;
