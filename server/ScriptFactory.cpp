@@ -47,23 +47,5 @@ PythonScriptFactory<Task>::PythonScriptFactory(const std::string & package,
 {
 }
 
-template<>
-int PythonScriptFactory<Entity>::check() const
-{
-    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type)) {
-        return -1;
-    }
-    return 0;
-}
-
-template<>
-int PythonScriptFactory<Task>::check() const
-{
-    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
-        return -1;
-    }
-    return 0;
-}
-
 template class PythonScriptFactory<Entity>;
 template class PythonScriptFactory<Task>;

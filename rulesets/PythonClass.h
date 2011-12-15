@@ -46,10 +46,8 @@ class PythonClass {
     int load();
     int refresh();
 
-    virtual int check() const = 0;
-
   public:
-    virtual ~PythonClass();
+    ~PythonClass();
 };
 
 #endif // RULESETS_PYTHON_CLASS_H

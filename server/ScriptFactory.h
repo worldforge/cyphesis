@@ -28,8 +28,6 @@
 /// to in game objects.
 template <class T>
 class PythonScriptFactory : public ScriptKit<T>, private PythonClass {
-  protected:
-    int check() const;
   public:
     PythonScriptFactory(const std::string & package, const std::string & type);
     ~PythonScriptFactory();
