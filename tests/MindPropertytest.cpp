@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include <Python.h>
+
 #include "PropertyCoverage.h"
 
 #include "rulesets/MindProperty.h"
@@ -45,18 +47,89 @@ int main()
 
 // stubs
 
+#include "rulesets/BaseMind.h"
+#include "rulesets/PythonScriptFactory.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int SETUP_NO = -1;
 } } }
 
-MindFactory * MindFactory::m_instance = NULL;
-
-MindFactory::MindFactory()
+PythonClass::PythonClass(const std::string & package,
+                         const std::string & type,
+                         PyTypeObject * base) : m_package(package),
+                                                m_type(type),
+                                                m_base(base),
+                                                m_module(0),
+                                                m_class(0)
 {
 }
 
-BaseMind * MindFactory::newMind(const std::string & id, long intId,
-                                const TypeNode * const type)
+PythonClass::~PythonClass()
+{
+}
+
+MindFactory::~MindFactory()
+{
+}
+
+BaseMind * MindFactory::newMind(const std::string & id, long intId) const
+{
+    return 0;
+}
+
+MindKit::MindKit() : m_scriptFactory(0)
+{
+}
+
+MindKit::~MindKit()
+{
+}
+
+template<>
+PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
+                                                   const std::string & type) :
+                                                   PythonClass(package,
+                                                               type,
+                                                               &PyBaseObject_Type)
+{
+}
+
+template <class T>
+PythonScriptFactory<T>::~PythonScriptFactory()
+{
+}
+
+template <class T>
+int PythonScriptFactory<T>::setup()
+{
+    return 0;
+}
+
+template <class T>
+const std::string & PythonScriptFactory<T>::package() const
+{
+    return m_package;
+}
+
+template <class T>
+int PythonScriptFactory<T>::addScript(T * entity) const
+{
+    return 0;
+}
+
+template <class T>
+int PythonScriptFactory<T>::refreshClass()
+{
+    return 0;
+}
+
+template class PythonScriptFactory<BaseMind>;
+
+int GetScriptDetails(const Atlas::Message::MapType & script,
+                     const std::string & class_name,
+                     const std::string & context,
+                     std::string & script_package,
+                     std::string & script_class)
 {
     return 0;
 }
