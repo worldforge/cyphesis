@@ -20,11 +20,24 @@
 #ifndef RULESETS_MIND_FACTORY_H
 #define RULESETS_MIND_FACTORY_H
 
-// FIXME Cross dependency, but only required for MindKit. Pls fix.
-#include "rulesets/MindBuilder.h"
+#include <string>
 
 class BaseMind;
-class TypeNode;
+
+template<class T>
+class ScriptKit;
+
+class MindKit {
+  protected:
+    MindKit();
+
+  public:
+    ScriptKit<BaseMind> * m_scriptFactory;
+
+    virtual ~MindKit() = 0;
+
+    virtual BaseMind * newMind(const std::string & id, long) const = 0;
+};
 
 /// \brief Factory class for creating minds
 ///

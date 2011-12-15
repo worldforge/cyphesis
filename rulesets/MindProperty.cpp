@@ -106,9 +106,11 @@ void MindProperty::apply(Entity * ent)
         return;
     }
 
-    chr->m_mind = MindBuilder::instance()->newMind(ent->getId(),
-                                                   ent->getIntId(),
-                                                   ent->getType());
+    chr->m_mind = m_factory->newMind(ent->getId(), ent->getIntId());
+
+    if (m_factory->m_scriptFactory != 0) {
+        m_factory->m_scriptFactory->addScript(chr->m_mind);
+    }
 
     Setup s;
     Anonymous setup_arg;

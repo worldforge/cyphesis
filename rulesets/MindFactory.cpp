@@ -22,9 +22,18 @@
 #include "BaseMind.h"
 
 #include "common/debug.h"
-#include "common/TypeNode.h"
+#include "common/ScriptKit.h"
 
 static const bool debug_flag = false;
+
+MindKit::MindKit() : m_scriptFactory(0)
+{
+}
+
+MindKit::~MindKit()
+{
+    delete m_scriptFactory;
+}
 
 MindFactory::~MindFactory()
 {

@@ -51,7 +51,6 @@ librulesetentity_a_SOURCES = \
 			     MultiHandlerProperty_impl.h \
 			     BBoxProperty.cpp BBoxProperty.h \
 			     TransientProperty.cpp TransientProperty.h \
-			     MindProperty.cpp MindProperty.h \
 			     InternalProperties.cpp InternalProperties.h \
 			     StatisticsProperty.cpp StatisticsProperty.h \
 			     TasksProperty.cpp TasksProperty.h \
@@ -64,6 +63,7 @@ librulesetentity_a_SOURCES = \
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \
+			   MindProperty.cpp MindProperty.h \
 			   MemEntity.cpp MemEntity.h \
 			   MemMap.cpp MemMap.h
 
