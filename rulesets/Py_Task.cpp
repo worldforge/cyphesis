@@ -315,6 +315,7 @@ PyObject * wrapPython<Task>(Task * t)
         return NULL;
     }
     pt->m_task = t;
+    return (PyObject*)pt;
 }
 
 
