@@ -1,3 +1,5 @@
+Ensure PythonClass checks base on reload
+
 Make all PyProperties into an inheritance tree, and all scripts to
 inherit from them
  - migrate from ?etattr() to ?etattro()
