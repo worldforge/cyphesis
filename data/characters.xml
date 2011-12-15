@@ -158,7 +158,7 @@
       <map name="mind">
         <map name="default">
           <string name="language">python</string>
-          <string name="name">mind.NPCMind</string>
+          <string name="name">mind.NPCMind.NPCMind</string>
         </map>
         <string name="visibility">private</string>
       </map>
