@@ -949,7 +949,6 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/rulesets/libscriptpython.a \
@@ -1003,7 +1002,6 @@ Admintest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Ruleset.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
@@ -1054,7 +1052,6 @@ ServerAccounttest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Ruleset.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
@@ -1103,7 +1100,6 @@ Playertest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/Ruleset.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
@@ -1312,7 +1308,6 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ExternalMind.o \
         $(top_builddir)/server/ExternalProperty.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
@@ -1358,7 +1353,6 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/ScriptFactory.o \
         $(top_builddir)/server/TaskFactory.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/PendingTeleport.o \
@@ -1406,7 +1400,6 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/Ruleset.o \
-        $(top_builddir)/server/TaskScriptFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \

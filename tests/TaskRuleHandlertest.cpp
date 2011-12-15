@@ -128,7 +128,7 @@ int main()
 
 #include "server/EntityFactory.h"
 #include "server/TaskFactory.h"
-#include "server/TaskScriptFactory.h"
+#include "server/ScriptFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"
@@ -159,37 +159,46 @@ Task * TaskFactory::newTask(LocatedEntity & chr)
     return 0;
 }
 
-PythonTaskScriptFactory::PythonTaskScriptFactory(const std::string & package,
-                                                 const std::string & type) :
-                                                 PythonClass(package, type)
+template <class T>
+PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
+                                         const std::string & type) :
+                                         PythonClass(package, type)
 {
 }
 
-PythonTaskScriptFactory::~PythonTaskScriptFactory()
+template <class T>
+PythonScriptFactory<T>::~PythonScriptFactory()
 {
 }
 
-int PythonTaskScriptFactory::setup()
-{
-    return 0;
-}
-
-int PythonTaskScriptFactory::check() const
+template <class T>
+int PythonScriptFactory<T>::setup()
 {
     return 0;
 }
 
-const std::string & PythonTaskScriptFactory::package() const
+template <class T>
+int PythonScriptFactory<T>::check() const
+{
+    return 0;
+}
+
+template <class T>
+const std::string & PythonScriptFactory<T>::package() const
 {
     return m_package;
 }
 
-int PythonTaskScriptFactory::addScript(Task * entity) const
+template <class T>
+int PythonScriptFactory<T>::addScript(T * entity) const
 {
     return 0;
 }
 
-int PythonTaskScriptFactory::refreshClass()
+template class PythonScriptFactory<Task>;
+
+template <class T>
+int PythonScriptFactory<T>::refreshClass()
 {
     return 0;
 }

@@ -22,7 +22,7 @@
 #include "EntityBuilder.h"
 #include "EntityFactory.h"
 #include "TaskFactory.h"
-#include "TaskScriptFactory.h"
+#include "ScriptFactory.h"
 #include "Persistence.h"
 
 #include "common/log.h"
@@ -153,8 +153,8 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
         }
     }
     if (factory->m_scriptFactory == 0) {
-        PythonTaskScriptFactory * ptsf = new PythonTaskScriptFactory(script_package,
-                                                                     script_class);
+        PythonScriptFactory<Task> * ptsf =
+              new PythonScriptFactory<Task>(script_package, script_class);
         if (ptsf->setup() == 0) {
             factory->m_scriptFactory = ptsf;
         } else {

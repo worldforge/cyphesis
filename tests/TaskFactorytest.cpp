@@ -25,29 +25,11 @@
 #endif
 
 #include "server/TaskFactory.h"
-#include "server/TaskScriptFactory.h"
 
 #include "rulesets/Character.h"
 #include "rulesets/Task.h"
 
 #include <cassert>
-
-class TestTaskScriptFactory : public ScriptKit<Task> {
-  protected:
-    std::string m_package;
-  public:
-    virtual const std::string & package() const {
-        return m_package;
-    }
-
-    virtual int addScript(Task * task) const {
-        return 0;
-    }
-
-    virtual int refreshClass() {
-        return 0;
-    }
-};
 
 int main()
 {
@@ -67,10 +49,6 @@ int main()
 
     e = ek->newTask(*chr);
     assert(e);
-
-    ek->m_scriptFactory = new TestTaskScriptFactory;
-
-    delete ek;
 
     return 0;
 }

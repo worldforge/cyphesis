@@ -88,7 +88,6 @@ SERVER_SOURCES = \
 		WorldRouter.cpp WorldRouter.h \
 		StorageManager.cpp StorageManager.h \
 		ScriptFactory.cpp ScriptFactory.h \
-		TaskScriptFactory.cpp TaskScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		Ruleset.cpp Ruleset.h \
@@ -149,6 +148,7 @@ cyslave_SOURCES = \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
 		ScriptFactory.cpp ScriptFactory.h \
+		ScriptFactory_impl.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		EntityBuilder.cpp EntityBuilder.h \
