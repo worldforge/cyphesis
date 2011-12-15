@@ -156,7 +156,10 @@
         <string name="visibility">public</string>
       </map>
       <map name="mind">
-        <string name="default">NPC</string>
+        <map name="default">
+          <string name="language">python</string>
+          <string name="name">mind.NPCMind</string>
+        </map>
         <string name="visibility">private</string>
       </map>
       <map name="stamina">

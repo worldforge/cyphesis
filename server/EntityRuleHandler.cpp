@@ -200,7 +200,8 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
             // if (J != script.end() && J->second.isString()) {
                 // const std::string & mindLang = J->second.String();
             // }
-            MindFactory::instance()->addMindType(class_name, mindType);
+            log(NOTICE, "This won't work no more");
+            // MindFactory::instance()->addMindType(class_name, mindType);
         }
     }
 

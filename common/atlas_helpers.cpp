@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "RuleHandler.h"
+#include "atlas_helpers.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"
@@ -28,11 +28,11 @@ using Atlas::Message::ListType;
 
 using String::compose;
 
-int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
-                                  const std::string & class_name,
-                                  const std::string & context,
-                                  std::string & script_package,
-                                  std::string & script_class)
+int GetScriptDetails(const Atlas::Message::MapType & script,
+                     const std::string & class_name,
+                     const std::string & context,
+                     std::string & script_package,
+                     std::string & script_class)
 {
     MapType::const_iterator J = script.find("name");
     MapType::const_iterator Jend = script.end();

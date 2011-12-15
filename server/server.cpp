@@ -42,7 +42,6 @@
 
 #include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"
-#include "rulesets/MindFactory.h"
 #include "rulesets/Entity.h"
 
 #include "common/id.h"
@@ -407,7 +406,6 @@ int main(int argc, char ** argv)
     EntityBuilder::instance()->flushFactories();
     EntityBuilder::del();
     ArithmeticBuilder::del();
-    MindFactory::del();
     TeleportAuthenticator::del();
 
     Inheritance::clear();

@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2008 Alistair Riddoch
+// Copyright (C) 2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,24 +17,15 @@
 
 // $Id$
 
-#ifndef RULESETS_MIND_PROPERTY_H
-#define RULESETS_MIND_PROPERTY_H
+#ifndef RULESETS_PYTHON_SCRIPT_UTILS_H
+#define RULESETS_PYTHON_SCRIPT_UTILS_H
 
-#include "common/Property.h"
+#include <Atlas/Message/Element.h>
 
-class MindKit;
+int GetScriptDetails(const Atlas::Message::MapType &,
+                     const std::string &,
+                     const std::string &,
+                     std::string &,
+                     std::string &);
 
-/// \brief Class to handle assigning a mind object to an entity
-/// \ingroup PropertyClasses
-class MindProperty : public PropertyBase {
-  protected:
-    MindKit * m_factory;
-  public:
-    MindProperty();
-
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void apply(Entity *);
-};
-
-#endif // RULESETS_MIND_PROPERTY_H
+#endif // RULESETS_PYTHON_SCRIPT_UTILS_H

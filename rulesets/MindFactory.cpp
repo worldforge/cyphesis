@@ -17,28 +17,23 @@
 
 // $Id$
 
-#include <Python.h>
-
 #include "MindFactory.h"
 
 #include "BaseMind.h"
-#include "Python_Script_Utils.h"
 
 #include "common/debug.h"
 #include "common/TypeNode.h"
 
 static const bool debug_flag = false;
 
-MindFactory * MindFactory::m_instance = NULL;
-
-MindFactory::MindFactory()
+MindFactory::~MindFactory()
 {
 }
 
-BaseMind * MindFactory::newMind(const std::string & id, long intId,
-                                const TypeNode * const type)
+BaseMind * MindFactory::newMind(const std::string & id, long intId) const
 {
-    BaseMind * mind = new BaseMind(id, intId);
+    return new BaseMind(id, intId);
+#if 0
     mind->setType(type);
     std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
     MindFactory::mindmap_t::const_iterator I = m_mindTypes.find(type->name());
@@ -50,4 +45,5 @@ BaseMind * MindFactory::newMind(const std::string & id, long intId,
     }
     Create_PyMind(mind, mind_package, mind_class);
     return mind;
+#endif
 }
