@@ -40,7 +40,7 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Look;
 
-MindProperty::MindProperty()
+MindProperty::MindProperty() : m_factory(0)
 {
 }
 
@@ -53,6 +53,7 @@ void MindProperty::set(const Element & val)
 {
     log(NOTICE, "Mind property getting set");
     if (!val.isMap()) {
+        log(NOTICE, "Mind Porperty not map");
         return;
     }
     const MapType & data = val.Map();
@@ -60,6 +61,7 @@ void MindProperty::set(const Element & val)
     std::string script_class;
     if (GetScriptDetails(data, "Foo", "Mind",
                          script_package, script_class) != 0) {
+        log(NOTICE, "Mind Porperty details bad");
         return;
     }
 
