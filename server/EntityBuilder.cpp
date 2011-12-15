@@ -23,7 +23,6 @@
 #include "EntityFactory.h"
 #include "ScriptFactory.h"
 #include "TaskFactory.h"
-#include "TaskScriptFactory.h"
 
 #include "rulesets/Thing.h"
 #include "rulesets/Character.h"
