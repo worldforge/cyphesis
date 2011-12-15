@@ -87,7 +87,6 @@ SERVER_SOURCES = \
 		SpawnEntity.cpp SpawnEntity.h \
 		WorldRouter.cpp WorldRouter.h \
 		StorageManager.cpp StorageManager.h \
-		ScriptFactory.cpp ScriptFactory.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		Ruleset.cpp Ruleset.h \
@@ -147,8 +146,6 @@ cyslave_SOURCES = \
 		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
 		WorldRouter.cpp WorldRouter.h \
-		ScriptFactory.cpp ScriptFactory.h \
-		ScriptFactory_impl.h \
 		TaskFactory.cpp TaskFactory.h \
 		CorePropertyManager.cpp CorePropertyManager.h \
 		EntityBuilder.cpp EntityBuilder.h \

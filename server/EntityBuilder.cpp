@@ -30,6 +30,7 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+#include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Task.h"
 
 #include "common/id.h"

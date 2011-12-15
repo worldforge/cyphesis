@@ -21,10 +21,10 @@
 
 #include "EntityBuilder.h"
 #include "EntityFactory.h"
-#include "ScriptFactory.h"
 #include "Player.h"
 
 #include "rulesets/MindFactory.h"
+#include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
 #include "common/debug.h"

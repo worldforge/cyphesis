@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_SCRIPT_FACTORY_H
-#define SERVER_SCRIPT_FACTORY_H
+#ifndef RULESETS_PYTHON_SCRIPT_FACTORY_H
+#define RULESETS_PYTHON_SCRIPT_FACTORY_H
 
 #include "rulesets/PythonClass.h"
 
@@ -39,4 +39,4 @@ class PythonScriptFactory : public ScriptKit<T>, private PythonClass {
     int refreshClass();
 };
 
-#endif // SERVER_SCRIPT_FACTORY_H
+#endif // RULESETS_PYTHON_SCRIPT_FACTORY_H

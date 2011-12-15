@@ -93,7 +93,10 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    PythonWrapper.cpp PythonWrapper.h \
 			    PythonEntityScript.cpp PythonEntityScript.h \
 			    PythonArithmeticScript.cpp PythonArithmeticScript.h \
-			    PythonArithmeticFactory.cpp PythonArithmeticFactory.h
+			    PythonArithmeticFactory.cpp \
+                            PythonArithmeticFactory.h \
+                            PythonScriptFactory.cpp PythonScriptFactory.h \
+                            PythonScriptFactory_impl.h
 
 dist-hook:
 	(cd $(top_srcdir)/rulesets && tar cf - `find $(RULESETS) -name \*.py`) | (cd $(distdir) && tar xf -)
