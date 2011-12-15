@@ -24,11 +24,10 @@
 
 #include "common/ScriptKit.h"
 
-class Entity;
-
 /// \brief Factory implementation for creating python script objects to attach
-/// to in game entity objects.
-class PythonScriptFactory : public ScriptKit<Entity>, private PythonClass {
+/// to in game objects.
+template <class T>
+class PythonScriptFactory : public ScriptKit<T>, private PythonClass {
   protected:
     int check() const;
   public:
@@ -38,7 +37,7 @@ class PythonScriptFactory : public ScriptKit<Entity>, private PythonClass {
     int setup();
 
     const std::string & package() const;
-    int addScript(Entity * entity) const;
+    int addScript(T * entity) const;
     int refreshClass();
 };
 

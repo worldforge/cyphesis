@@ -19,34 +19,18 @@
 
 #include <Python.h>
 
-#include "ScriptFactory.h"
+#include "ScriptFactory_impl.h"
 
 #include "rulesets/Py_Thing.h"
+#include "rulesets/Py_Task.h"
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/Task.h"
 
-/// \brief PythonScriptFactory constructor
-///
-/// @param package Name of the script package where the script type is
-/// @param type Name of the scrpt types instanced by this factory
-PythonScriptFactory::PythonScriptFactory(const std::string & package,
-                                         const std::string & type) :
-                                         PythonClass(package, type)
-{
-}
-
-PythonScriptFactory::~PythonScriptFactory()
-{
-}
-
-int PythonScriptFactory::setup()
-{
-    return load();
-}
-
-int PythonScriptFactory::check() const
+template<>
+int PythonScriptFactory<Entity>::check() const
 {
     if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
 -       !PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
@@ -55,35 +39,14 @@ int PythonScriptFactory::check() const
     return 0;
 }
 
-const std::string & PythonScriptFactory::package() const
+template<>
+int PythonScriptFactory<Task>::check() const
 {
-    return m_package;
-}
-
-int PythonScriptFactory::addScript(Entity * entity) const
-{
-    if (m_class == 0) {
+    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyTask_Type)) {
         return -1;
     }
-    PyObject * wrapper = wrapPython(entity);
-    if (wrapper == 0) {
-        return -1;
-    }
-
-    PyObject * script = Create_PyScript(wrapper, m_class);
-
-    Py_DECREF(wrapper);
-
-    if (script != NULL) {
-        entity->setScript(new PythonEntityScript(script));
-
-        Py_DECREF(script);
-    }
-
-    return (script == NULL) ? -1 : 0;
+    return 0;
 }
 
-int PythonScriptFactory::refreshClass()
-{
-    return refresh();
-}
+template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<Task>;

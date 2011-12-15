@@ -73,7 +73,7 @@ int main()
     // Py_DECREF(package_name);
     // assert(testmod);
 
-    PythonScriptFactory psf("testmod", "TestEntity");
+    PythonScriptFactory<Entity> psf("testmod", "TestEntity");
     int ret = psf.setup();
     assert(ret == 0);
     Entity * e = new Entity("1", 1);

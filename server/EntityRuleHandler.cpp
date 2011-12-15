@@ -174,8 +174,8 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
             }
         }
         if (factory->m_scriptFactory == 0) {
-            PythonScriptFactory * psf = new PythonScriptFactory(script_package,
-                                                                script_class);
+            PythonScriptFactory<Entity> * psf =
+                  new PythonScriptFactory<Entity>(script_package, script_class);
             if (psf->setup() == 0) {
                 factory->m_scriptFactory = psf;
             } else {

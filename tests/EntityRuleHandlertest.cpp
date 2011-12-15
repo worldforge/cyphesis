@@ -181,37 +181,46 @@ void EntityBuilder::installFactory(const std::string & class_name,
 {
 }
 
-PythonScriptFactory::PythonScriptFactory(const std::string & package,
+template <class T>
+PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
                                          PythonClass(package, type)
 {
 }
 
-PythonScriptFactory::~PythonScriptFactory()
+template <class T>
+PythonScriptFactory<T>::~PythonScriptFactory()
 {
 }
 
-int PythonScriptFactory::setup()
-{
-    return 0;
-}
-
-int PythonScriptFactory::check() const
+template <class T>
+int PythonScriptFactory<T>::setup()
 {
     return 0;
 }
 
-const std::string & PythonScriptFactory::package() const
+template <class T>
+int PythonScriptFactory<T>::check() const
+{
+    return 0;
+}
+
+template <class T>
+const std::string & PythonScriptFactory<T>::package() const
 {
     return m_package;
 }
 
-int PythonScriptFactory::addScript(Entity * entity) const
+template <class T>
+int PythonScriptFactory<T>::addScript(T * entity) const
 {
     return 0;
 }
 
-int PythonScriptFactory::refreshClass()
+template class PythonScriptFactory<Entity>;
+
+template <class T>
+int PythonScriptFactory<T>::refreshClass()
 {
     return 0;
 }
