@@ -30,6 +30,24 @@
 #include "rulesets/Task.h"
 
 template<>
+PythonScriptFactory<Entity>::PythonScriptFactory(const std::string & package,
+                                                 const std::string & type) :
+                                                 PythonClass(package,
+                                                             type,
+                                                             &PyEntity_Type)
+{
+}
+
+template<>
+PythonScriptFactory<Task>::PythonScriptFactory(const std::string & package,
+                                               const std::string & type) :
+                                               PythonClass(package,
+                                                           type,
+                                                           &PyTask_Type)
+{
+}
+
+template<>
 int PythonScriptFactory<Entity>::check() const
 {
     if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type)) {

@@ -31,10 +31,12 @@
 /// @param package name of the script package scripts are to be created from
 /// @param type name of the type instanced to create scripts
 PythonClass::PythonClass(const std::string & package,
-                         const std::string & type) : m_package(package),
-                                                     m_type(type),
-                                                     m_module(0),
-                                                     m_class(0)
+                         const std::string & type,
+                         PyTypeObject * base) : m_package(package),
+                                                m_type(type),
+                                                m_base(base),
+                                                m_module(0),
+                                                m_class(0)
 {
 }
 
@@ -65,10 +67,10 @@ int PythonClass::getClass()
     if (m_class == 0) {
         return -1;
     }
-    if (check() != 0) {
-        log(ERROR, String::compose("Python class does not inherit from "
-                                   "a core server type. \"%1.%2\"",
-                                   m_package, m_type));
+    if (!PyType_IsSubtype((PyTypeObject*)m_class, m_base)) {
+        log(ERROR, String::compose("Python class \"%1.%2\" does not inherit "
+                                   "from a core server type \"%3\".",
+                                   m_package, m_type, m_base->tp_name));
         Py_DECREF(m_class);
         m_class = 0;
         return -1;

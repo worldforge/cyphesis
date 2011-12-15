@@ -30,13 +30,17 @@ class PythonClass {
     std::string m_package;
     /// \brief Name of the script type instanced by this factory
     std::string m_type;
+    /// \brief Base class object this should inherit from
+    struct _typeobject * m_base;
 
     /// \brief Module object which contains the script class
     struct _object * m_module;
     /// \brief Class object to be instanced when creating scripts
     struct _object * m_class;
 
-    PythonClass(const std::string & package, const std::string & type);
+    PythonClass(const std::string & package,
+                const std::string & type,
+                struct _typeobject * base);
 
     int getClass();
     int load();

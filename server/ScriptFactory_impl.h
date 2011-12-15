@@ -27,12 +27,6 @@
 ///
 /// @param package Name of the script package where the script type is
 /// @param type Name of the scrpt types instanced by this factory
-template <class T>
-PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
-                                            const std::string & type) :
-                                            PythonClass(package, type)
-{
-}
 
 template <class T>
 PythonScriptFactory<T>::~PythonScriptFactory()
