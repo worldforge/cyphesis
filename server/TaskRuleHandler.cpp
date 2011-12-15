@@ -22,8 +22,9 @@
 #include "EntityBuilder.h"
 #include "EntityFactory.h"
 #include "TaskFactory.h"
-#include "ScriptFactory.h"
 #include "Persistence.h"
+
+#include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
 #include "common/debug.h"

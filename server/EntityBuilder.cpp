@@ -21,7 +21,6 @@
 
 #include "CorePropertyManager.h"
 #include "EntityFactory.h"
-#include "ScriptFactory.h"
 #include "TaskFactory.h"
 
 #include "rulesets/Thing.h"
@@ -31,6 +30,7 @@
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+#include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Task.h"
 
 #include "common/id.h"

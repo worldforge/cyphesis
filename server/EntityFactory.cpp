@@ -19,8 +19,6 @@
 
 #include "EntityFactory_impl.h"
 
-#include "ScriptFactory.h"
-
 #include "rulesets/Entity.h"
 #include "rulesets/Thing.h"
 #include "rulesets/Character.h"
@@ -28,6 +26,7 @@
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
+#include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
 #include "common/TypeNode.h"

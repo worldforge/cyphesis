@@ -19,7 +19,7 @@
 
 #include <Python.h>
 
-#include "ScriptFactory_impl.h"
+#include "PythonScriptFactory_impl.h"
 
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Py_Task.h"
