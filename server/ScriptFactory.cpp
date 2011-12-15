@@ -32,8 +32,7 @@
 template<>
 int PythonScriptFactory<Entity>::check() const
 {
-    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type) &&
--       !PyType_IsSubtype((PyTypeObject*)m_class, &PyCharacter_Type)) {
+    if (!PyType_IsSubtype((PyTypeObject*)m_class, &PyEntity_Type)) {
         return -1;
     }
     return 0;
