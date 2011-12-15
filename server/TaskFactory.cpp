@@ -19,12 +19,11 @@
 
 #include "server/TaskFactory.h"
 
-#include "server/TaskScriptFactory.h"
-
 #include "rulesets/Task.h"
 #include "rulesets/LocatedEntity.h"
 
 #include "common/debug.h"
+#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 
 static const bool debug_flag = false;
