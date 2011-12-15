@@ -28,23 +28,15 @@
 
 #include "rulesets/BaseMind.h"
 
-#include "common/TypeNode.h"
-
 #include <cassert>
-
-static const char * etype = "settler";
 
 int main()
 {
-    TypeNode * tn = new TypeNode(etype);
+    MindFactory * mf = new MindFactory;
 
-    MindFactory * mf = MindFactory::instance();
+    mf->newMind("1", 1);
 
-    mf->addMindType(etype, "testmod");
-
-    mf->newMind("1", 1, tn);
-
-    mf->newMind("2", 2, tn);
+    mf->newMind("2", 2);
 
     return 0;
 }
@@ -175,18 +167,5 @@ void WorldTime::initTimeInfo()
 }
 
 DateTime::DateTime(int t)
-{
-}
-
-void Create_PyMind(BaseMind * mind, const std::string & package,
-                                    const std::string & type)
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
 {
 }
