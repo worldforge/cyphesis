@@ -21,7 +21,6 @@
 
 #include "CorePropertyManager.h"
 #include "EntityFactory.h"
-#include "ScriptFactory.h"
 #include "TaskFactory.h"
 
 #include "rulesets/Thing.h"
@@ -43,6 +42,7 @@
 #include "common/compose.hpp"
 #include "common/Monitors.h"
 #include "common/Property.h"
+#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 
