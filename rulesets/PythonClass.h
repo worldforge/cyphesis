@@ -42,7 +42,7 @@ class PythonClass {
                 const std::string & type,
                 struct _typeobject * base);
 
-    int getClass();
+    int getClass(struct _object *);
     int load();
     int refresh();
 

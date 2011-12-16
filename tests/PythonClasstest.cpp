@@ -39,7 +39,7 @@ class TestPythonClass : public PythonClass {
 
     virtual int check() const { return 0; }
 
-    int test_getClass() { return getClass(); }
+    int test_getClass(PyObject * o) { return getClass(o); }
     int tet_load() { return load(); }
     int test_refresh() { return refresh(); }
 

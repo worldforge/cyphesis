@@ -242,7 +242,7 @@ int PythonClass::load()
     return 0;
 }
 
-int PythonClass::getClass()
+int PythonClass::getClass(struct _object *)
 {
     return 0;
 }

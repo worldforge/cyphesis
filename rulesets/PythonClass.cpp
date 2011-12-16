@@ -46,7 +46,7 @@ int PythonClass::load()
     if (m_module == NULL) {
         return -1;
     }
-    return getClass();
+    return getClass(m_module);
 }
 
 PythonClass::~PythonClass()
@@ -61,20 +61,21 @@ PythonClass::~PythonClass()
 
 /// \brief Retrieve the pythonclass object from the module which has
 /// already been loaded.
-int PythonClass::getClass()
+int PythonClass::getClass(PyObject * module)
 {
-    m_class = Get_PyClass(m_module, m_package, m_type);
-    if (m_class == 0) {
+    PyObject * new_class = Get_PyClass(module, m_package, m_type);
+    if (new_class == 0) {
         return -1;
     }
-    if (!PyType_IsSubtype((PyTypeObject*)m_class, m_base)) {
+    if (!PyType_IsSubtype((PyTypeObject*)new_class, m_base)) {
         log(ERROR, String::compose("Python class \"%1.%2\" does not inherit "
                                    "from a core server type \"%3\".",
                                    m_package, m_type, m_base->tp_name));
-        Py_DECREF(m_class);
-        m_class = 0;
+        Py_DECREF(new_class);
         return -1;
     }
+    // FIXME We own a reference to m_class. Need to decref
+    m_class = new_class;
 
     return 0;
 }
@@ -82,6 +83,7 @@ int PythonClass::getClass()
 int PythonClass::refresh()
 {
     if (m_module == 0) {
+        log(ERROR, "bort");
         return -1;
     }
     PyObject * new_module = PyImport_ReloadModule(m_module);
@@ -91,7 +93,21 @@ int PythonClass::refresh()
         PyErr_Clear();
         return -1;
     }
+    int ret = getClass(new_module);
+    if (ret != 0) {
+        log(ERROR, String::compose("Error finding python class \"%1\" in \"%2\"",
+                                   m_type, m_package));
+        return -1;
+        // After reloading, but failing to get the class, I think the old class
+        // should still work, but is no longer bound to the name. It won't
+        // be collected at least until we release the reference we hold
+        // in m_class
+    }
+    printf("%x %x\n", m_module, new_module);
     Py_DECREF(m_module);
+    // FIXME These are probably the same pointer - certainly mostly
+    // We do need to decref though, as both calls to PyImport_...()
+    // return new references
     m_module = new_module;
-    return getClass();
+    return 0;
 }
