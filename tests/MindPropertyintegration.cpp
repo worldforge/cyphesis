@@ -27,10 +27,15 @@
 #include <Python.h>
 
 #include "python_testers.h"
+#include "TestWorld.h"
 
+#include "rulesets/BaseMind.h"
+#include "rulesets/Character.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
 #include "rulesets/MindProperty.h"
+
+#include "common/TypeNode.h"
 
 #include <cassert>
 
@@ -50,6 +55,8 @@ int main()
     run_python_string("import testmod");
     run_python_string("from atlas import Operation");
     run_python_string("class settlerMind(server.Mind):\n"
+                      " def __init__(self, cppthing):\n"
+                      "  self.mind = cppthing\n"
                       " def look_operation(self, op): pass\n"
                       " def delete_operation(self, op):\n"
                       "  return Operation('sight') + Operation('move')\n"
@@ -70,6 +77,23 @@ int main()
     assert(mk != 0);
 
     assert(mk->m_scriptFactory != 0);
+
+    // Set up a minimal test world
+
+    Entity * world = new Entity("0", 0);
+
+    TestWorld * tw = new TestWorld(*world);
+
+    Character * test_character = new Character("1", 1);
+
+    test_character->setType(new TypeNode("settler"));
+
+    assert(test_character->m_mind == 0);
+
+    mp->apply(test_character);
+
+    assert(test_character->m_mind != 0);
+    assert(test_character->m_mind->getType() == test_character->getType());
 
     shutdown_python_api();
     return 0;
