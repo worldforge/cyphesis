@@ -50,7 +50,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
                  TerrainModtest PythonClasstest
 
-RULESETS_INTEGRATION_TESTS = BulletDomainintegration
+RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest
@@ -842,6 +842,19 @@ TerrainModtest_LDADD = \
         $(top_builddir)/rulesets/TerrainModTranslator.o \
         $(TERRAIN_LIBS)
 
+# RULESETS_INTEGRATION
+
+MindPropertyintegration_SOURCES = MindPropertyintegration.cpp
+MindPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/PythonScriptFactory.o \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)
 
 # CLIENT_TESTS
 

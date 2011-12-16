@@ -54,6 +54,9 @@ void MindProperty::set(const Element & val)
     log(NOTICE, "Mind property getting set");
     if (!val.isMap()) {
         log(NOTICE, "Mind Porperty not map");
+        if (val.isString()) {
+            log(ERROR, String::compose("Mind is %1", val.String()));
+        }
         return;
     }
     const MapType & data = val.Map();
