@@ -50,7 +50,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
                  TerrainModtest PythonClasstest
 
-RULESETS_INTEGRATION_TESTS = MindFactoryintegration BulletDomainintegration
+RULESETS_INTEGRATION_TESTS = BulletDomainintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest
@@ -830,17 +830,6 @@ ArithmeticFactorytest_LDADD = \
 PythonArithmeticFactorytest_SOURCES = PythonArithmeticFactorytest.cpp
 PythonArithmeticFactorytest_LDADD = \
         $(top_builddir)/rulesets/PythonArithmeticFactory.o
-
-MindFactoryintegration_SOURCES = MindFactoryintegration.cpp
-MindFactoryintegration_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
 
 BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
 BulletDomainintegration_LDADD = \
