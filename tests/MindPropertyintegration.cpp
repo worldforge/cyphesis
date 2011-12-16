@@ -34,11 +34,11 @@
 
 #include <cassert>
 
+using Atlas::Message::MapType;
+
 static PyMethodDef no_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
-
-static const char * etype = "settler";
 
 int main()
 {
@@ -49,7 +49,7 @@ int main()
     run_python_string("import server");
     run_python_string("import testmod");
     run_python_string("from atlas import Operation");
-    run_python_string("class settlerMind(server.Thing):\n"
+    run_python_string("class settlerMind(server.Mind):\n"
                       " def look_operation(self, op): pass\n"
                       " def delete_operation(self, op):\n"
                       "  return Operation('sight') + Operation('move')\n"
@@ -58,6 +58,18 @@ int main()
     run_python_string("testmod.settlerMind=settlerMind");
 
     MindProperty * mp = new MindProperty;
+
+    MapType mind_descr;
+
+    mind_descr["language"] = "python";
+    mind_descr["name"] = "testmod.settlerMind";
+
+    mp->set(mind_descr);
+
+    MindKit * mk = mp->factory();
+    assert(mk != 0);
+
+    assert(mk->m_scriptFactory != 0);
 
     shutdown_python_api();
     return 0;
