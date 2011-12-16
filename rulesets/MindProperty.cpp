@@ -22,6 +22,7 @@
 #include "rulesets/Character.h"
 #include "rulesets/MindFactory.h"
 #include "rulesets/PythonScriptFactory.h"
+#include "rulesets/BaseMind.h"
 
 #include "common/atlas_helpers.h"
 #include "common/compose.hpp"
@@ -115,6 +116,8 @@ void MindProperty::apply(Entity * ent)
     }
 
     chr->m_mind = m_factory->newMind(ent->getId(), ent->getIntId());
+
+    chr->m_mind->setType(ent->getType());
 
     if (m_factory->m_scriptFactory != 0) {
         m_factory->m_scriptFactory->addScript(chr->m_mind);
