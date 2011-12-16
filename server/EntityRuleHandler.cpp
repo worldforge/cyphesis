@@ -187,24 +187,6 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
         }
     }
 
-    // Establish whether this rule has an associated mind rule,
-    // and handle it.
-    J = class_desc.find("mind");
-    if (J != Jend && J->second.isMap()) {
-        const MapType & script = J->second.asMap();
-        J = script.find("name");
-        if (J != script.end() && J->second.isString()) {
-            const std::string & mindType = J->second.String();
-            // language is unused. might need it one day
-            // J = script.find("language");
-            // if (J != script.end() && J->second.isString()) {
-                // const std::string & mindLang = J->second.String();
-            // }
-            log(NOTICE, "This won't work no more");
-            // MindFactory::instance()->addMindType(class_name, mindType);
-        }
-    }
-
     // Store the default attribute for entities create by this rule.
     J = class_desc.find("attributes");
     if (J != Jend && J->second.isMap()) {
