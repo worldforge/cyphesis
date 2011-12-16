@@ -89,7 +89,7 @@ int main()
 
 // stubs
 
-#include "server/ScriptFactory.h"
+#include "rulesets/PythonScriptFactory.h"
 
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
