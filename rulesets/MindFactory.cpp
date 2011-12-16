@@ -42,17 +42,4 @@ MindFactory::~MindFactory()
 BaseMind * MindFactory::newMind(const std::string & id, long intId) const
 {
     return new BaseMind(id, intId);
-#if 0
-    mind->setType(type);
-    std::string mind_class("NPCMind"), mind_package("mind.NPCMind");
-    MindFactory::mindmap_t::const_iterator I = m_mindTypes.find(type->name());
-    if (I != m_mindTypes.end()) {
-        mind_package = I->second;
-        mind_class = type->name() + "Mind";
-        debug(std::cout << "Got custom mind of type " << mind_package << " for "
-                        << type << std::endl << std::flush;);
-    }
-    Create_PyMind(mind, mind_package, mind_class);
-    return mind;
-#endif
 }
