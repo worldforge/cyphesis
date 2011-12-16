@@ -152,9 +152,9 @@ int main()
 
 #include "server/EntityFactory.h"
 #include "server/Player.h"
-#include "server/ScriptFactory.h"
 
 #include "rulesets/MindFactory.h"
+#include "rulesets/PythonScriptFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"
@@ -257,12 +257,6 @@ void EntityKit::updateProperties()
 }
 
 void EntityKit::addProperties()
-{
-}
-
-MindFactory * MindFactory::m_instance = NULL;
-
-MindFactory::MindFactory()
 {
 }
 

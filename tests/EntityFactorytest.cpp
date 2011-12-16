@@ -25,13 +25,13 @@
 #endif
 
 #include "server/EntityFactory.h"
-#include "server/ScriptFactory.h"
 
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
 
+#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 
 #include <cassert>

@@ -130,7 +130,8 @@ int main()
 
 #include "server/EntityFactory.h"
 #include "server/TaskFactory.h"
-#include "server/ScriptFactory.h"
+
+#include "rulesets/PythonScriptFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"
