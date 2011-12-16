@@ -29,7 +29,6 @@
 #include "server/CorePropertyManager.h"
 #include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
-#include "server/ScriptFactory.h"
 
 #include "rulesets/World.h"
 #include "rulesets/Creator.h"
@@ -46,6 +45,7 @@
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 #include "common/Variable.h"
+#include "common/ScriptKit.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/RootOperation.h>
