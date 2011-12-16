@@ -60,6 +60,9 @@ void MindProperty::set(const Element & val)
         return;
     }
     const MapType & data = val.Map();
+    if (data.empty()) {
+        return;
+    }
     std::string script_package;
     std::string script_class;
     if (GetScriptDetails(data, "Foo", "Mind",
