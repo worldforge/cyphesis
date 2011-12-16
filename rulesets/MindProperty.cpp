@@ -52,12 +52,7 @@ int MindProperty::get(Element & val) const
 
 void MindProperty::set(const Element & val)
 {
-    log(NOTICE, "Mind property getting set");
     if (!val.isMap()) {
-        log(NOTICE, "Mind Porperty not map");
-        if (val.isString()) {
-            log(ERROR, String::compose("Mind is %1", val.String()));
-        }
         return;
     }
     const MapType & data = val.Map();
@@ -68,14 +63,12 @@ void MindProperty::set(const Element & val)
     std::string script_class;
     if (GetScriptDetails(data, "Foo", "Mind",
                          script_package, script_class) != 0) {
-        log(NOTICE, "Mind Porperty details bad");
         return;
     }
 
     if (m_factory == 0) {
         m_factory = new MindFactory;
     }
-    log(NOTICE, "Sorted");
     if (m_factory->m_scriptFactory != 0) {
         if (m_factory->m_scriptFactory->package() != script_package) {
             delete m_factory->m_scriptFactory;
@@ -99,7 +92,6 @@ void MindProperty::set(const Element & val)
 void MindProperty::apply(Entity * ent)
 {
     if (m_factory == 0) {
-        log(NOTICE, "Mind property applied without factory");
         return;
     }
 
