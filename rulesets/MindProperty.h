@@ -32,6 +32,10 @@ class MindProperty : public PropertyBase {
   public:
     MindProperty();
 
+    MindKit * factory() {
+        return m_factory;
+    }
+
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void apply(Entity *);
