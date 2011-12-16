@@ -330,8 +330,3 @@ void WorldTime::initTimeInfo()
 DateTime::DateTime(int t)
 {
 }
-
-void Create_PyMind(BaseMind * mind, const std::string & package,
-                                    const std::string & type)
-{
-}

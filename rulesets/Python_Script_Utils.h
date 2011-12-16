@@ -29,8 +29,6 @@ struct _object * Get_PyClass(struct _object * module,
                        const std::string & package,
                        const std::string & type);
 struct _object * Get_PyModule(const std::string & package);
-void Create_PyMind(BaseMind * mind, const std::string & package,
-                                    const std::string & type);
 struct _object * Create_PyScript(struct _object *, struct _object *);
 
 #endif // RULESETS_PYTHON_SCRIPT_UTILS_H

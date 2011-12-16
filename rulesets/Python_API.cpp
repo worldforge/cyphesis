@@ -394,36 +394,6 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
     return pyob;
 }
 
-void Create_PyMind(BaseMind * mind, const std::string & package,
-                                    const std::string & type)
-{
-    PyObject * module = Get_PyModule(package);
-    if (module == NULL) {
-        return;
-    }
-    PyObject * py_class = Get_PyClass(module, package, type);
-    Py_DECREF(module);
-    if (py_class == NULL) {
-        return;
-    }
-    PyEntity * wrapper = newPyMind();
-    if (wrapper == NULL) {
-        return;
-    }
-    wrapper->m_entity.m = mind;
-
-    PyObject * script = Create_PyScript((PyObject *)wrapper, py_class);
-
-    Py_DECREF(wrapper);
-    Py_DECREF(py_class);
-
-    if (script != NULL) {
-        mind->setScript(new PythonEntityScript(script));
-
-        Py_DECREF(script);
-    }
-}
-
 static PyObject * is_location(PyObject * self, PyObject * loc)
 {
     if (PyLocation_Check(loc)) {
