@@ -34,6 +34,7 @@
 #include "server/EntityFactory.h"
 
 #include "common/Inheritance.h"
+#include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -189,6 +190,15 @@ int main(int argc, char ** argv)
         // the custom type we just installed.
         EntityKit * custom_type_factory = test_eb->getClassFactory("custom_type");
         assert(custom_type_factory != 0);
+        assert(custom_type_factory->m_type != 0);
+        assert(custom_type_factory->m_type ==
+               Inheritance::instance().getType("custom_type"));
+
+        const Root & check_class = Inheritance::instance().getClass("custom_type");
+        assert(check_class.isValid());
+        assert(check_class->getId() == "custom_type");
+        assert(check_class->getParents().size() == 1);
+        assert(check_class->getParents().front() == "thing");
 
         // Check the factory has the attributes we described on the custom
         // type.
@@ -196,6 +206,18 @@ int main(int argc, char ** argv)
         assert(J != custom_type_factory->m_attributes.end());
         assert(J->second.isString());
         assert(J->second.String() == "test_value");
+
+        J = custom_type_factory->m_classAttributes.find("test_custom_type_attr");
+        assert(J != custom_type_factory->m_classAttributes.end());
+        assert(J->second.isString());
+        assert(J->second.String() == "test_value");
+
+        TypeNode * custom_type_node = custom_type_factory->m_type;
+        PropertyDict::const_iterator K = custom_type_node->defaults().find("test_custom_type_attr");
+        assert(K != custom_type_node->defaults().end());
+        Atlas::Message::Element custom_type_val;
+        assert(K->second->get(custom_type_val) == 0);
+        assert(custom_type_val == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
         test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);

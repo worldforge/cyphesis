@@ -178,7 +178,7 @@ EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
 }
 
 void EntityBuilder::installFactory(const std::string & class_name,
-                                   const std::string & parent,
+                                   const Root & class_desc,
                                    EntityKit * factory)
 {
 }

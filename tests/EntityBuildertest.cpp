@@ -209,7 +209,8 @@ int main(int argc, char ** argv)
         custom_type_factory->m_attributes["test_custom_type_attr"] =
               "test_value";
         {
-            entity_factory.installFactory("custom_type", "thing",
+            entity_factory.installFactory("custom_type",
+                                          atlasClass("custom_type", "thing"),
                                           custom_type_factory);
             custom_type_factory->m_type = new TypeNode("custom_type");
         }
@@ -272,8 +273,9 @@ int main(int argc, char ** argv)
         custom_type_factory->m_scriptFactory = new TestScriptFactory();
 
         {
-            entity_factory.installFactory("custom_scripted_type", "thing",
-                                          custom_type_factory);
+            entity_factory.installFactory("custom_scripted_type",
+                  atlasClass("custom_scripted_type", "thing"),
+                  custom_type_factory);
             custom_type_factory->m_type = new TypeNode("custom_scripted_type");
         }
 

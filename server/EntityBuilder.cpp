@@ -301,14 +301,22 @@ void EntityBuilder::installBaseFactory(const std::string & class_name,
                                        const std::string & parent,
                                        EntityKit * factory)
 {
-    installFactory(class_name, parent, factory);
+    installFactoryInner(class_name, factory);
     Inheritance & i = Inheritance::instance();
     factory->m_type = i.addChild(atlasClass(class_name, parent));
 }
 
 void EntityBuilder::installFactory(const std::string & class_name,
-                                   const std::string & parent,
+                                   const Root & class_desc,
                                    EntityKit * factory)
+{
+    installFactoryInner(class_name, factory);
+    Inheritance & i = Inheritance::instance();
+    factory->m_type = i.addChild(class_desc);
+}
+
+void EntityBuilder::installFactoryInner(const std::string & class_name,
+                                        EntityKit * factory)
 {
     assert(factory != 0);
 
