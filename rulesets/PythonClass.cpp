@@ -78,14 +78,8 @@ int PythonClass::getClass(PyObject * module)
         Py_DECREF(new_class);
         return -1;
     }
-    // FIXME We own a reference to m_class. Need to decref
     if (m_class != 0) {
-        log(NOTICE, "Reloading class");
-        if (new_class != m_class) {
-            log(WARNING, "Class pointer changes on reload");
-        } else {
-            log(WARNING, "Class pointer remains the same on reload");
-        }
+        Py_DECREF(m_class);
     }
     m_class = new_class;
 
@@ -115,16 +109,14 @@ int PythonClass::refresh()
         // be collected at least until we release the reference we hold
         // in m_class
     }
-    printf("%p %p\n", m_module, new_module);
+    // We decref even though this is probably an identical pointer to the
+    // module because the PyImport_ call returned a new reference
     Py_DECREF(m_module);
-    // FIXME These are probably the same pointer - certainly mostly
-    // We do need to decref though, as both calls to PyImport_...()
-    // return new references
     if (m_module != new_module) {
-        log(WARNING, "A reloaded module has change its pointer");
-    } else {
-        log(WARNING, "A reloaded module pointer stays the same");
+        log(WARNING, String::compose("Python module \"%1.%2\" has changed "
+                                     "its pointer on reload",
+                                     m_package, m_type));
+        m_module = new_module;
     }
-    m_module = new_module;
     return 0;
 }
