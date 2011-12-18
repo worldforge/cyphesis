@@ -164,6 +164,8 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
         }
     } else {
         // FIXME If this fails, that's bad.
+        // If this fails the user needs to know, but the old values
+        // should remain in place.
         factory->m_scriptFactory->refreshClass();
     }
 
