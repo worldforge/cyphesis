@@ -164,6 +164,9 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             delete ptsf;
             return -1;
         }
+    } else {
+        // FIXME If this fails, that's bad.
+        factory->m_scriptFactory->refreshClass();
     }
 
     // FIXME This does not check for or remove old activations for this
@@ -231,13 +234,6 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
         log(ERROR, compose("Could not find factory for existing task class "
                            "\"%1\"", class_name));
         return -1;
-    }
-
-    assert(factory != 0);
-
-    ScriptKit<Task> * script_factory = factory->m_scriptFactory;
-    if (script_factory != 0) {
-        script_factory->refreshClass();
     }
 
     std::string dependent, reason;
