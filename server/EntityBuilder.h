@@ -53,9 +53,6 @@ class EntityBuilder {
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,
                             EntityKit * factory);
-    void installFactoryInner(const std::string & class_name,
-                             EntityKit * factory);
-
   public:
     static void init() {
         m_instance = new EntityBuilder();

@@ -301,28 +301,18 @@ void EntityBuilder::installBaseFactory(const std::string & class_name,
                                        const std::string & parent,
                                        EntityKit * factory)
 {
-    installFactoryInner(class_name, factory);
-    Inheritance & i = Inheritance::instance();
-    factory->m_type = i.addChild(atlasClass(class_name, parent));
+    installFactory(class_name, atlasClass(class_name, parent), factory);
 }
 
 void EntityBuilder::installFactory(const std::string & class_name,
                                    const Root & class_desc,
                                    EntityKit * factory)
 {
-    installFactoryInner(class_name, factory);
-    Inheritance & i = Inheritance::instance();
-    factory->m_type = i.addChild(class_desc);
-}
-
-void EntityBuilder::installFactoryInner(const std::string & class_name,
-                                        EntityKit * factory)
-{
-    assert(factory != 0);
-
     m_entityFactories[class_name] = factory;
     Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
                                 new Variable<int>(factory->m_createdCount));
+    Inheritance & i = Inheritance::instance();
+    factory->m_type = i.addChild(class_desc);
 }
 
 EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
