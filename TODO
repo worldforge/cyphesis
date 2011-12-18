@@ -1,4 +1,6 @@
 Ensure PythonClass checks base on reload
+ - What happens when package changes?
+ - What happens when class _name_ changes?
 
 Make all PyProperties into an inheritance tree, and all scripts to
 inherit from them

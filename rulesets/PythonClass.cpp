@@ -65,6 +65,10 @@ int PythonClass::getClass(PyObject * module)
 {
     PyObject * new_class = Get_PyClass(module, m_package, m_type);
     if (new_class == 0) {
+        // If this is a new class, leave it as zero and fail and this
+        // should be discarded by <*>RuleHandler
+        // If this is an existing class, leave it as the old value, but
+        // fail the update. This should signal back to the client.
         return -1;
     }
     if (!PyType_IsSubtype((PyTypeObject*)new_class, m_base)) {
@@ -75,6 +79,14 @@ int PythonClass::getClass(PyObject * module)
         return -1;
     }
     // FIXME We own a reference to m_class. Need to decref
+    if (m_class != 0) {
+        log(NOTICE, "Reloading class");
+        if (new_class != m_class) {
+            log(WARNING, "Class pointer changes on reload");
+        } else {
+            log(WARNING, "Class pointer remains the same on reload");
+        }
+    }
     m_class = new_class;
 
     return 0;
@@ -103,11 +115,16 @@ int PythonClass::refresh()
         // be collected at least until we release the reference we hold
         // in m_class
     }
-    printf("%x %x\n", m_module, new_module);
+    printf("%p %p\n", m_module, new_module);
     Py_DECREF(m_module);
     // FIXME These are probably the same pointer - certainly mostly
     // We do need to decref though, as both calls to PyImport_...()
     // return new references
+    if (m_module != new_module) {
+        log(WARNING, "A reloaded module has change its pointer");
+    } else {
+        log(WARNING, "A reloaded module pointer stays the same");
+    }
     m_module = new_module;
     return 0;
 }

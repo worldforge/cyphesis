@@ -157,16 +157,12 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
                              script_package, script_class) != 0) {
             return -1;
         }
-        if (factory->m_scriptFactory != 0) {
-            if (factory->m_scriptFactory->package() != script_package) {
-                delete factory->m_scriptFactory;
-                factory->m_scriptFactory = 0;
-            }
-        }
-        if (factory->m_scriptFactory == 0) {
+        if (factory->m_scriptFactory == 0 ||
+            factory->m_scriptFactory->package() != script_package) {
             PythonScriptFactory<Entity> * psf =
                   new PythonScriptFactory<Entity>(script_package, script_class);
             if (psf->setup() == 0) {
+                delete factory->m_scriptFactory;
                 factory->m_scriptFactory = psf;
             } else {
                 log(ERROR, compose("Python class \"%1.%2\" failed to load",
