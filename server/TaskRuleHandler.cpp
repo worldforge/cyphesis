@@ -147,16 +147,14 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
         return 1;
     }
 
-    if (factory->m_scriptFactory != 0) {
-        if (factory->m_scriptFactory->package() != script_package) {
-            delete factory->m_scriptFactory;
-            factory->m_scriptFactory = 0;
-        }
-    }
-    if (factory->m_scriptFactory == 0) {
+    // FIXME This is the same code as EntityRuleHandler
+    if (factory->m_scriptFactory == 0 ||
+        factory->m_scriptFactory->package() != script_package) {
         PythonScriptFactory<Task> * ptsf =
               new PythonScriptFactory<Task>(script_package, script_class);
+
         if (ptsf->setup() == 0) {
+            delete factory->m_scriptFactory;
             factory->m_scriptFactory = ptsf;
         } else {
             log(ERROR, compose("Python class \"%1.%2\" failed to load",
