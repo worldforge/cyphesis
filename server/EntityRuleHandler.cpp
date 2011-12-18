@@ -105,11 +105,6 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
     }
     assert(factory != 0);
     
-    ScriptKit<Entity> * script_factory = factory->m_scriptFactory;
-    if (script_factory != 0) {
-        script_factory->refreshClass();
-    }
-
     MapType backup_attributes = factory->m_attributes,
             backup_class_attributes = factory->m_classAttributes;
 
@@ -179,6 +174,9 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
                 delete psf;
                 return -1;
             }
+        } else {
+            // FIXME If this fails, that's bad.
+            factory->m_scriptFactory->refreshClass();
         }
     }
 
