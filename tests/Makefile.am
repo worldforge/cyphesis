@@ -829,7 +829,8 @@ ArithmeticFactorytest_LDADD = \
 
 PythonArithmeticFactorytest_SOURCES = PythonArithmeticFactorytest.cpp
 PythonArithmeticFactorytest_LDADD = \
-        $(top_builddir)/rulesets/PythonArithmeticFactory.o
+        $(top_builddir)/rulesets/PythonArithmeticFactory.o \
+        $(top_builddir)/rulesets/PythonClass.o
 
 BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
 BulletDomainintegration_LDADD = \

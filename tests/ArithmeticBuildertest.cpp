@@ -58,14 +58,19 @@ int main()
 
 PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
                                                  const std::string & name) :
-                                                 m_module(0), m_class(0),
-                                                 m_package(package),
-                                                 m_type(name)
+                                                 PythonClass(package,
+                                                             name,
+                                                             0)
 {
 }
 
 PythonArithmeticFactory::~PythonArithmeticFactory()
 {
+}
+
+int PythonArithmeticFactory::setup()
+{
+    return 0;
 }
 
 ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
@@ -74,5 +79,15 @@ ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
 }
 
 ArithmeticKit::~ArithmeticKit()
+{
+}
+
+PythonClass::PythonClass(const std::string & package,
+                         const std::string & type,
+                         struct _typeobject * base)
+{
+}
+
+PythonClass::~PythonClass()
 {
 }
