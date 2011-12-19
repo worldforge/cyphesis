@@ -63,17 +63,6 @@ ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
         return 0;
     }
 
-#if 0
-    PyTask * wrapper = newPyTask();
-    assert(wrapper != 0);
-    wrapper->m_task = task;
-    assert(wrapper->m_task != 0);
-    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
-    assert(script != 0);
-
-    task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
-#endif
-
     // FIXME Pass in entity for initialisation of entity pointer in
     // EntityWrapper.
     PyObject * py_object;
