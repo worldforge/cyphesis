@@ -70,8 +70,7 @@ int main()
 
     {
         PythonArithmeticFactory paf("badmod", "TestArithmeticScript");
-        assert(paf.m_module == 0);
-        assert(paf.m_class == 0);
+        assert(paf.setup() != 0);
 
         ArithmeticScript * as = paf.newScript(0);
         assert(as == 0);
@@ -79,8 +78,7 @@ int main()
 
     {
         PythonArithmeticFactory paf("testmod", "BadArithmeticScriptClass");
-        assert(paf.m_module != 0);
-        assert(paf.m_class == 0);
+        assert(paf.setup() != 0);
 
         ArithmeticScript * as = paf.newScript(0);
         assert(as == 0);
@@ -88,8 +86,7 @@ int main()
 
     {
         PythonArithmeticFactory paf("testmod", "FailArithmeticScript");
-        assert(paf.m_module != 0);
-        assert(paf.m_class != 0);
+        assert(paf.setup() == 0);
 
         ArithmeticScript * as = paf.newScript(0);
         assert(as != 0);
@@ -97,8 +94,7 @@ int main()
 
 
     PythonArithmeticFactory paf("testmod", "TestArithmeticScript");
-    assert(paf.m_module != 0);
-    assert(paf.m_class != 0);
+    assert(paf.setup() == 0);
 
     ArithmeticScript * as = paf.newScript(0);
     assert(as != 0);

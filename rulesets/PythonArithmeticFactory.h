@@ -22,27 +22,18 @@
 
 #include "ArithmeticFactory.h"
 
+#include "rulesets/PythonClass.h"
+
 #include <string>
 
 /// \brief Factory class for for creating python arithmetic scripts
-class PythonArithmeticFactory : public ArithmeticKit {
-  public:
-    /// /brief Python module object containing the script type
-    struct _object * m_module;
-    /// \brief Python clas object for the script type
-    struct _object * m_class;
-
-    /// \brief Name of the package containing the script
-    std::string m_package;
-    /// \brief Name of the type within the package for the script
-    std::string m_type;
-
-    int getClass();
-    int addScript();
+class PythonArithmeticFactory : public ArithmeticKit, private PythonClass {
   public:
     PythonArithmeticFactory(const std::string & package,
                             const std::string & name);
     virtual ~PythonArithmeticFactory();
+
+    int setup();
 
     virtual ArithmeticScript * newScript(Entity * owner);
 };

@@ -37,28 +37,20 @@
 /// @param name Name of the type within the package for the script
 PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
                                                  const std::string & name) :
-                                                 m_module(0), m_class(0),
-                                                 m_package(package),
-                                                 m_type(name)
+                                                 PythonClass(package,
+                                                             name,
+                                                             &PyBaseObject_Type)
 {
-    // Import the module
-    m_module = Get_PyModule(m_package);
-    if (m_module == NULL) {
-        return;
-    }
-
-    // Get a reference to the class
-    m_class = Get_PyClass(m_module, m_package, m_type);
 }
+
 
 PythonArithmeticFactory::~PythonArithmeticFactory()
 {
-    if (m_module != 0) {
-        Py_DECREF(m_module);
-    }
-    if (m_class != 0) {
-        Py_DECREF(m_class);
-    }
+}
+
+int PythonArithmeticFactory::setup()
+{
+    return load();
 }
 
 /// \brief Create a new arithmetic script for a character
@@ -68,20 +60,8 @@ ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
 {
     // Create the task, and use its script to add a script
     if (m_class == 0) {
-        std::cout << "No class" << std::endl << std::flush;
         return 0;
     }
-
-#if 0
-    PyTask * wrapper = newPyTask();
-    assert(wrapper != 0);
-    wrapper->m_task = task;
-    assert(wrapper->m_task != 0);
-    PyObject * script = Create_PyScript((PyObject *)wrapper, m_class);
-    assert(script != 0);
-
-    task->setScript(new PythonEntityScript(script, (PyObject *)wrapper));
-#endif
 
     // FIXME Pass in entity for initialisation of entity pointer in
     // EntityWrapper.

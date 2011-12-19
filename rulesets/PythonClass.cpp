@@ -40,15 +40,6 @@ PythonClass::PythonClass(const std::string & package,
 {
 }
 
-int PythonClass::load()
-{
-    m_module = Get_PyModule(m_package);
-    if (m_module == NULL) {
-        return -1;
-    }
-    return getClass(m_module);
-}
-
 PythonClass::~PythonClass()
 {
     if (m_class != 0) {
@@ -57,6 +48,15 @@ PythonClass::~PythonClass()
     if (m_module != 0) {
         Py_DECREF(m_module);
     }
+}
+
+int PythonClass::load()
+{
+    m_module = Get_PyModule(m_package);
+    if (m_module == NULL) {
+        return -1;
+    }
+    return getClass(m_module);
 }
 
 /// \brief Retrieve the pythonclass object from the module which has

@@ -47,5 +47,6 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
                                                     Entity * owner)
 {
     PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
+    paf.setup();
     return paf.newScript(owner);
 }
