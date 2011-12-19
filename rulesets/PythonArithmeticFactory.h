@@ -37,7 +37,6 @@ class PythonArithmeticFactory : public ArithmeticKit {
     /// \brief Name of the type within the package for the script
     std::string m_type;
 
-    int getClass();
     int addScript();
   public:
     PythonArithmeticFactory(const std::string & package,
