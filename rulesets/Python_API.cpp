@@ -340,6 +340,12 @@ PyTypeObject PyErrLogger_Type = {
         0,                              // tp_new
 };
 
+/// \brief Find a class in a Python module
+///
+/// @param module the imported Python module
+/// @param package the name of the module for error reporting
+/// @param type the name of the class or type
+/// @return new reference
 PyObject * Get_PyClass(PyObject * module,
                        const std::string & package,
                        const std::string & type)
@@ -367,6 +373,10 @@ PyObject * Get_PyClass(PyObject * module,
     return py_class;
 }
 
+/// \brief Import a Python module
+///
+/// @param package the name of the module
+/// @return new reference
 PyObject * Get_PyModule(const std::string & package)
 {
     PyObject * package_name = PyString_FromString((char *)package.c_str());
