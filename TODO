@@ -1,3 +1,10 @@
+Add Arithmetic functionality to all scripts. Cos you know.
+Add the concept of the Property script in general and use it to replace the
+un-flexible concept of a specific Arithmetic script type.
+It may be just more efficient to ignore this concept for most scripts,
+but will almost certainly simplify the code to add it to many.
+A more flexible concept of scripting attributes might make sense too.
+
 Move to a mechanism like the new mind property for statistics
 
 Ensure PythonClass checks base on reload
