@@ -1,4 +1,3 @@
-Migrate PyArithmeticF code over to using PythonClass
 Move to a mechanism like the new mind property for statistics
 
 Ensure PythonClass checks base on reload
