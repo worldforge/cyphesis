@@ -39,8 +39,11 @@ class TaskKit {
   protected:
     TaskKit();
 
-    /// \brief Type name of the base entity class this task works on
+    /// \brief Type of the base entity class this task works on
     const TypeNode * m_target;
+
+    /// \brief Name of a property the target must have
+    std::string m_property;
   public:
     ScriptKit<Task> * m_scriptFactory;
 
@@ -50,6 +53,12 @@ class TaskKit {
     {
         m_target = t;
         return m_target;
+    }
+
+    const std::string & setRequireProperty(const std::string & p)
+    {
+        m_property = p;
+        return m_property;
     }
 
     /// \brief Check target matches

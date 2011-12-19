@@ -51,13 +51,19 @@ TaskFactory::~TaskFactory()
 
 int TaskFactory::checkTarget(LocatedEntity * target)
 {
-    if (m_target == 0 || target->getType()->isTypeOf(m_target)) {
-        return 0;
+    if (m_target != 0 && !target->getType()->isTypeOf(m_target)) {
+        debug( std::cout << target->getType()->name() << " is not a "
+                         << m_target->name()
+                         << std::endl << std::flush; );
+        return -1;
     }
-    debug( std::cout << target->getType()->name() << " is not a "
-                     << m_target->name()
-                     << std::endl << std::flush; );
-    return -1;
+    if (!m_property.empty() && !target->hasAttr(m_property)) {
+        debug( std::cout << target->getType()->name() << " has not a "
+                         << m_property
+                         << std::endl << std::flush; );
+        return -1;
+    }
+    return 0;
 }
 
 Task * TaskFactory::newTask(LocatedEntity & chr)
