@@ -17,6 +17,9 @@
 
 // $Id$
 
+#ifndef RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
+#define RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
+
 #include "PythonScriptFactory.h"
 
 #include "rulesets/PythonEntityScript.h"
@@ -72,3 +75,5 @@ int PythonScriptFactory<T>::refreshClass()
 {
     return refresh();
 }
+
+#endif // RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
