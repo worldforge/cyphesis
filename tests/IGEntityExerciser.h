@@ -28,8 +28,6 @@
 #include "rulesets/Motion.h"
 #include "rulesets/Entity.h"
 
-#include "common/TypeNode.h"
-
 #include <Atlas/Message/Element.h>
 
 class IGEntityExerciser : public EntityExerciser {

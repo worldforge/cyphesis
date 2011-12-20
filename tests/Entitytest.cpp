@@ -120,6 +120,8 @@ int main()
 
 // stubs
 
+#include "common/TypeNode.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
 int ATTACK_NO = -1;
