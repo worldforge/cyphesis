@@ -712,6 +712,21 @@ def test_slice(host='', account='', password='', **args):
         print "Task start failed"
         return
 
+def test_delve(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    world=m.look()
+    settler=m.make('settler',pos=(1,1,0))
+    tool=m.make('pickaxe',pos=(0,0,0),parent=settler.id)
+
+    m.avatar.send(Operation("wield", Entity(tool.id), to=settler))
+    m.avatar.send(Operation("use", Operation("cut", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
 def test_task_stop(host='', account='', password='', **args):
 
     m=create_editor(host, account, password)

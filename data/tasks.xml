@@ -97,7 +97,7 @@
   <map>
     <map name="activation">
       <string name="operation">cut</string>
-      <string name="target">world</string>
+      <string name="target">.terrain</string>
       <string name="tool">pickaxe</string>
     </map>
     <map name="attributes">
