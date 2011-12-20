@@ -101,13 +101,12 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             return -1;
         }
         const std::string & target_desc = J->second.String();
-        std::string target_class;
         std::string::size_type dot = target_desc.find('.');
         if (dot != 0) {
             // If there is no dot, or the dot is not the first character,
             // then the first part of the string is the class to be matched
             // This works if there is a dot, or if the search returned npos
-            target_class = target_desc.substr(0, dot);
+            std::string target_class = target_desc.substr(0, dot);
             const TypeNode * target_type = i.getType(target_class);
             if (target_type == 0) {
                 dependent = target_class;
@@ -119,9 +118,13 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             factory->setTarget(target_type);
         }
         if (dot != std::string::npos) {
-            // if there is a dot, then the rest of the string is the
-            // property to be matched
-            // FIXME Install the property match
+            if (++dot < target_desc.size()) {
+                std::string target_property = target_desc.substr(dot);
+                factory->setRequireProperty(target_property);
+            } else {
+                log(WARNING, compose("Task rule \"%1\" provide empty string "
+                                     "for activation property", class_name));
+            }
         }
     }
 
