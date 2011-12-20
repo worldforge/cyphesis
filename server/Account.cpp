@@ -33,7 +33,6 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/serialno.h"
-#include "common/Inheritance.h"
 #include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
