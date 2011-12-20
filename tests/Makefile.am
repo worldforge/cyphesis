@@ -11,7 +11,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                operationstest serialnotest newidtest TypeNodetest \
                FormattedXMLWritertest PropertyFactorytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
-               ClientTasktest utilstest SystemTimetest
+               ClientTasktest utilstest SystemTimetest \
+               TaskKittest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest \
@@ -250,6 +251,10 @@ utilstest_LDADD = \
 SystemTimetest_SOURCES = SystemTimetest.cpp
 SystemTimetest_LDADD = \
         $(top_builddir)/common/SystemTime.o
+
+TaskKittest_SOURCES = TaskKittest.cpp
+TaskKittest_LDADD = \
+        $(top_builddir)/common/TaskKit.o
 
 # PHYSICS_TESTS
 
