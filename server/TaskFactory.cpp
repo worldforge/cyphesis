@@ -28,15 +28,6 @@
 
 static const bool debug_flag = false;
 
-TaskKit::TaskKit() : m_scriptFactory(0)
-{
-}
-
-TaskKit::~TaskKit()
-{
-    delete m_scriptFactory;
-}
-
 /// \brief TaskFactory constructor
 ///
 /// @param package name of the package containing the script

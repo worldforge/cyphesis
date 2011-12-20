@@ -183,6 +183,14 @@ int main()
 
 // stubs
 
+TaskKit::TaskKit() : m_scriptFactory(0)
+{
+}
+
+TaskKit::~TaskKit()
+{
+}
+
 void Task::initTask(const Operation & op, OpVector & res)
 {
 }

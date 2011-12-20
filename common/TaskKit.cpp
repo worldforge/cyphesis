@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2005 Alistair Riddoch
+// Copyright (C) 2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,23 +17,15 @@
 
 // $Id$
 
-#ifndef SERVER_TASK_FACTORY_H
-#define SERVER_TASK_FACTORY_H
+#include "TaskKit.h"
 
-#include "common/TaskKit.h"
+#include "common/ScriptKit.h"
 
-/// \brief Factory for creating tasks implemented as python scripts.
-class TaskFactory : public TaskKit {
-  protected:
-    /// \brief Name of the class within the package for the script
-    std::string m_name;
+TaskKit::TaskKit() : m_scriptFactory(0)
+{
+}
 
-  public:
-    TaskFactory(const std::string & name);
-    virtual ~TaskFactory();
-
-    virtual int checkTarget(LocatedEntity * target);
-    virtual Task * newTask(LocatedEntity & chr);
-};
-
-#endif // SERVER_TASK_FACTORY_H
+TaskKit::~TaskKit()
+{
+    delete m_scriptFactory;
+}
