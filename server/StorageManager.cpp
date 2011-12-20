@@ -30,7 +30,6 @@
 #include "common/debug.h"
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
-#include "common/const.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/compose.hpp"

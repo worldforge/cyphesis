@@ -32,7 +32,6 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/const.h"
 #include "common/Inheritance.h"
 #include "common/random.h"
 #include "common/compose.hpp"
