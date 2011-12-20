@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef RULESETS_PYTHON_SCRIPT_UTILS_H
-#define RULESETS_PYTHON_SCRIPT_UTILS_H
+#ifndef COMMON_ATLAS_HELPERS_H
+#define COMMON_ATLAS_HELPERS_H
 
 #include <Atlas/Message/Element.h>
 
@@ -28,4 +28,4 @@ int GetScriptDetails(const Atlas::Message::MapType &,
                      std::string &,
                      std::string &);
 
-#endif // RULESETS_PYTHON_SCRIPT_UTILS_H
+#endif // COMMON_ATLAS_HELPERS_H
