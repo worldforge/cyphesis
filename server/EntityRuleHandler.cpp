@@ -23,7 +23,6 @@
 #include "EntityFactory.h"
 #include "Player.h"
 
-#include "rulesets/MindFactory.h"
 #include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
