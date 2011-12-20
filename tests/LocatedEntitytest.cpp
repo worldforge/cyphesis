@@ -252,6 +252,8 @@ int main()
 
 // stubs
 
+#include "common/TypeNode.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int EAT_NO = -1;
 int NOURISH_NO = -1;

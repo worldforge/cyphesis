@@ -22,8 +22,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/OperationRouter.h"
-#include "common/TypeNode.h"
 #include "common/Property.h"
 
 #include "common/Add.h"
