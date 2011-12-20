@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,36 +26,162 @@
 
 #include "server/TaskFactory.h"
 
-#include "rulesets/Character.h"
+#include "rulesets/Entity.h"
 #include "rulesets/Task.h"
+
+#include "common/TypeNode.h"
 
 #include <cassert>
 
+static bool stub_TypeNode_isTypeOf = false;
+static bool stub_LocatedEntity_hasAttr = false;
+
 int main()
 {
-    Character * chr = new Character("1", 1);
-    TaskKit * ek;
+    {
+        TaskKit * ek = new TaskFactory("test1");
 
-    Task * e;
+        delete ek;
+    }
 
-    ek = new TaskFactory("test1");
+    Entity * chr = new Entity("1", 1);
+    Entity * target = new Entity("2", 2);
 
-    e = ek->newTask(*chr);
-    assert(e);
+    // Check target will always succeed if no constraints are in place
+    {
+        TaskKit * ek = new TaskFactory("test1");
 
-    delete ek;
+        int c = ek->checkTarget(target);
+        assert(c == 0);
+    }
 
-    ek = new TaskFactory("test2");
+    // Type match fails, no property set
+    {
+        TaskKit * ek = new TaskFactory("test1");
 
-    e = ek->newTask(*chr);
-    assert(e);
+        stub_TypeNode_isTypeOf = false;
+
+        ek->setTarget(new TypeNode("type1"));
+        target->setType(new TypeNode("type2"));
+
+        int c = ek->checkTarget(target);
+        assert(c == -1);
+    }
+
+    // Type match succeeds, no property set
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_TypeNode_isTypeOf = true;
+
+        ek->setTarget(new TypeNode("type1"));
+        target->setType(new TypeNode("type2"));
+
+        int c = ek->checkTarget(target);
+        assert(c == 0);
+    }
+
+    // property match fails, no type match
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_LocatedEntity_hasAttr = false;
+
+        ek->setRequireProperty("prop1");
+
+        int c = ek->checkTarget(target);
+        assert(c == -1);
+    }
+
+    // property match succeeds, no type match
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_LocatedEntity_hasAttr = true;
+
+        ek->setRequireProperty("prop1");
+
+        int c = ek->checkTarget(target);
+        assert(c == 0);
+    }
+
+    // property match fails, type match fails
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_LocatedEntity_hasAttr = false;
+        stub_TypeNode_isTypeOf = false;
+
+        ek->setTarget(new TypeNode("type1"));
+        target->setType(new TypeNode("type2"));
+
+        ek->setRequireProperty("prop1");
+
+        int c = ek->checkTarget(target);
+        assert(c == -1);
+    }
+
+    // property match succeeds, type match fails
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_LocatedEntity_hasAttr = true;
+        stub_TypeNode_isTypeOf = false;
+
+        ek->setTarget(new TypeNode("type1"));
+        target->setType(new TypeNode("type2"));
+
+        ek->setRequireProperty("prop1");
+
+        int c = ek->checkTarget(target);
+        assert(c == -1);
+    }
+
+    // property match fails, type match succeeds
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_LocatedEntity_hasAttr = false;
+        stub_TypeNode_isTypeOf = true;
+
+        ek->setTarget(new TypeNode("type1"));
+        target->setType(new TypeNode("type2"));
+
+        ek->setRequireProperty("prop1");
+
+        int c = ek->checkTarget(target);
+        assert(c == -1);
+    }
+
+    // property match fails, type match fails
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        stub_LocatedEntity_hasAttr = true;
+        stub_TypeNode_isTypeOf = true;
+
+        ek->setTarget(new TypeNode("type1"));
+        target->setType(new TypeNode("type2"));
+
+        ek->setRequireProperty("prop1");
+
+        int c = ek->checkTarget(target);
+        assert(c == 0);
+    }
+
+    {
+        TaskKit * ek = new TaskFactory("test1");
+
+        Task * e = ek->newTask(*chr);
+        assert(e);
+
+        delete ek;
+    }
 
     return 0;
 }
 
 // stubs
-
-#include "common/TypeNode.h"
 
 void Task::initTask(const Operation & op, OpVector & res)
 {
@@ -74,175 +200,6 @@ Task::~Task()
 }
 
 void Task::irrelevant()
-{
-}
-
-Character::Character(const std::string & id, long intId) :
-           Character_parent(id, intId),
-               m_movement(*(Movement*)0),
-               m_mind(0), m_externalMind(0)
-{
-}
-
-Character::~Character()
-{
-}
-
-void Character::operation(const Operation & op, OpVector &)
-{
-}
-
-void Character::externalOperation(const Operation & op)
-{
-}
-
-
-void Character::ImaginaryOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TalkOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::UseOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::WieldOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::AttackOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::ActuateOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::mindActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindAttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindEatOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindGoalInfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindLookOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindMoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetupOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindThoughtOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTickOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUseOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindWieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindOtherOperation(const Operation &, OpVector &)
-{
-}
-
-Thing::Thing(const std::string & id, long intId) :
-       Thing_parent(id, intId)
-{
-}
-
-Thing::~Thing()
-{
-}
-
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
 }
 
@@ -396,7 +353,7 @@ LocatedEntity::~LocatedEntity()
 
 bool LocatedEntity::hasAttr(const std::string & name) const
 {
-    return false;
+    return stub_LocatedEntity_hasAttr;
 }
 
 int LocatedEntity::getAttr(const std::string & name,
@@ -431,9 +388,13 @@ void LocatedEntity::onUpdated()
 {
 }
 
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+{
+}
+
 bool TypeNode::isTypeOf(const TypeNode * base_type) const
 {
-    return false;
+    return stub_TypeNode_isTypeOf;
 }
 
 Router::Router(const std::string & id, long intId) : m_id(id),
