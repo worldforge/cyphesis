@@ -26,9 +26,9 @@
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
-#include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
+#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 
 using Atlas::Message::MapType;
