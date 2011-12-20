@@ -183,13 +183,9 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
 Task * EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
 {
     Task * task = factory->newTask(owner);
-    if (task == 0) {
-        return 0;
-    }
-    Task * task_script = dynamic_cast<Task *>(task);
 
-    if (task_script != 0 && factory->m_scriptFactory != 0) {
-        if (factory->m_scriptFactory->addScript(task_script) != 0) {
+    if (task != 0 && factory->m_scriptFactory != 0) {
+        if (factory->m_scriptFactory->addScript(task) != 0) {
             log(ERROR, "Assigning script to task failed");
         }
     }
