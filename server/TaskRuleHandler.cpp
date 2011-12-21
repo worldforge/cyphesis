@@ -21,7 +21,6 @@
 
 #include "EntityBuilder.h"
 #include "TaskFactory.h"
-#include "Persistence.h"
 
 #include "rulesets/PythonScriptFactory.h"
 
