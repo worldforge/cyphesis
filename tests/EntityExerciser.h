@@ -22,21 +22,7 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/Property.h"
-
-#include "common/Add.h"
-#include "common/Burn.h"
-#include "common/Connect.h"
-#include "common/Eat.h"
-#include "common/Monitor.h"
-#include "common/Nourish.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
-#include "common/Unseen.h"
-#include "common/Update.h"
-
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/RootOperation.h>
 
 #include <set>
 

@@ -34,7 +34,20 @@
 
 #include "common/TypeNode.h"
 
+#include "common/Add.h"
+#include "common/Burn.h"
+#include "common/Connect.h"
+#include "common/Eat.h"
+#include "common/Monitor.h"
+#include "common/Nourish.h"
+#include "common/Setup.h"
+#include "common/Tick.h"
+#include "common/Unseen.h"
+#include "common/Update.h"
+
 #include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 IGEntityExerciser::IGEntityExerciser(Entity & e) :
                            EntityExerciser(e), m_ent(e) {
