@@ -12,7 +12,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                FormattedXMLWritertest PropertyFactorytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
                ClientTasktest utilstest SystemTimetest \
-               TaskKittest EntityKittest
+               TaskKittest EntityKittest atlas_helperstest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest \
@@ -259,6 +259,10 @@ TaskKittest_LDADD = \
 EntityKittest_SOURCES = EntityKittest.cpp
 EntityKittest_LDADD = \
         $(top_builddir)/common/EntityKit.o
+
+atlas_helperstest_SOURCES = atlas_helperstest.cpp
+atlas_helperstest_LDADD = \
+        $(top_builddir)/common/atlas_helpers.o
 
 # PHYSICS_TESTS
 
