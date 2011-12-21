@@ -22,7 +22,8 @@
 
 #include "Thing.h"
 
-#include "common/Property.h"
+template <typename T>
+class Property;
 
 typedef Thing Plant_parent;
 
