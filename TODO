@@ -1,3 +1,5 @@
+Are we using tp_base in client classes?
+
 Add Arithmetic functionality to all scripts. Cos you know.
 Add the concept of the Property script in general and use it to replace the
 un-flexible concept of a specific Arithmetic script type.
