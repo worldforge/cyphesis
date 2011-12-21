@@ -1121,7 +1121,8 @@ Playertest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = \
-        $(top_builddir)/server/EntityFactory.o
+        $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/common/EntityKit.o
 
 TaskFactorytest_SOURCES = TaskFactorytest.cpp
 TaskFactorytest_LDADD = \
@@ -1421,6 +1422,7 @@ EntityFactoryTypeNodeintegration_SOURCES = \
         TestPropertyManager.cpp
 EntityFactoryTypeNodeintegration_LDADD = \
         $(top_builddir)/server/EntityFactory.o \
+        $(top_builddir)/common/EntityKit.o \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/PropertyManager.o \
         $(top_builddir)/common/Property.o

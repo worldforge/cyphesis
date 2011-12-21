@@ -20,65 +20,7 @@
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
 
-#include <set>
-#include <map>
-#include <string>
-
-namespace Atlas {
-    namespace Message {
-        class Element;
-        typedef std::map<std::string, Element> MapType;
-    }
-}
-
-class Entity;
-class TypeNode;
-
-template<class T>
-class ScriptKit;
-
-/// \brief Abstract factory for creating in-game entity objects.
-///
-/// An Entity consists of an instance of one of a number of C++ classes
-/// optionally with a script. Stores information about default attributes,
-/// script language and class name.
-class EntityKit {
-  protected:
-    EntityKit();
-  public:
-    ScriptKit<Entity> * m_scriptFactory;
-    /// Default attribute values for this class
-    Atlas::Message::MapType m_classAttributes;
-    /// Default attribute values for instances of this class, including
-    /// defaults inherited from parent classes.
-    Atlas::Message::MapType m_attributes;
-    /// Factory for class from which the class handled by this factory
-    /// inherits.
-    EntityKit * m_parent;
-    /// Set of factories for classes which inherit from the class handled
-    /// by this factory.
-    std::set<EntityKit *> m_children;
-    /// Inheritance type of this class.
-    TypeNode * m_type;
-    /// Number of times this factory has created an entity
-    int m_createdCount;
-
-    virtual ~EntityKit();
-
-    void addProperties();
-
-    void updateProperties();
-
-    /// \brief Create a new Entity and make it persistent.
-    ///
-    /// @param id a string giving the identifier of the Entity.
-    /// @param intId an integer giving the identifier of the Entity.
-    /// @param pb a pointer to the persistor object for the Entity.
-    virtual Entity * newEntity(const std::string & id,
-                                        long intId) = 0;
-    /// \brief Create a copy of this factory.
-    virtual EntityKit * duplicateFactory() = 0;
-};
+#include "common/EntityKit.h"
 
 /// \brief Concrete factory template for creating in-game entity objects.
 template <class T>
