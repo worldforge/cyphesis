@@ -1,3 +1,20 @@
+A given owning entity (Account/Admin) needs to keep track of the work it is
+doing when doing a ruleset upload. The whole ruleset change should be
+encapsulated into a transaction, with its own instance of RuleHandler etc,
+and once done it should be possible to check for errors, commit, or not.
+Writing rules to database should only be done if transaction succeeds, so
+all pending writes need to be encapsulated too. This requires the handler
+and builder code not to be in server.
+
+These class belong at the simulator layer (above rulesets,
+                                           but not server specific):
+  EntityBuilder, CorePropertyManager, *RuleHandler
+
+Add a Server config class in server/ which adds all the base EntityFactories
+to the builder, and the PropertyFactories to the CorePropertyManager. Then
+both those can be made independant of server. It could also handle all the
+really core types being added to Inheritance.
+
 Are we using tp_base in client classes?
 
 Add Arithmetic functionality to all scripts. Cos you know.
