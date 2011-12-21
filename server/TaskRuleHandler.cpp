@@ -20,7 +20,6 @@
 #include "TaskRuleHandler.h"
 
 #include "EntityBuilder.h"
-#include "EntityFactory.h"
 #include "TaskFactory.h"
 #include "Persistence.h"
 
@@ -28,8 +27,8 @@
 
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/EntityKit.h"
 #include "common/Inheritance.h"
-#include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
 
 using Atlas::Message::Element;
