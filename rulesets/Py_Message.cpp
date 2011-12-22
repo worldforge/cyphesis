@@ -293,32 +293,29 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     return ret;
 }
 
-static int PyListObject_asElement(PyObject * list, Element & res)
+int PyListObject_asElement(PyObject * list, ListType & res)
 {
-    ListType argslist;
     PyMessage * item;
     int len = PyList_Size(list);
     for(int i = 0; i < len; i++) {
         item = (PyMessage *)PyList_GetItem(list, i);
         if (PyMessage_Check(item)) {
-            argslist.push_back(*(item->m_obj));
+            res.push_back(*(item->m_obj));
         } else {
             Element o;
             if (PyObject_asMessageElement((PyObject*)item, o) == 0) {
-                argslist.push_back(o);
+                res.push_back(o);
             } else {
                 debug( std::cout << "Python to atlas conversion failed on element " << i << " of list" << std::endl << std::flush; );
                 return -1;
             }
         }
     }
-    res = argslist;
     return 0;
 }
 
-static int PyDictObject_asElement(PyObject * dict, Element & res)
+int PyDictObject_asElement(PyObject * dict, MapType & res)
 {
-    MapType argsmap;
     PyMessage * item;
     PyObject * keys = PyDict_Keys(dict);
     PyObject * vals = PyDict_Values(dict);
@@ -326,9 +323,9 @@ static int PyDictObject_asElement(PyObject * dict, Element & res)
         PyObject * key = PyList_GetItem(keys, i);
         item = (PyMessage *)PyList_GetItem(vals, i);
         if (PyMessage_Check(item)) {
-            argsmap[PyString_AsString(key)] = *(item->m_obj);
+            res[PyString_AsString(key)] = *(item->m_obj);
         } else {
-            if (PyObject_asMessageElement((PyObject*)item, argsmap[PyString_AsString(key)]) != 0) {
+            if (PyObject_asMessageElement((PyObject*)item, res[PyString_AsString(key)]) != 0) {
                 debug( std::cout << "Python to atlas conversion failed on element " << PyString_AsString(key) << " of map" << std::endl << std::flush; );
                 return -1;
             }
@@ -336,7 +333,6 @@ static int PyDictObject_asElement(PyObject * dict, Element & res)
     }
     Py_DECREF(keys);
     Py_DECREF(vals);
-    res = argsmap;
     return 0;
 }
 
@@ -360,10 +356,12 @@ int PyObject_asMessageElement(PyObject * o, Element & res, bool simple)
         return -1;
     }
     if (PyList_Check(o)) {
-        return PyListObject_asElement(o, res);
+        res = ListType();
+        return PyListObject_asElement(o, res.List());
     }
     if (PyDict_Check(o)) {
-        return PyDictObject_asElement(o, res);
+        res = MapType();
+        return PyDictObject_asElement(o, res.Map());
     }
     if (PyTuple_Check(o)) {
         ListType list;

@@ -22,9 +22,15 @@
 
 #include <Python.h>
 
+#include <map>
+#include <string>
+#include <vector>
+
 namespace Atlas {
     namespace Message {
         class Element;
+        typedef std::vector<Element> ListType;
+        typedef std::map<std::string, Element> MapType;
     }
 }
 
@@ -50,7 +56,12 @@ PyMessage * newPyMessage();
 // Utility functions to munge between Object related types and python types
 //
 
+
 PyObject * MessageElement_asPyObject(const Atlas::Message::Element & obj);
-int PyObject_asMessageElement(PyObject * o, Atlas::Message::Element & res, bool simple = false);
+int PyObject_asMessageElement(PyObject * o,
+                              Atlas::Message::Element & res,
+                              bool simple = false);
+int PyDictObject_asElement(PyObject * dict, Atlas::Message::MapType & res);
+int PyListObject_asElement(PyObject * list, Atlas::Message::ListType & res);
 
 #endif // RULESETS_PY_MESSAGE_H
