@@ -44,7 +44,8 @@ static void TerrainModProperty_dealloc(PyTerrainModProperty *self)
     self->ob_type->tp_free(self);
 }
 
-static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * name)
+static PyObject * TerrainModProperty_getattro(PyTerrainModProperty *self,
+                                              PyObject * oname)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL || self->m_property == NULL) {
@@ -52,6 +53,7 @@ static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * 
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     Element val;
     if (self->m_property->getAttr(name, val) == 0) {
         if (strcmp(name, "shape") == 0 && val.isMap()) {
@@ -67,9 +69,9 @@ static PyObject * TerrainModProperty_getattr(PyTerrainModProperty *self, char * 
     return Py_FindMethod(TerrainModProperty_methods, (PyObject *)self, name);
 }
 
-static int TerrainModProperty_setattr(PyTerrainModProperty * self,
-                                      char * name,
-                                      PyObject *v)
+static int TerrainModProperty_setattro(PyTerrainModProperty * self,
+                                       PyObject * oname,
+                                       PyObject * v)
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL || self->m_property == NULL) {
@@ -77,6 +79,7 @@ static int TerrainModProperty_setattr(PyTerrainModProperty * self,
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     Element val;
     if (self->m_property->getAttr(name, val) == 0) {
         Element e;
@@ -119,8 +122,8 @@ PyTypeObject PyTerrainModProperty_Type = {
         // methods 
         (destructor)TerrainModProperty_dealloc,           // tp_dealloc
         0,                                                // tp_print
-        (getattrfunc)TerrainModProperty_getattr,          // tp_getattr
-        (setattrfunc)TerrainModProperty_setattr,          // tp_setattr
+        0,                                                // tp_getattr
+        0,                                                // tp_setattr
         0,                                                // tp_compare
         0,                                                // tp_repr
         0,                                                // tp_as_number
@@ -129,8 +132,8 @@ PyTypeObject PyTerrainModProperty_Type = {
         0,                                                // tp_hash
         0,                                                // tp_call
         0,                                                // tp_str
-        0,                                                // tp_getattro
-        0,                                                // tp_setattro
+        (getattrofunc)TerrainModProperty_getattro,        // tp_getattro
+        (setattrofunc)TerrainModProperty_setattro,        // tp_setattro
         0,                                                // tp_as_buffer
         Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,         // tp_flags
         "TerrainModProperty objects",                     // tp_doc
