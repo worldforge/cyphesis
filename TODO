@@ -1,3 +1,5 @@
+Py_Shape is old-school
+
 A given owning entity (Account/Admin) needs to keep track of the work it is
 doing when doing a ruleset upload. The whole ruleset change should be
 encapsulated into a transaction, with its own instance of RuleHandler etc,
