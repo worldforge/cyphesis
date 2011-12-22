@@ -15,7 +15,8 @@ to the builder, and the PropertyFactories to the CorePropertyManager. Then
 both those can be made independant of server. It could also handle all the
 really core types being added to Inheritance.
 
-Are we using tp_base in client classes?
+Is PyCreator/PyCharacter still needed in the client side? It seems to have
+been abandoned before being fully introduced.
 
 Add Arithmetic functionality to all scripts. Cos you know.
 Add the concept of the Property script in general and use it to replace the
