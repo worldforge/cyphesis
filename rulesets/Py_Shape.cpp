@@ -123,7 +123,7 @@ static void Shape_dealloc(PyShape *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Shape_getattr(PyShape *self, char *name)
+static PyObject * Shape_getattro(PyShape *self, PyObject * oname)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
@@ -131,10 +131,11 @@ static PyObject * Shape_getattr(PyShape *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
-    return Py_FindMethod(Shape_methods, (PyObject *)self, name);
+    // char * name = PyString_AsString(oname);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Shape_setattr(PyShape *self, char *name, PyObject *v)
+static int Shape_setattro(PyShape *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
@@ -142,6 +143,7 @@ static int Shape_setattr(PyShape *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    // char * name = PyString_AsString(oname);
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
@@ -286,8 +288,8 @@ PyTypeObject PyShape_Type = {
         /* methods */
         (destructor)Shape_dealloc,      /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Shape_getattr,     /*tp_getattr*/
-        (setattrfunc)Shape_setattr,     /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         0,                              /*tp_compare*/
         (reprfunc)Shape_repr,           /*tp_repr*/
         &Shape_number,                  /*tp_as_number*/
@@ -296,18 +298,18 @@ PyTypeObject PyShape_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Shape_getattro,   // tp_getattro
+        (setattrofunc)Shape_setattro,   // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Shape objects",             // tp_doc
+        "Shape objects",                // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Shape_methods,                  // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
