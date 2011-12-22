@@ -22,6 +22,8 @@
 #include "Py_Message.h"
 #include "Py_Point3D.h"
 
+#include "common/log.h"
+
 #include "physics/Shape.h"
 
 #include <Atlas/Message/Element.h>
@@ -32,6 +34,7 @@
 #include <sstream>
 #include <iostream>
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
 static PyObject * Shape_area(PyShape * self)
@@ -152,7 +155,39 @@ static PyObject * Shape_repr(PyShape *self)
 
 static int Shape_init(PyShape * self, PyObject * args, PyObject * kwds)
 {
-    // TODO Init from something?
+    PyObject * arg = 0;
+    if (!PyArg_ParseTuple(args, "|O", &arg)) {
+        return -1;
+    }
+    if (arg == 0) {
+        return 0;
+    }
+    if (PyDict_Check(arg)) {
+        MapType data;
+        if (PyDictObject_asElement(arg, data) != 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
+            return -1;
+        }
+        self->shape = Shape::newFromAtlas(data);
+        if (self->shape == 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting atlas to shape");
+            return -1;
+        }
+        return 0;
+    }
+    if (PyMessage_Check(arg)) {
+        Element * data = ((PyMessage*)arg)->m_obj;
+        if (!data->isMap()) {
+            PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
+            return -1;
+        }
+        self->shape = Shape::newFromAtlas(data->Map());
+        if (self->shape == 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting atlas to shape");
+            return -1;
+        }
+        return 0;
+    }
     return 0;
 }
 

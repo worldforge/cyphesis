@@ -70,6 +70,15 @@ int main()
     run_python_string("import server");
     run_python_string("import physics");
     run_python_string("physics.Shape()");
+    fail_python_string("physics.Shape({})");
+    run_python_string("s = physics.Shape({'type': 'polygon',"
+                                         "'points': [[ 0.0, 0.0 ],"
+                                                    "[ 1.0, 0.0 ],"
+                                                    "[ 1.0, 1.0 ]] })");
+    run_python_string("s.footprint()");
+    run_python_string("s.low_corner()");
+    run_python_string("s.high_corner()");
+    run_python_string("s.as_data()");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
