@@ -56,12 +56,8 @@ class Heaping(server.Task):
 
         res=Oplist()
 
-        chunk_loc = Location(self.character.location.parent)
-        chunk_loc.velocity = Vector3D()
 
-        chunk_loc.coordinates = self.pos
-
-        if not hasattr(self, 'terrain_mod'):
+        if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
             mods = self.target().terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
@@ -82,11 +78,15 @@ class Heaping(server.Task):
                 area_map = {'points': modmap['shape']['points'],
                             'layer': 7,
                             'type': 'polygon'}
-                            
+
+                mound_loc = Location(self.character.location.parent)
+                mound_loc.velocity = Vector3D()
+                mound_loc.coordinates = self.pos
+
                 motte_create=Operation("create",
                                        Entity(name="motte",
                                               type="path",
-                                              location = chunk_loc,
+                                              location = mound_loc,
                                               terrainmod = modmap,
                                               area = area_map),
                                        to=self.target())

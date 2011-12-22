@@ -6,6 +6,9 @@ from physics import *
 from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
+from weakref import ref
+
+import math
 
 import server
 
@@ -30,7 +33,6 @@ class Earthbarrier(server.Task):
         """ Op handler for regular tick op """
         # print "Earthbarrier.tick"
 
-        self.pos = self.character.location.coordinates
         if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
@@ -56,12 +58,8 @@ class Earthbarrier(server.Task):
 
         res=Oplist()
 
-        chunk_loc = Location(self.character.location.parent)
-        chunk_loc.velocity = Vector3D()
 
-        chunk_loc.coordinates = self.pos
-
-        if not hasattr(self, 'terrain_mod'):
+        if not hasattr(self, 'mod_entity') or self.mod_entity() is None:
             mods = self.target().terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are making wall,
@@ -87,24 +85,62 @@ class Earthbarrier(server.Task):
                                     },
                           'type': 'levelmod'                                    
                           }
+                area_map = {'points': modmap['shape']['points'],
+                            'layer': 7,
+                            'type': 'polygon'}
+                line_map = {'points': [[ self.pos.x, self.pos.y ]],
+                            'type': 'line'}
+
+                wall_loc = Location(self.character.location.parent)
+                wall_loc.velocity = Vector3D()
+                wall_loc.coordinates = self.pos
+
                 walls_create=Operation("create",
-                                        Entity(name="walls",
+                                        Entity(name="wall",
                                                type="path",
-                                               location = chunk_loc,
-                                               terrainmod = modmap),
+                                               line = line_map,
+                                               location = wall_loc,
+                                               terrainmod = modmap,
+                                               area = area_map),
                                         to=self.target())
                 res.append(walls_create)
             else:
                 for mod in mods:
-                    if not hasattr(mod, 'name') or mod.name != 'walls':
-                        # print "%s is no good" % mod.id
+                    if not hasattr(mod, 'name') or mod.name != 'wall':
+                        print "%s is no good" % mod.id
                         continue
-                    # print "%s looks good" % mod.id
-                    mod.terrainmod.height += 1.0
-                    # We have modified the attribute in place, so must send an update op to propagate
+                    print "%s looks good" % mod.id
+                    self.mod_entity = ref(mod)
+                    # We have modified the attribute in place,
+                    # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
                     break
-            # self.terrain_mod = "moddy_mod_mod"
+        else:
+            mod = self.mod_entity()
+            print "Now we grow it"
+            area = mod.terrainmod.shape.area()
+            factor = math.sqrt((area + 1) / area)
+            line = Shape(mod.line)
+            mod.terrainmod.shape *= factor
+            mod.terrainmod.height += 1 / area
+            box = mod.terrainmod.shape.footprint()
+            mod.bbox = [box.low_corner().x,
+                        box.low_corner().y,
+                        0,
+                        box.high_corner().x,
+                        box.high_corner().y,
+                        mod.terrainmod.height]
+
+            area_shape = mod.terrainmod.shape.as_data()
+            area_map = {'points': area_shape['points'],
+                        'layer': 7,
+                        'type': 'polygon'}
+            # FIXME This area is not getting broadcast
+            mod.area = area_map
+            # We have modified the attribute in place,
+            # so must send an update op to propagate
+            res.append(Operation("update", to=mod.id))
+
 
         res.append(self.next_tick(0.75))
 
