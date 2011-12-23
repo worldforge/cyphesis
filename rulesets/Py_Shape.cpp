@@ -41,7 +41,7 @@ static PyObject * Shape_area(PyShape * self)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.area");
         return NULL;
     }
 #endif // NDEBUG
@@ -52,7 +52,7 @@ static PyObject * Shape_footprint(PyShape * self)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.footprint");
         return NULL;
     }
 #endif // NDEBUG
@@ -67,7 +67,7 @@ static PyObject * Shape_low_corner(PyShape * self)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.low_corner");
         return NULL;
     }
 #endif // NDEBUG
@@ -82,7 +82,7 @@ static PyObject * Shape_high_corner(PyShape * self)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.high_corner");
         return NULL;
     }
 #endif // NDEBUG
@@ -97,7 +97,7 @@ static PyObject * Shape_as_data(PyShape * self)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.as_data");
         return NULL;
     }
 #endif // NDEBUG
@@ -127,7 +127,7 @@ static PyObject * Shape_getattro(PyShape *self, PyObject * oname)
 {
 #ifndef NDEBUG
     if (self->shape == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattro");
         return NULL;
     }
 #endif // NDEBUG
