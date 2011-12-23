@@ -282,7 +282,7 @@ static PySequenceMethods Shape_sequence = {
 PyTypeObject PyShape_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
-        "atlas.Shape",                  /*tp_name*/
+        "physics.Shape",                /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
