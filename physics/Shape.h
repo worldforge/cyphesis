@@ -64,6 +64,7 @@ class MathShape : public Shape {
 
     const char * getType() const;
   public:
+    MathShape();
     MathShape(const ShapeT<dim> &);
 
     virtual size_t size() const;
