@@ -344,7 +344,7 @@ static int CreatorClient_init(PyCreatorClient * self,
 PyTypeObject PyCharacterClient_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      /*ob_size*/
-        "CreatorClient",                     /*tp_name*/
+        "CreatorClient",                        /*tp_name*/
         sizeof(PyCreatorClient),                /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
         /* methods */
