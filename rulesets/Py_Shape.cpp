@@ -217,7 +217,7 @@ Py_ssize_t Shape_sq_length(PyShape * self)
 static PyObject * Shape_inplace_multiply(PyShape * self, PyObject * other)
 {
     if (!PyFloat_CheckExact(other)) {
-        PyErr_SetString(PyExc_TypeError, "Can only rotatey with a float");
+        PyErr_SetString(PyExc_TypeError, "Can only scale with a float");
         return NULL;
     }
     double val = PyFloat_AsDouble(other);
