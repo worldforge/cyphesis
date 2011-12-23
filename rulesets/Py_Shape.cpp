@@ -237,8 +237,7 @@ static int Polygon_init(PyShape * self, PyObject * args, PyObject * kwds)
             PyErr_SetString(PyExc_TypeError, "Error creating polygon");
             return -1;
         }
-        // FIXME Use the data
-        // self->shape->fromAtlas(data);
+        self->shape->fromAtlas(data);
         if (self->shape == 0) {
             PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
             return -1;
@@ -256,8 +255,7 @@ static int Polygon_init(PyShape * self, PyObject * args, PyObject * kwds)
             PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
             return -1;
         }
-        // FIXME Use the data
-        // self->shape->fromAtlas(data->List());
+        self->shape->fromAtlas(data->List());
         if (self->shape == 0) {
             PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
             return -1;
