@@ -30,11 +30,13 @@
 
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
+#include <wfmath/polygon.h>
 
 #include <sstream>
 #include <iostream>
 
 using Atlas::Message::Element;
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
 static PyObject * Shape_area(PyShape * self)
@@ -148,6 +150,31 @@ static int Shape_setattro(PyShape *self, PyObject *oname, PyObject *v)
     return -1;
 }
 
+static PyObject * Polygon_getattro(PyShape *self, PyObject * oname)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Polygon.getattro");
+        return NULL;
+    }
+#endif // NDEBUG
+    // char * name = PyString_AsString(oname);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
+}
+
+static int Polygon_setattro(PyShape *self, PyObject *oname, PyObject *v)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Polygon.setattr");
+        return -1;
+    }
+#endif // NDEBUG
+    // char * name = PyString_AsString(oname);
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
+    return -1;
+}
+
 static PyObject * Shape_repr(PyShape *self)
 {
     std::stringstream r;
@@ -186,6 +213,53 @@ static int Shape_init(PyShape * self, PyObject * args, PyObject * kwds)
         self->shape = Shape::newFromAtlas(data->Map());
         if (self->shape == 0) {
             PyErr_SetString(PyExc_TypeError, "Error converting atlas to shape");
+            return -1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+static int Polygon_init(PyShape * self, PyObject * args, PyObject * kwds)
+{
+    PyObject * arg = 0;
+    if (!PyArg_ParseTuple(args, "O", &arg)) {
+        return -1;
+    }
+    if (PyList_Check(arg)) {
+        ListType data;
+        if (PyListObject_asElement(arg, data) != 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
+            return -1;
+        }
+        self->shape = new MathShape<WFMath::Polygon, 2>;
+        if (self->shape == 0) {
+            PyErr_SetString(PyExc_TypeError, "Error creating polygon");
+            return -1;
+        }
+        // FIXME Use the data
+        // self->shape->fromAtlas(data);
+        if (self->shape == 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
+            return -1;
+        }
+        return 0;
+    }
+    if (PyMessage_Check(arg)) {
+        Element * data = ((PyMessage*)arg)->m_obj;
+        if (!data->isList()) {
+            PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
+            return -1;
+        }
+        self->shape = new MathShape<WFMath::Polygon, 2>;
+        if (self->shape == 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
+            return -1;
+        }
+        // FIXME Use the data
+        // self->shape->fromAtlas(data->List());
+        if (self->shape == 0) {
+            PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
             return -1;
         }
         return 0;
@@ -301,7 +375,7 @@ PyTypeObject PyShape_Type = {
         (getattrofunc)Shape_getattro,   // tp_getattro
         (setattrofunc)Shape_setattro,   // tp_setattro
         0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "Shape objects",                // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
@@ -318,6 +392,49 @@ PyTypeObject PyShape_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Shape_init,           // tp_init
+        0,                              // tp_alloc
+        Shape_new,                      // tp_new
+};
+
+PyTypeObject PyPolygon_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "physics.Polygon",              /*tp_name*/
+        sizeof(PyShape),                /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        0,                              /*tp_dealloc*/
+        0,                              /*tp_print*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        (getattrofunc)Polygon_getattro, // tp_getattro
+        (setattrofunc)Polygon_setattro, // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Polygon objects",              // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        Shape_methods,                  // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        &PyShape_Type,                  // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Polygon_init,         // tp_init
         0,                              // tp_alloc
         Shape_new,                      // tp_new
 };

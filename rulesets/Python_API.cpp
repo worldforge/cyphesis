@@ -623,11 +623,17 @@ void init_python_api(bool log_stdout)
         return;
     }
     PyModule_AddObject(physics, "Quaternion", (PyObject *)&PyQuaternion_Type);
+
     if (PyType_Ready(&PyShape_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Shape wrapper type");
         return;
     }
     PyModule_AddObject(physics, "Shape", (PyObject *)&PyShape_Type);
+    if (PyType_Ready(&PyPolygon_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Polygon wrapper type");
+        return;
+    }
+    PyModule_AddObject(physics, "Polygon", (PyObject *)&PyPolygon_Type);
 
     PyObject * common = Py_InitModule("common", no_methods);
     if (common == NULL) {

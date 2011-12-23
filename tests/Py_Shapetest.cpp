@@ -94,6 +94,19 @@ int main()
                                     "[ 1.0, 0.0 ],"
                                     "[ 1.0, 1.0 ]]");
 
+
+    fail_python_string("physics.Polygon()");
+    run_python_string("p = physics.Polygon([[ 0.0, 0.0 ],"
+                                           "[ 1.0, 0.0 ],"
+                                           "[ 1.0, 1.0 ]])");
+    run_python_string("p.area()");
+    run_python_string("p.footprint()");
+    run_python_string("p.low_corner()");
+    run_python_string("p.high_corner()");
+    run_python_string("p.as_data()");
+    run_python_string("repr(p)");
+    run_python_string("len(p)");
+    run_python_string("p *= 5.0");
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
