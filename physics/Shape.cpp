@@ -24,6 +24,7 @@
 #include <wfmath/polygon.h>
 #include <wfmath/stream.h>
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
 Shape::Shape()
@@ -47,13 +48,17 @@ WFMath::Point<3> MathShape<WFMath::AxisBox, 2>::highCorner() const
 }
 
 template<>
-void MathShape<WFMath::AxisBox, 2>::fromAtlas(const MapType & data)
+void MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
 {
-    MapType::const_iterator I = data.find("points");
-    if (I == data.end() || !I->second.isList()) {
+    // FIXME Do what?
+    // MapType::const_iterator I = data.find("points");
+    // if (I == data.end() || !I->second.isList()) {
+        // return;
+    // }
+    if (!data.isList()) {
         return;
     }
-    m_shape.fromAtlas(I->second.List());
+    m_shape.fromAtlas(data.List());
 }
 
 ///////////////////////////////////////////////////////////////////////

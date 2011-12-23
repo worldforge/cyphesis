@@ -81,12 +81,8 @@ int main()
     }
 
     {
-        MapType m;
-        m["type"] = "axisbox";
-        m["points"] = ListType(2, 1.);
-
         Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
-        s->fromAtlas(m);
+        s->fromAtlas(ListType(2, 1.));
 
         assert(s != 0);
         assert(s->isValid());
@@ -94,12 +90,8 @@ int main()
     }
 
     {
-        MapType m;
-        m["type"] = "axisbox";
-        m["points"] = ListType(2, 1.);
-
         Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
-        s->fromAtlas(m);
+        s->fromAtlas(ListType(2, 1.));
 
         assert(s != 0);
         assert(s->isValid());
@@ -109,12 +101,8 @@ int main()
     }
 
     {
-        MapType m;
-        m["type"] = "axisbox";
-        m["points"] = ListType(2, 1.);
-
         Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
-        s->fromAtlas(m);
+        s->fromAtlas(ListType(2, 1.));
 
         assert(s != 0);
         assert(s->isValid());
