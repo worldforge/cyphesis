@@ -63,17 +63,14 @@ class Heaping(server.Task):
                 # There is no terrain mod where we are digging,
                 z=self.character.location.coordinates.z + 1.0
                 modmap = {'height': z,
-                          'shape': {
-                                    'points': [[ -0.7, -0.7 ],
-                                               [ -1.0, 0.0 ],
-                                               [ -0.7, 0.7 ],
-                                               [ 0.0, 1.0 ],
-                                               [ 0.7, 0.7 ],
-                                               [ 1.0, 0.0 ],
-                                               [ 0.7, -0.7 ],
-                                               [ 0.0, -1.0 ]],
-                                    'type': 'polygon'
-                                    },
+                          'shape': Polygon([[ -0.7, -0.7 ],
+                                            [ -1.0, 0.0 ],
+                                            [ -0.7, 0.7 ],
+                                            [ 0.0, 1.0 ],
+                                            [ 0.7, 0.7 ],
+                                            [ 1.0, 0.0 ],
+                                            [ 0.7, -0.7 ],
+                                            [ 0.0, -1.0 ]]).as_data(),
                           'type': 'levelmod' }
                 area_map = {'points': modmap['shape']['points'],
                             'layer': 7,
