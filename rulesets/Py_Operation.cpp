@@ -750,6 +750,48 @@ static PyObject * Operation_new(PyTypeObject * type, PyObject *, PyObject *)
     return (PyObject *)self;
 }
 
+PyTypeObject PyConstOperation_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                                      // ob_size
+        "atlas.Operation",                      // tp_name
+        sizeof(PyOperation),                    // tp_basicsize
+        0,                                      // tp_itemsize
+        //  methods 
+        (destructor)Operation_dealloc,          // tp_dealloc
+        0,                                      // tp_print
+        0,                                      // tp_getattr
+        0,                                      // tp_setattr
+        0,                                      // tp_compare
+        0,                                      // tp_repr
+        &Operation_num,                         // tp_as_number
+        &Operation_seq,                         // tp_as_sequence
+        0,                                      // tp_as_mapping
+        0,                                      // tp_hash
+        0,                                      // tp_call
+        0,                                      // tp_str
+        (getattrofunc)Operation_getattro,       // tp_getattro
+        0,                                      // tp_setattro
+        0,                                      // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,                     // tp_flags
+        "Operation objects",                    // tp_doc
+        0,                                      // tp_travers
+        0,                                      // tp_clear
+        0,                                      // tp_richcompare
+        0,                                      // tp_weaklistoffset
+        0,                                      // tp_iter
+        0,                                      // tp_iternext
+        ConstOperation_methods,                 // tp_methods
+        0,                                      // tp_members
+        0,                                      // tp_getset
+        0,                                      // tp_base
+        0,                                      // tp_dict
+        0,                                      // tp_descr_get
+        0,                                      // tp_descr_set
+        0,                                      // tp_dictoffset
+        (initproc)Operation_init,               // tp_init
+        0,                                      // tp_alloc
+        Operation_new,                          // tp_new
+};
 
 PyTypeObject PyOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
@@ -782,49 +824,6 @@ PyTypeObject PyOperation_Type = {
         0,                                      // tp_iter
         0,                                      // tp_iternext
         Operation_methods,                      // tp_methods
-        0,                                      // tp_members
-        0,                                      // tp_getset
-        0,                                      // tp_base
-        0,                                      // tp_dict
-        0,                                      // tp_descr_get
-        0,                                      // tp_descr_set
-        0,                                      // tp_dictoffset
-        (initproc)Operation_init,               // tp_init
-        0,                                      // tp_alloc
-        Operation_new,                          // tp_new
-};
-
-PyTypeObject PyConstOperation_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      // ob_size
-        "atlas.Operation",                      // tp_name
-        sizeof(PyOperation),                    // tp_basicsize
-        0,                                      // tp_itemsize
-        //  methods 
-        (destructor)Operation_dealloc,          // tp_dealloc
-        0,                                      // tp_print
-        0,                                      // tp_getattr
-        0,                                      // tp_setattr
-        0,                                      // tp_compare
-        0,                                      // tp_repr
-        &Operation_num,                         // tp_as_number
-        &Operation_seq,                         // tp_as_sequence
-        0,                                      // tp_as_mapping
-        0,                                      // tp_hash
-        0,                                      // tp_call
-        0,                                      // tp_str
-        (getattrofunc)Operation_getattro,       // tp_getattro
-        0,                                      // tp_setattro
-        0,                                      // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,                     // tp_flags
-        "Operation objects",                    // tp_doc
-        0,                                      // tp_travers
-        0,                                      // tp_clear
-        0,                                      // tp_richcompare
-        0,                                      // tp_weaklistoffset
-        0,                                      // tp_iter
-        0,                                      // tp_iternext
-        ConstOperation_methods,                 // tp_methods
         0,                                      // tp_members
         0,                                      // tp_getset
         0,                                      // tp_base
