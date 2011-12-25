@@ -797,7 +797,7 @@ PyTypeObject PyOperation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                                      // ob_size
         "atlas.Operation",                      // tp_name
-        sizeof(PyOperation),                    // tp_basicsize
+        0,                                      // tp_basicsize
         0,                                      // tp_itemsize
         //  methods 
         0,                                      // tp_dealloc
