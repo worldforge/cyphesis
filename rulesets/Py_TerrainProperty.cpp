@@ -128,31 +128,6 @@ static void TerrainProperty_dealloc(PyTerrainProperty *self)
     self->ob_type->tp_free(self);
 }
 
-static PyObject * TerrainProperty_getattr(PyTerrainProperty *self, char * name)
-{
-#ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
-        return NULL;
-    }
-#endif // NDEBUG
-    return Py_FindMethod(TerrainProperty_methods, (PyObject *)self, name);
-}
-
-static int TerrainProperty_setattr(PyTerrainProperty * self,
-                                   char * name,
-                                   PyObject *v)
-{
-#ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.setattro");
-        return -1;
-    }
-#endif // NDEBUG
-    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
-    return -1;
-}
-
 static int TerrainProperty_init(PyTerrainProperty * self,
                                 PyObject * args,
                                 PyObject * kwd)
@@ -173,8 +148,8 @@ PyTypeObject PyTerrainProperty_Type = {
         // methods 
         (destructor)TerrainProperty_dealloc,              // tp_dealloc
         0,                                                // tp_print
-        (getattrfunc)TerrainProperty_getattr,             // tp_getattr
-        (setattrfunc)TerrainProperty_setattr,             // tp_setattr
+        0,                                                // tp_getattr
+        0,                                                // tp_setattr
         0,                                                // tp_compare
         0,                                                // tp_repr
         0,                                                // tp_as_number
@@ -194,7 +169,7 @@ PyTypeObject PyTerrainProperty_Type = {
         0,                                                // tp_weaklistoffset
         0,                                                // tp_iter
         0,                                                // tp_iternext
-        0,                                                // tp_methods
+        TerrainProperty_methods,                          // tp_methods
         0,                                                // tp_members
         0,                                                // tp_getset
         0,                                                // tp_base
