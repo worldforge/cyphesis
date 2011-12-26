@@ -64,12 +64,6 @@ PyMethodDef RootEntity_methods[] = {
     {NULL,          NULL}
 };
 
-PyMethodDef ConstRootEntity_methods[] = {
-    {"get_name",        (PyCFunction)RootEntity_get_name,    METH_NOARGS},
-    {NULL,          NULL}
-};
-
-
 /*
  * Beginning of RootEntity standard methods section.
  */
