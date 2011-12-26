@@ -84,7 +84,6 @@ static PyObject * Entity_send_world(PyEntity * self, PyOperation * op)
 }
 
 static PyMethodDef Entity_methods[] = {
-    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
     {"send_world",      (PyCFunction)Entity_send_world, METH_O},
     {NULL,              NULL}           /* sentinel */
 };
@@ -155,8 +154,6 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
 }
 
 static PyMethodDef Character_methods[] = {
-    {"as_entity",       (PyCFunction)Entity_as_entity,     METH_NOARGS},
-    {"send_world",      (PyCFunction)Entity_send_world,    METH_O},
     {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
     {NULL,              NULL}           /* sentinel */
