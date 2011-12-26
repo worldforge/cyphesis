@@ -74,7 +74,7 @@ static void RootEntity_dealloc(PyRootEntity *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)
+static PyObject * RootEntity_getattro(PyRootEntity * self, PyObject * oname)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
@@ -82,6 +82,7 @@ static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "name") == 0) {
         return PyString_FromString(self->entity->getName().c_str());
     } else if (strcmp(name, "id") == 0) {
@@ -101,7 +102,7 @@ static PyObject * RootEntity_getattr(PyRootEntity * self, char * name)
     return Py_FindMethod(RootEntity_methods, (PyObject *)self, name);
 }
 
-static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
+static int RootEntity_setattro(PyRootEntity *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
@@ -109,6 +110,7 @@ static int RootEntity_setattr(PyRootEntity *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "name") == 0) {
         if (!PyString_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "non string name");
@@ -263,8 +265,8 @@ PyTypeObject PyRootEntity_Type = {
         //  methods 
         (destructor)RootEntity_dealloc,         // tp_dealloc
         0,                                      // tp_print
-        (getattrfunc)RootEntity_getattr,        // tp_getattr
-        (setattrfunc)RootEntity_setattr,        // tp_setattr
+        0,                                      // tp_getattr
+        0,                                      // tp_setattr
         0,                                      // tp_compare
         0,                                      // tp_repr
         0,                                      // tp_as_number
@@ -273,8 +275,8 @@ PyTypeObject PyRootEntity_Type = {
         0,                                      // tp_hash
         0,                                      // tp_call
         0,                                      // tp_str
-        0,                                      // tp_getattro
-        0,                                      // tp_setattro
+        (getattrofunc)RootEntity_getattro,      // tp_getattro
+        (setattrofunc)RootEntity_setattro,      // tp_setattro
         0,                                      // tp_as_buffer
         Py_TPFLAGS_DEFAULT,                     // tp_flags
         "RootEntity objects",                   // tp_doc
