@@ -1,3 +1,5 @@
+Clean up use of FindMethod and pointless dealloc in Py_TerrainModProperty
+
 Create inherited types in the script API for common operations - actually
 cheaper believe it or not
 
