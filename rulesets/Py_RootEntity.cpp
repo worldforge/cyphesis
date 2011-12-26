@@ -99,7 +99,7 @@ static PyObject * RootEntity_getattro(PyRootEntity * self, PyObject * oname)
             return MessageElement_asPyObject(attr);
         }
     }
-    return Py_FindMethod(RootEntity_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int RootEntity_setattro(PyRootEntity *self, PyObject *oname, PyObject *v)
@@ -286,7 +286,7 @@ PyTypeObject PyRootEntity_Type = {
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext
-        0,                                      // tp_methods
+        RootEntity_methods,                     // tp_methods
         0,                                      // tp_members
         0,                                      // tp_getset
         0,                                      // tp_base
