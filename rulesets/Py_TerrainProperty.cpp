@@ -31,7 +31,7 @@ static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL || self->m_property == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getHeight");
         return NULL;
     }
 #endif // NDEBUG
@@ -51,7 +51,7 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL || self->m_property == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getSurface");
         return NULL;
     }
 #endif // NDEBUG
@@ -78,7 +78,7 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
 {
 #ifndef NDEBUG
     if (self->m_entity == NULL || self->m_property == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getattr");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getNormal");
         return NULL;
     }
 #endif
