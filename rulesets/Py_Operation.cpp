@@ -530,14 +530,6 @@ PyMethodDef Operation_methods[] = {
     {"setSeconds",      (PyCFunction)Operation_setSeconds,      METH_O},
     {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_O},
     {"setArgs",         (PyCFunction)Operation_setArgs,         METH_O},
-    {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
-    {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
-    {"getFrom",         (PyCFunction)Operation_getFrom,         METH_NOARGS},
-    {"getTo",           (PyCFunction)Operation_getTo,           METH_NOARGS},
-    {"getSeconds",      (PyCFunction)Operation_getSeconds,      METH_NOARGS},
-    {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_NOARGS},
-    {"getArgs",         (PyCFunction)Operation_getArgs,         METH_NOARGS},
-    {"get_name",        (PyCFunction)Operation_get_name,        METH_NOARGS},
     {NULL,          NULL}
 };
 
