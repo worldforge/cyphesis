@@ -40,6 +40,7 @@ Ensure PythonClass checks base on reload
 
 Make all PyProperties into an inheritance tree, and all scripts to
 inherit from them
+ - need full coverage of both first.
  - migrate from ?etattr() to ?etattro()
  - add tp_base
  - one aspect is that the property value itself is typically important
