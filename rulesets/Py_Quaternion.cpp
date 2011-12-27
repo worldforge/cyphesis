@@ -78,14 +78,15 @@ static void Quaternion_dealloc(PyQuaternion *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Quaternion_getattr(PyQuaternion *self, char *name)
+static PyObject * Quaternion_getattro(PyQuaternion *self, PyObject *oname)
 {
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->rotation.vector().x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->rotation.vector().y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->rotation.vector().z()); }
     if (strcmp(name, "w") == 0) { return PyFloat_FromDouble(self->rotation.scalar()); }
 
-    return Py_FindMethod(Quaternion_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int Quaternion_compare(PyQuaternion * self, PyQuaternion * other)
@@ -234,46 +235,46 @@ static PyObject * Quaternion_new(PyTypeObject * type, PyObject *, PyObject *)
 }
 
 PyTypeObject PyQuaternion_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
-        "physics.Quaternion",           /*tp_name*/
-        sizeof(PyQuaternion),           /*tp_basicsize*/
-        0,                              /*tp_itemsize*/
-        /* methods */
-        (destructor)Quaternion_dealloc, /*tp_dealloc*/
-        0,                              /*tp_print*/
-        (getattrfunc)Quaternion_getattr,/*tp_getattr*/
-        0,                              /*tp_setattr*/
-        (cmpfunc)Quaternion_compare,    /*tp_compare*/
-        (reprfunc)Quaternion_repr,      /*tp_repr*/
-        &Quaternion_as_number,          /*tp_as_number*/
-        0,                              /*tp_as_sequence*/
-        0,                              /*tp_as_mapping*/
-        0,                              /*tp_hash*/
-        0,                              // tp_call
-        0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
-        0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Quaternion objects",           // tp_doc
-        0,                              // tp_travers
-        0,                              // tp_clear
-        0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
-        0,                              // tp_iter
-        0,                              // tp_iternext
-        0,                              // tp_methods
-        0,                              // tp_members
-        0,                              // tp_getset
-        0,                              // tp_base
-        0,                              // tp_dict
-        0,                              // tp_descr_get
-        0,                              // tp_descr_set
-        0,                              // tp_dictoffset
-        (initproc)Quaternion_init,      // tp_init
-        0,                              // tp_alloc
-        Quaternion_new,                 // tp_new
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,                                                     /*ob_size*/
+    "physics.Quaternion",                                  /*tp_name*/
+    sizeof(PyQuaternion),                                  /*tp_basicsize*/
+    0,                                                     /*tp_itemsize*/
+    /* methods */
+    (destructor)Quaternion_dealloc,                        /*tp_dealloc*/
+    0,                                                     /*tp_print*/
+    0,                                                     /*tp_getattr*/
+    0,                                                     /*tp_setattr*/
+    (cmpfunc)Quaternion_compare,                           /*tp_compare*/
+    (reprfunc)Quaternion_repr,                             /*tp_repr*/
+    &Quaternion_as_number,                                 /*tp_as_number*/
+    0,                                                     /*tp_as_sequence*/
+    0,                                                     /*tp_as_mapping*/
+    0,                                                     /*tp_hash*/
+    0,                                                     // tp_call
+    0,                                                     // tp_str
+    (getattrofunc)Quaternion_getattro,                     // tp_getattro
+    0,                                                     // tp_setattro
+    0,                                                     // tp_as_buffer
+    Py_TPFLAGS_DEFAULT,                                    // tp_flags
+    "Quaternion objects",                                  // tp_doc
+    0,                                                     // tp_travers
+    0,                                                     // tp_clear
+    0,                                                     // tp_richcompare
+    0,                                                     // tp_weaklistoffset
+    0,                                                     // tp_iter
+    0,                                                     // tp_iternext
+    Quaternion_methods,                                    // tp_methods
+    0,                                                     // tp_members
+    0,                                                     // tp_getset
+    0,                                                     // tp_base
+    0,                                                     // tp_dict
+    0,                                                     // tp_descr_get
+    0,                                                     // tp_descr_set
+    0,                                                     // tp_dictoffset
+    (initproc)Quaternion_init,                             // tp_init
+    0,                                                     // tp_alloc
+    Quaternion_new,                                        // tp_new
 };
 
 PyQuaternion * newPyQuaternion()
