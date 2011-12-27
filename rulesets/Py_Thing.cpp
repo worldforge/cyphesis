@@ -176,7 +176,6 @@ static void Entity_dealloc(PyEntity *self)
         PyObject_ClearWeakRefs((PyObject *) self);
     }
 
-    Py_XDECREF(self->Entity_attr);
     self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -234,13 +233,6 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
             Py_DECREF(wrapper);
         }
         return list;
-    }
-    if (self->Entity_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->Entity_attr, name);
-        if (v != NULL) {
-            Py_INCREF(v);
-            return v;
-        }
     }
     Entity * entity = self->m_entity.e;
     PropertyBase * prop = entity->modProperty(name);
@@ -305,17 +297,7 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         }
         return 0;
     }
-    // FIXME In fact it seems that nothing currently hits this bit, so
-    // all this code is redundant for entity scripts.
-    // If we get here, then the attribute is not Atlas compatable, so we
-    // need to store it in a python dictionary
-    if (self->Entity_attr == NULL) {
-        self->Entity_attr = PyDict_New();
-        if (self->Entity_attr == NULL) {
-            return -1;
-        }
-    }
-    return PyDict_SetItemString(self->Entity_attr, name, v);
+    return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
 static int Entity_compare(PyEntity *self, PyEntity *other)
@@ -483,13 +465,6 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         }
         return list;
     }
-    if (self->Entity_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->Entity_attr, name);
-        if (v != NULL) {
-            Py_INCREF(v);
-            return v;
-        }
-    }
     LocatedEntity * mind = self->m_entity.m;
     Element attr;
     if (mind->getAttr(name, attr) == 0) {
@@ -534,20 +509,7 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         entity->setAttr(name, obj);
         return 0;
     }
-    // Minds set a number of native Python members on themselves to store
-    // important state information, which seems to be lost if we munge them
-    // into Atlas data, probably because of the weird stuff that happens
-    // in the wrappers when scripts manipulate complex attributes. They
-    // are copied on getattr, rather than referenced.
-    // If we get here, then the attribute is not Atlas compatable, so we
-    // need to store it in a python dictionary
-    if (self->Entity_attr == NULL) {
-        self->Entity_attr = PyDict_New();
-        if (self->Entity_attr == NULL) {
-            return -1;
-        }
-    }
-    return PyDict_SetItemString(self->Entity_attr, name, v);
+    return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
 static int Mind_compare(PyEntity *self, PyEntity *other)

@@ -1,4 +1,4 @@
-Remove Foo_attr from Py_CreatorClient and Py_Thing wrappers
+Remove Foo_attr from Py_Thing wrappers
 
 Py_Task seems not to need Task_attr, as subclasses have their own
 dictoffset. Try wihtout, using PyObject_GenericSet/Get at the end of ?etattro

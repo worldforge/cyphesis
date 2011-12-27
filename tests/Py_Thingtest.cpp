@@ -177,8 +177,15 @@ int main()
     run_python_string("le.map_attr");
     run_python_string("le.list_attr=[1,2]");
     run_python_string("le.list_attr");
-    run_python_string("le.non_atlas=set([1,2])");
-    run_python_string("le.non_atlas");
+    fail_python_string("le.non_atlas=set([1,2])");
+    fail_python_string("le.non_atlas");
+
+    run_python_string("class LocatedEntitySub(LocatedEntity): pass");
+
+    run_python_string("le2=LocatedEntitySub('1')");
+    run_python_string("le2.non_atlas=set([1,2])");
+    run_python_string("le2.non_atlas");
+
     // run_python_string("le.foo=1");
     // run_python_string("le.foo='1'");
     // run_python_string("le.foo=[1]");
@@ -221,6 +228,7 @@ int main()
     fail_python_string("print c.foo_operation");
     run_python_string("print c.location");
     run_python_string("print c.contains");
+
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");

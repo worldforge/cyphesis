@@ -31,8 +31,6 @@ class LocatedEntity;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
-    /// \brief Storage for additional attributes
-    PyObject * Entity_attr;  // Attributes dictionary
     /// \brief Entity object handled by this wrapper
     union {
         LocatedEntity * l;
