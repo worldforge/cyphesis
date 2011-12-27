@@ -1,8 +1,3 @@
-Remove Foo_attr from Py_Thing wrappers
-
-Py_Task seems not to need Task_attr, as subclasses have their own
-dictoffset. Try wihtout, using PyObject_GenericSet/Get at the end of ?etattro
-
 Clean up FindMethod everywhere
 
 Create inherited types in the script API for common operations - actually
