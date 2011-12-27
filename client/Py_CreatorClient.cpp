@@ -209,11 +209,6 @@ static PyMethodDef CreatorClient_methods[] = {
         {NULL,          NULL}           /* sentinel */
 };
 
-static void CreatorClient_dealloc(PyCreatorClient *self)
-{
-    self->ob_type->tp_free((PyObject*)self);
-}
-
 static PyObject * CreatorClient_getattro(PyCreatorClient *self,
                                          PyObject *oname)
 {
@@ -329,7 +324,7 @@ PyTypeObject PyCharacterClient_Type = {
         sizeof(PyCreatorClient),                /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
         /* methods */
-        (destructor)CreatorClient_dealloc,      /*tp_dealloc*/
+        0,                                      /*tp_dealloc*/
         0,                                      /*tp_print*/
         0,                                      /*tp_getattr*/
         0,                                      /*tp_setattr*/
@@ -372,7 +367,7 @@ PyTypeObject PyCreatorClient_Type = {
         sizeof(PyCreatorClient),                /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
         /* methods */
-        (destructor)CreatorClient_dealloc,      /*tp_dealloc*/
+        0,                                      /*tp_dealloc*/
         0,                                      /*tp_print*/
         0,                                      /*tp_getattr*/
         0,                                      /*tp_setattr*/
