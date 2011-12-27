@@ -257,14 +257,12 @@ static PyObject * CreatorClient_getattro(PyCreatorClient *self,
     }
     LocatedEntity * thing = self->m_mind.c;
     Element attr;
-    if (thing->getAttr(name, attr) != 0) {
-        return Py_FindMethod(CreatorClient_methods, (PyObject *)self, name);
+    if (thing->getAttr(name, attr) == 0) {
+        PyObject * ret = MessageElement_asPyObject(attr);
+        // FIXME Set an error
+        return ret;
     }
-    PyObject * ret = MessageElement_asPyObject(attr);
-    if (ret == NULL) {
-        return Py_FindMethod(CreatorClient_methods, (PyObject *)self, name);
-    }
-    return ret;
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int CreatorClient_setattro(PyCreatorClient *self,
@@ -391,7 +389,7 @@ PyTypeObject PyCreatorClient_Type = {
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext
-        0,                                      // tp_methods
+        CreatorClient_methods,                  // tp_methods
         0,                                      // tp_members
         0,                                      // tp_getset
         0,                                      // tp_base
