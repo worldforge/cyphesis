@@ -390,7 +390,6 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
 }
 
 static PyMethodDef Mind_methods[] = {
-    {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
     {NULL,              NULL}           // sentinel
 };
 
