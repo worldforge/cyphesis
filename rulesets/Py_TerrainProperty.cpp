@@ -123,11 +123,6 @@ static PyMethodDef TerrainProperty_methods[] = {
     {NULL,           NULL}           /* sentinel */
 };
 
-static void TerrainProperty_dealloc(PyProperty *self)
-{
-    self->ob_type->tp_free(self);
-}
-
 static int TerrainProperty_init(PyProperty * self,
                                 PyObject * args,
                                 PyObject * kwd)
@@ -146,7 +141,7 @@ PyTypeObject PyTerrainProperty_Type = {
         sizeof(PyProperty),                               // tp_basicsize
         0,                                                // tp_itemsize
         // methods 
-        (destructor)TerrainProperty_dealloc,              // tp_dealloc
+        0,                                                // tp_dealloc
         0,                                                // tp_print
         0,                                                // tp_getattr
         0,                                                // tp_setattr
