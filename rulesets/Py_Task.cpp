@@ -110,7 +110,6 @@ static PyMethodDef Task_methods[] = {
 
 static void Task_dealloc(PyTask *self)
 {
-    Py_XDECREF(self->Task_attr);
     self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -136,13 +135,6 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
     Atlas::Message::Element val;
     if (self->m_task->getAttr(name, val) == 0) {
         return MessageElement_asPyObject(val);
-    }
-    if (self->Task_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->Task_attr, name);
-        if (v != NULL) {
-            Py_INCREF(v);
-            return v;
-        }
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
@@ -189,13 +181,7 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
         return -1;
     }
     // FIXME Something may be required here long term, for task attributes.
-    if (self->Task_attr == NULL) {
-        self->Task_attr = PyDict_New();
-        if (self->Task_attr == NULL) {
-            return -1;
-        }
-    }
-    return PyDict_SetItemString(self->Task_attr, name, v);
+    return PyObject_GenericSetAttr((PyObject*)self, oname, v);
 }
 
 static int Task_compare(PyTask *self, PyTask *other)

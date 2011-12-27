@@ -28,8 +28,6 @@ class Task;
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
-    /// \brief Storage for additional attributes
-    PyObject * Task_attr;
     /// \brief Task object handled by this wrapper
     Task * m_task;
 } PyTask;

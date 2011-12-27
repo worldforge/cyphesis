@@ -95,8 +95,20 @@ int main()
     run_python_string("t.rate = 0");
     run_python_string("t.rate = 0.5");
     fail_python_string("t.rate = '1'");
-    run_python_string("t.foo = 1");
-    run_python_string("t.foo = 1.1");
+    // The raw wrapper object has no dict for arbitrary attributes
+    fail_python_string("t.foo = 1");
+    fail_python_string("t.foo = 1.1");
+    fail_python_string("t.foo = 'foois1'");
+    fail_python_string("assert t.foo == 'foois1'");
+
+    run_python_string("class TaskSubclass(Task): pass");
+    run_python_string("t2=TaskSubclass(c)");
+    // The subclass should have a dict offset
+    run_python_string("t2.foo = 1");
+    run_python_string("t2.foo = 1.1");
+    run_python_string("t2.foo = 'foois1'");
+    run_python_string("assert t2.foo == 'foois1'");
+    
 
     // Tasks do not permit wrappers of core server objects
     // to be stored directly.
@@ -105,8 +117,6 @@ int main()
     fail_python_string("t.foo = server.LocatedEntity('2')");
     fail_python_string("t.foo = server.Thing('2')");
 
-    run_python_string("t.foo = 'foois1'");
-    run_python_string("assert t.foo == 'foois1'");
     run_python_string("assert not t.obsolete()");
     run_python_string("print t.count()");
     run_python_string("print t.new_tick()");
