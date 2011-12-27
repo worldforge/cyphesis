@@ -46,6 +46,7 @@ inherit from them
     as_number/as_seq/as_map ?
  - make properties scriptable and the move common code from Entity, Task
    and Property into Scriptable base class for multiple inheritance
+ - It should be possible to simplify Py_Property.cpp function now
 
 Add tests which trigger possible crash conditions in the script interface
 
