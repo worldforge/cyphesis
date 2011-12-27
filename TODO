@@ -1,7 +1,7 @@
 Py_Task seems not to need Task_attr, as subclasses have their own
 dictoffset. Try wihtout, using PyObject_GenericSet/Get at the end of ?etattro
 
-Clean up use of FindMethod and pointless dealloc in Py_TerrainModProperty
+Clean up use of FindMethod in Py_TerrainModProperty
 
 Create inherited types in the script API for common operations - actually
 cheaper believe it or not
