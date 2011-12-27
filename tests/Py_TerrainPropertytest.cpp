@@ -38,8 +38,6 @@
 
 #include <cassert>
 
-#define PyTerrainProperty_Check(_o) ((_o)->ob_type == &PyTerrainProperty_Type)
-
 static PyObject * add_properties(PyObject * self, PyEntity * o)
 {
     if (!PyEntity_Check(o)) {
@@ -57,11 +55,11 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
     return Py_None;
 }
 
-static PyObject * null_wrapper(PyObject * self, PyTerrainProperty * o)
+static PyObject * null_wrapper(PyObject * self, PyProperty * o)
 {
     if (PyTerrainProperty_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        o->m_property = NULL;
+        o->m_p.base = NULL;
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");

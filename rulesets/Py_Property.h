@@ -38,45 +38,26 @@ typedef struct {
     /// \brief Entity object that owns the Property
     Entity * m_entity;
     /// \brief Property object handled by this wrapper
-    PropertyBase * m_property;
+    union {
+        PropertyBase * base;
+        TerrainProperty * terrain;
+        TerrainModProperty * terrainmod;
+    } m_p;
 } PyProperty;
 
-/// \brief Wrapper for statistics property.
-/// \ingroup PythonWrappers
-typedef struct {
-    PyObject_HEAD
-    /// \brief Entity object that owns the Property
-    Entity * m_entity;
-    /// \brief StatisticsProperty object handled by this wrapper
-    StatisticsProperty * m_property;
-} PyStatisticsProperty;
-
-/// \brief Wrapper for terrain property.
-/// \ingroup PythonWrappers
-typedef struct {
-    PyObject_HEAD
-    /// \brief Entity object that owns the Property
-    Entity * m_entity;
-    /// \brief TerrainProperty object handled by this wrapper
-    TerrainProperty * m_property;
-} PyTerrainProperty;
-
-/// \brief Wrapper for terrain mod property
-/// \ingroup PythonWrappers
-typedef struct {
-    PyObject_HEAD
-    /// \brief Entity object that owns the Property
-    Entity * m_entity;
-    /// \brief TerrainModProperty object handled by this wrapper
-    TerrainModProperty * m_property;
-} PyTerrainModProperty;
-
+extern PyTypeObject PyProperty_Type;
 extern PyTypeObject PyTerrainProperty_Type;
 extern PyTypeObject PyTerrainModProperty_Type;
 
+#define PyTerrainProperty_Check(_o) PyObject_TypeCheck(_o, &PyTerrainProperty_Type)
+#define PyTerrainProperty_CheckExact(_o) (Py_Type(_o) == &PyTerrainProperty_Type)
+
+#define PyTerrainModProperty_Check(_o) PyObject_TypeCheck(_o, &PyTerrainModProperty_Type)
+#define PyTerrainModProperty_CheckExact(_o) (Py_Type(_o) == &PyTerrainModProperty_Type)
+
 PyObject * Property_asPyObject(PropertyBase * property, Entity * owner);
 
-PyTerrainProperty * newPyTerrainProperty();
-PyTerrainModProperty * newPyTerrainModProperty();
+PyProperty * newPyTerrainProperty();
+PyProperty * newPyTerrainModProperty();
 
 #endif // RULESETS_PY_PROPERTY_H

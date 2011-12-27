@@ -26,11 +26,11 @@
 #include "Entity.h"
 #include "TerrainProperty.h"
 
-static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
+static PyObject * TerrainProperty_getHeight(PyProperty * self,
                                             PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
+    if (self->m_entity == NULL || self->m_p.terrain == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getHeight");
         return NULL;
     }
@@ -42,15 +42,15 @@ static PyObject * TerrainProperty_getHeight(PyTerrainProperty * self,
     // Return a sensible default.
     Vector3D normal(0,0,1);
     float h = 0;
-    self->m_property->getHeightAndNormal(x, y, h, normal);
+    self->m_p.terrain->getHeightAndNormal(x, y, h, normal);
     return PyFloat_FromDouble(h);
 }
 
-static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
+static PyObject * TerrainProperty_getSurface(PyProperty * self,
                                              PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
+    if (self->m_entity == NULL || self->m_p.terrain == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getSurface");
         return NULL;
     }
@@ -66,18 +66,18 @@ static PyObject * TerrainProperty_getSurface(PyTerrainProperty * self,
         return NULL;
     }
     int surface;
-    if (self->m_property->getSurface(pos->coords, surface) != 0) {
+    if (self->m_p.terrain->getSurface(pos->coords, surface) != 0) {
         PyErr_SetString(PyExc_TypeError, "How the hell should I know");
         return NULL;
     }
     return PyInt_FromLong(surface);
 }
 
-static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
+static PyObject * TerrainProperty_getNormal(PyProperty * self,
                                             PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
+    if (self->m_entity == NULL || self->m_p.terrain == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getNormal");
         return NULL;
     }
@@ -89,7 +89,7 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
     // Return a sensible default.
     Vector3D normal(0,0,1);
     float h = 0;
-    self->m_property->getHeightAndNormal(x, y, h, normal);
+    self->m_p.terrain->getHeightAndNormal(x, y, h, normal);
     PyVector3D * ret = newPyVector3D();
     if (ret != NULL) {
         ret->coords = normal;
@@ -97,7 +97,7 @@ static PyObject * TerrainProperty_getNormal(PyTerrainProperty * self,
     return (PyObject *)ret;
 }
 
-static PyObject * TerrainProperty_findMods(PyTerrainProperty * self,
+static PyObject * TerrainProperty_findMods(PyProperty * self,
                                           PyObject * other)
 {
     if (!PyPoint3D_Check(other)) {
@@ -105,7 +105,7 @@ static PyObject * TerrainProperty_findMods(PyTerrainProperty * self,
         return NULL;
     }
     std::vector<Entity *> result;
-    self->m_property->findMods(((PyPoint3D*)other)->coords, result);
+    self->m_p.terrain->findMods(((PyPoint3D*)other)->coords, result);
     PyObject * ret = PyTuple_New(result.size());
     std::vector<Entity *>::const_iterator I = result.begin();
     std::vector<Entity *>::const_iterator Iend = result.end();
@@ -123,12 +123,12 @@ static PyMethodDef TerrainProperty_methods[] = {
     {NULL,           NULL}           /* sentinel */
 };
 
-static void TerrainProperty_dealloc(PyTerrainProperty *self)
+static void TerrainProperty_dealloc(PyProperty *self)
 {
     self->ob_type->tp_free(self);
 }
 
-static int TerrainProperty_init(PyTerrainProperty * self,
+static int TerrainProperty_init(PyProperty * self,
                                 PyObject * args,
                                 PyObject * kwd)
 {
@@ -143,7 +143,7 @@ PyTypeObject PyTerrainProperty_Type = {
         PyObject_HEAD_INIT(NULL)
         0,                                                // ob_size
         "TerrainProperty",                                // tp_name
-        sizeof(PyTerrainProperty),                        // tp_basicsize
+        sizeof(PyProperty),                               // tp_basicsize
         0,                                                // tp_itemsize
         // methods 
         (destructor)TerrainProperty_dealloc,              // tp_dealloc
@@ -182,7 +182,7 @@ PyTypeObject PyTerrainProperty_Type = {
         0,                                                // tp_new
 };
 
-PyTerrainProperty * newPyTerrainProperty()
+PyProperty * newPyTerrainProperty()
 {
-    return (PyTerrainProperty *)PyTerrainProperty_Type.tp_new(&PyTerrainProperty_Type, 0, 0);
+    return (PyProperty *)PyTerrainProperty_Type.tp_new(&PyTerrainProperty_Type, 0, 0);
 }

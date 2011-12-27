@@ -35,18 +35,18 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-static PyObject * TerrainModProperty_getattro(PyTerrainModProperty *self,
+static PyObject * TerrainModProperty_getattro(PyProperty *self,
                                               PyObject * oname)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
+    if (self->m_entity == NULL || self->m_p.terrainmod == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainModProperty.getattr");
         return NULL;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     Element val;
-    if (self->m_property->getAttr(name, val) == 0) {
+    if (self->m_p.terrainmod->getAttr(name, val) == 0) {
         if (strcmp(name, "shape") == 0 && val.isMap()) {
             Shape * shape = Shape::newFromAtlas(val.Map());
             if (shape != 0) {
@@ -62,30 +62,30 @@ static PyObject * TerrainModProperty_getattro(PyTerrainModProperty *self,
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int TerrainModProperty_setattro(PyTerrainModProperty * self,
+static int TerrainModProperty_setattro(PyProperty * self,
                                        PyObject * oname,
                                        PyObject * v)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_property == NULL) {
+    if (self->m_entity == NULL || self->m_p.terrainmod == NULL) {
         PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainModProperty.setattro");
         return -1;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     Element val;
-    if (self->m_property->getAttr(name, val) == 0) {
+    if (self->m_p.terrainmod->getAttr(name, val) == 0) {
         Element e;
         if (PyObject_asMessageElement(v, e, true) == 0) {
-            self->m_property->setAttr(name, e);
-            self->m_property->setFlags(flag_unsent);
+            self->m_p.terrainmod->setAttr(name, e);
+            self->m_p.terrainmod->setFlags(flag_unsent);
             return 0;
         } else if (PyShape_Check(v)) {
             PyShape * ps = (PyShape*)v;
             MapType map;
             ps->shape->toAtlas(map);
-            self->m_property->setAttr(name, map);
-            self->m_property->setFlags(flag_unsent);
+            self->m_p.terrainmod->setAttr(name, map);
+            self->m_p.terrainmod->setFlags(flag_unsent);
             return 0;
         } else {
             log(WARNING, "Cannot convert value.");
@@ -95,7 +95,7 @@ static int TerrainModProperty_setattro(PyTerrainModProperty * self,
     return -1;
 }
 
-static int TerrainModProperty_init(PyTerrainModProperty * self,
+static int TerrainModProperty_init(PyProperty * self,
                                    PyObject * args,
                                    PyObject * kwd)
 {
@@ -110,7 +110,7 @@ PyTypeObject PyTerrainModProperty_Type = {
         PyObject_HEAD_INIT(NULL)
         0,                                                // ob_size
         "TerrainModProperty",                             // tp_name
-        sizeof(PyTerrainModProperty),                     // tp_basicsize
+        sizeof(PyProperty),                               // tp_basicsize
         0,                                                // tp_itemsize
         // methods 
         0,                                                // tp_dealloc
@@ -149,7 +149,7 @@ PyTypeObject PyTerrainModProperty_Type = {
         0,                                                // tp_new
 };
 
-PyTerrainModProperty * newPyTerrainModProperty()
+PyProperty * newPyTerrainModProperty()
 {
-    return (PyTerrainModProperty *)PyTerrainModProperty_Type.tp_new(&PyTerrainModProperty_Type, 0, 0);
+    return (PyProperty *)PyTerrainModProperty_Type.tp_new(&PyTerrainModProperty_Type, 0, 0);
 }

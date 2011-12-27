@@ -53,20 +53,20 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
     TerrainProperty * tp = dynamic_cast<TerrainProperty *>(property);
     if (tp != 0) {
         // Create a new python wrapper for this property.
-        PyTerrainProperty * prop = newPyTerrainProperty();
+        PyProperty * prop = newPyTerrainProperty();
         if (prop != NULL) {
             prop->m_entity = owner;
-            prop->m_property = tp;
+            prop->m_p.terrain = tp;
         }
         return (PyObject*)prop;
     }
     TerrainModProperty * tm = dynamic_cast<TerrainModProperty *>(property);
     if (tm != 0) {
         // Create a new python wrapper for this property
-        PyTerrainModProperty * prop = newPyTerrainModProperty();
+        PyProperty * prop = newPyTerrainModProperty();
         if (prop != NULL) {
             prop->m_entity = owner;
-            prop->m_property = tm;
+            prop->m_p.terrainmod = tm;
         }
         return (PyObject*)prop;
     }
