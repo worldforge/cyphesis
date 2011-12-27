@@ -35,7 +35,8 @@ typedef struct {
 extern PyTypeObject PyShape_Type;
 extern PyTypeObject PyPolygon_Type;
 
-#define PyShape_Check(_o) ((_o)->ob_type == &PyShape_Type)
+#define PyShape_Check(_o) PyObject_TypeCheck(_o, &PyShape_Type)
+#define PyShape_CheckExact(_o) (Py_TYPE(_o) == &PyShape_Type)
 
 PyShape * newPyShape();
 
