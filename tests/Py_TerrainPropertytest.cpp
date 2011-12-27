@@ -108,6 +108,7 @@ int main()
     fail_python_string("terrain.get_surface(Point3D(0,0,0))");
     fail_python_string("terrain.get_normal()");
     run_python_string("terrain.get_normal(0,0)");
+    run_python_string("terrain.find_mods(Point3D(0,0,0))");
 
     run_python_string("points = { }");
     run_python_string("points['-1x-1'] = [-1, -1, -16.8]");
