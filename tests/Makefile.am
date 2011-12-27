@@ -44,7 +44,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Py_Thingtest Py_Maptest Py_Tasktest \
                  Py_Worldtest Py_Messagetest Py_WorldTimetest \
                  Py_Propertytest Py_TerrainPropertytest \
-                 Py_Shapetest \
+                 Py_TerrainModPropertytest Py_Shapetest \
                  PythonWrappertest PythonEntityScripttest \
                  MindFactorytest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
@@ -789,6 +789,17 @@ Py_Propertytest_LDADD = \
 
 Py_TerrainPropertytest_SOURCES = Py_TerrainPropertytest.cpp python_testers.h
 Py_TerrainPropertytest_LDADD = \
+        $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
+Py_TerrainModPropertytest_SOURCES = Py_TerrainModPropertytest.cpp python_testers.h
+Py_TerrainModPropertytest_LDADD = \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
