@@ -2,8 +2,6 @@ Fix up client wrappers so they have real tests
 
 Consider moving WorldTime back to Python, or making it way more data driven
 
-Clean up FindMethod everywhere
-
 Create inherited types in the script API for common operations - actually
 cheaper believe it or not
 
