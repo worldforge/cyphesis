@@ -47,11 +47,6 @@ inherit from them
  - make properties scriptable and the move common code from Entity, Task
    and Property into Scriptable base class for multiple inheritance
 
-Finalise using tp_base in Py_Thing.*, in particular migrate mind script
-creation to use wrapNewEntity, and finally converge that code.
-Using wrapNewEntity may not be required, but mind factory code should
-work like EntityFactory and Task*Factory
-
 Add tests which trigger possible crash conditions in the script interface
 
 Make m_target private in TaskFactory, and change the sort function for the
