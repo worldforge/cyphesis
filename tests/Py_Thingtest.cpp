@@ -229,6 +229,30 @@ int main()
     run_python_string("print c.location");
     run_python_string("print c.contains");
 
+    fail_python_string("Mind()");
+    fail_python_string("Mind('s')");
+    fail_python_string("Mind(1)");
+    run_python_string("m=Mind('1')");
+    run_python_string("m=Mind('1')");
+    run_python_string("m.as_entity()");
+    fail_python_string("m.send_world(Operation('get'))");
+    run_python_string("m==LocatedEntity('2')");
+    fail_python_string("print m.foo_operation");
+    run_python_string("print m.location");
+    run_python_string("print m.contains");
+    fail_python_string("m.type");
+    fail_python_string("m.map=1");
+    run_python_string("m.string_attr='foo'");
+    run_python_string("assert(m.string_attr == 'foo')");
+    run_python_string("m.int_attr=23");
+    run_python_string("assert(m.int_attr == 23)");
+    run_python_string("m.float_attr=17.23");
+    fail_python_string("m.map_attr={'1': 2}");
+    fail_python_string("m.map_attr");
+    fail_python_string("m.list_attr=[1,2]");
+    fail_python_string("m.list_attr");
+    fail_python_string("m.non_atlas=set([1,2])");
+    fail_python_string("m.non_atlas");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
