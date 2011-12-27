@@ -80,17 +80,14 @@ static PyObject* Point3D_repr(PyPoint3D * self)
     return PyString_FromString(buf);
 }
 
-static PyObject * Point3D_getattr(PyPoint3D *self, char *name)
+static PyObject * Point3D_getattro(PyPoint3D *self, PyObject *oname)
 {
-    //if (!self->coords) {
-        //PyErr_SetString(PyExc_TypeError, "unset Point");
-        //return NULL;
-    //}
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.z()); }
 
-    return Py_FindMethod(Point3D_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
@@ -293,7 +290,7 @@ PyTypeObject PyPoint3D_Type = {
         //  methods 
         (destructor)Point3D_dealloc,    // tp_dealloc
         0,                              // tp_print
-        (getattrfunc)Point3D_getattr,   // tp_getattr
+        0,                              // tp_getattr
         0,                              // tp_setattr
         (cmpfunc)Point3D_compare,       // tp_compare
         (reprfunc)Point3D_repr,         // tp_repr
@@ -303,7 +300,7 @@ PyTypeObject PyPoint3D_Type = {
         0,                              // tp_hash
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
+        (getattrofunc)Point3D_getattro, // tp_getattro
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
@@ -314,7 +311,7 @@ PyTypeObject PyPoint3D_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Point3D_methods,                // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
