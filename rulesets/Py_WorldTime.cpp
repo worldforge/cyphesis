@@ -66,13 +66,14 @@ static void WorldTime_dealloc(PyWorldTime *self)
     self->ob_type->tp_free(self);
 }
 
-static PyObject * WorldTime_getattr(PyWorldTime *self, char *name)
+static PyObject * WorldTime_getattro(PyWorldTime *self, PyObject * oname)
 {
+    char * name = PyString_AsString(oname);
     std::string attr = (*self->time)[name];
     if (attr != "") {
         return PyString_FromString(attr.c_str());
     }
-    return Py_FindMethod(WorldTime_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static PyObject * WorldTime_new(PyTypeObject * type, PyObject *, PyObject *)
@@ -110,7 +111,7 @@ PyTypeObject PyWorldTime_Type = {
         // methods
         (destructor)WorldTime_dealloc,  // tp_dealloc
         0,                              // tp_print
-        (getattrfunc)WorldTime_getattr, // tp_getattr
+        0,                              // tp_getattr
         0,                              // tp_setattr
         0,                              // tp_compare
         0,                              // tp_repr
@@ -120,7 +121,7 @@ PyTypeObject PyWorldTime_Type = {
         0,                              // tp_hash
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
+        (getattrofunc)WorldTime_getattro,// tp_getattro
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
@@ -131,7 +132,7 @@ PyTypeObject PyWorldTime_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        WorldTime_methods,              // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
