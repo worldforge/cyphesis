@@ -1,6 +1,3 @@
-Remove generic dealloc in Py_CreatorClient and set an error when on attribute
-is found
-
 Consider moving WorldTime back to Python, or making it way more data driven
 
 Clean up FindMethod everywhere
