@@ -108,11 +108,6 @@ static PyMethodDef Task_methods[] = {
         {NULL,          NULL}           /* sentinel */
 };
 
-static void Task_dealloc(PyTask *self)
-{
-    self->ob_type->tp_free((PyObject*)self);
-}
-
 static PyObject * Task_getattro(PyTask *self, PyObject *oname)
 {
     // Fairly major re-write of this to use operator[] of Task base class
@@ -234,7 +229,7 @@ PyTypeObject PyTask_Type = {
         sizeof(PyTask),                 /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
-        (destructor)Task_dealloc,       /*tp_dealloc*/
+        0,                              /*tp_dealloc*/
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
