@@ -159,7 +159,8 @@ int main()
     fail_python_string("LocatedEntity()");
     fail_python_string("LocatedEntity('s')");
     run_python_string("le=LocatedEntity('1')");
-    run_python_string("le.as_entity()");
+    run_python_string("le_ent = le.as_entity()");
+    run_python_string("assert(le_ent.id == '1')");
     fail_python_string("le.send_world(Operation('get'))");
     run_python_string("le==LocatedEntity('2')");
     fail_python_string("print le.type");
@@ -234,7 +235,8 @@ int main()
     fail_python_string("Mind(1)");
     run_python_string("m=Mind('1')");
     run_python_string("m=Mind('1')");
-    run_python_string("m.as_entity()");
+    run_python_string("m_ent = m.as_entity()");
+    run_python_string("assert(m_ent.id == '1')");
     fail_python_string("m.send_world(Operation('get'))");
     run_python_string("m==LocatedEntity('2')");
     fail_python_string("print m.foo_operation");
