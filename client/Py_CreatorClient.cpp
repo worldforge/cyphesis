@@ -289,6 +289,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
         thing->setAttr(name, obj);
         return 0;
     }
+    PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
 

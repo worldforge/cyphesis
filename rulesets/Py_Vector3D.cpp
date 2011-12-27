@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000-2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -184,21 +184,19 @@ static PyObject* Vector3D_repr(PyVector3D * self)
     return PyString_FromString(buf);
 }
 
-static PyObject * Vector3D_getattr(PyVector3D *self, char *name)
+static PyObject * Vector3D_getattro(PyVector3D *self, PyObject *oname)
 {
-    //if (!self->coords) {
-        //PyErr_SetString(PyExc_TypeError, "unset Vector");
-        //return NULL;
-    //}
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.z()); }
 
-    return Py_FindMethod(Vector3D_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Vector3D_setattr(PyVector3D *self, char *name, PyObject *v)
+static int Vector3D_setattro(PyVector3D *self, PyObject *oname, PyObject *v)
 {
+    char * name = PyString_AsString(oname);
     float val;
     if (PyInt_Check(v)) {
         val = PyInt_AsLong(v);
@@ -447,8 +445,8 @@ PyTypeObject PyVector3D_Type = {
         // methods 
         (destructor)Vector3D_dealloc,   // tp_dealloc
         0,                              // tp_print
-        (getattrfunc)Vector3D_getattr,  // tp_getattr
-        (setattrfunc)Vector3D_setattr,  // tp_setattr
+        0,                              // tp_getattr
+        0,                              // tp_setattr
         (cmpfunc)Vector3D_compare,      // tp_compare
         (reprfunc)Vector3D_repr,        // tp_repr
         &Vector3D_num,                  // tp_as_number
@@ -457,8 +455,8 @@ PyTypeObject PyVector3D_Type = {
         0,                              // tp_hash
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Vector3D_getattro,// tp_getattro
+        (setattrofunc)Vector3D_setattro,// tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Vector3D objects",             // tp_doc
@@ -468,7 +466,7 @@ PyTypeObject PyVector3D_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Vector3D_methods,               // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
