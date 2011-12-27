@@ -389,10 +389,6 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
     
 }
 
-static PyMethodDef Mind_methods[] = {
-    {NULL,              NULL}           // sentinel
-};
-
 static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
 {
 #ifndef NDEBUG
@@ -695,7 +691,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        Mind_methods,                   // tp_methods
+        0,                              // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         &PyLocatedEntity_Type,          // tp_base
