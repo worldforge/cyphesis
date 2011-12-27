@@ -36,6 +36,10 @@
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainModProperty.h"
 
+#include "physics/Shape.h"
+
+#include <wfmath/polygon.h>
+
 #include <cassert>
 
 static PyObject * add_properties(PyObject * self, PyEntity * o)
@@ -51,6 +55,30 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
                                         new TerrainModProperty(HandlerMap()));
     p->install(ent);
     p->apply(ent);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject * add_terrainmod_shape(PyObject * self, PyProperty * o)
+{
+    if (!PyTerrainModProperty_Check(o)) {
+        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
+        return NULL;
+    }
+
+    TerrainModProperty * p = o->m_p.terrainmod;
+
+    WFMath::Polygon<2> raw_polygon;
+    raw_polygon.addCorner(0, WFMath::Point<2>(1,1));
+    raw_polygon.addCorner(0, WFMath::Point<2>(1,0));
+    raw_polygon.addCorner(0, WFMath::Point<2>(0,0));
+    MathShape<WFMath::Polygon, 2> polygon(raw_polygon);
+    Atlas::Message::MapType shape_data;
+    polygon.toAtlas(shape_data);
+
+    p->setAttr("shape", shape_data);
+    p->setAttr("nonshape", "testval");
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -72,6 +100,7 @@ static PyObject * null_wrapper(PyObject * self, PyProperty * o)
 
 static PyMethodDef testprop_methods[] = {
     {"add_properties", (PyCFunction)add_properties,                 METH_O},
+    {"add_terrainmod_shape", (PyCFunction)add_terrainmod_shape,     METH_O},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -95,12 +124,23 @@ int main()
     setup_test_functions();
 
     run_python_string("from server import *");
+    run_python_string("import physics");
     run_python_string("import testprop");
     run_python_string("t=Thing('1')");
     fail_python_string("t.terrainmod");
     run_python_string("testprop.add_properties(t)");
     run_python_string("terrainmod = t.terrainmod");
     fail_python_string("terrainmod.foo = 1");
+    fail_python_string("terrainmod.foo");
+    fail_python_string("terrainmod.shape");
+    fail_python_string("terrainmod.nonshape");
+    run_python_string("testprop.add_terrainmod_shape(terrainmod)");
+    run_python_string("assert type(terrainmod.shape) == physics.Shape");
+    run_python_string("assert terrainmod.nonshape == 'testval'");
+    run_python_string("print 'test1'");
+    run_python_string("terrainmod.shape = physics.Polygon([[ -0.7, -0.7],"
+                                                          "[ -1.0,  0.0],"
+                                                          "[ -0.7,  0.7]])");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
