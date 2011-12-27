@@ -91,7 +91,7 @@ static PyObject * Message_getattro(PyMessage *self, PyObject *oname)
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Message_setattro( PyMessage *self, PyObject *oname, PyObject *v)
+static int Message_setattro(PyMessage *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
