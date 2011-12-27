@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000-2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ static void Message_dealloc(PyMessage *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Message_getattr(PyMessage *self, char *name)
+static PyObject * Message_getattro(PyMessage *self, PyObject *oname)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -80,6 +80,7 @@ static PyObject * Message_getattr(PyMessage *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (self->m_obj->isMap()) {
         const MapType & omap = self->m_obj->asMap();
         MapType::const_iterator I = omap.find(name);
@@ -87,10 +88,10 @@ static PyObject * Message_getattr(PyMessage *self, char *name)
             return MessageElement_asPyObject(I->second);
         }
     }
-    return Py_FindMethod(Message_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Message_setattr( PyMessage *self, char *name, PyObject *v)
+static int Message_setattro( PyMessage *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_obj == NULL) {
@@ -98,6 +99,7 @@ static int Message_setattr( PyMessage *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     log(WARNING, String::compose("Setting \"%1\" attribute on an Atlas Message",
                                  name));
     if (self->m_obj->isMap()) {
@@ -180,8 +182,8 @@ PyTypeObject PyMessage_Type = {
         /* methods */
         (destructor)Message_dealloc,    /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Message_getattr,   /*tp_getattr*/
-        (setattrfunc)Message_setattr,   /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         0,                              /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -190,8 +192,8 @@ PyTypeObject PyMessage_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Message_getattro, // tp_getattro
+        (setattrofunc)Message_setattro, // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Message objects",              // tp_doc
@@ -201,7 +203,7 @@ PyTypeObject PyMessage_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Message_methods,                // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
