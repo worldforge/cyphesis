@@ -32,8 +32,6 @@ extern PyTypeObject PyCreatorClient_Type;
 /// \brief Wrapper for CreatorClient in Python
 typedef struct {
     PyObject_HEAD
-    /// \brief Storage for additional attributes
-    PyObject         * CreatorClient_attr;    // Attributes dictionary
     /// \brief CreatorClient object handled by this wrapper
     union {
         CharacterClient * c;

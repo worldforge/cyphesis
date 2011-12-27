@@ -211,10 +211,6 @@ static PyMethodDef CreatorClient_methods[] = {
 
 static void CreatorClient_dealloc(PyCreatorClient *self)
 {
-    //if (self->m_mind != NULL) {
-        //delete self->m_mind;
-    //}
-    Py_XDECREF(self->CreatorClient_attr);
     self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -264,13 +260,6 @@ static PyObject * CreatorClient_getattro(PyCreatorClient *self,
         }
         return (PyObject *)worldtime;
     }
-    if (self->CreatorClient_attr != NULL) {
-        PyObject *v = PyDict_GetItemString(self->CreatorClient_attr, name);
-        if (v != NULL) {
-            Py_INCREF(v);
-            return v;
-        }
-    }
     LocatedEntity * thing = self->m_mind.c;
     Element attr;
     if (thing->getAttr(name, attr) != 0) {
@@ -291,12 +280,6 @@ static int CreatorClient_setattro(PyCreatorClient *self,
     if (self->m_mind.c == NULL) {
         return -1;
     }
-    if (self->CreatorClient_attr == NULL) {
-        self->CreatorClient_attr = PyDict_New();
-        if (self->CreatorClient_attr == NULL) {
-            return -1;
-        }
-    }
     if (strcmp(name, "map") == 0) {
         return -1;
     }
@@ -311,9 +294,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
         thing->setAttr(name, obj);
         return 0;
     }
-    // If we get here, then the attribute is not Atlas compatable, so we
-    // need to store it in a python dictionary
-    return PyDict_SetItemString(self->CreatorClient_attr, name, v);
+    return -1;
 }
 
 static int CreatorClient_compare(PyCreatorClient *self, PyCreatorClient *other)
@@ -338,8 +319,6 @@ static int CreatorClient_init(PyCreatorClient * self,
         return -1;
     }
     self->m_mind.c = 0;
-    self->CreatorClient_attr = 0;
-    // self->m_mind = new CreatorClient(id, intId);
     return 0;
 }
 
