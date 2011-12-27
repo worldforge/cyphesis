@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000 Alistair Riddoch
+// Copyright (C) 2000-2011 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -45,8 +45,9 @@ static void BBox_dealloc(PyBBox * self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * BBox_getattr(PyBBox *self, char *name)
+static PyObject * BBox_getattro(PyBBox *self, PyObject *oname)
 {
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "near_point") == 0) {
         PyPoint3D * v = newPyPoint3D();
         if (v != NULL) {
@@ -62,11 +63,12 @@ static PyObject * BBox_getattr(PyBBox *self, char *name)
         return (PyObject *)v;
     }
 
-    return Py_FindMethod(BBox_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int BBox_setattr(PyBBox *self, char *name, PyObject *v)
+static int BBox_setattro(PyBBox *self, PyObject *oname, PyObject *v)
 {
+    char * name = PyString_AsString(oname);
     if (!PyPoint3D_Check(v)) {
         PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Point");
         return -1;
@@ -185,8 +187,8 @@ PyTypeObject PyBBox_Type = {
         /* methods */
         (destructor)BBox_dealloc,       /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)BBox_getattr,      /*tp_getattr*/
-        (setattrfunc)BBox_setattr,      /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         (cmpfunc)BBox_compare,          /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -195,8 +197,8 @@ PyTypeObject PyBBox_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)BBox_getattro,    // tp_getattro
+        (setattrofunc)BBox_setattro,    // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "BBox objects",                 // tp_doc
@@ -206,7 +208,7 @@ PyTypeObject PyBBox_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        BBox_methods,                   // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
