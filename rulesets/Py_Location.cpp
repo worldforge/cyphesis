@@ -60,7 +60,7 @@ static void Location_dealloc(PyLocation *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
-static PyObject * Location_getattr(PyLocation *self, char *name)
+static PyObject * Location_getattro(PyLocation *self, PyObject *oname)
 {
 #ifndef NDEBUG
     if (self->location == NULL) {
@@ -68,6 +68,7 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
         return NULL;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "parent") == 0) {
         if (self->location->m_loc == NULL) {
             Py_INCREF(Py_None);
@@ -110,10 +111,10 @@ static PyObject * Location_getattr(PyLocation *self, char *name)
         }
         return (PyObject *)b;
     }
-    return Py_FindMethod(Location_methods, (PyObject *)self, name);
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Location_setattr(PyLocation *self, char *name, PyObject *v)
+static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->location == NULL) {
@@ -121,6 +122,7 @@ static int Location_setattr(PyLocation *self, char *name, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
+    char * name = PyString_AsString(oname);
     if (strcmp(name, "parent") == 0) {
         // FIXME Support for weakrefs
         if (!PyLocatedEntity_Check(v)) {
@@ -278,8 +280,8 @@ PyTypeObject PyLocation_Type = {
         /* methods */
         (destructor)Location_dealloc,   /*tp_dealloc*/
         0,                              /*tp_print*/
-        (getattrfunc)Location_getattr,  /*tp_getattr*/
-        (setattrfunc)Location_setattr,  /*tp_setattr*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
         0,                              /*tp_compare*/
         (reprfunc)Location_repr,        /*tp_repr*/
         0,                              /*tp_as_number*/
@@ -288,8 +290,8 @@ PyTypeObject PyLocation_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
+        (getattrofunc)Location_getattro,// tp_getattro
+        (setattrofunc)Location_setattro,// tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
         "Location objects",             // tp_doc
@@ -299,7 +301,7 @@ PyTypeObject PyLocation_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Location_methods,               // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
