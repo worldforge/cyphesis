@@ -187,6 +187,7 @@ static PyObject * CreatorClient_delete(PyCreatorClient * self, PyObject * py_id)
     return Py_None;
 }
 
+#if 0
 static PyMethodDef CharacterClient_methods[] = {
         {"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
         {"make",           (PyCFunction)CreatorClient_make,      METH_O},
@@ -195,6 +196,7 @@ static PyMethodDef CharacterClient_methods[] = {
         {"send",           (PyCFunction)CreatorClient_send,      METH_O},
         {NULL,          NULL}           /* sentinel */
 };
+#endif
 
 static PyMethodDef CreatorClient_methods[] = {
         {"as_entity",      (PyCFunction)CreatorClient_as_entity, METH_NOARGS},
