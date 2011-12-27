@@ -35,10 +35,6 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-static PyMethodDef TerrainModProperty_methods[] = {
-    {NULL,           NULL}           /* sentinel */
-};
-
 static PyObject * TerrainModProperty_getattro(PyTerrainModProperty *self,
                                               PyObject * oname)
 {
@@ -61,7 +57,9 @@ static PyObject * TerrainModProperty_getattro(PyTerrainModProperty *self,
         }
         return MessageElement_asPyObject(val);
     }
-    return Py_FindMethod(TerrainModProperty_methods, (PyObject *)self, name);
+    // It's probably not even necessary to do this as there is no method
+    // table at time of writing, and no dictoffset for arbitrary attributes
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int TerrainModProperty_setattro(PyTerrainModProperty * self,
