@@ -912,11 +912,6 @@ Py_ObserverClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
         $(top_builddir)/client/Python_ClientAPI.o \
-        $(top_builddir)/client/CreatorClient.o \
-        $(top_builddir)/client/CharacterClient.o \
-        $(top_builddir)/client/ClientConnection.o \
-        $(top_builddir)/client/ObserverClient.o \
-        $(top_builddir)/client/BaseClient.o \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
