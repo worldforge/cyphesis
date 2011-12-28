@@ -45,3 +45,109 @@ int main()
     shutdown_python_api();
     return 0;
 }
+
+// stubs
+
+#include "client/ObserverClient.h"
+#include "client/CreatorClient.h"
+
+#include <Atlas/Objects/Operation.h>
+
+using Atlas::Objects::Entity::RootEntity;
+
+LocatedEntity * CharacterClient::look(const std::string & id)
+{
+    return 0;
+}
+
+LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
+{
+    return 0;
+}
+
+LocatedEntity * CreatorClient::make(const RootEntity & entity)
+{
+    return 0;
+}
+
+void CreatorClient::sendSet(const std::string & id,
+                            const RootEntity & entity)
+{
+}
+
+void CreatorClient::del(const std::string & id)
+{
+}
+
+void CharacterClient::send(const Operation & op)
+{
+}
+
+ObserverClient::ObserverClient()
+{
+}
+
+ObserverClient::~ObserverClient()
+{
+}
+
+int ObserverClient::setup(const std::string & account,
+                          const std::string & password,
+                          const std::string & avatar)
+{
+    return 0;
+}
+
+void ObserverClient::idle()
+{
+}
+
+BaseClient::BaseClient() : m_character(0)
+{
+}
+
+BaseClient::~BaseClient()
+{
+}
+
+Atlas::Objects::Root BaseClient::createSystemAccount()
+{
+    return Atlas::Objects::Operation::Info();
+}
+
+Atlas::Objects::Root BaseClient::createAccount(const std::string & name,
+                                               const std::string & password)
+{
+    return Atlas::Objects::Operation::Info();
+}
+
+void BaseClient::send(const Operation & op)
+{
+}
+
+CreatorClient * BaseClient::createCharacter(const std::string & type)
+{
+    return 0;
+}
+
+ClientConnection::ClientConnection()
+{
+}
+
+ClientConnection::~ClientConnection()
+{
+}
+
+int ClientConnection::wait()
+{
+    return 0;
+}
+
+int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
+{
+    return 0;
+}
+
+void ClientConnection::operation(const Operation & op)
+{
+}
