@@ -37,7 +37,6 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
@@ -54,6 +53,13 @@ BaseClient::BaseClient() : m_character(0)
 BaseClient::~BaseClient()
 {
 }
+
+/// \brief Send an operation to the server
+inline void BaseClient::send(const Operation & op)
+{
+    m_connection.send(op);
+}
+
 
 /// \brief Create a new account on the server
 ///
@@ -214,7 +220,7 @@ void BaseClient::logout()
 /// \brief Handle any operations that have arrived from the server
 void BaseClient::handleNet()
 {
-    RootOperation input;
+    Operation input;
     while ((input = m_connection.pop()).isValid()) {
         OpVector res;
         m_character->operation(input, res);

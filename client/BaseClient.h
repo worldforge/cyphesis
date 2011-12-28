@@ -72,9 +72,7 @@ class BaseClient {
     }
 
     /// \brief Send an operation to the server
-    void send(const Atlas::Objects::Operation::RootOperation & op) {
-        m_connection.send(op);
-    }
+    void send(const Atlas::Objects::Operation::RootOperation & op);
 
     int wait() {
         return m_connection.wait();
