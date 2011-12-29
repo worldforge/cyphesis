@@ -55,6 +55,12 @@ int main()
 
 using Atlas::Objects::Entity::RootEntity;
 
+CharacterClient::CharacterClient(const std::string & id, long intId,
+                                 ClientConnection & c) :
+                 BaseMind(id, intId), m_connection(c)
+{
+}
+
 LocatedEntity * CharacterClient::look(const std::string & id)
 {
     return 0;
@@ -63,6 +69,16 @@ LocatedEntity * CharacterClient::look(const std::string & id)
 LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
 {
     return 0;
+}
+
+void CharacterClient::send(const Operation & op)
+{
+}
+
+CreatorClient::CreatorClient(const std::string & id, long intId,
+                             ClientConnection &c) :
+               CharacterClient(id, intId, c)
+{
 }
 
 LocatedEntity * CreatorClient::make(const RootEntity & entity)
@@ -76,10 +92,6 @@ void CreatorClient::sendSet(const std::string & id,
 }
 
 void CreatorClient::del(const std::string & id)
-{
-}
-
-void CharacterClient::send(const Operation & op)
 {
 }
 

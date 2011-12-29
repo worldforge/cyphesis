@@ -20,6 +20,7 @@
 #include "Py_CreatorClient.h"
 
 #include "CreatorClient.h"
+#include "ClientConnection.h"
 
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_RootEntity.h"
@@ -312,7 +313,12 @@ static int CreatorClient_init(PyCreatorClient * self,
         PyErr_SetString(PyExc_TypeError, "CreatorClient() requires string/int ID");
         return -1;
     }
-    self->m_mind.c = 0;
+    // This is just here for testing, as there is currently no suppor in the
+    // API for creating this in a meaningful way. A CreatorClient must have
+    // a connection, so we create one here even though it is not in a connected
+    // state. The connection is stubbed out in the tests, so this doesn't
+    // matter.
+    self->m_mind.c = new CreatorClient(id, intId, *new ClientConnection);
     return 0;
 }
 

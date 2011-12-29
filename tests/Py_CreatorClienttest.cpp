@@ -70,12 +70,24 @@ LocatedEntity * CreatorClient::make(const RootEntity & entity)
     return 0;
 }
 
+CreatorClient::CreatorClient(const std::string & id, long intId,
+                             ClientConnection &c) :
+               CharacterClient(id, intId, c)
+{
+}
+
 void CreatorClient::sendSet(const std::string & id,
                             const RootEntity & entity)
 {
 }
 
 void CreatorClient::del(const std::string & id)
+{
+}
+
+CharacterClient::CharacterClient(const std::string & id, long intId,
+                                 ClientConnection & c) :
+                 BaseMind(id, intId), m_connection(c)
 {
 }
 
