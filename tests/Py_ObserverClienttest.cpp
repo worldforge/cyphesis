@@ -34,13 +34,55 @@
 
 #include <cassert>
 
+static bool stub_setup_fail = false;
+static bool stub_createCharacter_fail = false;
+static bool stub_send_wait_fail = false;
+static int stub_send_wait_results = 0;
+static bool stub_wait_fail = false;
+
 int main()
 {
     init_python_api();
     extend_client_python_api();
 
+    run_python_string("import atlas");
     run_python_string("import server");
-    run_python_string("server.ObserverClient()");
+    run_python_string("import types");
+    run_python_string("o=server.ObserverClient()");
+    run_python_string("o.setup()");
+    fail_python_string("o.setup('bob')");
+    run_python_string("o.setup('bob', 'jim')");
+    run_python_string("o.setup('bob', 'jim', 'settler')");
+    stub_setup_fail = true;
+    fail_python_string("o.setup('bob', 'jim', 'settler')");
+    stub_setup_fail = false;
+    run_python_string("o.create_avatar('settler')");
+    fail_python_string("o.create_avatar(1)");
+    run_python_string("o.run()");
+    fail_python_string("o.send()");
+    fail_python_string("o.send('get')");
+    run_python_string("o.send(atlas.Operation('get'))");
+    fail_python_string("o.send_wait()");
+    fail_python_string("o.send_wait('get')");
+    run_python_string("o.send_wait(atlas.Operation('get'))");
+    stub_send_wait_results = 1;
+    run_python_string("assert type(o.send_wait(atlas.Operation('get'))) == atlas.Operation");
+    stub_send_wait_results = 2;
+    run_python_string("assert type(o.send_wait(atlas.Operation('get'))) == atlas.Oplist");
+    run_python_string("assert len(o.send_wait(atlas.Operation('get'))) == 2");
+    stub_send_wait_fail = true;
+    // FIXME This really should fail
+    // fail_python_string("o.send_wait(atlas.Operation('get'))");
+    run_python_string("o.wait()");
+    stub_wait_fail = true;
+    fail_python_string("o.wait()");
+    run_python_string("assert type(o.id) == types.StringType");
+    run_python_string("o.character");
+    run_python_string("o.server = 'foo'");
+    fail_python_string("o.server = 23");
+
+    run_python_string("o == server.ObserverClient()");
+    
 
     shutdown_python_api();
     return 0;
@@ -107,6 +149,9 @@ int ObserverClient::setup(const std::string & account,
                           const std::string & password,
                           const std::string & avatar)
 {
+    if (stub_setup_fail) {
+        return -1;
+    }
     return 0;
 }
 
@@ -139,7 +184,10 @@ void BaseClient::send(const Operation & op)
 
 CreatorClient * BaseClient::createCharacter(const std::string & type)
 {
-    return 0;
+    if (stub_createCharacter_fail) {
+        return 0;
+    }
+    return new CreatorClient("1", 1, *new ClientConnection);
 }
 
 ClientConnection::ClientConnection()
@@ -152,11 +200,20 @@ ClientConnection::~ClientConnection()
 
 int ClientConnection::wait()
 {
+    if (stub_wait_fail) {
+        return -1;
+    }
     return 0;
 }
 
 int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 {
+    if (stub_send_wait_fail) {
+        return -1;
+    }
+    for (int i = 0; i < stub_send_wait_results; ++i) {
+        res.push_back(Atlas::Objects::Operation::Info());
+    }
     return 0;
 }
 
