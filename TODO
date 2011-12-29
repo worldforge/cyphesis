@@ -7,8 +7,6 @@ It's possible to add permissions and possibly even protection against
 CPU overload into the scripting API. Permissions could be controlled by a
 global context as well is flags on the objects
 
-Fix up client wrappers so they have real tests
-
 Consider moving WorldTime back to Python, or making it way more data driven
 
 Create inherited types in the script API for common operations - actually
