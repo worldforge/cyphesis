@@ -34,13 +34,50 @@
 
 #include <cassert>
 
+static bool stub_make_fail = false;
+static bool stub_look_fail = false;
+static bool stub_lookfor_fail = false;
+
 int main()
 {
     init_python_api();
     extend_client_python_api();
 
     run_python_string("import server");
-    run_python_string("server.CreatorClient(\"1\")");
+    run_python_string("import atlas");
+    run_python_string("c=server.CreatorClient(\"1\")");
+    run_python_string("c.as_entity()");
+    fail_python_string("c.make()");
+    fail_python_string("c.make('1')");
+    run_python_string("c.make(atlas.Entity('1'))");
+    stub_make_fail = true;
+    fail_python_string("c.make(atlas.Entity('1'))");
+    stub_make_fail = false;
+    run_python_string("c.set('1', atlas.Entity('1'))");
+    fail_python_string("c.set('1', 'not an entity')");
+    fail_python_string("c.set(1, atlas.Entity('1'))");
+    run_python_string("c.look('1')");
+    stub_look_fail = true;
+    fail_python_string("c.look('1')");
+    stub_look_fail = false;
+    fail_python_string("c.look(1)");
+    run_python_string("e=c.look('1')");
+    run_python_string("assert type(e) == server.LocatedEntity");
+    run_python_string("c.look_for(atlas.Entity('1'))");
+    stub_lookfor_fail = true;
+    run_python_string("c.look_for(atlas.Entity('1'))");
+    stub_lookfor_fail = false;
+    fail_python_string("c.look_for('1')");
+    run_python_string("c.delete('1')");
+    fail_python_string("c.delete()");
+
+    run_python_string("assert type(c.map) == server.Map");
+    run_python_string("assert type(c.location) == atlas.Location");
+    run_python_string("assert type(c.time) == server.WorldTime");
+    fail_python_string("c.foo");
+    run_python_string("c.foo = 1");
+    run_python_string("assert c.foo == 1");
+    fail_python_string("c.map = 1");
 
     shutdown_python_api();
     return 0;
@@ -51,23 +88,37 @@ int main()
 #include "client/ObserverClient.h"
 #include "client/CreatorClient.h"
 
+#include "rulesets/Entity.h"
+
+#include "common/id.h"
+
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/RootEntity.h>
 
 using Atlas::Objects::Entity::RootEntity;
 
 LocatedEntity * CharacterClient::look(const std::string & id)
 {
-    return 0;
+    if (stub_look_fail) {
+        return 0;
+    }
+    return new Entity(id, integerId(id));
 }
 
-LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
+LocatedEntity * CharacterClient::lookFor(const RootEntity & entity)
 {
-    return 0;
+    if (stub_lookfor_fail) {
+        return 0;
+    }
+    return new Entity(entity->getId(), integerId(entity->getId()));
 }
 
 LocatedEntity * CreatorClient::make(const RootEntity & entity)
 {
-    return 0;
+    if (stub_make_fail) {
+        return 0;
+    }
+    return new Entity(entity->getId(), integerId(entity->getId()));
 }
 
 CreatorClient::CreatorClient(const std::string & id, long intId,
