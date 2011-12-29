@@ -64,7 +64,7 @@ type tree, so we can try and get the closest match first.
 
 Include doxygen docs in http self-served docs.
 
-De-dup code in Py_Thing and Py_Mind
+De-dup code in Py_Thing and Py_Mind and Py_CreatorClient
 
 Make it possible to forget
 
