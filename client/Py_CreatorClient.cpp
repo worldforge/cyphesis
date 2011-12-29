@@ -272,9 +272,11 @@ static int CreatorClient_setattro(PyCreatorClient *self,
 {
     char * name = PyString_AsString(oname);
     if (self->m_mind.c == NULL) {
+        // FIXME Set an error
         return -1;
     }
     if (strcmp(name, "map") == 0) {
+        // FIXME Set an error
         return -1;
     }
     LocatedEntity * thing = self->m_mind.c;
