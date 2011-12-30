@@ -27,6 +27,7 @@ class PythonContext {
   protected:
     struct _object * m_globals;
     struct _object * m_locals;
+    struct _arena * m_arena;
   public:
     PythonContext();
 

@@ -18,6 +18,7 @@
 // $Id$
 
 #include <Python.h>
+#include <Python-ast.h>
 
 #include "PythonContext.h"
 
@@ -32,10 +33,51 @@ PythonContext::PythonContext()
     }
     m_globals = PyModule_GetDict(m);
     m_locals = PyDict_New();
+    m_arena = PyArena_New();
+}
+
+static PyObject *
+run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
+         PyCompilerFlags *flags, PyArena *arena)
+{
+    PyCodeObject *co;
+    PyObject *v;
+    co = PyAST_Compile(mod, filename, flags, arena);
+    if (co == NULL)
+        return NULL;
+    v = PyEval_EvalCode(co, globals, locals);
+    Py_DECREF(co);
+    return v;
 }
 
 std::string PythonContext::runCommand(const std::string & s)
 {
+    // This is expanded from PyRun_SimpleString in the Python library
+    // so that we can report errors better at the parsing stage
+    PyObject *ret = NULL;
+    mod_ty mod;
+
+    mod = PyParser_ASTFromString(s.c_str(),
+                                 "<string>",
+                                 Py_single_input,
+                                 NULL,
+                                 m_arena);
+    if (mod == NULL) {
+        PyErr_Print();
+        return "[parseerror]";
+    }
+    ret = run_mod(mod, "<string>", m_globals, m_locals, NULL, m_arena);
+    if (ret == NULL) {
+        PyErr_Print();
+        return "ERROR";
+    }
+    PyObject * repr = PyObject_Repr(ret);
+    if (repr == 0) {
+        return "[undecodable]";
+    }
+    return PyString_AsString(repr);
+
+#if 0
     PyObject * res = PyRun_String(s.c_str(),
                                   Py_single_input,
                                   m_globals,
@@ -53,4 +95,5 @@ std::string PythonContext::runCommand(const std::string & s)
         return "[undecodable]";
     }
     return PyString_AsString(repr);
+#endif
 }
