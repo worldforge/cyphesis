@@ -21,15 +21,25 @@
 
 #include "PythonContext.h"
 
+#include "common/log.h"
+
 PythonContext::PythonContext()
 {
-    m_context = PyDict_New();
-    PyDict_SetItemString(m_context, "__builtins__", PyEval_GetBuiltins() );
+    PyObject * m = PyImport_AddModule("__main__");
+    if (m == NULL) {
+        log(ERROR, "Could not import __main__");
+        return;
+    }
+    m_globals = PyModule_GetDict(m);
+    m_locals = PyDict_New();
 }
 
 std::string PythonContext::runCommand(const std::string & s)
 {
-    PyObject * res = PyRun_String(s.c_str(), Py_single_input, m_context, m_context);
+    PyObject * res = PyRun_String(s.c_str(),
+                                  Py_single_input,
+                                  m_globals,
+                                  m_locals);
     if (res == 0) {
         if (PyErr_Occurred() == 0) {
             return "WHAT";

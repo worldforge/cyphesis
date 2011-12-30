@@ -43,3 +43,11 @@ int main()
 
     return 0;
 }
+
+// stubs
+
+#include "common/log.h"
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
