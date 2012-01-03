@@ -1,5 +1,6 @@
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2011 Alistair Riddoch
+//               2001-2011 Python Software Foundation
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,6 +16,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// Portions of this file have been copied from Python 2.6.7 and so this file
+// is a derivative work. The derivative is distributed under the GPL as
+// permitted by the license used by Python Software Foundation.
+
 // $Id$
 
 #ifdef NDEBUG
@@ -29,6 +34,9 @@
 
 #include "python_testers.h"
 
+// This function is directly lifted from Python 2.6.7, pythonrun.c. It
+// forms part of the implementation of PyRun_SimpleStringFlags() as replicated
+// below, with modifications to treat parse errors differently.
 static PyObject *
 run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
          PyCompilerFlags *flags, PyArena *arena)
