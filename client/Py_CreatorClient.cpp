@@ -276,7 +276,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
         return -1;
     }
     if (strcmp(name, "map") == 0) {
-        // FIXME Set an error
+        PyErr_SetString(PyExc_AttributeError, "map attribute forbidden");
         return -1;
     }
     LocatedEntity * thing = self->m_mind.c;
