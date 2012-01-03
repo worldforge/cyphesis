@@ -20,10 +20,12 @@
 #ifndef TESTS_PYTHON_TESTERS_H
 #define TESTS_PYTHON_TESTERS_H
 
-#define run_python_string(_s) { int pyret = PyRun_SimpleString(_s); \
+#define run_python_string(_s) { int pyret = CyPyRun_SimpleString(_s); \
                                 assert(pyret == 0); }
 
-#define fail_python_string(_s) { int pyret = PyRun_SimpleString(_s); \
-                                 assert(pyret != 0); }
+#define fail_python_string(_s) { int pyret = CyPyRun_SimpleString(_s); \
+                                 assert(pyret == -1); }
+
+int CyPyRun_SimpleString(const char * s);
 
 #endif // TESTS_PYTHON_TESTERS_H
