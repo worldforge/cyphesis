@@ -45,7 +45,7 @@ int main()
 
     run_python_string("import server");
     run_python_string("import atlas");
-    fail_python_string("server.CreatorClient(1)");
+    expect_python_error("server.CreatorClient(1)", PyExc_TypeError);
     fail_python_string("server.CreatorClient(\"one\")");
     run_python_string("c=server.CreatorClient(\"1\")");
     run_python_string("c.as_entity()");

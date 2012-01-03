@@ -34,6 +34,8 @@
 
 #include "python_testers.h"
 
+#include <iostream>
+
 // This function is directly lifted from Python 2.6.7, pythonrun.c. It
 // forms part of the implementation of PyRun_SimpleStringFlags() as replicated
 // below, with modifications to treat parse errors differently.
@@ -56,7 +58,7 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
 // and fail in the case of a parse error in the code text. The unit tests
 // do contain code which should fail, but never any code that fails because
 // it won't parse.
-int CyPyRun_SimpleString(const char * command)
+int CyPyRun_SimpleString(const char * command, PyObject * exception)
 {
     PyCompilerFlags *flags = NULL;
     PyObject * m = PyImport_AddModule("__main__");
@@ -79,8 +81,14 @@ int CyPyRun_SimpleString(const char * command)
     PyArena_Free(arena);
 
     if (ret == NULL) {
+        int errcode = -1;
+        if (exception != 0) {
+            if (PyErr_ExceptionMatches(exception)) {
+                errcode = -3;
+            }
+        }
         PyErr_Print();
-        return -1;
+        return errcode;
     }
     Py_DECREF(ret);
     if (Py_FlushLine())

@@ -26,6 +26,10 @@
 #define fail_python_string(_s) { int pyret = CyPyRun_SimpleString(_s); \
                                  assert(pyret == -1); }
 
-int CyPyRun_SimpleString(const char * s);
+#define expect_python_error(_s, _e) { int pyret = CyPyRun_SimpleString(_s, _e); \
+                                      assert(pyret == -3); }
+
+int CyPyRun_SimpleString(const char * s,
+                         struct _object * exception = 0);
 
 #endif // TESTS_PYTHON_TESTERS_H
