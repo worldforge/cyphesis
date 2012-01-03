@@ -312,7 +312,7 @@ static int CreatorClient_init(PyCreatorClient * self,
     }
     long intId = integerId(id);
     if (intId == -1L) {
-        PyErr_SetString(PyExc_TypeError, "CreatorClient() requires string/int ID");
+        PyErr_SetString(PyExc_ValueError, "CreatorClient() requires string/int ID");
         return -1;
     }
     // This is just here for testing, as there is currently no suppor in the
