@@ -45,6 +45,8 @@ int main()
 
     run_python_string("import server");
     run_python_string("import atlas");
+    fail_python_string("server.CreatorClient(1)");
+    fail_python_string("server.CreatorClient(\"one\")");
     run_python_string("c=server.CreatorClient(\"1\")");
     run_python_string("c.as_entity()");
     fail_python_string("c.make()");
@@ -68,15 +70,22 @@ int main()
     run_python_string("c.look_for(atlas.Entity('1'))");
     stub_lookfor_fail = false;
     fail_python_string("c.look_for('1')");
+    run_python_string("c.send(atlas.Operation('info'))");
+    fail_python_string("c.send('info')");
+    fail_python_string("c.send()");
     run_python_string("c.delete('1')");
+    fail_python_string("c.delete(1)");
     fail_python_string("c.delete()");
+    run_python_string("c == server.CreatorClient(\"2\")");
 
     run_python_string("assert type(c.map) == server.Map");
     run_python_string("assert type(c.location) == atlas.Location");
     run_python_string("assert type(c.time) == server.WorldTime");
     fail_python_string("c.foo");
+    fail_python_string("c.foo_operation");
     run_python_string("c.foo = 1");
     run_python_string("assert c.foo == 1");
+    fail_python_string("c.foo = [1,2]");
     fail_python_string("c.map = 1");
 
     shutdown_python_api();
