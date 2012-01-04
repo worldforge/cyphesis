@@ -222,7 +222,11 @@ static int ObserverClient_setattro(PyObserverClient *self,
                                    PyObject * oname, PyObject *v)
 {
     char * name = PyString_AsString(oname);
-    if (strcmp(name, "server") == 0 && PyString_Check(v)) {
+    if (strcmp(name, "server") == 0) {
+        if (!PyString_Check(v)) {
+            PyErr_SetString(PyExc_TypeError, "server val must be string");
+            return -1;
+        }
         self->m_client->setServer(PyString_AsString(v));
         return 0;
     }
