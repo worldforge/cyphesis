@@ -49,7 +49,7 @@ int main()
     run_python_string("w.get_time()");
     run_python_string("w.get_object('0')");
     run_python_string("w.get_object('1')");
-    fail_python_string("w.get_object(1)");
+    expect_python_error("w.get_object(1)", PyExc_TypeError);
     run_python_string("w == World()");
 
     shutdown_python_api();
