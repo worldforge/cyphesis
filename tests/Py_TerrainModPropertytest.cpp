@@ -127,13 +127,13 @@ int main()
     run_python_string("import physics");
     run_python_string("import testprop");
     run_python_string("t=Thing('1')");
-    fail_python_string("t.terrainmod");
+    expect_python_error("t.terrainmod", PyExc_AttributeError);
     run_python_string("testprop.add_properties(t)");
     run_python_string("terrainmod = t.terrainmod");
-    fail_python_string("terrainmod.foo = 1");
-    fail_python_string("terrainmod.foo");
-    fail_python_string("terrainmod.shape");
-    fail_python_string("terrainmod.nonshape");
+    expect_python_error("terrainmod.foo = 1", PyExc_AttributeError);
+    expect_python_error("terrainmod.foo", PyExc_AttributeError);
+    expect_python_error("terrainmod.shape", PyExc_AttributeError);
+    expect_python_error("terrainmod.nonshape", PyExc_AttributeError);
     run_python_string("testprop.add_terrainmod_shape(terrainmod)");
     run_python_string("assert type(terrainmod.shape) == physics.Shape");
     run_python_string("assert terrainmod.nonshape == 'testval'");
@@ -146,8 +146,8 @@ int main()
     run_python_string("import sabotage");
     // Hit the assert checks.
     run_python_string("sabotage.null(terrainmod)");
-    fail_python_string("terrainmod.foo");
-    fail_python_string("terrainmod.foo = 1");
+    expect_python_error("terrainmod.foo", PyExc_AssertionError);
+    expect_python_error("terrainmod.foo = 1", PyExc_AssertionError);
 #endif // NDEBUG
    
 
