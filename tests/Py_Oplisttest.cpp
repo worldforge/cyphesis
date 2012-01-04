@@ -117,11 +117,13 @@ int main()
     run_python_string("arg1=Operation('get')");
     run_python_string("sabotage.null(arg1)");
     expect_python_error("m += arg1", PyExc_ValueError);
+    expect_python_error("n = m + arg1", PyExc_ValueError);
     
     run_python_string("sabotage.null(m)");
 
     expect_python_error("m.append(None)", PyExc_AssertionError);
     expect_python_error("m += None", PyExc_AssertionError);
+    expect_python_error("n = m + None", PyExc_AssertionError);
     expect_python_error("len(m)", PyExc_AssertionError);
 
 #endif // NDEBUG
