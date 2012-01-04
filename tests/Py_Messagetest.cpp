@@ -82,20 +82,20 @@ int main()
     run_python_string("Message(Operation('get'))");
     run_python_string("Message(Oplist(Operation('get')))");
     run_python_string("Message(Location())");
-    fail_python_string("Message(Vector3D())");
+    expect_python_error("Message(Vector3D())", PyExc_TypeError);
     run_python_string("Message([Message(1)])");
-    fail_python_string("Message([Vector3D()])");
+    expect_python_error("Message([Vector3D()])", PyExc_TypeError);
     run_python_string("Message({'foo': Message(1)})");
-    fail_python_string("Message({'foo': Vector3D()})");
-    fail_python_string("Message(1, 1)");
+    expect_python_error("Message({'foo': Vector3D()})", PyExc_TypeError);
+    expect_python_error("Message(1, 1)", PyExc_TypeError);
 
     run_python_string("m=Message(1)");
     run_python_string("print m.get_name()");
-    fail_python_string("print m.foo");
-    fail_python_string("m.foo = 1");
+    expect_python_error("print m.foo", PyExc_AttributeError);
+    expect_python_error("m.foo = 1", PyExc_AttributeError);
     run_python_string("m=Message({})");
-    fail_python_string("print m.foo");
-    fail_python_string("m.foo = Vector3D()");
+    expect_python_error("print m.foo", PyExc_AttributeError);
+    expect_python_error("m.foo = Vector3D()", PyExc_TypeError);
     run_python_string("m.foo = 1");
     run_python_string("print m.foo");
     run_python_string("m.foo = 1.1");
@@ -150,9 +150,9 @@ int main()
     run_python_string("get_name_method=m.get_name");
     run_python_string("sabotage.null(m)");
     // Hit the assert checks.
-    fail_python_string("print get_name_method()");
-    fail_python_string("print m.foo");
-    fail_python_string("m.foo = 1");
+    expect_python_error("print get_name_method()", PyExc_AssertionError);
+    expect_python_error("print m.foo", PyExc_AssertionError);
+    expect_python_error("m.foo = 1", PyExc_AssertionError);
 #endif // NDEBUG
 
     shutdown_python_api();
