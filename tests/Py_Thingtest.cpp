@@ -262,16 +262,16 @@ int main()
 
     run_python_string("t4=Thing('4')");
     run_python_string("sabotage.null(t4)");
-    fail_python_string("Thing(t4)");
+    expect_python_error("Thing(t4)", PyExc_AssertionError);
     
     run_python_string("c5=Character('5')");
     run_python_string("sabotage.null(c5)");
-    fail_python_string("Character(c5)");
+    expect_python_error("Character(c5)", PyExc_AssertionError);
 
     run_python_string("sabotage.null(le)");
-    fail_python_string("le.location");
-    fail_python_string("le.foo=1");
-    fail_python_string("le == t");
+    expect_python_error("le.location", PyExc_AssertionError);
+    expect_python_error("le.foo=1", PyExc_AssertionError);
+    expect_python_error("le == t", PyExc_AssertionError);
 
     run_python_string("as_entity_method=t.as_entity");
     run_python_string("send_world_method=t.send_world");
