@@ -111,6 +111,43 @@ static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
     //return -1;
 }
 
+static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
+{
+#ifndef NDEBUG
+    if (self->ops == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Oplist in Oplist.num_inplace_add");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (other == Py_None) {
+        Py_INCREF(self);
+        return (PyObject*)self;
+    }
+    if (PyOplist_Check(other)) {
+        PyOplist * opl = (PyOplist*)other;
+        OpVector::const_iterator Iend = opl->ops->end();
+        for (OpVector::const_iterator I = opl->ops->begin(); I != Iend; ++I) {
+            self->ops->push_back(*I);
+        }
+        Py_INCREF(self);
+        return (PyObject*)self;
+    }
+    if (PyOperation_Check(other)) {
+        PyOperation * op = (PyOperation*)other;
+#ifndef NDEBUG
+        if (!op->operation.isValid()) {
+            PyErr_SetString(PyExc_ValueError, "Invalid Operation in other of Oplist.num_inplace_add");
+            return NULL;
+        }
+#endif // NDEBUG
+        self->ops->push_back(op->operation);
+        Py_INCREF(self);
+        return (PyObject*)self;
+    }
+    PyErr_SetString(PyExc_TypeError, "Unkown other in Oplist.num_inplace_add");
+    return NULL;
+}
+
 #if PY_MINOR_VERSION < 5
 #define lenfunc inquiry
 #endif
@@ -187,30 +224,44 @@ static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
 }
 
 static PyNumberMethods Oplist_as_number = {
-        (binaryfunc)Oplist_num_add,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        Oplist_num_coerce,
-        0,
-        0,
-        0,
-        0,
-        0
+    (binaryfunc)Oplist_num_add,               // nb_add;
+    0,                                        // nb_subtract;
+    0,                                        // nb_multiply;
+    0,                                        // nb_divide;
+    0,                                        // nb_remainder;
+    0,                                        // nb_divmod;
+    0,                                        // nb_power;
+    0,                                        // nb_negative;
+    0,                                        // nb_positive;
+    0,                                        // nb_absolute;
+    0,                                        // nb_nonzero;
+    0,                                        // nb_invert;
+    0,                                        // nb_lshift;
+    0,                                        // nb_rshift;
+    0,                                        // nb_and;
+    0,                                        // nb_xor;
+    0,                                        // nb_or;
+    Oplist_num_coerce,                        // nb_coerce;
+    0,                                        // nb_int;
+    0,                                        // nb_long;
+    0,                                        // nb_float;
+    0,                                        // nb_oct;
+    0,                                        // nb_hex;
+    /* Added in release 2.0 */
+    (binaryfunc)Oplist_num_inplace_add,       // nb_inplace_add;
+    0,                                        // nb_inplace_subtract;
+    0,                                        // nb_inplace_multiply;
+    0,                                        // nb_inplace_divide;
+    0,                                        // nb_inplace_remainder;
+    0,                                        // nb_inplace_power;
+    0,                                        // nb_inplace_lshift;
+    0,                                        // nb_inplace_rshift;
+    0,                                        // nb_inplace_and;
+    0,                                        // nb_inplace_xor;
+    0,                                        // nb_inplace_or;
 };
+
+
 
 PyTypeObject PyOplist_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
