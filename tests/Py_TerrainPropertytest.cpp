@@ -96,17 +96,17 @@ int main()
     run_python_string("from server import *");
     run_python_string("import testprop");
     run_python_string("t=Thing('1')");
-    fail_python_string("t.terrain");
+    expect_python_error("t.terrain", PyExc_AttributeError);
     run_python_string("testprop.add_properties(t)");
     run_python_string("terrain = t.terrain");
-    fail_python_string("terrain.foo = 1");
-    fail_python_string("terrain.get_height()");
+    expect_python_error("terrain.foo = 1", PyExc_AttributeError);
+    expect_python_error("terrain.get_height()", PyExc_TypeError);
     run_python_string("terrain.get_height(0,0)");
-    fail_python_string("terrain.get_surface()");
-    fail_python_string("terrain.get_surface('1')");
+    expect_python_error("terrain.get_surface()", PyExc_TypeError);
+    expect_python_error("terrain.get_surface('1')", PyExc_TypeError);
     run_python_string("from physics import *");
-    fail_python_string("terrain.get_surface(Point3D(0,0,0))");
-    fail_python_string("terrain.get_normal()");
+    expect_python_error("terrain.get_surface(Point3D(0,0,0))", PyExc_TypeError);
+    expect_python_error("terrain.get_normal()", PyExc_TypeError);
     run_python_string("terrain.get_normal(0,0)");
     run_python_string("terrain.find_mods(Point3D(0,0,0))");
 
@@ -131,11 +131,10 @@ int main()
     run_python_string("method_get_surface = terrain.get_surface");
     run_python_string("method_get_normal = terrain.get_normal");
     run_python_string("sabotage.null(terrain)");
-    fail_python_string("terrain.foo");
-    fail_python_string("terrain.foo = 1");
-    fail_python_string("method_get_height(0,0)");
-    fail_python_string("method_get_surface(Point3D(0,0,0))");
-    fail_python_string("method_get_normal(0,0)");
+    expect_python_error("method_get_height(0,0)", PyExc_AssertionError);
+    expect_python_error("method_get_surface(Point3D(0,0,0))",
+                        PyExc_AssertionError);
+    expect_python_error("method_get_normal(0,0)", PyExc_AssertionError);
 #endif // NDEBUG
    
 
