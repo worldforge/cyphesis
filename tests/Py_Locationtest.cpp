@@ -79,14 +79,15 @@ int main()
     run_python_string("import atlas");
     run_python_string("import server");
     run_python_string("from physics import Point3D");
-    fail_python_string("atlas.Location(set([1,1]))");
-    fail_python_string("atlas.Location(1,1,1)");
+    expect_python_error("atlas.Location(set([1,1]))", PyExc_TypeError);
+    expect_python_error("atlas.Location(1,1,1)", PyExc_TypeError);
     run_python_string("atlas.Location(server.LocatedEntity('1'))");
     run_python_string("atlas.Location(server.Thing('1'))");
     run_python_string("atlas.Location(server.Character('1'))");
     run_python_string("atlas.Location(server.World())");
     run_python_string("atlas.Location(server.Mind('1'))");
-    fail_python_string("atlas.Location(server.Thing('1'), 1)");
+    expect_python_error("atlas.Location(server.Thing('1'), 1)",
+                        PyExc_TypeError);
     run_python_string("atlas.Location(server.Thing('1'), Point3D(0,0,0))");
     run_python_string("l=atlas.Location()");
     run_python_string("l1=l.copy()");
@@ -102,23 +103,23 @@ int main()
     run_python_string("l.coordinates=Point3D(0,0,0)");
     run_python_string("l.coordinates=Vector3D()");
     run_python_string("l.coordinates=Vector3D(0,0,0)");
-    fail_python_string("l.coordinates=()");
+    expect_python_error("l.coordinates=()", PyExc_ValueError);
     run_python_string("l.coordinates=(0,0,0)");
     run_python_string("l.coordinates=(0.0,0,0)");
-    fail_python_string("l.coordinates=('0',0,0)");
-    fail_python_string("l.coordinates=[]");
+    expect_python_error("l.coordinates=('0',0,0)", PyExc_TypeError);
+    expect_python_error("l.coordinates=[]", PyExc_ValueError);
     run_python_string("l.coordinates=[0,0,0]");
     run_python_string("l.coordinates=[0.0,0,0]");
-    fail_python_string("l.coordinates=['0',0,0]");
+    expect_python_error("l.coordinates=['0',0,0]", PyExc_TypeError);
     run_python_string("l.velocity=Vector3D()");
     run_python_string("l.velocity=Vector3D(0,0,0)");
     run_python_string("l.orientation=Quaternion()");
     run_python_string("l.orientation=Quaternion(0,0,0,1)");
     run_python_string("l.bbox=BBox()");
     run_python_string("l.bbox=Vector3D(0,0,0)");
-    fail_python_string("l.parent='1'");
+    expect_python_error("l.parent='1'", PyExc_TypeError);
     run_python_string("l.parent=server.Thing('1')");
-    fail_python_string("l.other=Vector3D(0,0,0)");
+    expect_python_error("l.other=Vector3D(0,0,0)", PyExc_AttributeError);
     run_python_string("repr(l)");
     run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
     run_python_string("l.parent");
@@ -128,18 +129,18 @@ int main()
     // Hit the assert checks.
     run_python_string("t=server.Thing('1')");
     run_python_string("sabotage.null(t)");
-    fail_python_string("l.parent=t");
-    fail_python_string("atlas.Location(t)");
+    expect_python_error("l.parent=t", PyExc_AssertionError);
+    expect_python_error("atlas.Location(t)", PyExc_AssertionError);
 
     run_python_string("m=server.Mind('1')");
     run_python_string("sabotage.null(m)");
-    fail_python_string("atlas.Location(m)");
+    expect_python_error("atlas.Location(m)", PyExc_AssertionError);
 
     run_python_string("copy_methd=l.copy");
     run_python_string("sabotage.null(l)");
-    fail_python_string("copy_methd()");
-    fail_python_string("l.parent");
-    fail_python_string("l.velocity=Vector3D()");
+    expect_python_error("copy_methd()", PyExc_AssertionError);
+    expect_python_error("l.parent", PyExc_AssertionError);
+    expect_python_error("l.velocity=Vector3D()", PyExc_AssertionError);
 #endif // NDEBUG
 
     shutdown_python_api();
