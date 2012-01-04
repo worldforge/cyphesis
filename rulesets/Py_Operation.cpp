@@ -573,7 +573,7 @@ static PyObject * Operation_getattro(PyOperation * self, PyObject * oname)
     } else if (strcmp(name, "id") == 0) {
         const std::list<std::string> & parents = self->operation->getParents();
         if (parents.empty()) {
-            PyErr_SetString(PyExc_TypeError, "Operation has no parents");
+            PyErr_SetString(PyExc_AttributeError, "Operation has no parents");
             return NULL;
         }
         return PyString_FromString(parents.front().c_str());
