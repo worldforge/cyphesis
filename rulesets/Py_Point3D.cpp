@@ -114,7 +114,7 @@ static Py_ssize_t Point3D_seq_length(PyPoint3D * self)
 static PyObject * Point3D_seq_item(PyPoint3D * self, Py_ssize_t item)
 {
     if (item < 0 || item >= 3) {
-        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Index out of range.");
+        PyErr_SetString(PyExc_IndexError,"Point3D.[]: Index out of range.");
         return 0;
     }
     return PyFloat_FromDouble(self->coords[item]);
@@ -125,7 +125,7 @@ static int Point3D_seq_ass_item(PyPoint3D * self,
                                 PyObject * val)
 {
     if (item < 0 || item >= 3) {
-        PyErr_SetString(PyExc_TypeError,"Point3D.[]: Index out of range.");
+        PyErr_SetString(PyExc_IndexError,"Point3D.[]: Index out of range.");
         return -1;
     }
     if (!PyFloat_Check(val)) {
