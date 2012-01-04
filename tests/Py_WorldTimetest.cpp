@@ -69,24 +69,24 @@ int main()
     assert(world_time != 0);
 
     run_python_string("from server import WorldTime");
-    fail_python_string("WorldTime()");
+    expect_python_error("WorldTime()", PyExc_TypeError);
     run_python_string("WorldTime(23)");
     // FIXME This started failing with Python 2.7
     // run_python_string("WorldTime(23.1)");
 
     run_python_string("w=WorldTime(23)");
     run_python_string("w.season");
-    fail_python_string("w.foo");
+    expect_python_error("w.foo", PyExc_AttributeError);
     run_python_string("w.is_now('morning')");
-    fail_python_string("w.is_now(1)");
+    expect_python_error("w.is_now(1)", PyExc_TypeError);
     run_python_string("w.seconds()");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("sabotage.null(w)");
     // Hit the assert checks.
-    fail_python_string("w.is_now('morning')");
-    fail_python_string("w.seconds()");
+    expect_python_error("w.is_now('morning')", PyExc_AssertionError);
+    expect_python_error("w.seconds()", PyExc_AssertionError);
 #endif // NDEBUG
 
     shutdown_python_api();
