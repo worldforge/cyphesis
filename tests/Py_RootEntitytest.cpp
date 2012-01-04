@@ -71,29 +71,29 @@ int main()
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Location");
     run_python_string("Entity('1')");
-    fail_python_string("Entity(1)");
-    fail_python_string("Entity('1', location='loc')");
+    expect_python_error("Entity(1)", PyExc_TypeError);
+    expect_python_error("Entity('1', location='loc')", PyExc_TypeError);
     run_python_string("l=Location()");
     run_python_string("Entity('1', location=l)");
     run_python_string("Entity('1', pos=())");
     run_python_string("Entity('1', pos=[])");
-    fail_python_string("Entity('1', pos=(1,1.0,'1'))");
-    fail_python_string("Entity('1', pos=[1,1.0,'1'])");
+    expect_python_error("Entity('1', pos=(1,1.0,'1'))", PyExc_TypeError);
+    expect_python_error("Entity('1', pos=[1,1.0,'1'])", PyExc_TypeError);
     run_python_string("Entity('1', tasks=[{'name': 'twist', 'param': 'value'}])");
-    fail_python_string("Entity('1', pos=1)");
-    fail_python_string("Entity('1', parent=1)");
+    expect_python_error("Entity('1', pos=1)", PyExc_TypeError);
+    expect_python_error("Entity('1', parent=1)", PyExc_TypeError);
     run_python_string("Entity('1', parent='0')");
-    fail_python_string("Entity('1', type=1)");
+    expect_python_error("Entity('1', type=1)", PyExc_TypeError);
     run_python_string("Entity('1', type='pig')");
     run_python_string("Entity('1', other=1)");
-    fail_python_string("Entity('1', other=set([1,1]))");
+    expect_python_error("Entity('1', other=set([1,1]))", PyExc_TypeError);
     run_python_string("e=Entity()");
     run_python_string("e.get_name()");
     run_python_string("e.name");
     run_python_string("e.id");
-    fail_python_string("e.foo");
+    expect_python_error("e.foo", PyExc_AttributeError);
     run_python_string("e.name='Bob'");
-    fail_python_string("e.name=1");
+    expect_python_error("e.name=1", PyExc_TypeError);
     run_python_string("e.foo='Bob'");
     run_python_string("e.bar=1");
     run_python_string("e.baz=[1,2.0,'three']");
@@ -107,9 +107,9 @@ int main()
     // Hit the assert checks.
     run_python_string("get_name_methd=e.get_name");
     run_python_string("sabotage.null(e)");
-    fail_python_string("get_name_methd()");
-    fail_python_string("e.name");
-    fail_python_string("e.name='Bob'");
+    expect_python_error("get_name_methd()", PyExc_AssertionError);
+    expect_python_error("e.name", PyExc_AssertionError);
+    expect_python_error("e.name='Bob'", PyExc_AssertionError);
 #endif // NDEBUG
 
 
