@@ -73,62 +73,71 @@ int main()
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Message");
     run_python_string("m=Map()");
-    fail_python_string("m.find_by_location()");
+    expect_python_error("m.find_by_location()", PyExc_TypeError);
     run_python_string("l=Location()");
-    fail_python_string("m.find_by_location(l)");
-    fail_python_string("m.find_by_location(l, 5.0, 'foo')");
-    fail_python_string("m.find_by_location(5, 5.0, 'foo')");
-    fail_python_string("m.find_by_type()");
-    fail_python_string("m.find_by_type(1)");
+    expect_python_error("m.find_by_location(l)", PyExc_TypeError);
+    expect_python_error("m.find_by_location(l, 5.0, 'foo')",
+                        PyExc_RuntimeError);
+    expect_python_error("m.find_by_location(5, 5.0, 'foo')", PyExc_TypeError);
+    expect_python_error("m.find_by_type()", PyExc_TypeError);
+    expect_python_error("m.find_by_type(1)", PyExc_TypeError);
     run_python_string("m.find_by_type('foo')");
-    fail_python_string("m.add()");
-    fail_python_string("m.add('2')");
-    fail_python_string("m.add('2', 1.2)");
-    fail_python_string("m.add(Message())");
-    fail_python_string("m.add(Message(), 1.2)");
-    fail_python_string("m.add(Message({'objtype': 'op', 'parents': ['get']}), 1.2)");
-    fail_python_string("m.add(Message({}), 1.2)");
-    fail_python_string("m.add(Message({'parents': 'get'}), 1.2)");
+    expect_python_error("m.add()", PyExc_TypeError);
+    expect_python_error("m.add('2')", PyExc_TypeError);
+    expect_python_error("m.add('2', 1.2)", PyExc_TypeError);
+    expect_python_error("m.add(Message())", PyExc_TypeError);
+    expect_python_error("m.add(Message(), 1.2)", PyExc_TypeError);
+    expect_python_error("m.add(Message({'objtype': 'op', 'parents': ['get']}), 1.2)",
+                        PyExc_TypeError);
+    expect_python_error("m.add(Message({}), 1.2)", PyExc_TypeError);
+    expect_python_error("m.add(Message({'parents': 'get'}), 1.2)",
+                        PyExc_TypeError);
     run_python_string("m.add(Message({'id': '2'}), 1.2)");
     run_python_string("m.add(Message({'id': '2'}), 1.2)");
-    fail_python_string("m.add(Entity())");
-    fail_python_string("m.add(Entity('1', type='oak'))");
+    expect_python_error("m.add(Entity())", PyExc_TypeError);
+    expect_python_error("m.add(Entity('1', type='oak'))", PyExc_TypeError);
     run_python_string("m.add(Entity('1', type='thing'), 1.1)");
     run_python_string("m.find_by_type('thing')");
-    fail_python_string("m.get()");
-    fail_python_string("m.get(1)");
+    expect_python_error("m.get()", PyExc_TypeError);
+    expect_python_error("m.get(1)", PyExc_TypeError);
     run_python_string("m.get('1')");
     run_python_string("m.get('23')");
-    fail_python_string("m.get_add()");
-    fail_python_string("m.get_add(3)");
+    expect_python_error("m.get_add()", PyExc_TypeError);
+    expect_python_error("m.get_add(3)", PyExc_TypeError);
     run_python_string("m.get_add('3')");
-    fail_python_string("m.update()");
-    fail_python_string("m.delete()");
-    fail_python_string("m.delete(1)");
+    run_python_string("m.update(Entity('3', type='thing'), 1.1)");
+    expect_python_error("m.update()", PyExc_TypeError);
+    expect_python_error("m.delete()", PyExc_TypeError);
+    expect_python_error("m.delete(1)", PyExc_TypeError);
     run_python_string("m.delete('1')");
-    fail_python_string("m.add_hooks_append()");
-    fail_python_string("m.add_hooks_append(1)");
+    expect_python_error("m.add_hooks_append()", PyExc_TypeError);
+    expect_python_error("m.add_hooks_append(1)", PyExc_TypeError);
     run_python_string("m.add_hooks_append('add_map')");
-    fail_python_string("m.update_hooks_append()");
-    fail_python_string("m.update_hooks_append(1)");
+    expect_python_error("m.update_hooks_append()", PyExc_TypeError);
+    expect_python_error("m.update_hooks_append(1)", PyExc_TypeError);
     run_python_string("m.update_hooks_append('update_map')");
-    fail_python_string("m.delete_hooks_append()");
-    fail_python_string("m.delete_hooks_append(1)");
+    expect_python_error("m.delete_hooks_append()", PyExc_TypeError);
+    expect_python_error("m.delete_hooks_append(1)", PyExc_TypeError);
     run_python_string("m.delete_hooks_append('delete_map')");
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("sabotage.null(m)");
     // Hit the assert checks.
-    fail_python_string("m.find_by_location(l, 5.0, 'foo')");
-    fail_python_string("m.find_by_type('foo')");
-    fail_python_string("m.add(Entity('1', type='thing'), 1.1)");
-    fail_python_string("m.delete('1')");
-    fail_python_string("m.get('1')");
-    fail_python_string("m.get_add('3')");
-    fail_python_string("m.add_hooks_append('add_map')");
-    fail_python_string("m.update_hooks_append('update_map')");
-    fail_python_string("m.delete_hooks_append('delete_map')");
+    expect_python_error("m.find_by_location(l, 5.0, 'foo')",
+                        PyExc_AssertionError);
+    expect_python_error("m.find_by_type('foo')", PyExc_AssertionError);
+    expect_python_error("m.add(Entity('1', type='thing'), 1.1)",
+                        PyExc_AssertionError);
+    expect_python_error("m.delete('1')", PyExc_AssertionError);
+    expect_python_error("m.get('1')", PyExc_AssertionError);
+    expect_python_error("m.get_add('3')", PyExc_AssertionError);
+    expect_python_error("m.add_hooks_append('add_map')",
+                        PyExc_AssertionError);
+    expect_python_error("m.update_hooks_append('update_map')",
+                        PyExc_AssertionError);
+    expect_python_error("m.delete_hooks_append('delete_map')",
+                        PyExc_AssertionError);
 #endif // NDEBUG
 
     shutdown_python_api();
