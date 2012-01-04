@@ -342,8 +342,12 @@ static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
             break;
         case 1:
             clist = PyTuple_GetItem(args, 0);
-            if (!PyList_Check(clist) || PyList_Size(clist) != 3) {
-                PyErr_SetString(PyExc_TypeError, "Vector3D() from single value must a list 3 long");
+            if (!PyList_Check(clist)) {
+                PyErr_SetString(PyExc_TypeError, "Vector3D() from single value must be a list");
+                return -1;
+            }
+            if (PyList_Size(clist) != 3) {
+                PyErr_SetString(PyExc_ValueError, "Vector3D() from a list must be 3 long");
                 return -1;
             }
             for(int i = 0; i < 3; i++) {
