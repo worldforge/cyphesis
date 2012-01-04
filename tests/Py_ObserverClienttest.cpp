@@ -50,20 +50,21 @@ int main()
     run_python_string("import types");
     run_python_string("o=server.ObserverClient()");
     run_python_string("o.setup()");
-    fail_python_string("o.setup('bob')");
+    expect_python_error("o.setup('bob')", PyExc_TypeError);
     run_python_string("o.setup('bob', 'jim')");
     run_python_string("o.setup('bob', 'jim', 'settler')");
     stub_setup_fail = true;
-    fail_python_string("o.setup('bob', 'jim', 'settler')");
+    expect_python_error("o.setup('bob', 'jim', 'settler')",
+                        PyExc_RuntimeError);
     stub_setup_fail = false;
     run_python_string("o.create_avatar('settler')");
-    fail_python_string("o.create_avatar(1)");
+    expect_python_error("o.create_avatar(1)", PyExc_TypeError);
     run_python_string("o.run()");
-    fail_python_string("o.send()");
-    fail_python_string("o.send('get')");
+    expect_python_error("o.send()", PyExc_TypeError);
+    expect_python_error("o.send('get')", PyExc_TypeError);
     run_python_string("o.send(atlas.Operation('get'))");
-    fail_python_string("o.send_wait()");
-    fail_python_string("o.send_wait('get')");
+    expect_python_error("o.send_wait()", PyExc_TypeError);
+    expect_python_error("o.send_wait('get')", PyExc_TypeError);
     run_python_string("o.send_wait(atlas.Operation('get'))");
     stub_send_wait_results = 1;
     run_python_string("assert type(o.send_wait(atlas.Operation('get'))) == atlas.Operation");
@@ -72,14 +73,15 @@ int main()
     run_python_string("assert len(o.send_wait(atlas.Operation('get'))) == 2");
     stub_send_wait_fail = true;
     // FIXME This really should fail
-    // fail_python_string("o.send_wait(atlas.Operation('get'))");
+    // expect_python_error("o.send_wait(atlas.Operation('get'))",
+    //                     PyExc_AssertionError);
     run_python_string("o.wait()");
     stub_wait_fail = true;
-    fail_python_string("o.wait()");
+    expect_python_error("o.wait()", PyExc_RuntimeError);
     run_python_string("assert type(o.id) == types.StringType");
     run_python_string("o.character");
     run_python_string("o.server = 'foo'");
-    fail_python_string("o.server = 23");
+    expect_python_error("o.server = 23", PyExc_TypeError);
 
     run_python_string("o == server.ObserverClient()");
     
