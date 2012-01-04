@@ -86,7 +86,8 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
         PyOperation * op = (PyOperation*)other;
 #ifndef NDEBUG
         if (!op->operation.isValid()) {
-            PyErr_SetString(PyExc_AssertionError, "NULL Operation in other of Oplist.num_add");
+            PyErr_SetString(PyExc_ValueError, "Invalid Operation in other of Oplist.num_add");
+            return NULL;
         }
 #endif // NDEBUG
         PyOplist * res = newPyOplist();
@@ -96,6 +97,7 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
         }
         return (PyObject*)res;
     }
+    PyErr_SetString(PyExc_TypeError, "Unkown other in Oplist.num_add");
     return NULL;
 }
 
