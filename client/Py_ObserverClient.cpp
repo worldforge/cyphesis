@@ -81,6 +81,7 @@ static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
     }
 #endif // NDEBUG
     if (!PyString_Check(arg)) {
+        PyErr_SetString(PyExc_TypeError, "id must be a string");
         return NULL;
     }
     char * avatar = PyString_AsString(arg);
