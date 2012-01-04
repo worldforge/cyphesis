@@ -283,7 +283,7 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         }
         const TypeNode * type = Inheritance::instance().getType(PyString_AsString(v));
         if (type == 0) {
-            PyErr_SetString(PyExc_RuntimeError, "Entity type unknown");
+            PyErr_SetString(PyExc_ValueError, "Entity type unknown");
             return -1;
         }
         entity->setType(type);
@@ -486,7 +486,7 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     }
 #endif // NDEBUG
     if (strcmp(name, "map") == 0) {
-        PyErr_SetString(PyExc_RuntimeError, "Setting map on mind is forbidden");
+        PyErr_SetString(PyExc_AttributeError, "Setting map on mind is forbidden");
         return -1;
     }
     LocatedEntity * entity = self->m_entity.m;
