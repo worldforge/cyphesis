@@ -75,11 +75,12 @@ int main()
                                                     "[ 1.0, 0.0 ],"
                                                     "[ 1.0, 1.0 ]] })");
     expect_python_error("physics.Shape({})", PyExc_TypeError);
-    fail_python_string("s = physics.Shape({'type': 'polygon',"
-                                          "'data': object(),"
-                                          "'points': [[ 0.0, 0.0 ],"
-                                                     "[ 1.0, 0.0 ],"
-                                                     "[ 1.0, 1.0 ]] })");
+    expect_python_error("s = physics.Shape({'type': 'polygon',"
+                                           "'data': object(),"
+                                           "'points': [[ 0.0, 0.0 ],"
+                                                      "[ 1.0, 0.0 ],"
+                                                      "[ 1.0, 1.0 ]] })",
+                        PyExc_TypeError);
     run_python_string("s.area()");
     run_python_string("s.footprint()");
     run_python_string("s.low_corner()");
@@ -90,9 +91,9 @@ int main()
     run_python_string("s *= 5.0");
     expect_python_error("s *= 5", PyExc_TypeError);
     // Can't send attributes yet
-    fail_python_string("s.points =  [[ 0.0, 0.0 ],"
-                                    "[ 1.0, 0.0 ],"
-                                    "[ 1.0, 1.0 ]]");
+    expect_python_error("s.points =  [[ 0.0, 0.0 ],"
+                                     "[ 1.0, 0.0 ],"
+                                     "[ 1.0, 1.0 ]]", PyExc_AttributeError);
 
 
     expect_python_error("physics.Polygon()", PyExc_TypeError);
