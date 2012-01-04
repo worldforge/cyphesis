@@ -1,3 +1,5 @@
+Add inplace add for Oplist
+
 Look into if installcheck-local can be used usefully to ensure all is in
 order.
 
