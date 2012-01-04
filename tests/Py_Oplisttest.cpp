@@ -75,22 +75,25 @@ int main()
     run_python_string("from atlas import Operation");
     run_python_string("m=Oplist()");
     run_python_string("m.append(None)");
-    fail_python_string("m.append(1)");
+    expect_python_error("m.append(1)", PyExc_TypeError);
     run_python_string("m.append(Operation('get'))");
     run_python_string("m.append(Oplist())");
     run_python_string("m.append(Oplist(Operation('get')))");
     run_python_string("m += None");
-    fail_python_string("m += 1");
+    expect_python_error("m += 1", PyExc_TypeError);
     run_python_string("m += Operation('get')");
     run_python_string("m += Oplist()");
     run_python_string("m += Oplist(Operation('get'))");
     run_python_string("len(m)");
     
-    fail_python_string("Oplist(1)");
-    fail_python_string("Oplist(Operation('get'), 1)");
-    fail_python_string("Oplist(Operation('get'), Operation('get'), 1)");
-    fail_python_string("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)");
-    fail_python_string("Oplist(Operation('get'), Operation('get'), Operation('get'), Operation('get'), Operation('get'))");
+    expect_python_error("Oplist(1)", PyExc_TypeError);
+    expect_python_error("Oplist(Operation('get'), 1)", PyExc_TypeError);
+    expect_python_error("Oplist(Operation('get'), Operation('get'), 1)",
+                        PyExc_TypeError);
+    expect_python_error("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)",
+                        PyExc_TypeError);
+    expect_python_error("Oplist(Operation('get'), Operation('get'), Operation('get'), Operation('get'), Operation('get'))",
+                        PyExc_TypeError);
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
@@ -98,13 +101,13 @@ int main()
     // Hit the assert checks.
     run_python_string("arg1=Operation('get')");
     run_python_string("sabotage.null(arg1)");
-    run_python_string("m += arg1");
+    expect_python_error("m += arg1", PyExc_ValueError);
     
     run_python_string("sabotage.null(m)");
 
-    fail_python_string("m.append(None)");
-    fail_python_string("m += None");
-    fail_python_string("len(m)");
+    expect_python_error("m.append(None)", PyExc_AssertionError);
+    expect_python_error("m += None", PyExc_AssertionError);
+    expect_python_error("len(m)", PyExc_AssertionError);
 
 #endif // NDEBUG
 
