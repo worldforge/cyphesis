@@ -1,11 +1,6 @@
 Look into if installcheck-local can be used usefully to ensure all is in
 order.
 
-Find out what a Python arena is. PyRun_String calls PyRun_StringFlags which
-creates a new arena. Perhaps PythonContext should just have one arena?
-Also it calls Parse and then runs separately, which would be nice to have
-as it allows better reporting.
-
 It's possible to add permissions and possibly even protection against
 CPU overload into the scripting API. Permissions could be controlled by a
 global context as well is flags on the objects
