@@ -370,7 +370,7 @@ static PyObject * Operation_seq_item(PyOperation * self, Py_ssize_t item)
 #endif // NDEBUG
     const std::vector<Root> & args= self->operation->getArgs();
     if (item < 0 || item >= (Py_ssize_t)args.size()) {
-        PyErr_SetString(PyExc_TypeError,"Operation.[]: Not enought op arguments");
+        PyErr_SetString(PyExc_TypeError,"Operation.[]: Not enough op arguments");
         return 0;
     }
     const Root & arg = args[item];
