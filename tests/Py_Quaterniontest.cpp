@@ -38,30 +38,33 @@ int main()
 
     run_python_string("from physics import Quaternion");
     run_python_string("q=Quaternion()");
-    fail_python_string("q=Quaternion([1])");
+    expect_python_error("q=Quaternion([1])", PyExc_ValueError);
     run_python_string("q=Quaternion([0,0,0,1])");
     run_python_string("q=Quaternion([0.0,0.0,0.0,1.0])");
-    fail_python_string("q=Quaternion(['0.0',0.0,0.0,1.0])");
-    fail_python_string("q=Quaternion(1,0)");
+    expect_python_error("q=Quaternion(['0.0',0.0,0.0,1.0])",
+                        PyExc_TypeError);
+    expect_python_error("q=Quaternion(1,0)", PyExc_TypeError);
     run_python_string("from physics import Vector3D");
-    fail_python_string("q=Quaternion(Vector3D(1,0,0),0)");
+    expect_python_error("q=Quaternion(Vector3D(1,0,0),0)",
+                        PyExc_TypeError);
     run_python_string("q=Quaternion(Vector3D(1,0,0),0.0)");
     run_python_string("q=Quaternion(Vector3D(1,0,0),Vector3D(0,1,0))");
-    fail_python_string("q=Quaternion(1,0,0)");
+    expect_python_error("q=Quaternion(1,0,0)", PyExc_TypeError);
     run_python_string("q=Quaternion(0,0,0,1)");
     run_python_string("q=Quaternion(0.0,0.0,0.0,1.0)");
-    fail_python_string("q=Quaternion('0.0',0.0,0.0,1.0)");
+    expect_python_error("q=Quaternion('0.0',0.0,0.0,1.0)",
+                        PyExc_TypeError);
     run_python_string("q=Quaternion()");
     run_python_string("q2=Quaternion()");
     run_python_string("q3=Quaternion(1,0,0,0)");
     run_python_string("print q == q2");
     run_python_string("print q == q3");
     run_python_string("print q * q2");
-    fail_python_string("print q * 2");
+    expect_python_error("print q * 2", PyExc_TypeError);
     run_python_string("print q.is_valid()");
     run_python_string("print q.as_list()");
-    fail_python_string("print q.rotation()");
-    fail_python_string("print q.rotation('foo',1.0)");
+    expect_python_error("print q.rotation()", PyExc_TypeError);
+    expect_python_error("print q.rotation('foo',1.0)", PyExc_TypeError);
     run_python_string("from physics import Vector3D");
     run_python_string("v=Vector3D(0,0,0)");
     run_python_string("print q == v");
