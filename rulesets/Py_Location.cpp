@@ -157,7 +157,11 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
         PyPoint3D * p = (PyPoint3D *)v;
         vector = Vector3D(p->coords.x(), p->coords.y(), p->coords.z());
         vector.setValid(p->coords.isValid());
-    } else if (PyTuple_Check(v) && (PyTuple_Size(v) == 3)) {
+    } else if (PyTuple_Check(v)) {
+        if (PyTuple_Size(v) != 3) {
+            PyErr_SetString(PyExc_ValueError, "value must be sequence of 3");
+            return -1;
+        }
         for(int i = 0; i < 3; i++) {
             PyObject * item = PyTuple_GetItem(v, i);
             if (PyInt_Check(item)) {
@@ -165,12 +169,17 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
             } else if (PyFloat_Check(item)) {
                 vector[i] = PyFloat_AsDouble(item);
             } else {
-                PyErr_SetString(PyExc_TypeError, "Vector3D() must take tuple of floats, or ints");
+                PyErr_SetString(PyExc_TypeError,
+                                "value must be tuple of floats, or ints");
                 return -1;
             }
         }
         vector.setValid();
-    } else if (PyList_Check(v) && (PyList_Size(v) == 3)) {
+    } else if (PyList_Check(v)) {
+        if (PyList_Size(v) != 3) {
+            PyErr_SetString(PyExc_ValueError, "value must be sequence of 3");
+            return -1;
+        }
         for(int i = 0; i < 3; i++) {
             PyObject * item = PyList_GetItem(v, i);
             if (PyInt_Check(item)) {
@@ -178,13 +187,14 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
             } else if (PyFloat_Check(item)) {
                 vector[i] = PyFloat_AsDouble(item);
             } else {
-                PyErr_SetString(PyExc_TypeError, "Vector3D() must take list of floats, or ints");
+                PyErr_SetString(PyExc_TypeError,
+                                "value must be list of floats, or ints");
                 return -1;
             }
         }
         vector.setValid();
     } else {
-        PyErr_SetString(PyExc_TypeError, "arg must be a vector");
+        PyErr_SetString(PyExc_TypeError, "value must be a vector");
         return -1;
     }
     if (strcmp(name, "coordinates") == 0) {
