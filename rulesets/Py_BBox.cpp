@@ -111,12 +111,15 @@ static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
             break;
         case 1:
             clist = PyTuple_GetItem(args, 0);
-            clist_size = PyList_Size(clist);
-            if (!PyList_Check(clist) || (clist_size != 3 && clist_size != 6)) {
+            if (!PyList_Check(clist)) {
                 PyErr_SetString(PyExc_TypeError, "BBox() from single value must a list 3 or 6 long");
                 return -1;
             }
-            
+            clist_size = PyList_Size(clist);
+            if (clist_size != 3 && clist_size != 6) {
+                PyErr_SetString(PyExc_ValueError, "BBox() from single value must a list 3 or 6 long");
+                return -1;
+            }
             val.resize(clist_size);
             for(int i = 0; i < clist_size; i++) {
                 PyObject * item = PyList_GetItem(clist, i);
