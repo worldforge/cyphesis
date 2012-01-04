@@ -105,46 +105,51 @@ int main()
     // allow cooler stuff to be done from the client.
     // FIXME Once the client is constrained to real operations, go back
     // to disallowing arbitrary operation names.
-    // fail_python_string("o=Operation('not_valid')");
+    // expect_python_error("o=Operation('not_valid')");
     run_python_string("o=Operation('not_valid')");
     run_python_string("o=Operation('get', to='1', from_='1')");
-    fail_python_string("o=Operation('get', from_=Message({'nonid': '1'}))");
-    fail_python_string("o=Operation('get', from_=Message({'id': 1}))");
-    fail_python_string("o=Operation('get', to=Message({'nonid': '1'}))");
-    fail_python_string("o=Operation('get', to=Message({'id': 1}))");
+    expect_python_error("o=Operation('get', from_=Message({'nonid': '1'}))",
+                        PyExc_TypeError);
+    expect_python_error("o=Operation('get', from_=Message({'id': 1}))",
+                        PyExc_TypeError);
+    expect_python_error("o=Operation('get', to=Message({'nonid': '1'}))",
+                        PyExc_TypeError);
+    expect_python_error("o=Operation('get', to=Message({'id': 1}))",
+                        PyExc_TypeError);
     run_python_string("e=Entity('1')");
     run_python_string("o=Operation('get', to=e, from_=e)");
     run_python_string("o=Operation('get', Entity(), to='1', from_='1')");
     run_python_string("o=Operation('get', Operation('set'), to='1', from_='1')");
-    fail_python_string("o=Operation('get', Location(), to='1', from_='1')");
+    expect_python_error("o=Operation('get', Location(), to='1', from_='1')",
+                        PyExc_TypeError);
     run_python_string("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')");
-    fail_python_string("Operation('get', Message('1'))");
+    expect_python_error("Operation('get', Message('1'))", PyExc_TypeError);
     run_python_string("Operation('get', Message({'objtype': 'obj', 'parents': ['thing']}))");
-    fail_python_string("o=Operation()");
-    fail_python_string("o=Operation(1)");
+    expect_python_error("o=Operation()", PyExc_TypeError);
+    expect_python_error("o=Operation(1)", PyExc_TypeError);
     run_python_string("o=Operation('get')");
     run_python_string("o.setSerialno(1)");
-    fail_python_string("o.setSerialno('1')");
+    expect_python_error("o.setSerialno('1')", PyExc_TypeError);
     run_python_string("o.setRefno(1)");
-    fail_python_string("o.setRefno('1')");
+    expect_python_error("o.setRefno('1')", PyExc_TypeError);
     run_python_string("o.setTo('1')");
-    fail_python_string("o.setTo(1)");
+    expect_python_error("o.setTo(1)", PyExc_TypeError);
     run_python_string("o.setFrom('2')");
-    fail_python_string("o.setFrom(2)");
+    expect_python_error("o.setFrom(2)", PyExc_TypeError);
     run_python_string("o.setSeconds(2)");
     run_python_string("o.setSeconds(2.0)");
-    fail_python_string("o.setSeconds('2.0')");
+    expect_python_error("o.setSeconds('2.0')", PyExc_TypeError);
     run_python_string("o.setFutureSeconds(2)");
     run_python_string("o.setFutureSeconds(2.0)");
-    fail_python_string("o.setFutureSeconds('2.0')");
-    fail_python_string("o.setArgs()");
+    expect_python_error("o.setFutureSeconds('2.0')", PyExc_TypeError);
+    expect_python_error("o.setArgs()", PyExc_TypeError);
     run_python_string("o.setArgs([])");
-    fail_python_string("o.setArgs(1)");
-    fail_python_string("o.setArgs([1])");
+    expect_python_error("o.setArgs(1)", PyExc_TypeError);
+    expect_python_error("o.setArgs([1])", PyExc_TypeError);
     run_python_string("o.setArgs([Operation('get')])");
     run_python_string("o.setArgs([Entity(parents=[\"oak\"])])");
     run_python_string("o.setArgs([Message({'parents': ['root']})])");
-    fail_python_string("o.setArgs([Message('1')])");
+    expect_python_error("o.setArgs([Message('1')])", PyExc_TypeError);
     run_python_string("import types");
     run_python_string("assert type(o.getSerialno()) == types.IntType");
     run_python_string("assert type(o.getRefno()) == types.IntType");
@@ -159,23 +164,23 @@ int main()
     run_python_string("assert type(o[0]) == Operation");
     run_python_string("assert type(o[1]) == Entity");
     run_python_string("assert type(o[2]) == Message");
-    fail_python_string("o[3]");
+    expect_python_error("o[3]", PyExc_IndexError);
     run_python_string("assert o + None == o");
-    fail_python_string("o + 1");
+    expect_python_error("o + 1", PyExc_TypeError);
     run_python_string("assert type(o + Oplist()) == Oplist");
     run_python_string("assert type(o + Operation('get')) == Oplist");
     run_python_string("assert type(o.from_) == types.StringType");
     run_python_string("assert type(o.to) == types.StringType");
     run_python_string("assert type(o.id) == types.StringType");
-    fail_python_string("o.from_='1'");
-    fail_python_string("o.from_=1");
-    fail_python_string("o.from_=Message({'id': 1})");
+    expect_python_error("o.from_='1'", PyExc_TypeError);
+    expect_python_error("o.from_=1", PyExc_TypeError);
+    expect_python_error("o.from_=Message({'id': 1})", PyExc_TypeError);
     run_python_string("o.from_=Message({'id': '1'})");
-    fail_python_string("o.to='1'");
-    fail_python_string("o.to=1");
-    fail_python_string("o.to=Message({'id': 1})");
+    expect_python_error("o.to='1'", PyExc_TypeError);
+    expect_python_error("o.to=1", PyExc_TypeError);
+    expect_python_error("o.to=Message({'id': 1})", PyExc_TypeError);
     run_python_string("o.to=Message({'id': '1'})");
-    fail_python_string("o.other=1");
+    expect_python_error("o.other=1", PyExc_AttributeError);
     
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
@@ -183,29 +188,31 @@ int main()
     // Hit the assert checks.
     run_python_string("arg1=Message({'objtype': 'obj', 'parents': ['thing']})");
     run_python_string("sabotage.null(arg1)");
-    fail_python_string("Operation('get', arg1)");
+    expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
 
     run_python_string("arg1=Entity()");
     run_python_string("sabotage.null(arg1)");
-    fail_python_string("Operation('get', arg1)");
+    expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
 
     run_python_string("arg1=Operation('get')");
     run_python_string("sabotage.null(arg1)");
-    fail_python_string("Operation('get', arg1)");
+    expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
 
-    fail_python_string("Operation('get', Entity(), arg1)");
-    fail_python_string("Operation('get', Entity(), Entity(), arg1)");
+    expect_python_error("Operation('get', Entity(), arg1)",
+                        PyExc_AssertionError);
+    expect_python_error("Operation('get', Entity(), Entity(), arg1)",
+                        PyExc_AssertionError);
 
     run_python_string("o2=Operation('get')");
     run_python_string("sabotage.null(o2)");
-    fail_python_string("o + o2");
+    expect_python_error("o + o2", PyExc_AssertionError);
 
     run_python_string("sabotage.clear_parents(o)");
-    fail_python_string("print o.id");
+    expect_python_error("print o.id", PyExc_AttributeError);
 
     run_python_string("ol = Oplist()");
     run_python_string("sabotage.null(ol)");
-    fail_python_string("o + ol");
+    expect_python_error("o + ol", PyExc_AssertionError);
 
     run_python_string("method_setSerialno=o.setSerialno");
     run_python_string("method_setRefno=o.setRefno");
@@ -224,27 +231,27 @@ int main()
     run_python_string("method_get_name=o.get_name");
 
     run_python_string("sabotage.null(o)");
-    fail_python_string("print o.to");
-    fail_python_string("len(o)");
-    fail_python_string("o[0]");
-    fail_python_string("o + None");
-    fail_python_string("o.to='1'");
+    expect_python_error("print o.to", PyExc_AssertionError);
+    expect_python_error("len(o)", PyExc_AssertionError);
+    expect_python_error("o[0]", PyExc_AssertionError);
+    expect_python_error("o + None", PyExc_AssertionError);
+    expect_python_error("o.to='1'", PyExc_AssertionError);
 
-    fail_python_string("method_setSerialno(1)");
-    fail_python_string("method_setRefno(1)");
-    fail_python_string("method_setTo('1')");
-    fail_python_string("method_setFrom('2')");
-    fail_python_string("method_setSeconds(2.0)");
-    fail_python_string("method_setFutureSeconds(2.0)");
-    fail_python_string("method_setArgs([])");
-    fail_python_string("method_getSerialno()");
-    fail_python_string("method_getRefno()");
-    fail_python_string("method_getTo()");
-    fail_python_string("method_getFrom()");
-    fail_python_string("method_getSeconds()");
-    fail_python_string("method_getFutureSeconds()");
-    fail_python_string("method_getArgs()");
-    fail_python_string("method_get_name()");
+    expect_python_error("method_setSerialno(1)", PyExc_AssertionError);
+    expect_python_error("method_setRefno(1)", PyExc_AssertionError);
+    expect_python_error("method_setTo('1')", PyExc_AssertionError);
+    expect_python_error("method_setFrom('2')", PyExc_AssertionError);
+    expect_python_error("method_setSeconds(2.0)", PyExc_AssertionError);
+    expect_python_error("method_setFutureSeconds(2.0)", PyExc_AssertionError);
+    expect_python_error("method_setArgs([])", PyExc_AssertionError);
+    expect_python_error("method_getSerialno()", PyExc_AssertionError);
+    expect_python_error("method_getRefno()", PyExc_AssertionError);
+    expect_python_error("method_getTo()", PyExc_AssertionError);
+    expect_python_error("method_getFrom()", PyExc_AssertionError);
+    expect_python_error("method_getSeconds()", PyExc_AssertionError);
+    expect_python_error("method_getFutureSeconds()", PyExc_AssertionError);
+    expect_python_error("method_getArgs()", PyExc_AssertionError);
+    expect_python_error("method_get_name()", PyExc_AssertionError);
 
 #endif // NDEBUG
 
