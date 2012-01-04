@@ -232,7 +232,7 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
                 if (PyObject_asMessageElement(val, val_obj) != 0) {
                     Py_DECREF(keys);
                     Py_DECREF(vals);
-                    PyErr_SetString(PyExc_TypeError, "Arg has no type.");
+                    PyErr_SetString(PyExc_TypeError, "val is not Atlas compatible.");
                     return -1;
                 }
                 self->entity->setAttr(key, val_obj);
