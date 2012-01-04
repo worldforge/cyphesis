@@ -156,30 +156,31 @@ int main()
     run_python_string("from atlas import Operation");
     run_python_string("from atlas import Oplist");
 
-    fail_python_string("LocatedEntity()");
-    fail_python_string("LocatedEntity('s')");
+    expect_python_error("LocatedEntity()", PyExc_TypeError);
+    expect_python_error("LocatedEntity('s')", PyExc_TypeError);
     run_python_string("le=LocatedEntity('1')");
     run_python_string("le_ent = le.as_entity()");
     run_python_string("assert(le_ent.id == '1')");
-    fail_python_string("le.send_world(Operation('get'))");
+    expect_python_error("le.send_world(Operation('get'))",
+                        PyExc_AttributeError);
     run_python_string("le==LocatedEntity('2')");
-    fail_python_string("print le.type");
-    fail_python_string("print le.foo_operation");
+    expect_python_error("print le.type", PyExc_AttributeError);
+    expect_python_error("print le.foo_operation", PyExc_AttributeError);
     run_python_string("print le.location");
     run_python_string("print le.contains");
-    fail_python_string("le.type");
-    fail_python_string("le.type='non_exist'");
-    fail_python_string("le.type=1");
+    expect_python_error("le.type", PyExc_AttributeError);
+    expect_python_error("le.type='non_exist'", PyExc_ValueError);
+    expect_python_error("le.type=1", PyExc_TypeError);
     run_python_string("le.type='game_entity'");
-    fail_python_string("le.type='game_entity'");
+    expect_python_error("le.type='game_entity'", PyExc_RuntimeError);
     run_python_string("le.type");
-    fail_python_string("le.map=1");
+    expect_python_error("le.map=1", PyExc_AttributeError);
     run_python_string("le.map_attr={'1': 2}");
     run_python_string("le.map_attr");
     run_python_string("le.list_attr=[1,2]");
     run_python_string("le.list_attr");
-    fail_python_string("le.non_atlas=set([1,2])");
-    fail_python_string("le.non_atlas");
+    expect_python_error("le.non_atlas=set([1,2])", PyExc_AttributeError);
+    expect_python_error("le.non_atlas", PyExc_AttributeError);
 
     run_python_string("class LocatedEntitySub(LocatedEntity): pass");
 
@@ -193,68 +194,70 @@ int main()
     // run_python_string("le.foo=['1']");
     // run_python_string("le.foo={'foo': 1, 'bar': '1'}");
 
-    fail_python_string("Thing()");
-    fail_python_string("Thing('s')");
-    fail_python_string("Thing(1)");
-    fail_python_string("Thing(LocatedEntity('1'))");
+    expect_python_error("Thing()", PyExc_TypeError);
+    expect_python_error("Thing('s')", PyExc_TypeError);
+    expect_python_error("Thing(1)", PyExc_TypeError);
+    expect_python_error("Thing(LocatedEntity('1'))", PyExc_TypeError);
     run_python_string("t=Thing('1')");
     run_python_string("Thing(t)");
     run_python_string("Thing(Character('1'))");
     run_python_string("t.as_entity()");
     run_python_string("t.send_world(Operation('get'))");
-    fail_python_string("t.send_world('get')");
-    fail_python_string("print t.type");
-    fail_python_string("print t.foo_operation");
+    expect_python_error("t.send_world('get')", PyExc_TypeError);
+    expect_python_error("print t.type", PyExc_AttributeError);
+    expect_python_error("print t.foo_operation", PyExc_AttributeError);
     run_python_string("print t.location");
     run_python_string("print t.contains");
 
-    fail_python_string("Character()");
-    fail_python_string("Character('s')");
-    fail_python_string("Character(1)");
-    fail_python_string("Character(Thing('1'))");
+    expect_python_error("Character()", PyExc_TypeError);
+    expect_python_error("Character('s')", PyExc_TypeError);
+    expect_python_error("Character(1)", PyExc_TypeError);
+    expect_python_error("Character(Thing('1'))", PyExc_TypeError);
     run_python_string("c=Character('1')");
     run_python_string("Character(c)");
     run_python_string("c.as_entity()");
     run_python_string("c.send_world(Operation('get'))");
-    fail_python_string("c.start_task()");
-    fail_python_string("c.start_task(Task(c))");
-    fail_python_string("c.start_task(1,Operation('cut'),Oplist())");
-    fail_python_string("c.start_task(Task(c),1,Oplist())");
-    fail_python_string("c.start_task(Task(c),Operation('cut'),1)");
+    expect_python_error("c.start_task()", PyExc_TypeError);
+    expect_python_error("c.start_task(Task(c))", PyExc_TypeError);
+    expect_python_error("c.start_task(1,Operation('cut'),Oplist())",
+                        PyExc_TypeError);
+    expect_python_error("c.start_task(Task(c),1,Oplist())", PyExc_TypeError);
+    expect_python_error("c.start_task(Task(c),Operation('cut'),1)",
+                        PyExc_TypeError);
     run_python_string("c.start_task(Task(c),Operation('cut'),Oplist())");
-    fail_python_string("c.mind2body(1)");
+    expect_python_error("c.mind2body(1)", PyExc_TypeError);
     run_python_string("c.mind2body(Operation('update'))");
     run_python_string("c.mind2body(Operation('get'))");
-    fail_python_string("print c.type");
-    fail_python_string("print c.foo_operation");
+    expect_python_error("print c.type", PyExc_AttributeError);
+    expect_python_error("print c.foo_operation", PyExc_AttributeError);
     run_python_string("print c.location");
     run_python_string("print c.contains");
 
-    fail_python_string("Mind()");
-    fail_python_string("Mind('s')");
-    fail_python_string("Mind(1)");
+    expect_python_error("Mind()", PyExc_TypeError);
+    expect_python_error("Mind('s')", PyExc_TypeError);
+    expect_python_error("Mind(1)", PyExc_TypeError);
     run_python_string("m=Mind('1')");
     run_python_string("m=Mind('1')");
     run_python_string("m_ent = m.as_entity()");
     run_python_string("assert(m_ent.id == '1')");
-    fail_python_string("m.send_world(Operation('get'))");
+    expect_python_error("m.send_world(Operation('get'))", PyExc_AttributeError);
     run_python_string("m==LocatedEntity('2')");
-    fail_python_string("print m.foo_operation");
+    expect_python_error("print m.foo_operation", PyExc_AttributeError);
     run_python_string("print m.location");
     run_python_string("print m.contains");
-    fail_python_string("m.type");
-    fail_python_string("m.map=1");
+    expect_python_error("m.type", PyExc_AttributeError);
+    expect_python_error("m.map=1", PyExc_AttributeError);
     run_python_string("m.string_attr='foo'");
     run_python_string("assert(m.string_attr == 'foo')");
     run_python_string("m.int_attr=23");
     run_python_string("assert(m.int_attr == 23)");
     run_python_string("m.float_attr=17.23");
-    fail_python_string("m.map_attr={'1': 2}");
-    fail_python_string("m.map_attr");
-    fail_python_string("m.list_attr=[1,2]");
-    fail_python_string("m.list_attr");
-    fail_python_string("m.non_atlas=set([1,2])");
-    fail_python_string("m.non_atlas");
+    expect_python_error("m.map_attr={'1': 2}", PyExc_AttributeError);
+    expect_python_error("m.map_attr", PyExc_AttributeError);
+    expect_python_error("m.list_attr=[1,2]", PyExc_AttributeError);
+    expect_python_error("m.list_attr", PyExc_AttributeError);
+    expect_python_error("m.non_atlas=set([1,2])", PyExc_AttributeError);
+    expect_python_error("m.non_atlas", PyExc_AttributeError);
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
@@ -276,14 +279,17 @@ int main()
     run_python_string("as_entity_method=t.as_entity");
     run_python_string("send_world_method=t.send_world");
     run_python_string("sabotage.null(t)");
-    fail_python_string("as_entity_method()");
-    fail_python_string("send_world_method(Operation('get'))");
+    expect_python_error("as_entity_method()", PyExc_AssertionError);
+    expect_python_error("send_world_method(Operation('get'))",
+                        PyExc_AssertionError);
 
     run_python_string("start_task_method=c.start_task");
     run_python_string("mind2body_method=c.mind2body");
     run_python_string("sabotage.null(c)");
-    fail_python_string("start_task_method(Task(Character('3')),Operation('cut'),Oplist())");
-    fail_python_string("mind2body_method(Operation('update'))");
+    expect_python_error("start_task_method(Task(Character('3')),Operation('cut'),Oplist())",
+                        PyExc_AssertionError);
+    expect_python_error("mind2body_method(Operation('update'))",
+                        PyExc_AssertionError);
 
 #endif // NDEBUG
 
