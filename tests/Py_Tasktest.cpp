@@ -77,9 +77,9 @@ int main()
     assert(task != 0);
 
     run_python_string("from server import Task");
-    fail_python_string("Task()");
-    fail_python_string("Task(1)");
-    fail_python_string("Task('1')");
+    expect_python_error("Task()", PyExc_TypeError);
+    expect_python_error("Task(1)", PyExc_TypeError);
+    expect_python_error("Task('1')", PyExc_TypeError);
     run_python_string("from server import Character");
     run_python_string("c=Character('1')");
     run_python_string("t=Task(c)");
@@ -88,18 +88,18 @@ int main()
     run_python_string("assert t.character == c");
     run_python_string("print t.progress");
     run_python_string("print t.rate");
-    fail_python_string("print t.foo");
+    expect_python_error("print t.foo", PyExc_AttributeError);
     run_python_string("t.progress = 0");
     run_python_string("t.progress = 0.5");
-    fail_python_string("t.progress = '1'");
+    expect_python_error("t.progress = '1'", PyExc_TypeError);
     run_python_string("t.rate = 0");
     run_python_string("t.rate = 0.5");
-    fail_python_string("t.rate = '1'");
+    expect_python_error("t.rate = '1'", PyExc_TypeError);
     // The raw wrapper object has no dict for arbitrary attributes
-    fail_python_string("t.foo = 1");
-    fail_python_string("t.foo = 1.1");
-    fail_python_string("t.foo = 'foois1'");
-    fail_python_string("assert t.foo == 'foois1'");
+    expect_python_error("t.foo = 1", PyExc_AttributeError);
+    expect_python_error("t.foo = 1.1", PyExc_AttributeError);
+    expect_python_error("t.foo = 'foois1'", PyExc_AttributeError);
+    expect_python_error("assert t.foo == 'foois1'", PyExc_AttributeError);
 
     run_python_string("class TaskSubclass(Task): pass");
     run_python_string("t2=TaskSubclass(c)");
@@ -112,17 +112,17 @@ int main()
 
     // Tasks do not permit wrappers of core server objects
     // to be stored directly.
-    fail_python_string("t.foo = Character('2')");
+    expect_python_error("t.foo = Character('2')", PyExc_TypeError);
     run_python_string("import server");
-    fail_python_string("t.foo = server.LocatedEntity('2')");
-    fail_python_string("t.foo = server.Thing('2')");
+    expect_python_error("t.foo = server.LocatedEntity('2')", PyExc_TypeError);
+    expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 
     run_python_string("assert not t.obsolete()");
     run_python_string("print t.count()");
     run_python_string("print t.new_tick()");
     run_python_string("print t.next_tick(1)");
     run_python_string("print t.next_tick(1.1)");
-    fail_python_string("print t.next_tick('1')");
+    expect_python_error("print t.next_tick('1')", PyExc_TypeError);
     run_python_string("t.irrelevant()");
     run_python_string("assert t.obsolete()");
 
@@ -137,20 +137,20 @@ int main()
 
     run_python_string("sabotage.null(t)");
 
-    fail_python_string("irrelevant_methd()");
-    fail_python_string("obsolete_methd()");
-    fail_python_string("count_methd()");
-    fail_python_string("new_tick_methd()");
-    fail_python_string("next_tick_methd(1.1)");
+    expect_python_error("irrelevant_methd()", PyExc_AssertionError);
+    expect_python_error("obsolete_methd()", PyExc_AssertionError);
+    expect_python_error("count_methd()", PyExc_AssertionError);
+    expect_python_error("new_tick_methd()", PyExc_AssertionError);
+    expect_python_error("next_tick_methd(1.1)", PyExc_AssertionError);
 
-    fail_python_string("t.progress");
-    fail_python_string("t.progress = 0");
-    fail_python_string("t==Task(c)");
-    fail_python_string("Task(t)");
+    expect_python_error("t.progress", PyExc_AssertionError);
+    expect_python_error("t.progress = 0", PyExc_AssertionError);
+    expect_python_error("t==Task(c)", PyExc_AssertionError);
+    expect_python_error("Task(t)", PyExc_AssertionError);
 
     run_python_string("c2=Character('2')");
     run_python_string("sabotage.null(c2)");
-    fail_python_string("t=Task(c2)");
+    expect_python_error("t=Task(c2)", PyExc_AssertionError);
 #endif // NDEBUG
 
     shutdown_python_api();
