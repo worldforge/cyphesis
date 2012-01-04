@@ -154,8 +154,12 @@ static int Quaternion_init(PyQuaternion * self,
             break;
         case 1:
             clist = PyTuple_GetItem(args, 0);
-            if (!PyList_Check(clist) || PyList_Size(clist) != 4) {
-                PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list 4 long");
+            if (!PyList_Check(clist)) {
+                PyErr_SetString(PyExc_TypeError, "Quaternion() from single value must a list");
+                return -1;
+            }
+            if (PyList_Size(clist) != 4) {
+                PyErr_SetString(PyExc_ValueError, "Quaternion() from a list must be 4 long");
                 return -1;
             }
             {
