@@ -82,9 +82,9 @@ int main()
     run_python_string("print 'hello'");
     run_python_string("import sys");
     run_python_string("sys.stdout.write('hello')");
-    fail_python_string("sys.stdout.write(1)");
+    expect_python_error("sys.stdout.write(1)", PyExc_TypeError);
     run_python_string("sys.stderr.write('hello')");
-    fail_python_string("sys.stderr.write(1)");
+    expect_python_error("sys.stderr.write(1)", PyExc_TypeError);
 
     run_python_string("from common import log");
     run_python_string("log.debug('foo')");
@@ -99,25 +99,31 @@ int main()
     run_python_string("l2=atlas.Location()");
 
     run_python_string("import physics");
-    fail_python_string("physics.distance_to()");
-    fail_python_string("physics.square_distance()");
-    fail_python_string("physics.square_horizontal_distance()");
+    expect_python_error("physics.distance_to()", PyExc_TypeError);
+    expect_python_error("physics.square_distance()", PyExc_TypeError);
+    expect_python_error("physics.square_horizontal_distance()",
+                        PyExc_TypeError);
     run_python_string("physics.distance_to(l1, l2)");
     run_python_string("physics.square_distance(l1, l2)");
     run_python_string("physics.square_horizontal_distance(l1, l2)");
-    fail_python_string("physics.distance_to('1', l2)");
-    fail_python_string("physics.square_distance('1', l2)");
-    fail_python_string("physics.square_horizontal_distance('1', l2)");
+    expect_python_error("physics.distance_to('1', l2)", PyExc_TypeError);
+    expect_python_error("physics.square_distance('1', l2)", PyExc_TypeError);
+    expect_python_error("physics.square_horizontal_distance('1', l2)",
+                        PyExc_TypeError);
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     run_python_string("sabotage.null(l1)");
-    fail_python_string("physics.distance_to(l1, l2)");
-    fail_python_string("physics.distance_to(l2, l1)");
-    fail_python_string("physics.square_distance(l1, l2)");
-    fail_python_string("physics.square_distance(l2, l1)");
-    fail_python_string("physics.square_horizontal_distance(l1, l2)");
-    fail_python_string("physics.square_horizontal_distance(l2, l1)");
+    expect_python_error("physics.distance_to(l1, l2)", PyExc_AssertionError);
+    expect_python_error("physics.distance_to(l2, l1)", PyExc_AssertionError);
+    expect_python_error("physics.square_distance(l1, l2)",
+                        PyExc_AssertionError);
+    expect_python_error("physics.square_distance(l2, l1)",
+                        PyExc_AssertionError);
+    expect_python_error("physics.square_horizontal_distance(l1, l2)",
+                        PyExc_AssertionError);
+    expect_python_error("physics.square_horizontal_distance(l2, l1)",
+                        PyExc_AssertionError);
 #endif // NDEBUG
 
     shutdown_python_api();
