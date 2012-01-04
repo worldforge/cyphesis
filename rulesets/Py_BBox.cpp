@@ -75,7 +75,7 @@ static int BBox_setattro(PyBBox *self, PyObject *oname, PyObject *v)
     }
     PyPoint3D * pt = (PyPoint3D *)v;
     if (!pt->coords.isValid()) {
-        PyErr_SetString(PyExc_TypeError, "BBox setattr must take a valid Point");
+        PyErr_SetString(PyExc_ValueError, "BBox setattr must take a valid Point");
         return -1;
     }
     const Point3D & point = pt->coords;
