@@ -448,6 +448,7 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
         }
         return (PyObject*)res;
     }
+    PyErr_SetString(PyExc_TypeError, "Unknown other in Operation.num_add");
     return NULL;
 }
 
