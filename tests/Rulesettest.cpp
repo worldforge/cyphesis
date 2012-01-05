@@ -28,6 +28,7 @@
 #include "server/EntityBuilder.h"
 
 #include "common/const.h"
+#include "common/globals.h"
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -48,11 +49,50 @@ class ExposedRuleset : public Ruleset {
 
 };
 
+const std::string data_path = TESTDATADIR;
+
 int main(int argc, char ** argv)
 {
     int ret;
 
+    ruleset = "game";
+
     {
+        database_flag = true;
+        EntityBuilder::init();
+        Ruleset::init();
+
+        assert(Ruleset::instance() != 0);
+
+        assert(EntityBuilder::instance() != 0);
+
+        Ruleset::del();
+        assert(Ruleset::instance() == 0);
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
+        Inheritance::clear();
+    }
+
+    {
+        database_flag = false;
+        etc_directory = data_path + "/ruleset1/etc";
+        EntityBuilder::init();
+        Ruleset::init();
+
+        assert(Ruleset::instance() != 0);
+
+        assert(EntityBuilder::instance() != 0);
+
+        Ruleset::del();
+        assert(Ruleset::instance() == 0);
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
+        Inheritance::clear();
+    }
+
+    {
+        database_flag = false;
+        etc_directory = data_path + "/ruleset2/etc";
         EntityBuilder::init();
         Ruleset::init();
 
@@ -325,7 +365,6 @@ int main(int argc, char ** argv)
 #include "server/Persistence.h"
 
 #include "common/AtlasFileLoader.h"
-#include "common/globals.h"
 #include "common/log.h"
 #include "common/TypeNode.h"
 
