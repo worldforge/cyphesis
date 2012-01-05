@@ -32,6 +32,8 @@
 
 #include <cassert>
 
+static bool stub_isOpen = true;
+
 const std::string data_path = TESTDATADIR;
 
 int main()
@@ -41,14 +43,46 @@ int main()
 
     OpVector res;
     wl = new WorldLoader("23", "42");
+    stub_isOpen = true;
     wl->setup(String::compose("%1/no_such_file", data_path), res);
-    assert(wl->isComplete());
-    assert(res.empty());
     delete wl;
 
     res.clear();
     wl = new WorldLoader("23", "42");
+    stub_isOpen = false;
     wl->setup(String::compose("%1/world.xml", data_path), res);
-    assert(!wl->isComplete());
-    assert(!res.empty());
+    delete wl;
+}
+
+// stubs
+
+#include "common/AtlasFileLoader.h"
+#include "common/log.h"
+
+AtlasFileLoader::AtlasFileLoader(const std::string & filename,
+      std::map<std::string, Atlas::Objects::Root> & m) : m_messages(m)
+{
+}
+
+AtlasFileLoader::~AtlasFileLoader()
+{
+}
+
+void AtlasFileLoader::objectArrived(const Atlas::Objects::Root & obj)
+{
+}
+
+bool AtlasFileLoader::isOpen()
+{
+    return stub_isOpen;
+}
+
+/// Read input file to atlas codec.
+void AtlasFileLoader::read()
+{
+}
+
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }

@@ -1481,13 +1481,7 @@ Mastertest_LDADD = \
 WorldLoadertest_SOURCES = WorldLoadertest.cpp
 WorldLoadertest_LDADD = \
         $(top_builddir)/tools/WorldLoader.o \
-        $(top_builddir)/common/AtlasFileLoader.o \
-        $(top_builddir)/common/ClientTask.o \
-        $(top_builddir)/common/const.o \
-        $(top_builddir)/common/globals.o \
-        $(top_builddir)/common/system_prefix.o \
-        $(top_builddir)/common/binreloc.o \
-        $(top_builddir)/common/log.o
+        $(top_builddir)/common/ClientTask.o
 
 AdminClienttest_SOURCES = AdminClienttest.cpp
 AdminClienttest_LDADD = \
