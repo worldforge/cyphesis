@@ -55,7 +55,7 @@ BaseClient::~BaseClient()
 }
 
 /// \brief Send an operation to the server
-inline void BaseClient::send(const Operation & op)
+void BaseClient::send(const Operation & op)
 {
     m_connection.send(op);
 }
