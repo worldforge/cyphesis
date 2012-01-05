@@ -44,17 +44,9 @@ class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder {
                     std::map<std::string, Atlas::Objects::Root> & m);
     ~AtlasFileLoader();
 
-    /// Indicate if the input file has been opened successfully
-    bool isOpen() {
-        return m_file.is_open();
-    }
+    bool isOpen();
 
-    /// Read input file to atlas codec.
-    void read() {
-        while (!m_file.eof()) {
-            m_codec->poll();
-        }
-    }
+    void read();
 
     /// \brief Read only accessor for the number of messages loaded
     int count() { return m_count; }

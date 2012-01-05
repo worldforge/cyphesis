@@ -459,6 +459,16 @@ void AtlasFileLoader::objectArrived(const Root & obj)
 {
 }
 
+bool AtlasFileLoader::isOpen()
+{
+    return true;
+}
+
+/// Read input file to atlas codec.
+void AtlasFileLoader::read()
+{
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)

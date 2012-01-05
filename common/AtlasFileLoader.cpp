@@ -59,3 +59,18 @@ AtlasFileLoader::~AtlasFileLoader()
 {
     delete m_codec;
 }
+
+/// Indicate if the input file has been opened successfully
+bool AtlasFileLoader::isOpen()
+{
+    return m_file.is_open();
+}
+
+/// Read input file to atlas codec.
+void AtlasFileLoader::read()
+{
+    while (!m_file.eof()) {
+        m_codec->poll();
+    }
+}
+
