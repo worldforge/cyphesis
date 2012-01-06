@@ -14,7 +14,9 @@ import server
 
 class Heaping(server.Task):
     """ A task for laying down built up terrain with a digging implement."""
-    class Obstructed(Exception): pass
+    class Obstructed(Exception):
+        "An exception indicating this task is obstructed by an entity>"
+        pass
 
     def heap_operation(self, op):
         """ Op handler for cut op which activates this task """
