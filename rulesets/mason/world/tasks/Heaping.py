@@ -8,11 +8,13 @@ from physics import Point3D
 from physics import Vector3D
 
 import math
+import weakref
 
 import server
 
 class Heaping(server.Task):
     """ A task for laying down built up terrain with a digging implement."""
+    class Obstructed(Exception): pass
 
     def heap_operation(self, op):
         """ Op handler for cut op which activates this task """
@@ -21,7 +23,6 @@ class Heaping(server.Task):
         if len(op) < 1:
             sys.stderr.write("Heaping task has no target in cut op")
 
-        # FIXME Use weak references, once we have them
         self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
 
@@ -53,14 +54,17 @@ class Heaping(server.Task):
 
         self.progress = 0
 
-
         res=Oplist()
 
-
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
-            mods = self.target().terrain.find_mods(self.pos)
-            if len(mods) == 0:
+            try:
+                mod = self._find_mod('motte')
+            except Obstructed:
+                self.irrelevant()
+                return
+            if mod is None:
                 # There is no terrain mod where we are digging,
+                print "no existing mod"
                 z=self.character.location.coordinates.z + 1.0
                 modmap = {'height': z,
                           'shape': Polygon([[ -0.7, -0.7 ],
@@ -88,36 +92,40 @@ class Heaping(server.Task):
                                               area = area_map),
                                        to=self.target())
                 res.append(motte_create)
+                res.append(self.next_tick(0.75))
+                return res
             else:
-                for mod in mods:
-                    if not hasattr(mod, 'name') or mod.name != 'motte':
-                        continue
-                    area = mod.terrainmod.shape.area()
-                    factor = math.sqrt((area + 1) / area)
-                    mod.terrainmod.shape *= factor
-                    mod.terrainmod.height += 1 / area
-                    box = mod.terrainmod.shape.footprint()
-                    mod.bbox = [box.low_corner().x,
-                                box.low_corner().y,
-                                0,
-                                box.high_corner().x,
-                                box.high_corner().y,
-                                mod.terrainmod.height]
+                print "found existing mod"
+                self.terrain_mod = weakref.ref(mod)
 
-                    area_shape = mod.terrainmod.shape.as_data()
-                    area_map = {'points': area_shape['points'],
-                                'layer': 7,
-                                'type': 'polygon'}
-                    # FIXME This area is not getting broadcast
-                    mod.area = area_map
-                    # We have modified the attribute in place,
-                    # so must send an update op to propagate
-                    res.append(Operation("update", to=mod.id))
-                    break
-            # self.terrain_mod = "moddy_mod_mod"
+        mod = self.terrain_mod()
+        area = mod.terrainmod.shape.area()
+        factor = math.sqrt((area + 1) / area)
+        mod.terrainmod.shape *= factor
+        mod.terrainmod.height += 1 / area
+        box = mod.terrainmod.shape.footprint()
+        mod.bbox = [box.low_corner().x,
+                    box.low_corner().y,
+                    0,
+                    box.high_corner().x,
+                    box.high_corner().y,
+                    mod.terrainmod.height]
 
-
-
+        area_shape = mod.terrainmod.shape.as_data()
+        area_map = {'points': area_shape['points'],
+                    'layer': 7,
+                    'type': 'polygon'}
+        # FIXME This area is not getting broadcast
+        mod.area = area_map
+        # We have modified the attribute in place,
+        # so must send an update op to propagate
+        res.append(Operation("update", to=mod.id))
         res.append(self.next_tick(0.75))
-
         return res
+    def _find_mod(self, name):
+        mods = self.target().terrain.find_mods(self.pos)
+        if len(mods) != 0:
+            for mod in mods:
+                if hasattr(mod, 'name') and mod.name == 'motte':
+                    return mod
+            raise Obstructed, "Another mod is in the way"
