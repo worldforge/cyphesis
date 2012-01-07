@@ -74,22 +74,6 @@ void TerrainModProperty::set(const Element & ent)
 
 }
 
-const TerrainProperty * TerrainModProperty::getTerrain(Entity * owner)
-{
-    const PropertyBase * terr;
-    LocatedEntity * ent = owner;
-
-    while ( (terr = ent->getProperty("terrain")) == NULL) {
-        ent = ent->m_location.m_loc;
-        if (ent == NULL) {
-            return NULL;
-        }
-    }
-
-    const TerrainProperty * tp = dynamic_cast<const TerrainProperty*>(terr);
-    return tp;
-}
-
 void TerrainModProperty::add(const std::string & s, MapType & ent) const
 {
     get(ent[s]);

@@ -20,10 +20,11 @@
 #ifndef RULESETS_TERRAIN_MOD_PROPERTY_H
 #define RULESETS_TERRAIN_MOD_PROPERTY_H
 
-#include "common/Property.h"
 #include "common/OperationRouter.h"
 
 #include "physics/Vector3D.h"
+
+#include "rulesets/TerrainEffectorProperty.h"
 
 namespace Mercator {
     class TerrainMod;
@@ -34,7 +35,7 @@ class TerrainModTranslator;
 
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
-class TerrainModProperty : public PropertyBase {
+class TerrainModProperty : public TerrainEffectorProperty {
   protected:
 
     /// \brief Collection of applied terrain mod data
@@ -51,8 +52,6 @@ class TerrainModProperty : public PropertyBase {
      * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
      */
     TerrainModTranslator* m_innerMod;
-
-    const TerrainProperty* getTerrain(Entity * owner);
 
   public:
 

@@ -503,6 +503,7 @@ TerrainModPropertytest_SOURCES = TerrainModPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TerrainModPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainModProperty.o \
+        $(top_builddir)/rulesets/TerrainEffectorProperty.o \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
