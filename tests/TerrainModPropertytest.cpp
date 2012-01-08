@@ -33,7 +33,7 @@
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-int main()
+static int run_coverage()
 {
     HandlerMap terrainModHandlers;
 
@@ -102,8 +102,33 @@ int main()
 
     pc.basicCoverage();
 
-    // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
+}
+
+static TerrainProperty * stub_getTerrain_return = 0;
+
+int main()
+{
+    {
+        HandlerMap terrainModHandlers;
+
+        TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
+
+        MapType shape;
+        MapType mod;
+        
+        shape["type"] = "polygon";
+        shape["points"] = ListType(3, ListType(2, 1.1f));
+        mod["shape"] = shape;
+        mod["type"] = "levelmod";
+
+        ap->set(mod);
+
+        // FIXME verify that the mod really takes effect
+        // ap->apply(0);
+    }
+
+    return run_coverage();
 }
 
 // stubs
@@ -113,6 +138,11 @@ int main()
 #include "modules/TerrainContext.h"
 
 #include <Mercator/TerrainMod.h>
+
+const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)
+{
+    return stub_getTerrain_return;
+}
 
 PropertyBase * Entity::modProperty(const std::string & name)
 {
