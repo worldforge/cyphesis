@@ -26,7 +26,7 @@ class TerrainProperty;
 
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
-class TerrainEffectorProperty : public PropertyBase {
+class TerrainEffectorProperty : public Property<Atlas::Message::MapType> {
   protected:
     const TerrainProperty* getTerrain(Entity * owner);
 };

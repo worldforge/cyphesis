@@ -38,9 +38,6 @@ class TerrainModTranslator;
 class TerrainModProperty : public TerrainEffectorProperty {
   protected:
 
-    /// \brief Collection of applied terrain mod data
-    Atlas::Message::MapType  m_data;
-
     /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
     Mercator::TerrainMod *m_modptr;
 
@@ -58,10 +55,6 @@ class TerrainModProperty : public TerrainEffectorProperty {
     explicit TerrainModProperty(const HandlerMap &);
     ~TerrainModProperty();
 
-    virtual int get(Atlas::Message::Element &) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string & key,
-                     Atlas::Message::MapType & map) const;
     virtual void install(Entity *);
     virtual void apply(Entity *);
 

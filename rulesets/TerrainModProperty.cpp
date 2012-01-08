@@ -58,27 +58,6 @@ TerrainModProperty::~TerrainModProperty()
     delete m_innerMod;
 }
 
-int TerrainModProperty::get(Element & ent) const
-{
-    MapType & mod = (ent = MapType()).Map();
-    mod = m_data;
-    return 0;
-}
-
-void TerrainModProperty::set(const Element & ent)
-{
-    if (ent.isMap()) {
-        const MapType & mod = ent.Map();
-        m_data = mod;
-    }
-
-}
-
-void TerrainModProperty::add(const std::string & s, MapType & ent) const
-{
-    get(ent[s]);
-}
-
 void TerrainModProperty::install(Entity * owner)
 {
     HandlerMap::const_iterator I = m_handlers.begin();
