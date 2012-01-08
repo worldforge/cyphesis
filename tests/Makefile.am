@@ -885,12 +885,6 @@ PythonArithmeticFactorytest_LDADD = \
         $(top_builddir)/rulesets/PythonArithmeticFactory.o \
         $(top_builddir)/rulesets/PythonClass.o
 
-BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
-BulletDomainintegration_LDADD = \
-        $(top_builddir)/rulesets/BulletDomain.o \
-        $(top_builddir)/rulesets/Domain.o \
-        $(TERRAIN_LIBS)
-
 TerrainModtest_SOURCES = TerrainModtest.cpp
 TerrainModtest_LDADD = \
         $(top_builddir)/rulesets/TerrainModTranslator.o \
@@ -910,6 +904,12 @@ MindPropertyintegration_LDADD = \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
+
+BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
+BulletDomainintegration_LDADD = \
+        $(top_builddir)/rulesets/BulletDomain.o \
+        $(top_builddir)/rulesets/Domain.o \
+        $(TERRAIN_LIBS)
 
 # CLIENT_TESTS
 
