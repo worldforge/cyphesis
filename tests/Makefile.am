@@ -51,7 +51,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
                  TerrainModtest PythonClasstest
 
-RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration
+RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
+                             TerrainPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest
@@ -909,6 +910,26 @@ BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
 BulletDomainintegration_LDADD = \
         $(top_builddir)/rulesets/BulletDomain.o \
         $(top_builddir)/rulesets/Domain.o \
+        $(TERRAIN_LIBS)
+
+TerrainPropertyintegration_SOURCES = TerrainPropertyintegration.cpp
+TerrainPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/TerrainModProperty.o \
+        $(top_builddir)/rulesets/TerrainEffectorProperty.o \
+        $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/rulesets/TerrainModTranslator.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/rulesets/Domain.o \
+        $(top_builddir)/rulesets/AtlasProperties.o \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/BaseWorld.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/PropertyManager.o \
+        $(top_builddir)/common/Router.o \
+        $(top_builddir)/common/operations.o \
+        $(top_builddir)/common/id.o \
         $(TERRAIN_LIBS)
 
 # CLIENT_TESTS
