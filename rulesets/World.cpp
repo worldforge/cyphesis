@@ -101,7 +101,11 @@ void World::EatOperation(const Operation & op, OpVector & res)
             if (!mass.isFloat()) {
                 mass = 0.;
             }
-            nour_arg->setAttr("mass", log(mass.Float() + 1));
+            // FIXME to do this right we need to know how long since the
+            // last tick, so the from entity needs to tell us.
+            nour_arg->setAttr("mass",
+                              std::pow(mass.Float(), 0.5) /
+                                      (60.0 * 24.0));
             nourish->setArgs1(nour_arg);
             res.push_back(nourish);
         }
