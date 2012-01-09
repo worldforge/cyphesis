@@ -168,7 +168,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
  
         m_nourishment = 0;
         Element maxmass_attr;
-        if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT)) {
+        if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
             mass = std::min(mass, maxmass_attr.Float());
         }
         PropertyBase * biomass = modPropertyType<double>("biomass");
