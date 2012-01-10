@@ -135,6 +135,9 @@ class Trailblaze(server.Task):
         # create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line), to=target)
         bbox = [minx, miny, minz, maxx, maxy, maxz]
         print "area %r box %r" % (area, bbox)
-        create = Operation('create', Entity(name='path', type='path', location=new_loc, bbox=bbox, area={'points' : area, 'layer' : 7}, line=line), to=target)
+        create = Operation('create',
+              Entity(name='path', type='path', location=new_loc, bbox=bbox,
+                     area={'shape': {'points' : area, 'type': 'polygon'},
+                           'layer': 7}, line=line), to=target)
         res.append(create)
         return
