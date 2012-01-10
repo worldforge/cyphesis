@@ -716,12 +716,13 @@ def _setup_outpost(m):
 
 def _setup_settlement(m):
 
-    path_area={'points' : [ [-26,-62], [-36,-31], [-26,-14], [2,-1], [22, 40],
-                            [132,122], [140,127], [144.5, 146.5], [169, 153],
-                            [169,155], [142.5,148.5], [138,129], [130,124],
-                            [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ],
-               'layer' : 7,
-               'type': 'polygon'}
+    path_area={'shape': {
+                'points': [[-26,-62], [-36,-31], [-26,-14], [2,-1], [22, 40],
+                           [132,122], [140,127], [144.5, 146.5], [169, 153],
+                           [169,155], [142.5,148.5], [138,129], [130,124],
+                           [18,40], [-2, 0], [-28,-12], [-38,-29], [-29,-62] ],
+                'type': 'polygon'},
+               'layer': 7}
     m.make('path', name='path to village', pos=(10, 20,settlement_height),
            area=path_area, bbox=[-38,-62,0,169,154,1],
            spawn={'name': 'settler village',
@@ -747,19 +748,25 @@ def _setup_settlement(m):
     carrotfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
     # this makes a carrot field storing its identity in carrotfield
     carrotfield = m.make('ploughed_field', name='field', pos=(120,170,30),
-                         status=1.0, area={'points' : carrotfield_points,
-                                           'layer' : 8},
+                         status=1.0, area={'shape': {
+                                            'points': carrotfield_points,
+                                            'type': 'polygon'},
+                                           'layer': 8},
                          bbox=[20,20,0])
     turnipfield_points = [ [0,0], [0,20], [20,20], [20,0] ]
     turnipfield = m.make('ploughed_field', name='field', pos=(142,170,30),
-                         status=1.0, area={'points' : turnipfield_points,
-                                           'layer' : 8},
+                         status=1.0, area={'shape': {
+                                            'points': turnipfield_points,
+                                            'type': 'polygon'},
+                                           'layer': 8},
                          bbox=[20,20,0])
 
     # plantfield(m, 'carrot', carrotfield, carrotfield_points)
     # plantfield(m, 'turnip', turnipfield, turnipfield_points)
 
-    village_square={'points': [[-10, -14], [15, -11], [13,18], [-8, 11]],
+    village_square={'shape': {
+                     'points': [[-10, -14], [15, -11], [13,18], [-8, 11]],
+                     'type': 'polygon'},
                     'layer':7 }
     m.make('path', name='village_square', pos=(150, 150, 22),
            area=village_square, bbox=[-10, -14, 0, 15, 18, 1])
@@ -784,7 +791,8 @@ def _setup_camp(m):
     camp_area_points=[]
     for i in range(10, 350, 17):
         camp_area_points.append([14 * sin(radians(i)), 16 * cos(radians(i))])
-    camp_area={'points': camp_area_points, 'layer':7, 'type': 'polygon' }
+    camp_area={'shape': {'points': camp_area_points, 'type': 'polygon'},
+               'layer': 7 }
     m.make('path', name='camp_area', pos=camp_pos, area=camp_area,
            bbox=[-14, -16, 0, 14, 16, 1],
            spawn={'name': 'goblin village',
@@ -893,8 +901,12 @@ def add_village(host='', account='', password='', **args):
     m.make('house3',pos=(150,142,22),orientation=directions[2])
     m.make('house3',pos=(158,142,22),orientation=directions[5])
 
-    m.make('ploughed_field', name='field',pos=(120,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
-    m.make('ploughed_field', name='field',pos=(142,170,30),status=1.0,area={'points' : [ [0,0], [0,20], [20,20], [20,0] ], 'layer' : 8})
+    m.make('ploughed_field', name='field', pos=(120,170,30), status=1.0,
+           area={'shape': {'points' : [[0,0], [0,20], [20,20], [20,0]],
+                           'type': 'polygon'}, 'layer': 8})
+    m.make('ploughed_field', name='field', pos=(142,170,30), status=1.0,
+           area={'shape': {'points' : [[0,0], [0,20], [20,20], [20,0] ],
+                           'type': 'polgyon'}, 'layer': 8})
 
 def flat_terrain(host='', account='', password='', **args):
 #   general things
@@ -1035,9 +1047,16 @@ def add_castle(host='', account='', password='', **args):
     # inn 
     m.make('inn', pos=(-454.429, 12.7224, settlement_height), orientation=[0,0,0.28,1])
 
-    castle_path_area = {'points': [[-400, -34], [-372, -34], [-350, -42], [-300, -56], [-215, -42], [-180, -5], [-125, -6], [-86, -4],
-        [-86, -2], [-125, -4], [-180, -3], [-215, -40], [-300, -54], [-350, -40], [-372, -30], [-400, -30]], 'layer' : 7}
-    m.make('path', name='path to castle',pos=(0, 0, settlement_height), area=castle_path_area,bbox=[100,8,1])
+    castle_path_area = {'shape': {
+                         'points': [[-400, -34], [-372, -34], [-350, -42],
+                                    [-300, -56], [-215, -42], [-180, -5],
+                                    [-125, -6], [-86, -4], [-86, -2],
+                                    [-125, -4], [-180, -3], [-215, -40],
+                                    [-300, -54], [-350, -40], [-372, -30],
+                                    [-400, -30]], 'type': 'polygon'},
+                         'layer' : 7}
+    m.make('path', name='path to castle', pos=(0, 0, settlement_height),
+           area=castle_path_area, bbox=[100,8,1])
 
 def add_fish(host='', account='', password='', **args):
 #   general things
