@@ -29,6 +29,7 @@
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/axisbox.h>
+#include <wfmath/intersect.h>
 #include <wfmath/point.h>
 #include <wfmath/polygon.h>
 
@@ -67,6 +68,24 @@ int main()
         assert(s != 0);
         assert(s->isValid());
 
+    }
+
+    {
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(
+              WFMath::AxisBox<2>(WFMath::Point<2>(0,0),
+                                 WFMath::Point<2>(1,1)));
+
+        assert(s != 0);
+        assert(s->isValid());
+        assert(s->intersect(WFMath::Point<2>(0.5, 0.5)));
+        assert(!s->intersect(WFMath::Point<2>(1.5, 0.5)));
+        assert(!s->intersect(WFMath::Point<2>(1.5, 1.5)));
+        assert(!s->intersect(WFMath::Point<2>(0.5, 1.5)));
+        assert(!s->intersect(WFMath::Point<2>(-0.5, 1.5)));
+        assert(!s->intersect(WFMath::Point<2>(-0.5, 0.5)));
+        assert(!s->intersect(WFMath::Point<2>(-0.5, -0.5)));
+        assert(!s->intersect(WFMath::Point<2>(0.5, -0.5)));
+        assert(!s->intersect(WFMath::Point<2>(1.5, -0.5)));
     }
 
     {
@@ -131,6 +150,29 @@ int main()
 
         assert(s != 0);
         assert(s->isValid());
+    }
+
+    {
+        WFMath::Polygon<2> p;
+        p.addCorner(0, WFMath::Point<2>(1,1));
+        p.addCorner(0, WFMath::Point<2>(1,0));
+        p.addCorner(0, WFMath::Point<2>(0,0));
+        // Make sure the underlying Intersect works
+        assert(Intersect(p, WFMath::Point<2>(0.75, 0.25), true));
+
+        Shape * s = new MathShape<WFMath::Polygon, 2>(p);
+
+        assert(s != 0);
+        assert(s->isValid());
+        assert(s->intersect(WFMath::Point<2>(0.75, 0.25)));
+        assert(!s->intersect(WFMath::Point<2>(1.5, 0.5)));
+        assert(!s->intersect(WFMath::Point<2>(1.5, 1.5)));
+        assert(!s->intersect(WFMath::Point<2>(0.5, 1.5)));
+        assert(!s->intersect(WFMath::Point<2>(-0.5, 1.5)));
+        assert(!s->intersect(WFMath::Point<2>(-0.5, 0.5)));
+        assert(!s->intersect(WFMath::Point<2>(-0.5, -0.5)));
+        assert(!s->intersect(WFMath::Point<2>(0.5, -0.5)));
+        assert(!s->intersect(WFMath::Point<2>(1.5, -0.5)));
     }
 
     {
