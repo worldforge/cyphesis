@@ -848,24 +848,27 @@
       <map name="area">
         <map name="default">
           <int name="layer">7</int>
-          <list name="points">
-            <list>
-              <float>0</float>
-              <float>0</float>
+          <map name="shape">
+            <list name="points">
+              <list>
+                <float>0</float>
+                <float>0</float>
+              </list>
+              <list>
+                <float>0</float>
+                <float>5</float>
+              </list>
+              <list>
+                <float>5</float>
+                <float>5</float>
+              </list>
+              <list>
+                <float>5</float>
+                <float>0</float>
+              </list>
             </list>
-            <list>
-              <float>0</float>
-              <float>5</float>
-            </list>
-            <list>
-              <float>5</float>
-              <float>5</float>
-            </list>
-            <list>
-              <float>5</float>
-              <float>0</float>
-            </list>
-          </list>
+            <string name="type">polygon</string>
+          </map>
         </map>
       </map>
       <map name="bbox">
