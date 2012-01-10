@@ -78,9 +78,8 @@ class Heaping(server.Task):
                                             [ 0.7, -0.7 ],
                                             [ 0.0, -1.0 ]]).as_data(),
                           'type': 'levelmod' }
-                area_map = {'points': modmap['shape']['points'],
-                            'layer': 7,
-                            'type': 'polygon'}
+                area_map = {'shape': modmap['shape'],
+                            'layer': 7}
 
                 mound_loc = Location(self.character.location.parent)
                 mound_loc.velocity = Vector3D()
@@ -113,10 +112,8 @@ class Heaping(server.Task):
                     box.high_corner().y,
                     mod.terrainmod.height]
 
-        area_shape = mod.terrainmod.shape.as_data()
-        area_map = {'points': area_shape['points'],
-                    'layer': 7,
-                    'type': 'polygon'}
+        area_map = {'shape': mod.terrainmod.shape.as_data(),
+                    'layer': 7}
         # FIXME This area is not getting broadcast
         mod.area = area_map
         # We have modified the attribute in place,
