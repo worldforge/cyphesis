@@ -46,6 +46,8 @@ class Shape {
     virtual WFMath::AxisBox<2> footprint() const = 0;
     virtual WFMath::Point<3> lowCorner() const = 0;
     virtual WFMath::Point<3> highCorner() const = 0;
+    virtual bool intersect(const WFMath::Point<2> &) const = 0;
+
     virtual void scale(WFMath::CoordType factor) = 0;
 
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
@@ -73,6 +75,8 @@ class MathShape : public Shape {
     virtual WFMath::AxisBox<2> footprint() const;
     virtual WFMath::Point<3> lowCorner() const;
     virtual WFMath::Point<3> highCorner() const;
+    virtual bool intersect(const WFMath::Point<2> &) const;
+
     virtual void scale(WFMath::CoordType factor);
 
     virtual void toAtlas(Atlas::Message::MapType &) const;

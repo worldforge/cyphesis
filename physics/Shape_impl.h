@@ -79,6 +79,12 @@ WFMath::Point<3> MathShape<ShapeT, dim>::highCorner() const
 }
 
 template<template <int> class ShapeT, const int dim>
+bool MathShape<ShapeT, dim>::intersect(const WFMath::Point<2> & p) const
+{
+    return Intersect(m_shape, p, true);
+}
+
+template<template <int> class ShapeT, const int dim>
 void MathShape<ShapeT, dim>::scale(WFMath::CoordType factor)
 {
 }
