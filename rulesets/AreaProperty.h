@@ -20,29 +20,25 @@
 #ifndef RULESETS_AREA_PROPERTY_H
 #define RULESETS_AREA_PROPERTY_H
 
-#include "LineProperty.h"
+#include "TerrainEffectorProperty.h"
 
-typedef WFMath::Point<2> Corner;
-typedef std::vector<WFMath::Point<2> > CornerList;
+class Shape;
 
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
-class AreaProperty : public PropertyBase {
+class AreaProperty : public TerrainEffectorProperty {
   protected:
-    /// \brief Property data for the line that defines the outline of the area
-    CornerList m_data;
-
-    /// \breif Optional terrain layer property.
-    int* m_layer;
+    int m_layer;
+    Shape * m_shape;
   public:
     explicit AreaProperty();
     virtual ~AreaProperty();
 
-    const CornerList & line() const { return m_data; }
+    const Shape * shape() const { return m_shape; }
 
-    virtual int get(Atlas::Message::Element & val) const;
+    virtual void apply(Entity *);
+
     virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
 };
 
 #endif // RULESETS_AREA_PROPERTY_H

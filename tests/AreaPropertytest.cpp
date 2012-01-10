@@ -53,3 +53,17 @@ int main()
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }
+
+// stubs
+
+#include "physics/Shape.h"
+
+const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)
+{
+    return 0;
+}
+
+Shape * Shape::newFromAtlas(const MapType & data)
+{
+    return 0;
+}

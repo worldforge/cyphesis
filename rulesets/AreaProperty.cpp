@@ -23,6 +23,8 @@
 #include <common/log.h>
 #include "common/type_utils_impl.h"
 
+#include "physics/Shape.h"
+
 #include <wfmath/atlasconv.h>
 
 #include <sstream>
@@ -39,26 +41,29 @@ using Atlas::Message::MapType;
 /// \brief AreaProperty constructor
 ///
 /// @param flags Flags used to persist this property
-AreaProperty::AreaProperty()
-: m_layer(0)
+AreaProperty::AreaProperty() : m_layer(0), m_shape(0)
 {
 }
 
 AreaProperty::~AreaProperty()
 {
-    delete m_layer;
 }
 
-
-int AreaProperty::get(Element & ent) const
+void AreaProperty::apply(Entity * owner)
 {
-    MapType & area = (ent = MapType()).Map();
-    objectListAsMessage(m_data, (area["points"] = ListType()).List());
-    if (m_layer) {
-        area["layer"] = *m_layer;
+    if (m_shape == 0) {
+        log(ERROR, "Terrain area has no shape to apply");
+        return;
     }
-    return 0;
 
+    const TerrainProperty * terrain = getTerrain(owner);
+
+    if (terrain == 0) {
+        log(ERROR, "Terrain area could not find terrain");
+        return;
+    }
+
+    /// \todo Write the code to handle all the Mercator stuff
 }
 
 void AreaProperty::set(const Element & ent)
@@ -66,32 +71,26 @@ void AreaProperty::set(const Element & ent)
     if (!ent.isMap()) {
         return;
     }
-    const MapType & area = ent.Map();
-    MapType::const_iterator I = area.find("type");
-    MapType::const_iterator Iend = area.end();
-    if (I != Iend && I->second.isString()) {
-        if (I->second.String() != "polygon") {
-            log(ERROR, "Area is not a polygon shape");
-            return;
-        }
-    }
-    I = area.find("points");
-    if (I != Iend && I->second.isList()) {
-        objectListFromMessage<Corner, CornerList>(I->second.List(),
-                                                  m_data);
-    }
+    m_data = ent.Map();
 
-    delete m_layer;
-    I = area.find("layer");
+    MapType::const_iterator I = m_data.find("shape");
+    MapType::const_iterator Iend = m_data.end();
+
+    if (I == m_data.end() || !I->second.isMap()) {
+        log(ERROR, "Area shape data missing or is not map");
+        return;
+    }
+    Shape * shape = Shape::newFromAtlas(I->second.Map());
+    if (shape == 0) {
+        return;
+    }
+    // FIXME overwriting old pointer
+    m_shape = shape;
+
+    I = m_data.find("layer");
     if (I != Iend && I->second.isInt()) {
-        m_layer = new int();
-        *m_layer = I->second.asInt();
+        m_layer = I->second.Int();
     } else {
         m_layer = 0;
     }
-}
-
-void AreaProperty::add(const std::string & s, MapType & ent) const
-{
-    get(ent[s]);
 }

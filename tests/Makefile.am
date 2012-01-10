@@ -423,6 +423,7 @@ AllPropertytest_LDADD = \
         $(top_builddir)/rulesets/OutfitProperty.o \
         $(top_builddir)/rulesets/StatisticsProperty.o \
         $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/rulesets/TerrainEffectorProperty.o \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/modules/DateTime.o \
         $(top_builddir)/modules/TerrainContext.o \
@@ -430,6 +431,7 @@ AllPropertytest_LDADD = \
         $(top_builddir)/common/Inheritance.o \
         $(top_builddir)/common/custom.o \
         $(top_builddir)/common/operations.o \
+        $(top_builddir)/physics/Shape.o \
         $(TERRAIN_LIBS)
 
 Scripttest_SOURCES = Scripttest.cpp

@@ -26,6 +26,8 @@
 #include "common/random.h"
 #include "common/type_utils_impl.h"
 
+#include "physics/Shape.h"
+
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -79,24 +81,16 @@ int SpawnEntity::spawnEntity(const std::string & type,
     dsc->setLoc(m_ent->m_location.m_loc->getId());
     const AreaProperty * ap = m_ent->getPropertyClass<AreaProperty>("area");
     if (ap != 0) {
-        const CornerList & line = ap->line();
-        WFMath::Polygon<2> spawn_area;
-        WFMath::CoordType lx = WFMATH_MAX, ly = WFMATH_MAX,
-                          hx = WFMATH_MIN, hy = WFMATH_MIN;
-        spawn_area.resize(line.size());
-        CornerList::const_iterator I = line.begin();
-        CornerList::const_iterator Iend = line.end();
-        for (int i = 0; I != Iend; ++I, ++i) {
-            WFMath::CoordType x = I->x(), y = I->y();
-            spawn_area.addCorner(i, Corner(x, y));
-            if (x < lx) { lx = x; }
-            if (y < ly) { ly = y; }
-        }
+        // FIXME orientation ignored
+        const Shape * spawn_area = ap->shape();
+        WFMath::AxisBox<2> spawn_box = spawn_area->footprint();
         Point3D new_pos = m_ent->m_location.pos();
         for (int i = 0; i < 10; ++i) {
-            WFMath::CoordType x = uniform(lx, hx);
-            WFMath::CoordType y = uniform(ly, hy);
-            if (Intersect(spawn_area, Corner(x, y), true)) {
+            WFMath::CoordType x = uniform(spawn_box.lowCorner().x(),
+                                          spawn_box.highCorner().x());
+            WFMath::CoordType y = uniform(spawn_box.lowCorner().y(),
+                                          spawn_box.highCorner().y());
+            if (spawn_area->intersect(WFMath::Point<2>(x, y))) {
                 new_pos += Vector3D(x, y, 0);
                 break;
             }

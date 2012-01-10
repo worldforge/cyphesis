@@ -121,19 +121,44 @@ AreaProperty::~AreaProperty()
 {
 }
 
-int AreaProperty::get(Atlas::Message::Element & ent) const
-{
-    return 0;
-
-}
-
 void AreaProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
-void AreaProperty::add(const std::string & s, Atlas::Message::MapType & ent) const
+void AreaProperty::apply(Entity * owner)
 {
 }
+
+template <typename T>
+Property<T>::Property(unsigned int flags) :
+                      PropertyBase(flags)
+{
+}
+
+template <typename T>
+int Property<T>::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
+
+template <typename T>
+void Property<T>::set(const Atlas::Message::Element & e)
+{
+}
+
+template <typename T>
+void Property<T>::add(const std::string & s,
+                      Atlas::Message::MapType & ent) const
+{
+}
+
+template <typename T>
+void Property<T>::add(const std::string & s,
+                      const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+template class Property<Atlas::Message::MapType>;
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
