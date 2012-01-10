@@ -82,12 +82,11 @@ class Earthbarrier(server.Task):
                                                [ 1.0, 1.0 ],
                                                [ 1.0, -1.0 ]],
                                     'type': 'polygon'
-                                    },
+                                   },
                           'type': 'levelmod'                                    
                           }
-                area_map = {'points': modmap['shape']['points'],
-                            'layer': 7,
-                            'type': 'polygon'}
+                area_map = {'shape': modmap['shape'],
+                            'layer': 7}
                 line_map = {'points': [[ self.pos.x, self.pos.y ]],
                             'type': 'line'}
 
@@ -120,6 +119,7 @@ class Earthbarrier(server.Task):
             print "Now we grow it"
             area = mod.terrainmod.shape.area()
             factor = math.sqrt((area + 1) / area)
+            # FIXME Shape is not compatible with line data yet
             line = Shape(mod.line)
             mod.terrainmod.shape *= factor
             mod.terrainmod.height += 1 / area
@@ -131,10 +131,8 @@ class Earthbarrier(server.Task):
                         box.high_corner().y,
                         mod.terrainmod.height]
 
-            area_shape = mod.terrainmod.shape.as_data()
-            area_map = {'points': area_shape['points'],
-                        'layer': 7,
-                        'type': 'polygon'}
+            area_map = {'shape': mod.terrainmod.shape.as_data(),
+                        'layer': 7}
             # FIXME This area is not getting broadcast
             mod.area = area_map
             # We have modified the attribute in place,
