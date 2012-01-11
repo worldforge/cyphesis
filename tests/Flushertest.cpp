@@ -151,6 +151,47 @@ int main()
         ClientTask * tf = new Flusher("1");
 
         OpVector ret;
+        Atlas::Objects::Operation::Tick op;
+        Atlas::Objects::Entity::Anonymous ent;
+        op->setArgs1(ent);
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Tick op;
+        Atlas::Objects::Entity::Anonymous ent;
+        ent->setName("725e66b2-2e35-4eb8-b3af-3de5691bf48a");
+        op->setArgs1(ent);
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Tick op;
+        Atlas::Objects::Entity::Anonymous ent;
+        ent->setName("flusher");
+        op->setArgs1(ent);
+        tf->operation(op, ret);
+        assert(!ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
         Atlas::Objects::Operation::Unseen op;
         tf->operation(op, ret);
         assert(ret.empty());
