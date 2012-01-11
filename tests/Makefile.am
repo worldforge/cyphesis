@@ -79,6 +79,7 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            EntityFactoryTypeNodeintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
+              Flushertest \
               WorldLoaderintegration
 
 PYTHON_TESTS = python_class
@@ -1514,6 +1515,11 @@ AdminClienttest_LDADD = \
 WorldDumpertest_SOURCES = WorldDumpertest.cpp
 WorldDumpertest_LDADD = \
         $(top_builddir)/tools/WorldDumper.o
+
+Flushertest_SOURCES = Flushertest.cpp
+Flushertest_LDADD = \
+        $(top_builddir)/tools/Flusher.o \
+        $(top_builddir)/common/ClientTask.o
 
 WorldLoaderintegration_SOURCES = WorldLoaderintegration.cpp
 WorldLoaderintegration_LDADD = \
