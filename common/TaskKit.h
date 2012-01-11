@@ -48,6 +48,8 @@ class TaskKit {
 
     virtual ~TaskKit();
 
+    const TypeNode * target() { return m_target; }
+
     const TypeNode * setTarget(const TypeNode * t)
     {
         m_target = t;
