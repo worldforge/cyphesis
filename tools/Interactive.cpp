@@ -280,7 +280,7 @@ void Interactive::infoArrived(const Operation & op)
         MapType::const_iterator Iend = entmap.end();
         for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
             const Element & item = I->second;
-            std::cout << "    " << I->first << ": ";
+            std::cout << std::string(spacing(), ' ') << I->first << ": ";
             output(item, 1);
             std::cout << std::endl;
         }

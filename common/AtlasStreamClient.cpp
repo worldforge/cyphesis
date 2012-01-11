@@ -148,11 +148,11 @@ void AtlasStreamClient::output(const Element & item, int depth) const
                 MapType::const_iterator I = item.Map().begin();
                 MapType::const_iterator Iend = item.Map().end();
                 for(; I != Iend; ++I) {
-                    std::cout << std::string((depth + 1) * 4, ' ') << I->first << ": ";
+                    std::cout << std::string((depth + 1) * spacing(), ' ') << I->first << ": ";
                     output(I->second, depth + 1);
                     std::cout << std::endl;
                 }
-                std::cout << std::string(depth * 4, ' ') << "}";
+                std::cout << std::string(depth * spacing(), ' ') << "}";
             }
             break;
         default:
@@ -282,7 +282,8 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
 
 AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
                                          serialNo(512), m_fd(-1), m_encoder(0),
-                                         m_codec(0), m_ios(0), m_currentTask(0)
+                                         m_codec(0), m_ios(0), m_currentTask(0),
+                                         m_spacing(2)
 {
 }
 

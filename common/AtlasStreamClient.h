@@ -51,6 +51,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     ClientTask * m_currentTask;
 
     std::string m_username;
+    int m_spacing;
 
     /// \brief Store for reply data from the server
     Atlas::Objects::Root m_infoReply;
@@ -94,6 +95,10 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     const std::string & errorMessage() const {
         return m_errorMessage;
+    }
+
+    int spacing() const {
+        return m_spacing;
     }
 
     void send(const Atlas::Objects::Operation::RootOperation & op);
