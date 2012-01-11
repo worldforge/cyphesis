@@ -1,7 +1,5 @@
 Why isn't trailblaze working?
 
-TerrainModProperty and probably others aren't covered by AllPropertytest
-
 Look into if installcheck-local can be used usefully to ensure all is in
 order.
 
