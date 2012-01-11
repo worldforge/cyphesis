@@ -27,20 +27,145 @@
 #include "tools/Flusher.h"
 
 #include "common/compose.hpp"
+#include "common/Tick.h"
+#include "common/Unseen.h"
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
 
 int main()
 {
+    {
+        ClientTask * tf = new Flusher("1");
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        tf->setup("oak", ret);
+        assert(!ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Get op;
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Sight op;
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Sight op;
+        op->setArgs1(Atlas::Objects::Entity::Anonymous());
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Sight op;
+        Atlas::Objects::Entity::Anonymous ent;
+        ent->setId("2");
+        op->setArgs1(ent);
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Sight op;
+        Atlas::Objects::Entity::Anonymous ent;
+        ent->setId("2");
+        ent->setParents(std::list<std::string>(1, "oak"));
+        op->setArgs1(ent);
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        tf->setup("oak", ret);
+        assert(!ret.empty());
+        assert(ret.size() == 1);
+        ret.clear();
+        Atlas::Objects::Operation::Sight op;
+        Atlas::Objects::Entity::Anonymous ent;
+        ent->setId("2");
+        ent->setParents(std::list<std::string>(1, "oak"));
+        op->setArgs1(ent);
+        tf->operation(op, ret);
+        assert(!ret.empty());
+        assert(ret.size() == 2);
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Tick op;
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
+
+    {
+        ClientTask * tf = new Flusher("1");
+
+        OpVector ret;
+        Atlas::Objects::Operation::Unseen op;
+        tf->operation(op, ret);
+        assert(ret.empty());
+
+        delete tf;
+    }
 }
 
 // stubs
 
 #include "common/log.h"
-#include "common/Tick.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
-int TICK_NO = -1;
+int TICK_NO = 1000;
+int UNSEEN_NO = 1001;
 } } }
 
 void log(LogLevel lvl, const std::string & msg)
