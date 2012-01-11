@@ -42,6 +42,7 @@ int main()
     TaskKit * k = new TestTaskKit;
 
     assert(k->m_scriptFactory == 0);
+    assert(k->target() == 0);
 
     delete k;
 

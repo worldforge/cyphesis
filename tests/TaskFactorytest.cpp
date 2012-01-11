@@ -41,6 +41,9 @@ int main()
     {
         TaskKit * ek = new TaskFactory("test1");
 
+        assert(ek->m_scriptFactory == 0);
+        assert(ek->target() == 0);
+
         delete ek;
     }
 
@@ -50,6 +53,9 @@ int main()
     // Check target will always succeed if no constraints are in place
     {
         TaskKit * ek = new TaskFactory("test1");
+
+        assert(ek->m_scriptFactory == 0);
+        assert(ek->target() == 0);
 
         int c = ek->checkTarget(target);
         assert(c == 0);
@@ -183,7 +189,7 @@ int main()
 
 // stubs
 
-TaskKit::TaskKit() : m_scriptFactory(0)
+TaskKit::TaskKit() : m_target(0), m_scriptFactory(0)
 {
 }
 
