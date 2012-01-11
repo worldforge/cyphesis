@@ -190,11 +190,13 @@ int main()
 
     {
         ClientTask * tf = new Flusher("1");
+        assert(!tf->isComplete());
 
         OpVector ret;
         Atlas::Objects::Operation::Unseen op;
         tf->operation(op, ret);
         assert(ret.empty());
+        assert(tf->isComplete());
 
         delete tf;
     }
