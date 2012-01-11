@@ -2,8 +2,6 @@ Why isn't trailblaze working?
 
 TerrainModProperty and probably others aren't covered by AllPropertytest
 
-Need to converge area format to that of mods.
-
 Look into if installcheck-local can be used usefully to ensure all is in
 order.
 
