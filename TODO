@@ -1,3 +1,6 @@
+Probably cleaner, and less globals to initiate ruleset load from the config
+phase in main()
+
 Why isn't trailblaze working?
 
 Look into if installcheck-local can be used usefully to ensure all is in
