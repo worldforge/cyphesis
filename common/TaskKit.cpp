@@ -21,7 +21,7 @@
 
 #include "common/ScriptKit.h"
 
-TaskKit::TaskKit() : m_scriptFactory(0)
+TaskKit::TaskKit() : m_target(0), m_scriptFactory(0)
 {
 }
 
