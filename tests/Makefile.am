@@ -76,7 +76,8 @@ SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
-                           EntityFactoryTypeNodeintegration
+                           EntityFactoryTypeNodeintegration \
+                           AccountConnectionintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
               Flushertest OperationMonitortest \
@@ -1492,6 +1493,18 @@ EntityFactoryTypeNodeintegration_LDADD = \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/PropertyManager.o \
         $(top_builddir)/common/Property.o
+
+AccountConnectionintegration_SOURCES = AccountConnectionintegration.cpp
+AccountConnectionintegration_LDADD = \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/SystemAccount.o \
+        $(top_builddir)/common/Inheritance.o \
+        $(top_builddir)/common/TypeNode.o \
+        $(top_builddir)/common/custom.o \
+        $(top_builddir)/common/operations.o
 
 # Other TESTS
 
