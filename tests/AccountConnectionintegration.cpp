@@ -29,12 +29,14 @@
 #include "server/CommClient.h"
 #include "server/CommServer.h"
 #include "server/Connection.h"
+#include "server/Lobby.h"
 #include "server/Player.h"
 #include "server/ServerAccount.h"
 #include "server/ServerRouting.h"
 #include "server/SystemAccount.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 
@@ -52,6 +54,7 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::smart_dynamic_cast;
 
 class TestCommClient : public CommClient {
   public:
@@ -90,12 +93,74 @@ class TestContext {
         delete m_world;
     }
 
+    Connection * connection() const { return m_connection; }
+    ServerRouting * server() const { return m_server; }
 };
 
 int main()
 {
     {
         TestContext scope;
+    }
+
+    // Basic player account creation
+    {
+        TestContext scope;
+
+        assert(scope.connection() != 0);
+        assert(scope.connection()->objects().empty());
+
+        Create op;
+        Anonymous create_arg;
+        create_arg->setParents(std::list<std::string>(1, "player"));
+        create_arg->setAttr("username", "39d409ec");
+        create_arg->setAttr("password", "6a6e71bab281");
+        op->setArgs1(create_arg);
+
+        OpVector res;
+        assert(res.empty());
+
+        // Send the operation to create the account
+        scope.connection()->operation(op, res);
+
+        // There should be a response op
+        assert(!res.empty());
+        assert(res.size() == 1);
+        // and the account creation should have created an object bound
+        // to this connection.
+        assert(!scope.connection()->objects().empty());
+
+        // Check the response is an info indicating successful account
+        // creation.
+        const Operation & reply = res.front();
+        assert(reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
+        // The Info response should have an argument describing the created
+        // account
+        const std::vector<Root> & reply_args = reply->getArgs();
+        assert(!reply_args.empty());
+        RootEntity account = smart_dynamic_cast<RootEntity>(reply_args.front());
+        assert(account.isValid());
+
+        // The account ID should be provided
+        assert(!account->isDefaultId());
+        const std::string & id = account->getId();
+        assert(!id.empty());
+
+        // Check the account has been registered in the server object
+        Router * account_router_ptr = scope.server()->getObject(id);
+        assert(account_router_ptr != 0);
+
+        // Check the account has been logged into the lobby
+        const AccountDict & lobby_dict = scope.server()->m_lobby.getAccounts();
+        AccountDict::const_iterator I = lobby_dict.find(id);
+        assert(I != lobby_dict.end());
+        Account * account_ptr = I->second;
+        assert(account_router_ptr == account_ptr);
+
+        // Basic login as now been established.
+        // TODO Character creation etc?
+        // TODO Lobby interaction?
+        // TODO Logout ?
     }
 }
 
@@ -105,7 +170,6 @@ int main()
 #include "server/ExternalMind.h"
 #include "server/ExternalProperty.h"
 #include "server/Juncture.h"
-#include "server/Lobby.h"
 #include "server/Persistence.h"
 #include "server/Ruleset.h"
 #include "server/TeleportAuthenticator.h"
@@ -215,36 +279,6 @@ int CommClient::read()
 int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 {
     return 0;
-}
-
-Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Router(id, intId),
-       m_server(s)
-{
-}
-
-Lobby::~Lobby()
-{
-}
-
-void Lobby::addAccount(Account * ac)
-{
-}
-
-void Lobby::delAccount(Account * ac)
-{
-}
-
-void Lobby::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Lobby::addToMessage(MapType & omap) const
-{
-}
-
-void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
 }
 
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
@@ -373,6 +407,7 @@ void Persistence::putAccount(const Account & ac)
 
 void log(LogLevel lvl, const std::string & msg)
 {
+    std::cout << msg << std::endl;
 }
 
 void logEvent(LogEvent lev, const std::string & msg)
@@ -779,6 +814,7 @@ void Router::error(const Operation & op,
                    OpVector & res,
                    const std::string & to) const
 {
+    std::cout << "Router::error(" << errstring << ")" << std::endl;
 }
 
 void Router::clientError(const Operation & op,
@@ -853,7 +889,7 @@ long integerId(const std::string & id)
     return intId;
 }
 
-static long idGenerator = 0;
+static long idGenerator = 500;
 
 #include <cstdio>
 

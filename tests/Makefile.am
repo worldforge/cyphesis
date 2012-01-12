@@ -1500,6 +1500,7 @@ AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/ConnectedRouter.o \
         $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
         $(top_builddir)/server/ServerRouting.o \
