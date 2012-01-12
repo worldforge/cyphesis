@@ -38,6 +38,20 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Create;
+using Atlas::Objects::Operation::Get;
+using Atlas::Objects::Operation::Imaginary;
+using Atlas::Objects::Operation::Logout;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Move;
 
 class TestCommClient : public CommClient {
   public:
@@ -106,21 +120,6 @@ int main()
 #include "common/Variable.h"
 
 #include <cstdlib>
-
-using Atlas::Message::Element;
-using Atlas::Message::ListType;
-using Atlas::Message::MapType;
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::Get;
-using Atlas::Objects::Operation::Imaginary;
-using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Look;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Talk;
-using Atlas::Objects::Operation::Move;
 
 bool database_flag = false;
 
