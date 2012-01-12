@@ -157,7 +157,21 @@ int main()
         Account * account_ptr = I->second;
         assert(account_router_ptr == account_ptr);
 
-        // Basic login as now been established.
+        // Basic login as now been established by account creation
+
+        // Set up some other account details
+        create_arg->setAttr("username", "89cae312");
+        create_arg->setAttr("password", "d730b8bd2d6c");
+
+        // and try an additional account creation, which should fail.
+        // Multiple logins are ok, but there is no reason to allow multiple
+        // account creations.
+        res.clear();
+        scope.connection()->operation(op, res);
+        assert(!res.empty());
+        assert(res.size() == 1);
+        // TODO check the error result etc
+
         // TODO Character creation etc?
         // TODO Lobby interaction?
         // TODO Logout ?
@@ -789,38 +803,6 @@ void LocatedEntity::onContainered()
 }
 
 void LocatedEntity::onUpdated()
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-    std::cout << "Router::error(" << errstring << ")" << std::endl;
-}
-
-void Router::clientError(const Operation & op,
-                         const std::string & errstring,
-                         OpVector & res,
-                         const std::string & to) const
 {
 }
 

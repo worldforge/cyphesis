@@ -1508,6 +1508,7 @@ AccountConnectionintegration_LDADD = \
         $(top_builddir)/common/BaseWorld.o \
         $(top_builddir)/common/Inheritance.o \
         $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/Router.o \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/custom.o \
         $(top_builddir)/common/operations.o \
