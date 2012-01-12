@@ -71,6 +71,8 @@ class Connection : public Router, virtual public sigc::trackable {
                const std::string & addr, const std::string & id, long iid);
     virtual ~Connection();
 
+    const RouterMap & objects() const { return m_objects; }
+
     void addEntity(Entity * ent);
     void addObject(Router * obj);
     void removeObject(long id);
