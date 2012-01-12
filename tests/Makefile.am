@@ -1498,13 +1498,20 @@ AccountConnectionintegration_SOURCES = AccountConnectionintegration.cpp
 AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/SystemAccount.o \
+        $(top_builddir)/common/BaseWorld.o \
         $(top_builddir)/common/Inheritance.o \
+        $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/custom.o \
-        $(top_builddir)/common/operations.o
+        $(top_builddir)/common/operations.o \
+        $(top_builddir)/physics/libphysics.a \
+        $(NETWORK_LIBS)
 
 # Other TESTS
 

@@ -24,8 +24,11 @@
 #define DEBUG
 #endif
 
+#include "TestWorld.h"
+
 #include "server/Player.h"
 #include "server/ServerAccount.h"
+#include "server/ServerRouting.h"
 #include "server/SystemAccount.h"
 
 #include <cassert>
@@ -40,26 +43,40 @@ class TestCommClient : public CommClient {
 
 int main()
 {
+    {
+        Entity * tlve = new Entity("0", 0);
+        BaseWorld * world = new TestWorld(*tlve);
+        ServerRouting * server = new ServerRouting(*world,
+                                                   "testrules",
+                                                   "testname",
+                                                   "1", 1, "2", 2);
+    }
 }
 
 // stubs
 
 #include "server/CommClient.h"
 #include "server/Connection.h"
+#include "server/ExternalMind.h"
+#include "server/ExternalProperty.h"
 #include "server/Juncture.h"
+#include "server/Lobby.h"
 #include "server/Persistence.h"
 #include "server/Ruleset.h"
-#include "server/ServerRouting.h"
 #include "server/TeleportAuthenticator.h"
 
 #include "rulesets/Creator.h"
 
+#include "common/const.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/Monitors.h"
 #include "common/PropertyManager.h"
+#include "common/Variable.h"
 
 #include <cstdlib>
 
+using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -75,6 +92,97 @@ using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
 
 bool database_flag = false;
+
+namespace consts {
+
+  const char * buildTime = __TIME__;
+  const char * buildDate = __DATE__;
+  const int buildId = -1;
+  const char * version = "test_build";
+}
+
+// globals - why do we have these again?
+
+const char * CYPHESIS = "cyphesisAccountConnectionintegration";
+int timeoffset = 0;
+std::string instance(CYPHESIS);
+
+Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
+       Router(id, intId),
+       m_server(s)
+{
+}
+
+Lobby::~Lobby()
+{
+}
+
+void Lobby::addAccount(Account * ac)
+{
+}
+
+void Lobby::delAccount(Account * ac)
+{
+}
+
+void Lobby::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Lobby::addToMessage(MapType & omap) const
+{
+}
+
+void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+                                         m_connection(0), m_entity(e)
+{
+}
+
+ExternalMind::~ExternalMind()
+{
+}
+
+void ExternalMind::operation(const Operation & op, OpVector & res)
+{
+}
+
+const std::string & ExternalMind::connectionId()
+{
+    assert(m_connection != 0);
+    return m_connection->getId();
+}
+
+void ExternalMind::connect(Connection * c)
+{
+    m_connection = c;
+}
+
+ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
+{
+}
+
+int ExternalProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void ExternalProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         Atlas::Message::MapType & map) const
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
 
 Juncture::Juncture(Connection * c,
                    const std::string & id, long iid) :
@@ -111,47 +219,6 @@ int Ruleset::modifyRule(const std::string & class_name,
     return 0;
 }
 
-void ServerRouting::addObject(Router * obj)
-{
-}
-
-Router * ServerRouting::getObject(const std::string & id) const
-{
-    return 0;
-}
-
-void Connection::connectAvatar(Character * chr)
-{
-}
-
-void Connection::addEntity(Entity * ent)
-{
-}
-
-void Connection::addObject(Router * obj)
-{
-}
-
-void Connection::disconnect()
-{
-}
-
-void Connection::send(const Operation &) const
-{
-}
-
-ConnectedRouter::ConnectedRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
-ConnectedRouter::~ConnectedRouter()
-{
-}
-
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
 int TeleportAuthenticator::addTeleport(const std::string &entity_id,
@@ -183,6 +250,16 @@ Persistence * Persistence::instance()
         m_instance = new Persistence();
     }
     return m_instance;
+}
+
+void Persistence::registerCharacters(Account & ac,
+                                     const EntityDict & worldObjects)
+{
+}
+
+Account * Persistence::getAccount(const std::string & name)
+{
+    return 0;
 }
 
 void Persistence::putAccount(const Account & ac)
@@ -608,6 +685,55 @@ void Router::clientError(const Operation & op,
 
 PropertyManager * PropertyManager::m_instance = 0;
 
+VariableBase::~VariableBase()
+{
+}
+
+template <typename T>
+Variable<T>::Variable(const T & variable) : m_variable(variable)
+{
+}
+
+template <typename T>
+Variable<T>::~Variable()
+{
+}
+
+template <typename T>
+void Variable<T>::send(std::ostream & o)
+{
+}
+
+template class Variable<int>;
+template class Variable<std::string>;
+template class Variable<const char *>;
+
+Monitors * Monitors::m_instance = NULL;
+
+Monitors::Monitors()
+{
+}
+
+Monitors::~Monitors()
+{
+}
+
+Monitors * Monitors::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Monitors();
+    }
+    return m_instance;
+}
+
+void Monitors::insert(const std::string & key, const Element & val)
+{
+}
+
+void Monitors::watch(const::std::string & name, VariableBase * monitor)
+{
+}
+
 Location::Location() : m_loc(0)
 {
 }
@@ -634,4 +760,20 @@ long newId(std::string & id)
     id = buf;
     assert(!id.empty());
     return new_id;
+}
+
+void encrypt_password(const std::string & pwd, std::string & hash)
+{
+}
+
+int check_password(const std::string & pwd, const std::string & hash)
+{
+    return 0;
+}
+
+bool_config_register::bool_config_register(bool & var,
+                                           const char * section,
+                                           const char * setting,
+                                           const char * help)
+{
 }
