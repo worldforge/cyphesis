@@ -26,37 +26,68 @@
 
 #include "TestWorld.h"
 
+#include "server/CommClient.h"
+#include "server/CommServer.h"
+#include "server/Connection.h"
 #include "server/Player.h"
 #include "server/ServerAccount.h"
 #include "server/ServerRouting.h"
 #include "server/SystemAccount.h"
 
+#include <Atlas/Objects/RootOperation.h>
+
 #include <cassert>
 
 
-#if 0
 class TestCommClient : public CommClient {
   public:
     TestCommClient(CommServer & cs) : CommClient(cs, "") { }
 };
-#endif
+
+class TestContext {
+  protected:
+    Entity * m_tlve;
+    BaseWorld * m_world;
+    ServerRouting * m_server;
+    CommServer * m_cs;
+    Connection * m_connection;
+  public:
+    TestContext()
+    {
+        m_tlve = new Entity("0", 0);
+        m_world = new TestWorld(*m_tlve);
+        m_server = new ServerRouting(*m_world,
+                                     "testrules",
+                                     "testname",
+                                     "1", 1, "2", 2);
+        m_cs = new CommServer;
+        m_connection = new Connection(*new TestCommClient(*m_cs),
+                                      *m_server,
+                                      "test_addr",
+                                      "3", 3);
+
+    }
+
+    ~TestContext()
+    {
+        delete m_connection;
+        delete m_cs;
+        delete m_server;
+        delete m_world;
+    }
+
+};
 
 int main()
 {
     {
-        Entity * tlve = new Entity("0", 0);
-        BaseWorld * world = new TestWorld(*tlve);
-        ServerRouting * server = new ServerRouting(*world,
-                                                   "testrules",
-                                                   "testname",
-                                                   "1", 1, "2", 2);
+        TestContext scope;
     }
 }
 
 // stubs
 
 #include "server/CommClient.h"
-#include "server/Connection.h"
 #include "server/ExternalMind.h"
 #include "server/ExternalProperty.h"
 #include "server/Juncture.h"
@@ -106,6 +137,86 @@ namespace consts {
 const char * CYPHESIS = "cyphesisAccountConnectionintegration";
 int timeoffset = 0;
 std::string instance(CYPHESIS);
+
+CommServer::CommServer() : m_congested(false)
+{
+}
+
+CommServer::~CommServer()
+{
+}
+
+Idle::Idle(CommServer & svr) : m_idleManager(svr)
+{
+}
+
+Idle::~Idle()
+{
+}
+
+CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+
+CommSocket::~CommSocket()
+{
+}
+
+CommStreamClient::CommStreamClient(CommServer & svr) :
+                  CommSocket(svr)
+{
+}
+
+CommStreamClient::~CommStreamClient()
+{
+}
+
+int CommStreamClient::getFd() const
+{
+    return -1;
+}
+
+bool CommStreamClient::isOpen() const
+{
+    return m_clientIos.is_open();
+}
+
+bool CommStreamClient::eof()
+{
+    return (m_clientIos.fail() ||
+            m_clientIos.peek() == std::iostream::traits_type::eof());
+}
+
+CommClient::CommClient(CommServer & svr, const std::string &) :
+            CommStreamClient(svr), Idle(svr),
+            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
+            m_connectTime(svr.time())
+{
+}
+
+CommClient::~CommClient()
+{
+}
+
+void CommClient::dispatch()
+{
+}
+
+void CommClient::objectArrived(const Atlas::Objects::Root & obj)
+{
+}
+
+void CommClient::idle(time_t t)
+{
+}
+
+int CommClient::read()
+{
+    return 0;
+}
+
+int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
+{
+    return 0;
+}
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),
@@ -198,11 +309,6 @@ Juncture::~Juncture()
 
 void Juncture::operation(const Operation & op, OpVector & res)
 {
-}
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
-{
-    return 0;
 }
 
 Ruleset * Ruleset::m_instance = NULL;
