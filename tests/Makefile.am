@@ -81,6 +81,7 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
               Flushertest OperationMonitortest \
+              MultiLineListFormattertest \
               WorldLoaderintegration
 
 PYTHON_TESTS = python_class
@@ -1547,6 +1548,10 @@ OperationMonitortest_SOURCES = OperationMonitortest.cpp
 OperationMonitortest_LDADD = \
         $(top_builddir)/tools/OperationMonitor.o \
         $(top_builddir)/common/ClientTask.o
+
+MultiLineListFormattertest_SOURCES = MultiLineListFormattertest.cpp
+MultiLineListFormattertest_LDADD = \
+        $(top_builddir)/tools/MultiLineListFormatter.o
 
 WorldLoaderintegration_SOURCES = WorldLoaderintegration.cpp
 WorldLoaderintegration_LDADD = \
