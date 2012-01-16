@@ -170,6 +170,9 @@ int main()
         scope.connection()->operation(op, res);
         assert(!res.empty());
         assert(res.size() == 1);
+
+        const Operation & error_reply = res.front();
+        assert(error_reply->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
         // TODO check the error result etc
 
         // TODO Character creation etc?
