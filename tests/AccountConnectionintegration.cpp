@@ -35,6 +35,11 @@
 #include "server/ServerRouting.h"
 #include "server/SystemAccount.h"
 
+#include "rulesets/Character.h"
+
+#include "common/id.h"
+#include "common/TypeNode.h"
+
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
@@ -56,6 +61,31 @@ using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::smart_dynamic_cast;
 
+static const char * test_valid_character_type = "37702ce7a151";
+
+class SpawningTestWorld : public TestWorld {
+  public:
+    SpawningTestWorld(Entity & gw) : TestWorld(gw) { }
+
+    virtual Entity * addEntity(Entity * ent) { 
+        ent->m_location.m_loc = &m_gameWorld;
+        ent->m_location.m_pos = WFMath::Point<3>(0,0,0);
+        m_eobjects[ent->getIntId()] = ent;
+        return ent;
+    }
+
+    virtual Entity * addNewEntity(const std::string & t,
+                                  const Atlas::Objects::Entity::RootEntity &) {
+        std::string id;
+        long intId = newId(id);
+
+        Entity * e = new Character(id, intId);
+
+        e->setType(new TypeNode(t));
+        return addEntity(e);
+    }
+};
+
 class TestCommClient : public CommClient {
   public:
     TestCommClient(CommServer & cs) : CommClient(cs, "") { }
@@ -72,7 +102,7 @@ class TestContext {
     TestContext()
     {
         m_tlve = new Entity("0", 0);
-        m_world = new TestWorld(*m_tlve);
+        m_world = new SpawningTestWorld(*m_tlve);
         m_server = new ServerRouting(*m_world,
                                      "testrules",
                                      "testname",
@@ -143,16 +173,16 @@ int main()
 
         // The account ID should be provided
         assert(!account->isDefaultId());
-        const std::string & id = account->getId();
-        assert(!id.empty());
+        const std::string account_id = account->getId();
+        assert(!account_id.empty());
 
         // Check the account has been registered in the server object
-        Router * account_router_ptr = scope.server()->getObject(id);
+        Router * account_router_ptr = scope.server()->getObject(account_id);
         assert(account_router_ptr != 0);
 
         // Check the account has been logged into the lobby
         const AccountDict & lobby_dict = scope.server()->m_lobby.getAccounts();
-        AccountDict::const_iterator I = lobby_dict.find(id);
+        AccountDict::const_iterator I = lobby_dict.find(account_id);
         assert(I != lobby_dict.end());
         Account * account_ptr = I->second;
         assert(account_router_ptr == account_ptr);
@@ -173,7 +203,26 @@ int main()
 
         const Operation & error_reply = res.front();
         assert(error_reply->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        // TODO check the error result etc
+
+        res.clear();
+
+        Player::playableTypes.insert(test_valid_character_type);
+
+        Anonymous character_arg;
+        character_arg->setParents(std::list<std::string>(1, test_valid_character_type));
+        character_arg->setName("938862f2-4db2-4e8e-b944-7b0935e569db");
+
+        Create character_op;
+        character_op->setArgs1(character_arg);
+        character_op->setFrom(account_id);
+
+        scope.connection()->operation(character_op, res);
+        assert(!res.empty());
+        assert(res.size() == 2);
+
+        const Operation & create_reply = res.front();
+        assert(create_reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
+
 
         // TODO Character creation etc?
         // TODO Lobby interaction?
