@@ -72,7 +72,7 @@
       <string>wall</string>
     </list>
   </map>
- 
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -105,7 +105,7 @@
       <string>material</string>
     </list>
   </map>
- 
+
   <map>
     <map name="attributes">
       <map name="mass">
@@ -224,7 +224,7 @@
       <string>material</string>
     </list>
   </map>
- 
+
   <map>
     <map name="attributes">
       <map name="bbox">
@@ -297,7 +297,7 @@
       <string>thing</string>
     </list>
   </map>
- 
+
   <map>
     <map name="attributes">
       <map name="bbox">

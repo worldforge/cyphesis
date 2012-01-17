@@ -1,5 +1,5 @@
 <atlas>
- 
+
   <map>
     <map name="activation">
       <string name="operation">craft</string>
@@ -37,7 +37,7 @@
       <string name="name">world.tasks.Bisect.Bisect</string>
     </map>
   </map>
- 
+
   <map>
     <map name="activation">
       <string name="operation">earthwork_bloomery</string>
@@ -112,7 +112,7 @@
       <string name="name">world.tasks.Delve.Delve</string>
     </map>
   </map>
- 
+
   <map>
     <map name="activation">
       <string name="operation">attack</string>
@@ -284,7 +284,7 @@
     </map>
   </map>
 
- <map>
+  <map>
     <map name="activation">
       <string name="operation">cut</string>
       <string name="target">tree</string>
