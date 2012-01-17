@@ -34,13 +34,6 @@ void MultiLineListFormatter::mapListItem(const std::string & name)
     m_stream << std::endl;
 }
 
-void MultiLineListFormatter::listMapItem()
-{
-    m_stream << std::string(m_indent, ' ');
-    Atlas::Formatter::listMapItem();
-    m_stream << std::endl;
-}
-
 void MultiLineListFormatter::listListItem()
 {
     m_stream << std::string(m_indent, ' ');
