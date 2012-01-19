@@ -62,7 +62,7 @@ static void setup_test_functions()
 
 int main()
 {
-    init_python_api();
+    init_python_api("16799987-a321-43a2-aa66-f7bc8ed8e9b2");
 
     setup_test_functions();
 

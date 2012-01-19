@@ -35,7 +35,7 @@ int main(int argc, char ** argv)
 {
     loadConfig(argc, argv);
 
-    init_python_api();
+    init_python_api("f5a8a981-e9ac-4f3b-a8f6-528add44da87");
 
     PyVector3D * pv = newPyVector3D();
 

@@ -60,10 +60,10 @@ static const bool debug_flag = false;
 
 Ruleset * Ruleset::m_instance = NULL;
 
-void Ruleset::init()
+void Ruleset::init(const std::string & ruleset)
 {
     m_instance = new Ruleset(EntityBuilder::instance());
-    m_instance->loadRules();
+    m_instance->loadRules(ruleset);
 }
 
 
@@ -123,6 +123,7 @@ int Ruleset::installRuleInner(const std::string & class_name,
 }
 
 int Ruleset::installRule(const std::string & class_name,
+                         const std::string & section,
                          const Root & class_desc)
 {
     std::string dependent, reason;
@@ -130,7 +131,7 @@ int Ruleset::installRule(const std::string & class_name,
     int ret = installRuleInner(class_name, class_desc, dependent, reason);
     if (ret == 0 && database_flag) {
         Persistence * p = Persistence::instance();
-        p->storeRule(class_desc, class_name);
+        p->storeRule(class_desc, class_name, section);
     }
     return ret;
 }
@@ -237,7 +238,8 @@ void Ruleset::waitForRule(const std::string & rulename,
     m_waitingRules.insert(std::make_pair(dependent, rule));
 }
 
-void Ruleset::getRulesFromFiles(RootDict & rules)
+void Ruleset::getRulesFromFiles(const std::string & ruleset,
+                                RootDict & rules)
 {
     std::string filename;
 
@@ -269,7 +271,7 @@ void Ruleset::getRulesFromFiles(RootDict & rules)
     ::closedir(rules_dir);
 }
 
-void Ruleset::loadRules()
+void Ruleset::loadRules(const std::string & ruleset)
 {
     RootDict ruleTable;
 
@@ -277,14 +279,14 @@ void Ruleset::loadRules()
         Persistence * p = Persistence::instance();
         p->getRules(ruleTable);
     } else {
-        getRulesFromFiles(ruleTable);
+        getRulesFromFiles(ruleset, ruleTable);
     }
 
     if (ruleTable.empty()) {
         log(ERROR, "Rule database table contains no rules.");
         if (database_flag) {
             log(NOTICE, "Attempting to load temporary ruleset from files.");
-            getRulesFromFiles(ruleTable);
+            getRulesFromFiles(ruleset, ruleTable);
         }
     }
 

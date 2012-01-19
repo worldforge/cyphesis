@@ -327,7 +327,7 @@ void Admin::createObject(const std::string & type_str,
                               "parent \"%1\"", type_str), res, getId());
             return;
         }
-        if (Ruleset::instance()->installRule(id, arg) == 0) {
+        if (Ruleset::instance()->installRule(id, "unknown", arg) == 0) {
             Info info;
             info->setTo(getId());
             info->setArgs1(arg);

@@ -413,6 +413,7 @@ void Juncture::operation(const Operation & op, OpVector & res)
 Ruleset * Ruleset::m_instance = NULL;
 
 int Ruleset::installRule(const std::string & class_name,
+                         const std::string & section,
                          const Root & class_desc)
 {
     return 0;

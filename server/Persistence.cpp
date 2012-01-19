@@ -258,7 +258,8 @@ int Persistence::getRules(std::map<std::string, Root> & t)
 }
 
 int Persistence::storeRule(const Atlas::Objects::Root & rule,
-                           const std::string & key)
+                           const std::string & key,
+                           const std::string & section)
 {
     const std::string & table = m_connection.rule();
     if (m_connection.hasKey(table, key)) {
@@ -267,7 +268,7 @@ int Persistence::storeRule(const Atlas::Objects::Root & rule,
     MapType rule_msg = rule->asMessage();
 
     // Sort out the correct filename, and remove the reference to it
-    std::string file = String::compose("%1.xml", ruleset);
+    std::string file = String::compose("%1.xml", section);
     MapType::const_iterator I = rule_msg.find("ruleset");
     if (I != rule_msg.end()) {
         if (I->second.isString()) {

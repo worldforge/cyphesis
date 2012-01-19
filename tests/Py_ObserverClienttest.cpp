@@ -42,7 +42,7 @@ static bool stub_wait_fail = false;
 
 int main()
 {
-    init_python_api();
+    init_python_api("230dabbb-d676-4d43-8a03-4623c02503b5");
     extend_client_python_api();
 
     run_python_string("import atlas");

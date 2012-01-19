@@ -35,7 +35,7 @@
 
 int main()
 {
-    init_python_api();
+    init_python_api("2a83ab2f-928f-457d-bcf7-34d3686e49c1");
 
     PyBBox * bbox = newPyBBox();
     assert(bbox != 0);

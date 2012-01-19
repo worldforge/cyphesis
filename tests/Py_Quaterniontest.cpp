@@ -34,7 +34,7 @@
 
 int main()
 {
-    init_python_api();
+    init_python_api("8f09b488-fd8f-4c57-a92b-97b84bcecbd3");
 
     run_python_string("from physics import Quaternion");
     run_python_string("q=Quaternion()");

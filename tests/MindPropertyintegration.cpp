@@ -47,7 +47,7 @@ static PyMethodDef no_methods[] = {
 
 int main()
 {
-    init_python_api();
+    init_python_api("978fcfe1-6f5d-44ea-b809-9aac1480bf7f");
 
     Py_InitModule("testmod", no_methods);
 

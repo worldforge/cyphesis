@@ -34,7 +34,7 @@
 
 int main()
 {
-    init_python_api();
+    init_python_api("25810437-5054-4316-911d-a3fdf8ba103f");
 
     run_python_string("from physics import Vector3D");
     run_python_string("from atlas import Message");

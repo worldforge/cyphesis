@@ -177,7 +177,7 @@ int main(int argc, char ** argv)
     readConfigItem(instance, "nice", nice);
     
     // Start up the python subsystem.
-    init_python_api();
+    init_python_api(ruleset_name);
 
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
@@ -192,7 +192,7 @@ int main(int argc, char ** argv)
 
     WorldRouter * world = new WorldRouter(time);
 
-    Ruleset::init();
+    Ruleset::init(ruleset_name);
 
     TeleportAuthenticator::init();
 
@@ -209,7 +209,8 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
-    ServerRouting * server = new ServerRouting(*world, ruleset, server_name,
+    ServerRouting * server = new ServerRouting(*world, ruleset_name,
+                                               server_name,
                                                server_id, int_id,
                                                lobby_id, lobby_int_id);
 

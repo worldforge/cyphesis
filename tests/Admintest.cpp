@@ -311,13 +311,14 @@ int main()
 {
     database_flag = false;
 
-    init_python_api();
+    std::string ruleset("5562a2b6-92a6-4c5a-992b-5dce75621597");
+    init_python_api(ruleset);
 
     SystemTime time;
     WorldRouter world(time);
     Entity & e = world.m_gameWorld;
 
-    Ruleset::init();
+    Ruleset::init(ruleset);
 
     ServerRouting server(world, "noruleset", "unittesting",
                          "1", 1, "2", 2);

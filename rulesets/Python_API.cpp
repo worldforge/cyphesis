@@ -500,7 +500,7 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-void init_python_api(bool log_stdout)
+void init_python_api(const std::string & ruleset, bool log_stdout)
 {
     Py_Initialize();
 

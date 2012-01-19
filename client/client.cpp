@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
     bool interactive = global_conf->findItem("", "interactive");
     int status = 0;
 
-    init_python_api(false);
+    init_python_api(ruleset_name, false);
     extend_client_python_api();
     new ClientPropertyManager();
 

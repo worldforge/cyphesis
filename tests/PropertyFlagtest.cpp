@@ -38,7 +38,7 @@ int main(int argc, char ** argv)
     loadConfig(argc, argv);
     database_flag = false;
 
-    init_python_api();
+    init_python_api("7a65cdc2-0c3d-4671-9417-ed39060b8955");
 
     EntityBuilder::init();
 

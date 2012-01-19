@@ -53,7 +53,7 @@ std::string instance(DEFAULT_INSTANCE);
 std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
-std::string ruleset(DEFAULT_RULESET);
+std::string ruleset_name(DEFAULT_RULESET);
 bool exit_flag = false;
 bool daemon_flag = false;
 bool database_flag = true;
@@ -576,15 +576,18 @@ void readInstanceConfiguration(const std::string & section)
     }
 
     // Load up the ruleset.
-    if (readConfigItem(section, "ruleset", ruleset)) {
+    if (readConfigItem(section, "ruleset", ruleset_name)) {
         if (section == DEFAULT_INSTANCE) {
             log(ERROR, String::compose("No ruleset specified in config. "
                                        "Using \"%1\" rules.", DEFAULT_RULESET));
         } else {
             log(INFO, String::compose("Auto configuring new instance \"%1\" "
                                       "to use ruleset \"%2\".",
-                                      instance, ruleset));
-            global_conf->setItem(section, "ruleset", ruleset, varconf::USER);
+                                      instance, ruleset_name));
+            global_conf->setItem(section,
+                                 "ruleset",
+                                 ruleset_name,
+                                 varconf::USER);
         }
     }
 

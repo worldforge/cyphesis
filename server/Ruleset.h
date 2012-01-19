@@ -62,15 +62,16 @@ class Ruleset {
                          const Atlas::Objects::Root & class_desc,
                          std::string & dependent,
                          std::string & reason);
-    void getRulesFromFiles(std::map<std::string, Atlas::Objects::Root> &);
-    void loadRules();
+    void getRulesFromFiles(const std::string &,
+                           std::map<std::string, Atlas::Objects::Root> &);
+    void loadRules(const std::string &);
 
     void waitForRule(const std::string & class_name,
                      const Atlas::Objects::Root & class_desc,
                      const std::string & dependent,
                      const std::string & reason);
   public:
-    static void init();
+    static void init(const std::string &);
 
     static Ruleset * instance() {
         return m_instance;
@@ -83,6 +84,7 @@ class Ruleset {
     }
 
     int installRule(const std::string & class_name,
+                    const std::string & section,
                     const Atlas::Objects::Root & class_desc);
     int modifyRule(const std::string & class_name,
                    const Atlas::Objects::Root & class_desc);

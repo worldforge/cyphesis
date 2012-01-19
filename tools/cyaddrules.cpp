@@ -219,20 +219,23 @@ int main(int argc, char ** argv)
         f.read();
         f.report(argv[optind]);
     } else if (optind == argc) {
-        std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
+        std::cout << "Reading rules from " << ruleset_name
+                  << std::endl << std::flush;
         std::string filename;
 
-        std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+        // FIXME Use library functions for path concatenation to guarantee
+        // sane portability
+        std::string dirname = etc_directory + "/cyphesis/" + ruleset_name + ".d";
         DIR * rules_dir = ::opendir(dirname.c_str());
         if (rules_dir == 0) {
-            filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
-            ServerRulesFileLoader f(filename, ruleset, bridge);
+            filename = etc_directory + "/cyphesis/" + ruleset_name + ".xml";
+            ServerRulesFileLoader f(filename, ruleset_name, bridge);
             if (f.isOpen()) {
                 std::cerr << "WARNING: Reading legacy rule data from \""
                           << filename << "\""
                           << std::endl << std::flush;
                 f.read();
-                f.report(ruleset);
+                f.report(ruleset_name);
             }
         } else {
             while (struct dirent * rules_entry = ::readdir(rules_dir)) {
@@ -241,7 +244,7 @@ int main(int argc, char ** argv)
                 }
                 filename = dirname + "/" + rules_entry->d_name;
     
-                ServerRulesFileLoader f(filename, ruleset, bridge);
+                ServerRulesFileLoader f(filename, ruleset_name, bridge);
                 if (!f.isOpen()) {
                     std::cerr << "ERROR: Unable to open file " << filename
                               << std::endl << std::flush;

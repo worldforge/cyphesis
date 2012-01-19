@@ -90,7 +90,7 @@ static void setup_test_functions()
 
 int main()
 {
-    init_python_api();
+    init_python_api("3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
 
     setup_test_functions();
 

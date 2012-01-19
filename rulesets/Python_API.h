@@ -20,7 +20,9 @@
 #ifndef RULESETS_PYTHON_API_H
 #define RULESETS_PYTHON_API_H
 
-void init_python_api(bool log_stdout = true);
+#include <string>
+
+void init_python_api(const std::string & ruleset, bool log_stdout = true);
 void shutdown_python_api();
 
 #endif // RULESETS_PYTHON_API_H

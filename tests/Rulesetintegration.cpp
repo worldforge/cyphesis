@@ -48,8 +48,9 @@ class ExposedRuleset : public Ruleset {
   public:
     ExposedRuleset(EntityBuilder * eb) : Ruleset(eb) { }
 
-    void getRulesFromFiles(std::map<std::string, Root> & rules) {
-        Ruleset::getRulesFromFiles(rules);
+    void getRulesFromFiles(const std::string & ruleset,
+                           std::map<std::string, Root> & rules) {
+        Ruleset::getRulesFromFiles(ruleset, rules);
     }
 };
 
@@ -69,7 +70,7 @@ int main(int argc, char ** argv)
 
     database_flag = false;
 
-    init_python_api();
+    init_python_api("6525a56d-7139-4016-8c1c-c2e77ab50039");
 
     int ret;
 
@@ -79,7 +80,7 @@ int main(int argc, char ** argv)
         Anonymous attributes;
 
         EntityBuilder::init();
-        Ruleset::init();
+        Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
 
         assert(Ruleset::instance() != 0);
 
@@ -103,7 +104,7 @@ int main(int argc, char ** argv)
         Atlas::Message::Element val;
 
         EntityBuilder::init();
-        Ruleset::init();
+        Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
 
         assert(Ruleset::instance() != 0);
 
@@ -181,7 +182,8 @@ int main(int argc, char ** argv)
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
             custom_type_description->setObjtype("class");
 
-            ret = test_ruleset.installRule("custom_type", custom_type_description);
+            ret = test_ruleset.installRule("custom_type", "custom",
+                                           custom_type_description);
 
             assert(ret == 0);
         }
@@ -262,7 +264,8 @@ int main(int argc, char ** argv)
             custom_inherited_type_description->setObjtype("class");
 
             std::string dependent, reason;
-            ret = test_ruleset.installRule("custom_inherited_type", custom_inherited_type_description);
+            ret = test_ruleset.installRule("custom_inherited_type", "custom",
+                                           custom_inherited_type_description);
 
             assert(ret == 0);
             assert(dependent.empty());

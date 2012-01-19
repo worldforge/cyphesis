@@ -135,21 +135,21 @@ int main(int argc, char ** argv)
         f.report(argv[optind]);
     } else if (optind == argc) {
         storage->clearRules();
-        std::cout << "Reading rules from " << ruleset << std::endl << std::flush;
+        std::cout << "Reading rules from " << ruleset_name << std::endl << std::flush;
         std::string filename;
 
-        std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+        std::string dirname = etc_directory + "/cyphesis/" + ruleset_name + ".d";
         DIR * rules_dir = ::opendir(dirname.c_str());
         if (rules_dir == 0) {
-            filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
+            filename = etc_directory + "/cyphesis/" + ruleset_name + ".xml";
             DatabaseFileLoader f(filename, *storage);
             if (f.isOpen()) {
                 std::cerr << "WARNING: Reading legacy rule data from \""
                           << filename << "\""
                           << std::endl << std::flush;
-                storage->setRuleset(ruleset);
+                storage->setRuleset(ruleset_name);
                 f.read();
-                f.report(ruleset);
+                f.report(ruleset_name);
             }
         } else {
             while (struct dirent * rules_entry = ::readdir(rules_dir)) {

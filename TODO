@@ -1,3 +1,6 @@
+Need to work out what to do with sections, vs rulesets when uploading and
+storing rules at the server end.
+
 Probably cleaner, and less globals to initiate ruleset load from the config
 phase in main()
 

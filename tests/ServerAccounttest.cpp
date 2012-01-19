@@ -145,13 +145,14 @@ int main()
 
     (void)new Domain;
 
-    init_python_api();
+    std::string ruleset("3b9cb0f9-c428-40cd-b8d0-0f39a5664143");
+    init_python_api(ruleset);
 
     SystemTime time;
     WorldRouter world(time);
     Entity & e = world.m_gameWorld;
 
-    Ruleset::init();
+    Ruleset::init(ruleset);
 
     ServerRouting server(world, "noruleset", "unittesting",
                          "1", 1, "2", 2);

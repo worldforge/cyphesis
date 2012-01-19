@@ -113,7 +113,7 @@ int main()
 
     new TestPropertyManager;
 
-    init_python_api();
+    init_python_api("993bbe09-5751-41fe-8a18-17995c713c2e");
 
     setup_test_functions();
 

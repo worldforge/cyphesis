@@ -43,8 +43,9 @@ class ExposedRuleset : public Ruleset {
   public:
     ExposedRuleset(EntityBuilder * eb) : Ruleset(eb) { }
 
-    void getRulesFromFiles(std::map<std::string, Root> & rules) {
-        Ruleset::getRulesFromFiles(rules);
+    void getRulesFromFiles(const std::string & ruleset,
+                           std::map<std::string, Root> & rules) {
+        Ruleset::getRulesFromFiles(ruleset, rules);
     }
 
 };
@@ -55,12 +56,12 @@ int main(int argc, char ** argv)
 {
     int ret;
 
-    ruleset = "game";
+    std::string ruleset("caaa1085-9ef4-4dc2-b1ad-3d1f15b31060");
 
     {
         database_flag = true;
         EntityBuilder::init();
-        Ruleset::init();
+        Ruleset::init(ruleset);
 
         assert(Ruleset::instance() != 0);
 
@@ -77,7 +78,7 @@ int main(int argc, char ** argv)
         database_flag = false;
         etc_directory = data_path + "/ruleset1/etc";
         EntityBuilder::init();
-        Ruleset::init();
+        Ruleset::init(ruleset);
 
         assert(Ruleset::instance() != 0);
 
@@ -94,7 +95,7 @@ int main(int argc, char ** argv)
         database_flag = false;
         etc_directory = data_path + "/ruleset2/etc";
         EntityBuilder::init();
-        Ruleset::init();
+        Ruleset::init(ruleset);
 
         assert(Ruleset::instance() != 0);
 
@@ -126,7 +127,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId("f134c3e0");
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.installRule("f134c3e0", custom_type_description);
+            ret = test_ruleset.installRule("f134c3e0", "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -140,7 +142,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId("667aa324");
             custom_type_description->setParents(std::list<std::string>(1, "task"));
 
-            ret = test_ruleset.installRule("667aa324", custom_type_description);
+            ret = test_ruleset.installRule("667aa324", "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -154,7 +157,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId("17c4e87e");
             custom_type_description->setParents(std::list<std::string>(1, "get"));
 
-            ret = test_ruleset.installRule("17c4e87e", custom_type_description);
+            ret = test_ruleset.installRule("17c4e87e", "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -169,7 +173,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId(class_name);
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.installRule(class_name, custom_type_description);
+            ret = test_ruleset.installRule(class_name, "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -184,7 +189,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId(class_name);
             custom_type_description->setParents(std::list<std::string>());
 
-            ret = test_ruleset.installRule(class_name, custom_type_description);
+            ret = test_ruleset.installRule(class_name, "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -199,7 +205,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId(class_name);
             custom_type_description->setParents(std::list<std::string>(1, ""));
 
-            ret = test_ruleset.installRule(class_name, custom_type_description);
+            ret = test_ruleset.installRule(class_name, "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -214,7 +221,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId(class_name);
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.installRule(class_name, custom_type_description);
+            ret = test_ruleset.installRule(class_name, "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -234,7 +242,8 @@ int main(int argc, char ** argv)
             custom_type_description->setId("custom_type");
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.installRule("custom_type", custom_type_description);
+            ret = test_ruleset.installRule("custom_type", "custom",
+                                           custom_type_description);
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_type_description);
 
@@ -255,7 +264,8 @@ int main(int argc, char ** argv)
             custom_inherited_type_description->setId("custom_inherited_type");
             custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
 
-            ret = test_ruleset.installRule("custom_inherited_type", custom_inherited_type_description);
+            ret = test_ruleset.installRule("custom_inherited_type", "custom",
+                                           custom_inherited_type_description);
 
             // Add this to inheritance, so future tests work
             Inheritance::instance().addChild(custom_inherited_type_description);
@@ -478,7 +488,8 @@ int Persistence::getRules(std::map<std::string, Root> & t)
 }
 
 int Persistence::storeRule(const Atlas::Objects::Root & rule,
-                           const std::string & key)
+                           const std::string & key,
+                           const std::string & ruleset)
 {
     return 0;
 }
@@ -570,6 +581,5 @@ void log(LogLevel lvl, const std::string & msg)
 }
 
 std::string etc_directory;
-std::string ruleset;
 bool database_flag = true;
 

@@ -40,7 +40,7 @@ static bool stub_lookfor_fail = false;
 
 int main()
 {
-    init_python_api();
+    init_python_api("602fe3c3-e6c4-4c9a-b0ac-9f0a034042ba");
     extend_client_python_api();
 
     run_python_string("import server");

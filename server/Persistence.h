@@ -56,7 +56,8 @@ class Persistence {
     
     int getRules(std::map<std::string, Atlas::Objects::Root> & m);
     int storeRule(const Atlas::Objects::Root & rule,
-                  const std::string & key);
+                  const std::string & key,
+                  const std::string & section);
     int updateRule(const Atlas::Objects::Root & rule,
                    const std::string & key);
     int clearRules();
