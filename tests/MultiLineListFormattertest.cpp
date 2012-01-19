@@ -26,8 +26,41 @@
 
 #include "tools/MultiLineListFormatter.h"
 
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
+
+#include <iostream>
+#include <sstream>
+
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
 int main()
 {
+    {
+        Atlas::Message::QueuedDecoder decoder;
+        std::stringstream str;
+        Atlas::Codecs::XML codec(str, decoder);
+        MultiLineListFormatter  formatter(str, codec);
+        Atlas::Message::Encoder encoder(formatter);
+
+        formatter.streamBegin();
+
+        MapType map;
+        map["string_list"] = ListType(2, "foo");
+        map["string_list_list"] = ListType(2, ListType(2, "foo"));
+        map["int_list"] = ListType(2, 23);
+        map["float_list"] = ListType(2, 3.14159265);
+        map["map_list"] = ListType(2, MapType());
+
+        encoder.streamMessageElement(map);
+
+        formatter.streamEnd();
+
+        std::cout << str.str() << std::endl;
+    }
     // The is no code in operations.cpp to execute, but we need coverage.
     return 0;
 }

@@ -29,7 +29,6 @@ class MultiLineListFormatter : public Atlas::Formatter
 
     virtual void mapListItem(const std::string & name);
 
-    virtual void listMapItem();
     virtual void listListItem();
     virtual void listIntItem(long l);
     virtual void listFloatItem(double d);
