@@ -56,7 +56,6 @@ class Heaping(server.Task):
 
         self.progress = 0
 
-        res=Oplist()
 
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
             try:
@@ -66,38 +65,9 @@ class Heaping(server.Task):
                 return
             if mod is None:
                 # There is no terrain mod where we are digging,
-                print "no existing mod"
-                z=self.character.location.coordinates.z + 1.0
-                modmap = {'height': z,
-                          'shape': Polygon([[ -0.7, -0.7 ],
-                                            [ -1.0, 0.0 ],
-                                            [ -0.7, 0.7 ],
-                                            [ 0.0, 1.0 ],
-                                            [ 0.7, 0.7 ],
-                                            [ 1.0, 0.0 ],
-                                            [ 0.7, -0.7 ],
-                                            [ 0.0, -1.0 ]]).as_data(),
-                          'type': 'levelmod' }
-                area_map = {'shape': modmap['shape'],
-                            'layer': 7}
-
-                mound_loc = Location(self.character.location.parent)
-                mound_loc.velocity = Vector3D()
-                mound_loc.coordinates = self.pos
-
-                motte_create=Operation("create",
-                                       Entity(name="motte",
-                                              type="path",
-                                              location = mound_loc,
-                                              terrainmod = modmap,
-                                              area = area_map),
-                                       to=self.target())
-                res.append(motte_create)
-                res.append(self.next_tick(0.75))
-                return res
-            else:
-                print "found existing mod"
-                self.terrain_mod = weakref.ref(mod)
+                return self._create_initial_mod()
+            print "found existing mod"
+            self.terrain_mod = weakref.ref(mod)
 
         mod = self.terrain_mod()
         area = mod.terrainmod.shape.area()
@@ -118,6 +88,7 @@ class Heaping(server.Task):
         mod.area = area_map
         # We have modified the attribute in place,
         # so must send an update op to propagate
+        res=Oplist()
         res.append(Operation("update", to=mod.id))
         res.append(self.next_tick(0.75))
         return res
@@ -128,3 +99,34 @@ class Heaping(server.Task):
                 if hasattr(mod, 'name') and mod.name == 'motte':
                     return mod
             raise Obstructed, "Another mod is in the way"
+    def _create_initial_mod(self):
+        print "no existing mod"
+        res=Oplist()
+        z=self.character.location.coordinates.z + 1.0
+        modmap = {'height': z,
+                  'shape': Polygon([[ -0.7, -0.7 ],
+                                    [ -1.0, 0.0 ],
+                                    [ -0.7, 0.7 ],
+                                    [ 0.0, 1.0 ],
+                                    [ 0.7, 0.7 ],
+                                    [ 1.0, 0.0 ],
+                                    [ 0.7, -0.7 ],
+                                    [ 0.0, -1.0 ]]).as_data(),
+                  'type': 'levelmod' }
+        area_map = {'shape': modmap['shape'],
+                    'layer': 7}
+
+        mound_loc = Location(self.character.location.parent)
+        mound_loc.velocity = Vector3D()
+        mound_loc.coordinates = self.pos
+
+        motte_create=Operation("create",
+                               Entity(name="motte",
+                                      type="path",
+                                      location = mound_loc,
+                                      terrainmod = modmap,
+                                      area = area_map),
+                               to=self.target())
+        res.append(motte_create)
+        res.append(self.next_tick(0.75))
+        return res
