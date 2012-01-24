@@ -69,6 +69,9 @@ class Heaping(server.Task):
             print "found existing mod"
             self.terrain_mod = weakref.ref(mod)
 
+        return self._grow_mod()
+
+    def _grow_mod(self):
         mod = self.terrain_mod()
 
         # FIXME The face direction should be relative to the shape centre,
