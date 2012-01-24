@@ -70,10 +70,25 @@ class Heaping(server.Task):
             self.terrain_mod = weakref.ref(mod)
 
         mod = self.terrain_mod()
+
+        # Determine which way the user is facing relative to the mod
+        user_to_mod = (mod.location - self.character.location).unit_vector()
+        user_facing = Vector3D(1,0,0)
+        face_factor = user_facing.rotate(self.character.location.orientation)
+
         area = mod.terrainmod.shape.area()
-        factor = math.sqrt((area + 1) / area)
-        mod.terrainmod.shape *= factor
-        mod.terrainmod.height += 1 / area
+        if face_factor > 0.2:
+            # Character is facing the centre. Heap up
+            mod.terrainmod.height += 1 / area
+        else:
+            # Character is facing away, Heap out
+            area_factor = math.sqrt((area + 1) / area)
+            mod.terrainmod.shape *= area_factor
+            area_map = {'shape': mod.terrainmod.shape.as_data(),
+                        'layer': 7}
+            # FIXME This area is not getting broadcast
+            mod.area = area_map
+
         box = mod.terrainmod.shape.footprint()
         mod.bbox = [box.low_corner().x,
                     box.low_corner().y,
@@ -82,10 +97,6 @@ class Heaping(server.Task):
                     box.high_corner().y,
                     mod.terrainmod.height]
 
-        area_map = {'shape': mod.terrainmod.shape.as_data(),
-                    'layer': 7}
-        # FIXME This area is not getting broadcast
-        mod.area = area_map
         # We have modified the attribute in place,
         # so must send an update op to propagate
         res=Oplist()
