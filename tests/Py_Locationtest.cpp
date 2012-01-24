@@ -123,6 +123,9 @@ int main()
     run_python_string("repr(l)");
     run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
     run_python_string("l.parent");
+    run_python_string("common_parent = server.Thing('1')");
+    run_python_string("atlas.Location(common_parent, Point3D(0,0,0)) - atlas.Location(common_parent, Point3D(1,0,0))");
+    expect_python_error("atlas.Location(common_parent, Point3D(0,0,0)) - Point3D(1,0,0)", PyExc_TypeError);
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");

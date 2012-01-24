@@ -281,6 +281,57 @@ static PyObject * Location_new(PyTypeObject * type, PyObject *, PyObject *)
     return (PyObject *)self;
 }
 
+static PyObject * Location_subtract(PyLocation * lhs, PyLocation * rhs)
+{
+    if (!PyLocation_CheckExact(rhs)) {
+        PyErr_SetString(PyExc_TypeError, "Location must subtract Location");
+        return 0;
+    }
+    PyVector3D * v = newPyVector3D();
+    if (v != NULL) {
+        v->coords = distanceTo(*rhs->location, *lhs->location);
+    }
+    return (PyObject*)v;
+}
+
+static PyNumberMethods Location_as_number = {
+    0,                                        // nb_add;
+    (binaryfunc)Location_subtract,            // nb_subtract;
+    0,                                        // nb_multiply;
+    0,                                        // nb_divide;
+    0,                                        // nb_remainder;
+    0,                                        // nb_divmod;
+    0,                                        // nb_power;
+    0,                                        // nb_negative;
+    0,                                        // nb_positive;
+    0,                                        // nb_absolute;
+    0,                                        // nb_nonzero;
+    0,                                        // nb_invert;
+    0,                                        // nb_lshift;
+    0,                                        // nb_rshift;
+    0,                                        // nb_and;
+    0,                                        // nb_xor;
+    0,                                        // nb_or;
+    0,                                        // nb_coerce;
+    0,                                        // nb_int;
+    0,                                        // nb_long;
+    0,                                        // nb_float;
+    0,                                        // nb_oct;
+    0,                                        // nb_hex;
+    /* Added in release 2.0 */
+    0,                                        // nb_inplace_add;
+    0,                                        // nb_inplace_subtract;
+    0,                                        // nb_inplace_multiply;
+    0,                                        // nb_inplace_divide;
+    0,                                        // nb_inplace_remainder;
+    0,                                        // nb_inplace_power;
+    0,                                        // nb_inplace_lshift;
+    0,                                        // nb_inplace_rshift;
+    0,                                        // nb_inplace_and;
+    0,                                        // nb_inplace_xor;
+    0,                                        // nb_inplace_or;
+};
+
 PyTypeObject PyLocation_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -294,7 +345,7 @@ PyTypeObject PyLocation_Type = {
         0,                              /*tp_setattr*/
         0,                              /*tp_compare*/
         (reprfunc)Location_repr,        /*tp_repr*/
-        0,                              /*tp_as_number*/
+        &Location_as_number,            /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
         0,                              /*tp_hash*/
