@@ -71,6 +71,10 @@ class Heaping(server.Task):
 
         mod = self.terrain_mod()
 
+        # FIXME The face direction should be relative to the shape centre,
+        # rather than entity coords, then when the character is facing out,
+        # the shape should only grow in that direction
+
         # Determine which way the user is facing relative to the mod
         user_to_mod = (mod.location - self.character.location).unit_vector()
         user_facing = Vector3D(1,0,0)
