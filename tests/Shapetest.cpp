@@ -132,6 +132,18 @@ int main()
         assert(high.isValid());
     }
 
+    {
+        Shape * s = new MathShape<WFMath::AxisBox, 2>(
+              WFMath::AxisBox<2>(WFMath::Point<2>(0,0),
+                                 WFMath::Point<2>(2,2)));
+
+        assert(s != 0);
+        assert(s->isValid());
+  
+        WFMath::Point<3> centre = s->centre();
+        assert(WFMath::Equal(centre, WFMath::Point<3>(1,1,0)));
+    }
+
     // The Polygon conversion functions throw if there isn't complete valid
     // polygon data
     {

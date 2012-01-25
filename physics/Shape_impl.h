@@ -61,6 +61,13 @@ WFMath::CoordType MathShape<ShapeT, dim>::area() const
 }
 
 template<template <int> class ShapeT, const int dim>
+WFMath::Point<3> MathShape<ShapeT, dim>::centre() const
+{
+    WFMath::Point<2> c =  m_shape.getCenter();
+    return WFMath::Point<3>(c.x(), c.y(), 0);
+}
+
+template<template <int> class ShapeT, const int dim>
 WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
 {
     return WFMath::AxisBox<2>();
