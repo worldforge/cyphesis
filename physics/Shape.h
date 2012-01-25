@@ -60,7 +60,7 @@ class Shape {
     static Shape * newFromAtlas(const Atlas::Message::MapType &);
 };
 
-template<template <int> class ShapeT, const int dim = 2>
+template<template <int> class ShapeT, int dim = 2>
 class MathShape : public Shape {
   protected:
     ShapeT<dim> m_shape;

@@ -26,77 +26,77 @@
 
 #include <wfmath/atlasconv.h>
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 const char * MathShape<ShapeT, dim>::getType() const
 {
     return "unknown";
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 MathShape<ShapeT, dim>::MathShape()
 {
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> & s) : m_shape(s)
 {
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 size_t MathShape<ShapeT, dim>::size() const
 {
     return m_shape.numCorners();
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 bool MathShape<ShapeT, dim>::isValid() const
 {
     return m_shape.isValid();
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 WFMath::CoordType MathShape<ShapeT, dim>::area() const
 {
     return 1.;
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 WFMath::Point<3> MathShape<ShapeT, dim>::centre() const
 {
     WFMath::Point<2> c =  m_shape.getCenter();
     return WFMath::Point<3>(c.x(), c.y(), 0);
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
 {
     return WFMath::AxisBox<2>();
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 WFMath::Point<3> MathShape<ShapeT, dim>::lowCorner() const
 {
     return m_shape.boundingBox().lowCorner();
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 WFMath::Point<3> MathShape<ShapeT, dim>::highCorner() const
 {
     return m_shape.boundingBox().highCorner();
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 bool MathShape<ShapeT, dim>::intersect(const WFMath::Point<2> & p) const
 {
     return Intersect(m_shape, p, true);
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::scale(WFMath::CoordType factor)
 {
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 {
     data["type"] = getType();
@@ -111,13 +111,13 @@ void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
     }
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::Element & data)
 {
     m_shape.fromAtlas(data);
 }
 
-template<template <int> class ShapeT, const int dim>
+template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::stream(std::ostream & o) const
 {
     o << getType() << ": ";
