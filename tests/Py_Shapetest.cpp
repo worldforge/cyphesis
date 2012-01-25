@@ -82,6 +82,7 @@ int main()
                                                       "[ 1.0, 1.0 ]] })",
                         PyExc_TypeError);
     run_python_string("s.area()");
+    run_python_string("s.centre()");
     run_python_string("s.footprint()");
     run_python_string("s.low_corner()");
     run_python_string("s.high_corner()");
@@ -101,6 +102,7 @@ int main()
                                            "[ 1.0, 0.0 ],"
                                            "[ 1.0, 1.0 ]])");
     run_python_string("p.area()");
+    run_python_string("p.centre()");
     run_python_string("p.footprint()");
     run_python_string("p.low_corner()");
     run_python_string("p.high_corner()");

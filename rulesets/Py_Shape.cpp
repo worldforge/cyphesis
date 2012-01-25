@@ -50,6 +50,21 @@ static PyObject * Shape_area(PyShape * self)
     return PyFloat_FromDouble(self->shape->area());
 }
 
+static PyObject * Shape_centre(PyShape * self)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.centre");
+        return NULL;
+    }
+#endif // NDEBUG
+    PyPoint3D * res = newPyPoint3D();
+    if (res != 0) {
+        res->coords = self->shape->centre();
+    }
+    return (PyObject*)res;
+}
+
 static PyObject * Shape_footprint(PyShape * self)
 {
 #ifndef NDEBUG
@@ -110,6 +125,7 @@ static PyObject * Shape_as_data(PyShape * self)
 
 static PyMethodDef Shape_methods[] = {
     {"area",               (PyCFunction)Shape_area,              METH_NOARGS},
+    {"centre",             (PyCFunction)Shape_centre,            METH_NOARGS},
     {"footprint",          (PyCFunction)Shape_footprint,         METH_NOARGS},
     {"low_corner",         (PyCFunction)Shape_low_corner,        METH_NOARGS},
     {"high_corner",        (PyCFunction)Shape_high_corner,       METH_NOARGS},
