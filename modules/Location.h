@@ -61,11 +61,11 @@ class Location {
                       const Point3D & pos,
                       const Vector3D & velocity);
 
-    const float boxSize() const { return m_boxSize; }
-    const float squareBoxSize() const { return m_squareBoxSize; }
+    float boxSize() const { return m_boxSize; }
+    float squareBoxSize() const { return m_squareBoxSize; }
 
-    const float radius() const { return m_radius; }
-    const float squareRadius() const { return m_squareRadius; }
+    float radius() const { return m_radius; }
+    float squareRadius() const { return m_squareRadius; }
 
     const Point3D & pos() const { return m_pos; }
     const Vector3D & velocity() const { return m_velocity; }
@@ -121,11 +121,10 @@ const Vector3D distanceTo(const Location & self, const Location & other);
 
 const Point3D relativePos(const Location & self, const Location & other);
 
-const float squareDistance(const Location & self, const Location & other);
-const float squareHorizontalDistance(const Location & self,
-                                     const Location & other);
+float squareDistance(const Location & self, const Location & other);
+float squareHorizontalDistance(const Location & self, const Location & other);
 
-inline const float distance(const Location & self, const Location & other)
+inline float distance(const Location & self, const Location & other)
 {
     return std::sqrt(squareDistance(self, other));
 }
