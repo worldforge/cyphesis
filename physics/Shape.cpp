@@ -90,8 +90,8 @@ WFMath::CoordType MathShape<WFMath::Polygon, 2>::area() const
 {
     WFMath::CoordType area = 0;
 
-    int n = m_shape.numCorners();
-    for (int i = 0; i < n; ++i) {
+    size_t n = m_shape.numCorners();
+    for (size_t i = 0; i < n; ++i) {
         WFMath::Point<2> corner = m_shape.getCorner(i);
         WFMath::Point<2> corner2 = m_shape.getCorner((i + 1) % n);
         area += corner.x() * corner2.y();
@@ -124,7 +124,7 @@ WFMath::Point<3> MathShape<WFMath::Polygon, 2>::highCorner() const
 template<>
 void MathShape<WFMath::Polygon, 2>::scale(WFMath::CoordType factor)
 {
-    for (int i = 0; i < m_shape.numCorners(); ++i) {
+    for (size_t i = 0; i < m_shape.numCorners(); ++i) {
         WFMath::Point<2> corner = m_shape.getCorner(i);
         m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
                                                corner.y() * factor));

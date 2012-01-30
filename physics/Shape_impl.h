@@ -92,7 +92,7 @@ bool MathShape<ShapeT, dim>::intersect(const WFMath::Point<2> & p) const
 }
 
 template<template <int> class ShapeT, int dim>
-void MathShape<ShapeT, dim>::scale(WFMath::CoordType factor)
+void MathShape<ShapeT, dim>::scale(WFMath::CoordType)
 {
 }
 
@@ -100,10 +100,10 @@ template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 {
     data["type"] = getType();
-    int size = m_shape.numCorners();
+    size_t size = m_shape.numCorners();
     if (size > 0) {
         Atlas::Message::ListType points;
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             WFMath::Point<dim> corner = m_shape.getCorner(i);
             points.push_back(corner.toAtlas());
         }
