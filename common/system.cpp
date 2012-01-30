@@ -240,7 +240,7 @@ extern "C" void report_abort(int signo)
 #endif
 }
 
-extern "C" void report_status(int signo)
+extern "C" void report_status(int)
 {
     if (exit_flag) {
         log(NOTICE, "Shutting down");
@@ -249,7 +249,7 @@ extern "C" void report_status(int signo)
     }
 }
 
-extern "C" void rotate_logs(int signo)
+extern "C" void rotate_logs(int)
 {
     rotateLogger();
 }

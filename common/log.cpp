@@ -64,7 +64,7 @@ static void logDate(std::ostream & log_stream)
 #endif // HAVE_LOCALTIME_R
 
     char buf[256];
-    int count = strftime(buf, sizeof(buf) / sizeof(char), TIME_FORMAT, local_time);
+    size_t count = strftime(buf, sizeof(buf) / sizeof(char), TIME_FORMAT, local_time);
 
     if (count == 0) {
         log_stream << "[TIME_ERROR]";

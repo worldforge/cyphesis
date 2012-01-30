@@ -50,7 +50,7 @@ static const bool debug_flag = false;
 
 Database * Database::m_instance = NULL;
 
-static void databaseNotice(void * arg, const char * message)
+static void databaseNotice(void *, const char * message)
 {
     log(NOTICE, "Notice from database:");
     log_formatted(NOTICE, message);
@@ -789,7 +789,7 @@ int Database::registerSimpleTable(const std::string & name,
         const Element & type = I->second;
         if (type.isString()) {
             query += " LIKE 'foo'";
-            int size = type.String().size();
+            std::size_t size = type.String().size();
             if (size == 0) {
                 createquery += " text";
             } else {
