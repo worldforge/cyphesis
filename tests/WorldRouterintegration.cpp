@@ -559,7 +559,7 @@ float sqrMag(const Point3D & p)
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
 }
 
-const float squareDistance(const Location & self, const Location & other)
+float squareDistance(const Location & self, const Location & other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);

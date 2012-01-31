@@ -693,7 +693,7 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
 template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
 template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
-const float squareDistance(const Location & self, const Location & other)
+float squareDistance(const Location & self, const Location & other)
 {
     return 1.f;
 }

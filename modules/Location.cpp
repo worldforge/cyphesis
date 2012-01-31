@@ -284,15 +284,14 @@ const Point3D relativePos(const Location & self, const Location & other)
     return pos;
 }
 
-const float squareDistance(const Location & self, const Location & other)
+float squareDistance(const Location & self, const Location & other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
     return sqrMag(dist);
 }
 
-const float squareHorizontalDistance(const Location & self,
-                                     const Location & other)
+float squareHorizontalDistance(const Location & self, const Location & other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);

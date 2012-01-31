@@ -659,7 +659,7 @@ const Point3D relativePos(const Location & self, const Location & other)
     return pos;
 }
 
-const float squareDistance(const Location & self, const Location & other)
+float squareDistance(const Location & self, const Location & other)
 {
     return 1.f;
 }
