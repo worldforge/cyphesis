@@ -179,11 +179,6 @@ int main(int argc, char ** argv)
     // Start up the python subsystem.
     init_python_api(ruleset_name);
 
-    // Create commserver instance that will handle connections from clients.
-    // The commserver will create the other server related objects, and the
-    // world object pair (World + WorldRouter), and initialise the admin
-    // account. The primary ruleset name is passed in so it
-    // can be stored and queried by clients.
     Inheritance::instance();
     new BulletDomain;
 
@@ -209,11 +204,18 @@ int main(int argc, char ** argv)
         return EXIT_DATABASE_ERROR;
     }
 
+    // Create the core server object, which stores central data,
+    // and track objects
     ServerRouting * server = new ServerRouting(*world, ruleset_name,
                                                server_name,
                                                server_id, int_id,
                                                lobby_id, lobby_int_id);
 
+    // Create commserver instance that will handle connections from clients.
+    // The commserver will create the other server related objects, and the
+    // world object pair (World + WorldRouter), and initialise the admin
+    // account. The primary ruleset name is passed in so it
+    // can be stored and queried by clients.
     CommServer * commServer = new CommServer;
 
     if (commServer->setup() != 0) {
