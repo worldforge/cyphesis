@@ -82,7 +82,7 @@ int main()
 
     Entity * world = new Entity("0", 0);
 
-    TestWorld * tw = new TestWorld(*world);
+    new TestWorld(*world);
 
     Character * test_character = new Character("1", 1);
 
