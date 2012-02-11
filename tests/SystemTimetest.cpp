@@ -32,10 +32,6 @@ int main()
 {
     {
         SystemTime s;
-    }
-
-    {
-        SystemTime s;
         s.update();
         assert(s.seconds() > 0);
         assert(s.microseconds() > 0);
