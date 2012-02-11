@@ -68,7 +68,7 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
     // v = PyRun_StringFlags(command, Py_file_input, d, d, flags);
     PyArena *arena = PyArena_New();
     if (arena == NULL)
-        return NULL;
+        return -1;
 
     mod_ty mod = PyParser_ASTFromString(command, "<string>", Py_file_input, flags, arena);
     if (mod == NULL) {
