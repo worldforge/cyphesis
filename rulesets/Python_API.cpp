@@ -682,7 +682,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     o = PyFloat_FromDouble(consts::basic_tick);
     PyModule_AddObject(_const, "basic_tick", o);
 
-    o = PyFloat_FromDouble(WFMATH_EPSILON);
+    o = PyFloat_FromDouble(WFMath::numeric_constants<WFMath::CoordType>::epsilon());
     PyModule_AddObject(_const, "epsilon", o);
 
     /// Create the common.globals module

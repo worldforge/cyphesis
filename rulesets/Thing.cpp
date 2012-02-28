@@ -250,7 +250,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     bool moving = false;
 
     if (m_location.velocity().isValid() &&
-        m_location.velocity().sqrMag() > WFMATH_EPSILON) {
+        m_location.velocity().sqrMag() > WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
         moving = true;
     }
 
@@ -265,7 +265,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         update_time = m_motion->checkCollisions();
 
         if (m_motion->collision()) {
-            if (update_time < WFMATH_EPSILON) {
+            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
                 moving = m_motion->resolveCollision();
             } else {
                 m_motion->m_collisionTime = current_time + update_time;
@@ -504,7 +504,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // If somehow a movement update arrives with the correct refno, but
     // we are not moving, then something has gone wrong.
     if (!m_location.velocity().isValid() ||
-        m_location.velocity().sqrMag() < WFMATH_EPSILON) {
+        m_location.velocity().sqrMag() < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
         log(ERROR, "Update got for entity not moving");
         return;
     }
@@ -569,7 +569,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         update_time = m_motion->checkCollisions();
 
         if (m_motion->collision()) {
-            if (update_time < WFMATH_EPSILON) {
+            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
                 moving = m_motion->resolveCollision();
             } else {
                 m_motion->m_collisionTime = current_time + update_time;
