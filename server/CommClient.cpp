@@ -19,11 +19,11 @@
 
 #include "CommClient.h"
 #include "CommServer.h"
-#include "ServerRouting.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/Router.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Encoder.h>
