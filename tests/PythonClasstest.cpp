@@ -32,8 +32,11 @@
 
 #include <cassert>
 
-bool stub_Get_PyClass_return = false;
-bool stub_Get_PyModule_return = false;
+static bool stub_Get_PyClass_return = false;
+static bool stub_Get_PyModule_return = false;
+
+static PyObject * testmod = 0;
+static PyObject * GoodClass_type = 0;
 
 class TestPythonClass : public PythonClass {
   public:
@@ -63,7 +66,8 @@ int main()
 {
     Py_Initialize();
 
-    Py_InitModule("testmod", no_methods);
+    testmod = Py_InitModule("testmod", no_methods);
+    assert(testmod != 0);
 
     run_python_string("import testmod");
 
@@ -72,6 +76,10 @@ int main()
     run_python_string("class GoodClass(object):\n"
                       " pass\n");
     run_python_string("testmod.BadClass=BadClass");
+    run_python_string("testmod.GoodClass=GoodClass");
+
+    GoodClass_type = PyObject_GetAttrString(testmod, "GoodClass");
+    assert(GoodClass_type != 0);
 
     {
         const char * package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
@@ -150,7 +158,9 @@ struct _object * Get_PyClass(struct _object * module,
                              const std::string & type)
 {
     if (stub_Get_PyClass_return) {
-        return new PyObject;
+        // It's possible I should be incrementing the reference count
+        Py_INCREF(GoodClass_type);
+        return GoodClass_type;
     }
     return 0;
 }
@@ -158,7 +168,8 @@ struct _object * Get_PyClass(struct _object * module,
 struct _object * Get_PyModule(const std::string & package)
 {
     if (stub_Get_PyModule_return) {
-        return new PyObject;
+        Py_INCREF(testmod);
+        return testmod;
     }
     return 0;
 }
