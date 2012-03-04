@@ -1,9 +1,11 @@
 AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
+noinst_LIBRARIES = libcomm.a
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave
 
-LOCAL_LIBS = $(top_builddir)/rulesets/libscriptpython.a \
+LOCAL_LIBS = $(top_builddir)/server/libcomm.a \
+             $(top_builddir)/rulesets/libscriptpython.a \
              $(top_builddir)/rulesets/librulesetmind.a \
              $(top_builddir)/rulesets/librulesetentity.a \
              $(top_builddir)/rulesets/librulesetbase.a \
@@ -66,6 +68,8 @@ else
 SERVER_LIBS = $(COMMON_LIBS) $(TERRAIN_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS) \
               $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
 
+FRONTEND_LIBS = $(COMMON_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS)
+
 cyphesis_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
@@ -111,6 +115,12 @@ SERVER_SOURCES = \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		HttpCache.cpp HttpCache.h \
+		TeleportState.cpp TeleportState.h \
+		TeleportAuthenticator.cpp TeleportAuthenticator.h \
+		PendingTeleport.cpp PendingTeleport.h \
+		server.cpp server.h
+
+COMM_SOURCES = \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommTCPListener.cpp CommTCPListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
@@ -122,11 +132,9 @@ SERVER_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
-		CommClientFactory.cpp CommClientFactory.h \
-		TeleportState.cpp TeleportState.h \
-		TeleportAuthenticator.cpp TeleportAuthenticator.h \
-		PendingTeleport.cpp PendingTeleport.h \
-		server.cpp server.h
+		CommClientFactory.cpp CommClientFactory.h
+
+libcomm_a_SOURCES = $(COMM_SOURCES)
 
 cyphesis_SOURCES = $(SERVER_SOURCES) buildid.cpp
 
