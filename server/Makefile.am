@@ -167,7 +167,7 @@ cyslave_SOURCES = \
 		CommMaster.cpp CommMaster.h \
 		CommServer.cpp CommServer.h \
 		CommClientFactory.cpp CommClientFactory.h \
-        TeleportState.cpp TeleportState.h \
+		TeleportState.cpp TeleportState.h \
 		slave.cpp
 
 nodist_cyslave_SOURCES = \
