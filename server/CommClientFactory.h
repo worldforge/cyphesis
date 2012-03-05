@@ -22,8 +22,6 @@
 
 #include "CommClientKit.h"
 
-class CommServer;
-
 class ServerRouting;
 
 /// \brief Concrete factory for createing CommClient objects
