@@ -117,6 +117,8 @@ SERVER_SOURCES = \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
+		CommHttpClientFactory.cpp CommHttpClientFactory.h \
+		CommPythonClientFactory.cpp CommPythonClientFactory.h \
 		CommClientFactory.cpp CommClientFactory.h \
 		CommClientFactory_impl.h \
 		server.cpp server.h

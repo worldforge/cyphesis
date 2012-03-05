@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2012 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,4 +17,19 @@
 
 // $Id$
 
-#include "CommClientFactory.h"
+#include "CommHttpClientFactory.h"
+
+#include "CommHttpClient.h"
+#include "CommServer.h"
+
+int CommHttpClientFactory::newCommClient(CommServer & svr,
+                                         int asockfd,
+                                         const std::string & address)
+{
+    CommHttpClient * newcli = new CommHttpClient(svr, asockfd);
+
+    // Add this new client to the list.
+    svr.addSocket(newcli);
+
+    return 0;
+}

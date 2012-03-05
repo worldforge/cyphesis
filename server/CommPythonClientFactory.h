@@ -17,4 +17,15 @@
 
 // $Id$
 
-#include "CommClientFactory.h"
+#ifndef SERVER_COMM_PYTHON_CLIENT_FACTORY_H
+#define SERVER_COMM_PYTHON_CLIENT_FACTORY_H
+
+#include "CommClientKit.h"
+
+/// \brief Concrete factory for createing CommPythonClient objects
+class CommPythonClientFactory : public CommClientKit {
+  public:
+    virtual int newCommClient(CommServer &, int, const std::string &);
+};
+
+#endif // SERVER_COMM_PYTHON_CLIENT_FACTORY_H

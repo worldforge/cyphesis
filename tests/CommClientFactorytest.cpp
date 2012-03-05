@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "server/CommClientFactory.h"
+#include "server/CommClientFactory_impl.h"
 
 #include "server/Peer.h"
 #include "server/SlaveClientConnection.h"

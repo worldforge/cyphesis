@@ -1025,6 +1025,7 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1057,14 +1058,9 @@ Admintest_LDADD = \
         $(top_builddir)/server/ExternalMind.o \
         $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/Lobby.o \
-        $(top_builddir)/server/CommStreamClient.o \
-        $(top_builddir)/server/CommClient.o \
         $(top_builddir)/server/Idle.o \
-        $(top_builddir)/server/CommSocket.o \
-        $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
         $(top_builddir)/server/Juncture.o \
-        $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
@@ -1081,6 +1077,7 @@ Admintest_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetmind.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1153,14 +1150,9 @@ Playertest_LDADD = \
         $(top_builddir)/server/ExternalMind.o \
         $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/Lobby.o \
-        $(top_builddir)/server/CommStreamClient.o \
-        $(top_builddir)/server/CommClient.o \
         $(top_builddir)/server/Idle.o \
-        $(top_builddir)/server/CommSocket.o \
-        $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/Peer.o \
         $(top_builddir)/server/Juncture.o \
-        $(top_builddir)/server/CommServer.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/Player.o \
@@ -1177,6 +1169,7 @@ Playertest_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1239,6 +1232,8 @@ ArithmeticBuildertest_LDADD = \
 CommClientFactorytest_SOURCES = CommClientFactorytest.cpp
 CommClientFactorytest_LDADD = \
         $(top_builddir)/server/CommClientFactory.o \
+        $(top_builddir)/server/CommHttpClientFactory.o \
+        $(top_builddir)/server/CommPythonClientFactory.o \
         $(top_builddir)/server/CommClientKit.o \
         $(NETWORK_LIBS)
 
