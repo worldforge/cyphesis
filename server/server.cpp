@@ -23,11 +23,12 @@
 
 #include "CommServer.h"
 #include "CommTCPListener.h"
-#include "CommClientFactory.h"
+#include "CommClientFactory_impl.h"
 #include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
+#include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
 #include "ArithmeticBuilder.h"
@@ -39,6 +40,7 @@
 #include "UpdateTester.h"
 #include "Admin.h"
 #include "TeleportAuthenticator.h"
+#include "TrustedConnection.h"
 
 #include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"

@@ -19,7 +19,6 @@
 
 #include "TrustedConnection.h"
 
-#include "CommClientFactory_impl.h"
 #include "Player.h"
 #include "SystemAccount.h"
 
@@ -58,5 +57,3 @@ Account * TrustedConnection::newAccount(const std::string & type,
         return new Player(this, username, hash, id, intId);
     }
 }
-
-template class CommClientFactory<TrustedConnection>;

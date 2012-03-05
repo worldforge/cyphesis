@@ -19,7 +19,6 @@
 
 #include "Connection.h"
 
-#include "CommClientFactory_impl.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "CommClient.h"
@@ -580,5 +579,3 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
     
     res.push_back(info);
 }
-
-template class CommClientFactory<Connection>;
