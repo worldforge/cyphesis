@@ -20,18 +20,9 @@
 #ifndef SERVER_COMM_CLIENT_FACTORY_H
 #define SERVER_COMM_CLIENT_FACTORY_H
 
-#include <string>
+#include "CommClientKit.h"
 
 class CommServer;
-class CommClient;
-
-/// \brief Abstract factory for creating objects from subclasses of CommClient
-class CommClientKit {
-  public:
-    virtual ~CommClientKit();
-
-    virtual int newCommClient(CommServer &, int, const std::string &) = 0;
-};
 
 class ServerRouting;
 

@@ -17,53 +17,13 @@
 
 // $Id$
 
-#include "CommClientFactory.h"
+#include "CommClientFactory_impl.h"
 
-#include "CommServer.h"
-#include "CommClient.h"
 #include "CommHttpClient.h"
 #include "CommPythonClient.h"
 #include "TrustedConnection.h"
 #include "SlaveClientConnection.h"
 #include "Peer.h"
-#include "ServerRouting.h"
-
-#include "common/id.h"
-#include "common/log.h"
-#include "common/system.h"
-
-CommClientKit::~CommClientKit()
-{
-}
-
-template <class ConnectionT>
-int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
-                                                  int asockfd,
-                                                  const std::string & address)
-{
-    std::string connection_id;
-    long c_iid = newId(connection_id);
-    if (c_iid < 0) {
-        log(ERROR, "Unable to accept connection as no ID available");
-        closesocket(asockfd);
-        return -1;
-    }
-
-    CommClient * newcli = new CommClient(svr,
-                                         m_server.getName(),
-                                         asockfd);
-
-    newcli->setup(new ConnectionT(*newcli,
-                                  m_server,
-                                  address,
-                                  connection_id, c_iid));
-
-    // Add this new client to the list.
-    svr.addSocket(newcli);
-    svr.addIdle(newcli);
-
-    return 0;
-}
 
 int CommHttpClientFactory::newCommClient(CommServer & svr,
                                          int asockfd,

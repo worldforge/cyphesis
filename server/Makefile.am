@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 noinst_LIBRARIES = libcomm.a
 bin_PROGRAMS = cyphesis
-EXTRA_PROGRAMS = cyslave
+EXTRA_PROGRAMS = cyslave cyprox
 
 LOCAL_LIBS = $(top_builddir)/server/libcomm.a \
              $(top_builddir)/rulesets/libscriptpython.a \
@@ -118,6 +118,8 @@ SERVER_SOURCES = \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
+		CommClientFactory.cpp CommClientFactory.h \
+		CommClientFactory_impl.h \
 		server.cpp server.h
 
 COMM_SOURCES = \
@@ -132,13 +134,21 @@ COMM_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
-		CommClientFactory.cpp CommClientFactory.h
+		CommClientKit.cpp CommClientKit.h
 
 libcomm_a_SOURCES = $(COMM_SOURCES)
 
 cyphesis_SOURCES = $(SERVER_SOURCES) buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
+
+cyprox_SOURCES = proxy.cpp buildid.cpp
+
+cyprox_LDADD = $(top_builddir)/server/libcomm.a \
+               $(top_builddir)/modules/libmodules.a \
+               $(top_builddir)/common/libcommon.a \
+               $(top_builddir)/physics/libphysics.a \
+               $(FRONTEND_LIBS)
 
 buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
              $(top_srcdir)/scripts/gen_buildid.py $(top_srcdir)/ChangeLog
