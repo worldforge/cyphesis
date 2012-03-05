@@ -209,7 +209,7 @@ static bool distanceFromAncestor(const Location & self,
     if (other.orientation().isValid()) {
         c = c.toParentCoords(other.m_pos, other.orientation());
     } else {
-        static const Quaternion identity(1, 0, 0, 0);
+        static const Quaternion identity((Quaternion::Identity()));
         c = c.toParentCoords(other.m_pos, identity);
     }
 
