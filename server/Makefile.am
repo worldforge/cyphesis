@@ -142,7 +142,7 @@ cyphesis_SOURCES = $(SERVER_SOURCES) buildid.cpp
 
 cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
-cyprox_SOURCES = proxy.cpp buildid.cpp
+cyprox_SOURCES = frontend.cpp buildid.cpp
 
 cyprox_LDADD = $(top_builddir)/server/libcomm.a \
                $(top_builddir)/modules/libmodules.a \
