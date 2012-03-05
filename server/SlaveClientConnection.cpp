@@ -19,6 +19,8 @@
 
 #include "SlaveClientConnection.h"
 
+#include "CommClientFactory_impl.h"
+
 /// \brief SlaveClientConnection constructor
 ///
 /// @param id identifier of the connection
@@ -40,3 +42,5 @@ SlaveClientConnection::~SlaveClientConnection()
 void SlaveClientConnection::operation(const Operation &, OpVector &)
 {
 }
+
+template class CommClientFactory<SlaveClientConnection>;

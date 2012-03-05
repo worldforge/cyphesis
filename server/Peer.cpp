@@ -19,6 +19,7 @@
 
 #include "Peer.h"
 
+#include "CommClientFactory_impl.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "CommClient.h"
@@ -337,3 +338,5 @@ void Peer::cleanTeleports()
         }
     }
 }
+
+template class CommClientFactory<Peer>;

@@ -17,13 +17,11 @@
 
 // $Id$
 
-#include "CommClientFactory_impl.h"
+#include "CommClientFactory.h"
 
 #include "CommHttpClient.h"
 #include "CommPythonClient.h"
-#include "TrustedConnection.h"
-#include "SlaveClientConnection.h"
-#include "Peer.h"
+#include "CommServer.h"
 
 int CommHttpClientFactory::newCommClient(CommServer & svr,
                                          int asockfd,
@@ -48,8 +46,3 @@ int CommPythonClientFactory::newCommClient(CommServer & svr,
 
     return 0;
 }
-
-template class CommClientFactory<Connection>;
-template class CommClientFactory<SlaveClientConnection>;
-template class CommClientFactory<TrustedConnection>;
-template class CommClientFactory<Peer>;
