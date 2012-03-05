@@ -1239,6 +1239,7 @@ ArithmeticBuildertest_LDADD = \
 CommClientFactorytest_SOURCES = CommClientFactorytest.cpp
 CommClientFactorytest_LDADD = \
         $(top_builddir)/server/CommClientFactory.o \
+        $(top_builddir)/server/CommClientKit.o \
         $(NETWORK_LIBS)
 
 ServerRoutingtest_SOURCES = ServerRoutingtest.cpp
