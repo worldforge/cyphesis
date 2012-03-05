@@ -111,7 +111,6 @@ SERVER_SOURCES = \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h \
 		UpdateTester.cpp UpdateTester.h \
-		CommSocket.cpp CommSocket.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		HttpCache.cpp HttpCache.h \
@@ -133,8 +132,9 @@ COMM_SOURCES = \
 		CommPythonClient.cpp CommPythonClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
+		CommClientKit.cpp CommClientKit.h \
 		CommServer.cpp CommServer.h \
-		CommClientKit.cpp CommClientKit.h
+		CommSocket.cpp CommSocket.h
 
 libcomm_a_SOURCES = $(COMM_SOURCES)
 
