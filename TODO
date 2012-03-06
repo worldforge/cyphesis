@@ -1,3 +1,6 @@
+BaseWorld, Property, TypeNode and Inheritance into rulesets? Everything else
+in common is lower level.
+
 Need to work out what to do with sections, vs rulesets when uploading and
 storing rules at the server end.
 
