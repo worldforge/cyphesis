@@ -4,7 +4,7 @@ noinst_LIBRARIES = libcomm.a
 bin_PROGRAMS = cyphesis
 EXTRA_PROGRAMS = cyslave cyprox
 
-LOCAL_LIBS = $(top_builddir)/server/libcomm.a \
+LOCAL_LIBS = libcomm.a \
              $(top_builddir)/rulesets/libscriptpython.a \
              $(top_builddir)/rulesets/librulesetmind.a \
              $(top_builddir)/rulesets/librulesetentity.a \
