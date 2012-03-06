@@ -108,8 +108,6 @@ SERVER_SOURCES = \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
 		Juncture.cpp Juncture.h \
-		Idle.cpp Idle.h \
-		IdleConnector.cpp IdleConnector.h \
 		UpdateTester.cpp UpdateTester.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
@@ -134,9 +132,11 @@ COMM_SOURCES = \
 		CommPythonClient.cpp CommPythonClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
-		CommClientKit.cpp CommClientKit.h \
 		CommServer.cpp CommServer.h \
-		CommSocket.cpp CommSocket.h
+		CommClientKit.cpp CommClientKit.h \
+		CommSocket.cpp CommSocket.h \
+		Idle.cpp Idle.h \
+		IdleConnector.cpp IdleConnector.h
 
 libcomm_a_SOURCES = $(COMM_SOURCES)
 
