@@ -111,11 +111,9 @@ SERVER_SOURCES = \
 		UpdateTester.cpp UpdateTester.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
-		HttpCache.cpp HttpCache.h \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
-		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommPythonClientFactory.cpp CommPythonClientFactory.h \
 		CommClientFactory.cpp CommClientFactory.h \
 		CommClientFactory_impl.h \
@@ -133,6 +131,8 @@ COMM_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
+		HttpCache.cpp HttpCache.h \
+		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommClientKit.cpp CommClientKit.h \
 		CommSocket.cpp CommSocket.h \
 		Idle.cpp Idle.h \
