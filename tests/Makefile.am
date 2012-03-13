@@ -72,7 +72,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
-                    CommMDNSPublishertest
+                    CommMDNSPublishertest CommClientKittest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
@@ -1073,6 +1073,7 @@ Admintest_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetmind.a \
@@ -1162,6 +1163,7 @@ Playertest_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/CommPeer.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1288,6 +1290,10 @@ CommStreamListenertest_LDADD = \
 CommMDNSPublishertest_SOURCES = CommMDNSPublishertest.cpp
 CommMDNSPublishertest_LDADD = \
         $(top_builddir)/server/CommMDNSPublisher.o
+
+CommClientKittest_SOURCES = CommClientKittest.cpp
+CommClientKittest_LDADD = \
+        $(top_builddir)/server/CommClientKit.o
 
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
