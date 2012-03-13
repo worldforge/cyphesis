@@ -68,7 +68,8 @@ else
 SERVER_LIBS = $(COMMON_LIBS) $(TERRAIN_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS) \
               $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS)
 
-FRONTEND_LIBS = $(COMMON_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS)
+FRONTEND_LIBS = $(COMMON_LIBS) $(MATH_LIBS) $(NETWORK_LIBS) $(MDNS_LIBS) \
+                $(PGSQL_LIBS)
 
 cyphesis_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
@@ -114,6 +115,8 @@ SERVER_SOURCES = \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		PendingTeleport.cpp PendingTeleport.h \
+		CommPeer.cpp CommPeer.h \
+		CommPythonClient.cpp CommPythonClient.h \
 		CommPythonClientFactory.cpp CommPythonClientFactory.h \
 		CommClientFactory.cpp CommClientFactory.h \
 		CommClientFactory_impl.h \
@@ -125,9 +128,7 @@ COMM_SOURCES = \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommStreamClient.cpp CommStreamClient.h \
 		CommClient.cpp CommClient.h \
-		CommPeer.cpp CommPeer.h \
 		CommHttpClient.cpp CommHttpClient.h \
-		CommPythonClient.cpp CommPythonClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
@@ -146,7 +147,7 @@ cyphesis_LDADD = $(LOCAL_LIBS) $(SERVER_LIBS)
 
 cyprox_SOURCES = frontend.cpp buildid.cpp
 
-cyprox_LDADD = $(top_builddir)/server/libcomm.a \
+cyprox_LDADD = libcomm.a \
                $(top_builddir)/modules/libmodules.a \
                $(top_builddir)/common/libcommon.a \
                $(top_builddir)/physics/libphysics.a \
