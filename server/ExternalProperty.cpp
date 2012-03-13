@@ -19,8 +19,6 @@
 
 #include "ExternalProperty.h"
 
-#include "common/Router.h"
-
 #include <Atlas/Objects/RootEntity.h>
 
 ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
