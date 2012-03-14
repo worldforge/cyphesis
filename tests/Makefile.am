@@ -68,7 +68,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
-               IdleConnectortest
+               IdleConnectortest CommPSQLSockettest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1337,6 +1337,10 @@ TaskRuleHandlertest_LDADD = \
 IdleConnectortest_SOURCES = IdleConnectortest.cpp
 IdleConnectortest_LDADD = \
         $(top_builddir)/server/IdleConnector.o
+
+CommPSQLSockettest_SOURCES = CommPSQLSockettest.cpp
+CommPSQLSockettest_LDADD = \
+        $(top_builddir)/server/CommPSQLSocket.o
 
 # SERVER_INTEGRATION_TESTS
 
