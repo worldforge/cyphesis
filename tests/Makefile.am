@@ -55,7 +55,8 @@ RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
-               ClientConnectiontest BaseClienttest
+               ClientConnectiontest BaseClienttest \
+               ClientPropertyManagertest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
@@ -983,6 +984,11 @@ ClientConnectiontest_LDADD = \
 BaseClienttest_SOURCES = BaseClienttest.cpp
 BaseClienttest_LDADD = \
         $(top_builddir)/client/BaseClient.o
+
+ClientPropertyManagertest_SOURCES = ClientPropertyManagertest.cpp
+ClientPropertyManagertest_LDADD = \
+        $(top_builddir)/client/ClientPropertyManager.o \
+        $(top_builddir)/common/PropertyManager.o
 
 # SERVER_TESTS
 
