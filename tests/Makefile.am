@@ -69,7 +69,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
-               CommPythonClientFactorytest
+               CommPythonClientFactorytest \
+               ExternalPropertytest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1351,6 +1352,11 @@ CommPythonClientFactorytest_SOURCES = CommPythonClientFactorytest.cpp
 CommPythonClientFactorytest_LDADD = \
         $(top_builddir)/server/CommPythonClientFactory.o \
         $(NETWORK_LIBS)
+
+ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
+ExternalPropertytest_LDADD = \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/common/Property.o
 
 # SERVER_INTEGRATION_TESTS
 
