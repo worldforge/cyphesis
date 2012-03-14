@@ -24,6 +24,8 @@
 #include "CommServer.h"
 #include "CommTCPListener.h"
 #include "CommClientFactory_impl.h"
+#include "CommHttpClientFactory.h"
+#include "CommPythonClientFactory.h"
 #include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"

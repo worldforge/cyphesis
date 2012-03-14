@@ -68,11 +68,13 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
-               IdleConnectortest CommPSQLSockettest
+               IdleConnectortest CommPSQLSockettest \
+               CommPythonClientFactorytest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
-                    CommMDNSPublishertest CommClientKittest
+                    CommMDNSPublishertest CommClientKittest \
+                    CommHttpClientFactorytest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
@@ -1227,8 +1229,6 @@ ArithmeticBuildertest_LDADD = \
 CommClientFactorytest_SOURCES = CommClientFactorytest.cpp
 CommClientFactorytest_LDADD = \
         $(top_builddir)/server/CommClientFactory.o \
-        $(top_builddir)/server/CommHttpClientFactory.o \
-        $(top_builddir)/server/CommPythonClientFactory.o \
         $(top_builddir)/server/CommClientKit.o \
         $(NETWORK_LIBS)
 
@@ -1295,6 +1295,11 @@ CommClientKittest_SOURCES = CommClientKittest.cpp
 CommClientKittest_LDADD = \
         $(top_builddir)/server/CommClientKit.o
 
+CommHttpClientFactorytest_SOURCES = CommHttpClientFactorytest.cpp
+CommHttpClientFactorytest_LDADD = \
+        $(top_builddir)/server/CommHttpClientFactory.o \
+        $(NETWORK_LIBS)
+
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
         $(top_builddir)/server/TeleportAuthenticator.o
@@ -1341,6 +1346,11 @@ IdleConnectortest_LDADD = \
 CommPSQLSockettest_SOURCES = CommPSQLSockettest.cpp
 CommPSQLSockettest_LDADD = \
         $(top_builddir)/server/CommPSQLSocket.o
+
+CommPythonClientFactorytest_SOURCES = CommPythonClientFactorytest.cpp
+CommPythonClientFactorytest_LDADD = \
+        $(top_builddir)/server/CommPythonClientFactory.o \
+        $(NETWORK_LIBS)
 
 # SERVER_INTEGRATION_TESTS
 

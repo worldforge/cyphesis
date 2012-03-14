@@ -35,16 +35,4 @@ class CommClientFactory : public CommClientKit {
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
 
-/// \brief Concrete factory for createing CommHttpClient objects
-class CommHttpClientFactory : public CommClientKit {
-  public:
-    virtual int newCommClient(CommServer &, int, const std::string &);
-};
-
-/// \brief Concrete factory for createing CommPythonClient objects
-class CommPythonClientFactory : public CommClientKit {
-  public:
-    virtual int newCommClient(CommServer &, int, const std::string &);
-};
-
 #endif // SERVER_COMM_CLIENT_FACTORY_H

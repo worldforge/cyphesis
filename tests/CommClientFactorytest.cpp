@@ -120,27 +120,11 @@ int main()
         int res = ccf_p.newCommClient(comm_server, -1, "");
         assert(res != 0);
     }
-
-    {
-        CommHttpClientFactory chcf;
-
-        int res = chcf.newCommClient(comm_server, -1, "");
-        assert(res == 0);
-    }
-
-    {
-        CommPythonClientFactory cpcf;
-
-        int res = cpcf.newCommClient(comm_server, -1, "");
-        assert(res == 0);
-    }
 }
 
 // stubs
 
 #include "server/CommClient.h"
-#include "server/CommHttpClient.h"
-#include "server/CommPythonClient.h"
 
 #include "common/id.h"
 
@@ -246,42 +230,6 @@ void Peer::operation(const Operation &, OpVector &)
 }
 
 int CommServer::addSocket(CommSocket*)
-{
-    return 0;
-}
-
-CommHttpClient::CommHttpClient(CommServer & svr, int fd) :
-                CommStreamClient(svr, fd)
-{
-}
-
-CommHttpClient::~CommHttpClient()
-{
-}
-
-void CommHttpClient::dispatch()
-{
-}
-
-int CommHttpClient::read()
-{
-    return 0;
-}
-
-CommPythonClient::CommPythonClient(CommServer & svr, int fd) :
-                  CommStreamClient(svr, fd), m_pyContext(0)
-{
-}
-
-CommPythonClient::~CommPythonClient()
-{
-}
-
-void CommPythonClient::dispatch()
-{
-}
-
-int CommPythonClient::read()
 {
     return 0;
 }
