@@ -55,7 +55,8 @@ RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
-               ClientConnectiontest BaseClienttest
+               ClientConnectiontest BaseClienttest \
+               ClientPropertyManagertest
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
@@ -68,11 +69,14 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
-               IdleConnectortest
+               IdleConnectortest CommPSQLSockettest \
+               CommPythonClientFactorytest \
+               ExternalPropertytest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
-                    CommMDNSPublishertest CommClientKittest
+                    CommMDNSPublishertest CommClientKittest \
+                    CommHttpClientFactorytest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
@@ -981,6 +985,11 @@ BaseClienttest_SOURCES = BaseClienttest.cpp
 BaseClienttest_LDADD = \
         $(top_builddir)/client/BaseClient.o
 
+ClientPropertyManagertest_SOURCES = ClientPropertyManagertest.cpp
+ClientPropertyManagertest_LDADD = \
+        $(top_builddir)/client/ClientPropertyManager.o \
+        $(top_builddir)/common/PropertyManager.o
+
 # SERVER_TESTS
 
 Rulesettest_SOURCES = Rulesettest.cpp
@@ -1227,8 +1236,6 @@ ArithmeticBuildertest_LDADD = \
 CommClientFactorytest_SOURCES = CommClientFactorytest.cpp
 CommClientFactorytest_LDADD = \
         $(top_builddir)/server/CommClientFactory.o \
-        $(top_builddir)/server/CommHttpClientFactory.o \
-        $(top_builddir)/server/CommPythonClientFactory.o \
         $(top_builddir)/server/CommClientKit.o \
         $(NETWORK_LIBS)
 
@@ -1295,6 +1302,11 @@ CommClientKittest_SOURCES = CommClientKittest.cpp
 CommClientKittest_LDADD = \
         $(top_builddir)/server/CommClientKit.o
 
+CommHttpClientFactorytest_SOURCES = CommHttpClientFactorytest.cpp
+CommHttpClientFactorytest_LDADD = \
+        $(top_builddir)/server/CommHttpClientFactory.o \
+        $(NETWORK_LIBS)
+
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
         $(top_builddir)/server/TeleportAuthenticator.o
@@ -1337,6 +1349,20 @@ TaskRuleHandlertest_LDADD = \
 IdleConnectortest_SOURCES = IdleConnectortest.cpp
 IdleConnectortest_LDADD = \
         $(top_builddir)/server/IdleConnector.o
+
+CommPSQLSockettest_SOURCES = CommPSQLSockettest.cpp
+CommPSQLSockettest_LDADD = \
+        $(top_builddir)/server/CommPSQLSocket.o
+
+CommPythonClientFactorytest_SOURCES = CommPythonClientFactorytest.cpp
+CommPythonClientFactorytest_LDADD = \
+        $(top_builddir)/server/CommPythonClientFactory.o \
+        $(NETWORK_LIBS)
+
+ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
+ExternalPropertytest_LDADD = \
+        $(top_builddir)/server/ExternalProperty.o \
+        $(top_builddir)/common/Property.o
 
 # SERVER_INTEGRATION_TESTS
 

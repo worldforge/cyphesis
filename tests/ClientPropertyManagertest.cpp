@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2012 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,22 +17,29 @@
 
 // $Id$
 
-#ifndef SERVER_COMM_CLIENT_FACTORY_H
-#define SERVER_COMM_CLIENT_FACTORY_H
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
 
-#include "CommClientKit.h"
+#include "client/ClientPropertyManager.h"
 
-class ServerRouting;
+#include <cassert>
 
-/// \brief Concrete factory for createing CommClient objects
-template <class ConnectionT>
-class CommClientFactory : public CommClientKit {
-  protected:
-    ServerRouting & m_server;
-  public:
-    explicit CommClientFactory(ServerRouting  & s) : m_server(s) { }
+int main()
+{
+    {
+        ClientPropertyManager * cpm = new ClientPropertyManager;
+        delete cpm;
+    }
 
-    virtual int newCommClient(CommServer &, int, const std::string &);
-};
+    {
+        ClientPropertyManager * cpm = new ClientPropertyManager;
+        assert(cpm->addProperty("foo", 0) == 0);
+        delete cpm;
+    }
 
-#endif // SERVER_COMM_CLIENT_FACTORY_H
+    return 0;
+}
