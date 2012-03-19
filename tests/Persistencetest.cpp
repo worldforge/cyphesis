@@ -35,6 +35,18 @@ using Atlas::Objects::Root;
 
 int main()
 {
+    {
+        Persistence * p = Persistence::instance();
+        p->shutdown();
+    }
+
+    {
+        Persistence * p = Persistence::instance();
+        int res = p->init();
+        assert(res == 0);
+        p->shutdown();
+    }
+
     return 0;
 }
 
