@@ -3,9 +3,6 @@
 
 from atlas import *
 from physics import *
-from physics import Quaternion
-from physics import Point3D
-from physics import Vector3D
 
 import math
 import weakref
