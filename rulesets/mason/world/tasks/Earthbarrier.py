@@ -3,9 +3,9 @@
 
 from atlas import *
 from physics import *
-from weakref import ref
 
 import math
+import weakref
 
 import server
 
@@ -106,7 +106,7 @@ class Earthbarrier(server.Task):
                         print "%s is no good" % mod.id
                         continue
                     print "%s looks good" % mod.id
-                    self.mod_entity = ref(mod)
+                    self.mod_entity = weakref.ref(mod)
                     # We have modified the attribute in place,
                     # so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))
