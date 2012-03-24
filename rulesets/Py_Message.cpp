@@ -72,6 +72,20 @@ static void Message_dealloc(PyMessage *self)
     self->ob_type->tp_free((PyObject*)self);
 }
 
+static PyObject * Message_repr(PyMessage *self)
+{
+#ifndef NDEBUG
+    if (self->m_obj == NULL) {
+        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.repr");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyString_FromFormat("<%s object at %p>(%s)",
+                               Py_TYPE(self)->tp_name,
+                               self,
+                               debug_tostring(*self->m_obj).c_str());
+}
+
 static PyObject * Message_getattro(PyMessage *self, PyObject *oname)
 {
 #ifndef NDEBUG
@@ -185,7 +199,7 @@ PyTypeObject PyMessage_Type = {
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
         0,                              /*tp_compare*/
-        0,                              /*tp_repr*/
+        (reprfunc)Message_repr,         /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
         0,                              /*tp_as_mapping*/
