@@ -26,6 +26,17 @@
 
 #include <wfmath/atlasconv.h>
 
+// Placeholders, as WFMath hasn't filled these out for line yet.
+namespace WFMath {
+
+template<int dim>
+bool Intersect(const Line<dim>&, const Point<dim>&, bool)
+{
+    return false;
+}
+
+}
+
 template<template <int> class ShapeT, int dim>
 const char * MathShape<ShapeT, dim>::getType() const
 {
@@ -88,7 +99,7 @@ WFMath::Point<3> MathShape<ShapeT, dim>::highCorner() const
 template<template <int> class ShapeT, int dim>
 bool MathShape<ShapeT, dim>::intersect(const WFMath::Point<2> & p) const
 {
-    return Intersect(m_shape, p, true);
+    return WFMath::Intersect(m_shape, p, true);
 }
 
 template<template <int> class ShapeT, int dim>

@@ -21,6 +21,7 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <wfmath/line.h>
 #include <wfmath/polygon.h>
 #include <wfmath/stream.h>
 
@@ -75,6 +76,32 @@ WFMath::Point<3> MathShape<WFMath::Ball, 2>::highCorner() const
 {
     WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
     return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+template<>
+WFMath::Point<3> MathShape<WFMath::Line, 2>::lowCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+WFMath::Point<3> MathShape<WFMath::Line, 2>::highCorner() const
+{
+    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
+    return WFMath::Point<3>(corner.x(), corner.y(), 0);
+}
+
+template<>
+void MathShape<WFMath::Line, 2>::scale(WFMath::CoordType factor)
+{
+    for (size_t i = 0; i < m_shape.numCorners(); ++i) {
+        WFMath::Point<2> corner = m_shape.getCorner(i);
+        m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
+                                               corner.y() * factor));
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -178,5 +205,6 @@ Shape * Shape::newFromAtlas(const MapType & data)
 
 template class MathShape<WFMath::AxisBox, 2>;
 template class MathShape<WFMath::Ball, 2>;
+template class MathShape<WFMath::Line, 2>;
 template class MathShape<WFMath::Polygon, 2>;
 template class MathShape<WFMath::RotBox, 2>;
