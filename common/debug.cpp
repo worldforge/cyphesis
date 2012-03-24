@@ -22,6 +22,7 @@
 #include <Atlas/Message/Element.h>
 
 #include <iostream>
+#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -53,7 +54,7 @@ static void output(std::ostream & out, const Element & item, int depth)
             break;
         case Element::TYPE_MAP:
             {
-                out << "{" << std::endl << std::flush;
+                out << "{" << std::endl;
                 MapType::const_iterator I = item.Map().begin();
                 MapType::const_iterator Iend = item.Map().end();
                 for(; I != Iend; ++I) {
@@ -77,6 +78,14 @@ void debug_dump(const T & t)
     output(std::cout, t, 0);
 }
 
+template <typename T>
+std::string debug_tostring(const T & t)
+{
+    std::stringstream out(std::ios::out);
+    output(out, t, 0);
+    return out.str();
+}
+
 template
 void debug_dump<MapType>(const MapType & map);
 
@@ -85,3 +94,13 @@ void debug_dump<ListType>(const ListType & list);
 
 template
 void debug_dump<Element>(const Element & e);
+
+template
+std::string debug_tostring<MapType>(const MapType & map);
+
+template
+std::string debug_tostring<ListType>(const ListType & list);
+
+template
+std::string debug_tostring<Element>(const Element & e);
+

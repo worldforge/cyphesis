@@ -28,6 +28,8 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <iostream>
+
 #include <cassert>
 
 using Atlas::Message::Element;
@@ -153,6 +155,112 @@ int main()
         assert(member.size() == 6);
 
         debug_dump(member);
+    }
+
+    // FIXME Check the result - should be moslty deterministic
+    {
+        // Test debug dumping an empty map
+        MapType empty;
+
+        std::string out = debug_tostring(empty);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+        assert((one["number"] = 1).isInt());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+        assert((one["foo"] = 1.1).isFloat());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+        assert((one["foo"] = (void*)0).isPtr());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+        assert((one["foo"] = "string").isString());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+        assert((one["foo"] = ListType()).isList());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+        assert((one["foo"] = MapType()).isMap());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+
+        MapType member;
+        assert((member["foo"] = 1).isInt());
+        assert((member["bar"] = 1.1).isFloat());
+        assert((member["baz"] = (void*)0).isPtr());
+        assert((member["quz"] = "string").isString());
+        assert((member["mim"] = ListType()).isList());
+        assert((member["woz"] = MapType()).isMap());
+        assert(member.size() == 6);
+
+        assert((one["foo"] = member).isMap());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        MapType one;
+
+        ListType member(6);
+        assert((member[0] = 1).isInt());
+        assert((member[1] = 1.1).isFloat());
+        assert((member[2] = (void*)0).isPtr());
+        assert((member[3] = "string").isString());
+        assert((member[4] = ListType()).isList());
+        assert((member[5] = MapType()).isMap());
+        assert(member.size() == 6);
+
+        assert((one["foo"] = member).isList());
+
+        std::string out = debug_tostring(one);
+    }
+
+    {
+        // Test debug dumping some data
+        ListType member(6);
+        assert((member[0] = 1).isInt());
+        assert((member[1] = 1.1).isFloat());
+        assert((member[2] = (void*)0).isPtr());
+        assert((member[3] = "string").isString());
+        assert((member[4] = ListType()).isList());
+        assert((member[5] = MapType()).isMap());
+        assert(member.size() == 6);
+
+        std::string out = debug_tostring(member);
     }
 
     return 0;

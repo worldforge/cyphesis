@@ -20,6 +20,8 @@
 #ifndef COMMON_DEBUG_H
 #define COMMON_DEBUG_H
 
+#include <string>
+
 #define debug(prg) { if (debug_flag) { prg } }
 
 #define debug_func() {\
@@ -30,5 +32,8 @@
 
 template <typename T>
 void debug_dump(const T & t);
+
+template <typename T>
+std::string debug_tostring(const T & t);
 
 #endif // COMMON_DEBUG_H
