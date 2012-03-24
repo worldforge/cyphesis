@@ -27,46 +27,46 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-static void output(const Element & item, int depth)
+static void output(std::ostream & out, const Element & item, int depth)
 {
     switch (item.getType()) {
         case Element::TYPE_INT:
-            std::cout << item.Int();
+            out << item.Int();
             break;
         case Element::TYPE_FLOAT:
-            std::cout << item.Float();
+            out << item.Float();
             break;
         case Element::TYPE_STRING:
-            std::cout << "\"" << item.String() << "\"";
+            out << "\"" << item.String() << "\"";
             break;
         case Element::TYPE_LIST:
             {
-                std::cout << "[ ";
+                out << "[ ";
                 ListType::const_iterator I = item.List().begin();
                 ListType::const_iterator Iend = item.List().end();
                 for(; I != Iend; ++I) {
-                    output(*I, depth + 1);
-                    std::cout << " ";
+                    output(out, *I, depth + 1);
+                    out << " ";
                 }
-                std::cout << "]";
+                out << "]";
             }
             break;
         case Element::TYPE_MAP:
             {
-                std::cout << "{" << std::endl << std::flush;
+                out << "{" << std::endl << std::flush;
                 MapType::const_iterator I = item.Map().begin();
                 MapType::const_iterator Iend = item.Map().end();
                 for(; I != Iend; ++I) {
-                    std::cout << std::string((depth + 1) * 4, ' ') << I->first << ": ";
-                    output(I->second, depth + 1);
-                    std::cout << std::endl;
+                    out << std::string((depth + 1) * 4, ' ') << I->first << ": ";
+                    output(out, I->second, depth + 1);
+                    out << std::endl;
                 }
-                std::cout << std::string(depth * 4, ' ') << "}";
-                std::cout << std::endl;
+                out << std::string(depth * 4, ' ') << "}";
+                out << std::endl;
             }
             break;
         default:
-            std::cout << "(\?\?\?)";
+            out << "(\?\?\?)";
             break;
     }
 }
@@ -74,17 +74,17 @@ static void output(const Element & item, int depth)
 template <>
 void debug_dump<MapType>(const MapType & map)
 {
-    output(map, 0);
+    output(std::cout, map, 0);
 }
 
 template <>
 void debug_dump<ListType>(const ListType & list)
 {
-    output(list, 0);
+    output(std::cout, list, 0);
 }
 
 template <>
 void debug_dump<Element>(const Element & e)
 {
-    output(e, 0);
+    output(std::cout, e, 0);
 }
