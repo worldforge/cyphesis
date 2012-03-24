@@ -71,20 +71,17 @@ static void output(std::ostream & out, const Element & item, int depth)
     }
 }
 
-template <>
-void debug_dump<MapType>(const MapType & map)
+template <typename T>
+void debug_dump(const T & t)
 {
-    output(std::cout, map, 0);
+    output(std::cout, t, 0);
 }
 
-template <>
-void debug_dump<ListType>(const ListType & list)
-{
-    output(std::cout, list, 0);
-}
+template
+void debug_dump<MapType>(const MapType & map);
 
-template <>
-void debug_dump<Element>(const Element & e)
-{
-    output(std::cout, e, 0);
-}
+template
+void debug_dump<ListType>(const ListType & list);
+
+template
+void debug_dump<Element>(const Element & e);
