@@ -111,7 +111,7 @@ class Heaping(server.Task):
         mods = self.target().terrain.find_mods(self.pos)
         if len(mods) != 0:
             for mod in mods:
-                if hasattr(mod, 'name') and mod.name == 'motte':
+                if hasattr(mod, 'name') and mod.name == name:
                     return mod
             raise Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
