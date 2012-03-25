@@ -185,13 +185,13 @@ Shape * Shape::newFromAtlas(const MapType & data)
     const std::string & type = I->second.String();
     Shape * new_shape = 0;
     if (type == "polygon") {
-        new_shape = new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
+        new_shape = new MathShape<WFMath::Polygon>;
     } else if (type == "line") {
-        new_shape = new MathShape<WFMath::Line>(WFMath::Line<2>());
+        new_shape = new MathShape<WFMath::Line>;
     } else if (type == "ball") {
-        new_shape = new MathShape<WFMath::Ball>(WFMath::Ball<2>());
+        new_shape = new MathShape<WFMath::Ball>;
     } else if (type == "rotbox") {
-        new_shape = new MathShape<WFMath::RotBox>(WFMath::RotBox<2>());
+        new_shape = new MathShape<WFMath::RotBox>;
     }
     if (new_shape != 0) {
         try {
