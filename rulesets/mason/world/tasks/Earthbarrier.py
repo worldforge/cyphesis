@@ -55,7 +55,6 @@ class Earthbarrier(server.Task):
         self.progress = 0
 
 
-        res=Oplist()
 
 
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
@@ -69,7 +68,6 @@ class Earthbarrier(server.Task):
                 return self._create_initial_mod()
             print "found existing mod"
             self.terrain_mod = weakref.ref(mod)
-        else: pass
 
         mod = self.terrain_mod()
         print "Now we grow it"
@@ -93,11 +91,9 @@ class Earthbarrier(server.Task):
         mod.area = area_map
         # We have modified the attribute in place,
         # so must send an update op to propagate
+        res=Oplist()
         res.append(Operation("update", to=mod.id))
-
-
         res.append(self.next_tick(0.75))
-
         return res
     def _find_mod(self, name):
         mods = self.target().terrain.find_mods(self.pos)
