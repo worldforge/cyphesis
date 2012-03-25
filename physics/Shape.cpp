@@ -186,6 +186,8 @@ Shape * Shape::newFromAtlas(const MapType & data)
     Shape * new_shape = 0;
     if (type == "polygon") {
         new_shape = new MathShape<WFMath::Polygon>(WFMath::Polygon<2>());
+    } else if (type == "line") {
+        new_shape = new MathShape<WFMath::Line>(WFMath::Line<2>());
     } else if (type == "ball") {
         new_shape = new MathShape<WFMath::Ball>(WFMath::Ball<2>());
     } else if (type == "rotbox") {
