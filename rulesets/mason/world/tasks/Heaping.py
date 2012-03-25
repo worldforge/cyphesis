@@ -116,7 +116,6 @@ class Heaping(server.Task):
             raise Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
         print "no existing mod"
-        res=Oplist()
         z=self.character.location.coordinates.z + 1.0
         modmap = {'height': z,
                   'shape': Polygon([[ -0.7, -0.7 ],
@@ -142,6 +141,7 @@ class Heaping(server.Task):
                                       terrainmod = modmap,
                                       area = area_map),
                                to=self.target())
+        res=Oplist()
         res.append(motte_create)
         res.append(self.next_tick(0.75))
         return res
