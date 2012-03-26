@@ -103,18 +103,8 @@ class Earthbarrier(server.Task):
                     return mod
             raise Earthbarrier.Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
-        # There is no terrain mod where we are making wall,
-        # so we check if it is in the materials , and if so create
-        # a wall
-        surface = self.target().terrain.get_surface(self.pos)
-        # print "SURFACE %d at %s" % (surface, self.pos)
-        if surface not in Earthbarrier.materials:
-            # print "Not in material"
-            self.irrelevant()
-            return
-        self.surface = surface
-
         z=self.character.location.coordinates.z + 1.0
+        mod_path = Line([[ self.pos.x, self.pos.y ]])
         modmap = {
                   'height': z,
                   'shape': {
@@ -128,8 +118,7 @@ class Earthbarrier(server.Task):
                   }
         area_map = {'shape': modmap['shape'],
                     'layer': 7}
-        line_map = {'points': [[ self.pos.x, self.pos.y ]],
-                    'type': 'line'}
+        line_map = mod_path.as_data()
 
         mod_loc = Location(self.character.location.parent)
         mod_loc.velocity = Vector3D()
