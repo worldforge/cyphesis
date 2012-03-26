@@ -16,7 +16,6 @@ class Earthbarrier(server.Task):
         "An exception indicating this task is obstructed by an entity>"
         pass
 
-    materials = { 0: 'boulder', 1: 'sand', 2: 'earth', 3: 'silt', 4: 'ice' }
     def walls_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print self.__class__.__name__,".setup"
