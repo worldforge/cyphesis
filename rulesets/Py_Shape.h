@@ -33,6 +33,7 @@ typedef struct {
 } PyShape;
 
 extern PyTypeObject PyShape_Type;
+extern PyTypeObject PyLine_Type;
 extern PyTypeObject PyPolygon_Type;
 
 #define PyShape_Check(_o) PyObject_TypeCheck(_o, &PyShape_Type)

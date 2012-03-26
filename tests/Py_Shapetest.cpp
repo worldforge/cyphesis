@@ -97,6 +97,20 @@ int main()
                                      "[ 1.0, 1.0 ]]", PyExc_AttributeError);
 
 
+    expect_python_error("physics.Line()", PyExc_TypeError);
+    run_python_string("l = physics.Line([[ 0.0, 0.0 ],"
+                                           "[ 1.0, 0.0 ],"
+                                           "[ 1.0, 1.0 ]])");
+    run_python_string("l.area()");
+    run_python_string("l.centre()");
+    run_python_string("l.footprint()");
+    run_python_string("l.low_corner()");
+    run_python_string("l.high_corner()");
+    run_python_string("d = l.as_data()");
+    run_python_string("repr(l)");
+    run_python_string("len(l)");
+    run_python_string("l *= 5.0");
+
     expect_python_error("physics.Polygon()", PyExc_TypeError);
     run_python_string("p = physics.Polygon([[ 0.0, 0.0 ],"
                                            "[ 1.0, 0.0 ],"
@@ -110,6 +124,7 @@ int main()
     run_python_string("repr(p)");
     run_python_string("len(p)");
     run_python_string("p *= 5.0");
+
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");
     // Hit the assert checks.
