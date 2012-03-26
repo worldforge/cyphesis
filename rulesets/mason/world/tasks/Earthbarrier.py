@@ -5,6 +5,7 @@ from atlas import *
 from physics import *
 
 import math
+import sys
 import weakref
 
 import server
@@ -18,10 +19,10 @@ class Earthbarrier(server.Task):
     materials = { 0: 'boulder', 1: 'sand', 2: 'earth', 3: 'silt', 4: 'ice' }
     def walls_operation(self, op):
         """ Op handler for cut op which activates this task """
-        # print "Earthbarrier.walls"
+        # print self.__class__.__name__,".setup"
 
         if len(op) < 1:
-            sys.stderr.write("Earthbarrier task has no target in Earthbarrier op")
+            sys.stderr.write("%s task has no target in setup op" % self.__class__.__name__)
 
         self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
@@ -30,7 +31,7 @@ class Earthbarrier(server.Task):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        # print "Earthbarrier.tick"
+        # print self.__class__.__name__,".tick"
 
         if self.target() is None:
             # print "Target is no more"
@@ -55,12 +56,11 @@ class Earthbarrier(server.Task):
         self.progress = 0
 
 
-
-
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
             try:
                 mod = self._find_mod('wall')
-            except Obstructed:
+            except Earthbarrier.Obstructed:
+                print "obstructed"
                 self.irrelevant()
                 return
             if mod is None:
@@ -101,7 +101,7 @@ class Earthbarrier(server.Task):
             for mod in mods:
                 if hasattr(mod, 'name') and mod.name == name:
                     return mod
-            raise Obstructed, "Another mod is in the way"
+            raise Earthbarrier.Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
         # There is no terrain mod where we are making wall,
         # so we check if it is in the materials , and if so create
@@ -131,19 +131,19 @@ class Earthbarrier(server.Task):
         line_map = {'points': [[ self.pos.x, self.pos.y ]],
                     'type': 'line'}
 
-        wall_loc = Location(self.character.location.parent)
-        wall_loc.velocity = Vector3D()
-        wall_loc.coordinates = self.pos
+        mod_loc = Location(self.character.location.parent)
+        mod_loc.velocity = Vector3D()
+        mod_loc.coordinates = self.pos
 
-        walls_create=Operation("create",
-                                Entity(name="wall",
-                                       type="path",
-                                       line = line_map,
-                                       location = wall_loc,
-                                       terrainmod = modmap,
-                                       area = area_map),
-                                to=self.target())
+        mod_create=Operation("create",
+                             Entity(name="wall",
+                                    type="path",
+                                    line = line_map,
+                                    location = mod_loc,
+                                    terrainmod = modmap,
+                                    area = area_map),
+                             to=self.target())
         res=Oplist()
-        res.append(walls_create)
+        res.append(mod_create)
         res.append(self.next_tick(0.75))
         return res

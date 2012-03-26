@@ -5,6 +5,7 @@ from atlas import *
 from physics import *
 
 import math
+import sys
 import weakref
 
 import server
@@ -17,10 +18,10 @@ class Heaping(server.Task):
 
     def heap_operation(self, op):
         """ Op handler for cut op which activates this task """
-        # print "Heaping.cut"
+        # print self.__class__.__name__,".setup"
 
         if len(op) < 1:
-            sys.stderr.write("Heaping task has no target in cut op")
+            sys.stderr.write("%s task has no target in setup op" % self.__class__.__name__)
 
         self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
@@ -29,7 +30,7 @@ class Heaping(server.Task):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        # print "Heaping.tick"
+        # print self.__class__.__name__,".tick"
 
         if self.target() is None:
             # print "Target is no more"
@@ -57,7 +58,8 @@ class Heaping(server.Task):
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
             try:
                 mod = self._find_mod('motte')
-            except Obstructed:
+            except Heaping.Obstructed:
+                print "obstructed"
                 self.irrelevant()
                 return
             if mod is None:
@@ -113,7 +115,7 @@ class Heaping(server.Task):
             for mod in mods:
                 if hasattr(mod, 'name') and mod.name == name:
                     return mod
-            raise Obstructed, "Another mod is in the way"
+            raise Heaping.Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
         print "no existing mod"
         z=self.character.location.coordinates.z + 1.0
@@ -130,18 +132,18 @@ class Heaping(server.Task):
         area_map = {'shape': modmap['shape'],
                     'layer': 7}
 
-        mound_loc = Location(self.character.location.parent)
-        mound_loc.velocity = Vector3D()
-        mound_loc.coordinates = self.pos
+        mod_loc = Location(self.character.location.parent)
+        mod_loc.velocity = Vector3D()
+        mod_loc.coordinates = self.pos
 
-        motte_create=Operation("create",
-                               Entity(name="motte",
-                                      type="path",
-                                      location = mound_loc,
-                                      terrainmod = modmap,
-                                      area = area_map),
-                               to=self.target())
+        mod_create=Operation("create",
+                             Entity(name="motte",
+                                    type="path",
+                                    location = mod_loc,
+                                    terrainmod = modmap,
+                                    area = area_map),
+                             to=self.target())
         res=Oplist()
-        res.append(motte_create)
+        res.append(mod_create)
         res.append(self.next_tick(0.75))
         return res
