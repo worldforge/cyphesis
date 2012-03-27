@@ -29,6 +29,7 @@
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/axisbox.h>
+#include <wfmath/line.h>
 #include <wfmath/point.h>
 #include <wfmath/polygon.h>
 
@@ -284,7 +285,7 @@ static int Line_init(PyShape * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    return MathShape_init<WFMath::Polygon, 2>(self, arg);
+    return MathShape_init<WFMath::Line, 2>(self, arg);
 }
 
 static int Polygon_init(PyShape * self, PyObject * args, PyObject * kwds)
@@ -448,7 +449,7 @@ PyTypeObject PyLine_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Polygon objects",              // tp_doc
+        "Line objects",                 // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
