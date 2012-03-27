@@ -33,6 +33,7 @@ typedef struct {
 } PyShape;
 
 extern PyTypeObject PyShape_Type;
+extern PyTypeObject PyBox_Type;
 extern PyTypeObject PyLine_Type;
 extern PyTypeObject PyPolygon_Type;
 
@@ -40,5 +41,6 @@ extern PyTypeObject PyPolygon_Type;
 #define PyShape_CheckExact(_o) (Py_TYPE(_o) == &PyShape_Type)
 
 PyShape * newPyShape();
+PyShape * newPyBox();
 
 #endif // RULESETS_PY_SHAPE_H

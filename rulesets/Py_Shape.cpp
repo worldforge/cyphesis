@@ -19,6 +19,7 @@
 
 #include "Py_Shape.h"
 
+#include "Py_BBox.h"
 #include "Py_Message.h"
 #include "Py_Point3D.h"
 
@@ -74,7 +75,7 @@ static PyObject * Shape_footprint(PyShape * self)
         return NULL;
     }
 #endif // NDEBUG
-    PyShape * res = newPyShape();
+    PyShape * res = newPyBox();
     if (res != 0) {
         res->shape = new MathShape<WFMath::AxisBox, 2>(self->shape->footprint());
     }
@@ -131,6 +132,41 @@ static PyMethodDef Shape_methods[] = {
     {"low_corner",         (PyCFunction)Shape_low_corner,        METH_NOARGS},
     {"high_corner",        (PyCFunction)Shape_high_corner,       METH_NOARGS},
     {"as_data",            (PyCFunction)Shape_as_data,           METH_NOARGS},
+    {NULL,              NULL}           /* sentinel */
+};
+
+static PyBBox * Box_extrude(PyShape * self, PyObject * args)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.as_data");
+        return NULL;
+    }
+#endif // NDEBUG
+    MathShape<WFMath::AxisBox, 2> * shape =
+          dynamic_cast<MathShape<WFMath::AxisBox, 2> *>(self->shape);
+    if (shape == 0) {
+        PyErr_SetString(PyExc_RuntimeError, "Shape is not a 2D axisbox");
+        return NULL;
+    }
+    float low, high;
+    if (!PyArg_ParseTuple(args, "dd", &low, &high)) {
+        return NULL;
+    }
+    PyBBox * ret = newPyBBox();
+    if (ret != 0) {
+        ret->box = BBox(Point3D(shape->shape().lowCorner().x(),
+                                shape->shape().lowCorner().y(),
+                                low),
+                        Point3D(shape->shape().highCorner().x(),
+                                shape->shape().highCorner().y(),
+                                high));
+    }
+    return ret;
+}
+
+static PyMethodDef Box_methods[] = {
+    {"extrude",            (PyCFunction)Box_extrude,             METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
@@ -275,6 +311,15 @@ static int MathShape_init(PyShape * self, PyObject * arg)
             return -1;
         }
         return 0;
+    }
+    return 0;
+}
+
+static int Box_init(PyShape * self, PyObject * args, PyObject * kwds)
+{
+    if (PyTuple_Size(args) != 0) {
+        PyErr_SetString(PyExc_TypeError, "Box shape takes no args");
+        return -1;
     }
     return 0;
 }
@@ -426,7 +471,6 @@ PyTypeObject PyShape_Type = {
         Shape_new,                      // tp_new
 };
 
-#if 0
 PyTypeObject PyBox_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              /*ob_size*/
@@ -469,7 +513,6 @@ PyTypeObject PyBox_Type = {
         0,                              // tp_alloc
         Shape_new,                      // tp_new
 };
-#endif
 
 PyTypeObject PyLine_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
@@ -560,4 +603,9 @@ PyTypeObject PyPolygon_Type = {
 PyShape * newPyShape()
 {
     return (PyShape *)PyShape_Type.tp_new(&PyShape_Type, 0, 0);
+}
+
+PyShape * newPyBox()
+{
+    return (PyShape *)PyBox_Type.tp_new(&PyBox_Type, 0, 0);
 }

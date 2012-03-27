@@ -629,6 +629,11 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         return;
     }
     PyModule_AddObject(physics, "Shape", (PyObject *)&PyShape_Type);
+    if (PyType_Ready(&PyBox_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Box wrapper type");
+        return;
+    }
+    PyModule_AddObject(physics, "Box", (PyObject *)&PyBox_Type);
     if (PyType_Ready(&PyLine_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Line wrapper type");
         return;
