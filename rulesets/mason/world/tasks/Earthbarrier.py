@@ -77,12 +77,7 @@ class Earthbarrier(server.Task):
         mod.terrainmod.shape *= factor
         mod.terrainmod.height += 1 / area
         box = mod.terrainmod.shape.footprint()
-        mod.bbox = [box.low_corner().x,
-                    box.low_corner().y,
-                    0,
-                    box.high_corner().x,
-                    box.high_corner().y,
-                    mod.terrainmod.height]
+        mod.bbox = box.extrude(0, mod.terrainmod.height).as_sequence()
 
         area_map = {'shape': mod.terrainmod.shape.as_data(),
                     'layer': 7}
