@@ -60,6 +60,7 @@ int main()
     run_python_string("from physics import Point3D");
     run_python_string("assert b.near_point == Point3D(0.0,0.0,0.0)");
     run_python_string("assert b.far_point == Point3D(1.0,1.0,1.0)");
+    run_python_string("assert b.as_sequence() == [0.0,0.0,0.0,1.0,1.0,1.0]");
     run_python_string("assert b.square_bounding_radius() > 1");
     expect_python_error("b.near_point=1", PyExc_TypeError);
     expect_python_error("b.near_point=Point3D()", PyExc_ValueError);

@@ -34,8 +34,24 @@ static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
     return PyFloat_FromDouble(square_radius);
 }
 
+static PyObject * BBox_as_sequence(PyBBox * self)
+{
+    PyObject * res = PyList_New(6);
+    const BBox & b = self->box;
+    if (res != NULL) {
+        PyList_SetItem(res, 0, PyFloat_FromDouble(b.lowCorner().x()));
+        PyList_SetItem(res, 1, PyFloat_FromDouble(b.lowCorner().y()));
+        PyList_SetItem(res, 2, PyFloat_FromDouble(b.lowCorner().z()));
+        PyList_SetItem(res, 3, PyFloat_FromDouble(b.highCorner().x()));
+        PyList_SetItem(res, 4, PyFloat_FromDouble(b.highCorner().y()));
+        PyList_SetItem(res, 5, PyFloat_FromDouble(b.highCorner().z()));
+    }
+    return res;
+}
+
 static PyMethodDef BBox_methods[] = {
     {"square_bounding_radius", (PyCFunction)BBox_sqr_bounding_radius, METH_NOARGS},
+    {"as_sequence",            (PyCFunction)BBox_as_sequence,     METH_NOARGS},
     {NULL, NULL}  // sentinel
 };
 
