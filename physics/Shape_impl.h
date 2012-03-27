@@ -66,6 +66,13 @@ bool MathShape<ShapeT, dim>::isValid() const
 }
 
 template<template <int> class ShapeT, int dim>
+WFMath::Point<3> MathShape<ShapeT, dim>::getCorner(size_t i) const
+{
+    WFMath::Point<2> p = m_shape.getCorner(i);
+    return WFMath::Point<3>(p.x(), p.y(), 0);
+}
+
+template<template <int> class ShapeT, int dim>
 WFMath::CoordType MathShape<ShapeT, dim>::area() const
 {
     return 1.;
