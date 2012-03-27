@@ -81,6 +81,12 @@ WFMath::Point<3> MathShape<WFMath::Ball, 2>::highCorner() const
 ///////////////////////////////////////////////////////////////////////
 
 template<>
+const char * MathShape<WFMath::Line, 2>::getType() const
+{
+    return "line";
+}
+
+template<>
 WFMath::Point<3> MathShape<WFMath::Line, 2>::lowCorner() const
 {
     WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
