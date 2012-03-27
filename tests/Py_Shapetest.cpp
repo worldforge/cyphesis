@@ -97,6 +97,19 @@ int main()
                                      "[ 1.0, 1.0 ]]", PyExc_AttributeError);
 
 
+    run_python_string("b = physics.Box()");
+    run_python_string("b.area()");
+    run_python_string("b.centre()");
+    run_python_string("b.footprint()");
+    run_python_string("b.low_corner()");
+    run_python_string("b.high_corner()");
+    run_python_string("b.extrude(0, 1)");
+    expect_python_error("b.extrude()", PyExc_TypeError);
+    run_python_string("d = b.as_data()");
+    run_python_string("repr(b)");
+    run_python_string("len(b)");
+    run_python_string("b *= 5.0");
+
     expect_python_error("physics.Line()", PyExc_TypeError);
     run_python_string("l = physics.Line([[ 0.0, 0.0 ],"
                                            "[ 1.0, 0.0 ],"
