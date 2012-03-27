@@ -321,6 +321,7 @@ static int Box_init(PyShape * self, PyObject * args, PyObject * kwds)
         PyErr_SetString(PyExc_TypeError, "Box shape takes no args");
         return -1;
     }
+    self->shape = new MathShape<WFMath::AxisBox, 2>;
     return 0;
 }
 
