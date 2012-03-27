@@ -246,7 +246,7 @@ static int MathShape_init(PyShape * self, PyObject * arg)
             PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
             return -1;
         }
-        self->shape = new MathShape<WFMath::Polygon, 2>;
+        self->shape = new MathShape<ShapeT, 2>;
         if (self->shape == 0) {
             PyErr_SetString(PyExc_TypeError, "Error creating polygon");
             return -1;
@@ -264,7 +264,7 @@ static int MathShape_init(PyShape * self, PyObject * arg)
             PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
             return -1;
         }
-        self->shape = new MathShape<WFMath::Polygon, 2>;
+        self->shape = new MathShape<ShapeT, 2>;
         if (self->shape == 0) {
             PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
             return -1;
@@ -425,6 +425,51 @@ PyTypeObject PyShape_Type = {
         0,                              // tp_alloc
         Shape_new,                      // tp_new
 };
+
+#if 0
+PyTypeObject PyBox_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "physics.Box",                  /*tp_name*/
+        sizeof(PyShape),                /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        0,                              /*tp_dealloc*/
+        0,                              /*tp_print*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Box objects",                  // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        Box_methods,                    // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        &PyShape_Type,                  // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Box_init,             // tp_init
+        0,                              // tp_alloc
+        Shape_new,                      // tp_new
+};
+#endif
 
 PyTypeObject PyLine_Type = {
         PyObject_HEAD_INIT(&PyType_Type)

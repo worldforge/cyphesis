@@ -1,3 +1,5 @@
+Extend Shape wrappers to allow box to be extruded into cube for easy bbox
+
 BaseWorld, Property, TypeNode and Inheritance into rulesets? Everything else
 in common is lower level.
 
