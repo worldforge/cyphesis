@@ -85,6 +85,8 @@ class MathShape : public Shape {
     virtual void fromAtlas(const Atlas::Message::Element &);
 
     virtual void stream(std::ostream &) const;
+
+    const ShapeT<dim> & shape() { return m_shape; }
 };
 
 inline std::ostream & operator<<(std::ostream& os, const Shape & s)
