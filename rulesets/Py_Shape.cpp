@@ -364,6 +364,25 @@ Py_ssize_t Shape_sq_length(PyShape * self)
     return self->shape->size();
 }
 
+PyPoint3D * Shape_sq_item(PyShape * self, Py_ssize_t index)
+{
+#ifndef NDEBUG
+    if (self->shape == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.copy");
+        return 0;
+    }
+#endif // NDEBUG
+    if (index >= self->shape->size()) {
+        PyErr_SetString(PyExc_IndexError, "Number of corners exceded");
+        return 0;
+    }
+    PyPoint3D * v = newPyPoint3D();
+    if (v != NULL) {
+        v->coords = self->shape->getCorner(index);
+    }
+    return v;
+}
+
 static PyObject * Shape_inplace_multiply(PyShape * self, PyObject * other)
 {
     if (!PyFloat_CheckExact(other)) {
@@ -419,7 +438,7 @@ static PySequenceMethods Shape_sequence = {
         (lenfunc)Shape_sq_length, // sq_length;
         0, // sq_concat;
         0, // sq_repeat;
-        0, // sq_item;
+        (ssizeargfunc)Shape_sq_item, // sq_item;
         0, // sq_slice;
         0, // sq_ass_item;
         0, // sq_ass_slice;

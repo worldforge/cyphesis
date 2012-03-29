@@ -75,11 +75,11 @@ int main()
                                                     "[ 1.0, 0.0 ],"
                                                     "[ 1.0, 1.0 ]] })");
     expect_python_error("physics.Shape({})", PyExc_TypeError);
-    expect_python_error("s = physics.Shape({'type': 'polygon',"
-                                           "'data': object(),"
-                                           "'points': [[ 0.0, 0.0 ],"
-                                                      "[ 1.0, 0.0 ],"
-                                                      "[ 1.0, 1.0 ]] })",
+    expect_python_error("physics.Shape({'type': 'polygon',"
+                                       "'data': object(),"
+                                       "'points': [[ 0.0, 0.0 ],"
+                                                  "[ 1.0, 0.0 ],"
+                                                  "[ 1.0, 1.0 ]] })",
                         PyExc_TypeError);
     run_python_string("s.area()");
     run_python_string("s.centre()");
@@ -88,7 +88,11 @@ int main()
     run_python_string("s.high_corner()");
     run_python_string("s.as_data()");
     run_python_string("repr(s)");
-    run_python_string("len(s)");
+    run_python_string("assert(len(s) == 3)");
+    run_python_string("s[0]");
+    run_python_string("s[1]");
+    run_python_string("s[2]");
+    expect_python_error("s[3]", PyExc_IndexError);
     run_python_string("s *= 5.0");
     expect_python_error("s *= 5", PyExc_TypeError);
     // Can't send attributes yet
@@ -107,7 +111,8 @@ int main()
     expect_python_error("b.extrude()", PyExc_TypeError);
     run_python_string("d = b.as_data()");
     run_python_string("repr(b)");
-    run_python_string("len(b)");
+    run_python_string("assert(len(b) == 4)");
+    run_python_string("b[0]");
     run_python_string("b *= 5.0");
 
     expect_python_error("physics.Line()", PyExc_TypeError);
