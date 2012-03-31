@@ -422,7 +422,7 @@ Py_ssize_t Shape_sq_length(PyShape * self)
     return self->shape.s->size();
 }
 
-PyPoint3D * Area_sq_item(PyShape * self, Py_ssize_t index)
+PyShape * Area_sq_item(PyShape * self, Py_ssize_t index)
 {
 #ifndef NDEBUG
     if (self->shape.s == NULL) {
@@ -434,15 +434,16 @@ PyPoint3D * Area_sq_item(PyShape * self, Py_ssize_t index)
         PyErr_SetString(PyExc_IndexError, "Number of corners exceded");
         return 0;
     }
-#if 0
-    PyPoint3D * v = newPyPoint3D();
-    if (v != NULL) {
-        v->coords = self->shape.s->getCorner(index);
+    PyShape * a = newPyArea();
+    if (a != 0) {
+        a->shape.p =
+              new MathShape<WFMath::Point, 2>(self->shape.p->getCorner(index));
+        if (a->shape.p == 0) {
+            Py_DECREF(a);
+            a = NULL;
+        }
     }
-    return v;
-#else
-    return 0;
-#endif
+    return a;
 }
 
 PyPoint3D * Body_sq_item(PyShape * self, Py_ssize_t index)
