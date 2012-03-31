@@ -135,7 +135,7 @@ int main()
     expect_python_error("terrainmod.shape", PyExc_AttributeError);
     expect_python_error("terrainmod.nonshape", PyExc_AttributeError);
     run_python_string("testprop.add_terrainmod_shape(terrainmod)");
-    run_python_string("assert type(terrainmod.shape) == physics.Shape");
+    run_python_string("assert type(terrainmod.shape) == physics.Area");
     run_python_string("assert terrainmod.nonshape == 'testval'");
     run_python_string("print 'test1'");
     run_python_string("terrainmod.shape = physics.Polygon([[ -0.7, -0.7],"
