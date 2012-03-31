@@ -823,12 +823,16 @@ PyShape * wrapShape(Shape * shape)
     Form<2> * plan = dynamic_cast<Form<2> *>(shape);
     if (plan != 0) {
         wrapper = newPyArea();
-        wrapper->shape.p = plan;
+        if (wrapper != 0) {
+            wrapper->shape.p = plan;
+        }
     } else {
         Form<3> * body = dynamic_cast<Form<3> *>(shape);
         if (body != 0) {
             wrapper = newPyBody();
-            wrapper->shape.b = body;
+            if (wrapper != 0) {
+                wrapper->shape.b = body;
+            }
         }
     }
     return wrapper;
