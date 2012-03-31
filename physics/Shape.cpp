@@ -69,6 +69,14 @@ void MathShape<WFMath::Line, 2>::scale(WFMath::CoordType factor)
 ///////////////////////////////////////////////////////////////////////
 
 template<>
+bool MathShape<WFMath::Point, 2>::intersect(const WFMath::Point<2> & p) const
+{
+    return WFMath::Equal(m_shape, p);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+template<>
 const char * MathShape<WFMath::Polygon, 2>::getType() const
 {
     return "polygon";
@@ -140,5 +148,6 @@ Shape * Shape::newFromAtlas(const MapType & data)
 template class MathShape<WFMath::AxisBox, 2>;
 template class MathShape<WFMath::Ball, 2>;
 template class MathShape<WFMath::Line, 2>;
+template class MathShape<WFMath::Point, 2>;
 template class MathShape<WFMath::Polygon, 2>;
 template class MathShape<WFMath::RotBox, 2>;
