@@ -629,6 +629,16 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         return;
     }
     PyModule_AddObject(physics, "Shape", (PyObject *)&PyShape_Type);
+    if (PyType_Ready(&PyArea_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Area wrapper type");
+        return;
+    }
+    PyModule_AddObject(physics, "Area", (PyObject *)&PyArea_Type);
+    if (PyType_Ready(&PyBody_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Body wrapper type");
+        return;
+    }
+    PyModule_AddObject(physics, "Body", (PyObject *)&PyBody_Type);
     if (PyType_Ready(&PyBox_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Box wrapper type");
         return;

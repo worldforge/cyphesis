@@ -82,7 +82,7 @@ int SpawnEntity::spawnEntity(const std::string & type,
     const AreaProperty * ap = m_ent->getPropertyClass<AreaProperty>("area");
     if (ap != 0) {
         // FIXME orientation ignored
-        const Shape * spawn_area = ap->shape();
+        const Area * spawn_area = ap->shape();
         WFMath::AxisBox<2> spawn_box = spawn_area->footprint();
         Point3D new_pos = m_ent->m_location.pos();
         for (int i = 0; i < 10; ++i) {

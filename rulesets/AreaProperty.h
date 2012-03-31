@@ -22,19 +22,20 @@
 
 #include "TerrainEffectorProperty.h"
 
-class Shape;
+template <int dim>
+class Form;
 
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
 class AreaProperty : public TerrainEffectorProperty {
   protected:
     int m_layer;
-    Shape * m_shape;
+    Form<2> * m_shape;
   public:
     explicit AreaProperty();
     virtual ~AreaProperty();
 
-    const Shape * shape() const { return m_shape; }
+    const Form<2> * shape() const { return m_shape; }
 
     virtual void apply(Entity *);
 

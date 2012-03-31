@@ -35,20 +35,6 @@ Shape::Shape()
 ///////////////////////////////////////////////////////////////////////
 
 template<>
-WFMath::Point<3> MathShape<WFMath::AxisBox, 2>::lowCorner() const
-{
-    WFMath::Point<2> corner = m_shape.lowCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
-WFMath::Point<3> MathShape<WFMath::AxisBox, 2>::highCorner() const
-{
-    WFMath::Point<2> corner = m_shape.highCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
 void MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
 {
     // FIXME Do what?
@@ -65,39 +51,9 @@ void MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
 ///////////////////////////////////////////////////////////////////////
 
 template<>
-WFMath::Point<3> MathShape<WFMath::Ball, 2>::lowCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
-WFMath::Point<3> MathShape<WFMath::Ball, 2>::highCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-///////////////////////////////////////////////////////////////////////
-
-template<>
 const char * MathShape<WFMath::Line, 2>::getType() const
 {
     return "line";
-}
-
-template<>
-WFMath::Point<3> MathShape<WFMath::Line, 2>::lowCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
-WFMath::Point<3> MathShape<WFMath::Line, 2>::highCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
 }
 
 template<>
@@ -141,20 +97,6 @@ WFMath::AxisBox<2> MathShape<WFMath::Polygon, 2>::footprint() const
 }
 
 template<>
-WFMath::Point<3> MathShape<WFMath::Polygon, 2>::lowCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
-WFMath::Point<3> MathShape<WFMath::Polygon, 2>::highCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
 void MathShape<WFMath::Polygon, 2>::scale(WFMath::CoordType factor)
 {
     for (size_t i = 0; i < m_shape.numCorners(); ++i) {
@@ -162,22 +104,6 @@ void MathShape<WFMath::Polygon, 2>::scale(WFMath::CoordType factor)
         m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
                                                corner.y() * factor));
     }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-template<>
-WFMath::Point<3> MathShape<WFMath::RotBox, 2>::lowCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().lowCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
-}
-
-template<>
-WFMath::Point<3> MathShape<WFMath::RotBox, 2>::highCorner() const
-{
-    WFMath::Point<2> corner = m_shape.boundingBox().highCorner();
-    return WFMath::Point<3>(corner.x(), corner.y(), 0);
 }
 
 ///////////////////////////////////////////////////////////////////////

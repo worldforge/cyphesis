@@ -50,8 +50,7 @@ static PyObject * TerrainModProperty_getattro(PyProperty *self,
         if (strcmp(name, "shape") == 0 && val.isMap()) {
             Shape * shape = Shape::newFromAtlas(val.Map());
             if (shape != 0) {
-                PyShape * wrapper = newPyShape();
-                wrapper->shape = shape;
+                PyShape * wrapper = wrapShape(shape);
                 return (PyObject*)wrapper;
             }
         }
@@ -83,7 +82,7 @@ static int TerrainModProperty_setattro(PyProperty * self,
         } else if (PyShape_Check(v)) {
             PyShape * ps = (PyShape*)v;
             MapType map;
-            ps->shape->toAtlas(map);
+            ps->shape.s->toAtlas(map);
             self->m_p.terrainmod->setAttr(name, map);
             self->m_p.terrainmod->setFlags(flag_unsent);
             return 0;

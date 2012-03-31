@@ -66,10 +66,9 @@ bool MathShape<ShapeT, dim>::isValid() const
 }
 
 template<template <int> class ShapeT, int dim>
-WFMath::Point<3> MathShape<ShapeT, dim>::getCorner(size_t i) const
+WFMath::Point<dim> MathShape<ShapeT, dim>::getCorner(size_t i) const
 {
-    WFMath::Point<2> p = m_shape.getCorner(i);
-    return WFMath::Point<3>(p.x(), p.y(), 0);
+    return m_shape.getCorner(i);
 }
 
 template<template <int> class ShapeT, int dim>
@@ -79,10 +78,9 @@ WFMath::CoordType MathShape<ShapeT, dim>::area() const
 }
 
 template<template <int> class ShapeT, int dim>
-WFMath::Point<3> MathShape<ShapeT, dim>::centre() const
+WFMath::Point<dim> MathShape<ShapeT, dim>::centre() const
 {
-    WFMath::Point<2> c =  m_shape.getCenter();
-    return WFMath::Point<3>(c.x(), c.y(), 0);
+    return m_shape.getCenter();
 }
 
 template<template <int> class ShapeT, int dim>
@@ -92,19 +90,19 @@ WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
 }
 
 template<template <int> class ShapeT, int dim>
-WFMath::Point<3> MathShape<ShapeT, dim>::lowCorner() const
+WFMath::Point<dim> MathShape<ShapeT, dim>::lowCorner() const
 {
     return m_shape.boundingBox().lowCorner();
 }
 
 template<template <int> class ShapeT, int dim>
-WFMath::Point<3> MathShape<ShapeT, dim>::highCorner() const
+WFMath::Point<dim> MathShape<ShapeT, dim>::highCorner() const
 {
     return m_shape.boundingBox().highCorner();
 }
 
 template<template <int> class ShapeT, int dim>
-bool MathShape<ShapeT, dim>::intersect(const WFMath::Point<2> & p) const
+bool MathShape<ShapeT, dim>::intersect(const WFMath::Point<dim> & p) const
 {
     return WFMath::Intersect(m_shape, p, true);
 }

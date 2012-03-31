@@ -42,13 +42,8 @@ class Shape {
   public:
     virtual size_t size() const = 0;
     virtual bool isValid() const = 0;
-    virtual WFMath::Point<3> getCorner(size_t) const = 0;
     virtual WFMath::CoordType area() const = 0;
-    virtual WFMath::Point<3> centre() const = 0;
     virtual WFMath::AxisBox<2> footprint() const = 0;
-    virtual WFMath::Point<3> lowCorner() const = 0;
-    virtual WFMath::Point<3> highCorner() const = 0;
-    virtual bool intersect(const WFMath::Point<2> &) const = 0;
 
     virtual void scale(WFMath::CoordType factor) = 0;
 
@@ -61,8 +56,34 @@ class Shape {
     static Shape * newFromAtlas(const Atlas::Message::MapType &);
 };
 
+template <int dim>
+class Form;
+
+template <>
+class Form<2> : public Shape {
+  public:
+    virtual WFMath::Point<2> getCorner(size_t) const = 0;
+    virtual WFMath::Point<2> centre() const = 0;
+    virtual WFMath::Point<2> lowCorner() const = 0;
+    virtual WFMath::Point<2> highCorner() const = 0;
+    virtual bool intersect(const WFMath::Point<2> &) const = 0;
+};
+
+template <>
+class Form<3> : public Shape {
+  public:
+    virtual WFMath::Point<3> getCorner(size_t) const = 0;
+    virtual WFMath::Point<3> centre() const = 0;
+    virtual WFMath::Point<3> lowCorner() const = 0;
+    virtual WFMath::Point<3> highCorner() const = 0;
+    virtual bool intersect(const WFMath::Point<3> &) const = 0;
+};
+
+typedef Form<2> Area;
+typedef Form<3> Body;
+
 template<template <int> class ShapeT, int dim = 2>
-class MathShape : public Shape {
+class MathShape : public Form<dim> {
   protected:
     ShapeT<dim> m_shape;
 
@@ -73,13 +94,13 @@ class MathShape : public Shape {
 
     virtual size_t size() const;
     virtual bool isValid() const;
-    virtual WFMath::Point<3> getCorner(size_t) const;
+    virtual WFMath::Point<dim> getCorner(size_t) const;
     virtual WFMath::CoordType area() const;
-    virtual WFMath::Point<3> centre() const;
+    virtual WFMath::Point<dim> centre() const;
     virtual WFMath::AxisBox<2> footprint() const;
-    virtual WFMath::Point<3> lowCorner() const;
-    virtual WFMath::Point<3> highCorner() const;
-    virtual bool intersect(const WFMath::Point<2> &) const;
+    virtual WFMath::Point<dim> lowCorner() const;
+    virtual WFMath::Point<dim> highCorner() const;
+    virtual bool intersect(const WFMath::Point<dim> &) const;
 
     virtual void scale(WFMath::CoordType factor);
 

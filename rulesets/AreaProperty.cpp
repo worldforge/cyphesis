@@ -85,7 +85,10 @@ void AreaProperty::set(const Element & ent)
         return;
     }
     // FIXME overwriting old pointer
-    m_shape = shape;
+    m_shape = dynamic_cast<Form<2> *>(shape);
+    if (m_shape == 0) {
+        return;
+    }
 
     I = m_data.find("layer");
     if (I != Iend && I->second.isInt()) {

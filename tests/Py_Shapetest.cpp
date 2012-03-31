@@ -39,7 +39,7 @@ static PyObject * null_wrapper(PyObject * self, PyShape * o)
 {
     if (PyShape_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        o->shape = NULL;
+        o->shape.s = NULL;
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");

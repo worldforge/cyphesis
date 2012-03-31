@@ -23,16 +23,26 @@
 #include <Python.h>
 
 class Shape;
+template <int dim>
+class Form;
 
 /// \brief Wrapper for Shape in Python
 /// \ingroup PythonWrappers
 typedef struct {
     PyObject_HEAD
     /// \brief Shape object handled by this wrapper
-    Shape * shape;
+    union {
+      Shape * s;
+      Form<2> * p;
+      Form<3> * b;
+    } shape;
 } PyShape;
 
 extern PyTypeObject PyShape_Type;
+
+extern PyTypeObject PyArea_Type;
+extern PyTypeObject PyBody_Type;
+
 extern PyTypeObject PyBox_Type;
 extern PyTypeObject PyLine_Type;
 extern PyTypeObject PyPolygon_Type;
@@ -40,7 +50,16 @@ extern PyTypeObject PyPolygon_Type;
 #define PyShape_Check(_o) PyObject_TypeCheck(_o, &PyShape_Type)
 #define PyShape_CheckExact(_o) (Py_TYPE(_o) == &PyShape_Type)
 
+#define PyArea_Check(_o) PyObject_TypeCheck(_o, &PyArea_Type)
+#define PyBody_Check(_o) PyObject_TypeCheck(_o, &PyBody_Type)
+
+PyShape * wrapShape(Shape *);
+
 PyShape * newPyShape();
+
+PyShape * newPyArea();
+PyShape * newPyBody();
+
 PyShape * newPyBox();
 
 #endif // RULESETS_PY_SHAPE_H
