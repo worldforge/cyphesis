@@ -44,16 +44,6 @@ const char * MathShape<ShapeT, dim>::getType() const
 }
 
 template<template <int> class ShapeT, int dim>
-MathShape<ShapeT, dim>::MathShape()
-{
-}
-
-template<template <int> class ShapeT, int dim>
-MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> & s) : m_shape(s)
-{
-}
-
-template<template <int> class ShapeT, int dim>
 size_t MathShape<ShapeT, dim>::size() const
 {
     return m_shape.numCorners();
@@ -86,7 +76,7 @@ WFMath::Point<dim> MathShape<ShapeT, dim>::centre() const
 template<template <int> class ShapeT, int dim>
 WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
 {
-    return WFMath::AxisBox<2>();
+    return m_shape.boundingBox();
 }
 
 template<template <int> class ShapeT, int dim>

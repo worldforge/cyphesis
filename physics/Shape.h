@@ -112,6 +112,18 @@ class MathShape : public Form<dim> {
     const ShapeT<dim> & shape() { return m_shape; }
 };
 
+
+template<template <int> class ShapeT, int dim>
+inline MathShape<ShapeT, dim>::MathShape()
+{
+}
+
+template<template <int> class ShapeT, int dim>
+inline MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> & s) : m_shape(s)
+{
+}
+
+
 inline std::ostream & operator<<(std::ostream& os, const Shape & s)
 {
     s.stream(os);
