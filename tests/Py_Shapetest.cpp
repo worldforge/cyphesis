@@ -114,8 +114,8 @@ int main()
 
     expect_python_error("physics.Line()", PyExc_TypeError);
     run_python_string("l = physics.Line([[ 0.0, 0.0 ],"
-                                           "[ 1.0, 0.0 ],"
-                                           "[ 1.0, 1.0 ]])");
+                                        "[ 1.0, 0.0 ],"
+                                        "[ 1.0, 1.0 ]])");
     run_python_string("l.area()");
     run_python_string("l.centre()");
     run_python_string("l.footprint()");
