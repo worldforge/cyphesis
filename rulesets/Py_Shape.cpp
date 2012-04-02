@@ -342,9 +342,8 @@ static int MathShape_init(PyShape * self, PyObject * arg)
         if (self->shape.p == 0) {
             return -1;
         }
-        self->shape.p->fromAtlas(data);
-        // FIXME Why check the pointer again? Is there a return code?
-        if (self->shape.s == 0) {
+        int ret = self->shape.p->fromAtlas(data);
+        if (ret != 0) {
             PyErr_SetString(PyExc_TypeError, "Error converting list to polygon");
             return -1;
         }
@@ -361,9 +360,8 @@ static int MathShape_init(PyShape * self, PyObject * arg)
             PyErr_SetString(PyExc_TypeError, "Error converting Atlas message to polygon");
             return -1;
         }
-        self->shape.p->fromAtlas(data->List());
-        // FIXME Why check the pointer again? Is there a return code?
-        if (self->shape.s == 0) {
+        int ret = self->shape.p->fromAtlas(data->List());
+        if (ret != 0) {
             PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
             return -1;
         }
