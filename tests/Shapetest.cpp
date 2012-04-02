@@ -163,7 +163,7 @@ int main()
         p.addCorner(0, Point<2>(1,1));
         p.addCorner(0, Point<2>(1,0));
         p.addCorner(0, Point<2>(0,0));
-        Shape * s = new MathShape<Polygon, 2>(Polygon<2>());
+        Shape * s = new MathShape<Polygon, 2>(p);
 
         assert(s != 0);
         assert(s->isValid());
