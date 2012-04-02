@@ -30,6 +30,7 @@
 
 #include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
+#include <wfmath/line.h>
 #include <wfmath/point.h>
 #include <wfmath/polygon.h>
 
@@ -42,6 +43,7 @@ using Atlas::Message::MapType;
 
 using WFMath::AxisBox;
 using WFMath::Ball;
+using WFMath::Line;
 using WFMath::Point;
 using WFMath::Polygon;
 using WFMath::RotBox;
@@ -453,5 +455,155 @@ int main()
         assert(high.isValid());
     }
 
+    {
+        Shape * s = new MathShape<Line, 2>(Line<2>());
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
+        Line<2> p;
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
+        Shape * s = new MathShape<Line, 2>(p);
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
+    {
+        Line<2> p;
+        p.addCorner(0, Point<2>(1,1));
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
+
+        Area * s = new MathShape<Line, 2>(p);
+
+        assert(s != 0);
+        assert(s->isValid());
+        assert(!s->intersect(Point<2>(0.75, 0.25)));
+        assert(!s->intersect(Point<2>(1.5, 0.5)));
+        assert(!s->intersect(Point<2>(1.5, 1.5)));
+        assert(!s->intersect(Point<2>(0.5, 1.5)));
+        assert(!s->intersect(Point<2>(-0.5, 1.5)));
+        assert(!s->intersect(Point<2>(-0.5, 0.5)));
+        assert(!s->intersect(Point<2>(-0.5, -0.5)));
+        assert(!s->intersect(Point<2>(0.5, -0.5)));
+        assert(!s->intersect(Point<2>(1.5, -0.5)));
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s == 0);
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+        m["points"] = ListType(3, ListType(2, 1.f));
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+        m["points"] = ListType(3, ListType(2, 1.f));
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(s->isValid());
+
+        MapType dest;
+        s->toAtlas(dest);
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(s->isValid());
+        s->area();
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        s->scale(2);
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(s->isValid());
+        AxisBox<2> rect = s->footprint();
+        std::cout << rect << std::endl;
+        assert(rect.isValid());
+    }
+
+    {
+        MapType m;
+        m["type"] = "line";
+        ListType points;
+        points.push_back(ListType(2, -1.));
+        points.push_back(ListType(2, 1.));
+        ListType point(1, 1.);
+        point.push_back(-1.);
+        points.push_back(point);
+        m["points"] = points;
+
+        Shape * s = Shape::newFromAtlas(m);
+        assert(s != 0);
+        
+        Area * a = dynamic_cast<Area *>(s);
+        assert(a != 0);
+
+        Point<2> low = a->lowCorner();
+        Point<2> high = a->highCorner();
+        assert(low.isValid());
+        assert(high.isValid());
+    }
+
     return 0;
 }
+
