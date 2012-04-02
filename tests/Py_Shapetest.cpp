@@ -130,6 +130,9 @@ int main()
     run_python_string("l *= 5.0");
 
     expect_python_error("physics.Polygon()", PyExc_TypeError);
+    expect_python_error("physics.Polygon([[ object(), object() ],"
+                                         "[ 1.0, 0.0 ],"
+                                         "[ 1.0, 1.0 ]])", PyExc_TypeError);
     run_python_string("p = physics.Polygon([[ 0.0, 0.0 ],"
                                            "[ 1.0, 0.0 ],"
                                            "[ 1.0, 1.0 ]])");
