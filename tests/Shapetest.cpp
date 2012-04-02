@@ -40,6 +40,14 @@
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
+using WFMath::AxisBox;
+using WFMath::Ball;
+using WFMath::Point;
+using WFMath::Polygon;
+using WFMath::RotBox;
+using WFMath::RotMatrix;
+using WFMath::Vector;
+
 int main()
 {
     {
@@ -53,7 +61,7 @@ int main()
     // The AxisBox is a little different, and is not covered by the
     // name constructor
     {
-        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
 
         assert(s != 0);
         assert(!s->isValid());
@@ -61,9 +69,8 @@ int main()
     }
 
     {
-        Shape * s = new MathShape<WFMath::AxisBox, 2>(
-              WFMath::AxisBox<2>(WFMath::Point<2>(0,0),
-                                 WFMath::Point<2>(1,1)));
+        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(0,0),
+                                                         Point<2>(1,1)));
 
         assert(s != 0);
         assert(s->isValid());
@@ -71,27 +78,26 @@ int main()
     }
 
     {
-        Area * s = new MathShape<WFMath::AxisBox, 2>(
-              WFMath::AxisBox<2>(WFMath::Point<2>(0,0),
-                                 WFMath::Point<2>(1,1)));
+        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(0,0),
+                                                        Point<2>(1,1)));
 
         assert(s != 0);
         assert(s->isValid());
-        assert(s->intersect(WFMath::Point<2>(0.5, 0.5)));
-        assert(!s->intersect(WFMath::Point<2>(1.5, 0.5)));
-        assert(!s->intersect(WFMath::Point<2>(1.5, 1.5)));
-        assert(!s->intersect(WFMath::Point<2>(0.5, 1.5)));
-        assert(!s->intersect(WFMath::Point<2>(-0.5, 1.5)));
-        assert(!s->intersect(WFMath::Point<2>(-0.5, 0.5)));
-        assert(!s->intersect(WFMath::Point<2>(-0.5, -0.5)));
-        assert(!s->intersect(WFMath::Point<2>(0.5, -0.5)));
-        assert(!s->intersect(WFMath::Point<2>(1.5, -0.5)));
+        assert(s->intersect(Point<2>(0.5, 0.5)));
+        assert(!s->intersect(Point<2>(1.5, 0.5)));
+        assert(!s->intersect(Point<2>(1.5, 1.5)));
+        assert(!s->intersect(Point<2>(0.5, 1.5)));
+        assert(!s->intersect(Point<2>(-0.5, 1.5)));
+        assert(!s->intersect(Point<2>(-0.5, 0.5)));
+        assert(!s->intersect(Point<2>(-0.5, -0.5)));
+        assert(!s->intersect(Point<2>(0.5, -0.5)));
+        assert(!s->intersect(Point<2>(1.5, -0.5)));
     }
 
     {
         MapType m;
 
-        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
         s->fromAtlas(m);
 
         assert(s != 0);
@@ -100,7 +106,7 @@ int main()
     }
 
     {
-        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
         s->fromAtlas(ListType(2, 1.));
 
         assert(s != 0);
@@ -109,7 +115,7 @@ int main()
     }
 
     {
-        Shape * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
         s->fromAtlas(ListType(2, 1.));
 
         assert(s != 0);
@@ -120,71 +126,70 @@ int main()
     }
 
     {
-        Area * s = new MathShape<WFMath::AxisBox, 2>(WFMath::AxisBox<2>());
+        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>());
         s->fromAtlas(ListType(2, 1.));
 
         assert(s != 0);
         assert(s->isValid());
 
-        WFMath::Point<2> low = s->lowCorner();
-        WFMath::Point<2> high = s->highCorner();
+        Point<2> low = s->lowCorner();
+        Point<2> high = s->highCorner();
         assert(low.isValid());
         assert(high.isValid());
     }
 
     {
-        Area * s = new MathShape<WFMath::AxisBox, 2>(
-              WFMath::AxisBox<2>(WFMath::Point<2>(0,0),
-                                 WFMath::Point<2>(2,2)));
+        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(0,0),
+                                                        Point<2>(2,2)));
 
         assert(s != 0);
         assert(s->isValid());
   
-        WFMath::Point<2> centre = s->centre();
-        assert(WFMath::Equal(centre, WFMath::Point<2>(1,1)));
+        Point<2> centre = s->centre();
+        assert(Equal(centre, Point<2>(1,1)));
     }
 
     // The Polygon conversion functions throw if there isn't complete valid
     // polygon data
     {
-        Shape * s = new MathShape<WFMath::Polygon, 2>(WFMath::Polygon<2>());
+        Shape * s = new MathShape<Polygon, 2>(Polygon<2>());
 
         assert(s != 0);
         assert(s->isValid());
     }
 
     {
-        WFMath::Polygon<2> p;
-        p.addCorner(0, WFMath::Point<2>(1,1));
-        p.addCorner(0, WFMath::Point<2>(1,0));
-        p.addCorner(0, WFMath::Point<2>(0,0));
-        Shape * s = new MathShape<WFMath::Polygon, 2>(WFMath::Polygon<2>());
+        Polygon<2> p;
+        p.addCorner(0, Point<2>(1,1));
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
+        Shape * s = new MathShape<Polygon, 2>(Polygon<2>());
 
         assert(s != 0);
         assert(s->isValid());
     }
 
     {
-        WFMath::Polygon<2> p;
-        p.addCorner(0, WFMath::Point<2>(1,1));
-        p.addCorner(0, WFMath::Point<2>(1,0));
-        p.addCorner(0, WFMath::Point<2>(0,0));
+        Polygon<2> p;
+        p.addCorner(0, Point<2>(1,1));
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
         // Make sure the underlying Intersect works
-        assert(Intersect(p, WFMath::Point<2>(0.75, 0.25), true));
+        assert(Intersect(p, Point<2>(0.75, 0.25), true));
 
-        Area * s = new MathShape<WFMath::Polygon, 2>(p);
+        Area * s = new MathShape<Polygon, 2>(p);
 
         assert(s != 0);
         assert(s->isValid());
-        assert(s->intersect(WFMath::Point<2>(0.75, 0.25)));
-        assert(!s->intersect(WFMath::Point<2>(1.5, 0.5)));
-        assert(!s->intersect(WFMath::Point<2>(1.5, 1.5)));
-        assert(!s->intersect(WFMath::Point<2>(0.5, 1.5)));
-        assert(!s->intersect(WFMath::Point<2>(-0.5, 1.5)));
-        assert(!s->intersect(WFMath::Point<2>(-0.5, 0.5)));
-        assert(!s->intersect(WFMath::Point<2>(-0.5, -0.5)));
-        assert(!s->intersect(WFMath::Point<2>(0.5, -0.5)));
-        assert(!s->intersect(WFMath::Point<2>(1.5, -0.5)));
+        assert(s->intersect(Point<2>(0.75, 0.25)));
+        assert(!s->intersect(Point<2>(1.5, 0.5)));
+        assert(!s->intersect(Point<2>(1.5, 1.5)));
+        assert(!s->intersect(Point<2>(0.5, 1.5)));
+        assert(!s->intersect(Point<2>(-0.5, 1.5)));
+        assert(!s->intersect(Point<2>(-0.5, 0.5)));
+        assert(!s->intersect(Point<2>(-0.5, -0.5)));
+        assert(!s->intersect(Point<2>(0.5, -0.5)));
+        assert(!s->intersect(Point<2>(1.5, -0.5)));
     }
 
     {
@@ -276,7 +281,7 @@ int main()
 
         assert(s != 0);
         assert(s->isValid());
-        WFMath::AxisBox<2> rect = s->footprint();
+        AxisBox<2> rect = s->footprint();
         std::cout << rect << std::endl;
         assert(rect.isValid());
     }
@@ -298,8 +303,8 @@ int main()
         Area * a = dynamic_cast<Area *>(s);
         assert(a != 0);
 
-        WFMath::Point<2> low = a->lowCorner();
-        WFMath::Point<2> high = a->highCorner();
+        Point<2> low = a->lowCorner();
+        Point<2> high = a->highCorner();
         assert(low.isValid());
         assert(high.isValid());
     }
@@ -307,15 +312,15 @@ int main()
     // The Ball conversion functions don't seem to require valid Atlas
     // data
     {
-        Shape * s = new MathShape<WFMath::Ball, 2>(WFMath::Ball<2>());
+        Shape * s = new MathShape<Ball, 2>(Ball<2>());
 
         assert(s != 0);
         assert(!s->isValid());
     }
 
     {
-        Shape * s = new MathShape<WFMath::Ball, 2>(
-              WFMath::Ball<2>(WFMath::Point<2>(1,1), 23.f));
+        Shape * s = new MathShape<Ball, 2>(
+              Ball<2>(Point<2>(1,1), 23.f));
 
         assert(s != 0);
         assert(s->isValid());
@@ -369,8 +374,8 @@ int main()
         Area * a = dynamic_cast<Area *>(s);
         assert(a != 0);
 
-        WFMath::Point<2> low = a->lowCorner();
-        WFMath::Point<2> high = a->highCorner();
+        Point<2> low = a->lowCorner();
+        Point<2> high = a->highCorner();
         assert(low.isValid());
         assert(high.isValid());
     }
@@ -378,17 +383,17 @@ int main()
     // The RotBox conversion functions throw if there isn't complete valid
     // polygon data
     {
-        Shape * s = new MathShape<WFMath::RotBox, 2>(WFMath::RotBox<2>());
+        Shape * s = new MathShape<RotBox, 2>(RotBox<2>());
 
         assert(s != 0);
         assert(!s->isValid());
     }
 
     {
-        Shape * s = new MathShape<WFMath::RotBox, 2>(
-            WFMath::RotBox<2>(WFMath::Point<2>(0,0),
-                              WFMath::Vector<2>(1,1),
-                              WFMath::RotMatrix<2>().identity()));
+        Shape * s = new MathShape<RotBox, 2>(
+            RotBox<2>(Point<2>(0,0),
+                              Vector<2>(1,1),
+                              RotMatrix<2>().identity()));
 
         assert(s != 0);
         assert(s->isValid());
@@ -442,8 +447,8 @@ int main()
         Area * a = dynamic_cast<Area *>(s);
         assert(a != 0);
 
-        WFMath::Point<2> low = a->lowCorner();
-        WFMath::Point<2> high = a->highCorner();
+        Point<2> low = a->lowCorner();
+        Point<2> high = a->highCorner();
         assert(low.isValid());
         assert(high.isValid());
     }
