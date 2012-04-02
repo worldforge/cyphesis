@@ -70,16 +70,28 @@ int main()
     run_python_string("import server");
     run_python_string("import physics");
     run_python_string("physics.Shape()");
+    expect_python_error("physics.Shape(object(), object())", PyExc_TypeError);
     run_python_string("s = physics.Shape({'type': 'polygon',"
                                          "'points': [[ 0.0, 0.0 ],"
                                                     "[ 1.0, 0.0 ],"
                                                     "[ 1.0, 1.0 ]] })");
     expect_python_error("physics.Shape({})", PyExc_TypeError);
+    expect_python_error("physics.Shape(object())", PyExc_TypeError);
     expect_python_error("physics.Shape({'type': 'polygon',"
                                        "'data': object(),"
                                        "'points': [[ 0.0, 0.0 ],"
                                                   "[ 1.0, 0.0 ],"
                                                   "[ 1.0, 1.0 ]] })",
+                        PyExc_TypeError);
+    run_python_string("physics.Shape(atlas.Message({'type': 'polygon',"
+                                                   "'points': [[ 0.0, 0.0 ],"
+                                                              "[ 1.0, 0.0 ],"
+                                                              "[ 1.0, 1.0 ]] }))");
+    expect_python_error("physics.Shape(atlas.Message('foo'))", PyExc_TypeError);
+    expect_python_error("physics.Shape(atlas.Message({'type': 'polygon',"
+                                                     "'points': [[ 0.0, 0.0 ],"
+                                                                "[ 1.0 ],"
+                                                                "[ 1.0, 1.0 ]] }))",
                         PyExc_TypeError);
     run_python_string("s.area()");
     run_python_string("s.footprint()");
@@ -130,6 +142,7 @@ int main()
     run_python_string("l *= 5.0");
 
     expect_python_error("physics.Polygon()", PyExc_TypeError);
+    expect_python_error("physics.Polygon(object())", PyExc_TypeError);
     expect_python_error("physics.Polygon([[ object(), object() ],"
                                          "[ 1.0, 0.0 ],"
                                          "[ 1.0, 1.0 ]])", PyExc_TypeError);
@@ -140,6 +153,10 @@ int main()
     // Sequence too short for complete polygon
     expect_python_error("physics.Polygon([[ 0.0, 0.0 ],"
                                          "[ 1.0, 1.0 ]])", PyExc_TypeError);
+    run_python_string("physics.Polygon(atlas.Message([[ 0.0, 0.0 ],"
+                                                     "[ 1.0, 0.0 ],"
+                                                     "[ 1.0, 1.0 ]]))");
+    expect_python_error("physics.Polygon(atlas.Message('foo'))", PyExc_TypeError);
     run_python_string("p = physics.Polygon([[ 0.0, 0.0 ],"
                                            "[ 1.0, 0.0 ],"
                                            "[ 1.0, 1.0 ]])");
