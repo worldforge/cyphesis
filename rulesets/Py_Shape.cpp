@@ -335,18 +335,17 @@ static int MathShape_init(PyShape * self, PyObject * arg)
     if (PyList_Check(arg)) {
         ListType data;
         if (PyListObject_asElement(arg, data) != 0) {
-            PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
+            PyErr_SetString(PyExc_TypeError, "Error converting list to atlas");
             return -1;
         }
         self->shape.p = new MathShape<ShapeT, 2>;
         if (self->shape.p == 0) {
-            PyErr_SetString(PyExc_TypeError, "Error creating polygon");
             return -1;
         }
         self->shape.p->fromAtlas(data);
         // FIXME Why check the pointer again? Is there a return code?
         if (self->shape.s == 0) {
-            PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
+            PyErr_SetString(PyExc_TypeError, "Error converting list to polygon");
             return -1;
         }
         return 0;
@@ -354,12 +353,12 @@ static int MathShape_init(PyShape * self, PyObject * arg)
     if (PyMessage_Check(arg)) {
         Element * data = ((PyMessage*)arg)->m_obj;
         if (!data->isList()) {
-            PyErr_SetString(PyExc_TypeError, "Error converting dict to atlas");
+            PyErr_SetString(PyExc_TypeError, "Atlas message is not a list");
             return -1;
         }
         self->shape.p = new MathShape<ShapeT, 2>;
         if (self->shape.p == 0) {
-            PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
+            PyErr_SetString(PyExc_TypeError, "Error converting Atlas message to polygon");
             return -1;
         }
         self->shape.p->fromAtlas(data->List());
