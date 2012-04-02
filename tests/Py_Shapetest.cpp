@@ -95,6 +95,9 @@ int main()
 
 
     run_python_string("b = physics.Box()");
+    expect_python_error("physics.Box([[ 0.0, 0.0 ],"
+                                     "[ 1.0, 0.0 ],"
+                                     "[ 1.0, 1.0 ]])", PyExc_TypeError);
     run_python_string("b.area()");
     run_python_string("b.centre()");
     run_python_string("b.footprint()");
