@@ -326,6 +326,23 @@ static int Shape_init(PyShape * self, PyObject * args, PyObject * kwds)
         }
         return 0;
     }
+    PyErr_SetString(PyExc_TypeError, "Error converting unknown to shape");
+    return -1;
+}
+
+template<template <int> class ShapeT, int dim>
+static int MathShape_fromListType(PyShape * self, const ListType & data)
+{
+    self->shape.p = new MathShape<ShapeT, dim>;
+    if (self->shape.p == 0) {
+        PyErr_SetString(PyExc_MemoryError, "Error allocating shape object");
+        return -1;
+    }
+    int ret = self->shape.p->fromAtlas(data);
+    if (ret != 0) {
+        PyErr_SetString(PyExc_TypeError, "Error converting list to polygon");
+        return -1;
+    }
     return 0;
 }
 
@@ -338,16 +355,7 @@ static int MathShape_init(PyShape * self, PyObject * arg)
             PyErr_SetString(PyExc_TypeError, "Error converting list to atlas");
             return -1;
         }
-        self->shape.p = new MathShape<ShapeT, 2>;
-        if (self->shape.p == 0) {
-            return -1;
-        }
-        int ret = self->shape.p->fromAtlas(data);
-        if (ret != 0) {
-            PyErr_SetString(PyExc_TypeError, "Error converting list to polygon");
-            return -1;
-        }
-        return 0;
+        return MathShape_fromListType<ShapeT, dim>(self, data);
     }
     if (PyMessage_Check(arg)) {
         Element * data = ((PyMessage*)arg)->m_obj;
@@ -355,19 +363,10 @@ static int MathShape_init(PyShape * self, PyObject * arg)
             PyErr_SetString(PyExc_TypeError, "Atlas message is not a list");
             return -1;
         }
-        self->shape.p = new MathShape<ShapeT, 2>;
-        if (self->shape.p == 0) {
-            PyErr_SetString(PyExc_TypeError, "Error converting Atlas message to polygon");
-            return -1;
-        }
-        int ret = self->shape.p->fromAtlas(data->List());
-        if (ret != 0) {
-            PyErr_SetString(PyExc_TypeError, "Error converting atlas to polygon");
-            return -1;
-        }
-        return 0;
+        return MathShape_fromListType<ShapeT, dim>(self, data->List());
     }
-    return 0;
+    PyErr_SetString(PyExc_TypeError, "Error converting unknown to polygon");
+    return -1;
 }
 
 static int Box_init(PyShape * self, PyObject * args, PyObject * kwds)
