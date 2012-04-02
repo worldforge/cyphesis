@@ -133,6 +133,13 @@ int main()
     expect_python_error("physics.Polygon([[ object(), object() ],"
                                          "[ 1.0, 0.0 ],"
                                          "[ 1.0, 1.0 ]])", PyExc_TypeError);
+    // One vector too short
+    expect_python_error("physics.Polygon([[ 0.0, 0.0 ],"
+                                         "[ 1.0 ],"
+                                         "[ 1.0, 1.0 ]])", PyExc_TypeError);
+    // Sequence too short for complete polygon
+    expect_python_error("physics.Polygon([[ 0.0, 0.0 ],"
+                                         "[ 1.0, 1.0 ]])", PyExc_TypeError);
     run_python_string("p = physics.Polygon([[ 0.0, 0.0 ],"
                                            "[ 1.0, 0.0 ],"
                                            "[ 1.0, 1.0 ]])");
