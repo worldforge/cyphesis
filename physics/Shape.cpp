@@ -35,17 +35,23 @@ Shape::Shape()
 ///////////////////////////////////////////////////////////////////////
 
 template<>
-void MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
+int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
 {
     // FIXME Do what?
     // MapType::const_iterator I = data.find("points");
     // if (I == data.end() || !I->second.isList()) {
         // return;
     // }
-    if (!data.isList()) {
-        return;
+    int ret = -1;
+    try {
+        if (data.isList()) {
+            m_shape.fromAtlas(data.List());
+            ret = 0;
+        }
     }
-    m_shape.fromAtlas(data.List());
+    catch (Atlas::Message::WrongTypeException e) {
+    }
+    return ret;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -128,10 +134,8 @@ Shape * Shape::newFromAtlas(const MapType & data)
         new_shape = new MathShape<WFMath::RotBox>;
     }
     if (new_shape != 0) {
-        try {
-            new_shape->fromAtlas(data);
-        }
-        catch (Atlas::Message::WrongTypeException e) {
+        int res = new_shape->fromAtlas(data);
+        if (res != 0) {
             delete new_shape;
             new_shape = 0;
         }

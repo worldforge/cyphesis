@@ -118,9 +118,16 @@ void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 }
 
 template<template <int> class ShapeT, int dim>
-void MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::Element & data)
+int MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::Element & data)
 {
-    m_shape.fromAtlas(data);
+    int ret = -1;
+    try {
+        m_shape.fromAtlas(data);
+        ret = 0;
+    }
+    catch (Atlas::Message::WrongTypeException e) {
+    }
+    return ret;
 }
 
 template<template <int> class ShapeT, int dim>

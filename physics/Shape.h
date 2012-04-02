@@ -48,7 +48,7 @@ class Shape {
     virtual void scale(WFMath::CoordType factor) = 0;
 
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
-    virtual void fromAtlas(const Atlas::Message::Element &) = 0;
+    virtual int fromAtlas(const Atlas::Message::Element &) = 0;
 
     virtual void stream(std::ostream &) const = 0;
 
@@ -105,7 +105,7 @@ class MathShape : public Form<dim> {
     virtual void scale(WFMath::CoordType factor);
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
-    virtual void fromAtlas(const Atlas::Message::Element &);
+    virtual int fromAtlas(const Atlas::Message::Element &);
 
     virtual void stream(std::ostream &) const;
 
