@@ -50,6 +50,19 @@ using WFMath::RotBox;
 using WFMath::RotMatrix;
 using WFMath::Vector;
 
+void test_conversion(Shape * s)
+{
+    Atlas::Message::MapType data;
+
+    s->toAtlas(data);
+    assert(!data.empty());
+    assert(data.find("type") != data.end());
+    assert(data["type"] != "unknown");
+
+    Shape * copy = Shape::newFromAtlas(data);
+    assert(copy != 0);
+}
+
 int main()
 {
     {
@@ -149,6 +162,16 @@ int main()
   
         Point<2> centre = s->centre();
         assert(Equal(centre, Point<2>(1,1)));
+    }
+
+    {
+        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(1,1),
+                                                        Point<2>(2,2)));
+
+        assert(s != 0);
+        assert(s->isValid());
+  
+        test_conversion(s);
     }
 
     // The Polygon conversion functions throw if there isn't complete valid

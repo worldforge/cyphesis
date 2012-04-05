@@ -35,16 +35,23 @@ Shape::Shape()
 ///////////////////////////////////////////////////////////////////////
 
 template<>
+const char * MathShape<WFMath::AxisBox, 2>::getType() const
+{
+    return "box";
+}
+
+template<>
 int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
 {
-    // FIXME Do what?
-    // MapType::const_iterator I = data.find("points");
-    // if (I == data.end() || !I->second.isList()) {
-        // return;
-    // }
     int ret = -1;
     try {
-        if (data.isList()) {
+        if (data.isMap()) {
+            const MapType & datamap = data.Map();
+            MapType::const_iterator I = datamap.find("points");
+            if (I != datamap.end()) {
+                m_shape.fromAtlas(I->second);
+            }
+        } else {
             m_shape.fromAtlas(data.List());
             ret = 0;
         }
@@ -53,6 +60,14 @@ int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
     }
     return ret;
 }
+
+template<>
+void MathShape<WFMath::AxisBox, 2>::toAtlas(MapType & data) const
+{
+    data["type"] = getType();
+    data["points"] = m_shape.toAtlas();
+}
+
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -73,6 +88,12 @@ void MathShape<WFMath::Line, 2>::scale(WFMath::CoordType factor)
 }
 
 ///////////////////////////////////////////////////////////////////////
+
+template<>
+const char * MathShape<WFMath::Point, 2>::getType() const
+{
+    return "point";
+}
 
 template<>
 bool MathShape<WFMath::Point, 2>::intersect(const WFMath::Point<2> & p) const
@@ -132,6 +153,8 @@ Shape * Shape::newFromAtlas(const MapType & data)
         new_shape = new MathShape<WFMath::Ball>;
     } else if (type == "rotbox") {
         new_shape = new MathShape<WFMath::RotBox>;
+    } else if (type == "box") {
+        new_shape = new MathShape<WFMath::AxisBox>;
     }
     if (new_shape != 0) {
         int res = new_shape->fromAtlas(data);
