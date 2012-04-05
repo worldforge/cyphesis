@@ -61,6 +61,8 @@ void test_conversion(Shape * s)
 
     Shape * copy = Shape::newFromAtlas(data);
     assert(copy != 0);
+    std::cout << "A: " << *s << std::endl
+              << "B: " << *copy << std::endl;
     assert(*s == *copy);
 }
 
@@ -368,7 +370,7 @@ int main()
 
     {
         MapType m;
-        m["type"] = "ball";
+        m["type"] = "circle";
 
         Shape * s = Shape::newFromAtlas(m);
 
@@ -378,7 +380,7 @@ int main()
 
     {
         MapType m;
-        m["type"] = "ball";
+        m["type"] = "circle";
         m["radius"] = 23.9;
         m["position"] = ListType(2, 1.f);
 
@@ -390,7 +392,7 @@ int main()
 
     {
         MapType m;
-        m["type"] = "ball";
+        m["type"] = "circle";
         m["radius"] = 23.9;
         m["position"] = ListType(2, 1.f);
 
@@ -404,7 +406,7 @@ int main()
 
     {
         MapType m;
-        m["type"] = "ball";
+        m["type"] = "circle";
         m["radius"] = 23.9;
         m["position"] = ListType(2, 1.f);
 
@@ -418,6 +420,18 @@ int main()
         Point<2> high = a->highCorner();
         assert(low.isValid());
         assert(high.isValid());
+    }
+
+    {
+        MapType m;
+        m["type"] = "circle";
+        m["radius"] = 23.9;
+        m["position"] = ListType(2, 1.f);
+
+        Shape * s = Shape::newFromAtlas(m);
+        assert(s != 0);
+        
+        test_conversion(s);
     }
 
     // The RotBox conversion functions throw if there isn't complete valid

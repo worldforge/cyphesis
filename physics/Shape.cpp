@@ -35,6 +35,39 @@ Shape::Shape()
 ///////////////////////////////////////////////////////////////////////
 
 template<>
+const char * MathShape<WFMath::Ball, 2>::getType() const
+{
+    return "circle";
+}
+
+template<>
+int MathShape<WFMath::Ball, 2>::fromAtlas(const Element & data)
+{
+    int ret = -1;
+    try {
+        if (data.isMap()) {
+            m_shape.fromAtlas(data.Map());
+            ret = 0;
+        }
+    }
+    catch (Atlas::Message::WrongTypeException e) {
+    }
+    return ret;
+}
+
+template<>
+void MathShape<WFMath::Ball, 2>::toAtlas(MapType & data) const
+{
+    Element e = m_shape.toAtlas();
+    if (e.isMap()) {
+        data = e.Map();
+        data["type"] = getType();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+template<>
 const char * MathShape<WFMath::AxisBox, 2>::getType() const
 {
     return "box";
@@ -150,7 +183,7 @@ Shape * Shape::newFromAtlas(const MapType & data)
         new_shape = new MathShape<WFMath::Polygon>;
     } else if (type == "line") {
         new_shape = new MathShape<WFMath::Line>;
-    } else if (type == "ball") {
+    } else if (type == "circle") {
         new_shape = new MathShape<WFMath::Ball>;
     } else if (type == "rotbox") {
         new_shape = new MathShape<WFMath::RotBox>;
