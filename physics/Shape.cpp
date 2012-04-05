@@ -102,7 +102,6 @@ void MathShape<WFMath::AxisBox, 2>::toAtlas(MapType & data) const
     data["points"] = m_shape.toAtlas();
 }
 
-
 ///////////////////////////////////////////////////////////////////////
 
 template<>
@@ -166,6 +165,39 @@ void MathShape<WFMath::Polygon, 2>::scale(WFMath::CoordType factor)
         WFMath::Point<2> corner = m_shape.getCorner(i);
         m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
                                                corner.y() * factor));
+    }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+template<>
+const char * MathShape<WFMath::RotBox, 2>::getType() const
+{
+    return "rotbox";
+}
+
+template<>
+int MathShape<WFMath::RotBox, 2>::fromAtlas(const Element & data)
+{
+    int ret = -1;
+    try {
+        if (data.isMap()) {
+            m_shape.fromAtlas(data.Map());
+            ret = 0;
+        }
+    }
+    catch (Atlas::Message::WrongTypeException e) {
+    }
+    return ret;
+}
+
+template<>
+void MathShape<WFMath::RotBox, 2>::toAtlas(MapType & data) const
+{
+    Element e = m_shape.toAtlas();
+    if (e.isMap()) {
+        data = e.Map();
+        data["type"] = getType();
     }
 }
 

@@ -508,6 +508,21 @@ int main()
     }
 
     {
+        MapType m;
+        m["type"] = "rotbox";
+        m["point"] = ListType(2, 1.f);
+        m["size"] = ListType(2, 1.f);
+
+        Shape * s = Shape::newFromAtlas(m);
+        assert(s != 0);
+        
+        // FIXME This doesn't work with an actual rotated box, as the underlying
+        // wfmath functions don't support them yet
+        test_conversion(s);
+    }
+
+    // Line functions
+    {
         Shape * s = new MathShape<Line, 2>(Line<2>());
 
         assert(s != 0);
