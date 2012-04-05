@@ -103,6 +103,17 @@ void MathShape<ShapeT, dim>::scale(WFMath::CoordType)
 }
 
 template<template <int> class ShapeT, int dim>
+bool MathShape<ShapeT, dim>::equal(const Shape & other) const
+{
+    const MathShape<ShapeT, dim> * rhs =
+          dynamic_cast<const MathShape<ShapeT, dim> *>(&other);
+    if (rhs != 0 && WFMath::Equal(this->m_shape, rhs->m_shape)) {
+        return true;
+    }
+    return false;
+}
+
+template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 {
     data["type"] = getType();

@@ -47,6 +47,8 @@ class Shape {
 
     virtual void scale(WFMath::CoordType factor) = 0;
 
+    virtual bool equal(const Shape & other) const = 0;
+
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
     virtual int fromAtlas(const Atlas::Message::Element &) = 0;
 
@@ -104,6 +106,8 @@ class MathShape : public Form<dim> {
 
     virtual void scale(WFMath::CoordType factor);
 
+    virtual bool equal(const Shape & other) const;
+
     virtual void toAtlas(Atlas::Message::MapType &) const;
     virtual int fromAtlas(const Atlas::Message::Element &);
 
@@ -123,6 +127,15 @@ inline MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> & s) : m_shape(s)
 {
 }
 
+inline bool operator==(const Shape & lhs, const Shape & rhs)
+{
+    return lhs.equal(rhs);
+}
+
+inline bool operator!=(const Shape & lhs, const Shape & rhs)
+{
+    return !lhs.equal(rhs);
+}
 
 inline std::ostream & operator<<(std::ostream& os, const Shape & s)
 {

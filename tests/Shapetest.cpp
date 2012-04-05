@@ -61,6 +61,7 @@ void test_conversion(Shape * s)
 
     Shape * copy = Shape::newFromAtlas(data);
     assert(copy != 0);
+    assert(*s == *copy);
 }
 
 int main()
