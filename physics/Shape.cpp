@@ -50,6 +50,7 @@ int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
             MapType::const_iterator I = datamap.find("points");
             if (I != datamap.end()) {
                 m_shape.fromAtlas(I->second);
+                ret = 0;
             }
         } else {
             m_shape.fromAtlas(data.List());
