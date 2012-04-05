@@ -561,6 +561,20 @@ int main()
     }
 
     {
+        Line<2> p;
+        p.addCorner(0, Point<2>(1,1));
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
+
+        Area * s = new MathShape<Line, 2>(p);
+
+        assert(s != 0);
+        assert(s->isValid());
+
+        test_conversion(s);
+    }
+
+    {
         MapType m;
         m["type"] = "line";
 
