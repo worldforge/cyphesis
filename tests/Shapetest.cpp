@@ -219,6 +219,20 @@ int main()
     }
 
     {
+        Polygon<2> p;
+        p.addCorner(0, Point<2>(1,1));
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
+        // Make sure the underlying Intersect works
+
+        Area * s = new MathShape<Polygon, 2>(p);
+
+        assert(s != 0);
+        assert(s->isValid());
+        test_conversion(s);
+    }
+
+    {
         MapType m;
         m["type"] = "polygon";
 
