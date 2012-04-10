@@ -134,6 +134,38 @@ bool MathShape<WFMath::Point, 2>::intersect(const WFMath::Point<2> & p) const
     return WFMath::Equal(m_shape, p);
 }
 
+template<>
+int MathShape<WFMath::Point, 2>::fromAtlas(const Element & data)
+{
+    int ret = -1;
+    try {
+        if (data.isMap()) {
+            const MapType & datamap = data.Map();
+            MapType::const_iterator I = datamap.find("pos");
+            if (I != datamap.end()) {
+                m_shape.fromAtlas(I->second);
+                ret = 0;
+            }
+        } else {
+            m_shape.fromAtlas(data.asList());
+            ret = 0;
+        }
+    }
+    catch (Atlas::Message::WrongTypeException e) {
+    }
+    return ret;
+}
+
+template<>
+void MathShape<WFMath::Point, 2>::toAtlas(MapType & data) const
+{
+    Element e = m_shape.toAtlas();
+    if (e.isList()) {
+        data["pos"] = e.asList();
+        data["type"] = getType();
+    }
+}
+
 ////////////////////////////// Polygon ////////////////////////////////
 
 template<>
@@ -217,6 +249,8 @@ Shape * Shape::newFromAtlas(const MapType & data)
         new_shape = new MathShape<WFMath::Line>;
     } else if (type == "circle") {
         new_shape = new MathShape<WFMath::Ball>;
+    } else if (type == "point") {
+        new_shape = new MathShape<WFMath::Point>;
     } else if (type == "rotbox") {
         new_shape = new MathShape<WFMath::RotBox>;
     } else if (type == "box") {

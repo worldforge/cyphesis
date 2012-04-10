@@ -185,6 +185,23 @@ int main()
         test_conversion(s);
     }
 
+    // Point
+    {
+        Shape * s = new MathShape<Point, 2>(Point<2>());
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
+        Shape * s = new MathShape<Point, 2>(Point<2>(1,2));
+
+        assert(s != 0);
+        assert(s->isValid());
+
+        test_conversion(s);
+    }
+
     // The Polygon conversion functions throw if there isn't complete valid
     // polygon data
     {
