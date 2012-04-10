@@ -86,7 +86,7 @@ int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
                 ret = 0;
             }
         } else {
-            m_shape.fromAtlas(data.List());
+            m_shape.fromAtlas(data.asList());
             ret = 0;
         }
     }

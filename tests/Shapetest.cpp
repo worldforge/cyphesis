@@ -144,6 +144,14 @@ int main()
     }
 
     {
+        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
+        s->fromAtlas(std::string("bad_string_value"));
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
         Area * s = new MathShape<AxisBox, 2>(AxisBox<2>());
         s->fromAtlas(ListType(2, 1.));
 
