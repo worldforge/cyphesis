@@ -187,7 +187,7 @@ int main()
 
     // Point
     {
-        Shape * s = new MathShape<Point, 2>(Point<2>());
+        Shape * s = new MathShape<Point, 2>();
 
         assert(s != 0);
         assert(!s->isValid());
@@ -198,8 +198,74 @@ int main()
 
         assert(s != 0);
         assert(s->isValid());
+    }
+
+    {
+        MapType m;
+        m["pos"] = ListType(2, 2.0);
+
+        Shape * s = new MathShape<Point, 2>();
+
+        assert(s != 0);
+        assert(!s->isValid());
+
+        s->fromAtlas(m);
+        assert(s->isValid());
+    }
+
+    {
+        ListType l(2, 2.0);
+
+        Shape * s = new MathShape<Point, 2>();
+
+        assert(s != 0);
+        assert(!s->isValid());
+
+        s->fromAtlas(l);
+        assert(s->isValid());
+    }
+
+    {
+        ListType l(1, 2.0); // Wrong length
+
+        Shape * s = new MathShape<Point, 2>();
+
+        assert(s != 0);
+        assert(!s->isValid());
+
+        s->fromAtlas(l);
+        assert(!s->isValid());
+    }
+
+    {
+        ListType l(2, "bad_string"); // Wrong type
+
+        Shape * s = new MathShape<Point, 2>();
+
+        assert(s != 0);
+        assert(!s->isValid());
+
+        s->fromAtlas(l);
+        assert(!s->isValid());
+    }
+
+    {
+        Shape * s = new MathShape<Point, 2>(Point<2>(1,2));
+
+        assert(s != 0);
+        assert(s->isValid());
 
         test_conversion(s);
+    }
+
+    {
+        Form<2> * s = new MathShape<Point, 2>(Point<2>(1,2));
+
+        assert(s != 0);
+        assert(s->isValid());
+
+        assert(s->intersect(Point<2>(1, 2)));
+        assert(!s->intersect(Point<2>(0.75, 0.25)));
     }
 
     // The Polygon conversion functions throw if there isn't complete valid
@@ -398,6 +464,40 @@ int main()
         m["type"] = "circle";
 
         Shape * s = Shape::newFromAtlas(m);
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
+        MapType m;
+        m["radius"] = 23.9;
+        m["position"] = ListType(2, 1.f);
+
+        Shape * s = new MathShape<Ball, 2>;
+        s->fromAtlas(m);
+
+        assert(s != 0);
+        assert(s->isValid());
+    }
+
+    {
+        MapType m;
+        m["radius"] = 23.9;
+        m["position"] = ListType(2, "bad_string"); // bad type here
+
+        Shape * s = new MathShape<Ball, 2>;
+        s->fromAtlas(m);
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
+
+    {
+        ListType l(2, 1.f); // Wrong type
+
+        Shape * s = new MathShape<Ball, 2>;
+        s->fromAtlas(l);
 
         assert(s != 0);
         assert(!s->isValid());
