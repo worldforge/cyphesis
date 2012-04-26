@@ -26,11 +26,20 @@
 
 #include <wfmath/atlasconv.h>
 
+template<int dim, template <int> class PathT>
+class Course;
+
 // Placeholders, as WFMath hasn't filled these out for line yet.
 namespace WFMath {
 
 template<int dim>
 bool Intersect(const Line<dim>&, const Point<dim>&, bool)
+{
+    return false;
+}
+
+template<int dim, template <int> class PathT>
+bool Intersect(const Course<dim, PathT>&, const Point<dim>&, bool)
 {
     return false;
 }

@@ -16,7 +16,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest \
-                Shapetest
+                Shapetest Coursetest
 
 MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
                TerrainContexttest
@@ -313,7 +313,8 @@ distancetest_LDADD = \
 
 Shapetest_SOURCES = Shapetest.cpp
 Shapetest_LDADD = \
-        $(top_builddir)/physics/Shape.o
+        $(top_builddir)/physics/Shape.o \
+        $(top_builddir)/physics/Course.o
 
 # MODULE_TESTS
 
@@ -439,6 +440,7 @@ AllPropertytest_LDADD = \
         $(top_builddir)/common/custom.o \
         $(top_builddir)/common/operations.o \
         $(top_builddir)/physics/Shape.o \
+        $(top_builddir)/physics/Course.o \
         $(TERRAIN_LIBS)
 
 Scripttest_SOURCES = Scripttest.cpp

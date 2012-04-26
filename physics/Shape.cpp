@@ -18,6 +18,7 @@
 // $Id$
 
 #include "Shape_impl.h"
+#include "Course.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -266,9 +267,14 @@ Shape * Shape::newFromAtlas(const MapType & data)
     return new_shape;
 }
 
+template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
+{
+};
+
 template class MathShape<WFMath::AxisBox, 2>;
 template class MathShape<WFMath::Ball, 2>;
 template class MathShape<WFMath::Line, 2>;
 template class MathShape<WFMath::Point, 2>;
 template class MathShape<WFMath::Polygon, 2>;
 template class MathShape<WFMath::RotBox, 2>;
+template class MathShape<LinearCourse, 2>;
