@@ -26,6 +26,8 @@
 
 #include "physics/Shape.h"
 
+#include "physics/Course.h"
+
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/axisbox.h>
@@ -65,6 +67,10 @@ void test_conversion(Shape * s)
               << "B: " << *copy << std::endl;
     assert(*s == *copy);
 }
+
+template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
+{
+};
 
 int main()
 {
@@ -648,7 +654,7 @@ int main()
 
     // Line functions
     {
-        Shape * s = new MathShape<Line, 2>(Line<2>());
+        Shape * s = new MathShape<Line, 2>;
 
         assert(s != 0);
         assert(!s->isValid());
@@ -810,6 +816,14 @@ int main()
         assert(high.isValid());
     }
 
+    // Course functions
+
+    {
+        Shape * s = new MathShape<LinearCourse, 2>;
+
+        assert(s != 0);
+        assert(!s->isValid());
+    }
     return 0;
 }
 
