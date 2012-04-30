@@ -1,3 +1,7 @@
+Re-factor login code so Session is the unique class rather than Account.
+Constraining logins to be one per account may be sound policy, but it
+should be policy rather than a hard constraint of the architecture.
+
 BaseWorld, Property, TypeNode and Inheritance into rulesets? Everything else
 in common is lower level.
 
