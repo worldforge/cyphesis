@@ -127,6 +127,8 @@ int main()
     expect_python_error("b[4]", PyExc_IndexError);
     run_python_string("b *= 5.0");
 
+    run_python_string("c = physics.Course()");
+
     expect_python_error("physics.Line()", PyExc_TypeError);
     run_python_string("l = physics.Line([[ 0.0, 0.0 ],"
                                         "[ 1.0, 0.0 ],"

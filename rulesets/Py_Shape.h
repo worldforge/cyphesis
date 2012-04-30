@@ -44,6 +44,7 @@ extern PyTypeObject PyArea_Type;
 extern PyTypeObject PyBody_Type;
 
 extern PyTypeObject PyBox_Type;
+extern PyTypeObject PyCourse_Type;
 extern PyTypeObject PyLine_Type;
 extern PyTypeObject PyPolygon_Type;
 
@@ -52,6 +53,18 @@ extern PyTypeObject PyPolygon_Type;
 
 #define PyArea_Check(_o) PyObject_TypeCheck(_o, &PyArea_Type)
 #define PyBody_Check(_o) PyObject_TypeCheck(_o, &PyBody_Type)
+
+#define PyBox_Check(_o) PyObject_TypeCheck(_o, &PyBox_Type)
+#define PyBox_CheckExact(_o) (Py_TYPE(_o) == &PyBox_Type)
+
+#define PyCourse_Check(_o) PyObject_TypeCheck(_o, &PyCourse_Type)
+#define PyCourse_CheckExact(_o) (Py_TYPE(_o) == &PyCourse_Type)
+
+#define PyLine_Check(_o) PyObject_TypeCheck(_o, &PyLine_Type)
+#define PyLine_CheckExact(_o) (Py_TYPE(_o) == &PyLine_Type)
+
+#define PyPolygon_Check(_o) PyObject_TypeCheck(_o, &PyPolygon_Type)
+#define PyPolygon_CheckExact(_o) (Py_TYPE(_o) == &PyPolygon_Type)
 
 PyShape * wrapShape(Shape *);
 

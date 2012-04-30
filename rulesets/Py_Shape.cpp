@@ -27,6 +27,8 @@
 
 #include "physics/Shape.h"
 
+#include "physics/Course.h"
+
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/axisbox.h>
@@ -36,6 +38,10 @@
 
 #include <sstream>
 #include <iostream>
+
+template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
+{
+};
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -226,6 +232,10 @@ static PyMethodDef Box_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
+static PyMethodDef Course_methods[] = {
+    {NULL,              NULL}           /* sentinel */
+};
+
 static void Shape_dealloc(PyShape *self)
 {
     if (self->shape.s != NULL) {
@@ -376,6 +386,20 @@ static int Box_init(PyShape * self, PyObject * args, PyObject * kwds)
         return -1;
     }
     self->shape.p = new MathShape<WFMath::AxisBox, 2>;
+    return 0;
+}
+
+static int Course_init(PyShape * self, PyObject * args, PyObject * kwds)
+{
+    PyObject * arg = 0;
+    if (!PyArg_ParseTuple(args, "|O", &arg)) {
+        return -1;
+    }
+    if (arg != 0) {
+        if (PyLine_Check(arg)) {
+        }
+    }
+    self->shape.p = new MathShape<LinearCourse, 2>;
     return 0;
 }
 
@@ -723,6 +747,49 @@ PyTypeObject PyBox_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Box_init,             // tp_init
+        0,                              // tp_alloc
+        Shape_new,                      // tp_new
+};
+
+PyTypeObject PyCourse_Type = {
+        PyObject_HEAD_INIT(&PyType_Type)
+        0,                              /*ob_size*/
+        "physics.Course",               /*tp_name*/
+        sizeof(PyShape),                /*tp_basicsize*/
+        0,                              /*tp_itemsize*/
+        /* methods */
+        0,                              /*tp_dealloc*/
+        0,                              /*tp_print*/
+        0,                              /*tp_getattr*/
+        0,                              /*tp_setattr*/
+        0,                              /*tp_compare*/
+        0,                              /*tp_repr*/
+        0,                              /*tp_as_number*/
+        0,                              /*tp_as_sequence*/
+        0,                              /*tp_as_mapping*/
+        0,                              /*tp_hash*/
+        0,                              // tp_call
+        0,                              // tp_str
+        0,                              // tp_getattro
+        0,                              // tp_setattro
+        0,                              // tp_as_buffer
+        Py_TPFLAGS_DEFAULT,             // tp_flags
+        "Course objects",               // tp_doc
+        0,                              // tp_travers
+        0,                              // tp_clear
+        0,                              // tp_richcompare
+        0,                              // tp_weaklistoffset
+        0,                              // tp_iter
+        0,                              // tp_iternext
+        Course_methods,                 // tp_methods
+        0,                              // tp_members
+        0,                              // tp_getset
+        &PyArea_Type,                   // tp_base
+        0,                              // tp_dict
+        0,                              // tp_descr_get
+        0,                              // tp_descr_set
+        0,                              // tp_dictoffset
+        (initproc)Course_init,          // tp_init
         0,                              // tp_alloc
         Shape_new,                      // tp_new
 };
