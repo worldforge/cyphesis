@@ -105,7 +105,7 @@ int main()
                                      "[ 1.0, 0.0 ],"
                                      "[ 1.0, 1.0 ]]", PyExc_AttributeError);
 
-
+    //////////////////////////////// Box /////////////////////////////////
     run_python_string("b = physics.Box()");
     expect_python_error("physics.Box([[ 0.0, 0.0 ],"
                                      "[ 1.0, 0.0 ],"
@@ -127,6 +127,7 @@ int main()
     expect_python_error("b[4]", PyExc_IndexError);
     run_python_string("b *= 5.0");
 
+    /////////////////////////////// Course ///////////////////////////////
     run_python_string("c = physics.Course()");
     run_python_string("c.area()");
     run_python_string("c.centre()");
@@ -139,6 +140,7 @@ int main()
     expect_python_error("c[0]", PyExc_IndexError);
     run_python_string("c *= 5.0");
 
+    //////////////////////////////// Line ////////////////////////////////
     expect_python_error("physics.Line()", PyExc_TypeError);
     run_python_string("l = physics.Line([[ 0.0, 0.0 ],"
                                         "[ 1.0, 0.0 ],"
@@ -153,6 +155,7 @@ int main()
     run_python_string("len(l)");
     run_python_string("l *= 5.0");
 
+    ////////////////////////////// Polygon ///////////////////////////////
     expect_python_error("physics.Polygon()", PyExc_TypeError);
     expect_python_error("physics.Polygon(object())", PyExc_TypeError);
     expect_python_error("physics.Polygon([[ object(), object() ],"
