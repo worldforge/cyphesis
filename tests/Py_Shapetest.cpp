@@ -128,6 +128,16 @@ int main()
     run_python_string("b *= 5.0");
 
     run_python_string("c = physics.Course()");
+    run_python_string("c.area()");
+    run_python_string("c.centre()");
+    run_python_string("c.footprint()");
+    run_python_string("c.low_corner()");
+    run_python_string("c.high_corner()");
+    run_python_string("c.as_data()");
+    run_python_string("repr(c)");
+    run_python_string("assert(len(c) == 0)");
+    expect_python_error("c[0]", PyExc_IndexError);
+    run_python_string("c *= 5.0");
 
     expect_python_error("physics.Line()", PyExc_TypeError);
     run_python_string("l = physics.Line([[ 0.0, 0.0 ],"
