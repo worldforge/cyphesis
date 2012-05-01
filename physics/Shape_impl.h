@@ -89,6 +89,17 @@ WFMath::AxisBox<2> MathShape<ShapeT, dim>::footprint() const
 }
 
 template<template <int> class ShapeT, int dim>
+WFMath::Polygon<2> MathShape<ShapeT, dim>::outline(WFMath::CoordType precision) const
+{
+    int n = m_shape.numCorners();
+    WFMath::Polygon<2> shape_outline;
+    for (int i = 0; i < n; ++i) {
+        shape_outline.addCorner(i, getCorner(i));
+    }
+    return shape_outline;
+}
+
+template<template <int> class ShapeT, int dim>
 WFMath::Point<dim> MathShape<ShapeT, dim>::lowCorner() const
 {
     return m_shape.boundingBox().lowCorner();

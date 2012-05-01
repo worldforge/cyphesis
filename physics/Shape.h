@@ -44,6 +44,7 @@ class Shape {
     virtual bool isValid() const = 0;
     virtual WFMath::CoordType area() const = 0;
     virtual WFMath::AxisBox<2> footprint() const = 0;
+    virtual WFMath::Polygon<2> outline(WFMath::CoordType p = 1.f) const = 0;
 
     virtual void scale(WFMath::CoordType factor) = 0;
 
@@ -100,6 +101,7 @@ class MathShape : public Form<dim> {
     virtual WFMath::CoordType area() const;
     virtual WFMath::Point<dim> centre() const;
     virtual WFMath::AxisBox<2> footprint() const;
+    virtual WFMath::Polygon<2> outline(WFMath::CoordType precision) const;
     virtual WFMath::Point<dim> lowCorner() const;
     virtual WFMath::Point<dim> highCorner() const;
     virtual bool intersect(const WFMath::Point<dim> &) const;

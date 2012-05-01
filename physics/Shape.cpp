@@ -29,11 +29,37 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+using WFMath::CoordType;
+using WFMath::Point;
+using WFMath::Polygon;
+
+using WFMath::numeric_constants;
+
+template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
+{
+};
+
 Shape::Shape()
 {
 }
 
 //////////////////////////////// Ball /////////////////////////////////
+
+template<>
+Polygon<2> MathShape<WFMath::Ball, 2>::outline(CoordType precision) const
+{
+    Polygon<2> shape_outline;
+    CoordType radius = m_shape.radius();
+    CoordType segments = radius * numeric_constants<CoordType>::pi() * 2.f / precision;
+    // FIXME lrint this properly
+    int count = (int)std::ceil(segments);
+    CoordType seg = numeric_constants<CoordType>::pi() * 2.f / count;
+    for (int i = 0; i < count; ++i) {
+        shape_outline.addCorner(i, Point<2>(radius * std::cos(seg * i),
+                                            radius * std::sin(seg * i)));
+    }
+    return shape_outline;
+}
 
 template<>
 const char * MathShape<WFMath::Ball, 2>::getType() const
@@ -64,6 +90,14 @@ void MathShape<WFMath::Ball, 2>::toAtlas(MapType & data) const
         data = e.Map();
         data["type"] = getType();
     }
+}
+
+/////////////////////////////// Course ////////////////////////////////
+
+template<>
+const char * MathShape<LinearCourse, 2>::getType() const
+{
+    return "course";
 }
 
 ////////////////////////////// AxisBox ////////////////////////////////
@@ -115,28 +149,28 @@ template<>
 void MathShape<WFMath::Line, 2>::scale(WFMath::CoordType factor)
 {
     for (size_t i = 0; i < m_shape.numCorners(); ++i) {
-        WFMath::Point<2> corner = m_shape.getCorner(i);
-        m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
-                                               corner.y() * factor));
+        Point<2> corner = m_shape.getCorner(i);
+        m_shape.moveCorner(i, Point<2>(corner.x() * factor,
+                                       corner.y() * factor));
     }
 }
 
 /////////////////////////////// Point /////////////////////////////////
 
 template<>
-const char * MathShape<WFMath::Point, 2>::getType() const
+const char * MathShape<Point, 2>::getType() const
 {
     return "point";
 }
 
 template<>
-bool MathShape<WFMath::Point, 2>::intersect(const WFMath::Point<2> & p) const
+bool MathShape<Point, 2>::intersect(const Point<2> & p) const
 {
     return WFMath::Equal(m_shape, p);
 }
 
 template<>
-int MathShape<WFMath::Point, 2>::fromAtlas(const Element & data)
+int MathShape<Point, 2>::fromAtlas(const Element & data)
 {
     int ret = -1;
     try {
@@ -158,7 +192,7 @@ int MathShape<WFMath::Point, 2>::fromAtlas(const Element & data)
 }
 
 template<>
-void MathShape<WFMath::Point, 2>::toAtlas(MapType & data) const
+void MathShape<Point, 2>::toAtlas(MapType & data) const
 {
     Element e = m_shape.toAtlas();
     if (e.isList()) {
@@ -170,20 +204,26 @@ void MathShape<WFMath::Point, 2>::toAtlas(MapType & data) const
 ////////////////////////////// Polygon ////////////////////////////////
 
 template<>
-const char * MathShape<WFMath::Polygon, 2>::getType() const
+Polygon<2> MathShape<Polygon, 2>::outline(CoordType precision) const
+{
+    return m_shape;
+}
+
+template<>
+const char * MathShape<Polygon, 2>::getType() const
 {
     return "polygon";
 }
 
 template<>
-WFMath::CoordType MathShape<WFMath::Polygon, 2>::area() const
+WFMath::CoordType MathShape<Polygon, 2>::area() const
 {
     WFMath::CoordType area = 0;
 
     size_t n = m_shape.numCorners();
     for (size_t i = 0; i < n; ++i) {
-        WFMath::Point<2> corner = m_shape.getCorner(i);
-        WFMath::Point<2> corner2 = m_shape.getCorner((i + 1) % n);
+        Point<2> corner = m_shape.getCorner(i);
+        Point<2> corner2 = m_shape.getCorner((i + 1) % n);
         area += corner.x() * corner2.y();
         area -= corner.y() * corner2.x();
     }
@@ -192,12 +232,12 @@ WFMath::CoordType MathShape<WFMath::Polygon, 2>::area() const
 }
 
 template<>
-void MathShape<WFMath::Polygon, 2>::scale(WFMath::CoordType factor)
+void MathShape<Polygon, 2>::scale(WFMath::CoordType factor)
 {
     for (size_t i = 0; i < m_shape.numCorners(); ++i) {
-        WFMath::Point<2> corner = m_shape.getCorner(i);
-        m_shape.moveCorner(i, WFMath::Point<2>(corner.x() * factor,
-                                               corner.y() * factor));
+        Point<2> corner = m_shape.getCorner(i);
+        m_shape.moveCorner(i, Point<2>(corner.x() * factor,
+                                       corner.y() * factor));
     }
 }
 
@@ -245,13 +285,13 @@ Shape * Shape::newFromAtlas(const MapType & data)
     const std::string & type = I->second.String();
     Shape * new_shape = 0;
     if (type == "polygon") {
-        new_shape = new MathShape<WFMath::Polygon>;
+        new_shape = new MathShape<Polygon>;
     } else if (type == "line") {
         new_shape = new MathShape<WFMath::Line>;
     } else if (type == "circle") {
         new_shape = new MathShape<WFMath::Ball>;
     } else if (type == "point") {
-        new_shape = new MathShape<WFMath::Point>;
+        new_shape = new MathShape<Point>;
     } else if (type == "rotbox") {
         new_shape = new MathShape<WFMath::RotBox>;
     } else if (type == "box") {
@@ -267,14 +307,10 @@ Shape * Shape::newFromAtlas(const MapType & data)
     return new_shape;
 }
 
-template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
-{
-};
-
 template class MathShape<WFMath::AxisBox, 2>;
 template class MathShape<WFMath::Ball, 2>;
 template class MathShape<WFMath::Line, 2>;
-template class MathShape<WFMath::Point, 2>;
-template class MathShape<WFMath::Polygon, 2>;
+template class MathShape<Point, 2>;
+template class MathShape<Polygon, 2>;
 template class MathShape<WFMath::RotBox, 2>;
 template class MathShape<LinearCourse, 2>;
