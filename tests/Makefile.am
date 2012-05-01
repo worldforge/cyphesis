@@ -316,6 +316,10 @@ Shapetest_LDADD = \
         $(top_builddir)/physics/Shape.o \
         $(top_builddir)/physics/Course.o
 
+Coursetest_SOURCES = Coursetest.cpp
+Coursetest_LDADD = \
+        $(top_builddir)/physics/Course.o
+
 # MODULE_TESTS
 
 DateTimetest_SOURCES = DateTimetest.cpp
