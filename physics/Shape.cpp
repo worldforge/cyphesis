@@ -100,6 +100,29 @@ void MathShape<Ball, 2>::toAtlas(MapType & data) const
 /////////////////////////////// Course ////////////////////////////////
 
 template<>
+Polygon<2> MathShape<LinearCourse, 2>::outline(CoordType precision) const
+{
+    Polygon<2> shape_outline;
+    size_t count = m_shape.numCorners();
+    if (count == 0) {
+        shape_outline.resize(count * 2);
+        for (size_t i = 0; i < count; ++i) {
+            WFMath::Vector<2> dir(0,0);
+            if (i != 0) {
+                dir += m_shape.getCorner(i - 1) - m_shape.getCorner(i);
+            }
+            if (i < count - 1) {
+                dir += m_shape.getCorner(i) - m_shape.getCorner(i + 1);
+            }
+            CoordType mag = dir.mag();
+            dir /= mag;
+            // FIXME Actually sort the outline
+        }
+    }
+    return shape_outline;
+}
+
+template<>
 const char * MathShape<LinearCourse, 2>::getType() const
 {
     return "course";
