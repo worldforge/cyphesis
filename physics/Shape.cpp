@@ -30,12 +30,17 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
 using WFMath::CoordType;
+
+using WFMath::AxisBox;
+using WFMath::Ball;
+using WFMath::Line;
 using WFMath::Point;
 using WFMath::Polygon;
+using WFMath::RotBox;
 
 using WFMath::numeric_constants;
 
-template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
+template<int dim> class LinearCourse : public Course<dim, Line>
 {
 };
 
@@ -46,7 +51,7 @@ Shape::Shape()
 //////////////////////////////// Ball /////////////////////////////////
 
 template<>
-Polygon<2> MathShape<WFMath::Ball, 2>::outline(CoordType precision) const
+Polygon<2> MathShape<Ball, 2>::outline(CoordType precision) const
 {
     Polygon<2> shape_outline;
     CoordType radius = m_shape.radius();
@@ -62,13 +67,13 @@ Polygon<2> MathShape<WFMath::Ball, 2>::outline(CoordType precision) const
 }
 
 template<>
-const char * MathShape<WFMath::Ball, 2>::getType() const
+const char * MathShape<Ball, 2>::getType() const
 {
     return "circle";
 }
 
 template<>
-int MathShape<WFMath::Ball, 2>::fromAtlas(const Element & data)
+int MathShape<Ball, 2>::fromAtlas(const Element & data)
 {
     int ret = -1;
     try {
@@ -83,7 +88,7 @@ int MathShape<WFMath::Ball, 2>::fromAtlas(const Element & data)
 }
 
 template<>
-void MathShape<WFMath::Ball, 2>::toAtlas(MapType & data) const
+void MathShape<Ball, 2>::toAtlas(MapType & data) const
 {
     Element e = m_shape.toAtlas();
     if (e.isMap()) {
@@ -103,13 +108,13 @@ const char * MathShape<LinearCourse, 2>::getType() const
 ////////////////////////////// AxisBox ////////////////////////////////
 
 template<>
-const char * MathShape<WFMath::AxisBox, 2>::getType() const
+const char * MathShape<AxisBox, 2>::getType() const
 {
     return "box";
 }
 
 template<>
-int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
+int MathShape<AxisBox, 2>::fromAtlas(const Element & data)
 {
     int ret = -1;
     try {
@@ -131,7 +136,7 @@ int MathShape<WFMath::AxisBox, 2>::fromAtlas(const Element & data)
 }
 
 template<>
-void MathShape<WFMath::AxisBox, 2>::toAtlas(MapType & data) const
+void MathShape<AxisBox, 2>::toAtlas(MapType & data) const
 {
     data["type"] = getType();
     data["points"] = m_shape.toAtlas();
@@ -140,13 +145,13 @@ void MathShape<WFMath::AxisBox, 2>::toAtlas(MapType & data) const
 //////////////////////////////// Line /////////////////////////////////
 
 template<>
-const char * MathShape<WFMath::Line, 2>::getType() const
+const char * MathShape<Line, 2>::getType() const
 {
     return "line";
 }
 
 template<>
-void MathShape<WFMath::Line, 2>::scale(WFMath::CoordType factor)
+void MathShape<Line, 2>::scale(WFMath::CoordType factor)
 {
     for (size_t i = 0; i < m_shape.numCorners(); ++i) {
         Point<2> corner = m_shape.getCorner(i);
@@ -244,13 +249,13 @@ void MathShape<Polygon, 2>::scale(WFMath::CoordType factor)
 /////////////////////////////// RotBox ////////////////////////////////
 
 template<>
-const char * MathShape<WFMath::RotBox, 2>::getType() const
+const char * MathShape<RotBox, 2>::getType() const
 {
     return "rotbox";
 }
 
 template<>
-int MathShape<WFMath::RotBox, 2>::fromAtlas(const Element & data)
+int MathShape<RotBox, 2>::fromAtlas(const Element & data)
 {
     int ret = -1;
     try {
@@ -265,7 +270,7 @@ int MathShape<WFMath::RotBox, 2>::fromAtlas(const Element & data)
 }
 
 template<>
-void MathShape<WFMath::RotBox, 2>::toAtlas(MapType & data) const
+void MathShape<RotBox, 2>::toAtlas(MapType & data) const
 {
     Element e = m_shape.toAtlas();
     if (e.isMap()) {
@@ -287,15 +292,15 @@ Shape * Shape::newFromAtlas(const MapType & data)
     if (type == "polygon") {
         new_shape = new MathShape<Polygon>;
     } else if (type == "line") {
-        new_shape = new MathShape<WFMath::Line>;
+        new_shape = new MathShape<Line>;
     } else if (type == "circle") {
-        new_shape = new MathShape<WFMath::Ball>;
+        new_shape = new MathShape<Ball>;
     } else if (type == "point") {
         new_shape = new MathShape<Point>;
     } else if (type == "rotbox") {
-        new_shape = new MathShape<WFMath::RotBox>;
+        new_shape = new MathShape<RotBox>;
     } else if (type == "box") {
-        new_shape = new MathShape<WFMath::AxisBox>;
+        new_shape = new MathShape<AxisBox>;
     }
     if (new_shape != 0) {
         int res = new_shape->fromAtlas(data);
@@ -307,10 +312,10 @@ Shape * Shape::newFromAtlas(const MapType & data)
     return new_shape;
 }
 
-template class MathShape<WFMath::AxisBox, 2>;
-template class MathShape<WFMath::Ball, 2>;
-template class MathShape<WFMath::Line, 2>;
+template class MathShape<AxisBox, 2>;
+template class MathShape<Ball, 2>;
+template class MathShape<Line, 2>;
 template class MathShape<Point, 2>;
 template class MathShape<Polygon, 2>;
-template class MathShape<WFMath::RotBox, 2>;
+template class MathShape<RotBox, 2>;
 template class MathShape<LinearCourse, 2>;
