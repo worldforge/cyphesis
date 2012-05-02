@@ -151,7 +151,7 @@ const char * MathShape<Line, 2>::getType() const
 }
 
 template<>
-void MathShape<Line, 2>::scale(WFMath::CoordType factor)
+void MathShape<Line, 2>::scale(CoordType factor)
 {
     size_t count = m_shape.numCorners();
     for (size_t i = 0; i < count; ++i) {
@@ -222,9 +222,9 @@ const char * MathShape<Polygon, 2>::getType() const
 }
 
 template<>
-WFMath::CoordType MathShape<Polygon, 2>::area() const
+CoordType MathShape<Polygon, 2>::area() const
 {
-    WFMath::CoordType area = 0;
+    CoordType area = 0;
 
     size_t count = m_shape.numCorners();
     for (size_t i = 0; i < count; ++i) {
@@ -238,7 +238,7 @@ WFMath::CoordType MathShape<Polygon, 2>::area() const
 }
 
 template<>
-void MathShape<Polygon, 2>::scale(WFMath::CoordType factor)
+void MathShape<Polygon, 2>::scale(CoordType factor)
 {
     for (size_t i = 0; i < m_shape.numCorners(); ++i) {
         Point<2> corner = m_shape.getCorner(i);
