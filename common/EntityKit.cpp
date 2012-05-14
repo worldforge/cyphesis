@@ -24,7 +24,10 @@
 
 using Atlas::Message::MapType;
 
-EntityKit::EntityKit() : m_scriptFactory(0), m_createdCount(0)
+EntityKit::EntityKit() : m_scriptFactory(0),
+                         m_parent(0),
+                         m_type(0),
+                         m_createdCount(0)
 {
 }
 
