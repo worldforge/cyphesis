@@ -59,9 +59,7 @@ ClientConnection::ClientConnection() :
 
 ClientConnection::~ClientConnection()
 {
-    if (encoder != NULL) {
-        delete encoder;
-    }
+    delete encoder;
 }
 
 void ClientConnection::operation(const RootOperation & op)
