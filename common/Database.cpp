@@ -267,9 +267,7 @@ Database * Database::instance()
 
 void Database::cleanup()
 {
-    if (m_instance != 0) {
-        delete m_instance;
-    }
+    delete m_instance;
 
     m_instance = 0;
 }
