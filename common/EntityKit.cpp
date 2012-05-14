@@ -30,9 +30,7 @@ EntityKit::EntityKit() : m_scriptFactory(0), m_createdCount(0)
 
 EntityKit::~EntityKit()
 {
-    if (m_scriptFactory != 0) {
-        delete m_scriptFactory;
-    }
+    delete m_scriptFactory;
 }
 
 void EntityKit::addProperties()
