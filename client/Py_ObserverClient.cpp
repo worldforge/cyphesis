@@ -186,9 +186,7 @@ static PyMethodDef ObserverClient_methods[] = {
 
 static void ObserverClient_dealloc(PyObserverClient *self)
 {
-    if (self->m_client != NULL) {
-        delete self->m_client;
-    }
+    delete self->m_client;
     self->ob_type->tp_free((PyObject*)self);
 }
 
