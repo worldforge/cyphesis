@@ -289,15 +289,9 @@ AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
 
 AtlasStreamClient::~AtlasStreamClient()
 {
-    if (m_encoder != NULL) {
-        delete m_encoder;
-    }
-    if (m_codec != NULL) {
-        delete m_codec;
-    }
-    if (m_ios != NULL) {
-        delete m_ios;
-    }
+    delete m_encoder;
+    delete m_codec;
+    delete m_ios;
 }
 
 void AtlasStreamClient::send(const RootOperation & op)
