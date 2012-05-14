@@ -264,12 +264,8 @@ Character::Character(const std::string & id, long intId) :
 Character::~Character()
 {
     delete &m_movement;
-    if (m_mind != 0) {
-        delete m_mind;
-    }
-    if (m_externalMind != 0) {
-        delete m_externalMind;
-    }
+    delete m_mind;
+    delete m_externalMind;
 }
 
 /// \brief Set up a new task as the one being performed by the Character
