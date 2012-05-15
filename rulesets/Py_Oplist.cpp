@@ -52,9 +52,7 @@ static PyMethodDef Oplist_methods[] = {
 
 static void Oplist_dealloc(PyOplist *self)
 {
-    if (self->ops != NULL) {
-        delete self->ops;
-    }
+    delete self->ops;
     self->ob_type->tp_free((PyObject*)self);
 }
 
