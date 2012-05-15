@@ -58,7 +58,7 @@ static void client_callback(AvahiClient * s,
                             AvahiClientState state,
                             void * userdata)
 {
-    CommMDNSPublisher * cmp = (CommMDNSPublisher*)userdata;
+    CommMDNSPublisher * cmp = static_cast<CommMDNSPublisher*>(userdata);
 
     switch (state) {
         case AVAHI_CLIENT_S_RUNNING:
@@ -146,7 +146,7 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
 {
     debug(std::cout << "avahi_watch_new " << fd << " " << callback
                     << std::endl << std::flush;);
-    CommMDNSPublisher * cmp = (CommMDNSPublisher*)api->userdata;
+    CommMDNSPublisher * cmp = static_cast<CommMDNSPublisher*>(api->userdata);
     if (cmp->getFd() != -1) {
         log(ERROR, "Avahi asked for multiple fds. Unable to comply.");
     } else {
@@ -205,7 +205,7 @@ static AvahiTimeout* timeout_new(const AvahiPoll * api,
     debug(std::cout << "avahi_timeout_new("
                     << (tv ? tv->tv_sec : -1)  << "," << callback << ")"
                     << std::endl << std::flush;);
-    CommMDNSPublisher * cmp = (CommMDNSPublisher*)api->userdata;
+    CommMDNSPublisher * cmp = static_cast<CommMDNSPublisher*>(api->userdata);
 
     AvahiTimeout * at = new AvahiTimeout;
     at->m_publisher = cmp;
