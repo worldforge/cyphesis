@@ -66,9 +66,7 @@ static PyMethodDef Message_methods[] = {
 
 static void Message_dealloc(PyMessage *self)
 {
-    if (self->m_obj != NULL) {
-        delete self->m_obj;
-    }
+    delete self->m_obj;
     self->ob_type->tp_free((PyObject*)self);
 }
 
