@@ -60,7 +60,7 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         }
     } else if (val.isPtr()) {
         debug(std::cout << "Assigning pointer" << std::endl << std::flush;);
-        Entity * e = (Entity*)val.Ptr();
+        Entity * e = static_cast<Entity*>(val.Ptr());
         m_data = EntityRef(e);
     }
 }
