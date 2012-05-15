@@ -40,6 +40,7 @@ using Atlas::Objects::Operation::Info;
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr,
                    const std::string & name) : CommClient(svr, name),
+                                               m_port(0),
                                                m_ref(0)
 {
 }
