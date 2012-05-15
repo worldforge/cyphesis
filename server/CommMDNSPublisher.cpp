@@ -256,9 +256,12 @@ static void timeout_free(AvahiTimeout * at)
 CommMDNSPublisher::CommMDNSPublisher(CommServer & svr,
                                      ServerRouting & s) : Idle(svr),
                                                          CommSocket(svr),
+                                                         m_avahiClient(0),
+                                                         m_avahiError(0),
                                                          m_server(s),
                                                          m_immediate(false),
                                                          m_avahiFd(-1),
+                                                         m_avahiWatch(0),
                                                          m_group(0)
 {
 }
