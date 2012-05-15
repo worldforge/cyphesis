@@ -33,36 +33,35 @@
 
 static const bool debug_flag = false;
 
-BulletDomain::BulletDomain()
-{
+BulletDomain::BulletDomain() :
 #ifdef HAVE_BULLET
     // collision configuration contains default setup for memory,
     // collision setup. Advanced users can create their own configuration.
-    m_collisionConfiguration = new btDefaultCollisionConfiguration();
-
+    m_collisionConfiguration(new btDefaultCollisionConfiguration()),
     // use the default collision dispatcher. For parallel processing you can
     // use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
-
+    m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)),
     // btDbvtBroadphase is a good general purpose broadphase.
     // You can also try out btAxis3Sweep.
-    btVector3       worldAabbMin(-1000,-1000,-1000);
-    btVector3       worldAabbMax(1000,1000,1000);
-    m_overlappingPairCache = new btAxisSweep3(worldAabbMin, worldAabbMax);
-
+    m_overlappingPairCache(new btAxisSweep3(btVector3(-1000,-1000,-1000),
+                                            btVector3(1000,1000,1000))),
     // the default constraint solver. For parallel processing you can use a
     // different solver (see Extras/BulletMultiThreaded)
     // No need for constraint solver without dynamics
     // btSequentialImpulseConstraintSolver* solver =
     //       new btSequentialImpulseConstraintSolver;
-
-    m_collisionWorld = new btCollisionWorld(m_dispatcher,
-                                            m_overlappingPairCache,
-                                            m_collisionConfiguration);
-
+    m_collisionWorld(new btCollisionWorld(m_dispatcher,
+                                          m_overlappingPairCache,
+                                          m_collisionConfiguration))
+#else // HAVE_BULLET
+    m_collisionConfiguration(0),
+    m_dispatcher(0),
+    m_overlappingPairCache(0),
+    m_collisionWorld(0)
+#endif // HAVE_BULLET
+{
     // No gravity in collision world
     // collisionWorld->setGravity(btVector3(0,-10,0));
-#endif // HAVE_BULLET
 }
 
 BulletDomain::~BulletDomain()
