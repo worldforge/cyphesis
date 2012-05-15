@@ -90,7 +90,7 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
                 m_data[key] = EntityRef(e);
             }
         } else if (item.isPtr()) {
-            Entity * e = (Entity*)item.Ptr();
+            Entity * e = static_cast<Entity*>(item.Ptr());
             assert(e != 0);
             m_data[key] = EntityRef(e);
         } else {
