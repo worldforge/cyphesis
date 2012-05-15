@@ -58,18 +58,10 @@ CommClient::CommClient(CommServer & svr, const std::string & name) :
 
 CommClient::~CommClient()
 {
-    if (m_connection != NULL) {
-        delete m_connection;
-    }
-    if (m_negotiate != NULL) {
-        delete m_negotiate;
-    }
-    if (m_encoder != NULL) {
-        delete m_encoder;
-    }
-    if (m_codec != NULL) {
-        delete m_codec;
-    }
+    delete m_connection;
+    delete m_negotiate;
+    delete m_encoder;
+    delete m_codec;
     m_clientIos.close();
 }
 
