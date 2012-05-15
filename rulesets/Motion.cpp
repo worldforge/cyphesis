@@ -36,7 +36,8 @@ using String::compose;
 static const bool debug_flag = false;
 
 Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false)
+                                m_collision(false), m_collEntity(0),
+                                m_collisionTime(0.f)
 {
 }
 
