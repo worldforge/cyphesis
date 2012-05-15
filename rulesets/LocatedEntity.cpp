@@ -73,9 +73,7 @@ LocatedEntity::~LocatedEntity()
     if (m_location.m_loc != 0) {
         m_location.m_loc->decRef();
     }
-    if (m_contains != 0) {
-        delete m_contains;
-    }
+    delete m_contains;
 }
 
 /// \brief Check if this entity has a property with the given name
