@@ -52,9 +52,8 @@ static const bool debug_flag = false;
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommUnixListener::CommUnixListener(CommServer & svr, CommClientKit & kit) :
-                  CommStreamListener(svr, kit)
+                  CommStreamListener(svr, kit, &m_unixListener)
 {
-    m_listener = &m_unixListener;
 }
 
 CommUnixListener::~CommUnixListener()

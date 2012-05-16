@@ -40,7 +40,9 @@ class CommStreamListener : public CommSocket {
     virtual int create(int fd, const char * address);
 
   public:
-    explicit CommStreamListener(CommServer & svr, CommClientKit & kit);
+    explicit CommStreamListener(CommServer & svr,
+                                CommClientKit & kit,
+                                basic_socket_server * listener);
     virtual ~CommStreamListener();
 
     int getFd() const;

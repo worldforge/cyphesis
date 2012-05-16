@@ -43,9 +43,8 @@ static const bool debug_flag = false;
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommTCPListener::CommTCPListener(CommServer & svr, CommClientKit & kit) :
-                 CommStreamListener(svr, kit)
+                 CommStreamListener(svr, kit, &m_tcpListener)
 {
-    m_listener = &m_tcpListener;
 }
 
 CommTCPListener::~CommTCPListener()

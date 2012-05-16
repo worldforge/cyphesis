@@ -26,8 +26,10 @@
 /// \brief Constructor for stream listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommStreamListener::CommStreamListener(CommServer & svr, CommClientKit & kit) :
-                    CommSocket(svr), m_clientKit(kit)
+CommStreamListener::CommStreamListener(CommServer & svr,
+                                       CommClientKit & kit,
+                                       basic_socket_server * listener) :
+                    CommSocket(svr), m_listener(listener), m_clientKit(kit)
 {
 }
 
