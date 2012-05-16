@@ -116,15 +116,9 @@ WorldDumper::WorldDumper(const std::string & accountId) : m_account(accountId),
 
 WorldDumper::~WorldDumper()
 {
-    if (m_encoder != 0) {
-        delete m_encoder;
-    }
-    if (m_formatter != 0) {
-        delete m_formatter;
-    }
-    if (m_codec != 0) {
-        delete m_codec;
-    }
+    delete m_encoder;
+    delete m_formatter;
+    delete m_codec;
 }
 
 void WorldDumper::setup(const std::string & arg, OpVector & res)
