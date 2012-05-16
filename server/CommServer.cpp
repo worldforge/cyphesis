@@ -148,7 +148,7 @@ void CommServer::poll(bool busy)
 
     for (int i = 0; i < rval; ++i) {
         struct epoll_event & event = events[i];
-        CommSocket * cs = (CommSocket *)event.data.ptr;
+        CommSocket * cs = static_cast<CommSocket *>(event.data.ptr);
         if (event.events & EPOLLHUP) {
             removeSocket(cs);
         } else {
