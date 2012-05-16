@@ -66,7 +66,9 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent)
 }
 
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
-                                         m_connection(0), m_entity(e)
+                                         m_connection(0),
+                                         m_entity(e),
+                                         m_lossTime(0.)
 {
 }
 
