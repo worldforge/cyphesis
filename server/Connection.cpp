@@ -511,6 +511,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
 
 void Connection::disconnectAccount(Account * ac, RouterMap::iterator I)
 {
+    assert(!m_obsolete);
     m_objects.erase(I);
     EntityDict::const_iterator J = ac->getCharacters().begin();
     EntityDict::const_iterator Jend = ac->getCharacters().end();
