@@ -140,13 +140,7 @@ void Connection::disconnectObject(Router * obj,
         cr->m_connection = 0;
         Account * ac = dynamic_cast<Account *>(cr);
         if (ac != 0) {
-            m_server.m_lobby.delAccount(ac);
-            logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
-                                             ac->getId(), ac->username(),
-                                             event));
-            if (!m_obsolete) {
-                disconnectAccount(ac, I);
-            }
+            disconnectAccount(ac, I, event);
         }
         return;
     }
@@ -510,9 +504,17 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     res.push_back(info);
 }
 
-void Connection::disconnectAccount(Account * ac, RouterMap::iterator I)
+void Connection::disconnectAccount(Account * ac,
+                                   RouterMap::iterator I,
+                                   const std::string & event)
 {
-    assert(!m_obsolete);
+    m_server.m_lobby.delAccount(ac);
+    logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
+                                     ac->getId(), ac->username(),
+                                     event));
+    if (m_obsolete) {
+        return;
+    }
     m_objects.erase(I);
     EntityDict::const_iterator J = ac->getCharacters().begin();
     EntityDict::const_iterator Jend = ac->getCharacters().end();
