@@ -80,9 +80,9 @@ Connection::~Connection()
     
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
-    RouterMap::const_iterator Iend = m_objects.end();
-    for (RouterMap::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        disconnectObject(I->second, "Disconnect");
+    RouterMap::iterator Iend = m_objects.end();
+    for (RouterMap::iterator I = m_objects.begin(); I != Iend; ++I) {
+        disconnectObject(I->second, I, "Disconnect");
     }
 
     m_server.decClients();
@@ -131,7 +131,9 @@ Account * Connection::addAccount(const std::string & type,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::disconnectObject(Router * obj, const std::string & event)
+Account * Connection::disconnectObject(Router * obj,
+                                       RouterMap::iterator I,
+                                       const std::string & event)
 {
     ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(obj);
     if (cr != 0) {
@@ -142,6 +144,9 @@ Account * Connection::disconnectObject(Router * obj, const std::string & event)
             logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
                                              ac->getId(), ac->username(),
                                              event));
+            if (!m_obsolete) {
+                disconnectAccount(ac, I);
+            }
             return ac;
         }
         return 0;
@@ -496,10 +501,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    Account * ac = disconnectObject(I->second, "Logout");
-    if (ac != 0) {
-        disconnectAccount(ac, I);
-    }
+    Account * ac = disconnectObject(I->second, I, "Logout");
 
     Info info;
     info->setArgs1(op);

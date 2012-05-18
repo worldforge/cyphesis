@@ -80,8 +80,8 @@ class TestConnection : public Connection {
         return addAccount("player", username, password);
     }
 
-    Account * test_disconnectObject(Router * obj) {
-        return disconnectObject(obj, "test_event");
+    Account * test_disconnectObject(Router * obj, RouterMap::iterator I) {
+        return disconnectObject(obj, I, "test_event");
     }
 
     size_t numObjects() const {
@@ -116,7 +116,7 @@ int main()
     Account * ac = tc->testAddAccount("bob", "foo");
     assert(ac != 0);
 
-    ac = tc->test_disconnectObject(ac);
+    ac = tc->test_disconnectObject(ac, tc->objects().find(ac->getIntId()));
     assert(ac != 0);
     tc->removeObject(ac);
 

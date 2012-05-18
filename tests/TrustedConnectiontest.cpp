@@ -505,7 +505,9 @@ Account * Connection::addAccount(const std::string & type,
     return 0;
 }
 
-Account * Connection::disconnectObject(Router * obj, const std::string & event)
+Account * Connection::disconnectObject(Router * obj,
+                                       RouterMap::iterator I,
+                                       const std::string & event)
 {
     return 0;
 }
