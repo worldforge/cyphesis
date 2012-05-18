@@ -131,9 +131,9 @@ Account * Connection::addAccount(const std::string & type,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::disconnectObject(Router * obj,
-                                       RouterMap::iterator I,
-                                       const std::string & event)
+void Connection::disconnectObject(Router * obj,
+                                  RouterMap::iterator I,
+                                  const std::string & event)
 {
     ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(obj);
     if (cr != 0) {
@@ -147,9 +147,8 @@ Account * Connection::disconnectObject(Router * obj,
             if (!m_obsolete) {
                 disconnectAccount(ac, I);
             }
-            return ac;
         }
-        return 0;
+        return;
     }
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != 0) {
@@ -191,7 +190,7 @@ Account * Connection::disconnectObject(Router * obj,
             }
         }
     }
-    return 0;
+    return;
 }
 
 void Connection::addEntity(Entity * ent)
@@ -501,7 +500,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    Account * ac = disconnectObject(I->second, I, "Logout");
+    disconnectObject(I->second, I, "Logout");
 
     Info info;
     info->setArgs1(op);
