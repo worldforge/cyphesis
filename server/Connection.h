@@ -55,8 +55,7 @@ class Connection : public Router, virtual public sigc::trackable {
     Account * addAccount(const std::string & account,
                          const std::string & username,
                          const std::string & password);
-    void disconnectObject(Router *,
-                          RouterMap::iterator,
+    void disconnectObject(RouterMap::iterator,
                           const std::string & event);
     void disconnectAccount(Account *,
                            RouterMap::iterator,
