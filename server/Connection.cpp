@@ -498,47 +498,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     }
     Account * ac = disconnectObject(I->second, "Logout");
     if (ac != 0) {
-        m_objects.erase(I);
-        EntityDict::const_iterator J = ac->getCharacters().begin();
-        EntityDict::const_iterator Jend = ac->getCharacters().end();
-        for (; J != Jend; ++J) {
-            Entity * chr = J->second;
-            Character * character = dynamic_cast<Character *>(chr);
-            if (character != 0) {
-                if (character->m_externalMind != 0) {
-                    ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
-                    if (em == 0) {
-                        log(ERROR, String::compose("Character %1(%2) has "
-                                                   "external mind object which "
-                                                   "is not an ExternalMind",
-                                                   chr->getType(),
-                                                   chr->getId()));
-                    } else {
-                        if (!em->isConnected()) {
-                            log(ERROR,
-                                String::compose("Connection(%1) has found a "
-                                                "character in its dictionery "
-                                                "which is not connected.",
-                                                getId()));
-                            removeObject(chr->getIntId());
-                        } else if (!em->isConnectedTo(this)) {
-                            log(ERROR,
-                                String::compose("Connection(%1) has found a "
-                                                "character in its dictionery "
-                                                "which is connected to another "
-                                                "Connection(%2)", getId(),
-                                                em->connectionId()));
-                            removeObject(chr->getIntId());
-                        }
-                    }
-                } else {
-                    removeObject(chr->getIntId());
-                }
-            } else {
-                // Non character entity
-                removeObject(chr->getIntId());
-            }
-        }
+        disconnectAccount(ac, I);
     }
 
     Info info;
@@ -547,6 +507,51 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         info->setRefno(op->getSerialno());
     }
     res.push_back(info);
+}
+
+void Connection::disconnectAccount(Account * ac, RouterMap::iterator I)
+{
+    m_objects.erase(I);
+    EntityDict::const_iterator J = ac->getCharacters().begin();
+    EntityDict::const_iterator Jend = ac->getCharacters().end();
+    for (; J != Jend; ++J) {
+        Entity * chr = J->second;
+        Character * character = dynamic_cast<Character *>(chr);
+        if (character != 0) {
+            if (character->m_externalMind != 0) {
+                ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
+                if (em == 0) {
+                    log(ERROR, String::compose("Character %1(%2) has "
+                                               "external mind object which "
+                                               "is not an ExternalMind",
+                                               chr->getType(),
+                                               chr->getId()));
+                } else {
+                    if (!em->isConnected()) {
+                        log(ERROR,
+                            String::compose("Connection(%1) has found a "
+                                            "character in its dictionery "
+                                            "which is not connected.",
+                                            getId()));
+                        removeObject(chr->getIntId());
+                    } else if (!em->isConnectedTo(this)) {
+                        log(ERROR,
+                            String::compose("Connection(%1) has found a "
+                                            "character in its dictionery "
+                                            "which is connected to another "
+                                            "Connection(%2)", getId(),
+                                            em->connectionId()));
+                        removeObject(chr->getIntId());
+                    }
+                }
+            } else {
+                removeObject(chr->getIntId());
+            }
+        } else {
+            // Non character entity
+            removeObject(chr->getIntId());
+        }
+    }
 }
 
 void Connection::GetOperation(const Operation & op, OpVector & res)
