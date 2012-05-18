@@ -52,8 +52,8 @@ void Juncture::onPeerLost()
 
         Error error;
         error->setArgs1(error_arg);
-        if (m_socket->getRef() != 0L) {
-            error->setRefno(m_socket->getRef());
+        if (m_connectRef != 0L) {
+            error->setRefno(m_connectRef);
             m_connection->m_commClient.send(error);
         }
     }
@@ -68,11 +68,11 @@ void Juncture::onPeerReplied(const Operation & op)
     }
 }
 
-Juncture::Juncture(Connection * c,
-                   const std::string & id, long iid) :
+Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectedRouter(id, iid, c),
-                                                       m_socket(0),
-                                                       m_peer(0)
+          m_socket(0),
+          m_peer(0),
+          m_connectRef(0)
 {
 }
 
@@ -188,7 +188,8 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
                             m_connection->m_server.getName());
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
-    if (m_socket->connect(hostname, port, op->getSerialno()) != 0) {
+    m_connectRef = op->getSerialno();
+    if (m_socket->connect(hostname, port, m_connectRef) != 0) {
         error(op, "Connection failed", res, getId());
         delete m_socket;
         m_socket = 0;

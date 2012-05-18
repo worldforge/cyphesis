@@ -37,6 +37,7 @@ class Juncture : public ConnectedRouter, virtual public sigc::trackable {
   protected:
     CommPeer * m_socket;
     Peer * m_peer;
+    long m_connectRef;
 
     void onPeerLost();
     void onPeerReplied(const Operation &);
