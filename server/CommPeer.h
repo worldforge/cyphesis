@@ -22,6 +22,8 @@
 
 #include "CommClient.h"
 
+#include <sigc++/signal.h>
+
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {
@@ -65,6 +67,8 @@ class CommPeer : public CommClient {
     long getRef() const {
         return m_ref;
     }
+
+    sigc::signal<void> connected;
 };
 
 #endif // SERVER_COMM_PEER_H

@@ -97,6 +97,8 @@ int CommPeer::read()
         Atlas::Negotiate * old_neg = m_negotiate;
         int ret = CommClient::read();
         if (old_neg != m_negotiate) {
+            connected.emit();
+
             Anonymous info_arg;
             m_connection->addToEntity(info_arg);
 
