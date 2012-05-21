@@ -71,8 +71,8 @@ void Juncture::onPeerLost()
         error->setArgs1(error_arg);
         if (m_connectRef != 0L) {
             error->setRefno(m_connectRef);
-            m_connection->send(error);
         }
+        m_connection->send(error);
     }
     m_peer = 0;
     m_socket = 0;
