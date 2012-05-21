@@ -44,6 +44,11 @@ using Atlas::Objects::Operation::Login;
 
 static const bool debug_flag = false;
 
+void Juncture::onPeerConnected()
+{
+    log(INFO, String::compose("Juncture onPeerC succeeded %1", getId()));
+}
+
 void Juncture::onPeerLost()
 {
     if (m_connection != 0) {
@@ -202,6 +207,8 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     m_connection->m_commClient.m_commServer.addSocket(m_socket);
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
 
+    m_socket->connected.connect(sigc::mem_fun(this,
+                                              &Juncture::onPeerConnected));
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
     m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
 }
