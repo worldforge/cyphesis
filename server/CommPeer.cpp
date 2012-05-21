@@ -40,8 +40,7 @@ using Atlas::Objects::Operation::Info;
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr,
                    const std::string & name) : CommClient(svr, name),
-                                               m_port(0),
-                                               m_ref(0)
+                                               m_port(0)
 {
 }
 
@@ -58,7 +57,6 @@ int CommPeer::connect(const std::string & host, int port, long ref)
 {
     m_host = host;
     m_port = port;
-    m_ref = ref;
     m_clientIos.open(host, port, true);
     if (m_clientIos.is_open()) {
         return 0;

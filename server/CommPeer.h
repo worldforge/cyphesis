@@ -32,8 +32,6 @@ class CommPeer : public CommClient {
     std::string m_host;
     /// \brief The port that this connection is on
     int m_port;
-    /// \brief Serial number for referring to the connection attempt
-    long m_ref;
 
   public:
     CommPeer(CommServer & svr, const std::string &);
@@ -59,13 +57,6 @@ class CommPeer : public CommClient {
     /// @return The port the peer is connected on
     int getPort() const {
         return m_port;
-    }
-
-    /// \brief Accessor for connect reference
-    ///
-    /// @return The connect reference
-    long getRef() const {
-        return m_ref;
     }
 
     sigc::signal<void> connected;
