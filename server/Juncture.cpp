@@ -59,6 +59,7 @@ void Juncture::onPeerConnected()
 
         m_connection->send(info);
     }
+    m_connectRef = 0L;
 }
 
 void Juncture::onPeerLost()
@@ -76,6 +77,7 @@ void Juncture::onPeerLost()
     }
     m_peer = 0;
     m_socket = 0;
+    m_connectRef = 0L;
 }
 
 void Juncture::onPeerReplied(const Operation & op)
@@ -212,7 +214,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
         m_socket = 0;
         return;
     }
-    log(INFO, String::compose("Connection succeeded %1", getId()));
+    log(INFO, String::compose("Connection in progress %1", getId()));
     m_peer = new Peer(*m_socket, m_connection->m_server,
                       hostname, getId(), getIntId());
     m_socket->setup(m_peer);
