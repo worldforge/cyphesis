@@ -1,3 +1,6 @@
+Bug: Not listening for IPv6 any more
+Bug: Connecting doesn't fail over
+
 Why isn't ExternalMind a ConnectedRouter
 
 Re-factor login code so Session is the unique class rather than Account.
