@@ -863,6 +863,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
                 Login m;
                 m->setArgs1(cmap);
                 m->setFrom(m_juncture_id);
+                m->setSerialno(newSerialNo());
 
                 send(m);
             }
