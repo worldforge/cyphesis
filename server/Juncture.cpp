@@ -71,7 +71,7 @@ void Juncture::onPeerLost()
         error->setArgs1(error_arg);
         if (m_connectRef != 0L) {
             error->setRefno(m_connectRef);
-            m_connection->m_commClient.send(error);
+            m_connection->send(error);
         }
     }
     m_peer = 0;
@@ -81,7 +81,7 @@ void Juncture::onPeerLost()
 void Juncture::onPeerReplied(const Operation & op)
 {
     if (m_connection != 0) {
-        m_connection->m_commClient.send(op);
+        m_connection->send(op);
     }
 }
 
