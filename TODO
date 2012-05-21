@@ -1,3 +1,5 @@
+Improve Interactive to use serialno for responses
+
 Bug: Not listening for IPv6 any more
 Bug: Connecting doesn't fail over
 
