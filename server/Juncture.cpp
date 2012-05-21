@@ -47,6 +47,18 @@ static const bool debug_flag = false;
 void Juncture::onPeerConnected()
 {
     log(INFO, String::compose("Juncture onPeerC succeeded %1", getId()));
+    if (m_connection != 0) {
+        Anonymous info_arg;
+        m_peer->addToEntity(info_arg);
+
+        Info info;
+        info->setArgs1(info_arg);
+        if (m_connectRef != 0L) {
+            info->setRefno(m_connectRef);
+        }
+
+        m_connection->send(info);
+    }
 }
 
 void Juncture::onPeerLost()

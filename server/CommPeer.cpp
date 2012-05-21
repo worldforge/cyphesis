@@ -98,18 +98,6 @@ int CommPeer::read()
         int ret = CommClient::read();
         if (old_neg != m_negotiate) {
             connected.emit();
-
-            Anonymous info_arg;
-            m_connection->addToEntity(info_arg);
-
-            Info info;
-            if (m_ref) {
-                info->setRefno(m_ref);
-            }
-            info->setArgs1(info_arg);
-
-            OpVector res;
-            m_connection->operation(info, res);
         }
         return ret;
     }

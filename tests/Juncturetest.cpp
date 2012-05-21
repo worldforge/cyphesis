@@ -680,6 +680,9 @@ Connection::~Connection()
 {
 }
 
+void Connection::send(const Operation & op) const
+{
+}
 
 void Connection::operation(const Operation &, OpVector &)
 {
