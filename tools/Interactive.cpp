@@ -370,6 +370,7 @@ void Interactive::soundArrived(const Operation & op)
 }
 
 sigc::signal<void, char *> CmdLine;
+sigc::signal<void, int, int> ContextSwitch;
 
 void Interactive::gotCommand(char * cmd)
 {
@@ -403,6 +404,11 @@ void Interactive::runCommand(char * cmd)
     exec(cmd, arg);
 }
 
+void Interactive::switchContext(int, int)
+{
+    updatePrompt();
+}
+
 int completion_iterator = 0;
 
 char * completion_generator(const char * text, int state)
@@ -419,12 +425,22 @@ char * completion_generator(const char * text, int state)
     return 0;
 }
 
+static int context_switch(int a, int b)
+{
+    ContextSwitch.emit(a, b);
+    return 0;
+}
+
 void Interactive::loop()
 {
+    if (rl_bind_keyseq("`", &context_switch) != 0) {
+        std::cout << "BINDING FALED" << std::endl;
+    }
     rl_callback_handler_install(m_prompt.c_str(),
                                 &Interactive::gotCommand);
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
+    ContextSwitch.connect(sigc::mem_fun(this, &Interactive::switchContext));
     while (!m_exit_flag) {
         select();
     };

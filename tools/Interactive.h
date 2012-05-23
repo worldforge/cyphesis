@@ -58,6 +58,7 @@ class Interactive : public AdminClient,
     void select(bool rewrite_prompt = true);
     void updatePrompt();
     void runCommand(char *);
+    void switchContext(int, int);
 
     static void gotCommand(char *);
 };
