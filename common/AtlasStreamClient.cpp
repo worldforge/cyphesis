@@ -53,6 +53,35 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
+AccountContext::AccountContext(const std::string & u) : m_username(u),
+                                                        m_refNo(0L)
+{
+}
+
+bool AccountContext::accept(const RootOperation& op) const
+{
+    std::cout << "Checking account context to see if it matches"
+              << std::endl << std::flush;
+    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
+        return true;
+    }
+    return false;
+}
+
+int AccountContext::dispatch(const RootOperation & op)
+{
+    std::cout << "Dispatching with account context to see if it matches"
+              << std::endl << std::flush;
+    assert(m_refNo != 0L);
+    m_refNo = 0L;
+    return 0;
+}
+
+std::string AccountContext::repr() const
+{
+    return m_username;
+}
+
 int AtlasStreamClient::authenticateLocal()
 {
 #ifdef HAVE_SYS_UN_H
@@ -189,6 +218,15 @@ void AtlasStreamClient::objectArrived(const Root & obj)
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
+    ContextMap::const_iterator J = m_contexts.begin();
+    ContextMap::const_iterator Jend = m_contexts.end();
+    for (; J != Jend; ++J) {
+        ObjectContext & c = *J->second;
+        if (c.accept(op)) {
+            c.dispatch(op);
+        }
+    }
+
     if (m_currentTask != 0) {
         OpVector res;
         m_currentTask->operation(op, res);
@@ -412,6 +450,8 @@ int AtlasStreamClient::waitForLoginResponse()
               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
                accountId = m_infoReply->getId();
+               m_contexts.insert(
+                     std::make_pair(accountId, new AccountContext(m_username)));
                if (!m_infoReply->getParents().empty()) {
                    accountType = m_infoReply->getParents().front();
                }
