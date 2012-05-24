@@ -377,25 +377,7 @@ int AtlasStreamClient::login(const std::string & username,
  
     send(l);
 
-    for (int i = 0; i < 10; ++i) {
-       if (poll(0, 100000) != 0) {
-           return -1;
-       }
-       if (reply_flag && !error_flag) {
-           if (m_infoReply->isDefaultId()) {
-               std::cerr << "Malformed reply" << std::endl << std::flush;
-           } else {
-               accountId = m_infoReply->getId();
-               if (!m_infoReply->getParents().empty()) {
-                   accountType = m_infoReply->getParents().front();
-               }
-               return 0;
-           }
-           reply_flag = false;
-       }
-    }
-
-    return -1;
+    return waitForLoginResponse();
 }
 
 int AtlasStreamClient::create(const std::string & type,
@@ -416,6 +398,11 @@ int AtlasStreamClient::create(const std::string & type,
 
     send(c);
 
+    return waitForLoginResponse();
+}
+
+int AtlasStreamClient::waitForLoginResponse()
+{
     for (int i = 0; i < 10; ++i) {
        if (poll(0, 100000) != 0) {
            return -1;
@@ -424,7 +411,6 @@ int AtlasStreamClient::create(const std::string & type,
            if (m_infoReply->isDefaultId()) {
               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
-               std::cerr << "Got it" << std::endl << std::flush;
                accountId = m_infoReply->getId();
                if (!m_infoReply->getParents().empty()) {
                    accountType = m_infoReply->getParents().front();
