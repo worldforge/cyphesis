@@ -43,6 +43,7 @@
 
 const std::string get_hostname();
 int socket_linger(SOCKET_TYPE, int);
+int socket_client_send_credentials(int fd);
 
 unsigned int security_init();
 unsigned int security_check();
