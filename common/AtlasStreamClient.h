@@ -93,7 +93,6 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     ContextMap m_contexts;
 
     // void objectArrived(const Atlas::Objects::Root &);
-    int authenticateLocal();
     int waitForLoginResponse();
     int negotiate();
     void output(const Atlas::Message::Element & item, int depth = 0) const;

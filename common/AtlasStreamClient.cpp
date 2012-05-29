@@ -81,11 +81,6 @@ std::string AccountContext::repr() const
     return m_username;
 }
 
-int AtlasStreamClient::authenticateLocal()
-{
-    return socket_client_send_credentials(m_fd);
-}
-
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
     output_element(std::cout, item, depth);
@@ -274,7 +269,7 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 
     m_fd = m_ios->getSocket();
 
-    authenticateLocal();
+    socket_client_send_credentials(m_fd);
 
     socket_linger(m_fd, 10);
 
