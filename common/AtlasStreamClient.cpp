@@ -24,6 +24,8 @@
 #include "common/AtlasStreamClient.h"
 #include "common/ClientTask.h"
 
+#include "common/debug.h"
+
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
@@ -149,45 +151,7 @@ int AtlasStreamClient::linger()
 
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
-    switch (item.getType()) {
-        case Element::TYPE_INT:
-            std::cout << item.Int();
-            break;
-        case Element::TYPE_FLOAT:
-            std::cout << item.Float();
-            break;
-        case Element::TYPE_STRING:
-            std::cout << "\"" << item.String() << "\"";
-            break;
-        case Element::TYPE_LIST:
-            {
-                std::cout << "[ ";
-                ListType::const_iterator I = item.List().begin();
-                ListType::const_iterator Iend = item.List().end();
-                for(; I != Iend; ++I) {
-                    output(*I, depth);
-                    std::cout << " ";
-                }
-                std::cout << "]";
-            }
-            break;
-        case Element::TYPE_MAP:
-            {
-                std::cout << "{" << std::endl << std::flush;
-                MapType::const_iterator I = item.Map().begin();
-                MapType::const_iterator Iend = item.Map().end();
-                for(; I != Iend; ++I) {
-                    std::cout << std::string((depth + 1) * spacing(), ' ') << I->first << ": ";
-                    output(I->second, depth + 1);
-                    std::cout << std::endl;
-                }
-                std::cout << std::string(depth * spacing(), ' ') << "}";
-            }
-            break;
-        default:
-            std::cout << "(\?\?\?)";
-            break;
-    }
+    output_element(std::cout, item, depth);
 }
 
 /// \brief Function call from the base class when an object arrives from the
