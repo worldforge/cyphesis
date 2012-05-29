@@ -42,7 +42,7 @@
 #include <string>
 
 const std::string get_hostname();
-int socket_linger(SOCKET_TYPE);
+int socket_linger(SOCKET_TYPE, int);
 
 unsigned int security_init();
 unsigned int security_check();

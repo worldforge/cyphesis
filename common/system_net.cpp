@@ -60,12 +60,12 @@ const std::string get_hostname()
 #endif // HAVE_UNAME
 }
 
-int socket_linger(SOCKET_TYPE fd)
+int socket_linger(SOCKET_TYPE fd, int time)
 {
     struct linger {
         int   l_onoff;
         int   l_linger;
-    } listenLinger = { 1, 10 };
+    } listenLinger = { 1, time };
     ::setsockopt(fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
                                               sizeof(listenLinger));
     return 0;

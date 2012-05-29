@@ -193,7 +193,7 @@ void output_element(std::ostream & out, const Element & item, int depth)
 {
 }
 
-int socket_linger(SOCKET_TYPE fd)
+int socket_linger(SOCKET_TYPE, int)
 {
     return 0;
 }
