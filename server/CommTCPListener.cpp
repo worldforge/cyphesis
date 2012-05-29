@@ -26,6 +26,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/system.h"
 
 #include <iostream>
 
@@ -104,17 +105,15 @@ int CommTCPListener::setup(int port)
     if (!m_tcpListener.is_open()) {
         return -1;
     }
+
     // Set a linger time of 0 seconds, so that the socket is got rid
     // of quickly.
-    int socket = m_tcpListener.getSocket();
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 0 };
-    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                sizeof(listenLinger));
+    int fd = m_tcpListener.getSocket();
+    socket_linger(fd, 0);
+
     // Ensure the address can be reused once we are done with it.
     int flag = 1;
-    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
+    ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
+
     return 0;
 }
