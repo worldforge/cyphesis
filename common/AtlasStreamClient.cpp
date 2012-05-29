@@ -235,9 +235,15 @@ AtlasStreamClient::~AtlasStreamClient()
 
 void AtlasStreamClient::send(const RootOperation & op)
 {
-    if (m_encoder == 0 || m_ios == 0) {
+    if (m_encoder == 0) {
         return;
     }
+
+    // There is no way this should ever be null if m_encoder is
+    // not null, as m_encoder is set following negotiation, and that
+    // can't happen without a socket stream
+    assert(m_ios != 0);
+
     reply_flag = false;
     error_flag = false;
     m_encoder->streamObjectsMessage(op);
@@ -280,6 +286,8 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 
 int AtlasStreamClient::negotiate()
 {
+    assert(m_ios != 0);
+
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", *m_ios);
 
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
