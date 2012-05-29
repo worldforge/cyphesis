@@ -96,7 +96,6 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int authenticateLocal();
     int waitForLoginResponse();
     int negotiate();
-    int linger();
     void output(const Atlas::Message::Element & item, int depth = 0) const;
 
     virtual void objectArrived(const Atlas::Objects::Root &);

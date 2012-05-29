@@ -95,6 +95,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/ClientTask.o \
               $(top_builddir)/common/AtlasFileLoader.o \
               $(top_builddir)/common/system_uid.o \
+              $(top_builddir)/common/system_net.o \
               $(top_builddir)/common/id.o \
               $(top_builddir)/common/utils.o \
               $(top_builddir)/common/debug.o \
@@ -125,6 +126,7 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/system_prefix.o \
                    $(top_builddir)/common/system_uid.o \
+                   $(top_builddir)/common/system_net.o \
                    $(top_builddir)/common/binreloc.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/log.o \

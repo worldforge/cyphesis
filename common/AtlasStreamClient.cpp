@@ -23,6 +23,7 @@
 
 #include "common/AtlasStreamClient.h"
 #include "common/ClientTask.h"
+#include "common/system.h"
 
 #include "common/debug.h"
 
@@ -135,18 +136,6 @@ int AtlasStreamClient::authenticateLocal()
 #else // HAVE_SYS_UN_H
     return -1;
 #endif // HAVE_SYS_UN_H
-}
-
-int AtlasStreamClient::linger()
-{
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 10 };
-    ::setsockopt(m_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                   sizeof(listenLinger));
-    // Ensure the address can be reused once we are done with it.
-    return 0;
 }
 
 void AtlasStreamClient::output(const Element & item, int depth) const
@@ -315,7 +304,7 @@ int AtlasStreamClient::connect(const std::string & host, int port)
     }
     m_fd = m_ios->getSocket();
 
-    linger();
+    socket_linger(m_fd);
 
     return negotiate();
 
@@ -333,7 +322,7 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 
     authenticateLocal();
 
-    linger();
+    socket_linger(m_fd);
 
     return negotiate();
 #else // HAVE_SYS_UN_H

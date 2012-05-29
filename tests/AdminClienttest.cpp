@@ -312,11 +312,6 @@ int AtlasStreamClient::authenticateLocal()
     return 0;
 }
 
-int AtlasStreamClient::linger()
-{
-    return 0;
-}
-
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
 }

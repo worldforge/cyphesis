@@ -26,7 +26,6 @@
 
 #include "common/AtlasStreamClient.h"
 #include "common/ClientTask.h"
-#include "common/debug.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -185,10 +184,18 @@ int main()
 
 // stubs
 
+#include "common/debug.h"
+#include "common/system.h"
+
 using Atlas::Message::Element;
 
 void output_element(std::ostream & out, const Element & item, int depth)
 {
+}
+
+int socket_linger(SOCKET_TYPE fd)
+{
+    return 0;
 }
 
 ClientTask::ClientTask() : m_complete(false)

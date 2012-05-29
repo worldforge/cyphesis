@@ -59,3 +59,14 @@ const std::string get_hostname()
     return std::string(host_ident.nodename);
 #endif // HAVE_UNAME
 }
+
+int socket_linger(SOCKET_TYPE fd)
+{
+    struct linger {
+        int   l_onoff;
+        int   l_linger;
+    } listenLinger = { 1, 10 };
+    ::setsockopt(fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
+                                              sizeof(listenLinger));
+    return 0;
+}
