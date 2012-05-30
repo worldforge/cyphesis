@@ -26,29 +26,9 @@
 
 #include <sigc++/trackable.h>
 
-#include <boost/enable_shared_from_this.hpp>
+#include <boost/shared_ptr.hpp>
 
-class ObjectContext : public boost::enable_shared_from_this<ObjectContext>
-{
-  public:
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const = 0;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&) = 0;
-    virtual std::string repr() const = 0;
-
-};
-
-class AccountContext : public ObjectContext
-{
-  protected:
-    const std::string m_username;
-    std::string m_id;
-    long m_refNo;
-  public:
-    AccountContext(const std::string & u);
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
-    virtual std::string repr() const;
-};
+class ObjectContext;
 
 typedef std::map<std::string, boost::shared_ptr<ObjectContext> > ContextMap;
 
