@@ -158,6 +158,19 @@ Interactive::~Interactive()
 {
 }
 
+void Interactive::operation(const Operation & op)
+{
+    ContextMap::const_iterator J = m_contexts.begin();
+    ContextMap::const_iterator Jend = m_contexts.end();
+    for (; J != Jend; ++J) {
+        ObjectContext & c = *J->second;
+        if (c.accept(op)) {
+            c.dispatch(op);
+        }
+    }
+    AdminClient::operation(op);
+}
+
 void Interactive::appearanceArrived(const Operation & op)
 {
     if (accountId.empty()) {

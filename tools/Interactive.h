@@ -41,6 +41,8 @@ class Interactive : public AdminClient,
     bool m_exit_flag;
 
   protected:
+    virtual void operation(const Operation &);
+
     virtual void appearanceArrived(const Operation &);
     virtual void disappearanceArrived(const Operation &);
     virtual void infoArrived(const Operation &);

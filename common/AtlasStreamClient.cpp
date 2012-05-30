@@ -114,15 +114,6 @@ void AtlasStreamClient::objectArrived(const Root & obj)
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
-    ContextMap::const_iterator J = m_contexts.begin();
-    ContextMap::const_iterator Jend = m_contexts.end();
-    for (; J != Jend; ++J) {
-        ObjectContext & c = *J->second;
-        if (c.accept(op)) {
-            c.dispatch(op);
-        }
-    }
-
     if (m_currentTask != 0) {
         OpVector res;
         m_currentTask->operation(op, res);
