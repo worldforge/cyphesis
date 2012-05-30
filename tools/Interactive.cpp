@@ -67,9 +67,6 @@ extern "C" {
 #endif
 
 #include <iostream>
-#include <algorithm>
-
-#include <cstdio>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
