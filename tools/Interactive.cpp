@@ -98,7 +98,7 @@ using Atlas::Objects::Operation::Connect;
 struct command {
     const char * cmd_string;
     const char * cmd_description;
-    int (Interactive::*cmd_method)(const std::string &, const std::string &);
+    int (Interactive::*cmd_method)(struct command *, const std::string &);
     const char * cmd_longhelp;
 };
 
@@ -472,6 +472,12 @@ void Interactive::runCommand(char * cmd)
         while (len > 0 && arg[--len] == ' ') { arg[len] = 0; }
     } else {
         arg = (char *)"";
+    }
+
+    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+        if (strcmp(cmd, I->cmd_string) == 0) {
+            (this->*(I->cmd_method))(I, arg);
+        }
     }
 
     exec(cmd, arg);
@@ -977,7 +983,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     }
 }
 
-int Interactive::commandUnknown(const std::string & cmd,
+int Interactive::commandUnknown(struct command * cmd,
                                 const std::string & arg)
 {
     return 0;
