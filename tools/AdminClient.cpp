@@ -291,7 +291,8 @@ void AdminClient::report()
         std::cout << "Rule \"" << I->second.first.first << "\" with parent \""
                   << I->first << "\" from ruleset \""
                   << I->second.first.second
-                  << "\" was never uploaded as its parent does not exist in any of the available rulesets."
+                  << "\" was never uploaded as its parent does not exist in "
+                     "any of the available rulesets."
                   << std::endl << std::flush;
     }
 }
