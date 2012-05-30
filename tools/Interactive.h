@@ -48,6 +48,8 @@ class Interactive : public AdminClient,
     virtual void sightArrived(const Operation &);
     virtual void soundArrived(const Operation &);
 
+    virtual void loginSuccess(const Atlas::Objects::Root & arg);
+
   public:
     Interactive();
     ~Interactive();

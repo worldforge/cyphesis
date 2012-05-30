@@ -108,6 +108,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     virtual void sightArrived(const Operation &);
     virtual void soundArrived(const Operation &);
 
+    virtual void loginSuccess(const Atlas::Objects::Root & arg);
 
   public:
     AtlasStreamClient();

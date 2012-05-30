@@ -339,6 +339,10 @@ void AtlasStreamClient::soundArrived(const RootOperation & op)
 {
 }
 
+void AtlasStreamClient::loginSuccess(const Root & arg)
+{
+}
+
 /// \brief Called when an Error operation arrives
 ///
 /// @param op Operation to be processed

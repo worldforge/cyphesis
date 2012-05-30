@@ -196,6 +196,10 @@ void AtlasStreamClient::soundArrived(const RootOperation & op)
 {
 }
 
+void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root & arg)
+{
+}
+
 /// \brief Called when an Error operation arrives
 ///
 /// @param op Operation to be processed
@@ -353,12 +357,10 @@ int AtlasStreamClient::waitForLoginResponse()
            if (m_infoReply->isDefaultId()) {
               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
-               accountId = m_infoReply->getId();
-               m_contexts.insert(
-                     std::make_pair(accountId, new AccountContext(m_username)));
                if (!m_infoReply->getParents().empty()) {
                    accountType = m_infoReply->getParents().front();
                }
+               loginSuccess(m_infoReply);
                return 0;
            }
            reply_flag = false;

@@ -369,6 +369,12 @@ void Interactive::soundArrived(const Operation & op)
               << std::endl << std::flush;
 }
 
+void Interactive::loginSuccess(const Atlas::Objects::Root & arg)
+{
+    const std::string & id = arg->getId();
+    m_contexts.insert(std::make_pair(id, new AccountContext(m_username)));
+}
+
 sigc::signal<void, char *> CmdLine;
 sigc::signal<void, int, int> ContextSwitch;
 
