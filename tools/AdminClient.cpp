@@ -71,7 +71,7 @@ void AdminClient::getLogin()
     std::cout << "Username: " << std::flush;
     std::cin >> m_username;
     std::cout << "Password: " << std::flush;
-    std::cin >> password;
+    std::cin >> m_password;
 }
 
 /// \brief Check if a rule exists in the rule table
@@ -270,7 +270,7 @@ void AdminClient::waitForInfo()
 /// This function uses credentials that have been set earlier.
 int AdminClient::login()
 {
-    return AtlasStreamClient::login(m_username, password);
+    return AtlasStreamClient::login(m_username, m_password);
 }
 
 /// \brief Report information about rules which didn't upload
