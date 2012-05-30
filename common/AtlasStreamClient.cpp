@@ -52,35 +52,6 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
-AccountContext::AccountContext(const std::string & u) : m_username(u),
-                                                        m_refNo(0L)
-{
-}
-
-bool AccountContext::accept(const RootOperation& op) const
-{
-    std::cout << "Checking account context to see if it matches"
-              << std::endl << std::flush;
-    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
-        return true;
-    }
-    return false;
-}
-
-int AccountContext::dispatch(const RootOperation & op)
-{
-    std::cout << "Dispatching with account context to see if it matches"
-              << std::endl << std::flush;
-    assert(m_refNo != 0L);
-    m_refNo = 0L;
-    return 0;
-}
-
-std::string AccountContext::repr() const
-{
-    return m_username;
-}
-
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
     output_element(std::cout, item, depth);

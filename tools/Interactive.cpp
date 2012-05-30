@@ -147,6 +147,35 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
+AccountContext::AccountContext(const std::string & u) : m_username(u),
+                                                        m_refNo(0L)
+{
+}
+
+bool AccountContext::accept(const Operation& op) const
+{
+    std::cout << "Checking account context to see if it matches"
+              << std::endl << std::flush;
+    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
+        return true;
+    }
+    return false;
+}
+
+int AccountContext::dispatch(const Operation & op)
+{
+    std::cout << "Dispatching with account context to see if it matches"
+              << std::endl << std::flush;
+    assert(m_refNo != 0L);
+    m_refNo = 0L;
+    return 0;
+}
+
+std::string AccountContext::repr() const
+{
+    return m_username;
+}
+
 Interactive::Interactive() : m_avatar_flag(false), m_server_flag(false),
                              m_juncture_flag(false),
                              m_serverName("cyphesis"), m_prompt("cyphesis> "),
