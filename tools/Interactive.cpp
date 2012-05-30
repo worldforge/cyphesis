@@ -98,33 +98,58 @@ using Atlas::Objects::Operation::Connect;
 struct command {
     const char * cmd_string;
     const char * cmd_description;
+    int (Interactive::*cmd_method)(const std::string &, const std::string &);
+    const char * cmd_longhelp;
 };
 
 struct command commands[] = {
-    { "add_agent",      "Create an in-game agent", },
-    { "cancel",         "Cancel the current admin task", },
-    { "connect",        "Connect server to a peer", },
-    { "create",         "Use account to create server objects", },
-    { "creator_create", "Use agent to create an entity", },
-    { "creator_look",   "Use agent to look at an entity", },
-    { "delete",         "Delete an entity from the server", },
-    { "dump",           "Write a copy of the world to an Atlas file", },
-    { "get",            "Examine any object on the server", },
-    { "find_by_name",   "Find an entity with the given name", },
-    { "find_by_type",   "Find an entity with the given type", },
-    { "flush",          "Flush entities from the server", },
-    { "help",           "Display this help", },
-    { "install",        "Install a new type", },
-    { "login",          "Log into a peer server", },
-    { "restore",        "Read world data from file and add it to the world", },
-    { "look",           "Return the current server lobby", },
-    { "logout",         "Log user out of server", },
-    { "monitor",        "Enable in-game op monitoring", },
-    { "query",          "Synonym for \"get\" (deprecated)", },
-    { "reload",         "Reload the script for a type", },
-    { "stat",           "Return current server status", },
-    { "unmonitor",      "Disable in-game op monitoring", },
-    { NULL,             "Guard", }
+    { "add_agent",      "Create an in-game agent",
+      &Interactive::commandUnknown, 0, },
+    { "cancel",         "Cancel the current admin task",
+      &Interactive::commandUnknown, 0, },
+    { "connect",        "Connect server to a peer",
+      &Interactive::commandUnknown, 0, },
+    { "create",         "Use account to create server objects",
+      &Interactive::commandUnknown, 0, },
+    { "creator_create", "Use agent to create an entity",
+      &Interactive::commandUnknown, 0, },
+    { "creator_look",   "Use agent to look at an entity",
+      &Interactive::commandUnknown, 0, },
+    { "delete",         "Delete an entity from the server",
+      &Interactive::commandUnknown, 0, },
+    { "dump",           "Write a copy of the world to an Atlas file",
+      &Interactive::commandUnknown, 0, },
+    { "get",            "Examine any object on the server",
+      &Interactive::commandUnknown, 0, },
+    { "find_by_name",   "Find an entity with the given name",
+      &Interactive::commandUnknown, 0, },
+    { "find_by_type",   "Find an entity with the given type",
+      &Interactive::commandUnknown, 0, },
+    { "flush",          "Flush entities from the server",
+      &Interactive::commandUnknown, 0, },
+    { "help",           "Display this help",
+      &Interactive::commandUnknown, 0, },
+    { "install",        "Install a new type",
+      &Interactive::commandUnknown, 0, },
+    { "login",          "Log into a peer server",
+      &Interactive::commandUnknown, 0, },
+    { "restore",        "Read world data from file and add it to the world",
+      &Interactive::commandUnknown, 0, },
+    { "look",           "Return the current server lobby",
+      &Interactive::commandUnknown, 0, },
+    { "logout",         "Log user out of server",
+      &Interactive::commandUnknown, 0, },
+    { "monitor",        "Enable in-game op monitoring",
+      &Interactive::commandUnknown, 0, },
+    { "query",          "Synonym for \"get\" (deprecated)",
+      &Interactive::commandUnknown, 0, },
+    { "reload",         "Reload the script for a type",
+      &Interactive::commandUnknown, 0, },
+    { "stat",           "Return current server status",
+      &Interactive::commandUnknown, 0, },
+    { "unmonitor",      "Disable in-game op monitoring",
+      &Interactive::commandUnknown, 0, },
+    { NULL,             "Guard", 0, 0, }
 };
 
 
@@ -140,7 +165,7 @@ static void help()
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
 
     for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
-        std::cout << "    " << I->cmd_string
+        std::cout << " " << I->cmd_string
                   << std::string(max_length - strlen(I->cmd_string), ' ')
                   << I->cmd_description << std::endl;
     }
@@ -950,4 +975,10 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
        }
        select(false);
     }
+}
+
+int Interactive::commandUnknown(const std::string & cmd,
+                                const std::string & arg)
+{
+    return 0;
 }

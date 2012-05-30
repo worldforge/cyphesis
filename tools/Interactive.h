@@ -94,6 +94,8 @@ class Interactive : public AdminClient,
     void switchContext(int, int);
 
     static void gotCommand(char *);
+
+    int commandUnknown(const std::string &, const std::string &);
 };
 
 #endif // TOOLS_INTERACTIVE_H
