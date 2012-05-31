@@ -54,3 +54,8 @@ std::string AccountContext::repr() const
 {
     return m_username;
 }
+
+bool AccountContext::checkContextCommand(const struct command *)
+{
+    return false;
+}

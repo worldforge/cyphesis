@@ -33,6 +33,7 @@ class AccountContext : public ObjectContext
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;
+    virtual bool checkContextCommand(const struct command *);
 };
 
 #endif // TOOLS_ACCOUNT_CONTEXT_H

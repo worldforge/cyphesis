@@ -33,6 +33,7 @@ class ObjectContext : public boost::enable_shared_from_this<ObjectContext>
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const = 0;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&) = 0;
     virtual std::string repr() const = 0;
+    virtual bool checkContextCommand(const struct command *) = 0;
 
 };
 
