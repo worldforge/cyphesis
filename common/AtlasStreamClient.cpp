@@ -319,9 +319,9 @@ int AtlasStreamClient::waitForLoginResponse()
            if (m_infoReply->isDefaultId()) {
               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
-               accountId = m_infoReply->getId();
+               m_accountId = m_infoReply->getId();
                if (!m_infoReply->getParents().empty()) {
-                   accountType = m_infoReply->getParents().front();
+                   m_accountType = m_infoReply->getParents().front();
                }
                loginSuccess(m_infoReply);
                return 0;

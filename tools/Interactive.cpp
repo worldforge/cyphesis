@@ -201,10 +201,10 @@ void Interactive::operation(const Operation & op)
 
 void Interactive::appearanceArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -236,10 +236,10 @@ void Interactive::appearanceArrived(const Operation & op)
 
 void Interactive::disappearanceArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -350,10 +350,10 @@ void Interactive::errorArrived(const Operation & op)
 
 void Interactive::sightArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo() && m_agentId != op->getTo()) {
+    if (m_accountId != op->getTo() && m_agentId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -375,10 +375,10 @@ void Interactive::sightArrived(const Operation & op)
 
 void Interactive::soundArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -547,7 +547,7 @@ void Interactive::select(bool rewrite_prompt)
 void Interactive::updatePrompt()
 {
     std::string designation(">");
-    if (accountType == "admin" || accountType == "sys") {
+    if (m_accountType == "admin" || m_accountType == "sys") {
         designation = "#";
     } else {
         designation = "$";
@@ -597,7 +597,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
                       << std::endl << std::flush;
         } else {
             Create c;
-            c->setFrom(accountId);
+            c->setFrom(m_accountId);
             Anonymous ent;
             ent->setId(std::string(arg, 0, space));
             ent->setObjtype("class");
@@ -613,11 +613,11 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             l->setArgs1(cmap);
         }
-        l->setFrom(accountId);
+        l->setFrom(m_accountId);
         send(l);
     } else if (cmd == "logout") {
         Logout l;
-        l->setFrom(accountId);
+        l->setFrom(m_accountId);
         if (!arg.empty()) {
             Anonymous lmap;
             lmap->setId(arg);
@@ -630,7 +630,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Anonymous ent;
         ent->setAttr("say", arg);
         t->setArgs1(ent);
-        t->setFrom(accountId);
+        t->setFrom(m_accountId);
         send(t);
     } else if (cmd == "help" || cmd == "?") {
         reply_expected = false;
@@ -648,7 +648,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             g->setArgs1(cmap);
         }
-        g->setFrom(accountId);
+        g->setFrom(m_accountId);
 
         send(g);
     } else if (cmd == "reload") {
@@ -662,7 +662,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             tmap->setObjtype("class");
             tmap->setId(arg);
             s->setArgs1(tmap);
-            s->setFrom(accountId);
+            s->setFrom(m_accountId);
 
             send(s);
         }
@@ -679,7 +679,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             g->setArgs1(cmap);
         }
-        g->setFrom(accountId);
+        g->setFrom(m_accountId);
 
         send(g);
     } else if (cmd == "monitor") {
@@ -688,7 +688,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Monitor m;
 
             m->setArgs1(Anonymous());
-            m->setFrom(accountId);
+            m->setFrom(m_accountId);
 
             send(m);
         }
@@ -700,7 +700,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         if (om != 0) {
             Monitor m;
 
-            m->setFrom(accountId);
+            m->setFrom(m_accountId);
 
             send(m);
 
@@ -761,7 +761,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);
-        c->setFrom(accountId);
+        c->setFrom(m_accountId);
 
         m_avatar_flag = true;
 
@@ -877,7 +877,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "No task currently running" << std::endl << std::flush;
         }
     } else if (cmd == "dump") {
-        ClientTask * task = new WorldDumper(accountId);
+        ClientTask * task = new WorldDumper(m_accountId);
         runTask(task, arg);
         reply_expected = false;
     } else if (cmd == "restore") {
@@ -885,7 +885,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            ClientTask * task = new WorldLoader(accountId, m_agentId);
+            ClientTask * task = new WorldLoader(m_accountId, m_agentId);
             runTask(task, arg);
             reply_expected = false;
         }
@@ -904,7 +904,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             Create c;
             c->setArgs1(cmap);
-            c->setFrom(accountId);
+            c->setFrom(m_accountId);
 
             m_juncture_flag = true;
 

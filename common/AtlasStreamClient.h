@@ -57,9 +57,9 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     Atlas::Objects::Root m_infoReply;
 
     /// \brief Account identifier returned after successful login
-    std::string accountId;
+    std::string m_accountId;
     /// \brief Account type returned after login
-    std::string accountType;
+    std::string m_accountType;
     /// \brief Stored error message from the last received Error operation
     std::string m_errorMessage;
 
