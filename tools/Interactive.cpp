@@ -94,6 +94,8 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Operation::Monitor;
 using Atlas::Objects::Operation::Connect;
 
+using boost::shared_ptr;
+
 /// \brief Entry in the global command table for cycmd
 struct command {
     const char * cmd_string;
@@ -192,7 +194,7 @@ void Interactive::operation(const Operation & op)
     ContextMap::const_iterator J = m_contexts.begin();
     ContextMap::const_iterator Jend = m_contexts.end();
     for (; J != Jend; ++J) {
-        ObjectContext & c = *J->second;
+        ObjectContext & c = **J;
         if (c.accept(op)) {
             c.dispatch(op);
         }
@@ -295,8 +297,7 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_juncture_id = ent->getId();
-            m_contexts.insert(std::make_pair(m_juncture_id,
-                                             new JunctureContext));
+            m_contexts.insert(shared_ptr<ObjectContext>(new JunctureContext));
             m_juncture_flag = false;
         }
     } else if (m_server_flag) {
@@ -415,8 +416,7 @@ void Interactive::soundArrived(const Operation & op)
 
 void Interactive::loginSuccess(const Atlas::Objects::Root & arg)
 {
-    const std::string & id = arg->getId();
-    m_contexts.insert(std::make_pair(id, new AccountContext(m_username)));
+    m_contexts.insert(shared_ptr<ObjectContext>(new AccountContext(m_username)));
 }
 
 sigc::signal<void, char *> CmdLine;

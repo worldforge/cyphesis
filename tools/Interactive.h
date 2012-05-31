@@ -27,10 +27,11 @@
 #include <sigc++/trackable.h>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 class ObjectContext;
 
-typedef std::map<std::string, boost::shared_ptr<ObjectContext> > ContextMap;
+typedef std::set<boost::shared_ptr<ObjectContext> > ContextMap;
 
 /// \brief Class template for clients used to connect to and administrate
 /// a cyphesis server.
@@ -48,6 +49,7 @@ class Interactive : public AdminClient,
 
     /// \brief Map of context with which we can interact with the server
     ContextMap m_contexts;
+    boost::weak_ptr<ObjectContext> m_currentContext;
 
   protected:
     virtual void operation(const Operation &);
