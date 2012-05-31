@@ -17,23 +17,8 @@
 
 // $Id$
 
-#ifndef TOOLS_OBJECT_CONTEXT_H
-#define TOOLS_OBJECT_CONTEXT_H
+#include "ObjectContext.h"
 
-#include <Atlas/Objects/ObjectsFwd.h>
-
-#include <boost/enable_shared_from_this.hpp>
-
-#include <string>
-
-class ObjectContext : public boost::enable_shared_from_this<ObjectContext>
+ObjectContext::~ObjectContext()
 {
-  public:
-    virtual ~ObjectContext() = 0;
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const = 0;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&) = 0;
-    virtual std::string repr() const = 0;
-
-};
-
-#endif // TOOLS_OBJECT_CONTEXT_H
+}

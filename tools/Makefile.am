@@ -83,7 +83,7 @@ cycmd_SOURCES = cycmd.cpp \
         WorldLoader.cpp WorldLoader.h \
         MultiLineListFormatter.cpp MultiLineListFormatter.h \
         AdminClient.cpp AdminClient.h \
-        ObjectContext.h \
+        ObjectContext.cpp ObjectContext.h \
         AccountContext.cpp AccountContext.h \
         Interactive.cpp Interactive.h
 cycmd_LDADD = $(top_builddir)/common/operations.o \
