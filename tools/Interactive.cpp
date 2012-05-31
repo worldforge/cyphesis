@@ -29,6 +29,7 @@
 #include "WorldLoader.h"
 
 #include "tools/AccountContext.h"
+#include "tools/JunctureContext.h"
 
 #include "common/AtlasStreamClient.h"
 #include "common/log.h"
@@ -294,6 +295,8 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_juncture_id = ent->getId();
+            m_contexts.insert(std::make_pair(m_juncture_id,
+                                             new JunctureContext));
             m_juncture_flag = false;
         }
     } else if (m_server_flag) {
