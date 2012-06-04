@@ -416,7 +416,12 @@ void Interactive::soundArrived(const Operation & op)
 
 void Interactive::loginSuccess(const Atlas::Objects::Root & arg)
 {
-    m_contexts.insert(shared_ptr<ObjectContext>(new AccountContext(m_username)));
+    // Create a new account context, store it in our context set,
+    // and assign it as the current context
+    ObjectContext * ac = new AccountContext(m_username);
+    // This is slightly unwieldy, but it ensures we get a weak pointer to
+    // the context object with a minimum of weak copies.
+    m_currentContext = *m_contexts.insert(shared_ptr<ObjectContext>(ac)).first;
 }
 
 sigc::signal<void, char *> CmdLine;
