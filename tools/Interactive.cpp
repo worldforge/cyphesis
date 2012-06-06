@@ -29,6 +29,8 @@
 #include "WorldLoader.h"
 
 #include "tools/AccountContext.h"
+#include "tools/AvatarContext.h"
+#include "tools/ConnectionContext.h"
 #include "tools/JunctureContext.h"
 
 #include "common/AtlasStreamClient.h"
@@ -287,6 +289,7 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_agentId = ent->getId();
+            m_contexts.insert(shared_ptr<ObjectContext>(new AvatarContext));
             m_avatar_flag = false;
         }
     } else if (m_juncture_flag) {
@@ -589,6 +592,9 @@ void Interactive::updatePrompt()
 
 int Interactive::setup()
 {
+    ObjectContext * cc = new ConnectionContext;
+    m_contexts.insert(shared_ptr<ObjectContext>(cc));
+
     Get get;
 
     send(get);
