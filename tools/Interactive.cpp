@@ -480,7 +480,7 @@ void Interactive::switchContext(int, int)
         }
     }
     updatePrompt();
-    rl_forced_update_display();
+    rl_redisplay();
 }
 
 int completion_iterator = 0;
