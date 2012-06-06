@@ -58,3 +58,7 @@ bool ConnectionContext::checkContextCommand(const struct command *)
 {
     return false;
 }
+
+void ConnectionContext::setFromContext(const RootOperation & op)
+{
+}

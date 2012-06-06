@@ -33,6 +33,7 @@ class AvatarContext : public ObjectContext
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;
     virtual bool checkContextCommand(const struct command *);
+    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
 };
 
 #endif // TOOLS_AVATAR_CONTEXT_H

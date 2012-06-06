@@ -300,7 +300,8 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_juncture_id = ent->getId();
-            m_contexts.insert(shared_ptr<ObjectContext>(new JunctureContext));
+            m_contexts.insert(shared_ptr<ObjectContext>(
+                  new JunctureContext(m_juncture_id)));
             m_juncture_flag = false;
         }
     } else if (m_server_flag) {

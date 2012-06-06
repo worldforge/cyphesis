@@ -59,3 +59,8 @@ bool AccountContext::checkContextCommand(const struct command *)
 {
     return false;
 }
+
+void AccountContext::setFromContext(const RootOperation & op)
+{
+    op->setFrom(m_id);
+}

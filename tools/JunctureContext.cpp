@@ -26,7 +26,8 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-JunctureContext::JunctureContext() : m_refNo(0L)
+JunctureContext::JunctureContext(const std::string & id) : m_id(id),
+                                                           m_refNo(0L)
 {
 }
 
@@ -50,4 +51,9 @@ std::string JunctureContext::repr() const
 bool JunctureContext::checkContextCommand(const struct command *)
 {
     return false;
+}
+
+void JunctureContext::setFromContext(const RootOperation & op)
+{
+    op->setFrom(m_id);
 }

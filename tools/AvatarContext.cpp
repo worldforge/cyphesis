@@ -51,3 +51,8 @@ bool AvatarContext::checkContextCommand(const struct command *)
 {
     return false;
 }
+
+void AvatarContext::setFromContext(const RootOperation & op)
+{
+    op->setFrom(m_id);
+}
