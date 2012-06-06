@@ -467,7 +467,20 @@ void Interactive::runCommand(char * cmd)
 
 void Interactive::switchContext(int, int)
 {
+    ContextMap::const_iterator I = m_contexts.begin();
+    ContextMap::const_iterator Iend = m_contexts.end();
+    for (; I != Iend; ++I) {
+        const boost::shared_ptr<ObjectContext> & i = *I;
+        if (m_currentContext.lock() == i) {
+            if (++I == Iend) {
+                I = m_contexts.begin();
+            }
+            m_currentContext = *I;
+            break;
+        }
+    }
     updatePrompt();
+    rl_forced_update_display();
 }
 
 int completion_iterator = 0;
@@ -564,8 +577,13 @@ void Interactive::updatePrompt()
     if (m_currentTask != 0) {
         status = m_currentTask->description();
     }
-    m_prompt = String::compose("[%1@%2 %3{%4}]%5 ", m_username, m_serverName,
-                             m_systemType, status, designation);
+    std::string context = "";
+    boost::shared_ptr<ObjectContext> c = m_currentContext.lock();
+    if (c) {
+        context = c->repr();
+    }
+    m_prompt = String::compose("[%1@%2 %3{%4}]%5 ", context, m_serverName,
+                               m_systemType, status, designation);
     rl_set_prompt(m_prompt.c_str());
 }
 
