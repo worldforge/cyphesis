@@ -951,14 +951,13 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             send(c);
         }
     } else if (cmd == "login") {
-        reply_expected = false;
-
         std::vector<std::string> args;
         tokenize(arg, args);
 
         if (args.size() != 2) {
             std::cout << "usage: login <username> <password>"
                       << std::endl << std::flush;
+            reply_expected = false;
         } else {
             Anonymous cmap;
             cmap->setAttr("username", args[0]);
