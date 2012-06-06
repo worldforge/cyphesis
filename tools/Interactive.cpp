@@ -945,30 +945,31 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         }
     } else if (cmd == "login") {
         reply_expected = false;
-        if (m_juncture_id.empty()) {
-            std::cout << "Use create juncture to create a juncture object "
-                         "on the server"
+
+        std::vector<std::string> args;
+        tokenize(arg, args);
+
+        if (args.size() != 2) {
+            std::cout << "usage: login <username> <password>"
                       << std::endl << std::flush;
         } else {
+            Anonymous cmap;
+            cmap->setAttr("username", args[0]);
+            cmap->setAttr("password", args[1]);
 
-            std::vector<std::string> args;
-            tokenize(arg, args);
+            Login m;
+            m->setArgs1(cmap);
+            m->setSerialno(newSerialNo());
 
-            if (args.size() != 2) {
-                std::cout << "usage: login <username> <password>"
-                          << std::endl << std::flush;
+            boost::shared_ptr<ObjectContext> c = m_currentContext.lock();
+            if (c) {
+                c->setFromContext(m);
             } else {
-                Anonymous cmap;
-                cmap->setAttr("username", args[0]);
-                cmap->setAttr("password", args[1]);
-
-                Login m;
-                m->setArgs1(cmap);
-                m->setFrom(m_juncture_id);
-                m->setSerialno(newSerialNo());
-
-                send(m);
+                std::cout << "WAI!" << std::endl;
             }
+            // m->setFrom(m_juncture_id);
+
+            send(m);
         }
     } else {
         reply_expected = false;
