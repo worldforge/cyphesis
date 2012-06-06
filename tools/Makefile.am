@@ -85,6 +85,7 @@ cycmd_SOURCES = cycmd.cpp \
         AdminClient.cpp AdminClient.h \
         ObjectContext.cpp ObjectContext.h \
         AccountContext.cpp AccountContext.h \
+        AvatarContext.cpp AvatarContext.h \
         JunctureContext.cpp JunctureContext.h \
         Interactive.cpp Interactive.h
 cycmd_LDADD = $(top_builddir)/common/operations.o \
