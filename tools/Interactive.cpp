@@ -653,7 +653,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             l->setArgs1(cmap);
         }
-        l->setFrom(m_accountId);
+        command_context->setFromContext(l);
         send(l);
     } else if (cmd == "logout") {
         Logout l;
