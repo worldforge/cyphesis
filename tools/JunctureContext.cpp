@@ -35,11 +35,21 @@ bool JunctureContext::accept(const RootOperation& op) const
 {
     std::cout << "Checking juncture context to see if it matches"
               << std::endl << std::flush;
+    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
+        std::cout << "It does!"
+                  << std::endl << std::flush;
+        return true;
+    }
+
     return false;
 }
 
 int JunctureContext::dispatch(const RootOperation & op)
 {
+    std::cout << "Juncture dispatch!"
+              << std::endl << std::flush;
+    // If we get an info op here, it can mean something succeeded, like
+    // connection or login.
     return 0;
 }
 
@@ -56,4 +66,7 @@ bool JunctureContext::checkContextCommand(const struct command *)
 void JunctureContext::setFromContext(const RootOperation & op)
 {
     op->setFrom(m_id);
+    if (!op->isDefaultSerialno()) {
+        m_refNo = op->getSerialno();
+    }
 }

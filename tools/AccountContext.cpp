@@ -26,7 +26,9 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-AccountContext::AccountContext(const std::string & u) : m_username(u),
+AccountContext::AccountContext(const std::string & id,
+                               const std::string & u) : m_id(id),
+                                                        m_username(u),
                                                         m_refNo(0L)
 {
 }

@@ -26,7 +26,7 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-AvatarContext::AvatarContext() : m_refNo(0L)
+AvatarContext::AvatarContext(const std::string & id) : m_id(id), m_refNo(0L)
 {
 }
 

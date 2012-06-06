@@ -28,7 +28,7 @@ class AvatarContext : public ObjectContext
     std::string m_id;
     long m_refNo;
   public:
-    AvatarContext();
+    AvatarContext(const std::string & id);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;
