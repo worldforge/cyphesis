@@ -621,6 +621,12 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     reply_flag = false;
     error_flag = false;
 
+    boost::shared_ptr<ObjectContext> command_context = m_currentContext.lock();
+    if (!command_context) {
+        std::cout << "ERROR: Context free" << std::endl << std::flush;
+        return;
+    }
+
     if (cmd == "stat") {
         Get g;
         send(g);
@@ -962,12 +968,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             m->setArgs1(cmap);
             m->setSerialno(newSerialNo());
 
-            boost::shared_ptr<ObjectContext> c = m_currentContext.lock();
-            if (c) {
-                c->setFromContext(m);
-            } else {
-                std::cout << "WAI!" << std::endl;
-            }
+            command_context->setFromContext(m);
 
             send(m);
         }
