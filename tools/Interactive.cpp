@@ -967,7 +967,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             } else {
                 std::cout << "WAI!" << std::endl;
             }
-            // m->setFrom(m_juncture_id);
 
             send(m);
         }
