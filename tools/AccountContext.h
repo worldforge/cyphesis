@@ -20,21 +20,18 @@
 #ifndef TOOLS_ACCOUNT_CONTEXT_H
 #define TOOLS_ACCOUNT_CONTEXT_H
 
-#include "ObjectContext.h"
+#include "IdContext.h"
 
-class AccountContext : public ObjectContext
+class AccountContext : public IdContext
 {
   protected:
-    const std::string m_id;
     const std::string m_username;
-    long m_refNo;
   public:
     AccountContext(const std::string & id, const std::string & u);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;
     virtual bool checkContextCommand(const struct command *);
-    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
 };
 
 #endif // TOOLS_ACCOUNT_CONTEXT_H

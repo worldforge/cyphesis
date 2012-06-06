@@ -17,19 +17,23 @@
 
 // $Id$
 
-#ifndef TOOLS_AVATAR_CONTEXT_H
-#define TOOLS_AVATAR_CONTEXT_H
-
 #include "IdContext.h"
 
-class AvatarContext : public IdContext
-{
-  public:
-    AvatarContext(const std::string & id);
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
-    virtual std::string repr() const;
-    virtual bool checkContextCommand(const struct command *);
-};
+#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/SmartPtr.h>
 
-#endif // TOOLS_AVATAR_CONTEXT_H
+#include <iostream>
+
+using Atlas::Objects::Operation::RootOperation;
+
+IdContext::IdContext(const std::string & id) : m_id(id), m_refNo(0L)
+{
+}
+
+void IdContext::setFromContext(const RootOperation & op)
+{
+    op->setFrom(m_id);
+    if (!op->isDefaultSerialno()) {
+        m_refNo = op->getSerialno();
+    }
+}

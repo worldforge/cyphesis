@@ -84,6 +84,7 @@ cycmd_SOURCES = cycmd.cpp \
         MultiLineListFormatter.cpp MultiLineListFormatter.h \
         AdminClient.cpp AdminClient.h \
         ObjectContext.cpp ObjectContext.h \
+        IdContext.cpp IdContext.h \
         AccountContext.cpp AccountContext.h \
         AvatarContext.cpp AvatarContext.h \
         ConnectionContext.cpp ConnectionContext.h \

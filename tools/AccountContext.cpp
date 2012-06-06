@@ -27,9 +27,8 @@
 using Atlas::Objects::Operation::RootOperation;
 
 AccountContext::AccountContext(const std::string & id,
-                               const std::string & u) : m_id(id),
-                                                        m_username(u),
-                                                        m_refNo(0L)
+                               const std::string & u) : IdContext(id),
+                                                        m_username(u)
 {
 }
 
@@ -60,9 +59,4 @@ std::string AccountContext::repr() const
 bool AccountContext::checkContextCommand(const struct command *)
 {
     return false;
-}
-
-void AccountContext::setFromContext(const RootOperation & op)
-{
-    op->setFrom(m_id);
 }

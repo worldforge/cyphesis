@@ -17,19 +17,19 @@
 
 // $Id$
 
-#ifndef TOOLS_AVATAR_CONTEXT_H
-#define TOOLS_AVATAR_CONTEXT_H
+#ifndef TOOLS_ID_CONTEXT_H
+#define TOOLS_ID_CONTEXT_H
 
-#include "IdContext.h"
+#include "ObjectContext.h"
 
-class AvatarContext : public IdContext
+class IdContext : public ObjectContext
 {
+  protected:
+    const std::string m_id;
+    long m_refNo;
   public:
-    AvatarContext(const std::string & id);
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
-    virtual std::string repr() const;
-    virtual bool checkContextCommand(const struct command *);
+    explicit IdContext(const std::string & id);
+    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
 };
 
-#endif // TOOLS_AVATAR_CONTEXT_H
+#endif // TOOLS_ID_CONTEXT_H

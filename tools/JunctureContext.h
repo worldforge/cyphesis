@@ -20,20 +20,16 @@
 #ifndef TOOLS_JUNCTURE_CONTEXT_H
 #define TOOLS_JUNCTURE_CONTEXT_H
 
-#include "ObjectContext.h"
+#include "IdContext.h"
 
-class JunctureContext : public ObjectContext
+class JunctureContext : public IdContext
 {
-  protected:
-    std::string m_id;
-    long m_refNo;
   public:
     JunctureContext(const std::string & id);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;
     virtual bool checkContextCommand(const struct command *);
-    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
 };
 
 #endif // TOOLS_JUNCTURE_CONTEXT_H

@@ -26,7 +26,7 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-AvatarContext::AvatarContext(const std::string & id) : m_id(id), m_refNo(0L)
+AvatarContext::AvatarContext(const std::string & id) : IdContext(id)
 {
 }
 
@@ -50,9 +50,4 @@ std::string AvatarContext::repr() const
 bool AvatarContext::checkContextCommand(const struct command *)
 {
     return false;
-}
-
-void AvatarContext::setFromContext(const RootOperation & op)
-{
-    op->setFrom(m_id);
 }
