@@ -19,11 +19,12 @@
 
 #include "AccountContext.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
 
+using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
 AccountContext::AccountContext(const std::string & id,
@@ -46,6 +47,26 @@ int AccountContext::dispatch(const RootOperation & op)
 {
     std::cout << "Dispatching with account context to see if it matches"
               << std::endl << std::flush;
+    if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO &&
+        !op->getArgs().empty()) {
+        std::cout << "Dispatching info"
+                  << std::endl << std::flush;
+        const Root & ent = op->getArgs().front();
+        if (ent->hasAttrFlag(Atlas::Objects::ID_FLAG) &&
+            ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) &&
+            ent->getParents().size() > 0) {
+            const std::string & type = ent->getParents().front();
+            if (type == "juncture") {
+                std::cout << "created juncture"
+                          << std::endl << std::flush;
+            } else {
+                std::cout << "created avatar"
+                          << std::endl << std::flush;
+            }
+        } else {
+        }
+        
+    }
     assert(m_refNo != 0L);
     m_refNo = 0L;
     return 0;
