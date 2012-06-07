@@ -27,7 +27,7 @@ class ConnectionContext : public ObjectContext
   protected:
     long m_refNo;
   public:
-    ConnectionContext();
+    ConnectionContext(Interactive &);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;

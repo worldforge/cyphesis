@@ -27,8 +27,9 @@
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
-AccountContext::AccountContext(const std::string & id,
-                               const std::string & u) : IdContext(id),
+AccountContext::AccountContext(Interactive & i,
+                               const std::string & id,
+                               const std::string & u) : IdContext(i, id),
                                                         m_username(u)
 {
 }

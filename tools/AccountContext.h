@@ -27,7 +27,9 @@ class AccountContext : public IdContext
   protected:
     const std::string m_username;
   public:
-    AccountContext(const std::string & id, const std::string & u);
+    AccountContext(Interactive &,
+                   const std::string & id,
+                   const std::string & u);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;

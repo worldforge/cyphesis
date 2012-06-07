@@ -26,9 +26,14 @@
 
 #include <string>
 
+class Interactive;
+
 class ObjectContext : public boost::enable_shared_from_this<ObjectContext>
 {
+  protected:
+    Interactive & m_client;
   public:
+    explicit ObjectContext(Interactive & i) : m_client(i) { }
     virtual ~ObjectContext() = 0;
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const = 0;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&) = 0;

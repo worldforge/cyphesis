@@ -26,7 +26,8 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-JunctureContext::JunctureContext(const std::string & id) : IdContext(id)
+JunctureContext::JunctureContext(Interactive & i,
+                                 const std::string & id) : IdContext(i, id)
 {
 }
 

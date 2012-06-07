@@ -26,7 +26,8 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-ConnectionContext::ConnectionContext() : m_refNo(0L)
+ConnectionContext::ConnectionContext(Interactive & i) : ObjectContext(i),
+                                                        m_refNo(0L)
 {
 }
 

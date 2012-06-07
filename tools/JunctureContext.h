@@ -25,7 +25,7 @@
 class JunctureContext : public IdContext
 {
   public:
-    JunctureContext(const std::string & id);
+    JunctureContext(Interactive &, const std::string & id);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;

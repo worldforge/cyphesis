@@ -25,7 +25,7 @@
 class AvatarContext : public IdContext
 {
   public:
-    AvatarContext(const std::string & id);
+    AvatarContext(Interactive &, const std::string & id);
     virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
     virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
     virtual std::string repr() const;

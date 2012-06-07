@@ -26,7 +26,8 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-AvatarContext::AvatarContext(const std::string & id) : IdContext(id)
+AvatarContext::AvatarContext(Interactive & i, const std::string & id) :
+      IdContext(i, id)
 {
 }
 

@@ -26,10 +26,6 @@
 
 using Atlas::Objects::Operation::RootOperation;
 
-IdContext::IdContext(const std::string & id) : m_id(id), m_refNo(0L)
-{
-}
-
 void IdContext::setFromContext(const RootOperation & op)
 {
     op->setFrom(m_id);

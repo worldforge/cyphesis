@@ -28,7 +28,8 @@ class IdContext : public ObjectContext
     const std::string m_id;
     long m_refNo;
   public:
-    explicit IdContext(const std::string & id);
+    explicit IdContext(Interactive & i, const std::string & id) :
+          ObjectContext(i), m_id(id), m_refNo(0L) { }
     virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
 };
 
