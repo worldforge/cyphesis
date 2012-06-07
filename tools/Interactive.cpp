@@ -771,32 +771,27 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             endTask();
         }
     } else if (cmd == "connect") {
-        reply_expected = false;
-        if (m_juncture_id.empty()) {
-            std::cout << "Use create juncture to create a juncture object "
-                         "on the server"
+        std::vector<std::string> args;
+        tokenize(arg, args);
+
+        if (args.size() != 2) {
+            std::cout << "usage: connect <hostname> <port>"
                       << std::endl << std::flush;
+
+            reply_expected = false;
         } else {
+            Anonymous cmap;
+            cmap->setAttr("hostname", args[0]);
+            cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
 
-            std::vector<std::string> args;
-            tokenize(arg, args);
+            Connect m;
+            m->setArgs1(cmap);
+            // No serialno yet
+            // FIXME add serialno once Juncture context can handle this
 
-            if (args.size() != 2) {
-                std::cout << "usage: connect <hostname> <port>"
-                          << std::endl << std::flush;
-            } else {
-                Anonymous cmap;
-                cmap->setAttr("hostname", args[0]);
-                cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
-                // cmap->setAttr("username", args[2]);
-                // cmap->setAttr("password", args[3]);
+            command_context->setFromContext(m);
 
-                Connect m;
-                m->setArgs1(cmap);
-                m->setFrom(m_juncture_id);
-
-                send(m);
-            }
+            send(m);
         }
     } else if (cmd == "add_agent") {
         std::string agent_type("creator");
