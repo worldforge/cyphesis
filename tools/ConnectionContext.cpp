@@ -52,7 +52,7 @@ int ConnectionContext::dispatch(const RootOperation & op)
 
 std::string ConnectionContext::repr() const
 {
-    return "";
+    return " ";
 }
 
 bool ConnectionContext::checkContextCommand(const struct command *)
