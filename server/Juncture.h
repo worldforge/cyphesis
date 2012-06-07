@@ -48,6 +48,9 @@ class Juncture : public ConnectedRouter, virtual public sigc::trackable {
 
     virtual void operation(const Operation &, OpVector &);
 
+    virtual void addToMessage(Atlas::Message::MapType &) const;
+    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+
     void LoginOperation(const Operation &, OpVector &);
     void OtherOperation(const Operation &, OpVector &);
 

@@ -36,8 +36,12 @@
 #include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Login;
@@ -112,6 +116,20 @@ void Juncture::operation(const Operation & op, OpVector & res)
             OtherOperation(op, res);
             break;
     }
+}
+
+void Juncture::addToMessage(MapType & omap) const
+{
+    omap["objtype"] = "obj";
+    omap["id"] = getId();
+    omap["parents"] = ListType(1, "juncture");
+}
+
+void Juncture::addToEntity(const RootEntity & ent) const
+{
+    ent->setObjtype("obj");
+    ent->setId(getId());
+    ent->setParents(std::list<std::string>(1,"juncture"));
 }
 
 void Juncture::LoginOperation(const Operation & op, OpVector & res)
