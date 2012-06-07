@@ -944,7 +944,8 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             Create c;
             c->setArgs1(cmap);
-            c->setFrom(m_accountId);
+            c->setSerialno(newSerialNo());
+            command_context->setFromContext(c);
 
             m_juncture_flag = true;
 
