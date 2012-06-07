@@ -19,6 +19,9 @@
 
 #include "AccountContext.h"
 
+#include "tools/Interactive.h"
+#include "tools/JunctureContext.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -26,6 +29,8 @@
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
+
+using boost::shared_ptr;
 
 AccountContext::AccountContext(Interactive & i,
                                const std::string & id,
@@ -60,6 +65,8 @@ int AccountContext::dispatch(const RootOperation & op)
             if (type == "juncture") {
                 std::cout << "created juncture"
                           << std::endl << std::flush;
+                m_client.addCurrentContext(shared_ptr<ObjectContext>(
+                      new JunctureContext(m_client, ent->getId())));
             } else {
                 std::cout << "created avatar"
                           << std::endl << std::flush;

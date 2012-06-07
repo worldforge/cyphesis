@@ -289,6 +289,8 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_agentId = ent->getId();
+            addContext(shared_ptr<ObjectContext>(
+                  new AvatarContext(*this, m_agentId)));
             m_avatar_flag = false;
         }
     } else if (m_juncture_flag) {
@@ -299,8 +301,6 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_juncture_id = ent->getId();
-            addContext(shared_ptr<ObjectContext>(
-                  new JunctureContext(*this, m_juncture_id)));
             m_juncture_flag = false;
         }
     } else if (m_server_flag) {
@@ -495,6 +495,8 @@ const shared_ptr<ObjectContext> & Interactive::addContext(
 void Interactive::addCurrentContext(const shared_ptr<ObjectContext> & c)
 {
     m_currentContext = *m_contexts.insert(c).first;
+    updatePrompt();
+    rl_redisplay();
 }
 
 int completion_iterator = 0;
