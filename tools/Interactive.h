@@ -74,6 +74,9 @@ class Interactive : public AdminClient,
     void updatePrompt();
     void runCommand(char *);
     void switchContext(int, int);
+    const boost::shared_ptr<ObjectContext> & addContext(
+          const boost::shared_ptr<ObjectContext> &);
+    void addCurrentContext(const boost::shared_ptr<ObjectContext> &);
 
     static void gotCommand(char *);
 

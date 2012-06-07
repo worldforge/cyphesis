@@ -289,8 +289,6 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_agentId = ent->getId();
-            m_contexts.insert(shared_ptr<ObjectContext>(
-                  new AvatarContext(*this, m_agentId)));
             m_avatar_flag = false;
         }
     } else if (m_juncture_flag) {
@@ -301,7 +299,7 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_juncture_id = ent->getId();
-            m_contexts.insert(shared_ptr<ObjectContext>(
+            addContext(shared_ptr<ObjectContext>(
                   new JunctureContext(*this, m_juncture_id)));
             m_juncture_flag = false;
         }
@@ -426,7 +424,7 @@ void Interactive::loginSuccess(const Atlas::Objects::Root & arg)
     ObjectContext * ac = new AccountContext(*this, m_accountId, m_username);
     // This is slightly unwieldy, but it ensures we get a weak pointer to
     // the context object with a minimum of weak copies.
-    m_currentContext = *m_contexts.insert(shared_ptr<ObjectContext>(ac)).first;
+    addCurrentContext(shared_ptr<ObjectContext>(ac));
 }
 
 sigc::signal<void, char *> CmdLine;
@@ -486,6 +484,17 @@ void Interactive::switchContext(int, int)
     }
     updatePrompt();
     rl_redisplay();
+}
+
+const shared_ptr<ObjectContext> & Interactive::addContext(
+      const shared_ptr<ObjectContext> & c)
+{
+    return *m_contexts.insert(c).first;
+}
+
+void Interactive::addCurrentContext(const shared_ptr<ObjectContext> & c)
+{
+    m_currentContext = *m_contexts.insert(c).first;
 }
 
 int completion_iterator = 0;
@@ -595,7 +604,7 @@ void Interactive::updatePrompt()
 int Interactive::setup()
 {
     ObjectContext * cc = new ConnectionContext(*this);
-    m_contexts.insert(shared_ptr<ObjectContext>(cc));
+    addContext(shared_ptr<ObjectContext>(cc));
 
     Get get;
 
