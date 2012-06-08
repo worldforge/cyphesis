@@ -41,7 +41,6 @@ class Interactive : public AdminClient,
   private:
     bool m_avatar_flag, m_server_flag, m_juncture_flag;
     std::string m_agentId;
-    std::string m_juncture_id;
     std::string m_serverName;
     std::string m_systemType;
     std::string m_prompt;

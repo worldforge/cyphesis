@@ -300,7 +300,6 @@ void Interactive::infoArrived(const Operation & op)
                       << std::endl << std::flush;
             
         } else {
-            m_juncture_id = ent->getId();
             m_juncture_flag = false;
         }
     } else if (m_server_flag) {
