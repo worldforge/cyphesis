@@ -812,10 +812,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         send(c);
     } else if (cmd == "delete") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
             std::cout << "Please specify the entity to delete" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -824,18 +821,15 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous del_arg;
             del_arg->setId(arg);
             del->setArgs1(del_arg);
-            del->setFrom(m_agentId);
-            del->setTo(arg);
+
+            command_context->setFromContext(del);
 
             send(del);
 
             reply_expected = false;
         }
     } else if (cmd == "find_by_name") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
             std::cout << "Please specify the name to search for" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -844,17 +838,15 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setName(arg);
             l->setArgs1(lmap);
-            l->setFrom(m_agentId);
+
+            command_context->setFromContext(l);
 
             send(l);
 
             reply_expected = false;
         }
     } else if (cmd == "find_by_type") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
             std::cout << "Please specify the type to search for" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -863,7 +855,8 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setParents(std::list<std::string>(1, arg));
             l->setArgs1(lmap);
-            l->setFrom(m_agentId);
+
+            command_context->setFromContext(l);
 
             send(l);
 
