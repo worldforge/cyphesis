@@ -288,8 +288,6 @@ void Interactive::infoArrived(const Operation & op)
             
         } else {
             m_agentId = ent->getId();
-            addContext(shared_ptr<ObjectContext>(
-                  new AvatarContext(*this, m_agentId)));
             m_avatar_flag = false;
         }
     } else if (m_server_flag) {
@@ -796,7 +794,9 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);
-        c->setFrom(m_accountId);
+        c->setSerialno(newSerialNo());
+
+        command_context->setFromContext(c);
 
         m_avatar_flag = true;
 

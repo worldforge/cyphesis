@@ -20,6 +20,7 @@
 #include "AccountContext.h"
 
 #include "tools/Interactive.h"
+#include "tools/AvatarContext.h"
 #include "tools/JunctureContext.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -70,6 +71,9 @@ int AccountContext::dispatch(const RootOperation & op)
             } else {
                 std::cout << "created avatar"
                           << std::endl << std::flush;
+                m_client.addContext(shared_ptr<ObjectContext>(
+                      new AvatarContext(m_client, ent->getId())));
+                
             }
         } else {
         }
