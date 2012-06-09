@@ -181,7 +181,6 @@ static void help()
 }
 
 Interactive::Interactive() : m_avatar_flag(false), m_server_flag(false),
-                             m_juncture_flag(false),
                              m_serverName("cyphesis"), m_prompt("cyphesis> "),
                              m_exit_flag(false)
 {
@@ -292,15 +291,6 @@ void Interactive::infoArrived(const Operation & op)
             addContext(shared_ptr<ObjectContext>(
                   new AvatarContext(*this, m_agentId)));
             m_avatar_flag = false;
-        }
-    } else if (m_juncture_flag) {
-        std::cout << "Juncture create success" << std::endl << std::flush;
-        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            std::cerr << "ERROR: Response to juncture create does not contain agent id"
-                      << std::endl << std::flush;
-            
-        } else {
-            m_juncture_flag = false;
         }
     } else if (m_server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
@@ -944,8 +934,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             c->setArgs1(cmap);
             c->setSerialno(newSerialNo());
             command_context->setFromContext(c);
-
-            m_juncture_flag = true;
 
             send(c);
         }
