@@ -57,6 +57,18 @@ void AtlasStreamClient::output(const Element & item, int depth) const
     output_element(std::cout, item, depth);
 }
 
+void AtlasStreamClient::output(const Root & ent) const
+{
+    MapType entmap = ent->asMessage();
+    MapType::const_iterator Iend = entmap.end();
+    for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
+        const Element & item = I->second;
+        std::cout << std::string(spacing(), ' ') << I->first << ": ";
+        output(item, 1);
+        std::cout << std::endl;
+    }
+}
+
 /// \brief Function call from the base class when an object arrives from the
 /// server
 ///

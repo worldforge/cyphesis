@@ -311,14 +311,7 @@ void Interactive::infoArrived(const Operation & op)
     } else if (m_currentTask == 0) {
         AtlasStreamClient::infoArrived(op);
         std::cout << "Info(" << std::endl;
-        MapType entmap = ent->asMessage();
-        MapType::const_iterator Iend = entmap.end();
-        for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
-            const Element & item = I->second;
-            std::cout << std::string(spacing(), ' ') << I->first << ": ";
-            output(item, 1);
-            std::cout << std::endl;
-        }
+        output(ent);
         std::cout << ")" << std::endl << std::flush;
         // Display results of command
     }
@@ -356,14 +349,7 @@ void Interactive::sightArrived(const Operation & op)
         return;
     }
     std::cout << "Sight(" << std::endl;
-    const MapType & ent = op->getArgs().front()->asMessage();
-    MapType::const_iterator Iend = ent.end();
-    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
-        const Element & item = I->second;
-        std::cout << "      " << I->first << ":";
-        output(item, 1);
-        std::cout << std::endl;
-    }
+    output(op->getArgs().front());
     std::cout << ")" << std::endl << std::flush;
 }
 
