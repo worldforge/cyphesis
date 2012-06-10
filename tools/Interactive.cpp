@@ -335,24 +335,6 @@ void Interactive::errorArrived(const Operation & op)
     std::cout << ")" << std::endl << std::flush;
 }
 
-void Interactive::sightArrived(const Operation & op)
-{
-    if (m_accountId.empty()) {
-        return;
-    }
-    if (m_accountId != op->getTo()) {
-        // This is an IG op we are monitoring
-        return;
-    }
-    reply_flag = true;
-    if (m_currentTask != 0) {
-        return;
-    }
-    std::cout << "Sight(" << std::endl;
-    output(op->getArgs().front());
-    std::cout << ")" << std::endl << std::flush;
-}
-
 void Interactive::soundArrived(const Operation & op)
 {
     if (m_accountId.empty()) {

@@ -77,7 +77,11 @@ int AccountContext::dispatch(const RootOperation & op)
             }
         } else {
         }
-        
+    } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO &&
+               !op->getArgs().empty()) {
+        std::cout << "Sight(" << std::endl;
+        m_client.output(op->getArgs().front());
+        std::cout << ")" << std::endl << std::flush;
     }
     assert(m_refNo != 0L);
     m_refNo = 0L;

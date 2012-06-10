@@ -57,7 +57,6 @@ class Interactive : public AdminClient,
     virtual void disappearanceArrived(const Operation &);
     virtual void infoArrived(const Operation &);
     virtual void errorArrived(const Operation &);
-    virtual void sightArrived(const Operation &);
     virtual void soundArrived(const Operation &);
 
     virtual void loginSuccess(const Atlas::Objects::Root & arg);
