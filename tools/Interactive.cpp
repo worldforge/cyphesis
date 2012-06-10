@@ -794,6 +794,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setName(arg);
             l->setArgs1(lmap);
+            l->setSerialno(newSerialNo());
 
             command_context->setFromContext(l);
 
@@ -811,6 +812,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setParents(std::list<std::string>(1, arg));
             l->setArgs1(lmap);
+            l->setSerialno(newSerialNo());
 
             command_context->setFromContext(l);
 
