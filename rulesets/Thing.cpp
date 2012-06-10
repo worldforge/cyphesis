@@ -631,6 +631,9 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
     addToEntity(new_ent);
     s->setArgs1(new_ent);
 
+    if (!op->isDefaultSerialno()) {
+        s->setRefno(op->getSerialno());
+    }
     s->setTo(op->getFrom());
 
     res.push_back(s);
