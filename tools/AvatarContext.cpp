@@ -37,7 +37,7 @@ bool AvatarContext::accept(const RootOperation& op) const
 {
     std::cout << "Checking avatar context to see if it matches"
               << std::endl << std::flush;
-    if (op->getTo() == m_id) {
+    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         return true;
     }
     return false;
@@ -49,6 +49,9 @@ int AvatarContext::dispatch(const RootOperation & op)
         std::cout << "Sight(" << std::endl;
         m_client.output(op->getArgs().front());
         std::cout << ")" << std::endl << std::flush;
+    }
+    if (!op->isDefaultRefno() && op->getRefno() == m_refNo) {
+        m_refNo = 0L;
     }
     return 0;
 }

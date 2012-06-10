@@ -637,6 +637,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             l->setArgs1(cmap);
         }
+        l->setSerialno(newSerialNo());
         command_context->setFromContext(l);
         send(l);
         reply_expected = false;
