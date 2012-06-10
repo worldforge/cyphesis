@@ -71,7 +71,7 @@ int AccountContext::dispatch(const RootOperation & op)
             } else {
                 std::cout << "created avatar"
                           << std::endl << std::flush;
-                m_client.addContext(shared_ptr<ObjectContext>(
+                m_client.addCurrentContext(shared_ptr<ObjectContext>(
                       new AvatarContext(m_client, ent->getId())));
                 
             }
