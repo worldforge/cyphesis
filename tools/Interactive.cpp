@@ -119,10 +119,6 @@ struct command commands[] = {
       &Interactive::commandUnknown, CMD_DEFAULT, 0, },
     { "create",         "Use account to create server objects",
       &Interactive::commandUnknown, CMD_DEFAULT, 0, },
-    { "creator_create", "Use agent to create an entity",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
-    { "creator_look",   "Use agent to look at an entity",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
     { "delete",         "Delete an entity from the server",
       &Interactive::commandUnknown, CMD_DEFAULT, 0, },
     { "dump",           "Write a copy of the world to an Atlas file",
@@ -834,42 +830,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             runTask(task, arg);
             reply_expected = false;
         }
-    } else if (cmd == "creator_create") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
-            std::cout << "Please specify the type to create" << std::endl << std::flush;
-            reply_expected = false;
-        } else {
-            Create c;
-
-            Anonymous thing;
-            thing->setParents(std::list<std::string>(1, arg));
-            c->setArgs1(thing);
-            c->setFrom(m_agentId);
-
-            send(c);
-
-            reply_expected = false;
-        }
-    } else if (cmd == "creator_look") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else {
-            Look l;
-
-            if (!arg.empty()) {
-                Anonymous cmap;
-                cmap->setId(arg);
-                l->setArgs1(cmap);
-            }
-            l->setFrom(m_agentId);
-
-            send(l);
-            reply_expected = true;
-        }
     } else if (cmd == "cancel") {
         if (endTask() != 0) {
             std::cout << "No task currently running" << std::endl << std::flush;
@@ -894,7 +854,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         if (args.size() < 1) {
             std::cout << "usage: create <type> <params> ... "
                       << std::endl << std::flush;
-            reply_expected = false;
         } else {
             Anonymous cmap;
             cmap->setParents(std::list<std::string>(1, args[0]));
@@ -907,6 +866,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             send(c);
         }
+        reply_expected = false;
     } else if (cmd == "login") {
         std::vector<std::string> args;
         tokenize(arg, args);
