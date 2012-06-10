@@ -19,7 +19,9 @@
 
 #include "AvatarContext.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include "tools/Interactive.h"
+
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
@@ -35,11 +37,19 @@ bool AvatarContext::accept(const RootOperation& op) const
 {
     std::cout << "Checking avatar context to see if it matches"
               << std::endl << std::flush;
+    if (op->getTo() == m_id) {
+        return true;
+    }
     return false;
 }
 
 int AvatarContext::dispatch(const RootOperation & op)
 {
+    if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+        std::cout << "Sight(" << std::endl;
+        m_client.output(op->getArgs().front());
+        std::cout << ")" << std::endl << std::flush;
+    }
     return 0;
 }
 

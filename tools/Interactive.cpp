@@ -340,7 +340,7 @@ void Interactive::sightArrived(const Operation & op)
     if (m_accountId.empty()) {
         return;
     }
-    if (m_accountId != op->getTo() && m_agentId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -639,6 +639,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         }
         command_context->setFromContext(l);
         send(l);
+        reply_expected = false;
     } else if (cmd == "logout") {
         Logout l;
         l->setFrom(m_accountId);

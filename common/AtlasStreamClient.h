@@ -66,8 +66,6 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     // void objectArrived(const Atlas::Objects::Root &);
     int waitForLoginResponse();
     int negotiate();
-    void output(const Atlas::Message::Element & item, int depth = 0) const;
-    void output(const Atlas::Objects::Root & item) const;
 
     virtual void objectArrived(const Atlas::Objects::Root &);
 
@@ -110,6 +108,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
                const std::string & username,
                const std::string & password);
     int poll(int timeout = 0, int msec = 0);
+    void output(const Atlas::Message::Element & item, int depth = 0) const;
+    void output(const Atlas::Objects::Root & item) const;
 
     int runTask(ClientTask * task, const std::string & arg);
     int endTask();
