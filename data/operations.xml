@@ -143,6 +143,18 @@
       <string>root_operation</string>
     </list>
   </map>
+  
+    <!--Pioneering construction op start-->
+   <map>
+    <string name="id">constructions</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+  
+    
+      <!--Pioneering construction end-->
 
   <map>
     <string name="id">wear</string>
