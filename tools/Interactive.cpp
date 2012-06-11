@@ -821,14 +821,12 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             reply_expected = false;
         }
     } else if (cmd == "flush") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
+            // FIXME usage
             std::cout << "Please specify the type to flush" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            ClientTask * task = new Flusher(m_agentId);
+            ClientTask * task = new Flusher(command_context);
             runTask(task, arg);
             reply_expected = false;
         }
