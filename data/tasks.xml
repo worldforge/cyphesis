@@ -567,5 +567,29 @@
       <string name="name">world.tasks.Woodenwall.Woodenwall</string>
     </map>
   </map>
+  
+  <!--Pioneering construction start-->
+   <map>
+    <map name="activation">  
+      <string name="operation">constructions</string></string>
+      <string name="target">world</string>
+      <string name="tool">hammer</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">pioneeringconstruction</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Pioneeringconstruction.Pioneeringconstruction</string>
+    </map>
+  </map>
+ 
+    <!--Pioneering construction End-->
+  
+  
 
 </atlas>
