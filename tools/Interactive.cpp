@@ -839,14 +839,10 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         runTask(task, arg);
         reply_expected = false;
     } else if (cmd == "restore") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else {
-            ClientTask * task = new WorldLoader(m_accountId, m_agentId);
-            runTask(task, arg);
-            reply_expected = false;
-        }
+        // FIXME Enforce context type
+        ClientTask * task = new WorldLoader(m_accountId, command_context);
+        runTask(task, arg);
+        reply_expected = false;
     } else if (cmd == "create") {
         std::vector<std::string> args;
         tokenize(arg, args);
