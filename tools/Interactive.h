@@ -39,8 +39,7 @@ class Interactive : public AdminClient,
                     virtual public sigc::trackable
 {
   private:
-    bool m_avatar_flag, m_server_flag;
-    std::string m_agentId;
+    bool m_server_flag;
     std::string m_serverName;
     std::string m_systemType;
     std::string m_prompt;

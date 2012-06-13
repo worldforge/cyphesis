@@ -176,7 +176,7 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
-Interactive::Interactive() : m_avatar_flag(false), m_server_flag(false),
+Interactive::Interactive() : m_server_flag(false),
                              m_serverName("cyphesis"), m_prompt("cyphesis> "),
                              m_exit_flag(false)
 {
@@ -276,17 +276,7 @@ void Interactive::infoArrived(const Operation & op)
         return;
     }
     const Root & ent = op->getArgs().front();
-    if (m_avatar_flag) {
-        std::cout << "Create agent success" << std::endl << std::flush;
-        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            std::cerr << "ERROR: Response to agent create does not contain agent id"
-                      << std::endl << std::flush;
-            
-        } else {
-            m_agentId = ent->getId();
-            m_avatar_flag = false;
-        }
-    } else if (m_server_flag) {
+    if (m_server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
         if (!ent->isDefaultName()) {
             m_serverName = ent->getName();
@@ -304,13 +294,13 @@ void Interactive::infoArrived(const Operation & op)
             }
         }
         m_server_flag = false;
-    } else if (m_currentTask == 0) {
-        AtlasStreamClient::infoArrived(op);
+    } else if (m_currentTask == 0 && op->isDefaultRefno()) {
         std::cout << "Info(" << std::endl;
         output(ent);
         std::cout << ")" << std::endl << std::flush;
         // Display results of command
     }
+    AtlasStreamClient::infoArrived(op);
 }
 
 void Interactive::errorArrived(const Operation & op)
@@ -763,8 +753,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         c->setSerialno(newSerialNo());
 
         command_context->setFromContext(c);
-
-        m_avatar_flag = true;
 
         send(c);
     } else if (cmd == "delete") {
