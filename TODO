@@ -1,3 +1,6 @@
+Optionally report back success in the form of Info on in-game ops with
+serialno?
+
 Improve Interactive to use serialno for responses
 
 Bug: Not listening for IPv6 any more
