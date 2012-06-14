@@ -1578,8 +1578,21 @@ MultiLineListFormattertest_LDADD = \
 WorldLoaderintegration_SOURCES = WorldLoaderintegration.cpp
 WorldLoaderintegration_LDADD = \
         $(top_builddir)/tools/WorldLoader.o \
-        $(top_builddir)/common/AtlasFileLoader.o \
-        $(top_builddir)/common/ClientTask.o
+        $(top_builddir)/tools/Interactive.o \
+        $(top_builddir)/tools/AdminClient.o \
+        $(top_builddir)/tools/AccountContext.o \
+        $(top_builddir)/tools/AvatarContext.o \
+        $(top_builddir)/tools/ConnectionContext.o \
+        $(top_builddir)/tools/JunctureContext.o \
+        $(top_builddir)/tools/IdContext.o \
+        $(top_builddir)/tools/ObjectContext.o \
+        $(top_builddir)/tools/OperationMonitor.o \
+        $(top_builddir)/tools/Flusher.o \
+        $(top_builddir)/tools/WorldDumper.o \
+        $(top_builddir)/tools/MultiLineListFormatter.o \
+        $(top_builddir)/common/libcommon.a \
+        $(READLINE_LIBS) \
+        $(NETWORK_LIBS)
 
 # PYTHON_TESTS
 
