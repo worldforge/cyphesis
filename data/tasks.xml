@@ -571,7 +571,7 @@
 
    <map>
     <map name="activation">  
-      <string name="operation">constructions</string></string>
+      <string name="operation">constructions</string>
       <string name="target">world</string>
       <string name="tool">hammer</string>
     </map>
@@ -588,7 +588,7 @@
     </map>
   </map>
  
-    <!---->
+
   
   
 
