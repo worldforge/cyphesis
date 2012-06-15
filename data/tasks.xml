@@ -568,7 +568,7 @@
     </map>
   </map>
   
-  <!--Pioneering construction start-->
+
    <map>
     <map name="activation">  
       <string name="operation">constructions</string></string>
@@ -588,7 +588,7 @@
     </map>
   </map>
  
-    <!--Pioneering construction End-->
+    <!---->
   
   
 
