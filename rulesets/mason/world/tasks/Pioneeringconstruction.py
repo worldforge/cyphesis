@@ -65,17 +65,15 @@ class Pioneeringconstruction(server.Task):
             return
 
         chunk_loc = Location(self.character.location.parent)
-        chunk_loc.velocity = Vector3D()
         chunk_loc.coordinates = self.pos
-        chunk_loc.orientation=Quaternion([0,0,0,0])
         count = lcount 
         res=Oplist()
         
         #loops through raw_materials and attempts to place 3 lumber in inventory infront of user
         while (count > 0) : 
             tar = raw_materials.pop()
-            move=Operation("move", Entity(tar.id,location=chunk_loc), to=self.target())
-            print " ID "+tar.id+"!"
+            move=Operation("move", Entity(tar.id,location=chunk_loc), to=tar)
+            #print " ID "+tar.id+"!"
             res.append(move)
             count = count - 1
             
