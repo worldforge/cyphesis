@@ -1,3 +1,6 @@
+Fix up WorldLoader so it can work with IG only. Requires support for
+GetOperation in Creator
+
 Optionally report back success in the form of Info on in-game ops with
 serialno?
 
