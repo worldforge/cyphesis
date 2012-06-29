@@ -193,7 +193,9 @@ class Entity : public LocatedEntity {
     virtual void DisappearanceOperation(const Operation &, OpVector &);
     virtual void DivideOperation(const Operation &, OpVector &);
     virtual void EatOperation(const Operation &, OpVector &);
+    virtual void GetOperation(const Operation &, OpVector &);
     virtual void ImaginaryOperation(const Operation &, OpVector &);
+    virtual void InfoOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
     virtual void NourishOperation(const Operation &, OpVector &);
