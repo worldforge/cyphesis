@@ -371,6 +371,14 @@ void Entity::EatOperation(const Operation &, OpVector &)
 {
 }
 
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::InfoOperation(const Operation &, OpVector &)
+{
+}
+
 void Entity::ImaginaryOperation(const Operation &, OpVector &)
 {
 }

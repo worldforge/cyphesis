@@ -40,8 +40,14 @@
         case Atlas::Objects::Operation::DIVIDE_NO: \
             _prefix ## DivideOperation(_op, _result); \
             break; \
+        case Atlas::Objects::Operation::GET_NO: \
+            _prefix ## GetOperation(_op, _result); \
+            break; \
         case Atlas::Objects::Operation::IMAGINARY_NO: \
             _prefix ## ImaginaryOperation(_op, _result); \
+            break; \
+        case Atlas::Objects::Operation::INFO_NO: \
+            _prefix ## InfoOperation(_op, _result); \
             break; \
         case Atlas::Objects::Operation::LOOK_NO: \
             _prefix ## LookOperation(_op, _result); \
