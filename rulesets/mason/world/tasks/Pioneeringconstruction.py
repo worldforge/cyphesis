@@ -52,7 +52,7 @@ class Pioneeringconstruction(server.Task):
         count = 0
         raw_materials = []
 
-        # Make sure only 1 part of each attribute is being consumed as per the recipe. 
+
         for item in self.character.contains:
             if item.type[0] == str(self.materials):
                     raw_materials.append(item)
@@ -69,11 +69,33 @@ class Pioneeringconstruction(server.Task):
         count = lcount 
         res=Oplist()
         
-        #loops through raw_materials and attempts to place 3 lumber in inventory infront of user
+        #loops through raw_materials and places 3 lumber in inventory infront of user
+        offset=Vector3D(0,0,0)
         while (count > 0) : 
             tar = raw_materials.pop()
+            #length of the lumber obtained
+            lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
+            #rough length to position lumber
+            lumber_length=lumberlength/4
+            
+            if count == 3 :
+				#left component
+				chunk_loc.orientation=Quaternion([1,0.5,0,1])
+            if count == 2 :
+				#right component
+				chunk_loc.orientation=Quaternion([1,-0.5,0,1])
+				offset=Vector3D(lumber_length,0,lumber_length)
+				chunk_loc.coordinates=chunk_loc.coordinates+offset
+            if count == 1 :
+				#bottom component
+				chunk_loc.coordinates = self.pos
+				#.707 is sin(.5) which is needed for a 90 degree rotation
+				chunk_loc.orientation=Quaternion([.707,0,.707,0])
+				offset=Vector3D(-(2*lumber_length),-(3*lumber_length),0)
+				chunk_loc.coordinates=chunk_loc.coordinates+offset
+				
+
             move=Operation("move", Entity(tar.id,location=chunk_loc), to=tar)
-            #print " ID "+tar.id+"!"
             res.append(move)
             count = count - 1
             
