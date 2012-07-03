@@ -323,7 +323,7 @@ void Character::InfoOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    // tp->TickOperation(this, op, res);
+    tp->operation(this, op, res);
 }
 
 void Character::TickOperation(const Operation & op, OpVector & res)
