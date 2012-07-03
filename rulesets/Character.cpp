@@ -319,7 +319,6 @@ void Character::InfoOperation(const Operation & op, OpVector & res)
     TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
     if (tp == 0) {
-        log(WARNING, "Info for task, but no tasks property");
         return;
     }
 
