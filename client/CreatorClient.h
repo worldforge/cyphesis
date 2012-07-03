@@ -29,6 +29,9 @@ class CreatorClient : public CharacterClient {
   public:
     CreatorClient(const std::string &, long, ClientConnection&);
 
+    LocatedEntity * handleMakeResponse(const Atlas::Objects::Operation::RootOperation &,
+                                       double);
+
     LocatedEntity * make(const Atlas::Objects::Entity::RootEntity &);
     void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);
     void del(const std::string &);
