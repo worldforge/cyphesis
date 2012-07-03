@@ -128,9 +128,9 @@ void Task::initTask(const Operation & op, OpVector & res)
     res.push_back(tick);
 }
 
-void Task::TickOperation(const Operation & op, OpVector & res)
+void Task::operation(const Operation & op, OpVector & res)
 {
     if (m_script != 0) {
-        m_script->operation("tick", op, res);
+        m_script->operation(op->getParents().front(), op, res);
     }
 }

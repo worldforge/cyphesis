@@ -100,6 +100,6 @@ void Task::initTask(const Operation & op, OpVector & res)
 {
 }
 
-void Task::TickOperation(const Operation & op, OpVector & res)
+void Task::operation(const Operation & op, OpVector & res)
 {
 }

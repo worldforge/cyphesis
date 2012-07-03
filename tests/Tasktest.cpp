@@ -47,7 +47,7 @@ int main()
         OpVector res;
 
         if (0) {
-            task->TickOperation(op, res);
+            task->operation(op, res);
         }
     }
 
@@ -77,7 +77,7 @@ int main()
 
         fell.initTask(c, res);
 
-        fell.TickOperation(op, res);
+        fell.operation(op, res);
 
         fell.irrelevant();
 
