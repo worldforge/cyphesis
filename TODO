@@ -1,3 +1,6 @@
+Now that the client is getting an info response to create, get rid of the
+need to see?
+
 Re-factor login code so Session is the unique class rather than Account.
 Constraining logins to be one per account may be sound policy, but it
 should be policy rather than a hard constraint of the architecture.
