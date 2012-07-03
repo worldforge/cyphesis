@@ -630,6 +630,10 @@ void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
 {
 }
 
+void TasksProperty::operation(Entity *, const Operation &, OpVector &)
+{
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
