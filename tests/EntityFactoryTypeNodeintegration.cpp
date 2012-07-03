@@ -175,6 +175,10 @@ void Character::ImaginaryOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::InfoOperation(const Operation & op, OpVector &)
+{
+}
+
 void Character::TickOperation(const Operation & op, OpVector &)
 {
 }

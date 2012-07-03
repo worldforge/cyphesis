@@ -314,6 +314,18 @@ void Character::ImaginaryOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 }
 
+void Character::InfoOperation(const Operation & op, OpVector & res)
+{
+    TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
+
+    if (tp == 0) {
+        log(WARNING, "Info for task, but no tasks property");
+        return;
+    }
+
+    // tp->TickOperation(this, op, res);
+}
+
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "================================" << std::endl
