@@ -552,7 +552,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = dox/cyphesis \
+INPUT                  = dox/python \
                          rulesets/basic/mind \
                          rulesets/mason/world
 

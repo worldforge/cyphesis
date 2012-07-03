@@ -48,6 +48,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Drop;
+using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Pickup;
@@ -670,10 +671,19 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
             return;
         }
 
-        Operation c(op.copy());
-
         Anonymous new_ent;
         obj->addToEntity(new_ent);
+
+        if (!op->isDefaultSerialno()) {
+            log(NOTICE, "Sending create response");
+
+            Info i;
+            i->setArgs1(new_ent);
+            i->setTo(op->getFrom());
+            res.push_back(i);
+        }
+
+        Operation c(op.copy());
         c->setArgs1(new_ent);
 
         Sight s;

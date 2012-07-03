@@ -79,6 +79,7 @@ class Character : public Character_parent {
     virtual void externalOperation(const Operation & op);
 
     virtual void ImaginaryOperation(const Operation & op, OpVector &);
+    virtual void InfoOperation(const Operation & op, OpVector &);
     virtual void TickOperation(const Operation & op, OpVector &);
     virtual void TalkOperation(const Operation & op, OpVector &);
     virtual void NourishOperation(const Operation & op, OpVector &);

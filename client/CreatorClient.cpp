@@ -42,48 +42,15 @@ CreatorClient::CreatorClient(const std::string & id, long intId,
 {
 }
 
-LocatedEntity * CreatorClient::make(const RootEntity & entity)
+LocatedEntity * CreatorClient::handleMakeResponse(const RootOperation & op,
+                                                  double create_time)
 {
-    Create op;
-    op->setArgs1(entity);
-    op->setFrom(getId());
-    op->setTo(getId());
-    OpVector result;
-    if (sendAndWaitReply(op, result) != 0) {
-        std::cerr << "No reply to make" << std::endl << std::flush;
-        return NULL;
-    }
-    assert(!result.empty());
-    const Operation & res = result.front();
-    if (!res.isValid()) {
-        std::cerr << "NULL reply to make" << std::endl << std::flush;
-        return NULL;
-    }
-    if (res->getClassNo() != Atlas::Objects::Operation::SIGHT_NO) {
-        std::cerr << "Reply to make isn't sight" << std::endl << std::flush;
-        return NULL;
-    }
-    if (res->getArgs().empty()) {
-        std::cerr << "Reply to make has no args" << std::endl << std::flush;
-        return NULL;
-    }
-    RootOperation arg = smart_dynamic_cast<RootOperation>(res->getArgs().front());
-    if (!arg.isValid()) {
-        std::cerr << "Arg of reply to make is not an operation"
-                  << std::endl << std::flush;
-        return NULL;
-    }
-    if (arg->getClassNo() != Atlas::Objects::Operation::CREATE_NO) {
-        std::cerr << "Reply to make isn't sight of create"
-                  << std::endl << std::flush;
-        return NULL;
-    }
-    if (arg->getArgs().empty()) {
+    if (op->getArgs().empty()) {
         std::cerr << "Arg of reply to make has no args"
                   << std::endl << std::flush;
         return NULL;
     }
-    RootEntity created = smart_dynamic_cast<RootEntity>(arg->getArgs().front());
+    RootEntity created = smart_dynamic_cast<RootEntity>(op->getArgs().front());
     if (!created.isValid()) {
         std::cerr << "Created argument is not an entity"
                   << std::endl << std::flush;
@@ -103,8 +70,52 @@ LocatedEntity * CreatorClient::make(const RootEntity & entity)
     const std::string & created_type = created->getParents().front();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
-    LocatedEntity * obj = m_map.updateAdd(created, res->getSeconds());
+    LocatedEntity * obj = m_map.updateAdd(created, create_time);
     return obj;
+}
+
+LocatedEntity * CreatorClient::make(const RootEntity & entity)
+{
+    Create op;
+    op->setArgs1(entity);
+    op->setFrom(getId());
+    op->setTo(getId());
+    OpVector result;
+    if (sendAndWaitReply(op, result) != 0) {
+        std::cerr << "No reply to make" << std::endl << std::flush;
+        return NULL;
+    }
+    assert(!result.empty());
+    const Operation & res = result.front();
+    if (!res.isValid()) {
+        std::cerr << "NULL reply to make" << std::endl << std::flush;
+        return NULL;
+    }
+    // FIXME Make this more robust against an info response
+    if (res->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+        if (res->getArgs().empty()) {
+            std::cerr << "Reply to make has no args" << std::endl << std::flush;
+            return NULL;
+        }
+        RootOperation arg = smart_dynamic_cast<RootOperation>(res->getArgs().front());
+        if (!arg.isValid()) {
+            std::cerr << "Arg of reply to make is not an operation"
+                      << std::endl << std::flush;
+            return NULL;
+        }
+        if (arg->getClassNo() != Atlas::Objects::Operation::CREATE_NO) {
+            std::cerr << "Reply to make isn't sight of create"
+                      << std::endl << std::flush;
+            return NULL;
+        }
+        return handleMakeResponse(arg, res->getSeconds());
+    } else if (res->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+        return handleMakeResponse(res, res->getSeconds());
+    } else {
+        std::cerr << "Reply to make isn't sight or info"
+                  << std::endl << std::flush;
+        return NULL;
+    }
 }
 
 

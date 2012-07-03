@@ -217,6 +217,14 @@ void Entity::EatOperation(const Operation &, OpVector &)
 {
 }
 
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::InfoOperation(const Operation &, OpVector &)
+{
+}
+
 void Entity::ImaginaryOperation(const Operation &, OpVector &)
 {
 }
@@ -574,7 +582,7 @@ void Task::initTask(const Operation & op, OpVector & res)
 {
 }
 
-void Task::TickOperation(const Operation & op, OpVector & res)
+void Task::operation(const Operation & op, OpVector & res)
 {
 }
 
@@ -619,6 +627,10 @@ void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
 }
 
 void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::operation(Entity *, const Operation &, OpVector &)
 {
 }
 

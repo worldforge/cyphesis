@@ -198,16 +198,11 @@ void TasksProperty::TickOperation(Entity * owner,
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return;
     }
-    m_task->TickOperation(op, res);
-    if (m_task->obsolete()) {
-        clearTask(owner, res);
-    } else {
-        if (res.empty()) {
-            log(WARNING, String::compose("Character::%1: Task %2 has "
-                                         "stalled", __func__,
-                                         m_task->name()));
-        }
-        updateTask(owner, res);
+    operation(owner, op, res);
+    if (m_task != 0 && res.empty()) {
+        log(WARNING, String::compose("Character::%1: Task %2 has "
+                                     "stalled", __func__,
+                                     m_task->name()));
     }
 }
 
@@ -215,4 +210,16 @@ void TasksProperty::UseOperation(Entity * owner,
                                  const Operation & op,
                                  OpVector & res)
 {
+}
+
+void TasksProperty::operation(Entity * owner,
+                              const Operation & op,
+                              OpVector & res)
+{
+    m_task->operation(op, res);
+    if (m_task->obsolete()) {
+        clearTask(owner, res);
+    } else {
+        updateTask(owner, res);
+    }
 }

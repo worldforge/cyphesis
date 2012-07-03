@@ -201,7 +201,7 @@ void Task::initTask(const Operation & op, OpVector & res)
 {
 }
 
-void Task::TickOperation(const Operation & op, OpVector & res)
+void Task::operation(const Operation & op, OpVector & res)
 {
 }
 
@@ -264,6 +264,14 @@ void Entity::DivideOperation(const Operation &, OpVector &)
 }
 
 void Entity::EatOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::InfoOperation(const Operation &, OpVector &)
 {
 }
 

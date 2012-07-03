@@ -327,8 +327,18 @@ void Entity::EatOperation(const Operation &, OpVector &)
 {
 }
 
+/// \brief Handle a get operation
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
 /// \brief Handle a imaginary operation
 void Entity::ImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+/// \brief Handle a info operation
+void Entity::InfoOperation(const Operation &, OpVector &)
 {
 }
 

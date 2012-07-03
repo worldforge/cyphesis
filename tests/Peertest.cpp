@@ -645,6 +645,10 @@ void Character::ImaginaryOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::InfoOperation(const Operation & op, OpVector &)
+{
+}
+
 void Character::TickOperation(const Operation & op, OpVector &)
 {
 }
@@ -842,6 +846,14 @@ void Entity::DivideOperation(const Operation &, OpVector &)
 }
 
 void Entity::EatOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::InfoOperation(const Operation &, OpVector &)
 {
 }
 

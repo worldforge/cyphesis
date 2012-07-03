@@ -47,7 +47,7 @@ int main()
         OpVector res;
 
         if (0) {
-            task->TickOperation(op, res);
+            task->operation(op, res);
         }
     }
 
@@ -77,7 +77,7 @@ int main()
 
         fell.initTask(c, res);
 
-        fell.TickOperation(op, res);
+        fell.operation(op, res);
 
         fell.irrelevant();
 
@@ -116,6 +116,10 @@ void Character::externalOperation(const Operation & op)
 
 
 void Character::ImaginaryOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::InfoOperation(const Operation & op, OpVector &)
 {
 }
 
@@ -311,6 +315,14 @@ void Entity::DivideOperation(const Operation &, OpVector &)
 }
 
 void Entity::EatOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::InfoOperation(const Operation &, OpVector &)
 {
 }
 

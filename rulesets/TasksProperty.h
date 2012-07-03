@@ -53,6 +53,8 @@ class TasksProperty : public PropertyBase {
 
     void TickOperation(Entity * owner, const Operation & op, OpVector &);
     void UseOperation(Entity * owner, const Operation & op, OpVector &);
+
+    void operation(Entity * owner, const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H
