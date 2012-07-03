@@ -26,6 +26,8 @@ class Dig(server.Task):
 
         self.pos = Point3D(op[0].pos)
 
+    def info_operation(self, op):
+        print "Dig.info"
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dig.tick"
@@ -70,6 +72,7 @@ class Dig(server.Task):
                                 type = "pile",
                                 material = Dig.materials[surface],
                                 location = chunk_loc), to = self.target())
+        create.setSerialno(0)
         res.append(create)
 
         res.append(self.next_tick(1.75))
