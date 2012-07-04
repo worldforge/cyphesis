@@ -589,7 +589,26 @@
   </map>
  
 
-  
+     <map>
+    <map name="activation">  
+      <string name="operation">gates</string>
+      <string name="target">world</string>
+      <string name="tool">rope</string>
+    </map>
+    <map name="attributes">
+    </map>
+    <string name="id">gateconstruction</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>task</string>
+    </list>
+    <map name="script">
+      <string name="language">python</string>
+      <string name="name">world.tasks.Gateconstruction.Gateconstruction</string>
+    </map>
+  </map>
+ 
+
   
 
 </atlas>
