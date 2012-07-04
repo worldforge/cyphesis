@@ -1,8 +1,11 @@
+## \brief Interface to server core mind.
+class Mind(object): pass
+
 ## \brief Interface to server core tasks.
 ##
 ## This is the interface class for all task scripts.
 ## It provides the interface to the underlying object in the server core.
-class Task:
+class Task(object):
   def __init__(self, c):
      self.character = c
 
@@ -13,7 +16,7 @@ class Task:
 ##
 ## This is the interface class for all entity and mind scripts.
 ## It provides the interface to the underlying object in the server core.
-class Thing:
+class Thing(object):
 
   ## Thing constructor
   def __init__(self):
