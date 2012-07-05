@@ -37,19 +37,22 @@ class Gateconstruction(server.Task):
             if item.type[0] == str("construction"):
                 raw_materials.append(item)
                 self.acount = self.acount + 1
-                #print "ADDING A frames"
+                print "ADDING A frames"
             if item.type[0] == str("lumber"):
                 raw_materials1.append(item)
                 self.lcount=self.lcount+1
-                #print "ADDING LUMBER"                
+                print "ADDING LUMBER"                
             if self.acount == 2 and self.lcount==1:
-                #print "DONE A frame"
+                print "DONE Gate"
                 break
         else:
-            print "No materials in inventory"
+            print "No materials in inventory for Gate"
             self.irrelevant()
             return
-        
+
+
+        print str(len(raw_materials))
+        print str(len(raw_materials1))
         chunk_loc = Location(gate())
         #chunk_loc = Location(self.character.location.parent)
         chunk_loc.coordinates =Point3D([0,0,0]) #self.pos
@@ -58,11 +61,11 @@ class Gateconstruction(server.Task):
         while (count1 > 0):
             tar = raw_materials1.pop()
             self.lumber_length=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
-            offset=Vector3D(0,0,self.lumber_length)
+            offset=Vector3D(0,self.lumber_length/3,self.lumber_length*.65)
             chunk_loc.orientation=Quaternion([.707,0,0,.707])
             chunk_loc.coordinates=chunk_loc.coordinates+offset
-            move=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
-            res.append(move)
+            move1=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
+            res.append(move1)
             #print str(tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2])
             #print str(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])
             #print str(tar.location.bbox.far_point[0]-tar.location.bbox.near_point[0])
@@ -74,36 +77,33 @@ class Gateconstruction(server.Task):
         #chunk_loc = Location(self.character.location.parent)
         chunk_loc.coordinates =Point3D([0,0,0]) #self.pos        
         #loops through raw_materials and places 3 lumber in inventory infront of user
-        offset=Vector3D(0,0,0)#magic number till size of aframe can be found
+        offset=Vector3D(0,0,0)
         while (count > 0) : 
             tar = raw_materials.pop()
-            #length of the lumber obtained
-            #lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
-            #rough length to position lumber
-            #lumber_length=lumberlength/4
-            
+          
             if count == 2 :
                 #left component
                 chunk_loc.coordinates =Point3D([0,0,0])
-                offset=Vector3D(0,0,self.lumber_length)
+                offset=Vector3D(0,0,self.lumber_length*.7)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
+                print "LEFT"
             if count == 1 :
                 #right component
                 chunk_loc.coordinates =Point3D([0,0,0])
-                offset=Vector3D(0,-(self.lumber_length),self.lumber_length)
+                offset=Vector3D(0,-(self.lumber_length/2),self.lumber_length*.7)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
+                print "RIGHT"
                 
-                
-            #print "MOVING"
+            print "MOVING"
             move=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
             res.append(move)
             count = count - 1
 
         
 
-            
+        print "RETURNING"    
         self.progress =1
         self.irrelevant()
         return res
