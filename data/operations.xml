@@ -143,6 +143,23 @@
       <string>root_operation</string>
     </list>
   </map>
+  
+
+   <map>
+    <string name="id">constructions</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+  
+	<map>
+    <string name="id">gates</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
 
   <map>
     <string name="id">wear</string>
