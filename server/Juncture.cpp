@@ -225,7 +225,6 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
                             m_connection->m_server.getName());
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
-    m_connectRef = op->getSerialno();
     if (m_socket->connect(hostname, port) != 0) {
         error(op, "Connection failed", res, getId());
         delete m_socket;
@@ -239,6 +238,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     m_connection->m_commClient.m_commServer.addSocket(m_socket);
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
 
+    m_connectRef = op->getSerialno();
     m_socket->connected.connect(sigc::mem_fun(this,
                                               &Juncture::onPeerConnected));
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
