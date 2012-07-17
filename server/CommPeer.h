@@ -42,7 +42,7 @@ class CommPeer : public CommClient {
 
     void idle(time_t t);
 
-    int connect(const std::string &, int, long);
+    int connect(const std::string &, int);
     void setup(Router *);
 
     /// \brief Get the hostname of the connected peer

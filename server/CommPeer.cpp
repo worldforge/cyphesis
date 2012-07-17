@@ -53,7 +53,7 @@ CommPeer::~CommPeer()
 /// @param host The hostname of the peer to connect to
 /// @param port The port to connect on
 /// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host, int port, long ref)
+int CommPeer::connect(const std::string & host, int port)
 {
     m_host = host;
     m_port = port;

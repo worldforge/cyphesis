@@ -226,7 +226,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     m_connectRef = op->getSerialno();
-    if (m_socket->connect(hostname, port, m_connectRef) != 0) {
+    if (m_socket->connect(hostname, port) != 0) {
         error(op, "Connection failed", res, getId());
         delete m_socket;
         m_socket = 0;
