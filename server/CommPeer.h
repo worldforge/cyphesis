@@ -60,6 +60,7 @@ class CommPeer : public CommClient {
     }
 
     sigc::signal<void> connected;
+    sigc::signal<void> failed;
 };
 
 #endif // SERVER_COMM_PEER_H
