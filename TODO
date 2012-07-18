@@ -1,3 +1,6 @@
+Remove m_host and m_port in CommPeer. Store them in Peer
+Separate out connect into two trivial inline functions
+
 There are many ways in which MemMap does the same job as WorldRouter.
 Common base class?
 
