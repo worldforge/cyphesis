@@ -486,7 +486,7 @@ int CommPeer::read()
     return 0;
 }
 
-int CommPeer::connect(const std::string & host, int port)
+int CommPeer::connect(const std::string & host, int port, struct addrinfo *)
 {
     return stub_CommPeer_connect_return;
 }
