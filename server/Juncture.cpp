@@ -112,6 +112,13 @@ void Juncture::onPeerLost()
 {
 }
 
+void Juncture::onPeerReplied(const Operation & op)
+{
+    if (m_connection != 0) {
+        m_connection->send(op);
+    }
+}
+
 int Juncture::attemptConnect(const std::string & hostname, int port)
 {
     m_socket = new CommPeer(m_connection->m_commClient.m_commServer,
@@ -133,13 +140,6 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
                                            &Juncture::onPeerFailed));
 
     return 0;
-}
-
-void Juncture::onPeerReplied(const Operation & op)
-{
-    if (m_connection != 0) {
-        m_connection->send(op);
-    }
 }
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
