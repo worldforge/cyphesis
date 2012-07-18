@@ -87,17 +87,17 @@ int CommPeer::read()
 {
     if (m_clientIos.connect_pending()) {
         if (m_clientIos.isReady(0)) {
+            connected.emit();
             return 0;
         } else {
+            // With the cyphesis socket model, this object gets deleted
+            // if its fd gets closed, so trying a second fd is useless
+            // This object is done.
+            failed.emit();
             return -1;
         }
     } else {
-        Atlas::Negotiate * old_neg = m_negotiate;
-        int ret = CommClient::read();
-        if (old_neg != m_negotiate) {
-            connected.emit();
-        }
-        return ret;
+        return CommClient::read();
     }
 }
 
