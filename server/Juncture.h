@@ -28,6 +28,8 @@ class CommPeer;
 class Connection;
 class Peer;
 
+class PeerAddress;
+
 /// \brief Class managing and persisting connections to another server that
 /// is peered to this one
 ///
@@ -35,13 +37,17 @@ class Peer;
 /// the peer connection
 class Juncture : public ConnectedRouter, virtual public sigc::trackable {
   protected:
+    PeerAddress * m_address;
     CommPeer * m_socket;
     Peer * m_peer;
     long m_connectRef;
 
     void onPeerConnected();
+    void onPeerFailed();
     void onPeerLost();
     void onPeerReplied(const Operation &);
+
+    int attemptConnect(const std::string &, int);
   public:
     Juncture(Connection *, const std::string & id, long iid);
     virtual ~Juncture();
