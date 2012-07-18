@@ -53,11 +53,15 @@ CommPeer::~CommPeer()
 /// @param host The hostname of the peer to connect to
 /// @param port The port to connect on
 /// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host, int port)
+int CommPeer::connect(const std::string & host, int port, struct addrinfo * i)
 {
     m_host = host;
     m_port = port;
-    m_clientIos.open(host, port, true);
+    if (i != 0) {
+        m_clientIos.open(i, true);
+    } else {
+        m_clientIos.open(host, port, true);
+    }
     if (m_clientIos.is_open()) {
         return 0;
     }
