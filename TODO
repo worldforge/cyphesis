@@ -1,3 +1,6 @@
+There are many ways in which MemMap does the same job as WorldRouter.
+Common base class?
+
 Fix up WorldLoader so it can work with IG only. Requires support for
 GetOperation in Creator
 
