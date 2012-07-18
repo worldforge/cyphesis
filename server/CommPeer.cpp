@@ -58,14 +58,10 @@ int CommPeer::connect(const std::string & host, int port, struct addrinfo * i)
     m_host = host;
     m_port = port;
     if (i != 0) {
-        m_clientIos.open(i, true);
+        return m_clientIos.open(i, true);
     } else {
-        m_clientIos.open(host, port, true);
+        return m_clientIos.open(host, port, true);
     }
-    if (m_clientIos.is_open()) {
-        return 0;
-    }
-    return -1;
 }
 
 void CommPeer::setup(Router * connection)
