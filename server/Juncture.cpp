@@ -80,6 +80,7 @@ void Juncture::onSocketConnected()
 
         m_connection->send(info);
     }
+    m_socket = 0;
     m_connectRef = 0L;
 }
 
@@ -216,7 +217,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
         error(op, "Juncture not connected", res, getId());
         return;
     }
-    assert(m_socket != 0);
+    assert(m_socket == 0);
 
     if (m_peer->getAuthState() != PEER_INIT) {
         error(op, "Juncture not ready", res, getId());
