@@ -62,8 +62,11 @@ using Atlas::Objects::Entity::Anonymous;
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
+           int port,
            const std::string & id, long iid) :
       Router(id, iid),
+      m_host(addr),
+      m_port(port),
       m_state(PEER_INIT),
       m_commClient(client),
       m_server(svr)
@@ -286,8 +289,8 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         logout_args.push_back(op_arg);
 
         Anonymous ip_arg;
-        ip_arg->setAttr("teleport_host", peer->getHost());
-        ip_arg->setAttr("teleport_port", peer->getPort());
+        ip_arg->setAttr("teleport_host", m_host);
+        ip_arg->setAttr("teleport_port", m_port);
         ip_arg->setAttr("possess_key", s->getPossessKey());
         ip_arg->setAttr("possess_entity_id", arg->getId());
         logout_args.push_back(ip_arg);

@@ -1,3 +1,9 @@
+In CommPeer, if isReady() was called from ::eof(), all the extra
+logic could be in there, and ::read() would not need to be overriden.
+Currently the override is done twice.
+
+Re-write listener code to use the same iterator crap
+
 Remove m_host and m_port in CommPeer. Store them in Peer
 Separate out connect into two trivial inline functions
 

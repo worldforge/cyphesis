@@ -61,7 +61,7 @@ class PeerAddress {
 void Juncture::onPeerConnected()
 {
     m_peer = new Peer(*m_socket, m_connection->m_server,
-                      "TEST", getId(), getIntId());
+                      m_host, m_port, getId(), getIntId());
 
     m_socket->setup(m_peer);
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
@@ -70,7 +70,7 @@ void Juncture::onPeerConnected()
     log(INFO, String::compose("Juncture onPeerC succeeded %1", getId()));
     if (m_connection != 0) {
         Anonymous info_arg;
-        m_peer->addToEntity(info_arg);
+        addToEntity(info_arg);
 
         Info info;
         info->setArgs1(info_arg);
@@ -124,11 +124,14 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
     m_socket = new CommPeer(m_connection->m_commClient.m_commServer,
                             m_connection->m_server.getName());
 
-    if (m_socket->connect(hostname, port, *m_address->i) != 0) {
+    if (m_socket->connect(*m_address->i) != 0) {
         delete m_socket;
         m_socket = 0;
         return -1;
     }
+
+    m_host = hostname;
+    m_port = port;
 
     log(INFO, String::compose("Connection in progress %1", getId()));
     m_connection->m_commClient.m_commServer.addSocket(m_socket);

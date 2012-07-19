@@ -27,12 +27,6 @@
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {
-  protected:
-    /// \brief The hostname that this peer is connected to
-    std::string m_host;
-    /// \brief The port that this connection is on
-    int m_port;
-
   public:
     CommPeer(CommServer & svr, const std::string &);
     virtual ~CommPeer();
@@ -42,22 +36,9 @@ class CommPeer : public CommClient {
 
     void idle(time_t t);
 
-    int connect(const std::string &, int, struct addrinfo * = 0);
+    int connect(const std::string &, int);
+    int connect(struct addrinfo *);
     void setup(Router *);
-
-    /// \brief Get the hostname of the connected peer
-    ///
-    /// @return The hostname of the connected peer
-    const std::string & getHost() const {
-        return m_host;
-    }
-
-    /// \brief Get the port the peer is connected on
-    ///
-    /// @return The port the peer is connected on
-    int getPort() const {
-        return m_port;
-    }
 
     sigc::signal<void> connected;
     sigc::signal<void> failed;

@@ -39,8 +39,7 @@ using Atlas::Objects::Operation::Info;
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr,
-                   const std::string & name) : CommClient(svr, name),
-                                               m_port(0)
+                   const std::string & name) : CommClient(svr, name)
 {
 }
 
@@ -53,15 +52,18 @@ CommPeer::~CommPeer()
 /// @param host The hostname of the peer to connect to
 /// @param port The port to connect on
 /// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host, int port, struct addrinfo * i)
+int CommPeer::connect(const std::string & host, int port)
 {
-    m_host = host;
-    m_port = port;
-    if (i != 0) {
-        return m_clientIos.open(i, true);
-    } else {
-        return m_clientIos.open(host, port, true);
-    }
+    return m_clientIos.open(host, port, true);
+}
+
+/// \brief Connect to a remote peer wath a specific address info
+///
+/// @param info The address info of the peer to connect to
+/// @return Returns 0 on success and -1 on failure.
+int CommPeer::connect(struct addrinfo * info)
+{
+    return m_clientIos.open(info, true);
 }
 
 void CommPeer::setup(Router * connection)
