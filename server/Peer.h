@@ -41,6 +41,8 @@ typedef std::map<long, TeleportState *> TeleportMap;
 /// to this one
 ///
 /// This is the main point of dispatch for any operation from the peer.
+/// It also handles the state relating to a specific connection, including
+/// whether it is authenticated.
 class Peer : public Router {
   protected:
     /// \brief Name of host we are connected to
