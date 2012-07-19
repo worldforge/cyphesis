@@ -1,3 +1,10 @@
+Peer should probably store a lower level version of the hostname, rather
+than the input to the resolver, thus ensuring the other party can connect
+to the right place. Juncture stores the high level representation, and uses
+DNS to resolve. This is correct, as it may need to re-resolve
+later - the other server may have moved. Peer will get deleted if the other
+servers address changes, and has to express an accurate version to the client.
+
 In Juncture - tighten up detecting the failed socket condition.
 Once we are connected to Peer, probably shouldnt have the m_socket pointer
 any more, and need to make sure we are no longer connected to the signals.
