@@ -73,17 +73,15 @@ int CommUnixListener::setup(const std::string & name)
 {
     m_path = name;
 
-    m_unixListener.open(m_path);
-    bool bound = m_unixListener.is_open();
+    int ret = m_unixListener.open(m_path);
 
-    if (!bound) {
+    if (ret != 0) {
         ::unlink(m_path.c_str());
 
-        m_unixListener.open(m_path);
-        bound = m_unixListener.is_open();
+        ret = m_unixListener.open(m_path);
     }
 
-    return bound ? 0 : 1;
+    return ret;
 }
 
 /// \brief Accept a new connect to the listen socket.

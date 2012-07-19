@@ -101,8 +101,7 @@ int CommTCPListener::accept()
 /// \brief Create and bind the listen socket.
 int CommTCPListener::setup(int port)
 {
-    m_tcpListener.open(port);
-    if (!m_tcpListener.is_open()) {
+    if (m_tcpListener.open(port) != 0) {
         return -1;
     }
 
