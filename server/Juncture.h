@@ -34,7 +34,10 @@ class PeerAddress;
 /// is peered to this one
 ///
 /// This is the main point of dispatch for any operation from the manager of
-/// the peer connection
+/// the peer connection. It represents the persistent part of a relationship
+/// with another server. Network session specific state is handled by
+/// the Peer object, which this object holds a reference to, but does not
+/// own.
 class Juncture : public ConnectedRouter, virtual public sigc::trackable {
   protected:
     PeerAddress * m_address;
