@@ -58,7 +58,7 @@ class PeerAddress {
     tcp_address::const_iterator i;
 };
 
-void Juncture::onPeerConnected()
+void Juncture::onSocketConnected()
 {
     m_peer = new Peer(*m_socket, m_connection->m_server,
                       m_host, m_port, getId(), getIntId());
@@ -83,7 +83,7 @@ void Juncture::onPeerConnected()
     m_connectRef = 0L;
 }
 
-void Juncture::onPeerFailed()
+void Juncture::onSocketFailed()
 {
     assert(m_address != 0);
     if (m_connection != 0) {
@@ -138,9 +138,9 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
 
     m_socket->connected.connect(sigc::mem_fun(this,
-                                              &Juncture::onPeerConnected));
+                                              &Juncture::onSocketConnected));
     m_socket->failed.connect(sigc::mem_fun(this,
-                                           &Juncture::onPeerFailed));
+                                           &Juncture::onSocketFailed));
 
     return 0;
 }

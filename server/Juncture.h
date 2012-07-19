@@ -44,8 +44,8 @@ class Juncture : public ConnectedRouter, virtual public sigc::trackable {
     std::string m_host;
     int m_port;
 
-    void onPeerConnected();
-    void onPeerFailed();
+    void onSocketConnected();
+    void onSocketFailed();
     void onPeerLost();
     void onPeerReplied(const Operation &);
 
