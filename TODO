@@ -1,3 +1,8 @@
+In Juncture - tighten up detecting the failed socket condition.
+Once we are connected to Peer, probably shouldnt have the m_socket pointer
+any more, and need to make sure we are no longer connected to the signals.
+Can we clear the socket signals?
+
 In CommPeer, if isReady() was called from ::eof(), all the extra
 logic could be in there, and ::read() would not need to be overriden.
 Currently the override is done twice.
