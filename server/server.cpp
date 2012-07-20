@@ -69,8 +69,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sstream>
-
 class TrustedConnection;
 class Peer;
 
