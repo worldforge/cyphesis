@@ -128,9 +128,5 @@ int CommTCPListener::setup(struct addrinfo * i)
     int fd = m_tcpListener.getSocket();
     socket_linger(fd, 0);
 
-    // Ensure the address can be reused once we are done with it.
-    int flag = 1;
-    ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
-
     return 0;
 }
