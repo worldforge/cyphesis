@@ -39,6 +39,7 @@ class CommTCPListener : public CommStreamListener {
     virtual ~CommTCPListener();
 
     int setup(int port);
+    int setup(struct addrinfo * address);
 };
 
 #endif // SERVER_COMM_TCP_LISTENER_H
