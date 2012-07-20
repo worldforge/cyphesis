@@ -69,6 +69,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <skstream/skaddress.h>
+
 class TrustedConnection;
 class Peer;
 
@@ -324,14 +326,23 @@ int main(int argc, char ** argv)
     }
 #endif
 
-    CommTCPListener * httpListener = new CommTCPListener(*commServer,
-          *new CommHttpClientFactory());
-    if (httpListener->setup(http_port_num) != 0) {
-        log(ERROR, String::compose("Could not create http listen socket on "
-                                   "port %1.", http_port_num));
-        delete httpListener;
-    } else {
-        commServer->addSocket(httpListener);
+    tcp_address http_address;
+
+    if (http_address.resolveListener(String::compose("%1", http_port_num)) == 0) {
+        tcp_address::const_iterator I = http_address.begin();
+        for (; I != http_address.end(); ++I) {
+            log(INFO, "Attempt");
+
+            CommTCPListener * httpListener = new CommTCPListener(*commServer,
+                  *new CommHttpClientFactory());
+            if (httpListener->setup(*I) != 0) {
+                log(ERROR, String::compose("Could not create http listen socket on "
+                                           "port %1.", http_port_num));
+                delete httpListener;
+            } else {
+                commServer->addSocket(httpListener);
+            }
+        }
     }
 
     if (useMetaserver) {
