@@ -44,7 +44,7 @@ static const bool debug_flag = false;
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommTCPListener::CommTCPListener(CommServer & svr, CommClientKit & kit) :
-                 CommStreamListener(svr, kit, &m_tcpListener)
+                 CommStreamListener<tcp_socket_server>(svr, kit)
 {
 }
 
@@ -61,7 +61,7 @@ int CommTCPListener::accept()
     SOCKLEN addr_len = sizeof(sst);
 
     debug(std::cout << "Accepting.." << std::endl << std::flush;);
-    int asockfd = ::accept(m_tcpListener.getSocket(),
+    int asockfd = ::accept(m_listener.getSocket(),
                            (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {
@@ -101,31 +101,27 @@ int CommTCPListener::accept()
 /// \brief Create and bind the listen socket.
 int CommTCPListener::setup(int port)
 {
-    if (m_tcpListener.open(port) != 0) {
+    if (m_listener.open(port) != 0) {
         return -1;
     }
 
     // Set a linger time of 0 seconds, so that the socket is got rid
     // of quickly.
-    int fd = m_tcpListener.getSocket();
+    int fd = m_listener.getSocket();
     socket_linger(fd, 0);
-
-    // Ensure the address can be reused once we are done with it.
-    int flag = 1;
-    ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
 
     return 0;
 }
 
 int CommTCPListener::setup(struct addrinfo * i)
 {
-    if (m_tcpListener.open(i) != 0) {
+    if (m_listener.open(i) != 0) {
         return -1;
     }
 
     // Set a linger time of 0 seconds, so that the socket is got rid
     // of quickly.
-    int fd = m_tcpListener.getSocket();
+    int fd = m_listener.getSocket();
     socket_linger(fd, 0);
 
     return 0;

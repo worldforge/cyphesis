@@ -27,11 +27,8 @@
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote hosts.
 /// \ingroup ServerSockets
-class CommTCPListener : public CommStreamListener {
+class CommTCPListener : public CommStreamListener<tcp_socket_server> {
   protected:
-    /// skstream object to manage the listen socket.
-    tcp_socket_server m_tcpListener;
-
     virtual int accept();
 
   public:

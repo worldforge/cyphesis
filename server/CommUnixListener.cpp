@@ -52,13 +52,13 @@ static const bool debug_flag = false;
 ///
 /// @param svr Reference to the object that manages all socket communication.
 CommUnixListener::CommUnixListener(CommServer & svr, CommClientKit & kit) :
-                  CommStreamListener(svr, kit, &m_unixListener)
+                  CommStreamListener<unix_socket_server>(svr, kit)
 {
 }
 
 CommUnixListener::~CommUnixListener()
 {
-    if (m_unixListener.is_open()) {
+    if (m_listener.is_open()) {
         ::unlink(m_path.c_str());
     }
 }
@@ -73,12 +73,12 @@ int CommUnixListener::setup(const std::string & name)
 {
     m_path = name;
 
-    int ret = m_unixListener.open(m_path);
+    int ret = m_listener.open(m_path);
 
     if (ret != 0) {
         ::unlink(m_path.c_str());
 
-        ret = m_unixListener.open(m_path);
+        ret = m_listener.open(m_path);
     }
 
     return ret;
@@ -88,7 +88,7 @@ int CommUnixListener::setup(const std::string & name)
 int CommUnixListener::accept()
 {
     debug(std::cout << "Local accepting.." << std::endl << std::flush;);
-    int fd = m_unixListener.accept();
+    int fd = m_listener.accept();
 
     if (fd < 0) {
         return -1;

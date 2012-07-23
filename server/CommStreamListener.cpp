@@ -17,6 +17,10 @@
 
 // $Id$
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "CommStreamListener.h"
 
 #include "CommClientFactory.h"
@@ -26,46 +30,62 @@
 /// \brief Constructor for stream listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommStreamListener::CommStreamListener(CommServer & svr,
-                                       CommClientKit & kit,
-                                       basic_socket_server * listener) :
-                    CommSocket(svr), m_listener(listener), m_clientKit(kit)
+template <class ListenerT>
+CommStreamListener<ListenerT>::CommStreamListener(CommServer & svr,
+                                       CommClientKit & kit) :
+                    CommSocket(svr), m_clientKit(kit)
 {
 }
 
-CommStreamListener::~CommStreamListener()
+template <class ListenerT>
+CommStreamListener<ListenerT>::~CommStreamListener()
 {
-    delete &m_clientKit;
 }
 
-int CommStreamListener::create(int asockfd, const char * address)
+template <class ListenerT>
+int CommStreamListener<ListenerT>::create(int asockfd, const char * address)
 {
     return m_clientKit.newCommClient(m_commServer, asockfd, address);
 }
 
-int CommStreamListener::getFd() const
+template <class ListenerT>
+int CommStreamListener<ListenerT>::getFd() const
 {
-    return m_listener->getSocket();
+    return m_listener.getSocket();
 }
 
-bool CommStreamListener::eof()
+template <class ListenerT>
+bool CommStreamListener<ListenerT>::eof()
 {
     return false;
 }
 
-bool CommStreamListener::isOpen() const
+template <class ListenerT>
+bool CommStreamListener<ListenerT>::isOpen() const
 {
-    return m_listener->is_open();
+    return m_listener.is_open();
 }
 
-int CommStreamListener::read()
+template <class ListenerT>
+int CommStreamListener<ListenerT>::read()
 {
-    accept();
+    this->accept();
     // Accept errors are not returned, as the listen socket should not
     // be removed.
     return 0;
 }
 
-void CommStreamListener::dispatch()
+template <class ListenerT>
+void CommStreamListener<ListenerT>::dispatch()
 {
 }
+
+template class CommStreamListener<tcp_socket_server>;
+
+#ifdef HAVE_SYS_UN_H
+
+#include <skstream/skserver_unix.h>
+
+template class CommStreamListener<unix_socket_server>;
+
+#endif // HAVE_SYS_UN_H

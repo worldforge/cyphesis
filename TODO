@@ -1,3 +1,6 @@
+Intetionally surrender as many capabilities as we can in order to avoid
+security issues.
+
 Peer should probably store a lower level version of the hostname, rather
 than the input to the resolver, thus ensuring the other party can connect
 to the right place. Juncture stores the high level representation, and uses
