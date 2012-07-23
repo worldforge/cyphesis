@@ -1,3 +1,9 @@
+Note that SO_LINGER almost certainly does nothing on listen sockets,
+and is irrelevant on others. What we really need to do is shutdown the write
+side once we have finished sending, and the leave the socket along to be 
+close by the client.
+ : see http://blog.netherlabs.nl/articles/2009/01/18/the-ultimate-so_linger-page-or-why-is-my-tcp-not-reliable
+
 Intetionally surrender as many capabilities as we can in order to avoid
 security issues.
 
