@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "server/CommStreamListener.h"
+#include "server/CommStreamListener_impl.h"
 
 #include "server/CommClientFactory.h"
 
@@ -37,11 +37,11 @@ class test_socket_server : public basic_socket_server
   public:
 };
 
-class TestCommStreamListener : public CommStreamListener
+class TestCommStreamListener : public CommStreamListener<test_socket_server>
 {
   public:
     explicit TestCommStreamListener(CommServer & svr, CommClientKit & kit) :
-             CommStreamListener(svr, kit, new test_socket_server) {
+             CommStreamListener(svr, kit) {
     }
 
     int accept() { return 0; }
