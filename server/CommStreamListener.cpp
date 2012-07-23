@@ -21,64 +21,9 @@
 #include "config.h"
 #endif
 
-#include "CommStreamListener.h"
-
-#include "CommClientFactory.h"
+#include "CommStreamListener_impl.h"
 
 #include <skstream/skserver.h>
-
-/// \brief Constructor for stream listener socket object.
-///
-/// @param svr Reference to the object that manages all socket communication.
-template <class ListenerT>
-CommStreamListener<ListenerT>::CommStreamListener(CommServer & svr,
-                                       CommClientKit & kit) :
-                    CommSocket(svr), m_clientKit(kit)
-{
-}
-
-template <class ListenerT>
-CommStreamListener<ListenerT>::~CommStreamListener()
-{
-}
-
-template <class ListenerT>
-int CommStreamListener<ListenerT>::create(int asockfd, const char * address)
-{
-    return m_clientKit.newCommClient(m_commServer, asockfd, address);
-}
-
-template <class ListenerT>
-int CommStreamListener<ListenerT>::getFd() const
-{
-    return m_listener.getSocket();
-}
-
-template <class ListenerT>
-bool CommStreamListener<ListenerT>::eof()
-{
-    return false;
-}
-
-template <class ListenerT>
-bool CommStreamListener<ListenerT>::isOpen() const
-{
-    return m_listener.is_open();
-}
-
-template <class ListenerT>
-int CommStreamListener<ListenerT>::read()
-{
-    this->accept();
-    // Accept errors are not returned, as the listen socket should not
-    // be removed.
-    return 0;
-}
-
-template <class ListenerT>
-void CommStreamListener<ListenerT>::dispatch()
-{
-}
 
 template class CommStreamListener<tcp_socket_server>;
 
