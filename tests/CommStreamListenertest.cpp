@@ -41,7 +41,7 @@ class TestCommStreamListener : public CommStreamListener<test_socket_server>
 {
   public:
     explicit TestCommStreamListener(CommServer & svr, CommClientKit & kit) :
-             CommStreamListener(svr, kit) {
+             CommStreamListener<test_socket_server>(svr, kit) {
     }
 
     int accept() { return 0; }
