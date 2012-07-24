@@ -37,7 +37,8 @@ class CommUnixListener : public CommStreamListener<unix_socket_server> {
     virtual int accept();
 
   public:
-    explicit CommUnixListener(CommServer & svr, CommClientKit & kit);
+    explicit CommUnixListener(CommServer & svr,
+                              const boost::shared_ptr<CommClientKit> & kit);
     virtual ~CommUnixListener();
 
     /// Accessor for the filesystem path of the socket.

@@ -32,7 +32,8 @@ class CommTCPListener : public CommStreamListener<tcp_socket_server> {
     virtual int accept();
 
   public:
-    explicit CommTCPListener(CommServer & svr, CommClientKit &);
+    explicit CommTCPListener(CommServer & svr,
+                             const boost::shared_ptr<CommClientKit> &);
     virtual ~CommTCPListener();
 
     int setup(int port);

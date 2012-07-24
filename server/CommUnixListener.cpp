@@ -51,7 +51,8 @@ static const bool debug_flag = false;
 /// \brief Constructor unix listen socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommUnixListener::CommUnixListener(CommServer & svr, CommClientKit & kit) :
+CommUnixListener::CommUnixListener(CommServer & svr,
+                                   const boost::shared_ptr<CommClientKit> & kit) :
                   CommStreamListener<unix_socket_server>(svr, kit)
 {
 }

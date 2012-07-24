@@ -22,6 +22,8 @@
 
 #include "CommSocket.h"
 
+#include <boost/shared_ptr.hpp>
+
 class CommClientKit;
 
 /// \brief Handle the internet listen socket used to accept connections from
@@ -33,7 +35,7 @@ class CommStreamListener : public CommSocket {
     /// skstream object to manage the listen socket.
     ListenerT m_listener;
 
-    CommClientKit & m_clientKit;
+    boost::shared_ptr<CommClientKit> m_clientKit;
 
     virtual int accept() = 0;
 
@@ -41,7 +43,7 @@ class CommStreamListener : public CommSocket {
 
   public:
     explicit CommStreamListener(CommServer & svr,
-                                CommClientKit & kit);
+                                const boost::shared_ptr<CommClientKit> & kit);
     virtual ~CommStreamListener();
 
     int getFd() const;

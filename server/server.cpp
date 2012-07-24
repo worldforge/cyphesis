@@ -71,6 +71,11 @@
 
 #include <skstream/skaddress.h>
 
+#include <boost/make_shared.hpp>
+
+using boost::make_shared;
+using boost::shared_ptr;
+
 class TrustedConnection;
 class Peer;
 
@@ -267,7 +272,8 @@ int main(int argc, char ** argv)
     // commServer->addIdle(update_tester);
 
     CommTCPListener * listener = new CommTCPListener(*commServer,
-          *new CommClientFactory<Connection>(*server));
+          make_shared<CommClientFactory<Connection>,
+                      ServerRouting & >(*server));
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
@@ -304,7 +310,8 @@ int main(int argc, char ** argv)
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
-          *new CommClientFactory<TrustedConnection>(*server));
+          make_shared<CommClientFactory<TrustedConnection>,
+                      ServerRouting &>(*server));
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
                                    "with address \"%1\"",
@@ -315,7 +322,7 @@ int main(int argc, char ** argv)
     }
 
     CommUnixListener * pythonListener = new CommUnixListener(*commServer,
-          *new CommPythonClientFactory());
+          make_shared<CommPythonClientFactory>());
     if (pythonListener->setup(python_socket_name) != 0) {
         log(ERROR, String::compose("Could not create python listen socket "
                                    "with address %1.",
@@ -329,12 +336,14 @@ int main(int argc, char ** argv)
     tcp_address http_address;
 
     if (http_address.resolveListener(String::compose("%1", http_port_num)) == 0) {
+        shared_ptr<CommHttpClientFactory> web_clients =
+              make_shared<CommHttpClientFactory>();
         tcp_address::const_iterator I = http_address.begin();
         for (; I != http_address.end(); ++I) {
             log(INFO, "Attempt");
 
             CommTCPListener * httpListener = new CommTCPListener(*commServer,
-                  *new CommHttpClientFactory());
+                  web_clients);
             if (httpListener->setup(*I) != 0) {
                 log(ERROR, String::compose("Could not create http listen socket on "
                                            "port %1.", http_port_num));

@@ -29,8 +29,8 @@
 /// @param svr Reference to the object that manages all socket communication.
 template <class ListenerT>
 CommStreamListener<ListenerT>::CommStreamListener(CommServer & svr,
-                                                  CommClientKit & kit) :
-                    CommSocket(svr), m_clientKit(kit)
+      const boost::shared_ptr<CommClientKit> & kit) :
+      CommSocket(svr), m_clientKit(kit)
 {
 }
 
@@ -42,7 +42,7 @@ CommStreamListener<ListenerT>::~CommStreamListener()
 template <class ListenerT>
 int CommStreamListener<ListenerT>::create(int asockfd, const char * address)
 {
-    return m_clientKit.newCommClient(m_commServer, asockfd, address);
+    return m_clientKit->newCommClient(m_commServer, asockfd, address);
 }
 
 template <class ListenerT>
