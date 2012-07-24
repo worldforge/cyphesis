@@ -272,10 +272,12 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(*commServer);
     // commServer->addIdle(update_tester);
 
-    CommTCPListener * listener = new CommTCPListener(*commServer,
+    shared_ptr<CommClientFactory<Connection> > atlas_clients =
           make_shared<CommClientFactory<Connection>,
-                      ServerRouting & >(*server));
+                      ServerRouting & >(*server);
     if (client_port_num < 0) {
+        CommTCPListener * listener = new CommTCPListener(*commServer,
+                                                         atlas_clients);
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             if (listener->setup(client_port_num) == 0) {
@@ -299,15 +301,15 @@ int main(int argc, char ** argv)
                              varconf::USER);
         global_conf->setItem(CYPHESIS, "dynamic_port_start",
                              client_port_num + 1, varconf::USER);
-    } else {
-        if (listener->setup(client_port_num) != 0) {
+        commServer->addSocket(listener);
+    } else if (TCPListenFactory::listen(*commServer,
+                                        client_port_num,
+                                        atlas_clients) != 0) {
             log(ERROR, String::compose("Could not create client listen socket "
                                        "on port %1. Init failed.",
                                        client_port_num));
             return EXIT_SOCKET_ERROR;
-        }
     }
-    commServer->addSocket(listener);
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
