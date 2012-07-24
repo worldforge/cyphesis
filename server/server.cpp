@@ -340,8 +340,6 @@ int main(int argc, char ** argv)
               make_shared<CommHttpClientFactory>();
         tcp_address::const_iterator I = http_address.begin();
         for (; I != http_address.end(); ++I) {
-            log(INFO, "Attempt");
-
             CommTCPListener * httpListener = new CommTCPListener(*commServer,
                   web_clients);
             if (httpListener->setup(*I) != 0) {
