@@ -30,25 +30,15 @@
 
 #include <skstream/skserver.h>
 
+#include <boost/make_shared.hpp>
+
 #include <cassert>
+
+using boost::shared_ptr;
 
 class test_socket_server : public basic_socket_server
 {
   public:
-};
-
-class TestCommStreamListener : public CommStreamListener<test_socket_server>
-{
-  public:
-    explicit TestCommStreamListener(CommServer & svr, CommClientKit & kit) :
-             CommStreamListener<test_socket_server>(svr, kit) {
-    }
-
-    int accept() { return 0; }
-
-    int test_create(int asockfd, const char * address) {
-        return this->create(asockfd, address);
-    }
 };
 
 class TestCommClientKit : public CommClientKit
@@ -59,44 +49,59 @@ class TestCommClientKit : public CommClientKit
     }
 };
 
+class TestCommStreamListener : public CommStreamListener<test_socket_server>
+{
+  public:
+    explicit TestCommStreamListener(CommServer & svr) :
+             CommStreamListener<test_socket_server>(svr, 
+             boost::make_shared<TestCommClientKit>()) {
+    }
+
+    int accept() { return 0; }
+
+    int test_create(int asockfd, const char * address) {
+        return this->create(asockfd, address);
+    }
+};
+
 int main()
 {
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
     }
 
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
 
         tcsl.test_create(-1, "foo");
     }
 
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
 
         tcsl.getFd();
     }
 
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
 
         tcsl.eof();
     }
 
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
 
         tcsl.isOpen();
     }
 
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
 
         tcsl.read();
     }
 
     {
-        TestCommStreamListener tcsl(*(CommServer*)0, *new TestCommClientKit);
+        TestCommStreamListener tcsl(*(CommServer*)0);
 
         tcsl.dispatch();
     }
