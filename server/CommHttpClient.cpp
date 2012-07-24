@@ -45,7 +45,7 @@ void CommHttpClient::dispatch()
     // m_clientIos << "Server: cyphesis/" << consts::version << std::endl << std::endl;
     // m_clientIos << "<html><head><title>Cyphesis</title></head><body>Cystast</body></html>" << std::endl << std::flush;
 
-    m_clientIos.close();
+    m_clientIos.shutdown(true);
 }
 
 int CommHttpClient::read()
