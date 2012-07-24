@@ -41,6 +41,7 @@
 #include "IdleConnector.h"
 #include "UpdateTester.h"
 #include "Admin.h"
+#include "TCPListenFactory.h"
 #include "TeleportAuthenticator.h"
 #include "TrustedConnection.h"
 
@@ -333,23 +334,12 @@ int main(int argc, char ** argv)
     }
 #endif
 
-    tcp_address http_address;
+    if (TCPListenFactory::listen(*commServer,
+                                 http_port_num,
+                                 make_shared<CommHttpClientFactory>()) != 0) {
+        log(ERROR, String::compose("Could not create http listen"
+                                   " socket on port %1.", http_port_num));
 
-    if (http_address.resolveListener(String::compose("%1", http_port_num)) == 0) {
-        shared_ptr<CommHttpClientFactory> web_clients =
-              make_shared<CommHttpClientFactory>();
-        tcp_address::const_iterator I = http_address.begin();
-        for (; I != http_address.end(); ++I) {
-            CommTCPListener * httpListener = new CommTCPListener(*commServer,
-                  web_clients);
-            if (httpListener->setup(*I) != 0) {
-                log(ERROR, String::compose("Could not create http listen socket on "
-                                           "port %1.", http_port_num));
-                delete httpListener;
-            } else {
-                commServer->addSocket(httpListener);
-            }
-        }
     }
 
     if (useMetaserver) {
