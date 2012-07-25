@@ -102,7 +102,7 @@ class Gateconstruction(server.Task):
             count = count - 1
 
         
-
+        #gate().bbox=[-self.lumber_length/2,-self.lumber_length/2,-.1,self.lumber_length/2,self.lumber_length/2,.1] 
         print "RETURNING"    
         self.progress =1
         self.irrelevant()
@@ -135,7 +135,8 @@ class Gateconstruction(server.Task):
        
 
         chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates = self.pos 
+        chunk_loc.coordinates = self.pos
+        chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
             
         create=Operation("create", Entity(name = "Basic_Gate", type = "construction", location = chunk_loc), to = target)
