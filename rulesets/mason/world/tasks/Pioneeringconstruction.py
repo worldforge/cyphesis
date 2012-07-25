@@ -14,7 +14,7 @@ class Pioneeringconstruction(server.Task):
     """A task for creating a Wooden structures such as A Frames with lumber and rope but for now a hammer""" 
 
     materials = "lumber"
-    def constructions_operation(self, op):
+    def aframe_operation(self, op):
         """ Op handler for Pioneeringconstruction op which activates this task """
         
         if len(op) < 1:
@@ -36,12 +36,12 @@ class Pioneeringconstruction(server.Task):
             if item.type[0] == str(self.materials):
                 raw_materials.append(item)
                 self.lcount = self.lcount + 1
-                print "ADDING"
+                #print "ADDING"
             if self.lcount == 3 :
-                print "DONE"
+                #print "DONE"
                 break
         else:
-            print "No materials in inventory"
+            print "No materials in inventory for A frame"
             self.irrelevant()
             return
         
@@ -53,20 +53,25 @@ class Pioneeringconstruction(server.Task):
         res=Oplist()
         #loops through raw_materials and places 3 lumber in inventory infront of user
         offset=Vector3D(0,0,0)
+        self.globalll=0
+        self.globallh=0
         while (count > 0) : 
             tar = raw_materials.pop()
             #length of the lumber obtained
             lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
+            lumberheight=tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]
+            self.globalll=lumberlength
+            self.globallh=lumberheight
             #rough length to position lumber
             lumber_length=lumberlength/4
             
             if count == 3 :
                 #left component
-                chunk_loc.orientation=Quaternion([1,0.5,0,1])
+                chunk_loc.orientation=Quaternion([.653,0.27,.27,.653])
             if count == 2 :
                 #right component
-                chunk_loc.orientation=Quaternion([1,-0.5,0,1])
-                offset=Vector3D(lumber_length,0,lumber_length)
+                chunk_loc.orientation=Quaternion([.653,-0.27,-.27,.653])
+                offset=Vector3D(lumber_length,0,0)
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
             if count == 1 :
                 #bottom component
@@ -76,12 +81,12 @@ class Pioneeringconstruction(server.Task):
                 offset=Vector3D(-(2*lumber_length),-(3*lumber_length),0)
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
                 
-            print "MOVING"
-            move=Operation("move", Entity(tar.id,location=chunk_loc), to=tar)
+            #print "MOVING"
+            move=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
             res.append(move)
             count = count - 1
 
-            
+        #aframe().bbox=[-self.globalll/2,-self.globalll/2,-self.globallh/2,self.globalll/2,self.globalll,self.globallh/2] 
         self.progress =1
         self.irrelevant()
         return res
@@ -113,9 +118,24 @@ class Pioneeringconstruction(server.Task):
        
 
         chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates = self.pos 
+        chunk_loc.coordinates = self.pos
+        chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
-            
+        lcount=0
+        #makes sure we have 3 lumber to construct A frame
+        for item in self.character.contains:
+            if item.type[0] == str(self.materials):
+                lcount = lcount + 1
+                #print "ADDING"
+            if lcount == 3 :
+                #print "DONE"
+                break
+        else:
+            print "No materials in inventory for A frame"
+            self.irrelevant()
+            return
+        
+        bbox1=[-3,-3,-3,3,3,3]   
         create=Operation("create", Entity(name = "A_Frame", type = "construction", location = chunk_loc), to = target)
         create.setSerialno(0)
         #print create.id
