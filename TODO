@@ -1,3 +1,9 @@
+skstream::close() gets called twice on destruction. Once from
+CommClient destructor, then from CommStreamClient destructor.
+
+Investiage what happens when a client does a write only shutdown.
+Do server get a HUP?
+
 Note that SO_LINGER almost certainly does nothing on listen sockets,
 and is irrelevant on others. What we really need to do is shutdown the write
 side once we have finished sending, and the leave the socket along to be 
