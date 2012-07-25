@@ -276,11 +276,11 @@ int main(int argc, char ** argv)
           make_shared<CommClientFactory<Connection>,
                       ServerRouting & >(*server);
     if (client_port_num < 0) {
-        CommTCPListener * listener = new CommTCPListener(*commServer,
-                                                         atlas_clients);
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
-            if (listener->setup(client_port_num) == 0) {
+            if (TCPListenFactory::listen(*commServer,
+                                         client_port_num,
+                                         atlas_clients) == 0) {
                 break;
             }
         }
@@ -301,14 +301,13 @@ int main(int argc, char ** argv)
                              varconf::USER);
         global_conf->setItem(CYPHESIS, "dynamic_port_start",
                              client_port_num + 1, varconf::USER);
-        commServer->addSocket(listener);
     } else if (TCPListenFactory::listen(*commServer,
                                         client_port_num,
                                         atlas_clients) != 0) {
-            log(ERROR, String::compose("Could not create client listen socket "
-                                       "on port %1. Init failed.",
-                                       client_port_num));
-            return EXIT_SOCKET_ERROR;
+        log(ERROR, String::compose("Could not create client listen socket "
+                                   "on port %1. Init failed.",
+                                   client_port_num));
+        return EXIT_SOCKET_ERROR;
     }
 
 #ifdef HAVE_SYS_UN_H
@@ -354,7 +353,7 @@ int main(int argc, char ** argv)
         }
     }
 
-#if defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
+#if defined(HAVE_AVAHI)
 
     CommMDNSPublisher * cmdns = new CommMDNSPublisher(*commServer,
                                                       *server);
@@ -366,7 +365,7 @@ int main(int argc, char ** argv)
         delete cmdns;
     }
 
-#endif // defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
+#endif // defined(HAVE_AVAHI)
 
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
