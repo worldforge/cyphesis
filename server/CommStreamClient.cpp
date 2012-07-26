@@ -32,7 +32,6 @@ CommStreamClient::CommStreamClient(CommServer & svr) :
 
 CommStreamClient::~CommStreamClient()
 {
-    m_clientIos.close();
 }
 
 int CommStreamClient::getFd() const
