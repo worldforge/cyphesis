@@ -11,11 +11,11 @@ class editor:
     def __init__(self, client, avatar):
         self.client=client
         self.avatar=avatar
-        self.list_call={"say":(self._say,1),
-                        "own":(self._own,2),
-                        "know":(self._know,2),
-                        "learn":(self._learn,2),
-                        "tell":(self._tell,1)}
+        self.list_call={"say":(editor._say,1),
+                        "own":(editor._own,2),
+                        "know":(editor._know,2),
+                        "learn":(editor._learn,2),
+                        "tell":(editor._tell,1)}
     def call_list_args(self, *args):
         #indent='\t'*self.cl_depth
         for i in range(self.cl_args[1]):
@@ -24,12 +24,12 @@ class editor:
                 #print indent,self.cl_args,args
                 #self.cl_depth=self.cl_depth+1
                 for a in args[i]:
-                    apply(self.call_list_args,args[:i]+(a,)+args[i+1:])
+                    self.call_list_args(*args[:i]+(a,)+args[i+1:])
                 #self.cl_depth=self.cl_depth-1
                 return
         #print indent,"SINGLE!"
         #print indent,self.cl_args,args
-        apply(self.cl_args[0],args)
+        self.cl_args[0](self, *args)
     def __getattr__(self, name):
         if self.list_call.has_key(name):
             self.cl_args=self.list_call[name]
