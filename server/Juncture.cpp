@@ -135,14 +135,19 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
     m_host = hostname;
     m_port = port;
 
-    log(INFO, String::compose("Connection in progress %1", getId()));
     m_connection->m_commClient.m_commServer.addSocket(m_socket);
     m_connection->m_commClient.m_commServer.addIdle(m_socket);
 
-    m_socket->connected.connect(sigc::mem_fun(this,
-                                              &Juncture::onSocketConnected));
-    m_socket->failed.connect(sigc::mem_fun(this,
-                                           &Juncture::onSocketFailed));
+    if (m_socket->connect_pending()) {
+        log(INFO, String::compose("Connection in progress %1", getId()));
+        m_socket->connected.connect(sigc::mem_fun(this,
+                                                  &Juncture::onSocketConnected));
+        m_socket->failed.connect(sigc::mem_fun(this,
+                                               &Juncture::onSocketFailed));
+    } else {
+        log(INFO, String::compose("Connection worked instant %1", getId()));
+        onSocketConnected();
+    }
 
     return 0;
 }
