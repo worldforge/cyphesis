@@ -16,14 +16,7 @@ Once we are connected to Peer, probably shouldnt have the m_socket pointer
 any more, and need to make sure we are no longer connected to the signals.
 Can we clear the socket signals?
 
-In CommPeer, if isReady() was called from ::eof(), all the extra
-logic could be in there, and ::read() would not need to be overriden.
-Currently the override is done twice.
-
-Re-write listener code to use the same iterator crap
-
-Remove m_host and m_port in CommPeer. Store them in Peer
-Separate out connect into two trivial inline functions
+Separate out CommPeer::connect into two trivial inline functions
 
 There are many ways in which MemMap does the same job as WorldRouter.
 Common base class?
