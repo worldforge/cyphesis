@@ -885,7 +885,9 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
            std::cout << cmd << ": No reply from server" << std::endl << std::flush;
            return;
        }
-       select(false);
+       if (select(false) != 0) {
+           return;
+       }
     }
 }
 
