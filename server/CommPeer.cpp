@@ -79,27 +79,18 @@ void CommPeer::setup(Router * connection)
 bool CommPeer::eof()
 {
     if (m_clientIos.connect_pending()) {
-        return false;
-    } else {
-        return CommStreamClient::eof();
-    }
-}
-
-int CommPeer::read()
-{
-    if (m_clientIos.connect_pending()) {
         if (m_clientIos.isReady(0)) {
             connected.emit();
-            return 0;
+            return false;
         } else {
             // With the cyphesis socket model, this object gets deleted
             // if its fd gets closed, so trying a second fd is useless
             // This object is done.
             failed.emit();
-            return -1;
+            return true;
         }
     } else {
-        return CommClient::read();
+        return CommStreamClient::eof();
     }
 }
 

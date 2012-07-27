@@ -32,7 +32,6 @@ class CommPeer : public CommClient {
     virtual ~CommPeer();
 
     bool eof();
-    int read();
 
     void idle(time_t t);
 
