@@ -231,8 +231,6 @@ int AtlasStreamClient::connect(const std::string & host, int port)
     }
     m_fd = m_ios->getSocket();
 
-    socket_linger(m_fd, 10);
-
     return negotiate();
 
 }
@@ -248,8 +246,6 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
     m_fd = m_ios->getSocket();
 
     socket_client_send_credentials(m_fd);
-
-    socket_linger(m_fd, 10);
 
     return negotiate();
 #else // HAVE_SYS_UN_H

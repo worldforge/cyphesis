@@ -105,12 +105,6 @@ int CommTCPListener::setup(int port)
     if (m_listener.open(port) != 0) {
         return -1;
     }
-
-    // Set a linger time of 0 seconds, so that the socket is got rid
-    // of quickly.
-    int fd = m_listener.getSocket();
-    socket_linger(fd, 0);
-
     return 0;
 }
 
@@ -119,11 +113,5 @@ int CommTCPListener::setup(struct addrinfo * i)
     if (m_listener.open(i) != 0) {
         return -1;
     }
-
-    // Set a linger time of 0 seconds, so that the socket is got rid
-    // of quickly.
-    int fd = m_listener.getSocket();
-    socket_linger(fd, 0);
-
     return 0;
 }
