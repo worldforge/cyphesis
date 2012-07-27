@@ -43,7 +43,6 @@ class Interactive : public AdminClient,
     std::string m_serverName;
     std::string m_systemType;
     std::string m_prompt;
-    bool m_exit_flag;
 
     /// \brief Map of context with which we can interact with the server
     ContextMap m_contexts;
@@ -67,7 +66,7 @@ class Interactive : public AdminClient,
     int setup();
     void exec(const std::string & cmd, const std::string & arg);
     void loop();
-    void select(bool rewrite_prompt = true);
+    int select(bool rewrite_prompt = true);
     void updatePrompt();
     void runCommand(char *);
     void switchContext(int, int);

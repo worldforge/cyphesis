@@ -177,8 +177,7 @@ static void help()
 }
 
 Interactive::Interactive() : m_server_flag(false),
-                             m_serverName("cyphesis"), m_prompt("cyphesis> "),
-                             m_exit_flag(false)
+                             m_serverName("cyphesis"), m_prompt("cyphesis> ")
 {
 }
 
@@ -471,14 +470,12 @@ void Interactive::loop()
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
     ContextSwitch.connect(sigc::mem_fun(this, &Interactive::switchContext));
-    while (!m_exit_flag) {
-        select();
-    };
+    while (select() == 0);
     std::cout << std::endl << std::flush;
     rl_callback_handler_remove();
 }
 
-void Interactive::select(bool rewrite_prompt)
+int Interactive::select(bool rewrite_prompt)
 // poll the codec if select says there is something there.
 {
     fd_set infds;
@@ -503,7 +500,7 @@ void Interactive::select(bool rewrite_prompt)
         if (FD_ISSET(m_fd, &infds)) {
             if (m_ios->peek() == -1) {
                 std::cout << "Server disconnected" << std::endl << std::flush;
-                m_exit_flag = true;
+                return -1;
             } else {
                 if (rewrite_prompt) {
                     std::cout << std::endl;
@@ -519,6 +516,7 @@ void Interactive::select(bool rewrite_prompt)
             rl_callback_read_char();
         }
     }
+    return 0;
 }
 
 void Interactive::updatePrompt()
