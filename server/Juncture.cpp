@@ -87,6 +87,8 @@ void Juncture::onSocketConnected()
 void Juncture::onSocketFailed()
 {
     assert(m_address != 0);
+    assert(m_peer == 0);
+    assert(m_socket != 0);
     if (m_connection != 0) {
         if (++m_address->i != m_address->a.end()) {
             if (attemptConnect("foo", 6767) == 0) {
@@ -104,7 +106,6 @@ void Juncture::onSocketFailed()
         }
         m_connection->send(error);
     }
-    m_peer = 0;
     m_socket = 0;
     m_connectRef = 0L;
 }
