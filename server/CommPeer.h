@@ -31,6 +31,10 @@ class CommPeer : public CommClient {
     CommPeer(CommServer & svr, const std::string &);
     virtual ~CommPeer();
 
+    bool connect_pending() const {
+        return m_clientIos.connect_pending();
+    }
+
     bool eof();
 
     void idle(time_t t);
