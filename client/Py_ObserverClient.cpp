@@ -71,6 +71,19 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
     return Py_None;
 }
 
+static PyObject * ObserverClient_teardown(PyObserverClient * self)
+{
+#ifndef NDEBUG
+    if (self->m_client == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
+        return NULL;
+    }
+#endif // NDEBUG
+    self->m_client->teardown();
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
                                                PyObject * arg)
 {
@@ -176,6 +189,7 @@ static PyObject * ObserverClient_wait(PyObserverClient * self)
 
 static PyMethodDef ObserverClient_methods[] = {
         {"setup",          (PyCFunction)ObserverClient_setup,     METH_VARARGS},
+        {"teardown",       (PyCFunction)ObserverClient_teardown,  METH_NOARGS},
         {"create_avatar",  (PyCFunction)ObserverClient_create_avatar, METH_O},
         {"run",            (PyCFunction)ObserverClient_run,       METH_NOARGS},
         {"send",           (PyCFunction)ObserverClient_send,      METH_O},
