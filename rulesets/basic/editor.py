@@ -16,6 +16,8 @@ class editor:
                         "know":(editor._know,2),
                         "learn":(editor._learn,2),
                         "tell":(editor._tell,1)}
+    def __del__(self):
+        self.client.teardown()
     def call_list_args(self, *args):
         #indent='\t'*self.cl_depth
         for i in range(self.cl_args[1]):
