@@ -73,6 +73,12 @@ int ObserverClient::setup(const std::string & account,
     return 0;
 }
 
+int ObserverClient::teardown()
+{
+    m_connection.cleanDisconnect();
+    return 0;
+}
+
 void ObserverClient::idle()
 {
 #ifdef HAVE_USLEEP
