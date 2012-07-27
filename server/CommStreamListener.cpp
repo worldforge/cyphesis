@@ -17,55 +17,20 @@
 
 // $Id$
 
-#include "CommStreamListener.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include "CommClientFactory.h"
+#include "CommStreamListener_impl.h"
 
 #include <skstream/skserver.h>
 
-/// \brief Constructor for stream listener socket object.
-///
-/// @param svr Reference to the object that manages all socket communication.
-CommStreamListener::CommStreamListener(CommServer & svr,
-                                       CommClientKit & kit,
-                                       basic_socket_server * listener) :
-                    CommSocket(svr), m_listener(listener), m_clientKit(kit)
-{
-}
+template class CommStreamListener<tcp_socket_server>;
 
-CommStreamListener::~CommStreamListener()
-{
-    delete &m_clientKit;
-}
+#ifdef HAVE_SYS_UN_H
 
-int CommStreamListener::create(int asockfd, const char * address)
-{
-    return m_clientKit.newCommClient(m_commServer, asockfd, address);
-}
+#include <skstream/skserver_unix.h>
 
-int CommStreamListener::getFd() const
-{
-    return m_listener->getSocket();
-}
+template class CommStreamListener<unix_socket_server>;
 
-bool CommStreamListener::eof()
-{
-    return false;
-}
-
-bool CommStreamListener::isOpen() const
-{
-    return m_listener->is_open();
-}
-
-int CommStreamListener::read()
-{
-    accept();
-    // Accept errors are not returned, as the listen socket should not
-    // be removed.
-    return 0;
-}
-
-void CommStreamListener::dispatch()
-{
-}
+#endif // HAVE_SYS_UN_H

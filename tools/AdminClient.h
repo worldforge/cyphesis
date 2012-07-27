@@ -33,7 +33,7 @@ class AdminClient : public AtlasStreamClient
 {
   protected:
     /// \brief Password used to log into the server
-    std::string password;
+    std::string m_password;
     /// \brief Store of rules which can't be uploaded until their parent has
     /// been uploaded
     RuleWaitList m_waitingRules;
@@ -53,7 +53,7 @@ class AdminClient : public AtlasStreamClient
 
     /// \brief Set the password used to log into the server
     void setPassword(const std::string & passwd) {
-        password = passwd;
+        m_password = passwd;
     }
 
     /// \brief Set the username used to log into the server

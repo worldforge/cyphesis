@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2012 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,27 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_COMM_TCP_LISTENER_H
-#define SERVER_COMM_TCP_LISTENER_H
+#include "ObjectContext.h"
 
-#include "CommStreamListener.h"
-
-#include <skstream/skserver.h>
-
-/// \brief Handle the internet listen socket used to accept connections from
-/// remote hosts.
-/// \ingroup ServerSockets
-class CommTCPListener : public CommStreamListener<tcp_socket_server> {
-  protected:
-    virtual int accept();
-
-  public:
-    explicit CommTCPListener(CommServer & svr,
-                             const boost::shared_ptr<CommClientKit> &);
-    virtual ~CommTCPListener();
-
-    int setup(int port);
-    int setup(struct addrinfo * address);
-};
-
-#endif // SERVER_COMM_TCP_LISTENER_H
+ObjectContext::~ObjectContext()
+{
+}

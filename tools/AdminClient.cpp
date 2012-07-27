@@ -71,7 +71,7 @@ void AdminClient::getLogin()
     std::cout << "Username: " << std::flush;
     std::cin >> m_username;
     std::cout << "Password: " << std::flush;
-    std::cin >> password;
+    std::cin >> m_password;
 }
 
 /// \brief Check if a rule exists in the rule table
@@ -87,7 +87,7 @@ int AdminClient::checkRule(const std::string & id)
 
     g->setArgs1(get_arg);
 
-    g->setFrom(accountId);
+    g->setFrom(m_accountId);
 
     send(g);
 
@@ -138,7 +138,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
         s->setArgs1(set_arg);
 
-        s->setFrom(accountId);
+        s->setFrom(m_accountId);
 
         send(s);
 
@@ -218,7 +218,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     c->setArgs1(create_arg);
 
-    c->setFrom(accountId);
+    c->setFrom(m_accountId);
 
     send(c);
 
@@ -270,7 +270,7 @@ void AdminClient::waitForInfo()
 /// This function uses credentials that have been set earlier.
 int AdminClient::login()
 {
-    return AtlasStreamClient::login(m_username, password);
+    return AtlasStreamClient::login(m_username, m_password);
 }
 
 /// \brief Report information about rules which didn't upload
@@ -291,7 +291,8 @@ void AdminClient::report()
         std::cout << "Rule \"" << I->second.first.first << "\" with parent \""
                   << I->first << "\" from ruleset \""
                   << I->second.first.second
-                  << "\" was never uploaded as its parent does not exist in any of the available rulesets."
+                  << "\" was never uploaded as its parent does not exist in "
+                     "any of the available rulesets."
                   << std::endl << std::flush;
     }
 }

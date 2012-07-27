@@ -22,49 +22,29 @@
 
 #include "CommClient.h"
 
+#include <sigc++/signal.h>
+
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
 class CommPeer : public CommClient {
-  protected:
-    /// \brief The hostname that this peer is connected to
-    std::string m_host;
-    /// \brief The port that this connection is on
-    int m_port;
-    /// \brief Serial number for referring to the connection attempt
-    long m_ref;
-
   public:
     CommPeer(CommServer & svr, const std::string &);
     virtual ~CommPeer();
 
+    bool connect_pending() const {
+        return m_clientIos.connect_pending();
+    }
+
     bool eof();
-    int read();
 
     void idle(time_t t);
 
-    int connect(const std::string &, int, long);
+    int connect(const std::string &, int);
+    int connect(struct addrinfo *);
     void setup(Router *);
 
-    /// \brief Get the hostname of the connected peer
-    ///
-    /// @return The hostname of the connected peer
-    const std::string & getHost() const {
-        return m_host;
-    }
-
-    /// \brief Get the port the peer is connected on
-    ///
-    /// @return The port the peer is connected on
-    int getPort() const {
-        return m_port;
-    }
-
-    /// \brief Accessor for connect reference
-    ///
-    /// @return The connect reference
-    long getRef() const {
-        return m_ref;
-    }
+    sigc::signal<void> connected;
+    sigc::signal<void> failed;
 };
 
 #endif // SERVER_COMM_PEER_H

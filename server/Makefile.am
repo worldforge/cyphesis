@@ -123,6 +123,7 @@ SERVER_SOURCES = \
 		server.cpp server.h
 
 COMM_SOURCES = \
+		TCPListenFactory.cpp TCPListenFactory.h \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommTCPListener.cpp CommTCPListener.h \
 		CommUnixListener.cpp CommUnixListener.h \

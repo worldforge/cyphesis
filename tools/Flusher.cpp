@@ -19,6 +19,8 @@
 
 #include "Flusher.h"
 
+#include "tools/ObjectContext.h"
+
 #include "common/compose.hpp"
 #include "common/Tick.h"
 
@@ -35,12 +37,21 @@ using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Tick;
 
-Flusher::Flusher(const std::string & agent_id) : agentId(agent_id)
+using boost::shared_ptr;
+
+Flusher::Flusher(const shared_ptr<ObjectContext> & c) : m_context(c)
 {
 }
 
 void Flusher::setup(const std::string & arg, OpVector & ret)
 {
+    shared_ptr<ObjectContext> flush_context = m_context.lock();
+
+    if (!flush_context) {
+        m_complete = true;
+        return;
+    }
+
     type = arg;
 
     m_description = String::compose("flushing %1", type);
@@ -51,13 +62,21 @@ void Flusher::setup(const std::string & arg, OpVector & ret)
     Anonymous lmap;
     lmap->setParents(std::list<std::string>(1, type));
     l->setArgs1(lmap);
-    l->setFrom(agentId);
+
+    flush_context->setFromContext(l);
 
     ret.push_back(l);
 }
 
 void Flusher::operation(const Operation & op, OpVector & res)
 {
+    shared_ptr<ObjectContext> flush_context = m_context.lock();
+
+    if (!flush_context) {
+        m_complete = true;
+        return;
+    }
+
     if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
         // We have a sight op, check if its the sight of an entity we
         // want to delete.
@@ -95,7 +114,9 @@ void Flusher::operation(const Operation & op, OpVector & res)
         Anonymous dmap;
         dmap->setId(id);
         d->setArgs1(dmap);
-        d->setFrom(agentId);
+
+        flush_context->setFromContext(d);
+
         d->setTo(id);
 
         res.push_back(d);
@@ -107,8 +128,8 @@ void Flusher::operation(const Operation & op, OpVector & res)
         Anonymous tick_arg;
         tick_arg->setName("flusher");
 
-        t->setFrom(agentId);
-        t->setTo(agentId);
+        flush_context->setFromContext(t);
+        t->setTo(t->getFrom());
         t->setFutureSeconds(0.1);
         t->setArgs1(tick_arg);
 
@@ -128,7 +149,7 @@ void Flusher::operation(const Operation & op, OpVector & res)
         Anonymous lmap;
         lmap->setParents(std::list<std::string>(1, type));
         l->setArgs1(lmap);
-        l->setFrom(agentId);
+        flush_context->setFromContext(l);
 
         res.push_back(l);
     } else if (op->getParents().front() == "unseen") {

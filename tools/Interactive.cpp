@@ -28,6 +28,11 @@
 #include "WorldDumper.h"
 #include "WorldLoader.h"
 
+#include "tools/AccountContext.h"
+#include "tools/AvatarContext.h"
+#include "tools/ConnectionContext.h"
+#include "tools/JunctureContext.h"
+
 #include "common/AtlasStreamClient.h"
 #include "common/log.h"
 #include "common/OperationRouter.h"
@@ -65,9 +70,6 @@ extern "C" {
 #endif
 
 #include <iostream>
-#include <algorithm>
-
-#include <cstdio>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -94,37 +96,64 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Operation::Monitor;
 using Atlas::Objects::Operation::Connect;
 
+using boost::shared_ptr;
+
 /// \brief Entry in the global command table for cycmd
 struct command {
     const char * cmd_string;
     const char * cmd_description;
+    int (Interactive::*cmd_method)(struct command *, const std::string &);
+    int cmd_flags;
+    const char * cmd_longhelp;
 };
 
+static const int CMD_DEFAULT = 0;
+static const int CMD_CONTEXT = 1 << 1;
+
 struct command commands[] = {
-    { "add_agent",      "Create an in-game agent", },
-    { "cancel",         "Cancel the current admin task", },
-    { "connect",        "Connect server to a peer", },
-    { "create",         "Use account to create server objects", },
-    { "creator_create", "Use agent to create an entity", },
-    { "creator_look",   "Use agent to look at an entity", },
-    { "delete",         "Delete an entity from the server", },
-    { "dump",           "Write a copy of the world to an Atlas file", },
-    { "get",            "Examine any object on the server", },
-    { "find_by_name",   "Find an entity with the given name", },
-    { "find_by_type",   "Find an entity with the given type", },
-    { "flush",          "Flush entities from the server", },
-    { "help",           "Display this help", },
-    { "install",        "Install a new type", },
-    { "login",          "Log into a peer server", },
-    { "restore",        "Read world data from file and add it to the world", },
-    { "look",           "Return the current server lobby", },
-    { "logout",         "Log user out of server", },
-    { "monitor",        "Enable in-game op monitoring", },
-    { "query",          "Synonym for \"get\" (deprecated)", },
-    { "reload",         "Reload the script for a type", },
-    { "stat",           "Return current server status", },
-    { "unmonitor",      "Disable in-game op monitoring", },
-    { NULL,             "Guard", }
+    { "add_agent",      "Create an in-game agent",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "cancel",         "Cancel the current admin task",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "connect",        "Connect server to a peer",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "create",         "Use account to create server objects",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "delete",         "Delete an entity from the server",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "dump",           "Write a copy of the world to an Atlas file",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "get",            "Examine any object on the server",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "find_by_name",   "Find an entity with the given name",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "find_by_type",   "Find an entity with the given type",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "flush",          "Flush entities from the server",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "help",           "Display this help",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "install",        "Install a new type",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "login",          "Log into a peer server",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "restore",        "Read world data from file and add it to the world",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "look",           "Return the current server lobby",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "logout",         "Log user out of server",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "monitor",        "Enable in-game op monitoring",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "query",          "Synonym for \"get\" (deprecated)",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "reload",         "Reload the script for a type",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "stat",           "Return current server status",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { "unmonitor",      "Disable in-game op monitoring",
+      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+    { NULL,             "Guard", 0, 0, }
 };
 
 
@@ -140,17 +169,15 @@ static void help()
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
 
     for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
-        std::cout << "    " << I->cmd_string
+        std::cout << " " << I->cmd_string
                   << std::string(max_length - strlen(I->cmd_string), ' ')
                   << I->cmd_description << std::endl;
     }
     std::cout << std::endl << std::flush;
 }
 
-Interactive::Interactive() : m_avatar_flag(false), m_server_flag(false),
-                             m_juncture_flag(false),
-                             m_serverName("cyphesis"), m_prompt("cyphesis> "),
-                             m_exit_flag(false)
+Interactive::Interactive() : m_server_flag(false),
+                             m_serverName("cyphesis"), m_prompt("cyphesis> ")
 {
 }
 
@@ -158,12 +185,25 @@ Interactive::~Interactive()
 {
 }
 
+void Interactive::operation(const Operation & op)
+{
+    ContextMap::const_iterator J = m_contexts.begin();
+    ContextMap::const_iterator Jend = m_contexts.end();
+    for (; J != Jend; ++J) {
+        ObjectContext & c = **J;
+        if (c.accept(op)) {
+            c.dispatch(op);
+        }
+    }
+    AdminClient::operation(op);
+}
+
 void Interactive::appearanceArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -195,10 +235,10 @@ void Interactive::appearanceArrived(const Operation & op)
 
 void Interactive::disappearanceArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -235,27 +275,7 @@ void Interactive::infoArrived(const Operation & op)
         return;
     }
     const Root & ent = op->getArgs().front();
-    if (m_avatar_flag) {
-        std::cout << "Create agent success" << std::endl << std::flush;
-        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            std::cerr << "ERROR: Response to agent create does not contain agent id"
-                      << std::endl << std::flush;
-            
-        } else {
-            m_agentId = ent->getId();
-            m_avatar_flag = false;
-        }
-    } else if (m_juncture_flag) {
-        std::cout << "Juncture create success" << std::endl << std::flush;
-        if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            std::cerr << "ERROR: Response to juncture create does not contain agent id"
-                      << std::endl << std::flush;
-            
-        } else {
-            m_juncture_id = ent->getId();
-            m_juncture_flag = false;
-        }
-    } else if (m_server_flag) {
+    if (m_server_flag) {
         std::cout << "Server query success" << std::endl << std::flush;
         if (!ent->isDefaultName()) {
             m_serverName = ent->getName();
@@ -273,20 +293,13 @@ void Interactive::infoArrived(const Operation & op)
             }
         }
         m_server_flag = false;
-    } else if (m_currentTask == 0) {
-        AtlasStreamClient::infoArrived(op);
+    } else if (m_currentTask == 0 && op->isDefaultRefno()) {
         std::cout << "Info(" << std::endl;
-        MapType entmap = ent->asMessage();
-        MapType::const_iterator Iend = entmap.end();
-        for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
-            const Element & item = I->second;
-            std::cout << std::string(spacing(), ' ') << I->first << ": ";
-            output(item, 1);
-            std::cout << std::endl;
-        }
+        output(ent);
         std::cout << ")" << std::endl << std::flush;
         // Display results of command
     }
+    AtlasStreamClient::infoArrived(op);
 }
 
 void Interactive::errorArrived(const Operation & op)
@@ -307,37 +320,12 @@ void Interactive::errorArrived(const Operation & op)
     std::cout << ")" << std::endl << std::flush;
 }
 
-void Interactive::sightArrived(const Operation & op)
-{
-    if (accountId.empty()) {
-        return;
-    }
-    if (accountId != op->getTo() && m_agentId != op->getTo()) {
-        // This is an IG op we are monitoring
-        return;
-    }
-    reply_flag = true;
-    if (m_currentTask != 0) {
-        return;
-    }
-    std::cout << "Sight(" << std::endl;
-    const MapType & ent = op->getArgs().front()->asMessage();
-    MapType::const_iterator Iend = ent.end();
-    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
-        const Element & item = I->second;
-        std::cout << "      " << I->first << ":";
-        output(item, 1);
-        std::cout << std::endl;
-    }
-    std::cout << ")" << std::endl << std::flush;
-}
-
 void Interactive::soundArrived(const Operation & op)
 {
-    if (accountId.empty()) {
+    if (m_accountId.empty()) {
         return;
     }
-    if (accountId != op->getTo()) {
+    if (m_accountId != op->getTo()) {
         // This is an IG op we are monitoring
         return;
     }
@@ -369,7 +357,18 @@ void Interactive::soundArrived(const Operation & op)
               << std::endl << std::flush;
 }
 
+void Interactive::loginSuccess(const Atlas::Objects::Root & arg)
+{
+    // Create a new account context, store it in our context set,
+    // and assign it as the current context
+    ObjectContext * ac = new AccountContext(*this, m_accountId, m_username);
+    // This is slightly unwieldy, but it ensures we get a weak pointer to
+    // the context object with a minimum of weak copies.
+    addCurrentContext(shared_ptr<ObjectContext>(ac));
+}
+
 sigc::signal<void, char *> CmdLine;
+sigc::signal<void, int, int> ContextSwitch;
 
 void Interactive::gotCommand(char * cmd)
 {
@@ -379,8 +378,7 @@ void Interactive::gotCommand(char * cmd)
 void Interactive::runCommand(char * cmd)
 {
     if (cmd == NULL) {
-        m_exit_flag = true;
-        std::cout << std::endl << std::flush;
+        cleanDisconnect();
         return;
     }
 
@@ -400,7 +398,44 @@ void Interactive::runCommand(char * cmd)
         arg = (char *)"";
     }
 
+    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+        if (strcmp(cmd, I->cmd_string) == 0) {
+            (this->*(I->cmd_method))(I, arg);
+        }
+    }
+
     exec(cmd, arg);
+}
+
+void Interactive::switchContext(int, int)
+{
+    ContextMap::const_iterator I = m_contexts.begin();
+    ContextMap::const_iterator Iend = m_contexts.end();
+    for (; I != Iend; ++I) {
+        const boost::shared_ptr<ObjectContext> & i = *I;
+        if (m_currentContext.lock() == i) {
+            if (++I == Iend) {
+                I = m_contexts.begin();
+            }
+            m_currentContext = *I;
+            break;
+        }
+    }
+    updatePrompt();
+    rl_redisplay();
+}
+
+const shared_ptr<ObjectContext> & Interactive::addContext(
+      const shared_ptr<ObjectContext> & c)
+{
+    return *m_contexts.insert(c).first;
+}
+
+void Interactive::addCurrentContext(const shared_ptr<ObjectContext> & c)
+{
+    m_currentContext = *m_contexts.insert(c).first;
+    updatePrompt();
+    rl_redisplay();
 }
 
 int completion_iterator = 0;
@@ -419,20 +454,28 @@ char * completion_generator(const char * text, int state)
     return 0;
 }
 
+static int context_switch(int a, int b)
+{
+    ContextSwitch.emit(a, b);
+    return 0;
+}
+
 void Interactive::loop()
 {
+    if (rl_bind_keyseq("`", &context_switch) != 0) {
+        std::cout << "BINDING FALED" << std::endl;
+    }
     rl_callback_handler_install(m_prompt.c_str(),
                                 &Interactive::gotCommand);
     rl_completion_entry_function = &completion_generator;
     CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
-    while (!m_exit_flag) {
-        select();
-    };
+    ContextSwitch.connect(sigc::mem_fun(this, &Interactive::switchContext));
+    while (select() == 0);
     std::cout << std::endl << std::flush;
     rl_callback_handler_remove();
 }
 
-void Interactive::select(bool rewrite_prompt)
+int Interactive::select(bool rewrite_prompt)
 // poll the codec if select says there is something there.
 {
     fd_set infds;
@@ -457,7 +500,7 @@ void Interactive::select(bool rewrite_prompt)
         if (FD_ISSET(m_fd, &infds)) {
             if (m_ios->peek() == -1) {
                 std::cout << "Server disconnected" << std::endl << std::flush;
-                m_exit_flag = true;
+                return -1;
             } else {
                 if (rewrite_prompt) {
                     std::cout << std::endl;
@@ -473,12 +516,13 @@ void Interactive::select(bool rewrite_prompt)
             rl_callback_read_char();
         }
     }
+    return 0;
 }
 
 void Interactive::updatePrompt()
 {
     std::string designation(">");
-    if (accountType == "admin" || accountType == "sys") {
+    if (m_accountType == "admin" || m_accountType == "sys") {
         designation = "#";
     } else {
         designation = "$";
@@ -487,13 +531,21 @@ void Interactive::updatePrompt()
     if (m_currentTask != 0) {
         status = m_currentTask->description();
     }
-    m_prompt = String::compose("[%1@%2 %3{%4}]%5 ", m_username, m_serverName,
-                             m_systemType, status, designation);
+    std::string context = "";
+    boost::shared_ptr<ObjectContext> c = m_currentContext.lock();
+    if (c) {
+        context = c->repr();
+    }
+    m_prompt = String::compose("[%1@%2 %3{%4}]%5 ", context, m_serverName,
+                               m_systemType, status, designation);
     rl_set_prompt(m_prompt.c_str());
 }
 
 int Interactive::setup()
 {
+    ObjectContext * cc = new ConnectionContext(*this);
+    addContext(shared_ptr<ObjectContext>(cc));
+
     Get get;
 
     send(get);
@@ -518,6 +570,12 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     reply_flag = false;
     error_flag = false;
 
+    boost::shared_ptr<ObjectContext> command_context = m_currentContext.lock();
+    if (!command_context) {
+        std::cout << "ERROR: Context free" << std::endl << std::flush;
+        return;
+    }
+
     if (cmd == "stat") {
         Get g;
         send(g);
@@ -528,7 +586,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
                       << std::endl << std::flush;
         } else {
             Create c;
-            c->setFrom(accountId);
+            c->setFrom(m_accountId);
             Anonymous ent;
             ent->setId(std::string(arg, 0, space));
             ent->setObjtype("class");
@@ -544,11 +602,13 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             l->setArgs1(cmap);
         }
-        l->setFrom(accountId);
+        l->setSerialno(newSerialNo());
+        command_context->setFromContext(l);
         send(l);
+        reply_expected = false;
     } else if (cmd == "logout") {
         Logout l;
-        l->setFrom(accountId);
+        l->setFrom(m_accountId);
         if (!arg.empty()) {
             Anonymous lmap;
             lmap->setId(arg);
@@ -561,7 +621,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Anonymous ent;
         ent->setAttr("say", arg);
         t->setArgs1(ent);
-        t->setFrom(accountId);
+        t->setFrom(m_accountId);
         send(t);
     } else if (cmd == "help" || cmd == "?") {
         reply_expected = false;
@@ -579,7 +639,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             g->setArgs1(cmap);
         }
-        g->setFrom(accountId);
+        g->setFrom(m_accountId);
 
         send(g);
     } else if (cmd == "reload") {
@@ -593,7 +653,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             tmap->setObjtype("class");
             tmap->setId(arg);
             s->setArgs1(tmap);
-            s->setFrom(accountId);
+            s->setFrom(m_accountId);
 
             send(s);
         }
@@ -610,7 +670,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             cmap->setId(arg);
             g->setArgs1(cmap);
         }
-        g->setFrom(accountId);
+        g->setFrom(m_accountId);
 
         send(g);
     } else if (cmd == "monitor") {
@@ -619,7 +679,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Monitor m;
 
             m->setArgs1(Anonymous());
-            m->setFrom(accountId);
+            m->setFrom(m_accountId);
 
             send(m);
         }
@@ -631,7 +691,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         if (om != 0) {
             Monitor m;
 
-            m->setFrom(accountId);
+            m->setFrom(m_accountId);
 
             send(m);
 
@@ -651,32 +711,27 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             endTask();
         }
     } else if (cmd == "connect") {
-        reply_expected = false;
-        if (m_juncture_id.empty()) {
-            std::cout << "Use create juncture to create a juncture object "
-                         "on the server"
+        std::vector<std::string> args;
+        tokenize(arg, args);
+
+        if (args.size() != 2) {
+            std::cout << "usage: connect <hostname> <port>"
                       << std::endl << std::flush;
+
+            reply_expected = false;
         } else {
+            Anonymous cmap;
+            cmap->setAttr("hostname", args[0]);
+            cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
 
-            std::vector<std::string> args;
-            tokenize(arg, args);
+            Connect m;
+            m->setArgs1(cmap);
+            // No serialno yet
+            // FIXME add serialno once Juncture context can handle this
 
-            if (args.size() != 2) {
-                std::cout << "usage: connect <hostname> <port>"
-                          << std::endl << std::flush;
-            } else {
-                Anonymous cmap;
-                cmap->setAttr("hostname", args[0]);
-                cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
-                // cmap->setAttr("username", args[2]);
-                // cmap->setAttr("password", args[3]);
+            command_context->setFromContext(m);
 
-                Connect m;
-                m->setArgs1(cmap);
-                m->setFrom(m_juncture_id);
-
-                send(m);
-            }
+            send(m);
         }
     } else if (cmd == "add_agent") {
         std::string agent_type("creator");
@@ -692,16 +747,13 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);
-        c->setFrom(accountId);
+        c->setSerialno(newSerialNo());
 
-        m_avatar_flag = true;
+        command_context->setFromContext(c);
 
         send(c);
     } else if (cmd == "delete") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
             std::cout << "Please specify the entity to delete" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -710,18 +762,15 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous del_arg;
             del_arg->setId(arg);
             del->setArgs1(del_arg);
-            del->setFrom(m_agentId);
-            del->setTo(arg);
+
+            command_context->setFromContext(del);
 
             send(del);
 
             reply_expected = false;
         }
     } else if (cmd == "find_by_name") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
             std::cout << "Please specify the name to search for" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -730,17 +779,16 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setName(arg);
             l->setArgs1(lmap);
-            l->setFrom(m_agentId);
+            l->setSerialno(newSerialNo());
+
+            command_context->setFromContext(l);
 
             send(l);
 
             reply_expected = false;
         }
     } else if (cmd == "find_by_type") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
             std::cout << "Please specify the type to search for" << std::endl << std::flush;
             reply_expected = false;
         } else {
@@ -749,77 +797,37 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous lmap;
             lmap->setParents(std::list<std::string>(1, arg));
             l->setArgs1(lmap);
-            l->setFrom(m_agentId);
+            l->setSerialno(newSerialNo());
+
+            command_context->setFromContext(l);
 
             send(l);
 
             reply_expected = false;
         }
     } else if (cmd == "flush") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
+        if (arg.empty()) {
+            // FIXME usage
             std::cout << "Please specify the type to flush" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            ClientTask * task = new Flusher(m_agentId);
+            ClientTask * task = new Flusher(command_context);
             runTask(task, arg);
             reply_expected = false;
-        }
-    } else if (cmd == "creator_create") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else if (arg.empty()) {
-            std::cout << "Please specify the type to create" << std::endl << std::flush;
-            reply_expected = false;
-        } else {
-            Create c;
-
-            Anonymous thing;
-            thing->setParents(std::list<std::string>(1, arg));
-            c->setArgs1(thing);
-            c->setFrom(m_agentId);
-
-            send(c);
-
-            reply_expected = false;
-        }
-    } else if (cmd == "creator_look") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else {
-            Look l;
-
-            if (!arg.empty()) {
-                Anonymous cmap;
-                cmap->setId(arg);
-                l->setArgs1(cmap);
-            }
-            l->setFrom(m_agentId);
-
-            send(l);
-            reply_expected = true;
         }
     } else if (cmd == "cancel") {
         if (endTask() != 0) {
             std::cout << "No task currently running" << std::endl << std::flush;
         }
     } else if (cmd == "dump") {
-        ClientTask * task = new WorldDumper(accountId);
+        ClientTask * task = new WorldDumper(m_accountId);
         runTask(task, arg);
         reply_expected = false;
     } else if (cmd == "restore") {
-        if (m_agentId.empty()) {
-            std::cout << "Use add_agent to add an in-game agent first" << std::endl << std::flush;
-            reply_expected = false;
-        } else {
-            ClientTask * task = new WorldLoader(accountId, m_agentId);
-            runTask(task, arg);
-            reply_expected = false;
-        }
+        // FIXME Enforce context type
+        ClientTask * task = new WorldLoader(m_accountId, command_context);
+        runTask(task, arg);
+        reply_expected = false;
     } else if (cmd == "create") {
         std::vector<std::string> args;
         tokenize(arg, args);
@@ -827,7 +835,6 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         if (args.size() < 1) {
             std::cout << "usage: create <type> <params> ... "
                       << std::endl << std::flush;
-            reply_expected = false;
         } else {
             Anonymous cmap;
             cmap->setParents(std::list<std::string>(1, args[0]));
@@ -835,37 +842,32 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             Create c;
             c->setArgs1(cmap);
-            c->setFrom(accountId);
-
-            m_juncture_flag = true;
+            c->setSerialno(newSerialNo());
+            command_context->setFromContext(c);
 
             send(c);
         }
-    } else if (cmd == "login") {
         reply_expected = false;
-        if (m_juncture_id.empty()) {
-            std::cout << "Use create juncture to create a juncture object "
-                         "on the server"
+    } else if (cmd == "login") {
+        std::vector<std::string> args;
+        tokenize(arg, args);
+
+        if (args.size() != 2) {
+            std::cout << "usage: login <username> <password>"
                       << std::endl << std::flush;
+            reply_expected = false;
         } else {
+            Anonymous cmap;
+            cmap->setAttr("username", args[0]);
+            cmap->setAttr("password", args[1]);
 
-            std::vector<std::string> args;
-            tokenize(arg, args);
+            Login m;
+            m->setArgs1(cmap);
+            m->setSerialno(newSerialNo());
 
-            if (args.size() != 2) {
-                std::cout << "usage: login <username> <password>"
-                          << std::endl << std::flush;
-            } else {
-                Anonymous cmap;
-                cmap->setAttr("username", args[0]);
-                cmap->setAttr("password", args[1]);
+            command_context->setFromContext(m);
 
-                Login m;
-                m->setArgs1(cmap);
-                m->setFrom(m_juncture_id);
-
-                send(m);
-            }
+            send(m);
         }
     } else {
         reply_expected = false;
@@ -883,6 +885,14 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
            std::cout << cmd << ": No reply from server" << std::endl << std::flush;
            return;
        }
-       select(false);
+       if (select(false) != 0) {
+           return;
+       }
     }
+}
+
+int Interactive::commandUnknown(struct command * cmd,
+                                const std::string & arg)
+{
+    return 0;
 }

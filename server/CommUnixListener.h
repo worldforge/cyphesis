@@ -29,17 +29,16 @@ class CommClientKit;
 /// \brief Handle the listen socket used to listen for unix socket connections
 /// on the local machine.
 /// \ingroup ServerSockets
-class CommUnixListener : public CommStreamListener {
+class CommUnixListener : public CommStreamListener<unix_socket_server> {
   private:
-    /// skstream object which manages the low level unix listen socket.
-    unix_socket_server m_unixListener;
     /// Filesystem path of the unix socket.
     std::string m_path;
 
     virtual int accept();
 
   public:
-    explicit CommUnixListener(CommServer & svr, CommClientKit & kit);
+    explicit CommUnixListener(CommServer & svr,
+                              const boost::shared_ptr<CommClientKit> & kit);
     virtual ~CommUnixListener();
 
     /// Accessor for the filesystem path of the socket.

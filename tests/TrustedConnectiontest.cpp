@@ -505,9 +505,9 @@ Account * Connection::addAccount(const std::string & type,
     return 0;
 }
 
-Account * Connection::removeAccount(Router * obj, const std::string & event)
+void Connection::disconnectObject(RouterMap::iterator I,
+                                  const std::string & event)
 {
-    return 0;
 }
 
 ServerRouting::ServerRouting(BaseWorld & wrld,

@@ -26,6 +26,8 @@
 
 #include "tools/Flusher.h"
 
+#include "tools/ObjectContext.h"
+
 #include "common/compose.hpp"
 #include "common/Tick.h"
 #include "common/Unseen.h"
@@ -35,16 +37,52 @@
 
 #include <cassert>
 
+class test_ObjectContext : public ObjectContext {
+  public:
+    std::string m_id;
+    test_ObjectContext(const std::string & id) :
+          ObjectContext(*(Interactive*)0), m_id(id) { }
+    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const
+    {
+        return false;
+    }
+
+    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&)
+    {
+        return 0;
+    }
+
+    virtual std::string repr() const
+    {
+        return "test_context";
+    }
+
+    virtual bool checkContextCommand(const struct command *)
+    {
+        return false;
+    }
+
+    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&op)
+    {
+        op->setFrom(m_id);
+    }
+};
+
+using boost::shared_ptr;
+
 int main()
 {
+    shared_ptr<ObjectContext> test_context(new test_ObjectContext("1"));
+
+
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         delete tf;
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         tf->setup("oak", ret);
@@ -54,7 +92,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Get op;
@@ -65,7 +103,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Sight op;
@@ -76,7 +114,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Sight op;
@@ -88,7 +126,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Sight op;
@@ -102,7 +140,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Sight op;
@@ -117,7 +155,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         tf->setup("oak", ret);
@@ -137,7 +175,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Tick op;
@@ -148,7 +186,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Tick op;
@@ -161,7 +199,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Tick op;
@@ -175,7 +213,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
 
         OpVector ret;
         Atlas::Objects::Operation::Tick op;
@@ -189,7 +227,7 @@ int main()
     }
 
     {
-        ClientTask * tf = new Flusher("1");
+        ClientTask * tf = new Flusher(test_context);
         assert(!tf->isComplete());
 
         OpVector ret;
@@ -205,6 +243,10 @@ int main()
 // stubs
 
 #include "common/log.h"
+
+ObjectContext::~ObjectContext()
+{
+}
 
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = 1000;

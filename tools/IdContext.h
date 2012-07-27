@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2012 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,27 +17,20 @@
 
 // $Id$
 
-#ifndef SERVER_COMM_TCP_LISTENER_H
-#define SERVER_COMM_TCP_LISTENER_H
+#ifndef TOOLS_ID_CONTEXT_H
+#define TOOLS_ID_CONTEXT_H
 
-#include "CommStreamListener.h"
+#include "ObjectContext.h"
 
-#include <skstream/skserver.h>
-
-/// \brief Handle the internet listen socket used to accept connections from
-/// remote hosts.
-/// \ingroup ServerSockets
-class CommTCPListener : public CommStreamListener<tcp_socket_server> {
+class IdContext : public ObjectContext
+{
   protected:
-    virtual int accept();
-
+    const std::string m_id;
+    long m_refNo;
   public:
-    explicit CommTCPListener(CommServer & svr,
-                             const boost::shared_ptr<CommClientKit> &);
-    virtual ~CommTCPListener();
-
-    int setup(int port);
-    int setup(struct addrinfo * address);
+    explicit IdContext(Interactive & i, const std::string & id) :
+          ObjectContext(i), m_id(id), m_refNo(0L) { }
+    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
 };
 
-#endif // SERVER_COMM_TCP_LISTENER_H
+#endif // TOOLS_ID_CONTEXT_H

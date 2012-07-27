@@ -41,6 +41,7 @@
 #include "IdleConnector.h"
 #include "UpdateTester.h"
 #include "Admin.h"
+#include "TCPListenFactory.h"
 #include "TeleportAuthenticator.h"
 #include "TrustedConnection.h"
 
@@ -69,7 +70,12 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sstream>
+#include <skstream/skaddress.h>
+
+#include <boost/make_shared.hpp>
+
+using boost::make_shared;
+using boost::shared_ptr;
 
 class TrustedConnection;
 class Peer;
@@ -266,12 +272,15 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(*commServer);
     // commServer->addIdle(update_tester);
 
-    CommTCPListener * listener = new CommTCPListener(*commServer,
-          *new CommClientFactory<Connection>(*server));
+    shared_ptr<CommClientFactory<Connection> > atlas_clients =
+          make_shared<CommClientFactory<Connection>,
+                      ServerRouting & >(*server);
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
-            if (listener->setup(client_port_num) == 0) {
+            if (TCPListenFactory::listen(*commServer,
+                                         client_port_num,
+                                         atlas_clients) == 0) {
                 break;
             }
         }
@@ -292,19 +301,19 @@ int main(int argc, char ** argv)
                              varconf::USER);
         global_conf->setItem(CYPHESIS, "dynamic_port_start",
                              client_port_num + 1, varconf::USER);
-    } else {
-        if (listener->setup(client_port_num) != 0) {
-            log(ERROR, String::compose("Could not create client listen socket "
-                                       "on port %1. Init failed.",
-                                       client_port_num));
-            return EXIT_SOCKET_ERROR;
-        }
+    } else if (TCPListenFactory::listen(*commServer,
+                                        client_port_num,
+                                        atlas_clients) != 0) {
+        log(ERROR, String::compose("Could not create client listen socket "
+                                   "on port %1. Init failed.",
+                                   client_port_num));
+        return EXIT_SOCKET_ERROR;
     }
-    commServer->addSocket(listener);
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
-          *new CommClientFactory<TrustedConnection>(*server));
+          make_shared<CommClientFactory<TrustedConnection>,
+                      ServerRouting &>(*server));
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
                                    "with address \"%1\"",
@@ -315,7 +324,7 @@ int main(int argc, char ** argv)
     }
 
     CommUnixListener * pythonListener = new CommUnixListener(*commServer,
-          *new CommPythonClientFactory());
+          make_shared<CommPythonClientFactory>());
     if (pythonListener->setup(python_socket_name) != 0) {
         log(ERROR, String::compose("Could not create python listen socket "
                                    "with address %1.",
@@ -326,14 +335,12 @@ int main(int argc, char ** argv)
     }
 #endif
 
-    CommTCPListener * httpListener = new CommTCPListener(*commServer,
-          *new CommHttpClientFactory());
-    if (httpListener->setup(http_port_num) != 0) {
-        log(ERROR, String::compose("Could not create http listen socket on "
-                                   "port %1.", http_port_num));
-        delete httpListener;
-    } else {
-        commServer->addSocket(httpListener);
+    if (TCPListenFactory::listen(*commServer,
+                                 http_port_num,
+                                 make_shared<CommHttpClientFactory>()) != 0) {
+        log(ERROR, String::compose("Could not create http listen"
+                                   " socket on port %1.", http_port_num));
+
     }
 
     if (useMetaserver) {
@@ -346,7 +353,7 @@ int main(int argc, char ** argv)
         }
     }
 
-#if defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
+#if defined(HAVE_AVAHI)
 
     CommMDNSPublisher * cmdns = new CommMDNSPublisher(*commServer,
                                                       *server);
@@ -358,7 +365,7 @@ int main(int argc, char ** argv)
         delete cmdns;
     }
 
-#endif // defined(HAVE_LIBHOWL) || defined(HAVE_AVAHI)
+#endif // defined(HAVE_AVAHI)
 
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.

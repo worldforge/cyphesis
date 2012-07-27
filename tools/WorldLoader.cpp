@@ -20,6 +20,7 @@
 #include "WorldLoader.h"
 
 #include "tools/MultiLineListFormatter.h"
+#include "tools/ObjectContext.h"
 
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
@@ -38,6 +39,8 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
+
+using boost::shared_ptr;
 
 StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o,
                        const std::list<std::string>::const_iterator & c) :
@@ -139,7 +142,7 @@ void WorldLoader::create(const RootEntity & obj, OpVector & res)
 
     Create create;
     create->setArgs1(create_arg);
-    create->setFrom(m_agent);
+    m_agent_context->setFromContext(create);
     ++m_lastSerialNo;
     create->setSerialno(m_lastSerialNo);
 
@@ -225,7 +228,7 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 
         Set set;
         set->setArgs1(update);
-        set->setFrom(m_agent);
+        m_agent_context->setFromContext(set);
         set->setTo(id);
         ++m_lastSerialNo;
         set->setSerialno(m_lastSerialNo);
@@ -309,8 +312,9 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
 }
 
 WorldLoader::WorldLoader(const std::string & accountId,
-                         const std::string & agentId) : m_account(accountId),
-                                                        m_agent(agentId),
+                         const shared_ptr<ObjectContext> & context) :
+                                                        m_account(accountId),
+                                                        m_context(context),
                                                         m_lastSerialNo(-1),
                                                         m_count(0),
                                                         m_updateCount(0),
@@ -325,6 +329,13 @@ WorldLoader::~WorldLoader()
 
 void WorldLoader::setup(const std::string & arg, OpVector & res)
 {
+    m_agent_context = m_context.lock();
+
+    if (!m_agent_context) {
+        m_complete = true;
+        return;
+    }
+
     std::string filename("world.xml");
     if (!arg.empty()) {
         filename = arg;
@@ -343,15 +354,24 @@ void WorldLoader::setup(const std::string & arg, OpVector & res)
 
     Look l;
 
-    l->setFrom(m_agent);
+    m_agent_context->setFromContext(l);
     ++m_lastSerialNo;
     l->setSerialno(m_lastSerialNo);
 
     res.push_back(l);
+
+    m_agent_context.reset();
 }
 
 void WorldLoader::operation(const Operation & op, OpVector & res)
 {
+    m_agent_context = m_context.lock();
+
+    if (!m_agent_context) {
+        m_complete = true;
+        return;
+    }
+
     if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
         infoArrived(op, res);
     } else if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
@@ -359,4 +379,6 @@ void WorldLoader::operation(const Operation & op, OpVector & res)
     } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
         sightArrived(op, res);
     }
+
+    m_agent_context.reset();
 }

@@ -180,6 +180,10 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
 {
 }
 
+void AtlasStreamClient::loginSuccess(const Root & arg)
+{
+}
+
 void AtlasStreamClient::send(const RootOperation & op)
 {
 }

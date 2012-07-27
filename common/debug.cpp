@@ -28,7 +28,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-static void output(std::ostream & out, const Element & item, int depth)
+void output_element(std::ostream & out, const Element & item, int depth)
 {
     switch (item.getType()) {
         case Element::TYPE_INT:
@@ -46,7 +46,7 @@ static void output(std::ostream & out, const Element & item, int depth)
                 ListType::const_iterator I = item.List().begin();
                 ListType::const_iterator Iend = item.List().end();
                 for(; I != Iend; ++I) {
-                    output(out, *I, depth + 1);
+                    output_element(out, *I, depth + 1);
                     out << " ";
                 }
                 out << "]";
@@ -59,7 +59,7 @@ static void output(std::ostream & out, const Element & item, int depth)
                 MapType::const_iterator Iend = item.Map().end();
                 for(; I != Iend; ++I) {
                     out << std::string((depth + 1) * 4, ' ') << I->first << ": ";
-                    output(out, I->second, depth + 1);
+                    output_element(out, I->second, depth + 1);
                     out << std::endl;
                 }
                 out << std::string(depth * 4, ' ') << "}";
@@ -75,14 +75,14 @@ static void output(std::ostream & out, const Element & item, int depth)
 template <typename T>
 void debug_dump(const T & t)
 {
-    output(std::cout, t, 0);
+    output_element(std::cout, t, 0);
 }
 
 template <typename T>
 std::string debug_tostring(const T & t)
 {
     std::stringstream out(std::ios::out);
-    output(out, t, 0);
+    output_element(out, t, 0);
     return out.str();
 }
 

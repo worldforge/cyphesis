@@ -25,6 +25,9 @@
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+
 #include <list>
 #include <set>
 #include <stack>
@@ -47,11 +50,14 @@ class StackEntry {
     explicit StackEntry(const Atlas::Objects::Entity::RootEntity & o);
 };
 
+class ObjectContext;
+
 /// \brief Task class for dumping the world to a file
 class WorldLoader : public ClientTask {
   protected:
     std::string m_account;
-    std::string m_agent;
+    boost::weak_ptr<ObjectContext> m_context;
+    boost::shared_ptr<ObjectContext> m_agent_context;
     int m_lastSerialNo;
     int m_count;
     int m_updateCount;
@@ -72,7 +78,7 @@ class WorldLoader : public ClientTask {
     void sightArrived(const Operation &, OpVector & res);
   public:
     explicit WorldLoader(const std::string & accountId,
-                         const std::string & agentId);
+                         const boost::shared_ptr<ObjectContext> & context);
     virtual ~WorldLoader();
 
     virtual void setup(const std::string & arg, OpVector & ret);

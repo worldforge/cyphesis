@@ -23,6 +23,9 @@
 
 #include "common/AtlasStreamClient.h"
 #include "common/ClientTask.h"
+#include "common/system.h"
+
+#include "common/debug.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -40,10 +43,6 @@
 
 #include <cstdio>
 
-#ifdef HAVE_SYS_UN_H
-#include <sys/un.h>
-#endif // HAVE_SYS_UN_H
-
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -53,111 +52,20 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
-int AtlasStreamClient::authenticateLocal()
-{
-#ifdef HAVE_SYS_UN_H
-#ifndef __APPLE__
-#ifndef SO_PEERCRED
-    // Prove to the server that we are real.
-
-    unsigned char buf[1];
-
-    buf[0] = '\0';
-
-    struct iovec vec[1];
-
-    vec[0].iov_base = buf;
-    vec[0].iov_len = 1;
-
-    struct msghdr auth_message;
-
-    auth_message.msg_iov = vec;
-    auth_message.msg_iovlen = 1;
-    auth_message.msg_name = 0;
-    auth_message.msg_namelen = 0;
-    auth_message.msg_controllen = CMSG_SPACE(sizeof(struct ucred));
-    unsigned char * mcb = new unsigned char[auth_message.msg_controllen];
-    auth_message.msg_control = mcb;
-    auth_message.msg_flags = 0;
-
-    struct cmsghdr * control = CMSG_FIRSTHDR(&auth_message);
-    control->cmsg_len = CMSG_LEN(sizeof(struct ucred));
-    control->cmsg_level = SOL_SOCKET;
-    control->cmsg_type = SCM_CREDENTIALS;
-    struct ucred * creds = (struct ucred *)CMSG_DATA(control);
-    creds->pid = ::getpid();
-    creds->uid = ::getuid();
-    creds->gid = ::getgid();
-
-    int serr = sendmsg(m_fd, &auth_message, 0);
-
-    delete [] mcb;
-
-    if (serr < 0) {
-        perror("sendmsg");
-    }
-
-    // Done proving we are real.
-#endif // SO_PEERCRED
-    return 0;
-#endif // __APPLE__
-#else // HAVE_SYS_UN_H
-    return -1;
-#endif // HAVE_SYS_UN_H
-}
-
-int AtlasStreamClient::linger()
-{
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 10 };
-    ::setsockopt(m_fd, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                   sizeof(listenLinger));
-    // Ensure the address can be reused once we are done with it.
-    return 0;
-}
-
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
-    switch (item.getType()) {
-        case Element::TYPE_INT:
-            std::cout << item.Int();
-            break;
-        case Element::TYPE_FLOAT:
-            std::cout << item.Float();
-            break;
-        case Element::TYPE_STRING:
-            std::cout << "\"" << item.String() << "\"";
-            break;
-        case Element::TYPE_LIST:
-            {
-                std::cout << "[ ";
-                ListType::const_iterator I = item.List().begin();
-                ListType::const_iterator Iend = item.List().end();
-                for(; I != Iend; ++I) {
-                    output(*I, depth);
-                    std::cout << " ";
-                }
-                std::cout << "]";
-            }
-            break;
-        case Element::TYPE_MAP:
-            {
-                std::cout << "{" << std::endl << std::flush;
-                MapType::const_iterator I = item.Map().begin();
-                MapType::const_iterator Iend = item.Map().end();
-                for(; I != Iend; ++I) {
-                    std::cout << std::string((depth + 1) * spacing(), ' ') << I->first << ": ";
-                    output(I->second, depth + 1);
-                    std::cout << std::endl;
-                }
-                std::cout << std::string(depth * spacing(), ' ') << "}";
-            }
-            break;
-        default:
-            std::cout << "(\?\?\?)";
-            break;
+    output_element(std::cout, item, depth);
+}
+
+void AtlasStreamClient::output(const Root & ent) const
+{
+    MapType entmap = ent->asMessage();
+    MapType::const_iterator Iend = entmap.end();
+    for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
+        const Element & item = I->second;
+        std::cout << std::string(spacing(), ' ') << I->first << ": ";
+        output(item, 1);
+        std::cout << std::endl;
     }
 }
 
@@ -262,6 +170,10 @@ void AtlasStreamClient::soundArrived(const RootOperation & op)
 {
 }
 
+void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root & arg)
+{
+}
+
 /// \brief Called when an Error operation arrives
 ///
 /// @param op Operation to be processed
@@ -296,9 +208,15 @@ AtlasStreamClient::~AtlasStreamClient()
 
 void AtlasStreamClient::send(const RootOperation & op)
 {
-    if (m_encoder == 0 || m_ios == 0) {
+    if (m_encoder == 0) {
         return;
     }
+
+    // There is no way this should ever be null if m_encoder is
+    // not null, as m_encoder is set following negotiation, and that
+    // can't happen without a socket stream
+    assert(m_ios != 0);
+
     reply_flag = false;
     error_flag = false;
     m_encoder->streamObjectsMessage(op);
@@ -312,8 +230,6 @@ int AtlasStreamClient::connect(const std::string & host, int port)
         return -1;
     }
     m_fd = m_ios->getSocket();
-
-    linger();
 
     return negotiate();
 
@@ -329,9 +245,7 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 
     m_fd = m_ios->getSocket();
 
-    authenticateLocal();
-
-    linger();
+    socket_client_send_credentials(m_fd);
 
     return negotiate();
 #else // HAVE_SYS_UN_H
@@ -339,8 +253,20 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 #endif // HAVE_SYS_UN_H
 }
 
+int AtlasStreamClient::cleanDisconnect()
+{
+    // Shutting down our write side will cause the server to get a HUP once
+    // it has consumed all we have left for it
+    m_ios->shutdown(true);
+    // The server will then close the socket once we have all the responses
+    while (this->poll(20, 0) == 0);
+    return 0;
+}
+
 int AtlasStreamClient::negotiate()
 {
+    assert(m_ios != 0);
+
     Atlas::Net::StreamConnect conn("cyphesis_aiclient", *m_ios);
 
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
@@ -377,25 +303,7 @@ int AtlasStreamClient::login(const std::string & username,
  
     send(l);
 
-    for (int i = 0; i < 10; ++i) {
-       if (poll(0, 100000) != 0) {
-           return -1;
-       }
-       if (reply_flag && !error_flag) {
-           if (m_infoReply->isDefaultId()) {
-               std::cerr << "Malformed reply" << std::endl << std::flush;
-           } else {
-               accountId = m_infoReply->getId();
-               if (!m_infoReply->getParents().empty()) {
-                   accountType = m_infoReply->getParents().front();
-               }
-               return 0;
-           }
-           reply_flag = false;
-       }
-    }
-
-    return -1;
+    return waitForLoginResponse();
 }
 
 int AtlasStreamClient::create(const std::string & type,
@@ -416,6 +324,11 @@ int AtlasStreamClient::create(const std::string & type,
 
     send(c);
 
+    return waitForLoginResponse();
+}
+
+int AtlasStreamClient::waitForLoginResponse()
+{
     for (int i = 0; i < 10; ++i) {
        if (poll(0, 100000) != 0) {
            return -1;
@@ -424,11 +337,11 @@ int AtlasStreamClient::create(const std::string & type,
            if (m_infoReply->isDefaultId()) {
               std::cerr << "Malformed reply" << std::endl << std::flush;
            } else {
-               std::cerr << "Got it" << std::endl << std::flush;
-               accountId = m_infoReply->getId();
+               m_accountId = m_infoReply->getId();
                if (!m_infoReply->getParents().empty()) {
-                   accountType = m_infoReply->getParents().front();
+                   m_accountType = m_infoReply->getParents().front();
                }
+               loginSuccess(m_infoReply);
                return 0;
            }
            reply_flag = false;

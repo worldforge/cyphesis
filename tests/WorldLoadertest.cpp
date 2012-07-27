@@ -26,6 +26,8 @@
 
 #include "tools/WorldLoader.h"
 
+#include "tools/ObjectContext.h"
+
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -36,19 +38,54 @@ static bool stub_isOpen = true;
 
 const std::string data_path = TESTDATADIR;
 
+class test_ObjectContext : public ObjectContext {
+  public:
+    std::string m_id;
+    test_ObjectContext(const std::string & id) :
+          ObjectContext(*(Interactive*)0), m_id(id) { }
+    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const
+    {
+        return false;
+    }
+
+    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&)
+    {
+        return 0;
+    }
+
+    virtual std::string repr() const
+    {
+        return "test_context";
+    }
+
+    virtual bool checkContextCommand(const struct command *)
+    {
+        return false;
+    }
+
+    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&op)
+    {
+        op->setFrom(m_id);
+    }
+};
+
+using boost::shared_ptr;
+
 int main()
 {
-    WorldLoader * wl = new WorldLoader("23", "42");
+    shared_ptr<ObjectContext> test_context(new test_ObjectContext("42"));
+
+    WorldLoader * wl = new WorldLoader("23", test_context);
     delete wl;
 
     OpVector res;
-    wl = new WorldLoader("23", "42");
+    wl = new WorldLoader("23", test_context);
     stub_isOpen = true;
     wl->setup(String::compose("%1/no_such_file", data_path), res);
     delete wl;
 
     res.clear();
-    wl = new WorldLoader("23", "42");
+    wl = new WorldLoader("23", test_context);
     stub_isOpen = false;
     wl->setup(String::compose("%1/world.xml", data_path), res);
     delete wl;
@@ -58,6 +95,10 @@ int main()
 
 #include "common/AtlasFileLoader.h"
 #include "common/log.h"
+
+ObjectContext::~ObjectContext()
+{
+}
 
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
       std::map<std::string, Atlas::Objects::Root> & m) : m_messages(m)

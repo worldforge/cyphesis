@@ -39,9 +39,7 @@ using Atlas::Objects::Operation::Info;
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
 CommPeer::CommPeer(CommServer & svr,
-                   const std::string & name) : CommClient(svr, name),
-                                               m_port(0),
-                                               m_ref(0)
+                   const std::string & name) : CommClient(svr, name)
 {
 }
 
@@ -54,16 +52,18 @@ CommPeer::~CommPeer()
 /// @param host The hostname of the peer to connect to
 /// @param port The port to connect on
 /// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host, int port, long ref)
+int CommPeer::connect(const std::string & host, int port)
 {
-    m_host = host;
-    m_port = port;
-    m_ref = ref;
-    m_clientIos.open(host, port, true);
-    if (m_clientIos.is_open()) {
-        return 0;
-    }
-    return -1;
+    return m_clientIos.open(host, port, true);
+}
+
+/// \brief Connect to a remote peer wath a specific address info
+///
+/// @param info The address info of the peer to connect to
+/// @return Returns 0 on success and -1 on failure.
+int CommPeer::connect(struct addrinfo * info)
+{
+    return m_clientIos.open(info, true);
 }
 
 void CommPeer::setup(Router * connection)
@@ -79,37 +79,18 @@ void CommPeer::setup(Router * connection)
 bool CommPeer::eof()
 {
     if (m_clientIos.connect_pending()) {
-        return false;
+        if (m_clientIos.isReady(0)) {
+            connected.emit();
+            return false;
+        } else {
+            // With the cyphesis socket model, this object gets deleted
+            // if its fd gets closed, so trying a second fd is useless
+            // This object is done.
+            failed.emit();
+            return true;
+        }
     } else {
         return CommStreamClient::eof();
-    }
-}
-
-int CommPeer::read()
-{
-    if (m_clientIos.connect_pending()) {
-        if (m_clientIos.isReady(0)) {
-            return 0;
-        } else {
-            return -1;
-        }
-    } else {
-        Atlas::Negotiate * old_neg = m_negotiate;
-        int ret = CommClient::read();
-        if (old_neg != m_negotiate) {
-            Anonymous info_arg;
-            m_connection->addToEntity(info_arg);
-
-            Info info;
-            if (m_ref) {
-                info->setRefno(m_ref);
-            }
-            info->setArgs1(info_arg);
-
-            OpVector res;
-            m_connection->operation(info, res);
-        }
-        return ret;
     }
 }
 

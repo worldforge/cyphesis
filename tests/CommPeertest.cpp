@@ -117,7 +117,7 @@ class TestCommPeer : public CommPeer
 class TestRouter : public Peer
 {
   public:
-    TestRouter(CommClient & c, ServerRouting & s) : Peer(c, s, "test_addr", "5", 5)
+    TestRouter(CommClient & c, ServerRouting & s) : Peer(c, s, "test_addr", 6767, "5", 5)
     {
     }
 };
@@ -357,6 +357,7 @@ int CommClient::send(const Atlas::Objects::Operation::RootOperation &op)
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
+           int port,
            const std::string & id, long iid) :
       Router(id, iid),
       m_state(PEER_INIT),

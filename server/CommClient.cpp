@@ -62,7 +62,6 @@ CommClient::~CommClient()
     delete m_negotiate;
     delete m_encoder;
     delete m_codec;
-    m_clientIos.close();
 }
 
 void CommClient::setup(Router * connection)
