@@ -1,13 +1,5 @@
-Looks like client code has a loop reference, meaning objects only get cleaned
-up on finalise, which presumably triggers a GC round.
-
 On account connection, the call to MTRand to salt and encrypt the password
 looks a bit expensive. Syscalls opening dev/urandom, which could block.
-
-Investiage what happens when a client does a write only shutdown.
-Do server get a HUP?
- - Yes it does. Behavious is good. Client sends what it has already
-   flushed, then the server gets a clean HUP.
 
 Note that SO_LINGER almost certainly does nothing on listen sockets,
 and is irrelevant on others. What we really need to do is shutdown the write
