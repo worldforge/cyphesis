@@ -379,8 +379,7 @@ void Interactive::gotCommand(char * cmd)
 void Interactive::runCommand(char * cmd)
 {
     if (cmd == NULL) {
-        m_exit_flag = true;
-        std::cout << std::endl << std::flush;
+        cleanDisconnect();
         return;
     }
 
