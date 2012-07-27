@@ -257,6 +257,16 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 #endif // HAVE_SYS_UN_H
 }
 
+int AtlasStreamClient::cleanDisconnect()
+{
+    // Shutting down our write side will cause the server to get a HUP once
+    // it has consumed all we have left for it
+    m_ios->shutdown(true);
+    // The server will then close the socket once we have all the responses
+    while (this->poll(20, 0) == 0);
+    return 0;
+}
+
 int AtlasStreamClient::negotiate()
 {
     assert(m_ios != 0);

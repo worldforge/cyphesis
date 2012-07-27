@@ -103,6 +103,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     void send(const Atlas::Objects::Operation::RootOperation & op);
     int connect(const std::string & host, int port = 6767);
     int connectLocal(const std::string & host);
+    int cleanDisconnect();
     int login(const std::string & username, const std::string & password);
     int create(const std::string & type,
                const std::string & username,
