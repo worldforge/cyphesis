@@ -478,11 +478,6 @@ bool CommPeer::eof()
     return false;
 }
 
-int CommPeer::read()
-{
-    return 0;
-}
-
 int CommPeer::connect(struct addrinfo *)
 {
     return stub_CommPeer_connect_return;

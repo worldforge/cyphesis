@@ -497,11 +497,6 @@ bool CommPeer::eof()
     return false;
 }
 
-int CommPeer::read()
-{
-    return 0;
-}
-
 void CommPeer::idle(time_t t)
 {
 }
