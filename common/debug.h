@@ -20,7 +20,10 @@
 #ifndef COMMON_DEBUG_H
 #define COMMON_DEBUG_H
 
+#include <iosfwd>
 #include <string>
+
+namespace Atlas { namespace Message { class Element; } }
 
 #define debug(prg) { if (debug_flag) { prg } }
 
@@ -29,6 +32,10 @@
         std::cerr << __PRETTY_FUNCTION__ << std::endl << std::flush;\
     }\
 }
+
+void output_element(std::ostream & out,
+                    const Atlas::Message::Element & item,
+                    int depth);
 
 template <typename T>
 void debug_dump(const T & t);

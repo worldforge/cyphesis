@@ -307,16 +307,6 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Root;
 
-int AtlasStreamClient::authenticateLocal()
-{
-    return 0;
-}
-
-int AtlasStreamClient::linger()
-{
-    return 0;
-}
-
 void AtlasStreamClient::output(const Element & item, int depth) const
 {
 }
@@ -346,6 +336,10 @@ void AtlasStreamClient::sightArrived(const RootOperation & op)
 }
 
 void AtlasStreamClient::soundArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::loginSuccess(const Root & arg)
 {
 }
 

@@ -8,7 +8,7 @@ from random import *
 
 import server
 
-class Skeleton(server.Character):
+class Skeleton(server.Thing):
     def touch_operation(self, op):
         retops = Oplist()
         if self.status<0: return

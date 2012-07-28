@@ -7,7 +7,7 @@ from random import *
 import atlas
 import server
 
-class Deer(Thing):
+class Deer(server.Thing):
     def chop_operation(self, op):
         if self.mass<1:
             return(Operation("set",Entity(self.id,status=-1),to=self))

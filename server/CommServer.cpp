@@ -149,27 +149,27 @@ void CommServer::poll(bool busy)
     for (int i = 0; i < rval; ++i) {
         struct epoll_event & event = events[i];
         CommSocket * cs = static_cast<CommSocket *>(event.data.ptr);
-        if (event.events & EPOLLHUP) {
-            removeSocket(cs);
-        } else {
-            // FIXME If this never happens, then it can go
-            if (event.events & EPOLLERR) {
-                log(WARNING, "Socket error returned by epoll()");
-            }
-            if (event.events & EPOLLIN) {
-                if (cs->eof()) {
+
+        if (event.events & EPOLLERR) {
+            // FIXME This is triggered by an outgoing connect fail, and by
+            // process/src/bint. What to do?
+            // log(WARNING, "Socket error returned by epoll_wait()");
+        }
+        if (event.events & EPOLLIN) {
+            if (cs->eof()) {
+                removeSocket(cs);
+            } else {
+                if (cs->read() != 0) {
+                    // Remove it?
+                    // FIXME It could be bad to do this, as dispatch()
+                    // has not been called.
                     removeSocket(cs);
                 } else {
-                    if (cs->read() != 0) {
-                        // Remove it?
-                        // FIXME It could be bad to do this, as dispatch()
-                        // has not been called.
-                        removeSocket(cs);
-                    } else {
-                        cs->dispatch();
-                    }
+                    cs->dispatch();
                 }
             }
+        } else if (event.events & EPOLLHUP) {
+            removeSocket(cs);
         }
     }
 #else // HAVE_EPOLL_CREATE

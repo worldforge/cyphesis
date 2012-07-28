@@ -27,18 +27,17 @@
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote hosts.
 /// \ingroup ServerSockets
-class CommTCPListener : public CommStreamListener {
+class CommTCPListener : public CommStreamListener<tcp_socket_server> {
   protected:
-    /// skstream object to manage the listen socket.
-    tcp_socket_server m_tcpListener;
-
     virtual int accept();
 
   public:
-    explicit CommTCPListener(CommServer & svr, CommClientKit &);
+    explicit CommTCPListener(CommServer & svr,
+                             const boost::shared_ptr<CommClientKit> &);
     virtual ~CommTCPListener();
 
     int setup(int port);
+    int setup(struct addrinfo * address);
 };
 
 #endif // SERVER_COMM_TCP_LISTENER_H

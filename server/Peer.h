@@ -41,8 +41,14 @@ typedef std::map<long, TeleportState *> TeleportMap;
 /// to this one
 ///
 /// This is the main point of dispatch for any operation from the peer.
+/// It also handles the state relating to a specific connection, including
+/// whether it is authenticated.
 class Peer : public Router {
   protected:
+    /// \brief Name of host we are connected to
+    std::string m_host;
+    /// \brief Port number we are connected to
+    int m_port;
     /// \brief Account identifier returned after successful login
     std::string m_accountId;
     /// \brief Account type returned after login
@@ -59,7 +65,7 @@ class Peer : public Router {
     ServerRouting & m_server;
 
     Peer(CommClient & client, ServerRouting & svr,
-         const std::string & addr, const std::string & id, long iid);
+         const std::string & addr, int port, const std::string & id, long iid);
     virtual ~Peer();
 
     void setAuthState(PeerAuthState state);

@@ -35,44 +35,129 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
+#include <skstream/skaddress.h>
+
 using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Login;
 
+using String::compose;
+
 static const bool debug_flag = false;
 
-void Juncture::onPeerLost()
+class PeerAddress {
+  public:
+    tcp_address a;
+    tcp_address::const_iterator i;
+};
+
+void Juncture::onSocketConnected()
 {
+    m_peer = new Peer(*m_socket, m_connection->m_server,
+                      m_host, m_port, getId(), getIntId());
+
+    m_socket->setup(m_peer);
+    m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
+    m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
+
+    log(INFO, String::compose("Juncture onPeerC succeeded %1", getId()));
     if (m_connection != 0) {
+        Anonymous info_arg;
+        addToEntity(info_arg);
+
+        Info info;
+        info->setArgs1(info_arg);
+        if (m_connectRef != 0L) {
+            info->setRefno(m_connectRef);
+        }
+
+        m_connection->send(info);
+    }
+    m_socket = 0;
+    m_connectRef = 0L;
+}
+
+void Juncture::onSocketFailed()
+{
+    assert(m_address != 0);
+    assert(m_peer == 0);
+    assert(m_socket != 0);
+    if (m_connection != 0) {
+        if (++m_address->i != m_address->a.end()) {
+            if (attemptConnect("foo", 6767) == 0) {
+                return;
+            }
+        }
+
         Anonymous error_arg;
-        error_arg->setAttr("message", "Connection lost");
+        error_arg->setAttr("message", "Connection failed");
 
         Error error;
         error->setArgs1(error_arg);
-        if (m_socket->getRef() != 0L) {
-            error->setRefno(m_socket->getRef());
-            m_connection->m_commClient.send(error);
+        if (m_connectRef != 0L) {
+            error->setRefno(m_connectRef);
         }
+        m_connection->send(error);
     }
-    m_peer = 0;
     m_socket = 0;
+    m_connectRef = 0L;
+}
+
+void Juncture::onPeerLost()
+{
 }
 
 void Juncture::onPeerReplied(const Operation & op)
 {
     if (m_connection != 0) {
-        m_connection->m_commClient.send(op);
+        m_connection->send(op);
     }
 }
 
-Juncture::Juncture(Connection * c,
-                   const std::string & id, long iid) :
+int Juncture::attemptConnect(const std::string & hostname, int port)
+{
+    m_socket = new CommPeer(m_connection->m_commClient.m_commServer,
+                            m_connection->m_server.getName());
+
+    if (m_socket->connect(*m_address->i) != 0) {
+        delete m_socket;
+        m_socket = 0;
+        return -1;
+    }
+
+    m_host = hostname;
+    m_port = port;
+
+    m_connection->m_commClient.m_commServer.addSocket(m_socket);
+    m_connection->m_commClient.m_commServer.addIdle(m_socket);
+
+    if (m_socket->connect_pending()) {
+        log(INFO, String::compose("Connection in progress %1", getId()));
+        m_socket->connected.connect(sigc::mem_fun(this,
+                                                  &Juncture::onSocketConnected));
+        m_socket->failed.connect(sigc::mem_fun(this,
+                                               &Juncture::onSocketFailed));
+    } else {
+        log(INFO, String::compose("Connection worked instant %1", getId()));
+        onSocketConnected();
+    }
+
+    return 0;
+}
+
+Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectedRouter(id, iid, c),
-                                                       m_socket(0),
-                                                       m_peer(0)
+          m_address(0),
+          m_socket(0),
+          m_peer(0),
+          m_connectRef(0)
 {
 }
 
@@ -93,6 +178,20 @@ void Juncture::operation(const Operation & op, OpVector & res)
             OtherOperation(op, res);
             break;
     }
+}
+
+void Juncture::addToMessage(MapType & omap) const
+{
+    omap["objtype"] = "obj";
+    omap["id"] = getId();
+    omap["parents"] = ListType(1, "juncture");
+}
+
+void Juncture::addToEntity(const RootEntity & ent) const
+{
+    ent->setObjtype("obj");
+    ent->setId(getId());
+    ent->setParents(std::list<std::string>(1,"juncture"));
 }
 
 void Juncture::LoginOperation(const Operation & op, OpVector & res)
@@ -124,7 +223,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
         error(op, "Juncture not connected", res, getId());
         return;
     }
-    assert(m_socket != 0);
+    assert(m_socket == 0);
 
     if (m_peer->getAuthState() != PEER_INIT) {
         error(op, "Juncture not ready", res, getId());
@@ -184,25 +283,26 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     }
     int port = port_attr.Int();
 
-    m_socket = new CommPeer(m_connection->m_commClient.m_commServer,
-                            m_connection->m_server.getName());
-
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
-    if (m_socket->connect(hostname, port, op->getSerialno()) != 0) {
-        error(op, "Connection failed", res, getId());
-        delete m_socket;
-        m_socket = 0;
+    m_address = new PeerAddress;
+
+    if (m_address->a.resolveConnector(hostname, compose("%1", port)) != 0) {
+        error(op, "Connect host resolution failed", res, getId());
         return;
     }
-    log(INFO, String::compose("Connection succeeded %1", getId()));
-    m_peer = new Peer(*m_socket, m_connection->m_server,
-                      hostname, getId(), getIntId());
-    m_socket->setup(m_peer);
-    m_connection->m_commClient.m_commServer.addSocket(m_socket);
-    m_connection->m_commClient.m_commServer.addIdle(m_socket);
 
-    m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
-    m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
+    m_address->i = m_address->a.begin();
+    
+    if (m_address->i == m_address->a.end()) {
+        error(op, "Connect host returned zero addressses", res, getId());
+        return;
+    }
+
+    m_connectRef = op->getSerialno();
+
+    if (attemptConnect(hostname, port) != 0) {
+        error(op, "Connection failed", res, getId());
+    }
 }
 
 int Juncture::teleportEntity(const Entity * ent)

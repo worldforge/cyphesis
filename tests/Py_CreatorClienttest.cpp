@@ -170,6 +170,11 @@ int ObserverClient::setup(const std::string & account,
     return 0;
 }
 
+int ObserverClient::teardown()
+{
+    return 0;
+}
+
 void ObserverClient::idle()
 {
 }

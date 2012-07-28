@@ -26,6 +26,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/system.h"
 
 #include <iostream>
 
@@ -42,8 +43,9 @@ static const bool debug_flag = false;
 /// \brief Constructor for stream listener socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommTCPListener::CommTCPListener(CommServer & svr, CommClientKit & kit) :
-                 CommStreamListener(svr, kit, &m_tcpListener)
+CommTCPListener::CommTCPListener(CommServer & svr,
+                                 const boost::shared_ptr<CommClientKit> & kit) :
+                 CommStreamListener<tcp_socket_server>(svr, kit)
 {
 }
 
@@ -60,7 +62,7 @@ int CommTCPListener::accept()
     SOCKLEN addr_len = sizeof(sst);
 
     debug(std::cout << "Accepting.." << std::endl << std::flush;);
-    int asockfd = ::accept(m_tcpListener.getSocket(),
+    int asockfd = ::accept(m_listener.getSocket(),
                            (struct sockaddr *)&sst, &addr_len);
 
     if (asockfd < 0) {
@@ -100,21 +102,16 @@ int CommTCPListener::accept()
 /// \brief Create and bind the listen socket.
 int CommTCPListener::setup(int port)
 {
-    m_tcpListener.open(port);
-    if (!m_tcpListener.is_open()) {
+    if (m_listener.open(port) != 0) {
         return -1;
     }
-    // Set a linger time of 0 seconds, so that the socket is got rid
-    // of quickly.
-    int socket = m_tcpListener.getSocket();
-    struct linger {
-        int   l_onoff;
-        int   l_linger;
-    } listenLinger = { 1, 0 };
-    ::setsockopt(socket, SOL_SOCKET, SO_LINGER, (char *)&listenLinger,
-                                                sizeof(listenLinger));
-    // Ensure the address can be reused once we are done with it.
-    int flag = 1;
-    ::setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&flag, sizeof(flag));
+    return 0;
+}
+
+int CommTCPListener::setup(struct addrinfo * i)
+{
+    if (m_listener.open(i) != 0) {
+        return -1;
+    }
     return 0;
 }

@@ -410,6 +410,14 @@ void Juncture::operation(const Operation & op, OpVector & res)
 {
 }
 
+void Juncture::addToMessage(MapType & omap) const
+{
+}
+
+void Juncture::addToEntity(const RootEntity & ent) const
+{
+}
+
 Ruleset * Ruleset::m_instance = NULL;
 
 int Ruleset::installRule(const std::string & class_name,

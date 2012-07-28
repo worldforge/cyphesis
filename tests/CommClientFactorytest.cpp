@@ -104,22 +104,6 @@ int main()
         int res = ccf_tc.newCommClient(comm_server, -1, "");
         assert(res != 0);
     }
-
-    {
-        test_newid_fail = false;
-        CommClientFactory<Peer> ccf_p(*(ServerRouting*)0);
-
-        int res = ccf_p.newCommClient(comm_server, -1, "");
-        assert(res == 0);
-    }
-
-    {
-        test_newid_fail = true;
-        CommClientFactory<Peer> ccf_p(*(ServerRouting*)0);
-
-        int res = ccf_p.newCommClient(comm_server, -1, "");
-        assert(res != 0);
-    }
 }
 
 // stubs
@@ -216,6 +200,7 @@ void SlaveClientConnection::operation(const Operation &, OpVector &)
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
+           int port,
            const std::string & id, long iid) :
       Router(id, iid), m_commClient(client), m_server(svr)
 {

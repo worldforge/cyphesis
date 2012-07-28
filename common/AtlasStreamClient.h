@@ -57,17 +57,15 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     Atlas::Objects::Root m_infoReply;
 
     /// \brief Account identifier returned after successful login
-    std::string accountId;
+    std::string m_accountId;
     /// \brief Account type returned after login
-    std::string accountType;
+    std::string m_accountType;
     /// \brief Stored error message from the last received Error operation
     std::string m_errorMessage;
 
     // void objectArrived(const Atlas::Objects::Root &);
-    int authenticateLocal();
+    int waitForLoginResponse();
     int negotiate();
-    int linger();
-    void output(const Atlas::Message::Element & item, int depth = 0) const;
 
     virtual void objectArrived(const Atlas::Objects::Root &);
 
@@ -80,6 +78,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     virtual void sightArrived(const Operation &);
     virtual void soundArrived(const Operation &);
 
+    virtual void loginSuccess(const Atlas::Objects::Root & arg);
 
   public:
     AtlasStreamClient();
@@ -104,11 +103,14 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     void send(const Atlas::Objects::Operation::RootOperation & op);
     int connect(const std::string & host, int port = 6767);
     int connectLocal(const std::string & host);
+    int cleanDisconnect();
     int login(const std::string & username, const std::string & password);
     int create(const std::string & type,
                const std::string & username,
                const std::string & password);
     int poll(int timeout = 0, int msec = 0);
+    void output(const Atlas::Message::Element & item, int depth = 0) const;
+    void output(const Atlas::Objects::Root & item) const;
 
     int runTask(ClientTask * task, const std::string & arg);
     int endTask();

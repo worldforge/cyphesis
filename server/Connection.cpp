@@ -80,9 +80,9 @@ Connection::~Connection()
     
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
-    RouterMap::const_iterator Iend = m_objects.end();
-    for (RouterMap::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        removeAccount(I->second, "Disconnect");
+    RouterMap::iterator Iend = m_objects.end();
+    for (RouterMap::iterator I = m_objects.begin(); I != Iend; ++I) {
+        disconnectObject(I, "Disconnect");
     }
 
     m_server.decClients();
@@ -131,22 +131,19 @@ Account * Connection::addAccount(const std::string & type,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-Account * Connection::removeAccount(Router * obj, const std::string & event)
+void Connection::disconnectObject(RouterMap::iterator I,
+                                  const std::string & event)
 {
-    ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(obj);
+    ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(I->second);
     if (cr != 0) {
         cr->m_connection = 0;
         Account * ac = dynamic_cast<Account *>(cr);
         if (ac != 0) {
-            m_server.m_lobby.delAccount(ac);
-            logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
-                                             ac->getId(), ac->username(),
-                                             event));
-            return ac;
+            disconnectAccount(ac, I, event);
         }
-        return 0;
+        return;
     }
-    Character * chr = dynamic_cast<Character *>(obj);
+    Character * chr = dynamic_cast<Character *>(I->second);
     if (chr != 0) {
         if (chr->m_externalMind != 0) {
             ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
@@ -186,7 +183,7 @@ Account * Connection::removeAccount(Router * obj, const std::string & event)
             }
         }
     }
-    return 0;
+    return;
 }
 
 void Connection::addEntity(Entity * ent)
@@ -496,50 +493,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
               res);
         return;
     }
-    Account * ac = removeAccount(I->second, "Logout");
-    if (ac != 0) {
-        m_objects.erase(I);
-        EntityDict::const_iterator J = ac->getCharacters().begin();
-        EntityDict::const_iterator Jend = ac->getCharacters().end();
-        for (; J != Jend; ++J) {
-            Entity * chr = J->second;
-            Character * character = dynamic_cast<Character *>(chr);
-            if (character != 0) {
-                if (character->m_externalMind != 0) {
-                    ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
-                    if (em == 0) {
-                        log(ERROR, String::compose("Character %1(%2) has "
-                                                   "external mind object which "
-                                                   "is not an ExternalMind",
-                                                   chr->getType(),
-                                                   chr->getId()));
-                    } else {
-                        if (!em->isConnected()) {
-                            log(ERROR,
-                                String::compose("Connection(%1) has found a "
-                                                "character in its dictionery "
-                                                "which is not connected.",
-                                                getId()));
-                            removeObject(chr->getIntId());
-                        } else if (!em->isConnectedTo(this)) {
-                            log(ERROR,
-                                String::compose("Connection(%1) has found a "
-                                                "character in its dictionery "
-                                                "which is connected to another "
-                                                "Connection(%2)", getId(),
-                                                em->connectionId()));
-                            removeObject(chr->getIntId());
-                        }
-                    }
-                } else {
-                    removeObject(chr->getIntId());
-                }
-            } else {
-                // Non character entity
-                removeObject(chr->getIntId());
-            }
-        }
-    }
+    disconnectObject(I, "Logout");
 
     Info info;
     info->setArgs1(op);
@@ -547,6 +501,60 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         info->setRefno(op->getSerialno());
     }
     res.push_back(info);
+}
+
+void Connection::disconnectAccount(Account * ac,
+                                   RouterMap::iterator I,
+                                   const std::string & event)
+{
+    m_server.m_lobby.delAccount(ac);
+    logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
+                                     ac->getId(), ac->username(),
+                                     event));
+    if (m_obsolete) {
+        return;
+    }
+    m_objects.erase(I);
+    EntityDict::const_iterator J = ac->getCharacters().begin();
+    EntityDict::const_iterator Jend = ac->getCharacters().end();
+    for (; J != Jend; ++J) {
+        Entity * chr = J->second;
+        Character * character = dynamic_cast<Character *>(chr);
+        if (character != 0) {
+            if (character->m_externalMind != 0) {
+                ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
+                if (em == 0) {
+                    log(ERROR, String::compose("Character %1(%2) has "
+                                               "external mind object which "
+                                               "is not an ExternalMind",
+                                               chr->getType(),
+                                               chr->getId()));
+                } else {
+                    if (!em->isConnected()) {
+                        log(ERROR,
+                            String::compose("Connection(%1) has found a "
+                                            "character in its dictionery "
+                                            "which is not connected.",
+                                            getId()));
+                        removeObject(chr->getIntId());
+                    } else if (!em->isConnectedTo(this)) {
+                        log(ERROR,
+                            String::compose("Connection(%1) has found a "
+                                            "character in its dictionery "
+                                            "which is connected to another "
+                                            "Connection(%2)", getId(),
+                                            em->connectionId()));
+                        removeObject(chr->getIntId());
+                    }
+                }
+            } else {
+                removeObject(chr->getIntId());
+            }
+        } else {
+            // Non character entity
+            removeObject(chr->getIntId());
+        }
+    }
 }
 
 void Connection::GetOperation(const Operation & op, OpVector & res)

@@ -1,6 +1,42 @@
 Now that the client is getting an info response to create, get rid of the
 need to see?
 
+On account connection, the call to MTRand to salt and encrypt the password
+looks a bit expensive. Syscalls opening dev/urandom, which could block.
+
+Intetionally surrender as many capabilities as we can in order to avoid
+security issues.
+
+Peer should probably store a lower level version of the hostname, rather
+than the input to the resolver, thus ensuring the other party can connect
+to the right place. Juncture stores the high level representation, and uses
+DNS to resolve. This is correct, as it may need to re-resolve
+later - the other server may have moved. Peer will get deleted if the other
+servers address changes, and has to express an accurate version to the client.
+
+In Juncture - tighten up detecting the failed socket condition.
+Once we are connected to Peer, probably shouldnt have the m_socket pointer
+any more, and need to make sure we are no longer connected to the signals.
+Can we clear the socket signals?
+
+Separate out CommPeer::connect into two trivial inline functions
+
+There are many ways in which MemMap does the same job as WorldRouter.
+Common base class?
+
+Fix up WorldLoader so it can work with IG only. Requires support for
+GetOperation in Creator
+
+Optionally report back success in the form of Info on in-game ops with
+serialno?
+
+Improve Interactive to use serialno for responses
+
+Bug: Not listening for IPv6 any more
+Bug: Connecting doesn't fail over
+
+Why isn't ExternalMind a ConnectedRouter
+
 Re-factor login code so Session is the unique class rather than Account.
 Constraining logins to be one per account may be sound policy, but it
 should be policy rather than a hard constraint of the architecture.

@@ -22,18 +22,20 @@
 
 #include "CommSocket.h"
 
-class basic_socket_server;
+#include <boost/shared_ptr.hpp>
+
 class CommClientKit;
 
 /// \brief Handle the internet listen socket used to accept connections from
 /// remote hosts.
 /// \ingroup ServerSockets
+template <class ListenerT>
 class CommStreamListener : public CommSocket {
   protected:
     /// skstream object to manage the listen socket.
-    basic_socket_server * m_listener;
+    ListenerT m_listener;
 
-    CommClientKit & m_clientKit;
+    boost::shared_ptr<CommClientKit> m_clientKit;
 
     virtual int accept() = 0;
 
@@ -41,8 +43,7 @@ class CommStreamListener : public CommSocket {
 
   public:
     explicit CommStreamListener(CommServer & svr,
-                                CommClientKit & kit,
-                                basic_socket_server * listener);
+                                const boost::shared_ptr<CommClientKit> & kit);
     virtual ~CommStreamListener();
 
     int getFd() const;

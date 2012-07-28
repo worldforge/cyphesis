@@ -127,6 +127,17 @@ AC_LINK_IFELSE(
     ]
 )
 
+AX_BOOST_BASE(
+    [1.40],
+    [],
+    [
+        AC_MSG_ERROR([
+Cannot find Boost library 1.40 or later.
+Please see http://www.boost.org/ for details of how to download and install
+Boost.])
+    ]
+)
+
 AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])
 AC_COMPILE_IFELSE(
     [

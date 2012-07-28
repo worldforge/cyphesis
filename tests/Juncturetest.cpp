@@ -182,8 +182,7 @@ int main()
         TestJuncture * j = new TestJuncture(0);
 
         CommPeer * cp = new CommPeer(cs, "");
-        j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
-        j->test_addSocket(cp);
+        j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
 
@@ -206,9 +205,8 @@ int main()
         TestJuncture * j = new TestJuncture(0);
 
         CommPeer * cp = new CommPeer(cs, "");
-        Peer * p = new Peer(*cp, sr, "", "4", 4);
+        Peer * p = new Peer(*cp, sr, "", 6767, "4", 4);
         j->test_addPeer(p);
-        j->test_addSocket(cp);
 
         p->setAuthState(PEER_AUTHENTICATING);
 
@@ -233,8 +231,7 @@ int main()
         TestJuncture * j = new TestJuncture(0);
 
         CommPeer * cp = new CommPeer(cs, "");
-        j->test_addPeer(new Peer(*cp, sr, "", "4", 4));
-        j->test_addSocket(cp);
+        j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
 
@@ -285,7 +282,7 @@ int main()
     {
         TestJuncture * j = new TestJuncture(0);
 
-        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", "4", 4));
+        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", 6767, "4", 4));
 
         OpVector res;
         Operation op;
@@ -387,7 +384,7 @@ int main()
     {
         TestJuncture * j = new TestJuncture(0);
 
-        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", "4", 4));
+        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", 6767, "4", 4));
         j->teleportEntity(0);
 
         delete j;
@@ -481,12 +478,7 @@ bool CommPeer::eof()
     return false;
 }
 
-int CommPeer::read()
-{
-    return 0;
-}
-
-int CommPeer::connect(const std::string & host, int port, long)
+int CommPeer::connect(struct addrinfo *)
 {
     return stub_CommPeer_connect_return;
 }
@@ -616,6 +608,7 @@ int CommServer::addSocket(CommSocket*)
 Peer::Peer(CommClient & client,
            ServerRouting & svr,
            const std::string & addr,
+           int port,
            const std::string & id, long iid) :
       Router(id, iid),
       m_state(PEER_INIT),
@@ -680,6 +673,9 @@ Connection::~Connection()
 {
 }
 
+void Connection::send(const Operation & op) const
+{
+}
 
 void Connection::operation(const Operation &, OpVector &)
 {

@@ -26,28 +26,36 @@
 
 #include "tools/WorldLoader.h"
 
+#include "tools/Interactive.h"
+#include "tools/AvatarContext.h"
+
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootOperation.h>
 
 #include <cassert>
 
+using boost::shared_ptr;
+
 const std::string data_path = TESTDATADIR;
 
 int main()
 {
-    WorldLoader * wl = new WorldLoader("23", "42");
+    Interactive client;
+    shared_ptr<ObjectContext> avatar_context(new AvatarContext(client, "42")); 
+
+    WorldLoader * wl = new WorldLoader("23", avatar_context);
     delete wl;
 
     OpVector res;
-    wl = new WorldLoader("23", "42");
+    wl = new WorldLoader("23", avatar_context);
     wl->setup(String::compose("%1/no_such_file", data_path), res);
     assert(wl->isComplete());
     assert(res.empty());
     delete wl;
 
     res.clear();
-    wl = new WorldLoader("23", "42");
+    wl = new WorldLoader("23", avatar_context);
     wl->setup(String::compose("%1/world.xml", data_path), res);
     assert(!wl->isComplete());
     assert(!res.empty());

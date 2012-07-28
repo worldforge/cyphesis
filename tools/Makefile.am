@@ -83,6 +83,12 @@ cycmd_SOURCES = cycmd.cpp \
         WorldLoader.cpp WorldLoader.h \
         MultiLineListFormatter.cpp MultiLineListFormatter.h \
         AdminClient.cpp AdminClient.h \
+        ObjectContext.cpp ObjectContext.h \
+        IdContext.cpp IdContext.h \
+        AccountContext.cpp AccountContext.h \
+        AvatarContext.cpp AvatarContext.h \
+        ConnectionContext.cpp ConnectionContext.h \
+        JunctureContext.cpp JunctureContext.h \
         Interactive.cpp Interactive.h
 cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/client_socket.o \
@@ -95,8 +101,10 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/ClientTask.o \
               $(top_builddir)/common/AtlasFileLoader.o \
               $(top_builddir)/common/system_uid.o \
+              $(top_builddir)/common/system_net.o \
               $(top_builddir)/common/id.o \
               $(top_builddir)/common/utils.o \
+              $(top_builddir)/common/debug.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)
@@ -124,9 +132,11 @@ cyaddrules_LDADD = $(top_builddir)/common/operations.o \
                    $(top_builddir)/common/globals.o \
                    $(top_builddir)/common/system_prefix.o \
                    $(top_builddir)/common/system_uid.o \
+                   $(top_builddir)/common/system_net.o \
                    $(top_builddir)/common/binreloc.o \
                    $(top_builddir)/common/const.o \
                    $(top_builddir)/common/log.o \
+                   $(top_builddir)/common/debug.o \
                    $(top_builddir)/common/AtlasStreamClient.o \
                    $(NETWORKTOOL_LIBS) \
                    $(TOOL_LIBS)
