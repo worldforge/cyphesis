@@ -78,7 +78,7 @@ class Pioneeringconstruction(server.Task):
                 chunk_loc.coordinates = Point3D([0,0,0]) #self.pos
                 #.707 is sin(.5) which is needed for a 90 degree rotation
                 chunk_loc.orientation=Quaternion([.707,0,.707,0])
-                offset=Vector3D(-(2*lumber_length),-(3*lumber_length),0)
+                offset=Vector3D(-(1.5*lumber_length),-(2.5*lumber_length),0)
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
                 
             #print "MOVING"
@@ -119,13 +119,17 @@ class Pioneeringconstruction(server.Task):
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.coordinates = self.pos
-        chunk_loc.orientation=self.character.location.orientation
+        lumberh=0#lumberheight
+        lumberl=0#lumberlength
+        #chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
         lcount=0
         #makes sure we have 3 lumber to construct A frame
         for item in self.character.contains:
             if item.type[0] == str(self.materials):
                 lcount = lcount + 1
+                lumberl=item.location.bbox.far_point[2]-item.location.bbox.near_point[2]
+                lumberh=item.location.bbox.far_point[1]-item.location.bbox.near_point[1]
                 #print "ADDING"
             if lcount == 3 :
                 #print "DONE"
@@ -135,8 +139,8 @@ class Pioneeringconstruction(server.Task):
             self.irrelevant()
             return
         
-        bbox1=[-3,-3,-3,3,3,3]   
-        create=Operation("create", Entity(name = "A_Frame", type = "construction", location = chunk_loc), to = target)
+        bbox1=[-lumberl/2,-lumberl/2,-lumberh/2,lumberl/2,lumberl/2,lumberh/2] 
+        create=Operation("create", Entity(name = "A_Frame", type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
         #print create.id
         res.append(create)
