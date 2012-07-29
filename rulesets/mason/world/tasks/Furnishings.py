@@ -33,6 +33,8 @@ class Furnishings(server.Task):
         target=self.target()
         raw_materials=[]
         raw_materials1=[]#holders campfire
+        raw_materials2=[]#temp holder for aframes to be moved
+        acount=0
         lcount=0
         wcount=0
         bcount=0
@@ -50,6 +52,9 @@ class Furnishings(server.Task):
             if item.type[0] == "boulder":
                 raw_materials.append(item)
                 bcount = bcount + 1
+            if item.type[0] == "construction":
+                raw_materials2.append(item)
+                acount=acount+1
             if lcount == 1 and wcount==3 :
                 print "Enough material for table"
                 break
@@ -62,6 +67,9 @@ class Furnishings(server.Task):
             if ccount == 1 and bcount==4 :
                 print "Enough material for fireplace"
                 break
+            if acount==2:
+                print "Enough Materials for Wallframe"
+                break
         else:
             print "No materials in inventory for Furnishings 2"
             self.irrelevant()
@@ -69,8 +77,8 @@ class Furnishings(server.Task):
 
 
         count=lcount+wcount+bcount
-        print str(count)
-        print self.fname
+        #print str(count)
+        #print self.fname
         if self.fname=="Table":
             #Making table
             while (count > 0) : 
@@ -139,8 +147,8 @@ class Furnishings(server.Task):
 
             #create the back of the seat
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(0,.3,.75)
-            lbbox=[-.3,-.1,-.4,.3,.1,.4]
+            offset=Vector3D(-.3,0,.75)
+            lbbox=[-.1,-.3,-.4,.1,.3,.4]
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
@@ -156,7 +164,7 @@ class Furnishings(server.Task):
                 count = count - 1
             #create the Floor, it is one large wood
             #Table base
-            lbbox=[-2,-2,-1,2,2,.1]#local bbox
+            lbbox=[-2,-2,-.1,2,2,.1]#local bbox
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
 
@@ -197,11 +205,24 @@ class Furnishings(server.Task):
             lbbox=[-2,-.1,-.1,2,.1,1.5]
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
-            res.append(create) 
+            res.append(create)
+        if self.fname=="Wallframe":
+            chunk_loc.coordinates =Point3D([0,0,0])
+            tar=raw_materials2.pop()
+            chunk_loc.orientation=Quaternion([.27,0.65,-.65,.27])
+            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            res.append(create)
+            chunk_loc.coordinates =Point3D([0,0,0])
+            tar=raw_materials2.pop()
+            print str(tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2])
+            print str(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])
+            print str(tar.location.bbox.far_point[0]-tar.location.bbox.near_point[0])
+            offset=Vector3D(-(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])/.9,0,tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]/1.7)#Translate second A frame in wall
+            chunk_loc.orientation=Quaternion([.653,-.27,.27,.653])
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            res.append(create)
 
-        #aframe().bbox=[-self.globalll/2,-self.globalll/2,-self.globallh/2,self.globalll/2,self.globalll,self.globallh/2]
-        #item().orientation=Quaternion(1,1,1,1)#self.character.location.orientation
-        print "Rotate to characters rotation"
         self.progress =1
         self.irrelevant()
         return res
@@ -234,13 +255,22 @@ class Furnishings(server.Task):
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.coordinates = self.pos
+        #rotoff=Quaternion([.707,0,.707,0])
+        #charrot=Quaternion([self.character.location.orientation.w,self.character.location.orientation.x,self.character.location.orientation.y,self.character.location.orientation.z])
+        #w=(charrot.w*rotoff.w)-(charrot.x*rotoff.x)-(charrot.y*rotoff.y)-(charrot.z*rotoff.z)
+        #x=(charrot.w*rotoff.x)+(charrot.x*rotoff.w)+(charrot.y*rotoff.z)-(charrot.z*rotoff.y)
+        #y=(charrot.w*rotoff.y)+(charrot.y*rotoff.w)+(charrot.x*rotoff.z)-(charrot.z*rotoff.x)
+        #z=(charrot.w*rotoff.z)+(charrot.z*rotoff.w)+(charrot.x*rotoff.y)-(charrot.y*rotoff.x)
+        
         chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
+        acount=0#A frame count
         lcount=0#lumber count
         wcount=0#wood count
         ccount=0#campfire count
         bcount=0#boulder count
         self.fname=""#furnishing name
+        aframewidth=0
         #makes sure we have the right amount of material
         for item in self.character.contains:
             if item.type[0] == "lumber":
@@ -255,6 +285,9 @@ class Furnishings(server.Task):
             if item.type[0] == "boulder":
                 bcount = bcount + 1
                 #print "ADDING"
+            if item.type[0] == "construction":
+                acount=acount+1
+                aframewidth=item.location.bbox.far_point[1]-item.location.bbox.near_point[1]
             if lcount == 1 and wcount==3 :
                 self.fname="Table"
                 break
@@ -268,13 +301,21 @@ class Furnishings(server.Task):
             if ccount== 1 and bcount==4:
                 self.fname="Fireplace"
                 break
+            if acount ==2:
+                self.fname="Wallframe"
+                break
         else:
             print "No materials in inventory for Furnishings 1"
             self.irrelevant()
             return
-        
-        bbox1=[-3,-3,-3,3,3,3]   
-        create=Operation("create", Entity(name = self.fname, type = "construction", location = chunk_loc), to = target)
+
+        bbox1=[-1,-1,-1,1,1,1]   #cube bbox so the ojects can be viewed from afar.  Relatively close fit
+        if(self.fname=="Floor"):
+            bbox1=[-2,-2,-.01,2,2,.01]
+        if(self.fname=="Wallframe"):
+            bbox1=[-aframewidth,-.5,-aframewidth,0,.5,aframewidth]
+      
+        create=Operation("create", Entity(name = self.fname, type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
         res.append(create)
         res.append(self.next_tick(1.75))    
