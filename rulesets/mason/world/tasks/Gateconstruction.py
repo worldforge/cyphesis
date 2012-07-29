@@ -51,8 +51,8 @@ class Gateconstruction(server.Task):
             return
 
 
-        print str(len(raw_materials))
-        print str(len(raw_materials1))
+        #print str(len(raw_materials))
+        #print str(len(raw_materials1))
         chunk_loc = Location(gate())
         #chunk_loc = Location(self.character.location.parent)
         chunk_loc.coordinates =Point3D([0,0,0]) #self.pos
@@ -61,7 +61,7 @@ class Gateconstruction(server.Task):
         while (count1 > 0):
             tar = raw_materials1.pop()
             self.lumber_length=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
-            offset=Vector3D(0,self.lumber_length/3,self.lumber_length*.65)
+            offset=Vector3D(0,self.lumber_length/2.5,self.lumber_length*.65)
             chunk_loc.orientation=Quaternion([.707,0,0,.707])
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
@@ -138,8 +138,8 @@ class Gateconstruction(server.Task):
         chunk_loc.coordinates = self.pos
         chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
-            
-        create=Operation("create", Entity(name = "Basic_Gate", type = "construction", location = chunk_loc), to = target)
+        bbox1=[-4,-4,-.01,4,4,.01]    #Needed so it can be viewed from afar
+        create=Operation("create", Entity(name = "Basic_Gate", type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
         #print create.id
         res.append(create)
