@@ -129,6 +129,7 @@ COMM_SOURCES = \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommStreamClient.cpp CommStreamClient.h \
 		CommClient.cpp CommClient.h \
+		CommUserClient.cpp CommUserClient.h \
 		CommHttpClient.cpp CommHttpClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \

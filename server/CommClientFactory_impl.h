@@ -20,7 +20,7 @@
 #include "CommClientFactory.h"
 
 #include "CommServer.h"
-#include "CommClient.h"
+#include "CommUserClient.h"
 #include "ServerRouting.h"
 
 #include "common/id.h"
@@ -43,9 +43,9 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
         return -1;
     }
 
-    CommClient * newcli = new CommClient(svr,
-                                         m_server.getName(),
-                                         asockfd);
+    CommClient * newcli = new CommUserClient(svr,
+                                             m_server.getName(),
+                                             asockfd);
 
     newcli->setup(new ConnectionT(*newcli,
                                   m_server,
