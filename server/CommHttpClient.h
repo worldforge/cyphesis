@@ -22,12 +22,14 @@
 
 #include "CommStreamClient.h"
 
+#include <skstream/skstream.h>
+
 #include <list>
 #include <string>
 
 /// \brief Handle an internet socket connected to a remote web browser.
 /// \ingroup ServerSockets
-class CommHttpClient : public CommStreamClient {
+class CommHttpClient : public CommStreamClient<tcp_socket_stream> {
   protected:
     std::string m_incoming;
     std::list<std::string> m_headers;

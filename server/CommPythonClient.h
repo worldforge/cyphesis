@@ -22,13 +22,15 @@
 
 #include "CommStreamClient.h"
 
+#include <skstream/skstream.h>
+
 #include <string>
 
 class PythonContext;
 
 /// \brief Handle an internet socket connected to a remote python commandline.
 /// \ingroup ServerSockets
-class CommPythonClient : public CommStreamClient {
+class CommPythonClient : public CommStreamClient<tcp_socket_stream> {
   protected:
     PythonContext * const m_pyContext;
     std::string m_incoming;

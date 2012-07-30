@@ -37,7 +37,7 @@
 static const bool debug_flag = false;
 
 CommClient::CommClient(CommServer & svr, const std::string & name, int fd) :
-            CommStreamClient(svr, fd), Idle(svr),
+            CommStreamClient<tcp_socket_stream>(svr, fd), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
@@ -47,7 +47,7 @@ CommClient::CommClient(CommServer & svr, const std::string & name, int fd) :
 }
 
 CommClient::CommClient(CommServer & svr, const std::string & name) :
-            CommStreamClient(svr), Idle(svr),
+            CommStreamClient<tcp_socket_stream>(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {

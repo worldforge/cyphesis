@@ -19,33 +19,43 @@
 
 #include "CommStreamClient.h"
 
-CommStreamClient::CommStreamClient(CommServer & svr, int fd) :
+#include <skstream/skstream.h>
+
+template <class StreamT>
+CommStreamClient<StreamT>::CommStreamClient(CommServer & svr, int fd) :
                   CommSocket(svr),
                   m_clientIos(fd)
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr) :
+template <class StreamT>
+CommStreamClient<StreamT>::CommStreamClient(CommServer & svr) :
                   CommSocket(svr)
 {
 }
 
-CommStreamClient::~CommStreamClient()
+template <class StreamT>
+CommStreamClient<StreamT>::~CommStreamClient()
 {
 }
 
-int CommStreamClient::getFd() const
+template <class StreamT>
+int CommStreamClient<StreamT>::getFd() const
 {
     return m_clientIos.getSocket();
 }
 
-bool CommStreamClient::isOpen() const
+template <class StreamT>
+bool CommStreamClient<StreamT>::isOpen() const
 {
     return m_clientIos.is_open();
 }
 
-bool CommStreamClient::eof()
+template <class StreamT>
+bool CommStreamClient<StreamT>::eof()
 {
     return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
+            m_clientIos.peek() == StreamT::traits_type::eof());
 }
+
+template class CommStreamClient<tcp_socket_stream>;

@@ -90,7 +90,7 @@ bool CommPeer::eof()
             return true;
         }
     } else {
-        return CommStreamClient::eof();
+        return CommStreamClient<tcp_socket_stream>::eof();
     }
 }
 

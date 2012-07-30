@@ -22,26 +22,26 @@
 
 #include "CommSocket.h"
 
-#include <skstream/skstream.h>
-
 /// \brief Base class for stream clients connected to the server.
 ///
 /// \ingroup ServerSockets
+template <class StreamT>
 class CommStreamClient : public CommSocket {
   protected:
     /// \brief C++ iostream compatible socket object handling the socket IO.
-    tcp_socket_stream m_clientIos;
+    StreamT m_clientIos;
 
-  public:
     CommStreamClient(CommServer &, int fd);
     CommStreamClient(CommServer &);
+
+  public:
     virtual ~CommStreamClient();
 
     void disconnect() { m_clientIos.shutdown(); }
 
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
+    virtual int getFd() const;
+    virtual bool isOpen() const;
+    virtual bool eof();
 };
 
 #endif // SERVER_COMM_STREAM_CLIENT_H

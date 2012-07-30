@@ -26,7 +26,8 @@
 static const bool debug_flag = false;
 
 CommPythonClient::CommPythonClient(CommServer & svr, int fd) :
-                CommStreamClient(svr, fd), m_pyContext(new PythonContext)
+                CommStreamClient<tcp_socket_stream>(svr, fd),
+                m_pyContext(new PythonContext)
 {
     m_clientIos.setTimeout(0,1000); // FIXME?
 }

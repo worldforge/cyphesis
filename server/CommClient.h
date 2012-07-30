@@ -26,6 +26,8 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <skstream/skstream.h>
+
 #include <deque>
 
 namespace Atlas {
@@ -43,7 +45,7 @@ class Router;
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
 /// \ingroup ServerSockets
 class CommClient : public Atlas::Objects::ObjectsDecoder,
-                   public CommStreamClient,
+                   public CommStreamClient<tcp_socket_stream>,
                    public Idle {
   public:
     /// \brief STL deque of pointers to operation objects.
@@ -76,9 +78,10 @@ class CommClient : public Atlas::Objects::ObjectsDecoder,
     virtual void objectArrived(const Atlas::Objects::Root & obj);
 
     virtual void idle(time_t t);
+
+    CommClient(CommServer &, const std::string &);
   public:
     CommClient(CommServer &, const std::string &, int fd);
-    CommClient(CommServer &, const std::string &);
     virtual ~CommClient();
 
     void disconnect() { m_clientIos.shutdown(); }

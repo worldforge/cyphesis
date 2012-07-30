@@ -24,7 +24,7 @@
 static const bool debug_flag = false;
 
 CommHttpClient::CommHttpClient(CommServer & svr, int fd) :
-                CommStreamClient(svr, fd),
+                CommStreamClient<tcp_socket_stream>(svr, fd),
                 m_req_complete(false)
 {
     m_clientIos.setTimeout(0,1000); // FIXME?
