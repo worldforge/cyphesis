@@ -17,83 +17,8 @@
 
 // $Id$
 
-#include "CommStreamClient.h"
+#include "CommStreamClient_impl.h"
 
-#include "common/debug.h"
-#include "common/log.h"
+// #include <skstream/skstream.h>
 
-#include <skstream/skstream.h>
-
-static const bool debug_flag = true;
-
-template <class StreamT>
-CommStreamClient<StreamT>::CommStreamClient(CommServer & svr, int fd) :
-                  CommSocket(svr),
-                  m_clientIos(fd)
-{
-}
-
-template <class StreamT>
-CommStreamClient<StreamT>::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-template <class StreamT>
-CommStreamClient<StreamT>::~CommStreamClient()
-{
-}
-
-template <class StreamT>
-int CommStreamClient<StreamT>::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-template <class StreamT>
-bool CommStreamClient<StreamT>::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-template <class StreamT>
-bool CommStreamClient<StreamT>::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == StreamT::traits_type::eof());
-}
-
-template <class StreamT>
-void CommStreamClient<StreamT>::disconnect()
-{
-    m_clientIos.shutdown();
-}
-
-template <class StreamT>
-int CommStreamClient<StreamT>::flush()
-{
-    struct timeval tv = {0, 0};
-    fd_set sfds;
-    int cfd = m_clientIos.getSocket();
-    FD_ZERO(&sfds);
-    FD_SET(cfd, &sfds);
-    if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
-        // We only flush to the client if the client is ready
-        m_clientIos << std::flush;
-    } else {
-        // FIXME Establish why this gets hit so much
-        debug(std::cout << "Client not ready" << std::endl << std::flush;);
-    }
-    // This timeout should only occur if the client was really not
-    // ready
-    if (m_clientIos.timeout()) {
-        log(NOTICE, "Client disconnected because of write timeout.");
-        m_clientIos.shutdown();
-        m_clientIos.setstate(std::iostream::failbit);
-        return -1;
-    }
-    return 0;
-
-}
-
-template class CommStreamClient<tcp_socket_stream>;
+// template class CommStreamClient<tcp_socket_stream>;

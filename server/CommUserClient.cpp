@@ -19,7 +19,13 @@
 
 #include "CommUserClient.h"
 
+#include "CommStreamClient_impl.h"
+#include "CommClient_impl.h"
+
 static const bool debug_flag = false;
+
+template class CommStreamClient<tcp_socket_stream>;
+template class CommClient<tcp_socket_stream>;
 
 CommUserClient::CommUserClient(CommServer & svr,
                                const std::string & name,
