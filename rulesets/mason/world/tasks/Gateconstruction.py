@@ -11,14 +11,14 @@ import server
 import weakref
 
 class Gateconstruction(server.Task):
-    """A task for creating a Wooden structures such as A Frames with lumber and rope but for now a hammer""" 
+    """A task for creating a Gate using rope""" 
 
     materials = "lumber"
     def gates_operation(self, op):
         """ Op handler for Pioneeringconstruction op which activates this task """
         
         if len(op) < 1:
-            sys.stderr.write("Pioneeringconstruction  task has no target in op")
+            sys.stderr.write("Gateconstruction  task has no target in op")
 
         self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
@@ -27,8 +27,6 @@ class Gateconstruction(server.Task):
     def info_operation(self,op):
         print "Gate info"
         gate = server.world.get_object_ref(op[0].id)
-        #self.pos=aframe().pos#   Point3D(op[0].pos)       
-        #print op[0].id
         self.lcount = 0#needs 1 lumber for basic gate
         self.acount=0#needs 2 a frames for basic gate
         raw_materials = []
@@ -37,13 +35,10 @@ class Gateconstruction(server.Task):
             if item.type[0] == str("construction"):
                 raw_materials.append(item)
                 self.acount = self.acount + 1
-                print "ADDING A frames"
             if item.type[0] == str("lumber"):
                 raw_materials1.append(item)
-                self.lcount=self.lcount+1
-                print "ADDING LUMBER"                
+                self.lcount=self.lcount+1                
             if self.acount == 2 and self.lcount==1:
-                print "DONE Gate"
                 break
         else:
             print "No materials in inventory for Gate"
@@ -51,11 +46,8 @@ class Gateconstruction(server.Task):
             return
 
 
-        #print str(len(raw_materials))
-        #print str(len(raw_materials1))
         chunk_loc = Location(gate())
-        #chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates =Point3D([0,0,0]) #self.pos
+        chunk_loc.coordinates =Point3D([0,0,0]) 
         res=Oplist()
         count1=self.lcount
         while (count1 > 0):
@@ -66,43 +58,35 @@ class Gateconstruction(server.Task):
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
             res.append(move1)
-            #print str(tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2])
-            #print str(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])
-            #print str(tar.location.bbox.far_point[0]-tar.location.bbox.near_point[0])
             count1=count1-1
 
         
         count = self.acount
         chunk_loc = Location(gate())
-        #chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates =Point3D([0,0,0]) #self.pos        
+        chunk_loc.coordinates =Point3D([0,0,0])      
         #loops through raw_materials and places 3 lumber in inventory infront of user
         offset=Vector3D(0,0,0)
         while (count > 0) : 
             tar = raw_materials.pop()
           
             if count == 2 :
-                #left component
+                #left component of gate
                 chunk_loc.coordinates =Point3D([0,0,0])
                 offset=Vector3D(0,0,self.lumber_length*.7)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
-                print "LEFT"
+                
             if count == 1 :
-                #right component
+                #right component of gate
                 chunk_loc.coordinates =Point3D([0,0,0])
                 offset=Vector3D(0,-(self.lumber_length/2),self.lumber_length*.7)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
-                print "RIGHT"
                 
-            print "MOVING"
             move=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
             res.append(move)
             count = count - 1
 
-        
-        #gate().bbox=[-self.lumber_length/2,-self.lumber_length/2,-.1,self.lumber_length/2,self.lumber_length/2,.1] 
         print "RETURNING"    
         self.progress =1
         self.irrelevant()
@@ -113,7 +97,7 @@ class Gateconstruction(server.Task):
         """ Op handler for regular tick op """
         target=self.target()
         if not target:
-            # print "Target is no more"m
+            # print "Target is no more"
             self.irrelevant()
             return
 
@@ -141,10 +125,6 @@ class Gateconstruction(server.Task):
         bbox1=[-4,-4,-.01,4,4,.01]    #Needed so it can be viewed from afar
         create=Operation("create", Entity(name = "Basic_Gate", type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
-        #print create.id
         res.append(create)
         res.append(self.next_tick(1.75))    
-        #res.append(create)
-        #self.progress = 1
-        #self.irrelevant()
         return res
