@@ -30,10 +30,11 @@
 #ifndef SERVER_COMM_CLIENT_FACTORY_IMPL_H
 #define SERVER_COMM_CLIENT_FACTORY_IMPL_H
 
-template <class ConnectionT>
-int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
-                                                  int asockfd,
-                                                  const std::string & address)
+template <class SocketT, class ConnectionT>
+int CommClientFactory<SocketT, ConnectionT>::newCommClient(
+      CommServer & svr,
+      int asockfd,
+      const std::string & address)
 {
     std::string connection_id;
     long c_iid = newId(connection_id);
@@ -43,9 +44,7 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
         return -1;
     }
 
-    CommUserClient * newcli = new CommUserClient(svr,
-                                                 m_server.getName(),
-                                                 asockfd);
+    SocketT * newcli = new SocketT(svr, m_server.getName(), asockfd);
 
     newcli->setup(new ConnectionT(*newcli,
                                   m_server,

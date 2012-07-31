@@ -24,6 +24,7 @@
 #include "CommServer.h"
 #include "CommTCPListener.h"
 #include "CommClientFactory_impl.h"
+#include "CommUserClient.h"
 #include "CommHttpClientFactory.h"
 #include "CommPythonClientFactory.h"
 #include "CommUnixListener.h"
@@ -272,8 +273,8 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(*commServer);
     // commServer->addIdle(update_tester);
 
-    shared_ptr<CommClientFactory<Connection> > atlas_clients =
-          make_shared<CommClientFactory<Connection>,
+    shared_ptr<CommClientFactory<CommUserClient, Connection> > atlas_clients =
+          make_shared<CommClientFactory<CommUserClient, Connection>,
                       ServerRouting & >(*server);
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
@@ -312,7 +313,7 @@ int main(int argc, char ** argv)
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
-          make_shared<CommClientFactory<TrustedConnection>,
+          make_shared<CommClientFactory<CommUserClient, TrustedConnection>,
                       ServerRouting &>(*server));
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "

@@ -25,7 +25,7 @@
 class ServerRouting;
 
 /// \brief Concrete factory for createing CommClient objects
-template <class ConnectionT>
+template <class SocketT, class ConnectionT>
 class CommClientFactory : public CommClientKit {
   protected:
     ServerRouting & m_server;
