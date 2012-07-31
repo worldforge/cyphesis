@@ -27,8 +27,6 @@ class Pioneeringconstruction(server.Task):
     def info_operation(self,op):
         print "Aframe info"
         aframe = server.world.get_object_ref(op[0].id)
-        #self.pos=aframe().pos#   Point3D(op[0].pos)       
-        #print op[0].id
         self.lcount = 0
         
         raw_materials = []
@@ -36,9 +34,7 @@ class Pioneeringconstruction(server.Task):
             if item.type[0] == str(self.materials):
                 raw_materials.append(item)
                 self.lcount = self.lcount + 1
-                #print "ADDING"
             if self.lcount == 3 :
-                #print "DONE"
                 break
         else:
             print "No materials in inventory for A frame"
@@ -46,8 +42,7 @@ class Pioneeringconstruction(server.Task):
             return
         
         chunk_loc = Location(aframe())
-        #chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates =Point3D([0,0,0]) #self.pos
+        chunk_loc.coordinates =Point3D([0,0,0]) 
         
         count = self.lcount
         res=Oplist()
@@ -81,12 +76,10 @@ class Pioneeringconstruction(server.Task):
                 offset=Vector3D(-(1.5*lumber_length),-(2.5*lumber_length),0)
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
                 
-            #print "MOVING"
             move=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
             res.append(move)
             count = count - 1
 
-        #aframe().bbox=[-self.globalll/2,-self.globalll/2,-self.globallh/2,self.globalll/2,self.globalll,self.globallh/2] 
         self.progress =1
         self.irrelevant()
         return res
@@ -96,7 +89,7 @@ class Pioneeringconstruction(server.Task):
         """ Op handler for regular tick op """
         target=self.target()
         if not target:
-            # print "Target is no more"m
+            # print "Target is no more"
             self.irrelevant()
             return
 
@@ -121,7 +114,6 @@ class Pioneeringconstruction(server.Task):
         chunk_loc.coordinates = self.pos
         lumberh=0#lumberheight
         lumberl=0#lumberlength
-        #chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
         lcount=0
         #makes sure we have 3 lumber to construct A frame
@@ -130,9 +122,8 @@ class Pioneeringconstruction(server.Task):
                 lcount = lcount + 1
                 lumberl=item.location.bbox.far_point[2]-item.location.bbox.near_point[2]
                 lumberh=item.location.bbox.far_point[1]-item.location.bbox.near_point[1]
-                #print "ADDING"
+        
             if lcount == 3 :
-                #print "DONE"
                 break
         else:
             print "No materials in inventory for A frame"
@@ -142,10 +133,6 @@ class Pioneeringconstruction(server.Task):
         bbox1=[-lumberl/2,-lumberl/2,-lumberh/2,lumberl/2,lumberl/2,lumberh/2] 
         create=Operation("create", Entity(name = "A_Frame", type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
-        #print create.id
         res.append(create)
         res.append(self.next_tick(1.75))    
-        #res.append(create)
-        #self.progress = 1
-        #self.irrelevant()
         return res
