@@ -1,3 +1,7 @@
+Move logic for reply ops from CommClient::objectArrived to Connection?
+Would probably clean up the logic in CommClient, and allow send()
+to be removed.
+
 Name of server for negotiation purposes is done _every_ connection
 in CommClient. Calculate it centrally.
 
