@@ -70,10 +70,10 @@ void CommPeer::setup(Router * connection)
 {
     m_connection = connection;
 
-    if (!m_clientIos.connect_pending()) {
-        m_negotiate->poll(false);
-        m_clientIos << std::flush;
-    }
+    assert(!m_clientIos.connect_pending());
+
+    m_negotiate->poll(false);
+    m_clientIos << std::flush;
 }
 
 bool CommPeer::eof()

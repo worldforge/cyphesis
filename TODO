@@ -1,3 +1,11 @@
+Client connection can be made way more efficient by embedding the objects
+as members, rather than using pointers. To this end, make Negotiate
+a member, using a template arg. Make the stream type also a member.
+Move all explicit listener related functionality to a subclass
+of CommClient, leaving CommClient as the common, template base class
+for CommPeer and the new class. Encoder could also be embedded, except for
+the need to pass in the codec on construction - arguably bad design.
+
 Now that the client is getting an info response to create, get rid of the
 need to see?
 

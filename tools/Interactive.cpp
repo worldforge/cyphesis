@@ -192,7 +192,11 @@ void Interactive::operation(const Operation & op)
     for (; J != Jend; ++J) {
         ObjectContext & c = **J;
         if (c.accept(op)) {
-            c.dispatch(op);
+            if (c.dispatch(op) == 0) {
+                // It is not safe to carry on iterating, as the
+                // dispatch may have modified the context map.
+                break;
+            }
         }
     }
     AdminClient::operation(op);

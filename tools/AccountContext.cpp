@@ -76,6 +76,7 @@ int AccountContext::dispatch(const RootOperation & op)
                 
             }
         } else {
+            // FIXME Report an error?
         }
     } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO &&
                !op->getArgs().empty()) {
