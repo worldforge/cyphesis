@@ -123,7 +123,7 @@ void Juncture::onPeerReplied(const Operation & op)
 
 int Juncture::attemptConnect(const std::string & hostname, int port)
 {
-    m_socket = new CommPeer(m_connection->m_commClient.m_commServer,
+    m_socket = new CommPeer(m_connection->m_commSocket.m_commServer,
                             m_connection->m_server.getName());
 
     if (m_socket->connect(*m_address->i) != 0) {
@@ -135,8 +135,8 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
     m_host = hostname;
     m_port = port;
 
-    m_connection->m_commClient.m_commServer.addSocket(m_socket);
-    m_connection->m_commClient.m_commServer.addIdle(m_socket);
+    m_connection->m_commSocket.m_commServer.addSocket(m_socket);
+    m_connection->m_commSocket.m_commServer.addIdle(m_socket);
 
     if (m_socket->connect_pending()) {
         log(INFO, String::compose("Connection in progress %1", getId()));
@@ -240,7 +240,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
         l->setSerialno(op->getSerialno());
     }
     // Send the login op
-    m_peer->m_commClient.send(l);
+    m_peer->send(l);
     m_peer->setAuthState(PEER_AUTHENTICATING);
 }
 

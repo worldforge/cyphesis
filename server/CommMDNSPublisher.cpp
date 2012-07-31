@@ -407,4 +407,8 @@ void CommMDNSPublisher::dispatch()
 {
 }
 
+void CommMDNSPublisher::disconnect()
+{
+}
+
 #endif // defined(HAVE_AVAHI)

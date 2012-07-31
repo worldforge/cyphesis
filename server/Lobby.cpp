@@ -20,7 +20,7 @@
 #include "Lobby.h"
 
 #include "Account.h"
-#include "Connection_methods.h"
+#include "Connection.h"
 #include "ServerRouting.h"
 
 #include "common/debug.h"
@@ -28,6 +28,8 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <iostream>
 
 #include <cassert>
 

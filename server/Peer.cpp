@@ -21,8 +21,7 @@
 
 #include "ServerRouting.h"
 #include "Lobby.h"
-#include "CommClient.h"
-#include "CommPeer.h"
+#include "CommSocket.h"
 #include "CommServer.h"
 #include "TeleportState.h"
 #include "ExternalMind.h"
@@ -59,16 +58,15 @@ using Atlas::Objects::Entity::Anonymous;
 /// @param svr the server routing object of this server.
 /// @param addr a string representation of the address of the peer.
 /// @param id a string giving the indentifier of the peer connection.
-Peer::Peer(CommClient & client,
+Peer::Peer(CommSocket & client,
            ServerRouting & svr,
            const std::string & addr,
            int port,
            const std::string & id, long iid) :
-      Router(id, iid),
+      Link(client, id, iid),
       m_host(addr),
       m_port(port),
       m_state(PEER_INIT),
-      m_commClient(client),
       m_server(svr)
 {
     logEvent(CONNECT, String::compose("%1 - - Connect to %2", id, addr));
@@ -158,7 +156,7 @@ int Peer::teleportEntity(const Entity * ent)
         return -1;
     }
 
-    std::time_t teleport_time = m_commClient.m_commServer.time();
+    std::time_t teleport_time = m_commSocket.m_commServer.time();
 
     // Add a teleport state object to identify this teleport request
     TeleportState * s = new TeleportState(teleport_time);
@@ -204,7 +202,7 @@ int Peer::teleportEntity(const Entity * ent)
         std::vector<Root> & create_args = op->modifyArgs();
         create_args.push_back(key_arg);
     }
-    m_commClient.send(op);
+    this->send(op);
     log(INFO, "Sent Create op to peer");
     
     // Set it as validated and add to the list of teleports
@@ -236,12 +234,6 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     }
 
     long iid = op->getRefno();
-
-    CommPeer *peer = dynamic_cast<CommPeer*>(&m_commClient);
-    if(peer == 0) {
-        log(ERROR, "Unable to get CommPeer object");
-        return;
-    }
 
     TeleportMap::iterator I = m_teleports.find(iid);
     if (I == m_teleports.end()) {
@@ -326,7 +318,7 @@ void Peer::cleanTeleports()
         return;
     }
     // Get the current time
-    std::time_t curr_time = m_commClient.m_commServer.time();
+    std::time_t curr_time = m_commSocket.m_commServer.time();
 
     TeleportMap::iterator I = m_teleports.begin();
     for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {

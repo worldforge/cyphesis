@@ -20,15 +20,18 @@
 #include "CommClient.h"
 #include "CommServer.h"
 
+#include "server/Link.h"
+
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
-#include "common/Router.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Codec.h>
+
+#include <skstream/skstream.h>
 
 #include <iostream>
 #include <sstream>
@@ -36,81 +39,95 @@
 
 static const bool debug_flag = false;
 
-CommClient::CommClient(CommServer & svr, const std::string & name, int fd) :
-            CommStreamClient<tcp_socket_stream>(svr, fd), Idle(svr),
+template <class StreamT>
+CommClient<StreamT>::CommClient(CommServer & svr,
+                                const std::string & name,
+                                int fd) :
+            CommStreamClient<StreamT>(svr, fd), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
-    m_clientIos.setTimeout(0,1000);
+    this->m_clientIos.setTimeout(0,1000);
 
-    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + name, m_clientIos);
+    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + name,
+                                               this->m_clientIos);
 }
 
-CommClient::CommClient(CommServer & svr, const std::string & name) :
-            CommStreamClient<tcp_socket_stream>(svr), Idle(svr),
+template <class StreamT>
+CommClient<StreamT>::CommClient(CommServer & svr,
+                                const std::string & name) :
+            CommStreamClient<StreamT>(svr), Idle(svr),
             m_codec(NULL), m_encoder(NULL), m_connection(NULL),
             m_connectTime(svr.time())
 {
-    m_clientIos.setTimeout(0,1000);
+    this->m_clientIos.setTimeout(0,1000);
 
-    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + name, m_clientIos);
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + name,
+                                                this->m_clientIos);
 }
 
-CommClient::~CommClient()
+template <class StreamT>
+CommClient<StreamT>::~CommClient()
 {
-    delete m_connection;
-    delete m_negotiate;
-    delete m_encoder;
-    delete m_codec;
+    delete this->m_connection;
+    delete this->m_negotiate;
+    delete this->m_encoder;
+    delete this->m_codec;
 }
 
-void CommClient::setup(Router * connection)
+template <class StreamT>
+void CommClient<StreamT>::setup(Link * connection)
 {
     debug( std::cout << "Negotiating started" << std::endl << std::flush; );
     // Create the server side negotiator
 
-    m_connection = connection;
+    this->m_connection = connection;
 
-    m_negotiate->poll(false);
+    this->m_negotiate->poll(false);
 
-    m_clientIos << std::flush;
+    this->m_clientIos << std::flush;
 }
 
-int CommClient::negotiate()
+template <class StreamT>
+int CommClient<StreamT>::negotiate()
 {
     debug(std::cout << "Negotiating... " << std::flush;);
     // poll and check if negotiation is complete
-    m_negotiate->poll();
+    this->m_negotiate->poll();
 
-    if (m_negotiate->getState() == Atlas::Negotiate::IN_PROGRESS) {
+    if (this->m_negotiate->getState() == Atlas::Negotiate::IN_PROGRESS) {
         return 0;
     }
     debug(std::cout << "done" << std::endl;);
 
     // Check if negotiation failed
-    if (m_negotiate->getState() == Atlas::Negotiate::FAILED) {
+    if (this->m_negotiate->getState() == Atlas::Negotiate::FAILED) {
         log(NOTICE, "Failed to negotiate");
         return -1;
     }
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    m_codec = m_negotiate->getCodec(*this);
+    this->m_codec = this->m_negotiate->getCodec(*this);
 
     // Create a new encoder to send high level objects to the codec
-    m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
+    this->m_encoder = new Atlas::Objects::ObjectsEncoder(*this->m_codec);
+
+    assert(this->m_connection != 0);
+    this->m_connection->setEncoder(this->m_encoder);
 
     // This should always be sent at the beginning of a session
-    m_codec->streamBegin();
+    this->m_codec->streamBegin();
 
     // Acceptor is now finished with
-    delete m_negotiate;
-    m_negotiate = NULL;
+    delete this->m_negotiate;
+    this->m_negotiate = 0;
 
     return 0;
 }
 
-int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
+template <class StreamT>
+int CommClient<StreamT>::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     assert(m_connection != 0);
     OpVector reply;
@@ -132,7 +149,8 @@ int CommClient::operation(const Atlas::Objects::Operation::RootOperation & op)
     return 0;
 }
 
-void CommClient::dispatch()
+template <class StreamT>
+void CommClient<StreamT>::dispatch()
 {
     DispatchQueue::const_iterator Iend = m_opQueue.end();
     for(DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
@@ -144,7 +162,8 @@ void CommClient::dispatch()
     m_opQueue.clear();
 }
 
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
+template <class StreamT>
+void CommClient<StreamT>::objectArrived(const Atlas::Objects::Root & obj)
 {
     Atlas::Objects::Operation::RootOperation op = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(obj);
     if (!op.isValid()) {
@@ -165,17 +184,19 @@ void CommClient::objectArrived(const Atlas::Objects::Root & obj)
     m_opQueue.push_back(op);
 }
 
-void CommClient::idle(time_t t)
+template <class StreamT>
+void CommClient<StreamT>::idle(time_t t)
 {
     if (m_negotiate != 0) {
         if ((t - m_connectTime) > 10) {
             log(NOTICE, "Client disconnected because of negotiation timeout.");
-            m_clientIos.shutdown();
+            this->m_clientIos.shutdown();
         }
     }
 }
 
-int CommClient::read()
+template <class StreamT>
+int CommClient<StreamT>::read()
 {
     if (m_codec != NULL) {
         m_codec->poll();
@@ -185,38 +206,22 @@ int CommClient::read()
     }
 }
 
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
+template <class StreamT>
+int CommClient<StreamT>::send(const Atlas::Objects::Operation::RootOperation & op)
 {
-    if (!isOpen()) {
+    if (!this->isOpen()) {
         log(ERROR, "Writing to closed client");
         return -1;
     }
-    if (m_clientIos.fail()) {
+    if (this->m_clientIos.fail()) {
         return -1;
     }
-    if (m_encoder == 0) {
+    if (this->m_encoder == 0) {
         log(ERROR, "Encoder not initialized");
         return -1;
     }
     m_encoder->streamObjectsMessage(op);
-    struct timeval tv = {0, 0};
-    fd_set sfds;
-    int cfd = m_clientIos.getSocket();
-    FD_ZERO(&sfds);
-    FD_SET(cfd, &sfds);
-    if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
-        // We only flush to the client if the client is ready
-        m_clientIos << std::flush;
-    } else {
-        debug(std::cout << "Client not ready" << std::endl << std::flush;);
-    }
-    // This timeout should only occur if the client was really not
-    // ready
-    if (m_clientIos.timeout()) {
-        log(NOTICE, "Client disconnected because of write timeout.");
-        m_clientIos.shutdown();
-        m_clientIos.setstate(std::iostream::failbit);
-        return -1;
-    }
-    return 0;
+    return this->flush();
 }
+
+template class CommClient<tcp_socket_stream>;

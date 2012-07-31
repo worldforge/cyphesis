@@ -37,11 +37,12 @@ class CommStreamClient : public CommSocket {
   public:
     virtual ~CommStreamClient();
 
-    void disconnect() { m_clientIos.shutdown(); }
-
     virtual int getFd() const;
     virtual bool isOpen() const;
     virtual bool eof();
+    virtual void disconnect();
+    virtual int flush();
+
 };
 
 #endif // SERVER_COMM_STREAM_CLIENT_H

@@ -23,7 +23,6 @@
 #include <string>
 
 class CommServer;
-class CommClient;
 
 /// \brief Abstract factory for creating objects from subclasses of CommClient
 class CommClientKit {

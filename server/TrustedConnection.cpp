@@ -31,7 +31,7 @@
 /// @param svr The core server object
 /// @param addr A string representation of the client's network address
 /// @param id The identifier of this connection.
-TrustedConnection::TrustedConnection(CommClient & client,
+TrustedConnection::TrustedConnection(CommSocket & client,
                                      ServerRouting & svr,
                                      const std::string & addr,
                                      const std::string & id, long iid) :

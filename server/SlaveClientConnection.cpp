@@ -26,12 +26,12 @@
 /// @param id identifier of the connection
 /// @param client network object the client is connected to
 /// @param svr core server object
-SlaveClientConnection::SlaveClientConnection(CommClient & client,
+SlaveClientConnection::SlaveClientConnection(CommSocket & client,
                                              ServerRouting & svr,
                                              const std::string & address,
                                              const std::string & id, long iid) :
-                       Router(id, iid),
-                       m_commClient(client), m_server(svr)
+                       Link(client, id, iid),
+                       m_server(svr)
 {
 }
 

@@ -38,8 +38,8 @@ using Atlas::Objects::Operation::Info;
 /// @param svr Reference to the object that manages all socket communication.
 /// @param username Username to login with on peer
 /// @param password Password to login with on peer
-CommPeer::CommPeer(CommServer & svr,
-                   const std::string & name) : CommClient(svr, name)
+CommPeer::CommPeer(CommServer & svr, const std::string & name) :
+          CommClient<tcp_socket_stream>(svr, name)
 {
 }
 
@@ -66,7 +66,7 @@ int CommPeer::connect(struct addrinfo * info)
     return m_clientIos.open(info, true);
 }
 
-void CommPeer::setup(Router * connection)
+void CommPeer::setup(Link * connection)
 {
     m_connection = connection;
 

@@ -24,7 +24,7 @@ static const bool debug_flag = false;
 CommUserClient::CommUserClient(CommServer & svr,
                                const std::string & name,
                                int fd) :
-            CommClient(svr, name, fd)
+            CommClient<tcp_socket_stream>(svr, name, fd)
 {
 }
 

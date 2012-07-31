@@ -22,11 +22,13 @@
 
 #include "CommClient.h"
 
+#include <skstream/skstream.h>
+
 #include <sigc++/signal.h>
 
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
-class CommPeer : public CommClient {
+class CommPeer : public CommClient<tcp_socket_stream> {
   public:
     CommPeer(CommServer & svr, const std::string &);
     virtual ~CommPeer();
@@ -41,7 +43,7 @@ class CommPeer : public CommClient {
 
     int connect(const std::string &, int);
     int connect(struct addrinfo *);
-    void setup(Router *);
+    void setup(Link *);
 
     sigc::signal<void> connected;
     sigc::signal<void> failed;

@@ -1,3 +1,6 @@
+Name of server for negotiation purposes is done _every_ connection
+in CommClient. Calculate it centrally.
+
 Client connection can be made way more efficient by embedding the objects
 as members, rather than using pointers. To this end, make Negotiate
 a member, using a template arg. Make the stream type also a member.

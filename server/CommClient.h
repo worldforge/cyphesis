@@ -26,8 +26,6 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <skstream/skstream.h>
-
 #include <deque>
 
 namespace Atlas {
@@ -38,14 +36,15 @@ namespace Atlas {
   class Negotiate;
 }
 
-class Router;
+class Link;
 
 /// \brief Base class for Atlas clients connected to the server.
 ///
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
 /// \ingroup ServerSockets
+template <class StreamT>
 class CommClient : public Atlas::Objects::ObjectsDecoder,
-                   public CommStreamClient<tcp_socket_stream>,
+                   public CommStreamClient<StreamT>,
                    public Idle {
   public:
     /// \brief STL deque of pointers to operation objects.
@@ -60,7 +59,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder,
     /// \brief Atlas negotiator for handling codec negotiation.
     Atlas::Negotiate * m_negotiate;
     /// \brief Server side object for handling connection level operations.
-    Router * m_connection;
+    Link * m_connection;
     /// \brief Time connection was opened
     time_t m_connectTime;
 
@@ -71,7 +70,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder,
     template <class OpType>
     void queue(const OpType &);
 
-    bool timeout() { return m_clientIos.timeout(); }
+    bool timeout() { return this->m_clientIos.timeout(); }
 
     int operation(const Atlas::Objects::Operation::RootOperation &);
 
@@ -84,9 +83,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder,
   public:
     virtual ~CommClient();
 
-    void disconnect() { m_clientIos.shutdown(); }
-
-    void setup(Router * connection);
+    void setup(Link * connection);
     int send(const Atlas::Objects::Operation::RootOperation &);
 
     int read();

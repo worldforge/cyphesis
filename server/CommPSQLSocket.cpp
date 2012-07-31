@@ -122,6 +122,10 @@ void CommPSQLSocket::dispatch()
     m_db.launchNewQuery();
 }
 
+void CommPSQLSocket::disconnect()
+{
+}
+
 void CommPSQLSocket::idle(time_t t)
 {
     debug(std::cout << "CommPSQLSocket::idle()" << std::endl << std::flush;);

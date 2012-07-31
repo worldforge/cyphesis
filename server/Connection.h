@@ -20,13 +20,13 @@
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
-#include "common/Router.h"
+#include "server/Link.h"
 
 #include <sigc++/trackable.h>
 
 class Account;
 class Character;
-class CommClient;
+class CommSocket;
 class ServerRouting;
 
 typedef std::map<long, Router *> RouterMap;
@@ -39,7 +39,7 @@ typedef std::map<long, Router *> RouterMap;
 /// and any other entities that that are associated with those accounts,
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
-class Connection : public Router, virtual public sigc::trackable {
+class Connection : public Link, virtual public sigc::trackable {
   protected:
     RouterMap m_objects;
 
@@ -68,10 +68,9 @@ class Connection : public Router, virtual public sigc::trackable {
     virtual int verifyCredentials(const Account &,
                                   const Atlas::Objects::Root &) const;
   public:
-    CommClient & m_commClient;
     ServerRouting & m_server;
 
-    Connection(CommClient &, ServerRouting & svr,
+    Connection(CommSocket &, ServerRouting & svr,
                const std::string & addr, const std::string & id, long iid);
     virtual ~Connection();
 
@@ -83,9 +82,6 @@ class Connection : public Router, virtual public sigc::trackable {
     void objectDeleted(long id);
 
     void connectAvatar(Character * chr);
-
-    void disconnect();
-    void send(const Operation & op) const;
 
     virtual void operation(const Operation &, OpVector &);
 

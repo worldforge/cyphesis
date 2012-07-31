@@ -77,4 +77,10 @@ void CommStreamListener<ListenerT>::dispatch()
 {
 }
 
+template <class ListenerT>
+void CommStreamListener<ListenerT>::disconnect()
+{
+    return m_listener.shutdown();
+}
+
 #endif // SERVER_COMM_STREAM_LISTENER_IMPL_H

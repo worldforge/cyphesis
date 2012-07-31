@@ -40,8 +40,8 @@
 #include "common/TypeNode.h"
 #include "common/compose.hpp"
 
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <sigc++/adaptors/bind.h>
 #include <sigc++/functors/mem_fun.h>
@@ -57,12 +57,11 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Connection::Connection(CommClient & client,
+Connection::Connection(CommSocket & socket,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Router(id, iid), m_obsolete(false),
-                                                m_commClient(client),
+            Link(socket, id, iid), m_obsolete(false),
                                                 m_server(svr)
 {
     m_server.incClients();
@@ -86,11 +85,6 @@ Connection::~Connection()
     }
 
     m_server.decClients();
-}
-
-void Connection::send(const Operation & op) const
-{
-    m_commClient.send(op);
 }
 
 Account * Connection::newAccount(const std::string & type,
@@ -209,11 +203,6 @@ void Connection::removeObject(long id)
 void Connection::objectDeleted(long id)
 {
     removeObject(id);
-}
-
-void Connection::disconnect()
-{
-    m_commClient.disconnect();
 }
 
 void Connection::connectAvatar(Character * chr)

@@ -138,6 +138,7 @@ COMM_SOURCES = \
 		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommClientKit.cpp CommClientKit.h \
 		CommSocket.cpp CommSocket.h \
+		Link.cpp Link.h \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h
 

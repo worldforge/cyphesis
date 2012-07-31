@@ -36,7 +36,7 @@ class TrustedConnection : public Connection {
                                  const std::string & passwd,
                                  const std::string & id, long intId);
   public:
-    TrustedConnection(CommClient & client,
+    TrustedConnection(CommSocket & client,
                       ServerRouting & svr,
                       const std::string & addr,
                       const std::string & id, long iid);

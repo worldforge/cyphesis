@@ -73,6 +73,7 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     bool eof();
     int read();
     void dispatch();
+    void disconnect();
 };
 
 #endif // SERVER_COMM_MDNS_PUBLISHER_H

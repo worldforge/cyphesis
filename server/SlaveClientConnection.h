@@ -20,9 +20,9 @@
 #ifndef SERVER_SLAVE_CLIENT_CONNECTION_H
 #define SERVER_SLAVE_CLIENT_CONNECTION_H
 
-#include "common/Router.h"
+#include "server/Link.h"
 
-class CommClient;
+class CommSocket;
 class ServerRouting;
 
 /// \brief Class representing connections from a client to a cyphesis instance
@@ -30,14 +30,12 @@ class ServerRouting;
 ///
 /// This behaves much like Connection, but handles the different behavoir
 /// required because cyphesis is not the authoritative point for logins.
-class SlaveClientConnection : public Router {
+class SlaveClientConnection : public Link {
   public:
-    /// \brief network object the client is connected to
-    CommClient & m_commClient;
     /// \brief core server object
     ServerRouting & m_server;
 
-    SlaveClientConnection(CommClient &,
+    SlaveClientConnection(CommSocket &,
                           ServerRouting &,
                           const std::string & address,
                           const std::string & id, long iid);

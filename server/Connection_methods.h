@@ -22,11 +22,4 @@
 
 #include "Connection.h"
 
-#include "CommClient.h"
-
-inline void Connection::send(const Operation & op) const
-{
-    m_commClient.send(op);
-}
-
 #endif // SERVER_CONNECTION_METHODS_H

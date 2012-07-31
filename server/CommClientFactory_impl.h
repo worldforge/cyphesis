@@ -43,9 +43,9 @@ int CommClientFactory<ConnectionT>::newCommClient(CommServer & svr,
         return -1;
     }
 
-    CommClient * newcli = new CommUserClient(svr,
-                                             m_server.getName(),
-                                             asockfd);
+    CommUserClient * newcli = new CommUserClient(svr,
+                                                 m_server.getName(),
+                                                 asockfd);
 
     newcli->setup(new ConnectionT(*newcli,
                                   m_server,

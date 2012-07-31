@@ -20,11 +20,11 @@
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
 
-#include "common/Router.h"
+#include "server/Link.h"
 
 #include <sigc++/signal.h>
 
-class CommClient;
+class CommSocket;
 class ServerRouting;
 class TeleportState;
 
@@ -43,7 +43,7 @@ typedef std::map<long, TeleportState *> TeleportMap;
 /// This is the main point of dispatch for any operation from the peer.
 /// It also handles the state relating to a specific connection, including
 /// whether it is authenticated.
-class Peer : public Router {
+class Peer : public Link {
   protected:
     /// \brief Name of host we are connected to
     std::string m_host;
@@ -59,12 +59,10 @@ class Peer : public Router {
     TeleportMap m_teleports;
     
   public:
-    /// The client socket used to connect to the peer.
-    CommClient & m_commClient;
     /// The server routing object of this server.
     ServerRouting & m_server;
 
-    Peer(CommClient & client, ServerRouting & svr,
+    Peer(CommSocket & client, ServerRouting & svr,
          const std::string & addr, int port, const std::string & id, long iid);
     virtual ~Peer();
 

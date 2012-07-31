@@ -28,7 +28,7 @@
 ///
 /// Used by subclasses to handle remote TCP clients and local UNIX clients.
 /// \ingroup ServerSockets
-class CommUserClient : public CommClient { // <tcp_socket_stream>,
+class CommUserClient : public CommClient<tcp_socket_stream> {
   public:
     CommUserClient(CommServer &, const std::string &, int fd);
     virtual ~CommUserClient();

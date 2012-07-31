@@ -181,6 +181,10 @@ void CommMetaClient::metaserverTerminate()
     m_clientIos << std::flush;
 }
 
+void CommMetaClient::disconnect()
+{
+}
+
 void CommMetaClient::idle(time_t t)
 {
     if (m_state == META_INIT) {

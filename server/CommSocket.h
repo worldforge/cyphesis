@@ -72,6 +72,15 @@ class CommSocket {
     /// while the data is still being read. This can a cause hangs or
     /// unpredictable behavior especially in the Atlas::Codec code.
     virtual void dispatch() = 0;
+
+    /// \brief Disconnect cleanly
+    ///
+    /// Politely inform the far end that we are done. This is normally done
+    /// by shutting down the TCP connection
+    virtual void disconnect() = 0;
+
+    /// \brief Flush the socket
+    virtual int flush();
 };
 
 #endif // SERVER_COMM_SOCKET_H
