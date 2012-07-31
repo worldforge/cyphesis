@@ -106,7 +106,6 @@ SERVER_SOURCES = \
 		ConnectedRouter.cpp ConnectedRouter.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
-		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
 		Juncture.cpp Juncture.h \
 		UpdateTester.cpp UpdateTester.h \
