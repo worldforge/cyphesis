@@ -11,7 +11,7 @@ import server
 import weakref
 
 class Furnishings(server.Task):
-    """A task for creating a Wooden structures such as A Frames with lumber and rope but for now a hammer""" 
+    """A task for creating a Wooden structures such as Chairs,and Tables with a hammer""" 
 
     materials = "lumber"
     def furnishing_operation(self, op):
@@ -34,11 +34,11 @@ class Furnishings(server.Task):
         raw_materials=[]
         raw_materials1=[]#holders campfire
         raw_materials2=[]#temp holder for aframes to be moved
-        acount=0
-        lcount=0
-        wcount=0
-        bcount=0
-        ccount=0
+        acount=0#A frame count
+        lcount=0#Lumber count
+        wcount=0#Wood count
+        bcount=0#Boulder count
+        ccount=0#Campfire count
         for item in self.character.contains:
             if item.type[0] == "lumber":
                 raw_materials.append(item)
@@ -56,29 +56,27 @@ class Furnishings(server.Task):
                 raw_materials2.append(item)
                 acount=acount+1
             if lcount == 1 and wcount==3 :
-                print "Enough material for table"
+                #print "Enough material for table"
                 break
             if lcount == 4 and wcount==2 :
-                print "Enough material for chair"
+                #print "Enough material for chair"
                 break
             if lcount == 0 and wcount==5 :
-                print "Enough material for floor"
+                #print "Enough material for floor"
                 break
             if ccount == 1 and bcount==4 :
-                print "Enough material for fireplace"
+                #print "Enough material for fireplace"
                 break
             if acount==2:
-                print "Enough Materials for Wallframe"
+                #print "Enough Materials for Wallframe"
                 break
         else:
-            print "No materials in inventory for Furnishings 2"
+            print "No materials in inventory for Furnishings"
             self.irrelevant()
             return
 
 
         count=lcount+wcount+bcount
-        #print str(count)
-        #print self.fname
         if self.fname=="Table":
             #Making table
             while (count > 0) : 
@@ -153,7 +151,6 @@ class Furnishings(server.Task):
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             
-            #create the table
         
         if self.fname=="Floor":
             #Making Floor
@@ -163,7 +160,6 @@ class Furnishings(server.Task):
                 res.append(set)
                 count = count - 1
             #create the Floor, it is one large wood
-            #Table base
             lbbox=[-2,-2,-.1,2,2,.1]#local bbox
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
@@ -175,9 +171,7 @@ class Furnishings(server.Task):
                 set = Operation("set", Entity(tar.id, status = -1), to = tar)
                 res.append(set)
                 count = count - 1
-            #create the Fireplace, it is 1 campfire and 4 boulders
-            #place campfire
-            #lbbox=[-2,-2,-1,2,2,.1]#local bbox
+            #Move campfire 
             tar=raw_materials1.pop()
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
@@ -207,6 +201,7 @@ class Furnishings(server.Task):
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
         if self.fname=="Wallframe":
+            #Making wallframe, we move 2 A frames into position
             chunk_loc.coordinates =Point3D([0,0,0])
             tar=raw_materials2.pop()
             chunk_loc.orientation=Quaternion([.27,0.65,-.65,.27])
@@ -232,7 +227,7 @@ class Furnishings(server.Task):
         """ Op handler for regular tick op """
         target=self.target()
         if not target:
-            # print "Target is no more"m
+            # print "Target is no more"
             self.irrelevant()
             return
 
@@ -255,12 +250,6 @@ class Furnishings(server.Task):
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.coordinates = self.pos
-        #rotoff=Quaternion([.707,0,.707,0])
-        #charrot=Quaternion([self.character.location.orientation.w,self.character.location.orientation.x,self.character.location.orientation.y,self.character.location.orientation.z])
-        #w=(charrot.w*rotoff.w)-(charrot.x*rotoff.x)-(charrot.y*rotoff.y)-(charrot.z*rotoff.z)
-        #x=(charrot.w*rotoff.x)+(charrot.x*rotoff.w)+(charrot.y*rotoff.z)-(charrot.z*rotoff.y)
-        #y=(charrot.w*rotoff.y)+(charrot.y*rotoff.w)+(charrot.x*rotoff.z)-(charrot.z*rotoff.x)
-        #z=(charrot.w*rotoff.z)+(charrot.z*rotoff.w)+(charrot.x*rotoff.y)-(charrot.y*rotoff.x)
         
         chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
@@ -275,16 +264,12 @@ class Furnishings(server.Task):
         for item in self.character.contains:
             if item.type[0] == "lumber":
                 lcount = lcount + 1
-                #print "ADDING"
             if item.type[0] == "wood":
                 wcount = wcount + 1
-                #print "ADDING"
             if item.type[0] == "campfire":
                 ccount = ccount + 1
-                #print "ADDING"
             if item.type[0] == "boulder":
                 bcount = bcount + 1
-                #print "ADDING"
             if item.type[0] == "construction":
                 acount=acount+1
                 aframewidth=item.location.bbox.far_point[1]-item.location.bbox.near_point[1]
@@ -292,7 +277,6 @@ class Furnishings(server.Task):
                 self.fname="Table"
                 break
             if lcount == 4 and wcount ==2:
-                print "Making chair"
                 self.fname= "Chair"
                 break
             if lcount== 0 and wcount==5:
@@ -310,9 +294,9 @@ class Furnishings(server.Task):
             return
 
         bbox1=[-1,-1,-1,1,1,1]   #cube bbox so the ojects can be viewed from afar.  Relatively close fit
-        if(self.fname=="Floor"):
+        if(self.fname=="Floor"):#If floor make different bbox which is thing so it can be walked over
             bbox1=[-2,-2,-.01,2,2,.01]
-        if(self.fname=="Wallframe"):
+        if(self.fname=="Wallframe"):#If wall frame make bbox based upon the 2 aframes used
             bbox1=[-aframewidth,-.5,-aframewidth,0,.5,aframewidth]
       
         create=Operation("create", Entity(name = self.fname, type = "construction",bbox=bbox1, location = chunk_loc), to = target)
