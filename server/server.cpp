@@ -25,6 +25,9 @@
 #include "CommTCPListener.h"
 #include "CommClientFactory_impl.h"
 #include "CommUserClient.h"
+#ifdef HAVE_SYS_UN_H
+#include "CommAdminClient.h"
+#endif
 #include "CommHttpClientFactory.h"
 #include "CommPythonClientFactory.h"
 #include "CommUnixListener.h"
@@ -313,7 +316,7 @@ int main(int argc, char ** argv)
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
-          make_shared<CommClientFactory<CommUserClient, TrustedConnection>,
+          make_shared<CommClientFactory<CommAdminClient, TrustedConnection>,
                       ServerRouting &>(*server));
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
