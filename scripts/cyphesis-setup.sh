@@ -89,6 +89,7 @@ done
 # ${USERNAME}. We can proceed to set up their account.
 
 CREATE_USER_CMD=`which createuser 2>/dev/null`
+CREATE_USER_FLAGS='-d -w -S -R'
 CREATE_DATABASE_CMD=`which createdb 2>/dev/null`
 DB_SUSER=postgres
 DB_QUERY_CMD=`which psql 2>/dev/null`
@@ -102,7 +103,7 @@ if sudo -u ${USERNAME} ${DB_QUERY_CMD} -c "" ${DB_TEMPLATE} 2> /dev/null ; then
     echo PostgreSQL user ${USERNAME} already exists. Good.
 else
     echo Creating PostgreSQL account for user ${USERNAME}...
-    if sudo -u ${DB_SUSER} ${CREATE_USER_CMD} -A -d -q -R ${USERNAME} ; then
+    if sudo -u ${DB_SUSER} ${CREATE_USER_CMD} ${CREATE_USER_FLAGS} ${USERNAME} ; then
       echo Created PostgreSQL user ${USERNAME}.
     else
       echo ERROR: $0: Unable to create database account ${USERNAME}.
@@ -120,8 +121,12 @@ if sudo -u ${USERNAME} $DB_QUERY_CMD -c "" cyphesis 2> /dev/null ; then
     echo PostgreSQL database cyphesis already exists. Good.
 else
     echo Creating PostgreSQL database cyphesis as user ${USERNAME}...
-    sudo -u ${USERNAME} ${CREATE_DATABASE_CMD} -q cyphesis
-    echo Created PostgreSQL database cyphesis as ${USERNAME}.
+    if sudo -u ${USERNAME} ${CREATE_DATABASE_CMD} cyphesis ; then
+      echo Created PostgreSQL database cyphesis as ${USERNAME}.
+    else
+      echo ERROR: $0: Unable to create database cyphesis.
+      exit 1
+    fi
 fi
 
 echo
