@@ -25,6 +25,7 @@
 #endif
 
 #include "TestWorld.h"
+#include "null_stream.h"
 
 #include "server/CommClient.h"
 #include "server/CommServer.h"
@@ -86,9 +87,9 @@ class SpawningTestWorld : public TestWorld {
     }
 };
 
-class TestCommClient : public CommClient {
+class TestCommClient : public CommClient<null_stream> {
   public:
-    TestCommClient(CommServer & cs) : CommClient(cs, "") { }
+    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
 };
 
 class TestContext {
@@ -289,60 +290,7 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return -1;
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
-}
-
-CommClient::CommClient(CommServer & svr, const std::string &) :
-            CommStreamClient(svr), Idle(svr),
-            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
-            m_connectTime(svr.time())
-{
-}
-
-CommClient::~CommClient()
-{
-}
-
-void CommClient::dispatch()
-{
-}
-
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
-{
-}
-
-void CommClient::idle(time_t t)
-{
-}
-
-int CommClient::read()
-{
-    return 0;
-}
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
+int CommSocket::flush()
 {
     return 0;
 }

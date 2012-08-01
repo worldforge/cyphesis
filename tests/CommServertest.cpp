@@ -60,6 +60,12 @@ class CommFakeSocket : public CommSocket {
 
     virtual void dispatch() { }
 
+    virtual void disconnect() { }
+
+    virtual int flush() {
+        return 0;
+    }
+
 };
 
 int main(int argc, char ** argv)
@@ -92,6 +98,11 @@ CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()
 {
+}
+
+int CommSocket::flush()
+{
+    return 0;
 }
 
 void log(LogLevel lvl, const std::string & msg)

@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "null_stream.h"
+
 #include "server/Admin.h"
 #include "server/CommServer.h"
 #include "server/ServerRouting.h"
@@ -65,9 +67,9 @@ using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Monitor;
 using Atlas::Objects::Operation::Connect;
 
-class TestCommClient : public CommClient {
+class TestCommClient : public CommClient<null_stream> {
   public:
-    TestCommClient(CommServer & cs) : CommClient(cs, "") { }
+    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
 };
 
 class TestAdmin : public Admin {

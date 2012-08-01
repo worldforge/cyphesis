@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "null_stream.h"
+
 #include "server/TrustedConnection.h"
 
 #include "server/Account.h"
@@ -65,14 +67,14 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Move;
 
-class TestCommClient : public CommClient {
+class TestCommClient : public CommClient<null_stream> {
   public:
-    TestCommClient(CommServer & cs) : CommClient(cs, "") { }
+    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
 };
 
 class TestConnection : public TrustedConnection {
   public:
-    TestConnection(CommClient & cc, ServerRouting & svr,
+    TestConnection(CommSocket & cc, ServerRouting & svr,
                    const std::string & addr, const std::string & id, long iid) :
         TrustedConnection(cc, svr, addr, id, iid) {
       
@@ -201,60 +203,7 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return -1;
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
-}
-
-CommClient::CommClient(CommServer & svr, const std::string &) :
-            CommStreamClient(svr), Idle(svr),
-            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
-            m_connectTime(svr.time())
-{
-}
-
-CommClient::~CommClient()
-{
-}
-
-void CommClient::dispatch()
-{
-}
-
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
-{
-}
-
-void CommClient::idle(time_t t)
-{
-}
-
-int CommClient::read()
-{
-    return 0;
-}
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
+int CommSocket::flush()
 {
     return 0;
 }
@@ -448,12 +397,11 @@ ConnectedRouter::~ConnectedRouter()
 {
 }
 
-Connection::Connection(CommClient & client,
+Connection::Connection(CommSocket & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Router(id, iid), m_obsolete(false),
-                                                m_commClient(client),
+            Link(client, id, iid), m_obsolete(false),
                                                 m_server(svr)
 {
 }
@@ -990,6 +938,23 @@ void LocatedEntity::onContainered()
 }
 
 void LocatedEntity::onUpdated()
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
 {
 }
 

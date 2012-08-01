@@ -37,7 +37,6 @@ int main()
 
 // stubs
 
-#include "server/CommClient.h"
 #include "server/Connection.h"
 #include "server/Persistence.h"
 #include "server/TeleportAuthenticator.h"
@@ -47,7 +46,6 @@ int main()
 #include "common/globals.h"
 #include "common/id.h"
 #include "common/log.h"
-#include "common/Router.h"
 
 #include <cstdlib>
 
@@ -56,10 +54,6 @@ void Connection::connectAvatar(Character * chr)
 }
 
 void Connection::addEntity(Entity * ent)
-{
-}
-
-void Connection::disconnect()
 {
 }
 
@@ -84,11 +78,6 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 
 Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
-{
-    return 0;
-}
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
 {
     return 0;
 }
@@ -499,6 +488,14 @@ void LocatedEntity::makeContainer()
 }
 
 void LocatedEntity::merge(const MapType & ent)
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
 {
 }
 
