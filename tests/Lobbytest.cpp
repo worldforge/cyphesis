@@ -113,7 +113,7 @@ int main()
 
         Account * tac = new TestAccount();
 
-        tac->m_connection = new Connection(*(CommClient*)0,
+        tac->m_connection = new Connection(*(CommSocket*)0,
                                            *(ServerRouting*)0,
                                            "foo", "3", 3);
 
@@ -131,7 +131,7 @@ int main()
 
         Account * tac = new TestAccount();
 
-        tac->m_connection = new Connection(*(CommClient*)0,
+        tac->m_connection = new Connection(*(CommSocket*)0,
                                            *(ServerRouting*)0,
                                            "foo", "3", 3);
 
@@ -150,7 +150,7 @@ int main()
 
         Account * tac = new TestAccount();
 
-        tac->m_connection = new Connection(*(CommClient*)0,
+        tac->m_connection = new Connection(*(CommSocket*)0,
                                            *(ServerRouting*)0,
                                            "foo", "3", 3);
 
@@ -206,11 +206,6 @@ int main()
 }
 
 // Stub functions
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
-{
-    return 0;
-}
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -299,12 +294,28 @@ ConnectedRouter::~ConnectedRouter()
 {
 }
 
-Connection::Connection(CommClient & client,
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
+{
+}
+
+Connection::Connection(CommSocket & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Router(id, iid), m_obsolete(false),
-                                                m_commClient(client),
+            Link(client, id, iid), m_obsolete(false),
                                                 m_server(svr)
 {
 }

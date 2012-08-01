@@ -24,10 +24,11 @@
 #define DEBUG
 #endif
 
+#include "null_stream.h"
+
 #include "server/CommClientFactory_impl.h"
 
 #include "server/Peer.h"
-#include "server/SlaveClientConnection.h"
 #include "server/TrustedConnection.h"
 #include "server/CommServer.h"
 
@@ -40,6 +41,13 @@
 #include <cassert>
 
 static bool test_newid_fail = false;
+
+class TestCommClient : public CommClient<null_stream> {
+  public:
+    TestCommClient(CommServer & cs,
+                   const std::string & n, 
+                   int f) : CommClient<null_stream>(cs, n, f) { }
+};
 
 class TestCommClientKit : public CommClientKit
 {
@@ -59,7 +67,7 @@ int main()
 
     {
         test_newid_fail = false;
-        CommClientFactory<Connection> ccf_c(*(ServerRouting*)0);
+        CommClientFactory<TestCommClient, Connection> ccf_c(*(ServerRouting*)0);
 
         int res = ccf_c.newCommClient(comm_server, -1, "");
         assert(res == 0);
@@ -67,7 +75,7 @@ int main()
 
     {
         test_newid_fail = true;
-        CommClientFactory<Connection> ccf_c(*(ServerRouting*)0);
+        CommClientFactory<TestCommClient, Connection> ccf_c(*(ServerRouting*)0);
 
         int res = ccf_c.newCommClient(comm_server, -1, "");
         assert(res != 0);
@@ -75,23 +83,7 @@ int main()
 
     {
         test_newid_fail = false;
-        CommClientFactory<SlaveClientConnection> ccf_scc(*(ServerRouting*)0);
-
-        int res = ccf_scc.newCommClient(comm_server, -1, "");
-        assert(res == 0);
-    }
-
-    {
-        test_newid_fail = true;
-        CommClientFactory<SlaveClientConnection> ccf_scc(*(ServerRouting*)0);
-
-        int res = ccf_scc.newCommClient(comm_server, -1, "");
-        assert(res != 0);
-    }
-
-    {
-        test_newid_fail = false;
-        CommClientFactory<TrustedConnection> ccf_tc(*(ServerRouting*)0);
+        CommClientFactory<TestCommClient, TrustedConnection> ccf_tc(*(ServerRouting*)0);
 
         int res = ccf_tc.newCommClient(comm_server, -1, "");
         assert(res == 0);
@@ -99,7 +91,7 @@ int main()
 
     {
         test_newid_fail = true;
-        CommClientFactory<TrustedConnection> ccf_tc(*(ServerRouting*)0);
+        CommClientFactory<TestCommClient, TrustedConnection> ccf_tc(*(ServerRouting*)0);
 
         int res = ccf_tc.newCommClient(comm_server, -1, "");
         assert(res != 0);
@@ -116,12 +108,11 @@ int main()
 
 using Atlas::Objects::Root;
 
-Connection::Connection(CommClient & client,
+Connection::Connection(CommSocket & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Router(id, iid), m_obsolete(false),
-                                                m_commClient(client),
+            Link(client, id, iid), m_obsolete(false),
                                                 m_server(svr)
 {
 }
@@ -164,7 +155,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
 {
 }
 
-TrustedConnection::TrustedConnection(CommClient & client,
+TrustedConnection::TrustedConnection(CommSocket & client,
                                      ServerRouting & svr,
                                      const std::string & addr,
                                      const std::string & id, long iid) :
@@ -180,29 +171,12 @@ Account * TrustedConnection::newAccount(const std::string & type,
     return 0;
 }
 
-SlaveClientConnection::SlaveClientConnection(CommClient & client,
-                                             ServerRouting & svr,
-                                             const std::string & address,
-                                             const std::string & id, long iid) :
-                       Router(id, iid),
-                       m_commClient(client), m_server(svr)
-{
-}
-
-SlaveClientConnection::~SlaveClientConnection()
-{
-}
-
-void SlaveClientConnection::operation(const Operation &, OpVector &)
-{
-}
-
-Peer::Peer(CommClient & client,
+Peer::Peer(CommSocket & client,
            ServerRouting & svr,
            const std::string & addr,
            int port,
            const std::string & id, long iid) :
-      Router(id, iid), m_commClient(client), m_server(svr)
+      Link(client, id, iid), m_server(svr)
 {
 }
 
@@ -219,64 +193,15 @@ int CommServer::addSocket(CommSocket*)
     return 0;
 }
 
-CommClient::CommClient(CommServer & svr, const std::string &, int fd) :
-            CommStreamClient(svr, fd), Idle(svr)
-{
-}
-
-CommClient::~CommClient()
-{
-}
-
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
-{
-}
-
-void CommClient::idle(time_t t)
-{
-}
-
-int CommClient::read()
-{
-    return 0;
-}
-
-void CommClient::dispatch()
-{
-}
-
-void CommClient::setup(Router * connection)
-{
-}
-
-CommStreamClient::CommStreamClient(CommServer & svr, int) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return -1;
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return true;
-}
-
-bool CommStreamClient::eof()
-{
-    return false;
-}
-
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()
 {
+}
+
+int CommSocket::flush()
+{
+    return 0;
 }
 
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
@@ -292,6 +217,23 @@ CommServer::CommServer() : m_congested(false)
 }
 
 CommServer::~CommServer()
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
 {
 }
 

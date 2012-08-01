@@ -1055,7 +1055,9 @@ Accounttest_SOURCES = Accounttest.cpp
 Accounttest_LDADD = \
         $(top_builddir)/server/Account.o
 
-Admintest_SOURCES = Admintest.cpp CommClient_null_stream.cpp
+Admintest_SOURCES = \
+        Admintest.cpp \
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 Admintest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
@@ -1100,7 +1102,9 @@ Admintest_LDADD = \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 Admintest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
-ServerAccounttest_SOURCES = ServerAccounttest.cpp CommClient_null_stream.cpp
+ServerAccounttest_SOURCES = \
+        ServerAccounttest.cpp \
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 ServerAccounttest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
@@ -1145,7 +1149,9 @@ ServerAccounttest_LDADD = \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 ServerAccounttest_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
-Playertest_SOURCES = Playertest.cpp CommClient_null_stream.cpp
+Playertest_SOURCES = \
+        Playertest.cpp \
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 Playertest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
@@ -1203,14 +1209,16 @@ buildidtest_SOURCES = buildidtest.cpp
 buildidtest_LDADD = \
         $(top_builddir)/server/buildid.o
 
-Connectiontest_SOURCES = Connectiontest.cpp CommClient_null_stream.cpp
+Connectiontest_SOURCES = \
+        Connectiontest.cpp \
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 Connectiontest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(NETWORK_LIBS)
 
 TrustedConnectiontest_SOURCES = \
         TrustedConnectiontest.cpp \
-        CommClient_null_stream.cpp
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 TrustedConnectiontest_LDADD = \
         $(top_builddir)/server/TrustedConnection.o \
         $(NETWORK_LIBS)
@@ -1241,7 +1249,9 @@ ArithmeticBuildertest_SOURCES = ArithmeticBuildertest.cpp
 ArithmeticBuildertest_LDADD = \
         $(top_builddir)/server/ArithmeticBuilder.o
 
-CommClientFactorytest_SOURCES = CommClientFactorytest.cpp
+CommClientFactorytest_SOURCES = \
+        CommClientFactorytest.cpp \
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 CommClientFactorytest_LDADD = \
         $(top_builddir)/server/CommClientFactory.o \
         $(top_builddir)/server/CommClientKit.o \
@@ -1464,7 +1474,9 @@ Rulesetintegration_LDADD = \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
-Accountintegration_SOURCES = Accountintegration.cpp CommClient_null_stream.cpp
+Accountintegration_SOURCES = \
+        Accountintegration.cpp \
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 Accountintegration_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \
@@ -1521,7 +1533,7 @@ EntityFactoryTypeNodeintegration_LDADD = \
 
 AccountConnectionintegration_SOURCES = \
         AccountConnectionintegration.cpp \
-        CommClient_null_stream.cpp
+        CommClient_null_stream.cpp CommClient_stub_impl.h
 AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \

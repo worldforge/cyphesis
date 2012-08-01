@@ -24,6 +24,9 @@
 #define DEBUG
 #endif
 
+#include "null_stream.h"
+#include "CommClient_stub_impl.h"
+
 #include "server/Peer.h"
 
 #include "server/CommPeer.h"
@@ -37,8 +40,16 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <skstream/skstream.h>
+
 #include <cassert>
 #include <string>
+
+class TestCommClient : public CommClient<null_stream> {
+  public:
+    TestCommClient(CommServer & cs,
+                   const std::string & n) : CommClient<null_stream>(cs, n) { }
+};
 
 class TestWorld : public BaseWorld {
   public:
@@ -87,7 +98,7 @@ class TestWorld : public BaseWorld {
 
 class TestPeer : public Peer {
 public:
-    TestPeer(CommClient & client, ServerRouting & svr,
+    TestPeer(CommSocket & client, ServerRouting & svr,
          const std::string & addr, const std::string & id, long iid)
     : Peer(client, svr, addr, 6767, id, iid)
     {
@@ -106,12 +117,12 @@ int main()
     CommServer server;
 
     {
-        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         delete p;
     }
 
     {
-        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
         Atlas::Objects::Operation::RootOperation op;
         OpVector res;
@@ -122,7 +133,7 @@ int main()
 
     {
         // Test the setting of authentiaction states
-        Peer * p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
         assert(p->getAuthState() == PEER_INIT);
         p->setAuthState(PEER_AUTHENTICATED);
@@ -132,7 +143,7 @@ int main()
     }
 
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -141,7 +152,7 @@ int main()
 
     // Authenticating (no args)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
@@ -152,7 +163,7 @@ int main()
 
     // Authenticating (empty arg)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
@@ -165,7 +176,7 @@ int main()
 
     // Authenticating (full arg)
     {
-        TestPeer *p = new TestPeer(*(CommClient*)0, *(ServerRouting*)0, "addr", "1", 1);
+        TestPeer *p = new TestPeer(*(CommSocket*)0, *(ServerRouting*)0, "addr", "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATING);
         
@@ -183,7 +194,7 @@ int main()
 
     // Authenticated (no args)
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -193,7 +204,7 @@ int main()
     }
 
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Error op;
         OpVector res;
@@ -202,7 +213,7 @@ int main()
 
     // Not authenticated
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Entity e("3", 3);
         int ret = p->teleportEntity(&e);
@@ -211,7 +222,7 @@ int main()
 
     // Authenticated
     {
-        CommClient client(server, "");
+        TestCommClient client(server, "");
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -225,7 +236,7 @@ int main()
 
     // Re-teleport same entity
     {
-        CommClient client(server, "");
+        TestCommClient client(server, "");
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -242,7 +253,7 @@ int main()
 
     // Character (no mind)
     {
-        CommClient client(server, "");
+        TestCommClient client(server, "");
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -256,7 +267,7 @@ int main()
 
     // Character (externl mind, unconnected)
     {
-        CommClient client(server, "");
+        TestCommClient client(server, "");
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -271,7 +282,7 @@ int main()
 
     // Character (externl mind, connected)
     {
-        CommClient client(server, "");
+        TestCommClient client(server, "");
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -288,7 +299,7 @@ int main()
 
     // No arg
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -298,7 +309,7 @@ int main()
 
     // Empty arg, no refno
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -311,7 +322,7 @@ int main()
 
     // Empty arg, made up refno, not CommPeer
     {
-        CommClient *peerConn = new CommClient(*(CommServer*)0, "name");
+        TestCommClient *peerConn = new TestCommClient(*(CommServer*)0, "name");
         Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
@@ -415,14 +426,14 @@ int main()
 
     // No teleports to clear
     {
-        Peer *p = new Peer(*(CommClient*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->cleanTeleports();
     }
 
     // One teleport to clear
     {
-        CommClient client(server, "");
+        TestCommClient client(server, "");
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -484,7 +495,7 @@ CommServer::~CommServer()
 }
 
 CommPeer::CommPeer(CommServer & svr, const std::string & n) :
-      CommClient(svr, n)
+      CommClient<tcp_socket_stream>(svr, n)
 {
 }
 
@@ -501,57 +512,8 @@ void CommPeer::idle(time_t t)
 {
 }
 
-CommClient::CommClient(CommServer &svr, const std::string &) :
-                                        CommStreamClient(svr), 
-                                        Idle(svr), m_codec(NULL), 
-                                        m_encoder(NULL), m_connection(NULL),
-                                        m_connectTime(0)
-{
-    m_negotiate = NULL;
-}
-
-CommClient::~CommClient()
-{
-}
-
-void CommClient::setup(Router * connection)
-{
-}
-
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
-{
-}
-
-void CommClient::idle(time_t t)
-{
-}
-
-int CommClient::operation(const Atlas::Objects::Operation::RootOperation &op)
-{
-    return 0;
-}
-
-int CommClient::read()
-{
-    return 0;
-}
-
-void CommClient::dispatch()
-{
-}
-
-int CommClient::negotiate()
-{
-    delete m_negotiate;
-    m_negotiate = NULL;
-    return 0;
-}
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation &op)
-{
-    stub_CommClient_sent_op = op;
-    return 0;
-}
+template class CommStreamClient<tcp_socket_stream>;
+template class CommClient<tcp_socket_stream>;
 
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
@@ -559,35 +521,9 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int fd) :
-                  CommSocket(svr),
-                  m_clientIos(fd)
+int CommSocket::flush()
 {
-}
-
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
+    return 0;
 }
 
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
@@ -1004,6 +940,23 @@ void LocatedEntity::makeContainer()
 }
 
 void LocatedEntity::merge(const MapType & ent)
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
 {
 }
 
