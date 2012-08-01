@@ -53,7 +53,7 @@ class Gateconstruction(server.Task):
         while (count1 > 0):
             tar = raw_materials1.pop()
             self.lumber_length=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
-            offset=Vector3D(0,self.lumber_length/2.5,self.lumber_length*.65)
+            offset=Vector3D(self.lumber_length/7,self.lumber_length/3.5,self.lumber_length*.63)
             chunk_loc.orientation=Quaternion([.707,0,0,.707])
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
