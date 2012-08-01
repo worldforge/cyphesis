@@ -146,7 +146,7 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
     }
@@ -157,7 +157,7 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
         em.connect(0);
@@ -169,7 +169,7 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
         const std::string & id = em.connectionId();
@@ -251,7 +251,7 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
@@ -269,7 +269,7 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
@@ -287,7 +287,7 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
@@ -316,7 +316,7 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommClient*)0,
+        em.connect(new Connection(*(CommSocket*)0,
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
@@ -344,25 +344,15 @@ int main()
 
 // stubs
 
-#include "server/CommClient.h"
-
 #include "rulesets/Script.h"
 
 using Atlas::Message::MapType;
 
-int CommClient::send(const Atlas::Objects::Operation::RootOperation & op)
-{
-    stub_connection_send_op = op->getClassNo();
-    ++stub_connection_send_count;
-    return 0;
-}
-
-Connection::Connection(CommClient & client,
+Connection::Connection(CommSocket & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Router(id, iid), m_obsolete(false),
-                                                m_commClient(client),
+            Link(client, id, iid), m_obsolete(false),
                                                 m_server(svr)
 {
 }
@@ -645,6 +635,23 @@ Location::Location(LocatedEntity * rf, const Point3D & pos)
 }
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
 {
 }
 

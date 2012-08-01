@@ -24,20 +24,43 @@
 #define DEBUG
 #endif
 
+#include "CommClient_stub_impl.h"
+
 #include "server/Juncture.h"
 
 #include "server/CommPeer.h"
 #include "server/CommServer.h"
-#include "common/Connect.h"
 #include "server/Connection.h"
 #include "server/Peer.h"
 #include "server/ServerRouting.h"
 
+#include "common/Connect.h"
+
 #include <Atlas/Objects/Operation.h>
+
+#include <skstream/skstream.h>
 
 #include <cassert>
 
+template class CommStreamClient<tcp_socket_stream>;
+template class CommClient<tcp_socket_stream>;
+
 class BaseWorld;
+
+class StubSocket : public CommSocket {
+  public:
+    explicit StubSocket(CommServer & cs,
+                        const char * foo = "",
+                        int fd = -1) : CommSocket(cs) { }
+    virtual ~StubSocket() { }
+
+    int getFd() const { return 0; }
+    bool isOpen() const { return true; }
+    bool eof() { return false; }
+    int read() { return 0; }
+    void dispatch() { }
+    void disconnect() { }
+};
 
 // Test class to expose protected methods.
 class TestJuncture : public Juncture
@@ -327,7 +350,7 @@ int main()
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         CommServer cs;
-        CommClient * cc = new CommClient(cs, "", 23);
+        CommSocket * cc = new StubSocket(cs, "", 23);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -351,7 +374,7 @@ int main()
 
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         CommServer cs;
-        CommClient * cc = new CommClient(cs, "", 23);
+        CommSocket * cc = new StubSocket(cs, "", 23);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -410,7 +433,7 @@ int main()
 
     // Peer replied, connected this end
     {
-        Connection * c = new Connection(*(CommClient*)0,
+        Connection * c = new Connection(*(CommSocket*)0,
                                         *(ServerRouting*)0, "", "4", 4);
 
         TestJuncture * j = new TestJuncture(c);
@@ -461,7 +484,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 
 
 CommPeer::CommPeer(CommServer & svr, const std::string & n) :
-      CommClient(svr, n)
+      CommClient<tcp_socket_stream>(svr, n)
 {
 }
 
@@ -483,68 +506,8 @@ int CommPeer::connect(struct addrinfo *)
     return stub_CommPeer_connect_return;
 }
 
-void CommPeer::setup(Router * connection)
+void CommPeer::setup(Link * connection)
 {
-}
-
-CommClient::CommClient(CommServer &svr, const std::string &, int) :
-                                        CommStreamClient(svr), 
-                                        Idle(svr), m_codec(NULL), 
-                                        m_encoder(NULL), m_connection(NULL),
-                                        m_connectTime(0)
-{
-    m_negotiate = NULL;
-}
-
-CommClient::CommClient(CommServer &svr, const std::string & n) :
-                                        CommStreamClient(svr), 
-                                        Idle(svr), m_codec(NULL), 
-                                        m_encoder(NULL), m_connection(NULL),
-                                        m_connectTime(0)
-{
-    m_negotiate = NULL;
-}
-
-CommClient::~CommClient()
-{
-}
-
-void CommClient::setup(Router * connection)
-{
-}
-
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
-{
-}
-
-void CommClient::idle(time_t t)
-{
-}
-
-int CommClient::operation(const Operation &op)
-{
-    return 0;
-}
-
-int CommClient::read()
-{
-    return 0;
-}
-
-void CommClient::dispatch()
-{
-}
-
-int CommClient::negotiate()
-{
-    delete m_negotiate;
-    m_negotiate = NULL;
-    return 0;
-}
-
-int CommClient::send(const Operation &op)
-{
-    return 0;
 }
 
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
@@ -553,35 +516,9 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int fd) :
-                  CommSocket(svr),
-                  m_clientIos(fd)
+int CommSocket::flush()
 {
-}
-
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
+    return 0;
 }
 
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
@@ -605,14 +542,13 @@ int CommServer::addSocket(CommSocket*)
     return 0;
 }
 
-Peer::Peer(CommClient & client,
+Peer::Peer(CommSocket & client,
            ServerRouting & svr,
            const std::string & addr,
            int port,
            const std::string & id, long iid) :
-      Router(id, iid),
+      Link(client, id, iid),
       m_state(PEER_INIT),
-      m_commClient(client),
       m_server(svr)
 {
 }
@@ -644,12 +580,11 @@ void Peer::cleanTeleports()
 {
 }
 
-Connection::Connection(CommClient & client,
+Connection::Connection(CommSocket & client,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Router(id, iid), m_obsolete(false),
-                                                m_commClient(client),
+            Link(client, id, iid), m_obsolete(false),
                                                 m_server(svr)
 {
 }
@@ -670,10 +605,6 @@ int Connection::verifyCredentials(const Account &,
 
 
 Connection::~Connection()
-{
-}
-
-void Connection::send(const Operation & op) const
 {
 }
 
@@ -706,6 +637,23 @@ ConnectedRouter::ConnectedRouter(const std::string & id,
 }
 
 ConnectedRouter::~ConnectedRouter()
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+}
+
+void Link::disconnect()
 {
 }
 

@@ -72,10 +72,6 @@ int main()
 
 // stubs
 
-void Connection::send(const Operation & op) const
-{
-}
-
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
 {
 }
