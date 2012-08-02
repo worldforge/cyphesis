@@ -1,3 +1,5 @@
+See if we can test CommStreamClient with null_stream
+
 Move logic for reply ops from CommClient::objectArrived to Connection?
 Would probably clean up the logic in CommClient, and allow send()
 to be removed.

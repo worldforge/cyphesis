@@ -24,18 +24,23 @@
 #define DEBUG
 #endif
 
-#include "server/CommStreamClient.h"
+#include "server/CommStreamClient_impl.h"
+
+#include <skstream/skstream.h>
 
 #include <cassert>
 
-class TestCommStreamClient : public CommStreamClient
+template class CommStreamClient<tcp_socket_stream>;
+
+class TestCommStreamClient : public CommStreamClient<tcp_socket_stream>
 {
   public:
-    TestCommStreamClient(int fd) : CommStreamClient(*(CommServer*)0, fd)
+    TestCommStreamClient(int fd) :
+          CommStreamClient<tcp_socket_stream>(*(CommServer*)0, fd)
     {
     }
 
-    TestCommStreamClient() : CommStreamClient(*(CommServer*)0)
+    TestCommStreamClient() : CommStreamClient<tcp_socket_stream>(*(CommServer*)0)
     {
     }
 
@@ -63,13 +68,13 @@ int main()
     }
 
     {
-        CommStreamClient * cs = new TestCommStreamClient();
+        TestCommStreamClient * cs = new TestCommStreamClient();
 
         delete cs;
     }
 
     {
-        CommStreamClient * cs = new TestCommStreamClient(MAGIC_FD);
+        TestCommStreamClient * cs = new TestCommStreamClient(MAGIC_FD);
 
         int fd = cs->getFd();
 
@@ -77,7 +82,7 @@ int main()
     }
 
     {
-        CommStreamClient * cs = new TestCommStreamClient();
+        TestCommStreamClient * cs = new TestCommStreamClient();
 
         bool open = cs->isOpen();
 
@@ -85,7 +90,7 @@ int main()
     }
 
     {
-        CommStreamClient * cs = new TestCommStreamClient();
+        TestCommStreamClient * cs = new TestCommStreamClient();
 
         bool eof = cs->eof();
 
@@ -103,4 +108,11 @@ CommSocket::~CommSocket()
 {
 }
 
-// Library stubs
+int CommSocket::flush()
+{
+    return 0;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}

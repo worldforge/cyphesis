@@ -154,6 +154,12 @@ int main()
 
 // Stub functions
 
+#include "CommClient_stub_impl.h"
+
+#include <skstream/skstream.h>
+
+template class CommStreamClient<tcp_socket_stream>;
+
 HttpCache * HttpCache::m_instance = 0;
 
 HttpCache::HttpCache()
@@ -171,35 +177,9 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int fd) :
-                  CommSocket(svr),
-                  m_clientIos(fd)
+int CommSocket::flush()
 {
-}
-
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
+    return 0;
 }
 
 void log(LogLevel, const std::string & msg)

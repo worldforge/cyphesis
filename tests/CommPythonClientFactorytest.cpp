@@ -49,6 +49,8 @@ int main()
 
 // stubs
 
+#include "CommClient_stub_impl.h"
+
 #include "server/CommPythonClient.h"
 
 #include "common/id.h"
@@ -56,7 +58,7 @@ int main()
 #include <cstdlib>
 
 CommPythonClient::CommPythonClient(CommServer & svr, int fd) :
-                  CommStreamClient(svr, fd), m_pyContext(0)
+                  CommStreamClient<tcp_socket_stream>(svr, fd), m_pyContext(0)
 {
 }
 
@@ -73,34 +75,15 @@ int CommPythonClient::read()
     return 0;
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return -1;
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return true;
-}
-
-bool CommStreamClient::eof()
-{
-    return false;
-}
-
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()
 {
+}
+
+int CommSocket::flush()
+{
+    return 0;
 }
 
 CommClientKit::~CommClientKit()

@@ -117,6 +117,11 @@ CommSocket::~CommSocket()
 {
 }
 
+int CommSocket::flush()
+{
+    return 0;
+}
+
 CommClientKit::~CommClientKit()
 {
 }

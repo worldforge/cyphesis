@@ -58,6 +58,11 @@ class TestCommSocket : public CommSocket
     virtual void dispatch()
     {
     }
+
+    virtual void disconnect()
+    {
+    }
+
 };
 
 int main()

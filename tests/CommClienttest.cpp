@@ -24,12 +24,13 @@
 #define DEBUG
 #endif
 
-#include "server/CommClient.h"
+#include "server/CommClient_impl.h"
 
 #include "server/CommServer.h"
+#include "server/CommStreamClient_impl.h"
+#include "server/Link.h"
 
 #include "common/log.h"
-#include "common/Router.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Negotiate.h>
@@ -37,6 +38,8 @@
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+#include <skstream/skstream.h>
 
 #include <cstdlib>
 
@@ -134,14 +137,18 @@ class TestNegotiate : public Atlas::Negotiate
     }
 };
 
-class TestCommClient : public CommClient
+template class CommStreamClient<tcp_socket_stream>;
+template class CommClient<tcp_socket_stream>;
+
+class TestCommClient : public CommClient<tcp_socket_stream>
 {
   public:
-    TestCommClient(CommServer & svr, int fd) : CommClient(svr, "", fd)
+    TestCommClient(CommServer & svr, int fd) :
+          CommClient<tcp_socket_stream>(svr, "", fd)
     {
     }
 
-    TestCommClient(CommServer & svr) : CommClient(svr, "")
+    TestCommClient(CommServer & svr) : CommClient<tcp_socket_stream>(svr, "")
     {
     }
 
@@ -164,7 +171,7 @@ class TestCommClient : public CommClient
         m_negotiate = new TestNegotiate(state);
     }
 
-    void test_setConnection(Router * r)
+    void test_setConnection(Link * r)
     {
         m_connection = r;
     }
@@ -216,12 +223,12 @@ class TestCommClient : public CommClient
     }
 };
 
-class TestRouter : public Router
+class TestLink : public Link
 {
   protected:
     int m_reply;
   public:
-    TestRouter(int reply = 0) : Router("5", 5), m_reply(reply)
+    TestLink(CommSocket & cs, int reply = 0) : Link(cs, "5", 5), m_reply(reply)
     {
     }
 
@@ -247,7 +254,7 @@ int main()
     }
 
     {
-        CommClient * cs = new TestCommClient(comm_server);
+        TestCommClient * cs = new TestCommClient(comm_server);
 
         delete cs;
     }
@@ -261,7 +268,7 @@ int main()
     }
 
     {
-        CommClient * cs = new TestCommClient(comm_server);
+        TestCommClient * cs = new TestCommClient(comm_server);
 
         cs->setup(0);
 
@@ -278,6 +285,8 @@ int main()
 
     {
         TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnection(new TestLink(*cs));
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
 
@@ -307,6 +316,8 @@ int main()
 
     {
         TestCommClient * cs = new TestCommClient(comm_server);
+
+        cs->test_setConnection(new TestLink(*cs));
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
         cs->test_negotiate();
@@ -378,7 +389,7 @@ int main()
     {
         TestCommClient * cs = new TestCommClient(comm_server);
 
-        cs->test_setConnection(new TestRouter);
+        cs->test_setConnection(new TestLink(*cs));
 
         Atlas::Objects::Operation::RootOperation op;
         cs->test_operation(op);
@@ -389,7 +400,7 @@ int main()
     {
         TestCommClient * cs = new TestCommClient(comm_server);
 
-        cs->test_setConnection(new TestRouter(1));
+        cs->test_setConnection(new TestLink(*cs, 1));
 
         Atlas::Objects::Operation::RootOperation op;
         cs->test_operation(op);
@@ -400,7 +411,7 @@ int main()
     {
         TestCommClient * cs = new TestCommClient(comm_server);
 
-        cs->test_setConnection(new TestRouter(1));
+        cs->test_setConnection(new TestLink(*cs, 1));
 
         Atlas::Objects::Operation::RootOperation op;
         op->setSerialno(23);
@@ -412,7 +423,7 @@ int main()
     {
         TestCommClient * cs = new TestCommClient(comm_server);
 
-        cs->test_setConnection(new TestRouter(1));
+        cs->test_setConnection(new TestLink(*cs, 1));
 
         cs->dispatch();
 
@@ -422,7 +433,7 @@ int main()
     {
         TestCommClient * cs = new TestCommClient(comm_server);
 
-        cs->test_setConnection(new TestRouter(1));
+        cs->test_setConnection(new TestLink(*cs, 1));
 
         cs->test_setupQueue();
         cs->dispatch();
@@ -469,35 +480,9 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int fd) :
-                  CommSocket(svr),
-                  m_clientIos(fd)
+int CommSocket::flush()
 {
-}
-
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
+    return 0;
 }
 
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
@@ -517,6 +502,15 @@ CommServer::CommServer() : m_congested(false)
 }
 
 CommServer::~CommServer()
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
 {
 }
 

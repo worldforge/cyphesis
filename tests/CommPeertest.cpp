@@ -114,10 +114,10 @@ class TestCommPeer : public CommPeer
     }
 };
 
-class TestRouter : public Peer
+class TestPeer : public Peer
 {
   public:
-    TestRouter(CommClient & c, ServerRouting & s) : Peer(c, s, "test_addr", 6767, "5", 5)
+    TestPeer(CommSocket & c, ServerRouting & s) : Peer(c, s, "test_addr", 6767, "5", 5)
     {
     }
 };
@@ -167,7 +167,7 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        cs->setup(new TestRouter(*cs, server));
+        cs->setup(new TestPeer(*cs, server));
 
         cs->idle(reference_seconds);
 
@@ -177,7 +177,7 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        TestRouter * tr = new TestRouter(*cs, server);
+        TestPeer * tr = new TestPeer(*cs, server);
         cs->setup(tr);
         tr->setAuthState(PEER_AUTHENTICATED);
 
@@ -189,7 +189,7 @@ int main()
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        TestRouter * tr = new TestRouter(*cs, server);
+        TestPeer * tr = new TestPeer(*cs, server);
         cs->setup(tr);
         tr->setAuthState(PEER_FAILED);
 
@@ -203,7 +203,14 @@ int main()
 
 // Stub functions
 
+#include "CommClient_stub_impl.h"
+
 #include <Atlas/Net/Stream.h>
+
+#include <skstream/skstream.h>
+
+template class CommStreamClient<tcp_socket_stream>;
+template class CommClient<tcp_socket_stream>;
 
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
@@ -211,35 +218,9 @@ CommSocket::~CommSocket()
 {
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int fd) :
-                  CommSocket(svr),
-                  m_clientIos(fd)
+int CommSocket::flush()
 {
-}
-
-CommStreamClient::CommStreamClient(CommServer & svr) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return m_clientIos.is_open();
-}
-
-bool CommStreamClient::eof()
-{
-    return (m_clientIos.fail() ||
-            m_clientIos.peek() == std::iostream::traits_type::eof());
+    return 0;
 }
 
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
@@ -285,6 +266,15 @@ CommServer::~CommServer()
 {
 }
 
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
 {
@@ -302,66 +292,13 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-CommClient::CommClient(CommServer &svr, const std::string &) :
-                                        CommStreamClient(svr), 
-                                        Idle(svr), m_codec(NULL), 
-                                        m_encoder(NULL), m_connection(NULL),
-                                        m_connectTime(svr.time())
-{
-    m_negotiate = new Atlas::Net::StreamConnect("cyphesis_test", m_clientIos);
-}
-
-CommClient::~CommClient()
-{
-}
-
-void CommClient::setup(Router * connection)
-{
-    m_connection = connection;
-}
-
-void CommClient::objectArrived(const Atlas::Objects::Root & obj)
-{
-}
-
-void CommClient::idle(time_t t)
-{
-}
-
-int CommClient::operation(const Atlas::Objects::Operation::RootOperation &op)
-{
-    return 0;
-}
-
-int CommClient::read()
-{
-    return 0;
-}
-
-void CommClient::dispatch()
-{
-}
-
-int CommClient::negotiate()
-{
-    delete m_negotiate;
-    m_negotiate = NULL;
-    return 0;
-}
-
-int CommClient::send(const Atlas::Objects::Operation::RootOperation &op)
-{
-    return 0;
-}
-
-Peer::Peer(CommClient & client,
+Peer::Peer(CommSocket & client,
            ServerRouting & svr,
            const std::string & addr,
            int port,
            const std::string & id, long iid) :
-      Router(id, iid),
+      Link(client, id, iid),
       m_state(PEER_INIT),
-      m_commClient(client),
       m_server(svr)
 {
 }

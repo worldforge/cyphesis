@@ -50,14 +50,20 @@ int main()
 
 // stubs
 
+#include "CommClient_stub_impl.h"
+
 #include "server/CommHttpClient.h"
 
 #include "common/id.h"
 
+#include <skstream/skstream.h>
+
 #include <cstdlib>
 
+template class CommStreamClient<tcp_socket_stream>;
+
 CommHttpClient::CommHttpClient(CommServer & svr, int fd) :
-                CommStreamClient(svr, fd)
+                CommStreamClient<tcp_socket_stream>(svr, fd)
 {
 }
 
@@ -74,34 +80,15 @@ int CommHttpClient::read()
     return 0;
 }
 
-CommStreamClient::CommStreamClient(CommServer & svr, int) :
-                  CommSocket(svr)
-{
-}
-
-CommStreamClient::~CommStreamClient()
-{
-}
-
-int CommStreamClient::getFd() const
-{
-    return -1;
-}
-
-bool CommStreamClient::isOpen() const
-{
-    return true;
-}
-
-bool CommStreamClient::eof()
-{
-    return false;
-}
-
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 
 CommSocket::~CommSocket()
 {
+}
+
+int CommSocket::flush()
+{
+    return 0;
 }
 
 CommClientKit::~CommClientKit()

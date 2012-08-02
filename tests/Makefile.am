@@ -1287,7 +1287,8 @@ CommSockettest_SOURCES = CommSockettest.cpp
 CommSockettest_LDADD = \
         $(top_builddir)/server/CommSocket.o
 
-CommStreamClienttest_SOURCES = CommStreamClienttest.cpp
+CommStreamClienttest_SOURCES = \
+        CommStreamClienttest.cpp
 CommStreamClienttest_LDADD = \
         $(top_builddir)/server/CommStreamClient.o \
         $(NETWORK_LIBS)
@@ -1372,7 +1373,8 @@ CommPSQLSockettest_SOURCES = CommPSQLSockettest.cpp
 CommPSQLSockettest_LDADD = \
         $(top_builddir)/server/CommPSQLSocket.o
 
-CommPythonClientFactorytest_SOURCES = CommPythonClientFactorytest.cpp
+CommPythonClientFactorytest_SOURCES = \
+        CommPythonClientFactorytest.cpp
 CommPythonClientFactorytest_LDADD = \
         $(top_builddir)/server/CommPythonClientFactory.o \
         $(NETWORK_LIBS)

@@ -107,6 +107,11 @@ CommSocket::~CommSocket()
 {
 }
 
+int CommSocket::flush()
+{
+    return 0;
+}
+
 Idle::Idle(CommServer & svr) : m_idleManager(svr)
 {
 }
