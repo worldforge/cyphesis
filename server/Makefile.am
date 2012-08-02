@@ -124,10 +124,12 @@ SERVER_SOURCES = \
 COMM_SOURCES = \
 		TCPListenFactory.cpp TCPListenFactory.h \
 		CommStreamListener.cpp CommStreamListener.h \
+		CommStreamListener_impl.h \
 		CommTCPListener.cpp CommTCPListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
-		CommStreamClient.cpp CommStreamClient.h \
-		CommClient.cpp CommClient.h \
+		CommStreamClient.cpp  CommStreamClient.h \
+		CommStreamClient_impl.h \
+		CommClient.cpp CommClient_impl.h CommClient.h \
 		CommUserClient.cpp CommUserClient.h \
 		CommAdminClient.cpp CommAdminClient.h \
 		CommHttpClient.cpp CommHttpClient.h \

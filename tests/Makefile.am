@@ -105,6 +105,8 @@ EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
 check_PROGRAMS = $(TESTS)
 
+noinst_HEADERS = null_stream.h
+
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
