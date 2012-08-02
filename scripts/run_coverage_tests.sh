@@ -70,14 +70,20 @@ check_coverage() {
         exit 1
     fi
 
+    gcov_files="${source_file}"
+
+    if [ -f ${source_dir}/${base_file}_impl.h ]
+    then
+        gcov_files="${gcov_files} ${source_dir}/${base_file}_impl.h"
+    fi
 
     coverage_percent=$( (cd ${source_dir} && LC_ALL=C gcov ${source_file}) | \
-          grep -A 1 "^File '${base_file}.cpp" | \
+          grep -A 1 -e "^File '${base_file}.cpp" \
+                    -e "^File '${base_file}_impl.h" | \
           grep ^Lines | \
-          head -n 1 | \
           sed "s/^Lines executed:\([0-9]\+\.[0-9]\+\)% of .*$/\1/")
 
-    echo ${source_file} ${coverage_percent}
+    echo ${gcov_files} ${coverage_percent}
 }
 
 usage() {
