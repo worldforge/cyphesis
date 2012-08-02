@@ -53,8 +53,8 @@ class TestExternalMind : public ExternalMind
 };
 
 int stub_baseworld_receieved_op = -1;
-int stub_connection_send_op = -1;
-int stub_connection_send_count = 0;
+int stub_link_send_op = -1;
+int stub_link_send_count = 0;
 
 class TestWorld : public BaseWorld {
   public:
@@ -255,12 +255,12 @@ int main()
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
-        stub_connection_send_op = -1;
-        stub_connection_send_count = 0;
+        stub_link_send_op = -1;
+        stub_link_send_count = 0;
         OpVector res;
         em.operation(Atlas::Objects::Operation::RootOperation(), res);
-        assert(stub_connection_send_op == Atlas::Objects::Operation::ROOT_OPERATION_NO);
-        assert(stub_connection_send_count == 1);
+        assert(stub_link_send_op == Atlas::Objects::Operation::ROOT_OPERATION_NO);
+        assert(stub_link_send_count == 1);
     }
 
     // Send a Sight operation to a connected mind
@@ -273,12 +273,12 @@ int main()
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
-        stub_connection_send_op = -1;
-        stub_connection_send_count = 0;
+        stub_link_send_op = -1;
+        stub_link_send_count = 0;
         OpVector res;
         em.operation(Atlas::Objects::Operation::Sight(), res);
-        assert(stub_connection_send_op == Atlas::Objects::Operation::SIGHT_NO);
-        assert(stub_connection_send_count == 1);
+        assert(stub_link_send_op == Atlas::Objects::Operation::SIGHT_NO);
+        assert(stub_link_send_count == 1);
     }
 
     // Send a Sight(Set) of hungry operation to a connected mind
@@ -291,8 +291,8 @@ int main()
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
-        stub_connection_send_op = -1;
-        stub_connection_send_count = 0;
+        stub_link_send_op = -1;
+        stub_link_send_count = 0;
 
         // A sight(set) of a starving entity
         Atlas::Objects::Root arg;
@@ -306,8 +306,8 @@ int main()
         // It should trigger an extra Sight(Imaginary)
         OpVector res;
         em.operation(op, res);
-        assert(stub_connection_send_op == Atlas::Objects::Operation::SIGHT_NO);
-        assert(stub_connection_send_count > 1);
+        assert(stub_link_send_op == Atlas::Objects::Operation::SIGHT_NO);
+        assert(stub_link_send_count > 1);
     }
 
     // Send a Sight(Set) of starving operation to a connected mind
@@ -320,8 +320,8 @@ int main()
                                   *(ServerRouting*)0,
                                   "addr", "4", 4));
 
-        stub_connection_send_op = -1;
-        stub_connection_send_count = 0;
+        stub_link_send_op = -1;
+        stub_link_send_count = 0;
 
         // A sight(set) of a starving entity
         Atlas::Objects::Root arg;
@@ -335,8 +335,8 @@ int main()
         // It should trigger an extra Sight(Imaginary)
         OpVector res;
         em.operation(op, res);
-        assert(stub_connection_send_op == Atlas::Objects::Operation::SIGHT_NO);
-        assert(stub_connection_send_count > 1);
+        assert(stub_link_send_op == Atlas::Objects::Operation::SIGHT_NO);
+        assert(stub_link_send_count > 1);
     }
 
     return 0;
@@ -649,6 +649,8 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
+    stub_link_send_op = op->getClassNo();
+    ++stub_link_send_count;
 }
 
 void Link::disconnect()

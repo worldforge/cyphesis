@@ -954,6 +954,7 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
+    stub_CommClient_sent_op = op;
 }
 
 void Link::disconnect()
