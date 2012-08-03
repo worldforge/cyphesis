@@ -18,9 +18,6 @@
 // $Id$
 
 #include "null_stream.h"
-#include "CommClient_stub_impl.h"
+#include "CommStreamClient_stub_impl.h"
 
-#include <Atlas/Objects/RootOperation.h>
-#include <Atlas/Objects/SmartPtr.h>
-
-template class CommClient<null_stream>;
+template class CommStreamClient<null_stream>;

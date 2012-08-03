@@ -25,6 +25,7 @@
 #endif
 
 #include "CommClient_stub_impl.h"
+#include "CommStreamClient_stub_impl.h"
 
 #include "server/Juncture.h"
 

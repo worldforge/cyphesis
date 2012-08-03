@@ -204,6 +204,7 @@ int main()
 // Stub functions
 
 #include "CommClient_stub_impl.h"
+#include "CommStreamClient_stub_impl.h"
 
 #include <Atlas/Net/Stream.h>
 

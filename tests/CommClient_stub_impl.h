@@ -20,52 +20,6 @@
 #include "server/CommClient.h"
 
 template <class StreamT>
-CommStreamClient<StreamT>::CommStreamClient(CommServer & svr, int fd) :
-      CommSocket(svr), m_clientIos(fd)
-{
-}
-
-template <class StreamT>
-CommStreamClient<StreamT>::CommStreamClient(CommServer & svr) :
-      CommSocket(svr)
-{
-}
-
-template <class StreamT>
-CommStreamClient<StreamT>::~CommStreamClient()
-{
-}
-
-template <class StreamT>
-int CommStreamClient<StreamT>::getFd() const
-{
-    return -1;
-}
-
-template <class StreamT>
-bool CommStreamClient<StreamT>::isOpen() const
-{
-    return true;
-}
-
-template <class StreamT>
-bool CommStreamClient<StreamT>::eof()
-{
-    return false;
-}
-
-template <class StreamT>
-void CommStreamClient<StreamT>::disconnect()
-{
-}
-
-template <class StreamT>
-int CommStreamClient<StreamT>::flush()
-{
-    return 0;
-}
-
-template <class StreamT>
 CommClient<StreamT>::CommClient(CommServer & svr,
                                     const std::string & name,
                                     int fd) :
