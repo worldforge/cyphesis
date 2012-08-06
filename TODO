@@ -1,3 +1,9 @@
+When coverage tells us 0% in a header, that is because the header had to
+generate implicit default code - probably destructor.
+
+Design a general purpose constraints mechanism, and have it inform
+the physics system.
+
 See if we can test CommStreamClient with null_stream
 
 Move logic for reply ops from CommClient::objectArrived to Connection?
