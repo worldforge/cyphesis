@@ -276,6 +276,10 @@ MultiLineListFormatter::MultiLineListFormatter(std::iostream & s,
 {
 }
 
+MultiLineListFormatter::~MultiLineListFormatter()
+{
+}
+
 void MultiLineListFormatter::mapListItem(const std::string & name)
 {
     Atlas::Formatter::mapListItem(name);

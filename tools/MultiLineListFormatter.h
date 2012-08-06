@@ -26,6 +26,7 @@ class MultiLineListFormatter : public Atlas::Formatter
 {
   public:
     MultiLineListFormatter(std::iostream & s, Atlas::Bridge & b);
+    ~MultiLineListFormatter();
 
     virtual void mapListItem(const std::string & name);
 
