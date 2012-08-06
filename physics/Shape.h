@@ -40,6 +40,8 @@ class Shape {
   protected:
     Shape();
   public:
+    virtual ~Shape() = 0;
+
     virtual size_t size() const = 0;
     virtual bool isValid() const = 0;
     virtual WFMath::CoordType area() const = 0;
