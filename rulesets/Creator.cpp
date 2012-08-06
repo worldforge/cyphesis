@@ -48,6 +48,10 @@ Creator::Creator(const std::string & id, long intId) :
     setFlags(entity_ephem);
 }
 
+Creator::~Creator()
+{
+}
+
 void Creator::operation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Creator::operation" << std::endl << std::flush;);

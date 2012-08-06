@@ -40,6 +40,7 @@ class TrustedConnection : public Connection {
                       ServerRouting & svr,
                       const std::string & addr,
                       const std::string & id, long iid);
+    virtual ~TrustedConnection();
 };
 
 #endif // SERVER_TRUSTED_CONNECTION_H

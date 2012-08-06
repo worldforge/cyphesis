@@ -22,6 +22,10 @@
 #include "CommPythonClient.h"
 #include "CommServer.h"
 
+CommPythonClientFactory::~CommPythonClientFactory()
+{
+}
+
 int CommPythonClientFactory::newCommClient(CommServer & svr,
                                            int asockfd,
                                            const std::string & address)

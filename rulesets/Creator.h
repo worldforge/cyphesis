@@ -30,6 +30,7 @@ typedef Character Creator_parent;
 class Creator : public Creator_parent {
   public:
     explicit Creator(const std::string & id, long intId);
+    virtual ~Creator();
 
     virtual void operation(const Operation & op, OpVector &);
     virtual void externalOperation(const Operation & op);

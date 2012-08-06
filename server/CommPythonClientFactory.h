@@ -25,6 +25,7 @@
 /// \brief Concrete factory for createing CommPythonClient objects
 class CommPythonClientFactory : public CommClientKit {
   public:
+    virtual ~CommPythonClientFactory();
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
 

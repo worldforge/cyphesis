@@ -22,6 +22,10 @@
 #include "CommHttpClient.h"
 #include "CommServer.h"
 
+CommHttpClientFactory::~CommHttpClientFactory()
+{
+}
+
 int CommHttpClientFactory::newCommClient(CommServer & svr,
                                          int asockfd,
                                          const std::string & address)

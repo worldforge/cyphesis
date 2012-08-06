@@ -130,6 +130,10 @@ Creator::Creator(const std::string & id, long intId) :
 {
 }
 
+Creator::~Creator()
+{
+}
+
 void Creator::operation(const Operation & op, OpVector & res)
 {
 }

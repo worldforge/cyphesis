@@ -163,6 +163,10 @@ TrustedConnection::TrustedConnection(CommSocket & client,
 {
 }
 
+TrustedConnection::~TrustedConnection()
+{
+}
+
 Account * TrustedConnection::newAccount(const std::string & type,
                                         const std::string & username,
                                         const std::string & hash,

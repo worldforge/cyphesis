@@ -25,6 +25,7 @@
 /// \brief Concrete factory for createing CommHttpClient objects
 class CommHttpClientFactory : public CommClientKit {
   public:
+    virtual ~CommHttpClientFactory();
     virtual int newCommClient(CommServer &, int, const std::string &);
 };
 
