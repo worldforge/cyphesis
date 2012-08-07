@@ -1302,8 +1302,7 @@ CommSockettest_LDADD = \
 CommStreamClienttest_SOURCES = \
         CommStreamClienttest.cpp
 CommStreamClienttest_LDADD = \
-        $(top_builddir)/server/CommStreamClient.o \
-        $(NETWORK_LIBS)
+        $(top_builddir)/server/CommStreamClient.o
 
 CommClienttest_SOURCES = CommClienttest.cpp
 CommClienttest_LDADD = \

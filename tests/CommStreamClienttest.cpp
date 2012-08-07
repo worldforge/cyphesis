@@ -26,22 +26,27 @@
 
 #include "server/CommStreamClient_impl.h"
 
-#include <skstream/skstream.h>
+#include "null_stream.h"
 
 #include <cassert>
 
-template class CommStreamClient<tcp_socket_stream>;
+template class CommStreamClient<null_stream>;
 
-class TestCommStreamClient : public CommStreamClient<tcp_socket_stream>
+class TestCommStreamClient : public CommStreamClient<null_stream>
 {
   public:
     TestCommStreamClient(int fd) :
-          CommStreamClient<tcp_socket_stream>(*(CommServer*)0, fd)
+          CommStreamClient<null_stream>(*(CommServer*)0, fd)
     {
     }
 
-    TestCommStreamClient() : CommStreamClient<tcp_socket_stream>(*(CommServer*)0)
+    TestCommStreamClient() : CommStreamClient<null_stream>(*(CommServer*)0)
     {
+    }
+
+    null_stream & test_stream()
+    {
+        return m_clientIos;
     }
 
     virtual int read()
@@ -83,6 +88,7 @@ int main()
 
     {
         TestCommStreamClient * cs = new TestCommStreamClient();
+        cs->test_stream().reset_is_open_val(false);
 
         bool open = cs->isOpen();
 
@@ -91,10 +97,40 @@ int main()
 
     {
         TestCommStreamClient * cs = new TestCommStreamClient();
+        cs->test_stream().reset_is_open_val(true);
+
+        bool open = cs->isOpen();
+
+        assert(open);
+    }
+
+    {
+        TestCommStreamClient * cs = new TestCommStreamClient();
+        cs->test_stream().reset_fail_val(true);
 
         bool eof = cs->eof();
 
         assert(eof);
+    }
+
+    {
+        TestCommStreamClient * cs = new TestCommStreamClient();
+        cs->test_stream().reset_fail_val(false);
+        cs->test_stream().reset_peek_val(-1);
+
+        bool eof = cs->eof();
+
+        assert(eof);
+    }
+
+    {
+        TestCommStreamClient * cs = new TestCommStreamClient();
+        cs->test_stream().reset_fail_val(false);
+        cs->test_stream().reset_peek_val(1);
+
+        bool eof = cs->eof();
+
+        assert(!eof);
     }
 
     return 0;

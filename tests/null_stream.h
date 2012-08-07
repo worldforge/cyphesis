@@ -21,10 +21,39 @@
 #define TESTS_NULL_STREAM_H
 
 class null_stream {
+  private:
+    bool m_fail_val;
+    int m_peek_val;
+
+    bool m_timeout_val;
+    int m_socket_val;
+    bool m_is_open_val;
   public:
+    void reset_fail_val(bool v) { m_fail_val = v; }
+    void reset_peek_val(int v) { m_peek_val = v; }
+
+    void reset_timeout_val(bool v) { m_timeout_val = v; }
+    void reset_socket_val(int v) { m_socket_val = v; }
+    void reset_is_open_val(bool v) { m_is_open_val = v; }
+
+
+    class traits_type {
+      public:
+        static int eof() { return -1; }
+    };
+
     null_stream() { }
-    explicit null_stream(int) { }
-    bool timeout() { return true; }
+    explicit null_stream(int fd) : m_socket_val(fd) { }
+
+    int peek() { return m_peek_val; }
+    bool fail() const { return m_fail_val; }
+    void setstate(int) { }
+    void flush() { }
+
+    bool timeout() { return m_timeout_val; }
+    void shutdown(bool = false) { }
+    int getSocket() const { return m_socket_val; }
+    bool is_open() const { return m_is_open_val; }
 };
 
 #endif // TESTS_NULL_STREAM_H
