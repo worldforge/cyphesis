@@ -81,7 +81,7 @@ int CommStreamClient<StreamT>::flush()
     FD_SET(cfd, &sfds);
     if (select(++cfd, NULL, &sfds, NULL, &tv) > 0) {
         // We only flush to the client if the client is ready
-        m_clientIos << std::flush;
+        m_clientIos.flush();
     } else {
         // FIXME Establish why this gets hit so much
         // debug(std::cout << "Client not ready" << std::endl << std::flush;);
