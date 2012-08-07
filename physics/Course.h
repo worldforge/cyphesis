@@ -35,13 +35,13 @@ class Course {
     PathT<dim> m_path;
   public:
     ///
-    Course() { }
+    Course();
     ///
-    Course(const Course& l) : m_path(l.m_path) { }
+    Course(const Course& l);
     ///
-    explicit Course(const PathT<dim> & l) : m_path(l) { }
+    explicit Course(const PathT<dim> & l);
     ///
-    ~Course() { }
+    ~Course();
 
     /// Create an Atlas object from the course
     WFMath::AtlasOutType toAtlas() const;
@@ -105,6 +105,27 @@ class Course {
     WFMath::Ball<dim> boundingSphere() const;
     WFMath::Ball<dim> boundingShapeSloppy() const;
 };
+
+template<int dim, template <int> class PathT>
+inline Course<dim, PathT>::Course()
+{
+}
+
+template<int dim, template <int> class PathT>
+inline Course<dim, PathT>::Course(const Course<dim, PathT>& l) :
+      m_path(l.m_path)
+{
+}
+
+template<int dim, template <int> class PathT>
+inline Course<dim, PathT>::Course(const PathT<dim> & l) : m_path(l)
+{
+}
+
+template<int dim, template <int> class PathT>
+inline Course<dim, PathT>::~Course()
+{
+}
 
 template<int dim, template <int> class PathT>
 inline Course<dim, PathT>& Course<dim, PathT>::operator=(const Course<dim, PathT>& rhs)
