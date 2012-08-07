@@ -1,3 +1,5 @@
+SUBDIRS = minimal
+
 EXTRA_DIST = acorn.xml werewolf.xml
 
 MASON_RULES = animals.xml basic.xml buildings.xml characters.xml clothing.xml \
