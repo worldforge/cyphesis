@@ -70,6 +70,8 @@ class Furnishings(server.Task):
             if acount==2:
                 #print "Enough Materials for Wallframe"
                 break
+            if lcount==0 and wcount ==4:
+                break
         else:
             print "No materials in inventory for Furnishings"
             self.irrelevant()
@@ -97,7 +99,6 @@ class Furnishings(server.Task):
             res.append(create)
         if self.fname=="Chair":
             #Making chair
-            print "Making Chair 1"
             while (count > 0) : 
                 tar = raw_materials.pop()
                 set = Operation("set", Entity(tar.id, status = -1), to = tar)
@@ -135,10 +136,10 @@ class Furnishings(server.Task):
 
 
             
-            #create the seet
+            #create the seat
             chunk_loc.coordinates =Point3D([0,0,0])
             offset=Vector3D(0,0,.5)
-            lbbox=[-.3,-.3,-.1,.3,.3,.1]
+            lbbox=[-.3,-.3,-.1,.3,.3,.1]#Local bbox
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
@@ -146,7 +147,7 @@ class Furnishings(server.Task):
             #create the back of the seat
             chunk_loc.coordinates =Point3D([0,0,0])
             offset=Vector3D(-.3,0,.75)
-            lbbox=[-.1,-.3,-.4,.1,.3,.4]
+            lbbox=[-.1,-.3,-.4,.1,.3,.4]#local bbox
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
@@ -163,7 +164,39 @@ class Furnishings(server.Task):
             lbbox=[-2,-2,-.1,2,2,.1]#local bbox
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
-
+        if self.fname=="Siding":
+            #Making wooden siding with window
+            while (count > 0) : 
+                tar = raw_materials.pop()
+                set = Operation("set", Entity(tar.id, status = -1), to = tar)
+                res.append(set)
+                count = count - 1
+            #Siding is made of 4 components so it looks like we have a window
+            #Bottom part
+            lbbox=[-3,-.1,-1,3,.1,2]
+            create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
+            res.append(create)
+            #Top part
+            chunk_loc.coordinates =Point3D([0,0,0])
+            offset=Vector3D(0,0,4)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            lbbox=[-3,-.1,-1,3,.1,2]
+            create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
+            res.append(create)
+            #left part
+            chunk_loc.coordinates =Point3D([0,0,0])
+            offset=Vector3D(-2,0,2)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            lbbox=[-1,-.1,-.5,1,.1,.5]
+            create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
+            res.append(create)
+            #Right part
+            chunk_loc.coordinates =Point3D([0,0,0])
+            offset=Vector3D(2,0,2)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            lbbox=[-1,-.1,-.5,1,.1,.5]
+            create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
+            res.append(create)
         if self.fname=="Fireplace":
             #Making Fireplace
             while (count > 0) : 
@@ -209,9 +242,9 @@ class Furnishings(server.Task):
             res.append(create)
             chunk_loc.coordinates =Point3D([0,0,0])
             tar=raw_materials2.pop()
-            print str(tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2])
-            print str(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])
-            print str(tar.location.bbox.far_point[0]-tar.location.bbox.near_point[0])
+            #print str(tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2])
+            #print str(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])
+            #print str(tar.location.bbox.far_point[0]-tar.location.bbox.near_point[0])
             offset=Vector3D(-(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])/.9,0,tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]/1.7)#Translate second A frame in wall
             chunk_loc.orientation=Quaternion([.653,-.27,.27,.653])
             chunk_loc.coordinates=chunk_loc.coordinates+offset
@@ -282,6 +315,9 @@ class Furnishings(server.Task):
             if lcount== 0 and wcount==5:
                 self.fname="Floor"
                 break
+            if lcount==0 and wcount==4:
+                self.fname="Siding"
+                break
             if ccount== 1 and bcount==4:
                 self.fname="Fireplace"
                 break
@@ -298,7 +334,8 @@ class Furnishings(server.Task):
             bbox1=[-2,-2,-.01,2,2,.01]
         if(self.fname=="Wallframe"):#If wall frame make bbox based upon the 2 aframes used
             bbox1=[-aframewidth,-.5,-aframewidth,0,.5,aframewidth]
-      
+        if(self.fname=="Siding"):
+            bbox1=[-3,-.1,-3,3,.1,3]
         create=Operation("create", Entity(name = self.fname, type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
         res.append(create)
