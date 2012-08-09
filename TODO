@@ -1,3 +1,5 @@
+Motion only ever uses locatio, so doesn't need entity ref
+
 When coverage tells us 0% in a header, that is because the header had to
 generate implicit default code - probably destructor.
 
