@@ -11,7 +11,7 @@ import server
 import weakref
 
 class Pioneeringconstruction(server.Task):
-    """A task for creating a Wooden structures such as A Frames with lumber and rope but for now a hammer""" 
+    """A task for creating a Wooden structures such as A Frames with lumber and rope""" 
 
     materials = "lumber"
     def aframe_operation(self, op):
@@ -48,15 +48,11 @@ class Pioneeringconstruction(server.Task):
         res=Oplist()
         #loops through raw_materials and places 3 lumber in inventory infront of user
         offset=Vector3D(0,0,0)
-        self.globalll=0
-        self.globallh=0
         while (count > 0) : 
             tar = raw_materials.pop()
             #length of the lumber obtained
             lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
             lumberheight=tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]
-            self.globalll=lumberlength
-            self.globallh=lumberheight
             #rough length to position lumber
             lumber_length=lumberlength/4
             
@@ -130,7 +126,7 @@ class Pioneeringconstruction(server.Task):
             self.irrelevant()
             return
         
-        bbox1=[-lumberl/2,-lumberl/2,-lumberh/2,lumberl/2,lumberl/2,lumberh/2] 
+        bbox1=[-lumberl/2,-lumberl/2,-lumberh/2,lumberl/2,lumberl/2,lumberh/2] #bbox of a frame
         create=Operation("create", Entity(name = "A_Frame", type = "construction",bbox=bbox1, location = chunk_loc), to = target)
         create.setSerialno(0)
         res.append(create)
