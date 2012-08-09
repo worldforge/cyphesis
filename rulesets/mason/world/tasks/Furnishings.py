@@ -234,19 +234,6 @@ class Furnishings(server.Task):
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
         if self.fname=="Wallframe":
-            #Making wallframe, we move 2 A frames into position
-            #chunk_loc.coordinates =Point3D([0,0,0])
-            #tar=raw_materials2.pop()
-            #chunk_loc.orientation=Quaternion([.27,0.65,-.65,.27])
-            #create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
-            #res.append(create)
-            #chunk_loc.coordinates =Point3D([0,0,0])
-            #tar=raw_materials2.pop()
-            #offset=Vector3D(-(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])/.9,0,tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]/1.7)#Translate second A frame in wall
-            #chunk_loc.orientation=Quaternion([.653,-.27,.27,.653])
-            #chunk_loc.coordinates=chunk_loc.coordinates+offset
-            #create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
-            #res.append(create)
             #Bottom part of wall frame
             chunk_loc.coordinates =Point3D([0,0,0])
             tar = raw_materials.pop()
