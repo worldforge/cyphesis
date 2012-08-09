@@ -25,6 +25,7 @@
 #endif
 
 #include "TestWorld.h"
+#include "TestPropertyManager.h"
 
 #include "common/Property.h"
 
@@ -35,12 +36,8 @@
 
 int main(int argc, char ** argv)
 {
-    loadConfig(argc, argv);
-    database_flag = false;
-
-    init_python_api("7a65cdc2-0c3d-4671-9417-ed39060b8955");
-
-    EntityBuilder::init();
+    TestPropertyManager tpm;
+    // database_flag = false;
 
     Entity * thing = new Thing("1", 1);
 
@@ -89,4 +86,224 @@ int main(int argc, char ** argv)
 
     // TODO(alriddoch) add coverage for calling requirePropertyClass() when
     // a property of the wrong type already exists.
+}
+
+// stubs
+
+#include "rulesets/AtlasProperties.h"
+#include "rulesets/Domain.h"
+#include "rulesets/Motion.h"
+
+#include "common/const.h"
+#include "common/log.h"
+
+using Atlas::Objects::Entity::RootEntity;
+
+namespace Atlas { namespace Objects { namespace Operation {
+
+int ACTUATE_NO = -1;
+int ATTACK_NO = -1;
+int DROP_NO = -1;
+int EAT_NO = -1;
+int NOURISH_NO = -1;
+int PICKUP_NO = -1;
+int TICK_NO = -1;
+int UPDATE_NO = -1;
+
+} } }
+
+ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+      PropertyBase(per_ephem), m_data(data)
+{
+}
+
+int ContainsProperty::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
+
+void ContainsProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
+{
+}
+
+IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+                                                   m_data(data)
+{
+}
+
+int IdProperty::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
+
+void IdProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     Atlas::Message::MapType & ent) const
+{
+}
+
+void IdProperty::add(const std::string & key, const RootEntity & ent) const
+{
+}
+
+Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+                                m_collision(false), m_collEntity(0),
+                                m_collisionTime(0.f)
+{
+}
+
+Motion::~Motion()
+{
+}
+
+float Motion::checkCollisions()
+{
+    return consts::move_tick;
+}
+
+bool Motion::resolveCollision()
+{
+    return false;
+}
+
+void Motion::setMode(const std::string & mode)
+{
+    m_mode = mode;
+    // FIXME Re-configure stuff, and possible schedule an update?
+}
+
+void Motion::adjustPostion()
+{
+}
+
+Operation * Motion::genUpdateOperation()
+{
+    return 0;
+}
+
+Operation * Motion::genMoveOperation()
+{
+    return 0;
+}
+
+Domain * Domain::m_instance = 0;
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Router::error(const Operation & op,
+                   const std::string & errstring,
+                   OpVector & res,
+                   const std::string & to) const
+{
+}
+
+Location::Location() :
+    m_simple(true), m_solid(true),
+    m_boxSize(consts::minBoxSize),
+    m_squareBoxSize(consts::minSqrBoxSize),
+    m_loc(0)
+{
+}
+
+void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Location::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+BaseWorld * BaseWorld::m_instance = 0;
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+    m_instance = this;
+}
+
+BaseWorld::~BaseWorld()
+{
+    m_instance = 0;
+}
+
+Entity * BaseWorld::getEntity(const std::string & id) const
+{
+    return 0;
+}
+
+Entity * BaseWorld::getEntity(long id) const
+{
+    return 0;
+}
+
+PropertyManager * PropertyManager::m_instance = 0;
+
+PropertyManager::PropertyManager()
+{
+    assert(m_instance == 0);
+    m_instance = this;
+}
+
+PropertyManager::~PropertyManager()
+{
+   m_instance = 0;
+}
+
+void addToEntity(const Point3D & p, std::vector<double> & vd)
+{
+}
+
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
+{
+    return 1.f;
+}
+
+template <typename FloatT>
+int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
+{
+    if (vf.size() != 3) {
+        return -1;
+    }
+    p[0] = vf[0];
+    p[1] = vf[1];
+    p[2] = vf[2];
+    p.setValid();
+    return 0;
+}
+
+template <>
+int fromStdVector<double>(Point3D & p, const std::vector<double> & vf)
+{
+    return 0;
+}
+
+template <>
+int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf)
+{
+    return 0;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }
