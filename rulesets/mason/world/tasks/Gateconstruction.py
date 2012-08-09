@@ -15,7 +15,7 @@ class Gateconstruction(server.Task):
 
     materials = "lumber"
     def gates_operation(self, op):
-        """ Op handler for Pioneeringconstruction op which activates this task """
+        """ Op handler for Gateconstruction op which activates this task """
         
         if len(op) < 1:
             sys.stderr.write("Gateconstruction  task has no target in op")
@@ -29,8 +29,8 @@ class Gateconstruction(server.Task):
         gate = server.world.get_object_ref(op[0].id)
         self.lcount = 0#needs 1 lumber for basic gate
         self.acount=0#needs 2 a frames for basic gate
-        raw_materials = []
-        raw_materials1 = []
+        raw_materials = []#Holds construction
+        raw_materials1 = []#Holds lumber
         for item in self.character.contains:
             if item.type[0] == str("construction"):
                 raw_materials.append(item)
@@ -59,7 +59,7 @@ class Gateconstruction(server.Task):
                 tar = raw_materials1.pop()
                 self.lumber_length=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
                 offset=Vector3D(self.lumber_length/7,self.lumber_length/3.5,self.lumber_length*.63)
-                chunk_loc.orientation=Quaternion([.707,0,0,.707])
+                chunk_loc.orientation=Quaternion([.707,0,0,.707])#Same as an Euler of (0,90 Degrees,0)
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
                 move1=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
                 res.append(move1)
@@ -68,7 +68,7 @@ class Gateconstruction(server.Task):
             
             count = self.acount
             chunk_loc = Location(gate())
-            chunk_loc.coordinates =Point3D([0,0,0])      
+            chunk_loc.coordinates =Point3D([0,0,0])  #Resets    
             #loops through raw_materials and places 3 lumber in inventory infront of user
             offset=Vector3D(0,0,0)
             while (count > 0) : 
@@ -116,7 +116,7 @@ class Gateconstruction(server.Task):
             chunk_loc.coordinates =Point3D([0,0,0]) 
             self.lumber_length=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
             offset=Vector3D(0,self.lumber_length,self.lumber_length*(.7))
-            chunk_loc.orientation=Quaternion([.5,.5,-.5,.5])
+            chunk_loc.orientation=Quaternion([.5,.5,-.5,.5])#Same as (90 Degrees, 0, 90 Degrees)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,mode="fixed"), to=tar)
             res.append(move1)
