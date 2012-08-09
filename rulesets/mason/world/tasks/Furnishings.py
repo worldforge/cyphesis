@@ -67,7 +67,7 @@ class Furnishings(server.Task):
             if ccount == 1 and bcount==4 :
                 #print "Enough material for fireplace"
                 break
-            if acount==2:
+            if lcount==5:
                 #print "Enough Materials for Wallframe"
                 break
             if lcount==0 and wcount ==4:
@@ -235,21 +235,60 @@ class Furnishings(server.Task):
             res.append(create)
         if self.fname=="Wallframe":
             #Making wallframe, we move 2 A frames into position
+            #chunk_loc.coordinates =Point3D([0,0,0])
+            #tar=raw_materials2.pop()
+            #chunk_loc.orientation=Quaternion([.27,0.65,-.65,.27])
+            #create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            #res.append(create)
+            #chunk_loc.coordinates =Point3D([0,0,0])
+            #tar=raw_materials2.pop()
+            #offset=Vector3D(-(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])/.9,0,tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]/1.7)#Translate second A frame in wall
+            #chunk_loc.orientation=Quaternion([.653,-.27,.27,.653])
+            #chunk_loc.coordinates=chunk_loc.coordinates+offset
+            #create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            #res.append(create)
+            #Bottom part of wall frame
             chunk_loc.coordinates =Point3D([0,0,0])
-            tar=raw_materials2.pop()
-            chunk_loc.orientation=Quaternion([.27,0.65,-.65,.27])
-            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
-            res.append(create)
-            chunk_loc.coordinates =Point3D([0,0,0])
-            tar=raw_materials2.pop()
-            #print str(tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2])
-            #print str(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])
-            #print str(tar.location.bbox.far_point[0]-tar.location.bbox.near_point[0])
-            offset=Vector3D(-(tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1])/.9,0,tar.location.bbox.far_point[1]-tar.location.bbox.near_point[1]/1.7)#Translate second A frame in wall
-            chunk_loc.orientation=Quaternion([.653,-.27,.27,.653])
+            tar = raw_materials.pop()
+            lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
+            chunk_loc.orientation=Quaternion([.5,.5,.5,.5])
+            offset=Vector3D(-lumberlength/2,0,0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
+            #Top part of wall frame
+            chunk_loc.coordinates =Point3D([0,0,0])
+            tar = raw_materials.pop()
+            offset=Vector3D(-lumberlength/2,0,lumberlength*.8)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.orientation=Quaternion([.5,.5,.5,.5])
+            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            res.append(create)
+            #Left part of wall frame
+            chunk_loc.coordinates =Point3D([0,0,0])
+            tar = raw_materials.pop()
+            offset=Vector3D((lumberlength/2.0)*-.8,0,lumberlength*.8)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.orientation=Quaternion([.707,.707,0,0])
+            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            res.append(create)
+            #Right part of wall frame
+            chunk_loc.coordinates =Point3D([0,0,0])
+            tar = raw_materials.pop()
+            offset=Vector3D((lumberlength/2.0)*.8,0,lumberlength*.8)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.orientation=Quaternion([.707,.707,0,0])
+            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            res.append(create)
+            #Center part of wall frame
+            chunk_loc.coordinates =Point3D([0,0,0])
+            tar = raw_materials.pop()
+            offset=Vector3D((lumberlength/2.0)*-.8,0,lumberlength*.1)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.orientation=Quaternion([.27,.27,.65,.65])
+            create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
+            res.append(create)
+            
 
         self.progress =1
         self.irrelevant()
@@ -292,11 +331,12 @@ class Furnishings(server.Task):
         ccount=0#campfire count
         bcount=0#boulder count
         self.fname=""#furnishing name
-        aframewidth=0
+        lumberwidth=0
         #makes sure we have the right amount of material
         for item in self.character.contains:
             if item.type[0] == "lumber":
                 lcount = lcount + 1
+                lumberwidth=item.location.bbox.far_point[2]-item.location.bbox.near_point[2]
             if item.type[0] == "wood":
                 wcount = wcount + 1
             if item.type[0] == "campfire":
@@ -305,7 +345,6 @@ class Furnishings(server.Task):
                 bcount = bcount + 1
             if item.type[0] == "construction":
                 acount=acount+1
-                aframewidth=item.location.bbox.far_point[1]-item.location.bbox.near_point[1]
             if lcount == 1 and wcount==3 :
                 self.fname="Table"
                 break
@@ -321,7 +360,7 @@ class Furnishings(server.Task):
             if ccount== 1 and bcount==4:
                 self.fname="Fireplace"
                 break
-            if acount ==2:
+            if lcount==5:
                 self.fname="Wallframe"
                 break
         else:
@@ -333,7 +372,7 @@ class Furnishings(server.Task):
         if(self.fname=="Floor"):#If floor make different bbox which is thing so it can be walked over
             bbox1=[-2,-2,-.01,2,2,.01]
         if(self.fname=="Wallframe"):#If wall frame make bbox based upon the 2 aframes used
-            bbox1=[-aframewidth,-.5,-aframewidth,0,.5,aframewidth]
+            bbox1=[-lumberwidth,-.5,-lumberwidth,0,.5,lumberwidth]
         if(self.fname=="Siding"):
             bbox1=[-3,-.1,-3,3,.1,3]
         create=Operation("create", Entity(name = self.fname, type = "construction",bbox=bbox1, location = chunk_loc), to = target)
