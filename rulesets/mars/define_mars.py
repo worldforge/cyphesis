@@ -2,6 +2,10 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Copyright (C) 2000-2008 Alistair Riddoch
+#Copyright (c) 2012 Sean Ryan
+
+# Description: This started off as the 'minimal' ruleset and is slated to
+#              be advanced by way of tutorial to illustrate how features work
 
 from atlas import *
 from random import *
@@ -93,7 +97,7 @@ def _setup_terrain_basic(m, world):
     #     grass - suspect its random from foliage system
     #     depth - ???
     #     high  - ???
-    # These names, correspond to the layer shaders defined in the media/shared/modeldefinitions/<name>.terrain
+    # These names, correspond to the layer shaders defined in the media/shared/modeldefinitions/mars.terrain
     surfaces = [
         {'name': 'rock', 'pattern': 'fill' },
         {'name': 'mars', 'pattern': 'band', 'params': {'lowThreshold': -5.0,
@@ -102,8 +106,8 @@ def _setup_terrain_basic(m, world):
         #                                               'highThreshold': 10.0 } },
     ]
         
-    # The name of the terrain must also have a media/shared/modeldefinitions/<name>.terrain (i.e. moraf.terrain )
-    m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="moraf", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
+    # The name of the terrain must also have a media/shared/modeldefinitions/<name>.terrain (i.e. mars.terrain )
+    m.set(world.id, terrain={'points' : points, 'surfaces' : surfaces}, name="mars", bbox=[minx * 64, miny * 64, minz, maxx * 64, maxy * 64, maxz])
     points = {}
     surfaces = {}
 

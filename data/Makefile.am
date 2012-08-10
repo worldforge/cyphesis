@@ -1,4 +1,4 @@
-SUBDIRS = minimal
+SUBDIRS = minimal mars
 
 EXTRA_DIST = acorn.xml werewolf.xml
 
