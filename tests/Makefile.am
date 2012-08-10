@@ -106,8 +106,8 @@ EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 check_PROGRAMS = $(TESTS)
 
 noinst_HEADERS = null_stream.h CommClient_stub_impl.h \
-                 CommStreamClient_stub_impl.h
-
+                 CommStreamClient_stub_impl.h OperationExerciser.h \
+                 allOperations.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
@@ -145,7 +145,7 @@ consttest_LDADD = $(top_builddir)/common/const.o
 
 randomtest_SOURCES = randomtest.cpp
 
-Addtest_SOURCES = Addtest.cpp OperationExerciser.cpp OperationExerciser.h
+Addtest_SOURCES = Addtest.cpp OperationExerciser.cpp
 
 Attacktest_SOURCES = Attacktest.cpp
 
@@ -350,22 +350,21 @@ TerrainContexttest_LDADD = \
 # RULESETS_TESTS
 
 LocatedEntitytest_SOURCES = LocatedEntitytest.cpp \
-                            EntityExerciser.cpp EntityExerciser.h \
-                            allOperations.h
+                            EntityExerciser.cpp EntityExerciser.h
 LocatedEntitytest_LDADD = \
         $(top_builddir)/rulesets/LocatedEntity.o
 
 Entitytest_SOURCES = Entitytest.cpp \
                      TestPropertyManager.cpp TestPropertyManager.h \
                      IGEntityExerciser.cpp IGEntityExerciser.h \
-                     EntityExerciser.cpp EntityExerciser.h allOperations.h
+                     EntityExerciser.cpp EntityExerciser.h
 Entitytest_LDADD = \
         $(top_builddir)/rulesets/Entity.o
 
 Planttest_SOURCES = Planttest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
-                    EntityExerciser.cpp EntityExerciser.h allOperations.h \
+                    EntityExerciser.cpp EntityExerciser.h \
                     TestWorld.h
 Planttest_LDADD = \
         $(top_builddir)/rulesets/Plant.o
@@ -373,39 +372,39 @@ Planttest_LDADD = \
 Stackabletest_SOURCES = Stackabletest.cpp \
                         TestPropertyManager.cpp TestPropertyManager.h \
                         IGEntityExerciser.cpp IGEntityExerciser.h \
-                        EntityExerciser.cpp EntityExerciser.h allOperations.h
+                        EntityExerciser.cpp EntityExerciser.h
 Stackabletest_LDADD = \
         $(top_builddir)/rulesets/Stackable.o
 
 Thingtest_SOURCES = Thingtest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
-                    EntityExerciser.cpp EntityExerciser.h allOperations.h
+                    EntityExerciser.cpp EntityExerciser.h
 Thingtest_LDADD = \
         $(top_builddir)/rulesets/Thing.o
 
 Worldtest_SOURCES = Worldtest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
-                    EntityExerciser.cpp EntityExerciser.h allOperations.h
+                    EntityExerciser.cpp EntityExerciser.h
 Worldtest_LDADD = \
         $(top_builddir)/rulesets/World.o
 
 Charactertest_SOURCES = Charactertest.cpp \
                         TestPropertyManager.cpp TestPropertyManager.h \
                         IGEntityExerciser.cpp IGEntityExerciser.h \
-                        EntityExerciser.cpp EntityExerciser.h allOperations.h
+                        EntityExerciser.cpp EntityExerciser.h
 Charactertest_LDADD = \
         $(top_builddir)/rulesets/Character.o
 
 Creatortest_SOURCES = Creatortest.cpp \
                       TestPropertyManager.cpp TestPropertyManager.h \
                       IGEntityExerciser.cpp IGEntityExerciser.h \
-                      EntityExerciser.cpp EntityExerciser.h allOperations.h
+                      EntityExerciser.cpp EntityExerciser.h
 Creatortest_LDADD = \
         $(top_builddir)/rulesets/Creator.o
 
-ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp allOperations.h
+ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp
 ThingupdatePropertiestest_LDADD = \
         $(top_builddir)/rulesets/librulesetentity.a \
         $(top_builddir)/rulesets/librulesetbase.a \
