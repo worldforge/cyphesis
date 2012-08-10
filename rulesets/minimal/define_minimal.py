@@ -96,10 +96,10 @@ def _setup_terrain_basic(m, world):
     # These names, correspond to the layer shaders defined in the media/shared/modeldefinitions/mars.terrain
     surfaces = [
         {'name': 'rock', 'pattern': 'fill' },
-        {'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold':  -5.0,
-                                                       'highThreshold': 10.0 } },
-        #{'name': 'mars', 'pattern': 'band', 'params': {'lowThreshold': 5.0,
-        #                                               'highThreshold': 110.0 } },
+        {'name': 'mars', 'pattern': 'band', 'params': {'lowThreshold': -5.0,
+                                                       'highThreshold': 110.0 } },
+        #{'name': 'sand', 'pattern': 'band', 'params': {'lowThreshold':  -5.0,
+        #                                               'highThreshold': 10.0 } },
     ]
         
     # The name of the terrain must also have a media/shared/modeldefinitions/<name>.terrain (i.e. mars.terrain )
