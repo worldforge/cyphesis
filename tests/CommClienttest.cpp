@@ -173,7 +173,7 @@ class TestCommClient : public CommClient<tcp_socket_stream>
 
     void test_setConnection(Link * r)
     {
-        m_connection = r;
+        m_link = r;
     }
 
     void test_operation(const Atlas::Objects::Operation::RootOperation&op)

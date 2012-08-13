@@ -35,7 +35,7 @@ CommClient<StreamT>::CommClient(CommServer & svr,
                                 const std::string & name,
                                 int fd) :
             CommStreamClient<StreamT>(svr, fd), Idle(svr),
-            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
+            m_codec(NULL), m_encoder(NULL), m_link(NULL),
             m_connectTime(svr.time())
 {
     this->m_clientIos.setTimeout(0,1000);
@@ -48,7 +48,7 @@ template <class StreamT>
 CommClient<StreamT>::CommClient(CommServer & svr,
                                 const std::string & name) :
             CommStreamClient<StreamT>(svr), Idle(svr),
-            m_codec(NULL), m_encoder(NULL), m_connection(NULL),
+            m_codec(NULL), m_encoder(NULL), m_link(NULL),
             m_connectTime(svr.time())
 {
     this->m_clientIos.setTimeout(0,1000);
@@ -60,7 +60,7 @@ CommClient<StreamT>::CommClient(CommServer & svr,
 template <class StreamT>
 CommClient<StreamT>::~CommClient()
 {
-    delete this->m_connection;
+    delete this->m_link;
     delete this->m_negotiate;
     delete this->m_encoder;
     delete this->m_codec;
@@ -71,7 +71,7 @@ void CommClient<StreamT>::setup(Link * connection)
 {
     // Create the server side negotiator
 
-    this->m_connection = connection;
+    this->m_link = connection;
 
     this->m_negotiate->poll(false);
 
@@ -101,8 +101,8 @@ int CommClient<StreamT>::negotiate()
     // Create a new encoder to send high level objects to the codec
     this->m_encoder = new Atlas::Objects::ObjectsEncoder(*this->m_codec);
 
-    assert(this->m_connection != 0);
-    this->m_connection->setEncoder(this->m_encoder);
+    assert(this->m_link != 0);
+    this->m_link->setEncoder(this->m_encoder);
 
     // This should always be sent at the beginning of a session
     this->m_codec->streamBegin();
@@ -117,10 +117,10 @@ int CommClient<StreamT>::negotiate()
 template <class StreamT>
 int CommClient<StreamT>::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
-    assert(m_connection != 0);
+    assert(m_link != 0);
     OpVector reply;
     long serialno = op->getSerialno();
-    m_connection->operation(op, reply);
+    m_link->operation(op, reply);
     OpVector::const_iterator Iend = reply.end();
     for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
         if (!op->isDefaultSerialno()) {

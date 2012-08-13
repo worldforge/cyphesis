@@ -68,7 +68,7 @@ int CommPeer::connect(struct addrinfo * info)
 
 void CommPeer::setup(Link * connection)
 {
-    m_connection = connection;
+    m_link = connection;
 
     assert(!m_clientIos.connect_pending());
 
@@ -106,7 +106,7 @@ void CommPeer::idle(time_t t)
             m_clientIos.shutdown();
         }
     } else {
-        Peer *peer = dynamic_cast<Peer*>(m_connection);
+        Peer *peer = dynamic_cast<Peer*>(m_link);
         if (peer == NULL) {
             log(WARNING, "Casting CommPeer connection to Peer failed");
             return;

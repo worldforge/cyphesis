@@ -59,7 +59,7 @@ class CommClient : public Atlas::Objects::ObjectsDecoder,
     /// \brief Atlas negotiator for handling codec negotiation.
     Atlas::Negotiate * m_negotiate;
     /// \brief Server side object for handling connection level operations.
-    Link * m_connection;
+    Link * m_link;
     /// \brief Time connection was opened
     time_t m_connectTime;
 

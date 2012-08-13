@@ -24,7 +24,7 @@ CommClient<StreamT>::CommClient(CommServer & svr,
                                     const std::string & name,
                                     int fd) :
             CommStreamClient<StreamT>(svr, fd), Idle(svr),
-            m_codec(NULL), m_encoder(NULL), m_connection(NULL)
+            m_codec(NULL), m_encoder(NULL), m_link(NULL)
 {
 }
 
@@ -32,7 +32,7 @@ template <class StreamT>
 CommClient<StreamT>::CommClient(CommServer & svr,
                                 const std::string & name) :
             CommStreamClient<StreamT>(svr), Idle(svr),
-            m_codec(NULL), m_encoder(NULL), m_connection(NULL)
+            m_codec(NULL), m_encoder(NULL), m_link(NULL)
 {
 }
 
