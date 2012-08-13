@@ -66,7 +66,7 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent)
 }
 
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
-                                         m_connection(0),
+                                         m_external(0),
                                          m_entity(e),
                                          m_lossTime(0.)
 {
@@ -74,14 +74,11 @@ ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
 
 ExternalMind::~ExternalMind()
 {
-    // This object does not own the associated entity, so is not
-    // responsible for removing it from the connectio.
-    // m_connection.removeObject(getIntId());
 }
 
 void ExternalMind::operation(const Operation & op, OpVector & res)
 {
-    if (m_connection == 0) {
+    if (m_external == 0) {
         if (m_entity.getFlags() & entity_ephem) {
             // If this entity no longer has a connection, and is ephemeral
             // we should delete it.
@@ -99,7 +96,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
         }
         return;
     }
-    m_connection->send(op);
+    m_external->send(op);
 
     // Here we see if there is anything we should be sending the user
     // extra info about. The initial demo implementation checks for
@@ -135,7 +132,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
                     sight->setFrom(getId());
                     sight->setArgs1(imaginary);
 
-                    m_connection->send(sight);
+                    m_external->send(sight);
                 }
             }
         }
@@ -144,13 +141,13 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 
 const std::string & ExternalMind::connectionId()
 {
-    assert(m_connection != 0);
-    return m_connection->getId();
+    assert(m_external != 0);
+    return m_external->getId();
 }
 
-void ExternalMind::connect(Connection * c)
+void ExternalMind::linkUp(Link * c)
 {
-    m_connection = c;
+    m_external = c;
     if (c == 0) {
         m_lossTime = BaseWorld::instance().getTime();
     }

@@ -1,3 +1,6 @@
+There are only very few places where ConnectedRouter::m_connection is used
+as anything other than Link - should be possible to weaken the coupling.
+
 Motion only ever uses locatio, so doesn't need entity ref
 
 When coverage tells us 0% in a header, that is because the header had to

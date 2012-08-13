@@ -137,7 +137,7 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(0);
+        em.linkUp(0);
     }
 
     // Connect to something
@@ -146,9 +146,9 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
     }
 
     // Connect to something, then disconnect
@@ -157,10 +157,10 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
-        em.connect(0);
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
+        em.linkUp(0);
     }
 
     // Connect to something, then check connection ID
@@ -169,9 +169,9 @@ int main()
 
         ExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
         const std::string & id = em.connectionId();
         assert(id == "4");
     }
@@ -251,9 +251,9 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
 
         stub_link_send_op = -1;
         stub_link_send_count = 0;
@@ -269,9 +269,9 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
 
         stub_link_send_op = -1;
         stub_link_send_count = 0;
@@ -287,9 +287,9 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
 
         stub_link_send_op = -1;
         stub_link_send_count = 0;
@@ -316,9 +316,9 @@ int main()
 
         TestExternalMind em(e);
 
-        em.connect(new Connection(*(CommSocket*)0,
-                                  *(ServerRouting*)0,
-                                  "addr", "4", 4));
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
 
         stub_link_send_op = -1;
         stub_link_send_count = 0;

@@ -434,7 +434,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 }
 
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
-                                         m_connection(0), m_entity(e)
+                                         m_external(0), m_entity(e)
 {
 }
 
@@ -471,13 +471,13 @@ void ExternalProperty::add(const std::string & s,
 
 const std::string & ExternalMind::connectionId()
 {
-    assert(m_connection != 0);
-    return m_connection->getId();
+    assert(m_external != 0);
+    return m_external->getId();
 }
 
-void ExternalMind::connect(Connection * c)
+void ExternalMind::linkUp(Link * c)
 {
-    m_connection = c;
+    m_external = c;
 }
 
 Character::Character(const std::string & id, long intId) :

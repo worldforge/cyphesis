@@ -141,7 +141,7 @@ void Connection::disconnectObject(RouterMap::iterator I,
     if (chr != 0) {
         if (chr->m_externalMind != 0) {
             ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-            if (mind != 0 && mind->isConnectedTo(this)) {
+            if (mind != 0 && mind->isLinkedTo(this)) {
                 // Send a move op stopping the current movement
                 Anonymous move_arg;
                 move_arg->setId(chr->getId());
@@ -161,12 +161,12 @@ void Connection::disconnectObject(RouterMap::iterator I,
                 // We used to delete the external mind here, but now we
                 // leave it in place, as it takes care of the disconnected
                 // character.
-                mind->connect(0);
+                mind->linkUp(0);
                 logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
                                                     getId(), chr->getId(),
                                                     chr->getType()->name(),
                                                     event));
-            } else if (mind != 0 && mind->isConnected()) {
+            } else if (mind != 0 && mind->isLinked()) {
                 log(ERROR, String::compose("Connection(%1) requested to "
                                            "remove active character %2(%3) "
                                            "which is subscribed to another "
@@ -215,11 +215,11 @@ void Connection::connectAvatar(Character * chr)
         chr->m_externalMind = mind = new ExternalMind(*chr);
     }
 
-    if (mind->isConnected()) {
+    if (mind->isLinked()) {
         log(ERROR, "Character is already connected.");
         return;
     }
-    mind->connect(this);
+    mind->linkUp(this);
 
     if (chr->getProperty("external") == 0) {
         ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
@@ -299,7 +299,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         if (chr->m_externalMind != 0) {
             mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
         }
-        if (mind == 0 || !mind->isConnected()) {
+        if (mind == 0 || !mind->isLinked()) {
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
             connectAvatar(chr);
@@ -519,14 +519,14 @@ void Connection::disconnectAccount(Account * ac,
                                                chr->getType(),
                                                chr->getId()));
                 } else {
-                    if (!em->isConnected()) {
+                    if (!em->isLinked()) {
                         log(ERROR,
                             String::compose("Connection(%1) has found a "
                                             "character in its dictionery "
                                             "which is not connected.",
                                             getId()));
                         removeObject(chr->getIntId());
-                    } else if (!em->isConnectedTo(this)) {
+                    } else if (!em->isLinkedTo(this)) {
                         log(ERROR,
                             String::compose("Connection(%1) has found a "
                                             "character in its dictionery "

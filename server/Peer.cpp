@@ -180,7 +180,7 @@ int Peer::teleportEntity(const Entity * ent)
     op->setSerialno(iid);
     op->setArgs1(atlas_repr);
     
-    if (mind != 0 && mind->isConnected()) {
+    if (mind != 0 && mind->isLinked()) {
         // Entities with a mind require an additional one-time possess key that
         // is used by the client to authenticate a teleport on the destination
         // peer
@@ -270,7 +270,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
             return;
         }
         ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-        if (mind == 0 || !mind->isConnected()) {
+        if (mind == 0 || !mind->isLinked()) {
             log(ERROR, "Mind is NULL or not connected");
             return;
         }

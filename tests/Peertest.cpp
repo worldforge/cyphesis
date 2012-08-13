@@ -290,7 +290,7 @@ int main()
         
         Character e("3", 3);
         ExternalMind * mind = new ExternalMind(e);
-        mind->connect((Connection*)23);
+        mind->linkUp((Link*)23);
         e.m_externalMind = mind;
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
@@ -406,7 +406,7 @@ int main()
         
         Character e("23", 23);
         ExternalMind * mind = new ExternalMind(e);
-        mind->connect((Connection*)23);
+        mind->linkUp((Link*)23);
         e.m_externalMind = mind;
         int ret = p->teleportEntity(&e);
         assert(ret == 0);
@@ -536,7 +536,7 @@ Idle::~Idle()
 }
 
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
-                                         m_connection(0), m_entity(e)
+                                         m_external(0), m_entity(e)
 {
 }
 
@@ -548,9 +548,9 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 {
 }
 
-void ExternalMind::connect(Connection * c)
+void ExternalMind::linkUp(Link * c)
 {
-    m_connection = c;
+    m_external = c;
 }
 
 Character::Character(const std::string & id, long intId) :

@@ -22,18 +22,18 @@
 
 #include "common/Router.h"
 
-class Connection;
+class Link;
 class Entity;
 class LocatedEntity;
 
-/// \brief This class connects in-game entities to the Connection of the client
+/// \brief This class connects in-game entities to the Link of the client
 /// controlling it.
 ///
 /// Essentially used to relay in-game operations that pass to the mind on
 /// to the client.
 class ExternalMind : public Router {
   protected:
-    Connection * m_connection;
+    Link * m_external;
     Entity & m_entity;
     double m_lossTime;
 
@@ -46,12 +46,12 @@ class ExternalMind : public Router {
 
     virtual void operation(const Operation &, OpVector &);
 
-    bool isConnected() { return m_connection != 0; }
-    bool isConnectedTo(Connection * c) { return m_connection == c; }
+    bool isLinked() { return m_external != 0; }
+    bool isLinkedTo(Link * c) { return m_external == c; }
 
     const std::string & connectionId();
 
-    void connect(Connection * c);
+    void linkUp(Link * c);
 };
 
 #endif // SERVER_EXTERNAL_MIND_H
