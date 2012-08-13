@@ -55,27 +55,6 @@ class Furnishings(server.Task):
             if item.type[0] == "construction":
                 raw_materials2.append(item)
                 acount=acount+1
-            if lcount == 1 and wcount==3 :
-                #print "Enough material for table"
-                break
-            if lcount == 4 and wcount==2 :
-                #print "Enough material for chair"
-                break
-            if lcount == 0 and wcount==5 :
-                #print "Enough material for floor"
-                break
-            if ccount == 1 and bcount==4 :
-                #print "Enough material for fireplace"
-                break
-            if lcount==5:
-                #print "Enough Materials for Wallframe"
-                break
-            if lcount==0 and wcount ==4:
-                break
-        else:
-            print "No materials in inventory for Furnishings"
-            self.irrelevant()
-            return
 
 
         count=lcount+wcount+bcount
@@ -275,7 +254,26 @@ class Furnishings(server.Task):
             chunk_loc.orientation=Quaternion([.27,.27,.65,.65])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
-            
+        if self.fname=="Roof":
+            #Making the roof, roof is 1 lumber and a large wooden covering
+            while (count > 0) : 
+                tar = raw_materials.pop()
+                set = Operation("set", Entity(tar.id, status = -1), to = tar)
+                res.append(set)
+                count = count - 1
+            #create the top, it is one large wood
+            lbbox=[-4,-4,-.1,4,4,.3]#local bbox
+            offset=Vector3D(0,0,5)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
+            res.append(create)
+            #create column
+            chunk_loc.coordinates =Point3D([0,0,0])
+            lbbox=[-.5,-.5,-.1,.5,.5,6]#local bbox
+            offset=Vector3D(0,0,0)
+            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
+            res.append(create)
 
         self.progress =1
         self.irrelevant()
@@ -332,28 +330,29 @@ class Furnishings(server.Task):
                 bcount = bcount + 1
             if item.type[0] == "construction":
                 acount=acount+1
-            if lcount == 1 and wcount==3 :
-                self.fname="Table"
-                break
-            if lcount == 4 and wcount ==2:
-                self.fname= "Chair"
-                break
-            if lcount== 0 and wcount==5:
-                self.fname="Floor"
-                break
-            if lcount==0 and wcount==4:
-                self.fname="Siding"
-                break
-            if ccount== 1 and bcount==4:
-                self.fname="Fireplace"
-                break
-            if lcount==5:
-                self.fname="Wallframe"
-                break
+
+
+        print str(lcount)
+        print str(wcount)
+        if lcount == 1 and wcount==3:
+            self.fname="Table"
+        elif lcount == 4 and wcount ==2:
+            self.fname= "Chair"
+        elif lcount== 0 and wcount==5:
+            self.fname="Floor"
+        elif lcount==0 and wcount==4:
+            self.fname="Siding"
+        elif ccount== 1 and bcount==4:
+            self.fname="Fireplace"
+        elif lcount ==3 and wcount==5:
+            self.fname="Roof"
+        elif wcount==0 and lcount==5:
+            self.fname="Wallframe"
         else:
             print "No materials in inventory for Furnishings 1"
             self.irrelevant()
             return
+
 
         bbox1=[-1,-1,-1,1,1,1]   #cube bbox so the ojects can be viewed from afar.  Relatively close fit
         if(self.fname=="Floor"):#If floor make different bbox which is thing so it can be walked over
