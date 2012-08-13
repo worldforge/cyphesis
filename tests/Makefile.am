@@ -107,7 +107,7 @@ check_PROGRAMS = $(TESTS)
 
 noinst_HEADERS = null_stream.h CommClient_stub_impl.h \
                  CommStreamClient_stub_impl.h OperationExerciser.h \
-                 allOperations.h
+                 allOperations.h TestWorld.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
@@ -364,8 +364,7 @@ Entitytest_LDADD = \
 Planttest_SOURCES = Planttest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
-                    EntityExerciser.cpp EntityExerciser.h \
-                    TestWorld.h
+                    EntityExerciser.cpp EntityExerciser.h
 Planttest_LDADD = \
         $(top_builddir)/rulesets/Plant.o
 
