@@ -39,7 +39,7 @@ static const bool debug_flag = false;
 
 Persistence * Persistence::m_instance = NULL;
 
-Persistence::Persistence() : m_connection(*Database::instance())
+Persistence::Persistence() : m_db(*Database::instance())
 {
 }
 
@@ -55,15 +55,15 @@ int Persistence::init()
 {
     assert(this != 0);
 
-    if (m_connection.initConnection() != 0) {
+    if (m_db.initConnection() != 0) {
         if (::instance == CYPHESIS) {
             return DATABASE_CONERR;
         }
-        if (m_connection.createInstanceDatabase() != 0) {
+        if (m_db.createInstanceDatabase() != 0) {
             log(ERROR, "Database creation failed.");
             return DATABASE_CONERR;
         }
-        if (m_connection.initConnection() != 0) {
+        if (m_db.initConnection() != 0) {
             log(ERROR, "Still couldn't connect.");
             return DATABASE_CONERR;
         }
@@ -71,7 +71,7 @@ int Persistence::init()
                                   "\"%1\".", ::instance));
     }
 
-    if (m_connection.registerEntityIdGenerator() != 0) {
+    if (m_db.registerEntityIdGenerator() != 0) {
         log(ERROR, "Failed to register Id generator in database.");
         return DATABASE_TABERR;
     }
@@ -79,24 +79,24 @@ int Persistence::init()
     std::map<std::string, int> chunks;
     chunks["location"] = 0;
 
-    if (m_connection.registerEntityTable(chunks) != 0) {
+    if (m_db.registerEntityTable(chunks) != 0) {
         log(ERROR, "Failed to create Entity in database.");
         return DATABASE_TABERR;
     }
 
-    if (m_connection.registerPropertyTable() != 0) {
+    if (m_db.registerPropertyTable() != 0) {
         log(ERROR, "Failed to create Property in database.");
         return DATABASE_TABERR;
     }
 
-    bool i = (m_connection.initRule(true) == 0);
+    bool i = (m_db.initRule(true) == 0);
 
     MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
-    bool j = m_connection.registerSimpleTable("accounts", tableDesc) == 0;
-    bool k = m_connection.registerRelation(m_characterRelation,
+    bool j = m_db.registerSimpleTable("accounts", tableDesc) == 0;
+    bool k = m_db.registerRelation(m_characterRelation,
                                            "accounts",
                                            "entities") == 0;
 
@@ -104,7 +104,7 @@ int Persistence::init()
         debug(std::cout << "Bootstraping admin account."
                         << std::endl << std::flush;);
         std::string adminAccountId;
-        long adminAccountIntId = m_connection.newId(adminAccountId);
+        long adminAccountIntId = m_db.newId(adminAccountId);
         if (adminAccountIntId < 0) {
             log(CRITICAL, "Unable to get admin account ID from Database");
             return -2;
@@ -121,7 +121,7 @@ int Persistence::init()
 
 void Persistence::shutdown()
 {
-    m_connection.shutdownConnection();
+    m_db.shutdownConnection();
     Database::cleanup();
     assert(this == m_instance);
     delete m_instance;
@@ -131,7 +131,7 @@ void Persistence::shutdown()
 bool Persistence::findAccount(const std::string & name)
 {
     std::string namestr = "'" + name + "'";
-    DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
+    DatabaseResult dr = m_db.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
         log(ERROR, "Failure while find account.");
         return false;
@@ -150,7 +150,7 @@ bool Persistence::findAccount(const std::string & name)
 Account * Persistence::getAccount(const std::string & name)
 {
     std::string namestr = "'" + name + "'";
-    DatabaseResult dr = m_connection.selectSimpleRowBy("accounts", "username", namestr);
+    DatabaseResult dr = m_db.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
         log(ERROR, "Failure while find account.");
         return 0;
@@ -209,13 +209,13 @@ void Persistence::putAccount(const Account & ac)
     values += "', '";
     values += ac.password();
     values += "'";
-    m_connection.createSimpleRow("accounts", ac.getId(), columns, values);
+    m_db.createSimpleRow("accounts", ac.getId(), columns, values);
 }
 
 void Persistence::registerCharacters(Account & ac,
                                      const EntityDict & worldObjects)
 {
-    DatabaseResult dr = m_connection.selectRelation(m_characterRelation,
+    DatabaseResult dr = m_db.selectRelation(m_characterRelation,
                                                     ac.getId());
     if (dr.error()) {
         log(ERROR, "Database query failed while looking for characters for account.");
@@ -244,25 +244,25 @@ void Persistence::registerCharacters(Account & ac,
 
 void Persistence::addCharacter(const Account & ac, const Entity & e)
 {
-    m_connection.createRelationRow(m_characterRelation, ac.getId(), e.getId());
+    m_db.createRelationRow(m_characterRelation, ac.getId(), e.getId());
 }
 
 void Persistence::delCharacter(const std::string & id)
 {
-    m_connection.removeRelationRowByOther(m_characterRelation, id);
+    m_db.removeRelationRowByOther(m_characterRelation, id);
 }
 
 int Persistence::getRules(std::map<std::string, Root> & t)
 {
-    return m_connection.getTable(m_connection.rule(), t);
+    return m_db.getTable(m_db.rule(), t);
 }
 
 int Persistence::storeRule(const Atlas::Objects::Root & rule,
                            const std::string & key,
                            const std::string & section)
 {
-    const std::string & table = m_connection.rule();
-    if (m_connection.hasKey(table, key)) {
+    const std::string & table = m_db.rule();
+    if (m_db.hasKey(table, key)) {
         return -1;
     }
     MapType rule_msg = rule->asMessage();
@@ -282,8 +282,8 @@ int Persistence::storeRule(const Atlas::Objects::Root & rule,
         rule_msg.erase("ruleset");
     }
 
-    m_connection.putObject(table, key, rule_msg, StringVector(1, file));
-    if (m_connection.clearPendingQuery() != 0) {
+    m_db.putObject(table, key, rule_msg, StringVector(1, file));
+    if (m_db.clearPendingQuery() != 0) {
         // FIXME No writing to stderr here!
         std::cerr << "Failed" << std::endl << std::flush;
         return -1;
@@ -294,8 +294,8 @@ int Persistence::storeRule(const Atlas::Objects::Root & rule,
 int Persistence::updateRule(const Atlas::Objects::Root & rule,
                              const std::string & key)
 {
-    const std::string & table = m_connection.rule();
-    if (!m_connection.hasKey(table, key)) {
+    const std::string & table = m_db.rule();
+    if (!m_db.hasKey(table, key)) {
         std::cout << "Existing rule" << std::endl << std::flush;
         return -1;
     }
@@ -307,8 +307,8 @@ int Persistence::updateRule(const Atlas::Objects::Root & rule,
         rule_msg.erase(I);
     }
 
-    m_connection.updateObject(table, key, rule_msg);
-    if (m_connection.clearPendingQuery() != 0) {
+    m_db.updateObject(table, key, rule_msg);
+    if (m_db.clearPendingQuery() != 0) {
         // FIXME No writing to stderr here!
         std::cerr << "Failed" << std::endl << std::flush;
         return -1;
@@ -318,5 +318,5 @@ int Persistence::updateRule(const Atlas::Objects::Root & rule,
 
 int Persistence::clearRules()
 {
-    return m_connection.clearTable(m_connection.rule());
+    return m_db.clearTable(m_db.rule());
 }

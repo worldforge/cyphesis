@@ -464,7 +464,7 @@ bool EntityBuilder::isTask(const std::string & class_name)
 
 Persistence * Persistence::m_instance = NULL;
 
-Persistence::Persistence() : m_connection(*(Database*)0)
+Persistence::Persistence() : m_db(*(Database*)0)
 {
 }
 

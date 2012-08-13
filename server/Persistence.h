@@ -41,7 +41,7 @@ class Persistence {
 
     static Persistence * m_instance;
   public:
-    Database & m_connection;
+    Database & m_db;
 
     static Persistence * instance();
     int init();

@@ -256,7 +256,7 @@ int main(int argc, char ** argv)
         // log(INFO, _("Restored world."));
 
         CommPSQLSocket * dbsocket = new CommPSQLSocket(*commServer,
-                                        Persistence::instance()->m_connection);
+                                        Persistence::instance()->m_db);
         commServer->addSocket(dbsocket);
         commServer->addIdle(dbsocket);
 
