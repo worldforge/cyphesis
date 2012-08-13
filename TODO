@@ -1,3 +1,6 @@
+Abstract rules. Tasks are already one type, but we need MOAR! recipes,
+and designs and stuff.
+
 Move Server (base of ServerRouting) reference into Link.
 It needs to actually handle lobby dispatch first.
 
