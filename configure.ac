@@ -509,6 +509,8 @@ AC_CONFIG_FILES([
     client/Makefile
     tools/Makefile
     data/Makefile
+    data/minimal/Makefile
+    data/mars/Makefile
     tests/Makefile
     man/Makefile
     dox/Makefile
