@@ -2,7 +2,7 @@
 
 AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
-RULESETS = basic/mind mason
+RULESETS = basic/mind mason minimal mars
 
 moduledir = $(datadir)/cyphesis/scripts/cyphesis
 dist_module_DATA = basic/world/objects/Thing.py \
