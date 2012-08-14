@@ -446,9 +446,9 @@ void Connection::GetOperation(const Operation &, OpVector &)
 {
 }
 
-Account * Connection::addAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & password)
+Account * Connection::addNewAccount(const std::string & type,
+                                    const std::string & username,
+                                    const std::string & password)
 {
     return 0;
 }

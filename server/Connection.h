@@ -52,9 +52,9 @@ class Connection : public Link, virtual public sigc::trackable {
     /// without them trying to remove themselves from the connection.
     bool m_obsolete;
 
-    Account * addAccount(const std::string & account,
-                         const std::string & username,
-                         const std::string & password);
+    Account * addNewAccount(const std::string & account,
+                            const std::string & username,
+                            const std::string & password);
     void disconnectObject(RouterMap::iterator,
                           const std::string & event);
     void disconnectAccount(Account *,

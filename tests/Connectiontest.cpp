@@ -77,9 +77,9 @@ class TestConnection : public Connection {
       
     }
 
-    Account * testAddAccount(const std::string & username,
+    Account * testAddNewAccount(const std::string & username,
                             const std::string & password) {
-        return addAccount("player", username, password);
+        return addNewAccount("player", username, password);
     }
 
     void test_disconnectObject(RouterMap::iterator I) {
@@ -115,7 +115,7 @@ int main()
     TestCommClient * tcc = new TestCommClient(commServer);
     TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
 
-    Account * ac = tc->testAddAccount("bob", "foo");
+    Account * ac = tc->testAddNewAccount("bob", "foo");
     assert(ac != 0);
 
     tc->test_disconnectObject(tc->objects().find(ac->getIntId()));

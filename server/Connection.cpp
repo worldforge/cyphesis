@@ -95,9 +95,9 @@ Account * Connection::newAccount(const std::string & type,
     return new Player(this, username, hash, id, intId);
 }
 
-Account * Connection::addAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & password)
+Account * Connection::addNewAccount(const std::string & type,
+                                    const std::string & username,
+                                    const std::string & password)
 {
     std::string hash;
     encrypt_password(password, hash);
@@ -431,7 +431,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
             type = parents.front();
         }
     }
-    Account * account = addAccount(type, username, password);
+    Account * account = addNewAccount(type, username, password);
     if (account == 0) {
         clientError(op, "Account creation failed", res);
         return;
