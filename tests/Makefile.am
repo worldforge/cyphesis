@@ -81,7 +81,8 @@ SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
                            EntityFactoryTypeNodeintegration \
-                           AccountConnectionintegration
+                           AccountConnectionintegration \
+                           AccountServerLobbyintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
               Flushertest OperationMonitortest \
@@ -1535,6 +1536,13 @@ AccountConnectionintegration_LDADD = \
         $(top_builddir)/common/operations.o \
         $(top_builddir)/physics/libphysics.a \
         $(NETWORK_LIBS)
+
+AccountServerLobbyintegration_SOURCES = \
+        AccountServerLobbyintegration.cpp
+AccountServerLobbyintegration_LDADD = \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/Lobby.o
 
 # Other TESTS
 
