@@ -32,6 +32,15 @@
     </list>
   </map>
 
+
+  <map>
+    <string name="id">plane</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
   <map>
     <string name="id">disperse</string>
     <string name="objtype">op_definition</string>
@@ -146,7 +155,15 @@
   
 
    <map>
-    <string name="id">constructions</string>
+    <string name="id">aframe</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+  
+   <map>
+    <string name="id">furnishing</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>root_operation</string>
