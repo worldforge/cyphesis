@@ -159,7 +159,7 @@ class Gateconstruction(server.Task):
                 break
         else:
             print "No materials in inventory for a Gate"
-            self.irrelev
+            self.irrelevant()
 
         if self.progress < 1:
             # print "Not done yet"
