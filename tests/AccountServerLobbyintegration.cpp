@@ -27,36 +27,77 @@
 #include "TestWorld.h"
 
 #include "server/Account.h"
+#include "server/Connection.h"
+#include "server/Lobby.h"
 #include "server/ServerRouting.h"
+
+#include "common/compose.hpp"
+
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 
+class CommSocket;
+
 using Atlas::Message::MapType;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Talk;
+
+using String::compose;
+
+static int test_send_count;
 
 class AccountServerLobbyintegration
 {
   private:
     ServerRouting * m_server;
+    Account * m_account;
+    long m_id_counter;
   public:
     AccountServerLobbyintegration();
 
     void setup();
     void teardown();
+
+    void test_talk();
+};
+
+class TestAccount : public Account
+{
+  public:
+    TestAccount(ServerRouting & svr, long id, long cid);
+    int characterError(const Operation & op,
+                       const Atlas::Objects::Root & ent,
+                       OpVector & res) const
+    {
+        return false;
+    }
+                  
 };
 
 AccountServerLobbyintegration::AccountServerLobbyintegration() :
-      m_server(0)
+      m_server(0), m_id_counter(0L)
 {
 }
 
 void AccountServerLobbyintegration::setup()
 {
-    Entity * gw = new Entity("0", 0);
+    Entity * gw = new Entity(compose("%1", m_id_counter),
+                             m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
                                  "59331d74-bb5d-4a54-b1c2-860999a4e344",
                                  "93e1f67f-63c5-4b07-af4c-574b2273563d",
-                                 "2", 2,
-                                 "3", 3);
+                                 compose("%1", m_id_counter), m_id_counter++,
+                                 compose("%1", m_id_counter), m_id_counter++);
+    for (int i = 0; i < 3; ++i) {
+        m_account = new TestAccount(*m_server,
+                                    m_id_counter++,
+                                    m_id_counter++);
+        m_server->addAccount(m_account);
+        m_server->m_lobby.addAccount(m_account);
+    }
+    assert(m_account != 0);
 }
 
 void AccountServerLobbyintegration::teardown()
@@ -64,11 +105,48 @@ void AccountServerLobbyintegration::teardown()
     delete m_server;
 }
 
+void AccountServerLobbyintegration::test_talk()
+{
+    test_send_count = 0;
+
+    Anonymous talk_arg;
+    talk_arg->setAttr("say", "bb6a71d1-3ee9-43ac-8750-cd9d8f7921f6");
+
+    Talk op;
+    op->setArgs1(talk_arg);
+    op->setFrom(m_account->getId());
+
+    OpVector res;
+    m_account->operation(op, res);
+    assert(res.empty());
+
+    // Ensure the resulting broadcast sound was sent to all three accounts
+    assert(test_send_count == 3);
+}
+
+
+TestAccount::TestAccount(ServerRouting & svr, long id, long cid) :
+          Account(new Connection(*(CommSocket*)0,
+                                 svr,
+                                 "7546215f-ac75-4e1a-a2c3-a9226219259b",
+                                 compose("%1", cid),
+                                 cid),
+                  "cec7a6f5-ebf1-4531-a0d9-ed9bb46882ad",
+                  "59cf380e-7398-48a7-81cc-961265fadcd0",
+                  compose("%1", cid),
+                  cid)
+{
+}
+
 int main()
 {
     AccountServerLobbyintegration test_case;
-    test_case.setup();
-    test_case.teardown();
+
+    {
+        test_case.setup();
+        test_case.test_talk();
+        test_case.teardown();
+    }
     return 0;
 }
 
@@ -541,8 +619,65 @@ void LocatedEntity::merge(const MapType & ent)
 {
 }
 
+Connection::Connection(CommSocket & client,
+                       ServerRouting & svr,
+                       const std::string & addr,
+                       const std::string & id, long iid) :
+            Link(client, id, iid), m_obsolete(false),
+                                                m_server(svr)
+{
+}
+
+Account * Connection::newAccount(const std::string & type,
+                                 const std::string & username,
+                                 const std::string & passwd,
+                                 const std::string & id, long intId)
+{
+    return 0;
+}
+
+int Connection::verifyCredentials(const Account &,
+                                  const Atlas::Objects::Root &) const
+{
+    return 0;
+}
+
+Connection::~Connection()
+{
+}
+
+void Connection::operation(const Operation &, OpVector &)
+{
+}
+
+void Connection::LoginOperation(const Operation &, OpVector &)
+{
+}
+
+void Connection::LogoutOperation(const Operation &, OpVector &)
+{
+}
+
+void Connection::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Connection::GetOperation(const Operation &, OpVector &)
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
 void Link::send(const Operation & op) const
 {
+    ++test_send_count;
 }
 
 void Link::disconnect()
