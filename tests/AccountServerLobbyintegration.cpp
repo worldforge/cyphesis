@@ -42,6 +42,7 @@ class CommSocket;
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Imaginary;
 using Atlas::Objects::Operation::Talk;
 
 using String::compose;
@@ -61,6 +62,7 @@ class AccountServerLobbyintegration
     void teardown();
 
     void test_talk();
+    void test_emote();
 };
 
 class TestAccount : public Account
@@ -124,6 +126,25 @@ void AccountServerLobbyintegration::test_talk()
     assert(test_send_count == 3);
 }
 
+void AccountServerLobbyintegration::test_emote()
+{
+    test_send_count = 0;
+
+    Anonymous emote_arg;
+    emote_arg->setAttr("description", "c7ef270a-c4be-484c-a6a7-94efc4ff6ade");
+
+    Imaginary op;
+    op->setArgs1(emote_arg);
+    op->setFrom(m_account->getId());
+
+    OpVector res;
+    m_account->operation(op, res);
+    assert(res.empty());
+
+    // Ensure the resulting broadcast sound was sent to all three accounts
+    assert(test_send_count == 3);
+}
+
 
 TestAccount::TestAccount(ServerRouting & svr, long id, long cid) :
           Account(new Connection(*(CommSocket*)0,
@@ -145,6 +166,12 @@ int main()
     {
         test_case.setup();
         test_case.test_talk();
+        test_case.teardown();
+    }
+
+    {
+        test_case.setup();
+        test_case.test_emote();
         test_case.teardown();
     }
     return 0;
