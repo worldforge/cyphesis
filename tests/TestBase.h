@@ -46,6 +46,9 @@ class TestBase
   public:
     virtual ~TestBase();
 
+    virtual void setup() = 0;
+    virtual void teardown() = 0;
+
     std::size_t errorCount() const;
 
     const std::list<std::string> & errorReports() const;
@@ -89,7 +92,9 @@ int TestBase::run()
     std::list<Test>::const_iterator Iend = m_tests.end();
     std::list<Test>::const_iterator I = m_tests.begin();
     for (; I != Iend; ++I) {
+        setup();
         (*I)();
+        teardown();
     }
 
     if (m_errorReports.empty()) {

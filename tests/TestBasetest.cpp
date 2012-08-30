@@ -30,9 +30,20 @@
 
 #include <cassert>
 
+class Test : public Cyphesis::TestBase {
+  public:
+    void setup()
+    {
+    }
+
+    void teardown()
+    {
+    }
+};
+
 void test_assertTrue()
 {
-    Cyphesis::TestBase t;
+    Test t;
     assert(t.errorCount() == 0);
     t.assertTrue("test_var", true, "test_func", "test_file", 17467);
     assert(t.errorCount() == 0);
@@ -45,7 +56,7 @@ void test_assertTrue()
 
 void test_assertEqual()
 {
-    Cyphesis::TestBase t;
+    Test t;
     assert(t.errorCount() == 0);
     t.assertEqual("test_lval", 1, "test_rval", 1, "test_func",
                   "test_file", 96236);
@@ -63,6 +74,14 @@ void test_ASSERT_TRUE()
 {
     class T : public Cyphesis::TestBase {
       public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
         void test_macro()
         {
             ASSERT_TRUE(false);
@@ -74,7 +93,7 @@ void test_ASSERT_TRUE()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:68: void test_ASSERT_TRUE()::T::test_macro(): "
+           "TestBasetest.cpp:87: void test_ASSERT_TRUE()::T::test_macro(): "
            "Assertion 'false' failed.");
 }
 
@@ -82,6 +101,14 @@ void test_ASSERT_EQUAL()
 {
     class T : public Cyphesis::TestBase {
       public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
         void test_macro()
         {
             ASSERT_EQUAL(1, 2);
@@ -93,7 +120,7 @@ void test_ASSERT_EQUAL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:87: void test_ASSERT_EQUAL()::T::test_macro(): "
+           "TestBasetest.cpp:114: void test_ASSERT_EQUAL()::T::test_macro(): "
            "Assertion '1 == 2' failed. 1 != 2");
 }
 
