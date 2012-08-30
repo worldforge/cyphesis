@@ -43,6 +43,7 @@ class CommSocket;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Imaginary;
+using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Talk;
 
 using String::compose;
@@ -63,6 +64,7 @@ class AccountServerLobbyintegration
 
     void test_talk();
     void test_emote();
+    void test_lobby_look();
 };
 
 class TestAccount : public Account
@@ -145,6 +147,17 @@ void AccountServerLobbyintegration::test_emote()
     assert(test_send_count == 3);
 }
 
+void AccountServerLobbyintegration::test_lobby_look()
+{
+    test_send_count = 0;
+
+    Look op;
+    op->setFrom(m_account->getId());
+
+    OpVector res;
+    m_account->operation(op, res);
+    assert(!res.empty());
+}
 
 TestAccount::TestAccount(ServerRouting & svr, long id, long cid) :
           Account(new Connection(*(CommSocket*)0,
@@ -174,6 +187,13 @@ int main()
         test_case.test_emote();
         test_case.teardown();
     }
+
+    {
+        test_case.setup();
+        test_case.test_lobby_look();
+        test_case.teardown();
+    }
+
     return 0;
 }
 
