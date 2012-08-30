@@ -22,7 +22,12 @@
 
 #include "common/compose.hpp"
 
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+
 namespace Cyphesis {
+
+typedef boost::function<void()> Test;
 
 class TestBase
 {
@@ -31,6 +36,8 @@ class TestBase
     // Need to track not just counts, but also details of the failures,
     // which basically requires macros.
     std::list<std::string> m_errorReports;
+
+    std::list<Test> m_tests;
 
     void addFailure(const std::string & s)
     {
@@ -42,6 +49,10 @@ class TestBase
     std::size_t errorCount() const;
 
     const std::list<std::string> & errorReports() const;
+
+    void addTest(Test t);
+
+    int run();
 
     template <typename V>
     void assertTrue(const char * n, const V & val,
@@ -68,6 +79,25 @@ const std::list<std::string> & TestBase::errorReports() const
     return m_errorReports;
 }
 
+void TestBase::addTest(Test t)
+{
+    m_tests.push_back(t);
+}
+
+int TestBase::run()
+{
+    std::list<Test>::const_iterator Iend = m_tests.end();
+    std::list<Test>::const_iterator I = m_tests.begin();
+    for (; I != Iend; ++I) {
+        (*I)();
+    }
+
+    if (m_errorReports.empty()) {
+        return 0;
+    }
+    return -1;
+}
+
 template <typename V>
 void TestBase::assertTrue(const char * n, const V & val,
                       const char * func, const char * file, int line)
@@ -91,6 +121,8 @@ void TestBase::assertEqual(const char * l, const L & lval,
 }
 
 }
+
+#define ADD_TEST(_function) { this->addTest(boost::bind(&_function, this)); }
 
 #define ASSERT_TRUE(_expr) {\
     this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__, __FILE__, __LINE__);}
