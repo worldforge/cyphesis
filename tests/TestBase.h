@@ -29,7 +29,12 @@
 
 namespace Cyphesis {
 
-typedef boost::function<void()> Test;
+class Test
+{
+  public:
+    const char * name;
+    boost::function<void()> method;
+};
 
 class TestBase
 {
@@ -97,11 +102,13 @@ int TestBase::run()
     std::list<Test>::const_iterator I = m_tests.begin();
     for (; I != Iend; ++I) {
         setup();
-        (*I)();
+        (*I).method();
         teardown();
 
         if (!m_errorReports.empty()) {
             ++error_count;
+
+            std::cerr << "Test \"" << (*I).name << "\" failed:" << std::endl;
 
             std::list<std::string>::const_iterator I = m_errorReports.begin();
             std::list<std::string>::const_iterator Iend = m_errorReports.end();
@@ -118,7 +125,7 @@ int TestBase::run()
 
 template <typename V>
 void TestBase::assertTrue(const char * n, const V & val,
-                      const char * func, const char * file, int line)
+                          const char * func, const char * file, int line)
 {
     if (!val) {
         addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
@@ -128,8 +135,8 @@ void TestBase::assertTrue(const char * n, const V & val,
 
 template <typename L, typename R>
 void TestBase::assertEqual(const char * l, const L & lval,
-                       const char * r, const R & rval,
-                       const char * func, const char * file, int line)
+                           const char * r, const R & rval,
+                           const char * func, const char * file, int line)
 {
     if (lval != rval) {
         addFailure(String::compose("%1:%2: %3: Assertion '%4 == %5' failed. "
@@ -140,7 +147,11 @@ void TestBase::assertEqual(const char * l, const L & lval,
 
 }
 
-#define ADD_TEST(_function) { this->addTest(boost::bind(&_function, this)); }
+#define ADD_TEST(_function) {\
+    Cyphesis::Test _function_test = { #_function,\
+                                      boost::bind(&_function, this) };\
+    this->addTest(_function_test);\
+}
 
 #define ASSERT_TRUE(_expr) {\
     this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__, __FILE__, __LINE__);}
