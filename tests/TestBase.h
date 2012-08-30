@@ -24,7 +24,7 @@
 
 namespace Cyphesis {
 
-class Test
+class TestBase
 {
   protected:
     int m_error_count;
@@ -37,7 +37,7 @@ class Test
         m_errorReports.push_back(s);
     }
   public:
-    virtual ~Test();
+    virtual ~TestBase();
 
     std::size_t errorCount() const;
 
@@ -54,22 +54,22 @@ class Test
 };
 
 inline
-Test::~Test()
+TestBase::~TestBase()
 {
 }
 
-std::size_t Test::errorCount() const
+std::size_t TestBase::errorCount() const
 {
     return m_errorReports.size();
 }
 
-const std::list<std::string> & Test::errorReports() const
+const std::list<std::string> & TestBase::errorReports() const
 {
     return m_errorReports;
 }
 
 template <typename V>
-void Test::assertTrue(const char * n, const V & val,
+void TestBase::assertTrue(const char * n, const V & val,
                       const char * func, const char * file, int line)
 {
     if (!val) {
@@ -79,7 +79,7 @@ void Test::assertTrue(const char * n, const V & val,
 }
 
 template <typename L, typename R>
-void Test::assertEqual(const char * l, const L & lval,
+void TestBase::assertEqual(const char * l, const L & lval,
                        const char * r, const R & rval,
                        const char * func, const char * file, int line)
 {

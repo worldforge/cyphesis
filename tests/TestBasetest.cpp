@@ -32,7 +32,7 @@
 
 void test_assertTrue()
 {
-    Cyphesis::Test t;
+    Cyphesis::TestBase t;
     assert(t.errorCount() == 0);
     t.assertTrue("test_var", true, "test_func", "test_file", 17467);
     assert(t.errorCount() == 0);
@@ -45,7 +45,7 @@ void test_assertTrue()
 
 void test_assertEqual()
 {
-    Cyphesis::Test t;
+    Cyphesis::TestBase t;
     assert(t.errorCount() == 0);
     t.assertEqual("test_lval", 1, "test_rval", 1, "test_func",
                   "test_file", 96236);
@@ -61,7 +61,7 @@ void test_assertEqual()
 
 void test_ASSERT_TRUE()
 {
-    class T : public Cyphesis::Test {
+    class T : public Cyphesis::TestBase {
       public:
         void test_macro()
         {
@@ -80,7 +80,7 @@ void test_ASSERT_TRUE()
 
 void test_ASSERT_EQUAL()
 {
-    class T : public Cyphesis::Test {
+    class T : public Cyphesis::TestBase {
       public:
         void test_macro()
         {
