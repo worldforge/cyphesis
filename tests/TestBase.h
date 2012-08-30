@@ -25,6 +25,8 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
+#include <iostream>
+
 namespace Cyphesis {
 
 typedef boost::function<void()> Test;
@@ -89,18 +91,29 @@ void TestBase::addTest(Test t)
 
 int TestBase::run()
 {
+    int error_count = 0;
+
     std::list<Test>::const_iterator Iend = m_tests.end();
     std::list<Test>::const_iterator I = m_tests.begin();
     for (; I != Iend; ++I) {
         setup();
         (*I)();
         teardown();
+
+        if (!m_errorReports.empty()) {
+            ++error_count;
+
+            std::list<std::string>::const_iterator I = m_errorReports.begin();
+            std::list<std::string>::const_iterator Iend = m_errorReports.end();
+            for (; I != Iend; ++I) {
+                std::cerr << *I << std::endl;
+            }
+
+            m_errorReports.clear();
+        }
     }
 
-    if (m_errorReports.empty()) {
-        return 0;
-    }
-    return -1;
+    return error_count;
 }
 
 template <typename V>
