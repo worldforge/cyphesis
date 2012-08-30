@@ -1,3 +1,5 @@
+TEST_TESTS = TestBasetest
+
 COMMON_TESTS = logtest Inheritancetest Propertytest \
                systemtest system_nettest system_uidtest \
                type_utilstest \
@@ -96,7 +98,8 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) \
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
 
-TESTS = $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
+TESTS = $(TEST_TESTS) \
+        $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
         $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS) \
         $(RULESETS_INTEGRATION_TESTS) $(SERVER_INTEGRATION_TESTS)
 
@@ -106,11 +109,15 @@ EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
 check_PROGRAMS = $(TESTS)
 
-noinst_HEADERS = null_stream.h CommClient_stub_impl.h \
+noinst_HEADERS = TestBase.h null_stream.h CommClient_stub_impl.h \
                  CommStreamClient_stub_impl.h OperationExerciser.h \
                  allOperations.h TestWorld.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
+
+# TEST_TESTS
+
+TestBasetest_SOURCES = TestBasetest.cpp
 
 # COMMON_TESTS
 
