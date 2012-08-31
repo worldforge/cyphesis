@@ -65,13 +65,13 @@ class TestBase
     int run();
 
     template <typename V>
-    void assertTrue(const char * n, const V & val,
-                    const char * func, const char * file, int line);
+    int assertTrue(const char * n, const V & val,
+                   const char * func, const char * file, int line);
 
     template <typename L, typename R>
-    void assertEqual(const char * l, const L & lval,
-                     const char * r, const R & rval,
-                     const char * func, const char * file, int line);
+    int assertEqual(const char * l, const L & lval,
+                    const char * r, const R & rval,
+                    const char * func, const char * file, int line);
 };
 
 inline
@@ -124,25 +124,29 @@ int TestBase::run()
 }
 
 template <typename V>
-void TestBase::assertTrue(const char * n, const V & val,
-                          const char * func, const char * file, int line)
+int TestBase::assertTrue(const char * n, const V & val,
+                         const char * func, const char * file, int line)
 {
     if (!val) {
         addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
                                    file, line, func, n));
+        return -1;
     }
+    return 0;
 }
 
 template <typename L, typename R>
-void TestBase::assertEqual(const char * l, const L & lval,
-                           const char * r, const R & rval,
-                           const char * func, const char * file, int line)
+int TestBase::assertEqual(const char * l, const L & lval,
+                          const char * r, const R & rval,
+                          const char * func, const char * file, int line)
 {
     if (lval != rval) {
         addFailure(String::compose("%1:%2: %3: Assertion '%4 == %5' failed. "
                                    "%6 != %7",
                                    file, line, func, l, r, lval, rval));
+        return -1;
     }
+    return 0;
 }
 
 }
@@ -154,10 +158,13 @@ void TestBase::assertEqual(const char * l, const L & lval,
 }
 
 #define ASSERT_TRUE(_expr) {\
-    this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__, __FILE__, __LINE__);}
+    if (this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__,\
+                         __FILE__, __LINE__)) return;\
+}
 
 #define ASSERT_EQUAL(_lval, _rval) {\
-    this->assertEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                      __FILE__, __LINE__);}
+    if (this->assertEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
+                          __FILE__, __LINE__) != 0) return;\
+}
 
 #endif // TEST_TEST_BASE_H
