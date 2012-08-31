@@ -24,15 +24,55 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "common/const.h"
 
 #include <cstring>
 
 #include <cassert>
 
+class buildidtest : public Cyphesis::TestBase
+{
+  public:
+    buildidtest()
+    {
+        ADD_TEST(buildidtest::test_time);
+        ADD_TEST(buildidtest::test_date);
+        ADD_TEST(buildidtest::test_id);
+    }
+
+    void setup()
+    {
+    }
+
+    void teardown()
+    {
+    }
+
+    void test_time();
+    void test_date();
+    void test_id();
+};
+
+void buildidtest::test_time()
+{
+    ASSERT_TRUE(strlen(consts::buildTime) > 0);
+}
+
+void buildidtest::test_date()
+{
+    ASSERT_TRUE(strlen(consts::buildDate) > 0);
+}
+
+void buildidtest::test_id()
+{
+    ASSERT_TRUE(consts::buildId > 0);
+}
+
 int main()
 {
-    assert(strlen(consts::buildTime) > 0);
-    assert(strlen(consts::buildDate) > 0);
-    assert(consts::buildId > 0);
+    buildidtest t;
+
+    return t.run();
 }
