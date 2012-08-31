@@ -735,6 +735,7 @@ Monitors * Monitors::instance()
 
 void Monitors::watch(const::std::string & name, VariableBase * monitor)
 {
+    delete monitor;
 }
 
 void Monitors::insert(const std::string & key,
