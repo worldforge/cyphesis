@@ -25,6 +25,7 @@
 #endif
 
 #include "TestWorld.h"
+#include "TestBase.h"
 
 #include "server/Account.h"
 #include "server/Connection.h"
@@ -35,8 +36,6 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-
-#include <cassert>
 
 class CommSocket;
 
@@ -50,7 +49,7 @@ using String::compose;
 
 static int test_send_count;
 
-class AccountServerLobbyintegration
+class AccountServerLobbyintegration : public Cyphesis::TestBase
 {
   private:
     ServerRouting * m_server;
@@ -83,6 +82,9 @@ class TestAccount : public Account
 AccountServerLobbyintegration::AccountServerLobbyintegration() :
       m_server(0), m_id_counter(0L)
 {
+    ADD_TEST(AccountServerLobbyintegration::test_talk);
+    ADD_TEST(AccountServerLobbyintegration::test_emote);
+    ADD_TEST(AccountServerLobbyintegration::test_lobby_look);
 }
 
 void AccountServerLobbyintegration::setup()
@@ -101,7 +103,7 @@ void AccountServerLobbyintegration::setup()
         m_server->addAccount(m_account);
         m_server->m_lobby.addAccount(m_account);
     }
-    assert(m_account != 0);
+    ASSERT_TRUE(m_account != 0);
 }
 
 void AccountServerLobbyintegration::teardown()
@@ -122,10 +124,10 @@ void AccountServerLobbyintegration::test_talk()
 
     OpVector res;
     m_account->operation(op, res);
-    assert(res.empty());
+    ASSERT_TRUE(res.empty());
 
     // Ensure the resulting broadcast sound was sent to all three accounts
-    assert(test_send_count == 3);
+    ASSERT_EQUAL(test_send_count, 3);
 }
 
 void AccountServerLobbyintegration::test_emote()
@@ -141,10 +143,10 @@ void AccountServerLobbyintegration::test_emote()
 
     OpVector res;
     m_account->operation(op, res);
-    assert(res.empty());
+    ASSERT_TRUE(res.empty());
 
     // Ensure the resulting broadcast sound was sent to all three accounts
-    assert(test_send_count == 3);
+    ASSERT_EQUAL(test_send_count, 3);
 }
 
 void AccountServerLobbyintegration::test_lobby_look()
@@ -156,7 +158,7 @@ void AccountServerLobbyintegration::test_lobby_look()
 
     OpVector res;
     m_account->operation(op, res);
-    assert(!res.empty());
+    ASSERT_TRUE(!res.empty());
 }
 
 TestAccount::TestAccount(ServerRouting & svr, long id, long cid) :
@@ -176,25 +178,7 @@ int main()
 {
     AccountServerLobbyintegration test_case;
 
-    {
-        test_case.setup();
-        test_case.test_talk();
-        test_case.teardown();
-    }
-
-    {
-        test_case.setup();
-        test_case.test_emote();
-        test_case.teardown();
-    }
-
-    {
-        test_case.setup();
-        test_case.test_lobby_look();
-        test_case.teardown();
-    }
-
-    return 0;
+    return test_case.run();
 }
 
 // stubs
