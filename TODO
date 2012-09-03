@@ -1,3 +1,10 @@
+1. Make sure all retries have exponential backoff.
+2. Make sure all periodic things have jitter.
+  a) Metaserver query needs deterministics jitter, to ensure clients drift.
+  b) AI needs smaller jitter for now
+  c) Trees need bigger jitter, but again deterministic - same offset each
+     time for a given instance.
+
 Abstract rules. Tasks are already one type, but we need MOAR! recipes,
 and designs and stuff.
 
