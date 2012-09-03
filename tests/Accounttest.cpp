@@ -24,15 +24,130 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+#include "TestWorld.h"
+
 #include "server/Account.h"
+
+#include "server/CommSocket.h"
+#include "server/Connection.h"
+#include "server/ServerRouting.h"
+
+#include "rulesets/Entity.h"
+
+#include "common/compose.hpp"
+
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
 
 using Atlas::Message::MapType;
+using Atlas::Objects::Entity::RootEntity;
+
+using String::compose;
+
+class Accounttest : public Cyphesis::TestBase
+{
+  protected:
+    long m_id_counter;
+
+    ServerRouting * m_server;
+    Connection * m_connection;
+    Account * m_account;
+  public:
+    Accounttest();
+
+    void setup();
+    void teardown();
+
+    void test_null();
+};
+
+class TestAccount : public Account {
+  public:
+    TestAccount(Connection * conn, const std::string & username,
+                                   const std::string & passwd,
+                                   const std::string & id, long intId);
+
+    ~TestAccount();
+
+    virtual int characterError(const Operation & op,
+                               const Atlas::Objects::Root & ent,
+                               OpVector & res) const;
+
+    Entity * testAddNewCharacter(const std::string & typestr,
+                                 const RootEntity & ent,
+                                 const RootEntity & arg);
+};
+
+Accounttest::Accounttest() : m_id_counter(0L),
+                             m_server(0),
+                             m_connection(0),
+                             m_account(0)
+{
+    ADD_TEST(Accounttest::test_null);
+}
+
+void Accounttest::setup()
+{
+    Entity * gw = new Entity(compose("%1", m_id_counter),
+                             m_id_counter++);
+    m_server = new ServerRouting(*new TestWorld(*gw),
+                                 "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
+                                 "bad621d4-616d-4faf-b9e6-471d12b139a9",
+                                 compose("%1", m_id_counter), m_id_counter++,
+                                 compose("%1", m_id_counter), m_id_counter++);
+    m_connection = new Connection(*(CommSocket*)0, *m_server,
+                                  "8d18a4e8-f14f-4a46-997e-ada120d5438f",
+                                  compose("%1", m_id_counter), m_id_counter++);
+    m_account = new TestAccount(m_connection,
+                                "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
+                                "fa1a03a2-a745-4033-85cb-bb694e921e62",
+                                compose("%1", m_id_counter), m_id_counter++);
+}
+
+void Accounttest::teardown()
+{
+    delete m_server;
+}
+
+void Accounttest::test_null()
+{
+    ASSERT_TRUE(m_account != 0);
+}
+
+TestAccount::TestAccount(Connection * conn, const std::string & username,
+                         const std::string & passwd,
+                         const std::string & id, long intId) :
+      Account(conn, username, passwd, id, intId)
+{
+}
+
+TestAccount::~TestAccount()
+{
+    delete m_connection;
+}
+
+int TestAccount::characterError(const Operation & op,
+                                const Atlas::Objects::Root & ent,
+                                OpVector & res) const
+{
+    return 0;
+}
+
+Entity * TestAccount::testAddNewCharacter(const std::string & typestr,
+                                          const RootEntity & ent,
+                                          const RootEntity & arg)
+{
+    return addNewCharacter(typestr, ent, arg);
+}
 
 int main()
 {
-    return 0;
+    Accounttest t;
+
+    return t.run();
 }
 
 // stubs
@@ -48,6 +163,53 @@ int main()
 #include "common/log.h"
 
 #include <cstdlib>
+
+Connection::Connection(CommSocket & client,
+                       ServerRouting & svr,
+                       const std::string & addr,
+                       const std::string & id, long iid) :
+            Link(client, id, iid), m_obsolete(false),
+                                                m_server(svr)
+{
+}
+
+Account * Connection::newAccount(const std::string & type,
+                                 const std::string & username,
+                                 const std::string & passwd,
+                                 const std::string & id, long intId)
+{
+    return 0;
+}
+
+int Connection::verifyCredentials(const Account &,
+                                  const Atlas::Objects::Root &) const
+{
+    return 0;
+}
+
+Connection::~Connection()
+{
+}
+
+void Connection::operation(const Operation &, OpVector &)
+{
+}
+
+void Connection::LoginOperation(const Operation &, OpVector &)
+{
+}
+
+void Connection::LogoutOperation(const Operation &, OpVector &)
+{
+}
+
+void Connection::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Connection::GetOperation(const Operation &, OpVector &)
+{
+}
 
 void Connection::connectAvatar(Character * chr)
 {
@@ -66,6 +228,38 @@ ConnectedRouter::ConnectedRouter(const std::string & id,
 }
 
 ConnectedRouter::~ConnectedRouter()
+{
+}
+
+ServerRouting::ServerRouting(BaseWorld & wrld,
+                             const std::string & ruleset,
+                             const std::string & name,
+                             const std::string & id, long intId,
+                             const std::string & lId, long lIntId) :
+        Router(id, intId),
+        m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
+{
+}
+
+ServerRouting::~ServerRouting()
+{
+}
+
+void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Account * ServerRouting::getAccountByName(const std::string & username)
+{
+    return 0;
+}
+
+void ServerRouting::addAccount(Account * a)
 {
 }
 
@@ -491,12 +685,43 @@ void LocatedEntity::merge(const MapType & ent)
 {
 }
 
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
 void Link::send(const Operation & op) const
 {
 }
 
 void Link::disconnect()
 {
+}
+
+BaseWorld * BaseWorld::m_instance = 0;
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+    m_instance = this;
+}
+
+BaseWorld::~BaseWorld()
+{
+    m_instance = 0;
+}
+
+Entity * BaseWorld::getEntity(const std::string & id) const
+{
+    return 0;
+}
+
+Entity * BaseWorld::getEntity(long id) const
+{
+    return 0;
 }
 
 Router::Router(const std::string & id, long intId) : m_id(id),
