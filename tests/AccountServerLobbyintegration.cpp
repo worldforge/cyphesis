@@ -70,6 +70,7 @@ class TestAccount : public Account
 {
   public:
     TestAccount(ServerRouting & svr, long id, long cid);
+    ~TestAccount();
     int characterError(const Operation & op,
                        const Atlas::Objects::Root & ent,
                        OpVector & res) const
@@ -172,6 +173,11 @@ TestAccount::TestAccount(ServerRouting & svr, long id, long cid) :
                   compose("%1", cid),
                   cid)
 {
+}
+
+TestAccount::~TestAccount()
+{
+    delete m_connection;
 }
 
 int main()
