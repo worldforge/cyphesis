@@ -72,6 +72,14 @@ class TestBase
     int assertEqual(const char * l, const L & lval,
                     const char * r, const R & rval,
                     const char * func, const char * file, int line);
+
+    template <typename T>
+    int assertNull(const char * n, const T * ptr,
+                   const char * func, const char * file, int line);
+
+    template <typename T>
+    int assertNotNull(const char * n, const T * ptr,
+                      const char * func, const char * file, int line);
 };
 
 inline
@@ -149,6 +157,31 @@ int TestBase::assertEqual(const char * l, const L & lval,
     return 0;
 }
 
+template <typename T>
+int TestBase::assertNull(const char * n, const T * ptr,
+                         const char * func, const char * file, int line)
+{
+    if (ptr != 0) {
+        addFailure(String::compose("%1:%2, %3: Assertion '$4' null failed.",
+                                   file, line, func, n));
+        return -1;
+    }
+    return 0;
+}
+
+template <typename T>
+int TestBase::assertNotNull(const char * n, const T * ptr,
+                            const char * func, const char * file, int line)
+{
+    if (ptr == 0) {
+        addFailure(String::compose("%1:%2, %3: Assertion '$4' not null failed.",
+                                   file, line, func, n));
+        return -1;
+    }
+    return 0;
+}
+
+
 }
 
 #define ADD_TEST(_function) {\
@@ -159,12 +192,22 @@ int TestBase::assertEqual(const char * l, const L & lval,
 
 #define ASSERT_TRUE(_expr) {\
     if (this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__)) return;\
+                         __FILE__, __LINE__) != 0) return;\
 }
 
 #define ASSERT_EQUAL(_lval, _rval) {\
     if (this->assertEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
                           __FILE__, __LINE__) != 0) return;\
+}
+
+#define ASSERT_NULL(_ptr) {\
+    if (this->assertNull(#_ptr, _ptr, __PRETTY_FUNCTION__,\
+                         __FILE__, __LINE__) != 0) return;\
+}
+
+#define ASSERT_NOT_NULL(_ptr) {\
+    if (this->assertNotNull(#_ptr, _ptr, __PRETTY_FUNCTION__,\
+                            __FILE__, __LINE__) != 0) return;\
 }
 
 #endif // TEST_TEST_BASE_H
