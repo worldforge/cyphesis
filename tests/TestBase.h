@@ -162,7 +162,7 @@ int TestBase::assertNull(const char * n, const T * ptr,
                          const char * func, const char * file, int line)
 {
     if (ptr != 0) {
-        addFailure(String::compose("%1:%2, %3: Assertion '$4' null failed.",
+        addFailure(String::compose("%1:%2: %3: Assertion '%4' null failed.",
                                    file, line, func, n));
         return -1;
     }
@@ -174,7 +174,7 @@ int TestBase::assertNotNull(const char * n, const T * ptr,
                             const char * func, const char * file, int line)
 {
     if (ptr == 0) {
-        addFailure(String::compose("%1:%2, %3: Assertion '$4' not null failed.",
+        addFailure(String::compose("%1:%2: %3: Assertion '%4' not null failed.",
                                    file, line, func, n));
         return -1;
     }
