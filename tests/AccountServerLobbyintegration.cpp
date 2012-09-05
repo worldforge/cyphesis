@@ -104,7 +104,7 @@ void AccountServerLobbyintegration::setup()
         m_server->addAccount(m_account);
         m_server->m_lobby.addAccount(m_account);
     }
-    ASSERT_TRUE(m_account != 0);
+    ASSERT_NOT_NULL(m_account);
 }
 
 void AccountServerLobbyintegration::teardown()

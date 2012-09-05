@@ -114,7 +114,7 @@ void Accounttest::teardown()
 
 void Accounttest::test_null()
 {
-    ASSERT_TRUE(m_account != 0);
+    ASSERT_NOT_NULL(m_account);
 }
 
 TestAccount::TestAccount(Connection * conn, const std::string & username,

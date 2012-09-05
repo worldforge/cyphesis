@@ -85,6 +85,7 @@ void test_ASSERT_TRUE()
         void test_macro()
         {
             ASSERT_TRUE(false);
+            ASSERT_TRUE(false);
         }
     } t;
 
@@ -112,6 +113,7 @@ void test_ASSERT_EQUAL()
         void test_macro()
         {
             ASSERT_EQUAL(1, 2);
+            ASSERT_EQUAL(1, 2);
         }
     } t;
 
@@ -120,8 +122,67 @@ void test_ASSERT_EQUAL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:114: void test_ASSERT_EQUAL()::T::test_macro(): "
+           "TestBasetest.cpp:115: void test_ASSERT_EQUAL()::T::test_macro(): "
            "Assertion '1 == 2' failed. 1 != 2");
+}
+
+void test_ASSERT_NULL()
+{
+    class T : public Cyphesis::TestBase {
+      public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
+        void test_macro()
+        {
+            int i;
+            ASSERT_NULL(&i);
+            ASSERT_NULL(&i);
+        }
+    } t;
+
+    assert(t.errorCount() == 0);
+    t.test_macro();
+    assert(t.errorCount() == 1);
+
+    assert(t.errorReports().front() ==
+           "TestBasetest.cpp:144: void test_ASSERT_NULL()::T::test_macro(): "
+           "Assertion '&i' null failed.");
+}
+
+void test_ASSERT_NOT_NULL()
+{
+    class T : public Cyphesis::TestBase {
+      public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
+        void test_macro()
+        {
+            int * i = 0;
+            ASSERT_NOT_NULL(i);
+            ASSERT_NOT_NULL(i);
+        }
+    } t;
+
+    assert(t.errorCount() == 0);
+    t.test_macro();
+    assert(t.errorCount() == 1);
+
+    std::cout << t.errorReports().front() << std::endl;
+    assert(t.errorReports().front() ==
+           "TestBasetest.cpp:173: void test_ASSERT_NOT_NULL()::T::test_macro(): "
+           "Assertion 'i' not null failed.");
 }
 
 int main()
@@ -130,5 +191,7 @@ int main()
     test_assertEqual();
     test_ASSERT_TRUE();
     test_ASSERT_EQUAL();
+    test_ASSERT_NULL();
+    test_ASSERT_NOT_NULL();
     return 0;
 }
