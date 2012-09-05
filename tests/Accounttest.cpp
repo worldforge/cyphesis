@@ -148,10 +148,12 @@ void Accounttest::test_characterDestroyed()
 
     ASSERT_TRUE(!m_account->m_charactersDict.empty());
 
+    ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
+                     m_account->m_charactersDict.end());
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
+
     m_account->characterDestroyed(cid);
 
-    ASSERT_EQUAL(m_account->m_charactersDict.find(cid),
-                 m_account->m_charactersDict.end());
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
     delete c;
@@ -194,7 +196,9 @@ void Accounttest::test_connectCharacter_Character()
     
     m_account->connectCharacter(c);
 
-    ASSERT_TRUE(!m_account->m_charactersDict.empty());
+    ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
+                     m_account->m_charactersDict.end());
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
 
     m_account->m_charactersDict.erase(cid);
 
@@ -225,7 +229,9 @@ void Accounttest::test_addCharacter_Character()
 
     m_account->addCharacter(c);
 
-    ASSERT_TRUE(!m_account->m_charactersDict.empty());
+    ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
+                     m_account->m_charactersDict.end());
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
 
     m_account->m_charactersDict.erase(cid);
 
