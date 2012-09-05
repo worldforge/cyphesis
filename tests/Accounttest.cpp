@@ -33,7 +33,7 @@
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include "common/compose.hpp"
 
@@ -46,6 +46,13 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
+
+std::ostream & operator<<(std::ostream & os,
+                          const EntityDict::const_iterator &)
+{
+    os << "[iterator]";
+    return os;
+}
 
 class Accounttest : public Cyphesis::TestBase
 {
@@ -62,6 +69,10 @@ class Accounttest : public Cyphesis::TestBase
     void teardown();
 
     void test_null();
+    void test_characterDestroyed();
+    void test_characterDestroyed_invalid();
+    void test_connectCharacter_raw_Entity();
+    void test_connectCharacter_Character();
 };
 
 class TestAccount : public Account {
@@ -87,6 +98,10 @@ Accounttest::Accounttest() : m_id_counter(0L),
                              m_account(0)
 {
     ADD_TEST(Accounttest::test_null);
+    ADD_TEST(Accounttest::test_characterDestroyed);
+    ADD_TEST(Accounttest::test_characterDestroyed_invalid);
+    ADD_TEST(Accounttest::test_connectCharacter_raw_Entity);
+    ADD_TEST(Accounttest::test_connectCharacter_Character);
 }
 
 void Accounttest::setup()
@@ -116,6 +131,70 @@ void Accounttest::teardown()
 void Accounttest::test_null()
 {
     ASSERT_NOT_NULL(m_account);
+}
+
+void Accounttest::test_characterDestroyed()
+{
+    long cid = m_id_counter++;
+    Entity * c = new Entity(compose("%1", cid), cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    m_account->m_charactersDict.insert(std::make_pair(cid, c));
+
+    ASSERT_TRUE(!m_account->m_charactersDict.empty());
+
+    m_account->characterDestroyed(cid);
+
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid),
+                 m_account->m_charactersDict.end());
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    delete c;
+}
+
+void Accounttest::test_characterDestroyed_invalid()
+{
+    long cid = m_id_counter++;
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    m_account->characterDestroyed(cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid),
+                 m_account->m_charactersDict.end());
+}
+
+void Accounttest::test_connectCharacter_raw_Entity()
+{
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    long cid = m_id_counter++;
+    Entity * c = new Entity(compose("%1", cid), cid);
+    
+    m_account->connectCharacter(c);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    delete c;
+}
+
+void Accounttest::test_connectCharacter_Character()
+{
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+    
+    m_account->connectCharacter(c);
+
+    ASSERT_TRUE(!m_account->m_charactersDict.empty());
+
+    m_account->m_charactersDict.erase(cid);
+
+    delete c;
 }
 
 TestAccount::TestAccount(Connection * conn, const std::string & username,
@@ -156,8 +235,6 @@ int main()
 #include "server/Connection.h"
 #include "server/Persistence.h"
 #include "server/TeleportAuthenticator.h"
-
-#include "rulesets/Character.h"
 
 #include "common/globals.h"
 #include "common/id.h"
@@ -245,6 +322,7 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 
 ServerRouting::~ServerRouting()
 {
+    delete &m_world;
 }
 
 void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
@@ -713,6 +791,7 @@ BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
+    delete &m_gameWorld;
 }
 
 Entity * BaseWorld::getEntity(const std::string & id) const

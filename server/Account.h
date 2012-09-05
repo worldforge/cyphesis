@@ -116,6 +116,8 @@ class Account : public ConnectedRouter {
     const EntityDict & getCharacters() const {
         return m_charactersDict;
     }
+
+    friend class Accounttest;
 };
 
 #endif // SERVER_ACCOUNT_H
