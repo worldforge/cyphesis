@@ -84,8 +84,9 @@ void test_ASSERT_TRUE()
         
         void test_macro()
         {
-            ASSERT_TRUE(false);
-            ASSERT_TRUE(false);
+            bool val = false;
+            ASSERT_TRUE(val);
+            ASSERT_TRUE(val);
         }
     } t;
 
@@ -94,8 +95,8 @@ void test_ASSERT_TRUE()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:87: void test_ASSERT_TRUE()::T::test_macro(): "
-           "Assertion 'false' failed.");
+           "TestBasetest.cpp:88: void test_ASSERT_TRUE()::T::test_macro(): "
+           "Assertion 'val' failed.");
 }
 
 void test_ASSERT_EQUAL()
@@ -112,8 +113,9 @@ void test_ASSERT_EQUAL()
         
         void test_macro()
         {
-            ASSERT_EQUAL(1, 2);
-            ASSERT_EQUAL(1, 2);
+            int i = 1, j = 2;
+            ASSERT_EQUAL(i, j);
+            ASSERT_EQUAL(i, j);
         }
     } t;
 
@@ -122,8 +124,66 @@ void test_ASSERT_EQUAL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:115: void test_ASSERT_EQUAL()::T::test_macro(): "
-           "Assertion '1 == 2' failed. 1 != 2");
+           "TestBasetest.cpp:117: void test_ASSERT_EQUAL()::T::test_macro(): "
+           "Assertion 'i == j' failed. 1 != 2");
+}
+
+void test_ASSERT_GREATER()
+{
+    class T : public Cyphesis::TestBase {
+      public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
+        void test_macro()
+        {
+            int i = 1, j = 2;
+            ASSERT_GREATER(i, j);
+            ASSERT_GREATER(i, j);
+        }
+    } t;
+
+    assert(t.errorCount() == 0);
+    t.test_macro();
+    assert(t.errorCount() == 1);
+
+    assert(t.errorReports().front() ==
+           "TestBasetest.cpp:146: void test_ASSERT_GREATER()::T::test_macro(): "
+           "Assertion 'i > j' failed. 1 <= 2");
+}
+
+void test_ASSERT_LESS()
+{
+    class T : public Cyphesis::TestBase {
+      public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
+        void test_macro()
+        {
+            int i = 3, j = 2;
+            ASSERT_LESS(i, j);
+            ASSERT_LESS(i, j);
+        }
+    } t;
+
+    assert(t.errorCount() == 0);
+    t.test_macro();
+    assert(t.errorCount() == 1);
+
+    assert(t.errorReports().front() ==
+           "TestBasetest.cpp:175: void test_ASSERT_LESS()::T::test_macro(): "
+           "Assertion 'i < j' failed. 3 >= 2");
 }
 
 void test_ASSERT_NULL()
@@ -140,7 +200,7 @@ void test_ASSERT_NULL()
         
         void test_macro()
         {
-            int i;
+            int j; int * i = &j;
             ASSERT_NULL(&i);
             ASSERT_NULL(&i);
         }
@@ -151,7 +211,7 @@ void test_ASSERT_NULL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:144: void test_ASSERT_NULL()::T::test_macro(): "
+           "TestBasetest.cpp:204: void test_ASSERT_NULL()::T::test_macro(): "
            "Assertion '&i' null failed.");
 }
 
@@ -179,9 +239,8 @@ void test_ASSERT_NOT_NULL()
     t.test_macro();
     assert(t.errorCount() == 1);
 
-    std::cout << t.errorReports().front() << std::endl;
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:173: void test_ASSERT_NOT_NULL()::T::test_macro(): "
+           "TestBasetest.cpp:233: void test_ASSERT_NOT_NULL()::T::test_macro(): "
            "Assertion 'i' not null failed.");
 }
 
@@ -191,6 +250,8 @@ int main()
     test_assertEqual();
     test_ASSERT_TRUE();
     test_ASSERT_EQUAL();
+    test_ASSERT_GREATER();
+    test_ASSERT_LESS();
     test_ASSERT_NULL();
     test_ASSERT_NOT_NULL();
     return 0;
