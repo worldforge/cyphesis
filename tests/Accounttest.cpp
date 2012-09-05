@@ -73,6 +73,8 @@ class Accounttest : public Cyphesis::TestBase
     void test_characterDestroyed_invalid();
     void test_connectCharacter_raw_Entity();
     void test_connectCharacter_Character();
+    void test_addCharacter_raw_Entity();
+    void test_addCharacter_Character();
 };
 
 class TestAccount : public Account {
@@ -102,6 +104,8 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_characterDestroyed_invalid);
     ADD_TEST(Accounttest::test_connectCharacter_raw_Entity);
     ADD_TEST(Accounttest::test_connectCharacter_Character);
+    ADD_TEST(Accounttest::test_addCharacter_raw_Entity);
+    ADD_TEST(Accounttest::test_addCharacter_Character);
 }
 
 void Accounttest::setup()
@@ -189,6 +193,37 @@ void Accounttest::test_connectCharacter_Character()
     Entity * c = new Character(compose("%1", cid), cid);
     
     m_account->connectCharacter(c);
+
+    ASSERT_TRUE(!m_account->m_charactersDict.empty());
+
+    m_account->m_charactersDict.erase(cid);
+
+    delete c;
+}
+
+void Accounttest::test_addCharacter_raw_Entity()
+{
+    long cid = m_id_counter++;
+    Entity * c = new Entity(compose("%1", cid), cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    m_account->addCharacter(c);
+
+    // Only objects that inherit from Character are added
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    delete c;
+}
+
+void Accounttest::test_addCharacter_Character()
+{
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    m_account->addCharacter(c);
 
     ASSERT_TRUE(!m_account->m_charactersDict.empty());
 
