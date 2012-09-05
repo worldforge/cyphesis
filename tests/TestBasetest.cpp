@@ -128,6 +128,35 @@ void test_ASSERT_EQUAL()
            "Assertion 'i == j' failed. 1 != 2");
 }
 
+void test_ASSERT_NOT_EQUAL()
+{
+    class T : public Cyphesis::TestBase {
+      public:
+        void setup()
+        {
+        }
+
+        void teardown()
+        {
+        }
+        
+        void test_macro()
+        {
+            int i = 1, j = 1;
+            ASSERT_NOT_EQUAL(i, j);
+            ASSERT_NOT_EQUAL(i, j);
+        }
+    } t;
+
+    assert(t.errorCount() == 0);
+    t.test_macro();
+    assert(t.errorCount() == 1);
+
+    assert(t.errorReports().front() ==
+           "TestBasetest.cpp:146: void test_ASSERT_NOT_EQUAL()::T::test_macro(): "
+           "Assertion 'i != j' failed. 1 == 1");
+}
+
 void test_ASSERT_GREATER()
 {
     class T : public Cyphesis::TestBase {
@@ -153,7 +182,7 @@ void test_ASSERT_GREATER()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:146: void test_ASSERT_GREATER()::T::test_macro(): "
+           "TestBasetest.cpp:175: void test_ASSERT_GREATER()::T::test_macro(): "
            "Assertion 'i > j' failed. 1 <= 2");
 }
 
@@ -182,7 +211,7 @@ void test_ASSERT_LESS()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:175: void test_ASSERT_LESS()::T::test_macro(): "
+           "TestBasetest.cpp:204: void test_ASSERT_LESS()::T::test_macro(): "
            "Assertion 'i < j' failed. 3 >= 2");
 }
 
@@ -211,7 +240,7 @@ void test_ASSERT_NULL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:204: void test_ASSERT_NULL()::T::test_macro(): "
+           "TestBasetest.cpp:233: void test_ASSERT_NULL()::T::test_macro(): "
            "Assertion '&i' null failed.");
 }
 
@@ -240,7 +269,7 @@ void test_ASSERT_NOT_NULL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:233: void test_ASSERT_NOT_NULL()::T::test_macro(): "
+           "TestBasetest.cpp:262: void test_ASSERT_NOT_NULL()::T::test_macro(): "
            "Assertion 'i' not null failed.");
 }
 
@@ -250,6 +279,7 @@ int main()
     test_assertEqual();
     test_ASSERT_TRUE();
     test_ASSERT_EQUAL();
+    test_ASSERT_NOT_EQUAL();
     test_ASSERT_GREATER();
     test_ASSERT_LESS();
     test_ASSERT_NULL();
