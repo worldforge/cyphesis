@@ -57,17 +57,17 @@ class buildidtest : public Cyphesis::TestBase
 
 void buildidtest::test_time()
 {
-    ASSERT_TRUE(strlen(consts::buildTime) > 0);
+    ASSERT_GREATER(strlen(consts::buildTime), 0u);
 }
 
 void buildidtest::test_date()
 {
-    ASSERT_TRUE(strlen(consts::buildDate) > 0);
+    ASSERT_GREATER(strlen(consts::buildDate), 0u);
 }
 
 void buildidtest::test_id()
 {
-    ASSERT_TRUE(consts::buildId > 0);
+    ASSERT_GREATER(consts::buildId, 0);
 }
 
 int main()
