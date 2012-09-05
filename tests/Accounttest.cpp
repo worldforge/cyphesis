@@ -110,6 +110,7 @@ void Accounttest::setup()
 void Accounttest::teardown()
 {
     delete m_server;
+    delete m_account;
 }
 
 void Accounttest::test_null()
