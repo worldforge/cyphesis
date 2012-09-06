@@ -70,6 +70,12 @@ int main()
 
 // stubs
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 namespace Atlas { namespace Objects { namespace Operation {
 int UPDATE_NO = -1;
 } } }

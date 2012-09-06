@@ -47,6 +47,14 @@ int main()
 
 // stubs
 
+#include "TestWorld.h"
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "rulesets/BaseMind.h"
 #include "rulesets/PythonScriptFactory.h"
 

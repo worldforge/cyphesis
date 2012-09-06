@@ -297,6 +297,12 @@ int main(int argc, char ** argv)
 
 // stubs
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 Monitors * Monitors::m_instance = NULL;
 
 Monitors::Monitors()

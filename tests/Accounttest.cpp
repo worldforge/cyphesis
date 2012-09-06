@@ -262,6 +262,12 @@ Entity * TestAccount::testAddNewCharacter(const std::string & typestr,
     return addNewCharacter(typestr, ent, arg);
 }
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 int main()
 {
     Accounttest t;

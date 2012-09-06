@@ -233,6 +233,12 @@ int main()
 
 // stubs
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "server/CommClient.h"
 #include "server/ExternalMind.h"
 #include "server/ExternalProperty.h"

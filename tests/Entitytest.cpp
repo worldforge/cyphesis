@@ -120,6 +120,12 @@ int main()
 
 // stubs
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "common/TypeNode.h"
 
 namespace Atlas { namespace Objects { namespace Operation {

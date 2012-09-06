@@ -90,6 +90,12 @@ int main(int argc, char ** argv)
 
 // stubs
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/Domain.h"
 #include "rulesets/Motion.h"

@@ -98,3 +98,9 @@ int main()
     shutdown_python_api();
     return 0;
 }
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}

@@ -37,9 +37,7 @@ class TestWorld : public BaseWorld {
         return 0;
     }
     virtual Entity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
-        return 0;
-    }
+                                  const Atlas::Objects::Entity::RootEntity &);
     int createSpawnPoint(const Atlas::Message::MapType & data,
                          Entity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }

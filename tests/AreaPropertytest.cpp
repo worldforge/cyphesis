@@ -56,6 +56,14 @@ int main()
 
 // stubs
 
+#include "TestWorld.h"
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "physics/Shape.h"
 
 const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)

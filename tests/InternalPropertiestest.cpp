@@ -71,6 +71,14 @@ int main()
 
 // stubs
 
+#include "TestWorld.h"
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = -1;
 int SETUP_NO = -1;

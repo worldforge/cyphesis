@@ -80,6 +80,14 @@ int main()
 
 // stubs
 
+#include "TestWorld.h"
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "modules/TerrainContext.h"
 
 TerrainContext::TerrainContext(Entity * e) : m_entity(e)

@@ -50,6 +50,14 @@ int main()
 
 // stubs
 
+#include "TestWorld.h"
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 void Location::modifyBBox()
 {
 }

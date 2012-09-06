@@ -189,6 +189,12 @@ int main()
 
 // stubs
 
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
 #include "server/Connection.h"
 #include "server/Persistence.h"
 #include "server/TeleportAuthenticator.h"

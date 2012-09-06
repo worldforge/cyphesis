@@ -315,3 +315,9 @@ int main()
 
     return 0;
 }
+
+Entity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
