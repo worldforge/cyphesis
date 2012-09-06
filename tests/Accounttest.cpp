@@ -146,8 +146,6 @@ void Accounttest::test_characterDestroyed()
 
     m_account->m_charactersDict.insert(std::make_pair(cid, c));
 
-    ASSERT_TRUE(!m_account->m_charactersDict.empty());
-
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
     ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
