@@ -43,6 +43,7 @@
 #include <cassert>
 
 using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
@@ -62,6 +63,8 @@ class Accounttest : public Cyphesis::TestBase
     ServerRouting * m_server;
     Connection * m_connection;
     Account * m_account;
+
+    static Entity * TestWorld_addNewEntity_ret_value;
   public:
     Accounttest();
 
@@ -75,7 +78,20 @@ class Accounttest : public Cyphesis::TestBase
     void test_connectCharacter_Character();
     void test_addCharacter_raw_Entity();
     void test_addCharacter_Character();
+    void test_addNewCharacter_fail();
+    void test_addNewCharacter_raw_Entity();
+    void test_addNewCharacter_Character();
+    void test_addNewCharacter_unconnected();
+
+    static Entity * get_TestWorld_addNewEntity_ret_value();
 };
+
+Entity * Accounttest::TestWorld_addNewEntity_ret_value;
+
+Entity * Accounttest::get_TestWorld_addNewEntity_ret_value()
+{
+    return TestWorld_addNewEntity_ret_value;
+}
 
 class TestAccount : public Account {
   public:
@@ -106,6 +122,10 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_connectCharacter_Character);
     ADD_TEST(Accounttest::test_addCharacter_raw_Entity);
     ADD_TEST(Accounttest::test_addCharacter_Character);
+    ADD_TEST(Accounttest::test_addNewCharacter_fail);
+    ADD_TEST(Accounttest::test_addNewCharacter_raw_Entity);
+    ADD_TEST(Accounttest::test_addNewCharacter_Character);
+    ADD_TEST(Accounttest::test_addNewCharacter_unconnected);
 }
 
 void Accounttest::setup()
@@ -236,6 +256,89 @@ void Accounttest::test_addCharacter_Character()
     delete c;
 }
 
+void Accounttest::test_addNewCharacter_fail()
+{
+    TestWorld_addNewEntity_ret_value = 0;
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+    ASSERT_NOT_NULL(m_account->m_connection);
+
+    Entity * te = m_account->addNewCharacter(
+          "0e657318-2424-45c9-8a3c-a61ee1303342",
+          RootEntity(),
+          Root());
+
+    ASSERT_NULL(te);
+}
+
+void Accounttest::test_addNewCharacter_raw_Entity()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+    ASSERT_NOT_NULL(m_account->m_connection);
+
+    Entity * te = m_account->addNewCharacter(
+          "9e0ff22a-3b57-4703-b3fd-6ed0b8a89edc",
+          RootEntity(),
+          Root());
+
+    ASSERT_NOT_NULL(te);
+
+    // It hasn't been connected, because it is not a character
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+
+    delete TestWorld_addNewEntity_ret_value;
+}
+
+void Accounttest::test_addNewCharacter_Character()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+    ASSERT_NOT_NULL(m_account->m_connection);
+
+    Entity * te = m_account->addNewCharacter(
+          "aa119eb0-ad7d-46d5-a8c3-5797ca541b6c",
+          RootEntity(),
+          Root());
+
+    ASSERT_NOT_NULL(te);
+
+    ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
+                     m_account->m_charactersDict.end());
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, 
+                 TestWorld_addNewEntity_ret_value);
+
+    m_account->m_charactersDict.erase(cid);
+
+    delete TestWorld_addNewEntity_ret_value;
+}
+
+void Accounttest::test_addNewCharacter_unconnected()
+{
+    // Make the account disconnected
+    delete m_account->m_connection;
+    m_account->m_connection = 0;
+
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+    ASSERT_NULL(m_account->m_connection);
+
+    Entity * te = m_account->addNewCharacter(
+          "3b657231-f87b-407c-99ee-9e0195475a3f",
+          RootEntity(),
+          Root());
+
+    ASSERT_NULL(te);
+
+    delete TestWorld_addNewEntity_ret_value;
+}
+
 TestAccount::TestAccount(Connection * conn, const std::string & username,
                          const std::string & passwd,
                          const std::string & id, long intId) :
@@ -265,7 +368,13 @@ Entity * TestAccount::testAddNewCharacter(const std::string & typestr,
 Entity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
-    return 0;
+    Entity * ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
+    if (ne != 0) {
+        ne->m_location.m_loc = &m_gameWorld;
+        ne->m_location.m_pos = Point3D(0,0,0);
+        assert(ne->m_location.isValid());
+    }
+    return ne;
 }
 
 int main()
