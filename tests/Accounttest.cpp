@@ -36,15 +36,22 @@
 #include "rulesets/Character.h"
 
 #include "common/compose.hpp"
+#include "common/debug.h"
 
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::RootOperation;
 
 using String::compose;
 
@@ -52,6 +59,30 @@ std::ostream & operator<<(std::ostream & os,
                           const EntityDict::const_iterator &)
 {
     os << "[iterator]";
+    return os;
+}
+
+std::ostream & operator<<(std::ostream & os,
+                          const Element & e)
+{
+    debug_dump(e, os);
+    return os;
+}
+
+template <typename T>
+std::ostream & operator<<(std::ostream & os,
+                          const std::list<T> & sl)
+{
+    typename std::list<T>::const_iterator I = sl.begin();
+    typename std::list<T>::const_iterator Iend = sl.end();
+    os << "[";
+    for (; I != Iend; ++I) {
+        if (I != sl.begin()) {
+            os << ", ";
+        }
+        os << *I;
+    }
+    os << "]";
     return os;
 }
 
@@ -65,6 +96,8 @@ class Accounttest : public Cyphesis::TestBase
     Account * m_account;
 
     static Entity * TestWorld_addNewEntity_ret_value;
+    static OpVector Link_send_sent;
+    static int characterError_ret_value;
   public:
     Accounttest();
 
@@ -82,15 +115,54 @@ class Accounttest : public Cyphesis::TestBase
     void test_addNewCharacter_raw_Entity();
     void test_addNewCharacter_Character();
     void test_addNewCharacter_unconnected();
+    void test_LogoutOperation_no_serialno();
+    void test_LogoutOperation_serialno();
+    void test_LogoutOperation_unconnected();
+    void test_getType();
+    void test_store();
+    void test_addToMessage();
+    void test_addToEntity();
+    void test_operation_Create();
+    void test_operation_Get();
+    void test_operation_Imaginary();
+    void test_operation_Logout();
+    void test_operation_Look();
+    void test_operation_Set();
+    void test_operation_Talk();
+    void test_operation_INVALID();
+    void test_operation_Other();
+    void test_CreateOperation();
+    void test_GetOperation();
+    void test_ImaginaryOperation();
+    void test_LookOperation();
+    void test_SetOperation();
+    void test_TalkOperation();
+    void test_OtherOperation();
+    void test_createObject();
+    void test_filterTasks();
 
     static Entity * get_TestWorld_addNewEntity_ret_value();
+    static void append_Link_send_sent(const RootOperation &);
+    static int get_characterError_ret_value();
 };
 
 Entity * Accounttest::TestWorld_addNewEntity_ret_value;
+OpVector Accounttest::Link_send_sent;
+int Accounttest::characterError_ret_value;
 
 Entity * Accounttest::get_TestWorld_addNewEntity_ret_value()
 {
     return TestWorld_addNewEntity_ret_value;
+}
+
+void Accounttest::append_Link_send_sent(const RootOperation & op)
+{
+    Link_send_sent.push_back(op);
+}
+
+int Accounttest::get_characterError_ret_value()
+{
+    return characterError_ret_value;
 }
 
 class TestAccount : public Account {
@@ -126,6 +198,31 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_addNewCharacter_raw_Entity);
     ADD_TEST(Accounttest::test_addNewCharacter_Character);
     ADD_TEST(Accounttest::test_addNewCharacter_unconnected);
+    ADD_TEST(Accounttest::test_LogoutOperation_no_serialno);
+    ADD_TEST(Accounttest::test_LogoutOperation_serialno);
+    ADD_TEST(Accounttest::test_LogoutOperation_unconnected);
+    ADD_TEST(Accounttest::test_getType);
+    ADD_TEST(Accounttest::test_store);
+    ADD_TEST(Accounttest::test_addToMessage);
+    ADD_TEST(Accounttest::test_addToEntity);
+    ADD_TEST(Accounttest::test_operation_Create);
+    ADD_TEST(Accounttest::test_operation_Get);
+    ADD_TEST(Accounttest::test_operation_Imaginary);
+    ADD_TEST(Accounttest::test_operation_Logout);
+    ADD_TEST(Accounttest::test_operation_Look);
+    ADD_TEST(Accounttest::test_operation_Set);
+    ADD_TEST(Accounttest::test_operation_Talk);
+    ADD_TEST(Accounttest::test_operation_INVALID);
+    ADD_TEST(Accounttest::test_operation_Other);
+    ADD_TEST(Accounttest::test_CreateOperation);
+    ADD_TEST(Accounttest::test_GetOperation);
+    ADD_TEST(Accounttest::test_ImaginaryOperation);
+    ADD_TEST(Accounttest::test_LookOperation);
+    ADD_TEST(Accounttest::test_SetOperation);
+    ADD_TEST(Accounttest::test_TalkOperation);
+    ADD_TEST(Accounttest::test_OtherOperation);
+    ADD_TEST(Accounttest::test_createObject);
+    ADD_TEST(Accounttest::test_filterTasks);
 }
 
 void Accounttest::setup()
@@ -337,6 +434,256 @@ void Accounttest::test_addNewCharacter_unconnected()
     ASSERT_NULL(te);
 
     delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void Accounttest::test_LogoutOperation_no_serialno()
+{
+    Link_send_sent.clear();
+
+    RootOperation op;
+    OpVector res;
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(Link_send_sent.size(), 1u);
+
+    const RootOperation & reply = Link_send_sent.front();
+
+    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::INFO_NO);
+    ASSERT_TRUE(reply->isDefaultRefno());
+}
+
+void Accounttest::test_LogoutOperation_serialno()
+{
+    Link_send_sent.clear();
+
+    const long serno = 0x1fae73;
+
+    RootOperation op;
+    op->setSerialno(serno);
+    OpVector res;
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(Link_send_sent.size(), 1u);
+
+    const RootOperation & reply = Link_send_sent.front();
+
+    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::INFO_NO);
+    ASSERT_TRUE(!reply->isDefaultRefno());
+    ASSERT_EQUAL(reply->getRefno(), serno);
+}
+
+void Accounttest::test_LogoutOperation_unconnected()
+{
+    Link_send_sent.clear();
+
+    // Make the account unconnected
+    delete m_account->m_connection;
+    m_account->m_connection = 0;
+
+    RootOperation op;
+    OpVector res;
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(Link_send_sent.size(), 0u);
+}
+
+void Accounttest::test_getType()
+{
+    const char * account_type = m_account->getType();
+
+    ASSERT_EQUAL(std::string("account"), account_type);
+}
+
+void Accounttest::test_store()
+{
+    m_account->store();
+}
+
+void Accounttest::test_addToMessage()
+{
+    MapType data;
+
+    m_account->m_username = "2fe6afa4-747f-490b-a292-783bf3f4520b";
+    m_account->m_password = "09a6ec9f-493c-4cca-8e4a-241d15877ab4";
+
+    m_account->addToMessage(data);
+
+    ASSERT_EQUAL(data["username"], m_account->m_username);
+    ASSERT_EQUAL(data["name"], m_account->m_username);
+    ASSERT_EQUAL(data["password"], m_account->m_password);
+    ASSERT_EQUAL(data["parents"], ListType(1, "account"));
+    ASSERT_EQUAL(data["characters"], ListType());
+    ASSERT_EQUAL(data["objtype"], "obj");
+    ASSERT_EQUAL(data["id"], m_account->getId());
+}
+
+void Accounttest::test_addToEntity()
+{
+    Anonymous data;
+
+    m_account->m_username = "36b0931c-19db-4f87-8b83-591d465af9a0";
+    m_account->m_password = "980fc361-2a77-4246-8877-d57895435d6d";
+
+    m_account->addToEntity(data);
+
+    ASSERT_EQUAL(data->getAttr("username"), m_account->m_username);
+    ASSERT_TRUE(!data->isDefaultName());
+    ASSERT_EQUAL(data->getName(), m_account->m_username);
+    ASSERT_EQUAL(data->getAttr("password"), m_account->m_password);
+    ASSERT_TRUE(!data->isDefaultParents());
+    ASSERT_EQUAL(data->getParents(), std::list<std::string>(1, "account"));
+    ASSERT_EQUAL(data->getAttr("characters"), ListType());
+    ASSERT_TRUE(!data->isDefaultParents());
+    ASSERT_EQUAL(data->getObjtype(), "obj");
+    ASSERT_EQUAL(data->getAttr("id"), m_account->getId());
+}
+
+void Accounttest::test_operation_Create()
+{
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Get()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Imaginary()
+{
+    Atlas::Objects::Operation::Imaginary op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Logout()
+{
+    Atlas::Objects::Operation::Logout op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Look()
+{
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Set()
+{
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Talk()
+{
+    Atlas::Objects::Operation::Talk op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_INVALID()
+{
+    Atlas::Objects::Operation::Generic op;
+    op->setType("3d6b8a1e-137c-40a6-9ec9-1b21591e4937", OP_INVALID);
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_operation_Other()
+{
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+
+    m_account->operation(op, res);
+}
+
+void Accounttest::test_CreateOperation()
+{
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    m_account->CreateOperation(op, res);
+}
+
+void Accounttest::test_GetOperation()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    m_account->GetOperation(op, res);
+}
+
+void Accounttest::test_ImaginaryOperation()
+{
+    Atlas::Objects::Operation::Imaginary op;
+    OpVector res;
+
+    m_account->ImaginaryOperation(op, res);
+}
+
+void Accounttest::test_LookOperation()
+{
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    m_account->LookOperation(op, res);
+}
+
+void Accounttest::test_SetOperation()
+{
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    m_account->SetOperation(op, res);
+}
+
+void Accounttest::test_TalkOperation()
+{
+    Atlas::Objects::Operation::Talk op;
+    OpVector res;
+
+    m_account->TalkOperation(op, res);
+}
+
+void Accounttest::test_OtherOperation()
+{
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+
+    m_account->OtherOperation(op, res);
+}
+
+void Accounttest::test_createObject()
+{
+    Anonymous arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    // FIXME right now this depends on un-iniited value
+    // characterError_ret_value;
+    m_account->createObject("foO", arg, op, res);
+}
+
+void Accounttest::test_filterTasks()
+{
 }
 
 TestAccount::TestAccount(Connection * conn, const std::string & username,
@@ -355,7 +702,7 @@ int TestAccount::characterError(const Operation & op,
                                 const Atlas::Objects::Root & ent,
                                 OpVector & res) const
 {
-    return 0;
+    return Accounttest::get_characterError_ret_value();
 }
 
 Entity * TestAccount::testAddNewCharacter(const std::string & typestr,
@@ -387,6 +734,7 @@ int main()
 // stubs
 
 #include "server/Connection.h"
+#include "server/Lobby.h"
 #include "server/Persistence.h"
 #include "server/TeleportAuthenticator.h"
 
@@ -470,13 +818,15 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & lId, long lIntId) :
         Router(id, intId),
         m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
+        m_numClients(0), m_world(wrld),
+        m_lobby(*new Lobby(*this, lId, lIntId))
 {
 }
 
 ServerRouting::~ServerRouting()
 {
     delete &m_world;
+    delete &m_lobby;
 }
 
 void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
@@ -524,6 +874,36 @@ Persistence * Persistence::instance()
 }
 
 void Persistence::putAccount(const Account & ac)
+{
+}
+
+Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
+       Router(id, intId),
+       m_server(s)
+{
+}
+
+Lobby::~Lobby()
+{
+}
+
+void Lobby::delAccount(Account * ac)
+{
+}
+
+void Lobby::addToMessage(MapType & omap) const
+{
+}
+
+void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Lobby::addAccount(Account * ac)
+{
+}
+
+void Lobby::operation(const Operation & op, OpVector & res)
 {
 }
 
@@ -929,6 +1309,7 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
+    Accounttest::append_Link_send_sent(op);
 }
 
 void Link::disconnect()

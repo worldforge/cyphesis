@@ -1030,7 +1030,8 @@ CommServertest_LDADD = \
 
 Accounttest_SOURCES = Accounttest.cpp
 Accounttest_LDADD = \
-        $(top_builddir)/server/Account.o
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/common/debug.o
 
 Admintest_SOURCES = \
         Admintest.cpp \
