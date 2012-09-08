@@ -56,7 +56,7 @@ int main()
         // Test debug dumping an empty map
         MapType empty;
 
-        debug_dump(empty);
+        debug_dump(empty, std::cout);
     }
 
     {
@@ -64,7 +64,7 @@ int main()
         MapType one;
         assert((one["number"] = 1).isInt());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -72,7 +72,7 @@ int main()
         MapType one;
         assert((one["foo"] = 1.1).isFloat());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -80,7 +80,7 @@ int main()
         MapType one;
         assert((one["foo"] = (void*)0).isPtr());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -88,7 +88,7 @@ int main()
         MapType one;
         assert((one["foo"] = "string").isString());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -96,7 +96,7 @@ int main()
         MapType one;
         assert((one["foo"] = ListType()).isList());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -104,7 +104,7 @@ int main()
         MapType one;
         assert((one["foo"] = MapType()).isMap());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -122,7 +122,7 @@ int main()
 
         assert((one["foo"] = member).isMap());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -140,7 +140,7 @@ int main()
 
         assert((one["foo"] = member).isList());
 
-        debug_dump(one);
+        debug_dump(one, std::cout);
     }
 
     {
@@ -154,7 +154,7 @@ int main()
         assert((member[5] = MapType()).isMap());
         assert(member.size() == 6);
 
-        debug_dump(member);
+        debug_dump(member, std::cout);
     }
 
     // FIXME Check the result - should be moslty deterministic

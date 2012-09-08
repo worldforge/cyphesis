@@ -73,9 +73,9 @@ void output_element(std::ostream & out, const Element & item, int depth)
 }
 
 template <typename T>
-void debug_dump(const T & t)
+void debug_dump(const T & t, std::ostream & os)
 {
-    output_element(std::cout, t, 0);
+    output_element(os, t, 0);
 }
 
 template <typename T>
@@ -87,13 +87,13 @@ std::string debug_tostring(const T & t)
 }
 
 template
-void debug_dump<MapType>(const MapType & map);
+void debug_dump<MapType>(const MapType & map, std::ostream & os);
 
 template
-void debug_dump<ListType>(const ListType & list);
+void debug_dump<ListType>(const ListType & list, std::ostream & os);
 
 template
-void debug_dump<Element>(const Element & e);
+void debug_dump<Element>(const Element & e, std::ostream & os);
 
 template
 std::string debug_tostring<MapType>(const MapType & map);

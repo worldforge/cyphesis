@@ -38,7 +38,7 @@ void output_element(std::ostream & out,
                     int depth);
 
 template <typename T>
-void debug_dump(const T & t);
+void debug_dump(const T & t, std::ostream &);
 
 template <typename T>
 std::string debug_tostring(const T & t);
