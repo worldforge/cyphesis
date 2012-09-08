@@ -37,6 +37,7 @@
 
 #include "common/compose.hpp"
 #include "common/debug.h"
+#include "common/id.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -138,7 +139,10 @@ class Accounttest : public Cyphesis::TestBase
     void test_SetOperation();
     void test_TalkOperation();
     void test_OtherOperation();
-    void test_createObject();
+    void test_createObject_permission_error();
+    void test_createObject_add_failed();
+    void test_createObject_raw_Entity();
+    void test_createObject_Character();
     void test_filterTasks();
 
     static Entity * get_TestWorld_addNewEntity_ret_value();
@@ -221,7 +225,10 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_SetOperation);
     ADD_TEST(Accounttest::test_TalkOperation);
     ADD_TEST(Accounttest::test_OtherOperation);
-    ADD_TEST(Accounttest::test_createObject);
+    ADD_TEST(Accounttest::test_createObject_permission_error);
+    ADD_TEST(Accounttest::test_createObject_add_failed);
+    ADD_TEST(Accounttest::test_createObject_raw_Entity);
+    ADD_TEST(Accounttest::test_createObject_Character);
     ADD_TEST(Accounttest::test_filterTasks);
 }
 
@@ -671,15 +678,79 @@ void Accounttest::test_OtherOperation()
     m_account->OtherOperation(op, res);
 }
 
-void Accounttest::test_createObject()
+void Accounttest::test_createObject_permission_error()
 {
+    characterError_ret_value = -1;
+
     Anonymous arg;
     Atlas::Objects::Operation::Create op;
     OpVector res;
 
-    // FIXME right now this depends on un-iniited value
-    // characterError_ret_value;
     m_account->createObject("foO", arg, op, res);
+
+    ASSERT_TRUE(res.empty());
+
+    // addNewCharacter() would have put it here if it was created
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+}
+
+void Accounttest::test_createObject_add_failed()
+{
+    characterError_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = 0;
+
+    Anonymous arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    m_account->createObject("foO", arg, op, res);
+
+    ASSERT_TRUE(res.empty());
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+}
+
+void Accounttest::test_createObject_raw_Entity()
+{
+    long cid = m_id_counter++;
+
+    characterError_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
+
+    Anonymous arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    m_account->createObject("foO", arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_TRUE(m_account->m_charactersDict.empty());
+}
+
+void Accounttest::test_createObject_Character()
+{
+    long cid = m_id_counter++;
+
+    characterError_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    Anonymous arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    m_account->createObject("foO", arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 2u);
+    ASSERT_EQUAL(m_account->m_charactersDict.size(), 1u);
+
+    const RootOperation & info = res.front();
+    ASSERT_EQUAL(info->getArgs().size(), 1u);
+
+    const Root & info_arg = info->getArgs().front();
+    ASSERT_TRUE(!info_arg->isDefaultId());
+
+    long info_id = integerId(info_arg->getId());
+    ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(info_id),
+                     m_account->m_charactersDict.end());
 }
 
 void Accounttest::test_filterTasks()
@@ -1209,6 +1280,7 @@ void Entity::addToMessage(Atlas::Message::MapType & omap) const
 
 void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
+    ent->setId(getId());
 }
 
 PropertyBase * Entity::setAttr(const std::string & name,
