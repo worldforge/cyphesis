@@ -143,7 +143,10 @@ class Accounttest : public Cyphesis::TestBase
     void test_createObject_add_failed();
     void test_createObject_raw_Entity();
     void test_createObject_Character();
-    void test_filterTasks();
+    void test_filterTasks_empty();
+    void test_filterTasks_malformed_not_map();
+    void test_filterTasks_malformed_no_name();
+    void test_filterTasks_good();
 
     static Entity * get_TestWorld_addNewEntity_ret_value();
     static void append_Link_send_sent(const RootOperation &);
@@ -229,7 +232,10 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_createObject_add_failed);
     ADD_TEST(Accounttest::test_createObject_raw_Entity);
     ADD_TEST(Accounttest::test_createObject_Character);
-    ADD_TEST(Accounttest::test_filterTasks);
+    ADD_TEST(Accounttest::test_filterTasks_empty);
+    ADD_TEST(Accounttest::test_filterTasks_malformed_not_map);
+    ADD_TEST(Accounttest::test_filterTasks_malformed_no_name);
+    ADD_TEST(Accounttest::test_filterTasks_good);
 }
 
 void Accounttest::setup()
@@ -753,8 +759,57 @@ void Accounttest::test_createObject_Character()
                      m_account->m_charactersDict.end());
 }
 
-void Accounttest::test_filterTasks()
+void Accounttest::test_filterTasks_empty()
 {
+    ListType tasks;
+    Anonymous result;
+
+    int ret = m_account->filterTasks(tasks, result);
+
+    ASSERT_EQUAL(ret, 0);
+
+    ASSERT_EQUAL(result->getAttr("tasks"), ListType());
+}
+
+void Accounttest::test_filterTasks_malformed_not_map()
+{
+    ListType tasks(1, std::string("bar"));
+    Anonymous result;
+
+    int ret = m_account->filterTasks(tasks, result);
+
+    ASSERT_EQUAL(ret, -1);
+
+    ASSERT_EQUAL(result->hasAttr("tasks"), false);
+}
+
+void Accounttest::test_filterTasks_malformed_no_name()
+{
+    MapType task;
+    task["mim"] = "baz";
+    ListType tasks = ListType(1, task);
+    Anonymous result;
+
+    int ret = m_account->filterTasks(tasks, result);
+
+    ASSERT_EQUAL(ret, -1);
+
+    ASSERT_EQUAL(result->hasAttr("tasks"), false);
+}
+
+void Accounttest::test_filterTasks_good()
+{
+    MapType task;
+    task["mim"] = "baz";
+    task["name"] = "gootle";
+    ListType tasks = ListType(1, task);
+    Anonymous result;
+
+    int ret = m_account->filterTasks(tasks, result);
+
+    ASSERT_EQUAL(ret, 0);
+
+    ASSERT_EQUAL(result->getAttr("tasks"), tasks);
 }
 
 TestAccount::TestAccount(Connection * conn, const std::string & username,
