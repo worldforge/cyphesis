@@ -99,6 +99,7 @@ class Accounttest : public Cyphesis::TestBase
     static Entity * TestWorld_addNewEntity_ret_value;
     static OpVector Link_send_sent;
     static int characterError_ret_value;
+    static int Lobby_operation_called;
   public:
     Accounttest();
 
@@ -136,7 +137,11 @@ class Accounttest : public Cyphesis::TestBase
     void test_CreateOperation_no_parents();
     void test_CreateOperation_good();
     void test_GetOperation();
-    void test_ImaginaryOperation();
+    void test_ImaginaryOperation_no_args();
+    void test_ImaginaryOperation_Root_args();
+    void test_ImaginaryOperation_no_loc();
+    void test_ImaginaryOperation_loc();
+    void test_ImaginaryOperation_unconnected();
     void test_LookOperation();
     void test_SetOperation();
     void test_TalkOperation();
@@ -153,11 +158,13 @@ class Accounttest : public Cyphesis::TestBase
     static Entity * get_TestWorld_addNewEntity_ret_value();
     static void append_Link_send_sent(const RootOperation &);
     static int get_characterError_ret_value();
+    static void set_Lobby_operation_called(int class_no);
 };
 
 Entity * Accounttest::TestWorld_addNewEntity_ret_value;
 OpVector Accounttest::Link_send_sent;
 int Accounttest::characterError_ret_value;
+int Accounttest::Lobby_operation_called;
 
 Entity * Accounttest::get_TestWorld_addNewEntity_ret_value()
 {
@@ -172,6 +179,11 @@ void Accounttest::append_Link_send_sent(const RootOperation & op)
 int Accounttest::get_characterError_ret_value()
 {
     return characterError_ret_value;
+}
+
+void Accounttest::set_Lobby_operation_called(int class_no)
+{
+    Lobby_operation_called = class_no;
 }
 
 class TestAccount : public Account {
@@ -227,7 +239,11 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_CreateOperation_no_parents);
     ADD_TEST(Accounttest::test_CreateOperation_good);
     ADD_TEST(Accounttest::test_GetOperation);
-    ADD_TEST(Accounttest::test_ImaginaryOperation);
+    ADD_TEST(Accounttest::test_ImaginaryOperation_no_args);
+    ADD_TEST(Accounttest::test_ImaginaryOperation_Root_args);
+    ADD_TEST(Accounttest::test_ImaginaryOperation_no_loc);
+    ADD_TEST(Accounttest::test_ImaginaryOperation_loc);
+    ADD_TEST(Accounttest::test_ImaginaryOperation_unconnected);
     ADD_TEST(Accounttest::test_LookOperation);
     ADD_TEST(Accounttest::test_SetOperation);
     ADD_TEST(Accounttest::test_TalkOperation);
@@ -688,12 +704,75 @@ void Accounttest::test_GetOperation()
     ASSERT_TRUE(res.empty());
 }
 
-void Accounttest::test_ImaginaryOperation()
+void Accounttest::test_ImaginaryOperation_no_args()
 {
     Atlas::Objects::Operation::Imaginary op;
     OpVector res;
 
     m_account->ImaginaryOperation(op, res);
+
+    ASSERT_TRUE(res.empty());
+}
+
+void Accounttest::test_ImaginaryOperation_Root_args()
+{
+    Atlas::Objects::Operation::Imaginary op;
+    OpVector res;
+
+    Root arg;
+    op->setArgs1(arg);
+
+    m_account->ImaginaryOperation(op, res);
+}
+
+void Accounttest::test_ImaginaryOperation_no_loc()
+{
+    Lobby_operation_called = -1;
+
+    Atlas::Objects::Operation::Imaginary op;
+    OpVector res;
+
+    Anonymous arg;
+    op->setArgs1(arg);
+
+    m_account->ImaginaryOperation(op, res);
+
+    ASSERT_EQUAL(Lobby_operation_called,
+                 Atlas::Objects::Operation::SIGHT_NO);
+}
+
+void Accounttest::test_ImaginaryOperation_loc()
+{
+    Lobby_operation_called = -1;
+
+    Atlas::Objects::Operation::Imaginary op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setLoc("foo");
+    op->setArgs1(arg);
+
+    m_account->ImaginaryOperation(op, res);
+
+    ASSERT_EQUAL(Lobby_operation_called,
+                 Atlas::Objects::Operation::SIGHT_NO);
+}
+
+void Accounttest::test_ImaginaryOperation_unconnected()
+{
+    Lobby_operation_called = -1;
+    delete m_account->m_connection;
+    m_account->m_connection = 0;
+
+    Atlas::Objects::Operation::Imaginary op;
+    OpVector res;
+
+    Anonymous arg;
+    op->setArgs1(arg);
+
+    m_account->ImaginaryOperation(op, res);
+
+    ASSERT_EQUAL(Lobby_operation_called, -1);
 }
 
 void Accounttest::test_LookOperation()
@@ -1079,6 +1158,7 @@ void Lobby::addAccount(Account * ac)
 
 void Lobby::operation(const Operation & op, OpVector & res)
 {
+    Accounttest::set_Lobby_operation_called(op->getClassNo());
 }
 
 Character::Character(const std::string & id, long intId) :
