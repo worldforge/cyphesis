@@ -132,7 +132,9 @@ class Accounttest : public Cyphesis::TestBase
     void test_operation_Talk();
     void test_operation_INVALID();
     void test_operation_Other();
-    void test_CreateOperation();
+    void test_CreateOperation_no_args();
+    void test_CreateOperation_no_parents();
+    void test_CreateOperation_good();
     void test_GetOperation();
     void test_ImaginaryOperation();
     void test_LookOperation();
@@ -221,7 +223,9 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_operation_Talk);
     ADD_TEST(Accounttest::test_operation_INVALID);
     ADD_TEST(Accounttest::test_operation_Other);
-    ADD_TEST(Accounttest::test_CreateOperation);
+    ADD_TEST(Accounttest::test_CreateOperation_no_args);
+    ADD_TEST(Accounttest::test_CreateOperation_no_parents);
+    ADD_TEST(Accounttest::test_CreateOperation_good);
     ADD_TEST(Accounttest::test_GetOperation);
     ADD_TEST(Accounttest::test_ImaginaryOperation);
     ADD_TEST(Accounttest::test_LookOperation);
@@ -561,6 +565,8 @@ void Accounttest::test_operation_Create()
     OpVector res;
 
     m_account->operation(op, res);
+
+    ASSERT_TRUE(res.empty());
 }
 
 void Accounttest::test_operation_Get()
@@ -628,12 +634,48 @@ void Accounttest::test_operation_Other()
     m_account->operation(op, res);
 }
 
-void Accounttest::test_CreateOperation()
+void Accounttest::test_CreateOperation_no_args()
 {
     Atlas::Objects::Operation::Create op;
     OpVector res;
 
     m_account->CreateOperation(op, res);
+}
+
+void Accounttest::test_CreateOperation_no_parents()
+{
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    Anonymous create_arg;
+    op->setArgs1(create_arg);
+
+    m_account->operation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Accounttest::test_CreateOperation_good()
+{
+    long cid = m_id_counter++;
+
+    // Set up the creation so it succeeds
+    characterError_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    Anonymous create_arg;
+    create_arg->setParents(std::list<std::string>(1, "foo"));
+    op->setArgs1(create_arg);
+
+    m_account->operation(op, res);
+
+    ASSERT_EQUAL(res.size(), 2u);
 }
 
 void Accounttest::test_GetOperation()
@@ -711,7 +753,11 @@ void Accounttest::test_createObject_add_failed()
 
     m_account->createObject("foO", arg, op, res);
 
-    ASSERT_TRUE(res.empty());
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::ERROR_NO);
+
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 }
 
@@ -1488,6 +1534,7 @@ void Router::error(const Operation & op,
                    OpVector & res,
                    const std::string & to) const
 {
+    res.push_back(Atlas::Objects::Operation::Error());
 }
 
 Location::Location() : m_loc(0)
