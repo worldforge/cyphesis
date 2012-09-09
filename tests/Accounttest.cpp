@@ -684,6 +684,8 @@ void Accounttest::test_GetOperation()
     OpVector res;
 
     m_account->GetOperation(op, res);
+
+    ASSERT_TRUE(res.empty());
 }
 
 void Accounttest::test_ImaginaryOperation()
