@@ -78,6 +78,10 @@ int main()
 
 // stubs
 
+void TestWorld::message(const Operation & op, Entity & ent)
+{
+}
+
 Entity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {

@@ -52,7 +52,7 @@ class TestWorld : public BaseWorld {
     virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
         return 0;
     }
-    virtual void message(const Operation & op, Entity & ent) { }
+    virtual void message(const Operation & op, Entity & ent);
     virtual Entity * findByName(const std::string & name) { return 0; }
     virtual Entity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(Entity *) { }
