@@ -119,6 +119,8 @@ void Playertest::setup()
 void Playertest::teardown()
 {
     delete m_server;
+    delete m_account;
+    delete m_connection;
 }
 
 void Playertest::test_getType()
@@ -474,6 +476,7 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 
 ServerRouting::~ServerRouting()
 {
+    delete &m_world;
 }
 
 void ServerRouting::addObject(Router * obj)
@@ -988,6 +991,7 @@ BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
+    delete &m_gameWorld;
 }
 
 Entity * BaseWorld::getEntity(const std::string & id) const

@@ -31,6 +31,7 @@
 
 #include "server/CommSocket.h"
 #include "server/Connection.h"
+#include "server/Lobby.h"
 #include "server/ServerRouting.h"
 
 #include "rulesets/Character.h"
@@ -143,7 +144,15 @@ class Accounttest : public Cyphesis::TestBase
     void test_ImaginaryOperation_no_loc();
     void test_ImaginaryOperation_loc();
     void test_ImaginaryOperation_unconnected();
-    void test_LookOperation();
+    void test_LookOperation_no_args();
+    void test_LookOperation_unconnected();
+    void test_LookOperation_no_id();
+    void test_LookOperation_known_character();
+    void test_LookOperation_known_account();
+    void test_LookOperation_unknown();
+    void test_LookOperation_possess_invalid();
+    void test_LookOperation_possess_Entity();
+    void test_LookOperation_possess_Character();
     void test_SetOperation_no_args();
     void test_SetOperation_no_id();
     void test_SetOperation_unowned_character();
@@ -264,7 +273,15 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_ImaginaryOperation_no_loc);
     ADD_TEST(Accounttest::test_ImaginaryOperation_loc);
     ADD_TEST(Accounttest::test_ImaginaryOperation_unconnected);
-    ADD_TEST(Accounttest::test_LookOperation);
+    ADD_TEST(Accounttest::test_LookOperation_no_args);
+    ADD_TEST(Accounttest::test_LookOperation_unconnected);
+    ADD_TEST(Accounttest::test_LookOperation_no_id);
+    ADD_TEST(Accounttest::test_LookOperation_known_character);
+    ADD_TEST(Accounttest::test_LookOperation_known_account);
+    ADD_TEST(Accounttest::test_LookOperation_unknown);
+    ADD_TEST(Accounttest::test_LookOperation_possess_invalid);
+    ADD_TEST(Accounttest::test_LookOperation_possess_Entity);
+    ADD_TEST(Accounttest::test_LookOperation_possess_Character);
     ADD_TEST(Accounttest::test_SetOperation_no_args);
     ADD_TEST(Accounttest::test_SetOperation_no_id);
     ADD_TEST(Accounttest::test_SetOperation_unowned_character);
@@ -807,12 +824,157 @@ void Accounttest::test_ImaginaryOperation_unconnected()
     ASSERT_EQUAL(Lobby_operation_called, -1);
 }
 
-void Accounttest::test_LookOperation()
+void Accounttest::test_LookOperation_no_args()
 {
     Atlas::Objects::Operation::Look op;
     OpVector res;
 
     m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::SIGHT_NO);
+    ASSERT_EQUAL(result->getArgs().size(),
+                 1u);
+
+    const Root & result_arg = result->getArgs().front();
+
+    ASSERT_TRUE(!result_arg->isDefaultId());
+    ASSERT_EQUAL(result_arg->getId(),
+                 m_server->m_lobby.getId());
+}
+
+void Accounttest::test_LookOperation_unconnected()
+{
+    delete m_account->m_connection;
+    m_account->m_connection = 0;
+
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_TRUE(res.empty());
+}
+
+void Accounttest::test_LookOperation_no_id()
+{
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Accounttest::test_LookOperation_known_character()
+{
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
+
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(c->getId());
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::SIGHT_NO);
+    ASSERT_EQUAL(result->getArgs().size(),
+                 1u);
+
+    const Root & result_arg = result->getArgs().front();
+
+    ASSERT_TRUE(!result_arg->isDefaultId());
+    ASSERT_EQUAL(result_arg->getId(),
+                 c->getId());
+
+    m_account->m_charactersDict.erase(c->getIntId());
+    delete c;
+}
+
+void Accounttest::test_LookOperation_known_account()
+{
+    long cid = m_id_counter++;
+    Account * ac = new TestAccount(0, "","", compose("%1", cid), cid);
+    m_server->m_lobby.addAccount(ac);
+
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(ac->getId());
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::SIGHT_NO);
+    ASSERT_EQUAL(result->getArgs().size(),
+                 1u);
+
+    const Root & result_arg = result->getArgs().front();
+
+    ASSERT_TRUE(!result_arg->isDefaultId());
+    ASSERT_EQUAL(result_arg->getId(),
+                 ac->getId());
+
+    m_server->m_lobby.delAccount(ac);
+    delete ac;
+}
+
+void Accounttest::test_LookOperation_unknown()
+{
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId("8026");
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Accounttest::test_LookOperation_possess_invalid()
+{
+}
+
+void Accounttest::test_LookOperation_possess_Entity()
+{
+}
+
+void Accounttest::test_LookOperation_possess_Character()
+{
 }
 
 void Accounttest::test_SetOperation_no_args()
@@ -1471,6 +1633,7 @@ Lobby::~Lobby()
 
 void Lobby::delAccount(Account * ac)
 {
+    m_accounts.erase(ac->getId());
 }
 
 void Lobby::addToMessage(MapType & omap) const
@@ -1479,10 +1642,12 @@ void Lobby::addToMessage(MapType & omap) const
 
 void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
+    ent->setId(getId());
 }
 
 void Lobby::addAccount(Account * ac)
 {
+    m_accounts[ac->getId()] = ac;
 }
 
 void Lobby::operation(const Operation & op, OpVector & res)
