@@ -56,7 +56,7 @@ class Admintest : public Cyphesis::TestBase
 
     ServerRouting * m_server;
     Connection * m_connection;
-    Account * m_account;
+    Admin * m_account;
   public:
     Admintest();
 

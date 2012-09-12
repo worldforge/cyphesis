@@ -55,7 +55,7 @@ class ServerAccounttest : public Cyphesis::TestBase
 
     ServerRouting * m_server;
     Connection * m_connection;
-    Account * m_account;
+    ServerAccount * m_account;
   public:
     ServerAccounttest();
 
