@@ -44,6 +44,8 @@ class Player : public Account {
     /// \brief Set of types which can be created as playable characters by
     /// Player accounts.
     static std::set<std::string> playableTypes;
+
+    friend class Playertest;
 };
 
 #endif // SERVER_PLAYER_H

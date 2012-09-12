@@ -38,13 +38,16 @@
 
 #include "common/compose.hpp"
 
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
 
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
@@ -65,7 +68,14 @@ class Playertest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_null();
+    void test_getType();
+    void test_addToMessage();
+    void test_addToEntity();
+    void test_characterError_no_name();
+    void test_characterError_admin_name();
+    void test_characterError_not_playable();
+    void test_characterError_playable();
+
 };
 
 long Playertest::m_id_counter = 0L;
@@ -74,7 +84,13 @@ Playertest::Playertest() : m_server(0),
                          m_connection(0),
                          m_account(0)
 {
-    ADD_TEST(Playertest::test_null);
+    ADD_TEST(Playertest::test_getType);
+    ADD_TEST(Playertest::test_addToMessage);
+    ADD_TEST(Playertest::test_addToEntity);
+    ADD_TEST(Playertest::test_characterError_no_name);
+    ADD_TEST(Playertest::test_characterError_admin_name);
+    ADD_TEST(Playertest::test_characterError_not_playable);
+    ADD_TEST(Playertest::test_characterError_playable);
 }
 
 long Playertest::newId()
@@ -105,9 +121,99 @@ void Playertest::teardown()
     delete m_server;
 }
 
-void Playertest::test_null()
+void Playertest::test_getType()
 {
     ASSERT_TRUE(m_account != 0);
+
+    const char * type = m_account->getType();
+    ASSERT_EQUAL(std::string("player"), type);
+}
+
+void Playertest::test_addToMessage()
+{
+    MapType data;
+
+    m_account->addToMessage(data);
+
+    ASSERT_TRUE(data.find("character_types") != data.end());
+}
+
+void Playertest::test_addToEntity()
+{
+    Anonymous data;
+
+    m_account->addToEntity(data);
+
+    ASSERT_TRUE(data->hasAttr("character_types"));
+}
+
+void Playertest::test_characterError_no_name()
+{
+    Player::playableTypes.insert("settler");
+
+    Atlas::Objects::Operation::Create op;
+    Anonymous description;
+    description->setParents(std::list<std::string>(1, "settler"));
+    OpVector res;
+
+    int result = m_account->characterError(op, description, res);
+
+    ASSERT_EQUAL(result, 1);
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Playertest::test_characterError_admin_name()
+{
+    Player::playableTypes.insert("settler");
+
+    Atlas::Objects::Operation::Create op;
+    Anonymous description;
+    description->setName("adminfoo");
+    description->setParents(std::list<std::string>(1, "settler"));
+    OpVector res;
+
+    int result = m_account->characterError(op, description, res);
+
+    ASSERT_EQUAL(result, 1);
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Playertest::test_characterError_not_playable()
+{
+    Player::playableTypes.insert("settler");
+
+    Atlas::Objects::Operation::Create op;
+    Anonymous description;
+    description->setName("dfdd84f5-4708-4b6d-b418-f825d779efc0");
+    description->setParents(std::list<std::string>(1, "goblin"));
+    OpVector res;
+
+    int result = m_account->characterError(op, description, res);
+
+    ASSERT_EQUAL(result, 1);
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Playertest::test_characterError_playable()
+{
+    Player::playableTypes.insert("settler");
+
+    Atlas::Objects::Operation::Create op;
+    Anonymous description;
+    description->setName("13e45264-e512-411b-9f8a-2e5cb6327c87");
+    description->setParents(std::list<std::string>(1, "settler"));
+    OpVector res;
+
+    int result = m_account->characterError(op, description, res);
+
+    ASSERT_EQUAL(result, 0);
+    ASSERT_EQUAL(res.size(), 0u);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
@@ -916,6 +1022,7 @@ void Router::clientError(const Operation & op,
                          OpVector & res,
                          const std::string & to) const
 {
+    res.push_back(Atlas::Objects::Operation::Error());
 }
 
 void Router::error(const Operation & op,
@@ -923,6 +1030,7 @@ void Router::error(const Operation & op,
                    OpVector & res,
                    const std::string & to) const
 {
+    res.push_back(Atlas::Objects::Operation::Error());
 }
 
 Location::Location() : m_loc(0)
