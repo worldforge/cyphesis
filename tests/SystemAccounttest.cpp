@@ -65,24 +65,6 @@ class SystemAccounttest : public Cyphesis::TestBase
     void test_null();
 };
 
-class TestSystemAccount : public SystemAccount {
-  public:
-    TestSystemAccount(Connection * conn,
-                      const std::string & username,
-                      const std::string & passwd,
-                      const std::string & id, long intId);
-
-    ~TestSystemAccount();
-
-    virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Root & ent,
-                               OpVector & res) const;
-
-    Entity * testAddNewCharacter(const std::string & typestr,
-                                 const RootEntity & ent,
-                                 const RootEntity & arg);
-};
-
 SystemAccounttest::SystemAccounttest() : m_id_counter(0L),
                                          m_server(0),
                                          m_connection(0),
@@ -103,10 +85,10 @@ void SystemAccounttest::setup()
     m_connection = new Connection(*(CommSocket*)0, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   compose("%1", m_id_counter), m_id_counter++);
-    m_account = new TestSystemAccount(m_connection,
-                                "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
-                                "fa1a03a2-a745-4033-85cb-bb694e921e62",
-                                compose("%1", m_id_counter), m_id_counter++);
+    m_account = new SystemAccount(m_connection,
+                                  "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
+                                  "fa1a03a2-a745-4033-85cb-bb694e921e62",
+                                  compose("%1", m_id_counter), m_id_counter++);
 }
 
 void SystemAccounttest::teardown()
@@ -117,33 +99,6 @@ void SystemAccounttest::teardown()
 void SystemAccounttest::test_null()
 {
     ASSERT_TRUE(m_account != 0);
-}
-
-TestSystemAccount::TestSystemAccount(Connection * conn,
-                                     const std::string & username,
-                                     const std::string & passwd,
-                                     const std::string & id, long intId) :
-      SystemAccount(conn, username, passwd, id, intId)
-{
-}
-
-TestSystemAccount::~TestSystemAccount()
-{
-    delete m_connection;
-}
-
-int TestSystemAccount::characterError(const Operation & op,
-                                      const Atlas::Objects::Root & ent,
-                                      OpVector & res) const
-{
-    return 0;
-}
-
-Entity * TestSystemAccount::testAddNewCharacter(const std::string & typestr,
-                                                const RootEntity & ent,
-                                                const RootEntity & arg)
-{
-    return addNewCharacter(typestr, ent, arg);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
