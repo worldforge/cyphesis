@@ -73,7 +73,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityRuleHandlertest TaskRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
-               ExternalPropertytest Persistencetest
+               ExternalPropertytest Persistencetest \
+               SystemAccounttest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1373,6 +1374,10 @@ ExternalPropertytest_LDADD = \
 Persistencetest_SOURCES = Persistencetest.cpp
 Persistencetest_LDADD = \
         $(top_builddir)/server/Persistence.o
+
+SystemAccounttest_SOURCES = SystemAccounttest.cpp
+SystemAccounttest_LDADD = \
+        $(top_builddir)/server/SystemAccount.o
 
 # SERVER_INTEGRATION_TESTS
 

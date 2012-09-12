@@ -1,3 +1,5 @@
+Fix return type in characterError
+
 1. Make sure all retries have exponential backoff.
 2. Make sure all periodic things have jitter.
   a) Metaserver query needs deterministics jitter, to ensure clients drift.
