@@ -592,6 +592,10 @@ void Accounttest::test_store()
 
 void Accounttest::test_addToMessage()
 {
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
+
     MapType data;
 
     m_account->m_username = "2fe6afa4-747f-490b-a292-783bf3f4520b";
@@ -603,13 +607,20 @@ void Accounttest::test_addToMessage()
     ASSERT_EQUAL(data["name"], m_account->m_username);
     ASSERT_EQUAL(data["password"], m_account->m_password);
     ASSERT_EQUAL(data["parents"], ListType(1, "account"));
-    ASSERT_EQUAL(data["characters"], ListType());
+    ASSERT_EQUAL(data["characters"], ListType(1, c->getId()));
     ASSERT_EQUAL(data["objtype"], "obj");
     ASSERT_EQUAL(data["id"], m_account->getId());
+
+    m_account->m_charactersDict.erase(c->getIntId());
+    delete c;
 }
 
 void Accounttest::test_addToEntity()
 {
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
+
     Anonymous data;
 
     m_account->m_username = "36b0931c-19db-4f87-8b83-591d465af9a0";
@@ -623,10 +634,13 @@ void Accounttest::test_addToEntity()
     ASSERT_EQUAL(data->getAttr("password"), m_account->m_password);
     ASSERT_TRUE(!data->isDefaultParents());
     ASSERT_EQUAL(data->getParents(), std::list<std::string>(1, "account"));
-    ASSERT_EQUAL(data->getAttr("characters"), ListType());
+    ASSERT_EQUAL(data->getAttr("characters"), ListType(1, c->getId()));
     ASSERT_TRUE(!data->isDefaultParents());
     ASSERT_EQUAL(data->getObjtype(), "obj");
     ASSERT_EQUAL(data->getAttr("id"), m_account->getId());
+
+    m_account->m_charactersDict.erase(c->getIntId());
+    delete c;
 }
 
 void Accounttest::test_operation_Create()
