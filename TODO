@@ -1,3 +1,5 @@
+A solid attempt at i18n, which different l12n for connections?
+
 Fix return type in characterError
 
 1. Make sure all retries have exponential backoff.
