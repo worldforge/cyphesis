@@ -301,6 +301,10 @@ SystemAccount::SystemAccount(Connection * conn,
 {
 }
 
+SystemAccount::~SystemAccount()
+{
+}
+
 const char * SystemAccount::getType() const
 {
     return "sys";
