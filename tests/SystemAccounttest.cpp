@@ -62,7 +62,8 @@ class SystemAccounttest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_null();
+    void test_getType();
+    void test_store();
 };
 
 SystemAccounttest::SystemAccounttest() : m_id_counter(0L),
@@ -70,7 +71,8 @@ SystemAccounttest::SystemAccounttest() : m_id_counter(0L),
                                          m_connection(0),
                                          m_account(0)
 {
-    ADD_TEST(SystemAccounttest::test_null);
+    ADD_TEST(SystemAccounttest::test_getType);
+    ADD_TEST(SystemAccounttest::test_store);
 }
 
 void SystemAccounttest::setup()
@@ -98,9 +100,16 @@ void SystemAccounttest::teardown()
     delete m_connection;
 }
 
-void SystemAccounttest::test_null()
+void SystemAccounttest::test_getType()
 {
-    ASSERT_TRUE(m_account != 0);
+    const char * type = m_account->getType();
+
+    ASSERT_EQUAL(std::string("sys"), type);
+}
+
+void SystemAccounttest::test_store()
+{
+    m_account->store();
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
