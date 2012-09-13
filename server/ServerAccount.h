@@ -48,6 +48,8 @@ class ServerAccount : public Account {
     virtual ~ServerAccount();
 
     virtual const char * getType() const;
+
+    friend class ServerAccounttest;
 };
 
 #endif // SERVER_SERVER_ACCOUNT_H

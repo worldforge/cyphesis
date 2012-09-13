@@ -38,6 +38,7 @@
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
@@ -45,6 +46,7 @@
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::RootOperation;
 
 using String::compose;
 
@@ -62,7 +64,10 @@ class ServerAccounttest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_null();
+    void test_getType();
+    void test_characterError();
+    void test_createObject();
+    void test_addNewEntity();
 };
 
 ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
@@ -70,7 +75,10 @@ ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
                                          m_connection(0),
                                          m_account(0)
 {
-    ADD_TEST(ServerAccounttest::test_null);
+    ADD_TEST(ServerAccounttest::test_getType);
+    ADD_TEST(ServerAccounttest::test_characterError);
+    ADD_TEST(ServerAccounttest::test_createObject);
+    ADD_TEST(ServerAccounttest::test_addNewEntity);
 }
 
 void ServerAccounttest::setup()
@@ -98,9 +106,30 @@ void ServerAccounttest::teardown()
     delete m_connection;
 }
 
-void ServerAccounttest::test_null()
+void ServerAccounttest::test_getType()
 {
-    ASSERT_TRUE(m_account != 0);
+    const char * type = m_account->getType();
+
+    ASSERT_EQUAL(std::string("server"), type);
+}
+
+void ServerAccounttest::test_characterError()
+{
+    RootOperation op;
+    Root arg;
+    OpVector res;
+
+    int result = m_account->characterError(op, arg, res);
+
+    ASSERT_EQUAL(result, -1);
+}
+
+void ServerAccounttest::test_createObject()
+{
+}
+
+void ServerAccounttest::test_addNewEntity()
+{
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
