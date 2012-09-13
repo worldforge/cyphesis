@@ -1,3 +1,7 @@
+Reverse the flow of the possess key on the server. Have it created on the
+destination based on a secret, and passed back to the source server, and from
+there back to the client.
+
 A solid attempt at i18n, which different l12n for connections?
 
 Fix return type in characterError
