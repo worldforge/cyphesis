@@ -1044,7 +1044,8 @@ ServerAccounttest_LDADD = \
 
 Playertest_SOURCES = Playertest.cpp
 Playertest_LDADD = \
-        $(top_builddir)/server/Player.o
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/common/debug.o
 
 EntityFactorytest_SOURCES = EntityFactorytest.cpp
 EntityFactorytest_LDADD = \

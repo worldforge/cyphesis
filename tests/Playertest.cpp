@@ -37,6 +37,7 @@
 #include "rulesets/Entity.h"
 
 #include "common/compose.hpp"
+#include "common/debug.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -44,6 +45,7 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -51,6 +53,30 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
+
+std::ostream & operator<<(std::ostream & os,
+                          const Element & e)
+{
+    debug_dump(e, os);
+    return os;
+}
+
+template <typename T>
+std::ostream & operator<<(std::ostream & os,
+                          const std::list<T> & sl)
+{
+    typename std::list<T>::const_iterator I = sl.begin();
+    typename std::list<T>::const_iterator Iend = sl.end();
+    os << "[";
+    for (; I != Iend; ++I) {
+        if (I != sl.begin()) {
+            os << ", ";
+        }
+        os << *I;
+    }
+    os << "]";
+    return os;
+}
 
 class Playertest : public Cyphesis::TestBase
 {
@@ -140,6 +166,7 @@ void Playertest::test_addToMessage()
     m_account->addToMessage(data);
 
     ASSERT_TRUE(data.find("character_types") != data.end());
+    ASSERT_EQUAL(data["character_types"], ListType(1, "settler"));
 }
 
 void Playertest::test_addToEntity()
@@ -151,6 +178,7 @@ void Playertest::test_addToEntity()
     m_account->addToEntity(data);
 
     ASSERT_TRUE(data->hasAttr("character_types"));
+    ASSERT_EQUAL(data->getAttr("character_types"), ListType(1, "settler"));
 }
 
 void Playertest::test_characterError_no_name()
