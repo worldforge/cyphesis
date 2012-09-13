@@ -534,6 +534,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         res.push_back(s);
         return;
     }
+    // FIXME In the possess case this ID isn't really required
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "No target for look", res, getId());
@@ -552,7 +553,11 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         const std::string & key_str = key.String();
         Entity *character;
         character = TeleportAuthenticator::instance()->authenticateTeleport(to, key_str);
+        // FIXME Not finding the character should be fatal
+        // FIXME TA needs to generate clientError ops for the client
         if (character) {
+            // FIXME If we don't succeed in connecting, no need to carry on
+            // and we probably need to indicate to the client
             if (connectCharacter(character) == 0) {
                 TeleportAuthenticator::instance()->removeTeleport(to);
                 logEvent(POSSESS_CHAR,
@@ -567,6 +572,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         }
     }
 
+    // FIXME Avoid this lookup if we just took possession of a character
     EntityDict::const_iterator J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {
         Sight s;
