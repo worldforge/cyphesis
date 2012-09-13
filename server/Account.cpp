@@ -216,7 +216,7 @@ void Account::addToMessage(MapType & omap) const
     EntityDict::const_iterator I = m_charactersDict.begin();
     EntityDict::const_iterator Iend = m_charactersDict.end();
     for (; I != Iend; ++I) {
-        char_list.push_back(I->first);
+        char_list.push_back(I->second->getId());
     }
     omap["characters"] = char_list;
     omap["objtype"] = "obj";
