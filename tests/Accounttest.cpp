@@ -164,7 +164,11 @@ class Accounttest : public Cyphesis::TestBase
     void test_SetOperation_height_no_bbox();
     void test_SetOperation_tasks_empty();
     void test_SetOperation_tasks_good();
-    void test_TalkOperation();
+    void test_TalkOperation_no_args();
+    void test_TalkOperation_non_entity();
+    void test_TalkOperation_self();
+    void test_TalkOperation_loc();
+    void test_TalkOperation_unconnected();
     void test_OtherOperation();
     void test_createObject_permission_error();
     void test_createObject_add_failed();
@@ -300,7 +304,11 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_SetOperation_height_no_bbox);
     ADD_TEST(Accounttest::test_SetOperation_tasks_empty);
     ADD_TEST(Accounttest::test_SetOperation_tasks_good);
-    ADD_TEST(Accounttest::test_TalkOperation);
+    ADD_TEST(Accounttest::test_TalkOperation_no_args);
+    ADD_TEST(Accounttest::test_TalkOperation_non_entity);
+    ADD_TEST(Accounttest::test_TalkOperation_self);
+    ADD_TEST(Accounttest::test_TalkOperation_loc);
+    ADD_TEST(Accounttest::test_TalkOperation_unconnected);
     ADD_TEST(Accounttest::test_OtherOperation);
     ADD_TEST(Accounttest::test_createObject_permission_error);
     ADD_TEST(Accounttest::test_createObject_add_failed);
@@ -1369,13 +1377,91 @@ void Accounttest::test_SetOperation_tasks_good()
     delete c;
 }
 
-void Accounttest::test_TalkOperation()
+void Accounttest::test_TalkOperation_no_args()
 {
     Atlas::Objects::Operation::Talk op;
     OpVector res;
 
     m_account->TalkOperation(op, res);
+
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::ERROR_NO);
 }
+
+void Accounttest::test_TalkOperation_non_entity()
+{
+    Atlas::Objects::Operation::Talk op;
+    OpVector res;
+
+    Root talk_arg;
+    op->setArgs1(talk_arg);
+
+    m_account->TalkOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Accounttest::test_TalkOperation_self()
+{
+    Lobby_operation_called = -1;
+
+    Atlas::Objects::Operation::Talk op;
+    OpVector res;
+
+    Anonymous talk_arg;
+    op->setArgs1(talk_arg);
+
+    m_account->TalkOperation(op, res);
+
+    ASSERT_TRUE(res.empty());
+
+    ASSERT_EQUAL(Lobby_operation_called, Atlas::Objects::Operation::SOUND_NO);
+}
+
+void Accounttest::test_TalkOperation_loc()
+{
+    Lobby_operation_called = -1;
+
+    Atlas::Objects::Operation::Talk op;
+    OpVector res;
+
+    Anonymous talk_arg;
+    talk_arg->setLoc("6273");
+    op->setArgs1(talk_arg);
+
+    m_account->TalkOperation(op, res);
+
+    ASSERT_TRUE(res.empty());
+
+    ASSERT_EQUAL(Lobby_operation_called, Atlas::Objects::Operation::SOUND_NO);
+}
+
+void Accounttest::test_TalkOperation_unconnected()
+{
+    delete m_account->m_connection;
+    m_account->m_connection = 0;
+
+    Lobby_operation_called = -1;
+
+    Atlas::Objects::Operation::Talk op;
+    OpVector res;
+
+    Anonymous talk_arg;
+    op->setArgs1(talk_arg);
+
+    m_account->TalkOperation(op, res);
+
+    ASSERT_TRUE(res.empty());
+
+    ASSERT_EQUAL(Lobby_operation_called, -1);
+}
+
 
 void Accounttest::test_OtherOperation()
 {
