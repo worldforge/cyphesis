@@ -48,7 +48,9 @@ Player::Player(Connection * conn,
 {
 }
 
-Player::~Player() { }
+Player::~Player()
+{
+}
 
 const char * Player::getType() const
 {
