@@ -98,6 +98,7 @@ class Accounttest : public Cyphesis::TestBase
     Account * m_account;
 
     static Entity * TestWorld_addNewEntity_ret_value;
+    static Entity * TeleportAuthenticator_ret_value;
     static OpVector Link_send_sent;
     static int characterError_ret_value;
     static int Lobby_operation_called;
@@ -175,6 +176,7 @@ class Accounttest : public Cyphesis::TestBase
     void test_filterTasks_good();
 
     static Entity * get_TestWorld_addNewEntity_ret_value();
+    static Entity * get_TeleportAuthenticator_ret_value();
     static void append_Link_send_sent(const RootOperation &);
     static int get_characterError_ret_value();
     static void set_Lobby_operation_called(int class_no);
@@ -183,6 +185,7 @@ class Accounttest : public Cyphesis::TestBase
 };
 
 Entity * Accounttest::TestWorld_addNewEntity_ret_value;
+Entity * Accounttest::TeleportAuthenticator_ret_value;
 OpVector Accounttest::Link_send_sent;
 int Accounttest::characterError_ret_value;
 int Accounttest::Lobby_operation_called;
@@ -192,6 +195,11 @@ std::list<std::pair<RootOperation, Entity *> >
 Entity * Accounttest::get_TestWorld_addNewEntity_ret_value()
 {
     return TestWorld_addNewEntity_ret_value;
+}
+
+Entity * Accounttest::get_TeleportAuthenticator_ret_value()
+{
+    return TeleportAuthenticator_ret_value;
 }
 
 void Accounttest::append_Link_send_sent(const RootOperation & op)
@@ -967,14 +975,87 @@ void Accounttest::test_LookOperation_unknown()
 
 void Accounttest::test_LookOperation_possess_invalid()
 {
+    TeleportAuthenticator_ret_value = 0;
+
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId("8026");
+    arg->setAttr("possess_key", "3efc5e84-6fc6-4c66-bd68-1eec24ba09b6");
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
 }
 
 void Accounttest::test_LookOperation_possess_Entity()
 {
+    long cid = m_id_counter++;
+    Entity * c = new Entity(compose("%1", cid), cid);
+    TeleportAuthenticator_ret_value = c;
+
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(c->getId());
+    arg->setAttr("possess_key", "3efc5e84-6fc6-4c66-bd68-1eec24ba09b6");
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
+    m_account->m_charactersDict.erase(c->getIntId());
+    delete c;
 }
 
 void Accounttest::test_LookOperation_possess_Character()
 {
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+    TeleportAuthenticator_ret_value = c;
+
+    Atlas::Objects::Operation::Look op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(c->getId());
+    arg->setAttr("possess_key", "3efc5e84-6fc6-4c66-bd68-1eec24ba09b6");
+    op->setArgs1(arg);
+
+    m_account->LookOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & result = res.front();
+
+    ASSERT_EQUAL(result->getClassNo(),
+                 Atlas::Objects::Operation::SIGHT_NO);
+    ASSERT_EQUAL(result->getArgs().size(),
+                 1u);
+
+    const Root & result_arg = result->getArgs().front();
+
+    ASSERT_TRUE(!result_arg->isDefaultId());
+    ASSERT_EQUAL(result_arg->getId(),
+                 c->getId());
+
+    m_account->m_charactersDict.erase(c->getIntId());
+    delete c;
 }
 
 void Accounttest::test_SetOperation_no_args()
@@ -1600,7 +1681,8 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
-    return 0;
+    Entity * ne = Accounttest::get_TeleportAuthenticator_ret_value();
+    return ne;
 }
 
 Persistence * Persistence::m_instance = NULL;
