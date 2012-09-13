@@ -133,6 +133,8 @@ void Playertest::test_getType()
 
 void Playertest::test_addToMessage()
 {
+    Player::playableTypes.insert("settler");
+
     MapType data;
 
     m_account->addToMessage(data);
@@ -142,6 +144,8 @@ void Playertest::test_addToMessage()
 
 void Playertest::test_addToEntity()
 {
+    Player::playableTypes.insert("settler");
+
     Anonymous data;
 
     m_account->addToEntity(data);
