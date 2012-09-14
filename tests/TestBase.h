@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef TEST_TEST_BASE_H
-#define TEST_TEST_BASE_H
+#ifndef TESTS_TEST_BASE_H
+#define TESTS_TEST_BASE_H
 
 #include "common/compose.hpp"
 
@@ -282,4 +282,4 @@ int TestBase::assertNotNull(const char * n, const T * ptr,
                             __FILE__, __LINE__) != 0) return;\
 }
 
-#endif // TEST_TEST_BASE_H
+#endif // TESTS_TEST_BASE_H
