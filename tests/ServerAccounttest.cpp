@@ -73,6 +73,9 @@ class ServerAccounttest : public Cyphesis::TestBase
     void test_createObject_failed();
     void test_createObject_success();
     void test_createObject_success_refo();
+    void test_createObject_no_possess();
+    void test_createObject_possess_non_string();
+    void test_createObject_success_possess();
     void test_addNewEntity_failed();
     void test_addNewEntity_success();
     void test_addNewEntity_unconnected();
@@ -99,6 +102,9 @@ ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
     ADD_TEST(ServerAccounttest::test_createObject_failed);
     ADD_TEST(ServerAccounttest::test_createObject_success);
     ADD_TEST(ServerAccounttest::test_createObject_success_refo);
+    ADD_TEST(ServerAccounttest::test_createObject_no_possess);
+    ADD_TEST(ServerAccounttest::test_createObject_possess_non_string);
+    ADD_TEST(ServerAccounttest::test_createObject_success_possess);
     ADD_TEST(ServerAccounttest::test_addNewEntity_failed);
     ADD_TEST(ServerAccounttest::test_addNewEntity_success);
     ADD_TEST(ServerAccounttest::test_addNewEntity_unconnected);
@@ -242,6 +248,79 @@ void ServerAccounttest::test_createObject_success_refo()
                  Atlas::Objects::Operation::INFO_NO);
     ASSERT_TRUE(!reply->isDefaultRefno());
     ASSERT_EQUAL(reply->getRefno(), op->getSerialno());
+
+    delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void ServerAccounttest::test_createObject_no_possess()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+    RootEntity arg2;
+    RootOperation op;
+    op->setArgs1(arg);
+    op->modifyArgs().push_back(arg2);
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+    // FIXME No error to the client!
+    ASSERT_TRUE(res.empty());
+
+    delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void ServerAccounttest::test_createObject_possess_non_string()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+    RootEntity arg2;
+    arg2->setAttr("possess_key", 23);
+    RootOperation op;
+    op->setArgs1(arg);
+    op->modifyArgs().push_back(arg2);
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+    // FIXME No error to the client!
+    ASSERT_TRUE(res.empty());
+
+    delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void ServerAccounttest::test_createObject_success_possess()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+    RootEntity arg2;
+    arg2->setAttr("possess_key", "unimportant_string");
+    RootOperation op;
+    op->setArgs1(arg);
+    op->modifyArgs().push_back(arg2);
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
 
     delete TestWorld_addNewEntity_ret_value;
     TestWorld_addNewEntity_ret_value = 0;
