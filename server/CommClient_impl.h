@@ -17,6 +17,9 @@
 
 // $Id$
 
+#ifndef SERVER_COMM_CLIENT_IMPL_H
+#define SERVER_COMM_CLIENT_IMPL_H
+
 #include "CommClient.h"
 #include "CommServer.h"
 
@@ -208,3 +211,5 @@ int CommClient<StreamT>::send(const Atlas::Objects::Operation::RootOperation & o
     m_encoder->streamObjectsMessage(op);
     return this->flush();
 }
+
+#endif // SERVER_COMM_CLIENT_IMPL_H
