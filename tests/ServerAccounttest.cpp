@@ -32,6 +32,7 @@
 #include "server/CommSocket.h"
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
+#include "server/TeleportAuthenticator.h"
 
 #include "rulesets/Character.h"
 
@@ -126,10 +127,14 @@ void ServerAccounttest::setup()
                                   "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
                                   "fa1a03a2-a745-4033-85cb-bb694e921e62",
                                   compose("%1", m_id_counter), m_id_counter++);
+
+    TeleportAuthenticator::init();
 }
 
 void ServerAccounttest::teardown()
 {
+    TeleportAuthenticator::del();
+
     delete m_server;
     delete m_account;
     delete m_connection;
@@ -394,7 +399,6 @@ int main()
 
 #include "server/Connection.h"
 #include "server/Persistence.h"
-#include "server/TeleportAuthenticator.h"
 
 #include "common/globals.h"
 #include "common/id.h"
