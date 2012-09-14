@@ -33,12 +33,12 @@
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootEntity.h>
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
@@ -58,6 +58,8 @@ class ServerAccounttest : public Cyphesis::TestBase
     ServerRouting * m_server;
     Connection * m_connection;
     ServerAccount * m_account;
+
+    static Entity * TestWorld_addNewEntity_ret_value;
   public:
     ServerAccounttest();
 
@@ -66,9 +68,24 @@ class ServerAccounttest : public Cyphesis::TestBase
 
     void test_getType();
     void test_characterError();
-    void test_createObject();
-    void test_addNewEntity();
+    void test_createObject_not_obj();
+    void test_createObject_non_entity();
+    void test_createObject_failed();
+    void test_createObject_success();
+    void test_createObject_success_refo();
+    void test_addNewEntity_failed();
+    void test_addNewEntity_success();
+    void test_addNewEntity_unconnected();
+
+    static Entity * get_TestWorld_addNewEntity_ret_value();
 };
+
+Entity * ServerAccounttest::TestWorld_addNewEntity_ret_value;
+
+Entity * ServerAccounttest::get_TestWorld_addNewEntity_ret_value()
+{
+    return TestWorld_addNewEntity_ret_value;
+}
 
 ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
                                          m_server(0),
@@ -77,8 +94,14 @@ ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
 {
     ADD_TEST(ServerAccounttest::test_getType);
     ADD_TEST(ServerAccounttest::test_characterError);
-    ADD_TEST(ServerAccounttest::test_createObject);
-    ADD_TEST(ServerAccounttest::test_addNewEntity);
+    ADD_TEST(ServerAccounttest::test_createObject_not_obj);
+    ADD_TEST(ServerAccounttest::test_createObject_non_entity);
+    ADD_TEST(ServerAccounttest::test_createObject_failed);
+    ADD_TEST(ServerAccounttest::test_createObject_success);
+    ADD_TEST(ServerAccounttest::test_createObject_success_refo);
+    ADD_TEST(ServerAccounttest::test_addNewEntity_failed);
+    ADD_TEST(ServerAccounttest::test_addNewEntity_success);
+    ADD_TEST(ServerAccounttest::test_addNewEntity_unconnected);
 }
 
 void ServerAccounttest::setup()
@@ -124,12 +147,145 @@ void ServerAccounttest::test_characterError()
     ASSERT_EQUAL(result, -1);
 }
 
-void ServerAccounttest::test_createObject()
+void ServerAccounttest::test_createObject_not_obj()
 {
+    std::string type_str("unimportant_string");
+    Root arg;
+    RootOperation op;
+    OpVector res;
+
+    arg->setObjtype("foo");
+
+    m_account->createObject(type_str, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
 }
 
-void ServerAccounttest::test_addNewEntity()
+void ServerAccounttest::test_createObject_non_entity()
 {
+    std::string type_str("unimportant_string");
+    Root arg;
+    RootOperation op;
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+    ASSERT_TRUE(res.empty());
+}
+
+void ServerAccounttest::test_createObject_failed()
+{
+    TestWorld_addNewEntity_ret_value = 0;
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+    RootOperation op;
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void ServerAccounttest::test_createObject_success()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+    RootOperation op;
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+
+    delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void ServerAccounttest::test_createObject_success_refo()
+{
+    long cid = m_id_counter++;
+    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+    RootOperation op;
+    op->setSerialno(44295);
+    OpVector res;
+
+    m_account->createObject(type_str, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_TRUE(!reply->isDefaultRefno());
+    ASSERT_EQUAL(reply->getRefno(), op->getSerialno());
+
+    delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void ServerAccounttest::test_addNewEntity_failed()
+{
+    TestWorld_addNewEntity_ret_value = 0;
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+
+    Entity * e = m_account->addNewEntity(type_str, arg, arg);
+
+    ASSERT_NULL(e);
+}
+
+void ServerAccounttest::test_addNewEntity_success()
+{
+    long cid = m_id_counter++;
+    Entity * c = new Character(compose("%1", cid), cid);
+    TestWorld_addNewEntity_ret_value = c;
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+
+    Entity * e = m_account->addNewEntity(type_str, arg, arg);
+
+    ASSERT_EQUAL(c, e);
+
+    delete TestWorld_addNewEntity_ret_value;
+    TestWorld_addNewEntity_ret_value = 0;
+}
+
+void ServerAccounttest::test_addNewEntity_unconnected()
+{
+    m_account->m_connection = 0;
+
+    std::string type_str("unimportant_string");
+    RootEntity arg;
+
+    Entity * e = m_account->addNewEntity(type_str, arg, arg);
+
+    ASSERT_NULL(e);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
@@ -139,7 +295,13 @@ void TestWorld::message(const Operation & op, Entity & ent)
 Entity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
-    return 0;
+    Entity * ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
+    if (ne != 0) {
+        ne->m_location.m_loc = &m_gameWorld;
+        ne->m_location.m_pos = Point3D(0,0,0);
+        assert(ne->m_location.isValid());
+    }
+    return ne;
 }
 
 int main()
@@ -154,8 +316,6 @@ int main()
 #include "server/Connection.h"
 #include "server/Persistence.h"
 #include "server/TeleportAuthenticator.h"
-
-#include "rulesets/Character.h"
 
 #include "common/globals.h"
 #include "common/id.h"
@@ -839,6 +999,7 @@ void Router::error(const Operation & op,
                    OpVector & res,
                    const std::string & to) const
 {
+    res.push_back(Atlas::Objects::Operation::Error());
 }
 
 Location::Location() : m_loc(0)
