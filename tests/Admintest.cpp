@@ -66,6 +66,7 @@ class Admintest : public Cyphesis::TestBase
     void teardown();
 
     void test_null();
+    void test_getType();
 };
 
 long Admintest::m_id_counter = 0L;
@@ -75,6 +76,21 @@ Admintest::Admintest() : m_server(0),
                          m_account(0)
 {
     ADD_TEST(Admintest::test_null);
+    ADD_TEST(Admintest::test_getType);
+    // ADD_TEST(Admintest::test_addToMessage);
+    // ADD_TEST(Admintest::test_addToMessage_tree);
+    // ADD_TEST(Admintest::test_addToEntity_tree);
+    // ADD_TEST(Admintest::test_opDispatched);
+    // ADD_TEST(Admintest::test_opDispatched_unconnected);
+    // ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
+    // ADD_TEST(Admintest::test_characterError_default_parents);
+    // ADD_TEST(Admintest::test_characterError_empty_parents);
+    // ADD_TEST(Admintest::test_characterError_valid);
+    // ADD_TEST(Admintest::test_LookOperation_no_args);
+    // ADD_TEST(Admintest::test_LookOperation_no_id);
+    // ADD_TEST(Admintest::test_LookOperation_self);
+    // ADD_TEST(Admintest::test_LookOperation_unknwon);
+    // ADD_TEST(Admintest::test_LookOperation_knwon);
 }
 
 long Admintest::newId()
@@ -110,6 +126,13 @@ void Admintest::teardown()
 void Admintest::test_null()
 {
     ASSERT_TRUE(m_account != 0);
+}
+
+void Admintest::test_getType()
+{
+    const char * type_string = m_account->getType();
+
+    ASSERT_EQUAL(std::string("admin"), type_string);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
