@@ -56,6 +56,8 @@ class Admin : public Account {
     virtual void OtherOperation(const Operation &, OpVector &);
 
     void customMonitorOperation(const Operation &, OpVector &);
+
+    friend class Admintest;
 };
 
 #endif // SERVER_ADMIN_H
