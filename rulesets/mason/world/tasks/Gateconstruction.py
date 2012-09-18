@@ -60,7 +60,7 @@ class Gateconstruction(server.Task):
             while (count1 > 0):
                 tar = raw_materials1.pop()
                 self.lumber_length = tar.location.bbox.far_point[2]- \
-                                   tar.location.bbox.near_point[2]
+                                     tar.location.bbox.near_point[2]
                 offset=Vector3D(self.lumber_length/7, 
                 self.lumber_length/3.5,self.lumber_length*.63)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
