@@ -164,11 +164,6 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (m_connection == NULL) {
-        error(op,"Disconnected admin account handling explicit logout",res, getId());
-        return;
-    }
-
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "No account id given on logout op", res, getId());
@@ -179,6 +174,12 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
         Account::LogoutOperation(op, res);
         return;
     }
+
+    if (m_connection == NULL) {
+        error(op,"Disconnected admin account handling explicit logout",res, getId());
+        return;
+    }
+
     Router * account = m_connection->m_server.getObject(account_id);
     if (!account) {
         error(op, "Logout failed", res, getId());
