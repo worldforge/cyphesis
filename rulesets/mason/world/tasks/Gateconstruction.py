@@ -195,7 +195,7 @@ class Gateconstruction(server.Task):
                                           type = "construction",
                                           bbox=bbox1,
                                           location = chunk_loc),
-                                          to = target)
+                          to = target)
         create.setSerialno(0)
         res.append(create)
         res.append(self.next_tick(1.75))    
