@@ -274,7 +274,7 @@ void EntityKit::updateProperties()
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
 }
 

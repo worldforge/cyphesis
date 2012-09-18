@@ -611,7 +611,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 

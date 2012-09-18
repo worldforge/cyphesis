@@ -132,7 +132,7 @@ int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
 }
 

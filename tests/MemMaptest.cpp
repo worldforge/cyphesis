@@ -157,7 +157,7 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
 }
 

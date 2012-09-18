@@ -129,7 +129,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
 }
 

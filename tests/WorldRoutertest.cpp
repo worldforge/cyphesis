@@ -729,7 +729,7 @@ Entity * BaseWorld::getEntity(long id) const
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
 }
 

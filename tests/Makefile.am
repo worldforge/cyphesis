@@ -1036,7 +1036,8 @@ Accounttest_LDADD = \
 
 Admintest_SOURCES = Admintest.cpp
 Admintest_LDADD = \
-        $(top_builddir)/server/Admin.o
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/common/debug.o
 
 ServerAccounttest_SOURCES = ServerAccounttest.cpp
 ServerAccounttest_LDADD = \
