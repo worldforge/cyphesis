@@ -176,7 +176,8 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
     }
     const std::string & account_id = arg->getId();
     if (account_id == getId()) {
-       Account::LogoutOperation(op, res);
+        Account::LogoutOperation(op, res);
+        return;
     }
     Router * account = m_connection->m_server.getObject(account_id);
     if (!account) {
