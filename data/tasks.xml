@@ -476,7 +476,7 @@
 
   <map>
     <map name="activation">
-      <string name="operation">cut</string>
+      <string name="operation">plane</string>
       <string name="target">lumber</string>
       <string name="tool">bucksaw</string>
     </map>
@@ -571,7 +571,7 @@
 
    <map>
     <map name="activation">  
-      <string name="operation">constructions</string>
+      <string name="operation">aframe</string>
       <string name="target">world</string>
       <string name="tool">rope</string>
     </map>
@@ -588,7 +588,6 @@
     </map>
   </map>
  
-
      <map>
     <map name="activation">  
       <string name="operation">gates</string>
