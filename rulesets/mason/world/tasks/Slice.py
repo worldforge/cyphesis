@@ -10,7 +10,7 @@ import server
 
 class Slice(server.Task):
     """ A task for cutting a log into boards."""
-    def cut_operation(self, op):
+    def plane_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Slice.cut"
 
