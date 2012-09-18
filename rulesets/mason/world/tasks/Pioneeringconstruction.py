@@ -21,8 +21,8 @@ class Pioneeringconstruction(server.Task):
         which activates this task """
         
         if len(op) < 1:
-            sys.stderr.write("Pioneeringconstruction  task has no target "
-                             +" in op")
+            sys.stderr.write("Pioneeringconstruction  task has no target "+
+                             " in op")
 
         self.target = server.world.get_object_ref(op[0].id)
         self.tool = op.to
@@ -57,9 +57,9 @@ class Pioneeringconstruction(server.Task):
             tar = raw_materials.pop()
             #length of the lumber obtained
             lumberlength=tar.location.bbox.far_point[2]- \
-            tar.location.bbox.near_point[2]
+                         tar.location.bbox.near_point[2]
             lumberheight=tar.location.bbox.far_point[1]- \
-            tar.location.bbox.near_point[1]
+                         tar.location.bbox.near_point[1]
             #rough length to position lumber
             lumber_length=lumberlength/4
             
@@ -125,9 +125,9 @@ class Pioneeringconstruction(server.Task):
             if item.type[0] == str(self.materials):
                 lcount = lcount + 1
                 lumberl=item.location.bbox.far_point[2]- \
-                item.location.bbox.near_point[2]
+                        item.location.bbox.near_point[2]
                 lumberh=item.location.bbox.far_point[1]- \
-                item.location.bbox.near_point[1]
+                        item.location.bbox.near_point[1]
         
             if lcount == 3 :
                 break
