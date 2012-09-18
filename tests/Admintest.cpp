@@ -94,6 +94,7 @@ class Admintest : public Cyphesis::TestBase
     void null_method(Operation op) { }
 
     static bool Link_sent_called;
+    static Account * Account_LogoutOperation_called;
   public:
     Admintest();
 
@@ -117,17 +118,25 @@ class Admintest : public Cyphesis::TestBase
     void test_LogoutOperation_no_args();
     void test_LogoutOperation_no_id();
     void test_LogoutOperation_self();
-    void test_LogoutOperation_unknwon();
-    void test_LogoutOperation_knwon();
+    void test_LogoutOperation_unknown();
+    void test_LogoutOperation_known();
+    void test_LogoutOperation_other_but_unconnected();
 
     static void set_Link_sent_called();
+    static void set_Account_LogoutOperation_called(Account * );
 };
 
 bool Admintest::Link_sent_called = false;
+Account * Admintest::Account_LogoutOperation_called = 0;
 
 void Admintest::set_Link_sent_called()
 {
     Link_sent_called = true;
+}
+
+void Admintest::set_Account_LogoutOperation_called(Account * ac)
+{
+    Account_LogoutOperation_called = ac;
 }
 
 long Admintest::m_id_counter = 0L;
@@ -151,8 +160,9 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_LogoutOperation_no_args);
     ADD_TEST(Admintest::test_LogoutOperation_no_id);
     ADD_TEST(Admintest::test_LogoutOperation_self);
-    ADD_TEST(Admintest::test_LogoutOperation_unknwon);
-    ADD_TEST(Admintest::test_LogoutOperation_knwon);
+    ADD_TEST(Admintest::test_LogoutOperation_unknown);
+    ADD_TEST(Admintest::test_LogoutOperation_known);
+    ADD_TEST(Admintest::test_LogoutOperation_other_but_unconnected);
 }
 
 long Admintest::newId()
@@ -366,22 +376,131 @@ void Admintest::test_characterError_valid()
 
 void Admintest::test_LogoutOperation_no_args()
 {
+    Account_LogoutOperation_called = 0;
+
+    Operation op;
+    OpVector res;
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 0u);
+    ASSERT_EQUAL(Account_LogoutOperation_called, m_account);
 }
 
 void Admintest::test_LogoutOperation_no_id()
 {
+    Operation op;
+    OpVector res;
+
+    Anonymous arg;
+    op->setArgs1(arg);
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
 }
 
 void Admintest::test_LogoutOperation_self()
 {
+    Account_LogoutOperation_called = 0;
+
+    Operation op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(m_account->getId());
+    op->setArgs1(arg);
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 0u);
+
+    ASSERT_EQUAL(Account_LogoutOperation_called, m_account);
 }
 
-void Admintest::test_LogoutOperation_unknwon()
+void Admintest::test_LogoutOperation_unknown()
 {
+    long cid = m_id_counter++;
+
+    Operation op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(String::compose("%1", cid));
+    op->setArgs1(arg);
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
 }
 
-void Admintest::test_LogoutOperation_knwon()
+void Admintest::test_LogoutOperation_known()
 {
+    Account_LogoutOperation_called = 0;
+
+    long cid = m_id_counter++;
+    std::string cid_str = String::compose("%1", cid);
+    Account * ac2 = new Admin(0,
+                              "f3332c00-5d2b-45c1-8cf4-3429bdf2845f",
+                              "c0e095f0-575c-477c-bafd-2055d6958d4d",
+                              cid_str, cid);
+
+    m_server->addObject(ac2);
+
+    ASSERT_EQUAL(m_server->getObject(cid_str), ac2);
+
+    Atlas::Objects::Operation::Logout op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(cid_str);
+    op->setArgs1(arg);
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 0u);
+
+    ASSERT_EQUAL(Account_LogoutOperation_called, ac2);
+
+    delete ac2;
+}
+
+void Admintest::test_LogoutOperation_other_but_unconnected()
+{
+    Account_LogoutOperation_called = 0;
+    m_account->m_connection = 0;
+
+    long cid = m_id_counter++;
+    std::string cid_str = String::compose("%1", cid);
+    Account * ac2 = new Admin(0,
+                              "f3332c00-5d2b-45c1-8cf4-3429bdf2845f",
+                              "c0e095f0-575c-477c-bafd-2055d6958d4d",
+                              cid_str, cid);
+
+    m_server->addObject(ac2);
+
+    ASSERT_EQUAL(m_server->getObject(cid_str), ac2);
+
+    Atlas::Objects::Operation::Logout op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(cid_str);
+    op->setArgs1(arg);
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
+    ASSERT_NULL(Account_LogoutOperation_called);
+
+    delete ac2;
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
@@ -472,10 +591,14 @@ void Account::addToEntity(const RootEntity & ent) const
 
 void Account::operation(const Operation & op, OpVector & res)
 {
+    if (op->getClassNo() == Atlas::Objects::Operation::LOGOUT_NO) {
+        this->LogoutOperation(op, res);
+    }
 }
 
 void Account::LogoutOperation(const Operation &, OpVector &)
 {
+    Admintest::set_Account_LogoutOperation_called(this);
 }
 
 void Account::CreateOperation(const Operation &, OpVector &)
@@ -647,11 +770,17 @@ ServerRouting::~ServerRouting()
 
 void ServerRouting::addObject(Router * obj)
 {
+    m_objects[obj->getIntId()] = obj;
 }
 
 Router * ServerRouting::getObject(const std::string & id) const
 {
-    return 0;
+    RouterMap::const_iterator I = m_objects.find(integerId(id));
+    if (I == m_objects.end()) {
+        return 0;
+    } else {
+        return I->second;
+    }
 }
 
 void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
