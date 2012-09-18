@@ -37,17 +37,46 @@
 #include "rulesets/Entity.h"
 
 #include "common/compose.hpp"
+#include "common/debug.h"
+#include "common/Inheritance.h"
 
-#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+#include <sigc++/functors/mem_fun.h>
 
 #include <cassert>
 
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
+
+std::ostream & operator<<(std::ostream & os,
+                          const MapType::const_iterator &)
+{
+    os << "[iterator]";
+    return os;
+}
+
+std::ostream & operator<<(std::ostream & os,
+                          const EntityDict::const_iterator &)
+{
+    os << "[iterator]";
+    return os;
+}
+
+std::ostream & operator<<(std::ostream & os,
+                          const Element & e)
+{
+    debug_dump(e, os);
+    return os;
+}
 
 class Admintest : public Cyphesis::TestBase
 {
@@ -57,6 +86,14 @@ class Admintest : public Cyphesis::TestBase
     ServerRouting * m_server;
     Connection * m_connection;
     Admin * m_account;
+
+    bool m_monitor_flag;
+
+    sigc::signal<void, Operation> null_signal;
+
+    void null_method(Operation op) { }
+
+    static bool Link_sent_called;
   public:
     Admintest();
 
@@ -67,7 +104,31 @@ class Admintest : public Cyphesis::TestBase
 
     void test_null();
     void test_getType();
+    void test_addToMessage();
+    void test_addToMessage_tree();
+    void test_addToEntity();
+    void test_addToEntity_tree();
+    void test_opDispatched();
+    void test_opDispatched_unconnected();
+    void test_opDispatched_unconnected_monitored();
+    void test_characterError_default_parents();
+    void test_characterError_empty_parents();
+    void test_characterError_valid();
+    void test_LogoutOperation_no_args();
+    void test_LogoutOperation_no_id();
+    void test_LogoutOperation_self();
+    void test_LogoutOperation_unknwon();
+    void test_LogoutOperation_knwon();
+
+    static void set_Link_sent_called();
 };
+
+bool Admintest::Link_sent_called = false;
+
+void Admintest::set_Link_sent_called()
+{
+    Link_sent_called = true;
+}
 
 long Admintest::m_id_counter = 0L;
 
@@ -77,20 +138,21 @@ Admintest::Admintest() : m_server(0),
 {
     ADD_TEST(Admintest::test_null);
     ADD_TEST(Admintest::test_getType);
-    // ADD_TEST(Admintest::test_addToMessage);
-    // ADD_TEST(Admintest::test_addToMessage_tree);
-    // ADD_TEST(Admintest::test_addToEntity_tree);
-    // ADD_TEST(Admintest::test_opDispatched);
-    // ADD_TEST(Admintest::test_opDispatched_unconnected);
-    // ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
-    // ADD_TEST(Admintest::test_characterError_default_parents);
-    // ADD_TEST(Admintest::test_characterError_empty_parents);
-    // ADD_TEST(Admintest::test_characterError_valid);
-    // ADD_TEST(Admintest::test_LookOperation_no_args);
-    // ADD_TEST(Admintest::test_LookOperation_no_id);
-    // ADD_TEST(Admintest::test_LookOperation_self);
-    // ADD_TEST(Admintest::test_LookOperation_unknwon);
-    // ADD_TEST(Admintest::test_LookOperation_knwon);
+    ADD_TEST(Admintest::test_addToMessage);
+    ADD_TEST(Admintest::test_addToMessage_tree);
+    ADD_TEST(Admintest::test_addToEntity);
+    ADD_TEST(Admintest::test_addToEntity_tree);
+    ADD_TEST(Admintest::test_opDispatched);
+    ADD_TEST(Admintest::test_opDispatched_unconnected);
+    ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
+    ADD_TEST(Admintest::test_characterError_default_parents);
+    ADD_TEST(Admintest::test_characterError_empty_parents);
+    ADD_TEST(Admintest::test_characterError_valid);
+    ADD_TEST(Admintest::test_LogoutOperation_no_args);
+    ADD_TEST(Admintest::test_LogoutOperation_no_id);
+    ADD_TEST(Admintest::test_LogoutOperation_self);
+    ADD_TEST(Admintest::test_LogoutOperation_unknwon);
+    ADD_TEST(Admintest::test_LogoutOperation_knwon);
 }
 
 long Admintest::newId()
@@ -118,6 +180,8 @@ void Admintest::setup()
 
 void Admintest::teardown()
 {
+    Inheritance::clear();
+
     delete m_server;
     delete m_account;
     delete m_connection;
@@ -133,6 +197,191 @@ void Admintest::test_getType()
     const char * type_string = m_account->getType();
 
     ASSERT_EQUAL(std::string("admin"), type_string);
+}
+
+void Admintest::test_addToMessage()
+{
+    MapType data;
+
+    m_account->addToMessage(data);
+
+    ASSERT_NOT_EQUAL(data.find("character_types"), data.end());
+    ASSERT_EQUAL(data["character_types"], ListType());
+}
+
+void Admintest::test_addToMessage_tree()
+{
+    Inheritance::instance().addChild(atlasClass("character", "root"));
+    Inheritance::instance().addChild(atlasClass("human", "character"));
+    Inheritance::instance().addChild(atlasClass("settler", "human"));
+    Inheritance::instance().addChild(atlasClass("goblin", "character"));
+
+    MapType data;
+
+    m_account->addToMessage(data);
+
+    ListType expected_character_types;
+    expected_character_types.push_back("character");
+    expected_character_types.push_back("human");
+    expected_character_types.push_back("settler");
+    expected_character_types.push_back("goblin");
+
+    // FIXME How do we know this order is consistent
+    ASSERT_NOT_EQUAL(data.find("character_types"), data.end());
+    ASSERT_EQUAL(data["character_types"], expected_character_types);
+}
+
+void Admintest::test_addToEntity_tree()
+{
+    Anonymous data;
+
+    m_account->addToEntity(data);
+
+    ASSERT_TRUE(data->hasAttr("character_types"));
+    ASSERT_EQUAL(data->getAttr("character_types"), ListType());
+}
+
+void Admintest::test_addToEntity()
+{
+    Inheritance::instance().addChild(atlasClass("character", "root"));
+    Inheritance::instance().addChild(atlasClass("human", "character"));
+    Inheritance::instance().addChild(atlasClass("settler", "human"));
+    Inheritance::instance().addChild(atlasClass("goblin", "character"));
+
+    Anonymous data;
+
+    m_account->addToEntity(data);
+
+    ListType expected_character_types;
+    expected_character_types.push_back("character");
+    expected_character_types.push_back("human");
+    expected_character_types.push_back("settler");
+    expected_character_types.push_back("goblin");
+
+    ASSERT_TRUE(data->hasAttr("character_types"));
+    ASSERT_EQUAL(data->getAttr("character_types"),
+                 expected_character_types);
+}
+
+void Admintest::test_opDispatched()
+{
+    Link_sent_called = false;
+
+    m_account->m_monitorConnection =
+          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    Operation op;
+
+    m_account->opDispatched(op);
+
+    // The account is connected, so calling this should not affect the signal
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    // The operation should have been sent here
+    ASSERT_TRUE(Link_sent_called);
+}
+
+void Admintest::test_opDispatched_unconnected()
+{
+    m_account->m_connection = 0;
+
+    Link_sent_called = false;
+
+    ASSERT_TRUE(!m_account->m_monitorConnection.connected());
+
+    Operation op;
+
+    m_account->opDispatched(op);
+
+    // The operation should not have been sent here
+    ASSERT_TRUE(!Link_sent_called);
+}
+
+void Admintest::test_opDispatched_unconnected_monitored()
+{
+    m_account->m_connection = 0;
+
+    Link_sent_called = false;
+
+    m_account->m_monitorConnection =
+          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    Operation op;
+
+    m_account->opDispatched(op);
+
+    // The account is unconnected, so calling opDispatched should not
+    // cause the signal to get cut off
+    ASSERT_TRUE(!m_account->m_monitorConnection.connected());
+
+    // The operation should not have been sent here
+    ASSERT_TRUE(!Link_sent_called);
+}
+
+void Admintest::test_characterError_default_parents()
+{
+    Operation op;
+    Root ent;
+    OpVector res;
+
+    int ret = m_account->characterError(op, ent, res);
+
+    ASSERT_NOT_EQUAL(ret, 0);
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_characterError_empty_parents()
+{
+    Operation op;
+    Root ent;
+    OpVector res;
+
+    ent->setParents(std::list<std::string>());
+
+    int ret = m_account->characterError(op, ent, res);
+
+    ASSERT_NOT_EQUAL(ret, 0);
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_characterError_valid()
+{
+    Operation op;
+    Root ent;
+    OpVector res;
+
+    ent->setParents(std::list<std::string>(1, "settler"));
+
+    int ret = m_account->characterError(op, ent, res);
+
+    ASSERT_EQUAL(ret, 0);
+    ASSERT_EQUAL(res.size(), 0u);
+}
+
+void Admintest::test_LogoutOperation_no_args()
+{
+}
+
+void Admintest::test_LogoutOperation_no_id()
+{
+}
+
+void Admintest::test_LogoutOperation_self()
+{
+}
+
+void Admintest::test_LogoutOperation_unknwon()
+{
+}
+
+void Admintest::test_LogoutOperation_knwon()
+{
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
@@ -165,8 +414,8 @@ int main()
 
 #include "common/globals.h"
 #include "common/id.h"
-#include "common/Inheritance.h"
 #include "common/log.h"
+#include "common/TypeNode.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -855,6 +1104,7 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
+    Admintest::set_Link_sent_called();
 }
 
 void Link::disconnect()
@@ -863,8 +1113,17 @@ void Link::disconnect()
 
 Inheritance * Inheritance::m_instance = NULL;
 
-Inheritance::Inheritance()
+Inheritance::Inheritance() : noClass(0)
 {
+    Atlas::Objects::Entity::Anonymous root_desc;
+
+    root_desc->setParents(std::list<std::string>(0));
+    root_desc->setObjtype("meta");
+    root_desc->setId("root");
+
+    TypeNode * root = new TypeNode("root", root_desc);
+
+    atlasObjects["root"] = root;
 }
 
 Inheritance & Inheritance::instance()
@@ -873,6 +1132,15 @@ Inheritance & Inheritance::instance()
         m_instance = new Inheritance();
     }
     return *m_instance;
+}
+
+void Inheritance::clear()
+{
+    if (m_instance != NULL) {
+        m_instance->flush();
+        delete m_instance;
+        m_instance = NULL;
+    }
 }
 
 const TypeNode * Inheritance::getType(const std::string & parent)
@@ -886,7 +1154,11 @@ const TypeNode * Inheritance::getType(const std::string & parent)
 
 const Root & Inheritance::getClass(const std::string & parent)
 {
-    return noClass;
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return noClass;
+    }
+    return I->second->description();
 }
 
 bool Inheritance::hasClass(const std::string & parent)
@@ -896,6 +1168,62 @@ bool Inheritance::hasClass(const std::string & parent)
         return false;
     }
     return true;
+}
+
+TypeNode * Inheritance::addChild(const Root & obj)
+{
+    const std::string & child = obj->getId();
+    const std::string & parent = obj->getParents().front();
+    assert(atlasObjects.find(child) == atlasObjects.end());
+
+    TypeNodeDict::iterator I = atlasObjects.find(parent);
+    assert(I != atlasObjects.end());
+
+    Element children(ListType(1, child));
+    if (I->second->description()->copyAttr("children", children) == 0) {
+        assert(children.isList());
+        children.asList().push_back(child);
+    }
+    I->second->description()->setAttr("children", children);
+
+    TypeNode * type = new TypeNode(child, obj);
+    type->setParent(I->second);
+
+    atlasObjects[child] = type;
+
+    return type;
+}
+
+void Inheritance::flush()
+{
+    TypeNodeDict::const_iterator I = atlasObjects.begin();
+    TypeNodeDict::const_iterator Iend = atlasObjects.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
+    atlasObjects.clear();
+}
+
+Root atlasClass(const std::string & name, const std::string & parent)
+{
+    Atlas::Objects::Entity::Anonymous r;
+
+    r->setParents(std::list<std::string>(1, parent));
+    r->setObjtype("class");
+    r->setId(name);
+
+    return r;
+}
+
+TypeNode::TypeNode(const std::string & name,
+                   const Atlas::Objects::Root & d) : m_name(name),
+                                                     m_description(d),
+                                                     m_parent(0)
+{
+}
+
+TypeNode::~TypeNode()
+{
 }
 
 BaseWorld * BaseWorld::m_instance = 0;
@@ -950,6 +1278,7 @@ void Router::error(const Operation & op,
                    OpVector & res,
                    const std::string & to) const
 {
+    res.push_back(Atlas::Objects::Operation::Error());
 }
 
 Location::Location() : m_loc(0)
