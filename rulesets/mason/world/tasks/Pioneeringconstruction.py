@@ -21,7 +21,7 @@ class Pioneeringconstruction(server.Task):
         which activates this task """
         
         if len(op) < 1:
-            sys.stderr.write("Pioneeringconstruction  task has no target "+
+            sys.stderr.write("Pioneeringconstruction  task has no target "
                              " in op")
 
         self.target = server.world.get_object_ref(op[0].id)
@@ -141,7 +141,7 @@ class Pioneeringconstruction(server.Task):
         create=Operation("create", Entity(name = "A_Frame",
                                           type = "construction",
                                           bbox=bbox1, location = chunk_loc),
-                                          to = target)
+                         to = target)
         create.setSerialno(0)
         res.append(create)
         res.append(self.next_tick(1.75))    
