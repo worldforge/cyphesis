@@ -111,6 +111,9 @@ class Admintest : public Cyphesis::TestBase
 
     static bool Link_sent_called;
     static Account * Account_LogoutOperation_called;
+    static Account * Account_SetOperation_called;
+    static bool Ruleset_modifyRule_called;
+    static int Ruleset_modifyRule_retval;
   public:
     Admintest();
 
@@ -148,13 +151,28 @@ class Admintest : public Cyphesis::TestBase
     void test_GetOperation_rule_found();
     void test_GetOperation_rule_not_found();
     void test_GetOperation_unknown();
+    void test_SetOperation_no_args();
+    void test_SetOperation_no_objtype();
+    void test_SetOperation_no_id();
+    void test_SetOperation_obj_IG();
+    void test_SetOperation_obj_not_found();
+    void test_SetOperation_rule_unknown();
+    void test_SetOperation_rule_fail();
+    void test_SetOperation_rule_success();
+    void test_SetOperation_unknown();
 
     static void set_Link_sent_called();
     static void set_Account_LogoutOperation_called(Account * );
+    static void set_Account_SetOperation_called(Account * );
+    static void set_Ruleset_modifyRule_called();
+    static int get_Ruleset_modifyRule_retval();
 };
 
 bool Admintest::Link_sent_called = false;
 Account * Admintest::Account_LogoutOperation_called = 0;
+Account * Admintest::Account_SetOperation_called = 0;
+bool Admintest::Ruleset_modifyRule_called = false;
+int Admintest::Ruleset_modifyRule_retval = 0;
 
 void Admintest::set_Link_sent_called()
 {
@@ -164,6 +182,21 @@ void Admintest::set_Link_sent_called()
 void Admintest::set_Account_LogoutOperation_called(Account * ac)
 {
     Account_LogoutOperation_called = ac;
+}
+
+void Admintest::set_Account_SetOperation_called(Account * ac)
+{
+    Account_SetOperation_called = ac;
+}
+
+void Admintest::set_Ruleset_modifyRule_called()
+{
+    Ruleset_modifyRule_called = true;
+}
+
+int Admintest::get_Ruleset_modifyRule_retval()
+{
+    return Ruleset_modifyRule_retval;
 }
 
 long Admintest::m_id_counter = 0L;
@@ -201,6 +234,15 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_GetOperation_rule_found);
     ADD_TEST(Admintest::test_GetOperation_rule_not_found);
     ADD_TEST(Admintest::test_GetOperation_unknown);
+    ADD_TEST(Admintest::test_SetOperation_no_args);
+    ADD_TEST(Admintest::test_SetOperation_no_objtype);
+    ADD_TEST(Admintest::test_SetOperation_no_id);
+    ADD_TEST(Admintest::test_SetOperation_obj_IG);
+    ADD_TEST(Admintest::test_SetOperation_obj_not_found);
+    ADD_TEST(Admintest::test_SetOperation_rule_unknown);
+    ADD_TEST(Admintest::test_SetOperation_rule_fail);
+    ADD_TEST(Admintest::test_SetOperation_rule_success);
+    ADD_TEST(Admintest::test_SetOperation_unknown);
 }
 
 long Admintest::newId()
@@ -648,6 +690,8 @@ void Admintest::test_GetOperation_obj_OOG()
 
     ASSERT_TRUE(!reply_arg->isDefaultId());
     ASSERT_EQUAL(reply_arg->getId(), to->getId());
+
+    delete to;
 }
 
 void Admintest::test_GetOperation_obj_IG()
@@ -680,6 +724,8 @@ void Admintest::test_GetOperation_obj_IG()
 
     ASSERT_TRUE(!reply_arg->isDefaultId());
     ASSERT_EQUAL(reply_arg->getId(), to->getId());
+
+    delete to;
 }
 
 void Admintest::test_GetOperation_obj_not_found()
@@ -753,6 +799,178 @@ void Admintest::test_GetOperation_unknown()
     op->setArgs1(arg);
 
     m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_SetOperation_no_args()
+{
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_SetOperation_no_objtype()
+{
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_SetOperation_no_id()
+{
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_SetOperation_obj_IG()
+{
+    Account_SetOperation_called = 0;
+
+    long cid = m_id_counter++;
+    Entity * c = new Entity(compose("%1", cid), cid);
+
+    m_account->m_charactersDict.insert(std::make_pair(cid, c));
+
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId(c->getId());
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(Account_SetOperation_called, m_account);
+
+    // The operation returned would have come from Account::SetOperation
+    // but that is stubbed out
+    ASSERT_EQUAL(res.size(), 0u);
+
+    delete c;
+}
+
+void Admintest::test_SetOperation_obj_not_found()
+{
+    Account_SetOperation_called = 0;
+
+    long cid = m_id_counter++;
+
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId(compose("%1", cid));
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_NULL(Account_SetOperation_called);
+
+    // FIXME No error? Is that right?
+    ASSERT_EQUAL(res.size(), 0u);
+}
+
+void Admintest::test_SetOperation_rule_unknown()
+{
+    Ruleset_modifyRule_called = false;
+
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("class");
+    arg->setId("unimportant_unmatched_string");
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(!Ruleset_modifyRule_called);
+}
+
+void Admintest::test_SetOperation_rule_fail()
+{
+    Ruleset_modifyRule_called = false;
+    Ruleset_modifyRule_retval = -1;
+
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("class");
+    arg->setId("root");
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(Ruleset_modifyRule_called);
+}
+
+void Admintest::test_SetOperation_rule_success()
+{
+    Ruleset_modifyRule_called = false;
+    Ruleset_modifyRule_retval = 0;
+
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("class");
+    arg->setId("root");
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_TRUE(Ruleset_modifyRule_called);
+}
+
+void Admintest::test_SetOperation_unknown()
+{
+    Atlas::Objects::Operation::Set op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("unimportant_unknown_string");
+    arg->setId("root");
+    op->setArgs1(arg);
+
+    m_account->SetOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -863,6 +1081,7 @@ void Account::CreateOperation(const Operation &, OpVector &)
 
 void Account::SetOperation(const Operation &, OpVector &)
 {
+    Admintest::set_Account_SetOperation_called(this);
 }
 
 void Account::ImaginaryOperation(const Operation &, OpVector &)
@@ -973,7 +1192,8 @@ void Ruleset::init(const std::string & ruleset)
 int Ruleset::modifyRule(const std::string & class_name,
                         const Root & class_desc)
 {
-    return 0;
+    Admintest::set_Ruleset_modifyRule_called();
+    return Admintest::get_Ruleset_modifyRule_retval();
 }
 
 int Ruleset::installRule(const std::string & class_name,
