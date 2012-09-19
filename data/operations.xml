@@ -1,6 +1,14 @@
 <atlas>
 
   <map>
+    <string name="id">aframe</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">chop</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -26,15 +34,6 @@
 
   <map>
     <string name="id">cut</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
-  </map>
-
-
-  <map>
-    <string name="id">plane</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>
@@ -74,6 +73,14 @@
   </map>
 
   <map>
+    <string name="id">gates</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>root_operation</string>
+    </list>
+  </map>
+
+  <map>
     <string name="id">heap</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
@@ -91,6 +98,14 @@
 
   <map>
     <string name="id">lever</string>
+    <string name="objtype">op_definition</string>
+    <list name="parents">
+      <string>action</string>
+    </list>
+  </map>
+
+  <map>
+    <string name="id">plane</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>action</string>
@@ -147,24 +162,6 @@
 
   <map>
     <string name="id">walls</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
-  </map>
-  
-
-   <map>
-    <string name="id">aframe</string>
-    <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
-  </map> 
-
-  
-	<map>
-    <string name="id">gates</string>
     <string name="objtype">op_definition</string>
     <list name="parents">
       <string>root_operation</string>
