@@ -78,6 +78,22 @@ std::ostream & operator<<(std::ostream & os,
     return os;
 }
 
+class TestObject : public Router
+{
+  public:
+    explicit TestObject(const std::string & id, long intId);
+
+    virtual void operation(const Operation &, OpVector &);
+};
+
+TestObject::TestObject(const std::string & id, long intId) : Router(id, intId)
+{
+}
+
+void TestObject::operation(const Operation &, OpVector &)
+{
+}
+
 class Admintest : public Cyphesis::TestBase
 {
   protected:
@@ -121,6 +137,17 @@ class Admintest : public Cyphesis::TestBase
     void test_LogoutOperation_unknown();
     void test_LogoutOperation_known();
     void test_LogoutOperation_other_but_unconnected();
+    void test_GetOperation_no_args();
+    void test_GetOperation_no_objtype();
+    void test_GetOperation_no_id();
+    void test_GetOperation_empty_id();
+    void test_GetOperation_obj_unconnected();
+    void test_GetOperation_obj_OOG();
+    void test_GetOperation_obj_IG();
+    void test_GetOperation_obj_not_found();
+    void test_GetOperation_rule_found();
+    void test_GetOperation_rule_not_found();
+    void test_GetOperation_unknown();
 
     static void set_Link_sent_called();
     static void set_Account_LogoutOperation_called(Account * );
@@ -163,6 +190,17 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_LogoutOperation_unknown);
     ADD_TEST(Admintest::test_LogoutOperation_known);
     ADD_TEST(Admintest::test_LogoutOperation_other_but_unconnected);
+    ADD_TEST(Admintest::test_GetOperation_no_args);
+    ADD_TEST(Admintest::test_GetOperation_no_objtype);
+    ADD_TEST(Admintest::test_GetOperation_no_id);
+    ADD_TEST(Admintest::test_GetOperation_empty_id);
+    ADD_TEST(Admintest::test_GetOperation_obj_unconnected);
+    ADD_TEST(Admintest::test_GetOperation_obj_OOG);
+    ADD_TEST(Admintest::test_GetOperation_obj_IG);
+    ADD_TEST(Admintest::test_GetOperation_obj_not_found);
+    ADD_TEST(Admintest::test_GetOperation_rule_found);
+    ADD_TEST(Admintest::test_GetOperation_rule_not_found);
+    ADD_TEST(Admintest::test_GetOperation_unknown);
 }
 
 long Admintest::newId()
@@ -501,6 +539,224 @@ void Admintest::test_LogoutOperation_other_but_unconnected()
     ASSERT_NULL(Account_LogoutOperation_called);
 
     delete ac2;
+}
+
+void Admintest::test_GetOperation_no_args()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_GetOperation_no_objtype()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_GetOperation_no_id()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_GetOperation_empty_id()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId("");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_GetOperation_obj_unconnected()
+{
+    m_account->m_connection = 0;
+
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId("9287");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 0u);
+}
+
+void Admintest::test_GetOperation_obj_OOG()
+{
+    long cid = m_id_counter++;
+    std::string cid_str = String::compose("%1", cid);
+    Router * to = new TestObject(cid_str, cid);
+
+    m_server->addObject(to);
+
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId(cid_str);
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Operation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_EQUAL(reply->getArgs().size(), 1u);
+
+    const Root & reply_arg = reply->getArgs().front();
+
+    ASSERT_TRUE(!reply_arg->isDefaultId());
+    ASSERT_EQUAL(reply_arg->getId(), to->getId());
+}
+
+void Admintest::test_GetOperation_obj_IG()
+{
+    long cid = m_id_counter++;
+    std::string cid_str = String::compose("%1", cid);
+    Entity * to = new Entity(cid_str, cid);
+
+    m_server->m_world.addEntity(to);
+
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId(cid_str);
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Operation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_EQUAL(reply->getArgs().size(), 1u);
+
+    const Root & reply_arg = reply->getArgs().front();
+
+    ASSERT_TRUE(!reply_arg->isDefaultId());
+    ASSERT_EQUAL(reply_arg->getId(), to->getId());
+}
+
+void Admintest::test_GetOperation_obj_not_found()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("obj");
+    arg->setId("1741");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_GetOperation_rule_found()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("class");
+    arg->setId("root");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Operation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_EQUAL(reply->getArgs().size(), 1u);
+
+    const Root & reply_arg = reply->getArgs().front();
+
+    ASSERT_TRUE(!reply_arg->isDefaultId());
+    ASSERT_EQUAL(reply_arg->getId(), "root");
+}
+
+void Admintest::test_GetOperation_rule_not_found()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("class");
+    arg->setId("1741");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_GetOperation_unknown()
+{
+    Atlas::Objects::Operation::Get op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setObjtype("unknownobjtype");
+    arg->setId("1741");
+    op->setArgs1(arg);
+
+    m_account->GetOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
@@ -1133,6 +1389,7 @@ void Entity::addToMessage(Atlas::Message::MapType & omap) const
 
 void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
+    ent->setId(getId());
 }
 
 PropertyBase * Entity::setAttr(const std::string & name,
@@ -1393,6 +1650,7 @@ void Router::addToMessage(Atlas::Message::MapType & omap) const
 
 void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
+    ent->setId(getId());
 }
 
 void Router::clientError(const Operation & op,
@@ -1400,6 +1658,7 @@ void Router::clientError(const Operation & op,
                          OpVector & res,
                          const std::string & to) const
 {
+    res.push_back(Atlas::Objects::Operation::Error());
 }
 
 void Router::error(const Operation & op,
