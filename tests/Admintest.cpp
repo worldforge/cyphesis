@@ -113,8 +113,12 @@ class Admintest : public Cyphesis::TestBase
     static bool Link_sent_called;
     static Account * Account_LogoutOperation_called;
     static Account * Account_SetOperation_called;
+    static Account * Account_createObject_called;
     static bool Ruleset_modifyRule_called;
     static int Ruleset_modifyRule_retval;
+    static bool Ruleset_installRule_called;
+    static int Ruleset_installRule_retval;
+    static bool newId_fail;
   public:
     Admintest();
 
@@ -167,19 +171,36 @@ class Admintest : public Cyphesis::TestBase
     void test_customMonitorOperation_monitorin();
     void test_customMonitorOperation_unconnected();
     void test_customMonitorOperation_no_args();
+    void test_createObject_class_no_id();
+    void test_createObject_class_exists();
+    void test_createObject_class_parent_absent();
+    void test_createObject_class_fail();
+    void test_createObject_class_succeed();
+    void test_createObject_juncture_id_fail();
+    void test_createObject_juncture();
+    void test_createObject_juncture_serialno();
+    void test_createObject_fallthrough();
 
     static void set_Link_sent_called();
     static void set_Account_LogoutOperation_called(Account * );
     static void set_Account_SetOperation_called(Account * );
+    static void set_Account_createObject_called(Account * );
     static void set_Ruleset_modifyRule_called();
     static int get_Ruleset_modifyRule_retval();
+    static void set_Ruleset_installRule_called();
+    static int get_Ruleset_installRule_retval();
+    static bool get_newId_fail();
 };
 
 bool Admintest::Link_sent_called = false;
 Account * Admintest::Account_LogoutOperation_called = 0;
 Account * Admintest::Account_SetOperation_called = 0;
+Account * Admintest::Account_createObject_called = 0;
 bool Admintest::Ruleset_modifyRule_called = false;
 int Admintest::Ruleset_modifyRule_retval = 0;
+bool Admintest::Ruleset_installRule_called = false;
+int Admintest::Ruleset_installRule_retval = 0;
+bool Admintest::newId_fail = false;
 
 void Admintest::set_Link_sent_called()
 {
@@ -196,6 +217,11 @@ void Admintest::set_Account_SetOperation_called(Account * ac)
     Account_SetOperation_called = ac;
 }
 
+void Admintest::set_Account_createObject_called(Account * ac)
+{
+    Account_createObject_called = ac;
+}
+
 void Admintest::set_Ruleset_modifyRule_called()
 {
     Ruleset_modifyRule_called = true;
@@ -204,6 +230,21 @@ void Admintest::set_Ruleset_modifyRule_called()
 int Admintest::get_Ruleset_modifyRule_retval()
 {
     return Ruleset_modifyRule_retval;
+}
+
+void Admintest::set_Ruleset_installRule_called()
+{
+    Ruleset_installRule_called = true;
+}
+
+int Admintest::get_Ruleset_installRule_retval()
+{
+    return Ruleset_installRule_retval;
+}
+
+bool Admintest::get_newId_fail()
+{
+    return newId_fail;
 }
 
 long Admintest::m_id_counter = 0L;
@@ -256,6 +297,15 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_customMonitorOperation_monitorin);
     ADD_TEST(Admintest::test_customMonitorOperation_unconnected);
     ADD_TEST(Admintest::test_customMonitorOperation_no_args);
+    ADD_TEST(Admintest::test_createObject_class_no_id);
+    ADD_TEST(Admintest::test_createObject_class_exists);
+    ADD_TEST(Admintest::test_createObject_class_parent_absent);
+    ADD_TEST(Admintest::test_createObject_class_fail);
+    ADD_TEST(Admintest::test_createObject_class_succeed);
+    ADD_TEST(Admintest::test_createObject_juncture_id_fail);
+    ADD_TEST(Admintest::test_createObject_juncture);
+    ADD_TEST(Admintest::test_createObject_juncture_serialno);
+    ADD_TEST(Admintest::test_createObject_fallthrough);
 }
 
 long Admintest::newId()
@@ -1112,6 +1162,196 @@ void Admintest::test_customMonitorOperation_no_args()
                  m_server->m_world.Dispatching.slots().end());
 }
 
+void Admintest::test_createObject_class_no_id()
+{
+    Ruleset_installRule_called = false;
+    Ruleset_installRule_retval = -1;
+
+    std::string parent("root");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("class");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
+    ASSERT_TRUE(!Ruleset_installRule_called);
+}
+
+void Admintest::test_createObject_class_exists()
+{
+    Ruleset_installRule_called = false;
+    Ruleset_installRule_retval = -1;
+
+    Inheritance::instance().addChild(atlasClass("character", "root"));
+
+    std::string parent("root");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("class");
+    arg->setId("character");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
+    ASSERT_TRUE(!Ruleset_installRule_called);
+}
+
+void Admintest::test_createObject_class_parent_absent()
+{
+    Ruleset_installRule_called = false;
+    Ruleset_installRule_retval = -1;
+
+    Inheritance::instance().addChild(atlasClass("character", "root"));
+
+    std::string parent("root_entity");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("class");
+    arg->setId("character");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
+    ASSERT_TRUE(!Ruleset_installRule_called);
+}
+
+void Admintest::test_createObject_class_fail()
+{
+    Ruleset_installRule_called = false;
+    Ruleset_installRule_retval = -1;
+
+    std::string parent("root");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("class");
+    arg->setId("character");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+
+    ASSERT_TRUE(Ruleset_installRule_called);
+}
+
+void Admintest::test_createObject_class_succeed()
+{
+    Ruleset_installRule_called = false;
+    Ruleset_installRule_retval = 0;
+
+    std::string parent("root");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("class");
+    arg->setId("character");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+
+    ASSERT_TRUE(Ruleset_installRule_called);
+}
+
+void Admintest::test_createObject_juncture_id_fail()
+{
+    newId_fail = true;
+
+    std::string parent("juncture");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("obj");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_createObject_juncture()
+{
+    newId_fail = false;
+
+    std::string parent("juncture");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    OpVector res;
+
+    arg->setObjtype("obj");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_TRUE(res.front()->isDefaultRefno());
+}
+
+void Admintest::test_createObject_juncture_serialno()
+{
+    newId_fail = false;
+
+    std::string parent("juncture");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    op->setSerialno(m_id_counter++);
+    OpVector res;
+
+    arg->setObjtype("obj");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_TRUE(!res.front()->isDefaultRefno());
+}
+
+void Admintest::test_createObject_fallthrough()
+{
+    Account_createObject_called = 0;
+
+    std::string parent("unimportant_string");
+    Root arg;
+    Atlas::Objects::Operation::Create op;
+    op->setSerialno(m_id_counter++);
+    OpVector res;
+
+    arg->setObjtype("obj");
+
+    m_account->createObject(parent, arg, op, res);
+
+    ASSERT_EQUAL(res.size(), 0u);
+
+    ASSERT_EQUAL(Account_createObject_called,
+                 m_account);
+}
+
 void TestWorld::message(const Operation & op, Entity & ent)
 {
 }
@@ -1188,6 +1428,7 @@ void Account::createObject(const std::string & type_str,
                            const Operation & op,
                            OpVector & res)
 {
+    Admintest::set_Account_createObject_called(this);
 }
 
 void Account::addToMessage(MapType & omap) const
@@ -1335,7 +1576,8 @@ int Ruleset::installRule(const std::string & class_name,
                          const std::string & section,
                          const Root & class_desc)
 {
-    return 0;
+    Admintest::set_Ruleset_installRule_called();
+    return Admintest::get_Ruleset_installRule_retval();
 }
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
@@ -2030,6 +2272,9 @@ Location::Location() : m_loc(0)
 
 long newId(std::string & id)
 {
+    if (Admintest::get_newId_fail()) {
+        return -1;
+    }
     static char buf[32];
     long new_id = Admintest::newId();
     sprintf(buf, "%ld", new_id);
