@@ -39,6 +39,7 @@
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/Inheritance.h"
+#include "common/Monitor.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -160,6 +161,12 @@ class Admintest : public Cyphesis::TestBase
     void test_SetOperation_rule_fail();
     void test_SetOperation_rule_success();
     void test_SetOperation_unknown();
+    void test_OtherOperation_known();
+    void test_OtherOperation_monitor();
+    void test_customMonitorOperation_succeed();
+    void test_customMonitorOperation_monitorin();
+    void test_customMonitorOperation_unconnected();
+    void test_customMonitorOperation_no_args();
 
     static void set_Link_sent_called();
     static void set_Account_LogoutOperation_called(Account * );
@@ -243,6 +250,12 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_SetOperation_rule_fail);
     ADD_TEST(Admintest::test_SetOperation_rule_success);
     ADD_TEST(Admintest::test_SetOperation_unknown);
+    ADD_TEST(Admintest::test_OtherOperation_known);
+    ADD_TEST(Admintest::test_OtherOperation_monitor);
+    ADD_TEST(Admintest::test_customMonitorOperation_succeed);
+    ADD_TEST(Admintest::test_customMonitorOperation_monitorin);
+    ADD_TEST(Admintest::test_customMonitorOperation_unconnected);
+    ADD_TEST(Admintest::test_customMonitorOperation_no_args);
 }
 
 long Admintest::newId()
@@ -252,6 +265,8 @@ long Admintest::newId()
 
 void Admintest::setup()
 {
+    Atlas::Objects::Operation::MONITOR_NO = m_id_counter++;
+
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
@@ -975,6 +990,126 @@ void Admintest::test_SetOperation_unknown()
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
                  Atlas::Objects::Operation::ERROR_NO);
+}
+
+void Admintest::test_OtherOperation_known()
+{
+    Operation op;
+    OpVector res;
+
+    m_account->OtherOperation(op, res);
+
+    // Nothing should have happened.
+}
+
+void Admintest::test_OtherOperation_monitor()
+{
+    Atlas::Objects::Operation::Monitor op;
+    OpVector res;
+
+    Root arg;
+    op->setArgs1(arg);
+
+    m_account->OtherOperation(op, res);
+
+    // Quick check to ensure op passed through to customMonitorOperaion
+    // That function is fully tested below
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+}
+
+void Admintest::test_customMonitorOperation_succeed()
+{
+    // Check that Dispatching in not yet connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
+
+    Atlas::Objects::Operation::Monitor op;
+    OpVector res;
+
+    Root arg;
+    op->setArgs1(arg);
+
+    m_account->customMonitorOperation(op, res);
+
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    // Check that Dispatching has been connected
+    assert(m_server->m_world.Dispatching.slots().begin() !=
+                 m_server->m_world.Dispatching.slots().end());
+
+}
+
+void Admintest::test_customMonitorOperation_monitorin()
+{
+    // Check that Dispatching in not yet connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
+
+    // Set it up so it is already monitoring
+    m_account->m_monitorConnection =
+          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    Atlas::Objects::Operation::Monitor op;
+    OpVector res;
+
+    Root arg;
+    op->setArgs1(arg);
+
+    m_account->customMonitorOperation(op, res);
+
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    // Check that Dispatching in not been connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
+
+}
+
+void Admintest::test_customMonitorOperation_unconnected()
+{
+    m_account->m_connection = 0;
+
+    // Check that Dispatching in not yet connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
+
+    Atlas::Objects::Operation::Monitor op;
+    OpVector res;
+
+    Root arg;
+    op->setArgs1(arg);
+
+    m_account->customMonitorOperation(op, res);
+
+    ASSERT_TRUE(!m_account->m_monitorConnection.connected());
+
+    // Check that Dispatching has not been connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
+}
+
+void Admintest::test_customMonitorOperation_no_args()
+{
+    // Set it up so it is already monitoring
+    m_account->m_monitorConnection =
+          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+    ASSERT_TRUE(m_account->m_monitorConnection.connected());
+
+    // Check that Dispatching in not yet connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
+
+    Atlas::Objects::Operation::Monitor op;
+    OpVector res;
+
+    m_account->customMonitorOperation(op, res);
+
+    ASSERT_TRUE(!m_account->m_monitorConnection.connected());
+
+    // Check that Dispatching has not been connected
+    assert(m_server->m_world.Dispatching.slots().begin() ==
+                 m_server->m_world.Dispatching.slots().end());
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
