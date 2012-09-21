@@ -1212,8 +1212,6 @@ void Admintest::test_createObject_class_parent_absent()
     Ruleset_installRule_called = false;
     Ruleset_installRule_retval = -1;
 
-    Inheritance::instance().addChild(atlasClass("character", "root"));
-
     std::string parent("root_entity");
     Root arg;
     Atlas::Objects::Operation::Create op;
