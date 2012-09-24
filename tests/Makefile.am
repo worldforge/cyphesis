@@ -74,7 +74,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
                ExternalPropertytest Persistencetest \
-               SystemAccounttest TCPListenFactorytest
+               SystemAccounttest TCPListenFactorytest \
+               Linktest
 
 SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -112,7 +113,8 @@ check_PROGRAMS = $(TESTS)
 
 noinst_HEADERS = TestBase.h null_stream.h CommClient_stub_impl.h \
                  CommStreamClient_stub_impl.h OperationExerciser.h \
-                 allOperations.h TestWorld.h CommStreamListener_stub_impl.h
+                 allOperations.h TestWorld.h CommStreamListener_stub_impl.h \
+                 Sink.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
@@ -1253,6 +1255,10 @@ TCPListenFactorytest_SOURCES = TCPListenFactorytest.cpp
 TCPListenFactorytest_LDADD = \
         $(top_builddir)/server/TCPListenFactory.o \
         $(NETWORK_LIBS)
+
+Linktest_SOURCES = Linktest.cpp
+Linktest_LDADD = \
+        $(top_builddir)/server/Link.o
 
 # SERVER_INTEGRATION_TESTS
 
