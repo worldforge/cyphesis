@@ -28,46 +28,108 @@
 
 #include "server/TCPListenFactory.h"
 
+#include "server/CommClientKit.h"
 #include "server/CommServer.h"
 
 #include "common/compose.hpp"
 #include "common/debug.h"
 
+#include <boost/make_shared.hpp>
+
 #include <cassert>
 
 using String::compose;
+
+class TestCommClientKit : public CommClientKit
+{
+  public:
+    ~TestCommClientKit();
+
+    int newCommClient(CommServer &, int, const std::string &);
+};
+
+TestCommClientKit::~TestCommClientKit()
+{
+}
+
+int TestCommClientKit::newCommClient(CommServer &, int, const std::string &)
+{
+    return 0;
+}
 
 class TCPListenFactorytest : public Cyphesis::TestBase
 {
   protected:
     CommServer * m_commServer;
+    boost::shared_ptr<CommClientKit> m_commClientKit;
+
+    static bool CommServer_addSocket_called;
+    static int CommTCPListener_setup_return;
   public:
     TCPListenFactorytest();
 
     void setup();
     void teardown();
 
-    void test_null();
+    void test_listen();
+    void test_listen_fail();
+
+    static void set_CommServer_addSocket_called();
+    static int get_CommTCPListener_setup_return();
 };
 
 TCPListenFactorytest::TCPListenFactorytest() : m_commServer(0L)
 {
-    ADD_TEST(TCPListenFactorytest::test_null);
+    ADD_TEST(TCPListenFactorytest::test_listen);
+    ADD_TEST(TCPListenFactorytest::test_listen_fail);
 }
 
 void TCPListenFactorytest::setup()
 {
     m_commServer = new CommServer;
+    m_commClientKit = boost::make_shared<TestCommClientKit>();
 }
 
 void TCPListenFactorytest::teardown()
 {
+    m_commClientKit.reset();
+    delete m_commServer;
 }
 
-void TCPListenFactorytest::test_null()
+void TCPListenFactorytest::test_listen()
 {
-    ASSERT_NOT_NULL(m_commServer);
+    CommServer_addSocket_called = false;
+    CommTCPListener_setup_return = 0;
+
+    int ret = TCPListenFactory::listen(*m_commServer, 6767, m_commClientKit);
+
+    ASSERT_EQUAL(ret, 0);
+    ASSERT_TRUE(CommServer_addSocket_called);
 }
+
+void TCPListenFactorytest::test_listen_fail()
+{
+    CommServer_addSocket_called = false;
+    CommTCPListener_setup_return = -1;
+
+    int ret = TCPListenFactory::listen(*m_commServer, 6767, m_commClientKit);
+
+    ASSERT_EQUAL(ret, -1);
+    ASSERT_TRUE(!CommServer_addSocket_called);
+}
+
+void TCPListenFactorytest::set_CommServer_addSocket_called()
+{
+    CommServer_addSocket_called = true;
+}
+
+int TCPListenFactorytest::get_CommTCPListener_setup_return()
+{
+    return CommTCPListener_setup_return;
+}
+
+bool TCPListenFactorytest::CommServer_addSocket_called = true;
+int TCPListenFactorytest::CommTCPListener_setup_return = 0;
 
 int main()
 {
@@ -89,9 +151,18 @@ CommServer::CommServer() : m_epollFd(-1),
 {
 }
 
+CommServer::~CommServer()
+{
+}
+
 int CommServer::addSocket(CommSocket * cs)
 {
+    TCPListenFactorytest::set_CommServer_addSocket_called();
     return 0;
+}
+
+CommClientKit::~CommClientKit()
+{
 }
 
 CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
@@ -122,8 +193,5 @@ int CommTCPListener::accept()
 
 int CommTCPListener::setup(struct addrinfo * i)
 {
-    if (m_listener.open(i) != 0) {
-        return -1;
-    }
-    return 0;
+    return TCPListenFactorytest::get_CommTCPListener_setup_return();
 }
