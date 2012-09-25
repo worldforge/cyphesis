@@ -51,7 +51,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  MindFactorytest PythonContexttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
-                 TerrainModtest PythonClasstest
+                 TerrainModtest PythonClasstest \
+                 TerrainEffectorPropertytest
 
 RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration
@@ -916,6 +917,12 @@ PythonArithmeticFactorytest_LDADD = \
 TerrainModtest_SOURCES = TerrainModtest.cpp
 TerrainModtest_LDADD = \
         $(top_builddir)/rulesets/TerrainModTranslator.o \
+        $(TERRAIN_LIBS)
+
+
+TerrainEffectorPropertytest_SOURCES = TerrainEffectorPropertytest.cpp
+TerrainEffectorPropertytest_LDADD = \
+        $(top_builddir)/rulesets/TerrainEffectorProperty.o \
         $(TERRAIN_LIBS)
 
 # RULESETS_INTEGRATION
