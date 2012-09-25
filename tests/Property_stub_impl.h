@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2011 Alistair Riddoch
+// Copyright (C) 2004 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,20 +17,40 @@
 
 // $Id$
 
-#ifndef RULESETS_TERRAIN_EFFECTOR_PROPERTY_H
-#define RULESETS_TERRAIN_EFFECTOR_PROPERTY_H
+#ifndef TESTS_PROPERTY_IMPL_H
+#define TESTS_PROPERTY_IMPL_H
 
 #include "common/Property.h"
 
-class TerrainProperty;
+/// \brief Constructor for immutable Propertys
+template <typename T>
+Property<T>::Property(unsigned int flags) :
+                      PropertyBase(flags)
+{
+}
 
-/// \brief Class to handle Entity terrain modifier property
-/// \ingroup PropertyClasses
-class TerrainEffectorProperty : public Property<Atlas::Message::MapType> {
-  protected:
-    const TerrainProperty* getTerrain(Entity * owner);
+template <typename T>
+int Property<T>::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
 
-    friend class TerrainEffectorPropertytest;
-};
+template <typename T>
+void Property<T>::set(const Atlas::Message::Element & e)
+{
+}
 
-#endif // RULESETS_TERRAIN_EFFECTOR_PROPERTY_H
+// The following two are obsolete.
+template <typename T>
+void Property<T>::add(const std::string & s,
+                               Atlas::Message::MapType & ent) const
+{
+}
+
+template <typename T>
+void Property<T>::add(const std::string & s,
+                      const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+#endif // TESTS_PROPERTY_IMPL_H

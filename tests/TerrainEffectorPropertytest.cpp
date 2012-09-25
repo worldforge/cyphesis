@@ -28,8 +28,6 @@
 
 #include "rulesets/TerrainEffectorProperty.h"
 
-#if 0
-
 class TerrainEffectorPropertytest : public Cyphesis::TestBase
 {
   private:
@@ -60,12 +58,14 @@ void TerrainEffectorPropertytest::teardown()
 
 void TerrainEffectorPropertytest::test_null()
 {
+    // const TerrainProperty * res = m_property->getTerrain(0);
 }
-#endif
 
 int main()
 {
-   
+    TerrainEffectorPropertytest t;
+
+    t.run();
 
     return 0;
 }
@@ -73,6 +73,8 @@ int main()
 // stubs
 
 #include "rulesets/TerrainProperty.h"
+
+#include "Property_stub_impl.h"
 
 TerrainProperty::~TerrainProperty()
 {
@@ -84,6 +86,10 @@ int TerrainProperty::get(Atlas::Message::Element & ent) const
 }
 
 void TerrainProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
 
@@ -108,3 +114,5 @@ void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
+
+template class Property<Atlas::Message::MapType>;

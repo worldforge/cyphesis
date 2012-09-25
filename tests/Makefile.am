@@ -115,7 +115,7 @@ check_PROGRAMS = $(TESTS)
 noinst_HEADERS = TestBase.h null_stream.h CommClient_stub_impl.h \
                  CommStreamClient_stub_impl.h OperationExerciser.h \
                  allOperations.h TestWorld.h CommStreamListener_stub_impl.h \
-                 Sink.h
+                 Sink.h Property_stub_impl.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
