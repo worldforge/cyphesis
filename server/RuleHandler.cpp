@@ -28,6 +28,10 @@ using Atlas::Message::ListType;
 
 using String::compose;
 
+RuleHandler::~RuleHandler()
+{
+}
+
 int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
                                   const std::string & class_name,
                                   const std::string & context,

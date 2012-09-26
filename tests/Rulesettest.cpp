@@ -444,6 +444,10 @@ int TaskRuleHandler::update(const std::string & name,
     return 0;
 }
 
+RuleHandler::~RuleHandler()
+{
+}
+
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder()
