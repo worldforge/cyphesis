@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = libraries physics common modules rulesets server client data \
           tools tests man dox

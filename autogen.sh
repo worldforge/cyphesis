@@ -6,7 +6,7 @@ echo aclocal...
     exit 1
 }
 
-aclocal $ACLOCAL_FLAGS
+aclocal $ACLOCAL_FLAGS -I m4
 
 echo autoheader...
 (autoheader --version) < /dev/null > /dev/null 2>&1 || {

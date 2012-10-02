@@ -100,6 +100,8 @@ dnl allow the user to provide the directory where python is installed in
 
 AC_LANG(C++)
 
+AX_CXX_COMPILE_STDCXX_11
+
 AC_CHECK_FUNCS([sigset sigaction epoll_create poll localtime_r syslog uname])
 AC_CHECK_FUNCS([getuid nice fork setsid wait4 getppid kill inet_ntop])
 AC_CHECK_FUNCS([unlink usleep Sleep gettimeofday getnameinfo])
