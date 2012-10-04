@@ -37,7 +37,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      AtlasFileLoader.cpp AtlasFileLoader.h \
 		      Monitors.cpp Monitors.h \
 		      Variable.cpp Variable.h \
-		      AtlasStreamClient.cpp AtlasStreamClient.h \	
+		      AtlasStreamClient.cpp AtlasStreamClient.h \
 		      ClientTask.cpp ClientTask.h \
 		      SystemTime.cpp SystemTime.h \
 		      EntityKit.cpp EntityKit.h \
