@@ -347,6 +347,25 @@ def test_task(host='', account='', password='', **args):
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
 
+def test_wand(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+
+    world=m.look()
+
+    settler=m.make('settler',pos=(1,1,0))
+    wand=m.make('wand',pos=(0,0,0),parent=settler.id)
+
+    m.m.send(Operation("wield", Entity(wand.id), to=settler))
+    m.m.send(Operation("use", Operation("cast", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+    m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
+
 def test_fish(host='', account='', password='', **args):
     #   general things
 
