@@ -1,3 +1,7 @@
+Appropriate clothing buff.
+ - match the weather in terms of warmth
+ - social bonus for not wearing battle gear
+
 In FooOperation(), avoid calling FooOperation() in a parent class, as it
 re-does the checking.
 
