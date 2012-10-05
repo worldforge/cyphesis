@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2012 Anthony Pesce
+// Copyright (C) 2012 Anthony Pesce
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,24 +16,20 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef SHAKER_H
-#define SHAKER_H
+#ifndef COMMON_SHAKER_H
+#define COMMON_SHAKER_H
 
-#include <skstream/skstreamconfig.h>
-
-#include <cstdlib>
 #include <wfmath/MersenneTwister.h>
-
 #include <string>
 
-#endif
 
-
-class Shaker{
-	public:
-		Shaker();
-		std::string generate_salt(char * buffer[],size_t length);	
-	private:
-		WFMath::MTRand rng;	
+class Shaker
+{
+    public:
+        Shaker();
+        std::string generate_salt(size_t length);	
+    private:
+        WFMath::MTRand rng;	
 };
 
+#endif //COMMON_SHAKER_H
