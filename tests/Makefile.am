@@ -14,7 +14,8 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                FormattedXMLWritertest PropertyFactorytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
                ClientTasktest utilstest SystemTimetest \
-               TaskKittest EntityKittest ScriptKittest atlas_helperstest
+               TaskKittest EntityKittest ScriptKittest atlas_helperstest \
+               Shakertest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest \
@@ -279,6 +280,10 @@ SystemTimetest_LDADD = \
 TaskKittest_SOURCES = TaskKittest.cpp
 TaskKittest_LDADD = \
         $(top_builddir)/common/TaskKit.o
+        
+Shakertest_SOURCES = Shakertest.cpp
+Shakertest_LDADD = \
+        $(top_builddir)/common/Shaker.o
 
 ScriptKittest_SOURCES = ScriptKittest.cpp
 ScriptKittest_LDADD = \
