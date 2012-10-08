@@ -33,7 +33,8 @@ std::string Shaker::generate_salt(size_t length)
 {
     std::string salt;
 	
-    for (size_t i = 0; i < length; ++i) {
+    for (size_t i = 0; i < length; ++i) 
+    {
         unsigned char b = rng.randInt() & 0xff;
         salt.push_back(hex_table[b & 0xf]);
         salt.push_back(hex_table[(b & 0xf0) >> 4]);
