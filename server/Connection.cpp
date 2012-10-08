@@ -100,7 +100,8 @@ Account * Connection::addNewAccount(const std::string & type,
                                     const std::string & password)
 {
     std::string hash;
-    encrypt_password(password, hash);
+    std::string salt = m_server.getShaker().generate_salt(8);
+    hash_password(password,salt,hash);
     std::string newAccountId;
 
     long intId = newId(newAccountId);
