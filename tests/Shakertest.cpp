@@ -42,22 +42,22 @@ class Shakertest : public Cyphesis::TestBase
 
 Shakertest::Shakertest() 
 {
-	ADD_TEST(Shakertest::test_generate);
+    ADD_TEST(Shakertest::test_generate);
 }
 
 void Shakertest::setup()
 {
-	m_shaker = new Shaker;
+    m_shaker = new Shaker;
 }
 
 void Shakertest::teardown()
 {
-	delete m_shaker;
+    delete m_shaker;
 }
 
 void Shakertest::test_generate()
 {
-	std::string s = m_shaker->generate_salt(1000);
+    std::string s = m_shaker->generate_salt(1000);
     ASSERT_NOT_NULL(&s);
 }
 
@@ -65,9 +65,9 @@ void Shakertest::test_generate()
 
 int main()
 {
-	Shakertest t;
+    Shakertest t;
 	
-	return t.run();
+    return t.run();
 }
 
 
