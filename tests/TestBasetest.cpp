@@ -26,9 +26,13 @@
 
 #include "TestBase.h"
 
+#include "common/compose.hpp"
+
 #include <iostream>
 
 #include <cassert>
+
+using String::compose;
 
 class Test : public Cyphesis::TestBase {
   public:
@@ -95,8 +99,8 @@ void test_ASSERT_TRUE()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:88: void test_ASSERT_TRUE()::T::test_macro(): "
-           "Assertion 'val' failed.");
+           compose("%1:92: void test_ASSERT_TRUE()::T::test_macro(): "
+                   "Assertion 'val' failed.", __FILE__));
 }
 
 void test_ASSERT_EQUAL()
@@ -124,8 +128,8 @@ void test_ASSERT_EQUAL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:117: void test_ASSERT_EQUAL()::T::test_macro(): "
-           "Assertion 'i == j' failed. 1 != 2");
+           compose("%1:121: void test_ASSERT_EQUAL()::T::test_macro(): "
+                   "Assertion 'i == j' failed. 1 != 2", __FILE__));
 }
 
 void test_ASSERT_NOT_EQUAL()
@@ -153,8 +157,8 @@ void test_ASSERT_NOT_EQUAL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:146: void test_ASSERT_NOT_EQUAL()::T::test_macro(): "
-           "Assertion 'i != j' failed. 1 == 1");
+           compose("%1:150: void test_ASSERT_NOT_EQUAL()::T::test_macro(): "
+                   "Assertion 'i != j' failed. 1 == 1", __FILE__));
 }
 
 void test_ASSERT_GREATER()
@@ -182,8 +186,8 @@ void test_ASSERT_GREATER()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:175: void test_ASSERT_GREATER()::T::test_macro(): "
-           "Assertion 'i > j' failed. 1 <= 2");
+           compose("%1:179: void test_ASSERT_GREATER()::T::test_macro(): "
+                   "Assertion 'i > j' failed. 1 <= 2", __FILE__));
 }
 
 void test_ASSERT_LESS()
@@ -211,8 +215,8 @@ void test_ASSERT_LESS()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:204: void test_ASSERT_LESS()::T::test_macro(): "
-           "Assertion 'i < j' failed. 3 >= 2");
+           compose("%1:208: void test_ASSERT_LESS()::T::test_macro(): "
+                   "Assertion 'i < j' failed. 3 >= 2", __FILE__));
 }
 
 void test_ASSERT_NULL()
@@ -240,8 +244,8 @@ void test_ASSERT_NULL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:233: void test_ASSERT_NULL()::T::test_macro(): "
-           "Assertion '&i' null failed.");
+           compose("%1:237: void test_ASSERT_NULL()::T::test_macro(): "
+                   "Assertion '&i' null failed.", __FILE__));
 }
 
 void test_ASSERT_NOT_NULL()
@@ -269,8 +273,8 @@ void test_ASSERT_NOT_NULL()
     assert(t.errorCount() == 1);
 
     assert(t.errorReports().front() ==
-           "TestBasetest.cpp:262: void test_ASSERT_NOT_NULL()::T::test_macro(): "
-           "Assertion 'i' not null failed.");
+           compose("%1:266: void test_ASSERT_NOT_NULL()::T::test_macro(): "
+                   "Assertion 'i' not null failed.", __FILE__));
 }
 
 int main()
