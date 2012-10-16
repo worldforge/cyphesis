@@ -47,7 +47,7 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Actuate.h Add.h Affect.h Attack.h Burn.h Connect.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h Teleport.h \
-		      Shaker.h Shaker.cpp		      
+		      Shaker.h Shaker.cpp
 
 libtools_a_SOURCES = Storage.cpp Storage.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h
