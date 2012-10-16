@@ -15,21 +15,25 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+// $Id$
 
 #ifndef COMMON_SHAKER_H
 #define COMMON_SHAKER_H
 
 #include <wfmath/MersenneTwister.h>
+
 #include <string>
 
-
+/// \brief This is a class to generate a salt for a hash
 class Shaker
 {
-    public:
-        Shaker();
-        std::string generate_salt(size_t length);	
-    private:
-        WFMath::MTRand rng;	
+  public:
+    Shaker();
+    /// \brief Function to generate salt
+    std::string generateSalt(size_t length);	
+  private:
+    /// \brief MTRand Random Number Generator
+    WFMath::MTRand rng;	
 };
 
 #endif //COMMON_SHAKER_H
