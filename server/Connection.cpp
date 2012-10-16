@@ -102,7 +102,7 @@ Account * Connection::addNewAccount(const std::string & type,
                                     const std::string & password)
 {
     std::string hash;
-    std::string salt = m_server.getShaker().generate_salt(hash_salt_size);
+    std::string salt = m_server.getShaker().generateSalt(hash_salt_size);
     hash_password(password,salt,hash);
     std::string newAccountId;
 
