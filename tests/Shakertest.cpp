@@ -23,8 +23,10 @@
 #endif
 
 #include "TestBase.h"
-#include <string>
+
 #include "common/Shaker.h"
+
+using namespace std;
 
 class Shakertest : public Cyphesis::TestBase
 {
@@ -36,13 +38,13 @@ class Shakertest : public Cyphesis::TestBase
     Shakertest();
     void setup();
     void teardown();
-    void test_generate();
+    void testGenerate();
 
 };
 
 Shakertest::Shakertest() 
 {
-    ADD_TEST(Shakertest::test_generate);
+    ADD_TEST(Shakertest::testGenerate);
 }
 
 void Shakertest::setup()
@@ -55,10 +57,34 @@ void Shakertest::teardown()
     delete m_shaker;
 }
 
-void Shakertest::test_generate()
+void Shakertest::testGenerate()
 {
-    std::string s = m_shaker->generate_salt(1000);
-    ASSERT_NOT_NULL(&s);
+    unsigned int salt_length1 = 0;
+    unsigned int salt_length2 = 8;
+    unsigned int salt_length3 = 100;    
+    std::string s1  = m_shaker->generateSalt(salt_length1);
+    ASSERT_NOT_NULL(&s1);
+    ASSERT_TRUE(salt_length1*2==s1.length());
+    for(unsigned int i =0;i<s1.length();i++)
+    {
+        ASSERT_TRUE(isxdigit(s1[i]));
+    }
+
+    std::string s2 = m_shaker->generateSalt(salt_length2);
+    ASSERT_NOT_NULL(&s2);
+    ASSERT_TRUE(salt_length2*2==s2.length());
+    for(unsigned int i =0;i<s2.length();i++)
+    {
+        ASSERT_TRUE(isxdigit(s2[i]));
+    }
+
+    std::string s3 = m_shaker->generateSalt(salt_length3);
+    ASSERT_NOT_NULL(&s3);
+    ASSERT_TRUE(salt_length3*2==s3.length());
+    for(unsigned int i =0;i<s3.length();i++)
+    {
+        ASSERT_TRUE(isxdigit(s3[i]));
+    }
 }
 
 
@@ -69,6 +95,3 @@ int main()
 	
     return t.run();
 }
-
-
-
