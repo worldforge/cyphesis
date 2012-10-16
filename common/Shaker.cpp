@@ -17,19 +17,19 @@
 
 // $Id$
 
-
 #include "Shaker.h"
 
 static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
                                     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
-
 Shaker::Shaker()
 {
 	
 }
 
-std::string Shaker::generate_salt(size_t length)
+/// \brief Generates salt by using 
+/// a Random Number Generator of type WFMath::MTRand
+/// @param length The amount to iterate to generate the salt. 
+std::string Shaker::generateSalt(size_t length)
 {
     std::string salt;
 	
@@ -41,5 +41,3 @@ std::string Shaker::generate_salt(size_t length)
     }
     return salt;
 }
-
-
