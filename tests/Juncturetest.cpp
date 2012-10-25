@@ -685,3 +685,14 @@ void Router::error(const Operation & op,
 void log(LogLevel lvl, const std::string & msg)
 {
 }
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}
