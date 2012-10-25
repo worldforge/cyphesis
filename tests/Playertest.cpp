@@ -1106,3 +1106,13 @@ bool database_flag = false;
 namespace Atlas { namespace Objects { namespace Operation {
 int MONITOR_NO = -1;
 } } }
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}
