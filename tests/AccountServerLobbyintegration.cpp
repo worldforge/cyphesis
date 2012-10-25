@@ -870,3 +870,14 @@ bool_config_register::bool_config_register(bool & var,
                                            const char * help)
 {
 }
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}
