@@ -109,7 +109,7 @@ int main()
 
     ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",
                          "1", 1, "2", 2);
-
+                         
     CommServer commServer;
 
     TestCommClient * tcc = new TestCommClient(commServer);
@@ -980,14 +980,13 @@ const Root & Inheritance::getClass(const std::string & parent)
     return noClass;
 }
 
-void encrypt_password(const std::string & pwd, std::string & hash)
-{
-}
-
 void log(LogLevel lvl, const std::string & msg)
 {
 }
-
+void hash_password(const std::string & pwd, const std::string & salt,
+                   std::string & hash )
+{
+}
 void logEvent(LogEvent lev, const std::string & msg)
 {
 }
@@ -1025,4 +1024,14 @@ void addToEntity(const Vector3D & v, std::vector<double> & vd)
 int check_password(const std::string & pwd, const std::string & hash)
 {
     return 0;
+}
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
 }
