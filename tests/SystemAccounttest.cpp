@@ -896,3 +896,14 @@ void log(LogLevel lvl, const std::string & msg)
 }
 
 bool database_flag = false;
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}
