@@ -550,3 +550,14 @@ namespace consts {
   const int buildId = -1;
   const char * version = "test_version";
 }
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}
