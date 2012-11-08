@@ -1,3 +1,18 @@
+2012-11-08  Alistair Riddoch  <alriddoch@googlemail.com>
+
+	* New game systems by Jekin Trivedi implementing earthworks, and
+	  prototypes of baking, rope making and other crafting.
+
+	* New game systems by Elminster starting work on metal smelting.
+
+	* New game systems by Anthony Pesce implementing pioneering.
+
+	* New prototype game system for magic spells.
+
+	* Almost all the core code has been touched in some way over the last
+	  18 months in changes which have increased robustness, flexibility,
+	  performance and reliability.
+
 2011-03-01  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* NEWS: Update NEWS announcement for release.
