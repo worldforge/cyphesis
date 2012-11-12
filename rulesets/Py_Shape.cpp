@@ -450,7 +450,7 @@ PyShape * Area_sq_item(PyShape * self, Py_ssize_t index)
         return 0;
     }
 #endif // NDEBUG
-    if (index >= self->shape.s->size()) {
+    if (static_cast<size_t>(index) >= self->shape.s->size()) {
         PyErr_SetString(PyExc_IndexError, "Number of corners exceded");
         return 0;
     }
@@ -474,7 +474,7 @@ PyPoint3D * Body_sq_item(PyShape * self, Py_ssize_t index)
         return 0;
     }
 #endif // NDEBUG
-    if (index >= self->shape.s->size()) {
+    if (static_cast<size_t>(index) >= self->shape.s->size()) {
         PyErr_SetString(PyExc_IndexError, "Number of corners exceded");
         return 0;
     }
