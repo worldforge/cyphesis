@@ -792,7 +792,7 @@ int Database::registerSimpleTable(const std::string & name,
                 createquery += " text";
             } else {
                 char buf[32];
-                snprintf(buf, 32, "%d", size);
+                snprintf(buf, 32, "%zd", size);
                 createquery += " varchar(";
                 createquery += buf;
                 createquery += ")";
