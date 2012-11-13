@@ -88,7 +88,8 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
                            EntityFactoryTypeNodeintegration \
                            AccountConnectionintegration \
-                           AccountServerLobbyintegration
+                           AccountServerLobbyintegration \
+                           ConnectionShakerintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
               Flushertest OperationMonitortest \
@@ -1360,6 +1361,32 @@ Rulesetintegration_LDADD = \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
+ConnectionShakerintegration_SOURCES = \
+        ConnectionShakerintegration.cpp \
+        CommClient_null_stream.cpp \
+        CommStreamClient_null_stream.cpp
+ConnectionShakerintegration_LDADD = \
+        $(top_builddir)/server/Account.o \
+        $(top_builddir)/server/Admin.o \
+        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/server/Link.o \
+        $(top_builddir)/server/Lobby.o \
+        $(top_builddir)/server/Player.o \
+        $(top_builddir)/server/ServerAccount.o \
+        $(top_builddir)/server/ServerRouting.o \
+        $(top_builddir)/server/SystemAccount.o \
+        $(top_builddir)/common/BaseWorld.o \
+        $(top_builddir)/common/Inheritance.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/Router.o \
+        $(top_builddir)/common/TypeNode.o \
+        $(top_builddir)/common/custom.o \
+        $(top_builddir)/common/operations.o \
+        $(top_builddir)/common/Shaker.o \
+        $(top_builddir)/physics/libphysics.a \
+        $(NETWORK_LIBS)
+        
 Accountintegration_SOURCES = \
         Accountintegration.cpp \
         CommClient_null_stream.cpp \
@@ -1517,4 +1544,3 @@ python_class_LDADD = \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a
-
