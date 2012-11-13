@@ -165,6 +165,11 @@ Juncture::~Juncture()
 {
 }
 
+void Juncture::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+}
+
 void Juncture::operation(const Operation & op, OpVector & res)
 {
     const OpNo op_no = op->getClassNo();

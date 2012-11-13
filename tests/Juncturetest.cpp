@@ -568,6 +568,10 @@ void Peer::setAuthState(PeerAuthState state)
     m_state = state;
 }
 
+void Peer::externalOperation(const Operation & op)
+{
+}
+
 void Peer::operation(const Operation &op, OpVector &res)
 {
 }
@@ -606,6 +610,10 @@ int Connection::verifyCredentials(const Account &,
 
 
 Connection::~Connection()
+{
+}
+
+void Connection::externalOperation(const Operation & op)
 {
 }
 

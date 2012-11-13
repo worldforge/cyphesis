@@ -41,6 +41,7 @@ class TestMind : public Router
   public:
     TestMind() : Router("", -1) { }
 
+    virtual void externalOperation(const Operation &) { }
     virtual void operation(const Operation &, OpVector &) { }
 };
 

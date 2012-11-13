@@ -32,6 +32,7 @@ class TestConnectableRouter : public ConnectableRouter {
   public:
     TestConnectableRouter() : ConnectableRouter("1", 1) { }
 
+    virtual void externalOperation(const Operation&) { }
     virtual void operation(const Operation&, OpVector&) { }
 };
 

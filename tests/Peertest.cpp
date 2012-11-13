@@ -544,6 +544,10 @@ ExternalMind::~ExternalMind()
 {
 }
 
+void ExternalMind::externalOperation(const Operation &)
+{
+}
+
 void ExternalMind::operation(const Operation & op, OpVector & res)
 {
 }

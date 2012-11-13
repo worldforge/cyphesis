@@ -129,6 +129,10 @@ void Account::addCharacter(Entity * chr)
 {
 }
 
+void Account::externalOperation(const Operation & op)
+{
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
 }

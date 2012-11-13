@@ -346,6 +346,8 @@ int main()
 
 #include "rulesets/Script.h"
 
+#include "common/log.h"
+
 using Atlas::Message::MapType;
 
 Connection::Connection(CommSocket & client,
@@ -376,6 +378,10 @@ Connection::~Connection()
 {
 }
 
+
+void Connection::externalOperation(const Operation &)
+{
+}
 
 void Connection::operation(const Operation &, OpVector &)
 {
@@ -684,4 +690,8 @@ BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }

@@ -336,6 +336,10 @@ void Account::addToEntity(const RootEntity & ent) const
 {
 }
 
+void Account::externalOperation(const Operation & op)
+{
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
 }
@@ -400,6 +404,10 @@ Connection::~Connection()
 }
 
 void Connection::addObject(Router * obj)
+{
+}
+
+void Connection::externalOperation(const Operation & op)
 {
 }
 
@@ -480,6 +488,10 @@ Juncture::Juncture(Connection * c, const std::string & id, long iid) :
 }
 
 Juncture::~Juncture()
+{
+}
+
+void Juncture::externalOperation(const Operation & op)
 {
 }
 

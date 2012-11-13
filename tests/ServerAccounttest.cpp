@@ -456,6 +456,10 @@ void Account::addToEntity(const RootEntity & ent) const
 {
 }
 
+void Account::externalOperation(const Operation & op)
+{
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
 }
@@ -516,6 +520,10 @@ int Connection::verifyCredentials(const Account &,
 }
 
 Connection::~Connection()
+{
+}
+
+void Connection::externalOperation(const Operation & op)
 {
 }
 

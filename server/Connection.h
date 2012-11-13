@@ -83,6 +83,7 @@ class Connection : public Link, virtual public sigc::trackable {
 
     void connectAvatar(Character * chr);
 
+    virtual void externalOperation(const Operation & op);
     virtual void operation(const Operation &, OpVector &);
 
     virtual void LoginOperation(const Operation &, OpVector &);

@@ -38,6 +38,7 @@ class TestRouter : public Router {
   public:
     TestRouter(const std::string & id, long intId) : Router(id, intId) { }
 
+    virtual void externalOperation(const Operation &) { }
     virtual void operation(const Operation &, OpVector &) { }
 };
 

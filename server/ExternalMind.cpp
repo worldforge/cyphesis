@@ -76,6 +76,11 @@ ExternalMind::~ExternalMind()
 {
 }
 
+void ExternalMind::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+}
+
 void ExternalMind::operation(const Operation & op, OpVector & res)
 {
     if (m_external == 0) {

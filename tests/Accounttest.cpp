@@ -1696,6 +1696,10 @@ Connection::~Connection()
 {
 }
 
+void Connection::externalOperation(const Operation & op)
+{
+}
+
 void Connection::operation(const Operation &, OpVector &)
 {
 }
@@ -1830,6 +1834,10 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 void Lobby::addAccount(Account * ac)
 {
     m_accounts[ac->getId()] = ac;
+}
+
+void Lobby::externalOperation(const Operation & op)
+{
 }
 
 void Lobby::operation(const Operation & op, OpVector & res)

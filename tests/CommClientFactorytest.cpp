@@ -135,6 +135,10 @@ int Connection::verifyCredentials(const Account & account,
     return 0;
 }
 
+void Connection::externalOperation(const Operation & op)
+{
+}
+
 void Connection::operation(const Operation & op, OpVector & res)
 {
 }
@@ -185,6 +189,10 @@ Peer::Peer(CommSocket & client,
 }
 
 Peer::~Peer()
+{
+}
+
+void Peer::externalOperation(const Operation & op)
 {
 }
 

@@ -249,6 +249,11 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setId(getId());
 }
 
+void Account::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
     const OpNo op_no = op->getClassNo();

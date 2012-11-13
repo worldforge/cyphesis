@@ -61,7 +61,9 @@ class Router {
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;
 
+    virtual void externalOperation(const Operation & op) = 0;
     virtual void operation(const Operation &, OpVector &) = 0;
+
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 };

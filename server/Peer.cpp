@@ -93,6 +93,11 @@ PeerAuthState Peer::getAuthState()
     return m_state;
 }
 
+void Peer::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+}
+
 /// \brief Execute an operation sent by a connected peer
 ///
 /// \param op The operation to be executed

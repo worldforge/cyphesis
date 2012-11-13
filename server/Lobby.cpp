@@ -23,7 +23,9 @@
 #include "Connection.h"
 #include "ServerRouting.h"
 
+#include "common/compose.hpp"
 #include "common/debug.h"
+#include "common/log.h"
 #include "common/serialno.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -91,6 +93,11 @@ void Lobby::delAccount(Account * ac)
     m_accounts.erase(ac->getId());
 }
 
+
+void Lobby::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+}
 
 void Lobby::operation(const Operation & op, OpVector & res)
 {

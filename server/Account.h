@@ -99,6 +99,7 @@ class Account : public ConnectableRouter {
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
+    virtual void externalOperation(const Operation & op);
     virtual void operation(const Operation &, OpVector &);
 
     virtual void LogoutOperation(const Operation &, OpVector &);

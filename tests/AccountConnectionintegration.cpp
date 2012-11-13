@@ -314,6 +314,10 @@ ExternalMind::~ExternalMind()
 {
 }
 
+void ExternalMind::externalOperation(const Operation & op)
+{
+}
+
 void ExternalMind::operation(const Operation & op, OpVector & res)
 {
 }
@@ -361,6 +365,10 @@ Juncture::Juncture(Connection * c,
 }
 
 Juncture::~Juncture()
+{
+}
+
+void Juncture::externalOperation(const Operation & op)
 {
 }
 

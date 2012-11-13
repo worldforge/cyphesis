@@ -693,6 +693,10 @@ Connection::~Connection()
 {
 }
 
+void Connection::externalOperation(const Operation & op)
+{
+}
+
 void Connection::operation(const Operation &, OpVector &)
 {
 }

@@ -251,6 +251,12 @@ int Connection::verifyCredentials(const Account & account,
     return check_password(passwd, account.password());
 }
 
+
+void Connection::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+}
+
 void Connection::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);

@@ -44,6 +44,7 @@ class ExternalMind : public Router {
     ExternalMind(Entity &);
     virtual ~ExternalMind();
 
+    virtual void externalOperation(const Operation & op);
     virtual void operation(const Operation &, OpVector &);
 
     bool isLinked() { return m_external != 0; }
