@@ -103,7 +103,7 @@ SERVER_SOURCES = \
 		EntityBuilder.cpp EntityBuilder.h \
 		ArithmeticBuilder.cpp ArithmeticBuilder.h \
 		Lobby.cpp Lobby.h \
-		ConnectedRouter.cpp ConnectedRouter.h \
+		ConnectableRouter.cpp ConnectableRouter.h \
 		Connection.cpp Connection.h Connection_methods.h \
 		TrustedConnection.cpp TrustedConnection.h \
 		Peer.cpp Peer.h \

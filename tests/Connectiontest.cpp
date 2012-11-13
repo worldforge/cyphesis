@@ -289,7 +289,7 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         ConnectedRouter(id, intId, conn),
+         ConnectableRouter(id, intId, conn),
          m_username(uname), m_password(passwd)
 {
 }
@@ -359,7 +359,7 @@ void Account::OtherOperation(const Operation &, OpVector &)
 {
 }
 
-ConnectedRouter::ConnectedRouter(const std::string & id,
+ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
                                  Connection *c) :
                  Router(id, iid),
@@ -367,7 +367,7 @@ ConnectedRouter::ConnectedRouter(const std::string & id,
 {
 }
 
-ConnectedRouter::~ConnectedRouter()
+ConnectableRouter::~ConnectableRouter()
 {
 }
 

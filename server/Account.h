@@ -20,7 +20,7 @@
 #ifndef SERVER_ACCOUNT_H
 #define SERVER_ACCOUNT_H
 
-#include "ConnectedRouter.h"
+#include "ConnectableRouter.h"
 
 #include <vector>
 
@@ -41,7 +41,7 @@ typedef std::map<long, Entity *> EntityDict;
 /// The majority of functionality relating to user accounts is encapsulated
 /// here. Sub-classes control privilege levels by implementing
 /// characterError().
-class Account : public ConnectedRouter {
+class Account : public ConnectableRouter {
   protected:
     /// \brief A store of Character entities belonging to this account
     EntityDict m_charactersDict;

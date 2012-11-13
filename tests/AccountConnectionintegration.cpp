@@ -354,7 +354,7 @@ void ExternalProperty::add(const std::string & s,
 
 Juncture::Juncture(Connection * c,
                    const std::string & id, long iid) :
-          ConnectedRouter(id, iid, c),
+          ConnectableRouter(id, iid, c),
                                                        m_socket(0),
                                                        m_peer(0)
 {

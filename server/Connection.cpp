@@ -128,7 +128,7 @@ Account * Connection::addNewAccount(const std::string & type,
 void Connection::disconnectObject(RouterMap::iterator I,
                                   const std::string & event)
 {
-    ConnectedRouter * cr = dynamic_cast<ConnectedRouter *>(I->second);
+    ConnectableRouter * cr = dynamic_cast<ConnectableRouter *>(I->second);
     if (cr != 0) {
         cr->m_connection = 0;
         Account * ac = dynamic_cast<Account *>(cr);

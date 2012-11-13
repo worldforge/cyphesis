@@ -1391,7 +1391,7 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         ConnectedRouter(id, intId, conn),
+         ConnectableRouter(id, intId, conn),
          m_username(uname), m_password(passwd)
 {
 }
@@ -1537,7 +1537,7 @@ void Connection::addEntity(Entity * ent)
 {
 }
 
-ConnectedRouter::ConnectedRouter(const std::string & id,
+ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
                                  Connection *c) :
                  Router(id, iid),
@@ -1545,7 +1545,7 @@ ConnectedRouter::ConnectedRouter(const std::string & id,
 {
 }
 
-ConnectedRouter::~ConnectedRouter()
+ConnectableRouter::~ConnectableRouter()
 {
 }
 
@@ -1579,7 +1579,7 @@ int Ruleset::installRule(const std::string & class_name,
 }
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectedRouter(id, iid, c),
+          ConnectableRouter(id, iid, c),
           m_address(0),
           m_socket(0),
           m_peer(0),

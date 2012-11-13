@@ -17,9 +17,9 @@
 
 // $Id$
 
-#include "ConnectedRouter.h"
+#include "ConnectableRouter.h"
 
-ConnectedRouter::ConnectedRouter(const std::string & id,
+ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
                                  Connection *c) :
                  Router(id, iid),
@@ -27,6 +27,6 @@ ConnectedRouter::ConnectedRouter(const std::string & id,
 {
 }
 
-ConnectedRouter::~ConnectedRouter()
+ConnectableRouter::~ConnectableRouter()
 {
 }

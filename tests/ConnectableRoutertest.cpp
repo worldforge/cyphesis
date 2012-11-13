@@ -17,26 +17,49 @@
 
 // $Id$
 
-#ifndef SERVER_CONNECTED_ROUTER_H
-#define SERVER_CONNECTED_ROUTER_H
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
 
-#include "common/Router.h"
+#include "server/ConnectableRouter.h"
 
-class Connection;
+#include <cassert>
 
-/// \brief This is the base class for any entity which has an Atlas
-/// compatible indentifier, and can be bound to a connection
-///
-class ConnectedRouter : public Router {
-  protected:
-    explicit ConnectedRouter(const std::string & id,
-                             long intId,
-                             Connection * c = 0);
+class TestConnectableRouter : public ConnectableRouter {
   public:
-    /// \brief The network connection currently subscribed to this object
-    Connection * m_connection;
+    TestConnectableRouter() : ConnectableRouter("1", 1) { }
 
-    virtual ~ConnectedRouter();
+    virtual void operation(const Operation&, OpVector&) { }
 };
 
-#endif // SERVER_CONNECTED_ROUTER_H
+int main()
+{
+    {
+        TestConnectableRouter * cr = new TestConnectableRouter;
+
+        delete cr;
+    }
+    return 0;
+}
+
+// stubs
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}

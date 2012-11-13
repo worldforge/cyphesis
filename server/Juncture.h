@@ -20,7 +20,7 @@
 #ifndef SERVER_JUNCTURE_H
 #define SERVER_JUNCTURE_H
 
-#include "ConnectedRouter.h"
+#include "ConnectableRouter.h"
 
 #include <sigc++/trackable.h>
 
@@ -38,7 +38,7 @@ class PeerAddress;
 /// with another server. Network session specific state is handled by
 /// the Peer object, which this object holds a reference to, but does not
 /// own.
-class Juncture : public ConnectedRouter, virtual public sigc::trackable {
+class Juncture : public ConnectableRouter, virtual public sigc::trackable {
   protected:
     PeerAddress * m_address;
     CommPeer * m_socket;

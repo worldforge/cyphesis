@@ -70,7 +70,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                StorageManagertest HttpCachetest UpdateTestertest \
                ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
-               ConnectedRoutertest RuleHandlertest OpRuleHandlertest \
+               ConnectableRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
@@ -1209,9 +1209,9 @@ Juncturetest_LDADD = \
         $(top_builddir)/server/Juncture.o \
         $(NETWORK_LIBS)
 
-ConnectedRoutertest_SOURCES = ConnectedRoutertest.cpp
-ConnectedRoutertest_LDADD = \
-        $(top_builddir)/server/ConnectedRouter.o
+ConnectableRoutertest_SOURCES = ConnectableRoutertest.cpp
+ConnectableRoutertest_LDADD = \
+        $(top_builddir)/server/ConnectableRouter.o
 
 RuleHandlertest_SOURCES = RuleHandlertest.cpp
 RuleHandlertest_LDADD = \
@@ -1302,7 +1302,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
-        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1343,7 +1343,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/PendingTeleport.o \
-        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1391,7 +1391,7 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
-        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1420,7 +1420,7 @@ AccountConnectionintegration_SOURCES = \
 AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
-        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Link.o \
         $(top_builddir)/server/Lobby.o \

@@ -153,7 +153,7 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
 }
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectedRouter(id, iid, c),
+          ConnectableRouter(id, iid, c),
           m_address(0),
           m_socket(0),
           m_peer(0),
