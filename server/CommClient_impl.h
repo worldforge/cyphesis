@@ -121,21 +121,7 @@ template <class StreamT>
 int CommClient<StreamT>::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     assert(m_link != 0);
-    OpVector reply;
-    long serialno = op->getSerialno();
-    m_link->operation(op, reply);
-    OpVector::const_iterator Iend = reply.end();
-    for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
-        if (!op->isDefaultSerialno()) {
-            // Should we respect existing refnos?
-            if ((*I)->isDefaultRefno()) {
-                (*I)->setRefno(serialno);
-            }
-        }
-        if (send(*I) != 0) {
-            return -1;
-        }
-    }
+    m_link->externalOperation(op);
     return 0;
 }
 
