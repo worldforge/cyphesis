@@ -54,8 +54,8 @@ class MemEntity : public LocatedEntity {
         }
     }
 
-    virtual void externalOperation(const Operation & op) { /* REMOVE */ }
-    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
+    virtual void externalOperation(const Operation & op);
+    virtual void operation(const Operation &, OpVector &);
 };
 
 #endif // RULESETS_MEM_ENTITY_H

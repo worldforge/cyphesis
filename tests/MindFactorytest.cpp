@@ -89,6 +89,14 @@ MemEntity::~MemEntity()
 {
 }
 
+void MemEntity::externalOperation(const Operation & op)
+{
+}
+
+void MemEntity::operation(const Operation &, OpVector &)
+{
+}
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),

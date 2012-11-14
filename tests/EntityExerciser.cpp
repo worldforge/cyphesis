@@ -48,6 +48,14 @@
 
 #include <cassert>
 
+void LocatedEntityTest::externalOperation(const Operation & op)
+{
+}
+
+void LocatedEntityTest::operation(const Operation &, OpVector &)
+{
+}
+
 EntityExerciser::EntityExerciser(LocatedEntity & e) : m_ent(e)
 {
     if (e.getIntId() == 0) {

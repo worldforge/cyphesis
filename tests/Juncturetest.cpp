@@ -483,6 +483,13 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
 
 CommPeer::CommPeer(CommServer & svr, const std::string & n) :
       CommClient<tcp_socket_stream>(svr, n)

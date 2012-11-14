@@ -104,8 +104,8 @@ class ServerRouting : public Router {
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
 
-    virtual void externalOperation(const Operation & op) { /* REMOVE */ }
-    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
+    virtual void externalOperation(const Operation & op);
+    virtual void operation(const Operation &, OpVector &);
 };
 
 #endif // SERVER_SERVER_ROUTING_H

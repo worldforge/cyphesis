@@ -549,6 +549,14 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
+
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
 int TeleportAuthenticator::removeTeleport(const std::string &entity_id)

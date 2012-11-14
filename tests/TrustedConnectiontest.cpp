@@ -502,6 +502,14 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
+
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),
        m_server(s)
