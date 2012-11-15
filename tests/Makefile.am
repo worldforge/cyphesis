@@ -1368,7 +1368,7 @@ ConnectionShakerintegration_SOURCES = \
 ConnectionShakerintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
-        $(top_builddir)/server/ConnectedRouter.o \
+        $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/Link.o \
         $(top_builddir)/server/Lobby.o \
