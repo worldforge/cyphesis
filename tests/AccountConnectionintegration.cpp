@@ -128,6 +128,8 @@ class TestContext {
     ServerRouting * server() const { return m_server; }
 };
 
+static OpVector test_sent_ops;
+
 int main()
 {
     {
@@ -148,22 +150,21 @@ int main()
         create_arg->setAttr("password", "6a6e71bab281");
         op->setArgs1(create_arg);
 
-        OpVector res;
-        assert(res.empty());
+        assert(test_sent_ops.empty());
 
         // Send the operation to create the account
-        scope.connection()->operation(op, res);
+        scope.connection()->externalOperation(op);
 
         // There should be a response op
-        assert(!res.empty());
-        assert(res.size() == 1);
+        assert(!test_sent_ops.empty());
+        assert(test_sent_ops.size() == 1);
         // and the account creation should have created an object bound
         // to this connection.
         assert(!scope.connection()->objects().empty());
 
         // Check the response is an info indicating successful account
         // creation.
-        const Operation & reply = res.front();
+        const Operation & reply = test_sent_ops.front();
         assert(reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
         // The Info response should have an argument describing the created
         // account
@@ -197,15 +198,13 @@ int main()
         // and try an additional account creation, which should fail.
         // Multiple logins are ok, but there is no reason to allow multiple
         // account creations.
-        res.clear();
-        scope.connection()->operation(op, res);
-        assert(!res.empty());
-        assert(res.size() == 1);
+        test_sent_ops.clear();
+        scope.connection()->externalOperation(op);
+        assert(!test_sent_ops.empty());
+        assert(test_sent_ops.size() == 1);
 
-        const Operation & error_reply = res.front();
+        const Operation & error_reply = test_sent_ops.front();
         assert(error_reply->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-
-        res.clear();
 
         Player::playableTypes.insert(test_valid_character_type);
 
@@ -217,15 +216,16 @@ int main()
         character_op->setArgs1(character_arg);
         character_op->setFrom(account_id);
 
-        scope.connection()->operation(character_op, res);
+        test_sent_ops.clear();
+        scope.connection()->externalOperation(character_op);
         // FIXME the above went through Account::externalOperation, so there
         // is no reply in res. The reply has gone directly to the Link::send
         // method. Add a way of checking, once there are better stubs.
-        // assert(!res.empty());
-        // assert(res.size() == 2);
+        assert(!test_sent_ops.empty());
+        assert(test_sent_ops.size() == 2);
 
-        // const Operation & create_reply = res.front();
-        // assert(create_reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
+        const Operation & create_reply = test_sent_ops.front();
+        assert(create_reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
 
 
         // TODO Character creation etc?
@@ -384,6 +384,24 @@ void Juncture::addToMessage(MapType & omap) const
 }
 
 void Juncture::addToEntity(const RootEntity & ent) const
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
+{
+    test_sent_ops.push_back(op);
+}
+
+void Link::disconnect()
 {
 }
 
