@@ -308,11 +308,6 @@ void Connection::operation(const Operation & op, OpVector & res)
         return;
     }
     Router * obj = I->second;
-    Entity * ig_ent = dynamic_cast<Entity *>(obj);
-    if (ig_ent == NULL) {
-        obj->operation(op, res);
-        return;
-    }
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != NULL) {
         ExternalMind * mind = 0;
@@ -331,11 +326,11 @@ void Connection::operation(const Operation & op, OpVector & res)
             res.push_back(info);
 
             logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
-                                                getId(), ig_ent->getId(),
-                                                ig_ent->getType()));
+                                                getId(), chr->getId(),
+                                                chr->getType()));
         }
     }
-    ig_ent->externalOperation(op);
+    obj->externalOperation(op);
 }
 
 void Connection::LoginOperation(const Operation & op, OpVector & res)

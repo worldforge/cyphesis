@@ -218,11 +218,14 @@ int main()
         character_op->setFrom(account_id);
 
         scope.connection()->operation(character_op, res);
-        assert(!res.empty());
-        assert(res.size() == 2);
+        // FIXME the above went through Account::externalOperation, so there
+        // is no reply in res. The reply has gone directly to the Link::send
+        // method. Add a way of checking, once there are better stubs.
+        // assert(!res.empty());
+        // assert(res.size() == 2);
 
-        const Operation & create_reply = res.front();
-        assert(create_reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
+        // const Operation & create_reply = res.front();
+        // assert(create_reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
 
 
         // TODO Character creation etc?
