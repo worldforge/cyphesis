@@ -21,6 +21,7 @@
 #define SERVER_SERVER_ROUTING_H
 
 #include "common/Router.h"
+#include "common/Shaker.h"
 
 class Account;
 class BaseWorld;
@@ -36,6 +37,9 @@ extern bool restricted_flag;
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
 class ServerRouting : public Router {
+  protected:
+    /// A shaker to generate a salt.
+    Shaker m_shaker;
   private:
     /// A mapping of ID to object of all the OOG objects in the server.
     RouterMap m_objects;
@@ -76,7 +80,10 @@ class ServerRouting : public Router {
 
     /// Accessor for world manager object.
     BaseWorld & getWorld() { return m_world; }
-
+    
+    /// Accesor for Shaker object.
+    Shaker & getShaker() { return m_shaker; }
+    
     /// Accessor for OOG objects map.
     const RouterMap & getObjects() const {
         return m_objects;

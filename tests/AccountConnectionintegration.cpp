@@ -935,3 +935,18 @@ bool_config_register::bool_config_register(bool & var,
                                            const char * help)
 {
 }
+void hash_password(const std::string & pwd, const std::string & salt,
+                   std::string & hash)
+{
+}
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}

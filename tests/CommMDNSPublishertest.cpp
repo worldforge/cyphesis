@@ -200,3 +200,14 @@ int avahi_client_errno(AvahiClient *)
     return 0;
 }
 #endif // HAVE_AVAHI
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+   return "";
+}
