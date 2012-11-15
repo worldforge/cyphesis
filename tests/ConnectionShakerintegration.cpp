@@ -220,6 +220,10 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
+void Account::externalOperation(const Operation &)
+{
+}
+
 void Account::operation(const Operation &, OpVector &)
 {
 }
@@ -292,6 +296,14 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
+void ServerRouting::externalOperation(const Operation &)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
+
 Account * ServerRouting::getAccountByName(const std::string & username)
 {
     return 0;
@@ -327,6 +339,10 @@ void Lobby::addAccount(Account * ac)
 {
 }
 
+void Lobby::externalOperation(const Operation &)
+{
+}
+
 void Lobby::operation(const Operation & op, OpVector & res)
 {
 }
@@ -337,6 +353,10 @@ ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
 }
 
 ExternalMind::~ExternalMind()
+{
+}
+
+void ExternalMind::externalOperation(const Operation & op)
 {
 }
 
