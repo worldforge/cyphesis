@@ -1117,3 +1117,14 @@ int check_password(const std::string & pwd, const std::string & hash)
 {
     return 0;
 }
+
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+return "";
+}

@@ -95,12 +95,15 @@ Account * Connection::newAccount(const std::string & type,
     return new Player(this, username, hash, id, intId);
 }
 
+static const int hash_salt_size = 8;
+
 Account * Connection::addNewAccount(const std::string & type,
                                     const std::string & username,
                                     const std::string & password)
 {
     std::string hash;
-    encrypt_password(password, hash);
+    std::string salt = m_server.getShaker().generateSalt(hash_salt_size);
+    hash_password(password,salt,hash);
     std::string newAccountId;
 
     long intId = newId(newAccountId);

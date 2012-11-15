@@ -342,5 +342,16 @@ int_config_register::int_config_register(int & var,
 {
 }
 
+#include <common/Shaker.h>
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return "";
+}
+
 
 // Library stubs
