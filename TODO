@@ -1,3 +1,7 @@
+Rename Script::operation for clarify. Needs to merge C++11 first, to
+reduce chances of error. Then we can see how much operation is actually
+called.
+
 Appropriate clothing buff.
  - match the weather in terms of warmth
  - social bonus for not wearing battle gear
