@@ -89,6 +89,8 @@ class Connection : public Link, virtual public sigc::trackable {
     virtual void LogoutOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
+
+    friend class ConnectionShakerintegration;
 };
 
 #endif // SERVER_CONNECTION_H

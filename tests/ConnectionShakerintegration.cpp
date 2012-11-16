@@ -26,205 +26,81 @@
 
 #include "TestBase.h"
 
-#include "TestWorld.h"
-#include "null_stream.h"
-#include "common/Shaker.h"
 #include "server/CommServer.h"
+#include "server/CommSocket.h"
 #include "server/Connection.h"
-#include "server/CommClient.h"
-
-#include "server/ServerAccount.h"
+#include "server/Idle.h"
 #include "server/ServerRouting.h"
-
-#include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Operation.h>
-
-#include "common/Monitors.h"
-#include "common/PropertyManager.h"
-#include "common/Variable.h"
-
 #include "server/ExternalMind.h"
-#include "common/const.h"
+#include "server/ExternalProperty.h"
+
+#include "rulesets/Character.h"
+
+#include "common/Shaker.h"
+#include "common/PropertyManager.h"
 #include "common/globals.h"
 #include "common/log.h"
-#include "rulesets/Character.h"
-#include "common/TypeNode.h"
-
-#include "server/ExternalProperty.h"
-#include "server/Persistence.h"
-#include "server/Ruleset.h"
-#include "server/TeleportAuthenticator.h"
-#include "server/Juncture.h"
-#include <cstdio>
-
 #include "common/const.h"
+
+#include <cstdio>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::Get;
-using Atlas::Objects::Operation::Imaginary;
-using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Look;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Talk;
-using Atlas::Objects::Operation::Move;
-using Atlas::Objects::smart_dynamic_cast;
-
-
-static long idGenerator = 500;
+using String::compose;
 
 bool database_flag = false;
-
-namespace consts {
-
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
-  const int buildId = -1;
-  const char * version = "test_build";
-}
-
-const char * CYPHESIS = "cyphesisAccountConnectionintegration";
-int timeoffset = 0;
-std::string instance(CYPHESIS);
-Ruleset * Ruleset::m_instance = NULL;
-
-int Ruleset::installRule(const std::string & class_name,
-                         const std::string & section,
-                         const Root & class_desc)
-{
-    return 0;
-}
-
-int Ruleset::modifyRule(const std::string & class_name,
-                        const Root & class_desc)
-{
-    return 0;
-}
-
-
-long newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-    std::cout << msg << std::endl;
-}
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-void Persistence::putAccount(const Account & ac)
-{
-}
-
-Juncture::Juncture(Connection * c,
-                   const std::string & id, long iid) :
-          ConnectableRouter(id, iid, c),
-                                                       m_socket(0),
-                                                       m_peer(0)
-{
-}
-
-Juncture::~Juncture()
-{
-}
-
-void Juncture::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::addToMessage(MapType & omap) const
-{
-}
-
-void Juncture::addToEntity(const RootEntity & ent) const
-{
-}
 
 class ConnectionShakerintegration : public Cyphesis::TestBase
 {
   private:
-    Entity * m_tlve;
-    BaseWorld * m_world;
-    CommServer * m_cs;
-    Connection * m_connection;
+    long m_id_counter;
+
     ServerRouting * m_server;
+    Connection * m_connection;
   public:
     ConnectionShakerintegration();
-    void testAccount();
     void setup();
     void teardown();
+
+    void testShaker();
 };
 
-class TestCommClient : public CommClient<null_stream> {
-  public:
-    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
-};
-
-class SpawningTestWorld : public TestWorld {
-  public:
-    SpawningTestWorld(Entity & gw) : TestWorld(gw) { }
-
-    virtual Entity * addEntity(Entity * ent) { 
-        ent->m_location.m_loc = &m_gameWorld;
-        ent->m_location.m_pos = WFMath::Point<3>(0,0,0);
-        m_eobjects[ent->getIntId()] = ent;
-        return ent;
-    }
-
-    virtual Entity * addNewEntity(const std::string & t,
-                                  const Atlas::Objects::Entity::RootEntity &) {
-        std::string id;
-        long intId = newId(id);
-
-        Entity * e = new Character(id, intId);
-
-        e->setType(new TypeNode(t));
-        return addEntity(e);
-    }
-};
-
-ConnectionShakerintegration::ConnectionShakerintegration()
+ConnectionShakerintegration::ConnectionShakerintegration() : m_id_counter(0L),
+                                                             m_server(0),
+                                                             m_connection(0)
 {
-    ADD_TEST(ConnectionShakerintegration::testAccount);
+    ADD_TEST(ConnectionShakerintegration::testShaker);
 }
 
-void ConnectionShakerintegration::testAccount()
+void ConnectionShakerintegration::testShaker()
 {
-	//wanted to test adding the new account that calls shaker
-	//ASSERT_NOT_NULL(m_connection->addNewAccount("player","testuser","testpassword"));
-	ASSERT_NOT_NULL(m_connection);
+    ASSERT_NOT_NULL(m_connection);
+    Account * ac = m_connection->addNewAccount("player",
+                                               "testuser",
+                                               "testpassword");
+
+    // FIXME Check that a salt of the correct size has been passed to
+    // hash_password.
 }
 
 void ConnectionShakerintegration::setup()
 {
-		    m_tlve = new Entity("0", 0);
-            m_world = new SpawningTestWorld(*m_tlve);
-            m_cs = new CommServer;
-	        m_connection = new Connection(*new TestCommClient(*m_cs),
-                                      *m_server,
-                                      "test_addr",
-                                      "3", 3);
+    m_server = new ServerRouting(*(BaseWorld*)0,
+                                 "b88aa6d3-44b4-40bd-bfa9-8db00045bdc0",
+                                 "0f1fc7cb-5ab1-45c1-b0d3-ae49205ea437",
+                                 compose("%1", m_id_counter), m_id_counter++,
+                                 compose("%1", m_id_counter), m_id_counter++);
+    m_connection = new Connection(*(CommSocket*)0,
+                                  *m_server,
+                                  "test_addr",
+                                  compose("%1", m_id_counter), m_id_counter++);
 }
 
 void ConnectionShakerintegration::teardown()
 {
-	delete m_tlve;
-	delete m_world;
-	//delete m_cs;
-	delete m_connection;
+    delete m_server;
+    delete m_connection;
 }
 
 int main()
@@ -233,86 +109,22 @@ int main()
    return t.run();
 }
 
-//stubs
+// Stubs
 
-void hash_password(const std::string & pwd, const std::string & salt,
-                   std::string & hash)
-{
-}
-ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
-{
-}
+#include "server/Lobby.h"
+#include "server/Player.h"
 
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
+#include "common/Inheritance.h"
 
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
+using Atlas::Objects::Root;
 
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
+bool restricted_flag;
 
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
+namespace Atlas { namespace Objects { namespace Operation {
+int UPDATE_NO = -1;
+} } }
 
-int TeleportAuthenticator::addTeleport(const std::string &entity_id,
-                                        const std::string &possess_key)
-{
-    return 0;
-}
 
-int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
-{
-    return 0;
-}
-
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
-                                            const std::string &possess_key)
-{
-    return 0;
-}
-
-Persistence * Persistence::m_instance = NULL;
-
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
-void Persistence::registerCharacters(Account & ac,
-                                     const EntityDict & worldObjects)
-{
-}
-
-Account * Persistence::getAccount(const std::string & name)
-{
-    return 0;
-}
-
-void TestWorld::message(const Operation & op, Entity & ent)
-{
-}
-
-Entity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 CommServer::CommServer() : m_congested(false)
 {
 }
@@ -340,6 +152,185 @@ int CommSocket::flush()
     return 0;
 }
 
+Player::Player(Connection * conn,
+               const std::string & username,
+               const std::string & passwd,
+               const std::string & id,
+               long intId) :
+        Account(conn, username, passwd, id, intId)
+{
+}
+
+Player::~Player() { }
+
+const char * Player::getType() const
+{
+    return "player";
+}
+
+void Player::addToMessage(MapType & omap) const
+{
+}
+
+void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+int Player::characterError(const Operation & op,
+                           const Root & ent, OpVector & res) const
+{
+    return 0;
+}
+
+Account::Account(Connection * conn,
+                 const std::string & uname,
+                 const std::string & passwd,
+                 const std::string & id,
+                 long intId) :
+         ConnectableRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
+{
+}
+
+Account::~Account()
+{
+}
+
+const char * Account::getType() const
+{
+    return "testaccount";
+}
+
+void Account::store() const
+{
+}
+
+void Account::addToMessage(Atlas::Message::MapType &) const
+{
+}
+
+void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
+{
+}
+
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
+
+void Account::operation(const Operation &, OpVector &)
+{
+}
+
+
+void Account::LogoutOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::SetOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::ImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::TalkOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::LookOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::OtherOperation(const Operation &, OpVector &)
+{
+}
+
+ConnectableRouter::ConnectableRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectableRouter::~ConnectableRouter()
+{
+}
+
+ServerRouting::ServerRouting(BaseWorld & wrld,
+                             const std::string & ruleset,
+                             const std::string & name,
+                             const std::string & id, long intId,
+                             const std::string & lId, long lIntId) :
+        Router(id, intId),
+        m_svrRuleset(ruleset), m_svrName(name),
+        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
+{
+}
+
+ServerRouting::~ServerRouting()
+{
+}
+
+void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+Account * ServerRouting::getAccountByName(const std::string & username)
+{
+    return 0;
+}
+
+void ServerRouting::addAccount(Account * a)
+{
+}
+
+Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
+       Router(id, intId),
+       m_server(s)
+{
+}
+
+Lobby::~Lobby()
+{
+}
+
+void Lobby::delAccount(Account * ac)
+{
+}
+
+void Lobby::addToMessage(MapType & omap) const
+{
+}
+
+void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Lobby::addAccount(Account * ac)
+{
+}
+
+void Lobby::operation(const Operation & op, OpVector & res)
+{
+}
+
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
                                          m_external(0), m_entity(e)
 {
@@ -350,6 +341,29 @@ ExternalMind::~ExternalMind()
 }
 
 void ExternalMind::operation(const Operation & op, OpVector & res)
+{
+}
+
+ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
+{
+}
+
+int ExternalProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void ExternalProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         Atlas::Message::MapType & map) const
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
@@ -500,6 +514,7 @@ void Character::mindWieldOperation(const Operation &, OpVector &)
 {
 }
 
+
 void Character::mindOtherOperation(const Operation &, OpVector &)
 {
 }
@@ -537,7 +552,6 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
 }
-
 
 Entity::Entity(const std::string & id, long intId) :
         LocatedEntity(id, intId), m_motion(0), m_flags(0)
@@ -738,58 +752,140 @@ void LocatedEntity::onUpdated()
 {
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
-
-VariableBase::~VariableBase()
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
 {
 }
 
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
+Link::~Link()
 {
 }
 
-template <typename T>
-Variable<T>::~Variable()
+void Link::send(const Operation & op) const
 {
 }
 
-template <typename T>
-void Variable<T>::send(std::ostream & o)
+void Link::disconnect()
 {
 }
 
-template class Variable<int>;
-template class Variable<std::string>;
-template class Variable<const char *>;
-
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
 {
 }
 
-Monitors::~Monitors()
+Router::~Router()
 {
 }
 
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::insert(const std::string & key, const Element & val)
+void Router::addToMessage(Atlas::Message::MapType & omap) const
 {
 }
 
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Router::error(const Operation & op,
+                   const std::string & errstring,
+                   OpVector & res,
+                   const std::string & to) const
+{
+}
+
+void Router::clientError(const Operation & op,
+                         const std::string & errstring,
+                         OpVector & res,
+                         const std::string & to) const
 {
 }
 
 Location::Location() : m_loc(0)
+{
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+BaseWorld * BaseWorld::m_instance = 0;
+
+BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+{
+}
+
+BaseWorld::~BaseWorld()
+{
+}
+
+Entity * BaseWorld::getEntity(const std::string & id) const
+{
+    return 0;
+}
+
+Entity * BaseWorld::getEntity(long id) const
+{
+    return 0;
+}
+
+Inheritance * Inheritance::m_instance = NULL;
+
+Inheritance::Inheritance() : noClass(0)
+{
+}
+
+Inheritance & Inheritance::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Inheritance();
+    }
+    return *m_instance;
+}
+
+const TypeNode * Inheritance::getType(const std::string & parent)
+{
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return 0;
+    }
+    return I->second;
+}
+
+const Root & Inheritance::getClass(const std::string & parent)
+{
+    return noClass;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+void hash_password(const std::string & pwd, const std::string & salt,
+                   std::string & hash )
+{
+}
+void logEvent(LogEvent lev, const std::string & msg)
 {
 }
 
@@ -803,20 +899,27 @@ long integerId(const std::string & id)
     return intId;
 }
 
+static long idGenerator = 0;
 
-
-void encrypt_password(const std::string & pwd, std::string & hash)
+long newId(std::string & id)
 {
+    static char buf[32];
+    long new_id = ++idGenerator;
+    sprintf(buf, "%ld", new_id);
+    id = buf;
+    assert(!id.empty());
+    return new_id;
+}
+
+void addToEntity(const Vector3D & v, std::vector<double> & vd)
+{
+    vd.resize(3);
+    vd[0] = v[0];
+    vd[1] = v[1];
+    vd[2] = v[2];
 }
 
 int check_password(const std::string & pwd, const std::string & hash)
 {
     return 0;
-}
-
-bool_config_register::bool_config_register(bool & var,
-                                           const char * section,
-                                           const char * setting,
-                                           const char * help)
-{
 }
