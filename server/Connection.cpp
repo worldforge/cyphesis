@@ -21,8 +21,6 @@
 
 #include "ServerRouting.h"
 #include "Lobby.h"
-#include "CommClient.h"
-#include "CommServer.h"
 #include "Player.h"
 #include "ExternalMind.h"
 #include "ExternalProperty.h"
