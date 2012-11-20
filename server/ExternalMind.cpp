@@ -19,7 +19,7 @@
 
 #include "ExternalMind.h"
 
-#include "Connection.h"
+#include "Link.h"
 
 #include "rulesets/Entity.h"
 
