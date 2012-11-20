@@ -1,3 +1,9 @@
+The dynamic_cast, and other logic can be removed from Connection::operation
+if it could be moved into Character::externalOperation. In order for this
+to be possible, Link and ExternalMind move into common, and CommSocket
+would need to move into a library. This removes an expensive dynamic_cast
+from the path of every operation coming into the server.
+
 Rename Script::operation for clarify. Needs to merge C++11 first, to
 reduce chances of error. Then we can see how much operation is actually
 called.
