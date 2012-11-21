@@ -66,6 +66,8 @@ class Router {
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+
+    friend class Routertest;
 };
 
 #endif // COMMON_ROUTER_H
