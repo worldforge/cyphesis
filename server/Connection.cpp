@@ -301,10 +301,9 @@ void Connection::operation(const Operation & op, OpVector & res)
     debug(std::cout << "send on to " << from << std::endl << std::flush;);
     RouterMap::const_iterator I = m_objects.find(integerId(from));
     if (I == m_objects.end()) {
-        error(op, String::compose("Client \"%1\" op from \"%2\" is from "
-                                  "non-existant object.",
-                                  op->getParents().front(), from),
-              res);
+        sendError(op, String::compose("Client \"%1\" op from \"%2\" is from "
+                                      "non-existant object.",
+                                      op->getParents().front(), from), from);
         return;
     }
     Router * obj = I->second;
@@ -323,7 +322,7 @@ void Connection::operation(const Operation & op, OpVector & res)
             chr->addToEntity(info_arg);
             info->setArgs1(info_arg);
 
-            res.push_back(info);
+            send(info);
 
             logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
                                                 getId(), chr->getId(),
