@@ -401,6 +401,12 @@ void Link::send(const Operation & op) const
     test_sent_ops.push_back(op);
 }
 
+void Link::sendError(const Operation & op,
+                     const std::string &,
+                     const std::string &) const
+{
+}
+
 void Link::disconnect()
 {
 }

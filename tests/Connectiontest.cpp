@@ -886,6 +886,12 @@ void Link::send(const Operation & op) const
 {
 }
 
+void Link::sendError(const Operation & op,
+                     const std::string &,
+                     const std::string &) const
+{
+}
+
 void Link::disconnect()
 {
 }
