@@ -22,7 +22,7 @@
 #include "server/CommSocket.h"
 
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 
@@ -43,6 +43,17 @@ void Link::send(const Operation & op) const
         m_encoder->streamObjectsMessage(op);
         m_commSocket.flush();
     }
+}
+
+void Link::sendError(const Operation & op,
+                     const std::string & errstring,
+                     const std::string & to) const
+{
+    Atlas::Objects::Operation::Error e;
+
+    buildError(op, errstring, e, to);
+
+    send(e);
 }
 
 void Link::disconnect()

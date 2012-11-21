@@ -129,6 +129,8 @@ class Linktest : public Cyphesis::TestBase
 
     void test_send();
     void test_send_connected();
+    void test_sendError();
+    void test_sendError_connected();
     void test_disconnect();
 
     static void set_CommSocket_flush_called();
@@ -163,6 +165,8 @@ Linktest::Linktest()
 {
     ADD_TEST(Linktest::test_send);
     ADD_TEST(Linktest::test_send_connected);
+    ADD_TEST(Linktest::test_sendError);
+    ADD_TEST(Linktest::test_sendError_connected);
     ADD_TEST(Linktest::test_disconnect);
 }
 
@@ -207,6 +211,31 @@ void Linktest::test_send_connected()
     ASSERT_TRUE(CommSocket_flush_called);
 }
 
+void Linktest::test_sendError()
+{
+    CommSocket_flush_called = false;
+
+    Operation op;
+
+    m_link->sendError(op, "test error message", "");
+
+    ASSERT_TRUE(!CommSocket_flush_called);
+}
+
+void Linktest::test_sendError_connected()
+{
+    CommSocket_flush_called = false;
+
+    m_encoder = new Atlas::Objects::ObjectsEncoder(*m_bridge);
+    m_link->setEncoder(m_encoder);
+
+    Operation op;
+
+    m_link->sendError(op, "test error message", "");
+
+    ASSERT_TRUE(CommSocket_flush_called);
+}
+
 void Linktest::test_disconnect()
 {
     CommSocket_disconnect_called = false;
@@ -232,6 +261,13 @@ Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
 }
 
 Router::~Router()
+{
+}
+
+void Router::buildError(const Operation & op,
+                        const std::string & errstring,
+                        const Operation & e,
+                        const std::string & to) const
 {
 }
 
