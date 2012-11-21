@@ -254,46 +254,23 @@ int Connection::verifyCredentials(const Account & account,
 
 void Connection::externalOperation(const Operation & op)
 {
-    OpVector reply;
-    long serialno = op->getSerialno();
-    operation(op, reply);
-    OpVector::const_iterator Iend = reply.end();
-    for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
-        if (!op->isDefaultSerialno()) {
-            // Should we respect existing refnos?
-            if ((*I)->isDefaultRefno()) {
-                (*I)->setRefno(serialno);
-            }
-        }
-        // FIXME detect socket failure here
-        send(*I);
-    }
-}
-
-void Connection::operation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::FROM_FLAG)) {
+    debug(std::cout << "Connection::externalOperation"
+                    << std::endl << std::flush;);
+    if (op->isDefaultFrom()) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
-        const OpNo op_no = op->getClassNo();
-        switch (op_no) {
-            case Atlas::Objects::Operation::CREATE_NO:
-                CreateOperation(op, res);
-                break;
-            case Atlas::Objects::Operation::GET_NO:
-                GetOperation(op, res);
-                break;
-            case Atlas::Objects::Operation::LOGIN_NO:
-                LoginOperation(op, res);
-                break;
-            case Atlas::Objects::Operation::LOGOUT_NO:
-                LogoutOperation(op, res);
-                break;
-            case OP_INVALID:
-                break;
-            default:
-                error(op, "Unknown operation", res);
-                break;
+        OpVector reply;
+        long serialno = op->getSerialno();
+        operation(op, reply);
+        OpVector::const_iterator Iend = reply.end();
+        for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
+            if (!op->isDefaultSerialno()) {
+                // Should we respect existing refnos?
+                if ((*I)->isDefaultRefno()) {
+                    (*I)->setRefno(serialno);
+                }
+            }
+            // FIXME detect socket failure here
+            send(*I);
         }
         return;
     }
@@ -330,6 +307,31 @@ void Connection::operation(const Operation & op, OpVector & res)
         }
     }
     obj->externalOperation(op);
+}
+
+void Connection::operation(const Operation & op, OpVector & res)
+{
+    debug(std::cout << "Connection::operation" << std::endl << std::flush;);
+    const OpNo op_no = op->getClassNo();
+    switch (op_no) {
+        case Atlas::Objects::Operation::CREATE_NO:
+            CreateOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::GET_NO:
+            GetOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::LOGIN_NO:
+            LoginOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::LOGOUT_NO:
+            LogoutOperation(op, res);
+            break;
+        case OP_INVALID:
+            break;
+        default:
+            error(op, "Unknown operation", res);
+            break;
+    }
 }
 
 void Connection::LoginOperation(const Operation & op, OpVector & res)
