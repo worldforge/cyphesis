@@ -56,6 +56,10 @@ class Router {
         return m_intId;
     }
 
+    void buildError(const Operation &,
+                    const std::string & errstring,
+                    const Operation &,
+                    const std::string & to) const;
     void error(const Operation &, const std::string & errstring, OpVector &,
                const std::string & to = "") const;
     void clientError(const Operation &, const std::string & errstring,
