@@ -77,4 +77,10 @@ void CommStreamListener<ListenerT>::disconnect()
 {
 }
 
+template <class ListenerT>
+int CommStreamListener<ListenerT>::flush()
+{
+    return 0;
+}
+
 #endif // TESTS_COMM_STREAM_LISTENER_STUB_IMPL_H

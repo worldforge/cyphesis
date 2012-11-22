@@ -80,7 +80,7 @@ class CommSocket {
     virtual void disconnect() = 0;
 
     /// \brief Flush the socket
-    virtual int flush();
+    virtual int flush() = 0;
 };
 
 #endif // SERVER_COMM_SOCKET_H

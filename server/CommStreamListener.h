@@ -52,6 +52,7 @@ class CommStreamListener : public CommSocket {
     int read();
     void dispatch();
     void disconnect();
+    int flush();
 };
 
 #endif // SERVER_COMM_STREAM_LISTENER_H

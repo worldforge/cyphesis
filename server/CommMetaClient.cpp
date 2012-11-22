@@ -185,6 +185,11 @@ void CommMetaClient::disconnect()
 {
 }
 
+int CommMetaClient::flush()
+{
+    return 0;
+}
+
 void CommMetaClient::idle(time_t t)
 {
     if (m_state == META_INIT) {

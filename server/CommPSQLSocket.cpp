@@ -126,6 +126,11 @@ void CommPSQLSocket::disconnect()
 {
 }
 
+int CommPSQLSocket::flush()
+{
+    return 0;
+}
+
 void CommPSQLSocket::idle(time_t t)
 {
     debug(std::cout << "CommPSQLSocket::idle()" << std::endl << std::flush;);

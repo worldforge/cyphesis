@@ -36,8 +36,3 @@ CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
 CommSocket::~CommSocket()
 {
 }
-
-int CommSocket::flush()
-{
-    return 0;
-}

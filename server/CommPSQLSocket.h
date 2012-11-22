@@ -54,6 +54,7 @@ class CommPSQLSocket : public CommSocket, virtual public Idle {
     int read();
     void dispatch();
     void disconnect();
+    int flush();
 
     void idle(time_t t);
 };

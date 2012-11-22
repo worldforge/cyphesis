@@ -63,6 +63,11 @@ class TestCommSocket : public CommSocket
     {
     }
 
+    virtual int flush()
+    {
+        return 0;
+    }
+
 };
 
 int main()

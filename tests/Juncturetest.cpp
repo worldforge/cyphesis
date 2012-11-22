@@ -61,6 +61,7 @@ class StubSocket : public CommSocket {
     int read() { return 0; }
     void dispatch() { }
     void disconnect() { }
+    int flush() { return 0; }
 };
 
 // Test class to expose protected methods.
