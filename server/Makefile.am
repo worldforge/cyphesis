@@ -139,8 +139,6 @@ COMM_SOURCES = \
 		HttpCache.cpp HttpCache.h \
 		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommClientKit.cpp CommClientKit.h \
-		CommSocket.cpp CommSocket.h \
-		Link.cpp Link.h \
 		Idle.cpp Idle.h \
 		IdleConnector.cpp IdleConnector.h
 
@@ -184,7 +182,6 @@ cyslave_SOURCES = \
 		Master.cpp Master.h \
 		Idle.cpp Idle.h \
 		HttpCache.cpp HttpCache.h \
-		CommSocket.cpp CommSocket.h \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommUnixListener.cpp CommUnixListener.h \
 		CommStreamClient.cpp CommStreamClient.h \

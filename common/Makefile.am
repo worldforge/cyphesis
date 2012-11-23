@@ -43,6 +43,8 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      EntityKit.cpp EntityKit.h \
 		      ScriptKit.cpp ScriptKit.h \
 		      TaskKit.cpp TaskKit.h \
+		      CommSocket.cpp CommSocket.h \
+		      Link.cpp Link.h \
 		      atlas_helpers.cpp atlas_helpers.h \
 		      Actuate.h Add.h Affect.h Attack.h Burn.h Connect.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \

@@ -27,7 +27,6 @@
 #include "TestBase.h"
 
 #include "server/CommServer.h"
-#include "server/CommSocket.h"
 #include "server/Connection.h"
 #include "server/Idle.h"
 #include "server/ServerRouting.h"
@@ -36,6 +35,7 @@
 
 #include "rulesets/Character.h"
 
+#include "common/CommSocket.h"
 #include "common/Shaker.h"
 #include "common/PropertyManager.h"
 #include "common/globals.h"

@@ -19,12 +19,11 @@
 
 #include "ExternalMind.h"
 
-#include "Link.h"
-
 #include "rulesets/Entity.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/Link.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>

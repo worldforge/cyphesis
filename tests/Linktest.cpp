@@ -27,8 +27,8 @@
 #include "Sink.h"
 #include "TestBase.h"
 
-#include "server/CommSocket.h"
-#include "server/Link.h"
+#include "common/CommSocket.h"
+#include "common/Link.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/RootOperation.h>

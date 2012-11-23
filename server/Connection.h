@@ -20,7 +20,7 @@
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
-#include "server/Link.h"
+#include "common/Link.h"
 
 #include <sigc++/trackable.h>
 

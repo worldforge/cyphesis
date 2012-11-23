@@ -23,10 +23,9 @@
 #include "CommClient.h"
 #include "CommServer.h"
 
-#include "server/Link.h"
-
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/Link.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Encoder.h>

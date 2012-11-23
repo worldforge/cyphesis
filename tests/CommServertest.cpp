@@ -26,8 +26,7 @@
 
 #include "server/CommServer.h"
 
-#include "server/CommSocket.h"
-
+#include "common/CommSocket.h"
 #include "common/log.h"
 #include "common/SystemTime.h"
 

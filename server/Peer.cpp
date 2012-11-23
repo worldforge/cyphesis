@@ -21,11 +21,11 @@
 
 #include "ServerRouting.h"
 #include "Lobby.h"
-#include "CommSocket.h"
 #include "CommServer.h"
 #include "TeleportState.h"
 #include "ExternalMind.h"
 
+#include "common/CommSocket.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/system.h"

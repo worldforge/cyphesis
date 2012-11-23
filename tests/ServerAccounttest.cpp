@@ -29,13 +29,13 @@
 
 #include "server/ServerAccount.h"
 
-#include "server/CommSocket.h"
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 #include "server/TeleportAuthenticator.h"
 
 #include "rulesets/Character.h"
 
+#include "common/CommSocket.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootEntity.h>

@@ -20,7 +20,7 @@
 #ifndef SERVER_COMM_STREAM_LISTENER_H
 #define SERVER_COMM_STREAM_LISTENER_H
 
-#include "CommSocket.h"
+#include "common/CommSocket.h"
 
 #include <boost/shared_ptr.hpp>
 

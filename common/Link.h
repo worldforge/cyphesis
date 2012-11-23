@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_LINK_H
-#define SERVER_LINK_H
+#ifndef COMMON_LINK_H
+#define COMMON_LINK_H
 
 #include "common/Router.h"
 
@@ -52,4 +52,4 @@ class Link : public Router {
     void disconnect();
 };
 
-#endif // SERVER_LINK_H
+#endif // COMMON_LINK_H

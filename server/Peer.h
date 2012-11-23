@@ -20,7 +20,7 @@
 #ifndef SERVER_PEER_H
 #define SERVER_PEER_H
 
-#include "server/Link.h"
+#include "common/Link.h"
 
 #include <sigc++/signal.h>
 

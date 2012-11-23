@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_COMM_SOCKET_H
-#define SERVER_COMM_SOCKET_H
+#ifndef COMMON_COMM_SOCKET_H
+#define COMMON_COMM_SOCKET_H
 
 class CommServer;
 
@@ -83,4 +83,4 @@ class CommSocket {
     virtual int flush() = 0;
 };
 
-#endif // SERVER_COMM_SOCKET_H
+#endif // COMMON_COMM_SOCKET_H

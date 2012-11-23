@@ -20,8 +20,9 @@
 #ifndef SERVER_COMM_META_CLIENT_H
 #define SERVER_COMM_META_CLIENT_H
 
-#include "CommSocket.h"
 #include "Idle.h"
+
+#include "common/CommSocket.h"
 
 #include <string>
 

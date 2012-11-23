@@ -23,13 +23,13 @@
 
 #include "CommServer.h"
 
-#include "CommSocket.h"
 #include "Idle.h"
 
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/system.h"
 #include "common/compose.hpp"
+#include "common/CommSocket.h"
 #include "common/SystemTime.h"
 
 #include <skstream/sksocket.h>

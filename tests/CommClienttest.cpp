@@ -28,8 +28,8 @@
 
 #include "server/CommServer.h"
 #include "server/CommStreamClient_impl.h"
-#include "server/Link.h"
 
+#include "common/Link.h"
 #include "common/log.h"
 
 #include <Atlas/Codec.h>

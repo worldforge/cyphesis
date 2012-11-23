@@ -20,8 +20,9 @@
 #ifndef SERVER_COMM_PSQL_SOCKET_H
 #define SERVER_COMM_PSQL_SOCKET_H
 
-#include "CommSocket.h"
 #include "Idle.h"
+
+#include "common/CommSocket.h"
 
 class Database;
 

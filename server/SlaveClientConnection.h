@@ -20,7 +20,7 @@
 #ifndef SERVER_SLAVE_CLIENT_CONNECTION_H
 #define SERVER_SLAVE_CLIENT_CONNECTION_H
 
-#include "server/Link.h"
+#include "common/Link.h"
 
 class CommSocket;
 class ServerRouting;

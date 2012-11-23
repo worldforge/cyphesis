@@ -20,7 +20,7 @@
 #ifndef SERVER_COMM_STREAM_CLIENT_H
 #define SERVER_COMM_STREAM_CLIENT_H
 
-#include "CommSocket.h"
+#include "common/CommSocket.h"
 
 /// \brief Base class for stream clients connected to the server.
 ///

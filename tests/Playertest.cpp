@@ -29,13 +29,13 @@
 
 #include "server/Player.h"
 
-#include "server/CommSocket.h"
 #include "server/Connection.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 
 #include "rulesets/Entity.h"
 
+#include "common/CommSocket.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
 

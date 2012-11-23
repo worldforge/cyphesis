@@ -20,8 +20,9 @@
 #ifndef SERVER_COMM_MDNS_PUBLISHER_H
 #define SERVER_COMM_MDNS_PUBLISHER_H
 
-#include "CommSocket.h"
 #include "Idle.h"
+
+#include "common/CommSocket.h"
 
 #include <set>
 

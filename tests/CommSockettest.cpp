@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "server/CommSocket.h"
+#include "common/CommSocket.h"
 
 #include <cassert>
 

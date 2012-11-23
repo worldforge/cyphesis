@@ -29,12 +29,12 @@
 
 #include "server/SystemAccount.h"
 
-#include "server/CommSocket.h"
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 
 #include "rulesets/Entity.h"
 
+#include "common/CommSocket.h"
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/RootEntity.h>

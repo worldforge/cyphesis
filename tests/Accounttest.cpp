@@ -29,13 +29,13 @@
 
 #include "server/Account.h"
 
-#include "server/CommSocket.h"
 #include "server/Connection.h"
 #include "server/Lobby.h"
 #include "server/ServerRouting.h"
 
 #include "rulesets/Character.h"
 
+#include "common/CommSocket.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/id.h"

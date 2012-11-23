@@ -15,7 +15,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
                ClientTasktest utilstest SystemTimetest \
                TaskKittest EntityKittest ScriptKittest atlas_helperstest \
-               Shakertest
+               Shakertest CommSockettest Linktest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest \
@@ -76,10 +76,9 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
                ExternalPropertytest Persistencetest \
-               SystemAccounttest TCPListenFactorytest \
-               Linktest
+               SystemAccounttest TCPListenFactorytest
 
-SERVER_COMM_TESTS = CommSockettest CommStreamClienttest CommClienttest \
+SERVER_COMM_TESTS = CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
                     CommMDNSPublishertest CommClientKittest \
                     CommHttpClientFactorytest
@@ -297,6 +296,14 @@ EntityKittest_LDADD = \
 atlas_helperstest_SOURCES = atlas_helperstest.cpp
 atlas_helperstest_LDADD = \
         $(top_builddir)/common/atlas_helpers.o
+
+Linktest_SOURCES = Linktest.cpp
+Linktest_LDADD = \
+        $(top_builddir)/common/Link.o
+
+CommSockettest_SOURCES = CommSockettest.cpp
+CommSockettest_LDADD = \
+        $(top_builddir)/common/CommSocket.o
 
 # PHYSICS_TESTS
 
@@ -1156,10 +1163,6 @@ ExternalMindtest_LDADD = \
 
 # SERVER_COMM_TESTS
 
-CommSockettest_SOURCES = CommSockettest.cpp
-CommSockettest_LDADD = \
-        $(top_builddir)/server/CommSocket.o
-
 CommStreamClienttest_SOURCES = \
         CommStreamClienttest.cpp
 CommStreamClienttest_LDADD = \
@@ -1269,10 +1272,6 @@ TCPListenFactorytest_LDADD = \
         $(top_builddir)/server/TCPListenFactory.o \
         $(NETWORK_LIBS)
 
-Linktest_SOURCES = Linktest.cpp
-Linktest_LDADD = \
-        $(top_builddir)/server/Link.o
-
 # SERVER_INTEGRATION_TESTS
 
 WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
@@ -1309,7 +1308,6 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectableRouter.o \
-        $(top_builddir)/server/Link.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1405,7 +1403,6 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectableRouter.o \
-        $(top_builddir)/server/Link.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \

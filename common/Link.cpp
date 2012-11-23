@@ -19,7 +19,7 @@
 
 #include "Link.h"
 
-#include "server/CommSocket.h"
+#include "common/CommSocket.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
