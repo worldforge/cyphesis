@@ -59,6 +59,7 @@ librulesetentity_a_SOURCES = \
 			     TasksProperty.cpp TasksProperty.h \
 			     SpawnProperty.cpp SpawnProperty.h \
 			     VisibilityProperty.cpp VisibilityProperty.h \
+			     ExternalProperty.cpp ExternalProperty.h \
 			     Task.cpp Task.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
 			     ArithmeticFactory.cpp ArithmeticFactory.h

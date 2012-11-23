@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "server/ExternalProperty.h"
+#include "rulesets/ExternalProperty.h"
 
 #include "common/Router.h"
 

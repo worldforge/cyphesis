@@ -31,7 +31,7 @@
 #include "server/Idle.h"
 #include "server/ServerRouting.h"
 #include "rulesets/ExternalMind.h"
-#include "server/ExternalProperty.h"
+#include "rulesets/ExternalProperty.h"
 
 #include "rulesets/Character.h"
 

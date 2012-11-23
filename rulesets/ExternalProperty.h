@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_EXTERNAL_PROPERTY_H
-#define SERVER_EXTERNAL_PROPERTY_H
+#ifndef RULESETS_EXTERNAL_PROPERTY_H
+#define RULESETS_EXTERNAL_PROPERTY_H
 
 #include "common/Property.h"
 
@@ -40,4 +40,4 @@ class ExternalProperty : public PropertyBase {
                      const Atlas::Objects::Entity::RootEntity & ent) const;
 };
 
-#endif // SERVER_EXTERNAL_PROPERTY_H
+#endif // RULESETS_EXTERNAL_PROPERTY_H

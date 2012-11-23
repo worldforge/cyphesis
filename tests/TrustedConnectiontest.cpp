@@ -32,7 +32,7 @@
 #include "server/CommClient.h"
 #include "server/CommServer.h"
 #include "rulesets/ExternalMind.h"
-#include "server/ExternalProperty.h"
+#include "rulesets/ExternalProperty.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
 #include "server/ServerRouting.h"

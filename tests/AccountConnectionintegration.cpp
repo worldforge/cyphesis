@@ -248,7 +248,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 #include "server/CommClient.h"
 #include "rulesets/ExternalMind.h"
-#include "server/ExternalProperty.h"
+#include "rulesets/ExternalProperty.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
 #include "server/Ruleset.h"

@@ -38,6 +38,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
+                 ExternalPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest ActivePropertyFactorytest \
@@ -76,7 +77,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityRuleHandlertest TaskRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
-               ExternalPropertytest Persistencetest \
+               Persistencetest \
                SystemAccounttest TCPListenFactorytest
 
 SERVER_COMM_TESTS = CommStreamClienttest CommClienttest \
@@ -614,6 +615,11 @@ VisibilityPropertytest_SOURCES = VisibilityPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 VisibilityPropertytest_LDADD = \
         $(top_builddir)/rulesets/VisibilityProperty.o \
+        $(top_builddir)/common/Property.o
+
+ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
+ExternalPropertytest_LDADD = \
+        $(top_builddir)/rulesets/ExternalProperty.o \
         $(top_builddir)/common/Property.o
 
 Domaintest_SOURCES = Domaintest.cpp
@@ -1255,11 +1261,6 @@ CommPythonClientFactorytest_LDADD = \
         $(top_builddir)/server/CommPythonClientFactory.o \
         $(NETWORK_LIBS)
 
-ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
-ExternalPropertytest_LDADD = \
-        $(top_builddir)/server/ExternalProperty.o \
-        $(top_builddir)/common/Property.o
-
 Persistencetest_SOURCES = Persistencetest.cpp
 Persistencetest_LDADD = \
         $(top_builddir)/server/Persistence.o
@@ -1303,7 +1304,6 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/EntityFactory.o \
-        $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
@@ -1337,7 +1337,6 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/buildid.o \
-        $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommPeer.o \
@@ -1379,7 +1378,6 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/buildid.o \
-        $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Idle.o \
         $(top_builddir)/server/CommPeer.o \

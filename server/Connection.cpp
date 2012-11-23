@@ -22,10 +22,10 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "Player.h"
-#include "rulesets/ExternalMind.h"
-#include "ExternalProperty.h"
 
 #include "rulesets/Character.h"
+#include "rulesets/ExternalMind.h"
+#include "rulesets/ExternalProperty.h"
 
 #include "common/id.h"
 #include "common/log.h"

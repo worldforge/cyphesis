@@ -78,7 +78,6 @@ cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 endif
 
 SERVER_SOURCES = \
-		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
