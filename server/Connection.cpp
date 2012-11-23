@@ -22,7 +22,7 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "Player.h"
-#include "ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 #include "ExternalProperty.h"
 
 #include "rulesets/Character.h"

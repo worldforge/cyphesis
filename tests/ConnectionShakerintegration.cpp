@@ -30,7 +30,7 @@
 #include "server/Connection.h"
 #include "server/Idle.h"
 #include "server/ServerRouting.h"
-#include "server/ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 #include "server/ExternalProperty.h"
 
 #include "rulesets/Character.h"

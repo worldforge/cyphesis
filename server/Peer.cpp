@@ -23,7 +23,7 @@
 #include "Lobby.h"
 #include "CommServer.h"
 #include "TeleportState.h"
-#include "ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 
 #include "common/CommSocket.h"
 #include "common/id.h"

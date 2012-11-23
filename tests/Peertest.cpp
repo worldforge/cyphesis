@@ -32,7 +32,7 @@
 
 #include "server/CommPeer.h"
 #include "server/CommServer.h"
-#include "server/ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 
 #include "common/BaseWorld.h"
 

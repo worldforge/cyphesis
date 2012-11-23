@@ -78,7 +78,6 @@ cyslave_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 endif
 
 SERVER_SOURCES = \
-		ExternalMind.cpp ExternalMind.h \
 		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
@@ -161,7 +160,6 @@ buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
 	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 
 cyslave_SOURCES = \
-		ExternalMind.cpp ExternalMind.h \
 		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \

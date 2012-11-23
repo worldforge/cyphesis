@@ -33,6 +33,7 @@ librulesetentity_a_SOURCES = \
 			     Motion.cpp Motion.h \
 			     Domain.cpp Domain.h \
 			     BulletDomain.cpp BulletDomain.h \
+			     ExternalMind.cpp ExternalMind.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \
 			     EntityProperty.cpp EntityProperty.h \

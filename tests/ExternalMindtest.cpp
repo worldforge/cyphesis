@@ -24,7 +24,7 @@
 #define DEBUG
 #endif
 
-#include "server/ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 
 #include "server/Connection.h"
 

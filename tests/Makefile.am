@@ -41,6 +41,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest ActivePropertyFactorytest \
+                 ExternalMindtest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
                  Py_RootEntitytest Py_Operationtest Py_Oplisttest \
@@ -69,7 +70,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
                CommClientFactorytest ServerRoutingtest Idletest \
                StorageManagertest HttpCachetest UpdateTestertest \
-               ExternalMindtest ServerAccounttest TeleportAuthenticatortest \
+               ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectableRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
@@ -651,6 +652,10 @@ Pedestriantest_LDADD = \
         $(top_builddir)/rulesets/Pedestrian.o \
         $(top_builddir)/rulesets/Movement.o
 
+ExternalMindtest_SOURCES = ExternalMindtest.cpp
+ExternalMindtest_LDADD = \
+        $(top_builddir)/rulesets/ExternalMind.o
+
 ActivePropertyFactorytest_SOURCES = ActivePropertyFactorytest.cpp
 ActivePropertyFactorytest_LDADD = \
         $(top_builddir)/rulesets/ActivePropertyFactory.o
@@ -1157,10 +1162,6 @@ UpdateTestertest_SOURCES = UpdateTestertest.cpp
 UpdateTestertest_LDADD = \
         $(top_builddir)/server/UpdateTester.o
 
-ExternalMindtest_SOURCES = ExternalMindtest.cpp
-ExternalMindtest_LDADD = \
-        $(top_builddir)/server/ExternalMind.o
-
 # SERVER_COMM_TESTS
 
 CommStreamClienttest_SOURCES = \
@@ -1302,7 +1303,6 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/TeleportState.o \
         $(top_builddir)/server/TeleportAuthenticator.o \
         $(top_builddir)/server/EntityFactory.o \
-        $(top_builddir)/server/ExternalMind.o \
         $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1337,7 +1337,6 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/buildid.o \
-        $(top_builddir)/server/ExternalMind.o \
         $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Idle.o \
@@ -1380,7 +1379,6 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/buildid.o \
-        $(top_builddir)/server/ExternalMind.o \
         $(top_builddir)/server/ExternalProperty.o \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Idle.o \

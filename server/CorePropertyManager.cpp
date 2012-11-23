@@ -19,7 +19,7 @@
 
 #include "CorePropertyManager.h"
 
-#include "ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 #include "Juncture.h"
 #include "ServerRouting.h"
 

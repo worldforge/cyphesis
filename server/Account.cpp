@@ -22,7 +22,7 @@
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
-#include "ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 #include "Persistence.h"
 #include "TeleportAuthenticator.h"
 

@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_EXTERNAL_MIND_H
-#define SERVER_EXTERNAL_MIND_H
+#ifndef RULESETS_EXTERNAL_MIND_H
+#define RULESETS_EXTERNAL_MIND_H
 
 #include "common/Router.h"
 
@@ -55,4 +55,4 @@ class ExternalMind : public Router {
     void linkUp(Link * c);
 };
 
-#endif // SERVER_EXTERNAL_MIND_H
+#endif // RULESETS_EXTERNAL_MIND_H

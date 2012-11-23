@@ -31,7 +31,7 @@
 #include "server/Account.h"
 #include "server/CommClient.h"
 #include "server/CommServer.h"
-#include "server/ExternalMind.h"
+#include "rulesets/ExternalMind.h"
 #include "server/ExternalProperty.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
