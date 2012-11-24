@@ -21,7 +21,7 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
-ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
+ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
 {
 }
 

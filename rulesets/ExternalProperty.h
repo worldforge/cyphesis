@@ -22,15 +22,15 @@
 
 #include "common/Property.h"
 
-class Router;
+class ExternalMind;
 
 /// \brief Class to handle whether or not a character has an external mind
 /// \ingroup PropertyClasses
 class ExternalProperty : public PropertyBase {
   protected:
-    Router * & m_data;
+    ExternalMind * & m_data;
   public:
-    explicit ExternalProperty(Router * & data);
+    explicit ExternalProperty(ExternalMind * & data);
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);

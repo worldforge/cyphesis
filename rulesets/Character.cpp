@@ -22,6 +22,7 @@
 #include "Pedestrian.h"
 #include "BaseMind.h"
 #include "EntityProperty.h"
+#include "ExternalMind.h"
 #include "OutfitProperty.h"
 #include "StatusProperty.h"
 #include "TasksProperty.h"

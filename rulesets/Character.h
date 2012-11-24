@@ -23,6 +23,7 @@
 #include "Thing.h"
 
 class BaseMind;
+class ExternalMind;
 class Movement;
 class Task;
 
@@ -66,7 +67,7 @@ class Character : public Character_parent {
     /// \brief Internal AI mind controlling this character
     BaseMind * m_mind;
     /// \brief External network connected agent controlling this character
-    Router * m_externalMind;
+    ExternalMind * m_externalMind;
 
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
