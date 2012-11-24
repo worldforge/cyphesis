@@ -336,7 +336,7 @@ void ExternalMind::linkUp(Link * c)
     m_external = c;
 }
 
-ExternalProperty::ExternalProperty(Router * & data) : m_data(data)
+ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
 {
 }
 

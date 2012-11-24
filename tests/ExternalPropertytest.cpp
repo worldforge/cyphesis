@@ -26,6 +26,8 @@
 
 #include "rulesets/ExternalProperty.h"
 
+#include "rulesets/ExternalMind.h"
+
 #include "common/Router.h"
 
 #include <Atlas/Objects/RootEntity.h>
@@ -36,24 +38,15 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-class TestMind : public Router
-{
-  public:
-    TestMind() : Router("", -1) { }
-
-    virtual void externalOperation(const Operation &) { }
-    virtual void operation(const Operation &, OpVector &) { }
-};
-
 int main()
 {
     {
-        Router * e = 0;
+        ExternalMind * e = 0;
         ExternalProperty * ep = new ExternalProperty(e);
         delete ep;
     }
     {
-        Router * e = 0;
+        ExternalMind * e = 0;
         ExternalProperty * ep = new ExternalProperty(e);
 
         Element elem;
@@ -66,7 +59,7 @@ int main()
         delete ep;
     }
     {
-        Router * e = new TestMind;
+        ExternalMind * e = new ExternalMind(*(Entity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         Element elem;
@@ -80,7 +73,7 @@ int main()
         delete e;
     }
     {
-        Router * e = 0;
+        ExternalMind * e = 0;
         ExternalProperty * ep = new ExternalProperty(e);
 
         MapType map;
@@ -94,7 +87,7 @@ int main()
         delete ep;
     }
     {
-        Router * e = new TestMind;
+        ExternalMind * e = new ExternalMind(*(Entity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         MapType map;
@@ -109,7 +102,7 @@ int main()
         delete e;
     }
     {
-        Router * e = 0;
+        ExternalMind * e = 0;
         ExternalProperty * ep = new ExternalProperty(e);
 
         RootEntity ent;
@@ -121,7 +114,7 @@ int main()
         delete ep;
     }
     {
-        Router * e = new TestMind;
+        ExternalMind * e = new ExternalMind(*(Entity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         RootEntity ent;
@@ -133,7 +126,7 @@ int main()
         delete ep;
     }
     {
-        Router * e = 0;
+        ExternalMind * e = 0;
         ExternalProperty * ep = new ExternalProperty(e);
 
         const Element elem;
@@ -146,6 +139,23 @@ int main()
 }
 
 // stubs
+
+ExternalMind::ExternalMind(Entity & e) : Router("", -1L),
+                                         m_external(0), m_entity(e)
+{
+}
+
+ExternalMind::~ExternalMind()
+{
+}
+
+void ExternalMind::externalOperation(const Operation &)
+{
+}
+
+void ExternalMind::operation(const Operation & op, OpVector & res)
+{
+}
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
