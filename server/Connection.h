@@ -91,6 +91,7 @@ class Connection : public Link, virtual public sigc::trackable {
     virtual void CreateOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
 
+    friend class Connectiontest;
     friend class ConnectionShakerintegration;
 };
 

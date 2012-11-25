@@ -24,6 +24,7 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
 #include "null_stream.h"
 
 #include "server/Connection.h"
@@ -69,153 +70,465 @@ class TestCommClient : public CommClient<null_stream> {
     TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
 };
 
-class TestConnection : public Connection {
+class Connectiontest : public Cyphesis::TestBase
+{
+  private:
+    ServerRouting * m_server;
+    CommServer * m_commServer;
+    CommClient<null_stream> * m_tcc;
+    Connection * m_connection;
+
+    static bool Router_error_called;
+    static bool Router_clientError_called;
   public:
-    TestConnection(CommSocket & cc, ServerRouting & svr,
-                   const std::string & addr, const std::string & id, long iid) :
-        Connection(cc, svr, addr, id, iid) {
-      
-    }
+    Connectiontest();
 
-    Account * testAddNewAccount(const std::string & username,
-                            const std::string & password) {
-        return addNewAccount("player", username, password);
-    }
+    void setup();
+    void teardown();
 
-    void test_disconnectObject(RouterMap::iterator I) {
-        return disconnectObject(I, "test_event");
-    }
+    void test_addNewAccount();
+    void test_CreateOperation_empty();
+    void test_CreateOperation_root_arg();
+    void test_CreateOperation_restricted();
+    void test_CreateOperation_empty_arg();
+    void test_CreateOperation_account_by_id();
+    void test_CreateOperation_number_username();
+    void test_CreateOperation_no_passed();
+    void test_CreateOperation_empty_password();
+    void test_CreateOperation_username();
+    void test_CreateOperation();
+    void test_foo();
+    void test_disconnectAccount_empty();
+    void test_disconnectAccount_unused_Character();
+    void test_disconnectAccount_used_Character();
+    void test_disconnectAccount_others_used_Character();
+    void test_disconnectAccount_unlinked_Character();
+    void test_disconnectAccount_non_Character();
 
-    size_t numObjects() const {
-        return m_objects.size();
-    }
-
-    const RouterMap & getObjects() const {
-        return m_objects;
-    }
-
-    void removeObject(Router * obj) {
-        RouterMap::iterator I = m_objects.find(obj->getIntId());
-        if (I != m_objects.end()) {
-            m_objects.erase(I);
-        }
-    }
+    static void set_Router_error_called();
+    static void set_Router_clientError_called();
 };
 
-int main()
+bool Connectiontest::Router_error_called = false;
+bool Connectiontest::Router_clientError_called = false;
+
+void Connectiontest::set_Router_error_called()
 {
-    // WorldRouter world(SystemTime());
-    // Entity & e = world.m_gameWorld;
+    Router_error_called = true;
+}
 
-    ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",
-                         "1", 1, "2", 2);
+void Connectiontest::set_Router_clientError_called()
+{
+    Router_clientError_called = true;
+}
+
+Connectiontest::Connectiontest()
+{
+    ADD_TEST(Connectiontest::test_addNewAccount);
+    ADD_TEST(Connectiontest::test_CreateOperation_empty);
+    ADD_TEST(Connectiontest::test_CreateOperation_root_arg);
+    ADD_TEST(Connectiontest::test_CreateOperation_restricted);
+    ADD_TEST(Connectiontest::test_CreateOperation_empty_arg);
+    ADD_TEST(Connectiontest::test_CreateOperation_account_by_id);
+    ADD_TEST(Connectiontest::test_CreateOperation_number_username);
+    ADD_TEST(Connectiontest::test_CreateOperation_no_passed);
+    ADD_TEST(Connectiontest::test_CreateOperation_empty_password);
+    ADD_TEST(Connectiontest::test_CreateOperation_username);
+    ADD_TEST(Connectiontest::test_CreateOperation);
+    ADD_TEST(Connectiontest::test_foo);
+    ADD_TEST(Connectiontest::test_disconnectAccount_empty);
+    ADD_TEST(Connectiontest::test_disconnectAccount_empty);
+    ADD_TEST(Connectiontest::test_disconnectAccount_unused_Character);
+    ADD_TEST(Connectiontest::test_disconnectAccount_used_Character);
+    ADD_TEST(Connectiontest::test_disconnectAccount_others_used_Character);
+    ADD_TEST(Connectiontest::test_disconnectAccount_unlinked_Character);
+    ADD_TEST(Connectiontest::test_disconnectAccount_non_Character);
+}
+
+void Connectiontest::setup()
+{
+    Router_error_called = false;
+
+    m_server = new ServerRouting(*(BaseWorld*)0, "noruleset", "unittesting",
+                                 "1", 1, "2", 2);
                          
-    CommServer commServer;
+    m_commServer = new CommServer;
 
-    TestCommClient * tcc = new TestCommClient(commServer);
-    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
+    m_tcc = new TestCommClient(*m_commServer);
+    m_connection = new Connection(*m_tcc, *m_server, "addr", "3", 3);
+}
 
-    Account * ac = tc->testAddNewAccount("bob", "foo");
-    assert(ac != 0);
+void Connectiontest::teardown()
+{
+}
 
-    tc->test_disconnectObject(tc->objects().find(ac->getIntId()));
+void Connectiontest::test_addNewAccount()
+{
+    Account * ac = m_connection->addNewAccount("player", "bob", "foo");
 
-    assert(tc->numObjects() == 0);
+    ASSERT_NOT_NULL(ac);
 
-    {
-        Create op;
-        OpVector res;
-        tc->operation(op, res);
-        op->setArgs1(Root());
-        tc->operation(op, res);
-        restricted_flag = true;
-        tc->operation(op, res);
-        restricted_flag = false;
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        tc->operation(op, res);
-        op_arg->setId("jim");
-        // Legacy op
-        tc->operation(op, res);
-        op_arg->setAttr("username", 1);
-        // Malformed username
-        tc->operation(op, res);
-        op_arg->setAttr("username", "jim");
-        // username, no password
-        tc->operation(op, res);
-        op_arg->setAttr("password", "");
-        // zero length password
-        tc->operation(op, res);
-        op_arg->setAttr("username", "");
-        op_arg->setAttr("password", "foo");
-        // zero length username
-        tc->operation(op, res);
-        op_arg->setAttr("username", "jim");
-        // valid username and password
-        tc->operation(op, res);
-        assert(tc->numObjects() != 0);
-    }
+    m_connection->disconnectObject(m_connection->m_objects.find(ac->getIntId()),
+                                   "test_event");
 
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+}
+
+void Connectiontest::test_CreateOperation_empty()
+{
+    Create op;
+    OpVector res;
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_root_arg()
+{
+    Create op;
+    OpVector res;
+    op->setArgs1(Root());
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_restricted()
+{
+    Create op;
+    OpVector res;
+    restricted_flag = true;
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_empty_arg()
+{
+    Create op;
+    OpVector res;
+    restricted_flag = false;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_account_by_id()
+{
+    Create op;
+    OpVector res;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    op_arg->setId("jim");
+    // Legacy op
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_number_username()
+{
+    Create op;
+    OpVector res;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    op_arg->setAttr("username", 1);
+    // Malformed username
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_no_passed()
+{
+    Create op;
+    OpVector res;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    op_arg->setAttr("username", "jim");
+    // username, no password
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_error_called);
+}
+
+void Connectiontest::test_CreateOperation_empty_password()
+{
+    Create op;
+    OpVector res;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    op_arg->setAttr("username", "jim");
+    op_arg->setAttr("password", "");
+    // zero length password
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_clientError_called);
+}
+
+void Connectiontest::test_CreateOperation_username()
+{
+    Create op;
+    OpVector res;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    op_arg->setAttr("username", "");
+    op_arg->setAttr("password", "foo");
+    // zero length username
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
+    ASSERT_TRUE(Router_clientError_called);
+}
+
+void Connectiontest::test_CreateOperation()
+{
+    Create op;
+    OpVector res;
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    op_arg->setAttr("username", "jim");
+    op_arg->setAttr("password", "foo");
+    // valid username and password
+    m_connection->operation(op, res);
+    ASSERT_EQUAL(m_connection->m_objects.size(), 1u);
+}
+
+void Connectiontest::test_foo()
+{
     {
         Login op;
         OpVector res;
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op->setArgs1(Root());
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setId("bob");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setAttr("username", 1);
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setAttr("username", "");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setAttr("username", "bob");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setAttr("password", "foo");
-        tc->operation(op, res);
-        tc->operation(op, res);
+        m_connection->operation(op, res);
+        m_connection->operation(op, res);
     }
 
     {
         Get op;
         OpVector res;
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         Root op_arg;
         op->setArgs1(op_arg);
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setId("1");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setId("game_entity");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
     }
 
     {
         Logout op;
         OpVector res;
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op->setSerialno(24);
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         Root op_arg;
         op->setArgs1(op_arg);
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setId("-1");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         op_arg->setId("23");
-        tc->operation(op, res);
+        m_connection->operation(op, res);
         // How to determine the real ID?
-        const RouterMap rm = tc->getObjects();
+        const RouterMap rm = m_connection->m_objects;
         RouterMap::const_iterator I = rm.begin();
         for (;I != rm.end(); ++I) {
             std::string object_id = String::compose("%1", I->first);
             std::cout << "ID: " << object_id << std::endl;
             op_arg->setId(object_id);
-            tc->operation(op, res);
+            m_connection->operation(op, res);
         }
     }
 
-    delete tc;
+}
+
+void Connectiontest::test_disconnectAccount_empty()
+{
+    // setup
+    Account * ac = new Player(m_connection,
+                              "jim",
+                              "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
+                              "4", 4);
+
+    ac->m_connection = m_connection;
+    m_connection->m_objects[ac->getIntId()] = ac;
+
+    RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
+    assert(I != m_connection->m_objects.end());
+
+    m_connection->disconnectAccount(ac, I, "test_disconnect_account");
+
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+                m_connection->m_objects.end());
+}
+
+void Connectiontest::test_disconnectAccount_unused_Character()
+{
+    // setup
+    Account * ac = new Player(m_connection,
+                              "jim",
+                              "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
+                              "4", 4);
+
+    ac->m_connection = m_connection;
+    m_connection->m_objects[ac->getIntId()] = ac;
+
+    RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
+    assert(I != m_connection->m_objects.end());
+
+    Character * avatar = new Character("5", 5);
+    m_connection->m_objects[avatar->getIntId()] = avatar;
+    ac->addCharacter(avatar);
+
+    m_connection->disconnectAccount(ac, I, "test_disconnect_account");
+
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+                m_connection->m_objects.end());
+
+    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) == 
+                m_connection->m_objects.end());
+}
+
+void Connectiontest::test_disconnectAccount_used_Character()
+{
+    // setup
+    Account * ac = new Player(m_connection,
+                              "jim",
+                              "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
+                              "4", 4);
+
+    ac->m_connection = m_connection;
+    m_connection->m_objects[ac->getIntId()] = ac;
+
+    RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
+    assert(I != m_connection->m_objects.end());
+
+    Character * avatar = new Character("5", 5);
+    avatar->m_externalMind = new ExternalMind(*avatar);
+    avatar->m_externalMind->linkUp(m_connection);
+    m_connection->m_objects[avatar->getIntId()] = avatar;
+    ac->addCharacter(avatar);
+
+    m_connection->disconnectAccount(ac, I, "test_disconnect_account");
+
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+                m_connection->m_objects.end());
+
+    // The Character was in use, so it stays connected
+    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) != 
+                m_connection->m_objects.end());
+}
+
+void Connectiontest::test_disconnectAccount_others_used_Character()
+{
+    // setup
+    Account * ac = new Player(m_connection,
+                              "jim",
+                              "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
+                              "4", 4);
+
+    ac->m_connection = m_connection;
+    m_connection->m_objects[ac->getIntId()] = ac;
+
+    RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
+    assert(I != m_connection->m_objects.end());
+
+    CommClient<null_stream> * otcc = new TestCommClient(*m_commServer);
+    Connection * other_con = new Connection(*otcc, *m_server, "addr", "6", 6);
+
+    Character * avatar = new Character("5", 5);
+    avatar->m_externalMind = new ExternalMind(*avatar);
+    avatar->m_externalMind->linkUp(other_con);
+    m_connection->m_objects[avatar->getIntId()] = avatar;
+    ac->addCharacter(avatar);
+
+    m_connection->disconnectAccount(ac, I, "test_disconnect_account");
+
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+                m_connection->m_objects.end());
+
+    // The Character was in use by another connection, so it is removed
+    // from this one.
+    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) == 
+                m_connection->m_objects.end());
+}
+
+void Connectiontest::test_disconnectAccount_unlinked_Character()
+{
+    // setup
+    Account * ac = new Player(m_connection,
+                              "jim",
+                              "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
+                              "4", 4);
+
+    ac->m_connection = m_connection;
+    m_connection->m_objects[ac->getIntId()] = ac;
+
+    RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
+    assert(I != m_connection->m_objects.end());
+
+    Character * avatar = new Character("5", 5);
+    avatar->m_externalMind = new ExternalMind(*avatar);
+    m_connection->m_objects[avatar->getIntId()] = avatar;
+    ac->addCharacter(avatar);
+
+    m_connection->disconnectAccount(ac, I, "test_disconnect_account");
+
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+                m_connection->m_objects.end());
+
+    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) == 
+                m_connection->m_objects.end());
+}
+
+void Connectiontest::test_disconnectAccount_non_Character()
+{
+    // setup
+    Account * ac = new Player(m_connection,
+                              "jim",
+                              "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
+                              "4", 4);
+
+    ac->m_connection = m_connection;
+    m_connection->m_objects[ac->getIntId()] = ac;
+
+    RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
+    assert(I != m_connection->m_objects.end());
+
+    Entity * avatar = new Thing("5", 5);
+    m_connection->m_objects[avatar->getIntId()] = avatar;
+    ac->addCharacter(avatar);
+
+    m_connection->disconnectAccount(ac, I, "test_disconnect_account");
+
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+                m_connection->m_objects.end());
+
+    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) == 
+                m_connection->m_objects.end());
+}
+
+int main()
+{
+    Connectiontest t;
+
+    return t.run();
 }
 
 // Stubs
@@ -301,6 +614,12 @@ Account::~Account()
 const char * Account::getType() const
 {
     return "testaccount";
+}
+
+// Simplified stub version to allow us to test Connection::disconnectObject
+void Account::addCharacter(Entity * chr)
+{
+    m_charactersDict[chr->getIntId()] = chr;
 }
 
 void Account::store() const
@@ -918,6 +1237,7 @@ void Router::error(const Operation & op,
                    OpVector & res,
                    const std::string & to) const
 {
+    Connectiontest::set_Router_error_called();
 }
 
 void Router::clientError(const Operation & op,
@@ -925,6 +1245,7 @@ void Router::clientError(const Operation & op,
                          OpVector & res,
                          const std::string & to) const
 {
+    Connectiontest::set_Router_clientError_called();
 }
 
 Location::Location() : m_loc(0)
