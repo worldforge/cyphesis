@@ -91,7 +91,8 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            AccountConnectionintegration \
                            AccountServerLobbyintegration \
                            ConnectionShakerintegration \
-                           ConnectionCharacterintegration
+                           ConnectionCharacterintegration \
+                           AccountConnectionCharacterintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
               Flushertest OperationMonitortest \
@@ -1368,6 +1369,14 @@ ConnectionShakerintegration_LDADD = \
 ConnectionCharacterintegration_SOURCES = \
         ConnectionCharacterintegration.cpp
 ConnectionCharacterintegration_LDADD = \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/rulesets/Character.o \
+        $(top_builddir)/rulesets/ExternalMind.o
+        
+AccountConnectionCharacterintegration_SOURCES = \
+        AccountConnectionCharacterintegration.cpp
+AccountConnectionCharacterintegration_LDADD = \
+        $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/rulesets/Character.o \
         $(top_builddir)/rulesets/ExternalMind.o

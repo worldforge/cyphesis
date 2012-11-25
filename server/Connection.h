@@ -93,6 +93,7 @@ class Connection : public Link, virtual public sigc::trackable {
 
     friend class Connectiontest;
     friend class ConnectionShakerintegration;
+    friend class AccountConnectionCharacterintegration;
 };
 
 #endif // SERVER_CONNECTION_H
