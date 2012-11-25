@@ -172,10 +172,6 @@ int Peer::teleportEntity(const Entity * ent)
 
     // Check if the entity has a mind
     const Character * chr = dynamic_cast<const Character *>(ent);
-    ExternalMind * mind = 0;
-    if (chr != 0 && chr->m_externalMind != 0) {
-        mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-    }
 
     Atlas::Objects::Entity::Anonymous atlas_repr;
     ent->addToEntity(atlas_repr);
@@ -185,7 +181,9 @@ int Peer::teleportEntity(const Entity * ent)
     op->setSerialno(iid);
     op->setArgs1(atlas_repr);
     
-    if (mind != 0 && mind->isLinked()) {
+    if (chr != 0 &&
+        chr->m_externalMind != 0 &&
+        chr->m_externalMind->isLinked()) {
         // Entities with a mind require an additional one-time possess key that
         // is used by the client to authenticate a teleport on the destination
         // peer
@@ -274,8 +272,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
             log(ERROR, "No external mind (though teleport state claims it)");
             return;
         }
-        ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-        if (mind == 0 || !mind->isLinked()) {
+        if (!chr->m_externalMind->isLinked()) {
             log(ERROR, "Mind is NULL or not connected");
             return;
         }
@@ -296,7 +293,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         logoutOp->setArgs(logout_args);
         logoutOp->setTo(entity->getId());
         OpVector temp;
-        mind->operation(logoutOp, temp);
+        chr->m_externalMind->operation(logoutOp, temp);
         log(INFO, "Sent random key to connected mind");
     }
 

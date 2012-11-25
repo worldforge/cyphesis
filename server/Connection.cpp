@@ -53,6 +53,8 @@ using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 
+using String::compose;
+
 static const bool debug_flag = false;
 
 Connection::Connection(CommSocket & socket,
@@ -141,8 +143,7 @@ void Connection::disconnectObject(RouterMap::iterator I,
     Character * chr = dynamic_cast<Character *>(I->second);
     if (chr != 0) {
         if (chr->m_externalMind != 0) {
-            ExternalMind * mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-            if (mind != 0 && mind->isLinkedTo(this)) {
+            if (chr->m_externalMind->isLinkedTo(this)) {
                 // Send a move op stopping the current movement
                 Anonymous move_arg;
                 move_arg->setId(chr->getId());
@@ -162,19 +163,19 @@ void Connection::disconnectObject(RouterMap::iterator I,
                 // We used to delete the external mind here, but now we
                 // leave it in place, as it takes care of the disconnected
                 // character.
-                mind->linkUp(0);
+                chr->m_externalMind->linkUp(0);
                 logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
                                                     getId(), chr->getId(),
                                                     chr->getType()->name(),
                                                     event));
-            } else if (mind != 0 && mind->isLinked()) {
+            } else if (chr->m_externalMind->isLinked()) {
                 log(ERROR, String::compose("Connection(%1) requested to "
                                            "remove active character %2(%3) "
                                            "which is subscribed to another "
                                            "Connection(%4).", getId(),
                                            chr->getType()->name(),
                                            chr->getId(),
-                                           mind->connectionId()));
+                                           chr->m_externalMind->connectionId()));
             }
         }
     }
@@ -208,19 +209,15 @@ void Connection::objectDeleted(long id)
 
 void Connection::connectAvatar(Character * chr)
 {
-    ExternalMind * mind = 0;
-    if (chr->m_externalMind != 0) {
-        mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-    }
-    if (mind == 0) {
-        chr->m_externalMind = mind = new ExternalMind(*chr);
+    if (chr->m_externalMind == 0) {
+        chr->m_externalMind = new ExternalMind(*chr);
     }
 
-    if (mind->isLinked()) {
+    if (chr->m_externalMind->isLinked()) {
         log(ERROR, "Character is already connected.");
         return;
     }
-    mind->linkUp(this);
+    chr->m_externalMind->linkUp(this);
 
     if (chr->getProperty("external") == 0) {
         ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
@@ -286,11 +283,7 @@ void Connection::externalOperation(const Operation & op)
     Router * obj = I->second;
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != NULL) {
-        ExternalMind * mind = 0;
-        if (chr->m_externalMind != 0) {
-            mind = dynamic_cast<ExternalMind*>(chr->m_externalMind);
-        }
-        if (mind == 0 || !mind->isLinked()) {
+        if (chr->m_externalMind == 0 || !chr->m_externalMind->isLinked()) {
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
             connectAvatar(chr);
@@ -523,41 +516,34 @@ void Connection::disconnectAccount(Account * ac,
     EntityDict::const_iterator J = ac->getCharacters().begin();
     EntityDict::const_iterator Jend = ac->getCharacters().end();
     for (; J != Jend; ++J) {
-        Entity * chr = J->second;
-        Character * character = dynamic_cast<Character *>(chr);
-        if (character != 0) {
-            if (character->m_externalMind != 0) {
-                ExternalMind * em = dynamic_cast<ExternalMind *>(character->m_externalMind);
-                if (em == 0) {
-                    log(ERROR, String::compose("Character %1(%2) has "
-                                               "external mind object which "
-                                               "is not an ExternalMind",
-                                               chr->getType(),
-                                               chr->getId()));
-                } else {
-                    if (!em->isLinked()) {
-                        log(ERROR,
-                            String::compose("Connection(%1) has found a "
-                                            "character in its dictionery "
-                                            "which is not connected.",
-                                            getId()));
-                        removeObject(chr->getIntId());
-                    } else if (!em->isLinkedTo(this)) {
-                        log(ERROR,
-                            String::compose("Connection(%1) has found a "
-                                            "character in its dictionery "
-                                            "which is connected to another "
-                                            "Connection(%2)", getId(),
-                                            em->connectionId()));
-                        removeObject(chr->getIntId());
-                    }
+        Entity * ent = J->second;
+        Character * chr = dynamic_cast<Character *>(ent);
+        // FIXME It seems in every case here we call removeObject(), which
+        // implies we could get away with only calling it once. However
+        // we just callled m_objects.erase above. Shouldn't that have
+        // already done it, more cheaply as it was using the iterator?
+        if (chr != 0) {
+            if (chr->m_externalMind != 0) {
+                if (!chr->m_externalMind->isLinked()) {
+                    log(ERROR, compose("Connection(%1) has found a "
+                                       "character in its dictionery "
+                                       "which is not connected.",
+                                       getId()));
+                    removeObject(ent->getIntId());
+                } else if (!chr->m_externalMind->isLinkedTo(this)) {
+                    log(ERROR, compose("Connection(%1) has found a "
+                                       "character in its dictionery "
+                                       "which is connected to another "
+                                       "Connection(%2)", getId(),
+                                       chr->m_externalMind->connectionId()));
+                    removeObject(ent->getIntId());
                 }
             } else {
-                removeObject(chr->getIntId());
+                removeObject(ent->getIntId());
             }
         } else {
             // Non character entity
-            removeObject(chr->getIntId());
+            removeObject(ent->getIntId());
         }
     }
 }
