@@ -133,6 +133,7 @@ void Connection::disconnectObject(RouterMap::iterator I,
 {
     ConnectableRouter * cr = dynamic_cast<ConnectableRouter *>(I->second);
     if (cr != 0) {
+        // FIXME assert that the connection pointer points to this
         cr->m_connection = 0;
         Account * ac = dynamic_cast<Account *>(cr);
         if (ac != 0) {
@@ -169,6 +170,8 @@ void Connection::disconnectObject(RouterMap::iterator I,
                                                     chr->getType()->name(),
                                                     event));
             } else if (chr->m_externalMind->isLinked()) {
+                // FIXME This may not be an error if we allow IG entities
+                // to belong to multiple accounts
                 log(ERROR, String::compose("Connection(%1) requested to "
                                            "remove active character %2(%3) "
                                            "which is subscribed to another "
@@ -518,19 +521,28 @@ void Connection::disconnectAccount(Account * ac,
     for (; J != Jend; ++J) {
         Entity * ent = J->second;
         Character * chr = dynamic_cast<Character *>(ent);
-        // FIXME It seems in every case here we call removeObject(), which
-        // implies we could get away with only calling it once. However
-        // we just callled m_objects.erase above. Shouldn't that have
-        // already done it, more cheaply as it was using the iterator?
+        // This code removes from this connection any of the accounts IG
+        // entities, except one which is currently in use by this connection.
+        // IE A player can log out their account, but continue using their
+        // exisiting character. The only case where removeObject() is not
+        // called is if the character has an external mind linked to this
+        // connection.
         if (chr != 0) {
             if (chr->m_externalMind != 0) {
                 if (!chr->m_externalMind->isLinked()) {
+                    // FIXME This is probably not an error. This can happen
+                    // if the account used this character in a previous
+                    // session, but not in this one. The ExternalMind gets
+                    // left behind, but would not be linked if it wasn't used
+                    // this time.
                     log(ERROR, compose("Connection(%1) has found a "
                                        "character in its dictionery "
                                        "which is not connected.",
                                        getId()));
                     removeObject(ent->getIntId());
                 } else if (!chr->m_externalMind->isLinkedTo(this)) {
+                    // FIXME This is not an error _if_ we allow IG entities
+                    // to be owned by multiple accounts.
                     log(ERROR, compose("Connection(%1) has found a "
                                        "character in its dictionery "
                                        "which is connected to another "
