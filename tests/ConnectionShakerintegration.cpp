@@ -26,6 +26,7 @@
 
 #include "TestBase.h"
 
+#include "server/Account.h"
 #include "server/CommServer.h"
 #include "server/CommSocket.h"
 #include "server/Connection.h"
@@ -41,6 +42,7 @@
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/const.h"
+#include "common/system.h"
 
 #include <cstdio>
 
@@ -55,7 +57,7 @@ class ConnectionShakerintegration : public Cyphesis::TestBase
 {
   private:
     long m_id_counter;
-
+    Shaker * m_shaker;
     ServerRouting * m_server;
     Connection * m_connection;
   public:
@@ -80,8 +82,13 @@ void ConnectionShakerintegration::testShaker()
                                                "testuser",
                                                "testpassword");
 
-    // FIXME Check that a salt of the correct size has been passed to
-    // hash_password.
+    std::string hash;
+    unsigned int salt_length = 8;
+    std::string salt  = m_shaker->generateSalt(salt_length);
+    ASSERT_NOT_NULL(&salt);
+    ASSERT_TRUE(salt_length*2==salt.length());
+    hash_password(ac->password(),salt,hash);
+    
 }
 
 void ConnectionShakerintegration::setup()
@@ -95,12 +102,14 @@ void ConnectionShakerintegration::setup()
                                   *m_server,
                                   "test_addr",
                                   compose("%1", m_id_counter), m_id_counter++);
+    m_shaker = new Shaker;
 }
 
 void ConnectionShakerintegration::teardown()
 {
     delete m_server;
     delete m_connection;
+    delete m_shaker;
 }
 
 int main()
