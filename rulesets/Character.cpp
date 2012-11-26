@@ -299,6 +299,35 @@ void Character::linkExternalMind(Link * link)
     sendWorld(update);
 }
 
+void Character::unlinkExternalMind(Link * link)
+{
+    if (m_externalMind == 0) {
+        log(ERROR, "Character is not connected.");
+        return;
+    }
+
+    // Send a move op stopping the current movement
+    Anonymous move_arg;
+    move_arg->setId(getId());
+    // Include the EXTERNAL property which is changing to zero.
+    // It would be more correct at this point to send a separate
+    // update to have the property update itself, but this
+    // will be much less of an issue once Sight(Set) is created
+    // more correctly
+    move_arg->setAttr("external", 0);
+    ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
+
+    Move move;
+    move->setFrom(getId());
+    move->setArgs1(move_arg);
+    externalOperation(move);
+
+    // We used to delete the external mind here, but now we
+    // leave it in place, as it takes care of the disconnected
+    // character.
+    m_externalMind->linkUp(0);
+}
+
 /// \brief Set up a new task as the one being performed by the Character
 ///
 /// @param task The new task to be assigned to the Character

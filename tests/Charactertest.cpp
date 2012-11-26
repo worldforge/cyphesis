@@ -90,6 +90,9 @@ class Charactertest : public Cyphesis::TestBase
     void test_linkExternalMind();
     void test_linkExternalMind_mind();
     void test_linkExternalMind_linked();
+    void test_unlinkExternalMind();
+    void test_unlinkExternalMind_unlinked();
+    void test_unlinkExternalMind_nomind();
 };
 
 Charactertest::Charactertest()
@@ -98,6 +101,9 @@ Charactertest::Charactertest()
     ADD_TEST(Charactertest::test_linkExternalMind);
     ADD_TEST(Charactertest::test_linkExternalMind_mind);
     ADD_TEST(Charactertest::test_linkExternalMind_linked);
+    ADD_TEST(Charactertest::test_unlinkExternalMind);
+    ADD_TEST(Charactertest::test_unlinkExternalMind_unlinked);
+    ADD_TEST(Charactertest::test_unlinkExternalMind_nomind);
 }
 
 void Charactertest::setup()
@@ -183,6 +189,50 @@ void Charactertest::test_linkExternalMind_linked()
     ASSERT_TRUE(m_character->m_externalMind->isLinked())
     ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(l))
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
+}
+
+// Common case. Character has a link, and this removes it.
+void Charactertest::test_unlinkExternalMind()
+{
+    ExternalMind * existing_mind = m_character->m_externalMind =
+                                   new ExternalMind(*m_character);
+    Link * existing_link = new TestLink(*(CommSocket*)0, "2", 2);
+    existing_mind->linkUp(existing_link);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked());
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
+    
+    m_character->unlinkExternalMind(existing_link);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(!m_character->m_externalMind->isLinked())
+}
+
+// Check the case where the Character has no link
+void Charactertest::test_unlinkExternalMind_unlinked()
+{
+    m_character->m_externalMind = new ExternalMind(*m_character);
+    ASSERT_NOT_NULL(m_character->m_externalMind);
+    ASSERT_TRUE(!m_character->m_externalMind->isLinked())
+
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+    
+    m_character->unlinkExternalMind(l);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(!m_character->m_externalMind->isLinked())
+}
+
+void Charactertest::test_unlinkExternalMind_nomind()
+{
+    ASSERT_NULL(m_character->m_externalMind);
+
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+    
+    m_character->unlinkExternalMind(l);
+
+    ASSERT_NULL(m_character->m_externalMind)
 }
 
 int main(int argc, char ** argv)
@@ -977,6 +1027,14 @@ long integerId(const std::string & id)
     }
 
     return intId;
+}
+
+void addToEntity(const Vector3D & v, std::vector<double> & vd)
+{
+    vd.resize(3);
+    vd[0] = v[0];
+    vd[1] = v[1];
+    vd[2] = v[2];
 }
 
 template <typename FloatT>
