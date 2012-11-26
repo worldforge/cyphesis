@@ -514,6 +514,10 @@ Character::~Character()
 {
 }
 
+void Character::linkExternalMind(Link * link)
+{
+}
+
 void Character::operation(const Operation & op, OpVector &)
 {
 }

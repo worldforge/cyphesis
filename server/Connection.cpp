@@ -212,31 +212,7 @@ void Connection::objectDeleted(long id)
 
 void Connection::connectAvatar(Character * chr)
 {
-    if (chr->m_externalMind == 0) {
-        chr->m_externalMind = new ExternalMind(*chr);
-    }
-
-    if (chr->m_externalMind->isLinked()) {
-        log(ERROR, "Character is already connected.");
-        return;
-    }
-    chr->m_externalMind->linkUp(this);
-
-    if (chr->getProperty("external") == 0) {
-        ExternalProperty * ep = new ExternalProperty(chr->m_externalMind);
-        // FIXME ensure this is install()ed and apply()ed
-        chr->setProperty("external", ep);
-    }
-
-    Anonymous update_arg;
-    update_arg->setId(chr->getId());
-    update_arg->setAttr("external", 1);
-
-    Update update;
-    update->setTo(chr->getId());
-    update->setArgs1(update_arg);
-
-    chr->sendWorld(update);
+    chr->linkExternalMind(this);
 }
 
 int Connection::verifyCredentials(const Account & account,
