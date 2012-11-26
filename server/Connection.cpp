@@ -145,26 +145,7 @@ void Connection::disconnectObject(RouterMap::iterator I,
     if (chr != 0) {
         if (chr->m_externalMind != 0) {
             if (chr->m_externalMind->isLinkedTo(this)) {
-                // Send a move op stopping the current movement
-                Anonymous move_arg;
-                move_arg->setId(chr->getId());
-                // Include the EXTERNAL property which is changing to zero.
-                // It would be more correct at this point to send a separate
-                // update to have the property update itself, but this
-                // will be much less of an issue once Sight(Set) is created
-                // more correctly
-                move_arg->setAttr("external", 0);
-                ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
-
-                Move move;
-                move->setFrom(chr->getId());
-                move->setArgs1(move_arg);
-                chr->externalOperation(move);
-
-                // We used to delete the external mind here, but now we
-                // leave it in place, as it takes care of the disconnected
-                // character.
-                chr->m_externalMind->linkUp(0);
+                chr->unlinkExternalMind(this);
                 logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
                                                     getId(), chr->getId(),
                                                     chr->getType()->name(),
