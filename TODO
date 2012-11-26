@@ -1,3 +1,6 @@
+Make [un]linkExternalMind return success, to indicate if an event should be
+logged. Keeps logging of events cleanly in the server code.
+
 Simplify CommServer by removing the Idle functionality, and making it
 a stand alone class.
  - In Juncture.cpp we can get to it by the ServerRouting
