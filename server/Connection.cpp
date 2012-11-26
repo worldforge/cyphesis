@@ -265,7 +265,8 @@ void Connection::externalOperation(const Operation & op)
         if (chr->m_externalMind == 0 || !chr->m_externalMind->isLinked()) {
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
-            connectAvatar(chr);
+            chr->linkExternalMind(this);
+
             Info info;
             Anonymous info_arg;
             chr->addToEntity(info_arg);

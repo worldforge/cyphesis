@@ -99,7 +99,8 @@ int Account::connectCharacter(Entity *chr)
 {
     Character * character = dynamic_cast<Character *>(chr);
     if (character != 0) {
-        m_connection->connectAvatar(character);
+        character->linkExternalMind(m_connection);
+
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
         // starts getting hard to tell whether or not they exist.
