@@ -23,6 +23,7 @@
 #include "BaseMind.h"
 #include "EntityProperty.h"
 #include "ExternalMind.h"
+#include "ExternalProperty.h"
 #include "OutfitProperty.h"
 #include "StatusProperty.h"
 #include "TasksProperty.h"
@@ -267,6 +268,35 @@ Character::~Character()
     delete &m_movement;
     delete m_mind;
     delete m_externalMind;
+}
+
+void Character::linkExternalMind(Link * link)
+{
+    if (m_externalMind == 0) {
+        m_externalMind = new ExternalMind(*this);
+    }
+
+    if (m_externalMind->isLinked()) {
+        log(ERROR, "Character is already connected.");
+        return;
+    }
+    m_externalMind->linkUp(link);
+
+    if (getProperty("external") == 0) {
+        ExternalProperty * ep = new ExternalProperty(m_externalMind);
+        // FIXME ensure this is install()ed and apply()ed
+        setProperty("external", ep);
+    }
+
+    Anonymous update_arg;
+    update_arg->setId(getId());
+    update_arg->setAttr("external", 1);
+
+    Update update;
+    update->setTo(getId());
+    update->setArgs1(update_arg);
+
+    sendWorld(update);
 }
 
 /// \brief Set up a new task as the one being performed by the Character

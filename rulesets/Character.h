@@ -24,6 +24,7 @@
 
 class BaseMind;
 class ExternalMind;
+class Link;
 class Movement;
 class Task;
 
@@ -71,6 +72,8 @@ class Character : public Character_parent {
 
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
+
+    void linkExternalMind(Link *);
 
     int startTask(Task *, const Operation & op, OpVector &);
     void updateTask(OpVector &);

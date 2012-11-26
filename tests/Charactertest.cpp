@@ -25,6 +25,7 @@
 #endif
 
 #include "IGEntityExerciser.h"
+#include "TestBase.h"
 #include "allOperations.h"
 
 #include "rulesets/Character.h"
@@ -33,6 +34,7 @@
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/EntityProperty.h"
+#include "rulesets/ExternalMind.h"
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/Script.h"
@@ -43,6 +45,7 @@
 #include "common/const.h"
 #include "common/id.h"
 #include "common/log.h"
+#include "common/Link.h"
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 
@@ -55,13 +58,64 @@ using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-int main(int argc, char ** argv)
+class TestLink : public Link
 {
-    Character e("1", 1);
-    TypeNode type("character");
-    e.setType(&type);
+  public:
+    TestLink(CommSocket & s, const std::string & id, long iid) :
+        Link(s, id, iid)
+    {
+    }
 
-    IGEntityExerciser ee(e);
+    void externalOperation(const Operation & op)
+    {
+    }
+
+    void operation(const Operation &, OpVector &)
+    {
+    }
+};
+
+class Charactertest : public Cyphesis::TestBase
+{
+  private:
+    Character * m_character;
+    TypeNode * m_type;
+  public:
+    Charactertest();
+
+    void setup();
+    void teardown();
+
+    void test_exerciser();
+    void test_linkExternalMind();
+    void test_linkExternalMind_mind();
+    void test_linkExternalMind_linked();
+};
+
+Charactertest::Charactertest()
+{
+    ADD_TEST(Charactertest::test_exerciser);
+    ADD_TEST(Charactertest::test_linkExternalMind);
+    ADD_TEST(Charactertest::test_linkExternalMind_mind);
+    ADD_TEST(Charactertest::test_linkExternalMind_linked);
+}
+
+void Charactertest::setup()
+{
+    m_character = new Character("1", 1);
+    m_type = new TypeNode("character");
+    m_character->setType(m_type);
+}
+
+void Charactertest::teardown()
+{
+    delete m_character;
+    delete m_type;
+}
+
+void Charactertest::test_exerciser()
+{
+    IGEntityExerciser ee(*m_character);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -72,11 +126,75 @@ int main(int argc, char ** argv)
 
     // Throw an op of every type at the entity again now it is subscribed
     ee.runOperations();
+}
 
-    return 0;
+// The common case as a link up with a new ExternalMind object
+void Charactertest::test_linkExternalMind()
+{
+    ASSERT_NULL(m_character->m_externalMind);
+
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+    
+    m_character->linkExternalMind(l);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(l))
+}
+
+// An existing, non-linked ExternalMind should be left in place, and used
+// for the link up.
+void Charactertest::test_linkExternalMind_mind()
+{
+    ExternalMind * existing_mind = m_character->m_externalMind =
+                                   new ExternalMind(*m_character);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind);
+    ASSERT_TRUE(!m_character->m_externalMind->isLinked());
+
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+    
+    m_character->linkExternalMind(l);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_EQUAL(m_character->m_externalMind, existing_mind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(l))
+}
+
+// An existing link should be unaffected, and linkup should fail
+void Charactertest::test_linkExternalMind_linked()
+{
+    ExternalMind * existing_mind = m_character->m_externalMind =
+                                   new ExternalMind(*m_character);
+    Link * existing_link = new TestLink(*(CommSocket*)0, "2", 2);
+    existing_mind->linkUp(existing_link);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked());
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
+
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+    
+    m_character->linkExternalMind(l);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_EQUAL(m_character->m_externalMind, existing_mind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(l))
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
+}
+
+int main(int argc, char ** argv)
+{
+    Charactertest t;
+
+    return t.run();
 }
 
 // stubs
+
+#include "rulesets/ExternalProperty.h"
 
 void TestWorld::message(const Operation & op, Entity & ent)
 {
@@ -100,6 +218,30 @@ int THOUGHT_NO = -1;
 int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
 } } }
+
+ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+                                         m_external(0),
+                                         m_entity(e),
+                                         m_lossTime(0.)
+{
+}
+
+ExternalMind::~ExternalMind()
+{
+}
+
+void ExternalMind::externalOperation(const Operation & op)
+{
+}
+
+void ExternalMind::linkUp(Link * c)
+{
+    m_external = c;
+}
+
+void ExternalMind::operation(const Operation & op, OpVector & res)
+{
+}
 
 Pedestrian::Pedestrian(Entity & body) : Movement(body)
 {
@@ -319,6 +461,12 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
 void Entity::onContainered()
 {
 }
@@ -517,6 +665,38 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 }
 
 TypeNode::~TypeNode()
+{
+}
+
+Link::Link(CommSocket & socket, const std::string & id, long iid) :
+            Router(id, iid), m_encoder(0), m_commSocket(socket)
+{
+}
+
+Link::~Link()
+{
+}
+
+ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
+{
+}
+
+int ExternalProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void ExternalProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         Atlas::Message::MapType & map) const
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
