@@ -67,6 +67,8 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
 
     void test_subscribe();
     void test_connect_existing();
+    void test_unsubscribe();
+    void test_unsubscribe_other();
 };
 
 AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
@@ -77,6 +79,8 @@ AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
 {
     ADD_TEST(AccountConnectionCharacterintegration::test_subscribe);
     ADD_TEST(AccountConnectionCharacterintegration::test_connect_existing);
+    ADD_TEST(AccountConnectionCharacterintegration::test_unsubscribe);
+    ADD_TEST(AccountConnectionCharacterintegration::test_unsubscribe_other);
 }
 
 void AccountConnectionCharacterintegration::setup()
@@ -151,6 +155,68 @@ void AccountConnectionCharacterintegration::test_connect_existing()
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
+    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+                m_connection->m_objects.end())
+}
+
+void AccountConnectionCharacterintegration::test_unsubscribe()
+{
+    // Initial state is that the account already belongs to the connection,
+    // and the character is linked up.
+
+    m_connection->m_objects[m_account->getIntId()] = m_account;
+    m_connection->m_objects[m_character->getIntId()] = m_character;
+    m_character->linkExternalMind(m_connection);
+
+    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+                m_connection->m_objects.end())
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
+
+    m_connection->disconnectObject(
+          m_connection->m_objects.find(m_character->getIntId()),
+          "test_disconnect_event"
+    );
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(!m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
+    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+                m_connection->m_objects.end())
+}
+
+void AccountConnectionCharacterintegration::test_unsubscribe_other()
+{
+    // Initial state is that the account already belongs to the connection,
+    // and the character is linked up.
+
+    m_connection->m_objects[m_account->getIntId()] = m_account;
+    m_connection->m_objects[m_character->getIntId()] = m_character;
+
+    Connection * other_connection =
+          new Connection(*(CommSocket*)0,
+                         *m_server,
+                         "242eedae-6a2e-4c5b-9901-711b14d7e851",
+                         compose("%1", m_id_counter), m_id_counter++);
+
+    m_character->linkExternalMind(other_connection);
+
+    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+                m_connection->m_objects.end())
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(other_connection))
+
+    m_connection->disconnectObject(
+          m_connection->m_objects.find(m_character->getIntId()),
+          "test_disconnect_event"
+    );
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(other_connection))
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())
 }
