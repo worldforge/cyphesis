@@ -143,7 +143,7 @@ void ConnectionCharacterintegration::test_connected()
     // Dispatching an external op from the character should have no effect
     // if the external mind is already in place.
 
-    m_connection->connectAvatar(m_character);
+    m_character->linkExternalMind(m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
@@ -174,7 +174,7 @@ void ConnectionCharacterintegration::test_unlinked()
     // already in place, but is not linked to a connection should link it
     // back up.
 
-    m_connection->connectAvatar(m_character);
+    m_character->linkExternalMind(m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
