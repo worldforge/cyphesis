@@ -141,7 +141,8 @@ void Charactertest::test_linkExternalMind()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    m_character->linkExternalMind(l);
+    int ret = m_character->linkExternalMind(l);
+    ASSERT_EQUAL(ret, 0);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(m_character->m_externalMind->isLinked())
@@ -160,7 +161,8 @@ void Charactertest::test_linkExternalMind_mind()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    m_character->linkExternalMind(l);
+    int ret = m_character->linkExternalMind(l);
+    ASSERT_EQUAL(ret, 0);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_EQUAL(m_character->m_externalMind, existing_mind);
@@ -182,7 +184,8 @@ void Charactertest::test_linkExternalMind_linked()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    m_character->linkExternalMind(l);
+    int ret = m_character->linkExternalMind(l);
+    ASSERT_EQUAL(ret, -1);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_EQUAL(m_character->m_externalMind, existing_mind);
@@ -203,7 +206,8 @@ void Charactertest::test_unlinkExternalMind()
     ASSERT_TRUE(m_character->m_externalMind->isLinked());
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
     
-    m_character->unlinkExternalMind(existing_link);
+    int ret = m_character->unlinkExternalMind(existing_link);
+    ASSERT_EQUAL(ret, 0);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
@@ -218,7 +222,8 @@ void Charactertest::test_unlinkExternalMind_unlinked()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    m_character->unlinkExternalMind(l);
+    int ret = m_character->unlinkExternalMind(l);
+    ASSERT_EQUAL(ret, -1);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
@@ -230,7 +235,8 @@ void Charactertest::test_unlinkExternalMind_nomind()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    m_character->unlinkExternalMind(l);
+    int ret = m_character->unlinkExternalMind(l);
+    ASSERT_EQUAL(ret, -1);
 
     ASSERT_NULL(m_character->m_externalMind)
 }

@@ -270,7 +270,7 @@ Character::~Character()
     delete m_externalMind;
 }
 
-void Character::linkExternalMind(Link * link)
+int Character::linkExternalMind(Link * link)
 {
     if (m_externalMind == 0) {
         m_externalMind = new ExternalMind(*this);
@@ -278,7 +278,7 @@ void Character::linkExternalMind(Link * link)
 
     if (m_externalMind->isLinked()) {
         log(ERROR, "Character is already connected.");
-        return;
+        return -1;
     }
     m_externalMind->linkUp(link);
 
@@ -297,13 +297,19 @@ void Character::linkExternalMind(Link * link)
     update->setArgs1(update_arg);
 
     sendWorld(update);
+    return 0;
 }
 
-void Character::unlinkExternalMind(Link * link)
+int Character::unlinkExternalMind(Link * link)
 {
     if (m_externalMind == 0) {
         log(ERROR, "Character is not connected.");
-        return;
+        return -1;
+    }
+
+    if  (!m_externalMind->isLinkedTo(link)) {
+        // FIXME Add error report here if it is linked to somewhere else
+        return -1;
     }
 
     // Send a move op stopping the current movement
@@ -322,10 +328,12 @@ void Character::unlinkExternalMind(Link * link)
     move->setArgs1(move_arg);
     externalOperation(move);
 
+
     // We used to delete the external mind here, but now we
     // leave it in place, as it takes care of the disconnected
     // character.
     m_externalMind->linkUp(0);
+    return 0;
 }
 
 /// \brief Set up a new task as the one being performed by the Character

@@ -73,8 +73,8 @@ class Character : public Character_parent {
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
 
-    void linkExternalMind(Link *);
-    void unlinkExternalMind(Link *);
+    int linkExternalMind(Link *);
+    int unlinkExternalMind(Link *);
 
     int startTask(Task *, const Operation & op, OpVector &);
     void updateTask(OpVector &);

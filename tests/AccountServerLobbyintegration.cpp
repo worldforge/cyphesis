@@ -286,8 +286,9 @@ Character::~Character()
 {
 }
 
-void Character::linkExternalMind(Link * link)
+int Character::linkExternalMind(Link * link)
 {
+    return 0;
 }
 
 void Character::operation(const Operation & op, OpVector &)
