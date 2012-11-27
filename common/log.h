@@ -31,7 +31,8 @@ typedef enum log_level { INFO, SCRIPT, NOTICE,
                          SCRIPT_ERROR,
                          CRITICAL } LogLevel;
 
-typedef enum log_event { START,          // Server binary started
+typedef enum log_event { NONE = 0,
+                         START,          // Server binary started
                          STOP,           // Server binary stopped
                          CONNECT,        // Atlas client connected
                          DISCONNECT,     // Atlas client disconnected
