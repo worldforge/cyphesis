@@ -81,6 +81,7 @@ class TestRouter : public Router
   public:
     TestRouter(const std::string &id, int iid) : Router(id, iid) { }
 
+    virtual void externalOperation(const Operation &) { }
     virtual void operation(const Operation &, OpVector &) { }
 };
 
@@ -325,6 +326,10 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
+void Account::externalOperation(const Operation &)
+{
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
 }
@@ -412,6 +417,10 @@ Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
 }
 
 Lobby::~Lobby()
+{
+}
+
+void Lobby::externalOperation(const Operation &)
 {
 }
 

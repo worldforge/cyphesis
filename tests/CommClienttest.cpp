@@ -232,6 +232,10 @@ class TestLink : public Link
     {
     }
 
+    virtual void externalOperation(const Operation & op)
+    {
+    }
+
     virtual void operation(const Operation&, OpVector&res)
     {
         if (m_reply) {

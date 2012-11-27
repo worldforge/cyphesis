@@ -84,10 +84,15 @@ class TestObject : public Router
   public:
     explicit TestObject(const std::string & id, long intId);
 
+    virtual void externalOperation(const Operation &);
     virtual void operation(const Operation &, OpVector &);
 };
 
 TestObject::TestObject(const std::string & id, long intId) : Router(id, intId)
+{
+}
+
+void TestObject::externalOperation(const Operation & op)
 {
 }
 
@@ -1437,6 +1442,10 @@ void Account::addToEntity(const RootEntity & ent) const
 {
 }
 
+void Account::externalOperation(const Operation & op)
+{
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
     if (op->getClassNo() == Atlas::Objects::Operation::LOGOUT_NO) {
@@ -1506,6 +1515,10 @@ Connection::~Connection()
 }
 
 void Connection::addObject(Router * obj)
+{
+}
+
+void Connection::externalOperation(const Operation & op)
 {
 }
 
@@ -1591,6 +1604,10 @@ Juncture::~Juncture()
 {
 }
 
+void Juncture::externalOperation(const Operation & op)
+{
+}
+
 void Juncture::operation(const Operation & op, OpVector & res)
 {
 }
@@ -1648,6 +1665,14 @@ Account * ServerRouting::getAccountByName(const std::string & username)
 }
 
 void ServerRouting::addAccount(Account * a)
+{
+}
+
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
 {
 }
 

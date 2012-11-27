@@ -1696,6 +1696,10 @@ Connection::~Connection()
 {
 }
 
+void Connection::externalOperation(const Operation & op)
+{
+}
+
 void Connection::operation(const Operation &, OpVector &)
 {
 }
@@ -1771,6 +1775,14 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
+
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
 int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
@@ -1830,6 +1842,10 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 void Lobby::addAccount(Account * ac)
 {
     m_accounts[ac->getId()] = ac;
+}
+
+void Lobby::externalOperation(const Operation & op)
+{
 }
 
 void Lobby::operation(const Operation & op, OpVector & res)

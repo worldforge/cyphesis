@@ -19,7 +19,7 @@
 
 #include "ExternalMind.h"
 
-#include "Connection.h"
+#include "Link.h"
 
 #include "rulesets/Entity.h"
 
@@ -74,6 +74,11 @@ ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
 
 ExternalMind::~ExternalMind()
 {
+}
+
+void ExternalMind::externalOperation(const Operation & op)
+{
+    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
 }
 
 void ExternalMind::operation(const Operation & op, OpVector & res)

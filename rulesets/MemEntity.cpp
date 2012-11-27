@@ -29,3 +29,11 @@ MemEntity::MemEntity(const std::string & id, long intId) :
 MemEntity::~MemEntity()
 {
 }
+
+void MemEntity::externalOperation(const Operation & op)
+{
+}
+
+void MemEntity::operation(const Operation &, OpVector &)
+{
+}

@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "common/Router.h"
 
 #include "common/log.h"
@@ -38,53 +40,203 @@ class TestRouter : public Router {
   public:
     TestRouter(const std::string & id, long intId) : Router(id, intId) { }
 
+    virtual void externalOperation(const Operation &) { }
     virtual void operation(const Operation &, OpVector &) { }
 };
 
+class Routertest : public Cyphesis::TestBase
+{
+  protected:
+    Router * m_router;
+  public:
+    Routertest();
+
+    void setup();
+    void teardown();
+
+    void test_error();
+    void test_error_to();
+    void test_error_serialno();
+    void test_error_serialno_to();
+    void test_clientError();
+    void test_addToMessage();
+    void test_addToEntity();
+};
+
+Routertest::Routertest() : m_router(0)
+{
+    ADD_TEST(Routertest::test_error);
+    ADD_TEST(Routertest::test_error_to);
+    ADD_TEST(Routertest::test_error_serialno);
+    ADD_TEST(Routertest::test_error_serialno_to);
+    ADD_TEST(Routertest::test_clientError);
+    ADD_TEST(Routertest::test_addToMessage);
+    ADD_TEST(Routertest::test_addToEntity);
+}
+
+void Routertest::setup()
+{
+    m_router = new TestRouter("1", 1);
+}
+
+void Routertest::teardown()
+{
+    delete m_router;
+}
+
+void Routertest::test_error()
+{
+    OpVector res;
+    Atlas::Objects::Operation::Get op;
+
+    m_router->error(op, "test failure", res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Atlas::Objects::Operation::RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(reply->isDefaultTo());
+    ASSERT_TRUE(reply->isDefaultSerialno());
+    ASSERT_EQUAL(reply->getArgs().size(), 2u);
+    ASSERT_EQUAL(reply->getArgs()[1]->getClassNo(),
+                 op->getClassNo());
+    ASSERT_TRUE(reply->getArgs().front()->getAttr("message").isString());
+    ASSERT_EQUAL(reply->getArgs().front()->getAttr("message").String(),
+                 "test failure");
+}
+
+void Routertest::test_error_to()
+{
+    OpVector res;
+    Atlas::Objects::Operation::Get op;
+
+    m_router->error(op, "test failure", res, "2");
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Atlas::Objects::Operation::RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(!reply->isDefaultTo());
+    ASSERT_EQUAL(reply->getTo(), "2");
+    ASSERT_TRUE(reply->isDefaultSerialno());
+    ASSERT_EQUAL(reply->getArgs().size(), 2u);
+    ASSERT_EQUAL(reply->getArgs()[1]->getClassNo(),
+                 op->getClassNo());
+    ASSERT_TRUE(reply->getArgs().front()->getAttr("message").isString());
+    ASSERT_EQUAL(reply->getArgs().front()->getAttr("message").String(),
+                 "test failure");
+}
+
+void Routertest::test_error_serialno()
+{
+    OpVector res;
+    Atlas::Objects::Operation::Get op;
+    op->setSerialno(23);
+
+    m_router->error(op, "test failure", res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Atlas::Objects::Operation::RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(reply->isDefaultTo());
+    // FIXME We probably should set this, regardless of whether TO
+    // is set
+    ASSERT_TRUE(reply->isDefaultRefno());
+    ASSERT_EQUAL(reply->getArgs().size(), 2u);
+    ASSERT_EQUAL(reply->getArgs()[1]->getClassNo(),
+                 op->getClassNo());
+    ASSERT_TRUE(reply->getArgs().front()->getAttr("message").isString());
+    ASSERT_EQUAL(reply->getArgs().front()->getAttr("message").String(),
+                 "test failure");
+}
+
+void Routertest::test_error_serialno_to()
+{
+    OpVector res;
+    Atlas::Objects::Operation::Get op;
+    op->setSerialno(23);
+
+    m_router->error(op, "test failure", res, "2");
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Atlas::Objects::Operation::RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(!reply->isDefaultTo());
+    ASSERT_EQUAL(reply->getTo(), "2");
+    ASSERT_TRUE(!reply->isDefaultRefno());
+    ASSERT_EQUAL(reply->getRefno(), op->getSerialno());
+    ASSERT_EQUAL(reply->getArgs().size(), 2u);
+    ASSERT_EQUAL(reply->getArgs()[1]->getClassNo(),
+                 op->getClassNo());
+    ASSERT_TRUE(reply->getArgs().front()->getAttr("message").isString());
+    ASSERT_EQUAL(reply->getArgs().front()->getAttr("message").String(),
+                 "test failure");
+}
+
+void Routertest::test_clientError()
+{
+    OpVector res;
+    Atlas::Objects::Operation::Get op;
+
+    m_router->clientError(op, "test failure", res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+
+    const Atlas::Objects::Operation::RootOperation & reply = res.front();
+
+    ASSERT_EQUAL(reply->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_TRUE(reply->isDefaultTo());
+    ASSERT_TRUE(reply->isDefaultSerialno());
+    ASSERT_EQUAL(reply->getArgs().size(), 2u);
+    ASSERT_EQUAL(reply->getArgs()[1]->getClassNo(),
+                 op->getClassNo());
+    ASSERT_TRUE(reply->getArgs().front()->getAttr("message").isString());
+    ASSERT_EQUAL(reply->getArgs().front()->getAttr("message").String(),
+                 "test failure");
+}
+
+void Routertest::test_addToMessage()
+{
+    Atlas::Message::MapType msg;
+
+    m_router->addToMessage(msg);
+
+    ASSERT_TRUE(msg.find("objtype") != msg.end());
+    ASSERT_TRUE(msg["objtype"].isString());
+    ASSERT_EQUAL(msg["objtype"].String(), "obj");
+    ASSERT_TRUE(msg.find("id") != msg.end());
+    ASSERT_TRUE(msg["id"].isString());
+    ASSERT_EQUAL(msg["id"].String(), "1");
+}
+
+void Routertest::test_addToEntity()
+{
+    Atlas::Objects::Entity::Anonymous ent;
+
+    m_router->addToEntity(ent);
+
+    ASSERT_TRUE(!ent->isDefaultObjtype());
+    ASSERT_EQUAL(ent->getObjtype(), "obj");
+    ASSERT_TRUE(!ent->isDefaultId());
+    ASSERT_EQUAL(ent->getId(), "1");
+}
+
 int main()
 {
-    TestRouter test_obj("1", 1);
+    Routertest t;
 
-    {
-        OpVector res;
-        Atlas::Objects::Operation::Get op;
-
-        test_obj.error(op, "test failure", res);
-        test_obj.error(op, "test failure", res, "1");
-
-        op->setSerialno(23);
-
-        test_obj.error(op, "test failure", res);
-        test_obj.error(op, "test failure", res, "1");
-
-    }
-
-    {
-        OpVector res;
-        Atlas::Objects::Operation::Get op;
-
-        test_obj.clientError(op, "test failure", res);
-        test_obj.clientError(op, "test failure", res, "1");
-
-        op->setSerialno(17);
-
-        test_obj.clientError(op, "test failure", res);
-        test_obj.clientError(op, "test failure", res, "1");
-    }
-
-    {
-        Atlas::Message::MapType msg;
-
-        test_obj.addToMessage(msg);
-    }
-
-    {
-        Atlas::Objects::Entity::Anonymous ent;
-
-        test_obj.addToEntity(ent);
-    }
-
-    return 0;
+    return t.run();
 }
 
 // stubs

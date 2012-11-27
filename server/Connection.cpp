@@ -251,30 +251,26 @@ int Connection::verifyCredentials(const Account & account,
     return check_password(passwd, account.password());
 }
 
-void Connection::operation(const Operation & op, OpVector & res)
+
+void Connection::externalOperation(const Operation & op)
 {
-    debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::FROM_FLAG)) {
+    debug(std::cout << "Connection::externalOperation"
+                    << std::endl << std::flush;);
+    if (op->isDefaultFrom()) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
-        const OpNo op_no = op->getClassNo();
-        switch (op_no) {
-            case Atlas::Objects::Operation::CREATE_NO:
-                CreateOperation(op, res);
-                break;
-            case Atlas::Objects::Operation::GET_NO:
-                GetOperation(op, res);
-                break;
-            case Atlas::Objects::Operation::LOGIN_NO:
-                LoginOperation(op, res);
-                break;
-            case Atlas::Objects::Operation::LOGOUT_NO:
-                LogoutOperation(op, res);
-                break;
-            case OP_INVALID:
-                break;
-            default:
-                error(op, "Unknown operation", res);
-                break;
+        OpVector reply;
+        long serialno = op->getSerialno();
+        operation(op, reply);
+        OpVector::const_iterator Iend = reply.end();
+        for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
+            if (!op->isDefaultSerialno()) {
+                // Should we respect existing refnos?
+                if ((*I)->isDefaultRefno()) {
+                    (*I)->setRefno(serialno);
+                }
+            }
+            // FIXME detect socket failure here
+            send(*I);
         }
         return;
     }
@@ -282,18 +278,12 @@ void Connection::operation(const Operation & op, OpVector & res)
     debug(std::cout << "send on to " << from << std::endl << std::flush;);
     RouterMap::const_iterator I = m_objects.find(integerId(from));
     if (I == m_objects.end()) {
-        error(op, String::compose("Client \"%1\" op from \"%2\" is from "
-                                  "non-existant object.",
-                                  op->getParents().front(), from),
-              res);
+        sendError(op, String::compose("Client \"%1\" op from \"%2\" is from "
+                                      "non-existant object.",
+                                      op->getParents().front(), from), from);
         return;
     }
     Router * obj = I->second;
-    Entity * ig_ent = dynamic_cast<Entity *>(obj);
-    if (ig_ent == NULL) {
-        obj->operation(op, res);
-        return;
-    }
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != NULL) {
         ExternalMind * mind = 0;
@@ -309,14 +299,39 @@ void Connection::operation(const Operation & op, OpVector & res)
             chr->addToEntity(info_arg);
             info->setArgs1(info_arg);
 
-            res.push_back(info);
+            send(info);
 
             logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
-                                                getId(), ig_ent->getId(),
-                                                ig_ent->getType()));
+                                                getId(), chr->getId(),
+                                                chr->getType()));
         }
     }
-    ig_ent->externalOperation(op);
+    obj->externalOperation(op);
+}
+
+void Connection::operation(const Operation & op, OpVector & res)
+{
+    debug(std::cout << "Connection::operation" << std::endl << std::flush;);
+    const OpNo op_no = op->getClassNo();
+    switch (op_no) {
+        case Atlas::Objects::Operation::CREATE_NO:
+            CreateOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::GET_NO:
+            GetOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::LOGIN_NO:
+            LoginOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::LOGOUT_NO:
+            LogoutOperation(op, res);
+            break;
+        case OP_INVALID:
+            break;
+        default:
+            error(op, "Unknown operation", res);
+            break;
+    }
 }
 
 void Connection::LoginOperation(const Operation & op, OpVector & res)

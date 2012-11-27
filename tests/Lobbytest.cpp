@@ -239,6 +239,10 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
 }
 
 
+void Account::externalOperation(const Operation & op)
+{
+}
+
 void Account::operation(const Operation &, OpVector &)
 {
 }
@@ -339,6 +343,9 @@ Connection::~Connection()
 {
 }
 
+void Connection::externalOperation(const Operation & op)
+{
+}
 
 void Connection::operation(const Operation &, OpVector &)
 {

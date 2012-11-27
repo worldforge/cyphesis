@@ -33,7 +33,8 @@ class LocatedEntityTest : public LocatedEntity {
     LocatedEntityTest(const std::string & id, int iid) :
         LocatedEntity(id, iid) { }
 
-    virtual void operation(const Operation &, OpVector &) { /* REMOVE */ }
+    virtual void externalOperation(const Operation &);
+    virtual void operation(const Operation &, OpVector &);
 };
 
 class EntityExerciser {

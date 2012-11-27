@@ -1309,6 +1309,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectableRouter.o \
+        $(top_builddir)/server/Link.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1404,6 +1405,7 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/server/ConnectableRouter.o \
+        $(top_builddir)/server/Link.o \
         $(top_builddir)/server/libcomm.a \
         $(top_builddir)/rulesets/libscriptpython.a \
         $(top_builddir)/rulesets/librulesetentity.a \
@@ -1434,7 +1436,6 @@ AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/server/Connection.o \
-        $(top_builddir)/server/Link.o \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/server/ServerAccount.o \

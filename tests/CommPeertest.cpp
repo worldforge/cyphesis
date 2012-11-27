@@ -259,6 +259,14 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
+
 CommServer::CommServer() : m_congested(false)
 {
 }
@@ -316,6 +324,10 @@ PeerAuthState Peer::getAuthState()
 void Peer::setAuthState(PeerAuthState state)
 {
     m_state = state;
+}
+
+void Peer::externalOperation(const Operation &op)
+{
 }
 
 void Peer::operation(const Operation &op, OpVector &res)

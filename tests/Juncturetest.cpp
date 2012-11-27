@@ -483,6 +483,13 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
 
 CommPeer::CommPeer(CommServer & svr, const std::string & n) :
       CommClient<tcp_socket_stream>(svr, n)
@@ -568,6 +575,10 @@ void Peer::setAuthState(PeerAuthState state)
     m_state = state;
 }
 
+void Peer::externalOperation(const Operation & op)
+{
+}
+
 void Peer::operation(const Operation &op, OpVector &res)
 {
 }
@@ -606,6 +617,10 @@ int Connection::verifyCredentials(const Account &,
 
 
 Connection::~Connection()
+{
+}
+
+void Connection::externalOperation(const Operation & op)
 {
 }
 

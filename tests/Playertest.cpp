@@ -336,6 +336,10 @@ void Account::addToEntity(const RootEntity & ent) const
 {
 }
 
+void Account::externalOperation(const Operation & op)
+{
+}
+
 void Account::operation(const Operation & op, OpVector & res)
 {
 }
@@ -400,6 +404,10 @@ Connection::~Connection()
 }
 
 void Connection::addObject(Router * obj)
+{
+}
+
+void Connection::externalOperation(const Operation & op)
 {
 }
 
@@ -483,6 +491,10 @@ Juncture::~Juncture()
 {
 }
 
+void Juncture::externalOperation(const Operation & op)
+{
+}
+
 void Juncture::operation(const Operation & op, OpVector & res)
 {
 }
@@ -534,6 +546,14 @@ Account * ServerRouting::getAccountByName(const std::string & username)
 }
 
 void ServerRouting::addAccount(Account * a)
+{
+}
+
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
 {
 }
 

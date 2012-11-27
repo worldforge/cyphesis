@@ -352,6 +352,10 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
+void Account::externalOperation(const Operation &)
+{
+}
+
 void Account::operation(const Operation &, OpVector &)
 {
 }
@@ -430,6 +434,10 @@ Connection::~Connection()
 }
 
 
+void Connection::externalOperation(const Operation &)
+{
+}
+
 void Connection::operation(const Operation &, OpVector &)
 {
 }
@@ -494,6 +502,14 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
+{
+}
+
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),
        m_server(s)
@@ -520,6 +536,10 @@ void Lobby::addAccount(Account * ac)
 {
 }
 
+void Lobby::externalOperation(const Operation &)
+{
+}
+
 void Lobby::operation(const Operation & op, OpVector & res)
 {
 }
@@ -530,6 +550,10 @@ ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
 }
 
 ExternalMind::~ExternalMind()
+{
+}
+
+void ExternalMind::externalOperation(const Operation &)
 {
 }
 

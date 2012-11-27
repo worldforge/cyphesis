@@ -90,6 +90,10 @@ Lobby::~Lobby()
 {
 }
 
+void Lobby::externalOperation(const Operation & op)
+{
+}
+
 void Lobby::operation(const Operation & op, OpVector & res)
 {
 }

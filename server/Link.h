@@ -46,6 +46,9 @@ class Link : public Router {
     }
 
     void send(const Operation & op) const;
+    void sendError(const Operation & op,
+                   const std::string &,
+                   const std::string &) const;
     void disconnect();
 };
 
