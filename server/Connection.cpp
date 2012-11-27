@@ -236,10 +236,9 @@ void Connection::externalOperation(const Operation & op)
     Router * obj = I->second;
     Character * chr = dynamic_cast<Character *>(obj);
     if (chr != NULL) {
-        if (chr->m_externalMind == 0 || !chr->m_externalMind->isLinked()) {
+        if (chr->linkExternalMind(this) == 0) {
             debug(std::cout << "Subscribing existing character" << std::endl
                             << std::flush;);
-            chr->linkExternalMind(this);
 
             Info info;
             Anonymous info_arg;
