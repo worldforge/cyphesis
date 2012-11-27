@@ -38,7 +38,7 @@
 #include "common/log.h"
 #include "common/TypeNode.h"
 
-#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cstdio>
 #include <cstring>
@@ -54,6 +54,7 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
   protected:
     long m_id_counter;
     static LogEvent m_logEvent_logged;
+    static Operation m_Link_send_sent;
 
     ServerRouting * m_server;
     Connection * m_connection;
@@ -73,13 +74,20 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     void test_unsubscribe_other();
 
     static void logEvent_logged(LogEvent le);
+    static void Link_send_sent(const Operation & op);
 };
 
 LogEvent AccountConnectionCharacterintegration::m_logEvent_logged = NONE;
+Operation AccountConnectionCharacterintegration::m_Link_send_sent(0);
 
 void AccountConnectionCharacterintegration::logEvent_logged(LogEvent le)
 {
     m_logEvent_logged = le;
+}
+
+void AccountConnectionCharacterintegration::Link_send_sent(const Operation & op)
+{
+    m_Link_send_sent = op;
 }
 
 AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
@@ -96,6 +104,8 @@ AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
 
 void AccountConnectionCharacterintegration::setup()
 {
+    m_Link_send_sent = 0;
+
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
@@ -143,6 +153,9 @@ void AccountConnectionCharacterintegration::test_subscribe()
 
     m_connection->externalOperation(op);
 
+    ASSERT_TRUE(m_Link_send_sent.isValid());
+    ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
     ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
@@ -1050,6 +1063,7 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
+    AccountConnectionCharacterintegration::Link_send_sent(op);
 }
 
 void Link::sendError(const Operation & op,
