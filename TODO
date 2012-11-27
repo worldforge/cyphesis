@@ -1,3 +1,5 @@
+Add checks to ensure unlinkExternalMind has the desired effect on movement.
+
 Make [un]linkExternalMind return success, to indicate if an event should be
 logged. Keeps logging of events cleanly in the server code.
 
