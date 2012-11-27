@@ -35,6 +35,7 @@
 #include "rulesets/ExternalMind.h"
 
 #include "common/const.h"
+#include "common/log.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -52,6 +53,7 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
 {
   protected:
     long m_id_counter;
+    static LogEvent m_logEvent_logged;
 
     ServerRouting * m_server;
     Connection * m_connection;
@@ -69,7 +71,16 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     void test_connect_existing();
     void test_unsubscribe();
     void test_unsubscribe_other();
+
+    static void logEvent_logged(LogEvent le);
 };
+
+LogEvent AccountConnectionCharacterintegration::m_logEvent_logged = START;
+
+void AccountConnectionCharacterintegration::logEvent_logged(LogEvent le)
+{
+    m_logEvent_logged = le;
+}
 
 AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
     m_id_counter(0L),
@@ -178,6 +189,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe()
           "test_disconnect_event"
     );
 
+    ASSERT_EQUAL(m_logEvent_logged, DROP_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
     ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
@@ -188,7 +200,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe()
 void AccountConnectionCharacterintegration::test_unsubscribe_other()
 {
     // Initial state is that the account already belongs to the connection,
-    // and the character is linked up.
+    // and the character is linked up to another connection
 
     m_connection->m_objects[m_account->getIntId()] = m_account;
     m_connection->m_objects[m_character->getIntId()] = m_character;
@@ -213,6 +225,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
           "test_disconnect_event"
     );
 
+    ASSERT_NOT_EQUAL(m_logEvent_logged, DROP_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(m_character->m_externalMind->isLinked())
     ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
@@ -260,7 +273,6 @@ int main()
 
 #include "common/CommSocket.h"
 #include "common/Inheritance.h"
-#include "common/log.h"
 #include "common/Property_impl.h"
 #include "common/PropertyManager.h"
 
@@ -1186,6 +1198,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 void logEvent(LogEvent lev, const std::string & msg)
 {
+    AccountConnectionCharacterintegration::logEvent_logged(lev);
 }
 
 long integerId(const std::string & id)
