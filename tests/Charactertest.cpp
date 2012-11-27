@@ -92,6 +92,7 @@ class Charactertest : public Cyphesis::TestBase
     void test_linkExternalMind_linked();
     void test_linkExternalMind_linked_other();
     void test_unlinkExternalMind();
+    void test_unlinkExternalMind_linked_other();
     void test_unlinkExternalMind_unlinked();
     void test_unlinkExternalMind_nomind();
 };
@@ -104,6 +105,7 @@ Charactertest::Charactertest()
     ADD_TEST(Charactertest::test_linkExternalMind_linked);
     ADD_TEST(Charactertest::test_linkExternalMind_linked_other);
     ADD_TEST(Charactertest::test_unlinkExternalMind);
+    ADD_TEST(Charactertest::test_unlinkExternalMind_linked_other);
     ADD_TEST(Charactertest::test_unlinkExternalMind_unlinked);
     ADD_TEST(Charactertest::test_unlinkExternalMind_nomind);
 }
@@ -236,6 +238,28 @@ void Charactertest::test_unlinkExternalMind()
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
+}
+
+// Character has a link to another connection.
+void Charactertest::test_unlinkExternalMind_linked_other()
+{
+    ExternalMind * existing_mind = m_character->m_externalMind =
+                                   new ExternalMind(*m_character);
+    Link * existing_link = new TestLink(*(CommSocket*)0, "2", 2);
+    existing_mind->linkUp(existing_link);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked());
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
+    
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+
+    int ret = m_character->unlinkExternalMind(l);
+    ASSERT_EQUAL(ret, -2);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link))
 }
 
 // Check the case where the Character has no link
