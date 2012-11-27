@@ -90,6 +90,7 @@ class Charactertest : public Cyphesis::TestBase
     void test_linkExternalMind();
     void test_linkExternalMind_mind();
     void test_linkExternalMind_linked();
+    void test_linkExternalMind_linked_other();
     void test_unlinkExternalMind();
     void test_unlinkExternalMind_unlinked();
     void test_unlinkExternalMind_nomind();
@@ -101,6 +102,7 @@ Charactertest::Charactertest()
     ADD_TEST(Charactertest::test_linkExternalMind);
     ADD_TEST(Charactertest::test_linkExternalMind_mind);
     ADD_TEST(Charactertest::test_linkExternalMind_linked);
+    ADD_TEST(Charactertest::test_linkExternalMind_linked_other);
     ADD_TEST(Charactertest::test_unlinkExternalMind);
     ADD_TEST(Charactertest::test_unlinkExternalMind_unlinked);
     ADD_TEST(Charactertest::test_unlinkExternalMind_nomind);
@@ -170,8 +172,31 @@ void Charactertest::test_linkExternalMind_mind()
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(l))
 }
 
-// An existing link should be unaffected, and linkup should fail
+// A link already done should be unaffected
 void Charactertest::test_linkExternalMind_linked()
+{
+    ExternalMind * existing_mind = m_character->m_externalMind =
+                                   new ExternalMind(*m_character);
+
+    Link * l = new TestLink(*(CommSocket*)0, "2", 2);
+    existing_mind->linkUp(l);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked());
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(l));
+
+    
+    int ret = m_character->linkExternalMind(l);
+    ASSERT_EQUAL(ret, -1);
+
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_EQUAL(m_character->m_externalMind, existing_mind);
+    ASSERT_TRUE(m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(l))
+}
+
+// An existing link should be unaffected, and linkup should fail
+void Charactertest::test_linkExternalMind_linked_other()
 {
     ExternalMind * existing_mind = m_character->m_externalMind =
                                    new ExternalMind(*m_character);
