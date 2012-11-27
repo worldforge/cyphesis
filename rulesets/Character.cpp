@@ -308,7 +308,9 @@ int Character::unlinkExternalMind(Link * link)
     }
 
     if  (!m_externalMind->isLinkedTo(link)) {
-        // FIXME Add error report here if it is linked to somewhere else
+        if (m_externalMind->isLinked()) {
+            return -2;
+        }
         return -1;
     }
 
