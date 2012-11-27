@@ -274,9 +274,7 @@ int Character::linkExternalMind(Link * link)
 {
     if (m_externalMind == 0) {
         m_externalMind = new ExternalMind(*this);
-    }
-
-    if (m_externalMind->isLinked()) {
+    } else if (m_externalMind->isLinked()) {
         log(ERROR, "Character is already connected.");
         return -1;
     }
