@@ -75,7 +75,7 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     static void logEvent_logged(LogEvent le);
 };
 
-LogEvent AccountConnectionCharacterintegration::m_logEvent_logged = START;
+LogEvent AccountConnectionCharacterintegration::m_logEvent_logged = NONE;
 
 void AccountConnectionCharacterintegration::logEvent_logged(LogEvent le)
 {
@@ -143,6 +143,7 @@ void AccountConnectionCharacterintegration::test_subscribe()
 
     m_connection->externalOperation(op);
 
+    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
 }

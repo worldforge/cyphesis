@@ -34,6 +34,7 @@
 #include "rulesets/ExternalMind.h"
 
 #include "common/const.h"
+#include "common/log.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -50,6 +51,7 @@ class ConnectionCharacterintegration : public Cyphesis::TestBase
 {
   protected:
     long m_id_counter;
+    static LogEvent m_logEvent_logged;
 
     ServerRouting * m_server;
     Connection * m_connection;
@@ -65,7 +67,16 @@ class ConnectionCharacterintegration : public Cyphesis::TestBase
     void test_connect_up();
     void test_connected();
     void test_unlinked();
+
+    static void logEvent_logged(LogEvent le);
 };
+
+LogEvent ConnectionCharacterintegration::m_logEvent_logged = NONE;
+
+void ConnectionCharacterintegration::logEvent_logged(LogEvent le)
+{
+    m_logEvent_logged = le;
+}
 
 ConnectionCharacterintegration::ConnectionCharacterintegration() :
     m_id_counter(0L),
@@ -118,6 +129,7 @@ void ConnectionCharacterintegration::test_connect_up()
 
     m_connection->externalOperation(op);
 
+    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
           dynamic_cast<ExternalMind*>(m_character->m_externalMind);
@@ -147,6 +159,7 @@ void ConnectionCharacterintegration::test_connected()
 
     m_connection->externalOperation(op);
 
+    ASSERT_NOT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ASSERT_EQUAL(m_character->m_externalMind, saved_em);
     em = dynamic_cast<ExternalMind*>(m_character->m_externalMind);
@@ -182,6 +195,7 @@ void ConnectionCharacterintegration::test_unlinked()
 
     m_connection->externalOperation(op);
 
+    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ASSERT_EQUAL(m_character->m_externalMind, saved_em);
     em = dynamic_cast<ExternalMind*>(m_character->m_externalMind);
@@ -228,7 +242,6 @@ int main()
 
 #include "common/CommSocket.h"
 #include "common/Inheritance.h"
-#include "common/log.h"
 #include "common/Property_impl.h"
 #include "common/PropertyManager.h"
 
@@ -1202,6 +1215,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 void logEvent(LogEvent lev, const std::string & msg)
 {
+    ConnectionCharacterintegration::logEvent_logged(lev);
 }
 
 long integerId(const std::string & id)
