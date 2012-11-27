@@ -143,24 +143,22 @@ void Connection::disconnectObject(RouterMap::iterator I,
     }
     Character * chr = dynamic_cast<Character *>(I->second);
     if (chr != 0) {
-        if (chr->m_externalMind != 0) {
-            if (chr->m_externalMind->isLinkedTo(this)) {
-                chr->unlinkExternalMind(this);
-                logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
-                                                    getId(), chr->getId(),
-                                                    chr->getType()->name(),
-                                                    event));
-            } else if (chr->m_externalMind->isLinked()) {
-                // FIXME This may not be an error if we allow IG entities
-                // to belong to multiple accounts
-                log(ERROR, String::compose("Connection(%1) requested to "
-                                           "remove active character %2(%3) "
-                                           "which is subscribed to another "
-                                           "Connection(%4).", getId(),
-                                           chr->getType()->name(),
-                                           chr->getId(),
-                                           chr->m_externalMind->connectionId()));
-            }
+        int taken = chr->unlinkExternalMind(this);
+        if (taken == 0) {
+            logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
+                                                getId(), chr->getId(),
+                                                chr->getType()->name(),
+                                                event));
+        } else if (taken == -2) {
+            // FIXME This may not be an error if we allow IG entities
+            // to belong to multiple accounts
+            log(ERROR, String::compose("Connection(%1) requested to "
+                                       "remove active character %2(%3) "
+                                       "which is subscribed to another "
+                                       "Connection(%4).", getId(),
+                                       chr->getType()->name(),
+                                       chr->getId(),
+                                       chr->m_externalMind->connectionId()));
         }
     }
     return;
