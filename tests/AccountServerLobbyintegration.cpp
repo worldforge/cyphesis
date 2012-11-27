@@ -214,10 +214,6 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 #include <cstdlib>
 
-void Connection::connectAvatar(Character * chr)
-{
-}
-
 void Connection::addEntity(Entity * ent)
 {
 }

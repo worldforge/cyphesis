@@ -1542,10 +1542,6 @@ void Connection::GetOperation(const Operation &, OpVector &)
 {
 }
 
-void Connection::connectAvatar(Character * chr)
-{
-}
-
 void Connection::addEntity(Entity * ent)
 {
 }

@@ -191,11 +191,6 @@ void Connection::objectDeleted(long id)
     removeObject(id);
 }
 
-void Connection::connectAvatar(Character * chr)
-{
-    chr->linkExternalMind(this);
-}
-
 int Connection::verifyCredentials(const Account & account,
                                   const Root & creds) const
 {
