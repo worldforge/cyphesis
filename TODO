@@ -1,3 +1,6 @@
+disconnectObject does not remove a non-Account ConnectableRouter from
+the connection. Neither does it remove Characters.
+
 Add checks to ensure unlinkExternalMind has the desired effect on movement.
 
 Make [un]linkExternalMind return success, to indicate if an event should be
