@@ -28,7 +28,8 @@ Appropriate clothing buff.
 In FooOperation(), avoid calling FooOperation() in a parent class, as it
 re-does the checking.
 
-Ducplicated code in ServerAccount::addNewEntity
+Ducplicated code in ServerAccount::addNewEntity; very similar to
+Account::addNewCharacter.
 
 Reverse the flow of the possess key on the server. Have it created on the
 destination based on a secret, and passed back to the source server, and from
