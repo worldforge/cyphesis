@@ -52,6 +52,7 @@ int main()
 // Stub functions
 
 #include "common/log.h"
+#include "common/Shaker.h"
 
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset,
@@ -73,6 +74,14 @@ void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
 }
 
 void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void ServerRouting::externalOperation(const Operation & op)
+{
+}
+
+void ServerRouting::operation(const Operation &, OpVector &)
 {
 }
 
@@ -199,9 +208,6 @@ int avahi_client_errno(AvahiClient *)
 {
     return 0;
 }
-#endif // HAVE_AVAHI
-
-#include <common/Shaker.h>
 
 Shaker::Shaker()
 {
@@ -211,3 +217,4 @@ std::string Shaker::generateSalt(size_t length)
 {
    return "";
 }
+#endif // HAVE_AVAHI

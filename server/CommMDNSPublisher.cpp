@@ -411,4 +411,9 @@ void CommMDNSPublisher::disconnect()
 {
 }
 
+int CommMDNSPublisher::flush()
+{
+    return 0;
+}
+
 #endif // defined(HAVE_AVAHI)
