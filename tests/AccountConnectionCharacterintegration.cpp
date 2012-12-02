@@ -153,12 +153,12 @@ void AccountConnectionCharacterintegration::test_subscribe()
 
     m_connection->externalOperation(op);
 
+    ASSERT_NOT_NULL(m_character->m_externalMind)
+    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
     ASSERT_TRUE(m_Link_send_sent.isValid());
     ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
                  Atlas::Objects::Operation::INFO_NO);
     ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
 }
 
 void AccountConnectionCharacterintegration::test_connect_existing()
