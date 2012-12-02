@@ -139,16 +139,16 @@ void ConnectionCharacterintegration::test_connect_up()
 
     m_connection->externalOperation(op);
 
-    ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
-                 Atlas::Objects::Operation::INFO_NO);
-    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
           dynamic_cast<ExternalMind*>(m_character->m_externalMind);
     ASSERT_NOT_NULL(em);
     ASSERT_TRUE(em->isLinked());
     ASSERT_TRUE(em->isLinkedTo(m_connection));
+    ASSERT_TRUE(m_Link_send_sent.isValid());
+    ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
+                 Atlas::Objects::Operation::INFO_NO);
+    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
 }
 
 void ConnectionCharacterintegration::test_connected()
@@ -209,14 +209,14 @@ void ConnectionCharacterintegration::test_unlinked()
 
     m_connection->externalOperation(op);
 
-    ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ASSERT_EQUAL(m_character->m_externalMind, saved_em);
     em = dynamic_cast<ExternalMind*>(m_character->m_externalMind);
     ASSERT_NOT_NULL(em);
     ASSERT_TRUE(em->isLinked());
     ASSERT_TRUE(em->isLinkedTo(m_connection));
+    ASSERT_TRUE(m_Link_send_sent.isValid());
+    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
