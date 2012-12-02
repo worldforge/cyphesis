@@ -101,6 +101,22 @@ void Router::clientError(const Operation & op,
     res.push_back(e);
 }
 
+/// \brief Process an operation from an external source
+///
+/// The ownership of the operation passed in at this point is handed
+/// over to the router. The calling code must not modify the operation
+/// after passing it to externalOperation, or expect the attributes
+/// of the operaration to remain the same.
+/// @param op The operation to be processed.
+void Router::externalOperation(const Operation & op)
+{
+}
+
+/// \brief Dispatch an operation that is to this object
+void Router::operation(const Operation & op, OpVector & res)
+{
+}
+
 /// \brief Copy the attribute values of this object to an Atlas Message
 void Router::addToMessage(Atlas::Message::MapType & omap) const
 {
