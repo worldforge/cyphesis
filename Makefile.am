@@ -12,6 +12,7 @@ socketdir = $(localstatedir)/tmp
 socket_DATA =
 
 install-data-hook:
+	mkdir -p $(DESTDIR)$(socketdir)
 	chmod 1777 $(DESTDIR)$(socketdir)
 	@echo 
 	@echo "Cyphesis is not yet ready to run."
