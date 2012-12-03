@@ -53,6 +53,8 @@ class ConnectionCharacterintegration : public Cyphesis::TestBase
     long m_id_counter;
     static LogEvent m_logEvent_logged;
     static Operation m_Link_send_sent;
+    static Operation m_BaseWorld_message_called;
+    static Entity * m_BaseWorld_message_called_from;
 
     ServerRouting * m_server;
     Connection * m_connection;
@@ -68,13 +70,17 @@ class ConnectionCharacterintegration : public Cyphesis::TestBase
     void test_connect_up();
     void test_connected();
     void test_unlinked();
+    void test_external_op();
 
     static void logEvent_logged(LogEvent le);
     static void Link_send_sent(const Operation & op);
+    static void BaseWorld_message_called(const Operation & op, Entity &);
 };
 
 LogEvent ConnectionCharacterintegration::m_logEvent_logged = NONE;
 Operation ConnectionCharacterintegration::m_Link_send_sent(0);
+Operation ConnectionCharacterintegration::m_BaseWorld_message_called(0);
+Entity * ConnectionCharacterintegration::m_BaseWorld_message_called_from(0);
 
 void ConnectionCharacterintegration::logEvent_logged(LogEvent le)
 {
@@ -86,6 +92,14 @@ void ConnectionCharacterintegration::Link_send_sent(const Operation & op)
     m_Link_send_sent = op;
 }
 
+void ConnectionCharacterintegration::BaseWorld_message_called(
+      const Operation & op,
+      Entity & ent)
+{
+    m_BaseWorld_message_called = op;
+    m_BaseWorld_message_called_from = &ent;
+}
+
 ConnectionCharacterintegration::ConnectionCharacterintegration() :
     m_id_counter(0L),
     m_connection(0),
@@ -95,6 +109,7 @@ ConnectionCharacterintegration::ConnectionCharacterintegration() :
     ADD_TEST(ConnectionCharacterintegration::test_connect_up);
     ADD_TEST(ConnectionCharacterintegration::test_connected);
     ADD_TEST(ConnectionCharacterintegration::test_unlinked);
+    ADD_TEST(ConnectionCharacterintegration::test_external_op);
 }
 
 void ConnectionCharacterintegration::setup()
@@ -117,6 +132,9 @@ void ConnectionCharacterintegration::setup()
     m_character->setType(m_characterType);
 
     m_connection->addObject(m_character);
+
+    m_BaseWorld_message_called = 0;
+    m_BaseWorld_message_called_from = 0;
 }
 
 void ConnectionCharacterintegration::teardown()
@@ -219,8 +237,32 @@ void ConnectionCharacterintegration::test_unlinked()
     ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
 }
 
+void ConnectionCharacterintegration::test_external_op()
+{
+    // Dispatching a Talk external op from the character should result in
+    // it being passed on to the world.
+
+    m_character->linkExternalMind(m_connection);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_character->getId());
+
+    m_connection->externalOperation(op);
+
+    // BaseWorld::message should have been called from Enitty::sendWorld
+    // with the Talk operation, modified to have TO set to the character.
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_character->getId());
+    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_character);
+}
+
 void TestWorld::message(const Operation & op, Entity & ent)
 {
+    ConnectionCharacterintegration::BaseWorld_message_called(op, ent);
 }
 
 Entity * TestWorld::addNewEntity(const std::string &,

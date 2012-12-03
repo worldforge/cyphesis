@@ -105,7 +105,7 @@ void Router::clientError(const Operation & op,
 ///
 /// The ownership of the operation passed in at this point is handed
 /// over to the router. The calling code must not modify the operation
-/// after passing it to externalOperation, or expect the attributes
+/// after passing it to here, or expect the attributes
 /// of the operaration to remain the same.
 /// @param op The operation to be processed.
 void Router::externalOperation(const Operation & op)

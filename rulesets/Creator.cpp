@@ -95,7 +95,7 @@ void Creator::externalOperation(const Operation & op)
     if (op->isDefaultTo()) {
         debug( std::cout << "Creator handling op normally" << std::endl
                          << std::flush;);
-        Creator_parent::externalOperation(op);
+        filterExternalOperation(op);
     } else if (op->getTo() == getId() && op->isDefaultFutureSeconds()) {
         debug( std::cout << "Creator handling op " << std::endl << std::flush;);
         OpVector lres;

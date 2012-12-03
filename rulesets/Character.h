@@ -58,6 +58,7 @@ class Character : public Character_parent {
     /// \brief Weight gained from excess energy by metabolism per tick
     static const double weightGain;
 
+    void filterExternalOperation(const Operation &);
     void metabolise(OpVector &, double ammount = 1); 
     void wieldDropped();
     LocatedEntity * findInContains(LocatedEntity * ent, const std::string & id);
@@ -129,6 +130,8 @@ class Character : public Character_parent {
     void sendMind(const Operation & op, OpVector &);
     void mind2body(const Operation & op, OpVector &);
     bool world2mind(const Operation & op);
+
+    friend class Charactertest;
 };
 
 #endif // RULESETS_CHARACTER_H
