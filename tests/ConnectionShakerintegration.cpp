@@ -82,7 +82,7 @@ void ConnectionShakerintegration::testShaker()
                                                "testuser",
                                                "testpassword");
 
-    ASSERT_TRUE(salt_length==16);
+    ASSERT_EQUAL(salt_length,16);
 }
 
 void ConnectionShakerintegration::setup()
