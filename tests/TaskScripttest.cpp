@@ -329,7 +329,7 @@ void Character::sendMind(const Operation & op, OpVector & res)
 }
 
 Thing::Thing(const std::string & id, long intId) :
-       Thing_parent(id, intId)
+       Entity(id, intId)
 {
 }
 

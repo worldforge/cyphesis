@@ -22,8 +22,6 @@
 
 #include "Entity.h"
 
-typedef Entity Thing_parent;
-
 /// \brief This is the base class from which all physical or tangiable in-game
 /// entities inherit.
 ///
@@ -31,7 +29,7 @@ typedef Entity Thing_parent;
 /// any special behavior can be described by a script. It provides
 /// functionality for movement, entity creation and destruction, attribute
 /// changing, and combustion.
-class Thing : public Thing_parent {
+class Thing : public Entity {
   protected:
     void checkVisibility(const Point3D &, OpVector &);
     void updateProperties(const Operation & op, OpVector & res);

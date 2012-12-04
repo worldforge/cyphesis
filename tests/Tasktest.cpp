@@ -236,7 +236,7 @@ void Character::mindOtherOperation(const Operation &, OpVector &)
 }
 
 Thing::Thing(const std::string & id, long intId) :
-       Thing_parent(id, intId)
+       Entity(id, intId)
 {
 }
 

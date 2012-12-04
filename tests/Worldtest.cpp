@@ -99,7 +99,7 @@ int UPDATE_NO = -1;
 } } }
 
 Thing::Thing(const std::string & id, long intId) :
-       Thing_parent(id, intId)
+       Entity(id, intId)
 {
 }
 
