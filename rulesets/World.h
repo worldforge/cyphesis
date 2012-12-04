@@ -22,14 +22,12 @@
 
 #include "Thing.h"
 
-typedef Thing World_parent;
-
 /// \brief This is the in-game entity class used to represent the world.
 ///
 /// I added this because I was not happy with the way the old object model
 /// used an out of game object of type WorldRouter to represent the world.
 /// \ingroup EntityClasses
-class World : public World_parent {
+class World : public Thing {
   public:
     explicit World(const std::string & id, long intId);
     virtual ~World();

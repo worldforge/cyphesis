@@ -188,7 +188,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = -1;
 }}}
 
-World::World(const std::string & id, long intId) : World_parent(id, intId)
+World::World(const std::string & id, long intId) : Thing(id, intId)
 {
 }
 
