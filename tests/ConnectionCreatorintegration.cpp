@@ -55,6 +55,7 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     static Operation m_Link_send_sent;
     static Operation m_BaseWorld_message_called;
     static Entity * m_BaseWorld_message_called_from;
+    static Operation m_Entity_callOperation_called;
 
     ServerRouting * m_server;
     Connection * m_connection;
@@ -74,12 +75,14 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     static void logEvent_logged(LogEvent le);
     static void Link_send_sent(const Operation & op);
     static void BaseWorld_message_called(const Operation & op, Entity &);
+    static void Entity_callOperation_called(const Operation & op);
 };
 
 LogEvent ConnectionCreatorintegration::m_logEvent_logged = NONE;
 Operation ConnectionCreatorintegration::m_Link_send_sent(0);
 Operation ConnectionCreatorintegration::m_BaseWorld_message_called(0);
 Entity * ConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
+Operation ConnectionCreatorintegration::m_Entity_callOperation_called(0);
 
 void ConnectionCreatorintegration::logEvent_logged(LogEvent le)
 {
@@ -97,6 +100,12 @@ void ConnectionCreatorintegration::BaseWorld_message_called(
 {
     m_BaseWorld_message_called = op;
     m_BaseWorld_message_called_from = &ent;
+}
+
+void ConnectionCreatorintegration::Entity_callOperation_called(
+      const Operation & op)
+{
+    m_Entity_callOperation_called = op;
 }
 
 ConnectionCreatorintegration::ConnectionCreatorintegration() :
@@ -183,7 +192,13 @@ void ConnectionCreatorintegration::test_external_op_override()
 
     m_connection->externalOperation(op);
 
-    // FIXME Add post conditions
+    // The operation should have been passed to Entity::callOperation for
+    // dispatch, completely unfiltered.
+    ASSERT_TRUE(m_Entity_callOperation_called.isValid());
+    ASSERT_EQUAL(m_Entity_callOperation_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_Entity_callOperation_called->isDefaultTo());
+    ASSERT_EQUAL(m_Entity_callOperation_called->getTo(), m_creator->getId());
 }
 
 void ConnectionCreatorintegration::test_external_op_puppet()
@@ -195,13 +210,25 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     m_creator->m_externalMind = new ExternalMind(*m_creator);
     m_creator->m_externalMind->linkUp(m_connection);
 
+    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    other->setType(m_creatorType);
+    m_server->m_world.addEntity(other);
+
     Atlas::Objects::Operation::Talk op;
     op->setFrom(m_creator->getId());
-    op->setTo(compose("%1", m_id_counter++));
+    op->setTo(other->getId());
 
     m_connection->externalOperation(op);
 
-    // FIXME Add post conditions
+    // Operation should be via world dispatch, as if it was from the Entity
+    // we are puppeting.
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), other->getId());
+    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, other);
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
@@ -242,6 +269,7 @@ int main()
 #include "rulesets/TasksProperty.h"
 
 #include "common/CommSocket.h"
+#include "common/id.h"
 #include "common/Inheritance.h"
 #include "common/Property_impl.h"
 #include "common/PropertyManager.h"
@@ -699,6 +727,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 
 void Entity::callOperation(const Operation & op, OpVector & res)
 {
+    ConnectionCreatorintegration::Entity_callOperation_called(op);
 }
 
 void Entity::externalOperation(const Operation & op)
@@ -1146,12 +1175,26 @@ BaseWorld::~BaseWorld()
 
 Entity * BaseWorld::getEntity(const std::string & id) const
 {
-    return 0;
+    long intId = integerId(id);
+
+    EntityDict::const_iterator I = m_eobjects.find(intId);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
 }
 
 Entity * BaseWorld::getEntity(long id) const
 {
-    return 0;
+    EntityDict::const_iterator I = m_eobjects.find(id);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
 }
 
 Inheritance * Inheritance::m_instance = NULL;
