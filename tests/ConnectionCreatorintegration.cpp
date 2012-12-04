@@ -71,6 +71,7 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     void test_external_op();
     void test_external_op_override();
     void test_external_op_puppet();
+    void test_external_op_puppet_nonexistant();
 
     static void logEvent_logged(LogEvent le);
     static void Link_send_sent(const Operation & op);
@@ -117,11 +118,15 @@ ConnectionCreatorintegration::ConnectionCreatorintegration() :
     ADD_TEST(ConnectionCreatorintegration::test_external_op);
     ADD_TEST(ConnectionCreatorintegration::test_external_op_override);
     ADD_TEST(ConnectionCreatorintegration::test_external_op_puppet);
+    ADD_TEST(ConnectionCreatorintegration::test_external_op_puppet_nonexistant);
 }
 
 void ConnectionCreatorintegration::setup()
 {
     m_Link_send_sent = 0;
+    m_BaseWorld_message_called = 0;
+    m_BaseWorld_message_called_from = 0;
+    m_Entity_callOperation_called = 0;
 
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
@@ -229,6 +234,34 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), other->getId());
     ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
     ASSERT_EQUAL(m_BaseWorld_message_called_from, other);
+}
+
+void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
+{
+    // Dispatching a Talk external op from the creator, to the creator should
+    // result in it being passed directly to the normal op dispatch,
+    // shortcutting the world.
+
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
+
+    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    other->setType(m_creatorType);
+    m_server->m_world.addEntity(other);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
+    op->setTo(compose("%1", m_id_counter++));
+
+    m_connection->externalOperation(op);
+
+    // Operation should be via world dispatch, as if it was from the Entity
+    // we are puppeting.
+    ASSERT_TRUE(m_Link_send_sent.isValid());
+    ASSERT_EQUAL(m_Link_send_sent->getParents().front(),
+                 "unseen");
+    ASSERT_TRUE(!m_Link_send_sent->isDefaultTo());
+    ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
