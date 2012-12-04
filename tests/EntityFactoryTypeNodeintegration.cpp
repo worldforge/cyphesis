@@ -114,7 +114,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
 }
 
 Plant::Plant(const std::string & id, long intId) :
-       Plant_parent(id, intId), m_nourishment(0)
+       Thing(id, intId), m_nourishment(0)
 {
 }
 

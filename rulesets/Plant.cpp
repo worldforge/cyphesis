@@ -55,7 +55,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Plant::Plant(const std::string & id, long intId) :
-       Plant_parent(id, intId), m_nourishment(0)
+       Thing(id, intId), m_nourishment(0)
 {
 }
 

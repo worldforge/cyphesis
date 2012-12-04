@@ -25,8 +25,6 @@
 template <typename T>
 class Property;
 
-typedef Thing Plant_parent;
-
 /// \brief This is the base class for flowering plants.
 ///
 /// Most of the functionality will be common to all plants, and most
@@ -36,7 +34,7 @@ typedef Thing Plant_parent;
 /// plants to grow, assuming we need plants to grow now that we are
 /// using Mercator for forests.
 /// \ingroup EntityClasses
-class Plant : public Plant_parent {
+class Plant : public Thing {
   protected:
     double m_nourishment;
 
