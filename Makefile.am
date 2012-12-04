@@ -11,6 +11,7 @@ rulesetdir = $(datadir)/cyphesis/rulesets
 socketdir = $(localstatedir)/tmp
 socket_DATA =
 
+# FIXME Remove the mkdir hack if it gets fixed in a future automake
 install-data-hook:
 	mkdir -p $(DESTDIR)$(socketdir)
 	chmod 1777 $(DESTDIR)$(socketdir)
