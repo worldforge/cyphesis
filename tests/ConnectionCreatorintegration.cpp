@@ -68,6 +68,8 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     void teardown();
 
     void test_external_op();
+    void test_external_op_override();
+    void test_external_op_puppet();
 
     static void logEvent_logged(LogEvent le);
     static void Link_send_sent(const Operation & op);
@@ -104,6 +106,8 @@ ConnectionCreatorintegration::ConnectionCreatorintegration() :
     m_creatorType(0)
 {
     ADD_TEST(ConnectionCreatorintegration::test_external_op);
+    ADD_TEST(ConnectionCreatorintegration::test_external_op_override);
+    ADD_TEST(ConnectionCreatorintegration::test_external_op_puppet);
 }
 
 void ConnectionCreatorintegration::setup()
@@ -145,7 +149,8 @@ void ConnectionCreatorintegration::test_external_op()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    m_creator->linkExternalMind(m_connection);
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(m_creator->getId());
@@ -161,6 +166,42 @@ void ConnectionCreatorintegration::test_external_op()
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_creator->getId());
     ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
     ASSERT_EQUAL(m_BaseWorld_message_called_from, m_creator);
+}
+
+void ConnectionCreatorintegration::test_external_op_override()
+{
+    // Dispatching a Talk external op from the creator should result in
+    // it being passed on to the world, exactly as if this was a Character
+    // except that we assume that Creator was set up linked.
+
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
+    op->setTo(m_creator->getId());
+
+    m_connection->externalOperation(op);
+
+    // FIXME Add post conditions
+}
+
+void ConnectionCreatorintegration::test_external_op_puppet()
+{
+    // Dispatching a Talk external op from the creator, to the creator should
+    // result in it being passed directly to the normal op dispatch,
+    // shortcutting the world.
+
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
+    op->setTo(compose("%1", m_id_counter++));
+
+    m_connection->externalOperation(op);
+
+    // FIXME Add post conditions
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
