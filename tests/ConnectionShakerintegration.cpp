@@ -78,11 +78,11 @@ ConnectionShakerintegration::ConnectionShakerintegration() : m_id_counter(0L),
 void ConnectionShakerintegration::testShaker()
 {
     ASSERT_NOT_NULL(m_connection);
-    Account * ac = m_connection->addNewAccount("player",
-                                               "testuser",
-                                               "testpassword");
+    m_connection->addNewAccount("player",
+                                "testuser",
+                                "testpassword");
 
-    ASSERT_EQUAL(salt_length,16);
+    ASSERT_EQUAL(salt_length, 16);
 }
 
 void ConnectionShakerintegration::setup()
