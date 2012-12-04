@@ -24,6 +24,7 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
 #include "TestWorld.h"
 #include "null_stream.h"
 
@@ -92,7 +93,7 @@ class TestCommClient : public CommClient<null_stream> {
     TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
 };
 
-class TestContext {
+class AccountConnectionintegration : public Cyphesis::TestBase {
   protected:
     Entity * m_tlve;
     BaseWorld * m_world;
@@ -100,48 +101,54 @@ class TestContext {
     CommServer * m_cs;
     Connection * m_connection;
   public:
-    TestContext()
-    {
-        m_tlve = new Entity("0", 0);
-        m_world = new SpawningTestWorld(*m_tlve);
-        m_server = new ServerRouting(*m_world,
-                                     "testrules",
-                                     "testname",
-                                     "1", 1, "2", 2);
-        m_cs = new CommServer;
-        m_connection = new Connection(*new TestCommClient(*m_cs),
-                                      *m_server,
-                                      "test_addr",
-                                      "3", 3);
+    AccountConnectionintegration();
 
-    }
+    void setup();
+    void teardown();
 
-    ~TestContext()
-    {
-        delete m_connection;
-        delete m_cs;
-        delete m_server;
-        delete m_world;
-    }
+    void test_account_creation();
 
     Connection * connection() const { return m_connection; }
     ServerRouting * server() const { return m_server; }
 };
 
+AccountConnectionintegration::AccountConnectionintegration()
+{
+    ADD_TEST(AccountConnectionintegration::test_account_creation);
+}
+
+void AccountConnectionintegration::setup()
+{
+    m_tlve = new Entity("0", 0);
+    m_world = new SpawningTestWorld(*m_tlve);
+    m_server = new ServerRouting(*m_world,
+                                 "testrules",
+                                 "testname",
+                                 "1", 1, "2", 2);
+    m_cs = new CommServer;
+    m_connection = new Connection(*new TestCommClient(*m_cs),
+                                  *m_server,
+                                  "test_addr",
+                                  "3", 3);
+}
+
+void AccountConnectionintegration::teardown()
+{
+    delete m_connection;
+    delete m_cs;
+    delete m_server;
+    delete m_world;
+}
+
 static OpVector test_sent_ops;
 
-int main()
+void AccountConnectionintegration::test_account_creation()
 {
-    {
-        TestContext scope;
-    }
-
     // Basic player account creation
     {
-        TestContext scope;
 
-        assert(scope.connection() != 0);
-        assert(scope.connection()->objects().empty());
+        ASSERT_NOT_NULL(m_connection);
+        ASSERT_TRUE(m_connection->objects().empty());
 
         Create op;
         Anonymous create_arg;
@@ -150,44 +157,44 @@ int main()
         create_arg->setAttr("password", "6a6e71bab281");
         op->setArgs1(create_arg);
 
-        assert(test_sent_ops.empty());
+        ASSERT_TRUE(test_sent_ops.empty());
 
         // Send the operation to create the account
-        scope.connection()->externalOperation(op, *scope.connection());
+        m_connection->externalOperation(op, *m_connection);
 
         // There should be a response op
-        assert(!test_sent_ops.empty());
-        assert(test_sent_ops.size() == 1);
+        ASSERT_TRUE(!test_sent_ops.empty());
+        ASSERT_EQUAL(test_sent_ops.size(), 1u);
         // and the account creation should have created an object bound
         // to this connection.
-        assert(!scope.connection()->objects().empty());
+        ASSERT_TRUE(!m_connection->objects().empty());
 
         // Check the response is an info indicating successful account
         // creation.
         const Operation & reply = test_sent_ops.front();
-        assert(reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
+        ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::INFO_NO);
         // The Info response should have an argument describing the created
         // account
         const std::vector<Root> & reply_args = reply->getArgs();
-        assert(!reply_args.empty());
+        ASSERT_TRUE(!reply_args.empty());
         RootEntity account = smart_dynamic_cast<RootEntity>(reply_args.front());
-        assert(account.isValid());
+        ASSERT_TRUE(account.isValid());
 
         // The account ID should be provided
-        assert(!account->isDefaultId());
+        ASSERT_TRUE(!account->isDefaultId());
         const std::string account_id = account->getId();
-        assert(!account_id.empty());
+        ASSERT_TRUE(!account_id.empty());
 
         // Check the account has been registered in the server object
-        Router * account_router_ptr = scope.server()->getObject(account_id);
-        assert(account_router_ptr != 0);
+        Router * account_router_ptr = m_server->getObject(account_id);
+        ASSERT_NOT_NULL(account_router_ptr);
 
         // Check the account has been logged into the lobby
-        const AccountDict & lobby_dict = scope.server()->m_lobby.getAccounts();
+        const AccountDict & lobby_dict = m_server->m_lobby.getAccounts();
         AccountDict::const_iterator I = lobby_dict.find(account_id);
-        assert(I != lobby_dict.end());
+        ASSERT_TRUE(I != lobby_dict.end());
         Account * account_ptr = I->second;
-        assert(account_router_ptr == account_ptr);
+        ASSERT_EQUAL(account_router_ptr, account_ptr);
 
         // Basic login as now been established by account creation
 
@@ -199,12 +206,13 @@ int main()
         // Multiple logins are ok, but there is no reason to allow multiple
         // account creations.
         test_sent_ops.clear();
-        scope.connection()->externalOperation(op, *scope.connection());
-        assert(!test_sent_ops.empty());
-        assert(test_sent_ops.size() == 1);
+        m_connection->externalOperation(op, *m_connection);
+        ASSERT_TRUE(!test_sent_ops.empty());
+        ASSERT_EQUAL(test_sent_ops.size(), 1u);
 
         const Operation & error_reply = test_sent_ops.front();
-        assert(error_reply->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
+        ASSERT_EQUAL(error_reply->getClassNo(),
+                     Atlas::Objects::Operation::ERROR_NO);
 
         Player::playableTypes.insert(test_valid_character_type);
 
@@ -217,21 +225,29 @@ int main()
         character_op->setFrom(account_id);
 
         test_sent_ops.clear();
-        scope.connection()->externalOperation(character_op, *scope.connection());
+        m_connection->externalOperation(character_op, *m_connection);
         // FIXME the above went through Account::externalOperation, so there
         // is no reply in res. The reply has gone directly to the Link::send
         // method. Add a way of checking, once there are better stubs.
-        assert(!test_sent_ops.empty());
-        assert(test_sent_ops.size() == 2);
+        ASSERT_TRUE(!test_sent_ops.empty());
+        ASSERT_EQUAL(test_sent_ops.size(), 2u);
 
         const Operation & create_reply = test_sent_ops.front();
-        assert(create_reply->getClassNo() == Atlas::Objects::Operation::INFO_NO);
+        ASSERT_EQUAL(create_reply->getClassNo(),
+                     Atlas::Objects::Operation::INFO_NO);
 
 
         // TODO Character creation etc?
         // TODO Lobby interaction?
         // TODO Logout ?
     }
+}
+
+int main()
+{
+    AccountConnectionintegration t;
+
+    return t.run();
 }
 
 // stubs
