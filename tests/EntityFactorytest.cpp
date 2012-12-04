@@ -87,7 +87,7 @@ int main()
 // stubs
 
 Stackable::Stackable(const std::string & id, long intId) :
-           Stackable_parent(id, intId), m_num(1)
+           Thing(id, intId), m_num(1)
 {
     // m_properties["num"] = new Property<int>(m_num, 0);
 }

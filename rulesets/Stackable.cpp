@@ -44,7 +44,7 @@ using Atlas::Objects::Entity::Anonymous;
 /// @param id identifier of this Entity
 /// @param intId identifier of this Entity
 Stackable::Stackable(const std::string & id, long intId) :
-           Stackable_parent(id, intId),
+           Thing(id, intId),
                                              m_num(1)
 {
     // m_properties["num"] = new Property<int>(m_num, 0);

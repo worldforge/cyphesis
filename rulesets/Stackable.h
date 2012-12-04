@@ -22,8 +22,6 @@
 
 #include "Thing.h"
 
-typedef Thing Stackable_parent;
-
 /// \brief This is the base class for items which are stackable objects, which
 /// are mostly used in multiple quantities, if there is usually no difference.
 /// between individual items.
@@ -33,7 +31,7 @@ typedef Thing Stackable_parent;
 /// and Divide semantics are not yet sorted. It may well be obsoleted if
 /// piles are implemented as was suggested in some early Mason docs.
 /// \ingroup EntityClasses
-class Stackable : public Stackable_parent {
+class Stackable : public Thing {
   protected:
     /// \brief Number of items in the stack
     int m_num;
