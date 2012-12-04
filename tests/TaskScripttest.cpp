@@ -188,7 +188,7 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 Character::Character(const std::string & id, long intId) :
-           Character_parent(id, intId),
+           Thing(id, intId),
                m_movement(*(Movement*)0),
                m_task(0), m_mind(0), m_externalMind(0)
 {

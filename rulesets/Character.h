@@ -28,8 +28,6 @@ class Link;
 class Movement;
 class Task;
 
-typedef Thing Character_parent;
-
 /// \brief This is the class for anything controlled by an AI mind, or
 /// external controller like a player client.
 ///
@@ -42,7 +40,7 @@ typedef Thing Character_parent;
 /// operation verification for checking if an in-game operation should be
 /// passed to the mind.
 /// \ingroup EntityClasses
-class Character : public Character_parent {
+class Character : public Thing {
   protected:
     /// \brief Handler for simulating movement under direction from the mind
     Movement & m_movement;
