@@ -42,7 +42,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Creator::Creator(const std::string & id, long intId) :
-         Creator_parent(id, intId)
+         Character(id, intId)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     setFlags(entity_ephem);

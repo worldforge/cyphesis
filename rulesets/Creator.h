@@ -22,12 +22,10 @@
 
 #include "Character.h"
 
-typedef Character Creator_parent;
-
 /// \brief This is a class for an in-game entity used by administrators
 /// and world builders to manipulate the world
 /// \ingroup EntityClasses
-class Creator : public Creator_parent {
+class Creator : public Character {
   public:
     explicit Creator(const std::string & id, long intId);
     virtual ~Creator();

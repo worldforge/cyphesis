@@ -135,7 +135,7 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
 }
 
 Creator::Creator(const std::string & id, long intId) :
-         Creator_parent(id, intId)
+         Character(id, intId)
 {
 }
 

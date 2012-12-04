@@ -499,7 +499,7 @@ void logEvent(LogEvent lev, const std::string & msg)
 }
 
 Creator::Creator(const std::string & id, long intId) :
-         Creator_parent(id, intId)
+         Character(id, intId)
 {
 }
 
