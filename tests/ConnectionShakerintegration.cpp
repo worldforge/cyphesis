@@ -51,6 +51,8 @@ using String::compose;
 
 bool database_flag = false;
 
+int salt_length = -1;
+
 class ConnectionShakerintegration : public Cyphesis::TestBase
 {
   private:
@@ -80,8 +82,7 @@ void ConnectionShakerintegration::testShaker()
                                                "testuser",
                                                "testpassword");
 
-    // FIXME Check that a salt of the correct size has been passed to
-    // hash_password.
+    ASSERT_EQUAL(salt_length,16);
 }
 
 void ConnectionShakerintegration::setup()
@@ -920,6 +921,7 @@ void log(LogLevel lvl, const std::string & msg)
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash )
 {
+    salt_length=salt.length();
 }
 void logEvent(LogEvent lev, const std::string & msg)
 {
