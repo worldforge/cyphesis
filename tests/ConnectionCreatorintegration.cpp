@@ -169,7 +169,7 @@ void ConnectionCreatorintegration::test_external_op()
     Atlas::Objects::Operation::Talk op;
     op->setFrom(m_creator->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     // BaseWorld::message should have been called from Enitty::sendWorld
     // with the Talk operation, modified to have TO set to the character.
@@ -195,7 +195,7 @@ void ConnectionCreatorintegration::test_external_op_override()
     op->setFrom(m_creator->getId());
     op->setTo(m_creator->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     // The operation should have been passed to Entity::callOperation for
     // dispatch, completely unfiltered.
@@ -223,7 +223,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     op->setFrom(m_creator->getId());
     op->setTo(other->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.
@@ -253,7 +253,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     op->setFrom(m_creator->getId());
     op->setTo(compose("%1", m_id_counter++));
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.
@@ -465,7 +465,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::externalOperation(const Operation &)
+void Account::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -541,7 +541,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-void ServerRouting::externalOperation(const Operation &)
+void ServerRouting::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -584,7 +584,7 @@ void Lobby::addAccount(Account * ac)
 {
 }
 
-void Lobby::externalOperation(const Operation &)
+void Lobby::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -763,7 +763,7 @@ void Entity::callOperation(const Operation & op, OpVector & res)
     ConnectionCreatorintegration::Entity_callOperation_called(op);
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

@@ -90,7 +90,7 @@ Lobby::~Lobby()
 {
 }
 
-void Lobby::externalOperation(const Operation & op)
+void Lobby::externalOperation(const Operation & op, Link &)
 {
 }
 

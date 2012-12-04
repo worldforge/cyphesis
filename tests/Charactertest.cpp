@@ -66,7 +66,7 @@ class TestLink : public Link
     {
     }
 
-    void externalOperation(const Operation & op)
+    void externalOperation(const Operation & op, Link &)
     {
     }
 
@@ -374,7 +374,7 @@ ExternalMind::~ExternalMind()
 {
 }
 
-void ExternalMind::externalOperation(const Operation & op)
+void ExternalMind::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -573,7 +573,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

@@ -153,7 +153,7 @@ int main()
         assert(test_sent_ops.empty());
 
         // Send the operation to create the account
-        scope.connection()->externalOperation(op);
+        scope.connection()->externalOperation(op, *scope.connection());
 
         // There should be a response op
         assert(!test_sent_ops.empty());
@@ -199,7 +199,7 @@ int main()
         // Multiple logins are ok, but there is no reason to allow multiple
         // account creations.
         test_sent_ops.clear();
-        scope.connection()->externalOperation(op);
+        scope.connection()->externalOperation(op, *scope.connection());
         assert(!test_sent_ops.empty());
         assert(test_sent_ops.size() == 1);
 
@@ -217,7 +217,7 @@ int main()
         character_op->setFrom(account_id);
 
         test_sent_ops.clear();
-        scope.connection()->externalOperation(character_op);
+        scope.connection()->externalOperation(character_op, *scope.connection());
         // FIXME the above went through Account::externalOperation, so there
         // is no reply in res. The reply has gone directly to the Link::send
         // method. Add a way of checking, once there are better stubs.
@@ -317,7 +317,7 @@ ExternalMind::~ExternalMind()
 {
 }
 
-void ExternalMind::externalOperation(const Operation & op)
+void ExternalMind::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -371,7 +371,7 @@ Juncture::~Juncture()
 {
 }
 
-void Juncture::externalOperation(const Operation & op)
+void Juncture::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -495,7 +495,7 @@ void Creator::operation(const Operation & op, OpVector & res)
 {
 }
 
-void Creator::externalOperation(const Operation & op)
+void Creator::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -528,7 +528,7 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -797,7 +797,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

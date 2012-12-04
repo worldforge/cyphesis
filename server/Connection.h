@@ -81,7 +81,7 @@ class Connection : public Link, virtual public sigc::trackable {
     void removeObject(long id);
     void objectDeleted(long id);
 
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
 
     virtual void LoginOperation(const Operation &, OpVector &);

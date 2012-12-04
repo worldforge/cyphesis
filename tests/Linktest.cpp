@@ -40,7 +40,7 @@ class TestLink : public Link
     TestLink(CommSocket & socket, const std::string & id, long iid);
     virtual ~TestLink();
 
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation&, OpVector&);
 };
 
@@ -53,7 +53,7 @@ TestLink::~TestLink()
 {
 }
 
-void TestLink::externalOperation(const Operation & op)
+void TestLink::externalOperation(const Operation & op, Link &)
 {
 }
 

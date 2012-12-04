@@ -84,7 +84,7 @@ class TestObject : public Router
   public:
     explicit TestObject(const std::string & id, long intId);
 
-    virtual void externalOperation(const Operation &);
+    virtual void externalOperation(const Operation &, Link &);
     virtual void operation(const Operation &, OpVector &);
 };
 
@@ -92,7 +92,7 @@ TestObject::TestObject(const std::string & id, long intId) : Router(id, intId)
 {
 }
 
-void TestObject::externalOperation(const Operation & op)
+void TestObject::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1442,7 +1442,7 @@ void Account::addToEntity(const RootEntity & ent) const
 {
 }
 
-void Account::externalOperation(const Operation & op)
+void Account::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1518,7 +1518,7 @@ void Connection::addObject(Router * obj)
 {
 }
 
-void Connection::externalOperation(const Operation & op)
+void Connection::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1600,7 +1600,7 @@ Juncture::~Juncture()
 {
 }
 
-void Juncture::externalOperation(const Operation & op)
+void Juncture::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1664,7 +1664,7 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1718,7 +1718,7 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1991,7 +1991,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

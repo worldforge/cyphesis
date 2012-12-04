@@ -120,7 +120,7 @@ template <class StreamT>
 int CommClient<StreamT>::operation(const Atlas::Objects::Operation::RootOperation & op)
 {
     assert(m_link != 0);
-    m_link->externalOperation(op);
+    m_link->externalOperation(op, *m_link);
     return 0;
 }
 

@@ -484,7 +484,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -576,7 +576,7 @@ void Peer::setAuthState(PeerAuthState state)
     m_state = state;
 }
 
-void Peer::externalOperation(const Operation & op)
+void Peer::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -621,7 +621,7 @@ Connection::~Connection()
 {
 }
 
-void Connection::externalOperation(const Operation & op)
+void Connection::externalOperation(const Operation & op, Link &)
 {
 }
 

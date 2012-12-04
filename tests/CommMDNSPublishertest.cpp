@@ -77,7 +77,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 

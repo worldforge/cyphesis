@@ -250,7 +250,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setId(getId());
 }
 
-void Account::externalOperation(const Operation & op)
+void Account::externalOperation(const Operation & op, Link &)
 {
     assert(m_connection != 0);
     OpVector reply;

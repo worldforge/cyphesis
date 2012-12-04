@@ -108,7 +108,7 @@ void Router::clientError(const Operation & op,
 /// after passing it to here, or expect the attributes
 /// of the operaration to remain the same.
 /// @param op The operation to be processed.
-void Router::externalOperation(const Operation & op)
+void Router::externalOperation(const Operation & op, Link &)
 {
 }
 

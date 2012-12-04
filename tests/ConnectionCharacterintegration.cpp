@@ -155,7 +155,7 @@ void ConnectionCharacterintegration::test_connect_up()
 
     ASSERT_NULL(m_character->m_externalMind);
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
@@ -188,7 +188,7 @@ void ConnectionCharacterintegration::test_connected()
     RootOperation op;
     op->setFrom(m_character->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     ASSERT_TRUE(!m_Link_send_sent.isValid());
     ASSERT_NOT_EQUAL(m_logEvent_logged, TAKE_CHAR);
@@ -225,7 +225,7 @@ void ConnectionCharacterintegration::test_unlinked()
     RootOperation op;
     op->setFrom(m_character->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ASSERT_EQUAL(m_character->m_externalMind, saved_em);
@@ -247,7 +247,7 @@ void ConnectionCharacterintegration::test_external_op()
     Atlas::Objects::Operation::Talk op;
     op->setFrom(m_character->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     // BaseWorld::message should have been called from Enitty::sendWorld
     // with the Talk operation, modified to have TO set to the character.
@@ -460,7 +460,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::externalOperation(const Operation &)
+void Account::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -536,7 +536,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-void ServerRouting::externalOperation(const Operation &)
+void ServerRouting::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -579,7 +579,7 @@ void Lobby::addAccount(Account * ac)
 {
 }
 
-void Lobby::externalOperation(const Operation &)
+void Lobby::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -753,7 +753,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

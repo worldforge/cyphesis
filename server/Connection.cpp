@@ -202,7 +202,7 @@ int Connection::verifyCredentials(const Account & account,
 }
 
 
-void Connection::externalOperation(const Operation & op)
+void Connection::externalOperation(const Operation & op, Link & link)
 {
     debug(std::cout << "Connection::externalOperation"
                     << std::endl << std::flush;);
@@ -252,7 +252,7 @@ void Connection::externalOperation(const Operation & op)
                                                 chr->getType()));
         }
     }
-    obj->externalOperation(op);
+    obj->externalOperation(op, link);
 }
 
 void Connection::operation(const Operation & op, OpVector & res)

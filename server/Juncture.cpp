@@ -165,7 +165,7 @@ Juncture::~Juncture()
 {
 }
 
-void Juncture::externalOperation(const Operation & op)
+void Juncture::externalOperation(const Operation & op, Link &)
 {
     log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
     assert(m_connection != 0);

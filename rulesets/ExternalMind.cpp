@@ -75,7 +75,7 @@ ExternalMind::~ExternalMind()
 {
 }
 
-void ExternalMind::externalOperation(const Operation & op)
+void ExternalMind::externalOperation(const Operation & op, Link &)
 {
     log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
 }

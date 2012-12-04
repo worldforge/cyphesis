@@ -209,7 +209,7 @@ class Entity : public LocatedEntity {
     virtual void UseOperation(const Operation &, OpVector &);
     virtual void WieldOperation(const Operation &, OpVector &);
 
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
 
     void callOperation(const Operation &, OpVector &);

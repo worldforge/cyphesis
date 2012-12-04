@@ -135,7 +135,7 @@ int Connection::verifyCredentials(const Account & account,
     return 0;
 }
 
-void Connection::externalOperation(const Operation & op)
+void Connection::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -192,7 +192,7 @@ Peer::~Peer()
 {
 }
 
-void Peer::externalOperation(const Operation & op)
+void Peer::externalOperation(const Operation & op, Link &)
 {
 }
 

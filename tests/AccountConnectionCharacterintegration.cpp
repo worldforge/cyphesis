@@ -151,7 +151,7 @@ void AccountConnectionCharacterintegration::test_subscribe()
     RootOperation op;
     op->setFrom(m_character->getId());
 
-    m_connection->externalOperation(op);
+    m_connection->externalOperation(op, *m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
@@ -458,7 +458,7 @@ void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) 
 {
 }
 
-void ServerRouting::externalOperation(const Operation &)
+void ServerRouting::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -519,7 +519,7 @@ void Lobby::addAccount(Account * ac)
 {
 }
 
-void Lobby::externalOperation(const Operation &)
+void Lobby::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -693,7 +693,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

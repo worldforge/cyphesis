@@ -84,7 +84,7 @@ void Creator::operation(const Operation & op, OpVector & res)
     sendMind(op, res);
 }
 
-void Creator::externalOperation(const Operation & op)
+void Creator::externalOperation(const Operation & op, Link &)
 {
     // If an admin connection specifies a TO on the op, we treat
     // it specially, and make sure it goes direct, otherwise

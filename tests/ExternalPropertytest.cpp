@@ -149,7 +149,7 @@ ExternalMind::~ExternalMind()
 {
 }
 
-void ExternalMind::externalOperation(const Operation &)
+void ExternalMind::externalOperation(const Operation &, Link &)
 {
 }
 

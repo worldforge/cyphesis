@@ -48,7 +48,7 @@
 
 #include <cassert>
 
-void LocatedEntityTest::externalOperation(const Operation & op)
+void LocatedEntityTest::externalOperation(const Operation & op, Link &)
 {
 }
 

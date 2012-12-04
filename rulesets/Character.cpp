@@ -1747,7 +1747,7 @@ void Character::operation(const Operation & op, OpVector & res)
     }
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
     debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
     filterExternalOperation(op);

@@ -69,7 +69,7 @@ class Peer : public Link {
     void setAuthState(PeerAuthState state);
     PeerAuthState getAuthState();
 
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
     
     int teleportEntity(const Entity *);

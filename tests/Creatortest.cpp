@@ -115,7 +115,7 @@ void Creatortest::test_externalOperation_normal()
     RootOperation op;
     op->setFrom(m_creator->getId());
 
-    m_creator->externalOperation(op);
+    m_creator->externalOperation(op, *(Link*)0);
 
     ASSERT_TRUE(m_Character_filterExternalOperation_called.isValid());
     ASSERT_EQUAL(m_Character_filterExternalOperation_called->getClassNo(),
@@ -169,7 +169,7 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
     filterExternalOperation(op);
 }
@@ -447,7 +447,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 
