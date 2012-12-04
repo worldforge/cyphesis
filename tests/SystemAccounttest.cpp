@@ -193,7 +193,7 @@ void Account::addToEntity(const RootEntity & ent) const
 {
 }
 
-void Account::externalOperation(const Operation & op)
+void Account::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -318,7 +318,7 @@ Connection::~Connection()
 {
 }
 
-void Connection::externalOperation(const Operation & op)
+void Connection::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -391,7 +391,7 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -445,7 +445,7 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -718,7 +718,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

@@ -379,7 +379,7 @@ Connection::~Connection()
 }
 
 
-void Connection::externalOperation(const Operation &)
+void Connection::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -513,7 +513,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

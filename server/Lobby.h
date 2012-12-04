@@ -48,7 +48,7 @@ class Lobby : public Router {
         return m_accounts;
     }
 
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;

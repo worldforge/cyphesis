@@ -129,7 +129,7 @@ void Account::addCharacter(Entity * chr)
 {
 }
 
-void Account::externalOperation(const Operation & op)
+void Account::externalOperation(const Operation & op, Link &)
 {
 }
 

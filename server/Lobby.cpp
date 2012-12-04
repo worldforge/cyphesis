@@ -94,7 +94,7 @@ void Lobby::delAccount(Account * ac)
 }
 
 
-void Lobby::externalOperation(const Operation & op)
+void Lobby::externalOperation(const Operation & op, Link &)
 {
     log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
 }

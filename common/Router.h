@@ -32,6 +32,8 @@ namespace Atlas {
     }
 }
 
+class Link;
+
 /// \brief This is the base class for any entity which has an Atlas
 /// compatible indentifier.
 ///
@@ -65,7 +67,7 @@ class Router {
     void clientError(const Operation &, const std::string & errstring,
                      OpVector &, const std::string & to = "") const;
 
-    virtual void externalOperation(const Operation & op) = 0;
+    virtual void externalOperation(const Operation & op, Link &) = 0;
     virtual void operation(const Operation &, OpVector &) = 0;
 
     virtual void addToMessage(Atlas::Message::MapType &) const;

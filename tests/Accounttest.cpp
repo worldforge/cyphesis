@@ -1696,7 +1696,7 @@ Connection::~Connection()
 {
 }
 
-void Connection::externalOperation(const Operation & op)
+void Connection::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1771,7 +1771,7 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1840,7 +1840,7 @@ void Lobby::addAccount(Account * ac)
     m_accounts[ac->getId()] = ac;
 }
 
-void Lobby::externalOperation(const Operation & op)
+void Lobby::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -1869,7 +1869,7 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -2142,7 +2142,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

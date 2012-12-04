@@ -33,7 +33,7 @@ class Creator : public Creator_parent {
     virtual ~Creator();
 
     virtual void operation(const Operation & op, OpVector &);
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
 
     virtual void mindLookOperation(const Operation & op, OpVector &);
 };

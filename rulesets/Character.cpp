@@ -34,6 +34,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/Link.h"
 #include "common/TypeNode.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
@@ -60,6 +61,7 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
@@ -325,7 +327,8 @@ int Character::unlinkExternalMind(Link * link)
     Move move;
     move->setFrom(getId());
     move->setArgs1(move_arg);
-    externalOperation(move);
+
+    filterExternalOperation(move);
 
 
     // We used to delete the external mind here, but now we
@@ -1711,24 +1714,8 @@ bool Character::world2mind(const Operation & op)
     return false;
 }
 
-void Character::operation(const Operation & op, OpVector & res)
+void Character::filterExternalOperation(const Operation & op)
 {
-    debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    Entity::operation(op, res);
-    if (world2mind(op)) {
-        debug( std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush;);
-        OpVector mres;
-        sendMind(op, mres);
-        OpVector::const_iterator Iend = mres.end();
-        for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
-            externalOperation(*I);
-        }
-    }
-}
-
-void Character::externalOperation(const Operation & op)
-{
-    debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
     OpVector mres;
     mind2body(op, mres);
     
@@ -1745,4 +1732,40 @@ void Character::externalOperation(const Operation & op)
     for (; I != Iend; ++I) {
         sendWorld(*I);
     }
+}
+
+void Character::operation(const Operation & op, OpVector & res)
+{
+    debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    Entity::operation(op, res);
+    if (world2mind(op)) {
+        debug( std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush;);
+        OpVector mres;
+        sendMind(op, mres);
+        OpVector::const_iterator Iend = mres.end();
+        for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
+            filterExternalOperation(*I);
+        }
+    }
+}
+
+void Character::externalOperation(const Operation & op, Link & link)
+{
+    debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    if (linkExternalMind(&link) == 0) {
+        debug(std::cout << "Subscribing existing character" << std::endl
+                        << std::flush;);
+
+        Info info;
+        Anonymous info_arg;
+        addToEntity(info_arg);
+        info->setArgs1(info_arg);
+
+        link.send(info);
+
+        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
+                                            getId(), getId(),
+                                            getType()));
+    }
+    filterExternalOperation(op);
 }

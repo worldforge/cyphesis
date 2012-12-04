@@ -57,7 +57,7 @@ class Juncture : public ConnectableRouter, virtual public sigc::trackable {
     Juncture(Connection *, const std::string & id, long iid);
     virtual ~Juncture();
 
-    virtual void externalOperation(const Operation & op);
+    virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;

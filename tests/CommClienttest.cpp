@@ -232,7 +232,7 @@ class TestLink : public Link
     {
     }
 
-    virtual void externalOperation(const Operation & op)
+    virtual void externalOperation(const Operation & op, Link &)
     {
     }
 

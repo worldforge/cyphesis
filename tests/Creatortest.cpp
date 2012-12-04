@@ -25,6 +25,7 @@
 #endif
 
 #include "IGEntityExerciser.h"
+#include "TestBase.h"
 #include "allOperations.h"
 #include "TestWorld.h"
 
@@ -45,14 +46,58 @@
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+using Atlas::Objects::Operation::RootOperation;
 
-int main(int argc, char ** argv)
+class Creatortest : public Cyphesis::TestBase
 {
-    Creator e("1", 1);
-    TypeNode type("creator");
-    e.setType(&type);
+  private:
+    static Operation m_Character_filterExternalOperation_called;
 
-    IGEntityExerciser ee(e);
+    Creator * m_creator;
+    TypeNode * m_type;
+  public:
+    Creatortest();
+
+    void setup();
+    void teardown();
+
+    void test_exerciser();
+    void test_externalOperation_normal();
+
+    static void Character_filterExternalOperation_called(const Operation & op);
+};
+
+Operation Creatortest::m_Character_filterExternalOperation_called(0);
+
+void Creatortest::Character_filterExternalOperation_called(const Operation & op)
+{
+    m_Character_filterExternalOperation_called = op;
+}
+
+Creatortest::Creatortest()
+{
+    ADD_TEST(Creatortest::test_exerciser);
+    ADD_TEST(Creatortest::test_externalOperation_normal);
+}
+
+void Creatortest::setup()
+{
+    m_creator = new Creator("1", 1);
+    m_type = new TypeNode("character");
+    m_creator->setType(m_type);
+
+    m_Character_filterExternalOperation_called = 0;
+}
+
+void Creatortest::teardown()
+{
+    delete m_creator;
+    delete m_type;
+}
+
+void Creatortest::test_exerciser()
+{
+    IGEntityExerciser ee(*m_creator);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -63,8 +108,25 @@ int main(int argc, char ** argv)
 
     // Throw an op of every type at the entity again now it is subscribed
     ee.runOperations();
+}
 
-    return 0;
+void Creatortest::test_externalOperation_normal()
+{
+    RootOperation op;
+    op->setFrom(m_creator->getId());
+
+    m_creator->externalOperation(op, *(Link*)0);
+
+    ASSERT_TRUE(m_Character_filterExternalOperation_called.isValid());
+    ASSERT_EQUAL(m_Character_filterExternalOperation_called->getClassNo(),
+                 Atlas::Objects::Operation::ROOT_OPERATION_NO);
+}
+
+int main(int argc, char ** argv)
+{
+    Creatortest t;
+
+    return t.run();
 }
 
 // stubs
@@ -107,10 +169,15 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
+    filterExternalOperation(op);
 }
 
+void Character::filterExternalOperation(const Operation & op)
+{
+    Creatortest::Character_filterExternalOperation_called(op);
+}
 
 void Character::ImaginaryOperation(const Operation & op, OpVector &)
 {
@@ -380,7 +447,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

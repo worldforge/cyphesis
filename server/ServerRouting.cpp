@@ -185,7 +185,7 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 

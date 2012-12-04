@@ -28,10 +28,9 @@
 #include "TestWorld.h"
 
 #include "server/Connection.h"
-#include "server/Player.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Character.h"
+#include "rulesets/Creator.h"
 #include "rulesets/ExternalMind.h"
 
 #include "common/const.h"
@@ -48,208 +47,226 @@
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
 
-/// Test code paths between account, connection and avatar classes
-class AccountConnectionCharacterintegration : public Cyphesis::TestBase
+class ConnectionCreatorintegration : public Cyphesis::TestBase
 {
   protected:
     long m_id_counter;
     static LogEvent m_logEvent_logged;
     static Operation m_Link_send_sent;
+    static Operation m_BaseWorld_message_called;
+    static Entity * m_BaseWorld_message_called_from;
+    static Operation m_Entity_callOperation_called;
 
     ServerRouting * m_server;
     Connection * m_connection;
-    Account * m_account;
-    Character * m_character;
-    TypeNode * m_characterType;
+    Creator * m_creator;
+    TypeNode * m_creatorType;
   public:
-    AccountConnectionCharacterintegration();
+    ConnectionCreatorintegration();
 
     void setup();
 
     void teardown();
 
-    void test_subscribe();
-    void test_connect_existing();
-    void test_unsubscribe();
-    void test_unsubscribe_other();
+    void test_external_op();
+    void test_external_op_override();
+    void test_external_op_puppet();
+    void test_external_op_puppet_nonexistant();
 
     static void logEvent_logged(LogEvent le);
     static void Link_send_sent(const Operation & op);
+    static void BaseWorld_message_called(const Operation & op, Entity &);
+    static void Entity_callOperation_called(const Operation & op);
 };
 
-LogEvent AccountConnectionCharacterintegration::m_logEvent_logged = NONE;
-Operation AccountConnectionCharacterintegration::m_Link_send_sent(0);
+LogEvent ConnectionCreatorintegration::m_logEvent_logged = NONE;
+Operation ConnectionCreatorintegration::m_Link_send_sent(0);
+Operation ConnectionCreatorintegration::m_BaseWorld_message_called(0);
+Entity * ConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
+Operation ConnectionCreatorintegration::m_Entity_callOperation_called(0);
 
-void AccountConnectionCharacterintegration::logEvent_logged(LogEvent le)
+void ConnectionCreatorintegration::logEvent_logged(LogEvent le)
 {
     m_logEvent_logged = le;
 }
 
-void AccountConnectionCharacterintegration::Link_send_sent(const Operation & op)
+void ConnectionCreatorintegration::Link_send_sent(const Operation & op)
 {
     m_Link_send_sent = op;
 }
 
-AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
-    m_id_counter(0L),
-    m_connection(0),
-    m_character(0),
-    m_characterType(0)
+void ConnectionCreatorintegration::BaseWorld_message_called(
+      const Operation & op,
+      Entity & ent)
 {
-    ADD_TEST(AccountConnectionCharacterintegration::test_subscribe);
-    ADD_TEST(AccountConnectionCharacterintegration::test_connect_existing);
-    ADD_TEST(AccountConnectionCharacterintegration::test_unsubscribe);
-    ADD_TEST(AccountConnectionCharacterintegration::test_unsubscribe_other);
+    m_BaseWorld_message_called = op;
+    m_BaseWorld_message_called_from = &ent;
 }
 
-void AccountConnectionCharacterintegration::setup()
+void ConnectionCreatorintegration::Entity_callOperation_called(
+      const Operation & op)
+{
+    m_Entity_callOperation_called = op;
+}
+
+ConnectionCreatorintegration::ConnectionCreatorintegration() :
+    m_id_counter(0L),
+    m_connection(0),
+    m_creator(0),
+    m_creatorType(0)
+{
+    ADD_TEST(ConnectionCreatorintegration::test_external_op);
+    ADD_TEST(ConnectionCreatorintegration::test_external_op_override);
+    ADD_TEST(ConnectionCreatorintegration::test_external_op_puppet);
+    ADD_TEST(ConnectionCreatorintegration::test_external_op_puppet_nonexistant);
+}
+
+void ConnectionCreatorintegration::setup()
 {
     m_Link_send_sent = 0;
+    m_BaseWorld_message_called = 0;
+    m_BaseWorld_message_called_from = 0;
+    m_Entity_callOperation_called = 0;
 
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
-                                 "989cfbbe-67e3-4571-858c-488b91e06e7d",
-                                 "10658e5e-373b-4565-b34e-954b9223961e",
+                                 "dd7452be-0137-4664-b90e-77dfb395ac39",
+                                 "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  compose("%1", m_id_counter), m_id_counter++,
                                  compose("%1", m_id_counter), m_id_counter++);
     m_connection = new Connection(*(CommSocket*)0,
                                   *m_server,
-                                  "a4754783-9909-476b-a418-6997477dff49",
+                                  "25251955-7e8c-4043-8a5e-adfb8a1e76f7",
                                   compose("%1", m_id_counter), m_id_counter++);
-    m_account = new Player(m_connection,
-                           "fred",
-                           "25846125-f1bb-4963-852e-856a8be45515",
-                           compose("%1", m_id_counter), m_id_counter++);
-    m_character = new Character(compose("%1", m_id_counter), m_id_counter++);
-    m_characterType = new TypeNode("test_avatar");
-    m_character->setType(m_characterType);
+    m_creator = new Creator(compose("%1", m_id_counter), m_id_counter++);
+    m_creatorType = new TypeNode("test_avatar");
+    m_creator->setType(m_creatorType);
 
+    m_connection->addObject(m_creator);
+
+    m_BaseWorld_message_called = 0;
+    m_BaseWorld_message_called_from = 0;
 }
 
-void AccountConnectionCharacterintegration::teardown()
+void ConnectionCreatorintegration::teardown()
 {
     delete m_connection;
-    delete m_character;
-    delete m_characterType;
+    delete m_creator;
+    delete m_creatorType;
     delete m_server;
 }
 
-void AccountConnectionCharacterintegration::test_subscribe()
+void ConnectionCreatorintegration::test_external_op()
 {
-    // Inject an external op through the connection which is from
-    // the Character. This should result in the Character being set up
-    // for IG with an external mind linked back to the Connection.
+    // Dispatching a Talk external op from the creator should result in
+    // it being passed on to the world, exactly as if this was a Character
+    // except that we assume that Creator was set up linked.
 
-    // Initial state is that the account and character objects already
-    // belong to the connection
-    m_connection->m_objects[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()] = m_character;
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
 
-    ASSERT_NULL(m_character->m_externalMind)
-
-    RootOperation op;
-    op->setFrom(m_character->getId());
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
 
     m_connection->externalOperation(op, *m_connection);
 
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
+    // BaseWorld::message should have been called from Enitty::sendWorld
+    // with the Talk operation, modified to have TO set to the character.
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_creator->getId());
+    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_creator);
+}
+
+void ConnectionCreatorintegration::test_external_op_override()
+{
+    // Dispatching a Talk external op from the creator should result in
+    // it being passed on to the world, exactly as if this was a Character
+    // except that we assume that Creator was set up linked.
+
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
+    op->setTo(m_creator->getId());
+
+    m_connection->externalOperation(op, *m_connection);
+
+    // The operation should have been passed to Entity::callOperation for
+    // dispatch, completely unfiltered.
+    ASSERT_TRUE(m_Entity_callOperation_called.isValid());
+    ASSERT_EQUAL(m_Entity_callOperation_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_Entity_callOperation_called->isDefaultTo());
+    ASSERT_EQUAL(m_Entity_callOperation_called->getTo(), m_creator->getId());
+}
+
+void ConnectionCreatorintegration::test_external_op_puppet()
+{
+    // Dispatching a Talk external op from the creator, to the creator should
+    // result in it being passed directly to the normal op dispatch,
+    // shortcutting the world.
+
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
+
+    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    other->setType(m_creatorType);
+    m_server->m_world.addEntity(other);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
+    op->setTo(other->getId());
+
+    m_connection->externalOperation(op, *m_connection);
+
+    // Operation should be via world dispatch, as if it was from the Entity
+    // we are puppeting.
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), other->getId());
+    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, other);
+}
+
+void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
+{
+    // Dispatching a Talk external op from the creator, to the creator should
+    // result in it being passed directly to the normal op dispatch,
+    // shortcutting the world.
+
+    m_creator->m_externalMind = new ExternalMind(*m_creator);
+    m_creator->m_externalMind->linkUp(m_connection);
+
+    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    other->setType(m_creatorType);
+    m_server->m_world.addEntity(other);
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_creator->getId());
+    op->setTo(compose("%1", m_id_counter++));
+
+    m_connection->externalOperation(op, *m_connection);
+
+    // Operation should be via world dispatch, as if it was from the Entity
+    // we are puppeting.
     ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
-                 Atlas::Objects::Operation::INFO_NO);
-    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
-}
-
-void AccountConnectionCharacterintegration::test_connect_existing()
-{
-    // Invote Account::connectCharacter to set up the character for IG
-    // with an external mind linked back to the connection.
-
-    // Initial state is that the account already belongs to the connection,
-    // but the character does not yet, as it is new.
-
-    m_connection->m_objects[m_account->getIntId()] = m_account;
-
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) ==
-                m_connection->m_objects.end())
-    
-    ASSERT_NULL(m_character->m_externalMind)
-
-    m_account->connectCharacter(m_character);
-
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
-}
-
-void AccountConnectionCharacterintegration::test_unsubscribe()
-{
-    // Initial state is that the account already belongs to the connection,
-    // and the character is linked up.
-
-    m_connection->m_objects[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()] = m_character;
-    m_character->linkExternalMind(m_connection);
-
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
-
-    m_connection->disconnectObject(
-          m_connection->m_objects.find(m_character->getIntId()),
-          "test_disconnect_event"
-    );
-
-    ASSERT_EQUAL(m_logEvent_logged, DROP_CHAR);
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(!m_character->m_externalMind->isLinked())
-    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
-}
-
-void AccountConnectionCharacterintegration::test_unsubscribe_other()
-{
-    // Initial state is that the account already belongs to the connection,
-    // and the character is linked up to another connection
-
-    m_connection->m_objects[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()] = m_character;
-
-    Connection * other_connection =
-          new Connection(*(CommSocket*)0,
-                         *m_server,
-                         "242eedae-6a2e-4c5b-9901-711b14d7e851",
-                         compose("%1", m_id_counter), m_id_counter++);
-
-    m_character->linkExternalMind(other_connection);
-
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinked())
-    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(other_connection))
-
-    m_connection->disconnectObject(
-          m_connection->m_objects.find(m_character->getIntId()),
-          "test_disconnect_event"
-    );
-
-    ASSERT_NOT_EQUAL(m_logEvent_logged, DROP_CHAR);
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinked())
-    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(other_connection))
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
+    ASSERT_EQUAL(m_Link_send_sent->getParents().front(),
+                 "unseen");
+    ASSERT_TRUE(!m_Link_send_sent->isDefaultTo());
+    ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
 {
+    ConnectionCreatorintegration::BaseWorld_message_called(op, ent);
 }
 
 Entity * TestWorld::addNewEntity(const std::string &,
@@ -260,7 +277,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 int main()
 {
-    AccountConnectionCharacterintegration t;
+    ConnectionCreatorintegration t;
 
     return t.run();
 }
@@ -270,8 +287,7 @@ int main()
 #include "server/CommServer.h"
 #include "server/Idle.h"
 #include "server/Lobby.h"
-#include "server/Persistence.h"
-#include "server/TeleportAuthenticator.h"
+#include "server/Player.h"
 
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
@@ -286,6 +302,7 @@ int main()
 #include "rulesets/TasksProperty.h"
 
 #include "common/CommSocket.h"
+#include "common/id.h"
 #include "common/Inheritance.h"
 #include "common/Property_impl.h"
 #include "common/PropertyManager.h"
@@ -380,19 +397,6 @@ int CommSocket::flush()
     return 0;
 }
 
-TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
-
-int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
-{
-    return 0;
-}
-
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
-                                            const std::string &possess_key)
-{
-    return 0;
-}
-
 Player::Player(Connection * conn,
                const std::string & username,
                const std::string & passwd,
@@ -421,6 +425,85 @@ int Player::characterError(const Operation & op,
                            const Root & ent, OpVector & res) const
 {
     return 0;
+}
+
+Account::Account(Connection * conn,
+                 const std::string & uname,
+                 const std::string & passwd,
+                 const std::string & id,
+                 long intId) :
+         ConnectableRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
+{
+}
+
+Account::~Account()
+{
+}
+
+const char * Account::getType() const
+{
+    return "testaccount";
+}
+
+void Account::store() const
+{
+}
+
+void Account::addToMessage(Atlas::Message::MapType &) const
+{
+}
+
+void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
+{
+}
+
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
+
+void Account::externalOperation(const Operation &, Link &)
+{
+}
+
+void Account::operation(const Operation &, OpVector &)
+{
+}
+
+
+void Account::LogoutOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::SetOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::ImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::TalkOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::LookOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::OtherOperation(const Operation &, OpVector &)
+{
 }
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
@@ -472,24 +555,6 @@ Account * ServerRouting::getAccountByName(const std::string & username)
 }
 
 void ServerRouting::addAccount(Account * a)
-{
-}
-
-Persistence * Persistence::m_instance = NULL;
-
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
-void Persistence::putAccount(const Account & ac)
 {
 }
 
@@ -691,6 +756,11 @@ void Entity::UseOperation(const Operation &, OpVector &)
 
 void Entity::WieldOperation(const Operation &, OpVector &)
 {
+}
+
+void Entity::callOperation(const Operation & op, OpVector & res)
+{
+    ConnectionCreatorintegration::Entity_callOperation_called(op);
 }
 
 void Entity::externalOperation(const Operation & op, Link &)
@@ -1063,7 +1133,7 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
-    AccountConnectionCharacterintegration::Link_send_sent(op);
+    ConnectionCreatorintegration::Link_send_sent(op);
 }
 
 void Link::sendError(const Operation & op,
@@ -1138,12 +1208,26 @@ BaseWorld::~BaseWorld()
 
 Entity * BaseWorld::getEntity(const std::string & id) const
 {
-    return 0;
+    long intId = integerId(id);
+
+    EntityDict::const_iterator I = m_eobjects.find(intId);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
 }
 
 Entity * BaseWorld::getEntity(long id) const
 {
-    return 0;
+    EntityDict::const_iterator I = m_eobjects.find(id);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
 }
 
 Inheritance * Inheritance::m_instance = NULL;
@@ -1213,7 +1297,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 void logEvent(LogEvent lev, const std::string & msg)
 {
-    AccountConnectionCharacterintegration::logEvent_logged(lev);
+    ConnectionCreatorintegration::logEvent_logged(lev);
 }
 
 long integerId(const std::string & id)
@@ -1280,5 +1364,3 @@ int check_password(const std::string & pwd, const std::string & hash)
 {
     return 0;
 }
-
-bool database_flag = false;

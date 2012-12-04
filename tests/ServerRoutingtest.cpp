@@ -81,7 +81,7 @@ class TestRouter : public Router
   public:
     TestRouter(const std::string &id, int iid) : Router(id, iid) { }
 
-    virtual void externalOperation(const Operation &) { }
+    virtual void externalOperation(const Operation &, Link &) { }
     virtual void operation(const Operation &, OpVector &) { }
 };
 
@@ -326,7 +326,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::externalOperation(const Operation &)
+void Account::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -420,7 +420,7 @@ Lobby::~Lobby()
 {
 }
 
-void Lobby::externalOperation(const Operation &)
+void Lobby::externalOperation(const Operation &, Link &)
 {
 }
 

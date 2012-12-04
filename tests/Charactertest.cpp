@@ -66,7 +66,7 @@ class TestLink : public Link
     {
     }
 
-    void externalOperation(const Operation & op)
+    void externalOperation(const Operation & op, Link &)
     {
     }
 
@@ -78,6 +78,9 @@ class TestLink : public Link
 class Charactertest : public Cyphesis::TestBase
 {
   private:
+    static Operation m_BaseWorld_message_called;
+    static Entity * m_BaseWorld_message_called_from;
+
     Character * m_character;
     TypeNode * m_type;
   public:
@@ -95,7 +98,20 @@ class Charactertest : public Cyphesis::TestBase
     void test_unlinkExternalMind_linked_other();
     void test_unlinkExternalMind_unlinked();
     void test_unlinkExternalMind_nomind();
+    void test_filterExternalOperation();
+
+    static void BaseWorld_message_called(const Operation & op, Entity &);
 };
+
+Operation Charactertest::m_BaseWorld_message_called(0);
+Entity * Charactertest::m_BaseWorld_message_called_from(0);
+
+void Charactertest::BaseWorld_message_called(const Operation & op,
+                                             Entity & ent)
+{
+    m_BaseWorld_message_called = op;
+    m_BaseWorld_message_called_from = &ent;
+}
 
 Charactertest::Charactertest()
 {
@@ -108,6 +124,7 @@ Charactertest::Charactertest()
     ADD_TEST(Charactertest::test_unlinkExternalMind_linked_other);
     ADD_TEST(Charactertest::test_unlinkExternalMind_unlinked);
     ADD_TEST(Charactertest::test_unlinkExternalMind_nomind);
+    ADD_TEST(Charactertest::test_filterExternalOperation);
 }
 
 void Charactertest::setup()
@@ -290,6 +307,27 @@ void Charactertest::test_unlinkExternalMind_nomind()
     ASSERT_NULL(m_character->m_externalMind)
 }
 
+void Charactertest::test_filterExternalOperation()
+{
+    // Dispatching a Talk external op from the character should result in
+    // it being passed on to the world.
+
+    Atlas::Objects::Operation::Talk op;
+    op->setFrom(m_character->getId());
+
+    m_character->filterExternalOperation(op);
+
+    // BaseWorld::message should have been called from Enitty::sendWorld
+    // with the Talk operation, modified to have TO set to the character.
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
+                 Atlas::Objects::Operation::TALK_NO);
+    ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_character->getId());
+    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_character);
+}
+
 int main(int argc, char ** argv)
 {
     Charactertest t;
@@ -303,6 +341,7 @@ int main(int argc, char ** argv)
 
 void TestWorld::message(const Operation & op, Entity & ent)
 {
+    Charactertest::BaseWorld_message_called(op, ent);
 }
 
 Entity * TestWorld::addNewEntity(const std::string &,
@@ -335,7 +374,7 @@ ExternalMind::~ExternalMind()
 {
 }
 
-void ExternalMind::externalOperation(const Operation & op)
+void ExternalMind::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -534,7 +573,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -779,6 +818,10 @@ Link::Link(CommSocket & socket, const std::string & id, long iid) :
 }
 
 Link::~Link()
+{
+}
+
+void Link::send(const Operation & op) const
 {
 }
 
@@ -1071,6 +1114,10 @@ PropertyManager::~PropertyManager()
 }
 
 void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void logEvent(LogEvent lev, const std::string & msg)
 {
 }
 

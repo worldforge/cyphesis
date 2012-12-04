@@ -352,7 +352,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::externalOperation(const Operation &)
+void Account::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -434,7 +434,7 @@ Connection::~Connection()
 }
 
 
-void Connection::externalOperation(const Operation &)
+void Connection::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -502,7 +502,7 @@ void ServerRouting::addAccount(Account * a)
 {
 }
 
-void ServerRouting::externalOperation(const Operation & op)
+void ServerRouting::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -536,7 +536,7 @@ void Lobby::addAccount(Account * ac)
 {
 }
 
-void Lobby::externalOperation(const Operation &)
+void Lobby::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -553,7 +553,7 @@ ExternalMind::~ExternalMind()
 {
 }
 
-void ExternalMind::externalOperation(const Operation &)
+void ExternalMind::externalOperation(const Operation &, Link &)
 {
 }
 
@@ -610,7 +610,7 @@ void Character::operation(const Operation & op, OpVector &)
 {
 }
 
-void Character::externalOperation(const Operation & op)
+void Character::externalOperation(const Operation & op, Link &)
 {
 }
 
@@ -880,7 +880,7 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::externalOperation(const Operation & op)
+void Entity::externalOperation(const Operation & op, Link &)
 {
 }
 

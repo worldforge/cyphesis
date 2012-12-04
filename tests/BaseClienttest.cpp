@@ -249,7 +249,7 @@ MemEntity::~MemEntity()
 {
 }
 
-void MemEntity::externalOperation(const Operation & op)
+void MemEntity::externalOperation(const Operation & op, Link &)
 {
 }
 
