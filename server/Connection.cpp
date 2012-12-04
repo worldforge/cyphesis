@@ -233,26 +233,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
                                       op->getParents().front(), from), from);
         return;
     }
-    Router * obj = I->second;
-    Character * chr = dynamic_cast<Character *>(obj);
-    if (chr != NULL) {
-        if (chr->linkExternalMind(this) == 0) {
-            debug(std::cout << "Subscribing existing character" << std::endl
-                            << std::flush;);
-
-            Info info;
-            Anonymous info_arg;
-            chr->addToEntity(info_arg);
-            info->setArgs1(info_arg);
-
-            send(info);
-
-            logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
-                                                getId(), chr->getId(),
-                                                chr->getType()));
-        }
-    }
-    obj->externalOperation(op, link);
+    I->second->externalOperation(op, link);
 }
 
 void Connection::operation(const Operation & op, OpVector & res)

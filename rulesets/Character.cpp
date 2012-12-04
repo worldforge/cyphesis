@@ -34,6 +34,7 @@
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/Link.h"
 #include "common/TypeNode.h"
 #include "common/serialno.h"
 #include "common/compose.hpp"
@@ -60,6 +61,7 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
@@ -1747,8 +1749,23 @@ void Character::operation(const Operation & op, OpVector & res)
     }
 }
 
-void Character::externalOperation(const Operation & op, Link &)
+void Character::externalOperation(const Operation & op, Link & link)
 {
     debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    if (linkExternalMind(&link) == 0) {
+        debug(std::cout << "Subscribing existing character" << std::endl
+                        << std::flush;);
+
+        Info info;
+        Anonymous info_arg;
+        addToEntity(info_arg);
+        info->setArgs1(info_arg);
+
+        link.send(info);
+
+        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
+                                            getId(), getId(),
+                                            getType()));
+    }
     filterExternalOperation(op);
 }

@@ -821,6 +821,10 @@ Link::~Link()
 {
 }
 
+void Link::send(const Operation & op) const
+{
+}
+
 ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
 {
 }
@@ -1110,6 +1114,10 @@ PropertyManager::~PropertyManager()
 }
 
 void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void logEvent(LogEvent lev, const std::string & msg)
 {
 }
 
